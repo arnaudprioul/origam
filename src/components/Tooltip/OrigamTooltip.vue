@@ -128,11 +128,17 @@
 		lang="scss"
 		scoped
 >
-
-</style>
-
-<style>
-	:root {
-
+	.origam-tooltip {
+		background-color: var(--origam-tooltip---background-color, var(--origam-color-neutral-800));
+		color: var(--origam-tooltip---color, var(--origam-color-text-inverse));
+		font-size: var(--origam-tooltip---font-size, 0.75rem);
+		font-weight: var(--origam-tooltip---font-weight, 500);
+		line-height: var(--origam-tooltip---line-height, 1.5);
+		padding-block: var(--origam-tooltip---padding-block, 4px);
+		padding-inline: var(--origam-tooltip---padding-inline, 8px);
+		border-radius: var(--origam-tooltip---border-radius, 4px);
+		z-index: var(--origam-tooltip---z-index, 1070);
+		max-width: var(--origam-tooltip---max-width, 300px);
+		opacity: var(--origam-tooltip---opacity, 1);
 	}
 </style>

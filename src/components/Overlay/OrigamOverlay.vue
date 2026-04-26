@@ -321,12 +321,12 @@
 		}
 
 		&__scrim {
-			pointer-events: auto;
-			background: rgb(255, 255, 255);
+			pointer-events: var(--origam-overlay__scrim---pointer-events, auto);
+			background-color: var(--origam-overlay__scrim---background-color, var(--origam-color-overlay-scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
 			border-radius: inherit;
 			bottom: 0;
 			left: 0;
-			opacity: 0.32;
+			opacity: var(--origam-overlay__scrim---opacity, 0.32);
 			position: fixed;
 			right: 0;
 			top: 0;
@@ -346,8 +346,4 @@
 			padding-inline-end: 0px;
 		}
 	}
-</style>
-
-<style>
-
 </style>

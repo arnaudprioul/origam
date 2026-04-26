@@ -23,6 +23,85 @@ copy.
 ## [Unreleased]
 
 ### Added
+- Component tier (Lot 4C — Overlay + Loader + Progress family, 6 composants) :
+  - `component/overlay` — 18 tokens :
+    - Racine (6 tokens) : `display`, `position`, `border-radius`, `pointer-events`, `z-index` → `{zIndex.overlay}` (1040), `transition-duration/easing`.
+    - Sous-section BEM `scrim` (12 tokens) : `background-color` → `{color.overlay.scrim}` (alias temporaire, voir arbitrage ci-dessous), `opacity` → `{opacity.32}`, `pointer-events`, `border-radius`, `position`, `position-top/bottom/left/right`, `transition-property/duration/timing-function`.
+    - Sous-section BEM `content` (4 tokens) : `outline`, `position`, `pointer-events`, `contain`.
+    - Variantes `absolute` (position) et `contained.scrim-position` (position override).
+  - `component/overlay-scrim` — 9 tokens : `background-color` → `{color.overlay.scrim}`, `opacity` → `{opacity.32}`, `pointer-events`, `border-radius`, `position`, `transition-property/duration/timing-function`.
+  - `component/loader` — 5 tokens : stub de cohérence (composant conteneur sans custom properties CSS propres). `height`, `transition-duration/easing`, `progress.margin`, `fullscreen` (position/top/left/height/width).
+  - `component/progress` — 11 tokens : racine (`display`, `width`) ; sous-section `content` (9 tokens layout). Dispatcher vers Circular/Linear.
+  - `component/progress-circular` — 22 tokens :
+    - Racine : `display`, `align-items`, `justify-content`, `position`, `vertical-align`, `size-{xs,sm,md,lg,xl}` (16/24/32/48/64 px), `transition-duration/easing`, `indeterminate-duration` (1400ms littéral SVG-spécifique).
+    - Sous-sections BEM : `svg` (4 tokens), `underlay` (`color` → `{color.surface.disabled}`, `opacity` → `{opacity.50}`, `z-index`), `overlay` (`color` → `{color.action.primary.bg}`, `z-index`), `content` (3 tokens flex).
+    - Variantes intent : `success/warning/danger/info.color` → `{color.feedback.{intent}.bg}`.
+  - `component/progress-linear` — 21 tokens :
+    - Racine : `background` (transparent), `overflow`, `position`, `width`, `transition-duration/easing`, `indeterminate-duration` (2200ms), `rounded-border-radius` → `{radius.full}`.
+    - Sous-sections BEM : `background-track` (`background` currentColor, `opacity` → `{opacity.50}`, `position`), `bar` (4 tokens), `stream` (`opacity` 0.3 littéral, `position`, `pointer-events`), `absolute` (3 tokens), `fixed` (3 tokens).
+  - 6 fichiers enregistrés dans `$metadata.json` et activés dans `$themes.json` (light + dark).
+
+### Changed
+- `OrigamOverlay.vue` :
+  - 1 hex retiré : `rgb(255, 255, 255)` (scrim background) → `var(--origam-overlay__scrim---background-color, var(--origam-color-overlay-scrim))`.
+  - `opacity: 0.32` et `pointer-events: auto` sur `__scrim` encapsulés dans des CSS custom properties.
+  - Bloc `<style></style>` global vide supprimé.
+- `OrigamOverlayScrim.vue` :
+  - Bug fix (port Optimus) : bloc `<style lang="scss" scoped>` ajouté — totalement absent dans le port Origam. Classe `.origam-scrim` reçoit ses propriétés via CSS custom properties avec fallbacks : `background-color` → `var(--origam-color-overlay-scrim)`, `opacity` → 0.32, `pointer-events`, `border-radius`, `position`, `transition-*`.
+- `OrigamProgressCircular.vue` :
+  - Bug fix (port Optimus) : `backgroundColorClasses` et `loaderColorClasses` exportés depuis `useTextColor` et appliqués sur les `<circle>` via `:class` — absents de l'implémentation Origam originale.
+  - 1 hex retiré : `rgba(#fff, 0.4)` sur `__underlay` → `var(--origam-progress-circular__underlay---color, var(--origam-color-surface-disabled))`.
+  - `opacity: 0.5` ajouté sur `__underlay` (présent dans Optimus, manquant dans Origam), encapsulé dans `var(--origam-progress-circular__underlay---opacity, 0.5)`.
+  - `transition` sur `__overlay` encapsulée dans `var()` duration/easing.
+  - Bloc `<style></style>` global vide supprimé.
+- `OrigamProgressLinear.vue` :
+  - Bug fix (port Optimus) : `useBackgroundColor` remplacé par `useTextColor` pour `bgColor` et `color` — Optimus utilise `useTextColor` qui expose classes ET styles de couleur.
+  - `backgroundColorClasses` et `loaderColorClasses` appliqués via `:class` sur `.origam-progress__background` et `.origam-progress__loader` — absents du port original.
+  - `color: var(--origam-progress-linear__background---color, inherit)` et `opacity` encapsulés sur `__background`.
+  - `color: var(--origam-progress-linear__loader---color, inherit)` encapsulé sur `__loader`.
+  - Bloc `:root {}` vide supprimé du `<style>` global (keyframes `indeterminate-*`, `stream`, `progress-linear-stripes` conservés — doivent rester globaux).
+- `OrigamLoader.vue`, `OrigamProgress.vue` : aucun changement — composants déjà propres (0 bloc global, 0 hex).
+
+### Points d'arbitrage ouverts (Lot 4C)
+- **Scrim backdrop color** : `color.overlay.scrim` vaut blanc en light / noir en dark. Pour un backdrop de modale traditionnel on veut noir semi-transparent dans **les deux thèmes**. Solution provisoire : alias `{color.overlay.scrim}` + commentaire `// TODO: rename to color.overlay.backdrop once #arbitration2 resolved` dans `OrigamOverlay.vue` et `OrigamOverlayScrim.vue`. Même point que Lot 2D. Décision requise : créer `color.overlay.backdrop` fixe sur `{color.black}` dans light ET dark.
+- **`opacity.30` absent du primitif** : `stream.opacity` à 0.3 dans ProgressLinear conservé en valeur littérale (primitif disponible : 0.26 et 0.32). Ajouter `opacity.30` au primitif ou aligner sur `opacity.32`.
+- **Tokens Progress partagés ou séparés** : `size-*` et `transition-*` définis dans `progress-circular` uniquement ; `progress-linear` a ses propres `transition-*`. Pas de token partagé inter-composant pour éviter couplage artificiel. Si harmonisation souhaitée : créer `progress.transition-*` et faire pointer les deux composants vers lui.
+
+- Component tier (Lot 4B — Dialog/DialogConfirmation/Menu/Tooltip, migration design tokens) :
+  - `component/dialog` — 15 tokens : racine (background → `{color.surface.raised}`, color → `{color.text.primary}`, border-radius → `{radius.lg}`, max-width/max-height, z-index → `{zIndex.modal}` = 1050, box-shadow → `{shadow.xl}`), transition (2), header (3), content (3), actions (3), close (2), variante fullscreen (3). Bloc `<style></style>` global vide supprimé. CSS custom properties tokenisées dans `<style scoped>`.
+  - `component/dialog-confirmation` — 11 tokens : icon-size, icon-color ×5 intents, title (font-size/weight/color), description (font-size/color), actions-gap → `{space.3}`. Aucune modification nécessaire au composant (aucun bloc style ni hex).
+  - `component/menu` — 11 tokens : racine (background → `{color.surface.raised}`, color → `{color.text.primary}`, border-radius → `{radius.md}`, box-shadow → `{shadow.lg}`, max-height, z-index → `{zIndex.dropdown}` = 1000), transition (2), content BEM (3), offsets directionnels (4). Bloc `<style>:root{}</style>` global vide supprimé. CSS custom properties tokenisées dans `<style scoped>`. Bug fix : `console.log()` de debug retiré.
+  - `component/tooltip` — 16 tokens : racine (background-color → `{color.neutral.800}` surface inverse intentionnelle, color → `{color.text.inverse}`, font-size → `{font.size.sm}`, font-weight, line-height, padding-block/inline → `{space.1/2}`, border-radius → `{radius.sm}`, z-index → `{zIndex.tooltip}` = 1070, max-width, opacity), transition (2), arrow BEM (2), variants directionnels (4). Bloc `<style>:root{}</style>` global vide supprimé. CSS custom properties tokenisées dans `<style scoped>`.
+  - Z-index normalisés : Dialog token → 1050 (prop runtime 2400 conservée pour compatibilité, décision lead requise), Menu → 1000, Tooltip → 1070.
+  - Blocs globaux supprimés : 3 blocs `<style>:root{}</style>` vides (Dialog, Menu, Tooltip). 0 hex hardcodé résiduel dans les 4 composants.
+  - Points d'arbitrage :
+    - Dialog `zIndex` prop default (2400 vs token 1050) : décision de cadrage requise du lead.
+    - Tooltip background : `{color.neutral.800}` retenu comme surface inverse explicite — pas de token sémantique `color.surface.inverse` existant. À créer si plusieurs composants en ont besoin.
+    - Menu positionnement : délégué à `OrigamOverlay` (locationStrategy CONNECTED) — les tokens `offset-*` documentent l'intention sans modifier la mécanique de l'overlay.
+
+- Component tier (Lot 4A — Alert enrichi + Snackbar nouveau) :
+  - `component/alert` — enrichissement massif (11 hex retirés, 1 bloc `<style>:root{}` supprimé) :
+    - Racine : `background-color` (→ `{color.surface.disabled}`), `color` (→ `{color.text.primary}`), `border-color`, `border-style`, `border-{top,left,bottom,right}-width`, `border-radius`, `border-radius-rounded`, `position`, `padding-block-{start,end}`, `padding-inline-{start,end}`, `margin-{block,inline}-{start,end}`, `density`, `accent-width`, `box-shadow-elevated` (→ `{shadow.md}`).
+    - Sous-sections BEM : `prepend` (8 tokens — align-items, margin/padding ×4 logiques), `append` (8 tokens idem), `close` (8 tokens idem), `title` (10 tokens — font-size/weight/hyphens/letter-spacing/line-height/overflow-wrap/text-transform/word-break/word-wrap), `text` (7 tokens — font-size/weight/line-height/letter-spacing/hyphens/word-break/word-wrap), `underlay` (1 token — border-radius).
+    - Variantes feedback : `success`, `warning`, `danger`, `info` — chacune avec `bg`, `fg`, `bg-subtle`, `fg-subtle`, `border` (5 × 4 = 20 tokens).
+    - Hex retirés du `<style scoped>` : `rgba(0,0,0,0.05)` + `rgba(0,0,0,0.08)` (box-shadow elevated) → `var(--origam-shadow-md)` ; `rgb(251,140,0)` + `#ffffff` (warning) ; `rgb(76,175,80)` + `#ffffff` (success) ; `rgb(33,150,243)` + `#ffffff` (info) ; `rgb(207,102,121)` + `#ffffff` (error) → toutes vers semantic feedback tokens.
+    - Les `rgba(30,30,30,0.87)` et `rgb(230,230,230)` du bloc `:root` supprimé sont désormais couverts par les tokens racine `background-color` et `color`.
+    - Note : l'intent `error` côté composant Vue mappé vers `danger` (alignement avec le naming du design system — `--error` CSS class → `danger.*` tokens). Point d'arbitrage à confirmer par le lead.
+  - `component/snackbar` — **nouveau** fichier (35 tokens créés, 1 hex retiré — `z-index: 10000` normalisé) :
+    - Racine : `z-index` (→ `{zIndex.toast}` = 1060, **breaking** : était hardcodé à 10000), `margin` (→ `{space.2}`), `position`.
+    - Sous-section `wrapper` (3 tokens) : `min-height`, `min-width`, `max-width`.
+    - Sous-section `content` (5 tokens) : `font-size` (→ `{font.size.md}`), `font-weight`, `letter-spacing`, `line-height`, `padding-block`, `padding-inline`.
+    - Sous-section `prepend` (1 token) : `margin-inline-end`.
+    - Sous-section `actions` (1 token) : `margin-inline-end`.
+    - Sous-section `timer` (2 tokens) : `transition-duration` (→ `{motion.duration.medium}`), `transition-easing` (→ `{motion.easing.linear}`).
+    - Sous-section `multi-line` (1 token) : `wrapper-min-height`.
+    - Sous-section `vertical` (1 token) : `actions-margin-bottom`.
+    - Sous-section `absolute` (1 token) : `z-index` (→ `{zIndex.raised}`).
+    - Variantes feedback : `success`, `warning`, `danger`, `info` — chacune avec `bg`, `fg`, `border` (3 × 4 = 12 tokens).
+    - `component/snackbar` enregistré dans `$metadata.json` (tokenSetOrder) et activé dans `$themes.json` (light + dark).
+    - **Breaking change documenté (Lot 0 audit)** : `z-index` snackbar passe de 10000 à 1060 (`{zIndex.toast}`). Toutes les surfaces flottantes (overlay, modal, tooltip) utilisent désormais l'échelle de z-index normalisée du primitif. Voir `tokens/primitive.json#zIndex`.
+    - Point d'arbitrage : `letter-spacing: 0.0178571429em` (content) n'a pas d'alias exact dans le primitif (le plus proche est `font.letterSpacing.wide` = 0.009375em). Valeur littérale conservée comme fallback dans `var()`, le token pointe vers `{font.letterSpacing.wide}` — ajustement visuel mineur. Décision requise du lead.
+
 - Component tier (Lot 3.2B — Input/TextField/TextareaField/ConfirmWrapper) :
   - `component/input` — 16 tokens : `font-size`, `font-weight`, `line-height`, `icon-opacity`, `icon-opacity-active`, `disabled-opacity`, `error-color` (alias vers `{color.feedback.danger.fgSubtle}`), sous-sections BEM `control` (height), `details` (font-size/weight/letter-spacing/line-height/min-height/padding-top), `prepend` (padding-top/margin-inline-end), `append` (padding-top/margin-inline-start), variantes `density-default` et `density-compact` (density dimension).
   - `component/text-field` — 6 tokens : sous-section `details` (padding-inline) et `input` (opacity/opacity-active/transition-duration/transition-easing). Bloc `<style>:root{}</style>` vide supprimé de `OrigamTextField.vue`.

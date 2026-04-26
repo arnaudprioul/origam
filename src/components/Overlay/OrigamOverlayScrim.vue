@@ -65,3 +65,20 @@
 		filterProps
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-scrim {
+		background-color: var(--origam-overlay-scrim---background-color, var(--origam-color-overlay-scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
+		pointer-events: var(--origam-overlay-scrim---pointer-events, auto);
+		border-radius: inherit;
+		inset: 0;
+		opacity: var(--origam-overlay-scrim---opacity, 0.32);
+		position: fixed;
+		transition-property: var(--origam-overlay-scrim---transition-property, opacity);
+		transition-duration: var(--origam-overlay-scrim---transition-duration, 200ms);
+		transition-timing-function: var(--origam-overlay-scrim---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
+	}
+</style>

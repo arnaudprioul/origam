@@ -216,8 +216,6 @@
 	})
 
 	const overlayProps = computed(() => {
-		console.log(origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu']))
-
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
 
@@ -249,12 +247,17 @@
 		scoped
 >
 	.origam-menu {
+		z-index: var(--origam-menu---z-index, 1000);
+		background: var(--origam-menu---background, var(--origam-color-surface-raised));
+		color: var(--origam-menu---color, var(--origam-color-text-primary));
+		border-radius: var(--origam-menu---border-radius, 8px);
+		box-shadow: var(--origam-menu---box-shadow);
+		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
 
-	}
-</style>
-
-<style>
-	:root {
-
+		&__list {
+			overflow: var(--origam-menu__content---overflow, auto);
+			max-width: var(--origam-menu__content---max-width, 320px);
+			padding: var(--origam-menu__content---padding, 4px);
+		}
 	}
 </style>

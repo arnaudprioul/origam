@@ -269,10 +269,12 @@
 		margin: auto;
 
 		> :deep(.origam-overlay__content) {
-			max-height: calc(100% - 48px);
+			max-height: var(--origam-dialog---max-height, calc(100% - 48px));
 			width: calc(100% - 48px);
-			max-width: calc(100% - 48px);
+			max-width: var(--origam-dialog---max-width, calc(100% - 48px));
 			margin: 24px;
+			border-radius: var(--origam-dialog---border-radius, 12px);
+			box-shadow: var(--origam-dialog---box-shadow);
 
 			&,
 			> form {
@@ -298,13 +300,13 @@
 
 		&--fullscreen {
 			> :deep(.origam-overlay__content) {
-				border-radius: 0;
+				border-radius: var(--origam-dialog__fullscreen---border-radius, 0px);
 				margin: 0;
 				padding: 0;
 				width: 100%;
 				height: 100%;
-				max-width: 100%;
-				max-height: 100%;
+				max-width: var(--origam-dialog__fullscreen---max-width, 100%);
+				max-height: var(--origam-dialog__fullscreen---max-height, 100%);
 				overflow-y: auto;
 				top: 0;
 				left: 0;
@@ -315,14 +317,10 @@
 					> .origam-sheet {
 						min-height: 100%;
 						min-width: 100%;
-						border-radius: 0;
+						border-radius: var(--origam-dialog__fullscreen---border-radius, 0px);
 					}
 				}
 			}
 		}
 	}
-</style>
-
-<style>
-
 </style>

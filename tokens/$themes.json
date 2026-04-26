@@ -14,6 +14,7 @@
       "component/avatar-group": "enabled",
       "component/badge": "enabled",
       "component/alert": "enabled",
+      "component/snackbar": "enabled",
       "component/bottom-nav": "enabled",
       "component/toolbar": "enabled",
       "component/app": "enabled",
@@ -41,7 +42,17 @@
       "component/password-field": "enabled",
       "component/input": "enabled",
       "component/text-field": "enabled",
-      "component/textarea-field": "enabled"
+      "component/textarea-field": "enabled",
+      "component/overlay": "enabled",
+      "component/overlay-scrim": "enabled",
+      "component/loader": "enabled",
+      "component/progress": "enabled",
+      "component/progress-circular": "enabled",
+      "component/progress-linear": "enabled",
+      "component/dialog": "enabled",
+      "component/dialog-confirmation": "enabled",
+      "component/menu": "enabled",
+      "component/tooltip": "enabled"
     }
   },
   {
@@ -59,6 +70,7 @@
       "component/avatar-group": "enabled",
       "component/badge": "enabled",
       "component/alert": "enabled",
+      "component/snackbar": "enabled",
       "component/bottom-nav": "enabled",
       "component/toolbar": "enabled",
       "component/app": "enabled",
@@ -86,7 +98,17 @@
       "component/password-field": "enabled",
       "component/input": "enabled",
       "component/text-field": "enabled",
-      "component/textarea-field": "enabled"
+      "component/textarea-field": "enabled",
+      "component/overlay": "enabled",
+      "component/overlay-scrim": "enabled",
+      "component/loader": "enabled",
+      "component/progress": "enabled",
+      "component/progress-circular": "enabled",
+      "component/progress-linear": "enabled",
+      "component/dialog": "enabled",
+      "component/dialog-confirmation": "enabled",
+      "component/menu": "enabled",
+      "component/tooltip": "enabled"
     }
   }
 ]
