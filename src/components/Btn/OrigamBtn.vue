@@ -269,14 +269,19 @@
 		] as StyleValue
 	})
 	const btnClasses = computed(() => {
+		// Resolve effective variant — `props.flat` is the legacy boolean shortcut
+		// for `variant="flat"`. `variant` wins when both are set.
+		const effectiveVariant = props.variant ?? (props.flat ? 'flat' : undefined)
+
 		return [
 			'origam-btn',
 			group?.selectedClass.value,
+			effectiveVariant ? `origam-btn--variant-${effectiveVariant}` : null,
 			{
 				'origam-btn--active': isActive.value,
 				'origam-btn--block': props.block,
 				'origam-btn--disabled': isDisabled.value,
-				'origam-btn--flat': props.flat,
+				'origam-btn--flat': effectiveVariant === 'flat',
 				'origam-btn--icon': !!props.icon,
 				'origam-btn--loading': props.loading,
 				'origam-btn--slim': props.slim,
@@ -467,8 +472,60 @@
 			padding: 0;
 		}
 
-		&--flat {
+		&--flat,
+		&--variant-flat {
+			// Default rendering — keeps the intent bg + fg from useColorEffect.
+			// `--flat` is the legacy boolean shortcut for `variant="flat"`; both
+			// classes are emitted while `flat: boolean` remains in the API.
 			box-shadow: none;
+		}
+
+		// ────────────────────────────────────────────────────────────
+		// Variants — each one overrides the rendered chrome on top of
+		// the intent vars set inline by `useColorEffect`. `!important`
+		// is required because `useColorEffect` ships its colors as
+		// inline `:style="{ '--origam-btn---background-color': … }"`,
+		// which beats class-level CSS in normal cascade order. Mirrors
+		// Vuetify's `.v-btn--variant-{name}` strategy.
+		// ────────────────────────────────────────────────────────────
+
+		&--variant-text {
+			background-color: transparent !important;
+			box-shadow: none;
+		}
+
+		&--variant-elevated {
+			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow-md));
+		}
+
+		&--variant-tonal {
+			// Tonal: tinted background, original color text. Uses the inline
+			// intent's bg with reduced opacity via `color-mix` when supported,
+			// falling back to the surface-overlay token.
+			background-color: var(
+				--origam-btn---background-color-tonal,
+				var(--origam-color-surface-overlay)
+			) !important;
+			box-shadow: none;
+		}
+
+		&--variant-outlined {
+			background-color: transparent !important;
+			border-width: var(--origam-btn---border-width-outlined, var(--origam-border-width-thin));
+			border-style: solid;
+			border-color: currentColor;
+			box-shadow: none;
+		}
+
+		&--variant-plain {
+			background-color: transparent !important;
+			box-shadow: none;
+			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity-70));
+
+			&:hover,
+			&:focus-visible {
+				opacity: 1;
+			}
 		}
 
 		&--block {
