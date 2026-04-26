@@ -1,0 +1,34 @@
+[
+  {
+    "id": "light",
+    "name": "Light",
+    "selectedTokenSets": {
+      "primitive": "enabled",
+      "semantic/light": "enabled",
+      "semantic/dark": "disabled",
+      "component/btn": "enabled",
+      "component/btn-group": "enabled",
+      "component/card": "enabled",
+      "component/chip": "enabled",
+      "component/avatar": "enabled",
+      "component/badge": "enabled",
+      "component/alert": "enabled"
+    }
+  },
+  {
+    "id": "dark",
+    "name": "Dark",
+    "selectedTokenSets": {
+      "primitive": "enabled",
+      "semantic/light": "disabled",
+      "semantic/dark": "enabled",
+      "component/btn": "enabled",
+      "component/btn-group": "enabled",
+      "component/card": "enabled",
+      "component/chip": "enabled",
+      "component/avatar": "enabled",
+      "component/badge": "enabled",
+      "component/alert": "enabled"
+    }
+  }
+]

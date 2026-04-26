@@ -1,0 +1,37 @@
+{
+  "chip": {
+    "bg":              { "$type": "color", "$value": "{color.surface.overlay}" },
+    "fg":              { "$type": "color", "$value": "{color.text.primary}" },
+    "border-color":    { "$type": "color", "$value": "currentColor" },
+    "border-width":    { "$type": "dimension", "$value": "{border.width.0}" },
+    "radius":          { "$type": "dimension", "$value": "{radius.full}" },
+    "radius-label":    { "$type": "dimension", "$value": "{radius.sm}" },
+    "font-weight":     { "$type": "fontWeight", "$value": "{font.weight.regular}" },
+    "opacity-disabled":{ "$type": "number", "$value": "{opacity.32}" },
+    "overlay-opacity": { "$type": "number", "$value": "{opacity.12}" },
+    "selected": {
+      "bg":            { "$type": "color", "$value": "{color.action.primary.bg}" },
+      "fg":            { "$type": "color", "$value": "{color.action.primary.fg}" }
+    },
+    "success": {
+      "bg":            { "$type": "color", "$value": "{color.feedback.success.bgSubtle}" },
+      "fg":            { "$type": "color", "$value": "{color.feedback.success.fgSubtle}" },
+      "border":        { "$type": "color", "$value": "{color.feedback.success.border}" }
+    },
+    "warning": {
+      "bg":            { "$type": "color", "$value": "{color.feedback.warning.bgSubtle}" },
+      "fg":            { "$type": "color", "$value": "{color.feedback.warning.fgSubtle}" },
+      "border":        { "$type": "color", "$value": "{color.feedback.warning.border}" }
+    },
+    "danger": {
+      "bg":            { "$type": "color", "$value": "{color.feedback.danger.bgSubtle}" },
+      "fg":            { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" },
+      "border":        { "$type": "color", "$value": "{color.feedback.danger.border}" }
+    },
+    "info": {
+      "bg":            { "$type": "color", "$value": "{color.feedback.info.bgSubtle}" },
+      "fg":            { "$type": "color", "$value": "{color.feedback.info.fgSubtle}" },
+      "border":        { "$type": "color", "$value": "{color.feedback.info.border}" }
+    }
+  }
+}

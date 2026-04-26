@@ -126,6 +126,8 @@ export * from './TextareaField'
 
 export * from './TextField'
 
+export * from './ThemeProvider'
+
 export * from './Title'
 
 export * from './Toolbar'

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schemas.tokens.studio/",
+  "tokenSetOrder": [
+    "primitive",
+    "semantic/light",
+    "semantic/dark",
+    "component/btn",
+    "component/btn-group",
+    "component/card",
+    "component/chip",
+    "component/avatar",
+    "component/badge",
+    "component/alert"
+  ],
+  "_note": "FUTURE: add semantic/brand-a.json and semantic/brand-b.json here between semantic/dark and component/* to enable brand theming. Each brand file overrides only the semantic tokens it needs (and optionally a primitive-override file for a different brand color ramp)."
+}

@@ -72,3 +72,5 @@ export * from './DataTable/expand.composable'
 export * from './DataTable/options.composable'
 export * from './DataTable/cell.composable'
 export * from './NumberField/hold.composable'
+
+export * from './Theme/theme.composable'

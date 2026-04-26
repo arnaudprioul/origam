@@ -56,6 +56,7 @@ export * from './Commons/filters.type'
 export * from './Commons/forwardRefs.type'
 export * from './Commons/hotkey.type'
 export * from './Commons/hover.type'
+export * from './Commons/intent.type'
 export * from './Commons/intersect.type'
 export * from './Commons/justify.type'
 export * from './Commons/layout.type'
@@ -238,6 +239,8 @@ export * from './VirtualScroll/virtual-scroll.type'
 export * from './VirtualScroll/virtual-scroll-item.type'
 
 export * from './Window/window.type'
+export * from './Theme/theme.type'
+
 export * from './Window/window-item.type'
 
 

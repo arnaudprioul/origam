@@ -1,0 +1,18 @@
+{
+  "card": {
+    "bg":               { "$type": "color", "$value": "{color.surface.raised}" },
+    "fg":               { "$type": "color", "$value": "{color.text.primary}" },
+    "border-color":     { "$type": "color", "$value": "{color.border.subtle}" },
+    "border-width":     { "$type": "dimension", "$value": "{border.width.0}" },
+    "radius":           { "$type": "dimension", "$value": "{radius.none}" },
+    "radius-rounded":   { "$type": "dimension", "$value": "{radius.sm}" },
+    "shadow":           { "$type": "shadow", "$value": "{shadow.none}" },
+    "shadow-hover":     { "$type": "shadow", "$value": "{shadow.lg}" },
+    "shadow-elevated":  { "$type": "shadow", "$value": "{shadow.md}" },
+    "overlay-bg":       { "$type": "color", "$value": "{color.black}" },
+    "overlay-opacity":  { "$type": "number", "$value": "{opacity.12}" },
+    "opacity-disabled": { "$type": "number", "$value": "{opacity.60}" },
+    "duration":         { "$type": "duration", "$value": "{motion.duration.slow}" },
+    "easing":           { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+  }
+}
