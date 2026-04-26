@@ -1,5 +1,0 @@
-# Origamdatatext
-
-## Usage
-
-    <OrigamDataText />

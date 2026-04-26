@@ -1,5 +1,0 @@
-# Origambreadcrumbitem
-
-## Usage
-
-    <OrigamBreadcrumbItem />

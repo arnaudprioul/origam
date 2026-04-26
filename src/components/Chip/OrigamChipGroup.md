@@ -1,5 +1,0 @@
-# Origamchipgroup
-
-## Usage
-
-    <OrigamChipGroup />

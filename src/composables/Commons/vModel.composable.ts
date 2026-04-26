@@ -22,17 +22,25 @@ export function useVModel<
     const kebabProp = toKebabCase(prop)
     const checkKebab = kebabProp !== prop
 
+    // `vm.vnode.props` is `null` when the host component is rendered
+    // without ANY props/listeners (e.g. `<my-comp />` with no attributes).
+    // Calling `Object.prototype.hasOwnProperty.call(null, key)` throws
+    // "Cannot convert undefined or null to object". The `?? {}` fallback
+    // mirrors optimus's `?.hasOwnProperty(...)` pattern but keeps the
+    // prototype-pollution-safe `.call()` form used elsewhere in origam.
+    const has = (key: string) => Object.prototype.hasOwnProperty.call(vm.vnode.props ?? {}, key)
+
     const isControlled = checkKebab
         ? computed(() => {
             void props[prop]
             return (
-                (Object.prototype.hasOwnProperty.call(vm.vnode.props, prop) || Object.prototype.hasOwnProperty.call(vm.vnode.props, kebabProp)) &&
-                (Object.prototype.hasOwnProperty.call(vm.vnode.props, `onUpdate:${prop}`) || Object.prototype.hasOwnProperty.call(vm.vnode.props, `onUpdate:${kebabProp}`))
+                (has(prop) || has(kebabProp)) &&
+                (has(`onUpdate:${prop}`) || has(`onUpdate:${kebabProp}`))
             )
         })
         : computed(() => {
             void props[prop]
-            return (Object.prototype.hasOwnProperty.call(vm.vnode.props, prop) && Object.prototype.hasOwnProperty.call(vm.vnode.props, `onUpdate:${prop}`))
+            return has(prop) && has(`onUpdate:${prop}`)
         })
 
     useToggleScope(() => !isControlled.value, () => {

@@ -1,5 +1,0 @@
-# Foxtransiton
-
-## Usage
-
-    <FoxTransiton />

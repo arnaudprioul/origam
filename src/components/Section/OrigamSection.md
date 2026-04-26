@@ -1,5 +1,0 @@
-# Origamsection
-
-## Usage
-
-    <OrigamSection />

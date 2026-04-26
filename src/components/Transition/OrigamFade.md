@@ -1,5 +1,0 @@
-# OrigamFade
-
-## Usage
-
-    <OrigamFade />

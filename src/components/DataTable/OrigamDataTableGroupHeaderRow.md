@@ -1,5 +1,0 @@
-# Origamdatatablegroupheaderrow
-
-## Usage
-
-    <OrigamDataTableGroupHeaderRow />

@@ -1,5 +1,0 @@
-# OrigamColorPickerSwatches
-
-## Usage
-
-    <OrigamColorPickerSwatches />

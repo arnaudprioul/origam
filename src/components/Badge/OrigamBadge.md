@@ -1,5 +1,0 @@
-# Origambadge
-
-## Usage
-
-    <OrigamBadge />

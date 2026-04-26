@@ -1,5 +1,0 @@
-# Origampasswordfield
-
-## Usage
-
-    <OrigamPasswordField />

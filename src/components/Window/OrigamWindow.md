@@ -1,5 +1,0 @@
-# Origamwindow
-
-## Usage
-
-    <OrigamWindow />

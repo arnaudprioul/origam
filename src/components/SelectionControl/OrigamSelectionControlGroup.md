@@ -1,5 +1,0 @@
-# Origamselectioncontrolgroup
-
-## Usage
-
-    <OrigamSelectionControlGroup />

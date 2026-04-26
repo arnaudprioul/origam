@@ -1,5 +1,0 @@
-# Origamwindowytranslate
-
-## Usage
-
-    <OrigamWindowYTranslate />

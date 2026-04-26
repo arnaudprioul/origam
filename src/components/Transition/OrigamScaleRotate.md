@@ -1,5 +1,0 @@
-# Origamscalerotate
-
-## Usage
-
-    <OrigamScaleRotate />

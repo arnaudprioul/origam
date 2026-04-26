@@ -1,5 +1,0 @@
-# Origamvirtualscrollitem
-
-## Usage
-
-    <OrigamVirtualScrollItem />

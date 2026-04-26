@@ -2,7 +2,6 @@
 	<Story
 			group="components"
 			title="Btn/OrigamBtn"
-			:layout="{ type: 'grid', width: 240 }"
 	>
 		<!--
 			REFERENCE STORY — pattern for every other component story.
@@ -10,7 +9,10 @@
 			Each <Variant> drives one orthogonal concern:
 			  • one variant per "prop family" (color, size, density, …)
 			  • one variant per slot
-			  • one variant per emit
+			  • one variant per emit — wire the listener to
+			    `logEvent('event-name', $event)` (imported from
+			    'histoire/client') so the emit shows up in histoire's
+			    Events tab. Don't roll your own counter / log list.
 			  • one "playground" variant that exposes everything together
 
 			Histoire's `init-state` is typed via `useStoryInitState<T>` so the
@@ -179,9 +181,17 @@
 				}>({})"
 		>
 			<template #default="{ state }">
+				<!--
+					Stacked example exposes the 3 vertical slots so the
+					layout reads as designed: prepend icon on top, label
+					in the middle, append icon at the bottom. Without
+					append-icon you'd only see top + middle and the
+					stacked layout would look incomplete.
+				-->
 				<origam-btn
 						v-bind="state"
 						:prepend-icon="state.stacked ? MDI_ICONS.HEART : undefined"
+						:append-icon="state.stacked ? MDI_ICONS.STAR : undefined"
 						color="primary"
 						text="Button"
 				/>
@@ -258,61 +268,40 @@
 			</origam-btn>
 		</Variant>
 
+		<!--
+			Emit variants — each one wires the listener to histoire's
+			`logEvent(name, payload)` so emits show up in the dedicated
+			"Events" tab of the story (no custom counters / log lists
+			needed). Mirrors the optimus convention.
+		-->
+
 		<!-- ════════════ EMIT: @click ════════════ -->
-		<Variant
-				title="Emit — click"
-				:init-state="() => useStoryInitState<{ count: number }>({ count: 0 })"
-		>
-			<template #default="{ state }">
-				<div style="display: grid; gap: 12px;">
-					<origam-btn
-							color="primary"
-							text="Click me"
-							@click="state.count++"
-					/>
-					<small>Click count : <strong>{{ state.count }}</strong></small>
-				</div>
-			</template>
+		<Variant title="Emit — click">
+			<origam-btn
+					color="primary"
+					text="Click me"
+					@click="logEvent('click', $event)"
+			/>
 		</Variant>
 
 		<!-- ════════════ EMIT: @click:prepend ════════════ -->
-		<Variant
-				title="Emit — click:prepend"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="display: grid; gap: 12px;">
-					<origam-btn
-							color="primary"
-							:prepend-icon="MDI_ICONS.HEART"
-							text="Click the icon"
-							@click:prepend="state.log.unshift(`prepend at ${new Date().toLocaleTimeString()}`)"
-					/>
-					<ul style="font-size: 0.75rem; max-height: 100px; overflow: auto;">
-						<li v-for="(line, i) in state.log.slice(0, 5)" :key="i">{{ line }}</li>
-					</ul>
-				</div>
-			</template>
+		<Variant title="Emit — click:prepend">
+			<origam-btn
+					color="primary"
+					:prepend-icon="MDI_ICONS.HEART"
+					text="Click the icon"
+					@click:prepend="logEvent('click:prepend', $event)"
+			/>
 		</Variant>
 
 		<!-- ════════════ EMIT: @click:append ════════════ -->
-		<Variant
-				title="Emit — click:append"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="display: grid; gap: 12px;">
-					<origam-btn
-							color="primary"
-							:append-icon="MDI_ICONS.ARROW_RIGHT"
-							text="Click the chevron"
-							@click:append="state.log.unshift(`append at ${new Date().toLocaleTimeString()}`)"
-					/>
-					<ul style="font-size: 0.75rem; max-height: 100px; overflow: auto;">
-						<li v-for="(line, i) in state.log.slice(0, 5)" :key="i">{{ line }}</li>
-					</ul>
-				</div>
-			</template>
+		<Variant title="Emit — click:append">
+			<origam-btn
+					color="primary"
+					:append-icon="MDI_ICONS.ARROW_RIGHT"
+					text="Click the chevron"
+					@click:append="logEvent('click:append', $event)"
+			/>
 		</Variant>
 
 		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
@@ -364,6 +353,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBtn, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type {

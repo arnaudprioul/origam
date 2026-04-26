@@ -1,5 +1,0 @@
-# Origamslidegroup
-
-## Usage
-
-    <OrigamSlideGroup />

@@ -1,5 +1,0 @@
-# Origamcontent
-
-## Usage
-
-    <OrigamContent />

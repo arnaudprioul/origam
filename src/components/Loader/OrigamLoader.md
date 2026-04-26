@@ -1,5 +1,0 @@
-# Origamloader
-
-## Usage
-
-    <OrigamLoader />

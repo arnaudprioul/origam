@@ -1,5 +1,0 @@
-# Origamwindowitem
-
-## Usage
-
-    <OrigamWindowItem />

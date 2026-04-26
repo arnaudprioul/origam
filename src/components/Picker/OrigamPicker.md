@@ -1,5 +1,0 @@
-# Origampicker
-
-## Usage
-
-    <OrigamPicker />

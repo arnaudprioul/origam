@@ -1,5 +1,0 @@
-# OrigamColorPickerEdit
-
-## Usage
-
-    <OrigamColorPickerEdit />

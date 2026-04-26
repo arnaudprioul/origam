@@ -1,5 +1,0 @@
-# Origamslidertrack
-
-## Usage
-
-    <OrigamSliderFieldTrack />

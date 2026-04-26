@@ -1,5 +1,0 @@
-# Origamlistitem
-
-## Usage
-
-    <OrigamListItem />

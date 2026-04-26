@@ -1,5 +1,0 @@
-# Origamsheet
-
-## Usage
-
-    <OrigamSheet />

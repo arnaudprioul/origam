@@ -1,5 +1,0 @@
-# Origamwindowxtranslate
-
-## Usage
-
-    <OrigamWindowXTranslate />

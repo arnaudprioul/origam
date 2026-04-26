@@ -1,5 +1,0 @@
-# Origamselect
-
-## Usage
-
-    <OrigamSelect />

@@ -1,5 +1,0 @@
-# Origamchip
-
-## Usage
-
-    <OrigamChip />

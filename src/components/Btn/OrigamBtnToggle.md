@@ -1,5 +1,0 @@
-# Foxbtntoggle
-
-## Usage
-
-    <FoxBtnToggle />

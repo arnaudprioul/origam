@@ -1,5 +1,0 @@
-# Origamexpand
-
-## Usage
-
-    <OrigamExpand />

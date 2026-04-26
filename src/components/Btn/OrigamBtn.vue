@@ -247,11 +247,20 @@
 	})
 
 	const progressProps = computed(() => {
+		// Exclude `size`, `type` and (critically) `tag` from filterProps.
+		// The Btn's own `tag` prop is `'button'` or `'a'` (from useLink),
+		// and without this exclusion `Object.assign` propagates it onto
+		// the spinner — which then renders as a NATIVE <button> with the
+		// user-agent default chrome (light-gray bg, 2px outset border,
+		// rounded corners). That's the "gros carré blanc" Arnaud was
+		// seeing INSIDE the loading button. Verified via Playwright DOM
+		// dump: depth 2 was a <button> with bg rgb(239,239,239) and
+		// border "2px outset rgb(0,0,0)" — straight UA defaults.
 		return Object.assign({
 					size: '23',
 					indeterminate: true
 				},
-				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id']))
+				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id', 'tag', 'size', 'type']))
 	})
 
 	// CLASS & STYLES
@@ -339,13 +348,22 @@
 		transition-duration: var(--origam-btn---transition-duration, 0.28s);
 		transition-timing-function: var(--origam-btn---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
-		padding: 0 16px;
+		// Density modulates BOTH the explicit height/min-height AND the
+		// horizontal padding so the visual difference between
+		// compact / default / comfortable is unmistakable. Previously
+		// density only nudged `min-height` while a fixed `height: 36px`
+		// took precedence, so `compact` (negative offset) was a no-op.
+		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
-		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0)));
+		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0px)));
 		max-width: var(--origam-btn---max-width, 100%);
-		height: var(--origam-btn---height, 36px);
-		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0)));
+		// Density is folded INTO the rendered height, not just min-height,
+		// so `compact` (negative offset) actually shrinks the button. The
+		// min-height var indirection is preserved for consumer overrides
+		// (e.g. forcing a tighter button via `--origam-btn---min-height`).
+		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
+		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
 		max-height: var(--origam-btn---max-height, 100%);
 
 		background-color: var(--origam-btn---background-color, rgb(230, 230, 230));
@@ -359,13 +377,50 @@
 		border-width: var(--origam-btn-group---border-width);
 		border-style: var(--origam-btn-group---border-style);
 		border-color: var(--origam-btn-group---border-color);
-		border-radius: var(--origam-btn-group---border-radius, 4px);
+		// Read `--origam-btn---border-radius` first so the `&--rounded`,
+		// `&--icon` and consumer `:style` overrides actually take effect.
+		// Falls back to the inherited group radius (or 4px) when unset.
+		border-radius: var(
+			--origam-btn---border-radius,
+			var(--origam-btn-group---border-radius, 4px)
+		);
 
+		// ──────────────────────────────────────────────────────────────
+		// __loader BEM child — declared FIRST (before any `&--*`
+		// modifier) so the source-order tie-breaker between equally
+		// specific selectors gives the win to the modifier overrides
+		// (e.g. `&--stacked __loader { grid-template-areas: …vertical… }`,
+		// `&--loading __loader { display: inline-flex }`). Previously this
+		// rule lived at the bottom of the block, so every modifier on
+		// `__loader` was silently shadowed and the stacked layout stayed
+		// horizontal. Verified via Playwright DOM dump: rule 1
+		// (`.origam-btn--stacked .origam-btn__loader[data-v]`) and rule 2
+		// (`.origam-btn .origam-btn__loader[data-v]`) had identical
+		// (0,3,0) specificity, so source order decided.
+		#{$this}__loader {
+			align-items: center;
+			justify-content: center;
+			display: inline-grid;
+			grid-template-areas: "prepend content append";
+			grid-template-columns: max-content auto max-content;
+			height: 100%;
+			width: 100%;
+
+			:deep(.origam-progress--circular) {
+				width: 1.5em;
+				height: 1.5em;
+			}
+		}
+
+		// Size variants: each one re-applies the density-aware horizontal
+		// padding so `compact` / `comfortable` keeps modulating the
+		// breathing room regardless of size. Without `density-padding-x`,
+		// these blocks would wipe out the base `padding: 0 calc(...)` rule.
 		&--size-x-small {
 			--origam-btn---height: 20px;
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding: 0 8px;
+			padding: 0 calc(8px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -376,7 +431,7 @@
 			--origam-btn---height: 28px;
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding: 0 12px;
+			padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -387,7 +442,7 @@
 			--origam-btn---height: 36px;
 			--origam-btn---font-size: 0.875rem;
 			--origam-btn---min-width: 64px;
-			padding: 0 16px;
+			padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -398,7 +453,7 @@
 			--origam-btn---height: 44px;
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding: 0 20px;
+			padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -409,23 +464,30 @@
 			--origam-btn---height: 52px;
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding: 0 24px;
+			padding: 0 calc(24px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;
 			}
 		}
 
+		// Density tokens — offsets applied to height + horizontal padding.
+		// Sign convention: positive grows the button, negative shrinks it.
+		// `density-padding-x` is half of `density` so the horizontal change
+		// scales with the vertical one without dwarfing the label.
 		&--density-comfortable {
 			--origam-btn---density: 8px;
+			--origam-btn---density-padding-x: 4px;
 		}
 
 		&--density-default {
 			--origam-btn---density: 0px;
+			--origam-btn---density-padding-x: 0px;
 		}
 
 		&--density-compact {
 			--origam-btn---density: -8px;
+			--origam-btn---density-padding-x: -4px;
 		}
 
 		&--border {
@@ -467,8 +529,12 @@
 			--origam-btn---border-radius: var(--origam-btn---border-radius-icon, 50%);
 
 			--origam-btn---min-width: 0;
-			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
-			--origam-btn---height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
+			// Square button: width must match the rendered height (which
+			// already includes density via the base `height` rule). We add
+			// density here too so width keeps parity with height — but we
+			// do NOT touch `--origam-btn---height` itself, otherwise the
+			// base rule would re-add density and double-count.
+			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
 		}
@@ -599,6 +665,20 @@
 			#{$this}__append {
 				opacity: 0;
 			}
+
+			// During loading, OrigamLoader's `v-if/v-else` removes the
+			// __prepend/__content/__append children entirely, so the
+			// 3-column grid below collapses to empty cells that can read
+			// as a "white square" depending on the parent bg. Switch to a
+			// centered flex layout so only the spinner shows, perfectly
+			// centered.
+			#{$this}__loader {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				grid-template-areas: none;
+				grid-template-columns: none;
+			}
 		}
 
 		&--stacked {
@@ -636,47 +716,56 @@
 				white-space: normal;
 			}
 
+			// Same density-aware padding pattern as the non-stacked size
+			// variants — keeps `compact`/`comfortable` modulating breathing
+			// room across all stacked sizes.
 			&#{$this}--size-x-small {
 				--origam-btn---height: 56px;
 				font-size: 0.625rem;
 				min-width: 56px;
-				padding: 0 12px;
+				padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-small {
 				--origam-btn---height: 64px;
 				font-size: 0.75rem;
 				min-width: 64px;
-				padding: 0 14px;
+				padding: 0 calc(14px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-default {
 				--origam-btn---height: 72px;
 				font-size: 0.875rem;
 				min-width: 72px;
-				padding: 0 16px;
+				padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-large {
 				--origam-btn---height: 80px;
 				font-size: 1rem;
 				min-width: 80px;
-				padding: 0 18px;
+				padding: 0 calc(18px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-x-large {
 				--origam-btn---height: 88px;
 				font-size: 1.125rem;
 				min-width: 88px;
-				padding: 0 20px;
+				padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
 			}
 
-			&#{$this}--density-default {
-				height: calc(var(--origam-btn---height) + 0px);
+			// Stacked amplifies the density delta — the icon-over-label
+			// layout reads "wider" so it needs a stronger compression /
+			// expansion to feel different from the size-x-large baseline.
+			// The base height rule (`calc(--origam-btn---height + density)`)
+			// picks these new values up automatically — no explicit `height`
+			// override needed.
+			&#{$this}--density-comfortable {
+				--origam-btn---density: 16px;
 			}
 
 			&#{$this}--density-compact {
-				height: calc(var(--origam-btn---height) + -24px);
+				--origam-btn---density: -24px;
 			}
 		}
 
@@ -684,28 +773,52 @@
 			padding: 0 8px;
 		}
 
+		// ────────────────────────────────────────────────────────────
+		// Rounded variants — mirror the optimus enum-driven API.
+		// `useRounded` emits one of:
+		//   - `--rounded`            → legacy boolean (max curvature)
+		//   - `--rounded-{name}`     → named variant from `ROUNDED` enum
+		// Each variant binds `--origam-btn---border-radius` to a primitive
+		// `--origam-radius-*` token so theme switches stay seamless.
+		// ────────────────────────────────────────────────────────────
 		&--rounded {
-			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, 24px);
+			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, var(--origam-radius-2xl, 24px));
 
 			&#{$this}--icon {
 				--origam-btn---border-radius: var(--origam-btn---border-radius, 4px);
 			}
 		}
 
-		#{$this}__loader {
-			align-items: center;
-			justify-content: center;
-			display: inline-grid;
-			grid-template-areas: "prepend content append";
-			grid-template-columns: max-content auto max-content;
-			height: 100%;
-			width: 100%;
-
-			:deep(.origam-progress--circular) {
-				width: 1.5em;
-				height: 1.5em;
-			}
+		&--rounded-x-small {
+			--origam-btn---border-radius: var(--origam-radius-xs, 2px);
 		}
+
+		&--rounded-small {
+			--origam-btn---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-btn---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-btn---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-btn---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-btn---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		// __loader BEM block (base layout) was moved next to the BEM
+		// children below — see `&__loader` further down. The base rule had
+		// to live AFTER the modifier blocks (`&--stacked`, `&--loading`,
+		// etc.) that override grid-template-areas, otherwise CSS source
+		// order at equal specificity made the base win unconditionally
+		// (e.g. stacked stayed horizontal). Cf. Playwright DOM dump.
 
 		&__content,
 		&__prepend,

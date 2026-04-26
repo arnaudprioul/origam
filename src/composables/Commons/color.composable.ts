@@ -180,47 +180,80 @@ export function useColorEffect (
     })
 
     const colorStyles = computed<string[]>(() => {
-        // 1) Intent path — emit token references. We only consult `color`
-        //    (the foreground/intent driver). `bgColor` is treated as legacy.
-        if (color.value && isIntent(color.value)) {
-            // Pick the role based on the active state: hover when the
-            // hoverColor wasn't explicitly different from the base color.
-            const role: 'default' | 'hover' | 'disabled' =
-                isHover.value && !props.hoverColor ? 'hover' :
-                isActive.value && !props.activeColor ? 'hover' :
-                'default'
-            const m = tokenStylesForIntent(color.value, role)
-            return Object.entries(m).map(([k, v]) => `${k}: ${v}`)
-        }
+        // ─────────────────────────────────────────────────────────────────
+        // Resolve bg and fg INDEPENDENTLY so that overriding only one of
+        // them (e.g. `hoverBgColor` while keeping `color="primary"` for
+        // the foreground) actually works. The previous "path A wins" logic
+        // short-circuited as soon as `color` was an intent and silently
+        // dropped any bgColor / hoverBgColor / activeBgColor overrides.
+        //
+        // Slot selection ("default" vs "hover") is per-axis: a missing
+        // hoverBgColor lets the bg auto-bump to the intent's `bgHover`
+        // slot, and likewise for fg. When the consumer DID pass an explicit
+        // hover override we use the value as-is on the "default" slot of
+        // that intent (the consumer chose the value, they don't want us
+        // re-bumping it to a hover variant of itself).
+        // ─────────────────────────────────────────────────────────────────
+        const bgRole: 'default' | 'hover' =
+            isHover.value && !props.hoverBgColor ? 'hover' :
+            isActive.value && !props.activeBgColor ? 'hover' :
+            'default'
+        const fgRole: 'default' | 'hover' =
+            isHover.value && !props.hoverColor ? 'hover' :
+            isActive.value && !props.activeColor ? 'hover' :
+            'default'
 
-        // 2) Legacy raw-color path — fall back to useBothColor + warn
-        if (color.value && typeof color.value === 'string' && color.value !== 'transparent') {
-            warnLegacyColor('color', color.value)
-        }
-        if (bgColor.value && typeof bgColor.value === 'string' && bgColor.value !== 'transparent') {
+        let bgDecl: string | null = null
+        let fgDecl: string | null = null
+        // When bg comes from an intent, we know the matching fg token —
+        // remember it so a missing `color` falls back to that pair (auto-
+        // contrast inside the design-system without `getForeground`).
+        let bgIntentFg: string | null = null
+
+        // ─── Background resolution ───────────────────────────────────────
+        if (bgColor.value && isIntent(bgColor.value)) {
+            const m = tokenStylesForIntent(bgColor.value, bgRole)
+            bgDecl = `background-color: ${m['background-color']}`
+            bgIntentFg = m.color
+        } else if (bgColor.value === 'transparent') {
+            bgDecl = `background-color: ${bgColor.value}`
+        } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
             warnLegacyColor('bgColor', bgColor.value)
+            bgDecl = `background-color: ${bgColor.value}`
         }
 
-        const styles: string[] = []
-
-        if (bgColor.value) {
-            if (bgColor.value === 'transparent') {
-                styles.push(`background-color: ${bgColor.value}`)
-            } else if (isCssColor(bgColor.value)) {
-                styles.push(`background-color: ${bgColor.value}`)
-                if (!color.value && isParsableColor(bgColor.value)) {
-                    const parsed = parseColor(bgColor.value)
-                    if (parsed.a == null || parsed.a === 1) {
-                        styles.push(`color: ${getForeground(parsed)}`)
-                    }
-                }
+        // ─── Foreground resolution ───────────────────────────────────────
+        if (color.value && isIntent(color.value)) {
+            const m = tokenStylesForIntent(color.value, fgRole)
+            // No bg has been picked yet → use the intent's own bg pair so
+            // `color="primary"` alone still renders a primary surface.
+            if (!bgDecl) {
+                bgDecl = `background-color: ${m['background-color']}`
+            }
+            fgDecl = `color: ${m.color}`
+        } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
+            if (color.value !== 'transparent') warnLegacyColor('color', color.value)
+            fgDecl = `color: ${color.value}`
+        } else if (!color.value && bgIntentFg) {
+            // Auto-contrast (token path): bg comes from an intent, no
+            // explicit color → pair the intent's matching `fg` token so
+            // the text is always legible without the consumer specifying
+            // both. Reads the same hover/disabled slot via `bgRole`.
+            fgDecl = `color: ${bgIntentFg}`
+        } else if (!color.value && bgColor.value && typeof bgColor.value === 'string'
+                   && bgColor.value !== 'transparent' && isParsableColor(bgColor.value)) {
+            // Auto-contrast (legacy raw CSS): WCAG-aware foreground from
+            // the existing `getForeground` helper. Skipped for translucent
+            // bgs (alpha < 1) since contrast can't be reliably computed.
+            const parsed = parseColor(bgColor.value)
+            if (parsed.a == null || parsed.a === 1) {
+                fgDecl = `color: ${getForeground(parsed)}`
             }
         }
 
-        if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
-            styles.push(`color: ${color.value}`)
-        }
-
+        const styles: string[] = []
+        if (bgDecl) styles.push(bgDecl)
+        if (fgDecl) styles.push(fgDecl)
         return styles
     })
 
