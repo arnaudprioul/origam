@@ -13,7 +13,8 @@ export const variantList: Array<IOptions<TVariant | undefined>> = [
     { label: 'Elevated', value: VARIANT.ELEVATED },
     { label: 'Tonal',    value: VARIANT.TONAL },
     { label: 'Outlined', value: VARIANT.OUTLINED },
-    { label: 'Plain',    value: VARIANT.PLAIN }
+    { label: 'Plain',    value: VARIANT.PLAIN },
+    { label: 'Ghost (glass)', value: VARIANT.GHOST }
 ]
 
 /**

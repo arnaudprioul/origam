@@ -528,6 +528,52 @@
 			}
 		}
 
+		// Glassmorphism — translucent tint of the current text color +
+		// backdrop-filter blur. The tint uses `currentColor` so the
+		// effect adapts to whichever foreground intent is active and
+		// flips correctly between light and dark themes (bg-color-mix
+		// is naturally theme-aware via the inherited text color).
+		//
+		// CSS-first / JS-fallback principle: `backdrop-filter` is
+		// gated by `@supports`. Browsers that lack it fall back to a
+		// stronger tint (no blur) so the variant still reads as a
+		// distinct surface.
+		&--variant-ghost {
+			background-color: var(
+				--origam-btn---background-color-ghost,
+				color-mix(in srgb, currentColor 8%, transparent)
+			) !important;
+			border-width: var(--origam-btn---border-width-ghost, var(--origam-border-width-thin));
+			border-style: solid;
+			border-color: var(
+				--origam-btn---border-color-ghost,
+				color-mix(in srgb, currentColor 16%, transparent)
+			);
+			box-shadow: none;
+
+			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
+				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
+			}
+
+			@supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
+				// No blur support — bump the tint a bit so the variant still
+				// reads as a discrete surface (Safari < 9, IE legacy).
+				background-color: var(
+					--origam-btn---background-color-ghost,
+					color-mix(in srgb, currentColor 14%, transparent)
+				) !important;
+			}
+
+			&:hover,
+			&:focus-visible {
+				background-color: var(
+					--origam-btn---background-color-ghost-hover,
+					color-mix(in srgb, currentColor 14%, transparent)
+				) !important;
+			}
+		}
+
 		&--block {
 			display: flex;
 			flex: 1 0 auto;

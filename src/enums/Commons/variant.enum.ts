@@ -9,7 +9,15 @@ export enum VARIANT {
     ELEVATED = 'elevated',
     TONAL = 'tonal',
     OUTLINED = 'outlined',
-    PLAIN = 'plain'
+    PLAIN = 'plain',
+    /**
+     * Glassmorphism — translucent tint of the current text color plus a
+     * backdrop-filter blur. Browsers without `backdrop-filter` get a
+     * slightly stronger tint as the fallback (handled in the SCSS via
+     * `@supports`). Pairs cleanly with `color="primary"` etc. — the
+     * variant only owns the chrome, not the foreground color.
+     */
+    GHOST = 'ghost'
 }
 
 /**
