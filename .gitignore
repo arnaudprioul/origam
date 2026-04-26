@@ -32,4 +32,11 @@ docs/.vitepress/cache
 *.sln
 *.sw?
 
+# Test
+tests/e2e/.report
+tests/e2e/.results
+
+# Debug files
+*.debug*
+
 
