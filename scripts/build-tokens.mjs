@@ -33,9 +33,19 @@ register(StyleDictionary)
 // ────────────────────────────────────────────────────────────────────────────
 const INTENT_STATES = new Set([
     'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info',
-    'selected'
+    'success', 'warning', 'danger', 'info', 'error',
+    'selected', 'outlined', 'elevated', 'filter',
+    'hover', 'active', 'disabled', 'focus'
 ])
+
+// Heuristic: any nested key that is NOT an intent/state and IS a "bare word"
+// (no separator characters, no digit prefix) is treated as a BEM child of
+// the component, emitting `--origam-{name}__{child}---{prop}`. Property
+// keys typically contain hyphens (`background-color`, `border-radius`) so
+// they fail this test.
+function isBemChildKey (key) {
+    return /^[a-zA-Z][a-zA-Z]*$/.test(key) && !key.includes('-')
+}
 
 StyleDictionary.registerTransform({
     name: 'origam/name/css',
@@ -53,16 +63,36 @@ StyleDictionary.registerTransform({
         if (isComponent) {
             const [blockName, ...rest] = path
 
-            // component.{name}.{state}.{prop...}
+            if (rest.length === 0) {
+                return `origam-${blockName}`
+            }
+
+            // component.{name}.{intent|state}.{prop...} → --origam-{name}--{state}---{prop}
             if (rest.length > 1 && INTENT_STATES.has(rest[0])) {
                 const [state, ...propParts] = rest
                 return `origam-${blockName}--${state}---${propParts.join('-')}`
             }
 
-            // component.{name}.{prop...}
-            if (rest.length === 0) {
-                return `origam-${blockName}`
+            // component.{name}.{child}.{prop...} where {child} is a BEM
+            // sub-element (single word like "overlay", "wrapper", "content") →
+            // --origam-{name}__{child}---{prop}
+            //
+            // This covers nested sub-element tokens like
+            // `card.overlay.background-color` → `--origam-card__overlay---background-color`,
+            // mirroring the convention `.origam-card__overlay { ... }` used
+            // in component SCSS.
+            if (rest.length > 1 && isBemChildKey(rest[0])) {
+                const [child, ...propParts] = rest
+                // Allow a second-level state inside a BEM child:
+                //   card.overlay.hover.opacity → --origam-card__overlay--hover---opacity
+                if (propParts.length > 1 && INTENT_STATES.has(propParts[0])) {
+                    const [state, ...innerProp] = propParts
+                    return `origam-${blockName}__${child}--${state}---${innerProp.join('-')}`
+                }
+                return `origam-${blockName}__${child}---${propParts.join('-')}`
             }
+
+            // component.{name}.{prop...} → --origam-{name}---{prop}
             return `origam-${blockName}---${rest.join('-')}`
         }
 

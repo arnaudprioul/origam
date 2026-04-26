@@ -294,7 +294,7 @@
 
 		align-items: center;
 		display: inline-flex;
-		font-weight: 400;
+		font-weight: var(--origam-chip---font-weight, 400);
 		max-width: 100%;
 		min-width: 0;
 		overflow: hidden;
@@ -302,10 +302,13 @@
 		text-decoration: none;
 		white-space: nowrap;
 		vertical-align: middle;
-		border-color: currentColor;
-		border-style: solid;
-		border-width: 0;
-		border-radius: 9999px;
+		border-color: var(--origam-chip---border-color, currentColor);
+		border-style: var(--origam-chip---border-style, solid);
+		border-width: var(--origam-chip---border-width, 0px);
+		border-radius: var(--origam-chip---border-radius, 9999px);
+
+		background-color: var(--origam-chip---background-color);
+		color: var(--origam-chip---color);
 
 		&__content {
 			align-items: center;
@@ -322,12 +325,12 @@
 		}
 
 		&__close {
-			cursor: pointer;
-			flex: 0 1 auto;
-			font-size: 18px;
-			max-height: 18px;
-			max-width: 18px;
-			user-select: none;
+			cursor: var(--origam-chip__close---cursor, pointer);
+			flex: var(--origam-chip__close---flex, 0 1 auto);
+			font-size: var(--origam-chip__close---font-size, 18px);
+			max-height: var(--origam-chip__close---max-height, 18px);
+			max-width: var(--origam-chip__close---max-width, 18px);
+			user-select: var(--origam-chip__close---user-select, none);
 
 			.origam-icon {
 				font-size: inherit;
@@ -335,55 +338,61 @@
 		}
 
 		&__filter {
-			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+			transition:
+				var(--origam-chip__filter---transition-property, transform, opacity)
+				var(--origam-chip__filter---transition-duration, 0.15s)
+				var(--origam-chip__filter---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 		}
 
 		&__overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: currentColor;
-			border-radius: inherit;
-			pointer-events: none;
-			opacity: 0;
-			transition: opacity 0.2s ease-in-out;
+			position: var(--origam-chip__overlay---position, absolute);
+			top: var(--origam-chip__overlay---position-top, 0);
+			left: var(--origam-chip__overlay---position-left, 0);
+			width: var(--origam-chip__overlay---width, 100%);
+			height: var(--origam-chip__overlay---height, 100%);
+			background-color: var(--origam-chip__overlay---background-color, currentColor);
+			border-radius: var(--origam-chip__overlay---border-radius, inherit);
+			pointer-events: var(--origam-chip__overlay---pointer-events, none);
+			opacity: var(--origam-chip__overlay---opacity, 0);
+			transition:
+				var(--origam-chip__overlay---transition-property, opacity)
+				var(--origam-chip__overlay---transition-duration, 0.2s)
+				var(--origam-chip__overlay---transition-timing-function, ease-in-out);
 		}
 
 		&--disabled {
-			opacity: 0.3;
+			opacity: var(--origam-chip---opacity-disabled, 0.3);
 			pointer-events: none;
 			user-select: none;
 		}
 
 		&--label {
-			border-radius: 4px;
+			border-radius: var(--origam-chip---border-radius-label, 4px);
 		}
 
 		&--size-x-small {
-			font-size: 0.625rem;
-			padding: 0 8px;
+			--origam-chip---font-size: var(--origam-chip---font-size-xs, 0.625rem);
+			padding: 0 var(--origam-chip---padding-xs, 8px);
 		}
 
 		&--size-small {
-			font-size: 0.75rem;
-			padding: 0 10px;
+			--origam-chip---font-size: var(--origam-chip---font-size-sm, 0.75rem);
+			padding: 0 var(--origam-chip---padding-sm, 10px);
 		}
 
 		&--size-default {
-			font-size: 0.875rem;
-			padding: 0 12px;
+			--origam-chip---font-size: var(--origam-chip---font-size-md, 0.875rem);
+			padding: 0 var(--origam-chip---padding-md, 12px);
 		}
 
 		&--size-large {
-			font-size: 1rem;
-			padding: 0 14px;
+			--origam-chip---font-size: var(--origam-chip---font-size-lg, 1rem);
+			padding: 0 var(--origam-chip---padding-lg, 14px);
 		}
 
 		&--size-x-large {
-			font-size: 1.125rem;
-			padding: 0 17px;
+			--origam-chip---font-size: var(--origam-chip---font-size-xl, 1.125rem);
+			padding: 0 var(--origam-chip---padding-xl, 17px);
 		}
 
 		&--density-default {
@@ -396,43 +405,43 @@
 
 		&:hover {
 			> #{$this}__overlay {
-				opacity: 0.24;
+				--origam-chip__overlay---opacity: var(--origam-chip---overlay-opacity-hover, 0.24);
 			}
 		}
 
 		&:focus-visible,
 		&:focus {
 			> #{$this}__overlay {
-				opacity: calc(0.12 * 1);
+				--origam-chip__overlay---opacity: var(--origam-chip---overlay-opacity-focus, 0.12);
 			}
 		}
 
 		&--active,
 		&[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				opacity: calc(0.12 * 1);
+				--origam-chip__overlay---opacity: var(--origam-chip---overlay-opacity-active, 0.12);
 			}
 
 			&:hover {
 				> #{$this}__overlay {
-					opacity: calc(0.04 * 1);
+					--origam-chip__overlay---opacity: var(--origam-chip---overlay-opacity-hover, 0.04);
 				}
 			}
 
 			&:focus-visible,
 			&:focus {
 				> #{$this}__overlay {
-					opacity: calc(0.12 * 1);
+					--origam-chip__overlay---opacity: var(--origam-chip---overlay-opacity-focus, 0.12);
 				}
 			}
 		}
 
 		&__underlay {
-			position: absolute;
+			position: var(--origam-chip__underlay---position, absolute);
 		}
 
 		&--border {
-			border-width: thin;
+			border-width: var(--origam-chip---border-width-outlined, thin);
 		}
 
 		&--link {
@@ -446,8 +455,24 @@
 	}
 </style>
 
-<style>
-	:root {
+<!--
+	Lot migration — `<style>:root{}` block removed.
+	The component now consumes the generated tokens from
+	`tokens/component/chip.json` (loaded once via the
+	consumer's token CSS pipeline).
 
+	Hardcoded values (border-radius, font-sizes, paddings, opacities,
+	transitions) are replaced by CSS vars with safe fallbacks.
+	Calc-based values that depend on the runtime (density modifier) remain
+	as local custom property assignments in the scoped block above.
+-->
+<style
+		lang="scss"
+		scoped
+>
+	.origam-chip {
+		// Calc-based density defaults — cannot live in the token JSON because
+		// they reference the resolved density value at the component-instance level.
+		--origam-chip---density: 0px;
 	}
 </style>

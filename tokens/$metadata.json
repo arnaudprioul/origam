@@ -9,6 +9,7 @@
     "component/card",
     "component/chip",
     "component/avatar",
+    "component/avatar-group",
     "component/badge",
     "component/alert"
   ],

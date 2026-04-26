@@ -234,7 +234,7 @@
 		}
 
 		&--elevated {
-			--origam-avatar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-avatar---box-shadow: var(--origam-avatar---box-shadow-elevated, var(--origam-shadow-md));
 		}
 
 		&--border {
@@ -288,82 +288,31 @@
 		}
 
 		&--warning {
-			--origam-avatar---background-color: var(--origam-status--warning---background-color, rgb(251, 140, 0));
-			--origam-avatar---color: var(--origam-status--warning---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--warning---background-color, var(--origam-color-feedback-warning-bg));
+			--origam-avatar---color: var(--origam-avatar--warning---color, var(--origam-color-feedback-warning-fg));
 		}
 
 		&--success {
-			--origam-avatar---background-color: var(--origam-status--success---background-color, rgb(76, 175, 80));
-			--origam-avatar---color: var(--origam-status--success---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--success---background-color, var(--origam-color-feedback-success-bg));
+			--origam-avatar---color: var(--origam-avatar--success---color, var(--origam-color-feedback-success-fg));
 		}
 
 		&--info {
-			--origam-avatar---background-color: var(--origam-status--info---background-color, rgb(33, 150, 243));
-			--origam-avatar---color: var(--origam-status--info---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--info---background-color, var(--origam-color-feedback-info-bg));
+			--origam-avatar---color: var(--origam-avatar--info---color, var(--origam-color-feedback-info-fg));
 		}
 
 		&--error {
-			--origam-avatar---background-color: var(--origam-status--error---background-color, rgb(207, 102, 121));
-			--origam-avatar---color: var(--origam-status--error---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color-feedback-danger-bg));
+			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color-feedback-danger-fg));
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-		--origam-avatar---text-align: center;
-		--origam-avatar---font-size: 1.5rem;
-		--origam-avatar---font-weight: 400;
-		--origam-avatar---letter-spacing: 0;
-		--origam-avatar---line-height: 1;;
-		--origam-avatar---text-transform: uppercase;
-		--origam-avatar---overflow: hidden;
-		--origam-avatar---position: relative;
-		--origam-avatar---height: 40px;
-		--origam-avatar---width: 40px;
-		--origam-avatar---density: 0px;
-		--origam-avatar---transition-duration: 0.2s;
-		--origam-avatar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-avatar---transition-property: width, height, font-size;
-		--origam-avatar---transition: var(--origam-avatar---transition-property) var(--origam-avatar---transition-duration) var(--origam-avatar---transition-timing-function);
-		--origam-avatar---border-top-width: 0;
-		--origam-avatar---border-left-width: 0;
-		--origam-avatar---border-bottom-width: 0;
-		--origam-avatar---border-right-width: 0;
-		--origam-avatar---border-width: var(--origam-avatar---border-top-width) var(--origam-avatar---border-left-width) var(--origam-avatar---border-bottom-width) var(--origam-avatar---border-right-width);
-		--origam-avatar---border-color: currentColor;
-		--origam-avatar---border-style: solid;
-		--origam-avatar---border-radius: 0px;
-		--origam-avatar---box-shadow: none;
-		--origam-avatar---color: rgba(30, 30, 30, 0.87);
-		--origam-avatar---background: rgb(230, 230, 230);
-		--origam-avatar---margin-inline-start: 0;
-		--origam-avatar---margin-inline-end: 0;
-		--origam-avatar---margin-block-start: 0;
-		--origam-avatar---margin-block-end: 0;
-		--origam-avatar---padding-block-start: 0;
-		--origam-avatar---padding-block-end: 0;
-		--origam-avatar---padding-inline-start: 0;
-		--origam-avatar---padding-inline-end: 0;
-
-		--origam-avatar__wrapper---width: 100%;
-		--origam-avatar__wrapper---height: 100%;
-		--origam-avatar__wrapper---flex: none;
-		--origam-avatar__wrapper---align-items: center;
-		--origam-avatar__wrapper---display: inline-flex;
-		--origam-avatar__wrapper---justify-content: center;
-		--origam-avatar__wrapper---vertical-align: middle;
-		--origam-avatar__wrapper---margin-inline-start: 0;
-		--origam-avatar__wrapper---margin-inline-end: 0;
-		--origam-avatar__wrapper---margin-block-start: 0;
-		--origam-avatar__wrapper---margin-block-end: 0;
-		--origam-avatar__padding---margin-block-start: 0;
-		--origam-avatar__padding---margin-block-end: 0;
-		--origam-avatar__padding---margin-inline-start: 0;
-		--origam-avatar__padding---margin-inline-end: 0;
-
-		--origam-avatar__image---width: 100%;
-		--origam-avatar__image---height: 100%;
-	}
-</style>
+<!--
+	Lot 1.5 migration — `<style>:root{}` block removed.
+	`--origam-avatar---*`, `--origam-avatar__wrapper---*`, and
+	`--origam-avatar__image---*` are now supplied by the generated tokens
+	(`tokens/component/avatar.json` → `src/assets/css/tokens/light.css`).
+	The legacy `--origam-status--*` namespace has been retired.
+-->

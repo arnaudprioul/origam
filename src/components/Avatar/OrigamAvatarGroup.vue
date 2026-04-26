@@ -216,7 +216,7 @@
 		}
 
 		&--elevated {
-			box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			box-shadow: var(--origam-avatar-group---box-shadow-elevated, var(--origam-shadow-md));
 		}
 
 		&--density-comfortable {
@@ -285,27 +285,8 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-avatar-group---flex-direction: row;
-		--origam-avatar-group---position: relative;
-		--origam-avatar-group---density: 0;
-		--origam-avatar-group---margin-inline-start: 0;
-		--origam-avatar-group---margin-inline-end: 0;
-		--origam-avatar-group---margin-block-start: 0;
-		--origam-avatar-group---margin-block-end: 0;
-		--origam-avatar-group---padding-block-start: 0;
-		--origam-avatar-group---padding-block-end: 0;
-		--origam-avatar-group---padding-inline-start: 0;
-		--origam-avatar-group---padding-inline-end: 0;
-
-		--origam-avatar-group__avatar---transition-duration: 0.2s;
-		--origam-avatar-group__avatar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-avatar-group__avatar---transition-property: margin;
-		--origam-avatar-group__avatar---transition: var(--origam-avatar-group__avatar---transition-property) var(--origam-avatar-group__avatar---transition-duration) var(--origam-avatar-group__avatar---transition-timing-function);
-		--origam-avatar-group__avatar---margin-inline-start: 0;
-		--origam-avatar-group__avatar---margin-inline-end: 0;
-		--origam-avatar-group__avatar---margin-block-start: 0;
-		--origam-avatar-group__avatar---margin-block-end: 0;
-	}
-</style>
+<!--
+	Lot 1.5 migration — `<style>:root{}` block removed.
+	`--origam-avatar-group---*` and `--origam-avatar-group__avatar---*`
+	are now generated from `tokens/component/avatar-group.json`.
+-->
