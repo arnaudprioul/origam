@@ -36,6 +36,8 @@ export * from './Chip/chip-group.interface'
 
 export * from './ColorPicker/color-picker.interface'
 export * from './ColorPicker/color-picker-canvas.interface'
+
+export * from './ConfirmWrapper/confirm-wrapper.interface'
 export * from './ColorPicker/color-picker-preview.interface'
 export * from './ColorPicker/color-picker-edit.interface'
 export * from './ColorPicker/color-picker-swatches.interface'
@@ -60,6 +62,7 @@ export * from './Commons/dimension.interface'
 export * from './Commons/delay.interface'
 export * from './Commons/density.interface'
 export * from './Commons/direction.interface'
+export * from './Commons/variant.interface'
 export * from './Commons/display.interface'
 export * from './Commons/elevation.interface'
 export * from './Commons/filters.interface'
@@ -122,6 +125,8 @@ export * from './DatePicker/date-picker-month.interface'
 export * from './DatePicker/date-picker-years.interface'
 
 export * from './DatePickerField/date-picker-field.interface'
+
+export * from './DefaultProvider/default-provider.interface'
 
 export * from './Dialog/dialog.interface'
 export * from './Dialog/dialog-confirmation.interface'

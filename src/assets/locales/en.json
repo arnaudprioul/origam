@@ -104,6 +104,13 @@
     "infiniteScroll": {
       "loadMore": "Load more",
       "empty": "No more"
+    },
+    "validation": {
+      "required": "This field is required",
+      "must_match": "The fields do not match",
+      "max_length": "Maximum {0} characters",
+      "must_contains": "This field must contain: {value}",
+      "max_size_error": "File \"{0}\" exceeds maximum size of {1}"
     }
   }
 }

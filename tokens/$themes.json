@@ -23,7 +23,8 @@
       "component/section": "enabled",
       "component/drawer": "enabled",
       "component/sheet": "enabled",
-      "component/system-bar": "enabled"
+      "component/system-bar": "enabled",
+      "component/confirm-wrapper": "enabled"
     }
   },
   {
@@ -50,7 +51,8 @@
       "component/section": "enabled",
       "component/drawer": "enabled",
       "component/sheet": "enabled",
-      "component/system-bar": "enabled"
+      "component/system-bar": "enabled",
+      "component/confirm-wrapper": "enabled"
     }
   }
 ]

@@ -26,6 +26,8 @@ export * from './ColorPicker'
 
 export * from './ColorPickerField'
 
+export * from './ConfirmWrapper'
+
 export * from './ContextualMenu'
 
 export * from './Counter'
@@ -37,6 +39,8 @@ export * from './DataTable'
 export * from './DatePicker'
 
 export * from './DatePickerField'
+
+export * from './DefaultsProvider'
 
 export * from './Dialog'
 

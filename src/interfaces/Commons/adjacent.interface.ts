@@ -15,3 +15,15 @@ export interface IAdjacentInnerProps {
     clearIcon?: TIcon
     clearable?: boolean
 }
+
+/** Click events emitted when the user clicks the prepend/append slots. */
+export interface IAdjacentEmits {
+    (e: 'click:append', event: MouseEvent): void
+    (e: 'click:prepend', event: MouseEvent): void
+}
+
+/** Slot signatures for adjacent prepend/append content. */
+export interface IAdjacentSlots {
+    prepend?: () => any
+    append?: () => any
+}

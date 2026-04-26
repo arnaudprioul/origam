@@ -104,6 +104,13 @@
     "infiniteScroll": {
       "loadMore": "Charger plus",
       "empty": "Aucune donnée supplémentaire"
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire",
+      "must_match": "Les champs ne correspondent pas",
+      "max_length": "Maximum {0} caractères",
+      "must_contains": "Ce champ doit contenir : {value}",
+      "max_size_error": "Le fichier \"{0}\" dépasse la taille maximum de {1}"
     }
   }
 }

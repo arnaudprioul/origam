@@ -710,6 +710,19 @@
   --origam-system-bar---border-start-end-radius: 0px;
   --origam-system-bar---border-end-start-radius: 0px;
   --origam-system-bar---border-end-end-radius: 0px;
+  --origam-confirm-wrapper---padding-start: 8px;
+  --origam-confirm-wrapper---padding-end: 8px;
+  --origam-confirm-wrapper---padding-top: 8px;
+  --origam-confirm-wrapper---padding-bottom: 16px;
+  --origam-confirm-wrapper---details-min-height: 22px;
+  --origam-confirm-wrapper---details-font-size: 0.75rem;
+  --origam-confirm-wrapper---details-letter-spacing: 0.0333em;
+  --origam-confirm-wrapper---details-line-height: 1;
+  --origam-confirm-wrapper---icon-opacity: 0.7;
+  --origam-confirm-wrapper---icon-opacity-active: 1;
+  --origam-confirm-wrapper---disabled-opacity: 0.5;
+  --origam-confirm-wrapper---horizontal-gap: 1em;
+  --origam-confirm-wrapper--error---color: #cf6679;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
@@ -1424,5 +1437,18 @@
     --origam-system-bar---border-start-end-radius: 0px;
     --origam-system-bar---border-end-start-radius: 0px;
     --origam-system-bar---border-end-end-radius: 0px;
+    --origam-confirm-wrapper---padding-start: 8px;
+    --origam-confirm-wrapper---padding-end: 8px;
+    --origam-confirm-wrapper---padding-top: 8px;
+    --origam-confirm-wrapper---padding-bottom: 16px;
+    --origam-confirm-wrapper---details-min-height: 22px;
+    --origam-confirm-wrapper---details-font-size: 0.75rem;
+    --origam-confirm-wrapper---details-letter-spacing: 0.0333em;
+    --origam-confirm-wrapper---details-line-height: 1;
+    --origam-confirm-wrapper---icon-opacity: 0.7;
+    --origam-confirm-wrapper---icon-opacity-active: 1;
+    --origam-confirm-wrapper---disabled-opacity: 0.5;
+    --origam-confirm-wrapper---horizontal-gap: 1em;
+    --origam-confirm-wrapper--error---color: #cf6679;
   }
 }
