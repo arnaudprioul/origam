@@ -19,7 +19,7 @@
 	 * `provideDefaults`) into the descendants' `useDefaults()` resolver.
 	 *
 	 * Behaviour matches `<v-defaults-provider>` from Vuetify and the
-	 * optimus-design-system equivalent:
+	 * origam-design-system equivalent:
 	 *   - `defaults`   : the map (`{ global: {…}, 'origam-btn': {…}, … }`)
 	 *   - `disabled`   : pass parent defaults through unchanged
 	 *   - `scoped`     : do not inherit parent defaults

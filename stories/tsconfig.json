@@ -1,24 +1,17 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
-    "paths": {
-      "@origam": [
-        "../src/"
-      ],
-      "@origam/*": [
-        "../src/*"
-      ],
-      "@stories": [
-        "../stories/"
-      ],
-      "@stories/*": [
-        "../stories/*"
-      ]
-    }
+    "composite": true,
+    "noEmit": true
   },
-  "references": [
-    {
-      "path": "../tsconfig.json"
-    }
+  "include": [
+    "**/*.ts",
+    "**/*.vue",
+    "**/*.story.ts",
+    "**/*.story.vue"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../dist"
   ]
 }

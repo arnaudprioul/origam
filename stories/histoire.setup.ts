@@ -12,8 +12,6 @@ import '@origam/assets/css/tokens/primitive.css'
 import '@origam/assets/css/tokens/light.css'
 import '@origam/assets/css/tokens/dark.css'
 
-import '@stories/assets/scss/codetabs.scss'
-
 export const setupVue3 = defineSetupVue3(({ app, addWrapper }) => {
     app.use(createOrigam())
     addWrapper(OrigamStoryLayout)

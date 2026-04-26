@@ -26,7 +26,7 @@ export function useVModel<
     // without ANY props/listeners (e.g. `<my-comp />` with no attributes).
     // Calling `Object.prototype.hasOwnProperty.call(null, key)` throws
     // "Cannot convert undefined or null to object". The `?? {}` fallback
-    // mirrors optimus's `?.hasOwnProperty(...)` pattern but keeps the
+    // mirrors origam's `?.hasOwnProperty(...)` pattern but keeps the
     // prototype-pollution-safe `.call()` form used elsewhere in origam.
     const has = (key: string) => Object.prototype.hasOwnProperty.call(vm.vnode.props ?? {}, key)
 

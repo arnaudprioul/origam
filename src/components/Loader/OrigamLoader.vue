@@ -6,7 +6,7 @@
 	>
 		<template v-if="isLoading">
 			<!--
-				Mirror of OptimusLoader: the `__progress` class lives on the
+				Mirror of OrigamLoader: the `__progress` class lives on the
 				default spinner directly (no wrapper) so consumers replacing
 				`#loader` get a clean slot without an extra DOM node.
 			-->
@@ -69,7 +69,7 @@
 </script>
 
 <!--
-	Restored scoped style block (mirrors OptimusLoader exactly). Only sets
+	Restored scoped style block (mirrors OrigamLoader exactly). Only sets
 	the wrapper height + the progress margin: NO display rule, so the host
 	(e.g. OrigamBtn `__loader`) keeps full control of the layout
 	(grid/flex) without specificity tug-of-war.

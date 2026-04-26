@@ -1,17 +1,20 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "paths": {
-      "@docs": [
-        "./docs/"
-      ],
-      "@docs/*": [
-        "./docs/*"
-      ]
-    }
+    "composite": true,
+    "noEmit": true,
+    "types": ["node"],
   },
-  "references": [
-    {
-      "path": "../tsconfig.json"
-    }
+  "include": [
+    "**/*.ts",
+    "**/*.vue",
+    "**/*.md",
+    ".vitepress/**/*.ts"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../dist",
+    ".vitepress/cache",
+    ".vitepress/dist"
   ]
 }

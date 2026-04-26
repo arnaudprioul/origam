@@ -5,7 +5,7 @@ import type { IDefault } from '../../interfaces'
 import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../utils'
 
 // ────────────────────────────────────────────────────────────────────────────
-// Defaults system — ported from optimus-design-system (Lot 3.0)
+// Defaults system — ported from origam(Lot 3.0)
 // ────────────────────────────────────────────────────────────────────────────
 //
 // Lets a `<OrigamDefaultsProvider>` ancestor inject default prop values for

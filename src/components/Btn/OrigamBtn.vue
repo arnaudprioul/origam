@@ -774,7 +774,7 @@
 		}
 
 		// ────────────────────────────────────────────────────────────
-		// Rounded variants — mirror the optimus enum-driven API.
+		// Rounded variants — mirror the origam enum-driven API.
 		// `useRounded` emits one of:
 		//   - `--rounded`            → legacy boolean (max curvature)
 		//   - `--rounded-{name}`     → named variant from `ROUNDED` enum

@@ -10,6 +10,6 @@
  *     </template>
  *   </Variant>
  */
-export function useStoryInitState<T> (initState: any): T {
+export default function useStoryInitState<T> (initState: any): T {
     return initState as T
 }

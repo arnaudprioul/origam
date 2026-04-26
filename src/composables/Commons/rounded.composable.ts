@@ -11,8 +11,8 @@ import { convertToUnit, formatRoundedStylesVar, getCurrentInstanceName } from '.
 /**
  * Resolve the consumer's `rounded` prop into either a class (named variant
  * or legacy boolean) or an inline `border-radius` declaration (free-form
- * CSS value). Mirrors the optimus-design-system implementation but uses a
- * static `PREDIFINED_ROUNDED` whitelist instead of the optimus
+ * CSS value). Mirrors the origam-design-system implementation but uses a
+ * static `PREDIFINED_ROUNDED` whitelist instead of the origam
  * theme-driven `useTheme().current.value.variables.rounded`, since origam
  * ships its radius rungs as fixed primitive tokens.
  *

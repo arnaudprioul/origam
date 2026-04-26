@@ -80,7 +80,7 @@
 		lang="scss"
 		scoped
 >
-	// Bug fix (port Optimus): replaced Vuetify vars `--v-theme-on-surface` / `--v-medium-emphasis-opacity`
+	// Bug fix (port Origam): replaced Vuetify vars `--v-theme-on-surface` / `--v-medium-emphasis-opacity`
 	// with Origam semantic tokens. Defaults now provided by tokens/component/list.json subheader section.
 	.origam-list-subheader {
 		align-items: center;

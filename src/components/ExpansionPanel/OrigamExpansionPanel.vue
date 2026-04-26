@@ -221,7 +221,7 @@
 		scoped
 >
 	// Defaults provided by tokens/component/expansion-panel.json.
-	// Bug fix (port Optimus): hex values and Vuetify shadow vars replaced with Origam tokens.
+	// Bug fix (port Origam): hex values and Vuetify shadow vars replaced with Origam tokens.
 	.origam-expansion-panel {
 		flex: var(--origam-expansion-panel---flex, 1 0 100%);
 		max-width: var(--origam-expansion-panel---max-width, 100%);

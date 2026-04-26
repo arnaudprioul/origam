@@ -1,6 +1,6 @@
 /**
  * Visual variants applied to elevation-driven components (Btn, Card, Chip…).
- * Mirrors the Vuetify / optimus-design-system taxonomy so consumers can swap
+ * Mirrors the Vuetify / origam-design-system taxonomy so consumers can swap
  * design systems without re-learning the API.
  */
 export enum VARIANT {
