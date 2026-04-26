@@ -24,8 +24,10 @@
       "primary": {
         "bg":         { "$type": "color", "$value": "{color.primary.500}" },
         "bgHover":    { "$type": "color", "$value": "{color.primary.400}" },
+        "bgSubtle":   { "$type": "color", "$value": "{color.primary.900}" },
         "bgDisabled": { "$type": "color", "$value": "{color.neutral.800}" },
         "fg":         { "$type": "color", "$value": "{color.neutral.0}" },
+        "fgSubtle":   { "$type": "color", "$value": "{color.primary.300}" },
         "fgDisabled": { "$type": "color", "$value": "{color.neutral.600}" }
       },
       "secondary": {

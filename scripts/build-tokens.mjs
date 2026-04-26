@@ -233,7 +233,7 @@ function buildOneTheme (themeName, sourceSets, allSources) {
     }
 
     return new StyleDictionary({
-        log: { warnings: 'warn', verbosity: 'default' },
+        log: { warnings: 'warn', verbosity: 'verbose' },
         source: sourceFiles,
         platforms: {
             css: {
@@ -272,7 +272,7 @@ function buildOneTheme (themeName, sourceSets, allSources) {
 
 function buildTypes (allSources) {
     return new StyleDictionary({
-        log: { warnings: 'warn', verbosity: 'default' },
+        log: { warnings: 'warn', verbosity: 'verbose' },
         source: allSources,
         platforms: {
             ts: {
