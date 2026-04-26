@@ -136,7 +136,8 @@
 		useSelectLink,
 		useSize,
 		useStatus,
-		useStyle
+		useStyle,
+		useVariant
 	} from '../../composables'
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
@@ -214,6 +215,7 @@
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
 	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive)
 	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
+	const {variantClasses} = useVariant(props)
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -269,24 +271,23 @@
 		] as StyleValue
 	})
 	const btnClasses = computed(() => {
-		// Resolve effective variant — `props.flat` is the legacy boolean shortcut
-		// for `variant="flat"`. `variant` wins when both are set.
-		const effectiveVariant = props.variant ?? (props.flat ? 'flat' : undefined)
-
 		return [
 			'origam-btn',
 			group?.selectedClass.value,
-			effectiveVariant ? `origam-btn--variant-${effectiveVariant}` : null,
 			{
 				'origam-btn--active': isActive.value,
 				'origam-btn--block': props.block,
 				'origam-btn--disabled': isDisabled.value,
-				'origam-btn--flat': effectiveVariant === 'flat',
+				// Legacy boolean shortcut — kept in v2.x. `variantClasses`
+				// emits `origam-btn--variant-flat` when `variant="flat"`,
+				// so consumers can pick either spelling.
+				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
 				'origam-btn--loading': props.loading,
 				'origam-btn--slim': props.slim,
 				'origam-btn--stacked': props.stacked
 			},
+			variantClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
