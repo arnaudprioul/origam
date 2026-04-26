@@ -198,41 +198,41 @@
 		$this: &;
 
 		&__actions {
-			margin-top: 16px;
-			display: flex;
-			gap: 8px;
+			margin-top: var(--origam-form__actions---margin-top, 16px);
+			display: var(--origam-form__actions---display, flex);
+			gap: var(--origam-form__actions---gap, 8px);
 		}
 
 		&__details {
 			align-items: flex-end;
 			display: flex;
-			font-size: 0.75rem;
-			font-weight: 400;
+			font-size: var(--origam-form__details---font-size, 0.75rem);
+			font-weight: var(--origam-form__details---font-weight, 400);
 			grid-area: messages;
-			letter-spacing: 0.0333333333em;
-			line-height: 1;;
-			min-height: 22px;
-			padding-top: 6px;
+			letter-spacing: var(--origam-form__details---letter-spacing, 0.0333333333em);
+			line-height: var(--origam-form__details---line-height, 1);
+			min-height: var(--origam-form__details---min-height, 22px);
+			padding-top: var(--origam-form__details---padding-top, 6px);
 			overflow: hidden;
 			justify-content: space-between;
 
 			> .origam-icon {
-				opacity: 0.7;
+				opacity: var(--origam-form__details---icon-opacity, 0.7);
 			}
 		}
 
 		&--error {
 			#{$this}__details {
 				> .origam-messages {
-					opacity: 1;
-					color: rgba(255, 0, 0, 1);
+					opacity: var(--origam-form--error---icon-opacity, 1);
+					color: var(--origam-form--error---messages-color, var(--origam-color-feedback-danger-fgSubtle));
 				}
 			}
 
 			#{$this}__details {
 				> .origam-icon {
-					opacity: 1;
-					color: rgba(255, 0, 0, 1);
+					opacity: var(--origam-form--error---icon-opacity, 1);
+					color: var(--origam-form--error---icon-color, var(--origam-color-feedback-danger-fgSubtle));
 				}
 			}
 		}

@@ -1,0 +1,114 @@
+{
+  "field": {
+    "_comment": "OrigamField component tokens — Lot 3.2A. Form input field with variants (outlined, underlined, solo, solo-filled, solo-inverted). BEM children: overlay, loader, field, prepend-inner, append-inner, clearable, label, prefix, suffix, outline, input.",
+
+    "padding-start":          { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-start padding of the field root (overridden by --prepended / --prefixed modifiers)" },
+    "padding-end":            { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-end padding of the field root (overridden by --appended / --suffixed modifiers)" },
+    "padding-top":            { "$type": "dimension",    "$value": "{space.2}",                    "$description": "Block-start inner padding" },
+    "padding-bottom":         { "$type": "dimension",    "$value": "6px",                          "$description": "Block-end inner padding" },
+
+    "font-size":              { "$type": "dimension",    "$value": "16px",                         "$description": "Base font-size of the field" },
+    "letter-spacing":         { "$type": "dimension",    "$value": "{font.letterSpacing.wide}",     "$description": "Letter-spacing applied to the field root and input" },
+    "border-radius":          { "$type": "dimension",    "$value": "{radius.sm}",                  "$description": "Controlled via --origam-field---rounded CSS custom property set by useRounded" },
+
+    "border-color":           { "$type": "color",        "$value": "{color.border.default}",       "$description": "Default outline/underline border color" },
+    "border-width":           { "$type": "dimension",    "$value": "{border.width.thin}",          "$description": "Default border width for outlined/underlined variants" },
+    "border-opacity":         { "$type": "number",       "$value": 0.38,                           "$description": "Default border opacity (translucent on inactive state)" },
+
+    "background-color":       { "$type": "color",        "$value": "transparent",                  "$description": "Field background (transparent by default; solo/filled variants override)" },
+    "color":                  { "$type": "color",        "$value": "{color.text.primary}",         "$description": "Field text color inherited by children" },
+
+    "opacity-disabled":       { "$type": "number",       "$value": "{opacity.50}",                 "$description": "Opacity when the field is disabled" },
+
+    "transition-duration":    { "$type": "duration",     "$value": "{motion.duration.normal}",     "$description": "Duration for label float, border and opacity transitions" },
+    "transition-easing":      { "$type": "cubicBezier",  "$value": "{motion.easing.standard}",     "$description": "Easing for all field transitions" },
+
+    "error": {
+      "_comment": "State tokens applied when --origam-field--error is active (and not disabled).",
+      "border-color":         { "$type": "color",        "$value": "{color.feedback.danger.border}","$description": "Border color in error state" },
+      "color":                { "$type": "color",        "$value": "{color.feedback.danger.fgSubtle}","$description": "Text/icon color in error state (label, icons)" }
+    },
+
+    "variant-solo": {
+      "_comment": "Tokens for &-solo and &-solo-filled variants.",
+      "box-shadow":           { "$type": "shadow",       "$value": "{shadow.sm}",                  "$description": "Elevation shadow on solo variants" }
+    },
+
+    "variant-outlined": {
+      "_comment": "Tokens specific to the outlined variant.",
+      "background-color":     { "$type": "color",        "$value": "transparent",                  "$description": "Background when outlined (transparent unless overridden)" }
+    },
+
+    "overlay": {
+      "_comment": "BEM child: .origam-field__overlay — interaction ripple layer.",
+      "background-color":     { "$type": "color",        "$value": "{color.overlay.scrim}",        "$description": "Scrim color for the interactive overlay pseudo-element" },
+      "opacity":              { "$type": "number",       "$value": "{opacity.0}",                  "$description": "Hidden at rest; transitions to hover/active opacity" },
+      "position":             { "$type": "other",        "$value": "absolute",                     "$description": "Fills the field area" },
+      "pointer-events":       { "$type": "other",        "$value": "none",                         "$description": "Does not intercept pointer events" }
+    },
+
+    "input": {
+      "_comment": "BEM child: .origam-field__input — the actual input/textarea wrapper.",
+      "padding-top":          { "$type": "dimension",    "$value": "calc({space.2} + calc(16px + 0px))", "$description": "Top padding = field-padding-top + input-padding-top + density. Kept as calc for runtime composition." },
+      "padding-bottom":       { "$type": "dimension",    "$value": "6px",                          "$description": "Bottom padding of the input wrapper" },
+      "padding-start":        { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-start padding inside the input wrapper" },
+      "padding-end":          { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-end padding inside the input wrapper" },
+      "opacity":              { "$type": "number",       "$value": 0.7,                            "$description": "Default opacity for the input wrapper (transitions to 1 on active)" }
+    },
+
+    "label": {
+      "_comment": "BEM child: .origam-field__label — floating/static label.",
+      "font-size":            { "$type": "dimension",    "$value": "0.75em",                       "$description": "Floating label font-size (used as scale factor by the JS animation)" },
+      "transition-duration":  { "$type": "duration",     "$value": "{motion.duration.normal}",     "$description": "Label float transition duration" },
+      "transition-easing":    { "$type": "cubicBezier",  "$value": "{motion.easing.standard}",     "$description": "Label float easing" }
+    },
+
+    "prefix": {
+      "_comment": "BEM child: .origam-field__prefix.",
+      "opacity":              { "$type": "number",       "$value": "{opacity.0}",                  "$description": "Hidden until active state" },
+      "opacity-active":       { "$type": "number",       "$value": "{opacity.100}",                "$description": "Fully visible when the field is active" }
+    },
+
+    "suffix": {
+      "_comment": "BEM child: .origam-field__suffix.",
+      "opacity":              { "$type": "number",       "$value": "{opacity.0}",                  "$description": "Hidden until active state" },
+      "opacity-active":       { "$type": "number",       "$value": "{opacity.100}",                "$description": "Fully visible when the field is active" }
+    },
+
+    "prepend-inner": {
+      "_comment": "BEM child: .origam-field__prepend-inner.",
+      "icon-opacity":         { "$type": "number",       "$value": 0.7,                            "$description": "Default icon opacity within prepend-inner" },
+      "icon-opacity-focused": { "$type": "number",       "$value": "{opacity.100}",                "$description": "Full opacity when focused" }
+    },
+
+    "append-inner": {
+      "_comment": "BEM child: .origam-field__append-inner.",
+      "icon-opacity":         { "$type": "number",       "$value": 0.7,                            "$description": "Default icon opacity within append-inner" },
+      "icon-opacity-focused": { "$type": "number",       "$value": "{opacity.100}",                "$description": "Full opacity when focused" }
+    },
+
+    "clearable": {
+      "_comment": "BEM child: .origam-field__clearable — clear-icon button.",
+      "opacity":              { "$type": "number",       "$value": "{opacity.0}",                  "$description": "Hidden at rest" },
+      "opacity-visible":      { "$type": "number",       "$value": "{opacity.100}",                "$description": "Visible on focused / hover / persistent-clear" },
+      "margin-inline":        { "$type": "dimension",    "$value": "4px",                          "$description": "Horizontal margin around the clear button" },
+      "transition-duration":  { "$type": "duration",     "$value": "150ms",                        "$description": "Clearable opacity/transform transition" },
+      "transition-easing":    { "$type": "cubicBezier",  "$value": "{motion.easing.standard}",     "$description": "Clearable easing" }
+    },
+
+    "outline": {
+      "_comment": "BEM child: .origam-field__outline — the three-part outline (start, notch, end).",
+      "border-color":         { "$type": "color",        "$value": "{color.border.default}",       "$description": "Outline border color (defaults to current field border-color)" },
+      "border-style":         { "$type": "other",        "$value": "solid",                        "$description": "Border style for all outline segments" },
+      "border-opacity":       { "$type": "number",       "$value": 0.38,                           "$description": "Opacity of outline at rest" },
+      "border-opacity-hover": { "$type": "number",       "$value": "{opacity.100}",                "$description": "Full opacity on hover/focus" },
+      "transition-duration":  { "$type": "duration",     "$value": "250ms",                        "$description": "Underlined variant outline opacity transition" },
+      "transition-easing":    { "$type": "cubicBezier",  "$value": "{motion.easing.standard}",     "$description": "Underlined variant outline easing" }
+    },
+
+    "loader": {
+      "_comment": "BEM child: .origam-field__loader — linear progress bar slot.",
+      "height":               { "$type": "dimension",    "$value": "4px",                          "$description": "Loader thickness (matches OrigamProgress thickness prop)" }
+    }
+  }
+}

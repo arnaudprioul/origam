@@ -365,9 +365,11 @@
 		align-items: center;
 		display: flex;
 		justify-content: center;
-		padding: .5rem 0;
+		/* --origam-otp-input-field---padding-block: 0.5rem (fallback) */
+		padding: var(--origam-otp-input-field---padding-block, .5rem) 0;
 		position: relative;
-		border-radius: 4px;
+		/* --origam-otp-input-field---border-radius: 4px (fallback) */
+		border-radius: var(--origam-otp-input-field---border-radius, 4px);
 
 		.origam-field {
 			height: 100%;
@@ -376,27 +378,35 @@
 		}
 
 		&__divider {
-			margin: 0 8px;
+			/* --origam-otp-input-field__divider---margin-inline: 8px (fallback) */
+			margin: 0 var(--origam-otp-input-field__divider---margin-inline, 8px);
 		}
 
 		&__content {
 			align-items: center;
 			display: flex;
-			gap: .5rem;
-			height: 64px;
-			padding: .5rem;
+			/* --origam-otp-input-field---gap: 0.5rem (fallback) */
+			gap: var(--origam-otp-input-field---gap, .5rem);
+			/* --origam-otp-input-field__content---height: 64px (fallback) */
+			height: var(--origam-otp-input-field__content---height, 64px);
+			/* --origam-otp-input-field__content---padding: 0.5rem (fallback) */
+			padding: var(--origam-otp-input-field__content---padding, .5rem);
 			justify-content: center;
-			max-width: 320px;
+			/* --origam-otp-input-field__content---max-width: 320px (fallback) */
+			max-width: var(--origam-otp-input-field__content---max-width, 320px);
 			position: relative;
 			border-radius: inherit;
 		}
 
 		&__field {
-			color: inherit;
-			font-size: 1.25rem;
+			color: var(--origam-otp-input-field__cell---color, inherit);
+			/* --origam-otp-input-field__cell---font-size: 1.25rem (fallback) */
+			font-size: var(--origam-otp-input-field__cell---font-size, 1.25rem);
 			height: 100%;
-			outline: none;
-			text-align: center;
+			/* --origam-otp-input-field__cell---outline: none (fallback) */
+			outline: var(--origam-otp-input-field__cell---outline, none);
+			/* --origam-otp-input-field__cell---text-align: center (fallback) */
+			text-align: var(--origam-otp-input-field__cell---text-align, center);
 			width: 100%;
 
 			&[type=number]::-webkit-outer-spin-button,
@@ -424,15 +434,11 @@
 
 		&--divided {
 			#{$this}__content {
-				max-width: 360px;
+				/* --origam-otp-input-field__content---max-width-divided: 360px (fallback) */
+				max-width: var(--origam-otp-input-field__content---max-width-divided, 360px);
 			}
 		}
 	}
 
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

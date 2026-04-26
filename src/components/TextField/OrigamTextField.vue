@@ -389,7 +389,7 @@
 		}
 
 		&__details {
-			padding-inline: 16px;
+			padding-inline: var(--origam-text-field__details---padding-inline, 16px);
 		}
 
 		:deep(.origam-field) {
@@ -408,8 +408,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

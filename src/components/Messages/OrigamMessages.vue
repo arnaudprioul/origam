@@ -120,21 +120,21 @@
 	.origam-messages {
 		color: var(--origam-messages---color, currentColor);
 		padding: var(--origam-messages---density, 0);
-		flex: 1 1 auto;
-		font-size: 12px;
-		min-height: 14px;
-		min-width: 1px;
-		opacity: 0.87;
-		position: relative;
+		flex: var(--origam-messages---flex, 1 1 auto);
+		font-size: var(--origam-messages---font-size, 12px);
+		min-height: var(--origam-messages---min-height, 14px);
+		min-width: var(--origam-messages---min-width, 1px);
+		opacity: var(--origam-messages---opacity, 0.87);
+		position: var(--origam-messages---position, relative);
 
 		&__message {
-			line-height: 12px;
-			word-break: break-word;
-			overflow-wrap: break-word;
+			line-height: var(--origam-messages__message---line-height, 12px);
+			word-break: var(--origam-messages__message---word-break, break-word);
+			overflow-wrap: var(--origam-messages__message---overflow-wrap, break-word);
 			word-wrap: break-word;
 			-webkit-hyphens: auto;
 			hyphens: auto;
-			transition-duration: .15s
+			transition-duration: var(--origam-messages__message---transition-duration, .15s);
 		}
 	}
 </style>

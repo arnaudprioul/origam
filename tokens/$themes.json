@@ -24,7 +24,24 @@
       "component/drawer": "enabled",
       "component/sheet": "enabled",
       "component/system-bar": "enabled",
-      "component/confirm-wrapper": "enabled"
+      "component/confirm-wrapper": "enabled",
+      "component/field": "enabled",
+      "component/form": "enabled",
+      "component/label": "enabled",
+      "component/messages": "enabled",
+      "component/number-field": "enabled",
+      "component/otp-input-field": "enabled",
+      "component/checkbox": "enabled",
+      "component/checkbox-btn": "enabled",
+      "component/selection-control": "enabled",
+      "component/selection-control-group": "enabled",
+      "component/file-field": "enabled",
+      "component/file-field-dragndrop-item": "enabled",
+      "component/file-field-list-item": "enabled",
+      "component/password-field": "enabled",
+      "component/input": "enabled",
+      "component/text-field": "enabled",
+      "component/textarea-field": "enabled"
     }
   },
   {
@@ -52,7 +69,24 @@
       "component/drawer": "enabled",
       "component/sheet": "enabled",
       "component/system-bar": "enabled",
-      "component/confirm-wrapper": "enabled"
+      "component/confirm-wrapper": "enabled",
+      "component/field": "enabled",
+      "component/form": "enabled",
+      "component/label": "enabled",
+      "component/messages": "enabled",
+      "component/number-field": "enabled",
+      "component/otp-input-field": "enabled",
+      "component/checkbox": "enabled",
+      "component/checkbox-btn": "enabled",
+      "component/selection-control": "enabled",
+      "component/selection-control-group": "enabled",
+      "component/file-field": "enabled",
+      "component/file-field-dragndrop-item": "enabled",
+      "component/file-field-list-item": "enabled",
+      "component/password-field": "enabled",
+      "component/input": "enabled",
+      "component/text-field": "enabled",
+      "component/textarea-field": "enabled"
     }
   }
 ]

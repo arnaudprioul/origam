@@ -754,18 +754,18 @@
 
 		&--error {
 			&:not(#{$this}--disabled) {
-				--origam-field---border-color: rgb(var(--origam-theme---color--error));
+				--origam-field---border-color: var(--origam-field--error---border-color, var(--origam-color-feedback-danger-border));
 
 				#{$this}__append-inner,
 				#{$this}__clearable,
 				#{$this}__prepend-inner {
 					> .origam-icon {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-field--error---color, var(--origam-color-feedback-danger-fgSubtle));
 					}
 				}
 
 				#{$this}__label {
-					color: rgba(255, 0, 0, 1);
+					color: var(--origam-field--error---color, var(--origam-color-feedback-danger-fgSubtle));
 				}
 			}
 		}
@@ -794,7 +794,7 @@
 			&-solo,
 			&-solo-filled,
 			&-solo-inverted {
-				box-shadow: var(--origam-theme---elevation, 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12));
+				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow-sm)));
 			}
 
 			&-solo,
@@ -923,18 +923,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-field---padding-start: 16px;
-		--origam-field---padding-end: 16px;
-		--origam-field---padding-top: 8px;
-		--origam-field---padding-bottom: 4px;
-
-		--origam-field__input---padding-top: calc(var(--origam-field---padding-top, 8px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-field---density, 0px)));
-		--origam-field__input---padding-bottom: var(--origam-field---padding-bottom, 4px);
-		--origam-field__input---padding-start: var(--origam-field---padding-bottom, 16px);
-		--origam-field__input---padding-end: var(--origam-field---padding-bottom, 16px);
-
-		--origam-field__label---font-size: 0.75em;
-	}
-</style>

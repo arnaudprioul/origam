@@ -145,8 +145,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

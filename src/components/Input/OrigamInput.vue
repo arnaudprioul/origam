@@ -246,9 +246,9 @@
 
 		display: grid;
 		flex: 1 1 auto;
-		font-size: 1rem;
-		font-weight: 400;
-		line-height: 1.5;
+		font-size: var(--origam-input---font-size, 1rem);
+		font-weight: var(--origam-input---font-weight, 400);
+		line-height: var(--origam-input---line-height, 1.5);
 
 		--origam-input---padding-top: 16px;
 		--origam-input__control---height: 56px;
@@ -271,7 +271,7 @@
 		&__prepend,
 		&__append {
 			> .origam-icon {
-				opacity: 0.7;
+				opacity: var(--origam-input---icon-opacity, 0.7);
 			}
 		}
 
@@ -356,7 +356,7 @@
 			#{$this}__details,
 			#{$this}__prepend,
 			#{$this}__append {
-				opacity: 0.5;
+				opacity: var(--origam-input---disabled-opacity, 0.5);
 			}
 		}
 
@@ -364,7 +364,7 @@
 			&:not(#{$this}--disabled) {
 				#{$this}__details {
 					> .origam-messages {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-input---error-color, var(--origam-color-feedback-danger-fg-subtle));
 					}
 				}
 
@@ -372,7 +372,7 @@
 				#{$this}__prepend,
 				#{$this}__append {
 					> .origam-icon {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-input---error-color, var(--origam-color-feedback-danger-fg-subtle));
 					}
 				}
 			}

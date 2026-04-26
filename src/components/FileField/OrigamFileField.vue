@@ -784,7 +784,7 @@
 
     :deep(.origam-input) {
       .origam-input__details {
-        padding-inline: 16px;
+        padding-inline: var(--origam-file-field---details-padding-inline, 16px);
       }
     }
 
@@ -800,7 +800,7 @@
     &__field {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--origam-file-field---field-gap, 8px);
       width: 100%;
     }
 
@@ -832,42 +832,43 @@
     &__dragndrop {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--origam-file-field---gap, 12px);
       width: 100%;
     }
 
     &__dropzone {
       align-items: center;
       background-color: var(--origam-file-field__dropzone---background-color, transparent);
-      border: 2px dashed var(--origam-file-field__dropzone---color, rgba(0, 0, 0, 0.2));
+      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color-border-default));
       border-radius: var(--origam-file-field__dropzone---border-radius, 8px);
       color: var(--origam-file-field__dropzone---color, inherit);
-      cursor: pointer;
+      cursor: var(--origam-file-field__dropzone---cursor, pointer);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--origam-file-field__dropzone---gap, 8px);
       justify-content: center;
       min-height: calc(var(--origam-file-field__dropzone---min-height, 140px) + var(--origam-file-field__dropzone---density, 0px));
       padding: calc(var(--origam-file-field__dropzone---padding, 24px) + var(--origam-file-field__dropzone---density, 0px));
       position: relative;
       text-align: center;
-      transition: border-color 0.2s ease, background-color 0.2s ease;
+      transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;
 
       &:hover {
-        border-color: var(--origam-file-field__dropzone---color, rgba(0, 0, 0, 0.4));
+        border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color-border-strong));
       }
 
       &--dragging {
-        background-color: var(--origam-file-field__dropzone--dragging---background-color, rgba(25, 118, 210, 0.06));
-        border-color: var(--origam-file-field__dropzone--dragging---border-color, rgb(25, 118, 210));
+        background-color: var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color-feedback-info-bg-subtle));
+        border-color: var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color-feedback-info-bg));
       }
 
       &--has-file {
         flex-direction: row;
-        gap: 12px;
+        gap: var(--origam-file-field__dropzone--has-file---gap, 12px);
         justify-content: flex-start;
         min-height: auto;
-        padding: var(--origam-file-field__dropzone--has-file---padding, 10px 12px);
+        padding-block: var(--origam-file-field__dropzone--has-file---padding, 10px);
+        padding-inline: var(--origam-file-field__dropzone--has-file---padding-inline, 12px);
         text-align: left;
       }
 
@@ -881,23 +882,23 @@
 
       &--disabled,
       &--readonly {
-        cursor: not-allowed;
-        opacity: 0.6;
+        cursor: var(--origam-file-field__dropzone---cursor-disabled, not-allowed);
+        opacity: var(--origam-file-field__dropzone---opacity-disabled, 0.6);
       }
 
       &-icon {
-        font-size: 40px;
-        opacity: 0.7;
+        font-size: var(--origam-file-field__dropzone---icon-font-size, 40px);
+        opacity: var(--origam-file-field__dropzone---icon-opacity, 0.7);
       }
 
       &-title {
-        font-size: 15px;
-        font-weight: 500;
+        font-size: var(--origam-file-field__dropzone---title-font-size, 0.875rem);
+        font-weight: var(--origam-file-field__dropzone---title-font-weight, 500);
       }
 
       &-subtitle {
-        font-size: 13px;
-        opacity: 0.6;
+        font-size: var(--origam-file-field__dropzone---subtitle-font-size, 0.75rem);
+        opacity: var(--origam-file-field__dropzone---subtitle-opacity, 0.6);
       }
 
       &-input {
@@ -913,18 +914,10 @@
     &__list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--origam-file-field---list-gap, 8px);
       list-style: none;
       margin: 0;
       padding: 0;
     }
-  }
-</style>
-
-<style>
-  :root {
-    --origam-file-field__dropzone---density: 0px;
-    --origam-file-field__dropzone---min-height: 140px;
-    --origam-file-field__dropzone---padding: 24px;
   }
 </style>

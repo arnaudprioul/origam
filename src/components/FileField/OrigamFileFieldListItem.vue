@@ -129,14 +129,16 @@
 >
   .origam-file-field-list-item {
     align-items: center;
-    background-color: var(--origam-file-field-list-item---background-color, rgba(0, 0, 0, 0.02));
-    border: 1px solid var(--origam-file-field-list-item---border-color, rgba(0, 0, 0, 0.08));
+    background-color: var(--origam-file-field-list-item---background-color, var(--origam-color-surface-overlay));
+    border: var(--origam-file-field-list-item---border-width, 1px) var(--origam-file-field-list-item---border-style, solid) var(--origam-file-field-list-item---border-color, var(--origam-color-border-subtle));
     border-radius: var(--origam-file-field-list-item---border-radius, 6px);
     display: flex;
-    gap: 12px;
-    padding: 10px 12px;
+    gap: var(--origam-file-field-list-item---gap, 12px);
+    padding-block: var(--origam-file-field-list-item---padding-block, 10px);
+    padding-inline: var(--origam-file-field-list-item---padding-inline, 12px);
 
     &__icon {
+      color: var(--origam-file-field-list-item__icon---color, var(--origam-color-text-secondary));
       flex-shrink: 0;
     }
 
@@ -144,32 +146,32 @@
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      gap: 4px;
+      gap: var(--origam-file-field-list-item---content-gap, 4px);
       min-width: 0;
     }
 
     &__name {
-      font-size: 14px;
-      font-weight: 500;
+      font-size: var(--origam-file-field-list-item__name---font-size, 0.875rem);
+      font-weight: var(--origam-file-field-list-item__name---font-weight, 500);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     &__meta {
-      color: var(--origam-file-field-list-item__meta---color, rgba(0, 0, 0, 0.6));
-      font-size: 12px;
+      color: var(--origam-file-field-list-item__meta---color, var(--origam-color-text-secondary));
+      font-size: var(--origam-file-field-list-item__meta---font-size, 0.75rem);
     }
 
     &__progress {
-      margin-top: 4px;
+      margin-top: var(--origam-file-field-list-item__progress---margin-top, 4px);
     }
 
     &__actions {
       align-items: center;
       display: flex;
       flex-shrink: 0;
-      gap: 4px;
+      gap: var(--origam-file-field-list-item---actions-gap, 4px);
     }
   }
 </style>

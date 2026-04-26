@@ -639,15 +639,15 @@
 			position: absolute;
 			bottom: 0;
 			left: calc(0px - var(--origam-field---padding-start));
-			border: 1px solid var(--origam-textarea-field__grip---border-color, #ddd);
+			border: 1px solid var(--origam-textarea-field__grip---border-color, var(--origam-color-border-subtle));
 			border-top-width: 0;
 			cursor: ns-resize;
-			height: 9px;
+			height: var(--origam-textarea-field__grip---height, 9px);
 			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			opacity: 0.2;
+			opacity: var(--origam-textarea-field__grip---opacity, 0.2);
 			width: calc(100% + var(--origam-field---padding-start) + var(--origam-field---padding-end));
 
 			&:hover {

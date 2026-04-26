@@ -83,8 +83,3 @@
 
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

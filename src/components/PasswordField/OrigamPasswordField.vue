@@ -555,7 +555,8 @@
 		}
 
 		&__toggle-icon {
-			cursor: pointer;
+			cursor: var(--origam-password-field__toggle-icon---cursor, pointer);
+			opacity: var(--origam-password-field__toggle-icon---opacity, 1);
 		}
 
 		&__details {
@@ -563,17 +564,18 @@
 		}
 
 		&__infos {
-			padding: var(--origam-password-field__infos---padding, 0 10px);
+			padding-block: var(--origam-password-field__infos---padding, 0px);
+			padding-inline: var(--origam-password-field__infos---padding-inline, 10px);
 		}
 
 		&__item {
+			overflow: var(--origam-password-field__item---overflow, visible);
 			padding: var(--origam-password-field__item---padding, 8px);
-			text-align: center;
-			position: relative;
-			overflow: visible;
+			position: var(--origam-password-field__item---position, relative);
+			text-align: var(--origam-password-field__item---text-align, center);
 
 			#{$this}__icon {
-				opacity: var(--origam-password-field__item---icon-opacity, 0.2);
+				opacity: var(--origam-password-field__item-icon---opacity, 0.2);
 			}
 
 			&--valid {
@@ -584,15 +586,15 @@
 		}
 
 		&__validate {
-			position: absolute;
-			top: 0;
-			right: 0;
-			transform: translate(50%, -50%);
+			position: var(--origam-password-field__validate---position, absolute);
+			top: var(--origam-password-field__validate---top, 0px);
+			right: var(--origam-password-field__validate---right, 0px);
+			transform: var(--origam-password-field__validate---transform, translate(50%, -50%));
 		}
 
 		&__icon {
 			font-size: var(--origam-password-field__icon---font-size, 45px);
-			font-weight: bold;
+			font-weight: var(--origam-password-field__icon---font-weight, bold);
 		}
 
 		:deep(.origam-field) {

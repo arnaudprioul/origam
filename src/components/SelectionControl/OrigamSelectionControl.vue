@@ -276,12 +276,14 @@
 		&--error {
 			:not(#{$this}--disabled) {
 				.origam-label {
-					color: rgba(255, 0, 0, 1);
+					/* --origam-selection-control__label---color-error: {color.feedback.danger.fgSubtle} (fallback: var(--origam-color-feedback-danger-fgSubtle)) */
+					color: var(--origam-selection-control__label---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
 				}
 
 				#{$this}__input {
 					> .origam-icon {
-						color: rgba(255, 0, 0, 1);
+						/* --origam-selection-control__icon---color-error: {color.feedback.danger.fgSubtle} */
+						color: var(--origam-selection-control__icon---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
 					}
 				}
 			}
@@ -316,8 +318,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>
