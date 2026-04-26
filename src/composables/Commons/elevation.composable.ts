@@ -1,9 +1,60 @@
 import { computed, isRef, ref, Ref } from 'vue'
 import type { IElevationProps } from '../../interfaces'
 import { TColor } from "../../types"
-import { formatElevationStyle, getCurrentInstanceName } from "../../utils"
+import { getCurrentInstanceName } from "../../utils"
 
-export function useElevation (props: IElevationProps | Ref<number | string | undefined>, flat: Ref<boolean> = ref(false), bgColor: Ref<TColor> = ref('rgb(0,0,0)'), name = getCurrentInstanceName()) {
+/**
+ * Map a numeric Material-style elevation (0..24) to a token rung in the
+ * generated shadow ladder (`--origam-shadow-{none|xs|sm|md|lg|xl}`).
+ *
+ * Buckets are intentionally chunky — the Material 25-step ladder collapses
+ * into a 6-token visual ladder. The mapping was tuned against the existing
+ * usage in OrigamCard / OrigamBadge / OrigamChip.
+ */
+function elevationToToken (level: number): string {
+    if (level <= 0) return 'none'
+    if (level <= 1) return 'xs'
+    if (level <= 3) return 'sm'
+    if (level <= 8) return 'md'
+    if (level <= 16) return 'lg'
+    return 'xl'
+}
+
+const _bgWarned = new WeakSet<object>()
+function warnBgColorUsage (bgColor: TColor) {
+    if (typeof console === 'undefined' || !bgColor) return
+    // Use a sentinel object to avoid spamming the warning per render.
+    const sentinel = { _: 'origam-elevation-bg-warn' } as const
+    if (_bgWarned.has(sentinel)) return
+    _bgWarned.add(sentinel)
+    // eslint-disable-next-line no-console
+    console.warn(
+        '[origam] useElevation: the `bgColor` parameter is deprecated and ignored. ' +
+        'Shadows now resolve from the design tokens (`--origam-shadow-*`) and switch with the active theme. ' +
+        'The parameter will be removed in v3.0.0.'
+    )
+}
+
+/**
+ * `useElevation` — refactored to consume design tokens (Lot 1).
+ *
+ * Backward-compat:
+ *   - The signature is preserved (`bgColor` accepted but ignored).
+ *   - Returns the same shape: `{ elevationClasses, elevationStyles }`.
+ *   - `elevationStyles` is still a string array — emits a single `box-shadow:`
+ *     declaration that references the appropriate `--origam-shadow-*` token.
+ */
+export function useElevation (
+    props: IElevationProps | Ref<number | string | undefined>,
+    flat: Ref<boolean> = ref(false),
+    bgColor: Ref<TColor> = ref('rgb(0,0,0)'),
+    name = getCurrentInstanceName()
+) {
+    // Soft-warn the first time a non-default bgColor is provided.
+    if (bgColor && bgColor.value && bgColor.value !== 'rgb(0,0,0)') {
+        warnBgColorUsage(bgColor.value)
+    }
+
     const elevationClasses = computed(() => {
         const elevation = isRef(props) ? props.value : props.elevation
         const classes: Array<string> = []
@@ -19,9 +70,13 @@ export function useElevation (props: IElevationProps | Ref<number | string | und
         const elevation = isRef(props) ? props.value : props.elevation
         const styles: Array<string> = []
 
-        if (elevation == null || flat.value) return []
+        if (elevation == null || flat.value) return styles
 
-        styles.push(formatElevationStyle(parseInt(elevation, 10), bgColor.value))
+        const numeric = typeof elevation === 'string' ? parseInt(elevation, 10) : elevation
+        if (Number.isNaN(numeric as number)) return styles
+
+        const tokenName = elevationToToken(numeric as number)
+        styles.push(`box-shadow: var(--origam-shadow-${tokenName})`)
 
         return styles
     })

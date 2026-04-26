@@ -330,8 +330,8 @@
 		text-indent: var(--origam-btn---text-indent);
 
 		transition-property: box-shadow, transform, opacity, background;
-		transition-duration: 0.28s;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: var(--origam-btn---transition-duration, 0.28s);
+		transition-timing-function: var(--origam-btn---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
 		padding: 0 16px;
 
@@ -438,27 +438,27 @@
 		&:focus-visible,
 		&:focus {
 			> #{$this}__overlay {
-				--origam-btn__overlay---opacity: calc(0.12 * 1);
+				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
 			}
 		}
 
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				--origam-btn__overlay---opacity: calc(0.12 * 1);
+				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
 			}
 
 			&:hover,
 			&:focus-visible,
 			&:focus {
 				> #{$this}__overlay {
-					--origam-btn__overlay---opacity: calc(0.12 * 1);
+					--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
 				}
 			}
 		}
 
 		&--icon {
-			--origam-btn---border-radius: 50%;
+			--origam-btn---border-radius: var(--origam-btn---border-radius-icon, 50%);
 
 			--origam-btn---min-width: 0;
 			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
@@ -480,10 +480,10 @@
 
 		&--disabled {
 			pointer-events: none;
-			--origam-btn---opacity: 0.26;
+			--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.26);
 
 			&:hover {
-				--origam-btn---opacity: 0.26;
+				--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.26);
 			}
 		}
 
@@ -581,10 +581,10 @@
 		}
 
 		&--rounded {
-			--origam-btn---border-radius: 24px;
+			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, 24px);
 
 			&#{$this}--icon {
-				--origam-btn---border-radius: 4px;
+				--origam-btn---border-radius: var(--origam-btn---border-radius, 4px);
 			}
 		}
 
@@ -646,7 +646,7 @@
 		}
 
 		&__overlay {
-			background-color: #000;
+			background-color: var(--origam-color-overlay-scrim);
 			border-radius: inherit;
 			opacity: var(--origam-btn__overlay---opacity, 0);
 			transition: opacity 0.2s ease-in-out;
@@ -664,37 +664,25 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-btn---position: relative;
+<!--
+	Lot 1 migration — `<style>:root{}` block removed.
+	The component now consumes the generated tokens from
+	`src/assets/css/tokens/{primitive,light,dark}.css` (loaded once via the
+	consumer's `import 'origam/styles'` or `import 'origam/tokens/css/light'`).
 
-		--origam-btn---density: 0;
-
-		--origam-btn---border-radius: 4px;
-		--origam-btn---border-width: 0;
-		--origam-btn---border-style: solid;
-		--origam-btn---border-color: currentColor;
-
-		--origam-btn---background-color: rgb(230, 230, 230);
-		--origam-btn---color: rgba(30, 30, 30, 0.87);
-
-		--origam-btn---width: auto;
-		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0));
-		--origam-btn---max-width: 100%;
-		--origam-btn---height: 36px;
-		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
-		--origam-btn---max-height: 100%;
-
-		--origam-btn---font-size: 0.875rem;
-		--origam-btn---font-weight: 500;
-		--origam-btn---letter-spacing: 0.0892857143em;
-		--origam-btn---line-height: 1;
-		--origam-btn---text-decoration: none;
-		--origam-btn---text-indent: 0.0892857143em;
-		--origam-btn---opacity: 1;
-
-		--origam-btn__overlay---opacity: 0;
-
+	Calc-based fallbacks (margins/paddings tied to height) live in the
+	`<style scoped>` block above as defaults on the element itself, so a
+	consumer who hasn't loaded the token CSS still sees a working button.
+-->
+<style
+		lang="scss"
+		scoped
+>
+	.origam-btn {
+		// Calc-based defaults that depend on local --origam-btn---height —
+		// these can't live in the token JSON because they reference the
+		// resolved value at the component-instance level (size variant,
+		// density modifier, etc.).
 		--origam-btn__content---margin-inline-start: 0;
 		--origam-btn__content---margin-inline-end: 0;
 
@@ -703,5 +691,8 @@
 
 		--origam-btn__prepend---margin-inline-start: calc(var(--origam-btn---height) / -9);
 		--origam-btn__prepend---margin-inline-end: calc(var(--origam-btn---height) / 4.5);
+
+		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0));
+		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
 	}
 </style>
