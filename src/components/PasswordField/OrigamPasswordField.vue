@@ -1,11 +1,13 @@
 <template>
 	<origam-input
 			ref="origamInputRef"
-			v-model="model"
+			v-model:model-value="model"
 			:class="passwordFieldClasses"
 			:focused="isFocused"
 			:style="passwordFieldStyles"
-			v-bind="{...rootAttrs, ...inputProps}"
+			v-bind="{...rootAttrs, ...inputProps, rules: enrichedRules}"
+			@click:prepend="handleClickPrepend"
+			@click:append="handleClickAppend"
 	>
 		<template
 				v-if="slots.prepend"
@@ -70,14 +72,54 @@
 						<slot name="prefix"/>
 					</template>
 
-					<template #default="{class: fieldSlotClass, ...fieldSlotProps}">
+					<template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
 						<div
 								:class="fieldSlotClass"
 								data-no-activator=""
 						>
+							<origam-menu
+									ref="origamMenuRef"
+									:model-value="showRequirements"
+									persistent
+									:target="origamInputRef"
+									content-class="origam-password-field__info"
+									v-bind="resolvedMenuProps"
+							>
+								<slot
+										name="info"
+										v-bind="{infos}"
+								>
+									<origam-row dense>
+										<origam-col
+												v-for="info in infos"
+												:key="info.key"
+										>
+											<origam-sheet
+													:class="{'origam-password-field__item--valid': isChecked(info.key)}"
+													class="origam-password-field__item"
+													:color="isChecked(info.key) ? 'success' : 'default'"
+													rounded="12px"
+											>
+												<div class="origam-password-field__validate">
+													<origam-icon
+															:color="isChecked(info.key) ? 'success' : 'accent'"
+															:icon="isChecked(info.key) ? MDI_ICONS.CHECK_CIRCLE_OUTLINE : MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+													/>
+												</div>
+												<div
+														v-if="info.icon"
+														class="origam-password-field__icon"
+												>
+													{{ info.icon }}
+												</div>
+											</origam-sheet>
+										</origam-col>
+									</origam-row>
+								</slot>
+							</origam-menu>
 							<slot
 									name="default"
-									v-bind="fieldSlotProps"
+									v-bind="{ref, ...fieldSlotProps}"
 							/>
 							<input
 									ref="inputRef"
@@ -114,10 +156,7 @@
 									name="appendInner"
 									v-bind="{icon: currentIcon}"
 							>
-								<origam-icon
-										:key="currentIcon"
-										:icon="currentIcon"
-								/>
+								<origam-icon :icon="currentIcon"/>
 							</slot>
 						</div>
 					</template>
@@ -155,11 +194,11 @@
 				>
 					<template
 							v-if="slots.counter"
-							#default="{counter, value, max}"
+							#default="{counter, max, value}"
 					>
 						<slot
 								name="counter"
-								v-bind="{counter, value, max}"
+								v-bind="{counter, max, value}"
 						/>
 					</template>
 				</origam-counter>
@@ -193,85 +232,121 @@
 		setup
 >
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamCounter, OrigamField, OrigamIcon, OrigamInput } from '../../components'
-	import { useAdjacentInner, useFocus, useProps, useVModel } from '../../composables'
+
+	import {
+		OrigamCol,
+		OrigamCounter,
+		OrigamField,
+		OrigamIcon,
+		OrigamInput,
+		OrigamMenu,
+		OrigamRow,
+		OrigamSheet
+	} from '../../components'
+
+	import {
+		useAdjacent,
+		useAdjacentInner,
+		useDefaults,
+		useFocus,
+		useLocale,
+		useProps,
+		useVModel
+	} from '../../composables'
+	import {
+		REQUIREMENT_MIN_LENGTH,
+		REQUIREMENT_NUMBER,
+		REQUIREMENT_SPECIAL,
+		REQUIREMENT_TINY,
+		REQUIREMENT_UPPERCASE
+	} from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
-	import type { IPasswordFieldProps } from '../../interfaces'
-	import type { TOrigamField, TOrigamInput } from "../../types"
+	import type { IPasswordFieldEmits, IPasswordFieldProps, IPasswordFieldSlots } from '../../interfaces'
+	import type { TOrigamField, TOrigamInput, TOrigamMenu } from '../../types'
 	import { filterInputAttrs, forwardRefs } from '../../utils'
 
-	const props = withDefaults(defineProps<IPasswordFieldProps>(), {
+	/*********************************************************
+	 * Global
+	 *
+	 * `<OrigamPasswordField>` is a TextField specialised for password
+	 * entry. Beyond the parent's text affordances, it adds:
+	 *   - Show/hide toggle on the appendInner icon.
+	 *   - Strength-requirements popup driven by `requirements` + the
+	 *     `need*` flags + `minLength`. The popup auto-opens on focus
+	 *     (or stays open when `persistentRequirements`).
+	 *   - Each enabled requirement is auto-injected as a validation rule
+	 *     so consumers don't have to repeat the regex in their `rules`.
+	 ********************************************************/
+	const _props = withDefaults(defineProps<IPasswordFieldProps>(), {
+		minLength: 8,
+		eager: true,
+		offIcon: MDI_ICONS.EYE_OFF,
+		onIcon: MDI_ICONS.EYE_OUTLINE,
+		menuProps: () => ({
+			closeDelay: 250,
+			closeOnContentClick: true,
+			locationStrategy: 'connected',
+			location: 'bottom left',
+			openDelay: 300,
+			scrim: false,
+			scrollStrategy: 'reposition'
+		}),
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
-		offIcon: MDI_ICONS.EYE_OFF_OUTLINE,
-		onIcon: MDI_ICONS.EYE_OUTLINE,
-		border: true,
 		rounded: true
 	})
+	const props = useDefaults(_props)
 
-	const emits = defineEmits(['click:control', 'mousedown:control', 'update:focused', 'update:modelValue', 'click:prepend', 'click:prependInner', 'click:append', 'click:appendInner', 'click:clear'])
+	const emits = defineEmits<IPasswordFieldEmits>()
 
-	const {filterProps} = useProps<IPasswordFieldProps>(props)
-
-	const attrs = useAttrs()
+	defineSlots<IPasswordFieldSlots>()
 	const slots = useSlots()
 
+	const attrs = useAttrs()
+
+	const {t} = useLocale()
+
 	const model = useVModel(props, 'modelValue')
-	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
+
+	/*********************************************************
+	 * Adjacent (outer + inner)
+	 ********************************************************/
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+	const {
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props)
 
-	const show = ref(false)
-	const currentIcon = computed(() => {
-		return show.value ? props.offIcon : props.onIcon
-	})
-	const currentType = computed(() => {
-		return show.value ? TEXT_FIELD_TYPE.TEXT : TEXT_FIELD_TYPE.PASSWORD
-	})
-	const handleToggleShow = () => {
-		show.value = !show.value
-	}
-
-	const counterValue = computed(() => {
-		if (typeof props.counterValue === 'function') {
-			return props.counterValue(model.value)
-		}
-
-		if (props.counterValue) {
-			return props.counterValue
-		}
-
-		return (model.value ?? '').toString().length
-	})
-	const max = computed(() => {
-		if (props.maxlength) return props.maxlength as unknown as undefined
-
-		if (!props.counter || (typeof props.counter !== 'number' && typeof props.counter !== 'string')) {
-			return undefined
-		}
-
-		return props.counter
-	})
-
-	const intersect = computed(() => {
-		return [{
-			handler: handleIntersect
-		}, null, ['once']]
-	})
+	/*********************************************************
+	 * Intersect — focuses the input on first scroll-into-view when
+	 * `autofocus` is set. Avoids stealing focus from off-screen forms.
+	 ********************************************************/
 	const handleIntersect = (isIntersecting: boolean, entries: IntersectionObserverEntry[]) => {
 		if (!props.autofocus || !isIntersecting) return
 
-		(entries[0].target as HTMLInputElement)?.focus?.()
+		;(entries[0].target as HTMLInputElement)?.focus?.()
 	}
+	const intersect = computed(() => {
+		return [{handler: handleIntersect}, null, ['once']]
+	})
 
+	/*********************************************************
+	 * Refs
+	 ********************************************************/
 	const origamInputRef = ref<TOrigamInput>()
 	const origamFieldRef = ref<TOrigamField>()
+	const origamMenuRef = ref<TOrigamMenu>()
 	const inputRef = ref<HTMLInputElement>()
 
+	/*********************************************************
+	 * Focus / control events
+	 ********************************************************/
+	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
 	const isActive = computed(() => {
 		return props.persistentPlaceholder || isFocused.value || props.active
 	})
@@ -317,6 +392,29 @@
 		model.value = el.value
 	}
 
+	/*********************************************************
+	 * Counter & details
+	 ********************************************************/
+	const counterValue = computed(() => {
+		if (typeof props.counterValue === 'function') {
+			return props.counterValue(model.value)
+		}
+
+		if (props.counterValue) {
+			return props.counterValue
+		}
+
+		return (model.value ?? '').toString().length
+	})
+	const max = computed(() => {
+		if (props.maxlength) return props.maxlength as unknown as undefined
+
+		if (!props.counter || (typeof props.counter !== 'number' && typeof props.counter !== 'string')) {
+			return undefined
+		}
+
+		return props.counter
+	})
 	const hasCounter = computed(() => {
 		return slots.counter || (props.counter !== false && props.counter != null)
 	})
@@ -324,6 +422,76 @@
 		return hasCounter.value || slots.details
 	})
 
+	/*********************************************************
+	 * Requirements popup
+	 *
+	 * `infos` is the live map of enabled requirements (keyed by
+	 * `info.key` so the menu and validation rule both see the same
+	 * descriptor). `showRequirements` gates the popup visibility.
+	 * `isChecked` evaluates each rule against the current value.
+	 ********************************************************/
+	const infos = computed(() => {
+		const localeInfos: { [key: string]: any } = {
+			minLength: REQUIREMENT_MIN_LENGTH(props.minLength)
+		}
+
+		if (props.needTiny) localeInfos.tiny = REQUIREMENT_TINY
+		if (props.needUppercase) localeInfos.uppercase = REQUIREMENT_UPPERCASE
+		if (props.needNumber) localeInfos.number = REQUIREMENT_NUMBER
+		if (props.needSpecial) localeInfos.special = REQUIREMENT_SPECIAL
+
+		return localeInfos
+	})
+	const showRequirements = computed(() => {
+		if (!props.requirements) return false
+
+		return isFocused.value || props.persistentRequirements
+	})
+
+	const isChecked = (key: string) => {
+		return infos.value[key]?.reg.test(model.value)
+	}
+
+	/*********************************************************
+	 * Show / hide toggle
+	 ********************************************************/
+	const show = ref(false)
+	const currentIcon = computed(() => {
+		return show.value ? props.offIcon : props.onIcon
+	})
+	const currentType = computed(() => {
+		return show.value ? TEXT_FIELD_TYPE.TEXT : TEXT_FIELD_TYPE.PASSWORD
+	})
+	const handleToggleShow = () => {
+		show.value = !show.value
+	}
+
+	/*********************************************************
+	 * Validation
+	 *
+	 * Auto-injects one rule per enabled requirement so `<origam-input>`'s
+	 * validation pipeline picks them up. Keeps user-supplied `rules`
+	 * intact and prepends the requirement rules so user errors win
+	 * the priority race.
+	 ********************************************************/
+	const enrichedRules = computed(() => {
+		const base = Array.isArray(props.rules) ? [...props.rules] : []
+
+		Object.keys(infos.value).forEach((key) => {
+			const info = infos.value[key]
+
+			base.push((value: any) => {
+				return info.reg.test(value || '') ||
+						t('origam.validation.must_contains', {value: info.message})
+			})
+		})
+
+		return base
+	})
+
+	/*********************************************************
+	 * Props passed down
+	 ********************************************************/
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
@@ -331,13 +499,21 @@
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
 	})
+	const resolvedMenuProps = computed(() => {
+		return {
+			...props.menuProps,
+			activatorProps: {
+				...((props.menuProps as any)?.activatorProps || {}),
+				'aria-haspopup': 'listbox'
+			}
+		}
+	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const passwordFieldStyles = computed(() => {
-		return [
-			props.style
-		] as StyleValue
+		return [props.style] as StyleValue
 	})
 	const passwordFieldClasses = computed(() => {
 		return [
@@ -346,7 +522,12 @@
 		]
 	})
 
-	defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
+	const {filterProps} = useProps<IPasswordFieldProps>(props)
+
+	defineExpose(forwardRefs({filterProps}))
 </script>
 
 <style
@@ -360,7 +541,7 @@
 			color: inherit;
 			opacity: 0;
 			flex: 1;
-			transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
+			transition: var(--origam-password-field__input---transition, 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1));
 			min-width: 0;
 
 			&:focus,
@@ -378,7 +559,40 @@
 		}
 
 		&__details {
-			padding-inline: 16px;
+			padding-inline: var(--origam-password-field__details---padding-inline, 16px);
+		}
+
+		&__infos {
+			padding: var(--origam-password-field__infos---padding, 0 10px);
+		}
+
+		&__item {
+			padding: var(--origam-password-field__item---padding, 8px);
+			text-align: center;
+			position: relative;
+			overflow: visible;
+
+			#{$this}__icon {
+				opacity: var(--origam-password-field__item---icon-opacity, 0.2);
+			}
+
+			&--valid {
+				#{$this}__icon {
+					opacity: var(--origam-password-field__item--valid---icon-opacity, 1);
+				}
+			}
+		}
+
+		&__validate {
+			position: absolute;
+			top: 0;
+			right: 0;
+			transform: translate(50%, -50%);
+		}
+
+		&__icon {
+			font-size: var(--origam-password-field__icon---font-size, 45px);
+			font-weight: bold;
 		}
 
 		:deep(.origam-field) {
@@ -388,12 +602,21 @@
 					opacity: 1;
 				}
 			}
+
+			input {
+				border: none;
+				background: transparent;
+			}
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>
+<!--
+	Lot 3.0/3.1 port — the entire OptimusPasswordField has been ported
+	with the namespace adapted (`Optimus*` → `Origam*`, classes/CSS vars
+	mirrored, locale key `optimus.validation.must_contains` →
+	`origam.validation.must_contains`). The bg-color="rgba(230,230,230, 0.50)"
+	hardcoded on each requirement Sheet was dropped — the Sheet's
+	`color` prop already drives the theme-aware tint via the design
+	tokens, no inline RGBA needed.
+-->

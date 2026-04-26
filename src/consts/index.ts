@@ -48,3 +48,5 @@ export * from './DataTable/group.const'
 export * from './DataTable/pagination.const'
 export * from './DataTable/select.const'
 export * from './DataTable/expand.const'
+
+export * from './PasswordField/password-field.const'
