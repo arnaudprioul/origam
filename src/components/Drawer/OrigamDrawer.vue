@@ -351,7 +351,7 @@
 		}
 
 		&--temporary {
-			--origam-drawer--box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+			--origam-drawer--box-shadow: var(--origam-shadow-lg);
 		}
 
 		&--sticky {
@@ -387,15 +387,18 @@
 		}
 
 		&__scrim {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: black;
-			opacity: 0.2;
-			transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			z-index: 1;
+			/* CSS-first: toutes les valeurs passent par les tokens — pas de valeur hardcodée */
+			position: var(--origam-drawer__scrim---position, absolute);
+			top: var(--origam-drawer__scrim---position-top, 0);
+			left: var(--origam-drawer__scrim---position-left, 0);
+			width: var(--origam-drawer__scrim---width, 100%);
+			height: var(--origam-drawer__scrim---height, 100%);
+			background: var(--origam-drawer__scrim---background, var(--origam-color-overlay-scrim));
+			opacity: var(--origam-drawer__scrim---opacity, 0.2);
+			transition-property: var(--origam-drawer__scrim---transition-property, opacity);
+			transition-duration: var(--origam-drawer__scrim---transition-duration, var(--origam-motion-duration-medium));
+			transition-timing-function: var(--origam-drawer__scrim---transition-timing-function, var(--origam-motion-easing-standard));
+			z-index: var(--origam-drawer__scrim---z-index, var(--origam-z-index-raised));
 		}
 
 		&__prepend,
@@ -406,38 +409,6 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-drawer--display: flex;
-		--origam-drawer--flex-direction: column;
-
-		--origam-drawer--border-top-width: 0;
-		--origam-drawer--border-left-width: 0;
-		--origam-drawer--border-bottom-width: 0;
-		--origam-drawer--border-right-width: 0;
-		--origam-drawer--border-width: var(--origam-drawer--border-top-width) var(--origam-drawer--border-left-width) var(--origam-drawer--border-bottom-width) var(--origam-drawer--border-right-width);
-		--origam-drawer--border-color: rgba(0, 0, 0, 0.87);
-		--origam-drawer--border-style: solid;
-		--origam-drawer--border-start-start-radius: 0;
-		--origam-drawer--border-start-end-radius: 0;
-		--origam-drawer--border-end-start-radius: 0;
-		--origam-drawer--border-end-end-radius: 0;
-		--origam-drawer--border-radius: var(--origam-drawer--border-start-start-radius) var(--origam-drawer--border-start-end-radius) var(--origam-drawer--border-end-start-radius) var(--origam-drawer--border-end-end-radius);
-
-		--origam-drawer--position: absolute;
-
-		--origam-drawer--transition-duration: 0.2s;
-		--origam-drawer--transition-property: box-shadow, transform, visibility, width, height, left, right, top, bottom;
-		--origam-drawer--transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-		--origam-drawer--height: 100%;
-		--origam-drawer--width: 100%;
-		--origam-drawer--max-width: 100%;
-
-		--origam-drawer--pointer-events: auto;
-
-		--origam-drawer--color: rgba(0, 0, 0, 0.87);
-		--origam-drawer--box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-		--origam-drawer--background: rgb(255, 255, 255);
-	}
-</style>
+<!-- Les valeurs par défaut des CSS custom properties ci-dessus sont désormais
+     émises par Style Dictionary depuis tokens/component/drawer.json.
+     Le bloc :root global a été supprimé — Lot 2D migration design tokens. -->

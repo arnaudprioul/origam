@@ -13,7 +13,17 @@
       "component/avatar": "enabled",
       "component/avatar-group": "enabled",
       "component/badge": "enabled",
-      "component/alert": "enabled"
+      "component/alert": "enabled",
+      "component/bottom-nav": "enabled",
+      "component/toolbar": "enabled",
+      "component/app": "enabled",
+      "component/app-bar": "enabled",
+      "component/layout": "enabled",
+      "component/main": "enabled",
+      "component/section": "enabled",
+      "component/drawer": "enabled",
+      "component/sheet": "enabled",
+      "component/system-bar": "enabled"
     }
   },
   {
@@ -30,7 +40,17 @@
       "component/avatar": "enabled",
       "component/avatar-group": "enabled",
       "component/badge": "enabled",
-      "component/alert": "enabled"
+      "component/alert": "enabled",
+      "component/bottom-nav": "enabled",
+      "component/toolbar": "enabled",
+      "component/app": "enabled",
+      "component/app-bar": "enabled",
+      "component/layout": "enabled",
+      "component/main": "enabled",
+      "component/section": "enabled",
+      "component/drawer": "enabled",
+      "component/sheet": "enabled",
+      "component/system-bar": "enabled"
     }
   }
 ]

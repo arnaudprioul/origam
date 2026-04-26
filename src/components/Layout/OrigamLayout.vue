@@ -57,12 +57,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-
-	* {
-		box-sizing: border-box;
-	}
-</style>

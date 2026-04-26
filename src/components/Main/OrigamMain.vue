@@ -110,25 +110,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-main--flex: 1 0 auto;
-
-		--origam-main--transition-duration: 0.2s;
-		--origam-main--transition-property: all;
-		--origam-main--transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-		--origam-main--max-width: 100%;
-		--origam-main--width: 100%;
-		--origam-main--height: 100%;
-
-		--origam-main--display: flex;
-
-		--origam-main--position: absolute;
-		--origam-main--position-top: 0;
-		--origam-main--position-left: 0;
-
-		--origam-main__scroller--position: relative;
-		--origam-main__scroller--max-width: 100%;
-	}
-</style>

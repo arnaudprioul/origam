@@ -16,3 +16,15 @@
 
 // Public mixin surface.
 @forward 'helpers';
+
+// Minimal global reset.
+// Migrated from `OrigamLayout.vue` during Lot 2A — `box-sizing: border-box`
+// is the de-facto standard for a sane layout model and was previously declared
+// inside the Layout component's `<style>:root{}` block, which caused it to
+// be loaded multiple times when several Layouts mounted on the same page.
+// Now lives once at the document root.
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}

@@ -241,7 +241,7 @@
 		}
 
 		&--elevated {
-			--origam-bottom-bar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
 		}
 
 		&--border {
@@ -265,7 +265,7 @@
 		}
 
 		&--active {
-			--origam-bottom-bar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--active---box-shadow);
 		}
 
 		&--grow {
@@ -330,38 +330,5 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-bottom-bar---border-top-width: 0;
-		--origam-bottom-bar---border-left-width: 0;
-		--origam-bottom-bar---border-bottom-width: 0;
-		--origam-bottom-bar---border-right-width: 0;
-		--origam-bottom-bar---border-width: var(--origam-bottom-bar---border-top-width) var(--origam-bottom-bar---border-left-width) var(--origam-bottom-bar---border-bottom-width) var(--origam-bottom-bar---border-right-width);
-		--origam-bottom-bar---border-color: currentColor;
-		--origam-bottom-bar---border-style: solid;
-		--origam-bottom-bar---border-radius: 0;
-		--origam-bottom-bar---density: 0;
-		--origam-bottom-bar---max-width: 100%;
-		--origam-bottom-bar---height: 48px;
-		--origam-bottom-bar---box-shadow: none;
-		--origam-bottom-bar---color: rgba(0, 0, 0, 0.87);
-		--origam-bottom-bar---background: rgb(230, 230, 230);
-		--origam-bottom-bar---margin-inline-start: 0;
-		--origam-bottom-bar---margin-inline-end: 0;
-		--origam-bottom-bar---margin-block-start: 0;
-		--origam-bottom-bar---margin-block-end: 0;
-		--origam-bottom-bar---padding-block-start: 8px;
-		--origam-bottom-bar---padding-block-end: 8px;
-		--origam-bottom-bar---padding-inline-start: 8px;
-		--origam-bottom-bar---padding-inline-end: 8px;
-		--origam-bottom-bar---transition-duration: 0.2s, 0.1s;
-		--origam-bottom-bar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-bottom-bar---transition-property: transform, color;
-		--origam-bottom-bar---transition: var(--origam-bottom-bar---transition-property) var(--origam-bottom-bar---transition-duration) var(--origam-bottom-bar---transition-timing-function);
 
-		--origam-bottom-bar__content---justify-content: center;
-		--origam-bottom-bar__content---align-items: center;
-		--origam-bottom-bar__content---flex-wrap: nowrap;
-		--origam-bottom-bar__content--transform: none;
-	}
-</style>
+
