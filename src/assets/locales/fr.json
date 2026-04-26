@@ -70,6 +70,13 @@
       "counter": "{0} fichier(s)",
       "counterSize": "{0} fichier(s) ({1} au total)"
     },
+    "fileField": {
+      "counter": "{0} fichier(s)",
+      "counterSize": "{0} fichier(s) ({1} au total)",
+      "dropzoneTitle": "Glissez et déposez vos fichiers ici",
+      "dropzoneSubtitle": "ou cliquez pour parcourir",
+      "browse": "Parcourir les fichiers"
+    },
     "fileUpload": {
       "title": "Drag and drop files here",
       "divider": "or",

@@ -15,7 +15,7 @@
 					:key="`${index}-${messages}`"
 			>
 				<div
-						:id="`${index}-${messages}`"
+						:id="`${index}-${toKebabCase(message)}`"
 						class="origam-messages__message"
 				>
 					<slot
@@ -34,11 +34,12 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef } from 'vue'
+	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import { OrigamSlideY, OrigamTransition } from '../../components'
 
 	import {
 		useBorder,
+		useDefaults,
 		useDensity,
 		useMargin,
 		usePadding,
@@ -50,16 +51,24 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IMessagesProps } from '../../interfaces'
+	import type { IMessagesEmits, IMessagesProps, IMessagesSlots } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
 
-	import { wrapInArray } from '../../utils'
+	import { toKebabCase, wrapInArray } from '../../utils'
 
-	const props = withDefaults(defineProps<IMessagesProps>(), {
+	const _props = withDefaults(defineProps<IMessagesProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
 		transition: () => ({component: OrigamSlideY}) as unknown as TTransitionProps
 	})
+	const props = useDefaults(_props)
+
+	const emits = defineEmits<IMessagesEmits>()
+
+	defineSlots<IMessagesSlots>()
+	const slots = useSlots()
+
+	const attrs = useAttrs()
 
 	const {filterProps} = useProps<IMessagesProps>(props)
 
@@ -106,3 +115,26 @@
 		filterProps
 	})
 </script>
+
+<style lang="scss" scoped>
+	.origam-messages {
+		color: var(--origam-messages---color, currentColor);
+		padding: var(--origam-messages---density, 0);
+		flex: 1 1 auto;
+		font-size: 12px;
+		min-height: 14px;
+		min-width: 1px;
+		opacity: 0.87;
+		position: relative;
+
+		&__message {
+			line-height: 12px;
+			word-break: break-word;
+			overflow-wrap: break-word;
+			word-wrap: break-word;
+			-webkit-hyphens: auto;
+			hyphens: auto;
+			transition-duration: .15s
+		}
+	}
+</style>

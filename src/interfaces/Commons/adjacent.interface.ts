@@ -27,3 +27,21 @@ export interface IAdjacentSlots {
     prepend?: () => any
     append?: () => any
 }
+
+/**
+ * Click events for the inner adjacent surface — these fire from icons
+ * rendered INSIDE the input chrome (clear button, password toggle, etc.)
+ * rather than from the outer prepend/append slots.
+ */
+export interface IAdjacentInnerEmits {
+    (e: 'click:appendInner', event: MouseEvent): void
+    (e: 'click:prependInner', event: MouseEvent): void
+    (e: 'click:clear', event: MouseEvent): void
+}
+
+/** Slot signatures for inner adjacent content (renders inside the input). */
+export interface IAdjacentInnerSlots {
+    prependInner?: () => any
+    appendInner?: () => any
+    clear?: () => any
+}

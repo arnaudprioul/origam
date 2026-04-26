@@ -65,7 +65,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { ICheckboxProps } from '../../interfaces'
+	import type { ICheckboxEmits, ICheckboxProps, ICheckboxSlots } from '../../interfaces'
 
 	import type { TOrigamCheckboxBtn, TOrigamInput } from "../../types"
 
@@ -77,7 +77,9 @@
 		density: DENSITY.DEFAULT
 	})
 
-	const emits = defineEmits(['update:modelValue', 'update:focused', 'click:label'])
+	const emits = defineEmits<ICheckboxEmits>()
+
+	defineSlots<ICheckboxSlots>()
 
 	const {filterProps} = useProps<ICheckboxProps>(props)
 
@@ -94,7 +96,7 @@
 		return props.id || `checkbox-${uid}`
 	})
 
-	const handleClickLabel = (e: Event) => {
+	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 

@@ -55,7 +55,7 @@
 					<template #default>
 						<input
 								ref="inputRef"
-								:aria-label="t(label, i + 1)"
+								:aria-label="t('origam.input.otp', i + 1)"
 								:autofocus="i === 0 && autofocus"
 								:disabled="disabled"
 								:inputmode="type === 'number' ? 'numeric' : 'text'"
@@ -140,19 +140,20 @@
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 
-	import type { IOtpInputFieldProps } from "../../interfaces"
+	import type { IOtpInputFieldEmits, IOtpInputFieldProps, IOtpInputFieldSlots } from "../../interfaces"
 
 	import type { TOrigamField } from "../../types"
 
-	import { filterInputAttrs, focusChild } from "../../utils"
+	import { filterInputAttrs, focusChild, forwardRefs } from "../../utils"
 
 	const props = withDefaults(defineProps<IOtpInputFieldProps>(), {
 		type: OTP_INPUT_FIELD_TYPE.NUMBER,
-		label: 'origam.input.otp',
 		length: 6
 	})
 
-	const emits = defineEmits(['finish', 'update:focused', 'update:modelValue'])
+	const emits = defineEmits<IOtpInputFieldEmits>()
+
+	defineSlots<IOtpInputFieldSlots>()
 
 	const {filterProps} = useProps<IOtpInputFieldProps>(props)
 
@@ -195,9 +196,11 @@
 	}
 
 	const handleInput = () => {
+		if (!current.value) return
+
 		// The maxlength attribute doesn't work for the number type input, so the text type is used.
 		// The following logic simulates the behavior of a number input.
-		if (isValidNumber(current.value.value)) {
+		if (isInvalidValue(current.value.value)) {
 			current.value.value = ''
 			return
 		}
@@ -265,7 +268,7 @@
 
 		const clipboardText = e?.clipboardData?.getData('Text').slice(0, length.value) ?? ''
 
-		if (isValidNumber(clipboardText)) return
+		if (isInvalidValue(clipboardText)) return
 
 		model.value = clipboardText.split('')
 
@@ -276,8 +279,20 @@
 		model.value = []
 	}
 
+	const handleClear = (e: MouseEvent) => {
+		e.stopPropagation()
+
+		model.value = []
+
+		nextTick(() => {
+			inputRef.value?.[0]?.focus()
+		})
+
+		emits('click:clear', e)
+	}
+
 	const handleFocus = (_e: FocusEvent, index: number) => {
-		focus()
+		if (!isFocused.value) focus()
 
 		focusIndex.value = index
 	}
@@ -288,8 +303,8 @@
 		focusIndex.value = -1
 	}
 
-	const isValidNumber = (value: string) => {
-		return props.type === 'number' && /[^0-9]/g.test(value)
+	const isInvalidValue = (value: string) => {
+		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /[^0-9]/g.test(value)
 	}
 
 	watch(model, (val) => {
@@ -323,17 +338,20 @@
 
 	// EXPOSE
 
-	defineExpose({
+	defineExpose(forwardRefs({
 		blur: () => {
-			inputRef.value?.some(input => input.blur())
+			inputRef.value?.some(input => {
+				input.blur()
+				return true
+			})
 		},
 		focus: () => {
-			inputRef.value?.[0].focus()
+			inputRef.value?.[0]?.focus()
 		},
 		reset,
 		isFocused,
 		filterProps
-	})
+	}))
 
 </script>
 

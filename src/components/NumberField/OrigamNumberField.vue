@@ -49,7 +49,7 @@
 				<template v-if="split">
 					<slot
 							name="increment"
-							v-bind="{canIncrease, onControlClick: () => handleControlClick, onUpControlMousedown: () => handleUpControlMousedown, onControlMouseup: () => handleControlMouseup}"
+							v-bind="{canIncrease, onControlClick: () => handleIncrementClick, onUpControlMousedown: () => handleUpControlMousedown, onControlMouseup: () => handleControlMouseup}"
 					>
 						<origam-btn
 								key="increment-btn"
@@ -59,7 +59,7 @@
 								flat
 								height="100%"
 								tabindex="-1"
-								@click="handleControlClick"
+								@click="handleIncrementClick"
 								@pointerdown="handleUpControlMousedown"
 								@pointerup="handleControlMouseup"
 						/>
@@ -123,7 +123,7 @@
 
 					<slot
 							name="increment"
-							v-bind="{canIncrease, onControlClick: () => handleControlClick, onUpControlMousedown: () => handleUpControlMousedown, onControlMouseup: () => handleControlMouseup}"
+							v-bind="{canIncrease, onControlClick: () => handleIncrementClick, onUpControlMousedown: () => handleUpControlMousedown, onControlMouseup: () => handleControlMouseup}"
 					>
 						<origam-btn
 								key="increment-btn"
@@ -133,7 +133,7 @@
 								flat
 								height="auto"
 								tabindex="-1"
-								@click="handleControlClick"
+								@click="handleIncrementClick"
 								@pointerdown="handleUpControlMousedown"
 								@pointerup="handleControlMouseup"
 						/>
@@ -144,7 +144,7 @@
 
 				<slot
 						name="decrement"
-						v-bind="{canDecrease, onControlClick: () => handleControlClick, onDownControlMousedown: () => handleDownControlMousedown, onControlMouseup: () => handleControlMouseup}"
+						v-bind="{canDecrease, onControlClick: () => handleDecrementClick, onDownControlMousedown: () => handleDownControlMousedown, onControlMouseup: () => handleControlMouseup}"
 				>
 					<origam-btn
 							key="decrement-btn"
@@ -154,7 +154,7 @@
 							flat
 							height="auto"
 							tabindex="-1"
-							@click="handleControlClick"
+							@click="handleDecrementClick"
 							@pointerdown="handleDownControlMousedown"
 							@pointerup="handleControlMouseup"
 					/>
@@ -214,14 +214,14 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch, watchEffect } from "vue"
+	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 	import { OrigamBtn, OrigamDivider, OrigamTextField } from "../../components"
 
 	import { useAdjacentInner, useFocus, useForm, useHold, useProps, useVModel } from "../../composables"
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
-	import type { INumberFieldProps } from "../../interfaces"
+	import type { INumberFieldEmits, INumberFieldProps, INumberFieldSlots } from "../../interfaces"
 
 	import type { TOrigamTextField } from "../../types"
 
@@ -244,7 +244,9 @@
 		type: TEXT_FIELD_TYPE.NUMBER
 	})
 
-	const emits = defineEmits(['click:control', 'mousedown:control', 'update:focused', 'update:modelValue', 'click:prepend', 'click:prependInner', 'click:append', 'click:appendInner', 'click:clear'])
+	const emits = defineEmits<INumberFieldEmits>()
+
+	defineSlots<INumberFieldSlots>()
 
 	const {filterProps} = useProps<INumberFieldProps>(props)
 
@@ -278,15 +280,17 @@
 	}
 
 	const _inputText = shallowRef<string | null>(null)
-	watchEffect(() => {
-		if (isFocused.value && !controlsDisabled.value) {
-			// ignore external changes
-		} else if (model.value == null) {
+
+	// Sync from external model changes (parent v-model updates)
+	watch(() => props.modelValue, (val) => {
+		if (isFocused.value && !controlsDisabled.value) return
+
+		if (val == null) {
 			_inputText.value = null
-		} else if (!isNaN(model.value)) {
-			_inputText.value = correctPrecision(model.value)
+		} else if (!isNaN(val)) {
+			_inputText.value = correctPrecision(val)
 		}
-	})
+	}, { immediate: true })
 	const inputText = computed<string | null>({
 		get: () => _inputText.value,
 		set (val) {
@@ -337,9 +341,15 @@
 		if (props.precision != null) inferredPrecision = Math.max(inferredPrecision, props.precision)
 
 		if (increment) {
-			if (canIncrease.value) inputText.value = correctPrecision(model.value + props.step, inferredPrecision)
+			if (canIncrease.value) {
+				inputText.value = correctPrecision(model.value + props.step, inferredPrecision)
+				emits('increment', model.value)
+			}
 		} else {
-			if (canDecrease.value) inputText.value = correctPrecision(model.value - props.step, inferredPrecision)
+			if (canDecrease.value) {
+				inputText.value = correctPrecision(model.value - props.step, inferredPrecision)
+				emits('decrement', model.value)
+			}
 		}
 	}
 
@@ -389,7 +399,10 @@
 			}
 		}
 	}
-	const handleControlClick = (e: MouseEvent) => {
+	const handleIncrementClick = (e: MouseEvent) => {
+		e.stopPropagation()
+	}
+	const handleDecrementClick = (e: MouseEvent) => {
 		e.stopPropagation()
 	}
 	const handleControlMouseup = (e: PointerEvent) => {
@@ -434,37 +447,50 @@
 
 	const clampModel = () => {
 		if (controlsDisabled.value) return
-		if (!origamTextFieldRef.value) return
 
-		const actualText = origamTextFieldRef.value.value
+		const actualText = _inputText.value ?? origamTextFieldRef.value?.value ?? null
 
 		if (actualText && !isNaN(Number(actualText))) {
-			inputText.value = correctPrecision(clamp(Number(actualText), props.min, props.max))
+			const clamped = clamp(Number(actualText), props.min, props.max)
+			model.value = clamped
+			_inputText.value = correctPrecision(clamped)
 		} else {
-			inputText.value = null
+			model.value = null
+			_inputText.value = null
 		}
 	}
 	const formatInputValue = () => {
 		if (controlsDisabled.value) return
 
-		if (model.value === null || isNaN(model.value)) {
-			inputText.value = null
+		if (_inputText.value === null) {
+			_inputText.value = null
 			return
 		}
 
-		inputText.value = props.precision == null
-				? String(model.value)
-				: model.value.toFixed(props.precision)
+		const numVal = Number(_inputText.value)
+
+		if (isNaN(numVal)) {
+			_inputText.value = null
+			return
+		}
+
+		_inputText.value = props.precision == null
+				? String(numVal)
+				: numVal.toFixed(props.precision)
 	}
 	const trimDecimalZeros = () => {
 		if (controlsDisabled.value) return
 
-		if (model.value === null || isNaN(model.value)) {
-			inputText.value = null
+		if (_inputText.value === null) return
+
+		const numVal = Number(_inputText.value)
+
+		if (isNaN(numVal)) {
+			_inputText.value = null
 			return
 		}
 
-		inputText.value = model.value.toString()
+		_inputText.value = numVal.toString()
 	}
 
 	const handleFocus = () => {

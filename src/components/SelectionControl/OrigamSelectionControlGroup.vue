@@ -18,7 +18,7 @@
 				>
 					<slot
 							name="item"
-							v-bind="{item}"
+							v-bind="{item, index}"
 					/>
 				</slot>
 			</template>
@@ -37,7 +37,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { ISelectionControlGroupProps } from "../../interfaces"
+	import type { ISelectionControlGroupEmits, ISelectionControlGroupProps, ISelectionControlGroupSlots } from "../../interfaces"
 
 	import { getUid } from '../../utils'
 
@@ -47,7 +47,9 @@
 		items: () => []
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ISelectionControlGroupEmits>()
+
+	defineSlots<ISelectionControlGroupSlots>()
 
 	const {filterProps} = useProps<ISelectionControlGroupProps>(props)
 

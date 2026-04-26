@@ -1,18 +1,24 @@
 import type {
+    IAdjacentInnerProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
+    IFieldEmits,
     IFieldProps,
+    IFieldSlots,
+    IInputEmits,
     IInputProps,
+    IInputSlots,
     IMarginProps,
     IPaddingProps,
-    IRoundedProps
+    IRoundedProps,
+    IVariantProps
 } from "../../interfaces"
 import type { TIcon } from "../../types"
 
-export interface INumberFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps {
+export interface INumberFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IVariantProps, IAdjacentInnerProps {
     autofocus?: boolean
     placeholder?: string
     persistentPlaceholder?: boolean
@@ -31,4 +37,18 @@ export interface INumberFieldProps extends ICommonsComponentProps, IColorProps, 
     holdRepeat?: number
     split?: boolean
     hideControls?: boolean
+}
+
+export interface INumberFieldEmits extends IFieldEmits, IInputEmits {
+    (e: 'click:control', event: MouseEvent): void
+    (e: 'mousedown:control', event: MouseEvent): void
+    (e: 'click:clear', event: MouseEvent): void
+    (e: 'increment', value: number | null): void
+    (e: 'decrement', value: number | null): void
+}
+
+export interface INumberFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    increment?: (data: { canIncrease: boolean, onControlClick: () => void, onUpControlMousedown: () => void, onControlMouseup: () => void }) => any
+    decrement?: (data: { canDecrease: boolean, onControlClick: () => void, onDownControlMousedown: () => void, onControlMouseup: () => void }) => any
 }

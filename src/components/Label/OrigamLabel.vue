@@ -1,16 +1,16 @@
 <template>
-	<label
+	<component
+			:is="tag"
 			:class="labelClasses"
 			:style="labelStyles"
+			:id="id"
+			:name="name"
 			@click="handleClick"
 	>
-		<slot
-				name="default"
-				v-bind="{text}"
-		>
+		<slot name="default">
 			<span>{{ text }}</span><sup v-if="required">*</sup>
 		</slot>
-	</label>
+	</component>
 </template>
 
 <script
@@ -18,27 +18,30 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { useBorder, useBothColor, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import { useBorder, useBothColor, useDefaults, useMargin, usePadding, useProps, useRounded } from '../../composables'
 
-	import type { ILabelProps } from '../../interfaces'
+	import type { ILabelEmits, ILabelProps, ILabelSlots } from '../../interfaces'
 
-	const props = withDefaults(defineProps<ILabelProps>(), {})
+	const _props = withDefaults(defineProps<ILabelProps>(), {
+		tag: 'label'
+	})
+	const props = useDefaults(_props)
 
-	const emits = defineEmits(['click'])
+	const emits = defineEmits<ILabelEmits>()
 
-	const {filterProps} = useProps<ILabelProps>(props)
-
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	defineSlots<ILabelSlots>()
 
 	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
 	}
 
 	// CLASS & STYLES
+
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const labelStyles = computed(() => {
 		return [
@@ -65,6 +68,8 @@
 	})
 
 	// EXPOSE
+
+	const {filterProps} = useProps<ILabelProps>(props)
 
 	defineExpose({
 		filterProps

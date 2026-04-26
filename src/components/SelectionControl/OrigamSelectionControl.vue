@@ -72,13 +72,15 @@
 
 	import { vRipple } from '../../directives'
 
-	import type { ISelectionControlProps } from "../../interfaces"
+	import type { ISelectionControlEmits, ISelectionControlProps, ISelectionControlSlots } from "../../interfaces"
 
 	import { filterInputAttrs, forwardRefs, getUid, matchesSelector } from '../../utils'
 
 	const props = withDefaults(defineProps<ISelectionControlProps>(), {})
 
-	const emits = defineEmits(['update:modelValue', 'click:label'])
+	const emits = defineEmits<ISelectionControlEmits>()
+
+	defineSlots<ISelectionControlSlots>()
 
 	const {filterProps} = useProps<ISelectionControlProps>(props)
 
@@ -122,7 +124,7 @@
 		isFocused.value = false
 		isFocusVisible.value = false
 	}
-	const handleClickLabel = (e: Event) => {
+	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 	const handleInput = (e: Event) => {

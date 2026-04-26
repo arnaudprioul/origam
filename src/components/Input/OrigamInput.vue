@@ -94,50 +94,40 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef, useSlots } from 'vue'
+	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 	import { OrigamMessages } from '../../components/Messages'
 
 	import {
 		useAdjacent,
-		useBorder,
 		useBothColor,
+		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useRtl,
 		useValidation
 	} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { IInputProps } from '../../interfaces'
+	import type { IInputEmits, IInputProps, IInputSlots } from '../../interfaces'
 
-	import { getUid } from '../../utils'
+	import { getUid, wrapInArray } from '../../utils'
 
-	const props = withDefaults(defineProps<IInputProps>(), {
+	const _props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
 		density: DENSITY.DEFAULT
 	})
+	const props = useDefaults(_props)
 
-	defineEmits(['update:modelValue', 'click:append', 'click:prepend'])
+	const emits = defineEmits<IInputEmits>()
 
-	const {filterProps} = useProps<IInputProps>(props)
+	defineSlots<IInputSlots>()
+	const slots = useSlots()
 
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {roundedStyles, roundedClasses} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
-	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
-	const {rtlClasses} = useRtl()
+	const attrs = useAttrs()
 
 	const uid = getUid()
 	const id = computed(() => {
@@ -172,10 +162,10 @@
 		if (props.errorMessages?.length || (!isPristine.value && errorMessages.value.length)) {
 			return errorMessages.value
 		} else if (props.hint && (props.persistentHint || props.focused)) {
-			return props.hint
+			return wrapInArray(props.hint)
 		}
 
-		return props.messages ?? []
+		return wrapInArray(props.messages ?? [])
 	})
 
 	const inputProps = computed(() => {
@@ -194,7 +184,6 @@
 		}
 	})
 
-	const slots = useSlots()
 	const hasMessages = computed(() => {
 		return messages.value.length > 0
 	})
@@ -207,10 +196,15 @@
 
 	// CLASS & STYLES
 
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	const {rtlClasses} = useRtl()
+
 	const inputStyles = computed(() => {
 		return [
 			dimensionStyles.value,
-			marginStyles.value,
+			colorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -223,32 +217,20 @@
 				'origam-input--hide-spin-buttons': props.hideSpinButtons
 			},
 			densityClasses.value,
-			roundedClasses.value,
-			borderClasses.value,
-			paddingClasses.value,
-			marginClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
 			props.class
 		]
 	})
-	const inputControlStyles = computed(() => {
-		return [
-			roundedStyles.value,
-			borderStyles.value,
-			paddingStyles.value,
-			colorStyles.value,
-			props.style
-		] as StyleValue
-	})
 	const inputControlClasses = computed(() => {
 		return [
-			'origam-input__control',
-			elevationClasses.value
+			'origam-input__control'
 		]
 	})
 
 	// EXPOSE
+
+	const {filterProps} = useProps<IInputProps>(props)
 
 	defineExpose({
 		filterProps
@@ -323,18 +305,6 @@
 
 		&--density-compact {
 			--origam-input---density: -8px;
-		}
-
-		&--border {
-			#{$this}__control {
-				border: 1px solid currentColor;
-			}
-		}
-
-		&--rounded {
-			#{$this}__control {
-				border-radius: 4px;
-			}
 		}
 
 		&--vertical {
@@ -432,8 +402,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-input---density: 0px;
-	}
-</style>

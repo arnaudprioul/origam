@@ -5,7 +5,9 @@
 			:class="textFieldClasses"
 			:focused="isFocused"
 			:style="textFieldStyles"
-			v-bind="{...rootAttrs, ...inputProps}"
+			v-bind="{...rootAttrs, ...inputProps, rules: enrichedRules}"
+			@click:prepend="handleClickPrepend"
+			@click:append="handleClickAppend"
 	>
 		<template
 				v-if="slots.prepend"
@@ -70,14 +72,14 @@
 						<slot name="prefix"/>
 					</template>
 
-					<template #default="{class: fieldSlotClass, ...fieldSlotProps}">
+					<template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
 						<div
 								:class="fieldSlotClass"
 								data-no-activator=""
 						>
 							<slot
 									name="default"
-									v-bind="fieldSlotProps"
+									v-bind="{ref, ...fieldSlotProps}"
 							/>
 							<input
 									ref="inputRef"
@@ -182,10 +184,10 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots } from 'vue'
+	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import { useAdjacentInner, useFocus, useProps, useVModel } from '../../composables'
+	import { useAdjacent, useAdjacentInner, useDefaults, useFocus, useLocale, useProps, useVModel } from '../../composables'
 
 	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts'
 
@@ -193,28 +195,30 @@
 
 	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
 
-	import type { ITextFieldProps } from '../../interfaces'
+	import type { ITextFieldEmits, ITextFieldProps, ITextFieldSlots } from '../../interfaces'
 
 	import type { TOrigamField, TOrigamInput } from "../../types"
 
 	import { filterInputAttrs, forwardRefs } from '../../utils'
 
-	const props = withDefaults(defineProps<ITextFieldProps>(), {
+	const _props = withDefaults(defineProps<ITextFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
-		border: true,
 		rounded: true
 	})
+	const props = useDefaults(_props)
 
-	const emits = defineEmits(['click:control', 'mousedown:control', 'update:focused', 'update:modelValue', 'click:prepend', 'click:prependInner', 'click:append', 'click:appendInner', 'click:clear'])
+	const emits = defineEmits<ITextFieldEmits>()
 
-	const {filterProps} = useProps<ITextFieldProps>(props)
+	defineSlots<ITextFieldSlots>()
+	const slots = useSlots()
 
 	const attrs = useAttrs()
-	const slots = useSlots()
+
+	const {t} = useLocale()
 
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
@@ -222,6 +226,10 @@
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+	const {
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
 	const counterValue = computed(() => {
 		if (typeof props.counterValue === 'function') {
@@ -320,6 +328,17 @@
 		return hasCounter.value || slots.details
 	})
 
+	const enrichedRules = computed(() => {
+		const base = Array.isArray(props.rules) ? [...props.rules] : []
+
+		if (props.counter && typeof props.counter === 'number') {
+			const limit = props.counter
+			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', [limit]))
+		}
+
+		return base
+	})
+
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
@@ -379,6 +398,11 @@
 				input {
 					opacity: 1;
 				}
+			}
+
+			input {
+				border: none;
+				background: transparent;
 			}
 		}
 	}

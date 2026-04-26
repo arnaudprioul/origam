@@ -143,6 +143,8 @@ export * from './ExpensionPanel/expansion-panel-content.interface'
 export * from './Field/field.interface'
 
 export * from './FileField/file-field.interface'
+export * from './FileField/file-field-dragndrop-item.interface'
+export * from './FileField/file-field-list-item.interface'
 
 export * from './Form/form.interface'
 

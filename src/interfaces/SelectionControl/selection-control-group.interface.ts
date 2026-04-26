@@ -1,4 +1,4 @@
-import type { IColorProps, ICommonsComponentProps, IDensityProps, IRippleProps } from '../../interfaces'
+import type { IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, IRippleProps } from '../../interfaces'
 import type { TIcon } from '../../types'
 
 import { Ref } from 'vue'
@@ -15,7 +15,17 @@ export interface ISelectionControlGroupProps extends ICommonsComponentProps, ICo
     modelValue?: any
     type?: string
     valueComparator?: (a: any, b: any) => boolean
-    items?: Array<any>
+    items?: Array<any> | Record<string, any>
+}
+
+export interface ISelectionControlGroupEmits extends ICommonsComponentEmits {
+
+}
+
+export interface ISelectionControlGroupSlots {
+    default?: (items: Array<any> | Record<string, any>) => any
+    item?: (item: any, index: number | string) => any
+    [key: string]: any
 }
 
 export interface ISelectionGroupContext {
