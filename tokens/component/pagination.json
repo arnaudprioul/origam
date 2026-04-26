@@ -1,0 +1,35 @@
+{
+  "pagination": {
+    "_comment": "OrigamPagination component tokens — Lot 5D. Navigation component rendering a list of page buttons with prev/next/first/last controls. BEM children: list, item (--is-active modifier), first, prev, next, last. Variants: --rounded (btn border-radius 2xl), --circle (btn border-radius full).",
+
+    "gap":                      { "$type": "dimension",  "$value": "{space.1}",                    "$description": "Gap between each pagination list item (margin applied per item)" },
+    "padding-block":            { "$type": "dimension",  "$value": "{space.0}",                    "$description": "Block-axis padding of the pagination root container" },
+    "padding-inline":           { "$type": "dimension",  "$value": "{space.0}",                    "$description": "Inline-axis padding of the pagination root container" },
+
+    "item": {
+      "_comment": "BEM child: .origam-pagination__item — individual page number button.",
+      "background-color":       { "$type": "color",      "$value": "transparent",                  "$description": "Default background of a page item (inherits from btn secondary)" },
+      "color":                  { "$type": "color",      "$value": "{color.text.primary}",         "$description": "Text color of a page item" },
+      "background-color-hover": { "$type": "color",      "$value": "{color.action.secondary.bgHover}", "$description": "Background on hover (follows btn secondary hover)" },
+      "active-background-color":{ "$type": "color",      "$value": "{color.action.primary.bg}",   "$description": "Background of the active (current) page button" },
+      "active-color":           { "$type": "color",      "$value": "{color.action.primary.fg}",   "$description": "Text color of the active page button" },
+      "active-overlay-opacity": { "$type": "number",     "$value": 0.12,                           "$description": "Overlay opacity on the active item's __overlay pseudo-element (provides a subtle tint reinforcement)" }
+    },
+
+    "prev-next-icon": {
+      "_comment": "Tokens for the prev/next/first/last navigation icon buttons.",
+      "color":                  { "$type": "color",      "$value": "{color.text.primary}",         "$description": "Icon color for prev/next/first/last controls" },
+      "opacity-disabled":       { "$type": "number",     "$value": "{opacity.26}",                 "$description": "Opacity when the control is disabled (no more pages available)" }
+    },
+
+    "ellipsis": {
+      "_comment": "Tokens for the ellipsis (...) placeholder item.",
+      "color":                  { "$type": "color",      "$value": "{color.text.secondary}",       "$description": "Text color of the ellipsis placeholder" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.bold}",           "$description": "Font weight — heavier to visually distinguish from page numbers" }
+    },
+
+    "border-radius":            { "$type": "dimension",  "$value": "{radius.sm}",                  "$description": "Default border-radius of each page button (4px square)" },
+    "border-radius-rounded":    { "$type": "dimension",  "$value": "{radius.2xl}",                 "$description": "Border-radius used with --rounded variant (pill-like)" },
+    "border-radius-circle":     { "$type": "dimension",  "$value": "{radius.full}",                "$description": "Border-radius used with --circle variant (perfect circle)" }
+  }
+}

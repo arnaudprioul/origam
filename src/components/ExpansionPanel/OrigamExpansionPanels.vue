@@ -194,7 +194,7 @@
 		lang="scss"
 		scoped
 >
-	// TODO - Rework with css variables
+	// Defaults provided by tokens/component/expansion-panel.json.
 	.origam-expansion-panels {
 		$this: &;
 
@@ -278,7 +278,7 @@
 			}
 
 			:deep(.origam-expansion-panel-header__overlay) {
-				transition: 0.3s border-radius cubic-bezier(0.4, 0, 0.2, 1);
+				transition: var(--origam-expansion-panel__accordion---header-overlay-transition, 0.3s) border-radius var(--origam-expansion-panel---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 
 			> .origam-expansion-panel {
@@ -292,20 +292,20 @@
 
 		&#{$this}--popout {
 			> .origam-expansion-panel {
-				max-width: calc(100% - 32px);
+				max-width: var(--origam-expansion-panel__popout---max-width, calc(100% - 32px));
 
 				&--active {
-					max-width: calc(100% + 16px);
+					max-width: var(--origam-expansion-panel__popout---max-width-active, calc(100% + 16px));
 				}
 			}
 		}
 
 		&#{$this}--inset {
 			> .origam-expansion-panel {
-				max-width: 100%;
+				max-width: var(--origam-expansion-panel__inset---max-width, 100%);
 
 				&--active {
-					max-width: calc(100% - 32px);
+					max-width: var(--origam-expansion-panel__inset---max-width-active, calc(100% - 32px));
 				}
 			}
 		}
@@ -324,8 +324,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

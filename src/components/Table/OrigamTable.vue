@@ -106,3 +106,43 @@
 		filterProps
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-table {
+		background-color: var(--origam-table---background-color, var(--origam-color-surface-default));
+		color: var(--origam-table---color, var(--origam-color-text-primary));
+		font-size: var(--origam-table---font-size, 0.875rem);
+
+		&__wrapper {
+			overflow-x: auto;
+
+			table {
+				border-collapse: var(--origam-table---border-collapse, collapse);
+				width: 100%;
+			}
+
+			:deep(th) {
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
+				color: var(--origam-table__header-cell---color, var(--origam-color-text-primary));
+				font-weight: var(--origam-table__header-cell---font-weight, 600);
+				padding-block: var(--origam-table__header-cell---padding-block, 12px);
+				padding-inline: var(--origam-table__header-cell---padding-inline, 16px);
+				border-bottom: var(--origam-table__header-cell---border-bottom-width, 2px) solid var(--origam-table__header-cell---border-bottom-color, var(--origam-color-border-default));
+				text-align: start;
+			}
+
+			:deep(td) {
+				padding-block: var(--origam-table__cell---padding-block, 12px);
+				padding-inline: var(--origam-table__cell---padding-inline, 16px);
+				border-bottom: var(--origam-table__cell---border-width, 1px) solid var(--origam-table__cell---border-color, var(--origam-color-border-subtle));
+			}
+
+			:deep(tr:hover td) {
+				background-color: var(--origam-table__row---hover-background-color, var(--origam-color-surface-sunken));
+			}
+		}
+	}
+</style>

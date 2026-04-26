@@ -319,67 +319,21 @@
 		scoped
 >
 	.origam-data-table {
-		width: 100%;
+		width: var(--origam-data-table---width, 100%);
+		background-color: var(--origam-data-table---background-color, var(--origam-color-surface-default));
+		color: var(--origam-data-table---color, var(--origam-color-text-primary));
 
 		&__table {
 			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0
+			border-collapse: var(--origam-data-table---border-collapse, separate);
+			border-spacing: var(--origam-data-table---border-spacing, 0)
 		}
 
 		&--loading {
 			&:deep(.origam-data-table-cell) {
-				opacity: var(--origam-data-table--loading---opacity);
+				opacity: var(--origam-data-table--loading---opacity, var(--origam-data-table__loading---opacity, 0.5));
 			}
 		}
 	}
-
-	.v-data-table-group-header-row__column {
-		padding-left: calc(var(--v-data-table-group-header-row-depth) * 16px) !important
-	}
-
-	.v-data-table-footer {
-		align-items: center;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-end;
-		padding: 8px 4px
-	}
-
-	.v-data-table-footer__items-per-page {
-		align-items: center;
-		display: flex;
-		justify-content: center
-	}
-
-	.v-data-table-footer__items-per-page > span {
-		padding-inline-end: 8px
-	}
-
-	.v-data-table-footer__items-per-page > .v-select {
-		width: 90px
-	}
-
-	.v-data-table-footer__info {
-		display: flex;
-		justify-content: flex-end;
-		min-width: 116px;
-		padding: 0 16px
-	}
-
-	.v-data-table-footer__paginationz {
-		align-items: center;
-		display: flex;
-		margin-inline-start: 16px
-	}
-
-	.v-data-table-footer__page {
-		padding: 0 8px
-	}
 </style>
 
-<style>
-	:root {
-		--origam-data-table--loading---opacity: 0.5;
-	}
-</style>

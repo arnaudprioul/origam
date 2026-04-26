@@ -108,8 +108,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

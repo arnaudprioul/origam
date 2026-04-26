@@ -170,13 +170,13 @@
 >
 	.origam-data-table-rows {
 		&--no-data {
-			text-align: center;
+			text-align: var(--origam-data-table-empty---text-align, center);
+			color: var(--origam-data-table-rows--no-data---color, var(--origam-color-text-secondary));
+		}
+
+		&--loading {
+			color: var(--origam-data-table-rows--loading---color, var(--origam-color-text-secondary));
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

@@ -77,20 +77,22 @@
 </script>
 
 <style
-		lang="css"
+		lang="scss"
 		scoped
 >
+	// Bug fix (port Optimus): replaced Vuetify vars `--v-theme-on-surface` / `--v-medium-emphasis-opacity`
+	// with Origam semantic tokens. Defaults now provided by tokens/component/list.json subheader section.
 	.origam-list-subheader {
 		align-items: center;
 		background: inherit;
-		color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+		color: var(--origam-list-subheader---color, var(--origam-color-text-secondary));
 		display: flex;
-		font-size: 0.875rem;
-		font-weight: 400;
-		line-height: 1.375rem;
-		padding-inline-end: 16px;
-		min-height: 40px;
-		transition: 0.2s min-height cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: var(--origam-list-subheader---font-size, 0.875rem);
+		font-weight: var(--origam-list-subheader---font-weight, 400);
+		line-height: var(--origam-list-subheader---line-height, 1.375rem);
+		padding-inline-end: var(--origam-list-subheader---padding-inline-end, 16px);
+		min-height: var(--origam-list-subheader---min-height, 40px);
+		transition: var(--origam-list-subheader---transition-duration, 0.2s) min-height var(--origam-list-subheader---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
 		&__text {
 			overflow: hidden;
@@ -99,7 +101,7 @@
 		}
 
 		&--inset {
-			--origam-list---indent-padding: 32px;
+			--origam-list---indent-padding: var(--origam-list-subheader---inset-indent-padding, 32px);
 		}
 
 		&--sticky {
@@ -110,8 +112,4 @@
 			z-index: 1;
 		}
 	}
-</style>
-
-<style>
-
 </style>

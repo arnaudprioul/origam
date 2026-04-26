@@ -334,7 +334,7 @@
 		&__item {
 			&--is-active {
 				:deep(.origam-btn__overlay) {
-					opacity: var(--origam-pagination__item--is-active---border-opacity)
+					opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, var(--origam-pagination__item---active-overlay-opacity, 0.12))
 				}
 			}
 		}
@@ -344,25 +344,23 @@
 		&__prev,
 		&__next,
 		&__last {
-			margin: .3rem;
+			margin: var(--origam-pagination---gap, 4px);
 		}
 
 		:deep(.origam-btn) {
-			border-radius: 4px;
+			border-radius: var(--origam-pagination---border-radius, 4px);
 		}
 
 		:deep(.origam-btn--rounded) {
-			border-radius: 50%;
+			border-radius: var(--origam-pagination---border-radius-rounded, 24px);
+		}
+
+		:deep(.origam-btn--icon) {
+			border-radius: var(--origam-pagination---border-radius-circle, 9999px);
 		}
 
 		:deep(.origam-btn__overlay) {
 			transition: none;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-pagination__item--is-active---border-opacity: 0.12;
 	}
 </style>

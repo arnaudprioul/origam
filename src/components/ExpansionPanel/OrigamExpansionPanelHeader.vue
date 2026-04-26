@@ -205,85 +205,87 @@
 		lang="scss"
 		scoped
 >
+	// Defaults provided by tokens/component/expansion-panel.json header section.
 	.origam-expansion-panel-header {
 		$this: &;
 
-		outline: none;
-		border-radius: inherit;
-		font-size: 0.9375rem;
-		line-height: 1;
-		min-height: 48px;
-		width: 100%;
-		border: none;
+		outline: var(--origam-expansion-panel__header---outline, none);
+		border-radius: var(--origam-expansion-panel__header---border-radius, inherit);
+		font-size: var(--origam-expansion-panel__header---font-size, 0.9375rem);
+		line-height: var(--origam-expansion-panel__header---line-height, 1);
+		min-height: var(--origam-expansion-panel__header---min-height, 48px);
+		width: var(--origam-expansion-panel__header---width, 100%);
+		border: var(--origam-expansion-panel__header---border, none);
 
 		&__wrapper {
-			align-items: center;
+			align-items: var(--origam-expansion-panel__header__wrapper---align-items, center);
 			text-align: start;
-			display: flex;
+			display: var(--origam-expansion-panel__header__wrapper---display, flex);
 			width: 100%;
 			height: 100%;
-			padding: 16px 24px;
+			padding-block: var(--origam-expansion-panel__header__wrapper---padding-block, 16px);
+			padding-inline: var(--origam-expansion-panel__header__wrapper---padding-inline, 24px);
 			position: relative;
-			transition: 0.3s min-height cubic-bezier(0.4, 0, 0.2, 1);
-			justify-content: space-between;
+			transition: var(--origam-expansion-panel__header__wrapper---transition-duration, 0.3s) min-height var(--origam-expansion-panel__header__wrapper---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			justify-content: var(--origam-expansion-panel__header__wrapper---justify-content, space-between);
 		}
 
 		&__overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
+			position: var(--origam-expansion-panel__header__overlay---position, absolute);
+			top: var(--origam-expansion-panel__header__overlay---top, 0);
+			left: var(--origam-expansion-panel__header__overlay---left, 0);
 			width: 100%;
 			height: 100%;
 			background-color: currentColor;
-			border-radius: inherit;
-			opacity: 0;
+			border-radius: var(--origam-expansion-panel__header__overlay---border-radius, inherit);
+			opacity: var(--origam-expansion-panel__header__overlay---opacity, 0);
 		}
 
 		&__append,
 		&__prepend {
 			display: inline-flex;
-			margin-bottom: -4px;
-			margin-top: -4px;
+			margin-bottom: var(--origam-expansion-panel__header__append---margin-block, -4px);
+			margin-top: var(--origam-expansion-panel__header__append---margin-block, -4px);
 			user-select: none;
 		}
 
 		&__append {
-			margin-inline-start: auto;
+			margin-inline-start: var(--origam-expansion-panel__header__append---margin-inline-start, auto);
 		}
 
 		&__prepend {
-			margin-inline-end: 8px;
+			margin-inline-end: var(--origam-expansion-panel__header__prepend---margin-inline-end, 8px);
 		}
 
 		&:hover {
-			&__overlay {
+			.origam-expansion-panel-header__overlay {
 				opacity: calc(0.04 * 1);
 			}
 		}
 
 		&:focus-visible,
 		&:focus {
-			&__overlay {
-				opacity: calc(0.12 * 1);
+			.origam-expansion-panel-header__overlay {
+				opacity: var(--origam-expansion-panel__header---focus-overlay-opacity, calc(0.12 * 1));
 			}
 		}
 
 		&--focusable {
 			&#{$this}--active {
 
-				&__overlay {
-					opacity: calc(0.12 * 1);
+				.origam-expansion-panel-header__overlay {
+					opacity: var(--origam-expansion-panel__header---focus-overlay-opacity, calc(0.12 * 1));
 				}
 
 				&:hover {
-					&__overlay {
+					.origam-expansion-panel-header__overlay {
 						opacity: calc((0.12 + 0.04) * 1);
 					}
 				}
 
 				&:focus-visible,
 				&:focus {
-					&__overlay {
+					.origam-expansion-panel-header__overlay {
 						opacity: calc((0.12 + 0.12) * 1);
 					}
 				}
@@ -293,8 +295,3 @@
 
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

@@ -152,23 +152,24 @@
 		lang="scss"
 		scoped
 >
+	// Defaults are now provided by the generated :root block from tokens/component/list.json.
 	.origam-list-group {
 		$this: &;
 
 		&--fluid {
-			--origam-list-group---list-indent-size: var(--origam-list-group--fluid---list-indent-size);
+			--origam-list-group---list-indent-size: var(--origam-list-group--fluid---list-indent-size, 0px);
 
 			&#{$this}--prepend {
-				--origam-list-group---parent-padding: var(--origam-list---indent-padding);
+				--origam-list-group---parent-padding: var(--origam-list---indent-padding, 0px);
 			}
 		}
 
 		&--prepend {
-			--origam-list-group---parent-padding: calc(var(--origam-list---indent-padding) + var(--origam-list-group---prepend-width));
+			--origam-list-group---parent-padding: calc(var(--origam-list---indent-padding, 0px) + var(--origam-list-group---prepend-width, 16px));
 		}
 
 		&__items {
-			--origam-list---indent-padding: calc(var(--origam-list-group---parent-padding) + var(--origam-list-group---list-indent-size));
+			--origam-list---indent-padding: calc(var(--origam-list-group---parent-padding, 0px) + var(--origam-list-group---list-indent-size, 16px));
 		}
 
 		&__header {
@@ -178,13 +179,13 @@
 				&--active {
 					&:not(:focus-visible) {
 						#{$item}__overlay {
-							opacity: var(--origam-list-group__header--active---opacity);
+							opacity: var(--origam-list-group__header--active---opacity, 0);
 						}
 					}
 
 					&:hover {
 						#{$item}__overlay {
-							opacity: var(--origam-list-group__header--active--hover---opacity);
+							opacity: var(--origam-list-group__header--active--hover---opacity, calc(0.04 * 1));
 						}
 					}
 				}
@@ -193,15 +194,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-list-group---list-indent-size: 16px;
-		--origam-list-group---parent-padding: var(--origam-list---indent-padding);
-		--origam-list-group---prepend-width: 16px;
-
-		--origam-list-group--fluid---list-indent-size: 0px;
-
-		--origam-list-group__header--active---opacity: 0;
-		--origam-list-group__header--active--hover---opacity: calc(0.04 * 1);
-	}
-</style>

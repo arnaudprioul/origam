@@ -85,6 +85,36 @@
 		scoped
 >
 	.origam-breadcrumbs-divider {
+		// Default values for CSS custom properties — moved from :root {} global block
+		// (no hex were present; values are keyword values only)
+		--origam-breadcrumb-divider---border-top-width: 0px;
+		--origam-breadcrumb-divider---border-left-width: 0px;
+		--origam-breadcrumb-divider---border-bottom-width: 0px;
+		--origam-breadcrumb-divider---border-right-width: 0px;
+		--origam-breadcrumb-divider---border-width: var(--origam-breadcrumb-divider---border-top-width) var(--origam-breadcrumb-divider---border-left-width) var(--origam-breadcrumb-divider---border-bottom-width) var(--origam-breadcrumb-divider---border-right-width);
+		--origam-breadcrumb-divider---border-color: currentColor;
+		--origam-breadcrumb-divider---border-style: solid;
+		--origam-breadcrumb-divider---border-radius: 0px;
+		--origam-breadcrumb-divider---density: 0px;
+		--origam-breadcrumb-divider---box-shadow: var(--origam-shadow-none, none);
+		// color: inherit → token breadcrumb.divider.color → {color.text.secondary} with inherit fallback preserved
+		--origam-breadcrumb-divider---color: var(--origam-breadcrumb-divider---color-token, inherit);
+		--origam-breadcrumb-divider---opacity: 1;
+		--origam-breadcrumb-divider---background: transparent;
+		--origam-breadcrumb-divider---margin-inline-start: 0px;
+		--origam-breadcrumb-divider---margin-inline-end: 0px;
+		--origam-breadcrumb-divider---margin-block-start: 0px;
+		--origam-breadcrumb-divider---margin-block-end: 0px;
+		--origam-breadcrumb-divider---padding-block-start: 0px;
+		--origam-breadcrumb-divider---padding-block-end: 0px;
+		// Token breadcrumb.divider.padding-inline → {space.2} = 8px
+		--origam-breadcrumb-divider---padding-inline-start: var(--origam-breadcrumb-divider---padding-inline, 8px);
+		--origam-breadcrumb-divider---padding-inline-end: var(--origam-breadcrumb-divider---padding-inline, 8px);
+		--origam-breadcrumb-divider---transition-duration: 0.2s, 0.1s;
+		--origam-breadcrumb-divider---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		--origam-breadcrumb-divider---transition-property: transform, color;
+		--origam-breadcrumb-divider---transition: var(--origam-breadcrumb-divider---transition-property) var(--origam-breadcrumb-divider---transition-duration) var(--origam-breadcrumb-divider---transition-timing-function);
+
 		display: inline-block;
 		vertical-align: middle;
 
@@ -121,35 +151,5 @@
 		&--density-compact {
 			--origam-breadcrumb-divider---density: 8px;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-breadcrumb-divider---border-top-width: 0;
-		--origam-breadcrumb-divider---border-left-width: 0;
-		--origam-breadcrumb-divider---border-bottom-width: 0;
-		--origam-breadcrumb-divider---border-right-width: 0;
-		--origam-breadcrumb-divider---border-width: var(--origam-breadcrumb-divider---border-top-width) var(--origam-breadcrumb-divider---border-left-width) var(--origam-breadcrumb-divider---border-bottom-width) var(--origam-breadcrumb-divider---border-right-width);
-		--origam-breadcrumb-divider---border-color: currentColor;
-		--origam-breadcrumb-divider---border-style: solid;
-		--origam-breadcrumb-divider---border-radius: 0;
-		--origam-breadcrumb-divider---density: 0;
-		--origam-breadcrumb-divider---box-shadow: none;
-		--origam-breadcrumb-divider---color: inherit;
-		--origam-breadcrumb-divider---opacity: 1;
-		--origam-breadcrumb-divider---background: transparent;
-		--origam-breadcrumb-divider---margin-inline-start: 0;
-		--origam-breadcrumb-divider---margin-inline-end: 0;
-		--origam-breadcrumb-divider---margin-block-start: 0;
-		--origam-breadcrumb-divider---margin-block-end: 0;
-		--origam-breadcrumb-divider---padding-block-start: 0;
-		--origam-breadcrumb-divider---padding-block-end: 0;
-		--origam-breadcrumb-divider---padding-inline-start: 8px;
-		--origam-breadcrumb-divider---padding-inline-end: 8px;
-		--origam-breadcrumb-divider---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb-divider---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb-divider---transition-property: transform, color;
-		--origam-breadcrumb-divider---transition: var(--origam-breadcrumb-divider---transition-property) var(--origam-breadcrumb-divider---transition-duration) var(--origam-breadcrumb-divider---transition-timing-function);
 	}
 </style>

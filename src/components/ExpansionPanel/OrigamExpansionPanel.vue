@@ -220,36 +220,39 @@
 		lang="scss"
 		scoped
 >
-	// TODO - Rework with css variables
+	// Defaults provided by tokens/component/expansion-panel.json.
+	// Bug fix (port Optimus): hex values and Vuetify shadow vars replaced with Origam tokens.
 	.origam-expansion-panel {
-		flex: 1 0 100%;
-		max-width: 100%;
-		position: relative;
-		transition: 0.3s all cubic-bezier(0.4, 0, 0.2, 1);
-		transition-property: margin-top, border-radius, border, max-width;
-		border-radius: 4px;
+		flex: var(--origam-expansion-panel---flex, 1 0 100%);
+		max-width: var(--origam-expansion-panel---max-width, 100%);
+		position: var(--origam-expansion-panel---position, relative);
+		transition-duration: var(--origam-expansion-panel---transition-duration, 0.3s);
+		transition-property: var(--origam-expansion-panel---transition-property, margin-top, border-radius, border, max-width);
+		transition-timing-function: var(--origam-expansion-panel---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
+		border-radius: var(--origam-expansion-panel---border-radius, 4px);
 
 		&:not(:first-child) {
 			&:after {
 				border-top-style: solid;
 				border-top-width: thin;
-				border-top-color: rgba(33, 33, 33, 0.12);
+				border-top-color: var(--origam-expansion-panel---divider-color, var(--origam-color-border-subtle));
+				opacity: var(--origam-expansion-panel---divider-opacity, 0.12);
 				content: "";
 				left: 0;
 				position: absolute;
 				right: 0;
 				top: 0;
-				transition: 0.3s opacity cubic-bezier(0.4, 0, 0.2, 1);
+				transition: var(--origam-expansion-panel---transition-duration, 0.3s) opacity var(--origam-expansion-panel---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 		}
 
 		&--disabled {
 			:deep(.origam-expansion-panel-header) {
-				color: rgba(0, 0, 0, 0.26);
-				pointer-events: none;
+				color: var(--origam-expansion-panel---disabled-color, var(--origam-color-text-disabled));
+				pointer-events: var(--origam-expansion-panel---disabled-pointer-events, none);
 
 				.origam-expansion-panel-header__overlay {
-					opacity: 0.4615384615;
+					opacity: var(--origam-expansion-panel---disabled-overlay-opacity, 0.4615384615);
 				}
 			}
 		}
@@ -257,7 +260,7 @@
 		&--active {
 			&:not(:first-child),
 			+ .origam-expansion-panel {
-				margin-top: 16px;
+				margin-top: var(--origam-expansion-panel---active-margin-top, 16px);
 
 				&:after {
 					opacity: 0;
@@ -268,27 +271,22 @@
 				border-bottom-left-radius: 0;
 				border-bottom-right-radius: 0;
 
-				&:not(.v-expansion-panel-title--static) {
-					min-height: 64px;
+				&:not(.origam-expansion-panel-header--static) {
+					min-height: var(--origam-expansion-panel__header---min-height-active, 64px);
 				}
 			}
 		}
 
 		&__shadow {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			box-shadow: 0px 3px 1px -2px var(--v-shadow-key-umbra-opacity, rgba(0, 0, 0, 0.2)), 0px 2px 2px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.14)), 0px 1px 5px 0px var(--v-shadow-key-ambient-opacity, rgba(0, 0, 0, 0.12));
-			border-radius: inherit;
-			z-index: -1;
+			position: var(--origam-expansion-panel__shadow---position, absolute);
+			top: var(--origam-expansion-panel__shadow---top, 0);
+			left: var(--origam-expansion-panel__shadow---left, 0);
+			width: var(--origam-expansion-panel__shadow---width, 100%);
+			height: var(--origam-expansion-panel__shadow---height, 100%);
+			box-shadow: var(--origam-expansion-panel__shadow---box-shadow, var(--origam-shadow-sm));
+			border-radius: var(--origam-expansion-panel__shadow---border-radius, inherit);
+			z-index: var(--origam-expansion-panel__shadow---z-index, -1);
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

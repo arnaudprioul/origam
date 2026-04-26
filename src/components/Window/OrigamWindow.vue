@@ -221,27 +221,30 @@
 	.origam-window {
 		$this: &;
 
-		overflow: hidden;
+		overflow: var(--origam-window---overflow, hidden);
 
 		&__container {
-			display: flex;
-			flex-direction: column;
+			display: var(--origam-window__container---display, flex);
+			flex-direction: var(--origam-window__container---flex-direction, column);
 			height: inherit;
-			position: relative;
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			position: var(--origam-window__container---position, relative);
+			transition:
+				var(--origam-window---transition-duration, 0.3s)
+				var(--origam-window---transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&__controls {
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
+			position: var(--origam-window__controls---position, absolute);
+			left: var(--origam-window__controls---position-left, 0);
+			top: var(--origam-window__controls---position-top, 0);
+			width: var(--origam-window__controls---width, 100%);
+			height: var(--origam-window__controls---height, 100%);
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding: 0 16px;
+			padding: 0 var(--origam-window__controls---padding-inline, 16px);
 			pointer-events: none;
+			color: var(--origam-window__controls---color, inherit);
 
 			> * {
 				pointer-events: auto;
@@ -252,25 +255,19 @@
 			overflow: hidden;
 
 			#{$this}__prev {
-				transform: translateX(-200%);
+				transform: var(--origam-window--show-arrows-on-hover---prev-transform, translateX(-200%));
 			}
 
 			#{$this}__next {
-				transform: translateX(200%);
+				transform: var(--origam-window--show-arrows-on-hover---next-transform, translateX(200%));
 			}
 
 			&:hover {
 				#{$this}__prev,
 				#{$this}__next {
-					transform: translateX(0);
+					transform: var(--origam-window--show-arrows-on-hover---hover-transform, translateX(0));
 				}
 			}
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

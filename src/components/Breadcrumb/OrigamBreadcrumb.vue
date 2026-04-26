@@ -155,6 +155,33 @@
 		scoped
 >
 	.origam-breadcrumb {
+		// Runtime-composed transition (property + duration + timing from tokens via :root from style-dictionary output)
+		--origam-breadcrumb---border-top-width: 0px;
+		--origam-breadcrumb---border-left-width: 0px;
+		--origam-breadcrumb---border-bottom-width: 0px;
+		--origam-breadcrumb---border-right-width: 0px;
+		--origam-breadcrumb---border-width: var(--origam-breadcrumb---border-top-width) var(--origam-breadcrumb---border-left-width) var(--origam-breadcrumb---border-bottom-width) var(--origam-breadcrumb---border-right-width);
+		--origam-breadcrumb---border-color: currentColor;
+		--origam-breadcrumb---border-style: solid;
+		--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-token, 0px);
+		--origam-breadcrumb---density: 0px;
+		--origam-breadcrumb---box-shadow: var(--origam-shadow-none, none);
+		// Hex retirés : rgba(0,0,0,0.87) → var(--origam-color-text-primary) ; rgb(230,230,230) → transparent (token breadcrumb.background)
+		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color-text-primary));
+		--origam-breadcrumb---background: var(--origam-breadcrumb---background-token, transparent);
+		--origam-breadcrumb---margin-inline-start: 0px;
+		--origam-breadcrumb---margin-inline-end: 0px;
+		--origam-breadcrumb---margin-block-start: 0px;
+		--origam-breadcrumb---margin-block-end: 0px;
+		--origam-breadcrumb---padding-block-start: 8px;
+		--origam-breadcrumb---padding-block-end: 8px;
+		--origam-breadcrumb---padding-inline-start: 8px;
+		--origam-breadcrumb---padding-inline-end: 8px;
+		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
+		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		--origam-breadcrumb---transition-property: transform, color;
+		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
+
 		transition: var(--origam-breadcrumb---transition);
 
 		background: var(--origam-breadcrumb---background);
@@ -191,7 +218,8 @@
 		}
 
 		&--elevated {
-			--origam-breadcrumb---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			// Hex retirés : rgba(0,0,0,0.05) + rgba(0,0,0,0.08) → var(--origam-shadow-md)
+			--origam-breadcrumb---box-shadow: var(--origam-shadow-md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
 		}
 
 		&--border {
@@ -199,7 +227,8 @@
 		}
 
 		&--rounded {
-			--origam-breadcrumb---border-radius: 4px;
+			// Token breadcrumb.border-radius-rounded → {radius.sm} = 4px
+			--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-rounded, 4px);
 		}
 
 		&--density-comfortable {
@@ -216,31 +245,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-breadcrumb---border-top-width: 0;
-		--origam-breadcrumb---border-left-width: 0;
-		--origam-breadcrumb---border-bottom-width: 0;
-		--origam-breadcrumb---border-right-width: 0;
-		--origam-breadcrumb---border-width: var(--origam-breadcrumb---border-top-width) var(--origam-breadcrumb---border-left-width) var(--origam-breadcrumb---border-bottom-width) var(--origam-breadcrumb---border-right-width);
-		--origam-breadcrumb---border-color: currentColor;
-		--origam-breadcrumb---border-style: solid;
-		--origam-breadcrumb---border-radius: 0;
-		--origam-breadcrumb---density: 0;
-		--origam-breadcrumb---box-shadow: none;
-		--origam-breadcrumb---color: rgba(0, 0, 0, 0.87);
-		--origam-breadcrumb---background: rgb(230, 230, 230);
-		--origam-breadcrumb---margin-inline-start: 0;
-		--origam-breadcrumb---margin-inline-end: 0;
-		--origam-breadcrumb---margin-block-start: 0;
-		--origam-breadcrumb---margin-block-end: 0;
-		--origam-breadcrumb---padding-block-start: 8px;
-		--origam-breadcrumb---padding-block-end: 8px;
-		--origam-breadcrumb---padding-inline-start: 8px;
-		--origam-breadcrumb---padding-inline-end: 8px;
-		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb---transition-property: transform, color;
-		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
-	}
-</style>

@@ -106,19 +106,18 @@
 		lang="scss"
 		scoped
 >
+	// Defaults provided by tokens/component/expansion-panel.json content section.
 	.origam-expansion-panel-content {
-		display: flex;
+		display: var(--origam-expansion-panel__content---display, flex);
 
 		&__wrapper {
-			padding: 8px 24px 16px;
-			flex: 1 1 auto;
-			max-width: 100%;
+			padding-block-start: var(--origam-expansion-panel__content---padding-block-start, 8px);
+			padding-block-end: var(--origam-expansion-panel__content---padding-block-end, 16px);
+			padding-inline-start: var(--origam-expansion-panel__content---padding-inline-start, 24px);
+			padding-inline-end: var(--origam-expansion-panel__content---padding-inline-end, 24px);
+			flex: var(--origam-expansion-panel__content---flex, 1 1 auto);
+			max-width: var(--origam-expansion-panel__content---max-width, 100%);
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

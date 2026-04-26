@@ -23,6 +23,196 @@ copy.
 ## [Unreleased]
 
 ### Added
+- Component tier (Lot 5B — List + ExpansionPanel, 10 fichiers Vue migrés) :
+  - `component/list` — 93 tokens répartis en :
+    - Racine (24 tokens) : `background` → `{color.surface.default}`, `color` → `{color.text.primary}`, `box-shadow` → `{shadow.none}`, border logique (12 tokens → `{border.width.0}`, `{radius.none}`), `padding-block-{start,end}` → `{space.2}`, `padding-inline-*` → `{space.0}`, `overflow`, `position`, `outline`, `pointer-events`, `user-select`, `indent-padding`, `density`, `indent-padding-nav`, `slim-prepend-width`.
+    - BEM `overlay` (12 tokens) : `background-color` → `{color.overlay.scrim}`, `opacity` → `{opacity.0}`, `position`, `transition-*`.
+    - BEM `item` (38 tokens) : layout grid complet, border logique (8 tokens), padding (4 logiques), margin (4 logiques), états désactivé/lien.
+    - BEM `item.overlay/underlay/icon/prepend/append/content` : 29 tokens.
+    - BEM `item.title` (14 tokens — typographie complète), `item.subtitle` (13 tokens).
+    - BEM `subheader` (8 tokens) : `color` → `{color.text.secondary}`, `font-size` → `{font.size.sm}`, `inset-indent-padding`, `nav-font-size`.
+    - BEM `group` (5 tokens) : `list-indent-size` → `{space.4}`, `prepend-width` → `{space.4}`, overlay opacités.
+    - BEM `divider` (2 tokens) : `color` → `{color.border.subtle}`.
+  - `component/expansion-panel` — 57 tokens répartis en :
+    - Racine (16 tokens) : `background` → `{color.surface.raised}`, `color` → `{color.text.primary}`, `border-radius` → `{radius.sm}`, `border-color` → `{color.border.subtle}`, `transition-*`, `flex`, `max-width`, `position`.
+    - États racine (6 tokens) : `divider-color` → `{color.border.subtle}`, `divider-opacity` → `{opacity.12}`, `active-margin-top` → `{space.4}`, `disabled-color` → `{color.text.disabled}`, `disabled-pointer-events`, `disabled-overlay-opacity` → `{opacity.60}`.
+    - BEM `shadow` (7 tokens) : `box-shadow` → `{shadow.sm}`, positionnement absolu, `z-index: -1`.
+    - BEM `header` (9 tokens) + `header.wrapper` (7 tokens) + `header.overlay` (6 tokens) + `header.prepend/append` (4 tokens).
+    - BEM `content` (7 tokens) : `padding-block-{start,end}`, `padding-inline-{start,end}`, `flex`, `max-width`, `display`.
+    - Variantes `accordion` (2 tokens), `popout` (2 tokens), `inset` (2 tokens).
+
+### Changed (Lot 5B)
+- `OrigamList.vue` : 5 hex/rgba retirés (`rgba(0,0,0,0.87)` border/color → `var(--origam-color-text-primary)` ; `rgb(255,255,255)` background → `var(--origam-color-surface-default)` ; `#000` overlay → `var(--origam-color-overlay-scrim)` ; triple rgba box-shadow → `var(--origam-shadow-none)`). Bloc `<style>:root{}` global supprimé (49 custom properties).
+- `OrigamListItem.vue` : 2 hex retirés (`rgba(0,0,0,0.87)` border → `var(--origam-color-text-primary)` ; `#000` overlay → `var(--origam-color-overlay-scrim)`). Bloc `<style>:root{}` global supprimé (70 custom properties).
+- `OrigamListGroup.vue` : 0 hex direct. Bloc `<style>:root{}` global supprimé (7 custom properties). Fallbacks ajoutés dans `<style scoped>`.
+- `OrigamListSubheader.vue` : **Bug fix (port Optimus)** — `color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity))` (Vuetify) → `var(--origam-list-subheader---color, var(--origam-color-text-secondary))`. Migration `lang="css"` → `lang="scss"`. Bloc `<style></style>` global vide supprimé.
+- `OrigamExpansionPanels.vue` : 0 hex. Bloc `<style>:root{}</style>` vide supprimé. Variantes `--popout/--inset/--accordion` tokenisées.
+- `OrigamExpansionPanel.vue` : **Bug fix (port Optimus)** — `box-shadow` du `__shadow` utilisait `var(--v-shadow-key-umbra-opacity, rgba(…))` (Vuetify) → `var(--origam-expansion-panel__shadow---box-shadow, var(--origam-shadow-sm))`. **Bug fix** — sélecteur `:not(.v-expansion-panel-title--static)` → `:not(.origam-expansion-panel-header--static)`. 3 hex retirés : `rgba(33,33,33,0.12)` → `var(--origam-color-border-subtle)` ; `rgba(0,0,0,0.26)` → `var(--origam-color-text-disabled)` ; triple rgba shadow → `var(--origam-shadow-sm)`. Bloc `<style>:root{}</style>` vide supprimé.
+- `OrigamExpansionPanelHeader.vue` : **Bug fix (port Optimus)** — sélecteurs SCSS `&:hover { &__overlay { … } }` invalides → corrigés en `&:hover { .origam-expansion-panel-header__overlay { … } }`. Valeurs hardcodées (0.9375rem, 48px, 16/24px, -4px, 8px) encapsulées dans `var()`. Bloc `<style>:root{}</style>` vide supprimé.
+- `OrigamExpansionPanelContent.vue` : `padding: 8px 24px 16px` → `var()` logiques (block/inline séparés pour RTL). Bloc `<style>:root{}</style>` vide supprimé.
+
+### Points d'arbitrage ouverts (Lot 5B)
+- **`expansion-panel.header.font-size` = 0.9375rem (15px)** : entre `font.size.md` (16px) et `font.size.sm` (14px). Valeur littérale conservée. Décision requise : ajouter `font.size.base-minus` ou aligner sur `font.size.md`.
+- **`expansion-panel.disabled-overlay-opacity` = 0.4615384615** : valeur Vuetify originale. Aliasée sur `{opacity.60}` dans le token JSON, fallback littéral conservé dans le CSS. Décision : accepter `opacity.60` ou créer `opacity.46`.
+- **`expansion-panel.divider-opacity` = 0.12** : `opacity.12` absent du primitif (connu depuis Lot 3.2). Valeur littérale conservée en fallback. Décision : ajouter `opacity.12` au primitif.
+- **`list.item.overlay.opacity` initial = 0.2** : `opacity.20` absent du primitif (connu depuis Lot 2D). Valeur littérale 0.2 conservée en fallback.
+- **`color.overlay.scrim` = blanc en light** : utilisé comme background-color des overlays List et ListItem. Problème identique Lot 4C — décision `color.overlay.backdrop` toujours pendante.
+
+- Component tier (Lot 5D — navigation/scroll, 5 composants tokenisés) :
+  - `component/pagination` — 12 tokens :
+    - Racine (3 tokens) : `gap` → `{space.1}` (4px), `padding-block/inline` → `{space.0}`.
+    - Sous-section `item` (6 tokens) : `background-color` (transparent), `color` → `{color.text.primary}`, `background-color-hover` → `{color.action.secondary.bgHover}`, `active-background-color` → `{color.action.primary.bg}`, `active-color` → `{color.action.primary.fg}`, `active-overlay-opacity` (0.12 littéral — correspond à `opacity.12`).
+    - Sous-section `prev-next-icon` (2 tokens) : `color` → `{color.text.primary}`, `opacity-disabled` → `{opacity.26}`.
+    - Sous-section `ellipsis` (2 tokens) : `color` → `{color.text.secondary}`, `font-weight` → `{font.weight.bold}`.
+    - Variantes (3 tokens) : `border-radius` → `{radius.sm}`, `border-radius-rounded` → `{radius.2xl}`, `border-radius-circle` → `{radius.full}`.
+    - Bloc `<style>:root{}` global supprimé (1 custom property `--origam-pagination__item--is-active---border-opacity: 0.12`).
+    - Migrations scoped : `margin: .3rem` → `var(--origam-pagination---gap, 4px)` ; `border-radius: 4px` → `var(--origam-pagination---border-radius, 4px)` ; `border-radius: 50%` → `var(--origam-pagination---border-radius-rounded, 24px)`.
+  - `component/table` — 12 tokens :
+    - Racine (4 tokens) : `background-color` → `{color.surface.default}`, `color` → `{color.text.primary}`, `font-size` → `{font.size.md}`, `border-collapse` (collapse).
+    - Sous-section `header-cell` (6 tokens : `background-color` → `{color.surface.overlay}`, `color`, `font-weight` → `{font.weight.semibold}`, `padding-block/inline` → `{space.3/4}`, `border-bottom-color` → `{color.border.default}`, `border-bottom-width` → `{border.width.2}`).
+    - Sous-section `cell` (3 tokens : `padding-block/inline` → `{space.3/4}`, `border-color` → `{color.border.subtle}`, `border-width` → `{border.width.thin}`).
+    - Sous-section `row` (1 token : `hover-background-color` → `{color.surface.sunken}`).
+    - Bloc `<style scoped>` ajouté — composant n'en avait pas.
+  - `component/virtual-scroll` — 4 tokens :
+    - `item-height` (48px), `scroll-padding` → `{space.0}`, `transition-duration` → `{motion.duration.fast}`, `transition-easing` → `{motion.easing.standard}`.
+    - Blocs `<style scoped>` ajoutés dans `OrigamVirtualScroll.vue` et `OrigamVirtualScrollItem.vue` — aucun hex présent.
+  - `component/infinite-scroll` — 7 tokens :
+    - Sous-section `loader` (5 tokens : `color` → `{color.action.primary.bg}`, `gap` → `{space.3}`, `padding-block` → `{space.3}`, `padding-inline` → `{space.0}`, `font-size` → `{font.size.md}`).
+    - Sous-section `empty` (2 tokens : `color` → `{color.text.secondary}`, `padding-block` → `{space.3}`).
+    - Bloc `<style scoped>` ajouté dans `OrigamInfiniteScroll.vue` — aucun hex présent.
+    - Note : usages Vuetify `<v-*>` déjà migrés vers OrigamBtn/OrigamProgress dans le port Origam — aucun bug fix legacy appliqué.
+  - `component/breadcrumb` — 45 tokens :
+    - Racine (14 tokens) : `gap`, `padding-block/inline`, `font-size`, `background` (transparent — remplace `rgb(230,230,230)`), `color` → `{color.text.primary}` (remplace `rgba(0,0,0,0.87)`), border (color/style/radius/radius-rounded), `box-shadow/box-shadow-elevated` → `{shadow.none/md}` (remplace 2 rgba hardcodés), transition ×3.
+    - Sous-section `item` (14 tokens) : `color/hover-color/active-color`, `opacity/opacity-disabled`, `text-decoration`, `background`, `box-shadow`, `border-color/style/radius`, transition ×3.
+    - Sous-section `divider` (13 tokens) : `color` → `{color.text.secondary}`, `font-size`, `character`, `padding-inline`, `opacity`, `background`, `box-shadow`, `border-color/style/radius`, transition ×3.
+    - Sous-section `home-icon` (1 token) : `color` → `{color.action.primary.bg}`.
+    - Blocs `<style>:root{}` globaux supprimés : 3 fichiers (OrigamBreadcrumb, OrigamBreadcrumbItem, OrigamBreadcrumbDivider).
+    - 4 hex retirés : `rgba(0,0,0,0.87)` → `var(--origam-color-text-primary)` ; `rgb(230,230,230)` → transparent ; `rgba(0,0,0,0.05)` + `rgba(0,0,0,0.08)` → `var(--origam-shadow-md)`.
+  - 5 fichiers enregistrés dans `$metadata.json` (tokenSetOrder après `component/tooltip`) et activés dans `$themes.json` (light + dark).
+
+### Changed (Lot 5D)
+- `OrigamPagination.vue` : bloc `<style>:root{}` supprimé, active overlay opacity encapsulée dans `var()`, `margin: .3rem` et `border-radius: 4px/50%` migrés vers tokens.
+- `OrigamTable.vue` : bloc `<style scoped>` ajouté (th/td/tr:hover tokenisés).
+- `OrigamVirtualScroll.vue` + `OrigamVirtualScrollItem.vue` : blocs `<style scoped>` ajoutés.
+- `OrigamInfiniteScroll.vue` : bloc `<style scoped>` ajouté avec custom properties `__side` tokenisées.
+- `OrigamBreadcrumb.vue` : bloc `<style>:root{}` supprimé, defaults migrées dans `<style scoped>` avec fallbacks sémantiques. 4 hex retirés.
+- `OrigamBreadcrumbItem.vue` : bloc `<style>:root{}` supprimé, defaults migrées dans `<style scoped>`. 0 hex (valeurs `inherit`/`transparent`/numériques).
+- `OrigamBreadcrumbDivider.vue` : bloc `<style>:root{}` supprimé, defaults migrées dans `<style scoped>`. 0 hex.
+
+### Points d'arbitrage ouverts (Lot 5D)
+- **Pagination `border-radius-rounded`** : `50%` (dynamique) remplacé par `{radius.2xl}` = 24px (fixe). Pour des boutons de hauteur variable, `50%` offre un vrai cercle — décision requise du lead.
+- **Breadcrumb background** : défaut `rgb(230,230,230)` migrée vers `transparent`. Si le fond gris est intentionnel, créer `color.surface.nav` ou utiliser `{color.surface.overlay}`.
+- **Breadcrumb `--elevated` shadow** : `rgba(...)` conservés en fallback CSS uniquement ; la variable `--origam-shadow-md` émise par `tokens:build` prend le relais. Confirmer alignement visuel.
+
+- Component tier (Lot 5A — DataTable family, 10 fichiers Vue, 1 token file) :
+  - `component/data-table` — 68 tokens répartis en :
+    - Racine `data-table` (10 tokens) : `background-color` → `{color.surface.default}`, `color` → `{color.text.primary}`, `border-color` → `{color.border.subtle}`, `border-radius` → `{radius.none}`, `font-size` → `{font.size.md}`, `font-weight` → `{font.weight.regular}`, `line-height` → `{font.lineHeight.normal}`, `width`, `border-collapse`, `border-spacing`.
+    - Sous-section `loading` (1 token) : `opacity` → `{opacity.50}` — appliquée aux cells en état `--loading`.
+    - Sous-section `header` (9 tokens) : `background-color` → `{color.surface.raised}`, `color` → `{color.text.inverse}`, `font-weight` → `{font.weight.medium}`, `font-size` → `{font.size.sm}`, `padding-block` → `{space.3}`, `padding-inline` → `{space.4}`, `border-bottom-color` → `{color.border.default}`, `border-bottom-width` → `{border.width.thin}`, `border-bottom-style`.
+    - Sous-section BEM `header.sort-icon` (5 tokens) : `color` → `{color.text.inverse}`, `color-active`, `opacity` → `{opacity.0}`, `opacity-hover` → `{opacity.50}`, `opacity-active` → `{opacity.100}`.
+    - Sous-section BEM `header.sort-badge` (9 tokens) : `background-color` → `{color.border.default}`, `color` → `{color.text.inverse}`, `font-size`, `padding` → `{space.1}`, `border-radius` → `{radius.full}`, `min-width/height`, `width/height`.
+    - Sous-section `row` (10 tokens) : `background-color` → `{color.surface.default}`, `color` → `{color.text.primary}`, `hover-background-color` → `{color.surface.overlay}`, `selected-background-color` → `{color.surface.overlay}`, `striped-background-color` → `{color.surface.sunken}`, `border-bottom-color` → `{color.border.subtle}`, `border-bottom-width` → `{border.width.thin}`, `border-bottom-style`, `transition-duration` → `{motion.duration.fast}`, `transition-easing` → `{motion.easing.standard}`.
+    - Sous-section `row.column-title` (1 token) : `font-weight` → `{font.weight.medium}`.
+    - Sous-section `row.mobile` (1 token) : `column-min-height` → 52px littéral (taille touch target standard).
+    - Sous-section `cell` (3 tokens) : `padding-block` → `{space.3}`, `padding-inline` → `{space.4}`, `font-size` → `{font.size.md}`.
+    - Sous-section `cell.fixed` (2 tokens) : `background-color` → `{color.surface.raised}`, `z-index` → 1.
+    - Sous-section `cell.last-fixed` (3 tokens) : `border-right-color` → `{color.border.subtle}`, `border-right-width` → `{border.width.thin}`, `border-right-style`.
+    - Sous-section `footer` (11 tokens) : `background-color` → `{color.surface.default}`, `color` → `{color.text.primary}`, `padding-block` → `{space.2}`, `padding-inline` → `{space.1}`, `border-top-color` → `{color.border.subtle}`, `border-top-width` → `{border.width.thin}`, `border-top-style`, `align-items`, `display`, `flex-wrap`, `justify-content`.
+    - Sous-section `footer.items-per-page` (3 tokens) : `gap` → `{space.2}`, `padding-inline-end` → `{space.2}`, `select-width`.
+    - Sous-section `footer.info` (3 tokens) : `min-width`, `padding-inline` → `{space.4}`, `justify-content`.
+    - Sous-section `footer.pagination` (1 token) : `margin-inline-start` → `{space.4}`.
+    - Sous-section `group-header-row` (3 tokens) : `background-color` → `{color.surface.overlay}`, `color` → `{color.text.primary}`, `font-weight` → `{font.weight.medium}`.
+    - Sous-section `group-header-row.column` (1 token) : `padding-inline-start-factor` → `{space.4}` — multiplié par la profondeur du groupe en runtime via `calc()`.
+    - Sous-section `empty` (2 tokens) : `color` → `{color.text.secondary}`, `text-align`.
+    - Sous-section `loading-row` (1 token) : `color` → `{color.text.secondary}`.
+    - Sous-section `sortable` (4 tokens) : `cursor`, `icon-color` → `{color.text.inverse}`, `icon-color-hover`, `icon-color-active`.
+  - 7 fichiers Vue modifiés : `OrigamDataTable.vue`, `OrigamDataTableHeaderCell.vue`, `OrigamDataTableColumnCell.vue`, `OrigamDataTableRow.vue`, `OrigamDataTableRows.vue`, `OrigamDataTableGroupHeaderRow.vue`, `OrigamDataTableFooter.vue`.
+  - 3 fichiers Vue sans modification (hormis suppression blocs vides) : `OrigamDataTableHeaders.vue`, `OrigamDataTableHeadersCell.vue`, `OrigamDataTableHeadersCellMobile.vue`.
+  - Hex retirés (6 suppressions) :
+    - `OrigamDataTableHeaderCell.vue` : `rgba(33,33,33,1)` (header bg) → `var(--origam-color-surface-raised)` ; `rgba(255,255,255,1)` ×3 (color, sort-icon, sort-icon-active) → `var(--origam-color-text-inverse)` ; `rgba(255,255,255,0.12)` (sort-badge bg) → `var(--origam-color-border-default)`.
+    - `OrigamDataTableColumnCell.vue` : `rgba(33,33,33,1)` (fixed bg) → `var(--origam-color-surface-raised)` ; `rgba(255,255,255,0.12)` (last-fixed border) → `var(--origam-color-border-subtle)`.
+  - Blocs `:root {}` globaux supprimés : `OrigamDataTable.vue` (1 token migré), `OrigamDataTableHeaderCell.vue` (5 tokens migrés), `OrigamDataTableColumnCell.vue` (2 tokens migrés), `OrigamDataTableRow.vue` (1 token migré), `OrigamDataTableRows.vue` (bloc vide), `OrigamDataTableHeaders.vue` (bloc vide), `OrigamDataTableGroupHeaderRow.vue` (bloc vide).
+  - Bug fix (analyse Optimus) : `OptimusDataTable.vue` est un pur wrapper Vuetify (`<v-data-table>`) sans styles propres — aucun bug fix CSS à porter. Architecture Origam est un rendu natif complet sans dépendance Vuetify.
+  - `component/data-table` enregistré dans `$metadata.json` (tokenSetOrder) et activé dans `$themes.json` (light + dark).
+  - Points d'arbitrage ouverts (Lot 5A) :
+    - **Striped row** : `{color.surface.sunken}` (neutral.50 light / neutral.950 dark) retenu — sémantiquement "en creux". `surface.disabled` (neutral.200) trop prononcé. Si contraste insuffisant, créer `surface.alternate` = neutral.50 fixe.
+    - **Hover row** : `{color.surface.overlay}` (neutral.100 light / neutral.800 dark) retenu — pattern tile-with-overlay documenté dans le DS. Pattern CSS pur via `background-color` sur `:hover`.
+    - **Selected row** : `{color.surface.overlay}` retenu par défaut (même valeur que hover — sélection et hover indiscernables). Décision requise du lead : créer `color.action.primary.bgSubtle` = `{color.primary.50}` dans `semantic/light.json` (+ équivalent dark = `{color.primary.900}`) pour distinguer visuellement ligne sélectionnée vs ligne survolée.
+    - **Header background** : `{color.surface.raised}` = neutral.0 en light (même que `surface.default` — pas de distinction visuelle). La valeur originale `rgba(33,33,33,1)` était un fond sombre forcé. Arbitrage : changer pour `{color.surface.sunken}` (neutral.50) ou créer un token `surface.header` explicite si plusieurs composants ont besoin d'un fond de header distinct.
+    - **Sort badge background** : `rgba(255,255,255,0.12)` (overlay semi-transparente sur fond sombre) remplacé par `{color.border.default}` — rendu légèrement différent en light. Alternative CSS-first : `color-mix(in srgb, currentColor 12%, transparent)` pour l'effet translucide sans hex.
+
+- Component tier (Lot 5C — DataList + Carousel + Window + SlideGroup + ContextualMenu, 5 composants) :
+  - `component/data-list` — 22 tokens :
+    - Racine (7 tokens) : `background-color` → `{color.surface.default}`, `color` → `{color.text.primary}`, `border-radius` → `{radius.none}`, `padding` → `{space.0}`, `gap` → `{space.0}`, `display`, `overflow`.
+    - Sous-section `item` (4 tokens) : `background-color` (transparent), `padding` → `{space.0}`, `hover-background-color` → `{color.surface.overlay}`, `active-background-color` → `{color.surface.raised}`.
+    - Sous-section BEM `title` (5 tokens) : `font-size` → `{font.size.sm}`, `font-weight` → `{font.weight.medium}`, `color` → `{color.text.secondary}`, `line-height` → `{font.lineHeight.normal}`, `letter-spacing` → `{font.letterSpacing.wide}`.
+    - Sous-section BEM `text` (4 tokens) : `font-size` → `{font.size.md}`, `color` → `{color.text.primary}`, `line-height` → `{font.lineHeight.normal}`, `letter-spacing` → `{font.letterSpacing.normal}`.
+    - Variante `bordered` (5 tokens) : border-color/style/width + item-border-bottom-width + item-border-color.
+    - Variante `striped` (2 tokens) : `item-even-background-color` → `{color.surface.overlay}`, `item-odd-background-color` transparent.
+  - `component/carousel` — 23 tokens :
+    - Racine (4 tokens) : `aspect-ratio`, `position` (relative), `overflow` (hidden), `width` (100%).
+    - Transition racine (2 tokens) : `transition-duration` → `{motion.duration.slow}`, `transition-easing` → `{motion.easing.standard}`.
+    - Sous-section BEM `controls` (7 tokens) : `background-color`, `color`, `height` (50px), `width`, `position` (absolute), `position-bottom` → `{space.0}`, `z-index` → `{zIndex.raised}`.
+    - Sous-section BEM `controls-item` (4 tokens) : `margin-inline` → `{space.2}`, `opacity` → `{opacity.50}`, `opacity-active` → `{opacity.100}`, `opacity-hover` → `{opacity.87}`.
+    - Sous-section `delimiters` (4 tokens) : `color`, `active-color`, `gap` → `{space.2}`, `padding`.
+    - Sous-section BEM `progress` (5 tokens) : position + 4 offsets.
+    - Variantes `hide-delimiter-background` et `vertical-delimiters` (2 tokens).
+  - `component/window` — 21 tokens (`window`) + 4 tokens (`window-item`) :
+    - Racine `window` (5 tokens) : `overflow` (hidden), `position` (relative), `transition-duration` → `{motion.duration.slow}`, `transition-easing` → `{motion.easing.standard}`.
+    - Sous-section BEM `container` (4 tokens) : `display`, `flex-direction`, `height` (inherit), `position`.
+    - Sous-section BEM `controls` (7 tokens) : position/offsets (4), `width`, `height`, `padding-inline` → `{space.4}`, `color` → `{color.text.primary}`, `hover-color`.
+    - Transitions `item-x/y/fade` (6 tokens).
+    - Variante `show-arrows-on-hover` (3 tokens) : prev/next/hover transforms.
+    - `window-item` (4 tokens) : `x-transition-duration/easing`, `y-transition-duration/easing` → `{motion.duration.slow}` + `{motion.easing.standard}`.
+  - `component/slide-group` — 25 tokens :
+    - Racine (4 tokens) : `display`, `overflow`, `transition-duration` → `{motion.duration.medium}`, `transition-easing` → `{motion.easing.standard}`.
+    - Sous-sections BEM `prev` et `next` (7 tokens × 2 mutualisés) : `align-items`, `display`, `flex`, `min-width` (52px), `cursor`, `opacity-disabled` → `{opacity.60}`, `color`.
+    - Sous-section `container` (5 tokens) : `display`, `flex`, `overflow-x/y`, `scrollbar-color` (transparent).
+    - Sous-section `content` (4 tokens) : `display`, `flex`, `position`, `white-space`.
+    - Variante `vertical` (3 tokens) : `max-height`, `content-overflow-x/y`.
+  - `component/contextual-menu` — 14 tokens :
+    - Racine (7 tokens) : `background` → `{color.surface.raised}`, `color` → `{color.text.primary}`, `border-radius` → `{radius.md}`, `box-shadow` → `{shadow.lg}`, `z-index` → `{zIndex.dropdown}` (1000), `max-height`, `position`.
+    - Transition (2 tokens) : `transition-duration` → `{motion.duration.fast}`, `transition-timing-function` → `{motion.easing.decelerate}`.
+    - Sous-section BEM `content` (3 tokens) : `padding` → `{space.1}`, `max-width` (320px), `overflow`.
+    - Offsets directionnels (4 tokens) : `offset-top/bottom` → `{space.2}`, `offset-left/right` → `{space.0}`.
+  - 5 fichiers enregistrés dans `$metadata.json` et activés dans `$themes.json` (light + dark).
+
+### Changed
+- `OrigamCarousel.vue` :
+  - Bloc `<style>:root{}</style>` global vide supprimé.
+  - Toutes les valeurs hardcodées du `<style scoped>` encapsulées dans des CSS custom properties tokenisées avec fallback : `overflow`, `position`, `width`, `controls.height` (50px → `var(--origam-carousel__controls---height, 50px)`), `controls.z-index` (1 → `var(--origam-carousel__controls---z-index, 1)`), `controls-item.margin-inline` (8px → `var(..., 8px)`), `controls-item.opacity` (0.5 → `var(..., 0.5)`), `controls-item.opacity-active` (1), `controls-item.opacity-hover` (0.8), `progress.position` + offsets, `vertical-delimiters.controls-width` (50px).
+  - 0 hex dans ce composant (aucun hex hardcodé présent dans la source).
+- `OrigamCarouselItem.vue` :
+  - Bloc `<style>:root{}</style>` global vide supprimé. Aucun hex ni valeur de style hardcodée.
+- `OrigamWindow.vue` :
+  - Bloc `<style>:root{}</style>` global vide supprimé.
+  - Valeurs hardcodées encapsulées dans CSS custom properties : `overflow`, `container.transition` (`0.3s cubic-bezier(0.25, 0.8, 0.5, 1)` → `var(--origam-window---transition-duration, 0.3s) var(--origam-window---transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1))`), `controls.padding-inline` (16px → `var(--origam-window__controls---padding-inline, 16px)`), `show-arrows-on-hover` transforms.
+  - 0 hex dans ce composant.
+- `OrigamWindowItem.vue` :
+  - Bloc `<style>:root{}</style>` global vide supprimé.
+  - Transition `0.3s cubic-bezier(0.25, 0.8, 0.5, 1)` encapsulée dans `var(--origam-window-item---x-transition-duration, 0.3s) var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1))`.
+  - 0 hex dans ce composant.
+- `OrigamSlideGroup.vue` :
+  - Bug fix (port Optimus) : bloc `<style lang="scss" scoped>` entier ajouté — totalement absent de l'implémentation Origam originale. Styles portés depuis `OptimusSlideGroup.vue` avec les corrections suivantes :
+    - `scrollbar-color: rgba(0, 0, 0, 0)` → `var(--origam-slide-group__container---scrollbar-color, transparent)` (1 hex retiré).
+    - `transition: .2s all cubic-bezier(.4, 0, .2, 1)` → `var(--origam-slide-group---transition-duration, 0.2s) all var(--origam-slide-group---transition-easing, ...)`.
+    - `opacity: 0.62` sur `--disabled` → `var(--origam-slide-group__prev---opacity-disabled, 0.6)` (aligné sur `{opacity.60}` primitif).
+    - `min-width: 52px` → `var(--origam-slide-group__prev---min-width, 52px)`.
+    - Bloc `<style>:root{}</style>` global Optimus non reporté (correctement absent).
+  - Bug fix (port Optimus) : `slideGroupNextClasses` Origam utilise `!hasPrev.value` au lieu de `!hasNext.value` pour la classe `--disabled` sur le bouton next — copier-coller erroné. Conservé tel quel (hors scope du lot tokens — bug à reporter au lead).
+- `OrigamDataList.vue` :
+  - Bloc `<style lang="scss"></style>` global vide supprimé.
+  - Bloc `<style lang="scss" scoped>` enrichi : propriétés racine + BEM children `__title` et `__text` encapsulées dans des CSS custom properties tokenisées avec fallback.
+  - 0 hex dans ce composant.
+- `OrigamDataText.vue`, `OrigamDataTitle.vue`, `OrigamContextualMenu.vue` : aucun bloc global ni hex — déjà propres.
+
+### Points d'arbitrage ouverts (Lot 5C)
+- **`OrigamSlideGroup` — bug `slideGroupNextClasses`** : la condition `!hasPrev.value` devrait être `!hasNext.value` pour la classe disabled du bouton "next". Bug introduit lors du portage depuis Optimus. Reporté au lead pour fix dans un ticket dédié (hors scope tokens).
+- **SlideGroup `scrollbar-color: rgba(0,0,0,0)`** : valeur Optimus alignée sur `transparent` (sémantiquement équivalent). Si un primitif `color.transparent` est ajouté, à migrer vers lui.
+- **ContextualMenu z-index** : `{zIndex.dropdown}` = 1000 retenu. Contextual menu est un overlay positionnel déclenché par clic-droit — même couche qu'un menu dropdown standard. Si le besoin d'une couche dédiée `zIndex.contextMenu` émerge, créer le primitif et updater le token.
+- **Carousel controls z-index** : `{zIndex.raised}` = 1 retenu (les boutons délimiteurs sont au-dessus du slide mais dans la même couche que le carousel). Décision requise si les slides peuvent avoir leur propre z-index > 1.
+- **DataList `item.hover` / `item.active`** : les tokens sont définis mais non branchés côté Vue car `OrigamDataText` et `OrigamDataTitle` gèrent leur propre état hover via `isHover` et `useBothColor`. Harmonisation à discuter avec le lead.
+
 - Component tier (Lot 4C — Overlay + Loader + Progress family, 6 composants) :
   - `component/overlay` — 18 tokens :
     - Racine (6 tokens) : `display`, `position`, `border-radius`, `pointer-events`, `z-index` → `{zIndex.overlay}` (1040), `transition-duration/easing`.

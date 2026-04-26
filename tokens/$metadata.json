@@ -50,7 +50,20 @@
     "component/dialog",
     "component/dialog-confirmation",
     "component/menu",
-    "component/tooltip"
+    "component/tooltip",
+    "component/pagination",
+    "component/table",
+    "component/virtual-scroll",
+    "component/infinite-scroll",
+    "component/breadcrumb",
+    "component/data-table",
+    "component/list",
+    "component/expansion-panel",
+    "component/data-list",
+    "component/carousel",
+    "component/window",
+    "component/slide-group",
+    "component/contextual-menu"
   ],
   "_note": "FUTURE: add semantic/brand-a.json and semantic/brand-b.json here between semantic/dark and component/* to enable brand theming. Each brand file overrides only the semantic tokens it needs (and optionally a primitive-override file for a different brand color ramp)."
 }

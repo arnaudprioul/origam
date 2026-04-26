@@ -169,7 +169,9 @@
 		&--y-transition-leave-active,
 		&--y-reverse-transition-enter-active,
 		&--y-reverse-transition-leave-active {
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			transition:
+				var(--origam-window-item---x-transition-duration, 0.3s)
+				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&--x-transition-leave-from,
@@ -216,11 +218,5 @@
 		&--y-reverse-transition-leave-to {
 			transform: translateY(100%);
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

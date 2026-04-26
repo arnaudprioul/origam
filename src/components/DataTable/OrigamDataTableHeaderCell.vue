@@ -160,14 +160,14 @@
 		$this: &;
 
 		align-items: center;
-		color: var(--origam-data-table-header-cell---color);
+		color: var(--origam-data-table-header-cell---color, var(--origam-color-text-inverse));
 
 		&__sort-icon {
-			opacity: 0;
-			color: var(--origam-data-table-header-cell__sort-icon---color);
+			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, 0);
+			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color-text-inverse));
 
 			&--active {
-				color: var(--origam-data-table-header-cell__sort-icon--active---color);
+				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color-text-inverse));
 			}
 		}
 
@@ -180,14 +180,15 @@
 			display: inline-flex;
 			justify-content: center;
 			align-items: center;
-			font-size: .875rem;
-			padding: 4px;
-			border-radius: 50%;
-			background: var(--origam-data-table-header-cell__sort-badge---background);
-			min-width: 20px;
-			min-height: 20px;
-			width: 20px;
-			height: 20px
+			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, 0.875rem);
+			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space-1, 4px));
+			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius-full, 9999px));
+			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color-border-default));
+			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color-text-inverse));
+			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, 20px);
+			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, 20px);
+			width: var(--origam-data-table-header-cell__sort-badge---width, 20px);
+			height: var(--origam-data-table-header-cell__sort-badge---height, 20px)
 		}
 
 		span {
@@ -195,18 +196,18 @@
 		}
 
 		&#{$this}--sortable {
-			cursor: pointer;
+			cursor: var(--origam-data-table-sortable---cursor, pointer);
 
 			&:hover {
 				#{$this}__sort-icon {
-					opacity: .5;
+					opacity: var(--origam-data-table-header-cell__sort-icon---opacity-hover, 0.5);
 				}
 			}
 		}
 
 		&#{$this}--sorted {
 			#{$this}__sort-icon {
-				opacity: 1;
+				opacity: var(--origam-data-table-header-cell__sort-icon---opacity-active, 1);
 			}
 		}
 
@@ -215,22 +216,9 @@
 		}
 
 		&:deep(.origam-data-table-cell) {
-			background: var(--origam-data-table-header-cell---background);
-			color: var(--origam-data-table-header-cell---color);
+			background: var(--origam-data-table-header-cell---background, var(--origam-color-surface-raised));
+			color: var(--origam-data-table-header-cell---color, var(--origam-color-text-inverse));
 		}
 	}
 </style>
 
-<style>
-	:root {
-		--origam-data-table-header-cell---background: rgba(33, 33, 33, 1);
-		--origam-data-table-header-cell---color: rgba(255, 255, 255, 1);
-
-		--origam-data-table-header-cell--sortable---color: rgba(255, 255, 255, 1);
-
-		--origam-data-table-header-cell__sort-badge---background: rgba(255, 255, 255, 0.12);
-
-		--origam-data-table-header-cell__sort-icon---color: rgba(255, 255, 255, 1);
-		--origam-data-table-header-cell__sort-icon--active---color: rgba(255, 255, 255, 1);
-	}
-</style>
