@@ -104,7 +104,7 @@ document root or via a `:style` binding to re-skin a single instance.
 | `--origam-title---font-size-3xl` | `{font.size.5xl}` |
 
 The full list lives in
-[`tokens/component/title.json`](../../../tokens/component/title.json).
+`tokens/component/title.json`.
 
 ## Accessibility
 
@@ -125,5 +125,5 @@ The full list lives in
 
 ## Related
 
-- [`OrigamLabel`](../Label/OrigamLabel.md) — inline label element.
-- [`OrigamSheet`](../Sheet/OrigamSheet.md) — chrome surface to wrap a title.
+- `OrigamLabel` — inline label element.
+- `OrigamSheet` — chrome surface to wrap a title.

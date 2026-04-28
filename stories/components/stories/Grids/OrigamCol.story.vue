@@ -3,6 +3,7 @@
     group="components"
     title="Grids/OrigamCol"
   >
+
     <!--
       Pattern mirrored from OrigamBtn.story.vue:
         • one <Variant> per orthogonal concern
@@ -249,3 +250,5 @@
     color: var(--origam-color-text-onColor, #000);
   }
 </style>
+
+<docs lang="md" src="@docs/components/Grids/OrigamCol.md"/>

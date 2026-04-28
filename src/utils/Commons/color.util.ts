@@ -39,9 +39,6 @@ import { chunk, clamp, consoleWarn, has, int, padEnd } from '../../utils'
  *   - CSS variable (`var(--…)`)
  *   - one of the 148 named colours OR a CSS-wide keyword
  *     (`transparent`, `currentColor`, `inherit`, …)
- *
- * Aligns with optimus' `isCssColor` so origam consumers can pass any
- * CSS colour value the browser would accept.
  */
 export function isCssColor (color?: string | null | false): boolean {
     return !!color && (

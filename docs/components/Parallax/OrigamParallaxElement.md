@@ -179,7 +179,7 @@ from the parent `<OrigamParallax>` provide context (so all elements stay
 in sync).
 
 The full list lives in
-[`tokens/component/parallax.json`](../../../tokens/component/parallax.json).
+`tokens/component/parallax.json`.
 
 ## Accessibility
 
@@ -198,5 +198,5 @@ The full list lives in
 
 ## Related
 
-- [`OrigamParallax`](./OrigamParallax.md) — the host that emits the
+- `OrigamParallax` — the host that emits the
   movement context this element consumes.

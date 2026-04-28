@@ -125,6 +125,6 @@ sibling elements can offset their inner padding accordingly.
 
 ## Related
 
-- [`OrigamMain`](../Main/OrigamMain.md) — the central scroll area.
-- [`OrigamSystemBar`](../SystemBar/OrigamSystemBar.md) — OS-style title bar.
+- `OrigamMain` — the central scroll area.
+- `OrigamSystemBar` — OS-style title bar.
 - `OrigamAppBar`, `OrigamDrawer`, `OrigamBottomNav` — siblings registered against the layout.

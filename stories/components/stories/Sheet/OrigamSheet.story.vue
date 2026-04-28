@@ -3,6 +3,7 @@
 			group="components"
 			title="Sheet/OrigamSheet"
 	>
+
 		<!-- ════════════ COLOR ════════════ -->
 		<!--
 			`colorList` mixes intents and every CSS-color format the prop
@@ -194,3 +195,5 @@
 		tagList
 	} from '@stories/const'
 </script>
+
+<docs lang="md" src="@docs/components/Sheet/OrigamSheet.md"/>

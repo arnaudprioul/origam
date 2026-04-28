@@ -83,5 +83,5 @@ or less aggressively when several are in the same flex parent:
 
 ## Related
 
-- [`OrigamRow`](./OrigamRow.md) — the most common host.
-- [`OrigamCol`](./OrigamCol.md) — flex grid item.
+- `OrigamRow` — the most common host.
+- `OrigamCol` — flex grid item.

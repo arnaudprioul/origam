@@ -3,6 +3,7 @@
 			group="components"
 			title="SystemBar/OrigamSystemBar"
 	>
+
 		<!--
 			OrigamSystemBar is a layout-aware item — it expects an
 			OrigamLayout ancestor. Every variant wraps the bar in a small
@@ -208,3 +209,5 @@
 		background: var(--origam-color-surface-default, #fff);
 	}
 </style>
+
+<docs lang="md" src="@docs/components/SystemBar/OrigamSystemBar.md"/>

@@ -125,6 +125,6 @@ The component also reads the layout-bound positions:
 
 ## Related
 
-- [`OrigamLayout`](../Layout/OrigamLayout.md) — application shell.
-- [`OrigamSheet`](../Sheet/OrigamSheet.md) — generic surface, similar API.
-- [`OrigamContainer`](../Grids/OrigamContainer.md) — outer wrapper with breakpoint-aware max-width.
+- `OrigamLayout` — application shell.
+- `OrigamSheet` — generic surface, similar API.
+- `OrigamContainer` — outer wrapper with breakpoint-aware max-width.

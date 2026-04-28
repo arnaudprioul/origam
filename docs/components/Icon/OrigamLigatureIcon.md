@@ -5,7 +5,7 @@ the icon **name** as text, and an icon font (Material Icons, Material
 Symbols, …) substitutes the text by the matching glyph at render time
 via OpenType ligature substitutions.
 
-Unlike [`OrigamClassIcon`](./OrigamClassIcon.md) — which uses CSS classes
+Unlike `OrigamClassIcon` — which uses CSS classes
 to map glyphs — ligature icons rely on the **text content itself** being
 a known ligature name in the font. That makes the markup readable
 ("home", "settings") at the cost of requiring an icon font that supports
@@ -117,9 +117,9 @@ The leaf applies the Material font via SCSS:
 
 ## Related
 
-- [`OrigamIcon`](./OrigamIcon.md) — the dispatcher; **does NOT auto-route
+- `OrigamIcon` — the dispatcher; **does NOT auto-route
   to the ligature leaf** today (the resolver assumes `mdi:` strings map
   to `OrigamClassIcon`). Use `OrigamLigatureIcon` directly, or register a
   custom set whose `component` returns `OrigamLigatureIcon`.
-- [`OrigamClassIcon`](./OrigamClassIcon.md) — class-based alternative for
+- `OrigamClassIcon` — class-based alternative for
   Material Design Icons (`mdi-*`).

@@ -9,70 +9,70 @@ Voici la liste complète des composants disponibles dans le design system Origam
 | **OrigamBtn** | [Accéder à la doc](/components/Btn/OrigamBtn) |
 | **OrigamTitle** | [Accéder à la doc](/components/Title/OrigamTitle) |
 | **OrigamDivider** | [Accéder à la doc](/components/Divider/OrigamDivider) |
-| **OptimusLabel** | [Accéder à la doc](/components/Label/OptimusLabel) |
+| **OrigamLabel** | [Accéder à la doc](/components/Label/OrigamLabel) |
 
 ## Système de Grille et Mise en Page
 
 | Composant | Lien Documentation |
 | :--- | :--- |
-| **OptimusCol** | [Accéder à la doc](/components/Grids/OptimusCol) |
-| **OptimusLayout** | [Accéder à la doc](/components/Layout/OptimusLayout) |
-| **OptimusMain** | [Accéder à la doc](/components/Main/OptimusMain) |
-| **OptimusPage** | [Accéder à la doc](/components/Page/OptimusPage) |
-| **OptimusResponsive** | [Accéder à la doc](/components/Responsive/OptimusResponsive) |
+| **OrigamCol** | [Accéder à la doc](/components/Grids/OrigamCol) |
+| **OrigamLayout** | [Accéder à la doc](/components/Layout/OrigamLayout) |
+| **OrigamMain** | [Accéder à la doc](/components/Main/OrigamMain) |
+| **OrigamPage** | [Accéder à la doc](/components/Page/OrigamPage) |
+| **OrigamResponsive** | [Accéder à la doc](/components/Responsive/OrigamResponsive) |
 
 ## Navigation
 
 | Composant | Lien Documentation |
 | :--- | :--- |
-| **OptimusBreadcrumb** | [Accéder à la doc](/components/Breadcrumb/OptimusBreadcrumb) |
-| **OptimusBottomNav** | [Accéder à la doc](/components/BottomNav/OptimusBottomNav) |
-| **OptimusMenu** | [Accéder à la doc](/components/Menu/OptimusMenu) |
-| **OptimusTabs** | [Accéder à la doc](/components/Tabs/OptimusTabs) |
-| **OptimusToolbar** | [Accéder à la doc](/components/Toolbar/OptimusToolbar) |
-| **OptimusSidebar** | [Accéder à la doc](/components/Sidebar/OptimusSidebar) |
+| **OrigamBreadcrumb** | [Accéder à la doc](/components/Breadcrumb/OrigamBreadcrumb) |
+| **OrigamBottomNav** | [Accéder à la doc](/components/BottomNav/OrigamBottomNav) |
+| **OrigamMenu** | [Accéder à la doc](/components/Menu/OrigamMenu) |
+| **OrigamTabs** | [Accéder à la doc](/components/Tabs/OrigamTabs) |
+| **OrigamToolbar** | [Accéder à la doc](/components/Toolbar/OrigamToolbar) |
+| **OrigamSidebar** | [Accéder à la doc](/components/Sidebar/OrigamSidebar) |
 
 ## Conteneurs et Structure
 
 | Composant | Lien Documentation |
 | :--- | :--- |
-| **OptimusCard** | [Accéder à la doc](/components/Card/OptimusCard) |
-| **OptimusSheet** | [Accéder à la doc](/components/Sheet/OptimusSheet) |
-| **OptimusSection** | [Accéder à la doc](/components/Section/OptimusSection) |
-| **OptimusWindow** | [Accéder à la doc](/components/Window/OptimusWindow) |
-| **OptimusDrawer** | [Accéder à la doc](/components/Drawer/OptimusDrawer) |
+| **OrigamCard** | [Accéder à la doc](/components/Card/OrigamCard) |
+| **OrigamSheet** | [Accéder à la doc](/components/Sheet/OrigamSheet) |
+| **OrigamSection** | [Accéder à la doc](/components/Section/OrigamSection) |
+| **OrigamWindow** | [Accéder à la doc](/components/Window/OrigamWindow) |
+| **OrigamDrawer** | [Accéder à la doc](/components/Drawer/OrigamDrawer) |
 
 ## Formulaires et Saisie
 
 | Composant | Lien Documentation |
 | :--- | :--- |
-| **OptimusForm** | [Accéder à la doc](/components/Form/OptimusForm) |
-| **OptimusTextField** | [Accéder à la doc](/components/TextField/OptimusTextField) |
-| **OptimusTextarea** | [Accéder à la doc](/components/Textarea/OptimusTextarea) |
-| **OptimusCheckbox** | [Accéder à la doc](/components/Checkbox/OptimusCheckbox) |
-| **OptimusRadio** | [Accéder à la doc](/components/Radio/OptimusRadio) |
-| **OptimusSwitch** | [Accéder à la doc](/components/Switch/OptimusSwitch) |
-| **OptimusSelect** | [Accéder à la doc](/components/Select/OptimusSelect) |
-| **OptimusCombobox** | [Accéder à la doc](/components/Combobox/OptimusCombobox) |
-| **OptimusAutocomplete** | [Accéder à la doc](/components/Autocomplete/OptimusAutocomplete) |
-| **OptimusPassword** | [Accéder à la doc](/components/Password/OptimusPassword) |
-| **OptimusFileInput** | [Accéder à la doc](/components/FileInput/OptimusFileInput) |
-| **OptimusDatePicker** | [Accéder à la doc](/components/DatePicker/OptimusDatePicker) |
-| **OptimusColorPicker** | [Accéder à la doc](/components/ColorPicker/OptimusColorPicker) |
-| **OptimusSlider** | [Accéder à la doc](/components/Slider/OptimusSlider) |
-| **OptimusRangeSlider** | [Accéder à la doc](/components/RangeSlider/OptimusRangeSlider) |
-| **OptimusWizardForm** | [Accéder à la doc](/components/WizardForm/OptimusWizardForm) |
+| **OrigamForm** | [Accéder à la doc](/components/Form/OrigamForm) |
+| **OrigamTextField** | [Accéder à la doc](/components/TextField/OrigamTextField) |
+| **OrigamTextarea** | [Accéder à la doc](/components/Textarea/OrigamTextarea) |
+| **OrigamCheckbox** | [Accéder à la doc](/components/Checkbox/OrigamCheckbox) |
+| **OrigamRadio** | [Accéder à la doc](/components/Radio/OrigamRadio) |
+| **OrigamSwitch** | [Accéder à la doc](/components/Switch/OrigamSwitch) |
+| **OrigamSelect** | [Accéder à la doc](/components/Select/OrigamSelect) |
+| **OrigamCombobox** | [Accéder à la doc](/components/Combobox/OrigamCombobox) |
+| **OrigamAutocomplete** | [Accéder à la doc](/components/Autocomplete/OrigamAutocomplete) |
+| **OrigamPassword** | [Accéder à la doc](/components/Password/OrigamPassword) |
+| **OrigamFileInput** | [Accéder à la doc](/components/FileInput/OrigamFileInput) |
+| **OrigamDatePicker** | [Accéder à la doc](/components/DatePicker/OrigamDatePicker) |
+| **OrigamColorPicker** | [Accéder à la doc](/components/ColorPicker/OrigamColorPicker) |
+| **OrigamSlider** | [Accéder à la doc](/components/Slider/OrigamSlider) |
+| **OrigamRangeSlider** | [Accéder à la doc](/components/RangeSlider/OrigamRangeSlider) |
+| **OrigamWizardForm** | [Accéder à la doc](/components/WizardForm/OrigamWizardForm) |
 
 ## Éléments d'Interface
 
 | Composant | Lien Documentation |
 | :--- | :--- |
-| **OptimusIcon** | [Accéder à la doc](/components/Icon/OptimusIcon) |
-| **OptimusAvatar** | [Accéder à la doc](/components/Avatar/OptimusAvatar) |
-| **OptimusBadge** | [Accéder à la doc](/components/Badge/OptimusBadge) |
-| **OptimusChip** | [Accéder à la doc](/components/Chip/OptimusChip) |
-| **OptimusImg** | [Accéder à la doc](/components/Img/OptimusImg) |
-| **OptimusLink** | [Accéder à la doc](/components/Links/OptimusLink) |
+| **OrigamIcon** | [Accéder à la doc](/components/Icon/OrigamIcon) |
+| **OrigamAvatar** | [Accéder à la doc](/components/Avatar/OrigamAvatar) |
+| **OrigamBadge** | [Accéder à la doc](/components/Badge/OrigamBadge) |
+| **OrigamChip** | [Accéder à la doc](/components/Chip/OrigamChip) |
+| **OrigamImg** | [Accéder à la doc](/components/Img/OrigamImg) |
+| **OrigamLink** | [Accéder à la doc](/components/Links/OrigamLink) |
 
 ## Listes et Tableaux
 

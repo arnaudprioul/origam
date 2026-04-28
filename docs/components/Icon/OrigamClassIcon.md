@@ -3,7 +3,7 @@
 `<OrigamClassIcon>` is the **font-class leaf** rendered when an icon name
 maps to a CSS-class-driven font set (Material Design Icons via `mdi-*`,
 Font Awesome via `fa-*`, etc.). It is selected automatically by
-[`OrigamIcon`](./OrigamIcon.md) when the resolved icon string is a class
+`OrigamIcon` when the resolved icon string is a class
 name — you almost never instantiate it by hand, except in low-level
 integrations or when registering a new icon set.
 
@@ -100,6 +100,6 @@ interface IIconComponentProps {
 
 ## Related
 
-- [`OrigamIcon`](./OrigamIcon.md) — the dispatcher (preferred entry-point).
-- [`createOrigam`](../../composables/useIcon.md#createorigam) — register
+- `OrigamIcon` — the dispatcher (preferred entry-point).
+- `createOrigam` — register
   custom icon sets.

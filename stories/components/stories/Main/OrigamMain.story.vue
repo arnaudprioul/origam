@@ -3,6 +3,7 @@
 			group="components"
 			title="Main/OrigamMain"
 	>
+
 		<!--
 			OrigamMain reads the surrounding OrigamLayout. To keep stories
 			self-contained, every variant wraps the component in a small
@@ -127,3 +128,5 @@
 		background: var(--origam-color-surface-default, #fff);
 	}
 </style>
+
+<docs lang="md" src="@docs/components/Main/OrigamMain.md"/>

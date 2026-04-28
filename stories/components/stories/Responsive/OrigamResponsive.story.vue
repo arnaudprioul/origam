@@ -3,6 +3,7 @@
 			group="components"
 			title="Responsive/OrigamResponsive"
 	>
+
 		<!-- ════════════ ASPECT RATIO ════════════ -->
 		<Variant
 				title="Aspect ratio"
@@ -184,3 +185,5 @@
 		font-weight: 500;
 	}
 </style>
+
+<docs lang="md" src="@docs/components/Responsive/OrigamResponsive.md"/>

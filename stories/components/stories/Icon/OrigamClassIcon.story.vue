@@ -3,6 +3,7 @@
 			group="components"
 			title="Icon/OrigamClassIcon"
 	>
+
 		<!-- ════════════ ICON (class string) ════════════ -->
 		<Variant
 				title="Icon (class string)"
@@ -125,3 +126,5 @@
 		{ label: 'Menu',     value: 'mdi mdi-menu'     },
 	]
 </script>
+
+<docs lang="md" src="@docs/components/Icon/OrigamClassIcon.md"/>

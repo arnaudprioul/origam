@@ -3,6 +3,7 @@
 			group="components"
 			title="Divider/OrigamDivider"
 	>
+
 		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
@@ -105,3 +106,5 @@
 		{ label: 'Vertical', value: DIRECTION.VERTICAL },
 	]
 </script>
+
+<docs lang="md" src="@docs/components/Divider/OrigamDivider.md"/>

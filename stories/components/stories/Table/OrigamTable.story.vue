@@ -3,6 +3,7 @@
 			group="components"
 			title="Table/OrigamTable"
 	>
+
 		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
@@ -241,3 +242,5 @@
 		tagList
 	} from '@stories/const'
 </script>
+
+<docs lang="md" src="@docs/components/Table/OrigamTable.md"/>

@@ -149,7 +149,7 @@ interface ISystemBarProps extends ICommonsComponentProps, ITagProps,
 | `--origam-system-bar--rounded---border-radius` | inherits |
 
 The full list lives in
-[`tokens/component/system-bar.json`](../../../tokens/component/system-bar.json).
+`tokens/component/system-bar.json`.
 
 ## Accessibility
 
@@ -169,6 +169,6 @@ The full list lives in
 
 ## Related
 
-- [`OrigamLayout`](../Layout/OrigamLayout.md) — parent layout that absorbs the bar.
-- [`OrigamMain`](../Main/OrigamMain.md) — pushed down by the bar's height.
+- `OrigamLayout` — parent layout that absorbs the bar.
+- `OrigamMain` — pushed down by the bar's height.
 - `OrigamAppBar` — the larger, content-rich sibling.

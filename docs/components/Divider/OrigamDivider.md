@@ -104,7 +104,7 @@ instance.
 | `--origam-divider__label---padding-inline` | `{space.3}` |
 
 The full list lives in
-[`tokens/component/divider.json`](../../../tokens/component/divider.json).
+`tokens/component/divider.json`.
 
 ## Accessibility
 
@@ -124,7 +124,7 @@ The full list lives in
 
 ## Related
 
-- [`OrigamSheet`](../Sheet/OrigamSheet.md) — chrome surface frequently
+- `OrigamSheet` — chrome surface frequently
   separated by dividers.
-- [`OrigamSection`](../Section/OrigamSection.md) — semantic section
+- `OrigamSection` — semantic section
   wrapper.

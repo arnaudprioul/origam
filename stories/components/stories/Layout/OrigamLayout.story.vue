@@ -3,6 +3,7 @@
 			group="components"
 			title="Layout/OrigamLayout"
 	>
+
 		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<origam-layout style="height: 320px; border: 1px dashed var(--origam-color-border-default, #ccc);">
@@ -132,3 +133,5 @@
 		background: var(--origam-color-surface-default, #fff);
 	}
 </style>
+
+<docs lang="md" src="@docs/components/Layout/OrigamLayout.md"/>

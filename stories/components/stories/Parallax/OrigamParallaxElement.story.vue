@@ -3,6 +3,7 @@
 			group="components"
 			title="Parallax/OrigamParallaxElement"
 	>
+
 		<!-- ════════════ TYPE (translate / rotate / scale / depth / …) ════════════ -->
 		<Variant
 				title="Type"
@@ -245,3 +246,5 @@
 		color: 'var(--origam-color-text-primary)',
 	}
 </script>
+
+<docs lang="md" src="@docs/components/Parallax/OrigamParallaxElement.md"/>

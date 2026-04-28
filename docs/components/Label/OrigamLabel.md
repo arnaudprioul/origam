@@ -134,7 +134,7 @@ the document root or via a `:style` binding to re-skin a single instance.
 | `--origam-label__required-indicator---color` | `{color.feedback.danger.fgSubtle}` |
 
 The full list lives in
-[`tokens/component/label.json`](../../../tokens/component/label.json).
+`tokens/component/label.json`.
 
 ## Accessibility
 
@@ -153,6 +153,6 @@ The full list lives in
 
 ## Related
 
-- [`OrigamField`](../Field/OrigamField.md) — wraps an input + label and
+- `OrigamField` — wraps an input + label and
   drives the float animation.
-- [`OrigamTitle`](../Title/OrigamTitle.md) — semantic heading element.
+- `OrigamTitle` — semantic heading element.

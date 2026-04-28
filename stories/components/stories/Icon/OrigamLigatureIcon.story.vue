@@ -3,6 +3,7 @@
 			group="components"
 			title="Icon/OrigamLigatureIcon"
 	>
+
 		<!--
 			Note: Material Icons / Material Symbols font is NOT loaded in this
 			storybook. The ligature name renders as plain text — which is
@@ -120,3 +121,5 @@
 	import { useStoryInitState } from '@stories/composables'
 	import { sizeList, tagList } from '@stories/const'
 </script>
+
+<docs lang="md" src="@docs/components/Icon/OrigamLigatureIcon.md"/>

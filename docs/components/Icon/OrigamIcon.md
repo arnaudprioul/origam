@@ -185,8 +185,8 @@ type TIcon =
 
 ## Related
 
-- [`OrigamClassIcon`](./OrigamClassIcon.md) — the `mdi-` / `fa-` font-class leaf.
-- [`OrigamSvgIcon`](./OrigamSvgIcon.md) — inline SVG path leaf.
-- [`OrigamComponentIcon`](./OrigamComponentIcon.md) — Vue-component wrapper leaf.
-- [`OrigamLigatureIcon`](./OrigamLigatureIcon.md) — Material-style ligature leaf.
-- [`useIcon`](../../composables/useIcon.md) — composable that powers the dispatch.
+- `OrigamClassIcon` — the `mdi-` / `fa-` font-class leaf.
+- `OrigamSvgIcon` — inline SVG path leaf.
+- `OrigamComponentIcon` — Vue-component wrapper leaf.
+- `OrigamLigatureIcon` — Material-style ligature leaf.
+- `useIcon` — composable that powers the dispatch.

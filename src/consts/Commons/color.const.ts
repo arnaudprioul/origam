@@ -7,9 +7,6 @@ export const CSS_COLOR_REGEX = /^(?<fn>(?:rgb|hsl)a?)\((?<values>.+)\)/
  * (`transparent`, `currentColor`, `inherit`, `initial`, `unset`,
  * `revert`). Used by `isCssColor` so consumers can pass `'red'` /
  * `'white'` / `'transparent'` directly without going through hex/rgb.
- *
- * Mirrors the optimus-design-system list — keep them in sync if a new
- * named color is added on either side.
  */
 export const CSS_NAMED_COLORS = new Set([
     'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure',

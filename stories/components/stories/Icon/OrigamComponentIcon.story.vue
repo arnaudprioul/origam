@@ -3,6 +3,7 @@
 			group="components"
 			title="Icon/OrigamComponentIcon"
 	>
+
 		<!--
 			OrigamComponentIcon wraps a Vue component passed as `icon`.
 			In the absence of an external icon library (lucide, heroicons, …)
@@ -128,3 +129,5 @@
 		},
 	})
 </script>
+
+<docs lang="md" src="@docs/components/Icon/OrigamComponentIcon.md"/>

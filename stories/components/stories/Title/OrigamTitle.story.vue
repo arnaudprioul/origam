@@ -3,6 +3,7 @@
 			group="components"
 			title="Title/OrigamTitle"
 	>
+
 		<!-- ════════════ TAG (heading level) ════════════ -->
 		<Variant
 				title="Tag"
@@ -99,3 +100,5 @@
 		{ label: 'h6', value: 'h6' },
 	]
 </script>
+
+<docs lang="md" src="@docs/components/Title/OrigamTitle.md"/>

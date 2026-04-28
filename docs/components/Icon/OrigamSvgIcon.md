@@ -1,7 +1,7 @@
 # OrigamSvgIcon
 
 `<OrigamSvgIcon>` is the **inline SVG leaf**: when the resolved icon is a
-single SVG path string or an array of path entries, [`OrigamIcon`](./OrigamIcon.md)
+single SVG path string or an array of path entries, `OrigamIcon`
 selects this leaf to render the corresponding `<svg>` element directly in
 the DOM (no font-icon dependency, no external request).
 
@@ -129,6 +129,6 @@ interface IIconComponentProps {
 
 ## Related
 
-- [`OrigamIcon`](./OrigamIcon.md) — the dispatcher (preferred entry-point).
-- [`OrigamComponentIcon`](./OrigamComponentIcon.md) — wraps a full Vue
+- `OrigamIcon` — the dispatcher (preferred entry-point).
+- `OrigamComponentIcon` — wraps a full Vue
   SVG component when 24×24 isn't enough.

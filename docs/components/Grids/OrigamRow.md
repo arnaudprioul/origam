@@ -148,6 +148,6 @@ interface IRowProps extends ICommonsComponentProps, ITagProps,
 
 ## Related
 
-- [`OrigamCol`](./OrigamCol.md) — flex grid item.
-- [`OrigamContainer`](./OrigamContainer.md) — outer wrapper with breakpoint-aware max-width.
-- [`OrigamSpacer`](./OrigamSpacer.md) — flexible filler.
+- `OrigamCol` — flex grid item.
+- `OrigamContainer` — outer wrapper with breakpoint-aware max-width.
+- `OrigamSpacer` — flexible filler.

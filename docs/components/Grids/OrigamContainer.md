@@ -7,8 +7,8 @@ structural element of any page or section.
 > **Container is purely structural.** It deliberately does not expose
 > chrome props (`color`, `bgColor`, `rounded`, …). For a surface that
 > paints a background or rounds its corners, use
-> [`OrigamSheet`](../Sheet/OrigamSheet.md) or
-> [`OrigamCard`](../Card/OrigamCard.md) inside the container.
+> `OrigamSheet` or
+> `OrigamCard` inside the container.
 
 ## Basic usage
 
@@ -132,7 +132,7 @@ Container deliberately does **not** extend `IColorProps` or `IRoundedProps`.
 
 ## Related
 
-- [`OrigamRow`](./OrigamRow.md) — flex row container.
-- [`OrigamCol`](./OrigamCol.md) — flex grid item.
-- [`OrigamSheet`](../Sheet/OrigamSheet.md) — themed surface (use this for chrome).
-- [`OrigamMain`](../Main/OrigamMain.md) — application-level main slot.
+- `OrigamRow` — flex row container.
+- `OrigamCol` — flex grid item.
+- `OrigamSheet` — themed surface (use this for chrome).
+- `OrigamMain` — application-level main slot.

@@ -167,7 +167,7 @@ the document root or via a `:style` binding to re-skin a single instance.
 | `--origam-table__row---hover-background-color` | `{color.surface.sunken}` |
 
 The full list lives in
-[`tokens/component/table.json`](../../../tokens/component/table.json).
+`tokens/component/table.json`.
 
 ## Accessibility
 
@@ -190,7 +190,7 @@ The full list lives in
 
 ## Related
 
-- [`OrigamDataTable`](../DataTable/OrigamDataTable.md) — schema-driven
+- `OrigamDataTable` — schema-driven
   table built on top of `<OrigamTable>`.
-- [`OrigamSheet`](../Sheet/OrigamSheet.md) — chrome surface that pairs
+- `OrigamSheet` — chrome surface that pairs
   well as a frame.

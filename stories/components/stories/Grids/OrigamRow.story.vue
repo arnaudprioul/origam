@@ -3,6 +3,7 @@
 			group="components"
 			title="Grids/OrigamRow"
 	>
+
 		<!--
 			Note: every <origam-row> here is wrapped in <origam-container> on
 			purpose. <OrigamRow> applies negative inline margins (the gutter
@@ -230,3 +231,5 @@
 		text-align: center;
 	}
 </style>
+
+<docs lang="md" src="@docs/components/Grids/OrigamRow.md"/>

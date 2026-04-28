@@ -3,6 +3,7 @@
 			group="components"
 			title="Icon/OrigamSvgIcon"
 	>
+
 		<!-- ════════════ SINGLE PATH ════════════ -->
 		<Variant title="Single path">
 			<origam-svg-icon :icon="SVG_PATH_HEART"/>
@@ -140,3 +141,5 @@
 		'M10 14.17l-2.59-2.58L6 13l4 4 8-8-1.41-1.42z',
 	]
 </script>
+
+<docs lang="md" src="@docs/components/Icon/OrigamSvgIcon.md"/>

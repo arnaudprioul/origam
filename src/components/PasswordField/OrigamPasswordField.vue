@@ -616,8 +616,7 @@
 <!--
 	Lot 3.0/3.1 port — the entire OrigamPasswordField has been ported
 	with the namespace adapted (`Origam*` → `Origam*`, classes/CSS vars
-	mirrored, locale key `optimus.validation.must_contains` →
-	`origam.validation.must_contains`). The bg-color="rgba(230,230,230, 0.50)"
+	mirrored, `origam.validation.must_contains`). The bg-color="rgba(230,230,230, 0.50)"
 	hardcoded on each requirement Sheet was dropped — the Sheet's
 	`color` prop already drives the theme-aware tint via the design
 	tokens, no inline RGBA needed.

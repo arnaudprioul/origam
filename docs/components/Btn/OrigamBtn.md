@@ -231,7 +231,7 @@ a `:style` binding to re-skin a single instance.
 | `--origam-btn--{intent}---background-color` | `{color.action.{intent}.bg}` |
 
 The full list lives in
-[`tokens/component/btn.json`](../../../tokens/component/btn.json).
+`tokens/component/btn.json`.
 
 ## Accessibility
 
@@ -251,6 +251,6 @@ The full list lives in
 
 ## Related
 
-- [`OrigamBtnGroup`](./OrigamBtnGroup.md) — segmented control / toolbar group.
-- [`OrigamBtnToggle`](./OrigamBtnToggle.md) — single-pick or multi-pick toggle group.
-- [`useColorEffect`](../../composables/useColorEffect.md) — composable that drives the intent → token resolution.
+- `OrigamBtnGroup` — segmented control / toolbar group.
+- `OrigamBtnToggle` — single-pick or multi-pick toggle group.
+- `useColorEffect` — composable that drives the intent → token resolution.

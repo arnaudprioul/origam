@@ -144,7 +144,7 @@ instance.
 | `--origam-sheet--rounded---border-radius` | `{radius.sm}` |
 
 The full list lives in
-[`tokens/component/sheet.json`](../../../tokens/component/sheet.json).
+`tokens/component/sheet.json`.
 
 ## Accessibility
 
@@ -162,5 +162,5 @@ The full list lives in
 
 ## Related
 
-- [`OrigamMain`](../Main/OrigamMain.md) — application-level main slot, similar API.
-- [`OrigamContainer`](../Grids/OrigamContainer.md) — outer wrapper with breakpoint-aware max-width.
+- `OrigamMain` — application-level main slot, similar API.
+- `OrigamContainer` — outer wrapper with breakpoint-aware max-width.

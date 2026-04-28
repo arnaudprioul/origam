@@ -3,6 +3,7 @@
 			group="components"
 			title="Btn/OrigamBtn"
 	>
+
 		<!--
 			REFERENCE STORY — pattern for every other component story.
 
@@ -379,3 +380,5 @@
 		variantList
 	} from '@stories/const'
 </script>
+
+<docs lang="md" src="@docs/components/Btn/OrigamBtn.md"/>

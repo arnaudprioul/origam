@@ -175,6 +175,6 @@ or per-instance via a `:style` binding.
 
 ## Related
 
-- [`OrigamRow`](./OrigamRow.md) — flex row container.
-- [`OrigamContainer`](./OrigamContainer.md) — outer wrapper with breakpoint-aware max-width.
-- [`OrigamSpacer`](./OrigamSpacer.md) — flexible filler.
+- `OrigamRow` — flex row container.
+- `OrigamContainer` — outer wrapper with breakpoint-aware max-width.
+- `OrigamSpacer` — flexible filler.

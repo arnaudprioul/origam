@@ -3,6 +3,7 @@
 			group="components"
 			title="Parallax/OrigamParallax"
 	>
+
 		<!-- ════════════ EVENT — MOVE (mouse) ════════════ -->
 		<Variant title="Event — Move">
 			<origam-parallax :event="PARALLAX_EVENT.MOVE" :style="hostStyle">
@@ -233,3 +234,5 @@
 		height: '80vh',
 	}
 </script>
+
+<docs lang="md" src="@docs/components/Parallax/OrigamParallax.md"/>

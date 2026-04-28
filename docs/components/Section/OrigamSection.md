@@ -63,5 +63,5 @@ stub.
 
 ## Related
 
-- [`OrigamContainer`](../Grids/OrigamContainer.md) — outer wrapper with breakpoint-aware max-width.
-- [`OrigamMain`](../Main/OrigamMain.md) — application-level main slot.
+- `OrigamContainer` — outer wrapper with breakpoint-aware max-width.
+- `OrigamMain` — application-level main slot.

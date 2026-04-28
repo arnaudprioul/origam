@@ -3,6 +3,7 @@
 			group="components"
 			title="Section/OrigamSection"
 	>
+
 		<!--
 			OrigamSection is currently a stub component (no props, no slots).
 			This story exposes the placeholder so testers can spot it in
@@ -32,3 +33,5 @@
 >
 	import { OrigamSection } from '@origam/components'
 </script>
+
+<docs lang="md" src="@docs/components/Section/OrigamSection.md"/>

@@ -159,5 +159,5 @@ The token file also exposes named ratio shortcuts (`aspect-ratio-default`,
 
 ## Related
 
-- [`OrigamImg`](../Img/OrigamImg.md) — image wrapper that builds on `<OrigamResponsive>`.
-- [`useAspectRatio`](../../../src/composables/Commons/aspect-ratio.composable.ts) — the underlying CSS-first ratio composable.
+- `OrigamImg` — image wrapper that builds on `<OrigamResponsive>`.
+- `useAspectRatio` — the underlying CSS-first ratio composable.

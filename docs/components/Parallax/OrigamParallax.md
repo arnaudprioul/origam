@@ -153,7 +153,7 @@ instance.
 | `--origam-parallax__element---transition-duration` | `{motion.duration.medium}` |
 
 The full list lives in
-[`tokens/component/parallax.json`](../../../tokens/component/parallax.json).
+`tokens/component/parallax.json`.
 
 ## Accessibility
 
@@ -174,5 +174,5 @@ The full list lives in
 
 ## Related
 
-- [`OrigamParallaxElement`](./OrigamParallaxElement.md) — the layer
+- `OrigamParallaxElement` — the layer
   primitive that consumes the movement context.

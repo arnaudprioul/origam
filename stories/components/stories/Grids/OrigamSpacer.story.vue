@@ -3,6 +3,7 @@
 			group="components"
 			title="Grids/OrigamSpacer"
 	>
+
 		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div class="demo-flex-row">
@@ -118,3 +119,5 @@
 		border-radius: 4px;
 	}
 </style>
+
+<docs lang="md" src="@docs/components/Grids/OrigamSpacer.md"/>

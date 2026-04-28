@@ -3,6 +3,7 @@
 			group="components"
 			title="Label/OrigamLabel"
 	>
+
 		<!-- ════════════ COLOR ════════════ -->
 		<!--
 			`colorList` mixes intents and every CSS-color format the prop
@@ -120,3 +121,5 @@
 		{ label: 'div', value: 'div' },
 	]
 </script>
+
+<docs lang="md" src="@docs/components/Label/OrigamLabel.md"/>

@@ -3,6 +3,7 @@
 			group="components"
 			title="Grids/OrigamContainer"
 	>
+
 		<!-- ════════════ MODIFIERS (fluid / fullscreen) ════════════ -->
 		<Variant
 				title="Modifiers"
@@ -91,3 +92,5 @@
 		text-align: center;
 	}
 </style>
+
+<docs lang="md" src="@docs/components/Grids/OrigamContainer.md"/>

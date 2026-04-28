@@ -2,7 +2,7 @@
 
 `<OrigamComponentIcon>` is the **Vue-component wrapper leaf**: when the
 `icon` prop is a Vue component (a `Component` ref, not a string), the
-[`OrigamIcon`](./OrigamIcon.md) dispatcher selects this leaf to render
+`OrigamIcon` dispatcher selects this leaf to render
 the inner component inside an origam-styled wrapper.
 
 The wrapper provides:
@@ -115,6 +115,6 @@ interface IIconComponentProps {
 
 ## Related
 
-- [`OrigamIcon`](./OrigamIcon.md) — the dispatcher (preferred entry-point).
-- [`OrigamSvgIcon`](./OrigamSvgIcon.md) — for inline SVG path data instead
+- `OrigamIcon` — the dispatcher (preferred entry-point).
+- `OrigamSvgIcon` — for inline SVG path data instead
   of a full Vue component.
