@@ -13,7 +13,7 @@
 		setup
 >
 	import { computed, inject, StyleValue } from 'vue'
-	import { useParallaxTransform, useProps } from '../../composables'
+	import { useBorder, useElevation, useMargin, usePadding, useParallaxTransform, useProps, useRounded } from '../../composables'
 
 	import { ORIGAM_PARALLAX_KEY } from '../../consts'
 
@@ -35,6 +35,14 @@
 	})
 
 	const {filterProps} = useProps<IParallaxElementProps>(props)
+
+	// Chrome composables — mirror the IParallaxElementProps interface
+	// (IBorderProps / IPaddingProps / IMarginProps / IRoundedProps / IElevationProps).
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses} = useElevation(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
 
 	const parallax = inject(ORIGAM_PARALLAX_KEY)
 
@@ -146,6 +154,10 @@
 
 	const parallaxElementStyles = computed(() => {
 		return [
+			borderStyles.value,
+			roundedStyles.value,
+			paddingStyles.value,
+			marginStyles.value,
 			props.style,
 			{
 				...transform.value,
@@ -156,6 +168,11 @@
 	const parallaxElementClasses = computed(() => {
 		return [
 			'origam-parallax-element',
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

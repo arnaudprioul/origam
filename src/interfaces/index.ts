@@ -74,6 +74,7 @@ export * from './Commons/hover.interface'
 export * from './Commons/intersect.interface'
 export * from './Commons/justify.interface'
 export * from './Commons/layout.interface'
+export * from './Commons/options.interface'
 export * from './Commons/lazy.interface'
 export * from './Commons/link.interface'
 export * from './Commons/loader.interface'
@@ -152,8 +153,6 @@ export * from './Grids/container.interface'
 export * from './Grids/row.interface'
 export * from './Grids/col.interface'
 export * from './Grids/spacer.interface'
-
-export * from './Highlight/highlight.interface'
 
 export * from './Icon/icon.interface'
 

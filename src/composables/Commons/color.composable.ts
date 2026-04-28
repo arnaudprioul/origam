@@ -71,38 +71,98 @@ function fgSlot (role: 'default' | 'hover' | 'disabled'): string {
     return 'fg'
 }
 
+/**
+ * Resolve the **foreground-only** colour for an intent — the token used
+ * when the consumer says `color="primary"` and expects the *text itself*
+ * to be primary-coloured (no surface implied).
+ *
+ * This is NOT the same as `tokenStylesForIntent(...).color`:
+ *   - That one returns the WCAG-contrasted text colour to put ON TOP of
+ *     the matching `bg` token (typically white on a dark surface).
+ *   - This helper returns the `fgSubtle` rung — a darker shade of the
+ *     intent itself, designed for "coloured text on a light surface".
+ *
+ * Falls back gracefully on intents without a `fgSubtle` rung
+ * (`secondary`, `ghost`, `neutral`).
+ */
+function tokenForegroundForIntent (intent: TIntent): string {
+    if (intent === 'neutral' || intent === 'secondary') {
+        // No fgSubtle — `fg` is already a dark neutral text colour.
+        return 'var(--origam-color-action-secondary-fg)'
+    }
+    if (intent === 'ghost') {
+        // ghost.fg is already primary.600 — the intent's own colour.
+        return 'var(--origam-color-action-ghost-fg)'
+    }
+    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
+        return `var(--origam-color-feedback-${intent}-fgSubtle)`
+    }
+    // primary → action.primary.fgSubtle (color.primary.700)
+    return `var(--origam-color-action-${intent}-fgSubtle)`
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // Legacy `useColor` API (kept for backward compat — used by ~49 components)
 // ────────────────────────────────────────────────────────────────────────────
 
 export function useColor (colors: ComputedRef<{ background?: TColor, text?: TColor }>) {
     const colorStyles = computed(() => {
-        const styles = []
+        const styles: string[] = []
 
+        // Track the intent's matching foreground when the background is an
+        // intent — lets `bgColor="primary"` alone auto-pair the right text
+        // colour without forcing the consumer to specify both.
+        let bgIntentFg: string | null = null
+        let bgDecl: string | null = null
+
+        // ─── Background resolution ───────────────────────────────────────
         if (colors.value.background) {
-            if (colors.value.background === 'transparent') {
-                styles.push(`background-color: ${colors.value.background}`)
-            }
-
-            if (isCssColor(colors.value.background)) {
-                styles.push(`background-color: ${colors.value.background}`)
-
-                if (!colors.value.text && isParsableColor(colors.value.background)) {
-                    const backgroundColor = parseColor(colors.value.background)
-
-                    if (backgroundColor.a == null || backgroundColor.a === 1) {
-                        styles.push(`color: ${getForeground(backgroundColor)}`)
-                    }
-                }
+            if (isIntent(colors.value.background)) {
+                const m = tokenStylesForIntent(colors.value.background, 'default')
+                bgDecl = `background-color: ${m['background-color']}`
+                bgIntentFg = m.color
+            } else if (colors.value.background === 'transparent') {
+                bgDecl = `background-color: ${colors.value.background}`
+            } else if (isCssColor(colors.value.background)) {
+                bgDecl = `background-color: ${colors.value.background}`
             }
         }
 
+        // ─── Foreground resolution ───────────────────────────────────────
+        // `color` is foreground-only by design: setting `color="primary"`
+        // changes the text colour, NOT the surface. The text resolves to
+        // the intent's *own* colour (via `fgSubtle` — designed for coloured
+        // text on a light surface), NOT the white-on-bg pair returned by
+        // `tokenStylesForIntent`. Surface ownership lives on `bgColor`
+        // (auto-contrast pairs the matching white-fg below).
+        // For intent-aware surfaces (Btn), use `useColorEffect`, not this
+        // legacy composable — that's where the bg auto-pair-on-fg lives.
+        let fgDecl: string | null = null
         if (colors.value.text) {
-            if (isCssColor(colors.value.text)) {
-                styles.push(`color: ${colors.value.text}`)
+            if (isIntent(colors.value.text)) {
+                fgDecl = `color: ${tokenForegroundForIntent(colors.value.text)}`
+            } else if (isCssColor(colors.value.text)) {
+                fgDecl = `color: ${colors.value.text}`
+            }
+        } else if (bgIntentFg) {
+            // bg was an intent and consumer didn't provide an explicit text
+            // colour → pair the intent's matching fg token (theme-aware
+            // auto-contrast, no `getForeground` heuristic needed).
+            fgDecl = `color: ${bgIntentFg}`
+        } else if (bgDecl && colors.value.background && typeof colors.value.background === 'string'
+                   && colors.value.background !== 'transparent'
+                   && isParsableColor(colors.value.background)) {
+            // Legacy auto-contrast for raw CSS colors (WCAG-aware
+            // foreground from `getForeground`). Skipped for translucent
+            // bgs since contrast can't be reliably computed.
+            const parsed = parseColor(colors.value.background)
+            if (parsed.a == null || parsed.a === 1) {
+                fgDecl = `color: ${getForeground(parsed)}`
             }
         }
 
+        if (bgDecl) styles.push(bgDecl)
+        if (fgDecl) styles.push(fgDecl)
         return styles
     })
 

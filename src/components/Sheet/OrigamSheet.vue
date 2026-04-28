@@ -35,7 +35,7 @@
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses} = useElevation(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -49,6 +49,7 @@
 			dimensionStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
+			elevationStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
@@ -116,8 +117,35 @@
 			box-shadow: var(--origam-sheet--border---box-shadow);
 		}
 
+		// Rounded variants — mirrors the OrigamBtn pattern. Each variant
+		// binds `--origam-sheet---border-radius` to a primitive
+		// `--origam-radius-*` token so theme switches stay seamless.
 		&--rounded {
-			border-radius: var(--origam-sheet--rounded---border-radius);
+			--origam-sheet---border-radius: var(--origam-sheet--rounded---border-radius, var(--origam-radius-2xl, 24px));
+		}
+
+		&--rounded-x-small {
+			--origam-sheet---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-sheet---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-sheet---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-sheet---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-sheet---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-sheet---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
 		&--absolute {

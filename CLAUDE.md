@@ -4,6 +4,58 @@ This document is the canonical reference for AI agents and humans working on
 the origam design system. It complements the global CLAUDE.md instructions
 by capturing project-specific conventions.
 
+---
+
+## ⛔ "Test-as-you-build" rule for stories (mandatory)
+
+**Every new story MUST ship with a matching Playwright spec that asserts
+every prop / Variant produces a distinct runtime behaviour.** Don't write
+the doc + story and call it done — write the doc, the story, AND
+`tests/e2e/{component}.spec.ts` together. The spec must:
+
+1. Navigate to each `<Variant>` (via the dedicated Variant titles, not
+   via the HstSelect picker dropdown which is custom DOM and brittle).
+2. For each prop exposed in the variant's controls, programmatically
+   exercise the prop (mouse, scroll, value swap, …) and assert the
+   computed style / class actually changes between values.
+3. Catch silently-ignored props (component types `IXxxProps` but the
+   `<style>` block is empty, or a class is emitted without a matching
+   SCSS rule). If the SCSS is missing, **fix it in the same PR**, don't
+   defer to a remediation ticket — that's how the user ends up clicking
+   through 10 broken Variants.
+
+If a prop can't be tested headlessly (audio, deviceorientation on
+desktop without sensor support), document that in the spec with a
+diagnostic block AND mention the limitation explicitly when reporting
+to the user.
+
+---
+
+## ⛔ "Don't claim it's fixed" rule (mandatory)
+
+**Never tell the user "it's fixed" / "ça devrait marcher" / "fait" without
+having actually verified the runtime behaviour.** Type-check passing or
+file-edit success is NOT verification.
+
+Before claiming a fix:
+
+1. **Component logic / pure functions** — write a Vitest unit test (or
+   re-run an existing one) and confirm green.
+2. **SCSS / CSS rules** — grep the rendered class output OR ask the user
+   for a screenshot of the DOM-inspected element with computed styles.
+3. **Stories / Histoire interactions (mouse, scroll, focus, drag, …)** —
+   you cannot test these in CLI. Acknowledge the limitation explicitly:
+   *"I can't verify interactive behaviour from here — please reload and
+   confirm X, Y, Z. If it still fails, paste the console errors or a
+   screenshot."* Do **not** say "it's fixed" — say "I changed X, please
+   verify it works."
+4. **Fixes that touched composables consumed by many components** —
+   surface the blast radius and ask the user to spot-check at least one
+   component besides the one originally reported.
+
+When in doubt, **stop and ask** rather than claim correctness. A wrong
+"it's fixed" wastes the user's testing cycle and erodes trust.
+
 ## Tech stack (snapshot)
 
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.

@@ -43,29 +43,30 @@
 	const colClasses = computed(() => {
 		const classes = [
 			'origam-col',
-			{
-				[`origam-col--align-${props.align}`]: props.align
-			},
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class
 		]
-		const propMap = {
-			align: ['alignSm', 'alignSm', 'alignLg', 'alignXl', 'alignXxl'],
-			justify: ['justifySm', 'justifyMd', 'justifyLg', 'justifyXl', 'justifyXxl'],
-			offset: ['offsetSm', 'offsetMd', 'offsetLg', 'offsetXl', 'offsetXxl'],
-			order: ['orderSm', 'orderMd', 'orderLg', 'orderXl', 'orderXxl'],
-			grid: ['sm', 'md', 'lg', 'xl', 'xxl']
-		}
 
+		// `cols` is special — emits `origam-col--{value}` (no `--cols-` prefix).
 		if (props.cols) {
 			classes.push(`origam-col--${props.cols}`)
 		}
 
-		for (const type in propMap) {
-			propMap[type as keyof typeof propMap].forEach((prop) => {
-				if (props[prop as keyof typeof props]) classes.push(`origam-col--${toKebabCase(prop)}-${props[prop as keyof typeof props]}`)
+		// Standard prop families: each entry covers the base prop + per-breakpoint
+		// variants. Every prop emits `origam-col--{toKebabCase(prop)}-{value}`.
+		const propFamilies = {
+			align:      ['align',  'alignSm',  'alignMd',  'alignLg',  'alignXl',  'alignXxl'],
+			offset:     ['offset', 'offsetSm', 'offsetMd', 'offsetLg', 'offsetXl', 'offsetXxl'],
+			order:      ['order',  'orderSm',  'orderMd',  'orderLg',  'orderXl',  'orderXxl'],
+			breakpoint: ['sm', 'md', 'lg', 'xl', 'xxl']
+		}
+
+		for (const family in propFamilies) {
+			propFamilies[family as keyof typeof propFamilies].forEach((prop) => {
+				const value = props[prop as keyof typeof props]
+				if (value) classes.push(`origam-col--${toKebabCase(prop)}-${value}`)
 			})
 		}
 

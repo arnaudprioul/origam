@@ -44,24 +44,26 @@
 	const rowClasses = computed(() => {
 		const classes = [
 			'origam-row',
-			{
-				[`origam-row--align-${props.align}`]: props.align,
-				[`origam-row--justify-${props.justify}`]: props.justify
-			},
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class
 		]
-		const propMap = {
-			align: ['alignSm', 'alignMd', 'alignLg', 'alignXl', 'alignXxl'],
-			justify: ['justifySm', 'justifyMd', 'justifyLg', 'justifyXl', 'justifyXxl']
+
+		// Standard prop families: each entry covers the base prop + per-breakpoint
+		// variants. Every prop emits `origam-row--{toKebabCase(prop)}-{value}`.
+		// `direction` has no breakpoint variants — it's a single-axis prop.
+		const propFamilies = {
+			align:     ['align',   'alignSm',   'alignMd',   'alignLg',   'alignXl',   'alignXxl'],
+			justify:   ['justify', 'justifySm', 'justifyMd', 'justifyLg', 'justifyXl', 'justifyXxl'],
+			direction: ['direction']
 		}
 
-		for (const type in propMap) {
-			propMap[type as keyof typeof propMap].forEach((prop) => {
-				if (props[prop as keyof typeof props]) classes.push(`origam-row--${toKebabCase(prop)} : ${props[prop as keyof typeof props]}`)
+		for (const family in propFamilies) {
+			propFamilies[family as keyof typeof propFamilies].forEach((prop) => {
+				const value = props[prop as keyof typeof props]
+				if (value) classes.push(`origam-row--${toKebabCase(prop)}-${value}`)
 			})
 		}
 
@@ -85,6 +87,7 @@
 
 	.origam-row {
 		display: var(--origam-row---display);
+		flex-direction: var(--origam-row---flex-direction);
 		flex-wrap: var(--origam-row---flex-wrap);
 		flex: var(--origam-row---flex);
 		align-items: var(--origam-row---align-items);
@@ -105,22 +108,24 @@
 			margin-block-start: calc((var(--origam-row---margin-block-start) + var(--origam-row---density)) * -1);
 		}
 
+		// Density rungs — controls the gutter compensation applied to the
+		// row's outer margins. Negative values pull the row outward (so the
+		// outermost columns hug the container edges); positive values push
+		// it inward (extra breathing room).
+		//
+		//   default     →  0    (no compensation)
+		//   compact     → -8px  (tighter — outer columns flush)
+		//   comfortable →  8px  (looser — extra outer padding)
 		&--density-default {
-			--origam-row---density: -8px;
-
-			> .origam-col,
-			> [class*=origam-col-] {
-				// padding 4px
-			}
+			--origam-row---density: 0;
 		}
 
 		&--density-compact {
-			--origam-row---density: 0;
+			--origam-row---density: -8px;
+		}
 
-			> .origam-col,
-			> [class*=origam-col-] {
-				// padding 4px
-			}
+		&--density-comfortable {
+			--origam-row---density: 8px;
 		}
 
 		&--border {
@@ -137,6 +142,12 @@
 		@each $justify, $justifyAttr in $justifies {
 			&--justify-#{$justify} {
 				--origam-row---justify-content: #{$justifyAttr};
+			}
+		}
+
+		@each $direction in (row, row-reverse, column, column-reverse) {
+			&--direction-#{$direction} {
+				--origam-row---flex-direction: #{$direction};
 			}
 		}
 
@@ -163,6 +174,7 @@
 <style>
 	:root {
 		--origam-row---display: flex;
+		--origam-row---flex-direction: row;
 		--origam-row---flex-wrap: wrap;
 		--origam-row---flex: 1 1 auto;
 
@@ -177,6 +189,13 @@
 		--origam-row---margin-block-end: -4px;
 		--origam-row---margin-inline-start: -4px;
 		--origam-row---margin-inline-end: -4px;
+
+		/* `density` defaults to 0 here so the calc() in `.origam-row` margin
+		   rules always resolves — without this fallback, an Origam Row rendered
+		   without a density-* class would silently drop its margins (var()
+		   lookup fails, the whole calc() becomes invalid, the property is
+		   dropped). */
+		--origam-row---density: 0;
 
 		--origam-row---align-items: stretch;
 		--origam-row---justify-content: flex-start

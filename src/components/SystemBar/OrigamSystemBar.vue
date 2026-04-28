@@ -90,6 +90,7 @@
 >
 	.origam-system-bar {
 		align-items: var(--origam-system-bar---align-items, center);
+		box-sizing: var(--origam-system-bar---box-sizing, border-box);
 		display: var(--origam-system-bar---display, flex);
 		flex: var(--origam-system-bar---flex, 1 1 auto);
 		height: var(--origam-system-bar---height, 24px);

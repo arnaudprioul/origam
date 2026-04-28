@@ -127,8 +127,6 @@ export * from './Grids/container.type'
 export * from './Grids/row.type'
 export * from './Grids/spacer.type'
 
-export * from './Highlight/highlight.type'
-
 export * from './Icon/class-icon.type'
 export * from './Icon/component-icon.type'
 export * from './Icon/icon.type'

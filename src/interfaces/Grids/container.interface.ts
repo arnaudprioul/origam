@@ -1,15 +1,18 @@
 import type {
     IBorderProps,
-    IColorProps,
     ICommonsComponentProps,
     IDimensionProps,
     IMarginProps,
     IPaddingProps,
-    IRoundedProps,
     ITagProps
 } from '../../interfaces'
 
-export interface IContainerProps extends ICommonsComponentProps, ITagProps, IDimensionProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IColorProps {
+/**
+ * Container is a structural wrapper. It deliberately does NOT extend
+ * `IColorProps` / `IRoundedProps` — chrome (background, border-radius)
+ * belongs on `Sheet` / `Card` / `Alert`, not on the page-level wrapper.
+ */
+export interface IContainerProps extends ICommonsComponentProps, ITagProps, IDimensionProps, IPaddingProps, IMarginProps, IBorderProps {
     fluid?: boolean
     fullscreen?: boolean
 }
