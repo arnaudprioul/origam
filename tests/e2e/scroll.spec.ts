@@ -75,14 +75,7 @@ const SLIDE_GROUP_PATH = '/story/stories-components-stories-slide-origamslidegro
 
 test.describe('OrigamSlideGroup', () => {
 
-    // KNOWN ISSUE: OrigamSlideGroup never mounts in the Histoire sandbox —
-    // the DOM shows a `<!--[object Object]-->` Vue comment node where the
-    // component should render, even after a 5s wait, with no console
-    // error. The component itself appears to have a runtime issue (likely
-    // in `useGroup` / `useResizeObserver` / `useGoTo` setup) that
-    // silently aborts the render. Three tests below are .fixme until
-    // the underlying mount bug is investigated. See remediation ticket.
-    test.fixme('default — group renders with a horizontally-scrollable container', async ({ page }) => {
+    test('default — group renders with a horizontally-scrollable container', async ({ page }) => {
         await openVariant(page, SLIDE_GROUP_PATH, 'Default')
         const sandbox = sandboxOf(page)
         const group = sandbox.locator('.origam-slide-group').first()
@@ -95,7 +88,7 @@ test.describe('OrigamSlideGroup', () => {
         expect(['auto', 'scroll']).toContain(overflow)
     })
 
-    test.fixme('horizontal variant: scrollLeft can shift on scroll-overflow', async ({ page }) => {
+    test('horizontal variant: scrollLeft can shift on scroll-overflow', async ({ page }) => {
         await openVariant(page, SLIDE_GROUP_PATH, 'Default')
         const sandbox = sandboxOf(page)
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -112,7 +105,7 @@ test.describe('OrigamSlideGroup', () => {
         }
     })
 
-    test.fixme('direction class swap toggles flex-direction', async ({ page }) => {
+    test('direction class swap toggles flex-direction', async ({ page }) => {
         await openVariant(page, SLIDE_GROUP_PATH, 'Default')
         const sandbox = sandboxOf(page)
         const group = sandbox.locator('.origam-slide-group').first()

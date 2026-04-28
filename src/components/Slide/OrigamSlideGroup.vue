@@ -13,7 +13,6 @@
 				@click="handleFocusAffixes"
 				@mousedown="hasPrev && scrollTo('prev')"
 		>
-			>
 			<slot name="prev">
 				<origam-fade>
 					<origam-icon :icon="prevIcon"/>
@@ -48,7 +47,6 @@
 				@click="handleFocusAffixes"
 				@mousedown="hasNext && scrollTo('next')"
 		>
-			>
 			<slot name="next">
 				<origam-fade>
 					<origam-icon :icon="nextIcon"/>
@@ -93,9 +91,17 @@
 	} from "../../utils"
 
 	const props = withDefaults(defineProps<ISlideGroupProps>(), {
+		// `tag` MUST default to a real string — without it the root
+		// `<component :is="tag">` resolved to `<component :is="undefined">`
+		// which Vue renders as a `<!--[object Object]-->` placeholder
+		// and silently swallows the rest of the template (no error
+		// surface, the story shell looked empty).
+		tag: 'div',
 		direction: DIRECTION.HORIZONTAL,
-		prevIcon: MDI_ICONS.CHEVRON_RIGHT,
-		nextIcon: MDI_ICONS.CHEVRON_LEFT,
+		// Affix icons were swapped: prev pointed RIGHT, next pointed LEFT.
+		// Reversed so the chevrons match the scroll direction they trigger.
+		prevIcon: MDI_ICONS.CHEVRON_LEFT,
+		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		selectedClass: 'origam-slide-group-item--active'
 	})
 
@@ -199,7 +205,16 @@
 				Math.abs(newPosition - scrollPosition) < 16
 		) return
 
-		if (isHorizontal.value && containerRef.value) {
+		// In RTL, scroll positions are mirrored: position 0 is the
+		// right-most edge and increases as you go left. Flip
+		// `newPosition` against the max scrollable distance so the
+		// caller always works in LTR-style coordinates. In LTR, leave
+		// the requested position untouched — the previous code applied
+		// this flip unconditionally, which sent every "go to N" call
+		// to `(maxScroll − N)` instead of `N`. With a 5-tab viewport
+		// that meant clicking "next" jumped past the middle of the
+		// list and skipped tabs.
+		if (isHorizontal.value && isRtl.value && containerRef.value) {
 			const {scrollWidth, offsetWidth: containerWidth} = containerRef.value!
 
 			newPosition = (scrollWidth - containerWidth) - newPosition
@@ -308,20 +323,14 @@
 	}
 
 	const scrollTo = (location: 'prev' | 'next') => {
-		const direction = 1
-
-		const offsetStep = (location === 'prev' ? -direction : direction) * containerSize.value
-
-		let newPosition = scrollOffset.value + offsetStep
-
-		// TODO: improve it
-		if (isHorizontal.value && containerRef.value) {
-			const {scrollWidth, offsetWidth: containerWidth} = containerRef.value!
-
-			newPosition += scrollWidth - containerWidth
-		}
-
-		scrollToPosition(newPosition)
+		// Step one container-width per click, in the direction of the
+		// affix. The previous implementation added `scrollWidth -
+		// containerWidth` on top of the step, jumping straight to the
+		// far end on the first click and then walking back from there —
+		// arrows looked broken. A pure `currentOffset ± containerSize`
+		// behaviour is the standard pattern for slide groups.
+		const offsetStep = (location === 'prev' ? -1 : 1) * containerSize.value
+		scrollToPosition(scrollOffset.value + offsetStep)
 	}
 
 	const slotProps = computed(() => ({
@@ -418,7 +427,10 @@
 		return [
 			'origam-slide-group__next',
 			{
-				'origam-slide-group__next--disabled': !hasPrev.value
+				// Was `!hasPrev.value` (copy-paste from the prev affix
+				// classes) — the next button stayed enabled at the end
+				// of the scroll and disabled at the start.
+				'origam-slide-group__next--disabled': !hasNext.value
 			}
 		]
 	})
