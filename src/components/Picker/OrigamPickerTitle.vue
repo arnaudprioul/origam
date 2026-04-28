@@ -51,11 +51,12 @@
 		scoped
 >
 	.origam-picker-title {
-		text-transform: uppercase;
-		font-size: .75rem;
-		padding-inline: 24px 12px;
-		padding-block: 16px;
-		font-weight: 400;
-		letter-spacing: .1666666667em
+		text-transform: var(--origam-picker-title---text-transform, uppercase);
+		font-size: var(--origam-picker-title---font-size, .75rem);
+		padding-inline: var(--origam-picker-title---padding-inline, 24px 12px);
+		padding-block: var(--origam-picker-title---padding-block, 16px);
+		font-weight: var(--origam-picker-title---font-weight, 400);
+		letter-spacing: var(--origam-picker-title---letter-spacing, .1666666667em);
+		color: var(--origam-picker-title---color, var(--origam-picker--title---color, inherit));
 	}
 </style>
