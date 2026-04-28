@@ -287,7 +287,7 @@
 		return state.value === IMG_STATE.LOADING
 	})
 	const isError = computed(() => {
-		return state.value === IMG_STATE.ERROR && !slots.error
+		return state.value === IMG_STATE.ERROR
 	})
 	const hasContent = computed(() => {
 		return slots.default
