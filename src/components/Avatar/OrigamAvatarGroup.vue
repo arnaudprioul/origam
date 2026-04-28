@@ -30,10 +30,17 @@
 					name="rest"
 					v-bind="{rest: restItems, length: restItems.length}"
 			>
+				<!--
+					`avatarProps` is a function (line 104). Without the
+					call parens, Vue tries to spread the function ref
+					itself as props — `density`, `size`, `color`, …
+					forwarded from OrigamAvatarGroup never reached the
+					rest chip. Calling it () returns the merged props.
+				-->
 				<origam-avatar
 						ref="origamAvatarRef"
 						class="origam-avatar-group__rest"
-						v-bind="avatarProps"
+						v-bind="avatarProps()"
 				>
 					<template #default>
 						<slot name="default">
@@ -199,89 +206,104 @@
 		margin-inline-start: var(--origam-avatar-group---margin-inline-start);
 		margin-inline-end: var(--origam-avatar-group---margin-inline-end);
 
-		&___item {
+		&__item {
 			margin-block-start: var(--origam-avatar-group__item---margin-block-start);
 			margin-block-end: var(--origam-avatar-group__item---margin-block-end);
 			margin-inline-start: var(--origam-avatar-group__item---margin-inline-start);
 			margin-inline-end: var(--origam-avatar-group__item---margin-inline-end);
 		}
 
+		// Transition on the margin LONGHAND directly — CSS variables don't
+		// trigger transitions when their value changes; only the consumer
+		// property (here `margin-inline-start` / `margin-block-start`)
+		// does, and only when that exact property is in
+		// `transition-property`. Composing the longhands manually because
+		// the tokens expose `-property` / `-duration` / `-timing-function`
+		// individually (no shorthand `--…--transition` token).
+		// `__rest` (the +N chip) is part of the same overlap chain — it
+		// sits at the end of the cluster and must chevauche the last
+		// `__item` exactly like every other non-first slot. Both
+		// selectors are applied below in `--horizontal` / `--vertical`
+		// and in the transition declaration.
 		&--expand-on-hover,
 		&--expand-on-click {
-			#{$this}___item {
-				&:not(:first-child) {
-					transition: var(--origam-avatar-group__avatar---transition);
-				}
+			#{$this}__item:not(:first-child),
+			#{$this}__rest:not(:first-child) {
+				transition-property: var(--origam-avatar-group__avatar---transition-property, margin);
+				transition-duration: var(--origam-avatar-group__avatar---transition-duration, 200ms);
+				transition-timing-function: var(--origam-avatar-group__avatar---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
+		}
+
+		// `expand-on-click` is the actionable variant — the wrapper itself
+		// is the click target. Surface that affordance with `cursor:
+		// pointer` so users know the cluster is interactive (hover-only
+		// expand stays on the default cursor — no click handler).
+		&--expand-on-click {
+			cursor: pointer;
 		}
 
 		&--elevated {
 			box-shadow: var(--origam-avatar-group---box-shadow-elevated, var(--origam-shadow-md));
 		}
 
-		&--density-comfortable {
-			--origam-avatar-group---density: 8px;
+		// Density rungs — offset added to the cluster's overlap margin
+		// (`calc(-18px + density)`):
+		//   compact      = -6px  → total margin -24px → tightest stack
+		//   default      =  0    → total margin -18px → standard
+		//   comfortable  = 10px  → total margin  -8px → roomy stack
+		// Compact and comfortable used to share `8px` — the two rungs
+		// rendered identically and `compact` actually loosened the stack
+		// instead of tightening it.
+		&--density-compact {
+			--origam-avatar-group---density: -6px;
 		}
 
 		&--density-default {
 			--origam-avatar-group---density: 0px;
 		}
 
-		&--density-compact {
-			--origam-avatar-group---density: 8px;
+		&--density-comfortable {
+			--origam-avatar-group---density: 10px;
 		}
 
+		// Horizontal stack — overlapping margins on every non-first item.
+		// Apply margin DIRECTLY (not via a CSS variable) so the
+		// `transition-property: margin` declared above can pick up the
+		// change to `margin-inline-start` when the wrapper enters the
+		// `:hover` / `--active` state.
 		&--horizontal {
-			--origam-avatar-group---flex-direction: row;
+			flex-direction: row;
 
-			#{$this}___item {
-				&:not(:first-child) {
-					--origam-avatar-group---margin-inline-start: calc(-18px + var(--origam-avatar-group---density));
-				}
+			#{$this}__item:not(:first-child),
+			#{$this}__rest:not(:first-child) {
+				margin-inline-start: calc(-18px + var(--origam-avatar-group---density, 0px));
 			}
 
-			&#{$this}--expand-on-hover {
-				&:hover {
-					#{$this}___item {
-						--origam-avatar-group---margin-inline-start: 0;
-					}
-				}
-			}
-
-			&#{$this}--expand-on-click {
-				&#{$this}--active {
-					#{$this}___item {
-						--origam-avatar-group---margin-inline-start: 0;
-					}
-				}
+			&#{$this}--expand-on-hover:hover #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-hover:hover #{$this}__rest:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__rest:not(:first-child) {
+				margin-inline-start: 0;
 			}
 		}
 
 		&--vertical {
 			flex-direction: column;
 
-			#{$this}___item {
-				&:not(:first-child) {
-					--origam-avatar-group---margin-block-start: calc(-18px + var(--origam-avatar-group---density));
-				}
+			#{$this}__item:not(:first-child),
+			#{$this}__rest:not(:first-child) {
+				margin-block-start: calc(-18px + var(--origam-avatar-group---density, 0px));
 			}
 
-			&#{$this}--expand-on-hover {
-				&:hover {
-					#{$this}___item {
-						--origam-avatar-group---margin-block-start: 0;
-					}
-				}
-			}
-
-			&#{$this}--expand-on-click {
-				&#{$this}--active {
-					#{$this}___item {
-						--origam-avatar-group---margin-block-start: 0;
-					}
-				}
+			&#{$this}--expand-on-hover:hover #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-hover:hover #{$this}__rest:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__rest:not(:first-child) {
+				margin-block-start: 0;
 			}
 		}
+
 	}
 </style>
 

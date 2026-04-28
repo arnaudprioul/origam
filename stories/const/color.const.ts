@@ -3,7 +3,7 @@ import type { TColor } from '@origam/types'
 
 /**
  * Catch-all list for the `color` / `bgColor` controls in stories.
- * Mirrors the optimus-design-system pattern: intents + every CSS-color
+ * Mirrors the origam-design-system pattern: intents + every CSS-color
  * format the prop can accept. Lets testers cover the whole behaviour
  * matrix in one Variant.
  *

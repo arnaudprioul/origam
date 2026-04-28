@@ -399,7 +399,7 @@ test.describe('OrigamAvatarGroup', () => {
         expect(has).toBe(true)
     })
 
-    test('density variant — compact class is applied', async ({ page }) => {
+    test('density rungs produce three distinct overlap margins (compact tightest, comfortable roomiest)', async ({ page }) => {
         await page.goto(AVATAR_GROUP_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Density', { exact: true }).first().click()
@@ -409,11 +409,22 @@ test.describe('OrigamAvatarGroup', () => {
         const group = sandbox.locator('.origam-avatar-group').first()
         await expect(group).toBeVisible({ timeout: 5000 })
 
-        const density = await group.evaluate((el) => {
-            el.classList.add('origam-avatar-group--density-compact')
-            return getComputedStyle(el).getPropertyValue('--origam-avatar-group---density').trim()
-        })
-        expect(density).toBe('8px')
+        const measure = async (rung: 'compact' | 'default' | 'comfortable') =>
+            group.evaluate((el, rung) => {
+                el.classList.remove(
+                    'origam-avatar-group--density-compact',
+                    'origam-avatar-group--density-default',
+                    'origam-avatar-group--density-comfortable',
+                )
+                el.classList.add(`origam-avatar-group--density-${rung}`)
+                const item = el.querySelectorAll('.origam-avatar-group__item')[1] as HTMLElement | null
+                return item ? getComputedStyle(item).marginInlineStart : null
+            }, rung)
+
+        // calc(-18 + density) → compact -24, default -18, comfortable -8
+        expect(await measure('compact')).toBe('-24px')
+        expect(await measure('default')).toBe('-18px')
+        expect(await measure('comfortable')).toBe('-8px')
     })
 })
 

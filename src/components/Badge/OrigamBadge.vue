@@ -210,6 +210,7 @@
 			white-space: var(--origam-badge__badge---white-space);
 
 			height: var(--origam-badge__badge---height);
+			width: var(--origam-badge__badge---width, auto);
 			min-width: var(--origam-badge__badge---min-width);
 
 			padding-block-start: var(--origam-badge__badge---padding-block-start);
@@ -273,8 +274,14 @@
 				--origam-badge__badge---height: 9px;
 				--origam-badge__badge---width: 9px;
 				--origam-badge__badge---min-width: 0;
-				--origam-badge__badge---padding-block: 0;
-				--origam-badge__badge---padding-inline: 0;
+				// The base SCSS consumes the four padding LONGHANDS (block-start,
+				// block-end, inline-start, inline-end), not the shorthands.
+				// Setting `--padding-block: 0` here was a no-op — kept as legacy
+				// alias but the longhands below are what actually zeros padding.
+				--origam-badge__badge---padding-block-start: 0;
+				--origam-badge__badge---padding-block-end: 0;
+				--origam-badge__badge---padding-inline-start: 0;
+				--origam-badge__badge---padding-inline-end: 0;
 				--origam-badge__badge---text-indent: -9999px;
 			}
 		}
