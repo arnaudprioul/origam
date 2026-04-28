@@ -41,6 +41,16 @@ export const useIcon = (props: Ref<TIcon | undefined>) => {
             }
         }
 
+        // Detect raw SVG path data: strings that start with an SVG path command
+        // letter (M/m/L/l/C/c/…) followed by a space or digit are path data, not
+        // icon set references. Route them directly to OrigamSvgIcon.
+        if (/^[MmLlHhVvCcSsQqTtAaZz][\s\d,.-]/.test(icon)) {
+            return {
+                component: OrigamSvgIcon,
+                icon
+            }
+        }
+
         const iconSetName = Object.keys(icons.sets).find(
             setName => typeof icon === 'string' && icon.startsWith(`${setName}:`)
         )

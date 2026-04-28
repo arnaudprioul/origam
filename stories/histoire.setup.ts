@@ -20,6 +20,25 @@ import '@origam/assets/css/tokens/dark.css'
 // machine would silently flip every story to dark.
 if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', 'light')
+
+    // Load Material Icons + Material Symbols Outlined fonts for
+    // `OrigamLigatureIcon`. The component itself does NOT load any font
+    // (each host app declares its own icon strategy), but the stories
+    // need them so the ligature substitution can swap the icon name
+    // text into the actual glyph. Idempotent — re-running setup won't
+    // duplicate the <link>.
+    const FONT_HREFS = [
+        'https://fonts.googleapis.com/icon?family=Material+Icons',
+        'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
+    ]
+    for (const href of FONT_HREFS) {
+        if (!document.head.querySelector(`link[href="${href}"]`)) {
+            const link = document.createElement('link')
+            link.rel = 'stylesheet'
+            link.href = href
+            document.head.appendChild(link)
+        }
+    }
 }
 
 export const setupVue3 = defineSetupVue3(({ app, addWrapper }) => {
