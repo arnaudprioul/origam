@@ -73,13 +73,22 @@
 	import type { ITouchHandlers, IWindowProps } from '../../interfaces'
 
 	const props = withDefaults(defineProps<IWindowProps>(), {
-		prevIcon: MDI_ICONS.CHEVRON_RIGHT,
-		nextIcon: MDI_ICONS.CHEVRON_LEFT,
+		// Affix icons were swapped: prev pointed right, next pointed left.
+		// Reversed so the chevrons match the scroll/navigation direction.
+		prevIcon: MDI_ICONS.CHEVRON_LEFT,
+		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		touch: undefined,
 		direction: DIRECTION.HORIZONTAL,
 		selectedClass: 'origam-window-item--active',
 		mandatory: true,
-		tag: 'div'
+		tag: 'div',
+		// Vue 3 coerces unset Boolean-union props to `false` at runtime,
+		// which made `showArrows !== false` evaluate false on every variant
+		// that didn't explicitly opt-in — the entire `__controls` block
+		// was collapsed to a `<!--v-if-->` placeholder and there was no
+		// way to navigate. Default to `true` so navigation works out of
+		// the box; consumers can still pass `:show-arrows="false"` to hide.
+		showArrows: true
 	})
 
 	defineEmits(['update:modelValue'])
@@ -234,6 +243,14 @@
 		}
 
 		&__controls {
+			// `box-sizing: border-box` MUST stay — without it, `width: 100%`
+			// + `padding: 0 16px` resolves to `100% + 32px` (content-box
+			// default), which makes the affix container 32px wider than
+			// the window host. The prev arrow ends up nudged 2px out of
+			// the host's left edge and the next arrow gets clipped by the
+			// host's `overflow: hidden`. Pin the box model so 100% really
+			// means 100% of the host.
+			box-sizing: border-box;
 			position: var(--origam-window__controls---position, absolute);
 			left: var(--origam-window__controls---position-left, 0);
 			top: var(--origam-window__controls---position-top, 0);
