@@ -85,6 +85,14 @@
 	import { animate, convertToUnit, getScrollParent } from '../../utils'
 
 	const props = withDefaults(defineProps<IOverlayProps>(), {
+		// `openOnClick` defaults to `true` so the activator button opens
+		// the overlay out of the box. Without this default, `useActivator`'s
+		// fallback (`props.openOnClick == null && !openOnHover && !openOnFocus`)
+		// resolved to `undefined` when Vue coerces the missing boolean prop
+		// to `false` — and the strict equality `props.openOnClick == null`
+		// never matched, leaving every event hook off. Consumers can still
+		// pass `:open-on-click="false"` explicitly to disable.
+		openOnClick: true,
 		scrim: true,
 		zIndex: 2000,
 		closeOnBack: true,
