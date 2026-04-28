@@ -22,8 +22,11 @@ export function useSize (props: ISizeProps, name = getCurrentInstanceName()) {
         const styles = []
 
         if (props.size && !SIZES_ARRAY.includes(props.size as TSize)) {
-            styles.push(`width': ${convertToUnit(props.size)}`)
-            styles.push(`height': ${convertToUnit(props.size)}`)
+            // Note: previous version emitted `width': …` (stray apostrophe)
+            // which Vue silently dropped — leading to 0×0 components when a
+            // numeric/custom size was passed.
+            styles.push(`width: ${convertToUnit(props.size)}`)
+            styles.push(`height: ${convertToUnit(props.size)}`)
         }
 
         return styles

@@ -67,11 +67,18 @@
 
 	import { convertToUnit } from '../../utils'
 
+	import { SIZES } from '../../enums'
+
+	// Default size to `SIZES.DEFAULT` so the SCSS rule
+	// `.origam-progress--circular.origam-progress--size-default { width: 32px; height: 32px }`
+	// pins a width/height — without this the SVG (position: absolute) collapses
+	// to 0×0 and the component renders invisible.
 	const props = withDefaults(defineProps<IProgressCircularProps>(), {
 		tag: 'div',
 		modelValue: 0,
 		max: 100,
-		thickness: 4
+		thickness: 4,
+		size: SIZES.DEFAULT
 	})
 
 	const {filterProps} = useProps<IProgressCircularProps>(props)
@@ -79,7 +86,11 @@
 	const {progressClasses, progressStyles, normalizedValue, thickness, hasContent} = useProgress(props)
 	const {resizeRef, contentRect} = useResizeObserver()
 	const {intersectionRef} = useIntersectionObserver()
-	const {sizeStyles} = useSize(props)
+	// Pass an explicit name so `useSize` emits `origam-progress--size-{size}`,
+	// matching the SCSS rule `.origam-progress--circular.origam-progress--size-x` —
+	// otherwise the class would be `origam-progress-circular--size-x` and the
+	// pinned width/height would never apply (resulting in a 0×0 SVG).
+	const {sizeStyles, sizeClasses} = useSize(props, 'origam-progress')
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 
@@ -126,6 +137,7 @@
 	const progressCircularClasses = computed(() => {
 		return [
 			`origam-progress--circular`,
+			sizeClasses.value,
 			progressClasses.value,
 			props.class
 		]
