@@ -240,8 +240,9 @@
 
 		}
 
+		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
-			--origam-breadcrumb-item---density: 8px;
+			--origam-breadcrumb-item---density: -8px;
 		}
 
 		&--density-default {

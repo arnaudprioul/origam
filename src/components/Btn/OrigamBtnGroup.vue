@@ -160,6 +160,10 @@
 			--origam-btn-group---border-radius: 24px;
 		}
 
+		// Density formula on the btn-group is `height + density`, so:
+		//   • comfortable → density POSITIVE → height grows
+		//   • compact     → density NEGATIVE → height shrinks
+		// Pre-fix both rungs were +8, making them visually identical.
 		&--density-comfortable {
 			--origam-btn-group---density: 8px;
 		}
@@ -169,7 +173,7 @@
 		}
 
 		&--density-compact {
-			--origam-btn-group---density: 8px;
+			--origam-btn-group---density: -8px;
 		}
 
 		:deep(.origam-btn) {

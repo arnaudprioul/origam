@@ -140,8 +140,9 @@
 		margin-inline-start: var(--origam-breadcrumb-divider---margin-inline-start);
 		margin-inline-end: var(--origam-breadcrumb-divider---margin-inline-end);
 
+		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
-			--origam-breadcrumb-divider---density: 8px;
+			--origam-breadcrumb-divider---density: -8px;
 		}
 
 		&--density-default {

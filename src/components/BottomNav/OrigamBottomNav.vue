@@ -261,8 +261,9 @@
 			--origam-bottom-bar---border-radius: 4px;
 		}
 
+		// Density formula `padding/height - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
-			--origam-bottom-bar---density: 8px;
+			--origam-bottom-bar---density: -8px;
 		}
 
 		&--density-default {

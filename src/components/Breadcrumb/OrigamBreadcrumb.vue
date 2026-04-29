@@ -245,8 +245,9 @@
 			--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-rounded, 4px);
 		}
 
+		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
-			--origam-breadcrumb---density: 8px;
+			--origam-breadcrumb---density: -8px;
 		}
 
 		&--density-default {

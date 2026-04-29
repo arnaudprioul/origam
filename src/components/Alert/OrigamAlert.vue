@@ -336,8 +336,13 @@
 			--origam-alert---border-radius: 4px;
 		}
 
+		// Density formula on the alert is `padding - density`, so:
+		//   • comfortable → density must be NEGATIVE so `padding − (−8)` grows
+		//   • compact     → density must be POSITIVE so `padding − 8` shrinks
+		// Pre-fix both rungs were +8, making `comfortable` indistinguishable
+		// from `compact` (both shrunk the padding).
 		&--density-comfortable {
-			--origam-alert---density: 8px;
+			--origam-alert---density: -8px;
 		}
 
 		&--density-default {
