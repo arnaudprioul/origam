@@ -18,7 +18,7 @@
 >
 	import { OrigamSlideGroup } from '../../components'
 
-	import { useGroup, useProps } from "../../composables"
+	import { provideDefaults, useGroup, useProps } from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 
@@ -44,6 +44,20 @@
 	const origamSlideGroupRef = ref<TOrigamSlideGroup>()
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_CHIP_GROUP_KEY)
+
+	// Push the visual-token props down to every descendant `<origam-chip>`
+	// as DEFAULTS (children that pass their own value still win). Same
+	// pattern as `OrigamBtnGroup` — see the propagation contract there.
+	provideDefaults(computed(() => ({
+		'origam-chip': {
+			color: props.color,
+			bgColor: props.bgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor
+		}
+	})))
 
 	const slideGroupProps = computed(() => {
 		return origamSlideGroupRef.value?.filterProps(props)

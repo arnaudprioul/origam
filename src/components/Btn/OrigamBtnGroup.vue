@@ -28,6 +28,7 @@
 >
 	import { OrigamBtn } from '../../components'
 	import {
+		provideDefaults,
 		useBorder,
 		useColorEffect,
 		useDensity,
@@ -57,20 +58,29 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	const items = computed(() => {
-		return props.items?.map((item) => {
-			return {
-				...item,
-				density: props.density ?? item.density,
-				color: props.color ?? item.color,
-				bgColor: props.bgColor ?? item.bgColor,
-				activeColor: props.activeColor ?? item.activeColor,
-				activeBgColor: props.activeBgColor ?? item.activeBgColor,
-				hoverColor: props.hoverColor ?? item.hoverColor,
-				hoverBgColor: props.hoverBgColor ?? item.hoverBgColor
-			}
-		}) as Array<IBtnProps>
-	})
+	// Push the visual-token props down to every descendant `<origam-btn>`
+	// as DEFAULTS — children that pass their own `density` / `color` /
+	// `bgColor` / etc. still win (that's the contract: parent provides
+	// defaults, child overrides). Children consume this map via
+	// `useDefaults(props)` inside `OrigamBtn.vue`.
+	provideDefaults(computed(() => ({
+		'origam-btn': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor
+		}
+	})))
+
+	// The `items` array path used to manually merge with `props.x ?? item.x`,
+	// which made the parent OVERRIDE the item (the inverse of the documented
+	// "parent default, item override" contract). The merge is no longer
+	// needed — `useDefaults` inside each child enforces the correct
+	// resolution order and respects per-item overrides automatically.
+	const items = computed(() => (props.items ?? []) as Array<IBtnProps>)
 
 	const slots = useSlots()
 	const hasItems = computed(() => {

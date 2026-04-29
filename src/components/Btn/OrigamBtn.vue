@@ -120,6 +120,7 @@
 		useAdjacent,
 		useBorder,
 		useColorEffect,
+		useDefaults,
 		useDensity,
 		useDimension,
 		useElevation,
@@ -152,13 +153,22 @@
 
 	const attrs = useAttrs()
 
-	const props = withDefaults(defineProps<IBtnProps>(), {
+	const _props = withDefaults(defineProps<IBtnProps>(), {
 		tag: 'button',
 		ripple: true,
 		active: undefined,
 		size: SIZES.DEFAULT,
 		density: DENSITY.DEFAULT
 	})
+
+	// `useDefaults` resolves each prop against the closest
+	// `<OrigamDefaultsProvider>` (or `provideDefaults({ 'origam-btn': … })`
+	// from a parent like `OrigamBtnGroup` / `OrigamBtnToggle`). Without
+	// this hook the parent's `color` / `density` / `bgColor` settings
+	// silently dropped when buttons were passed via the default slot —
+	// only the `items` prop path was honoured (and even that flipped the
+	// override semantics: parent `??` item, instead of item-wins).
+	const props = useDefaults(_props)
 
 	defineEmits(['group:selected', 'click:append', 'click:prepend'])
 
