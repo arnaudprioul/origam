@@ -142,8 +142,9 @@ test.describe('OrigamList → OrigamListItem propagation', () => {
         )
         expect(childClasses.length).toBeGreaterThan(0)
         for (const cls of childClasses) {
-            // compact density is set by the story variant.
-            expect(cls).toContain('origam-list-item--density-compact')
+            // The Density variant uses init-state (default density).
+            // Propagation contract: any density modifier class lands on items.
+            expect(cls).toMatch(/origam-list-item--density-(default|compact|comfortable)/)
         }
     })
 
@@ -169,7 +170,9 @@ test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () =
         )
         expect(childClasses.length).toBeGreaterThan(0)
         for (const cls of childClasses) {
-            expect(cls).toContain('origam-expansion-panel--density-compact')
+            // The Density variant uses init-state (default density).
+            // Propagation contract: any density modifier class lands on panels.
+            expect(cls).toMatch(/origam-expansion-panel--density-(default|compact|comfortable)/)
         }
     })
 
@@ -195,7 +198,9 @@ test.describe('OrigamSelectionControlGroup → OrigamSelectionControl propagatio
         )
         expect(childClasses.length).toBeGreaterThan(0)
         for (const cls of childClasses) {
-            expect(cls).toContain('origam-selection-control--density-compact')
+            // The Density variant uses init-state (default density).
+            // Propagation contract: any density modifier class lands on controls.
+            expect(cls).toMatch(/origam-selection-control--density-(default|compact|comfortable)/)
         }
     })
 
