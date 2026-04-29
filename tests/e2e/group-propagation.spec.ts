@@ -105,19 +105,26 @@ test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
         }
     })
 
-    test('color propagation: btn children backgroundColor differs from default neutral', async ({ page }) => {
+    test('color propagation: btn children TEXT colour follows the intent', async ({ page }) => {
+        // Per the universal contract — `color` is fg-only, never paints
+        // the surface. We assert the text colour shifts off the default
+        // near-black; the background stays neutral.
         await openVariant(page, BOTTOM_NAV, 'Propagation color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
 
-        const bgColors = await sandbox.locator('.origam-bottom-nav .origam-btn').evaluateAll(els =>
-            els.map(el => getComputedStyle(el).backgroundColor)
+        const samples = await sandbox.locator('.origam-bottom-nav .origam-btn').evaluateAll(els =>
+            els.map(el => {
+                const cs = getComputedStyle(el)
+                return { color: cs.color, backgroundColor: cs.backgroundColor }
+            })
         )
-        expect(bgColors.length).toBeGreaterThan(0)
-        for (const bg of bgColors) {
-            // After propagation the primary token replaces the default neutral grey.
-            expect(bg).not.toBe('rgb(230, 230, 230)')
-            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+        expect(samples.length).toBeGreaterThan(0)
+        for (const s of samples) {
+            // Surface stays neutral — primary intent must NOT have flooded it.
+            expect(s.backgroundColor).not.toBe('rgb(124, 58, 237)')
+            // Text shifted to the intent's foreground token.
+            expect(s.color).not.toBe('rgb(38, 38, 38)')
         }
     })
 })

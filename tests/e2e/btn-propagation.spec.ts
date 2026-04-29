@@ -36,29 +36,40 @@ const CHIP_GROUP = '/story/stories-components-stories-chip-origamchipgroup-story
 // ─── BtnGroup → OrigamBtn ──────────────────────────────────────────────────
 
 test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
-    test('group color forwards: children backgroundColor ≠ default neutral', async ({ page }) => {
-        // The "Color (intent)" variant initialises `color: 'primary'` on
-        // the group. With propagation working, every child <origam-btn>
-        // should receive the primary token's background — measurable as
-        // a non-neutral computed background-color. Pre-fix it stayed at
-        // the default neutral grey (~rgb(230, 230, 230)).
+    test('group color forwards: children TEXT colour follows the intent (NOT the background)', async ({ page }) => {
+        // Universal design-system contract: `color` is foreground-only.
+        // `<OrigamBtnGroup color="primary">` should colour the text of
+        // every child to the primary intent — and leave the surface
+        // background untouched. This was the user's complaint after the
+        // initial provideDefaults fix: `color` was painting backgrounds
+        // (because `useColorEffect` auto-paired bg from intent). The
+        // colour composable was patched to drop that auto-pair.
         await openVariant(page, BTN_GROUP, 'Color (intent)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-group').first()).toBeVisible({ timeout: 8000 })
 
-        const bgColors = await sandbox.locator('.origam-btn-group .origam-btn').evaluateAll(els =>
-            els.map(el => getComputedStyle(el).backgroundColor)
+        const samples = await sandbox.locator('.origam-btn-group .origam-btn').evaluateAll(els =>
+            els.map(el => {
+                const cs = getComputedStyle(el)
+                return { color: cs.color, backgroundColor: cs.backgroundColor }
+            })
         )
 
-        // Default neutral btn bg is `rgb(230, 230, 230)` (grey-200ish).
-        // After propagation lands the primary token, every child differs.
-        for (const bg of bgColors) {
-            expect(bg).not.toBe('rgb(230, 230, 230)')
-            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+        // Background MUST stay neutral / unchanged — pre-fix it flooded
+        // with the intent's purple. The exact neutral depends on theme;
+        // we just assert it's NOT the primary-token purple.
+        for (const s of samples) {
+            expect(s.backgroundColor).not.toBe('rgb(124, 58, 237)') // primary 600
         }
 
-        // All children should share the same propagated background.
-        expect(new Set(bgColors).size).toBe(1)
+        // Text colour MUST shift away from the default near-black
+        // `rgb(38, 38, 38)`. Every child should have a non-default text.
+        for (const s of samples) {
+            expect(s.color).not.toBe('rgb(38, 38, 38)')
+        }
+
+        // All children share the same propagated text colour.
+        expect(new Set(samples.map(s => s.color)).size).toBe(1)
     })
 
     test('group density forwards to children passed via items prop', async ({ page }) => {
@@ -94,19 +105,57 @@ test.describe('OrigamBtnToggle → OrigamBtn propagation', () => {
         }
     })
 
-    test('toggle color forwards: children backgroundColor ≠ default neutral', async ({ page }) => {
-        // The Rounded&Color variant initialises `color: 'primary'` on the toggle.
+    test('toggle color forwards: children TEXT colour shifts; background stays neutral', async ({ page }) => {
+        // Same contract as the BtnGroup test above — `color` is fg-only.
         await openVariant(page, BTN_TOGGLE, 'Rounded & Color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-        const bgColors = await sandbox.locator('.origam-btn-toggle .origam-btn').evaluateAll(els =>
-            els.map(el => getComputedStyle(el).backgroundColor)
+        const samples = await sandbox.locator('.origam-btn-toggle .origam-btn').evaluateAll(els =>
+            els.map(el => {
+                const cs = getComputedStyle(el)
+                return { color: cs.color, backgroundColor: cs.backgroundColor }
+            })
         )
-        for (const bg of bgColors) {
-            expect(bg).not.toBe('rgb(230, 230, 230)')
-            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+        for (const s of samples) {
+            // No primary-purple flood on the surface.
+            expect(s.backgroundColor).not.toBe('rgb(124, 58, 237)')
+            // Text colour shifted off the default near-black.
+            expect(s.color).not.toBe('rgb(38, 38, 38)')
         }
+    })
+})
+
+// ─── color vs bgColor semantics (universal contract) ──────────────────────
+
+test.describe('OrigamBtn — color/bgColor semantics (universal contract)', () => {
+    /**
+     * Pin the universal contract that the user enforced:
+     *   • `color="primary"` alone   → paints the TEXT only, surface unchanged.
+     *   • `bgColor="primary"` alone → paints the SURFACE, text auto-contrasts.
+     * Pre-fix `color` auto-paired a primary background as well, which broke
+     * propagation expectations through groups.
+     *
+     * The BtnGroup `Color (intent)` variant initialises `color: 'primary'`
+     * on the parent — so its children are the cleanest way to assert the
+     * fix end-to-end without driving Histoire's HstSelect dropdown
+     * (which is a custom Vue component, not a native <select>).
+     */
+    test('color flows fg-only across propagation: text shifts, bg stays neutral', async ({ page }) => {
+        await openVariant(page, BTN_GROUP, 'Color (intent)')
+        const sandbox = sandboxOf(page)
+        const firstBtn = sandbox.locator('.origam-btn-group .origam-btn').first()
+        await expect(firstBtn).toBeVisible({ timeout: 8000 })
+
+        const sample = await firstBtn.evaluate(el => {
+            const cs = getComputedStyle(el)
+            return { color: cs.color, backgroundColor: cs.backgroundColor }
+        })
+
+        // No primary-purple flood on the surface.
+        expect(sample.backgroundColor).not.toBe('rgb(124, 58, 237)')
+        // Text shifted off the default near-black to the intent fg token.
+        expect(sample.color).not.toBe('rgb(38, 38, 38)')
     })
 })
 

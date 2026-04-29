@@ -283,14 +283,24 @@ export function useColorEffect (
         }
 
         // ─── Foreground resolution ───────────────────────────────────────
+        // Universal design-system contract (matches `useColor`):
+        //   • `color` is FOREGROUND-ONLY — it never paints the surface.
+        //   • `bgColor` owns the surface; if the consumer wants both
+        //     coloured, both props must be set.
+        // The previous version of this block auto-paired the bg from the
+        // intent when only `color` was passed — that meant
+        // `<OrigamBtnGroup color="primary">` flooded every child button
+        // with primary backgrounds instead of just colouring the text,
+        // breaking the rest of the design system's expectations.
+        // For "filled primary button" use `bgColor="primary"` (which
+        // auto-contrasts the text to the intent's fg pair below) or set
+        // both explicitly.
         if (color.value && isIntent(color.value)) {
-            const m = tokenStylesForIntent(color.value, fgRole)
-            // No bg has been picked yet → use the intent's own bg pair so
-            // `color="primary"` alone still renders a primary surface.
-            if (!bgDecl) {
-                bgDecl = `background-color: ${m['background-color']}`
-            }
-            fgDecl = `color: ${m.color}`
+            // `tokenForegroundForIntent` returns the intent's *foreground*
+            // token (e.g. `var(--origam-color-action-primary-fgSubtle)`),
+            // designed to be legible on a neutral surface — exactly the
+            // semantics consumers want from `color` alone.
+            fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
         } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
             if (color.value !== 'transparent') warnLegacyColor('color', color.value)
             fgDecl = `color: ${color.value}`
