@@ -107,7 +107,7 @@ test.describe('OrigamBtnToggle → OrigamBtn propagation', () => {
 
     test('toggle color forwards: children TEXT colour shifts; background stays neutral', async ({ page }) => {
         // Same contract as the BtnGroup test above — `color` is fg-only.
-        await openVariant(page, BTN_TOGGLE, 'Rounded & Color')
+        await openVariant(page, BTN_TOGGLE, 'Color (intent)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 

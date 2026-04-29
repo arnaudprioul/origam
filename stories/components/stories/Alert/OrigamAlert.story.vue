@@ -42,17 +42,29 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ TITLE ════════════ -->
+		<!-- ════════════ TITLE prop (heading) ════════════ -->
 		<Variant
 				title="Title prop"
-				:init-state="() => useStoryInitState<{ title?: string, text?: string }>({ title: 'Alert title', text: 'Alert body text.' })"
+				:init-state="() => useStoryInitState<{ title?: string }>({ title: 'Alert title' })"
 		>
 			<template #default="{ state }">
-				<origam-alert :title="state.title" :text="state.text" data-cy="alert-title"/>
+				<origam-alert :title="state.title" data-cy="alert-title"/>
 			</template>
 			<template #controls="{ state }">
 				<HstText v-model="state.title" title="title"/>
-				<HstText v-model="state.text"  title="text"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ TEXT prop (body) ════════════ -->
+		<Variant
+				title="Text prop"
+				:init-state="() => useStoryInitState<{ text?: string }>({ text: 'Alert body text.' })"
+		>
+			<template #default="{ state }">
+				<origam-alert :text="state.text" data-cy="alert-text"/>
+			</template>
+			<template #controls="{ state }">
+				<HstText v-model="state.text" title="text"/>
 			</template>
 		</Variant>
 

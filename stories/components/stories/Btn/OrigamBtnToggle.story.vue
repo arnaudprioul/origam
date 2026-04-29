@@ -84,20 +84,36 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED + COLOR ════════════ -->
+		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
-				title="Rounded & Color"
-				:init-state="() => useStoryInitState<{ rounded?: boolean | string, color?: string }>({ rounded: true, color: 'primary' })"
+				title="Rounded"
+				:init-state="() => useStoryInitState<{ rounded?: boolean | string }>({ rounded: true })"
 		>
 			<template #default="{ state }">
-				<origam-btn-toggle v-model="roundedValue" :rounded="state.rounded" :color="state.color" data-cy="btn-toggle-rounded">
+				<origam-btn-toggle v-model="roundedValue" :rounded="state.rounded" data-cy="btn-toggle-rounded">
 					<origam-btn :value="'grid'" text="Grid" data-cy="bt-rounded-grid"/>
 					<origam-btn :value="'list'" text="List" data-cy="bt-rounded-list"/>
 				</origam-btn-toggle>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ COLOR (intent) ════════════ -->
+		<Variant
+				title="Color (intent)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-btn-toggle v-bind="state" v-model="colorValue" data-cy="btn-toggle-color">
+					<origam-btn :value="'grid'" text="Grid" data-cy="bt-color-grid"/>
+					<origam-btn :value="'list'" text="List" data-cy="bt-color-list"/>
+				</origam-btn-toggle>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -147,7 +163,7 @@
 
 	import { OrigamBtn, OrigamBtnToggle } from '@origam/components'
 	import { DENSITY } from '@origam/enums'
-	import type { IBtnToggleProps } from '@origam/interfaces'
+	import type { IBtnToggleProps, IColorProps } from '@origam/interfaces'
 	import type { TDensity } from '@origam/types'
 
 	import { densityList, intentList, roundedList } from '@stories/const'
@@ -159,6 +175,7 @@
 	const disabledValue = ref<'a' | 'b' | undefined>(undefined)
 	const densityValue = ref<number>(2)
 	const roundedValue = ref<'grid' | 'list'>('grid')
+	const colorValue = ref<'grid' | 'list'>('grid')
 	const playgroundValue = ref<number | Array<number> | undefined>(1)
 </script>
 

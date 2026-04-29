@@ -114,6 +114,19 @@ test.describe('OrigamAlert — title', () => {
     })
 })
 
+// ─── Text ────────────────────────────────────────────────────────────────────
+
+test.describe('OrigamAlert — text', () => {
+    test('text prop renders the body content', async ({ page }) => {
+        await openVariant(page, STORY, 'Text prop')
+        const sandbox = sandboxOf(page)
+
+        const alert = sandbox.locator('[data-cy="alert-text"]').first()
+        await expect(alert).toBeVisible({ timeout: 8000 })
+        await expect(alert).toContainText('Alert body text.')
+    })
+})
+
 // ─── Prominent ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamAlert — prominent', () => {
