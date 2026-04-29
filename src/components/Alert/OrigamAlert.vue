@@ -190,7 +190,14 @@
 	// SLOTS
 
 	const hasIcon = computed(() => {
-		return !!(props.icon || props.status)
+		// Pre-fix: `!!(props.icon || props.status)` returned true as soon
+		// as a `status` was set, even when the resolved `icon` was empty
+		// (`useStatus` only assigns `statusIcon` to `icon` when
+		// `statusIconPosition === 'replace'`). The header then rendered
+		// `<origam-icon :icon="undefined">` — an empty `<i.origam-icon>`
+		// placeholder squeezed in next to the title. Pin the gate to the
+		// actual resolved icon used by the template.
+		return !!icon.value
 	})
 	const hasTitle = computed(() => {
 		return !!(slots.title || props.title)

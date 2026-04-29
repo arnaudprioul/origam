@@ -64,7 +64,7 @@
       "font-weight":           { "$type": "fontWeight", "$value": "{font.weight.medium}" },
       "hyphens":               { "$type": "other",      "$value": "auto" },
       "letter-spacing":        { "$type": "dimension",  "$value": "{font.letterSpacing.wider}" },
-      "line-height":           { "$type": "number",     "$value": "{font.lineHeight.loose}" },
+      "line-height":           { "$type": "number",     "$value": "{font.lineHeight.tight}" },
       "overflow-wrap":         { "$type": "other",      "$value": "normal" },
       "text-transform":        { "$type": "other",      "$value": "none" },
       "word-break":            { "$type": "other",      "$value": "normal" },

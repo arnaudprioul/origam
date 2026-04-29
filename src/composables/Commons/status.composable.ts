@@ -8,13 +8,24 @@ export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurre
         return `$${props.status}`
     })
 
+    // Default position when `statusIconPosition` is unset: PREPEND.
+    // The previous logic treated `undefined` as "render at every slot",
+    // so passing `status="info"` painted the icon at BOTH the prepend
+    // AND the append — a visible duplicate inside `OrigamAlert`. Now
+    // omitting the prop yields a single prepend icon, which is the
+    // common-case Material/Bootstrap pattern; consumers can opt into
+    // 'append' / 'both' / 'replace' explicitly.
+    const effectivePosition = computed(() => {
+        return props.statusIconPosition ?? `${STATUS_POSITION.PREPEND}`
+    })
+
     const prependIcon = computed(() => {
-        if (!props.status || (Boolean(props.statusIconPosition) && ![`${STATUS_POSITION.PREPEND}`, `${STATUS_POSITION.BOTH}`].includes(props.statusIconPosition as string)) || props.prependIcon) return props.prependIcon
+        if (!props.status || ![`${STATUS_POSITION.PREPEND}`, `${STATUS_POSITION.BOTH}`].includes(effectivePosition.value) || props.prependIcon) return props.prependIcon
 
         return statusIcon.value
     })
     const appendIcon = computed(() => {
-        if (!props.status || (props.statusIconPosition && ![`${STATUS_POSITION.APPEND}`, `${STATUS_POSITION.BOTH}`].includes(props.statusIconPosition)) || props.appendIcon) return props.appendIcon
+        if (!props.status || ![`${STATUS_POSITION.APPEND}`, `${STATUS_POSITION.BOTH}`].includes(effectivePosition.value) || props.appendIcon) return props.appendIcon
 
         return statusIcon.value
     })
