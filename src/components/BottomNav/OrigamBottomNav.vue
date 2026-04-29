@@ -226,7 +226,20 @@
 
 		border-color: var(--origam-bottom-bar---border-color);
 		border-style: var(--origam-bottom-bar---border-style);
-		border-width: var(--origam-bottom-bar---border-width);
+		// Use the directional border tokens declared in
+		// `tokens/component/bottom-nav.json` (border-top/left/bottom/right-width).
+		// The omnibus `--origam-bottom-bar---border-width` is set by the
+		// `&--border` modifier and acts as the override for all four
+		// sides; without that modifier the default fallback is 0 so
+		// the nav ships borderless.
+		// Pre-fix the SCSS read the undefined omnibus var directly,
+		// which CSS resolves to the property's `initial` value
+		// (`medium`, ~3px) — i.e. a 3px border was painted on every
+		// nav even when `border` was not set.
+		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
+		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
+		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
+		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-bar---border-width, 0));
 		border-radius: var(--origam-bottom-bar---border-radius);
 
 		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start) - var(--origam-bottom-bar---density));
@@ -274,7 +287,15 @@
 		}
 
 		&--border {
+			// Set the four directional tokens so the modifier wins over
+			// the per-side defaults (which are explicitly 0). Keeping
+			// the omnibus var in sync lets ad-hoc consumers who set it
+			// directly via inline style still get a uniform border.
 			--origam-bottom-bar---border-width: thin;
+			--origam-bottom-bar---border-top-width: thin;
+			--origam-bottom-bar---border-right-width: thin;
+			--origam-bottom-bar---border-bottom-width: thin;
+			--origam-bottom-bar---border-left-width: thin;
 		}
 
 		&--rounded {

@@ -282,7 +282,18 @@
 		margin-inline-start: var(--origam-alert---margin-inline-start);
 		margin-inline-end: var(--origam-alert---margin-inline-end);
 
-		border-width: var(--origam-alert---border-width);
+		// Use the directional border tokens declared in the JSON
+		// (border-{top,right,bottom,left}-width). The omnibus
+		// `--origam-alert---border-width` is consumed by ad-hoc
+		// inline overrides only — falling back to it lets a consumer
+		// set a single var to drive all four sides.
+		// Pre-fix the SCSS read the undefined omnibus var directly,
+		// which CSS resolves to `initial` (`medium`, ~3px) — alerts
+		// shipped with a 3px solid border on every render.
+		border-top-width: var(--origam-alert---border-top-width, var(--origam-alert---border-width, 0));
+		border-right-width: var(--origam-alert---border-right-width, var(--origam-alert---border-width, 0));
+		border-bottom-width: var(--origam-alert---border-bottom-width, var(--origam-alert---border-width, 0));
+		border-left-width: var(--origam-alert---border-left-width, var(--origam-alert---border-width, 0));
 		border-style: var(--origam-alert---border-style);
 		border-color: var(--origam-alert---border-color);
 		border-radius: var(--origam-alert---border-radius);

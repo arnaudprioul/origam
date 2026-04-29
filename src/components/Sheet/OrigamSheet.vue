@@ -88,7 +88,15 @@
 
 		border-color: var(--origam-sheet---border-color);
 		border-style: var(--origam-sheet---border-style);
-		border-width: var(--origam-sheet---border-width);
+		// Directional tokens (defined in `tokens/component/sheet.json`)
+		// with omnibus var as the consumer-override fallback. Pre-fix
+		// the SCSS read the undefined `--origam-sheet---border-width`
+		// directly, resolving to CSS `medium` (~3px) — Sheets shipped
+		// with a 3px solid border by default.
+		border-top-width: var(--origam-sheet---border-top-width, var(--origam-sheet---border-width, 0));
+		border-right-width: var(--origam-sheet---border-right-width, var(--origam-sheet---border-width, 0));
+		border-bottom-width: var(--origam-sheet---border-bottom-width, var(--origam-sheet---border-width, 0));
+		border-left-width: var(--origam-sheet---border-left-width, var(--origam-sheet---border-width, 0));
 		border-radius: var(--origam-sheet---border-radius);
 
 		width: var(--origam-sheet---width);
@@ -113,7 +121,18 @@
 		color: var(--origam-sheet---color);
 
 		&--border {
-			border-width: var(--origam-sheet--border---border-width);
+			// Override the four directional tokens — the base rule reads
+			// each side independently, so a single `border-width`
+			// shorthand here would only land if its specificity wins
+			// the cascade. Setting the per-side vars keeps the SCSS
+			// "directional first" contract consistent.
+			// Pre-fix this modifier read `--origam-sheet--border---border-width`,
+			// a token Style Dictionary never generated → the shorthand
+			// resolved to CSS `medium` (~3px).
+			--origam-sheet---border-top-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-right-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-bottom-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-left-width: var(--origam-border-width-thin, 1px);
 			box-shadow: var(--origam-sheet--border---box-shadow);
 		}
 
