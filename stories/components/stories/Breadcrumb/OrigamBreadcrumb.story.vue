@@ -4,15 +4,15 @@
 			title="Breadcrumb/OrigamBreadcrumb"
 	>
 		<!-- Propagation smoke-test: parent color forwards to items -->
-		<Variant title="Propagation color">
+		<Variant title="Color">
 			<origam-breadcrumb
 					color="primary"
 					:items="items"
 			/>
 		</Variant>
 
-		<!-- Propagation density -->
-		<Variant title="Propagation density">
+		<!-- Density -->
+		<Variant title="Density">
 			<origam-breadcrumb
 					density="compact"
 					:items="items"

@@ -4,7 +4,7 @@
 			title="List/OrigamList"
 	>
 		<!-- Propagation: parent density forwards to list items -->
-		<Variant title="Propagation density">
+		<Variant title="Density">
 			<origam-list density="compact">
 				<origam-list-item title="Item one"/>
 				<origam-list-item title="Item two"/>
@@ -12,8 +12,8 @@
 			</origam-list>
 		</Variant>
 
-		<!-- Propagation bgColor -->
-		<Variant title="Propagation bgColor">
+		<!-- BgColor -->
+		<Variant title="BgColor">
 			<origam-list bg-color="primary">
 				<origam-list-item title="Item one"/>
 				<origam-list-item title="Item two"/>

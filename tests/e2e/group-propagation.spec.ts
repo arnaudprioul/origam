@@ -65,8 +65,8 @@ test.describe('OrigamAvatarGroup → OrigamAvatar propagation', () => {
 // ─── 2. OrigamBreadcrumb → OrigamBreadcrumbItem ───────────────────────────
 
 test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
-    test('density class lands on breadcrumb items (Propagation density)', async ({ page }) => {
-        await openVariant(page, BREADCRUMB, 'Propagation density')
+    test('density class lands on breadcrumb items (Density)', async ({ page }) => {
+        await openVariant(page, BREADCRUMB, 'Density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-breadcrumb').first()).toBeVisible({ timeout: 8000 })
 
@@ -91,8 +91,8 @@ test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
 // ─── 3. OrigamBottomNav → OrigamBtn ───────────────────────────────────────
 
 test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
-    test('density class lands on btn children (Propagation density)', async ({ page }) => {
-        await openVariant(page, BOTTOM_NAV, 'Propagation density')
+    test('density class lands on btn children (Density)', async ({ page }) => {
+        await openVariant(page, BOTTOM_NAV, 'Density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
 
@@ -109,7 +109,7 @@ test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
         // Per the universal contract — `color` is fg-only, never paints
         // the surface. We assert the text colour shifts off the default
         // near-black; the background stays neutral.
-        await openVariant(page, BOTTOM_NAV, 'Propagation color')
+        await openVariant(page, BOTTOM_NAV, 'Color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
 
@@ -132,8 +132,8 @@ test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
 // ─── 4. OrigamList → OrigamListItem ───────────────────────────────────────
 
 test.describe('OrigamList → OrigamListItem propagation', () => {
-    test('density class lands on list items (Propagation density)', async ({ page }) => {
-        await openVariant(page, LIST, 'Propagation density')
+    test('density class lands on list items (Density)', async ({ page }) => {
+        await openVariant(page, LIST, 'Density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 8000 })
 
@@ -159,8 +159,8 @@ test.describe('OrigamList → OrigamListItem propagation', () => {
 // ─── 5. OrigamExpansionPanels → OrigamExpansionPanel ─────────────────────
 
 test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () => {
-    test('density class lands on panels (Propagation density)', async ({ page }) => {
-        await openVariant(page, EXPANSION, 'Propagation density')
+    test('density class lands on panels (Density)', async ({ page }) => {
+        await openVariant(page, EXPANSION, 'Density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
 
@@ -185,8 +185,8 @@ test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () =
 // ─── 6. OrigamSelectionControlGroup → OrigamSelectionControl ─────────────
 
 test.describe('OrigamSelectionControlGroup → OrigamSelectionControl propagation', () => {
-    test('density class lands on controls (Propagation density)', async ({ page }) => {
-        await openVariant(page, SELECTION, 'Propagation density')
+    test('density class lands on controls (Density)', async ({ page }) => {
+        await openVariant(page, SELECTION, 'Density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-selection-control-group').first()).toBeVisible({ timeout: 8000 })
 

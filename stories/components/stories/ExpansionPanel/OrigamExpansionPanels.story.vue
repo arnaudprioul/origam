@@ -4,15 +4,15 @@
 			title="ExpansionPanel/OrigamExpansionPanels"
 	>
 		<!-- Propagation: parent density forwards to panels -->
-		<Variant title="Propagation density">
+		<Variant title="Density">
 			<origam-expansion-panels density="compact">
 				<origam-expansion-panel title="Panel 1">Content 1</origam-expansion-panel>
 				<origam-expansion-panel title="Panel 2">Content 2</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- Propagation bgColor -->
-		<Variant title="Propagation bgColor">
+		<!-- BgColor -->
+		<Variant title="BgColor">
 			<origam-expansion-panels bg-color="primary">
 				<origam-expansion-panel title="Panel 1">Content 1</origam-expansion-panel>
 				<origam-expansion-panel title="Panel 2">Content 2</origam-expansion-panel>

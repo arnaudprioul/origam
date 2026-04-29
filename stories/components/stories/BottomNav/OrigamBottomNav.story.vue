@@ -4,7 +4,7 @@
 			title="BottomNav/OrigamBottomNav"
 	>
 		<!-- Propagation: parent color forwards to btn children -->
-		<Variant title="Propagation color">
+		<Variant title="Color">
 			<div style="position: relative; height: 80px; width: 100%;">
 				<origam-bottom-nav
 						color="primary"
@@ -15,8 +15,8 @@
 			</div>
 		</Variant>
 
-		<!-- Propagation density -->
-		<Variant title="Propagation density">
+		<!-- Density -->
+		<Variant title="Density">
 			<div style="position: relative; height: 80px; width: 100%;">
 				<origam-bottom-nav
 						density="compact"
