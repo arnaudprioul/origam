@@ -520,17 +520,24 @@
 			}
 		}
 
+		// Active state has its OWN opacity token now — using the hover
+		// rung made selected btns inside an `OrigamBtnToggle` look exactly
+		// like a hovered (non-selected) sibling, so the user couldn't see
+		// which option was current. Bumped the default to 0.2 so the
+		// selected affordance is visible without being heavy. The
+		// active+hover composite stacks one rung above (0.28) — keeps the
+		// "selected and the cursor is on it" peak distinct.
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
+				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-active, 0.2);
 			}
 
 			&:hover,
 			&:focus-visible,
 			&:focus {
 				> #{$this}__overlay {
-					--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
+					--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-active-hover, 0.28);
 				}
 			}
 		}
