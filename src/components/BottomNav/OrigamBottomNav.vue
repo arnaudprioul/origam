@@ -193,7 +193,27 @@
 
 		display: flex;
 		overflow: hidden;
+
+		// Default standalone positioning — pin to the bottom edge of the
+		// nearest positioned ancestor and stretch full width. Inside an
+		// `<origam-layout>` host, `useLayoutItem` overrides every one of
+		// these (left/right/bottom/width/transform) via inline styles, so
+		// the layout-driven slide-in animation still wins. Pre-fix the
+		// SCSS only declared `position: absolute` — when the component
+		// rendered standalone (story, modal preview, isolated test) it
+		// collapsed to its content width because no inline width was
+		// injected.
+		// `box-sizing: border-box` is required: with `width: 100%` and
+		// the default `content-box`, the inline padding tokens added
+		// ~22px of overflow on top of the parent's width, so the nav
+		// rendered slightly wider than its host. Same fix pattern as
+		// the OrigamWindow `__controls` overflow.
+		box-sizing: border-box;
 		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
 
 		transition: var(--origam-bottom-bar---transition);
 
