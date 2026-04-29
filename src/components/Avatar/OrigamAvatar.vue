@@ -54,6 +54,7 @@
 		useActive,
 		useBorder,
 		useColorEffect,
+		useDefaults,
 		useDensity,
 		useElevation,
 		useHover,
@@ -72,7 +73,12 @@
 	import type { ComputedRef, StyleValue } from 'vue'
 	import { computed, ref, useSlots } from 'vue'
 
-	const props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
+	const _props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-avatar': … })`
+	// injected by a parent like `OrigamAvatarGroup`. Props explicitly set by the
+	// parent template still win; the group's values are used only as defaults.
+	const props = useDefaults(_props)
 
 	defineEmits(['update:active', 'update:hover'])
 

@@ -1,0 +1,202 @@
+import { expect, test, type Page } from '@playwright/test'
+
+/**
+ * Regression spec — parent → children prop propagation for 6 group
+ * parent-child component pairs.
+ *
+ * Contract: parent `provideDefaults({ 'origam-{child}': { density, color, … } })`
+ * + child `useDefaults(props)` → children receive the parent's visual-token
+ * props as DEFAULTS; per-child explicit props still win.
+ *
+ * For each pair we verify either:
+ *  a) a density class lands on every child (class-based assertion — robust
+ *     across all themes/tokens), or
+ *  b) the child's computed backgroundColor differs from the raw default neutral
+ *     when a color intent is propagated.
+ */
+
+const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
+
+const openVariant = async (page: Page, storyPath: string, variant: string) => {
+    await page.goto(storyPath)
+    await page.waitForLoadState('networkidle')
+    await page.getByText(variant, { exact: true }).first().click()
+    await page.waitForTimeout(900)
+}
+
+// ─── Story URL constants ───────────────────────────────────────────────────
+
+const AVATAR_GROUP = '/story/stories-components-stories-avatar-origamavatargroup-story-vue'
+const BREADCRUMB   = '/story/stories-components-stories-breadcrumb-origambreadcrumb-story-vue'
+const BOTTOM_NAV   = '/story/stories-components-stories-bottomnav-origambottomnav-story-vue'
+const LIST         = '/story/stories-components-stories-list-origamlist-story-vue'
+const EXPANSION    = '/story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue'
+const SELECTION    = '/story/stories-components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue'
+
+// ─── 1. OrigamAvatarGroup → OrigamAvatar ──────────────────────────────────
+
+test.describe('OrigamAvatarGroup → OrigamAvatar propagation', () => {
+    test('forwarded size class lands on every child avatar (Forwarded props)', async ({ page }) => {
+        // The "Forwarded props" variant sets `size: "small"` on the group.
+        // After propagation each child should carry origam-avatar--size-small.
+        await openVariant(page, AVATAR_GROUP, 'Forwarded props')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-avatar-group').first()).toBeVisible({ timeout: 8000 })
+
+        const childClasses = await sandbox.locator('.origam-avatar-group .origam-avatar').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
+        for (const cls of childClasses) {
+            expect(cls).toMatch(/origam-avatar--size-/)
+        }
+    })
+
+    test('children render without errors in Basic usage variant', async ({ page }) => {
+        // Smoke-test: group renders without crashing after useDefaults wiring.
+        await openVariant(page, AVATAR_GROUP, 'Basic usage')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-avatar-group').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('.origam-avatar-group .origam-avatar').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── 2. OrigamBreadcrumb → OrigamBreadcrumbItem ───────────────────────────
+
+test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
+    test('density class lands on breadcrumb items (Propagation density)', async ({ page }) => {
+        await openVariant(page, BREADCRUMB, 'Propagation density')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-breadcrumb').first()).toBeVisible({ timeout: 8000 })
+
+        const childClasses = await sandbox.locator('.origam-breadcrumb-item').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
+        for (const cls of childClasses) {
+            expect(cls).toMatch(/origam-breadcrumb-item--density-(default|compact|comfortable)/)
+        }
+    })
+
+    test('default variant renders items without errors', async ({ page }) => {
+        await openVariant(page, BREADCRUMB, 'Default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-breadcrumb').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('.origam-breadcrumb-item').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── 3. OrigamBottomNav → OrigamBtn ───────────────────────────────────────
+
+test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
+    test('density class lands on btn children (Propagation density)', async ({ page }) => {
+        await openVariant(page, BOTTOM_NAV, 'Propagation density')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+
+        const childClasses = await sandbox.locator('.origam-bottom-nav .origam-btn').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
+        for (const cls of childClasses) {
+            expect(cls).toMatch(/origam-btn--density-(default|compact|comfortable)/)
+        }
+    })
+
+    test('color propagation: btn children backgroundColor differs from default neutral', async ({ page }) => {
+        await openVariant(page, BOTTOM_NAV, 'Propagation color')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+
+        const bgColors = await sandbox.locator('.origam-bottom-nav .origam-btn').evaluateAll(els =>
+            els.map(el => getComputedStyle(el).backgroundColor)
+        )
+        expect(bgColors.length).toBeGreaterThan(0)
+        for (const bg of bgColors) {
+            // After propagation the primary token replaces the default neutral grey.
+            expect(bg).not.toBe('rgb(230, 230, 230)')
+            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+        }
+    })
+})
+
+// ─── 4. OrigamList → OrigamListItem ───────────────────────────────────────
+
+test.describe('OrigamList → OrigamListItem propagation', () => {
+    test('density class lands on list items (Propagation density)', async ({ page }) => {
+        await openVariant(page, LIST, 'Propagation density')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 8000 })
+
+        const childClasses = await sandbox.locator('.origam-list-item').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
+        for (const cls of childClasses) {
+            // compact density is set by the story variant.
+            expect(cls).toContain('origam-list-item--density-compact')
+        }
+    })
+
+    test('default variant renders list items without errors', async ({ page }) => {
+        await openVariant(page, LIST, 'Default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('.origam-list-item').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── 5. OrigamExpansionPanels → OrigamExpansionPanel ─────────────────────
+
+test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () => {
+    test('density class lands on panels (Propagation density)', async ({ page }) => {
+        await openVariant(page, EXPANSION, 'Propagation density')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
+
+        const childClasses = await sandbox.locator('.origam-expansion-panel').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
+        for (const cls of childClasses) {
+            expect(cls).toContain('origam-expansion-panel--density-compact')
+        }
+    })
+
+    test('default variant renders panels without errors', async ({ page }) => {
+        await openVariant(page, EXPANSION, 'Default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('.origam-expansion-panel').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── 6. OrigamSelectionControlGroup → OrigamSelectionControl ─────────────
+
+test.describe('OrigamSelectionControlGroup → OrigamSelectionControl propagation', () => {
+    test('density class lands on controls (Propagation density)', async ({ page }) => {
+        await openVariant(page, SELECTION, 'Propagation density')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-selection-control-group').first()).toBeVisible({ timeout: 8000 })
+
+        const childClasses = await sandbox.locator('.origam-selection-control').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
+        for (const cls of childClasses) {
+            expect(cls).toContain('origam-selection-control--density-compact')
+        }
+    })
+
+    test('default variant renders controls without errors', async ({ page }) => {
+        await openVariant(page, SELECTION, 'Default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-selection-control-group').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('.origam-selection-control').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})

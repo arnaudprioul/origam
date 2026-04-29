@@ -72,6 +72,7 @@
 		useAdjacent,
 		useBorder,
 		useColorEffect,
+		useDefaults,
 		useDensity,
 		useHover,
 		useLink,
@@ -88,7 +89,11 @@
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 
-	const props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
+	const _props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-breadcrumb-item': … })`
+	// injected by a parent `OrigamBreadcrumb`.
+	const props = useDefaults(_props)
 
 	defineEmits(['click:append', 'click:prepend', 'click:append'])
 

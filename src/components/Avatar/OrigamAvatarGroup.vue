@@ -59,7 +59,7 @@
 >
 
 	import { OrigamAvatar } from "../../components"
-	import { useActive, useDensity, useHover, useMargin, usePadding, useProps, useRtl, useStyle } from "../../composables"
+	import { provideDefaults, useActive, useDensity, useHover, useMargin, usePadding, useProps, useRtl, useStyle } from "../../composables"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps } from "../../interfaces"
 	import type { TOrigamAvatar } from '../../types'
@@ -73,6 +73,17 @@
 		tag: 'div',
 		direction: DIRECTION.HORIZONTAL
 	})
+
+	// Push visual-token props down to every descendant `<origam-avatar>` as
+	// DEFAULTS — children that pass their own props still win.
+	provideDefaults(computed(() => ({
+		'origam-avatar': {
+			density: props.density,
+			size: props.size,
+			color: props.color,
+			bgColor: props.bgColor
+		}
+	})))
 
 	defineEmits(['update:active', 'update:hover'])
 

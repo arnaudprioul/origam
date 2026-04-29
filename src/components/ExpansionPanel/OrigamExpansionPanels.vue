@@ -117,6 +117,7 @@
 	import { OrigamExpansionPanel } from '../../components'
 
 	import {
+		provideDefaults,
 		useBorder,
 		useBothColor,
 		useDensity,
@@ -139,6 +140,18 @@
 	defineEmits(['update:modelValue'])
 
 	const {filterProps} = useProps<IExpansionPanelsProps>(props)
+
+	// Push visual-token props down to every descendant `<origam-expansion-panel>`
+	// as DEFAULTS — panels that pass their own props still win.
+	provideDefaults(computed(() => ({
+		'origam-expansion-panel': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			rounded: props.rounded,
+			border: props.border
+		}
+	})))
 
 	useGroup(props, ORIGAM_EXPANSION_PANEL_KEY)
 

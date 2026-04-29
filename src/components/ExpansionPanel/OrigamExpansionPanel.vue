@@ -90,6 +90,7 @@
 	import {
 		useBorder,
 		useBothColor,
+		useDefaults,
 		useDensity,
 		useElevation,
 		useGroupItem,
@@ -105,9 +106,13 @@
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 
-	const props = withDefaults(defineProps<IExpansionPanelProps>(), {
+	const _props = withDefaults(defineProps<IExpansionPanelProps>(), {
 		tag: 'div'
 	})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-expansion-panel': … })`
+	// injected by a parent `OrigamExpansionPanels`.
+	const props = useDefaults(_props)
 
 	defineEmits(['group:selected'])
 

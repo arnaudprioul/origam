@@ -118,6 +118,7 @@
 		useAdjacent,
 		useBackgroundColor,
 		useBorder,
+		useDefaults,
 		useDensity,
 		useDimension,
 		useElevation,
@@ -140,7 +141,11 @@
 
 	const attrs = useAttrs()
 
-	const props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
+	const _props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-list-item': … })`
+	// injected by a parent `OrigamList`.
+	const props = useDefaults(_props)
 
 	const emits = defineEmits(['click', 'click:append', 'click:prepend'])
 

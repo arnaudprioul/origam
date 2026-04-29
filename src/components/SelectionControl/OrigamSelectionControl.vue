@@ -68,7 +68,7 @@
 	import { computed, nextTick, ref, shallowRef, StyleValue, useAttrs } from 'vue'
 	import { OrigamIcon, OrigamLabel } from '../../components'
 
-	import { useProps, useSelectionControl } from '../../composables'
+	import { useDefaults, useProps, useSelectionControl } from '../../composables'
 
 	import { vRipple } from '../../directives'
 
@@ -76,7 +76,11 @@
 
 	import { filterInputAttrs, forwardRefs, getUid, matchesSelector } from '../../utils'
 
-	const props = withDefaults(defineProps<ISelectionControlProps>(), {})
+	const _props = withDefaults(defineProps<ISelectionControlProps>(), {})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-selection-control': … })`
+	// injected by a parent `OrigamSelectionControlGroup`.
+	const props = useDefaults(_props)
 
 	const emits = defineEmits<ISelectionControlEmits>()
 

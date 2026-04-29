@@ -89,6 +89,7 @@
 	import { OrigamListChildren } from '../../components'
 
 	import {
+		provideDefaults,
 		useBorder,
 		useBothColor,
 		useCreateList,
@@ -129,6 +130,16 @@
 	defineEmits(['update:selected', 'update:opened', 'click:open', 'click:select'])
 
 	const {filterProps} = useProps<IListProps>(props)
+
+	// Push visual-token props down to every descendant `<origam-list-item>` as
+	// DEFAULTS — items that pass their own props still win.
+	provideDefaults(computed(() => ({
+		'origam-list-item': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor
+		}
+	})))
 
 	const {items} = useItems(props)
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))

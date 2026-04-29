@@ -39,6 +39,7 @@
 >
 	import { OrigamBtn } from "../../components"
 	import {
+		provideDefaults,
 		useActive,
 		useBorder,
 		useColorEffect,
@@ -78,6 +79,22 @@
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
 
+	// Push visual-token props down to every descendant `<origam-btn>` (the
+	// bottom-nav button children) as DEFAULTS — items that pass their own
+	// props still win. `OrigamBtn` already calls `useDefaults` so this is
+	// picked up automatically.
+	provideDefaults(computed(() => ({
+		'origam-btn': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor
+		}
+	})))
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
@@ -107,19 +124,11 @@
 		absolute: toRef(props, 'absolute')
 	})
 
+	// `useDefaults` inside each `OrigamBtn` handles the visual-token fallback —
+	// no manual merge needed here. Items are spread as-is; `provideDefaults`
+	// above supplies the group-level defaults.
 	const items = computed(() => {
-		return props.items.map((item) => {
-			return {
-				...item,
-				density: props.density ?? item.density,
-				color: props.color ?? item.color,
-				bgColor: props.bgColor ?? item.bgColor,
-				hoverColor: props.hoverColor ?? item.hoverColor,
-				hoverBgColor: props.hoverBgColor ?? item.hoverBgColor,
-				activeColor: props.activeColor ?? item.activeColor,
-				activeBgColor: props.activeBgColor ?? item.activeBgColor
-			}
-		}) as Array<IBreadcrumbItemProps>
+		return props.items as Array<IBreadcrumbItemProps>
 	})
 
 	useGroup(props, ORIGAM_BTN_TOGGLE_KEY)

@@ -55,6 +55,7 @@
 	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem } from '../../components'
 
 	import {
+		provideDefaults,
 		useBorder,
 		useColorEffect,
 		useDensity,
@@ -83,6 +84,16 @@
 
 	const {filterProps} = useProps<IBreadcrumbProps>(props)
 
+	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`
+	// as DEFAULTS — items that pass their own props still win.
+	provideDefaults(computed(() => ({
+		'origam-breadcrumb-item': {
+			density: props.density,
+			color: props.color,
+			disabled: props.disabled
+		}
+	})))
+
 	const {colorStyles} = useColorEffect(props)
 	const {densityClasses} = useDensity(props)
 	const {elevationStyles, elevationClasses} = useElevation(props)
@@ -91,11 +102,14 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
+	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
+	// density/color fallback — no manual merge needed here.
+	// `disabled` and `isActive` are structural (not visual tokens), so
+	// they remain explicitly set on the item object.
 	const items = computed(() => {
 		return props.items.map((item, index) => {
 			return typeof item === 'string' ? {title: item, disabled: isLastItem(index)} : {
 				...item,
-				density: props.density ?? item.density,
 				disabled: isLastItem(index) || item.disabled,
 				isActive: isLastItem(index)
 			}
