@@ -145,7 +145,7 @@
 
 	import { vRipple } from '../../directives'
 
-	import { KEYBOARD_VALUES, MDI_ICONS } from '../../enums'
+	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
 
 	import type { IChipProps } from '../../interfaces'
 
@@ -156,7 +156,14 @@
 		closeIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		filterIcon: MDI_ICONS.CHECK,
 		closeLabel: 'origam.close',
-		modelValue: true
+		modelValue: true,
+		// Default size — without this `withDefaults` value, `useSize`
+		// emits no `--size-*` class on the chip root, and the size
+		// variants (which alone declare padding / font-size) never
+		// apply. Result pre-fix: chip rendered at body's 16px font and
+		// 0 padding, collapsing to ~18px tall. Mirrors `OrigamBtn`'s
+		// own `size: SIZES.DEFAULT` default.
+		size: SIZES.DEFAULT
 	})
 
 	// Resolve each prop against the closest provider — typically a parent
@@ -377,28 +384,46 @@
 			border-radius: var(--origam-chip---border-radius-label, 4px);
 		}
 
+		// Size scale — heights / font-sizes / paddings mirror Vuetify's
+		// `v-chip` for visual parity (the previous version only set
+		// font-size + padding, leaving `height` undeclared so the chip
+		// collapsed to its text content's line-box height ~18px). Each
+		// rung now also pins `font-size` (instead of relying on a
+		// CSS-var indirection that was never read by the base rule)
+		// and `line-height: 1` so vertical centring with the prepend /
+		// append icons stays clean.
 		&--size-x-small {
-			--origam-chip---font-size: var(--origam-chip---font-size-xs, 0.625rem);
+			font-size: var(--origam-chip---font-size-xs, 0.625rem);
+			line-height: 1;
+			height: var(--origam-chip---height-xs, 20px);
 			padding: 0 var(--origam-chip---padding-xs, 8px);
 		}
 
 		&--size-small {
-			--origam-chip---font-size: var(--origam-chip---font-size-sm, 0.75rem);
+			font-size: var(--origam-chip---font-size-sm, 0.75rem);
+			line-height: 1;
+			height: var(--origam-chip---height-sm, 24px);
 			padding: 0 var(--origam-chip---padding-sm, 10px);
 		}
 
 		&--size-default {
-			--origam-chip---font-size: var(--origam-chip---font-size-md, 0.875rem);
+			font-size: var(--origam-chip---font-size-md, 0.875rem);
+			line-height: 1;
+			height: var(--origam-chip---height-md, 32px);
 			padding: 0 var(--origam-chip---padding-md, 12px);
 		}
 
 		&--size-large {
-			--origam-chip---font-size: var(--origam-chip---font-size-lg, 1rem);
+			font-size: var(--origam-chip---font-size-lg, 1rem);
+			line-height: 1;
+			height: var(--origam-chip---height-lg, 38px);
 			padding: 0 var(--origam-chip---padding-lg, 14px);
 		}
 
 		&--size-x-large {
-			--origam-chip---font-size: var(--origam-chip---font-size-xl, 1.125rem);
+			font-size: var(--origam-chip---font-size-xl, 1.125rem);
+			line-height: 1;
+			height: var(--origam-chip---height-xl, 44px);
 			padding: 0 var(--origam-chip---padding-xl, 17px);
 		}
 
