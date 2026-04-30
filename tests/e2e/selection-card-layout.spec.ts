@@ -15,8 +15,11 @@ test('Card layout: active option card has thicker, intent-coloured border', asyn
     await expect(wrap).toBeVisible({ timeout: 8000 })
 
     // Story init: cardModel = 'm' → the medium card is active.
-    const active = sandbox.locator('[data-cy="scg-cards-m"]').first()
-    const inactive = sandbox.locator('[data-cy="scg-cards-s"]').first()
+    // The Card now lives INSIDE the SelectionControl (consumer renders
+    // it via the `#default` slot scope), so the data-cy lands on the
+    // SelectionControl wrapper. Drill into the inner card.
+    const active = sandbox.locator('[data-cy="scg-cards-m"] .scg-card-option').first()
+    const inactive = sandbox.locator('[data-cy="scg-cards-s"] .scg-card-option').first()
 
     const a = await active.evaluate(el => {
         const cs = getComputedStyle(el)
