@@ -40,6 +40,33 @@
 			</origam-selection-control-group>
 		</Variant>
 
+		<!-- ════════════ CARD LAYOUT (active via :has(--dirty)) ════════════ -->
+		<!--
+			Per the user's feedback ("for the selection group, use cards
+			instead and switch their border via the active class — much
+			more visible"). Each option is wrapped in an `<origam-card>`;
+			the card listens for `:has(.origam-selection-control--dirty)`
+			(modern CSS, supported in Chromium/Firefox/Safari ≥2023) so
+			the active option's card highlights without a single line of
+			Vue logic. CSS-first contract per CLAUDE.md.
+		-->
+		<Variant title="Card layout">
+			<div class="scg-card-row" data-cy="scg-cards">
+				<origam-selection-control-group v-model="cardModel" type="radio">
+					<origam-card
+							v-for="opt in cardOptions"
+							:key="opt.value"
+							border
+							rounded="default"
+							class="scg-card-option"
+							:data-cy="`scg-cards-${opt.value}`"
+					>
+						<origam-selection-control :value="opt.value" :label="opt.label"/>
+					</origam-card>
+				</origam-selection-control-group>
+			</div>
+		</Variant>
+
 		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<origam-selection-control-group v-model="multipleModel" type="checkbox" multiple data-cy="scg-multiple">
@@ -197,7 +224,7 @@
 		setup
 >
 	import { ref } from 'vue'
-	import { OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
+	import { OrigamCard, OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
 	import { DENSITY } from '@origam/enums'
 	import type {
 		IColorProps,
@@ -219,6 +246,13 @@
 	const disabledModel = ref<string[]>([])
 	const readonlyModel = ref<string[]>(['a'])
 	const playgroundModel = ref<any>(undefined)
+	const cardModel = ref<string | undefined>('m')
+
+	const cardOptions = [
+		{ value: 's', label: 'Small'  },
+		{ value: 'm', label: 'Medium' },
+		{ value: 'l', label: 'Large'  },
+	]
 
 	const checkboxItems = [
 		{ value: 'alpha', label: 'Alpha' },
@@ -232,3 +266,31 @@
 		{ label: 'switch',   value: 'switch'   },
 	]
 </script>
+
+<style scoped>
+	.scg-card-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		padding: 16px;
+	}
+	.scg-card-option {
+		flex: 1 1 140px;
+		min-width: 140px;
+		padding: 12px 16px;
+		cursor: pointer;
+		transition: border-color 0.15s ease, border-width 0.15s ease;
+	}
+	/*
+		`:has()` is the load-bearing selector — when the inner
+		`<origam-selection-control>` flips to its `--dirty` state
+		(model truthy), the surrounding card gains a thicker, intent-
+		coloured border without any JS state mirroring. Falls back
+		gracefully on browsers without `:has()` (the inner radio /
+		checkbox dot still indicates the active item).
+	*/
+	.scg-card-option:has(.origam-selection-control--dirty) {
+		border-color: var(--origam-color-action-primary-bg, rgb(124, 58, 237));
+		border-width: 2px;
+	}
+</style>
