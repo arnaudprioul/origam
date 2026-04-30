@@ -240,9 +240,35 @@
 			--origam-breadcrumb---border-width: thin;
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
+		// Direct border-radius declarations ensure the computed property
+		// updates immediately without CSS var cascade delays.
 		&--rounded {
-			// Token breadcrumb.border-radius-rounded → {radius.sm} = 4px
-			--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-rounded, 4px);
+			border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			border-radius: var(--origam-radius-2xl, 24px);
 		}
 
 		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).

@@ -472,6 +472,36 @@
 			position: var(--origam-chip__underlay---position, absolute);
 		}
 
+		// Rounded variants — overrides the default 9999px pill.
+		// boolean --rounded falls back to radius.sm (4px, a tight chip corner).
+		&--rounded {
+			--origam-chip---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-x-small {
+			--origam-chip---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-chip---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-chip---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-chip---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-chip---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-chip---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
 		&--border {
 			border-width: var(--origam-chip---border-width-outlined, thin);
 		}

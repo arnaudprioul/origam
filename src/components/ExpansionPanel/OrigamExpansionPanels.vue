@@ -334,6 +334,44 @@
 				}
 			}
 		}
+
+		// Rounded variants — propagated via CSS var to child expansion-panels.
+		// The root sets --origam-expansion-panels---border-radius and child
+		// panels inherit via border-radius: var(...) on their own root.
+		&--rounded {
+			--origam-expansion-panels---border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-x-small {
+			--origam-expansion-panels---border-radius: var(--origam-radius-xs, 2px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-small {
+			--origam-expansion-panels---border-radius: var(--origam-radius-sm, 4px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-default {
+			--origam-expansion-panels---border-radius: var(--origam-radius-md, 8px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-medium {
+			--origam-expansion-panels---border-radius: var(--origam-radius-lg, 12px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-large {
+			--origam-expansion-panels---border-radius: var(--origam-radius-xl, 16px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-x-large {
+			--origam-expansion-panels---border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
 	}
 </style>
 

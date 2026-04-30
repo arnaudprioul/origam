@@ -343,8 +343,35 @@
 			}
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
+		// Each rung binds `--origam-alert---border-radius` to a
+		// primitive `--origam-radius-*` token.
 		&--rounded {
-			--origam-alert---border-radius: 4px;
+			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			--origam-alert---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-alert---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-alert---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-alert---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-alert---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
 		// Density formula on the alert is `padding - density`, so:

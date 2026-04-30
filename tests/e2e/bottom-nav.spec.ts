@@ -82,16 +82,6 @@ test.describe('OrigamBottomNav — Color', () => {
     })
 })
 
-// ─── BgColor ──────────────────────────────────────────────────────────────────
-
-test.describe('OrigamBottomNav — BgColor', () => {
-    test('bgColor variant renders nav without errors', async ({ page }) => {
-        await openVariant(page, 'BgColor')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="bottom-nav-bgcolor"]').first()).toBeVisible({ timeout: 8000 })
-    })
-})
-
 // ─── Border ───────────────────────────────────────────────────────────────────
 
 test.describe('OrigamBottomNav — Border', () => {

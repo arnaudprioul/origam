@@ -313,8 +313,33 @@
 			--origam-list---indent-padding: var(--origam-list---indent-padding-nav, -8px);
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
-			--origam-list---border-radius: var(--origam-list---border-radius-rounded, 4px);
+			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			--origam-list---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-list---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-list---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-list---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-list---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
 		&--subheader {

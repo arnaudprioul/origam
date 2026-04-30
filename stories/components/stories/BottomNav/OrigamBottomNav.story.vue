@@ -73,28 +73,7 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ BG COLOR ════════════ -->
-		<Variant
-				title="BgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
-							:bg-color="state.bgColor"
-							:items="navItems"
-							data-cy="bottom-nav-bgcolor"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<HstSelect v-model="state.color" title="color" :options="intentList"/>
 			</template>
 		</Variant>
 
