@@ -40,44 +40,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ CARD LAYOUT (Card AS the SelectionControl content) ════════════ -->
-		<!--
-			Same pattern as Vuetify's `v-selection-control` + `v-card`
-			combo: the `<origam-selection-control>` owns the selection
-			state and the (hidden) input; its `#default` slot scope
-			exposes `model` so the consumer can render a fully custom
-			visual — here an `<origam-card>` whose border / elevation
-			switches via the slot's `model` flag. The SelectionControl
-			still drives the click target, so toggling works through the
-			whole card surface (no `:has()` workaround needed).
-		-->
-		<Variant title="Card layout">
-			<div class="scg-card-row" data-cy="scg-cards">
-				<origam-selection-control-group v-model="cardModel" type="radio">
-					<origam-selection-control
-							v-for="opt in cardOptions"
-							:key="opt.value"
-							:value="opt.value"
-							:label="opt.label"
-							:data-cy="`scg-cards-${opt.value}`"
-							class="scg-card-control"
-					>
-						<template #default="{ model }">
-							<origam-card
-									border
-									rounded="default"
-									:class="['scg-card-option', { 'scg-card-option--active': model }]"
-							>
-								<div class="scg-card-option__icon">{{ opt.icon }}</div>
-								<div class="scg-card-option__title">{{ opt.label }}</div>
-								<div class="scg-card-option__desc">{{ opt.desc }}</div>
-							</origam-card>
-						</template>
-					</origam-selection-control>
-				</origam-selection-control-group>
-			</div>
-		</Variant>
-
 		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<origam-selection-control-group v-model="multipleModel" type="checkbox" multiple data-cy="scg-multiple">
@@ -235,7 +197,7 @@
 		setup
 >
 	import { ref } from 'vue'
-	import { OrigamCard, OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
+	import { OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
 	import { DENSITY } from '@origam/enums'
 	import type {
 		IColorProps,
@@ -257,13 +219,6 @@
 	const disabledModel = ref<string[]>([])
 	const readonlyModel = ref<string[]>(['a'])
 	const playgroundModel = ref<any>(undefined)
-	const cardModel = ref<string | undefined>('m')
-
-	const cardOptions = [
-		{ value: 's', label: 'Small',  icon: '◔', desc: '~ 20 GB · 1 vCPU'  },
-		{ value: 'm', label: 'Medium', icon: '◑', desc: '~ 80 GB · 2 vCPU'  },
-		{ value: 'l', label: 'Large',  icon: '●', desc: '~ 320 GB · 4 vCPU' },
-	]
 
 	const checkboxItems = [
 		{ value: 'alpha', label: 'Alpha' },
@@ -278,78 +233,3 @@
 	]
 </script>
 
-<style scoped>
-	.scg-card-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 12px;
-		padding: 16px;
-	}
-
-	/*
-		The SelectionControl now owns the click surface — make the whole
-		thing inline-block so the Card snaps to its label width, drop the
-		default flex wrapper that pushes the radio dot to the side, and
-		hide the native input + radio glyph entirely (the Card IS the
-		visual now). Pointer-events on the input must stay so the click
-		still reaches the input via the wrapping label semantics.
-	*/
-	.scg-card-control {
-		flex: 1 1 200px;
-		min-width: 200px;
-		max-width: 320px;
-	}
-	:deep(.scg-card-control .origam-selection-control__wrapper) {
-		display: block;
-	}
-	:deep(.scg-card-control .origam-selection-control__input) {
-		position: absolute;
-		width: 0;
-		height: 0;
-		opacity: 0;
-		pointer-events: none;
-	}
-	/*
-		The label is already rendered inside the card visual (the
-		`opt.label` text in `__title`), so the SelectionControl's own
-		label slot is redundant — hide it. Keeps the card the only
-		visible target.
-	*/
-	:deep(.scg-card-control .origam-selection-control__label) {
-		display: none;
-	}
-
-	.scg-card-option {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		padding: 16px 20px;
-		min-height: 110px;
-		transition: border-color 0.15s ease, border-width 0.15s ease, box-shadow 0.15s ease;
-	}
-	.scg-card-option__icon {
-		font-size: 1.75rem;
-		line-height: 1;
-		opacity: 0.6;
-	}
-	.scg-card-option__title {
-		font-weight: 600;
-		font-size: 0.95rem;
-	}
-	.scg-card-option__desc {
-		font-size: 0.8125rem;
-		opacity: 0.66;
-	}
-
-	/*
-		Active state — driven by the slot's `model` flag (boolean) the
-		consumer applies as `--active` modifier. No `:has()` needed
-		(the SelectionControl exposes the state through slot scope), so
-		this works back to any browser supporting CSS variables.
-	*/
-	.scg-card-option--active {
-		border-color: var(--origam-color-action-primary-bg, rgb(124, 58, 237));
-		border-width: 2px;
-		box-shadow: 0 0 0 4px var(--origam-color-action-primary-bg-subtle, rgba(124, 58, 237, 0.1));
-	}
-</style>

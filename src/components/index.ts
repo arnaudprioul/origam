@@ -14,6 +14,8 @@ export * from './Breadcrumb'
 
 export * from './Btn'
 
+export * from './ItemGroup'
+
 export * from './Card'
 
 export * from './Carousel'

@@ -16,6 +16,7 @@ export * from './Breadcrumb/breadcrumb-divider.interface'
 export * from './Btn/btn.interface'
 export * from './Btn/btn-group.interface'
 export * from './Btn/btn-toggle.interface'
+export * from './ItemGroup/item-group.interface'
 
 export * from './Card/card.interface'
 export * from './Card/card-header.interface'
