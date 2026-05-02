@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:class="itemGroupClasses"
+      :style="itemGroupStyles"
 	>
 		<slot
 				name="default"
