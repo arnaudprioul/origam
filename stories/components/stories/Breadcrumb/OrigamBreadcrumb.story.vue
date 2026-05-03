@@ -4,37 +4,36 @@
 			title="Breadcrumb/OrigamBreadcrumb"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
-		<Variant title="Default">
-			<origam-breadcrumb :items="items" data-cy="breadcrumb-default"/>
-		</Variant>
+		<!--
+			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
-		<Variant title="Items prop">
-			<origam-breadcrumb :items="items" data-cy="breadcrumb-items"/>
-		</Variant>
+			Each <Variant> drives one orthogonal concern:
+			  • one variant per "prop family" (color, size, density, …)
+			  • one variant per slot
+			  • one variant per emit — wire the listener to
+			    `logEvent('event-name', $event)` (imported from
+			    'histoire/client') so the emit shows up in histoire's
+			    Events tab.
+			  • one "playground" variant that exposes everything together
+		-->
 
-		<!-- ════════════ DEFAULT SLOT (explicit children) ════════════ -->
-		<Variant title="Default slot">
-			<origam-breadcrumb data-cy="breadcrumb-slot">
-				<ol class="origam-breadcrumb__items">
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item title="Home" href="/" data-cy="breadcrumb-slot-home"/>
-					</li>
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-slot-div-1"/>
-					</li>
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item title="Section" href="/section" data-cy="breadcrumb-slot-section"/>
-					</li>
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-slot-div-2"/>
-					</li>
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item title="Current" data-cy="breadcrumb-slot-current"/>
-					</li>
-				</ol>
-			</origam-breadcrumb>
+		<!-- ════════════ COLOR / INTENT ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:items="items"
+						data-cy="breadcrumb-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ DENSITY ════════════ -->
@@ -51,25 +50,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ COLOR ════════════ -->
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb
-						:color="state.color"
-						:bg-color="state.bgColor"
-						:items="items"
-						data-cy="breadcrumb-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -107,7 +87,24 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIVIDER (custom string) ════════════ -->
+		<!-- ════════════ ELEVATION ════════════ -->
+		<Variant
+				title="Elevation"
+				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb
+						:elevation="state.elevation"
+						:items="items"
+						data-cy="breadcrumb-elevation"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DIVIDER (string) ════════════ -->
 		<Variant
 				title="Divider (string)"
 				:init-state="() => useStoryInitState<{ divider: string }>({ divider: '>' })"
@@ -133,7 +130,69 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!-- ════════════ DISABLED ════════════ -->
+		<Variant
+				title="Disabled"
+				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb
+						:disabled="state.disabled"
+						:items="items"
+						data-cy="breadcrumb-disabled"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ SLOT: default (explicit children) ════════════ -->
+		<Variant title="Slot — default">
+			<origam-breadcrumb data-cy="breadcrumb-slot-default">
+				<ol class="origam-breadcrumb__items">
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item title="Home" href="/" data-cy="breadcrumb-slot-home"/>
+					</li>
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-slot-div-1"/>
+					</li>
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item title="Section" href="/section" data-cy="breadcrumb-slot-section"/>
+					</li>
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-slot-div-2"/>
+					</li>
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item title="Current" data-cy="breadcrumb-slot-current"/>
+					</li>
+				</ol>
+			</origam-breadcrumb>
+		</Variant>
+
+		<!-- ════════════ SLOT: item ════════════ -->
+		<Variant title="Slot — item">
+			<origam-breadcrumb :items="items" data-cy="breadcrumb-slot-item">
+				<template #item="{ item, index }">
+					<origam-breadcrumb-item
+							v-bind="item"
+							:prepend-icon="index === 0 ? MDI_ICONS.HOME : undefined"
+							:data-cy="`breadcrumb-slot-item-${index}`"
+					/>
+				</template>
+			</origam-breadcrumb>
+		</Variant>
+
+		<!-- ════════════ SLOT: divider ════════════ -->
+		<Variant title="Slot — divider">
+			<origam-breadcrumb :items="items" data-cy="breadcrumb-slot-divider">
+				<template #divider>
+					<origam-icon :icon="MDI_ICONS.CHEVRON_DOUBLE_RIGHT" data-cy="breadcrumb-slot-divider-icon"/>
+				</template>
+			</origam-breadcrumb>
+		</Variant>
+
+		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBreadcrumbProps>({
@@ -142,7 +201,9 @@
 					bgColor: undefined,
 					rounded: undefined,
 					border: false,
+					elevation: undefined,
 					divider: '/',
+					disabled: false,
 				})"
 		>
 			<template #default="{ state }">
@@ -153,12 +214,14 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect   v-model="state.density" title="density" :options="densityList"/>
-				<HstSelect   v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.bgColor" title="bgColor" :options="intentList"/>
-				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
-				<HstCheckbox v-model="state.border"  title="border"/>
-				<HstText     v-model="state.divider" title="divider"/>
+				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
+				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
+				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstText     v-model="state.divider"   title="divider"/>
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
 			</template>
 		</Variant>
 	</Story>
@@ -171,7 +234,8 @@
 	import {
 		OrigamBreadcrumb,
 		OrigamBreadcrumbDivider,
-		OrigamBreadcrumbItem
+		OrigamBreadcrumbItem,
+		OrigamIcon
 	} from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type {
@@ -179,12 +243,13 @@
 		IBreadcrumbProps,
 		IColorProps,
 		IDensityProps,
+		IElevationProps,
 		IRoundedProps
 	} from '@origam/interfaces'
 	import type { TBreadcrumbItem } from '@origam/types'
 
-	import { densityList, intentList, roundedList } from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'
+	import { densityList, elevationList, intentList, roundedList } from '@stories/const'
 
 	const items: Array<TBreadcrumbItem> = [
 		{ title: 'Home',    href: '/'        },

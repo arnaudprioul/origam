@@ -15,40 +15,16 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Color ────────────────────────────────────────────────────────────────────
 
-test.describe('OrigamBottomNav — Default', () => {
-    test('renders the nav wrapper', async ({ page }) => {
-        await openVariant(page, 'Default')
+test.describe('OrigamBottomNav — Color', () => {
+    test('color intent is propagated to btn children', async ({ page }) => {
+        await openVariant(page, 'Color')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="bottom-nav-default"]').first()).toBeVisible({ timeout: 8000 })
-    })
-})
-
-// ─── Items prop ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamBottomNav — Items prop', () => {
-    test('renders one btn per item entry (3)', async ({ page }) => {
-        await openVariant(page, 'Items prop')
-        const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('[data-cy="bottom-nav-items"]').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-color"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
         const count = await nav.locator('.origam-btn').count()
-        expect(count).toBe(3)
-    })
-})
-
-// ─── Default slot ─────────────────────────────────────────────────────────────
-
-test.describe('OrigamBottomNav — Default slot', () => {
-    test('renders explicit btn children in the default slot', async ({ page }) => {
-        await openVariant(page, 'Default slot')
-        const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('[data-cy="bottom-nav-slot"]').first()
-        await expect(nav).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('[data-cy="bottom-nav-slot-home"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="bottom-nav-slot-search"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="bottom-nav-slot-profile"]').first()).toBeVisible()
+        expect(count).toBeGreaterThan(0)
     })
 })
 
@@ -69,16 +45,16 @@ test.describe('OrigamBottomNav — Density', () => {
     })
 })
 
-// ─── Color ────────────────────────────────────────────────────────────────────
+// ─── Rounded ──────────────────────────────────────────────────────────────────
 
-test.describe('OrigamBottomNav — Color', () => {
-    test('color intent is propagated to btn children', async ({ page }) => {
-        await openVariant(page, 'Color')
+test.describe('OrigamBottomNav — Rounded', () => {
+    test('border-radius is applied when rounded=true', async ({ page }) => {
+        await openVariant(page, 'Rounded')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('[data-cy="bottom-nav-color"]').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-rounded"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
-        const count = await nav.locator('.origam-btn').count()
-        expect(count).toBeGreaterThan(0)
+        const radius = await nav.evaluate(el => getComputedStyle(el).borderRadius)
+        expect(radius).not.toBe('0px')
     })
 })
 
@@ -118,16 +94,85 @@ test.describe('OrigamBottomNav — Grow', () => {
     })
 })
 
-// ─── Rounded ──────────────────────────────────────────────────────────────────
+// ─── Mode ─────────────────────────────────────────────────────────────────────
 
-test.describe('OrigamBottomNav — Rounded', () => {
-    test('border-radius is applied when rounded=true', async ({ page }) => {
-        await openVariant(page, 'Rounded')
+test.describe('OrigamBottomNav — Mode', () => {
+    test('mode class is applied to the nav', async ({ page }) => {
+        await openVariant(page, 'Mode')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('[data-cy="bottom-nav-rounded"]').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-mode"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
-        const radius = await nav.evaluate(el => getComputedStyle(el).borderRadius)
-        expect(radius).not.toBe('0px')
+        const cls = await nav.evaluate(el => el.className)
+        expect(cls).toMatch(/origam-bottom-nav--(vertical|horizontal|shift)/)
+    })
+})
+
+// ─── Items prop ───────────────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Items prop', () => {
+    test('renders one btn per item entry (3)', async ({ page }) => {
+        await openVariant(page, 'Items prop')
+        const sandbox = sandboxOf(page)
+        const nav = sandbox.locator('[data-cy="bottom-nav-items"]').first()
+        await expect(nav).toBeVisible({ timeout: 8000 })
+        const count = await nav.locator('.origam-btn').count()
+        expect(count).toBe(3)
+    })
+})
+
+// ─── Visible (modelValue) ─────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Visible', () => {
+    test('nav is visible when modelValue=true', async ({ page }) => {
+        await openVariant(page, 'Visible (modelValue)')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="bottom-nav-visible"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
+// ─── Slot: default ────────────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Slot: default', () => {
+    test('renders explicit btn children in the default slot', async ({ page }) => {
+        await openVariant(page, 'Slot — default')
+        const sandbox = sandboxOf(page)
+        const nav = sandbox.locator('[data-cy="bottom-nav-slot-default"]').first()
+        await expect(nav).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-home"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-search"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-profile"]').first()).toBeVisible()
+    })
+})
+
+// ─── Slot: item ───────────────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Slot: item', () => {
+    test('custom item slot renders with 3 buttons', async ({ page }) => {
+        await openVariant(page, 'Slot — item')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="bottom-nav-slot-item"] .origam-btn').count()
+        expect(count).toBe(3)
+    })
+})
+
+// ─── Emit: update:modelValue ──────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Emit: update:modelValue', () => {
+    test('emit variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Emit — update:modelValue')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="bottom-nav-emit-model"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
+// ─── Emit: update:active ──────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Emit: update:active', () => {
+    test('emit variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Emit — update:active')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="bottom-nav-emit-active"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 

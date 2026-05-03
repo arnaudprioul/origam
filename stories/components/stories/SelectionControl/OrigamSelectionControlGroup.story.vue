@@ -4,91 +4,37 @@
 			title="SelectionControl/OrigamSelectionControlGroup"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
-		<Variant title="Default">
-			<origam-selection-control-group v-model="defaultModel" type="checkbox" data-cy="scg-default">
-				<origam-selection-control value="a" label="Option A" data-cy="scg-default-a"/>
-				<origam-selection-control value="b" label="Option B" data-cy="scg-default-b"/>
-				<origam-selection-control value="c" label="Option C" data-cy="scg-default-c"/>
-			</origam-selection-control-group>
-		</Variant>
+		<!--
+			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
-		<Variant title="Items prop">
-			<origam-selection-control-group
-					v-model="itemsModel"
-					type="checkbox"
-					:items="checkboxItems"
-					data-cy="scg-items"
-			>
-				<template #item="{ item, index }">
-					<origam-selection-control
-							:value="item.value"
-							:label="item.label"
-							:data-cy="`scg-items-${index}`"
-					/>
-				</template>
-			</origam-selection-control-group>
-		</Variant>
+			Each <Variant> drives one orthogonal concern:
+			  • one variant per "prop family" (color, size, density, …)
+			  • one variant per slot
+			  • one variant per emit — wire the listener to
+			    `logEvent('event-name', $event)` (imported from
+			    'histoire/client') so the emit shows up in histoire's
+			    Events tab.
+			  • one "playground" variant that exposes everything together
+		-->
 
-		<!-- ════════════ DEFAULT SLOT (explicit children) ════════════ -->
-		<Variant title="Default slot">
-			<origam-selection-control-group v-model="slotModel" type="radio" data-cy="scg-slot">
-				<origam-selection-control value="x" label="Choice X" data-cy="scg-slot-x"/>
-				<origam-selection-control value="y" label="Choice Y" data-cy="scg-slot-y"/>
-				<origam-selection-control value="z" label="Choice Z" data-cy="scg-slot-z"/>
-			</origam-selection-control-group>
-		</Variant>
-
-		<!-- ════════════ MULTIPLE ════════════ -->
-		<Variant title="Multiple">
-			<origam-selection-control-group v-model="multipleModel" type="checkbox" multiple data-cy="scg-multiple">
-				<origam-selection-control value="one"   label="One"   data-cy="scg-multiple-1"/>
-				<origam-selection-control value="two"   label="Two"   data-cy="scg-multiple-2"/>
-				<origam-selection-control value="three" label="Three" data-cy="scg-multiple-3"/>
-			</origam-selection-control-group>
-		</Variant>
-
-		<!-- ════════════ INLINE ════════════ -->
+		<!-- ════════════ TYPE (checkbox / radio / switch) ════════════ -->
 		<Variant
-				title="Inline"
-				:init-state="() => useStoryInitState<{ inline: boolean }>({ inline: true })"
+				title="Type"
+				:init-state="() => useStoryInitState<{ type: string }>({ type: 'checkbox' })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
-						v-model="inlineModel"
-						type="checkbox"
-						:inline="state.inline"
-						data-cy="scg-inline"
+						v-model="typeModel"
+						:type="state.type"
+						data-cy="scg-type"
 				>
-					<origam-selection-control value="a" label="Alpha" data-cy="scg-inline-a"/>
-					<origam-selection-control value="b" label="Beta"  data-cy="scg-inline-b"/>
-					<origam-selection-control value="c" label="Gamma" data-cy="scg-inline-c"/>
+					<origam-selection-control value="a" label="Option A" data-cy="scg-type-a"/>
+					<origam-selection-control value="b" label="Option B" data-cy="scg-type-b"/>
+					<origam-selection-control value="c" label="Option C" data-cy="scg-type-c"/>
 				</origam-selection-control-group>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.inline" title="inline"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ DENSITY ════════════ -->
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-selection-control-group
-						v-model="densityModel"
-						type="checkbox"
-						:density="state.density"
-						data-cy="scg-density"
-				>
-					<origam-selection-control value="a" label="Option A" data-cy="scg-density-a"/>
-					<origam-selection-control value="b" label="Option B" data-cy="scg-density-b"/>
-				</origam-selection-control-group>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+				<HstSelect v-model="state.type" title="type" :options="typeList"/>
 			</template>
 		</Variant>
 
@@ -113,49 +59,161 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
+		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
-				title="Disabled"
-				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
-						v-model="disabledModel"
+						v-model="densityModel"
+						type="checkbox"
+						:density="state.density"
+						data-cy="scg-density"
+				>
+					<origam-selection-control value="a" label="Option A" data-cy="scg-density-a"/>
+					<origam-selection-control value="b" label="Option B" data-cy="scg-density-b"/>
+				</origam-selection-control-group>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ SELECTION MODIFIERS (inline / multiple) ════════════ -->
+		<Variant
+				title="Selection modifiers"
+				:init-state="() => useStoryInitState<{ inline: boolean, multiple: boolean }>({ inline: false, multiple: false })"
+		>
+			<template #default="{ state }">
+				<origam-selection-control-group
+						v-model="modifiersModel"
+						type="checkbox"
+						:inline="state.inline"
+						:multiple="state.multiple"
+						data-cy="scg-modifiers"
+				>
+					<origam-selection-control value="a" label="Alpha" data-cy="scg-modifiers-a"/>
+					<origam-selection-control value="b" label="Beta"  data-cy="scg-modifiers-b"/>
+					<origam-selection-control value="c" label="Gamma" data-cy="scg-modifiers-c"/>
+				</origam-selection-control-group>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.inline"   title="inline"/>
+				<HstCheckbox v-model="state.multiple" title="multiple"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ ICON OVERRIDES (trueIcon / falseIcon) ════════════ -->
+		<Variant
+				title="Icons (trueIcon / falseIcon)"
+				:init-state="() => useStoryInitState<{ trueIcon?: TIcon, falseIcon?: TIcon }>({ trueIcon: MDI_ICONS.CHECK_CIRCLE, falseIcon: MDI_ICONS.CIRCLE_OUTLINE })"
+		>
+			<template #default="{ state }">
+				<origam-selection-control-group
+						v-model="iconsModel"
+						type="checkbox"
+						:true-icon="state.trueIcon"
+						:false-icon="state.falseIcon"
+						data-cy="scg-icons"
+				>
+					<origam-selection-control value="a" label="Option A" data-cy="scg-icons-a"/>
+					<origam-selection-control value="b" label="Option B" data-cy="scg-icons-b"/>
+				</origam-selection-control-group>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.trueIcon"  title="trueIcon"  :options="iconList"/>
+				<HstSelect v-model="state.falseIcon" title="falseIcon" :options="iconList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ STATES (disabled / readonly / error) ════════════ -->
+		<Variant
+				title="States"
+				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
+		>
+			<template #default="{ state }">
+				<origam-selection-control-group
+						v-model="statesModel"
 						type="checkbox"
 						:disabled="state.disabled"
-						data-cy="scg-disabled"
+						:readonly="state.readonly"
+						:error="state.error"
+						data-cy="scg-states"
 				>
-					<origam-selection-control value="a" label="Option A" data-cy="scg-disabled-a"/>
-					<origam-selection-control value="b" label="Option B" data-cy="scg-disabled-b"/>
+					<origam-selection-control value="a" label="Option A" data-cy="scg-states-a"/>
+					<origam-selection-control value="b" label="Option B" data-cy="scg-states-b"/>
 				</origam-selection-control-group>
 			</template>
 			<template #controls="{ state }">
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ READONLY ════════════ -->
-		<Variant
-				title="Readonly"
-				:init-state="() => useStoryInitState<{ readonly: boolean }>({ readonly: true })"
-		>
-			<template #default="{ state }">
-				<origam-selection-control-group
-						v-model="readonlyModel"
-						type="checkbox"
-						:readonly="state.readonly"
-						data-cy="scg-readonly"
-				>
-					<origam-selection-control value="a" label="Option A" data-cy="scg-readonly-a"/>
-					<origam-selection-control value="b" label="Option B" data-cy="scg-readonly-b"/>
-				</origam-selection-control-group>
-			</template>
-			<template #controls="{ state }">
 				<HstCheckbox v-model="state.readonly" title="readonly"/>
+				<HstCheckbox v-model="state.error"    title="error"/>
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!-- ════════════ ITEMS PROP ════════════ -->
+		<Variant title="Items prop">
+			<origam-selection-control-group
+					v-model="itemsModel"
+					type="checkbox"
+					:items="checkboxItems"
+					data-cy="scg-items"
+			>
+				<template #item="{ item, index }">
+					<origam-selection-control
+							:value="item.value"
+							:label="item.label"
+							:data-cy="`scg-items-${index}`"
+					/>
+				</template>
+			</origam-selection-control-group>
+		</Variant>
+
+		<!-- ════════════ SLOT: default ════════════ -->
+		<Variant title="Slot — default">
+			<origam-selection-control-group
+					v-model="slotDefaultModel"
+					type="radio"
+					data-cy="scg-slot-default"
+			>
+				<origam-selection-control value="x" label="Choice X" data-cy="scg-slot-x"/>
+				<origam-selection-control value="y" label="Choice Y" data-cy="scg-slot-y"/>
+				<origam-selection-control value="z" label="Choice Z" data-cy="scg-slot-z"/>
+			</origam-selection-control-group>
+		</Variant>
+
+		<!-- ════════════ SLOT: item ════════════ -->
+		<Variant title="Slot — item">
+			<origam-selection-control-group
+					v-model="slotItemModel"
+					type="checkbox"
+					:items="checkboxItems"
+					data-cy="scg-slot-item"
+			>
+				<template #item="{ item, index }">
+					<div style="display: flex; align-items: center; gap: 8px; padding: 4px 0;">
+						<origam-selection-control :value="item.value" :data-cy="`scg-slot-item-ctrl-${index}`"/>
+						<span style="font-weight: 600;">{{ item.label }}</span>
+					</div>
+				</template>
+			</origam-selection-control-group>
+		</Variant>
+
+		<!-- ════════════ EMIT: update:modelValue ════════════ -->
+		<Variant title="Emit — update:modelValue">
+			<origam-selection-control-group
+					v-model="emitModel"
+					type="checkbox"
+					data-cy="scg-emit"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			>
+				<origam-selection-control value="a" label="Option A" data-cy="scg-emit-a"/>
+				<origam-selection-control value="b" label="Option B" data-cy="scg-emit-b"/>
+			</origam-selection-control-group>
+		</Variant>
+
+		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISelectionControlGroupProps>({
@@ -165,7 +223,10 @@
 					inline: false,
 					disabled: false,
 					readonly: false,
+					error: false,
 					type: 'checkbox',
+					trueIcon: undefined,
+					falseIcon: undefined,
 				})"
 		>
 			<template #default="{ state }">
@@ -180,13 +241,16 @@
 				</origam-selection-control-group>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"  title="density"  :options="densityList"/>
-				<HstSelect   v-model="state.color"    title="color"    :options="intentList"/>
-				<HstCheckbox v-model="state.multiple" title="multiple"/>
-				<HstCheckbox v-model="state.inline"   title="inline"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstSelect   v-model="state.type"     title="type"     :options="typeList"/>
+				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.type"      title="type"      :options="typeList"/>
+				<HstSelect   v-model="state.trueIcon"  title="trueIcon"  :options="iconList"/>
+				<HstSelect   v-model="state.falseIcon" title="falseIcon" :options="iconList"/>
+				<HstCheckbox v-model="state.multiple"  title="multiple"/>
+				<HstCheckbox v-model="state.inline"    title="inline"/>
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
+				<HstCheckbox v-model="state.readonly"  title="readonly"/>
+				<HstCheckbox v-model="state.error"     title="error"/>
 			</template>
 		</Variant>
 	</Story>
@@ -197,27 +261,31 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
+	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type {
 		IColorProps,
 		IDensityProps,
 		IOptions,
 		ISelectionControlGroupProps
 	} from '@origam/interfaces'
+	import type { TIcon } from '@origam/types'
 
-	import { densityList, intentList } from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'
+	import { densityList, iconList, intentList } from '@stories/const'
 
-	const defaultModel  = ref<string[]>([])
-	const itemsModel    = ref<string[]>([])
-	const slotModel     = ref<string | undefined>(undefined)
-	const multipleModel = ref<string[]>([])
-	const inlineModel   = ref<string[]>([])
-	const densityModel  = ref<string[]>([])
-	const colorModel    = ref<string[]>([])
-	const disabledModel = ref<string[]>([])
-	const readonlyModel = ref<string[]>(['a'])
+	const typeModel      = ref<string[]>([])
+	const colorModel     = ref<string[]>([])
+	const densityModel   = ref<string[]>([])
+	const modifiersModel = ref<string[]>([])
+	const iconsModel     = ref<string[]>([])
+	const statesModel    = ref<string[]>([])
+	const itemsModel     = ref<string[]>([])
+	const slotDefaultModel = ref<string | undefined>(undefined)
+	const slotItemModel  = ref<string[]>([])
+	const emitModel      = ref<string[]>([])
 	const playgroundModel = ref<any>(undefined)
 
 	const checkboxItems = [
@@ -232,4 +300,3 @@
 		{ label: 'switch',   value: 'switch'   },
 	]
 </script>
-

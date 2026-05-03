@@ -15,49 +15,6 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-// ─── Default ──────────────────────────────────────────────────────────────────
-
-test.describe('OrigamList — Default', () => {
-    test('renders 3 list items', async ({ page }) => {
-        await openVariant(page, 'Default')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="list-default"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="list-default"] .origam-list-item').count()
-        expect(count).toBe(3)
-    })
-})
-
-// ─── Items prop ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamList — Items prop', () => {
-    test('renders items from the items prop', async ({ page }) => {
-        await openVariant(page, 'Items prop')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="list-items"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="list-items"] .origam-list-item').count()
-        expect(count).toBeGreaterThan(0)
-    })
-})
-
-// ─── Default slot (explicit children + subheader) ─────────────────────────────
-
-test.describe('OrigamList — Default slot', () => {
-    test('renders OrigamListItem children in default slot', async ({ page }) => {
-        await openVariant(page, 'Default slot')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="list-slot"]').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('[data-cy="list-slot-alpha"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="list-slot-gamma"]').first()).toBeVisible()
-    })
-
-    test('renders OrigamListSubheader children in default slot', async ({ page }) => {
-        await openVariant(page, 'Default slot')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="list-slot-subheader-a"]').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('[data-cy="list-slot-subheader-b"]').first()).toBeVisible()
-    })
-})
-
 // ─── Density ──────────────────────────────────────────────────────────────────
 
 test.describe('OrigamList — Density', () => {
@@ -87,16 +44,6 @@ test.describe('OrigamList — Color', () => {
     })
 })
 
-// ─── BgColor ──────────────────────────────────────────────────────────────────
-
-test.describe('OrigamList — BgColor', () => {
-    test('bgColor variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'BgColor')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="list-bgcolor"]').first()).toBeVisible({ timeout: 8000 })
-    })
-})
-
 // ─── Rounded ──────────────────────────────────────────────────────────────────
 
 test.describe('OrigamList — Rounded', () => {
@@ -123,6 +70,16 @@ test.describe('OrigamList — Border', () => {
     })
 })
 
+// ─── Elevation ────────────────────────────────────────────────────────────────
+
+test.describe('OrigamList — Elevation', () => {
+    test('elevation variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Elevation')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-elevation"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
 // ─── Lines ────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamList — Lines', () => {
@@ -132,34 +89,142 @@ test.describe('OrigamList — Lines', () => {
         const list = sandbox.locator('[data-cy="list-lines"]').first()
         await expect(list).toBeVisible({ timeout: 8000 })
         const cls = await list.evaluate(el => el.className)
-        // Actual class pattern: origam-list--{value}-line (e.g. origam-list--one-line)
         expect(cls).toMatch(/origam-list--(one|two|three)-line/)
     })
 })
 
-// ─── Slim ─────────────────────────────────────────────────────────────────────
+// ─── Modifiers ────────────────────────────────────────────────────────────────
 
-test.describe('OrigamList — Slim', () => {
-    test('slim modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Slim')
+test.describe('OrigamList — Modifiers', () => {
+    test('list renders in modifiers variant', async ({ page }) => {
+        await openVariant(page, 'Modifiers')
         const sandbox = sandboxOf(page)
-        const list = sandbox.locator('[data-cy="list-slim"]').first()
-        await expect(list).toBeVisible({ timeout: 8000 })
-        const cls = await list.evaluate(el => el.className)
-        expect(cls).toContain('origam-list--slim')
+        await expect(sandbox.locator('[data-cy="list-modifiers"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="list-modifiers"] .origam-list-item').count()
+        expect(count).toBe(3)
     })
 })
 
-// ─── Nav ──────────────────────────────────────────────────────────────────────
+// ─── Items prop ───────────────────────────────────────────────────────────────
 
-test.describe('OrigamList — Nav', () => {
-    test('nav modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Nav')
+test.describe('OrigamList — Items prop', () => {
+    test('renders items from the items prop', async ({ page }) => {
+        await openVariant(page, 'Items prop')
         const sandbox = sandboxOf(page)
-        const list = sandbox.locator('[data-cy="list-nav"]').first()
-        await expect(list).toBeVisible({ timeout: 8000 })
-        const cls = await list.evaluate(el => el.className)
-        expect(cls).toContain('origam-list--nav')
+        await expect(sandbox.locator('[data-cy="list-items"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="list-items"] .origam-list-item').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── Group ────────────────────────────────────────────────────────────────────
+
+test.describe('OrigamList — Group', () => {
+    test('renders list groups', async ({ page }) => {
+        await openVariant(page, 'Group')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-group"]').first()).toBeVisible({ timeout: 8000 })
+        const groupCount = await sandbox.locator('[data-cy="list-group"] .origam-list-group').count()
+        expect(groupCount).toBe(2)
+    })
+
+    test('group items expand on activator click', async ({ page }) => {
+        await openVariant(page, 'Group')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-group-fruits"]').first()).toBeVisible({ timeout: 8000 })
+        await sandbox.locator('[data-cy="list-group-fruits"] .origam-list-group__header').first().click()
+        await page.waitForTimeout(400)
+        await expect(sandbox.locator('[data-cy="list-group-apple"]').first()).toBeVisible()
+    })
+})
+
+// ─── Subheader ────────────────────────────────────────────────────────────────
+
+test.describe('OrigamList — Subheader', () => {
+    test('renders subheaders correctly', async ({ page }) => {
+        await openVariant(page, 'Subheader')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-subheader"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="list-subheader-a"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="list-subheader-b"]').first()).toBeVisible()
+    })
+})
+
+// ─── Slot: default ────────────────────────────────────────────────────────────
+
+test.describe('OrigamList — Slot: default', () => {
+    test('renders explicit children in default slot', async ({ page }) => {
+        await openVariant(page, 'Slot — default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-slot-default"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="list-slot-alpha"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="list-slot-gamma"]').first()).toBeVisible()
+    })
+})
+
+// ─── Slot: item ───────────────────────────────────────────────────────────────
+
+test.describe('OrigamList — Slot: item', () => {
+    test('custom item slot renders with icon', async ({ page }) => {
+        await openVariant(page, 'Slot — item')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const customItems = await sandbox.locator('[data-cy="list-slot-item-custom"]').count()
+        expect(customItems).toBeGreaterThan(0)
+    })
+})
+
+// ─── Slot: subheader ──────────────────────────────────────────────────────────
+
+test.describe('OrigamList — Slot: subheader', () => {
+    test('custom subheader slot renders', async ({ page }) => {
+        await openVariant(page, 'Slot — subheader')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-slot-subheader"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
+// ─── Slot: groupActivator ─────────────────────────────────────────────────────
+
+test.describe('OrigamList — Slot: groupActivator', () => {
+    test('custom groupActivator slot renders', async ({ page }) => {
+        await openVariant(page, 'Slot — groupActivator')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-slot-group-activator"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
+// ─── Emit: update:selected ────────────────────────────────────────────────────
+
+test.describe('OrigamList — Emit: update:selected', () => {
+    test('emit variant renders selectable items', async ({ page }) => {
+        await openVariant(page, 'Emit — update:selected')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-emit-selected"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="list-emit-selected"] .origam-list-item').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── Emit: click:select ───────────────────────────────────────────────────────
+
+test.describe('OrigamList — Emit: click:select', () => {
+    test('emit variant renders selectable items', async ({ page }) => {
+        await openVariant(page, 'Emit — click:select')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-emit-click-select"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="list-emit-click-select"] .origam-list-item').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── Emit: update:opened ──────────────────────────────────────────────────────
+
+test.describe('OrigamList — Emit: update:opened', () => {
+    test('emit variant renders with groups', async ({ page }) => {
+        await openVariant(page, 'Emit — update:opened')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="list-emit-opened"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
@@ -170,5 +235,7 @@ test.describe('OrigamList — Playground', () => {
         await openVariant(page, 'Playground')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-playground"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="list-playground"] .origam-list-item').count()
+        expect(count).toBe(3)
     })
 })

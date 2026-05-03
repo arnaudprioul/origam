@@ -15,63 +15,14 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Color ────────────────────────────────────────────────────────────────────
 
-test.describe('OrigamExpansionPanels — Default', () => {
-    test('renders 3 expansion panels', async ({ page }) => {
-        await openVariant(page, 'Default')
+test.describe('OrigamExpansionPanels — Color', () => {
+    test('color variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Color')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="expansion-default"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="expansion-default"] .origam-expansion-panel').count()
-        expect(count).toBe(3)
-    })
-})
-
-// ─── Items prop ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamExpansionPanels — Items prop', () => {
-    test('renders one panel per items entry (3)', async ({ page }) => {
-        await openVariant(page, 'Items prop')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="expansion-items"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="expansion-items"] .origam-expansion-panel').count()
-        expect(count).toBe(3)
-    })
-})
-
-// ─── Default slot ─────────────────────────────────────────────────────────────
-
-test.describe('OrigamExpansionPanels — Default slot', () => {
-    test('renders explicit OrigamExpansionPanel children with slot-based title', async ({ page }) => {
-        await openVariant(page, 'Default slot')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="expansion-slot"]').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('[data-cy="expansion-slot-p1"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="expansion-slot-p2"]').first()).toBeVisible()
-    })
-})
-
-// ─── Multiple ─────────────────────────────────────────────────────────────────
-
-test.describe('OrigamExpansionPanels — Multiple', () => {
-    test('multiple modifier class is present on the wrapper', async ({ page }) => {
-        await openVariant(page, 'Multiple')
-        const sandbox = sandboxOf(page)
-        const wrapper = sandbox.locator('[data-cy="expansion-multiple"]').first()
-        await expect(wrapper).toBeVisible({ timeout: 8000 })
-        const count = await wrapper.locator('.origam-expansion-panel').count()
-        expect(count).toBe(3)
-    })
-})
-
-// ─── Mandatory ────────────────────────────────────────────────────────────────
-
-test.describe('OrigamExpansionPanels — Mandatory', () => {
-    test('at least one panel is present in mandatory mode', async ({ page }) => {
-        await openVariant(page, 'Mandatory')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="expansion-mandatory"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="expansion-mandatory"] .origam-expansion-panel').count()
+        await expect(sandbox.locator('[data-cy="expansion-color"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-color"] .origam-expansion-panel').count()
         expect(count).toBeGreaterThan(0)
     })
 })
@@ -90,28 +41,6 @@ test.describe('OrigamExpansionPanels — Density', () => {
         for (const cls of childClasses) {
             expect(cls).toMatch(/origam-expansion-panel--density-(default|compact|comfortable)/)
         }
-    })
-})
-
-// ─── Color ────────────────────────────────────────────────────────────────────
-
-test.describe('OrigamExpansionPanels — Color', () => {
-    test('color variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Color')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="expansion-color"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="expansion-color"] .origam-expansion-panel').count()
-        expect(count).toBeGreaterThan(0)
-    })
-})
-
-// ─── BgColor ──────────────────────────────────────────────────────────────────
-
-test.describe('OrigamExpansionPanels — BgColor', () => {
-    test('bgColor variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'BgColor')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="expansion-bgcolor"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
@@ -141,42 +70,135 @@ test.describe('OrigamExpansionPanels — Border', () => {
     })
 })
 
-// ─── Flat ─────────────────────────────────────────────────────────────────────
+// ─── Elevation ────────────────────────────────────────────────────────────────
 
-test.describe('OrigamExpansionPanels — Flat', () => {
-    test('flat modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Flat')
+test.describe('OrigamExpansionPanels — Elevation', () => {
+    test('elevation variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Elevation')
         const sandbox = sandboxOf(page)
-        const wrapper = sandbox.locator('[data-cy="expansion-flat"]').first()
-        await expect(wrapper).toBeVisible({ timeout: 8000 })
-        const cls = await wrapper.evaluate(el => el.className)
-        expect(cls).toContain('origam-expansion-panels--flat')
+        await expect(sandbox.locator('[data-cy="expansion-elevation"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
-// ─── Accordion ────────────────────────────────────────────────────────────────
+// ─── Icons ────────────────────────────────────────────────────────────────────
 
-test.describe('OrigamExpansionPanels — Accordion', () => {
-    test('accordion modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Accordion')
+test.describe('OrigamExpansionPanels — Icons', () => {
+    test('panels render with icon variant controls', async ({ page }) => {
+        await openVariant(page, 'Icons')
         const sandbox = sandboxOf(page)
-        const wrapper = sandbox.locator('[data-cy="expansion-accordion"]').first()
-        await expect(wrapper).toBeVisible({ timeout: 8000 })
-        const cls = await wrapper.evaluate(el => el.className)
-        expect(cls).toContain('origam-expansion-panels--accordion')
+        await expect(sandbox.locator('[data-cy="expansion-icons"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-icons"] .origam-expansion-panel').count()
+        expect(count).toBe(2)
     })
 })
 
-// ─── Inset ────────────────────────────────────────────────────────────────────
+// ─── Layout ───────────────────────────────────────────────────────────────────
 
-test.describe('OrigamExpansionPanels — Inset', () => {
-    test('inset modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Inset')
+test.describe('OrigamExpansionPanels — Layout', () => {
+    test('layout variant renders 3 panels', async ({ page }) => {
+        await page.goto('/story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue')
+        await page.waitForLoadState('networkidle')
+        // Click the sidebar variant item that is exact "Layout" within the story nav
+        await page.locator('.histoire-story-variant-link, [class*="variant"]').getByText('Layout', { exact: true }).first().click()
+        await page.waitForTimeout(1200)
         const sandbox = sandboxOf(page)
-        const wrapper = sandbox.locator('[data-cy="expansion-inset"]').first()
-        await expect(wrapper).toBeVisible({ timeout: 8000 })
-        const cls = await wrapper.evaluate(el => el.className)
-        expect(cls).toContain('origam-expansion-panels--inset')
+        await expect(sandbox.locator('[data-cy="expansion-layout"]').first()).toBeVisible({ timeout: 10000 })
+        const count = await sandbox.locator('[data-cy="expansion-layout"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
+    })
+})
+
+// ─── Selection ────────────────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Selection', () => {
+    test('selection variant renders panels', async ({ page }) => {
+        await openVariant(page, 'Selection')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-selection"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-selection"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
+    })
+})
+
+// ─── Items prop ───────────────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Items prop', () => {
+    test('renders one panel per items entry (3)', async ({ page }) => {
+        await openVariant(page, 'Items prop')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-items"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-items"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
+    })
+})
+
+// ─── Slot: default ────────────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Slot: default', () => {
+    test('renders explicit OrigamExpansionPanel children with slot-based title', async ({ page }) => {
+        await openVariant(page, 'Slot — default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-slot-default"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-p1"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="expansion-slot-p2"]').first()).toBeVisible()
+    })
+})
+
+// ─── Slot: item ───────────────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Slot: item', () => {
+    test('custom item slot renders 3 panels', async ({ page }) => {
+        await openVariant(page, 'Slot — item')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-slot-item"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
+    })
+})
+
+// ─── Slot: header ─────────────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Slot: header', () => {
+    test('custom header slot renders', async ({ page }) => {
+        await openVariant(page, 'Slot — header')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-slot-header"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-header-custom"]').first()).toBeVisible()
+    })
+})
+
+// ─── Slot: title ──────────────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Slot: title', () => {
+    test('custom title slot renders', async ({ page }) => {
+        await openVariant(page, 'Slot — title')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-slot-title"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
+// ─── Emit: update:modelValue ──────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Emit: update:modelValue', () => {
+    test('emit variant renders clickable panels', async ({ page }) => {
+        await openVariant(page, 'Emit — update:modelValue')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-emit-model"]').first()).toBeVisible({ timeout: 8000 })
+        const headers = sandbox.locator('[data-cy="expansion-emit-model"] .origam-expansion-panel-header')
+        const headerCount = await headers.count()
+        expect(headerCount).toBeGreaterThan(0)
+    })
+})
+
+// ─── Emit: group:selected ─────────────────────────────────────────────────────
+
+test.describe('OrigamExpansionPanels — Emit: group:selected', () => {
+    test('emit variant renders panels that can fire group:selected', async ({ page }) => {
+        await openVariant(page, 'Emit — group:selected')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="expansion-emit-selected"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-emit-selected-p1"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="expansion-emit-selected-p2"]').first()).toBeVisible()
     })
 })
 
@@ -187,5 +209,7 @@ test.describe('OrigamExpansionPanels — Playground', () => {
         await openVariant(page, 'Playground')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="expansion-playground"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-playground"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
     })
 })

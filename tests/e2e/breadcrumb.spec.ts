@@ -15,47 +15,15 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Color ────────────────────────────────────────────────────────────────────
 
-test.describe('OrigamBreadcrumb — Default', () => {
-    test('renders breadcrumb with items', async ({ page }) => {
-        await openVariant(page, 'Default')
+test.describe('OrigamBreadcrumb — Color', () => {
+    test('color variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Color')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="breadcrumb-default"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="breadcrumb-default"] .origam-breadcrumb-item').count()
+        await expect(sandbox.locator('[data-cy="breadcrumb-color"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="breadcrumb-color"] .origam-breadcrumb-item').count()
         expect(count).toBeGreaterThan(0)
-    })
-})
-
-// ─── Items prop ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamBreadcrumb — Items prop', () => {
-    test('renders 3 items from the items prop', async ({ page }) => {
-        await openVariant(page, 'Items prop')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="breadcrumb-items"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="breadcrumb-items"] .origam-breadcrumb-item').count()
-        expect(count).toBe(3)
-    })
-})
-
-// ─── Default slot ─────────────────────────────────────────────────────────────
-
-test.describe('OrigamBreadcrumb — Default slot (explicit children)', () => {
-    test('renders OrigamBreadcrumbItem children in the default slot', async ({ page }) => {
-        await openVariant(page, 'Default slot')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="breadcrumb-slot"]').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('[data-cy="breadcrumb-slot-home"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="breadcrumb-slot-section"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="breadcrumb-slot-current"]').first()).toBeVisible()
-    })
-
-    test('renders OrigamBreadcrumbDivider children in the default slot', async ({ page }) => {
-        await openVariant(page, 'Default slot')
-        const sandbox = sandboxOf(page)
-        const dividers = await sandbox.locator('[data-cy^="breadcrumb-slot-div"]').count()
-        expect(dividers).toBeGreaterThanOrEqual(2)
     })
 })
 
@@ -73,18 +41,6 @@ test.describe('OrigamBreadcrumb — Density', () => {
         for (const cls of childClasses) {
             expect(cls).toMatch(/origam-breadcrumb-item--density-(default|compact|comfortable)/)
         }
-    })
-})
-
-// ─── Color ────────────────────────────────────────────────────────────────────
-
-test.describe('OrigamBreadcrumb — Color', () => {
-    test('color variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Color')
-        const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="breadcrumb-color"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy="breadcrumb-color"] .origam-breadcrumb-item').count()
-        expect(count).toBeGreaterThan(0)
     })
 })
 
@@ -114,6 +70,16 @@ test.describe('OrigamBreadcrumb — Border', () => {
     })
 })
 
+// ─── Elevation ────────────────────────────────────────────────────────────────
+
+test.describe('OrigamBreadcrumb — Elevation', () => {
+    test('elevation variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Elevation')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="breadcrumb-elevation"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
+
 // ─── Divider (string) ─────────────────────────────────────────────────────────
 
 test.describe('OrigamBreadcrumb — Divider (string)', () => {
@@ -135,6 +101,62 @@ test.describe('OrigamBreadcrumb — Divider (icon)', () => {
         await expect(sandbox.locator('[data-cy="breadcrumb-divider-icon"]').first()).toBeVisible({ timeout: 8000 })
         const dividers = await sandbox.locator('[data-cy="breadcrumb-divider-icon"] .origam-breadcrumb-divider').count()
         expect(dividers).toBeGreaterThan(0)
+    })
+})
+
+// ─── Disabled ─────────────────────────────────────────────────────────────────
+
+test.describe('OrigamBreadcrumb — Disabled', () => {
+    test('disabled breadcrumb renders without errors', async ({ page }) => {
+        await openVariant(page, 'Disabled')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="breadcrumb-disabled"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="breadcrumb-disabled"] .origam-breadcrumb-item').count()
+        expect(count).toBeGreaterThan(0)
+    })
+})
+
+// ─── Slot: default ────────────────────────────────────────────────────────────
+
+test.describe('OrigamBreadcrumb — Slot: default', () => {
+    test('renders OrigamBreadcrumbItem children in the default slot', async ({ page }) => {
+        await openVariant(page, 'Slot — default')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-default"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-home"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-section"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-current"]').first()).toBeVisible()
+    })
+
+    test('renders OrigamBreadcrumbDivider children in the default slot', async ({ page }) => {
+        await openVariant(page, 'Slot — default')
+        const sandbox = sandboxOf(page)
+        const dividers = await sandbox.locator('[data-cy^="breadcrumb-slot-div"]').count()
+        expect(dividers).toBeGreaterThanOrEqual(2)
+    })
+})
+
+// ─── Slot: item ───────────────────────────────────────────────────────────────
+
+test.describe('OrigamBreadcrumb — Slot: item', () => {
+    test('custom item slot renders with prepend icon on first item', async ({ page }) => {
+        await openVariant(page, 'Slot — item')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const items = await sandbox.locator('[data-cy="breadcrumb-slot-item"] .origam-breadcrumb-item').count()
+        expect(items).toBe(3)
+    })
+})
+
+// ─── Slot: divider ────────────────────────────────────────────────────────────
+
+test.describe('OrigamBreadcrumb — Slot: divider', () => {
+    test('custom divider slot renders between items', async ({ page }) => {
+        await openVariant(page, 'Slot — divider')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-divider"]').first()).toBeVisible({ timeout: 8000 })
+        const customDividers = await sandbox.locator('[data-cy="breadcrumb-slot-divider-icon"]').count()
+        expect(customDividers).toBeGreaterThan(0)
     })
 })
 

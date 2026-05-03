@@ -4,37 +4,47 @@
 			title="BottomNav/OrigamBottomNav"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
-		<Variant title="Default">
-			<div class="story-bottom-nav-shell" data-cy="bottom-nav-default-shell">
-				<origam-bottom-nav
-						:model-value="true"
-						:items="navItems"
-						data-cy="bottom-nav-default"
-				/>
-			</div>
-		</Variant>
+		<!--
+			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
-		<Variant title="Items prop">
-			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav
-						:model-value="true"
-						:items="navItems"
-						data-cy="bottom-nav-items"
-				/>
-			</div>
-		</Variant>
+			Each <Variant> drives one orthogonal concern:
+			  • one variant per "prop family" (color, size, density, …)
+			  • one variant per slot
+			  • one variant per emit — wire the listener to
+			    `logEvent('event-name', $event)` (imported from
+			    'histoire/client') so the emit shows up in histoire's
+			    Events tab.
+			  • one "playground" variant that exposes everything together
+		-->
 
-		<!-- ════════════ DEFAULT SLOT (explicit children) ════════════ -->
-		<Variant title="Default slot">
-			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav :model-value="true" data-cy="bottom-nav-slot">
-					<origam-btn :prepend-icon="MDI_ICONS.HOME"    text="Home"    data-cy="bottom-nav-slot-home"/>
-					<origam-btn :prepend-icon="MDI_ICONS.MAGNIFY" text="Search"  data-cy="bottom-nav-slot-search"/>
-					<origam-btn :prepend-icon="MDI_ICONS.ACCOUNT" text="Profile" data-cy="bottom-nav-slot-profile"/>
-				</origam-bottom-nav>
-			</div>
+		<!-- ════════════ COLOR / INTENT ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div class="story-bottom-nav-shell">
+					<origam-bottom-nav
+							:model-value="true"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:hover-color="state.hoverColor"
+							:hover-bg-color="state.hoverBgColor"
+							:active-color="state.activeColor"
+							:active-bg-color="state.activeBgColor"
+							:items="navItems"
+							data-cy="bottom-nav-color"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
+				<HstSelect v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+				<HstSelect v-model="state.activeColor"  title="activeColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ DENSITY ════════════ -->
@@ -54,26 +64,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ COLOR ════════════ -->
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
-							:color="state.color"
-							:items="navItems"
-							data-cy="bottom-nav-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -157,7 +147,107 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!-- ════════════ MODE (vertical / horizontal / shift) ════════════ -->
+		<Variant
+				title="Mode"
+				:init-state="() => useStoryInitState<{ mode?: TMode }>({ mode: MODE.VERTICAL })"
+		>
+			<template #default="{ state }">
+				<div class="story-bottom-nav-shell">
+					<origam-bottom-nav
+							:model-value="true"
+							:mode="state.mode"
+							:items="navItems"
+							data-cy="bottom-nav-mode"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.mode" title="mode" :options="modeList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ ITEMS PROP ════════════ -->
+		<Variant title="Items prop">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav
+						:model-value="true"
+						:items="navItems"
+						data-cy="bottom-nav-items"
+				/>
+			</div>
+		</Variant>
+
+		<!-- ════════════ VISIBLE (modelValue toggle) ════════════ -->
+		<Variant
+				title="Visible (modelValue)"
+				:init-state="() => useStoryInitState<{ visible: boolean }>({ visible: true })"
+		>
+			<template #default="{ state }">
+				<div class="story-bottom-nav-shell">
+					<origam-bottom-nav
+							:model-value="state.visible"
+							:items="navItems"
+							data-cy="bottom-nav-visible"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.visible" title="visible (modelValue)"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ SLOT: default ════════════ -->
+		<Variant title="Slot — default">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav :model-value="true" data-cy="bottom-nav-slot-default">
+					<origam-btn :prepend-icon="MDI_ICONS.HOME"    text="Home"    data-cy="bottom-nav-slot-home"/>
+					<origam-btn :prepend-icon="MDI_ICONS.MAGNIFY" text="Search"  data-cy="bottom-nav-slot-search"/>
+					<origam-btn :prepend-icon="MDI_ICONS.ACCOUNT" text="Profile" data-cy="bottom-nav-slot-profile"/>
+				</origam-bottom-nav>
+			</div>
+		</Variant>
+
+		<!-- ════════════ SLOT: item ════════════ -->
+		<Variant title="Slot — item">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav :model-value="true" :items="navItems" data-cy="bottom-nav-slot-item">
+					<template #item="{ props: itemProps, index }">
+						<origam-btn
+								v-bind="itemProps"
+								:prepend-icon="MDI_ICONS.STAR"
+								:data-cy="`bottom-nav-slot-item-${index}`"
+						/>
+					</template>
+				</origam-bottom-nav>
+			</div>
+		</Variant>
+
+		<!-- ════════════ EMIT: update:modelValue ════════════ -->
+		<Variant title="Emit — update:modelValue">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav
+						:model-value="true"
+						:items="navItems"
+						data-cy="bottom-nav-emit-model"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<!-- ════════════ EMIT: update:active ════════════ -->
+		<Variant title="Emit — update:active">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav
+						:model-value="true"
+						:items="navItems"
+						data-cy="bottom-nav-emit-active"
+						@update:active="logEvent('update:active', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBottomNavProps>({
@@ -168,6 +258,7 @@
 					border: false,
 					elevation: undefined,
 					grow: false,
+					mode: MODE.VERTICAL,
 				})"
 		>
 			<template #default="{ state }">
@@ -188,6 +279,7 @@
 				<HstCheckbox v-model="state.border"    title="border"/>
 				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
 				<HstCheckbox v-model="state.grow"      title="grow"/>
+				<HstSelect   v-model="state.mode"      title="mode"      :options="modeList"/>
 			</template>
 		</Variant>
 	</Story>
@@ -197,19 +289,29 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
+	import { DENSITY, MDI_ICONS, MODE } from '@origam/enums'
 	import type {
 		IBorderProps,
 		IBottomNavProps,
 		IColorProps,
 		IDensityProps,
 		IElevationProps,
+		IOptions,
 		IRoundedProps
 	} from '@origam/interfaces'
+	import type { TMode } from '@origam/types'
 
-	import { densityList, elevationList, intentList, roundedList } from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'
+	import { densityList, elevationList, intentList, roundedList } from '@stories/const'
+
+	const modeList: Array<IOptions<TMode>> = [
+		{ label: 'vertical',   value: MODE.VERTICAL   },
+		{ label: 'horizontal', value: MODE.HORIZONTAL },
+		{ label: 'shift',      value: MODE.SHIFT      },
+	]
 
 	const navItems: Array<IBottomNavProps['items'][number]> = [
 		{ text: 'Home',    prependIcon: MDI_ICONS.HOME,    value: 'home'    },
