@@ -12,6 +12,18 @@ import '@origam/assets/css/tokens/primitive.css'
 import '@origam/assets/css/tokens/light.css'
 import '@origam/assets/css/tokens/dark.css'
 
+// Material Design Icons font — every component that renders an icon
+// (OrigamIcon, OrigamListGroup activator's expand chevron, OrigamBtn
+// prepend-icon, OrigamChip close button, …) ships with class names
+// like `mdi mdi-chevron-down`. Pictogrammers' `@mdi/font` declares the
+// `@font-face` and the per-glyph `::before { content: "…" }` rules
+// those classes consume. Without it, the `<i class="mdi mdi-…">`
+// elements render as 16x16 invisible boxes and consumers see only the
+// label next to the empty append slot. Material Icons / Symbols
+// (loaded below) are a different icon set used by `OrigamLigatureIcon`
+// and DO NOT cover the `mdi-*` glyph names.
+import '@mdi/font/css/materialdesignicons.css'
+
 // Force the light theme by default in the Histoire sandbox so component
 // stories render against the light palette. The dark palette is still
 // reachable by setting `<html data-theme="dark">` from a story wrapper
