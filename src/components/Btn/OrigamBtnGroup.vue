@@ -4,21 +4,23 @@
 			:id="id"
 			:class="btnGroupClasses"
 	>
-		<slot name="default">
-			<template v-if="hasItems">
-				<template
-						v-for="(item, index) in items"
-						:key="index"
-				>
-					<slot
-							name="item"
-							v-bind="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<template v-if="hasItems">
+					<template
+							v-for="(item, index) in items"
+							:key="index"
 					>
-						<origam-btn v-bind="item"/>
-					</slot>
+						<slot
+								name="item"
+								v-bind="{item, index}"
+						>
+							<origam-btn v-bind="item"/>
+						</slot>
+					</template>
 				</template>
-			</template>
-		</slot>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -26,9 +28,8 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from '../../components'
+	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
-		provideDefaults,
 		useBorder,
 		useColorEffect,
 		useDensity,
@@ -63,7 +64,7 @@
 	// `bgColor` / etc. still win (that's the contract: parent provides
 	// defaults, child overrides). Children consume this map via
 	// `useDefaults(props)` inside `OrigamBtn.vue`.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-btn': {
 			density: props.density,
 			color: props.color,
@@ -73,7 +74,7 @@
 			hoverColor: props.hoverColor,
 			hoverBgColor: props.hoverBgColor
 		}
-	})))
+	}))
 
 	// The `items` array path used to manually merge with `props.x ?? item.x`,
 	// which made the parent OVERRIDE the item (the inverse of the documented

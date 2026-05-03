@@ -5,46 +5,48 @@
 			:class="breadcrumbClasses"
 			aria-label="Breadcrumb"
 	>
-		<slot name="default">
-			<template v-if="hasItems">
-				<ol class="origam-breadcrumb__items">
-					<template
-							v-for="(item, index) in items"
-							:key="index"
-					>
-						<li class="origam-breadcrumb__item">
-							<slot
-									:name="`item.${index}`"
-									v-bind="{item, index}"
-							>
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<template v-if="hasItems">
+					<ol class="origam-breadcrumb__items">
+						<template
+								v-for="(item, index) in items"
+								:key="index"
+						>
+							<li class="origam-breadcrumb__item">
 								<slot
-										name="item"
-										v-bind="{ item, index }"
-								>
-									<origam-breadcrumb-item v-bind="item">
-										<slot name="item.title"/>
-									</origam-breadcrumb-item>
-								</slot>
-							</slot>
-
-							<template v-if="!isLastItem(index)">
-								<slot
-										:name="`divider.${index}`"
-										v-bind="{divider}"
+										:name="`item.${index}`"
+										v-bind="{item, index}"
 								>
 									<slot
-											name="divider"
-											v-bind="{divider}"
+											name="item"
+											v-bind="{ item, index }"
 									>
-										<origam-breadcrumb-divider :divider="divider"/>
+										<origam-breadcrumb-item v-bind="item">
+											<slot name="item.title"/>
+										</origam-breadcrumb-item>
 									</slot>
 								</slot>
-							</template>
-						</li>
-					</template>
-				</ol>
-			</template>
-		</slot>
+
+								<template v-if="!isLastItem(index)">
+									<slot
+											:name="`divider.${index}`"
+											v-bind="{divider}"
+									>
+										<slot
+												name="divider"
+												v-bind="{divider}"
+										>
+											<origam-breadcrumb-divider :divider="divider"/>
+										</slot>
+									</slot>
+								</template>
+							</li>
+						</template>
+					</ol>
+				</template>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -52,10 +54,9 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem } from '../../components'
+	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem, OrigamDefaultsProvider } from '../../components'
 
 	import {
-		provideDefaults,
 		useBorder,
 		useColorEffect,
 		useDensity,
@@ -86,13 +87,13 @@
 
 	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`
 	// as DEFAULTS — items that pass their own props still win.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-breadcrumb-item': {
 			density: props.density,
 			color: props.color,
 			disabled: props.disabled
 		}
-	})))
+	}))
 
 	const {colorStyles} = useColorEffect(props)
 	const {densityClasses} = useDensity(props)

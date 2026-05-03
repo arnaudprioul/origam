@@ -11,73 +11,75 @@
 			@keydown="handleKeydown"
 			@mousedown="handleMouseDown"
 	>
-		<slot name="default">
-			<origam-list-children
-					v-if="items"
-					:items="items"
-					:return-object="returnObject"
-			>
-				<template
-						v-if="hasChildrenItem"
-						#children="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<origam-list-children
+						v-if="items"
+						:items="items"
+						:return-object="returnObject"
 				>
-					<slot
-							name="childrenItem"
-							v-bind="{item, index}"
-					/>
-				</template>
+					<template
+							v-if="hasChildrenItem"
+							#children="{item, index}"
+					>
+						<slot
+								name="childrenItem"
+								v-bind="{item, index}"
+						/>
+					</template>
 
-				<template
-						v-if="hasDivider"
-						#divider="{itemProps}"
-				>
-					<slot
-							name="divider"
-							v-bind="itemProps"
-					/>
-				</template>
+					<template
+							v-if="hasDivider"
+							#divider="{itemProps}"
+					>
+						<slot
+								name="divider"
+								v-bind="itemProps"
+						/>
+					</template>
 
-				<template
-						v-if="hasSubheader"
-						#subheader="{itemProps}"
-				>
-					<slot
-							name="subheader"
-							v-bind="itemProps"
-					/>
-				</template>
+					<template
+							v-if="hasSubheader"
+							#subheader="{itemProps}"
+					>
+						<slot
+								name="subheader"
+								v-bind="itemProps"
+						/>
+					</template>
 
-				<template
-						v-if="hasGroup"
-						#group="{itemProps}"
-				>
-					<slot
-							name="group"
-							v-bind="itemProps"
-					/>
-				</template>
+					<template
+							v-if="hasGroup"
+							#group="{itemProps}"
+					>
+						<slot
+								name="group"
+								v-bind="itemProps"
+						/>
+					</template>
 
-				<template
-						v-if="hasGroupActivator"
-						#groupActivator="{props, isOpen, events, toggleIcon}"
-				>
-					<slot
-							name="groupActivator"
-							v-bind="{props, isOpen, events, toggleIcon}"
-					/>
-				</template>
+					<template
+							v-if="hasGroupActivator"
+							#groupActivator="{props, isOpen, events, toggleIcon}"
+					>
+						<slot
+								name="groupActivator"
+								v-bind="{props, isOpen, events, toggleIcon}"
+						/>
+					</template>
 
-				<template
-						v-if="hasItem"
-						#item="{itemProps}"
-				>
-					<slot
-							name="item"
-							v-bind="itemProps"
-					/>
-				</template>
-			</origam-list-children>
-		</slot>
+					<template
+							v-if="hasItem"
+							#item="{itemProps}"
+					>
+						<slot
+								name="item"
+								v-bind="itemProps"
+						/>
+					</template>
+				</origam-list-children>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -86,10 +88,9 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamListChildren } from '../../components'
+	import { OrigamDefaultsProvider, OrigamListChildren } from '../../components'
 
 	import {
-		provideDefaults,
 		useBorder,
 		useBothColor,
 		useCreateList,
@@ -133,13 +134,13 @@
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
 	// DEFAULTS — items that pass their own props still win.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-list-item': {
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor
 		}
-	})))
+	}))
 
 	const {items} = useItems(props)
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))

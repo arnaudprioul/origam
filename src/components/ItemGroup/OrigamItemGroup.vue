@@ -4,10 +4,12 @@
 			:class="itemGroupClasses"
       :style="itemGroupStyles"
 	>
-		<slot
-				name="default"
-				v-bind="slotProps"
-		/>
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot
+					name="default"
+					v-bind="slotProps"
+			/>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -25,6 +27,7 @@
 	 */
 	import { computed, StyleValue, useSlots } from 'vue'
 
+	import { OrigamDefaultsProvider } from '../../components'
 	import { useGroup, useProps } from '../../composables'
 
 	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
@@ -41,6 +44,14 @@
 	const {filterProps} = useProps<IItemGroupProps>(props)
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_ITEM_GROUP_KEY)
+
+	// Push the selectedClass down to every descendant `<origam-item>` as
+	// DEFAULTS — items that pass their own props still win.
+	const slotDefaults = computed(() => ({
+		'origam-item': {
+			selectedClass: props.selectedClass
+		}
+	}))
 
 	const slotProps = computed(() => ({
 		isSelected,

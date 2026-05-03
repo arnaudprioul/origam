@@ -8,48 +8,50 @@
 			@mouseenter="handleMouseEnter"
 			@mouseleave="handleMouseLeave"
 	>
-		<template
-				v-for="(item, index) in displayItems"
-				:key="index"
-		>
-			<slot
-					name="avatar"
-					v-bind="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<template
+					v-for="(item, index) in displayItems"
+					:key="index"
 			>
-				<origam-avatar
-						:id="`avatar-${index}`"
-						ref="origamAvatarRef"
-						class="origam-avatar-group__item"
-						v-bind="avatarProps(item)"
-				/>
-			</slot>
-		</template>
-
-		<template v-if="restItems.length">
-			<slot
-					name="rest"
-					v-bind="{rest: restItems, length: restItems.length}"
-			>
-				<!--
-					`avatarProps` is a function (line 104). Without the
-					call parens, Vue tries to spread the function ref
-					itself as props — `density`, `size`, `color`, …
-					forwarded from OrigamAvatarGroup never reached the
-					rest chip. Calling it () returns the merged props.
-				-->
-				<origam-avatar
-						ref="origamAvatarRef"
-						class="origam-avatar-group__rest"
-						v-bind="avatarProps()"
+				<slot
+						name="avatar"
+						v-bind="{item, index}"
 				>
-					<template #default>
-						<slot name="default">
-							+{{ restItems.length }}
-						</slot>
-					</template>
-				</origam-avatar>
-			</slot>
-		</template>
+					<origam-avatar
+							:id="`avatar-${index}`"
+							ref="origamAvatarRef"
+							class="origam-avatar-group__item"
+							v-bind="avatarProps(item)"
+					/>
+				</slot>
+			</template>
+
+			<template v-if="restItems.length">
+				<slot
+						name="rest"
+						v-bind="{rest: restItems, length: restItems.length}"
+				>
+					<!--
+						`avatarProps` is a function (line 104). Without the
+						call parens, Vue tries to spread the function ref
+						itself as props — `density`, `size`, `color`, …
+						forwarded from OrigamAvatarGroup never reached the
+						rest chip. Calling it () returns the merged props.
+					-->
+					<origam-avatar
+							ref="origamAvatarRef"
+							class="origam-avatar-group__rest"
+							v-bind="avatarProps()"
+					>
+						<template #default>
+							<slot name="default">
+								+{{ restItems.length }}
+							</slot>
+						</template>
+					</origam-avatar>
+				</slot>
+			</template>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -58,8 +60,8 @@
 		setup
 >
 
-	import { OrigamAvatar } from "../../components"
-	import { provideDefaults, useActive, useDensity, useHover, useMargin, usePadding, useProps, useRtl, useStyle } from "../../composables"
+	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
+	import { useActive, useDensity, useHover, useMargin, usePadding, useProps, useRtl, useStyle } from "../../composables"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps } from "../../interfaces"
 	import type { TOrigamAvatar } from '../../types'
@@ -76,14 +78,14 @@
 
 	// Push visual-token props down to every descendant `<origam-avatar>` as
 	// DEFAULTS — children that pass their own props still win.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-avatar': {
 			density: props.density,
 			size: props.size,
 			color: props.color,
 			bgColor: props.bgColor
 		}
-	})))
+	}))
 
 	defineEmits(['update:active', 'update:hover'])
 

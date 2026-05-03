@@ -80,7 +80,7 @@ test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
     })
 
     test('default variant renders items without errors', async ({ page }) => {
-        await openVariant(page, BREADCRUMB, 'Default')
+        await openVariant(page, BREADCRUMB, 'Color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-breadcrumb').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-breadcrumb-item').count()
@@ -149,7 +149,7 @@ test.describe('OrigamList → OrigamListItem propagation', () => {
     })
 
     test('default variant renders list items without errors', async ({ page }) => {
-        await openVariant(page, LIST, 'Default')
+        await openVariant(page, LIST, 'Color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-list-item').count()
@@ -177,7 +177,7 @@ test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () =
     })
 
     test('default variant renders panels without errors', async ({ page }) => {
-        await openVariant(page, EXPANSION, 'Default')
+        await openVariant(page, EXPANSION, 'Color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-expansion-panel').count()
@@ -205,7 +205,7 @@ test.describe('OrigamSelectionControlGroup → OrigamSelectionControl propagatio
     })
 
     test('default variant renders controls without errors', async ({ page }) => {
-        await openVariant(page, SELECTION, 'Default')
+        await openVariant(page, SELECTION, 'Color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-selection-control-group').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-selection-control').count()

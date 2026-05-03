@@ -7,28 +7,30 @@
 			@mouseleave="handleMouseleave"
 	>
 		<div class="origam-bottom-nav__content">
-			<slot name="default">
-				<template
-						v-for="(item, index) in items"
-						:key="index"
-				>
-					<slot
-							:name="`item.${index}`"
-							v-bind="{props: item}"
+			<origam-defaults-provider :defaults="slotDefaults">
+				<slot name="default">
+					<template
+							v-for="(item, index) in items"
+							:key="index"
 					>
 						<slot
-								name="item"
-								v-bind="{props: item, index}"
+								:name="`item.${index}`"
+								v-bind="{props: item}"
 						>
-							<origam-btn
-									ref="origamBtnRef"
-									class="origam-bottom-nav__btn"
-									v-bind="item"
-							/>
+							<slot
+									name="item"
+									v-bind="{props: item, index}"
+							>
+								<origam-btn
+										ref="origamBtnRef"
+										class="origam-bottom-nav__btn"
+										v-bind="item"
+								/>
+							</slot>
 						</slot>
-					</slot>
-				</template>
-			</slot>
+					</template>
+				</slot>
+			</origam-defaults-provider>
 		</div>
 	</component>
 </template>
@@ -37,9 +39,8 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import { OrigamBtn, OrigamDefaultsProvider } from "../../components"
 	import {
-		provideDefaults,
 		useActive,
 		useBorder,
 		useColorEffect,
@@ -83,7 +84,7 @@
 	// bottom-nav button children) as DEFAULTS — items that pass their own
 	// props still win. `OrigamBtn` already calls `useDefaults` so this is
 	// picked up automatically.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-btn': {
 			density: props.density,
 			color: props.color,
@@ -93,7 +94,7 @@
 			activeColor: props.activeColor,
 			activeBgColor: props.activeBgColor
 		}
-	})))
+	}))
 
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {isActive, activeClasses} = useActive(props, 'modelValue')

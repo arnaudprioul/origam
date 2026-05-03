@@ -4,25 +4,27 @@
 			:class="selectionControlGroupClasses"
 			:style="selectionControlGroupStyles"
 	>
-		<slot
-				name="default"
-				v-bind="{items}"
-		>
-			<template
-					v-for="(item, index) in items"
-					:key="index"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot
+					name="default"
+					v-bind="{items}"
 			>
-				<slot
-						:name="`item.${index}`"
-						v-bind="{item}"
+				<template
+						v-for="(item, index) in items"
+						:key="index"
 				>
 					<slot
-							name="item"
-							v-bind="{item, index}"
-					/>
-				</slot>
-			</template>
-		</slot>
+							:name="`item.${index}`"
+							v-bind="{item}"
+					>
+						<slot
+								name="item"
+								v-bind="{item, index}"
+						/>
+					</slot>
+				</template>
+			</slot>
+		</origam-defaults-provider>
 	</div>
 </template>
 
@@ -31,7 +33,8 @@
 		setup
 >
 	import { computed, onScopeDispose, provide, StyleValue } from 'vue'
-	import { provideDefaults, useProps, useVModel } from '../../composables'
+	import { OrigamDefaultsProvider } from '../../components'
+	import { useProps, useVModel } from '../../composables'
 
 	import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts'
 
@@ -55,12 +58,12 @@
 
 	// Push visual-token props down to every descendant `<origam-selection-control>`
 	// as DEFAULTS — controls that pass their own props still win.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-selection-control': {
 			density: props.density,
 			color: props.color
 		}
-	})))
+	}))
 
 	const modelValue = useVModel(props, 'modelValue')
 	const uid = getUid()

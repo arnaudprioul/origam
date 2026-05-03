@@ -5,10 +5,12 @@
 			:style="chipGroupStyles"
 			v-bind="{...slideGroupProps}"
 	>
-		<slot
-				name="default"
-				v-bind="{isSelected, select, next, prev, selected}"
-		/>
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot
+					name="default"
+					v-bind="{isSelected, select, next, prev, selected}"
+			/>
+		</origam-defaults-provider>
 	</origam-slide-group>
 </template>
 
@@ -16,9 +18,9 @@
 		lang="ts"
 		setup
 >
-	import { OrigamSlideGroup } from '../../components'
+	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
 
-	import { provideDefaults, useGroup, useProps } from "../../composables"
+	import { useGroup, useProps } from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 
@@ -48,7 +50,7 @@
 	// Push the visual-token props down to every descendant `<origam-chip>`
 	// as DEFAULTS (children that pass their own value still win). Same
 	// pattern as `OrigamBtnGroup` — see the propagation contract there.
-	provideDefaults(computed(() => ({
+	const slotDefaults = computed(() => ({
 		'origam-chip': {
 			color: props.color,
 			bgColor: props.bgColor,
@@ -57,7 +59,7 @@
 			hoverColor: props.hoverColor,
 			hoverBgColor: props.hoverBgColor
 		}
-	})))
+	}))
 
 	const slideGroupProps = computed(() => {
 		return origamSlideGroupRef.value?.filterProps(props)

@@ -4,38 +4,40 @@
 			:class="listGroupClasses"
 			:style="listGroupStyles"
 	>
-		<slot name="default">
-			<origam-list-group-activator class="origam-list-group__activator">
-				<slot
-						name="activator"
-						v-bind="{ events: activatorEvents, props: activatorProps, isOpen, toggleIcon }"
-				>
-					<origam-list-item
-							:active="isOpen"
-							:append-icon="appendActivatorIcon"
-							:prepend-icon="prependActivatorIcon"
-							:title="title"
-							:value="value"
-							v-bind="activatorProps"
-							v-on="activatorEvents"
-					/>
-				</slot>
-			</origam-list-group-activator>
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<origam-list-group-activator class="origam-list-group__activator">
+					<slot
+							name="activator"
+							v-bind="{ events: activatorEvents, props: activatorProps, isOpen, toggleIcon }"
+					>
+						<origam-list-item
+								:active="isOpen"
+								:append-icon="appendActivatorIcon"
+								:prepend-icon="prependActivatorIcon"
+								:title="title"
+								:value="value"
+								v-bind="activatorProps"
+								v-on="activatorEvents"
+						/>
+					</slot>
+				</origam-list-group-activator>
 
-			<origam-transition
-					:disabled="!isBooted"
-					:transition="transition"
-			>
-				<div
-						v-if="isOpen"
-						:aria-labelledby="id"
-						class="origam-list-group__items"
-						role="group"
+				<origam-transition
+						:disabled="!isBooted"
+						:transition="transition"
 				>
-					<slot name="items"/>
-				</div>
-			</origam-transition>
-		</slot>
+					<div
+							v-if="isOpen"
+							:aria-labelledby="id"
+							class="origam-list-group__items"
+							role="group"
+					>
+						<slot name="items"/>
+					</div>
+				</origam-transition>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -44,7 +46,7 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef } from 'vue'
-	import { OrigamExpandY, OrigamListGroupActivator, OrigamListItem, OrigamTransition } from '../../components'
+	import { OrigamDefaultsProvider, OrigamExpandY, OrigamListGroupActivator, OrigamListItem, OrigamTransition } from '../../components'
 
 	import {
 		useBorder,
@@ -71,6 +73,15 @@
 	const emits = defineEmits(['click:activator'])
 
 	const {filterProps} = useProps<IListGroupProps>(props)
+
+	// Push visual-token props down to every descendant `<origam-list-item>` as
+	// DEFAULTS — items that pass their own props still win.
+	const slotDefaults = computed(() => ({
+		'origam-list-item': {
+			color: props.color,
+			bgColor: props.bgColor
+		}
+	}))
 
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
