@@ -33,6 +33,30 @@ import '@mdi/font/css/materialdesignicons.css'
 if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', 'light')
 
+    // Force the sandbox iframe to fit the available viewport instead
+    // of locking to its responsive preset (default 1024×768 in Histoire,
+    // which forces a horizontal scroll on smaller screens). We inject
+    // a `<style>` tag into the SHELL window (`window.top`) — that's
+    // where the iframe element lives. Idempotent on re-runs.
+    try {
+        const top = window.top
+        if (top && top !== window && top.document && !top.document.getElementById('origam-iframe-fit')) {
+            const s = top.document.createElement('style')
+            s.id = 'origam-iframe-fit'
+            s.textContent = `
+                iframe[src*="__sandbox"] {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    height: 100% !important;
+                    max-height: 100% !important;
+                }
+            `
+            top.document.head.appendChild(s)
+        }
+    } catch {
+        // Cross-origin or no top window — silently no-op.
+    }
+
     // Load Material Icons + Material Symbols Outlined fonts for
     // `OrigamLigatureIcon`. The component itself does NOT load any font
     // (each host app declares its own icon strategy), but the stories
