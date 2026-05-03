@@ -49,10 +49,21 @@
 >
 	.origam-layout {
 		&__wrapper {
-			width: 100vw;
-			height: 100vh;
+			width: 100%;
 			max-height: 100%;
 			max-width: 100%;
+		}
+
+		// Full-viewport mode — opt-in via the `fullHeight` prop on
+		// `<OrigamApp>` (defaults to true) or directly on `<OrigamLayout>`.
+		// Pre-fix the wrapper hardcoded `width: 100vw; height: 100vh`
+		// regardless, so every story / modal / drawer that mounted a
+		// layout flooded its container with a full-viewport sheet,
+		// pushing the actual content to the top sliver. Now the
+		// viewport sizing only kicks in for true full-page app shells.
+		&--full-height &__wrapper {
+			width: 100vw;
+			height: 100vh;
 		}
 	}
 </style>
