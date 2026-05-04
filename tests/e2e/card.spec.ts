@@ -2,6 +2,13 @@ import { expect, test } from '@playwright/test'
 
 const STORY_PATH = '/story/stories-components-stories-card-origamcard-story-vue'
 
+const EXPECTED_INTENT_BG: Record<string, string> = {
+	primary: 'rgb(124, 58, 237)',
+	success: 'rgb(76, 175, 80)',
+	warning: 'rgb(251, 140, 0)',
+	danger:  'rgb(239, 68, 68)'
+}
+
 test.describe('OrigamCard', () => {
 	test('Basic — card renders with title and text', async ({ page }) => {
 		await page.goto(STORY_PATH)
@@ -12,6 +19,31 @@ test.describe('OrigamCard', () => {
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const card = sandbox.locator('[data-cy="card-basic"]')
 		await expect(card).toBeVisible({ timeout: 5000 })
+	})
+
+	test('Color showcase — bgColor prop paints each intent on the card root', async ({ page }) => {
+		// Pre-fix `ICardProps` did NOT extend `IColorProps`, so
+		// `<origam-card color="primary">` was a silent no-op despite
+		// the SCSS reading `var(--origam-card---color)` etc. from the
+		// design tokens. This spec asserts the COMPUTED background of
+		// each intent — catches the regression at runtime instead of
+		// asserting "card is visible" while the prop is silently
+		// dropped.
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		// Use `.last()` — "Color" is also a sidebar entry name in some
+		// configurations, so `.first()` may match the wrong element.
+		await page.getByText('Color', { exact: true }).last().click({ timeout: 5000 })
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+		for (const [intent, expected] of Object.entries(EXPECTED_INTENT_BG)) {
+			const card = sandbox.locator(`[data-cy="card-color-${intent}"]`)
+			await expect(card).toBeVisible({ timeout: 5000 })
+			const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor)
+			expect(bg, `card-color-${intent}`).toBe(expected)
+		}
 	})
 
 	test('Elevation — card element is visible and receives elevation class', async ({ page }) => {

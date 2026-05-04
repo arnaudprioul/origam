@@ -16,6 +16,23 @@
 			</div>
 		</Variant>
 
+		<!-- ════════════ COLOR ════════════ -->
+		<!--
+			Side-by-side render of every intent so the e2e suite can
+			assert the runtime computed `backgroundColor` differs per
+			value. Pre-fix `ICardProps` didn't even extend `IColorProps`
+			— `<origam-card color="primary">` was a silent no-op.
+			Closes the user-reported audit gap on color/bgColor coverage.
+		-->
+		<Variant title="Color">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
+				<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
+				<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
+				<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"

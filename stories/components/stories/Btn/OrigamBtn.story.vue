@@ -49,6 +49,7 @@
 				<origam-btn
 						v-bind="state"
 						text="Button"
+						data-cy="btn-color"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -59,6 +60,24 @@
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
+		</Variant>
+
+		<!--
+			Showcase variant — render 4 buttons side-by-side, each with a
+			different `bgColor` intent. Lets the e2e suite assert the
+			runtime computed `backgroundColor` actually changes per
+			value, instead of asserting "is visible" and silently passing
+			while the prop is ignored. Same pattern as the Toolbar
+			border showcase (commit 0b24362) that caught the unwanted
+			3 px frame regression.
+		-->
+		<Variant title="Color showcase">
+			<div style="display: flex; gap: 12px; padding: 16px;">
+				<origam-btn bg-color="primary" text="primary" data-cy="btn-color-primary"/>
+				<origam-btn bg-color="success" text="success" data-cy="btn-color-success"/>
+				<origam-btn bg-color="warning" text="warning" data-cy="btn-color-warning"/>
+				<origam-btn bg-color="danger"  text="danger"  data-cy="btn-color-danger"/>
+			</div>
 		</Variant>
 
 		<!-- ════════════ SIZES ════════════ -->

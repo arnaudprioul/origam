@@ -136,6 +136,7 @@
 	import {
 		useAdjacent,
 		useBorder,
+		useBothColor,
 		useDensity,
 		useDimension,
 		useElevation,
@@ -168,6 +169,15 @@
 	const link = useLink(props, attrs)
 
 	const {borderClasses, borderStyles} = useBorder(props)
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props (`color`, `bgColor`). Pre-fix
+	// `ICardProps` did NOT extend `IColorProps` and the SCSS read
+	// `var(--origam-card---color)` / `--background` from tokens only —
+	// the consumer-facing `<origam-card color="primary">` was a silent
+	// no-op. Wiring `useBothColor` here makes the consumer's intent
+	// land on the root element via inline-style specificity, overriding
+	// the token defaults exactly like every other coloured component.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
@@ -220,6 +230,7 @@
 	const cardStyles = computed(() => {
 		return [
 			borderStyles.value,
+			colorStyles.value,
 			dimensionStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
