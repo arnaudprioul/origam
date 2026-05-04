@@ -103,6 +103,52 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ BORDER ════════════ -->
+		<Variant
+				title="Border"
+				:init-state="() => useStoryInitState<{ border?: boolean | 'top' | 'right' | 'bottom' | 'left' }>({})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar
+						:border="state.border"
+						title="Border Toolbar"
+						data-cy="toolbar-border"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.border"
+						title="border"
+						:options="[
+							{ label: '(none)', value: undefined },
+							{ label: 'true (all sides)', value: true },
+							{ label: 'top', value: 'top' },
+							{ label: 'right', value: 'right' },
+							{ label: 'bottom', value: 'bottom' },
+							{ label: 'left', value: 'left' }
+						]"
+				/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ BORDER SHOWCASE ════════════ -->
+		<!--
+			Side-by-side render of every `border` rung so the e2e spec can
+			assert every value produces a distinct computed `border-*-width`
+			(no silently-ignored class). Stable `data-cy` selectors mirror
+			the rung names.
+		-->
+		<Variant title="Border showcase">
+			<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
+				<origam-toolbar title="border={false} (default)"   data-cy="toolbar-border-default"/>
+				<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
+				<origam-toolbar title='border="top"'    border="top"        data-cy="toolbar-border-top"/>
+				<origam-toolbar title='border="right"'  border="right"      data-cy="toolbar-border-right"/>
+				<origam-toolbar title='border="bottom"' border="bottom"     data-cy="toolbar-border-bottom"/>
+				<origam-toolbar title='border="left"'   border="left"       data-cy="toolbar-border-left"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">

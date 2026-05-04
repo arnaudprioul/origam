@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, FrameLocator, test } from '@playwright/test'
 
 const STORY_PATH = '/story/stories-components-stories-toolbar-origamtoolbar-story-vue'
 
@@ -128,5 +128,104 @@ test.describe('OrigamToolbar', () => {
 		const toolbar = sandbox.locator('[data-cy="toolbar-playground"]')
 		await expect(toolbar).toBeVisible({ timeout: 5000 })
 		await expect(toolbar).toHaveClass(/origam-toolbar/)
+	})
+
+	// ────────────────────────────────────────────────────────────────────
+	// Border — computed-CSS assertions
+	//
+	// Pre-fix the SCSS read singular shorthand variables
+	// (`--origam-toolbar---border-width`) that the token build never
+	// emits. Combined with `border-style: solid` from the tokens, every
+	// toolbar rendered with a ~3 px black frame on every side, even
+	// `border={false}`. This block asserts the runtime computed widths,
+	// not just class presence — the previous "renders" assertion was
+	// passing while the bug was active.
+	// ────────────────────────────────────────────────────────────────────
+
+	const widths = (sandbox: FrameLocator, selector: string) =>
+		sandbox.locator(selector).evaluate((el) => {
+			const cs = window.getComputedStyle(el)
+			return {
+				top:    cs.borderTopWidth,
+				right:  cs.borderRightWidth,
+				bottom: cs.borderBottomWidth,
+				left:   cs.borderLeftWidth
+			}
+		})
+
+	test('Border showcase — default toolbar is borderless on all four sides', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		await expect(sandbox.locator('[data-cy="toolbar-border-default"]')).toBeVisible({ timeout: 5000 })
+
+		const w = await widths(sandbox, '[data-cy="toolbar-border-default"]')
+		expect(w).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '0px' })
+	})
+
+	test('Border showcase — border={true} produces a thin border on all four sides', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		await expect(sandbox.locator('[data-cy="toolbar-border-true"]')).toBeVisible({ timeout: 5000 })
+
+		const w = await widths(sandbox, '[data-cy="toolbar-border-true"]')
+		// `thin` resolves to 1px in every modern browser. Asserting the
+		// strict equality keeps the test honest — if the SCSS regresses
+		// to `medium` (~3px) again, this fails immediately.
+		expect(w.top).toBe('1px')
+		expect(w.right).toBe('1px')
+		expect(w.bottom).toBe('1px')
+		expect(w.left).toBe('1px')
+	})
+
+	test('Border showcase — border="bottom" emits 1px ONLY on bottom', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		const w = await widths(sandbox, '[data-cy="toolbar-border-bottom"]')
+		expect(w).toEqual({ top: '0px', right: '0px', bottom: '1px', left: '0px' })
+	})
+
+	test('Border showcase — border="top" emits 1px ONLY on top', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		const w = await widths(sandbox, '[data-cy="toolbar-border-top"]')
+		expect(w).toEqual({ top: '1px', right: '0px', bottom: '0px', left: '0px' })
+	})
+
+	test('Border showcase — border="right" emits 1px ONLY on right', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		const w = await widths(sandbox, '[data-cy="toolbar-border-right"]')
+		expect(w).toEqual({ top: '0px', right: '1px', bottom: '0px', left: '0px' })
+	})
+
+	test('Border showcase — border="left" emits 1px ONLY on left', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		const w = await widths(sandbox, '[data-cy="toolbar-border-left"]')
+		expect(w).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '1px' })
 	})
 })
