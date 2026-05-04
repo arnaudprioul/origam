@@ -37,7 +37,10 @@
 				child element keeps the wrapper transparent and lets the
 				popup body get the styling it deserves.
 			-->
-			<div class="origam-tooltip__content">
+			<div
+					:style="colorStyles"
+					class="origam-tooltip__content"
+			>
 				<slot name="default">
 					<span>{{ text }}</span>
 				</slot>
@@ -50,10 +53,10 @@
 		lang="ts"
 		setup
 >
-	import { computed, mergeProps, ref, StyleValue } from 'vue'
+	import { computed, mergeProps, ref, StyleValue, toRef } from 'vue'
 	import { OrigamFade, OrigamOverlay, OrigamTranslateScale } from '../../components'
 
-	import { useProps, useScopeId, useVModel } from '../../composables'
+	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
@@ -81,6 +84,15 @@
 	defineEmits(['update:modelValue'])
 
 	const {filterProps} = useProps<ITooltipProps>(props)
+
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props. Pre-fix `ITooltipProps` did NOT
+	// extend `IColorProps`, so a consumer `<origam-tooltip
+	// color="primary">` was a silent no-op despite the SCSS reading
+	// `var(--origam-tooltip---background-color)` from the design tokens.
+	// Wired here so the inline declaration on `.origam-tooltip__content`
+	// wins via inline-style specificity.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()

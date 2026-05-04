@@ -37,7 +37,10 @@
 				everything below. Same family of bug as the Tooltip
 				wrapper-bg fix.
 			-->
-			<div class="origam-menu__content">
+			<div
+					:style="colorStyles"
+					class="origam-menu__content"
+			>
 				<slot name="default">
 					<origam-list class="origam-menu__list">
 						<origam-list-subheader
@@ -83,7 +86,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, watch } from 'vue'
+	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
 	import {
 		OrigamList,
 		OrigamListGroup,
@@ -93,7 +96,7 @@
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useProps, useScopeId, useVModel } from '../../composables'
+	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
 
 	import { ORIGAM_MENU_KEY } from '../../consts'
 
@@ -121,6 +124,14 @@
 	defineEmits(['update:modelValue', 'contextmenu'])
 
 	const {filterProps} = useProps<IMenuProps>(props)
+
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props (`color`, `bgColor`). Pre-fix the
+	// SCSS read `var(--origam-menu---background)` from tokens but the
+	// consumer-facing `<origam-menu color="primary">` was a silent
+	// no-op. Wired here so the inline declaration on the
+	// `.origam-menu__content` body wins via inline-style specificity.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()
