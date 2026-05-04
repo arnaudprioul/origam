@@ -292,10 +292,24 @@
 		margin-inline-start: var(--origam-card---margin-inline-start);
 		margin-inline-end: var(--origam-card---margin-inline-end);
 
+		// Borders — per-side / per-corner reads matching the tokens that
+		// `tokens/component/card.json` actually emits. Pre-fix the SCSS
+		// read the singular shorthand `--origam-card---border-width` and
+		// `--origam-card---border-radius` — neither variable is emitted
+		// by Style Dictionary, so `var()` resolved to its CSS initial
+		// (`medium` ≈ 3 px) and combined with `border-style: solid`
+		// produced an unwanted 3 px black frame on every card. Same
+		// family of bug as the Toolbar fix in 0b24362.
 		border-color: var(--origam-card---border-color);
 		border-style: var(--origam-card---border-style);
-		border-width: var(--origam-card---border-width);
-		border-radius: var(--origam-card---border-radius);
+		border-top-width: var(--origam-card---border-top-width, 0);
+		border-right-width: var(--origam-card---border-right-width, 0);
+		border-bottom-width: var(--origam-card---border-bottom-width, 0);
+		border-left-width: var(--origam-card---border-left-width, 0);
+		border-start-start-radius: var(--origam-card---border-start-start-radius, 0);
+		border-start-end-radius: var(--origam-card---border-start-end-radius, 0);
+		border-end-end-radius: var(--origam-card---border-end-end-radius, 0);
+		border-end-start-radius: var(--origam-card---border-end-start-radius, 0);
 
 		&__overlay {
 			background-color: var(--origam-card__overlay---background-color, var(--origam-color-overlay-scrim));
@@ -320,13 +334,22 @@
 			opacity: var(--origam-card---opacity);
 		}
 
+		// `border={true}` — opt-in border on all four sides (Vuetify
+		// parity). The base rule reads per-side widths now, so this
+		// modifier needs to set each side explicitly.
 		&--border {
-			--origam-card---border-width: thin;
+			--origam-card---border-top-width: thin;
+			--origam-card---border-right-width: thin;
+			--origam-card---border-bottom-width: thin;
+			--origam-card---border-left-width: thin;
 			--origam-card---box-shadow: none;
 		}
 
 		&--rounded {
-			--origam-card---border-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-start-start-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-start-end-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-end-end-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-end-start-radius: var(--origam-card---border-radius-rounded, 4px);
 		}
 
 		&--absolute {
