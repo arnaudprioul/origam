@@ -1729,6 +1729,8 @@ export type TTokenName =
   | '--origam-pagination__item---background-color-hover'
   | '--origam-pagination__item---color'
   | '--origam-parallax---aspect-ratio'
+  | '--origam-parallax---background-color'
+  | '--origam-parallax---color'
   | '--origam-parallax---perspective'
   | '--origam-parallax---transform-origin'
   | '--origam-parallax---transition-duration'

@@ -232,8 +232,21 @@
 	// and never translated. Same bug for `event`/`duration`/`easing`.
 	// `animationDuration` is an alias for `duration` (kept for backwards compat).
 	// When both are set, `animationDuration` wins so existing consumers that
-	// used the old prop name are not silently ignored.
-	const resolvedDuration = computed(() => props.animationDuration ?? props.duration ?? 1000)
+	// used the old prop name are not silently ignored. A one-shot
+	// `console.warn` flags the deprecated prop so consumers migrate to
+	// `duration` before the v3.0.0 removal.
+	let _animationDurationWarned = false
+	const resolvedDuration = computed(() => {
+		if (props.animationDuration != null && !_animationDurationWarned) {
+			_animationDurationWarned = true
+			// eslint-disable-next-line no-console
+			console.warn(
+				'[origam] OrigamParallax: the `animationDuration` prop is deprecated and will be removed in v3.0.0. ' +
+				'Use `duration` instead. Both props currently resolve to the same value (`animationDuration` wins when both are set).'
+			)
+		}
+		return props.animationDuration ?? props.duration ?? 1000
+	})
 
 	provide(ORIGAM_PARALLAX_KEY, {
 		audioData,
@@ -255,8 +268,13 @@
 			roundedStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			// Forward `perspective` as a component-scoped CSS variable so
+			// the SCSS owns the actual `perspective:` declaration. Lets the
+			// design-token layer override the default per-theme without
+			// touching the JS, and keeps the Style-Dictionary chromique
+			// pattern consistent across components.
 			{
-				perspective: `${props.perspective}px`
+				'--origam-parallax---perspective': `${props.perspective}px`
 			},
 			props.style
 		] as StyleValue
@@ -284,6 +302,12 @@
 		lang="scss"
 		scoped
 >
+	// Chromique — every visual knob resolves through component-scoped CSS
+	// variables fed by `tokens/component/parallax.json`. The Style-Dictionary
+	// build emits the `:root, [data-theme=...] { --origam-parallax---*: ... }`
+	// defaults; the SCSS only consumes them. The `--origam-parallax---perspective`
+	// override is forwarded from JS (see `parallaxStyles` above) so the
+	// runtime `perspective` prop still wins over the token default.
 	.origam-parallax {
 		display: flex;
 		flex-direction: column;
@@ -291,5 +315,18 @@
 		align-items: center;
 		position: relative;
 		overflow: hidden;
+
+		perspective: var(--origam-parallax---perspective, 1000px);
+		transform-origin: var(--origam-parallax---transform-origin, center center);
+		// `transition-duration` / `transition-timing-function` are read by
+		// the descendant `<OrigamParallaxElement>` via the provided
+		// `duration` / `easing` refs — surfaced here for siblings or
+		// consumers that want to animate parallax-adjacent layers (overlay,
+		// caption, …) at the same cadence as the parallax layers.
+		transition-duration: var(--origam-parallax---transition-duration, 600ms);
+		transition-timing-function: var(--origam-parallax---transition-timing-function, cubic-bezier(0.23, 1, 0.32, 1));
+
+		background-color: var(--origam-parallax---background-color, transparent);
+		color: var(--origam-parallax---color, inherit);
 	}
 </style>
