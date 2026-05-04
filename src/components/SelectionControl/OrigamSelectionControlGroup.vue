@@ -56,12 +56,31 @@
 
 	const {filterProps} = useProps<ISelectionControlGroupProps>(props)
 
-	// Push visual-token props down to every descendant `<origam-selection-control>`
-	// as DEFAULTS — controls that pass their own props still win.
+	// Push visual-token + behavioural props down to every descendant
+	// `<origam-selection-control>` as DEFAULTS — controls that pass
+	// their own value still win.
+	// Pre-fix only `density` + `color` were forwarded, so passing
+	// `<origam-selection-control-group type="radio">` left every
+	// child at `type=undefined` and the rendered `<input>` shipped
+	// without a `type` attribute. A click then never fired `change`,
+	// the model never updated, and the radio looked broken. Forward
+	// `type` plus the rest of the group-level surface so children
+	// behave as the consumer expects.
+	// (Closes task #24.)
 	const slotDefaults = computed(() => ({
 		'origam-selection-control': {
 			density: props.density,
-			color: props.color
+			color: props.color,
+			type: props.type,
+			disabled: props.disabled,
+			readonly: props.readonly,
+			error: props.error,
+			multiple: props.multiple,
+			name: props.name,
+			ripple: props.ripple,
+			falseIcon: props.falseIcon,
+			trueIcon: props.trueIcon,
+			valueComparator: props.valueComparator
 		}
 	}))
 
