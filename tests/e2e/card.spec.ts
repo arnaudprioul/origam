@@ -21,6 +21,54 @@ test.describe('OrigamCard', () => {
 		await expect(card).toBeVisible({ timeout: 5000 })
 	})
 
+	test('Border showcase — directional border rungs produce per-side widths', async ({ page }) => {
+		// Mirror of the Toolbar Border showcase (commit 0b24362). Pre-fix
+		// Card SCSS read singular shorthand — fixed in 9a2e667 with
+		// per-side reads. This spec asserts the directional rungs
+		// (`top`/`right`/`bottom`/`left`) produce 1 px on the
+		// corresponding side and 0 elsewhere.
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		const widths = (cy: string) =>
+			sandbox.locator(`[data-cy="${cy}"]`).evaluate(el => {
+				const cs = getComputedStyle(el as HTMLElement)
+				return {
+					top: cs.borderTopWidth, right: cs.borderRightWidth,
+					bottom: cs.borderBottomWidth, left: cs.borderLeftWidth
+				}
+			})
+
+		expect(await widths('card-border-default')).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '0px' })
+		expect(await widths('card-border-true')).toEqual({ top: '1px', right: '1px', bottom: '1px', left: '1px' })
+		expect(await widths('card-border-top')).toEqual({ top: '1px', right: '0px', bottom: '0px', left: '0px' })
+		expect(await widths('card-border-right')).toEqual({ top: '0px', right: '1px', bottom: '0px', left: '0px' })
+		expect(await widths('card-border-bottom')).toEqual({ top: '0px', right: '0px', bottom: '1px', left: '0px' })
+		expect(await widths('card-border-left')).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '1px' })
+	})
+
+	test('Rounded showcase — rounded={true} sets border-radius', async ({ page }) => {
+		await page.goto(STORY_PATH)
+		await page.waitForLoadState('networkidle')
+		await page.getByText('Rounded showcase', { exact: true }).first().click()
+		await page.waitForTimeout(800)
+
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+		const def = await sandbox.locator('[data-cy="card-rounded-default"]')
+			.evaluate(el => getComputedStyle(el as HTMLElement).borderTopLeftRadius)
+		expect(def).toBe('0px')
+
+		const rounded = await sandbox.locator('[data-cy="card-rounded-true"]')
+			.evaluate(el => getComputedStyle(el as HTMLElement).borderTopLeftRadius)
+		// Card's `&--rounded` modifier sets all four corners to a 4 px
+		// `--origam-card---border-radius-rounded` fallback.
+		expect(rounded).toBe('4px')
+	})
+
 	test('Color showcase — bgColor prop paints each intent on the card root', async ({ page }) => {
 		// Pre-fix `ICardProps` did NOT extend `IColorProps`, so
 		// `<origam-card color="primary">` was a silent no-op despite

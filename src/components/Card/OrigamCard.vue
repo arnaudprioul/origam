@@ -356,6 +356,38 @@
 			--origam-card---box-shadow: none;
 		}
 
+		// Directional rungs — `useBorder` emits BOTH `--border` and
+		// `--border-{dir}` for direction values, so these rules need to
+		// reset the OTHER three sides back to 0 (same pattern as
+		// OrigamToolbar's directional border rules in 0b24362).
+		&--border-top {
+			--origam-card---border-top-width: thin;
+			--origam-card---border-right-width: 0;
+			--origam-card---border-bottom-width: 0;
+			--origam-card---border-left-width: 0;
+		}
+
+		&--border-right {
+			--origam-card---border-top-width: 0;
+			--origam-card---border-right-width: thin;
+			--origam-card---border-bottom-width: 0;
+			--origam-card---border-left-width: 0;
+		}
+
+		&--border-bottom {
+			--origam-card---border-top-width: 0;
+			--origam-card---border-right-width: 0;
+			--origam-card---border-bottom-width: thin;
+			--origam-card---border-left-width: 0;
+		}
+
+		&--border-left {
+			--origam-card---border-top-width: 0;
+			--origam-card---border-right-width: 0;
+			--origam-card---border-bottom-width: 0;
+			--origam-card---border-left-width: thin;
+		}
+
 		&--rounded {
 			--origam-card---border-start-start-radius: var(--origam-card---border-radius-rounded, 4px);
 			--origam-card---border-start-end-radius: var(--origam-card---border-radius-rounded, 4px);

@@ -95,6 +95,31 @@
 			</template>
 		</Variant>
 
+		<!--
+			Showcase variants — pre-seeded prop values so the e2e suite
+			can assert each rung produces a measurable computed-CSS
+			change (border-width, border-radius). Without this the
+			default Border / Rounded variants ship at initial state
+			(no prop) and tests have no way to verify the prop wiring.
+		-->
+		<Variant title="Border showcase">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-card title='border={false} (default)'                   data-cy="card-border-default"/>
+				<origam-card title='border={true}'   :border="true"             data-cy="card-border-true"/>
+				<origam-card title='border="top"'    border="top"               data-cy="card-border-top"/>
+				<origam-card title='border="right"'  border="right"             data-cy="card-border-right"/>
+				<origam-card title='border="bottom"' border="bottom"            data-cy="card-border-bottom"/>
+				<origam-card title='border="left"'   border="left"              data-cy="card-border-left"/>
+			</div>
+		</Variant>
+
+		<Variant title="Rounded showcase">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-card title='rounded={false} (default)' data-cy="card-rounded-default"/>
+				<origam-card title='rounded={true}' :rounded="true" data-cy="card-rounded-true"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
