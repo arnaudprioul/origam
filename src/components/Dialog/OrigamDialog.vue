@@ -5,8 +5,6 @@
 			:activator-props="activatorProps"
 			:class="dialogClasses"
 			:style="dialogStyles"
-			aria-modal="true"
-			role="dialog"
 			v-bind="{...overlayProps, ...scopeId}"
 	>
 		<!--
@@ -34,8 +32,23 @@
 					name="default"
 					v-bind="{isActive}"
 			>
+				<!--
+					Apply `role="dialog"` + `aria-modal="true"` here on the
+					actual dialog body (the card), not on `<origam-overlay>`.
+					Pre-fix the dialog template passed these attrs to the
+					overlay component which has multiple template roots
+					(activator slot + teleport) — Vue couldn't auto-inherit
+					them and warned `Extraneous non-props attributes
+					(aria-modal, role) were passed to component but could
+					not be automatically inherited because component renders
+					fragment or text or teleport root nodes`. Moving them
+					to `<origam-card>` (single root) silences the warning
+					and gives screen readers the correct landmark.
+				-->
 				<origam-card
 						ref="origamCardRef"
+						aria-modal="true"
+						role="dialog"
 						v-bind="cardProps"
 				>
 					<template
