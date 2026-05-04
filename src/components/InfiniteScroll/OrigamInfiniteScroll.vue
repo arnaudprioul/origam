@@ -262,7 +262,13 @@
 		return props.side === INFINITE_SCROLL_SIDE.START || props.side === INFINITE_SCROLL_SIDE.BOTH
 	})
 	const hasEndIntersect = computed(() => {
-		return props.side === INFINITE_SCROLL_SIDE.END || INFINITE_SCROLL_SIDE.BOTH
+		// Pre-fix: `props.side === END || INFINITE_SCROLL_SIDE.BOTH` —
+		// the second operand was a string literal (truthy), so this
+		// always returned true regardless of the `side` prop. The end
+		// sentinel rendered even when `side="start"`, the start
+		// sentinel rendered as expected, and side="both" worked by
+		// accident.
+		return props.side === INFINITE_SCROLL_SIDE.END || props.side === INFINITE_SCROLL_SIDE.BOTH
 	})
 	const isIntersectMode = computed(() => {
 		return props.mode === INFINITE_SCROLL_MODE.INTERSECT
