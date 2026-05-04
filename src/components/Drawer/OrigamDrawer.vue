@@ -281,69 +281,87 @@
 	.origam-drawer {
 		-webkit-overflow-scrolling: touch;
 
-		display: var(--origam-drawer--display);
-		flex-direction: var(--origam-drawer--flex-direction);
+		display: var(--origam-drawer---display);
+		flex-direction: var(--origam-drawer---flex-direction);
 
-		height: var(--origam-drawer--height);
-		max-width: var(--origam-drawer--max-width);
+		height: var(--origam-drawer---height);
+		max-width: var(--origam-drawer---max-width);
 		width: var(--origam-drawer---width);
 
-		pointer-events: var(--origam-drawer--pointer-events);
+		pointer-events: var(--origam-drawer---pointer-events);
 
 		transform: var(--origam-layout---transform);
-		transition-duration: var(--origam-drawer--transition-duration);
-		transition-property: var(--origam-drawer--transition-property);
-		transition-timing-function: var(--origam-drawer--transition-timing-function);
+		transition-duration: var(--origam-drawer---transition-duration);
+		transition-property: var(--origam-drawer---transition-property);
+		transition-timing-function: var(--origam-drawer---transition-timing-function);
 
-		position: var(--origam-layout---position, var(--origam-drawer--position));
+		position: var(--origam-layout---position, var(--origam-drawer---position));
 		z-index: var(--origam-layout---zIndex, 1000);
 
-		border-color: var(--origam-drawer--border-color);
-		border-style: var(--origam-drawer--border-color);
-		border-width: var(--origam-drawer--border-width);
-		border-radius: var(--origam-drawer--border-radius);
+		// Pre-fix two SCSS bugs were stacked here:
+		// 1. Every `--origam-drawer--{prop}` (double-dash) read a CSS
+		//    variable the token build never emits — tokens emit
+		//    `--origam-drawer---{prop}` (TRIPLE dash). Net effect: 36/37
+		//    drawer variables resolved to nothing, so the drawer rendered
+		//    with browser-default backgrounds, transitions, and
+		//    dimensions instead of the design tokens.
+		// 2. `border-style` mistakenly read the `--border-color` variable
+		//    (typo). Even if the var name were correct it would still
+		//    produce an invalid `border-style` value.
+		// Fixed in this commit by rewriting all reads to triple-dash and
+		// pointing `border-style` at the correct variable. Per-side
+		// widths + per-corner radii match the chromique pattern.
+		border-color: var(--origam-drawer---border-color);
+		border-style: var(--origam-drawer---border-style);
+		border-top-width: var(--origam-drawer---border-top-width, 0);
+		border-right-width: var(--origam-drawer---border-right-width, 0);
+		border-bottom-width: var(--origam-drawer---border-bottom-width, 0);
+		border-left-width: var(--origam-drawer---border-left-width, 0);
+		border-start-start-radius: var(--origam-drawer---border-start-start-radius, 0);
+		border-start-end-radius: var(--origam-drawer---border-start-end-radius, 0);
+		border-end-end-radius: var(--origam-drawer---border-end-end-radius, 0);
+		border-end-start-radius: var(--origam-drawer---border-end-start-radius, 0);
 
-		background: var(--origam-drawer--background);
-		box-shadow: var(--origam-drawer--box-shadow);
-		color: var(--origam-drawer--color);
+		background: var(--origam-drawer---background);
+		box-shadow: var(--origam-drawer---box-shadow);
+		color: var(--origam-drawer---color);
 
+		// `border={true}` — opt-in border on all four sides (Vuetify
+		// parity). The per-side reads above pick up these var values
+		// automatically; the duplicate `border-{side}-width` declarations
+		// previously baked into each directional modifier were redundant.
 		&--border {
-			--origam-drawer--border-width: thin;
-			--origam-drawer--box-shadow: none;
+			--origam-drawer---border-top-width: thin;
+			--origam-drawer---border-right-width: thin;
+			--origam-drawer---border-bottom-width: thin;
+			--origam-drawer---border-left-width: thin;
+			--origam-drawer---box-shadow: none;
 		}
 
+		// Edge-anchored variants — only the side adjacent to the
+		// content gets a border, mimicking the Material drawer treatment.
 		&--top {
-			--origam-drawer--border-bottom-width: thin;
-
 			top: 0;
-			border-bottom-width: var(--origam-drawer--border-bottom-width);
+			--origam-drawer---border-bottom-width: thin;
 		}
 
 		&--bottom {
-			--origam-drawer--border-top-width: thin;
-
 			left: 0;
-			border-top-width: var(--origam-drawer--border-top-width);
+			--origam-drawer---border-top-width: thin;
 		}
 
 		&--left {
-			--origam-drawer--border-right-width: thin;
-
 			top: 0;
 			left: 0;
 			right: auto;
-
-			border-right-width: var(--origam-drawer--border-right-width);
+			--origam-drawer---border-right-width: thin;
 		}
 
 		&--right {
-			--origam-drawer--border-left-width: thin;
-
 			top: 0;
 			left: auto;
 			right: 0;
-
-			border-left-width: var(--origam-drawer--border-left-width);
+			--origam-drawer---border-left-width: thin;
 		}
 
 		&--floating {
@@ -351,12 +369,12 @@
 		}
 
 		&--temporary {
-			--origam-drawer--box-shadow: var(--origam-shadow-lg);
+			--origam-drawer---box-shadow: var(--origam-shadow-lg);
 		}
 
 		&--sticky {
-			--origam-drawer--height: auto;
-			--origam-drawer--transition-property: box-shadow, transform, visibility, width, height, left, right;
+			--origam-drawer---height: auto;
+			--origam-drawer---transition-property: box-shadow, transform, visibility, width, height, left, right;
 		}
 
 		&:deep(.origam-list) {
