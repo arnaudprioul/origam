@@ -3,15 +3,33 @@ import { expect, test } from '@playwright/test'
 const STORY_PATH = '/story/stories-components-stories-field-origamfield-story-vue'
 
 test.describe('OrigamField', () => {
-    test('Variant — renders field shell with custom input', async ({ page }) => {
+    test('Variant — default variant emits origam-field--variant-outlined class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Variant', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[data-cy="field-variant"]')).toBeVisible({ timeout: 5000 })
+        const field = sandbox.locator('[data-cy="field-variant"]')
+        await expect(field).toBeVisible({ timeout: 5000 })
+        await expect(field).toHaveClass(/origam-field--variant-outlined/, { timeout: 3000 })
         await expect(sandbox.locator('[data-cy="field-variant-input"]')).toBeVisible({ timeout: 3000 })
+    })
+
+    test('Variants showcase — all seven variant rungs are rendered', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Variants showcase', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+        const variants = ['outlined', 'filled', 'plain', 'underlined', 'solo', 'solo-filled', 'solo-inverted']
+        for (const v of variants) {
+            const el = sandbox.locator(`[data-cy="field-showcase-${v}"]`)
+            await expect(el).toBeVisible({ timeout: 5000 })
+            await expect(el).toHaveClass(new RegExp(`origam-field--variant-${v}`), { timeout: 3000 })
+        }
     })
 
     test('Color — field renders with color prop', async ({ page }) => {

@@ -361,6 +361,8 @@
 		]
 	})
 
+	const {filterProps} = useProps<ITextFieldProps>(props)
+
 	defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
 </script>
 

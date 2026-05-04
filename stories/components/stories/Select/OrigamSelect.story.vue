@@ -86,7 +86,7 @@
 		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
-				:init-state="() => useStoryInitState<{ variant?: TVariant }>({ variant: undefined })"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
 		>
 			<template #default="{ state }">
 				<origam-select
@@ -99,7 +99,7 @@
 				<div data-cy="select-variant-status">value = {{ variantModel }}</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.variant" title="variant" :options="variantList"/>
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
 			</template>
 		</Variant>
 
@@ -243,7 +243,7 @@
 			<template #controls="{ state }">
 				<HstText     v-model="state.label"         title="label"/>
 				<HstSelect   v-model="state.color"         title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.variant"       title="variant" :options="variantList"/>
+				<HstSelect   v-model="state.variant"       title="variant" :options="variantInputList"/>
 				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
 				<HstCheckbox v-model="state.multiple"      title="multiple"/>
 				<HstCheckbox v-model="state.chips"         title="chips"/>
@@ -266,12 +266,12 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamSelect } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, ISelectProps } from '@origam/interfaces'
-	import type { TVariant } from '@origam/types'
+	import type { TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantList } from '@stories/const'
+	import { densityList, intentList, variantInputList } from '@stories/const'
 
 	const stringItems = ['France', 'Germany', 'Spain', 'Italy', 'Portugal']
 	const objectItems = [

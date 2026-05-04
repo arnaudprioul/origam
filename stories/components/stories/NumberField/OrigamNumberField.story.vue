@@ -7,7 +7,7 @@
 		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
-				:init-state="() => useStoryInitState<{ variant?: TVariant }>({ variant: undefined })"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
 		>
 			<template #default="{ state }">
 				<origam-number-field
@@ -19,7 +19,7 @@
 				<div data-cy="numberfield-variant-status">value = {{ variantModel }}</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.variant" title="variant" :options="variantList"/>
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
 			</template>
 		</Variant>
 
@@ -163,7 +163,7 @@
 			<template #controls="{ state }">
 				<HstText     v-model="state.label"        title="label"/>
 				<HstSelect   v-model="state.color"        title="color"    :options="intentList"/>
-				<HstSelect   v-model="state.variant"      title="variant"  :options="variantList"/>
+				<HstSelect   v-model="state.variant"      title="variant"  :options="variantInputList"/>
 				<HstSelect   v-model="state.density"      title="density"  :options="densityList"/>
 				<HstSlider   v-model="state.min"          title="min"      :min="-100" :max="0"/>
 				<HstSlider   v-model="state.max"          title="max"      :min="1"    :max="1000"/>
@@ -186,12 +186,12 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamNumberField } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
+	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, INumberFieldProps } from '@origam/interfaces'
-	import type { TVariant } from '@origam/types'
+	import type { TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantList } from '@stories/const'
+	import { densityList, intentList, variantInputList } from '@stories/const'
 
 	const variantModel    = ref<number | null>(null)
 	const rangeModel      = ref<number | null>(50)

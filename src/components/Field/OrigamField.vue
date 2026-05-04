@@ -820,6 +820,57 @@
 				background: var(--origam-field---background-color);
 			}
 
+			// ── filled ──────────────────────────────────────────────────────
+			// Solid background + bottom border only; no visible outer outline.
+			// The background token defaults to a light surface overlay so the
+			// field reads as "filled" on any theme background.
+			&-filled {
+				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
+				border-radius: var(--origam-field---rounded) var(--origam-field---rounded) 0 0;
+				--origam-field__input---padding-top: 20px;
+
+				#{$this}__outlines {
+					#{$this}__outline {
+						border-bottom: 1px solid var(--origam-field---border-color, currentColor);
+						opacity: var(--origam-field--variant-filled---border-opacity, 0.42);
+					}
+				}
+
+				&:hover,
+				&#{$this}--focused {
+					#{$this}__outlines {
+						#{$this}__outline {
+							opacity: 1;
+						}
+					}
+				}
+
+				&#{$this}--error:not(#{$this}--disabled) {
+					#{$this}__outlines {
+						#{$this}__outline {
+							border-bottom-color: var(--origam-field---border-color, var(--origam-color-feedback-danger-border));
+						}
+					}
+				}
+			}
+
+			// ── plain ────────────────────────────────────────────────────────
+			// No chrome at all: transparent background, no border, no outline.
+			// Useful for inline / dense contexts where the surrounding layout
+			// provides enough visual affordance.
+			&-plain {
+				background: transparent;
+				--origam-field---border-width: 0px;
+
+				#{$this}__outlines {
+					display: none;
+				}
+
+				:deep(.origam-field__input) {
+					padding-inline: 0;
+				}
+			}
+
 			&-outlined {
 				--origam-field---border-width: 1px;
 				--origam-field---border-opacity: .38;

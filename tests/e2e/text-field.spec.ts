@@ -3,15 +3,18 @@ import { expect, test } from '@playwright/test'
 const STORY_PATH = '/story/stories-components-stories-textfield-origamtextfield-story-vue'
 
 test.describe('OrigamTextField', () => {
-    test('Variant — renders text input with default variant', async ({ page }) => {
+    test('Variant — default variant emits origam-field--variant-outlined class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Variant', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const field = sandbox.locator('[data-cy="textfield-variant"]')
-        await expect(field).toBeVisible({ timeout: 5000 })
+        const wrapper = sandbox.locator('[data-cy="textfield-variant"]')
+        await expect(wrapper).toBeVisible({ timeout: 5000 })
+        // The OrigamField root inside the TextField wrapper carries the variant class
+        const field = wrapper.locator('.origam-field').first()
+        await expect(field).toHaveClass(/origam-field--variant-outlined/, { timeout: 3000 })
         await expect(sandbox.locator('input').first()).toBeVisible({ timeout: 3000 })
     })
 

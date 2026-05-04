@@ -7,7 +7,7 @@
 		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
-				:init-state="() => useStoryInitState<{ variant?: TVariant }>({ variant: undefined })"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
 		>
 			<template #default="{ state }">
 				<origam-field
@@ -21,8 +21,31 @@
 				</origam-field>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.variant" title="variant" :options="variantList"/>
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
 			</template>
+		</Variant>
+
+		<!-- ════════════ VARIANTS SHOWCASE ════════════ -->
+		<Variant title="Variants showcase">
+			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+				<div
+						v-for="v in variantInputShowcaseList"
+						:key="v.value"
+						style="display: flex; align-items: center; gap: 16px;"
+				>
+					<span style="min-width: 120px; font-size: 13px; color: var(--origam-color-surface-fg, currentColor); opacity: 0.7;">{{ v.label }}</span>
+					<origam-field
+							:variant="v.value"
+							label="Label"
+							style="flex: 1;"
+							:data-cy="`field-showcase-${v.value}`"
+					>
+						<template #default="{ id, onFocus, onBlur }">
+							<input :id="id" class="origam-field__input" placeholder="Placeholder" @focus="onFocus" @blur="onBlur"/>
+						</template>
+					</origam-field>
+				</div>
+			</div>
 		</Variant>
 
 		<!-- ════════════ COLOR ════════════ -->
@@ -200,7 +223,7 @@
 			<template #controls="{ state }">
 				<HstText     v-model="state.label"      title="label"/>
 				<HstSelect   v-model="state.color"      title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.variant"    title="variant" :options="variantList"/>
+				<HstSelect   v-model="state.variant"    title="variant" :options="variantInputList"/>
 				<HstSelect   v-model="state.density"    title="density" :options="densityList"/>
 				<HstText     v-model="state.prefix"     title="prefix"/>
 				<HstText     v-model="state.suffix"     title="suffix"/>
@@ -221,12 +244,15 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamField, OrigamIcon } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IFieldProps } from '@origam/interfaces'
-	import type { TVariant } from '@origam/types'
+	import type { TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantList } from '@stories/const'
+	import { densityList, intentList, variantInputList } from '@stories/const'
+
+	/** Full list for the showcase — no "(none)" entry. */
+	const variantInputShowcaseList = variantInputList.filter(v => v.value !== undefined)
 </script>
 
 <docs lang="md" src="@docs/components/Field/OrigamField.md"/>
