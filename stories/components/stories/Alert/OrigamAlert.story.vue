@@ -9,6 +9,21 @@
 			<origam-alert text="This is a default alert." data-cy="alert-default"/>
 		</Variant>
 
+		<!-- ════════════ COLOR ════════════ -->
+		<!--
+			Side-by-side render of every intent. IAlertProps already
+			extends IColorProps; the showcase surfaces the prop and
+			gives the e2e suite a stable target.
+		-->
+		<Variant title="Color">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-alert bg-color="primary" text="primary" data-cy="alert-color-primary"/>
+				<origam-alert bg-color="success" text="success" data-cy="alert-color-success"/>
+				<origam-alert bg-color="warning" text="warning" data-cy="alert-color-warning"/>
+				<origam-alert bg-color="danger"  text="danger"  data-cy="alert-color-danger"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ STATUS ════════════ -->
 		<Variant
 				title="Status"

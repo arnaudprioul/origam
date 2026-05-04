@@ -9,6 +9,24 @@
 			<origam-chip text="My chip" data-cy="chip-default"/>
 		</Variant>
 
+		<!-- ════════════ COLOR ════════════ -->
+		<!--
+			Side-by-side render of every intent so the e2e suite can
+			assert each rung produces a measurable computed-CSS change.
+			IChipProps already extends IColorProps — pre-fix the story
+			just had no variant to surface it, so consumers had no easy
+			way to verify the prop wiring or for tests to catch a
+			regression.
+		-->
+		<Variant title="Color">
+			<div style="display: flex; gap: 12px; padding: 16px;">
+				<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
+				<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
+				<origam-chip bg-color="warning" text="warning" data-cy="chip-color-warning"/>
+				<origam-chip bg-color="danger"  text="danger"  data-cy="chip-color-danger"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ CLOSABLE ════════════ -->
 		<Variant title="Closable">
 			<div class="story-shell" data-cy="chip-closable-shell">

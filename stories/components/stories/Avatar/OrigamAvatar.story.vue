@@ -12,6 +12,21 @@
 			</div>
 		</Variant>
 
+		<!-- ════════════ COLOR ════════════ -->
+		<!--
+			Side-by-side render of every intent. IAvatarProps already
+			extends IColorProps; this variant gives the e2e suite a
+			concrete surface to verify the prop wiring.
+		-->
+		<Variant title="Color">
+			<div style="display: flex; gap: 12px; padding: 16px;">
+				<origam-avatar bg-color="primary" text="P" data-cy="avatar-color-primary"/>
+				<origam-avatar bg-color="success" text="S" data-cy="avatar-color-success"/>
+				<origam-avatar bg-color="warning" text="W" data-cy="avatar-color-warning"/>
+				<origam-avatar bg-color="danger"  text="D" data-cy="avatar-color-danger"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"

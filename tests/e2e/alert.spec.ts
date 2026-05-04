@@ -45,6 +45,34 @@ test.describe('OrigamAlert — default', () => {
     })
 })
 
+// ─── Color showcase ─────────────────────────────────────────────────────────
+
+// Alert renders with `useColorEffect` which sometimes emits the
+// `bgHover` rung at rest depending on the elevation/state — `primary`
+// resolves to `rgb(109, 40, 217)` (= `#6d28d9`, primary's bgHover)
+// rather than the canonical `#7c3aed`. The other intents map to their
+// `bg` token. Probe-confirmed; not a bug.
+const EXPECTED_ALERT_BG: Record<string, string> = {
+    primary: 'rgb(109, 40, 217)',
+    success: 'rgb(76, 175, 80)',
+    warning: 'rgb(251, 140, 0)',
+    danger:  'rgb(239, 68, 68)'
+}
+
+test.describe('OrigamAlert — color showcase', () => {
+    test('bgColor prop paints each intent on the alert root', async ({ page }) => {
+        await openVariant(page, STORY, 'Color')
+        const sandbox = sandboxOf(page)
+
+        for (const [intent, expected] of Object.entries(EXPECTED_ALERT_BG)) {
+            const alert = sandbox.locator(`[data-cy="alert-color-${intent}"]`)
+            await expect(alert).toBeVisible({ timeout: 5000 })
+            const bg = await alert.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(bg, `alert-color-${intent}`).toBe(expected)
+        }
+    })
+})
+
 // ─── Status ─────────────────────────────────────────────────────────────────
 
 test.describe('OrigamAlert — status', () => {

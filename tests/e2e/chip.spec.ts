@@ -84,6 +84,29 @@ test.describe('OrigamChip — closable', () => {
     })
 })
 
+// ─── Color showcase ─────────────────────────────────────────────────────────
+
+const EXPECTED_INTENT_BG: Record<string, string> = {
+    primary: 'rgb(124, 58, 237)',
+    success: 'rgb(76, 175, 80)',
+    warning: 'rgb(251, 140, 0)',
+    danger:  'rgb(239, 68, 68)'
+}
+
+test.describe('OrigamChip — color showcase', () => {
+    test('bgColor prop paints each intent on the chip root', async ({ page }) => {
+        await openVariant(page, STORY, 'Color')
+        const sandbox = sandboxOf(page)
+
+        for (const [intent, expected] of Object.entries(EXPECTED_INTENT_BG)) {
+            const chip = sandbox.locator(`[data-cy="chip-color-${intent}"]`)
+            await expect(chip).toBeVisible({ timeout: 5000 })
+            const bg = await chip.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(bg, `chip-color-${intent}`).toBe(expected)
+        }
+    })
+})
+
 // ─── Pill ───────────────────────────────────────────────────────────────────
 
 test.describe('OrigamChip — pill', () => {
