@@ -1,7 +1,20 @@
 <template>
+	<!--
+		`defer` (Vue 3.5+) waits until the current render cycle has
+		settled before resolving the teleport target. Pre-fix the teleport
+		evaluated `:to="#layout-0 .origam-layout__wrapper"` while the
+		wrapper was still being mounted by the parent OrigamLayout — Vue
+		warned `Failed to locate Teleport target` and `Invalid Teleport
+		target on mount: null`, the drawer never mounted, and a cascade
+		of `Cannot set properties of null (setting '__vnode')` errors
+		took the rest of the variant down. With `defer`, the target lookup
+		runs after the layout's wrapper is in the DOM.
+	-->
 	<teleport
 			v-if="isActive"
+			:disabled="isLayoutOrphan"
 			:to="teleportDrawer"
+			defer
 	>
 		<component
 				:is="tag"
@@ -188,7 +201,17 @@
 		)
 	})
 
+	// `useLayoutItem` falls back to `layoutId: 'origam-layout-orphan'`
+	// when no `<OrigamLayout>` ancestor is in the tree (stories, modal
+	// previews, tests). The corresponding `#origam-layout-orphan
+	// .origam-layout__wrapper` selector doesn't exist in the DOM, so
+	// `<teleport :to="…">` silently no-ops and the drawer never mounts.
+	// Detect the orphan case and disable the teleport — Vue's
+	// `disabled` flag falls back to inline rendering at the declared
+	// position, which is what the consumer expects in standalone use.
+	const isLayoutOrphan = computed(() => layoutId.value === 'origam-layout-orphan')
 	const teleportDrawer = computed(() => {
+		if (isLayoutOrphan.value) return undefined
 		return `#${layoutId.value} .origam-layout__wrapper`
 	})
 
