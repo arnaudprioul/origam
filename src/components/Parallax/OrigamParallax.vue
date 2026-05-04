@@ -29,6 +29,7 @@
 	import {
 		useAudio,
 		useBorder,
+		useBothColor,
 		useDimension,
 		useDisplay,
 		useElevation,
@@ -61,6 +62,10 @@
 	const {audioRef, audioData, onStop: handleStop} = useAudio(props)
 	const {platform} = useDisplay()
 	const {dimensionStyles} = useDimension(props)
+	// Pre-fix `IParallaxProps` did not extend `IColorProps` — the SCSS
+	// read `var(--origam-parallax---background-color)` from tokens but
+	// the consumer's intent had no override path.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderStyles, borderClasses} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
@@ -265,6 +270,7 @@
 		return [
 			dimensionStyles.value,
 			borderStyles.value,
+			colorStyles.value,
 			roundedStyles.value,
 			paddingStyles.value,
 			marginStyles.value,

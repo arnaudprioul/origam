@@ -2,6 +2,7 @@ import type {
     IAudioProps,
     IBorderProps,
     IBox,
+    IColorProps,
     ICommonsComponentProps,
     IDimensionProps,
     IElevationProps,
@@ -15,7 +16,12 @@ import type { TParallaxEvent, TPoint } from '../../types'
 
 import type { Ref } from 'vue'
 
-export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IAudioProps {
+// `IColorProps` exposes `color` / `bgColor` hooks. The Parallax SCSS
+// already reads `var(--origam-parallax---background-color)` and
+// `--color` from the design tokens (added in 2931d43); declaring the
+// props here lets the consumer override them per-instance via inline
+// styles, matching every other coloured component.
+export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IAudioProps {
     /**
      * @deprecated Use `duration` instead. `animationDuration` is kept as a
      * silent alias for backwards-compat and will be removed in v3.0.0.

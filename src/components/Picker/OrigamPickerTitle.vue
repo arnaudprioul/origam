@@ -14,8 +14,8 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from "vue"
-	import { useProps } from "../../composables"
+	import { computed, StyleValue, toRef } from "vue"
+	import { useBothColor, useProps } from "../../composables"
 
 	import type { IPickerTitleProps } from "../../interfaces"
 
@@ -25,10 +25,17 @@
 
 	const {filterProps} = useProps<IPickerTitleProps>(props)
 
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations. Pre-fix the SCSS read `var(--origam-picker-title---color)`
+	// from tokens but the consumer's `color`/`bgColor` props had no path
+	// to the rendered element.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
 	// CLASS & STYLES
 
 	const pickerTitleStyles = computed(() => {
 		return [
+			colorStyles.value,
 			props.style
 		] as StyleValue
 	})
