@@ -9,10 +9,20 @@
 			role="dialog"
 			v-bind="{...overlayProps, ...scopeId}"
 	>
-		<template
-				v-if="slots.activator"
-				#activator="{props}"
-		>
+		<!--
+			Always forward the activator slot to OrigamOverlay regardless
+			of whether the consumer provided one — the inner `<slot>` is a
+			no-op when empty. Pre-fix the wrapping template was guarded by
+			`v-if="slots.activator"` which (in some Vue 3 slot-resolution
+			paths) caused OrigamOverlay to receive an EMPTY activator slot,
+			so the merged activator-props (`onClick`, `ref`, …) never
+			reached the consumer's button. The dialog never opened on
+			click — clicking the activator only fired OrigamBtn's local
+			`handleClick`, never `useActivator.handleClick` which is what
+			toggles `isActive`. Removing the guard fixes the v-model flow
+			while keeping the no-activator case a clean no-op.
+		-->
+		<template #activator="{props}">
 			<slot
 					name="activator"
 					v-bind="{props}"
@@ -141,7 +151,16 @@
 		origin: 'center center',
 		scrollStrategy: 'block',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
-		zIndex: 2400
+		zIndex: 2400,
+		// Vue 3's Boolean prop coercion turns `undefined` into `false`,
+		// so without an explicit default here Dialog's resolved
+		// `props.openOnClick` is `false` even though OrigamOverlay's
+		// withDefaults declares `true`. The chain `Dialog → Overlay →
+		// useActivator.activatorEvents` then drops `onClick` from the
+		// activator merge, the consumer's button receives no click
+		// handler, and the dialog never opens. Anchoring the default
+		// here lines up the resolved prop with the parent's intent.
+		openOnClick: true
 	})
 
 	const emits = defineEmits(['update:modelValue', 'isRead', 'click:outside'])

@@ -247,6 +247,13 @@
 
 		link.navigate?.(e)
 		group?.toggle()
+
+		// Note: Vue 3.5 automatically merges parent-passed `onClick`
+		// (from `v-bind`) with the template `@click` listener — the
+		// vnode receives a 2-element listener array, both fire. Don't
+		// manually invoke `attrs.onClick` here, otherwise the parent's
+		// handler runs twice and `isActive` toggles back to its
+		// previous state.
 	}
 
 	const hasIcon = computed(() => {
