@@ -89,14 +89,18 @@
 
 	const isHover = shallowRef(false)
 
+	// `||` (not `??`) to fall back through the Vue-coerced `false` value
+	// that an unset TColor prop ends up with — `??` only catches null /
+	// undefined and would leak `false` downstream, where `useColor`
+	// silently no-ops on falsy backgrounds.
 	const hoverColor = computed(() => {
-		return props.hoverColor ?? props.color
+		return props.hoverColor || props.color
 	})
 	const color = computed(() => {
 		return isHover.value ? hoverColor.value : props.color
 	})
 	const hoverBgColor = computed(() => {
-		return props.hoverBgColor ?? props.color
+		return props.hoverBgColor || props.color
 	})
 	const bgColor = computed(() => {
 		return isHover.value ? hoverBgColor.value : props.bgColor

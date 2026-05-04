@@ -292,12 +292,17 @@
 			margin-inline-start: auto;
 		}
 
+		// Track + thumb: read from CSS variables so the design-token
+		// layer can override them per theme, AND so the inline
+		// `:style="backgroundColorStyles"` (which sets `background-color`
+		// directly) wins via inline-style specificity when the consumer
+		// passes `color`/`bgColor` and the switch is checked.
 		&__track {
 			display: inline-flex;
 			align-items: center;
 			font-size: 0.5rem;
 			padding: 0 5px;
-			background-color: rgb(163, 163, 163);
+			background-color: var(--origam-switch__track---background-color, rgb(163, 163, 163));
 			border-radius: 9999px;
 			height: 14px;
 			opacity: 0.6;
@@ -306,10 +311,31 @@
 			transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
+		// Track is FULLY OPAQUE when the switch is dirty (checked) so the
+		// consumer's color shines through; the OFF state stays at 0.6
+		// opacity (Material muted track). The `--dirty` modifier lives
+		// on the `.origam-selection-control` CHILD, not on `.origam-switch`
+		// itself — use a descendant selector accordingly. Reads the
+		// dedicated `--background-color-checked` token when the design
+		// tokens expose one — the inline `:style="backgroundColorStyles"`
+		// from `useSelectionControl` (which now falls back to
+		// `props.color` when checked) wins via inline-style specificity,
+		// so a consumer `color="primary"` paints the track without
+		// needing to override the token.
+		.origam-selection-control--dirty &__track {
+			opacity: 1;
+			background-color: var(--origam-switch__track---background-color-checked, var(--origam-switch__track---background-color, rgb(163, 163, 163)));
+		}
+
+		// Disabled checked state.
+		.origam-selection-control--dirty.origam-selection-control--disabled &__track {
+			background-color: var(--origam-switch__track---background-color-disabled, rgb(163, 163, 163));
+		}
+
 		&__thumb {
 			align-items: center;
-			background-color: rgb(71, 71, 71);
-			color: rgb(255, 255, 255);
+			background-color: var(--origam-switch__thumb---background-color, rgb(71, 71, 71));
+			color: var(--origam-switch__thumb---color, rgb(255, 255, 255));
 			border-radius: 50%;
 			display: flex;
 			font-size: 0.75rem;

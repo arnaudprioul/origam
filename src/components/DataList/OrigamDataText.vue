@@ -86,14 +86,17 @@
 
 	const isHover = shallowRef(false)
 
+	// `||` (not `??`) — Vue 3 coerces unset `TColor` props to `false`,
+	// not `undefined`, so the nullish coalescing operator wouldn't fall
+	// back. Same fix as the OrigamSwitch / OrigamDataTitle equivalent.
 	const hoverColor = computed(() => {
-		return props.hoverColor ?? props.color
+		return props.hoverColor || props.color
 	})
 	const color = computed(() => {
 		return isHover.value ? hoverColor.value : props.color
 	})
 	const hoverBgColor = computed(() => {
-		return props.hoverBgColor ?? props.color
+		return props.hoverBgColor || props.color
 	})
 	const bgColor = computed(() => {
 		return isHover.value ? hoverBgColor.value : props.bgColor
