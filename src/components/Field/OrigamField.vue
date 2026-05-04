@@ -504,6 +504,13 @@
 			flex-wrap: wrap;
 			letter-spacing: 0.009375em;
 			opacity: 0.7;
+			// `box-sizing: border-box` so the inline padding tokens
+			// (24px-top + 6px-bottom by default) are INCLUDED in the
+			// 56px min-height target. Pre-fix the default `content-box`
+			// stacked padding ON TOP of the height — every text field
+			// rendered at 86px (56 + 24 + 6) instead of the 56px Material
+			// baseline. User-reported.
+			box-sizing: border-box;
 			min-height: max(calc(var(--origam-input__control---height, 56px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
 			padding-inline: var(--origam-field__input---padding-start) var(--origam-field__input---padding-end);
