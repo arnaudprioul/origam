@@ -42,7 +42,21 @@
 
   import type { IItemGroupItemProps } from '../../interfaces'
 
-  const props = withDefaults(defineProps<IItemGroupItemProps>(), {
+  // Vue 3's `defineProps<T>()` compile-time prop extraction occasionally
+  // misses inherited props on multi-extends imported interfaces. Even
+  // with `tag?: string` shadowed in `IItemGroupItemProps`, the runtime
+  // sometimes warns `Property "tag" was accessed during render but is
+  // not defined on instance` on every <OrigamItem>. Mirroring the
+  // imported props onto a *local* interface that the SFC compiler
+  // resolves entirely within this file forces the runtime registration.
+  interface Props extends IItemGroupItemProps {
+    tag?: string
+    value?: any
+    disabled?: boolean
+    selectedClass?: string
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
     tag: 'div'
   })
 
