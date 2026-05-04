@@ -87,6 +87,11 @@
 	$breakpoints: ('sm': 600px, 'md': 960px, 'lg': 1280px, 'xl': 1920px, 'xxl': 2560px);
 	$sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 	$aligns: ('start': flex-start, 'end': flex-end, 'center': center, 'baseline': baseline, 'stretch': stretch);
+	// Order rungs — `first` resolves to a very negative number (always
+	// before any positional sibling) and `last` to a large positive
+	// number (always after). Numeric rungs 0..12 cover the common
+	// reorder cases (12-column grid).
+	$orders: ('first': -9999, 'last': 9999);
 
 	%default {
 		width: var(--origam-col---width);
@@ -110,6 +115,11 @@
 		flex-shrink: var(--origam-col---flex-shrink);
 		flex-basis: var(--origam-col---flex-basis);
 		align-self: var(--origam-col---align-self);
+		// Default `order: 0` — sits in source order. The `&--order-*`
+		// rules below override the var when the consumer reorders the
+		// column. Without this base read, the per-rung CSS variables
+		// would be set but never read by the layout engine.
+		order: var(--origam-col---order, 0);
 
 		max-width: var(--origam-col---max-width);
 		box-sizing: var(--origam-col---box-sizing);
@@ -146,6 +156,20 @@
 			}
 		}
 
+		// Order rungs — named keywords (`first` / `last`) plus 0..12.
+		// Mirror the same per-breakpoint emission pattern used by the
+		// align / size / offset families.
+		@each $name, $value in $orders {
+			&--order-#{$name} {
+				--origam-col---order: #{$value};
+			}
+		}
+		@for $i from 0 through 12 {
+			&--order-#{$i} {
+				--origam-col---order: #{$i};
+			}
+		}
+
 		@each $breakpoint, $breakpointSize in $breakpoints {
 			&--#{$breakpoint}-auto {
 				@extend %default;
@@ -179,6 +203,26 @@
 				&--align-#{$breakpoint}-#{$align} {
 					@media (min-width: $breakpointSize) {
 						--origam-col---align-self: #{$alignAttr};
+					}
+				}
+			}
+
+			// Per-breakpoint order — `&--order-sm-3 { order: 3 @ ≥600px }`,
+			// `&--order-md-first { order: -9999 @ ≥960px }`, etc. Class
+			// names match the JS emission `origam-col--order-{bp}-{value}`
+			// produced by `toKebabCase('orderSm')` etc. in the script
+			// block above.
+			@each $name, $value in $orders {
+				&--order-#{$breakpoint}-#{$name} {
+					@media (min-width: $breakpointSize) {
+						--origam-col---order: #{$value};
+					}
+				}
+			}
+			@for $i from 0 through 12 {
+				&--order-#{$breakpoint}-#{$i} {
+					@media (min-width: $breakpointSize) {
+						--origam-col---order: #{$i};
 					}
 				}
 			}

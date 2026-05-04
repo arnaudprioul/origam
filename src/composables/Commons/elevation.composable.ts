@@ -20,6 +20,20 @@ function elevationToToken (level: number): string {
     return 'xl'
 }
 
+/**
+ * Origam-native shadow rungs the consumer can pass directly via the
+ * `elevation` prop instead of a Material 0..24 number — e.g.
+ * `<OrigamCard elevation="md">` is equivalent to `elevation="6"` but
+ * makes the intent explicit. Lookup is identity (rung name == token
+ * suffix). Numeric inputs still flow through `elevationToToken`.
+ */
+const ORIGAM_SHADOW_RUNGS = new Set([
+    'none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'
+])
+function isOrigamRung (value: unknown): value is string {
+    return typeof value === 'string' && ORIGAM_SHADOW_RUNGS.has(value)
+}
+
 const _bgWarned = new WeakSet<object>()
 function warnBgColorUsage (bgColor: TColor) {
     if (typeof console === 'undefined' || !bgColor) return
@@ -71,6 +85,15 @@ export function useElevation (
         const styles: Array<string> = []
 
         if (elevation == null || flat.value) return styles
+
+        // Origam-native rung shortcut — e.g. `elevation="md"` lands
+        // straight on `var(--origam-shadow-md)` without going through
+        // the Material 0..24 → token mapping. Authors get an explicit
+        // intent ("medium shadow") rather than an opaque number.
+        if (isOrigamRung(elevation)) {
+            styles.push(`box-shadow: var(--origam-shadow-${elevation})`)
+            return styles
+        }
 
         const numeric = typeof elevation === 'string' ? parseInt(elevation, 10) : elevation
         if (Number.isNaN(numeric as number)) return styles
