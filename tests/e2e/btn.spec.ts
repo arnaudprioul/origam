@@ -47,6 +47,27 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
         expect(bgComputed).not.toMatch(/^#[0-9a-fA-F]{3,6}$/)
     })
 
+    test('Color showcase — bgColor prop paints each intent on the btn root', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Color showcase', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const expected: Record<string, string> = {
+            primary: 'rgb(124, 58, 237)',
+            success: 'rgb(76, 175, 80)',
+            warning: 'rgb(251, 140, 0)',
+            danger:  'rgb(239, 68, 68)'
+        }
+        for (const [intent, rgb] of Object.entries(expected)) {
+            const btn = sandbox.locator(`[data-cy="btn-color-${intent}"]`)
+            await expect(btn).toBeVisible({ timeout: 5000 })
+            const bg = await btn.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(bg, `btn-color-${intent}`).toBe(rgb)
+        }
+    })
+
     test('States — disabled disables pointer events', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')

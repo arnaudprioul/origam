@@ -80,6 +80,31 @@
 			</div>
 		</Variant>
 
+		<!-- ════════════ ROUNDED SHOWCASE ════════════ -->
+		<!--
+			Renders the `rounded` prop across its rungs so the e2e suite
+			can assert each value produces a measurable border-radius.
+		-->
+		<Variant title="Rounded showcase">
+			<div style="display: flex; gap: 12px; padding: 16px; align-items: center;">
+				<origam-btn text="default"   data-cy="btn-rounded-default"/>
+				<origam-btn :rounded="0"      text="0"     data-cy="btn-rounded-0"/>
+				<origam-btn rounded="sm"      text="sm"    data-cy="btn-rounded-sm"/>
+				<origam-btn rounded="lg"      text="lg"    data-cy="btn-rounded-lg"/>
+				<origam-btn rounded="circle"  text="●"     data-cy="btn-rounded-circle"/>
+			</div>
+		</Variant>
+
+		<!-- ════════════ BORDER SHOWCASE ════════════ -->
+		<Variant title="Border showcase">
+			<div style="display: flex; gap: 12px; padding: 16px;">
+				<origam-btn text="default"               data-cy="btn-border-default"/>
+				<origam-btn :border="true" text="true"   data-cy="btn-border-true"/>
+				<origam-btn border="top"   text="top"    data-cy="btn-border-top"/>
+				<origam-btn border="bottom" text="bot"   data-cy="btn-border-bottom"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ SIZES ════════════ -->
 		<Variant
 				title="Size"
