@@ -71,31 +71,40 @@
 		lang="scss"
 		scoped
 >
+	// Pre-fix every `var(--origam-main--{prop})` read used DOUBLE-dash
+	// while the token build emits TRIPLE-dash (`--origam-main---{prop}`,
+	// matching the project's component block/property convention). All
+	// 11 reads resolved to nothing, so the main element used CSS browser
+	// defaults instead of the design tokens (`flex: 1 0 auto`,
+	// `max-width: 100%`, transitions, etc.). Same family of bug as the
+	// OrigamDrawer fix in 0b7ea51 — confirmed by token-grep:
+	//   tokens emit: 13× `--origam-main---*` triple-dash
+	//   SCSS read:   11× `--origam-main--*`  double-dash (resolved → ∅)
 	.origam-main {
 		$this: &;
 
-		flex: var(--origam-main--flex);
-		max-width: var(--origam-main--max-width);
-		transition-duration: var(--origam-main--transition-duration);
-		transition-property: var(--origam-main--transition-property);
-		transition-timing-function: var(--origam-main--transition-timing-function);
+		flex: var(--origam-main---flex);
+		max-width: var(--origam-main---max-width);
+		transition-duration: var(--origam-main---transition-duration);
+		transition-property: var(--origam-main---transition-property);
+		transition-timing-function: var(--origam-main---transition-timing-function);
 		padding-inline-start: var(--origam-layout---position-left);
 		padding-inline-end: var(--origam-layout---position-right);
 		padding-block-start: var(--origam-layout---position-top);
 		padding-block-end: var(--origam-layout---position-bottom);
 
 		&__scroller {
-			max-width: var(--origam-main__scroller--max-width);
-			position: var(--origam-main__scroller--position);
+			max-width: var(--origam-main__scroller---max-width);
+			position: var(--origam-main__scroller---position);
 		}
 
 		&--scrollable {
-			display: var(--origam-main--display);
-			position: var(--origam-main--position);
-			top: var(--origam-main--position-top);
-			left: var(--origam-main--position-left);
-			width: var(--origam-main--width);
-			height: var(--origam-main--height);
+			display: var(--origam-main---display);
+			position: var(--origam-main---position);
+			top: var(--origam-main---position-top);
+			left: var(--origam-main---position-left);
+			width: var(--origam-main---width);
+			height: var(--origam-main---height);
 
 			#{$this}__scroller {
 				flex: 1 1 auto;
