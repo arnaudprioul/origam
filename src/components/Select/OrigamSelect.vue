@@ -977,6 +977,19 @@
 						opacity: 1;
 						pointer-events: auto;
 						caret-color: inherit;
+						// The base Select rule pins the input to
+						// `position: absolute` so it sits as an invisible
+						// a11y proxy. Autocomplete needs it BACK in the
+						// flex flow — otherwise the typed text starts at
+						// the wrapper's BORDER (left=16) but the picked
+						// text (which uses the static-position branch
+						// when a sibling selection chip exists) sits
+						// inside the wrapper's padding (left=32). User
+						// reported the 16px jump between typing and
+						// picked states. Forcing `static` keeps the
+						// input in flow at all times → typed text and
+						// picked text both land at left=32.
+						position: static;
 					}
 				}
 
@@ -1107,8 +1120,20 @@
 	 * `min-height: 32px` and trimming the block padding from 8px to 8px
 	 * (kept) — net result is 48px tall items that feel dense without
 	 * cramping the touch target.
+	 *
+	 * Inline padding bumped from 16px to 32px so the item TEXT lines up
+	 * with the field's text position (chip 16px + wrapper 16px = 32px).
+	 * Pre-fix the dropdown items started at 16px while the picked text
+	 * inside the field landed at 32px → a 16px horizontal jump every
+	 * time a user picked an item. Reported by the user when comparing
+	 * the open-dropdown screenshot to the picked-state screenshot.
+	 *
+	 * The hover/active overlay still spans the full row (it sits on the
+	 * item itself, not on its padding box) — only the title text is
+	 * inset, which matches the v-select / Material 3 visual.
 	 */
 	.origam-select__content .origam-list-item {
 		--origam-list-item---min-height: 32px;
+		--origam-list-item---padding-inline-start: 32px;
 	}
 </style>

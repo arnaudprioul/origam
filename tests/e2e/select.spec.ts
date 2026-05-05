@@ -316,6 +316,53 @@ test.describe('OrigamSelect', () => {
         // ate ~280px of vertical real-estate; the user reported it as a
         // spacing bug. Override scoped to `.origam-select__content` only,
         // so other lists (sidebar, nav, …) keep the 56px baseline.
+        // Every text source the user sees inside / around the field —
+        // floating label, typed input, picked text, selection chip, AND
+        // dropdown item titles — must land at the same X coordinate.
+        // Pre-fix: typed input landed at 16px (input was `position:
+        // absolute; left: 0` ignoring the wrapper's 16px padding) while
+        // picked text landed at 32px (input flipped to `position:
+        // static` once a sibling selection chip existed) and dropdown
+        // items also landed at 16px. Picking an item caused a visible
+        // 16px horizontal jump, and the dropdown didn't align with the
+        // field. Now everything pinned at 32px.
+        test('text alignment is consistent across all field states', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-autocomplete"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            const labelLeft = await sandbox.locator('[data-cy="select-autocomplete"] .origam-field__label')
+                .first().evaluate(el => el.getBoundingClientRect().left)
+
+            await select.locator('.origam-field').first().click()
+            await expect(sandbox.locator('.origam-list-item').first()).toBeVisible({ timeout: 2000 })
+            const itemLeft = await sandbox.locator('.origam-list-item__title')
+                .first().evaluate(el => el.getBoundingClientRect().left)
+
+            await select.locator('input').first().focus()
+            await page.keyboard.type('Fran')
+            await page.waitForTimeout(400)
+            const typedLeft = await select.locator('input').first()
+                .evaluate(el => el.getBoundingClientRect().left)
+
+            await sandbox.locator('.origam-list-item').first().click()
+            await page.waitForTimeout(400)
+            const pickedLeft = await select.locator('input').first()
+                .evaluate(el => el.getBoundingClientRect().left)
+
+            // All four positions must align — round to the nearest pixel
+            // so sub-pixel rendering quirks don't fail the assertion.
+            const positions = [labelLeft, itemLeft, typedLeft, pickedLeft].map(Math.round)
+            console.log('text positions:', { label: positions[0], item: positions[1], typed: positions[2], picked: positions[3] })
+            // Max-min spread must be 0 (or 1 for sub-pixel)
+            expect(Math.max(...positions) - Math.min(...positions)).toBeLessThanOrEqual(1)
+        })
+
         test('dropdown list items use the 48px menu height', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
