@@ -227,6 +227,15 @@
 			'origam-input__control'
 		]
 	})
+	// `inputControlStyles` was referenced in the template (`<div
+	// :style="inputControlStyles">`) but never declared in the script,
+	// so every render emitted:
+	//   [Vue warn]: Property "inputControlStyles" was accessed during
+	//   render but is not defined on instance.
+	// Wired as an empty StyleValue array — keeps the template binding
+	// valid and gives consumers a future hook (override via inline
+	// `style` would slot in here).
+	const inputControlStyles = computed<StyleValue>(() => [])
 
 	// EXPOSE
 
