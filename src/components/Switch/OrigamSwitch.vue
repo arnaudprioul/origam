@@ -328,17 +328,14 @@
 			transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
-		// Track is fully opaque on ON state. Background-color stays at
-		// the same `--background-color` token as OFF — the channel is
-		// owned by `bgColor` only, per the project's strict
-		// color/bgColor separation: `color` paints the label + thumb,
-		// `bgColor` paints the track. The inline
-		// `:style="backgroundColorStyles"` from `useSelectionControl`
-		// wins via inline-style specificity when the consumer sets
-		// `bgColor` (or `activeBgColor`).
-		.origam-selection-control--dirty &__track {
-			opacity: 1;
-		}
+		// Track keeps its transparency on BOTH states (Material rail).
+		// The 0.6 opacity is intentional — it makes the track visually
+		// distinct from the thumb (control-input) regardless of the
+		// `bgColor` channel. Pre-fix this rule overrode opacity to 1
+		// on `--dirty`, which made the ON-state track fully opaque and
+		// erased the visual contrast with the thumb. Reported by the
+		// user — "avec une transparence pour avoir une difference avec
+		// le control-input".
 
 		// Disabled checked state.
 		.origam-selection-control--dirty.origam-selection-control--disabled &__track {
