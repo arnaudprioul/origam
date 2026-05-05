@@ -273,6 +273,57 @@ test.describe('OrigamSelect', () => {
             expect(hasLinkClass).toBe(true)
         })
 
+        // Hover state layer — Material-style overlay must transition from
+        // 0 (resting) to a visible ~0.08 opacity on hover. Pre-fix the
+        // SCSS rule applied 0.12 to BOTH resting AND hover states (a 3×3
+        // selector cross with `&` matching everything), AND the overlay
+        // was painted with `--origam-color-overlay-scrim` (`#ffffff` in
+        // the light theme) — so a white overlay sat at 12% on a white
+        // menu surface, producing zero perceptible change at any state.
+        test('list items have a visible hover state layer', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-string"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            await select.locator('.origam-field').first().click()
+            await expect(sandbox.locator('.origam-list-item').first()).toBeVisible({ timeout: 2000 })
+
+            const firstItem = sandbox.locator('.origam-list-item').first()
+            const secondItem = sandbox.locator('.origam-list-item').nth(1)
+
+            // Resting overlay must be invisible
+            const restingOpacity = await firstItem.locator('.origam-list-item__overlay').first()
+                .evaluate(el => parseFloat(getComputedStyle(el).opacity))
+            expect(restingOpacity).toBe(0)
+
+            // Hover the second item — its overlay must reveal
+            const box = await secondItem.boundingBox()
+            expect(box).not.toBeNull()
+            await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2)
+            await page.waitForTimeout(300)
+
+            const hoverOpacity = await secondItem.locator('.origam-list-item__overlay').first()
+                .evaluate(el => parseFloat(getComputedStyle(el).opacity))
+            expect(hoverOpacity).toBeGreaterThan(0.05)
+
+            // The non-hovered item stays at rest
+            const otherStillResting = await firstItem.locator('.origam-list-item__overlay').first()
+                .evaluate(el => parseFloat(getComputedStyle(el).opacity))
+            expect(otherStillResting).toBe(0)
+
+            // Overlay color must contrast the surface — `currentColor`
+            // from text means a dark overlay on a light menu (or vice-versa).
+            const bg = await secondItem.locator('.origam-list-item__overlay').first()
+                .evaluate(el => getComputedStyle(el).backgroundColor)
+            // Forbid the "scrim white on white menu" miscolour
+            expect(bg).not.toBe('rgb(255, 255, 255)')
+        })
+
         test('open animation uses OrigamExpandY transition', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
