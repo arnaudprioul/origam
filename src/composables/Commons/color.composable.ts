@@ -50,6 +50,18 @@ function tokenStylesForIntent (intent: TIntent, role: 'default' | 'hover' | 'dis
         return styles
     }
     if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
+        // Feedback intents don't ship a `bgDisabled` / `fgDisabled`
+        // pair — only `bg`, `bgSubtle`, `fg`, `fgSubtle`, `border`.
+        // For the disabled state we reach for the `subtle` rung
+        // (`bgSubtle` is a near-white tint of the intent — e.g.
+        // `success.bgSubtle: #f0fdf4` vs `success.bg: #4caf50`),
+        // which is exactly what the user asked for: "plus clair que
+        // ce dernier" — a lighter version of the feedback bg.
+        if (role === 'disabled') {
+            styles['background-color'] = `var(--origam-color-feedback-${intent}-bgSubtle)`
+            styles.color = `var(--origam-color-feedback-${intent}-fgSubtle)`
+            return styles
+        }
         styles['background-color'] = `var(--origam-color-feedback-${intent}-bg)`
         styles.color = `var(--origam-color-feedback-${intent}-fg)`
         return styles

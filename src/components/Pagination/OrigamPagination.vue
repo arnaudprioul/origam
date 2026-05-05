@@ -92,7 +92,7 @@
 
 	import { useDisplay, useLocale, useProps, useRefs, useResizeObserver, useVModel } from "../../composables"
 
-	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
+	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
 
 	import type { IPaginationProps } from "../../interfaces"
 
@@ -222,22 +222,39 @@
 						ellipsis: false,
 						icon: true,
 						disabled: !!props.disabled || +props.length < 2,
-						// Forward the FULL IColorProps shape + `active`
-						// flag so the inner `<origam-btn>` can drive the
-						// resting / hover / active rungs through its own
-						// `useColorEffect`. Pre-fix only `color` (with
-						// the activeColor swap) was passed — `bgColor`,
-						// `hoverColor`, `hoverBgColor`, `activeBgColor`
-						// were silently dropped, so consumers reported
-						// "le bgColor sur la pagination ne fonctionne
-						// pas, on a pas le hover et active".
-						active: isActive,
-						color: props.color,
-						bgColor: props.bgColor,
-						hoverColor: props.hoverColor,
-						hoverBgColor: props.hoverBgColor,
-						activeColor: props.activeColor,
-						activeBgColor: props.activeBgColor,
+						// Pagination contract — only the ACTIVE item gets
+						// the `bgColor` highlight; non-active items render
+						// with just `color` (text/icon) on a transparent
+						// surface, which is the standard <pagination>
+						// look. The `hover*` rung still applies on the
+						// non-active items so consumers can see a hover
+						// preview. User report: "tous les btn sont
+						// bgColor=primary, c'est moche".
+						...(isActive
+							? {
+								active: true,
+								// `flat` so the active page has a solid
+								// fill anchored to `bgColor` (the
+								// "selected page" highlight). With a
+								// non-text variant, useColorEffect's
+								// `bgColor` actually paints the surface.
+								variant: VARIANT.FLAT,
+								color: props.activeColor || props.color,
+								bgColor: props.activeBgColor || props.bgColor,
+							}
+							: {
+								// `text` variant on resting items keeps
+								// the row visually clean — only the
+								// icon/text inherits `color`, no surface
+								// fill, so the active item stands out as
+								// THE highlighted one. Hover still gets
+								// a subtle overlay via `hoverColor` /
+								// `hoverBgColor` (Btn's own resolution).
+								variant: VARIANT.TEXT,
+								color: props.color,
+								hoverColor: props.hoverColor,
+								hoverBgColor: props.hoverBgColor,
+							}),
 						'aria-current': isActive,
 						'aria-label': t(isActive ? props.currentPageAriaLabel : props.pageAriaLabel, item),
 						onClick: (e: Event) => setValue(e, item)
@@ -246,12 +263,28 @@
 			}
 		})
 	})
+	// Shared color shape forwarded to first / prev / next / last btns —
+	// they're navigation affordances, not "selected" surfaces, so they
+	// follow the resting `color` / `hoverColor` / `hoverBgColor` rules
+	// (NOT `bgColor`, which is reserved for the active page highlight).
+	// User report: "les btn suivant/precedent/last/first doivent prendre
+	// la couleur aussi".
+	const controlColorProps = computed(() => ({
+		// Same `text` treatment as resting page items so the navigation
+		// row reads as a single coherent affordance.
+		variant: VARIANT.TEXT,
+		color: props.color,
+		hoverColor: props.hoverColor,
+		hoverBgColor: props.hoverBgColor,
+	}))
+
 	const controls = computed(() => {
 		const prevDisabled = !!props.disabled || page.value <= start.value
 		const nextDisabled = !!props.disabled || page.value >= start.value + length.value - 1
 
 		return {
 			first: {
+				...controlColorProps.value,
 				icon: props.firstIcon,
 				onClick: (e: Event) => setValue(e, start.value, 'first'),
 				disabled: prevDisabled,
@@ -259,6 +292,7 @@
 				'aria-disabled': prevDisabled
 			},
 			prev: {
+				...controlColorProps.value,
 				icon: props.prevIcon,
 				onClick: (e: Event) => setValue(e, page.value - 1, 'prev'),
 				disabled: prevDisabled,
@@ -266,6 +300,7 @@
 				'aria-disabled': prevDisabled
 			},
 			next: {
+				...controlColorProps.value,
 				icon: props.nextIcon,
 				onClick: (e: Event) => setValue(e, page.value + 1, 'next'),
 				disabled: nextDisabled,
@@ -273,6 +308,7 @@
 				'aria-disabled': nextDisabled
 			},
 			last: {
+				...controlColorProps.value,
 				icon: props.lastIcon,
 				onClick: (e: Event) => setValue(e, start.value + length.value - 1, 'last'),
 				disabled: nextDisabled,
