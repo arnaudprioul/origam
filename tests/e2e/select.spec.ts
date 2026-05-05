@@ -64,6 +64,11 @@ test.describe('OrigamSelect', () => {
         await expect(sandbox.locator('[data-cy="select-states"]')).toBeVisible({ timeout: 5000 })
     })
 
+    // Note on click target: in non-autocomplete mode the inner `<input>`
+    // has `pointer-events: none` (the wrapping `.origam-field__input` is
+    // the click surface — that's how a `<select>`-like UX works without
+    // letting the user type freely). Tests that click the input directly
+    // hit a no-op. Click `.origam-field` (the activator parent) instead.
     test('Emit update:modelValue — selecting item updates status', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
@@ -73,18 +78,16 @@ test.describe('OrigamSelect', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="select-emit-update"]')).toBeVisible({ timeout: 5000 })
 
-        // Click the select field to open menu
-        const input = sandbox.locator('[data-cy="select-emit-update"] input').first()
-        await input.click()
+        // Click the field wrapper to open the menu (input has pointer-events:none).
+        await sandbox.locator('[data-cy="select-emit-update"] .origam-field').first().click()
         await page.waitForTimeout(500)
 
         // Click first item in the dropdown
         const menuItem = sandbox.locator('.origam-list-item').first()
-        if (await menuItem.isVisible({ timeout: 2000 }).catch(() => false)) {
-            await menuItem.click()
-            const status = sandbox.locator('[data-cy="select-emit-status"]')
-            await expect(status).not.toContainText('value = null', { timeout: 3000 })
-        }
+        await expect(menuItem).toBeVisible({ timeout: 2000 })
+        await menuItem.click()
+        const status = sandbox.locator('[data-cy="select-emit-status"]')
+        await expect(status).not.toContainText('value = null', { timeout: 3000 })
     })
 
     test('Emit update:menu — opening dropdown fires event', async ({ page }) => {
@@ -95,9 +98,9 @@ test.describe('OrigamSelect', () => {
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="select-emit-menu"]')).toBeVisible({ timeout: 5000 })
-        const input = sandbox.locator('[data-cy="select-emit-menu"] input').first()
-        await input.click()
-        // logEvent called — no throw = success
+        await sandbox.locator('[data-cy="select-emit-menu"] .origam-field').first().click()
+        // Menu opens → list visible
+        await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 2000 })
     })
 
     test('No data — no data text visible when items is empty', async ({ page }) => {
@@ -108,15 +111,13 @@ test.describe('OrigamSelect', () => {
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="select-no-data"]')).toBeVisible({ timeout: 5000 })
-        // Open dropdown
-        const input = sandbox.locator('[data-cy="select-no-data"] input').first()
-        await input.click()
+        // Open dropdown via the field wrapper.
+        await sandbox.locator('[data-cy="select-no-data"] .origam-field').first().click()
         await page.waitForTimeout(400)
-        // No data text should appear
-        const noData = sandbox.locator('.origam-list').first()
-        if (await noData.isVisible({ timeout: 2000 }).catch(() => false)) {
-            await expect(noData).toContainText('Nothing found', { timeout: 2000 })
-        }
+        // No data text should appear in the list
+        const list = sandbox.locator('.origam-list').first()
+        await expect(list).toBeVisible({ timeout: 2000 })
+        await expect(list).toContainText('Nothing found', { timeout: 2000 })
     })
 
     test('Playground — renders and allows selection', async ({ page }) => {

@@ -108,7 +108,13 @@
 										:items="displayItems"
 										renderless
 								>
-									<template #item:renderless="{item, index, itemRef}">
+									<!-- Slot name MUST be `item.renderless` (with a dot) —
+									     OrigamVirtualScroll declares `<slot name="item.renderless">`
+									     and `<slot name="item.renderless.${index}">`. The previous
+									     `#item:renderless` (colon) parsed as a different slot name
+									     and never matched, so the v-for produced zero items in the
+									     dropdown — the menu opened but the list was empty. -->
+									<template #item.renderless="{item, index, itemRef}">
 										<slot
 												name="item"
 												v-bind="{item, index, props: menuListItemProps(item, itemRef, index)}"
