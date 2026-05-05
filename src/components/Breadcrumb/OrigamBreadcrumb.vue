@@ -95,7 +95,7 @@
 		}
 	}))
 
-	const {colorStyles} = useColorEffect(props)
+	const {colorStyles} = useColorEffect(props, undefined, undefined, computed(() => !!props.disabled))
 	const {densityClasses} = useDensity(props)
 	const {elevationStyles, elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)

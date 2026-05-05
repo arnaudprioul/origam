@@ -226,7 +226,8 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
 export function useColorEffect (
     props: IColorProps,
     isHover: Ref<boolean> | ComputedRef<boolean> = ref(false),
-    isActive: Ref<boolean> | ComputedRef<boolean> = ref(false)
+    isActive: Ref<boolean> | ComputedRef<boolean> = ref(false),
+    isDisabled: Ref<boolean> | ComputedRef<boolean> = ref(false)
 ) {
     const activeColor = computed(() => props.activeColor ? props.activeColor : props.color)
     const hoverColor = computed(() => props.hoverColor ? props.hoverColor : props.color)
@@ -254,11 +255,20 @@ export function useColorEffect (
         // that intent (the consumer chose the value, they don't want us
         // re-bumping it to a hover variant of itself).
         // ─────────────────────────────────────────────────────────────────
-        const bgRole: 'default' | 'hover' =
+        // Disabled wins over hover / active — when the host component
+        // is disabled, both axes resolve to the intent's `bgDisabled` /
+        // `fgDisabled` slot (which is by design a LIGHTER version of
+        // the resting bg, e.g. `--origam-color-action-primary-bgDisabled`
+        // = #e6e6e6 vs the resting `bg` = a saturated primary). User
+        // request: "le disable s'il a un bgColor doit être plus clair
+        // que ce dernier".
+        const bgRole: 'default' | 'hover' | 'disabled' =
+            isDisabled.value ? 'disabled' :
             isHover.value && !props.hoverBgColor ? 'hover' :
             isActive.value && !props.activeBgColor ? 'hover' :
             'default'
-        const fgRole: 'default' | 'hover' =
+        const fgRole: 'default' | 'hover' | 'disabled' =
+            isDisabled.value ? 'disabled' :
             isHover.value && !props.hoverColor ? 'hover' :
             isActive.value && !props.activeColor ? 'hover' :
             'default'
@@ -279,7 +289,14 @@ export function useColorEffect (
             bgDecl = `background-color: ${bgColor.value}`
         } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
             warnLegacyColor('bgColor', bgColor.value)
-            bgDecl = `background-color: ${bgColor.value}`
+            // Legacy raw-color path — when disabled, lighten via
+            // `color-mix` so the surface still reads as "disabled
+            // version of bgColor" without us having to bake a per-color
+            // disabled token. Same intent as the token path's
+            // `bgDisabled` slot.
+            bgDecl = isDisabled.value
+                ? `background-color: color-mix(in srgb, ${bgColor.value} 35%, white)`
+                : `background-color: ${bgColor.value}`
         }
 
         // ─── Foreground resolution ───────────────────────────────────────

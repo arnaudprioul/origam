@@ -223,7 +223,7 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive)
+	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive, isDisabled)
 	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
 	const {variantClasses} = useVariant(props)
 	const {

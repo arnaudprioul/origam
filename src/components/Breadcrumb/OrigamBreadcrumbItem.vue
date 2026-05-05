@@ -110,7 +110,7 @@
 		return active.value || link.isActive?.value
 	})
 
-	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, computed(() => !!props.disabled))
 	const {densityClasses} = useDensity(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
