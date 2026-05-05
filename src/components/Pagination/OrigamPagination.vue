@@ -195,6 +195,26 @@
 			return [start.value, props.ellipsis, ...createRange(rangeLength, rangeStart), props.ellipsis, length.value]
 		}
 	})
+	// Uniform color contract — every btn in the row (page items 1..n,
+	// the ellipsis, AND first / prev / next / last) receives the SAME
+	// six IColorProps fields. Changing `color` repaints every text/icon,
+	// changing `bgColor` repaints every surface, hover/active rungs
+	// work identically. The active item differentiates itself via
+	// `active: true` only; a disabled btn shows its standard --disabled
+	// veil (Btn's opacity rule), nothing intent-specific.
+	// User report: "putain pourquoi tous les btn ne sont pas gérés de
+	// la même manière sur la pagination ; je change la couleur, tous
+	// les btns voient leur couleur changer ; etc."
+	const sharedBtnColorProps = computed(() => ({
+		color: props.color,
+		bgColor: props.bgColor,
+		hoverColor: props.hoverColor,
+		hoverBgColor: props.hoverBgColor,
+		activeColor: props.activeColor,
+		activeBgColor: props.activeBgColor,
+	}))
+	const controlColorProps = sharedBtnColorProps
+
 	const items = computed(() => {
 		return range.value.map((item, index) => {
 			const ref = (e: any) => updateRef(e, index)
@@ -206,6 +226,16 @@
 					page: item,
 					props: {
 						ref,
+						// Same six IColorProps as the rest of the row —
+						// even though the ellipsis is non-clickable
+						// (`disabled: true`), it must read as visually
+						// part of the same nav row, just dimmed by the
+						// Btn's --disabled veil. Pre-fix it rendered
+						// in the default neutral grey while the
+						// surrounding btns took the consumer's bgColor,
+						// breaking the user's "tous les btn ensemble"
+						// expectation.
+						...sharedBtnColorProps.value,
 						ellipsis: true,
 						icon: true,
 						disabled: true
@@ -242,26 +272,6 @@
 			}
 		})
 	})
-	// Uniform color contract — every btn in the row (page items,
-	// first / prev / next / last) receives the SAME six IColorProps
-	// fields. Changing `color` repaints every text/icon, changing
-	// `bgColor` repaints every surface, hover/active rungs work
-	// identically. The active item differentiates itself via
-	// `active: true` only; a disabled btn shows its standard --disabled
-	// veil (the existing Btn opacity rule), nothing intent-specific.
-	// User report: "putain pourquoi tous les btn ne sont pas gérés de
-	// la même manière sur la pagination ; je change la couleur, tous
-	// les btns voient leur couleur changer ; etc."
-	const sharedBtnColorProps = computed(() => ({
-		color: props.color,
-		bgColor: props.bgColor,
-		hoverColor: props.hoverColor,
-		hoverBgColor: props.hoverBgColor,
-		activeColor: props.activeColor,
-		activeBgColor: props.activeBgColor,
-	}))
-	const controlColorProps = sharedBtnColorProps
-
 	const controls = computed(() => {
 		const prevDisabled = !!props.disabled || page.value <= start.value
 		const nextDisabled = !!props.disabled || page.value >= start.value + length.value - 1
