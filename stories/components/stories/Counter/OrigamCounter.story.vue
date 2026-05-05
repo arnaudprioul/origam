@@ -4,6 +4,16 @@
 			title="Counter/OrigamCounter"
 	>
 
+		<!-- ════════════ COLOR ════════════ -->
+		<Variant title="Color">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-counter :value="10" :max="100" :active="true" color="primary" data-cy="counter-color-primary"/>
+				<origam-counter :value="20" :max="100" :active="true" color="success" data-cy="counter-color-success"/>
+				<origam-counter :value="30" :max="100" :active="true" color="warning" data-cy="counter-color-warning"/>
+				<origam-counter :value="40" :max="100" :active="true" color="danger"  data-cy="counter-color-danger"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ VALUE / MAX ════════════ -->
 		<Variant
 				title="Value & max"

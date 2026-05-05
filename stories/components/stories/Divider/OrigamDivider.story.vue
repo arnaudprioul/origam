@@ -4,6 +4,16 @@
 			title="Divider/OrigamDivider"
 	>
 
+		<!-- ════════════ COLOR ════════════ -->
+		<Variant title="Color">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-divider color="primary" data-cy="divider-color-primary"/>
+				<origam-divider color="success" data-cy="divider-color-success"/>
+				<origam-divider color="warning" data-cy="divider-color-warning"/>
+				<origam-divider color="danger"  data-cy="divider-color-danger"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
