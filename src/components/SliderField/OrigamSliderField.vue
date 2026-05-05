@@ -34,10 +34,26 @@
 						@touchstartPassive="handleSliderTouchstart"
 				>
 
+					<!--
+						Track fill bounds:
+						  • single mode  → fill from `0` to `trackStop`
+						    (0% to current value, the active progress).
+						  • range mode  → fill from `trackRangeStart`
+						    to `trackRangeStop` (between the two thumbs,
+						    the selected range).
+						Pre-fix `:start="0"` was hardcoded — in range
+						mode `trackStop` returned `undefined` and the
+						track's `stop` prop fell back to its default
+						`100`, so the fill covered the WHOLE track,
+						painting both inside and outside the range with
+						the same `color` and erasing the visual
+						distinction. User-reported: "elles sont toute
+						en color".
+					-->
 					<origam-slider-field-track
 							ref="origamSliderFieldTrackRef"
-							:start="0"
-							:stop="trackStop"
+							:start="isRange ? trackRangeStart : 0"
+							:stop="isRange ? trackRangeStop : trackStop"
 							class="origam-slider-field__track"
 							v-bind="{...trackProps}"
 					/>
