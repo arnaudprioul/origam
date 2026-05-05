@@ -100,7 +100,13 @@
 		return props.readonly ?? readonly.value
 	})
 	const color = computed(() => {
-		return error || isDisabled.value ? undefined : sliderColor.value ?? props.color
+		// `error` is a `Ref` from the slider injection — must unwrap
+		// with `.value`. Pre-fix the bare `error` reference was always
+		// truthy (a non-null Ref object), so `color` always resolved
+		// to `undefined`. Result: the consumer's `color="primary"`
+		// never reached the thumb's `useTextColor` and the cercle
+		// stayed at the SCSS hardcoded grey.
+		return error.value || isDisabled.value ? undefined : sliderColor.value ?? props.color
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {
@@ -259,9 +265,12 @@
 			cursor: pointer;
 			width: var(--origam-slider-field-thumb---size, 20);
 			height: var(--origam-slider-field-thumb---size, 20);
+			border: 1px solid var(--origam-slider-field-thumb__surface---border-color, rgba(0, 0, 0, 0.18));
 			border-radius: 50%;
 			user-select: none;
 			background-color: currentColor;
+			box-shadow: none;
+			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1), 0.2s border-color cubic-bezier(0.4, 0, 0.2, 1);
 
 			@media (forced-colors: active) {
 				background-color: highlight;
