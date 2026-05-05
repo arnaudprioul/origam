@@ -4,30 +4,73 @@
 			title="Radio/OrigamRadio"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants. All
+			six fields surface together (Btn / Switch / SliderField /
+			Select / RatingField pattern) so consumers can explore them
+			as one cohesive concept.
+			Channel mapping (Radio = SelectionControl family — same
+			contract as Checkbox / Switch):
+			  • `color`   → label foreground + the active dot inside
+			                the radio circle when checked
+			  • `bgColor` → outer ring of the radio (the surface that
+			                wraps the dot)
+			  • hover/active variants modify the matching channel on
+			    the matching interaction state.
+			Hardcoded fixtures below the interactive control give the
+			e2e suite stable `data-cy="radio-color-fixture-{n}"`
+			selectors to assert no cross-pollution.
+		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-radio
-						v-model="colorModel"
-						:color="state.color"
-						value="a"
-						label="Option A"
-						data-cy="radio-color"
-				/>
-				<origam-radio
-						v-model="colorModel"
-						:color="state.color"
-						value="b"
-						label="Option B"
-						data-cy="radio-color-b"
-				/>
-				<div data-cy="radio-color-status">value = {{ colorModel }}</div>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<div style="display: flex; flex-direction: column; gap: 8px;">
+						<origam-radio
+								v-model="colorModel"
+								v-bind="state"
+								value="a"
+								label="Option A (interactive)"
+								data-cy="radio-color"
+						/>
+						<origam-radio
+								v-model="colorModel"
+								v-bind="state"
+								value="b"
+								label="Option B (interactive)"
+								data-cy="radio-color-b"
+						/>
+						<div data-cy="radio-color-status">value = {{ colorModel }}</div>
+					</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-radio :model-value="'a'" value="a"
+						              color="primary"
+						              label='color="primary" only'
+						              data-cy="radio-color-fixture-color-only"/>
+						<origam-radio :model-value="'a'" value="a"
+						              bg-color="success"
+						              label='bg-color="success" only'
+						              data-cy="radio-color-fixture-bg-only"/>
+						<origam-radio :model-value="'a'" value="a"
+						              color="warning" bg-color="primary"
+						              label='color="warning" + bg-color="primary"'
+						              data-cy="radio-color-fixture-combo"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
