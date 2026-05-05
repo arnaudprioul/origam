@@ -177,8 +177,14 @@
 	}
 
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
+	// `color` and `bgColor` are STRICTLY scoped to the SelectionControl
+	// (track / thumb / label). Stripping them from `inputProps` prevents
+	// `OrigamInput` (the outer row wrapper) from also applying them as
+	// `background-color` on its root — pre-fix the consumer's
+	// `bg-color="success"` painted the entire switch row green
+	// (including the label area), instead of just the track.
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'focused', 'id', 'style'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id'])
