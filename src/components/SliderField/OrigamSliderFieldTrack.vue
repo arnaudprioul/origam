@@ -94,11 +94,19 @@
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
+	// When `error` is on, force the `danger` intent on BOTH channels —
+	// `color` paints the FILL and the thumb (via currentColor), `bgColor`
+	// paints the rail (track background). Disabled keeps both `undefined`
+	// so SCSS can apply the muted neutral.
 	const color = computed(() => {
-		return error.value || isDisabled.value ? undefined : sliderColor.value ? sliderColor.value : props.color
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderColor.value || props.color
 	})
 	const bgColor = computed(() => {
-		return error.value || isDisabled.value ? undefined : sliderBgColor.value ? sliderBgColor.value : props.bgColor
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderBgColor.value || props.bgColor
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {

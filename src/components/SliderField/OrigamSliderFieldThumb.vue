@@ -106,7 +106,12 @@
 		// to `undefined`. Result: the consumer's `color="primary"`
 		// never reached the thumb's `useTextColor` and the cercle
 		// stayed at the SCSS hardcoded grey.
-		return error.value || isDisabled.value ? undefined : sliderColor.value ?? props.color
+		// When `error` is on, force the `danger` intent on BOTH channels
+		// (thumb cercle here, track + rail in -track). Convention shared
+		// with Input/Form/Snackbar/SelectionControl.
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderColor.value || props.color
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {

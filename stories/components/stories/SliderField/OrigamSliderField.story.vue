@@ -167,22 +167,45 @@
 		</Variant>
 
 		<!-- ════════════ STATES ════════════ -->
+		<!--
+			ONE variant covers `disabled`, `readonly`, `error`.
+			Hardcoded fixtures below the interactive slider give the
+			e2e suite stable selectors. The `error` fixtures verify the
+			project's contract: an errored slider paints BOTH channels
+			(color = fill + thumb, bgColor = rail) with the `danger`
+			intent — overriding the consumer's `color="primary"` so the
+			error stays visible.
+		-->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
 		>
 			<template #default="{ state }">
-				<origam-slider-field
-						v-model="statesModel"
-						:disabled="state.disabled"
-						:readonly="state.readonly"
-						:error="state.error"
-						:min="0"
-						:max="100"
-						label="Stateful slider"
-						data-cy="slider-states"
-				/>
-				<div data-cy="slider-states-status">value = {{ statesModel }}</div>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-slider-field
+							v-model="statesModel"
+							:disabled="state.disabled"
+							:readonly="state.readonly"
+							:error="state.error"
+							:min="0"
+							:max="100"
+							label="Stateful slider"
+							data-cy="slider-states"
+					/>
+					<div data-cy="slider-states-status">value = {{ statesModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — error forces danger on color + bgColor:</small>
+						<origam-slider-field :model-value="40" :min="0" :max="100"
+						                     error
+						                     label='error only (no color/bgColor)'
+						                     data-cy="slider-states-fixture-error"/>
+						<origam-slider-field :model-value="40" :min="0" :max="100"
+						                     error color="primary" bg-color="success"
+						                     label='error overrides color="primary" + bg-color="success"'
+						                     data-cy="slider-states-fixture-error-overrides"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
