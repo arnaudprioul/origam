@@ -100,6 +100,15 @@
 		location: BLOCK.BOTTOM,
 		origin: 'auto',
 		scrollStrategy: SCROLL_STRATEGIES.BLOCK,
+		// 12px breathing room from each viewport edge enforced by the
+		// connected location strategy. Components whose activator can
+		// span the full viewport (`<origam-select>`) override to `0`
+		// to keep the dropdown flush with the activator's left edge.
+		// Listed here in `withDefaults` so the SFC compiler emits the
+		// explicit prop declaration — type-only inheritance through
+		// `IOverlayProps → ILocationStrategyProps` doesn't always make
+		// it into the runtime declaration through HMR.
+		viewportMargin: 12,
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 

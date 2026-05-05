@@ -87,6 +87,7 @@
 					:offset="0"
 					:open-on-click="false"
 					:transition="{ component: OrigamExpandY }"
+					:viewport-margin="0"
 					activator="parent"
 					content-class="origam-select__content"
 					v-bind="{ ...menuProps }"

@@ -168,11 +168,15 @@ test.describe('OrigamSelect', () => {
         })
 
         // The dropdown must touch the activator's bottom edge (no gap) and
-        // align with the activator's left edge. Tested in a constrained
-        // wrapper because the Histoire iframe artificially makes the
-        // activator span the full viewport — that triggers the location
-        // strategy's `viewportMargin` (12px) edge guard, which would mask
-        // the offset:0 fix on the Select itself.
+        // align with the activator's left edge — even when the activator
+        // spans the full viewport width. Tested with NO wrapper injection
+        // (real condition in the Histoire sandbox where the Select fills
+        // the iframe). This catches both:
+        //   • the 8px top gap from the Menu's default `offset: 8` →
+        //     overridden to `offset: 0`
+        //   • the 12px left shift from the connected location strategy's
+        //     defensive `viewportMargin: 12` → overridden to `0` so the
+        //     dropdown is allowed to sit flush with the activator's edge.
         test('dropdown is flush with activator (no top/left gap)', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
@@ -182,19 +186,6 @@ test.describe('OrigamSelect', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('[data-cy="select-string"]')
             await expect(select).toBeVisible({ timeout: 5000 })
-
-            // Constrain the activator so it doesn't fill the iframe — mimics
-            // a real layout where the Select sits inside a column, a card,
-            // a form-row, etc.
-            await select.evaluate(el => {
-                const parent = el.parentElement
-                if (parent) {
-                    parent.style.maxWidth = '320px'
-                    parent.style.marginLeft = '40px'
-                    parent.style.marginTop = '40px'
-                }
-            })
-            await page.waitForTimeout(200)
 
             await select.locator('.origam-field').first().click()
             await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 2000 })
