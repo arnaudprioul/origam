@@ -779,7 +779,22 @@
 			}
 			isPristine.value = true
 
-			nextTick(() => isSelecting.value = false)
+			nextTick(() => {
+				isSelecting.value = false
+
+				// Select-all the input text in single-autocomplete mode
+				// when there IS a selection. The user expects: "click
+				// the field with `France` already picked, start typing
+				// → my keystrokes REPLACE the selection". Without the
+				// select-all the cursor lands at the end and typing
+				// appends — `France` + `S` → `FranceS` filters against
+				// nothing and looks broken.
+				// Skip in multiple mode (the input is meant to be a
+				// fresh filter input, NOT a copy of any chip).
+				if (props.autocomplete && !props.multiple && search.value) {
+					origamTextFieldRef.value?.select?.()
+				}
+			})
 		} else {
 			if (!props.multiple && search.value == null) model.value = []
 			else if (

@@ -326,6 +326,49 @@ test.describe('OrigamSelect', () => {
         // items also landed at 16px. Picking an item caused a visible
         // 16px horizontal jump, and the dropdown didn't align with the
         // field. Now everything pinned at 32px.
+        // Click into an autocomplete-single field that already has a
+        // selection → the input's text gets fully selected so the next
+        // keystroke REPLACES it. Pre-fix the cursor landed at the end
+        // and typing appended (`France` + `S` → `FranceS`, which then
+        // matched nothing in the filter and looked broken).
+        test('autocomplete-single: re-focus selects-all so typing replaces', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-autocomplete"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            // Pick France
+            await select.locator('.origam-field').first().click()
+            await sandbox.locator('.origam-list-item').first().click()
+            await page.waitForTimeout(400)
+
+            // Re-focus via tab cycle (avoids the click-outside scrim)
+            await page.keyboard.press('Tab')
+            await page.waitForTimeout(200)
+            await page.keyboard.press('Shift+Tab')
+            await page.waitForTimeout(400)
+
+            // The whole input value must be selected
+            const sel = await select.locator('input').first().evaluate(el => {
+                const i = el as HTMLInputElement
+                return { value: i.value, selectionStart: i.selectionStart, selectionEnd: i.selectionEnd }
+            })
+            expect(sel.value).toBe('France')
+            expect(sel.selectionStart).toBe(0)
+            expect(sel.selectionEnd).toBe(sel.value.length)
+
+            // Typing replaces — not appends
+            await page.keyboard.type('Sp')
+            await page.waitForTimeout(400)
+            const finalValue = await select.locator('input').first()
+                .evaluate(el => (el as HTMLInputElement).value)
+            expect(finalValue).toBe('Sp')
+        })
+
         test('text alignment is consistent across all field states', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
