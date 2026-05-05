@@ -186,8 +186,25 @@
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
 	})
+	// `isClickable` drives cursor: pointer, the ripple, the keydown
+	// handler, the `--link` modifier class, the focusable tabindex, and
+	// the click bridge. It must be true whenever the item is interactive
+	// for any reason — i.e. when ANY of the following holds:
+	//   • `props.link` toggles explicit router-link mode
+	//   • `link.isClickable.value` — useLink detects an `href`, a `to`,
+	//     OR an `onClick` listener (on attrs or props)
+	//   • `props.value != null && !!list` — selectable value inside a
+	//     list group (e.g. the items inside the Select dropdown)
+	//
+	// Pre-fix the chain was `… && props.link && (props.link || …)`. The
+	// middle `props.link` short-circuited the whole expression to false
+	// whenever the consumer didn't opt into link mode, killing cursor
+	// feedback / ripple / keyboard activation on every click-only item
+	// (notably Select dropdown items, which only carry `onClick` in
+	// `menuListItemProps`). Drop the redundant precondition and let the
+	// OR chain own the decision.
 	const isClickable = computed(() => {
-		return !props.disabled && props.link && (props.link || link.isClickable.value || (props.value != null && !!list))
+		return !props.disabled && (props.link || link.isClickable.value || (props.value != null && !!list))
 	})
 	const lineClasses = computed(() => {
 		return [

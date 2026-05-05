@@ -204,6 +204,34 @@ test.describe('OrigamSelect', () => {
             expect(Math.round(leftGap)).toBe(0)
         })
 
+        // List items inside the dropdown carry an `onClick` handler from
+        // `menuListItemProps` but no explicit `link` prop. Pre-fix
+        // `OrigamListItem.isClickable` short-circuited on `props.link`,
+        // killing cursor:pointer / ripple / keyboard activation. Items
+        // must read as clickable whenever they have any of: link mode,
+        // href/to, an onClick listener, or a value inside a list.
+        test('list items show cursor:pointer (clickable affordance)', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-string"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            await select.locator('.origam-field').first().click()
+            await expect(sandbox.locator('.origam-list-item').first()).toBeVisible({ timeout: 2000 })
+
+            const cursor = await sandbox.locator('.origam-list-item').first()
+                .evaluate(el => getComputedStyle(el).cursor)
+            expect(cursor).toBe('pointer')
+
+            const hasLinkClass = await sandbox.locator('.origam-list-item').first()
+                .evaluate(el => el.classList.contains('origam-list-item--link'))
+            expect(hasLinkClass).toBe(true)
+        })
+
         test('open animation uses OrigamExpandY transition', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
