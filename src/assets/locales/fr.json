@@ -105,7 +105,8 @@
     "rating": {
       "ariaLabel": {
         "item": "Note de {0} sur {1}"
-      }
+      },
+      "clear": "Réinitialiser la note"
     },
     "loading": "Chargement...",
     "infiniteScroll": {

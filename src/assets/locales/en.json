@@ -105,7 +105,8 @@
     "rating": {
       "ariaLabel": {
         "item": "Rating {0} of {1}"
-      }
+      },
+      "clear": "Clear rating"
     },
     "loading": "Loading...",
     "infiniteScroll": {

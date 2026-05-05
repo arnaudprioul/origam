@@ -98,6 +98,42 @@ test.describe('OrigamRatingField', () => {
     // default elevated/tonal chrome (visible background + box-shadow),
     // so the row read as five pill-buttons. Now forced to `variant: text`
     // so only the icon is visible.
+    // Pre-fix the only way to reset the rating was to click the SAME
+    // star a second time (a hidden Vuetify-style affordance) — user
+    // reported "clearable sur ratingField ne sert à rien" because
+    // nothing in the UI hinted at it. Now exposed as an explicit
+    // icon button next to the row so the affordance is discoverable.
+    test('clearable: clear button appears when value > 0 and resets the model', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('States', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        // Toggle clearable on via the controls panel
+        await page.locator('text=clearable').first().click().catch(() => {})
+        await page.waitForTimeout(300)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 5000 })
+
+        const readModel = () => sandbox.locator('.origam-rating-field').first().evaluate(el => {
+            const vue = (el as any).__vueParentComponent
+            let cur = vue
+            while (cur && cur.type?.__name !== 'OrigamRatingField') cur = cur.parent
+            return cur?.props?.modelValue
+        })
+
+        // The story's `rating` ref starts at 3 → clear button should be visible
+        expect(await readModel()).toBe(3)
+        await expect(sandbox.locator('[data-cy="rating-field-clear"]').first()).toBeVisible({ timeout: 2000 })
+
+        // Click clear → model resets to 0 → button hides
+        await sandbox.locator('[data-cy="rating-field-clear"]').first().click()
+        await page.waitForTimeout(300)
+        expect(await readModel()).toBe(0)
+        await expect(sandbox.locator('[data-cy="rating-field-clear"]')).toHaveCount(0)
+    })
+
     test('rating buttons render with text variant — no background, no shadow', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
