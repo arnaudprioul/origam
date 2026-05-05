@@ -12,22 +12,41 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<Variant title="Color">
-			<div style="display: flex; gap: 24px; padding: 16px;">
-				<origam-badge :model-value="true" :content="1" bg-color="primary" data-cy="badge-color-primary">
-					<origam-avatar text="P"/>
-				</origam-badge>
-				<origam-badge :model-value="true" :content="2" bg-color="success" data-cy="badge-color-success">
-					<origam-avatar text="S"/>
-				</origam-badge>
-				<origam-badge :model-value="true" :content="3" bg-color="warning" data-cy="badge-color-warning">
-					<origam-avatar text="W"/>
-				</origam-badge>
-				<origam-badge :model-value="true" :content="4" bg-color="danger" data-cy="badge-color-danger">
-					<origam-avatar text="D"/>
-				</origam-badge>
-			</div>
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-badge :model-value="true" :content="9" v-bind="state" data-cy="badge-color">
+						<origam-avatar text="A"/>
+					</origam-badge>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 24px;">
+						<origam-badge :model-value="true" :content="1" bg-color="primary" data-cy="badge-color-primary">
+							<origam-avatar text="P"/>
+						</origam-badge>
+						<origam-badge :model-value="true" :content="2" bg-color="success" data-cy="badge-color-success">
+							<origam-avatar text="S"/>
+						</origam-badge>
+						<origam-badge :model-value="true" :content="3" bg-color="warning" data-cy="badge-color-warning">
+							<origam-avatar text="W"/>
+						</origam-badge>
+						<origam-badge :model-value="true" :content="4" bg-color="danger" data-cy="badge-color-danger">
+							<origam-avatar text="D"/>
+						</origam-badge>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ CONTENT ════════════ -->

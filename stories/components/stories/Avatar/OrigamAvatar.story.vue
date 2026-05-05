@@ -12,19 +12,36 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<!--
-			Side-by-side render of every intent. IAvatarProps already
-			extends IColorProps; this variant gives the e2e suite a
-			concrete surface to verify the prop wiring.
+			One variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants.
+			Hardcoded showcase fixtures below for stable e2e selectors.
 		-->
-		<Variant title="Color">
-			<div style="display: flex; gap: 12px; padding: 16px;">
-				<origam-avatar bg-color="primary" text="P" data-cy="avatar-color-primary"/>
-				<origam-avatar bg-color="success" text="S" data-cy="avatar-color-success"/>
-				<origam-avatar bg-color="warning" text="W" data-cy="avatar-color-warning"/>
-				<origam-avatar bg-color="danger"  text="D" data-cy="avatar-color-danger"/>
-			</div>
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-avatar v-bind="state" text="A" data-cy="avatar-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-avatar bg-color="primary" text="P" data-cy="avatar-color-primary"/>
+						<origam-avatar bg-color="success" text="S" data-cy="avatar-color-success"/>
+						<origam-avatar bg-color="warning" text="W" data-cy="avatar-color-warning"/>
+						<origam-avatar bg-color="danger"  text="D" data-cy="avatar-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ SIZE ════════════ -->

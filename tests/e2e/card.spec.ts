@@ -29,7 +29,7 @@ test.describe('OrigamCard', () => {
 		// corresponding side and 0 elsewhere.
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -53,7 +53,7 @@ test.describe('OrigamCard', () => {
 	test('Rounded showcase — rounded={true} sets border-radius', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Rounded showcase', { exact: true }).first().click()
+		await page.getByText('Rounded', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -156,7 +156,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — default toolbar is borderless on all four sides', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -169,7 +169,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border={true} produces a thin border on all four sides', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -188,7 +188,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="bottom" emits 1px ONLY on bottom', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -199,7 +199,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="top" emits 1px ONLY on top', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -210,7 +210,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="right" emits 1px ONLY on right', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -221,7 +221,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="left" emits 1px ONLY on left', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border showcase', { exact: true }).first().click()
+		await page.getByText('Border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

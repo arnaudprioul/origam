@@ -34,62 +34,32 @@ test.describe('OrigamSwitch', () => {
         })
     }
 
-    test('Color variant — color="primary" tints label + thumb but NOT track', async ({ page }) => {
+    test('Color variant — strict color/bgColor channel separation (3 fixtures)', async ({ page }) => {
+        // The Color variant merges all `IColorProps` fields in one
+        // interactive controls panel + ships hardcoded fixtures below
+        // the interactive switch. Each fixture exercises one channel
+        // pattern so the spec can assert no cross-pollution at
+        // runtime without relying on programmatic HstSelect interaction.
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Color', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
-        const off = await sample(page, 'switch-color')
-        // Track stays at the default grey (bgColor channel untouched).
-        expect(off.trackBg).toBe('rgb(230, 230, 230)')
-        // Thumb takes the consumer's color (fgSubtle rung).
-        expect(off.thumbBg).toBe('rgb(109, 40, 217)')
-        // Wrapper carries the inline color (label inherits via currentColor).
-        expect(off.wrapperColor).toBe('rgb(109, 40, 217)')
+        // Fixture 1: color="primary" only → label + thumb tinted, track stays grey.
+        const f1 = await sample(page, 'switch-color-fixture-color-only')
+        expect(f1.trackBg).toBe('rgb(230, 230, 230)')   // default grey, untouched
+        expect(f1.thumbBg).toBe('rgb(109, 40, 217)')    // primary.fgSubtle
+        expect(f1.wrapperColor).toBe('rgb(109, 40, 217)')
 
-        // Toggle ON — strict separation: track still grey, thumb still primary.
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await sandbox.locator('[data-cy="switch-color"] input[type="checkbox"]').click({ force: true })
-        await page.waitForTimeout(500)
-        const on = await sample(page, 'switch-color')
-        expect(on.trackBg).toBe('rgb(230, 230, 230)')
-        expect(on.thumbBg).toBe('rgb(109, 40, 217)')
-    })
+        // Fixture 2: bg-color="success" only → track tinted, thumb stays white.
+        const f2 = await sample(page, 'switch-color-fixture-bg-only')
+        expect(f2.trackBg).toBe('rgb(76, 175, 80)')     // success.bg
+        expect(f2.thumbBg).toBe('rgb(255, 255, 255)')   // white token default
 
-    test('BgColor variant — bgColor="success" tints track but NOT thumb fill', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('BgColor', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
-        const off = await sample(page, 'switch-bg-color')
-        expect(off.trackBg).toBe('rgb(76, 175, 80)')   // bgColor channel paints track
-        // Thumb stays at its token default (white) — bgColor never
-        // crosses into the color channel.
-        expect(off.thumbBg).toBe('rgb(255, 255, 255)')
-    })
-
-    test('Color + BgColor combo — both channels work side-by-side without cross-pollution', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Color + BgColor combo', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
-        // combo_1 — color=primary, bg=success
-        const c1 = await sample(page, 'switch-combo-1')
-        expect(c1.trackBg).toBe('rgb(76, 175, 80)')   // success — bg channel
-        expect(c1.thumbBg).toBe('rgb(109, 40, 217)')  // primary fgSubtle — color channel
-
-        // combo_2 — color=warning, bg=primary
-        const c2 = await sample(page, 'switch-combo-2')
-        expect(c2.trackBg).toBe('rgb(124, 58, 237)')  // primary bg — bg channel
-        expect(c2.thumbBg).toBe('rgb(180, 83, 9)')    // warning fgSubtle — color channel
-
-        // combo_3 — color=danger, bg=warning
-        const c3 = await sample(page, 'switch-combo-3')
-        expect(c3.trackBg).toBe('rgb(251, 140, 0)')   // warning bg — bg channel
-        expect(c3.thumbBg).toBe('rgb(185, 28, 28)')   // danger fgSubtle — color channel
+        // Fixture 3: color="warning" + bg-color="primary" → both channels independent.
+        const f3 = await sample(page, 'switch-color-fixture-combo')
+        expect(f3.trackBg).toBe('rgb(124, 58, 237)')    // primary.bg — bg channel
+        expect(f3.thumbBg).toBe('rgb(180, 83, 9)')      // warning.fgSubtle — color channel
     })
 
     test('Inset & flat — toggle changes inset state', async ({ page }) => {

@@ -33,7 +33,7 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
     test('Color variant — primary intent applies the action token', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color (intent)', { exact: true }).first().click()
+        await page.getByText('Color', { exact: true }).last().click({ timeout: 5000 })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -50,7 +50,7 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
     test('Color showcase — bgColor prop paints each intent on the btn root', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color showcase', { exact: true }).first().click()
+        await page.getByText('Color', { exact: true }).last().click({ timeout: 5000 })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -4,63 +4,56 @@
 			title="Switch/OrigamSwitch"
 	>
 
-		<!-- ════════════ COLOR (foreground — label + thumb) ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants. All
+			six fields surface together (Btn pattern) so the consumer
+			can explore them as one cohesive concept.
+			Strict channel separation:
+			  • `color`   → label foreground + thumb (cercle)
+			  • `bgColor` → track (box derrière le cercle)
+			  • hover/active variants modify the matching channel on
+			    the matching interaction state.
+			The hardcoded fixtures below the interactive switch let the
+			e2e suite assert no cross-pollution at runtime via stable
+			`data-cy="switch-color-fixture-{n}"` selectors.
+		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-switch
-						v-model="colorModel"
-						:color="state.color"
-						label="Colored switch"
-						data-cy="switch-color"
-				/>
-				<div data-cy="switch-color-status">value = {{ colorModel }}</div>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-switch
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored switch (interactive)"
+							data-cy="switch-color"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-switch :model-value="true" color="primary"
+						               label='color="primary" only'
+						               data-cy="switch-color-fixture-color-only"/>
+						<origam-switch :model-value="true" bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="switch-color-fixture-bg-only"/>
+						<origam-switch :model-value="true" color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="switch-color-fixture-combo"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
-		</Variant>
-
-		<!-- ════════════ BG COLOR (background — track) ════════════ -->
-		<!--
-			Strict color/bgColor separation: `color` paints label + thumb,
-			`bgColor` paints the track. This variant exercises ONLY the
-			bgColor channel — leaves color untouched so the test can
-			assert track changes per intent while the label stays neutral.
-		-->
-		<Variant
-				title="BgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'success' })"
-		>
-			<template #default="{ state }">
-				<origam-switch
-						v-model="bgColorModel"
-						:bg-color="state.bgColor"
-						label="Track-tinted switch"
-						data-cy="switch-bg-color"
-				/>
-				<div data-cy="switch-bg-color-status">value = {{ bgColorModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ COLOR + BG COLOR (combined) ════════════ -->
-		<Variant title="Color + BgColor combo">
-			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
-				<origam-switch :model-value="true" color="primary" bg-color="success"
-				               label="color=primary  bg-color=success"
-				               data-cy="switch-combo-1"/>
-				<origam-switch :model-value="true" color="warning" bg-color="primary"
-				               label="color=warning  bg-color=primary"
-				               data-cy="switch-combo-2"/>
-				<origam-switch :model-value="true" color="danger"  bg-color="warning"
-				               label="color=danger   bg-color=warning"
-				               data-cy="switch-combo-3"/>
-			</div>
 		</Variant>
 
 		<!-- ════════════ DENSITY ════════════ -->
@@ -228,7 +221,6 @@
 	import { densityList, intentList } from '@stories/const'
 
 	const colorModel         = ref(false)
-	const bgColorModel       = ref(false)
 	const densityModel       = ref(false)
 	const insetModel         = ref(false)
 	const indeterminateModel = ref(false)

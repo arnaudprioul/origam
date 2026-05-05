@@ -4,14 +4,31 @@
 			title="Counter/OrigamCounter"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<Variant title="Color">
-			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
-				<origam-counter :value="10" :max="100" :active="true" color="primary" data-cy="counter-color-primary"/>
-				<origam-counter :value="20" :max="100" :active="true" color="success" data-cy="counter-color-success"/>
-				<origam-counter :value="30" :max="100" :active="true" color="warning" data-cy="counter-color-warning"/>
-				<origam-counter :value="40" :max="100" :active="true" color="danger"  data-cy="counter-color-danger"/>
-			</div>
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-counter :value="50" :max="100" :active="true" v-bind="state" data-cy="counter-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+						<origam-counter :value="10" :max="100" :active="true" color="primary" data-cy="counter-color-primary"/>
+						<origam-counter :value="20" :max="100" :active="true" color="success" data-cy="counter-color-success"/>
+						<origam-counter :value="30" :max="100" :active="true" color="warning" data-cy="counter-color-warning"/>
+						<origam-counter :value="40" :max="100" :active="true" color="danger"  data-cy="counter-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ VALUE / MAX ════════════ -->
@@ -111,9 +128,10 @@
 		setup
 >
 	import { OrigamCounter } from '@origam/components'
-	import type { ICounterProps } from '@origam/interfaces'
+	import type { IColorProps, ICounterProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
+	import { intentList } from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/Counter/OrigamCounter.md"/>

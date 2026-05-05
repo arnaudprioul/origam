@@ -24,13 +24,31 @@
 			— `<origam-card color="primary">` was a silent no-op.
 			Closes the user-reported audit gap on color/bgColor coverage.
 		-->
-		<Variant title="Color">
-			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
-				<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
-				<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
-				<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
-				<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
-			</div>
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-card v-bind="state" title="Interactive card" text="Tweak controls →" data-cy="card-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures (intent rungs):</small>
+						<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
+						<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
+						<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
+						<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ ELEVATION ════════════ -->
@@ -55,19 +73,20 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
+		<!-- ════════════ ROUNDED (IRoundedProps) ════════════ -->
 		<Variant
 				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
+				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px;">
-					<origam-card
-							:rounded="state.rounded"
-							title="Rounded card"
-							text="Border radius changes."
-							data-cy="card-rounded"
-					/>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-card :rounded="state.rounded" title="Interactive" text="Tweak controls →" data-cy="card-rounded"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+						<small>Showcase fixtures:</small>
+						<origam-card title='rounded={false} (default)' data-cy="card-rounded-default"/>
+						<origam-card title='rounded={true}' :rounded="true" data-cy="card-rounded-true"/>
+					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -78,46 +97,26 @@
 		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
-				:init-state="() => useStoryInitState<IBorderProps>({})"
+				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px;">
-					<origam-card
-							v-bind="state"
-							title="Bordered card"
-							text="Border applied."
-							data-cy="card-border"
-					/>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-card v-bind="state" title="Interactive card" text="Toggle controls →" data-cy="card-border"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+						<small>Showcase fixtures:</small>
+						<origam-card title='border={false} (default)'                   data-cy="card-border-default"/>
+						<origam-card title='border={true}'   :border="true"             data-cy="card-border-true"/>
+						<origam-card title='border="top"'    border="top"               data-cy="card-border-top"/>
+						<origam-card title='border="right"'  border="right"             data-cy="card-border-right"/>
+						<origam-card title='border="bottom"' border="bottom"            data-cy="card-border-bottom"/>
+						<origam-card title='border="left"'   border="left"              data-cy="card-border-left"/>
+					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstCheckbox v-model="state.border" title="border"/>
 			</template>
-		</Variant>
-
-		<!--
-			Showcase variants — pre-seeded prop values so the e2e suite
-			can assert each rung produces a measurable computed-CSS
-			change (border-width, border-radius). Without this the
-			default Border / Rounded variants ship at initial state
-			(no prop) and tests have no way to verify the prop wiring.
-		-->
-		<Variant title="Border showcase">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-				<origam-card title='border={false} (default)'                   data-cy="card-border-default"/>
-				<origam-card title='border={true}'   :border="true"             data-cy="card-border-true"/>
-				<origam-card title='border="top"'    border="top"               data-cy="card-border-top"/>
-				<origam-card title='border="right"'  border="right"             data-cy="card-border-right"/>
-				<origam-card title='border="bottom"' border="bottom"            data-cy="card-border-bottom"/>
-				<origam-card title='border="left"'   border="left"              data-cy="card-border-left"/>
-			</div>
-		</Variant>
-
-		<Variant title="Rounded showcase">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-				<origam-card title='rounded={false} (default)' data-cy="card-rounded-default"/>
-				<origam-card title='rounded={true}' :rounded="true" data-cy="card-rounded-true"/>
-			</div>
 		</Variant>
 
 		<!-- ════════════ DENSITY ════════════ -->
@@ -350,6 +349,7 @@
 		IAdjacentProps,
 		IBorderProps,
 		ICardProps,
+		IColorProps,
 		IDensityProps,
 		IRoundedProps
 	} from '@origam/interfaces'
@@ -359,6 +359,7 @@
 		densityList,
 		elevationList,
 		iconList,
+		intentList,
 		roundedList
 	} from '@stories/const'
 </script>

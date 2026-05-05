@@ -103,17 +103,28 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
+		<!-- ════════════ BORDER (IBorderProps) ════════════ -->
+		<!--
+			ONE variant per interface. Interactive control + hardcoded
+			showcase fixtures for the e2e suite (`data-cy="toolbar-border-{rung}"`).
+		-->
 		<Variant
 				title="Border"
-				:init-state="() => useStoryInitState<{ border?: boolean | 'top' | 'right' | 'bottom' | 'left' }>({})"
+				:init-state="() => useStoryInitState<{ border?: boolean | 'top' | 'right' | 'bottom' | 'left' }>({ border: true })"
 		>
 			<template #default="{ state }">
-				<origam-toolbar
-						:border="state.border"
-						title="Border Toolbar"
-						data-cy="toolbar-border"
-				/>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
+					<origam-toolbar :border="state.border" title="Border Toolbar (interactive)" data-cy="toolbar-border"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
+						<origam-toolbar title="border={false} (default)"           data-cy="toolbar-border-default"/>
+						<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
+						<origam-toolbar title='border="top"'    border="top"       data-cy="toolbar-border-top"/>
+						<origam-toolbar title='border="right"'  border="right"     data-cy="toolbar-border-right"/>
+						<origam-toolbar title='border="bottom"' border="bottom"    data-cy="toolbar-border-bottom"/>
+						<origam-toolbar title='border="left"'   border="left"      data-cy="toolbar-border-left"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect
@@ -129,24 +140,6 @@
 						]"
 				/>
 			</template>
-		</Variant>
-
-		<!-- ════════════ BORDER SHOWCASE ════════════ -->
-		<!--
-			Side-by-side render of every `border` rung so the e2e spec can
-			assert every value produces a distinct computed `border-*-width`
-			(no silently-ignored class). Stable `data-cy` selectors mirror
-			the rung names.
-		-->
-		<Variant title="Border showcase">
-			<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
-				<origam-toolbar title="border={false} (default)"   data-cy="toolbar-border-default"/>
-				<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
-				<origam-toolbar title='border="top"'    border="top"        data-cy="toolbar-border-top"/>
-				<origam-toolbar title='border="right"'  border="right"      data-cy="toolbar-border-right"/>
-				<origam-toolbar title='border="bottom"' border="bottom"     data-cy="toolbar-border-bottom"/>
-				<origam-toolbar title='border="left"'   border="left"       data-cy="toolbar-border-left"/>
-			</div>
 		</Variant>
 
 		<!-- ════════════ SLOT: prepend ════════════ -->

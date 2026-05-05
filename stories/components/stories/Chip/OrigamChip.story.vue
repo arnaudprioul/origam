@@ -9,22 +9,31 @@
 			<origam-chip text="My chip" data-cy="chip-default"/>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<!--
-			Side-by-side render of every intent so the e2e suite can
-			assert each rung produces a measurable computed-CSS change.
-			IChipProps already extends IColorProps — pre-fix the story
-			just had no variant to surface it, so consumers had no easy
-			way to verify the prop wiring or for tests to catch a
-			regression.
-		-->
-		<Variant title="Color">
-			<div style="display: flex; gap: 12px; padding: 16px;">
-				<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
-				<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
-				<origam-chip bg-color="warning" text="warning" data-cy="chip-color-warning"/>
-				<origam-chip bg-color="danger"  text="danger"  data-cy="chip-color-danger"/>
-			</div>
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-chip v-bind="state" text="Interactive chip" data-cy="chip-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
+						<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
+						<origam-chip bg-color="warning" text="warning" data-cy="chip-color-warning"/>
+						<origam-chip bg-color="danger"  text="danger"  data-cy="chip-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ CLOSABLE ════════════ -->

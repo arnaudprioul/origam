@@ -4,14 +4,31 @@
 			title="Divider/OrigamDivider"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<Variant title="Color">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-				<origam-divider color="primary" data-cy="divider-color-primary"/>
-				<origam-divider color="success" data-cy="divider-color-success"/>
-				<origam-divider color="warning" data-cy="divider-color-warning"/>
-				<origam-divider color="danger"  data-cy="divider-color-danger"/>
-			</div>
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-divider v-bind="state" data-cy="divider-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
+						<origam-divider color="primary" data-cy="divider-color-primary"/>
+						<origam-divider color="success" data-cy="divider-color-success"/>
+						<origam-divider color="warning" data-cy="divider-color-warning"/>
+						<origam-divider color="danger"  data-cy="divider-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ DIRECTION ════════════ -->
@@ -99,12 +116,14 @@
 	import { OrigamDivider } from '@origam/components'
 	import { DIRECTION } from '@origam/enums'
 	import type {
+		IColorProps,
 		IDividerProps,
 		IOptions
 	} from '@origam/interfaces'
 	import type { TDirection } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
+	import { intentList } from '@stories/const'
 
 	/**
 	 * Divider direction options. Inlined here because the divider is the

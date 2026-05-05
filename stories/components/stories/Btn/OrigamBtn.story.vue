@@ -40,17 +40,22 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
-				title="Color (intent)"
-				:init-state="() => useStoryInitState<IColorProps>({})"
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-btn
-						v-bind="state"
-						text="Button"
-						data-cy="btn-color"
-				/>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-btn v-bind="state" text="Button" data-cy="btn-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-btn bg-color="primary" text="primary" data-cy="btn-color-primary"/>
+						<origam-btn bg-color="success" text="success" data-cy="btn-color-success"/>
+						<origam-btn bg-color="warning" text="warning" data-cy="btn-color-warning"/>
+						<origam-btn bg-color="danger"  text="danger"  data-cy="btn-color-danger"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
@@ -60,49 +65,6 @@
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
-		</Variant>
-
-		<!--
-			Showcase variant — render 4 buttons side-by-side, each with a
-			different `bgColor` intent. Lets the e2e suite assert the
-			runtime computed `backgroundColor` actually changes per
-			value, instead of asserting "is visible" and silently passing
-			while the prop is ignored. Same pattern as the Toolbar
-			border showcase (commit 0b24362) that caught the unwanted
-			3 px frame regression.
-		-->
-		<Variant title="Color showcase">
-			<div style="display: flex; gap: 12px; padding: 16px;">
-				<origam-btn bg-color="primary" text="primary" data-cy="btn-color-primary"/>
-				<origam-btn bg-color="success" text="success" data-cy="btn-color-success"/>
-				<origam-btn bg-color="warning" text="warning" data-cy="btn-color-warning"/>
-				<origam-btn bg-color="danger"  text="danger"  data-cy="btn-color-danger"/>
-			</div>
-		</Variant>
-
-		<!-- ════════════ ROUNDED SHOWCASE ════════════ -->
-		<!--
-			Renders the `rounded` prop across its rungs so the e2e suite
-			can assert each value produces a measurable border-radius.
-		-->
-		<Variant title="Rounded showcase">
-			<div style="display: flex; gap: 12px; padding: 16px; align-items: center;">
-				<origam-btn text="default"   data-cy="btn-rounded-default"/>
-				<origam-btn :rounded="0"      text="0"     data-cy="btn-rounded-0"/>
-				<origam-btn rounded="sm"      text="sm"    data-cy="btn-rounded-sm"/>
-				<origam-btn rounded="lg"      text="lg"    data-cy="btn-rounded-lg"/>
-				<origam-btn rounded="circle"  text="●"     data-cy="btn-rounded-circle"/>
-			</div>
-		</Variant>
-
-		<!-- ════════════ BORDER SHOWCASE ════════════ -->
-		<Variant title="Border showcase">
-			<div style="display: flex; gap: 12px; padding: 16px;">
-				<origam-btn text="default"               data-cy="btn-border-default"/>
-				<origam-btn :border="true" text="true"   data-cy="btn-border-true"/>
-				<origam-btn border="top"   text="top"    data-cy="btn-border-top"/>
-				<origam-btn border="bottom" text="bot"   data-cy="btn-border-bottom"/>
-			</div>
 		</Variant>
 
 		<!-- ════════════ SIZES ════════════ -->
@@ -155,19 +117,48 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
+		<!-- ════════════ ROUNDED (IRoundedProps) ════════════ -->
 		<Variant
 				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
+				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'sm' })"
 		>
 			<template #default="{ state }">
-				<origam-btn
-						:rounded="state.rounded"
-						text="Button"
-				/>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-btn :rounded="state.rounded" text="Button" data-cy="btn-rounded"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px; align-items: center;">
+						<origam-btn text="default"     data-cy="btn-rounded-default"/>
+						<origam-btn :rounded="0"       text="0"      data-cy="btn-rounded-0"/>
+						<origam-btn rounded="sm"       text="sm"     data-cy="btn-rounded-sm"/>
+						<origam-btn rounded="lg"       text="lg"     data-cy="btn-rounded-lg"/>
+						<origam-btn rounded="circle"   text="●"      data-cy="btn-rounded-circle"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ BORDER (IBorderProps) ════════════ -->
+		<Variant
+				title="Border"
+				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-btn v-bind="state" text="Button" data-cy="btn-border"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-btn text="default"                    data-cy="btn-border-default"/>
+						<origam-btn :border="true"  text="true"       data-cy="btn-border-true"/>
+						<origam-btn border="top"    text="top"        data-cy="btn-border-top"/>
+						<origam-btn border="bottom" text="bottom"     data-cy="btn-border-bottom"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.border" title="border"/>
 			</template>
 		</Variant>
 
@@ -404,6 +395,7 @@
 	import { MDI_ICONS } from '@origam/enums'
 	import type {
 		IAdjacentProps,
+		IBorderProps,
 		IBtnProps,
 		IColorProps,
 		IDensityProps,
