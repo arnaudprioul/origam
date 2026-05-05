@@ -273,13 +273,14 @@
 	const correctPrecision = (val: number | string, precision = props.precision) => {
 		// `val` arrives as a number from the model in the happy path,
 		// but a parent could legitimately pass a numeric string
-		// (`v-model="someStringRef"`, JSON-deserialised modelValue, etc.).
-		// Coerce here so `.toFixed` doesn't blow up — the watch upstream
-		// already filters out NaN, but `isNaN("42")` is `false` (the
-		// string "42" is numerically valid), so without this coercion
-		// `correctPrecision("42")` crashed with `val.toFixed is not a
-		// function`.
+		// (`v-model="someStringRef"`, JSON-deserialised payload, etc.).
+		// Without coercion, `.toFixed` crashes — strings have no
+		// `toFixed` method, but `isNaN("42")` returns `false` so the
+		// upstream watch guard lets the string through.
+		// We only coerce when needed and keep the original number path
+		// untouched to avoid any subtle change in formatting semantics.
 		const num = typeof val === 'number' ? val : Number(val)
+		if (Number.isNaN(num)) return String(val)
 		const fixed = precision == null
 				? String(num)
 				: num.toFixed(precision)
