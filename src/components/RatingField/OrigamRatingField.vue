@@ -33,6 +33,7 @@
 					<origam-rating-field-item
 							ref="origamRatingFieldItemRef"
 							:index="-1"
+							:length="length"
 							:show-star="false"
 							:value="0"
 							v-bind="{...itemState[0], ...eventState[0]}"
@@ -56,12 +57,14 @@
 								<origam-rating-field-item
 										:checked="isChecked(range - 0.5)"
 										:index="index * 2"
+										:length="length"
 										:value="range - 0.5"
 										v-bind="{...itemState[index * 2], ...eventState[(index * 2) + 1]}"
 								/>
 								<origam-rating-field-item
 										:checked="isChecked(range)"
 										:index="(index * 2) + 1"
+										:length="length"
 										:value="range"
 										v-bind="{...itemState[(index * 2) + 1], ...eventState[(index * 2) + 2]}"
 								/>
@@ -70,6 +73,7 @@
 								<origam-rating-field-item
 										:checked="isChecked(range)"
 										:index="index"
+										:length="length"
 										:value="range"
 										v-bind="{...itemState[index], ...eventState[index + 1]}"
 								/>
