@@ -261,6 +261,19 @@ test.describe('OrigamSelect', () => {
             // item width); now it's just the field's `padding-inline`
             // tokens (~16px on the default size).
             expect(layout.inputLeft - layout.fieldLeft).toBeLessThan(24)
+
+            // Belt-and-suspenders: the input itself must NOT carry an
+            // additional `padding-inline` that would stack on top of the
+            // wrapper's padding. Pre-fix the autocomplete-single rule
+            // was `padding-inline: inherit`, which copied the wrapper's
+            // 16px onto the input → text started 48px from the field's
+            // left (16 outer + 16 wrapper + 16 inherited).
+            const inputPadding = await select.locator('input').first().evaluate(el => {
+                const cs = getComputedStyle(el)
+                return { left: cs.paddingLeft, right: cs.paddingRight }
+            })
+            expect(inputPadding.left).toBe('0px')
+            expect(inputPadding.right).toBe('0px')
         })
 
         test('selection is not duplicated after re-focus', async ({ page }) => {

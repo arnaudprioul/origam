@@ -1016,9 +1016,18 @@
 			&#{$this}--single {
 				:deep(.origam-field) {
 					input {
+						// Pre-fix `padding-inline: inherit` cascaded the
+						// parent `.origam-field__input`'s 16px padding
+						// onto the input ON TOP of the field's own 16px
+						// outer padding AND the wrapper's 16px inner
+						// padding. Net offset before the typed text was
+						// 48px (16 + 16 + 16) — the field looked
+						// half-empty on the left after picking. Drop it;
+						// the wrapper's padding already provides the
+						// text indent.
 						left: 0;
 						right: 0;
-						padding-inline: inherit;
+						padding-inline: 0;
 						opacity: 1;
 					}
 
