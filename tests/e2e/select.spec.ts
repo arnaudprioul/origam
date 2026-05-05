@@ -331,6 +331,53 @@ test.describe('OrigamSelect', () => {
         // keystroke REPLACES it. Pre-fix the cursor landed at the end
         // and typing appended (`France` + `S` → `FranceS`, which then
         // matched nothing in the filter and looked broken).
+        // Same contract as the tab-flow above, but exercised with a real
+        // mouse click — the user's actual flow. Pre-fix the focus
+        // watcher fired on the false→true transition and ran select()
+        // through the `forwardRefs` proxy, but two things broke the
+        // selection: (1) `forwardRefs` filters `$`-prefixed keys so
+        // `origamTextFieldRef.value.$el` was undefined, and (2) the
+        // microtask `nextTick` resolved BEFORE the click cycle's
+        // cursor-placement + the TextField's `handleFocus` chain ran,
+        // so any select() that did fire was clobbered immediately
+        // after. The fix DOM-queries the input via `vm.proxy.$el` and
+        // schedules through `setTimeout(0)` (macrotask) so it lands
+        // AFTER all the click-cycle synchronous work.
+        test('autocomplete-single: mouse re-click also selects-all', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-autocomplete"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            // Pick France, then close the menu via Escape so we can
+            // re-click on the closed/already-focused field.
+            await select.locator('.origam-field').first().click()
+            await sandbox.locator('.origam-list-item').first().click()
+            await page.waitForTimeout(400)
+
+            // Click the field again — the user's exact gesture.
+            await select.locator('.origam-field').first().click()
+            await page.waitForTimeout(100) // setTimeout(0) latency
+
+            const sel = await select.locator('input').first().evaluate(el => {
+                const i = el as HTMLInputElement
+                return { value: i.value, selStart: i.selectionStart, selEnd: i.selectionEnd }
+            })
+            expect(sel.value).toBe('France')
+            expect(sel.selStart).toBe(0)
+            expect(sel.selEnd).toBe(sel.value.length)
+
+            // Typing replaces
+            await page.keyboard.type('XX')
+            await page.waitForTimeout(200)
+            const final = await select.locator('input').first().evaluate(el => (el as HTMLInputElement).value)
+            expect(final).toBe('XX')
+        })
+
         test('autocomplete-single: re-focus selects-all so typing replaces', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')

@@ -286,6 +286,7 @@
 >
 	import {
 		computed,
+		getCurrentInstance,
 		inject,
 		mergeProps,
 		nextTick,
@@ -376,6 +377,13 @@
 	const origamVirtualScrollRef = ref<TOrigamVirtualScroll>()
 	const origamListRef = ref<TOrigamList>()
 	const origamChipsRef = ref<TOrigamChip>()
+
+	// Component instance — used as a fallback path to reach the
+	// underlying `<input>` (`vm.proxy.$el.querySelector('input')`) when
+	// the `forwardRefs`-based proxy on `origamTextFieldRef` doesn't
+	// expose certain props/methods (notably `$el`, which the proxy filters
+	// because of its `$` prefix).
+	const vm = getCurrentInstance()
 
 	const slots = useSlots()
 
@@ -539,6 +547,37 @@
 		if (menuDisabled.value) return
 
 		menu.value = !menu.value
+
+		// Select-all the input text on every field click in autocomplete-
+		// single mode when there's a selection. The focus watcher already
+		// runs select() on the focus TRANSITION, but that fires only on
+		// the false→true edge — clicking an already-focused field, OR a
+		// click that races with the menu's focus management (focusin
+		// steal / scroll-strategy refocus), leaves the cursor at the end
+		// with the selection cleared. Wiring it here too means EVERY
+		// mousedown re-selects, so the next keystroke always replaces.
+		// We DOM-query the `<input>` instead of going through the
+		// `origamTextFieldRef` proxy — `forwardRefs` doesn't reliably
+		// expose the underlying HTMLInputElement's `select()` method.
+		// Two `nextTick`s — one for Vue to flush, one to land AFTER the
+		// menu's focusin handler has run.
+		if (props.autocomplete && !props.multiple && search.value) {
+			// `setTimeout(0)` instead of `nextTick` — the browser's
+			// click cursor-placement and the TextField's
+			// `handleFocus` chain (which calls `input.focus()` →
+			// cursor jumps to end) run AFTER mousedown's synchronous
+			// handlers AND after Vue's microtask queue. A microtask
+			// `nextTick` resolves too early (before the click cycle
+			// finishes its cursor placement) so our select() takes
+			// effect for an instant then gets clobbered. A macrotask
+			// (setTimeout) lands AFTER all that, so the selection
+			// sticks.
+			setTimeout(() => {
+				const root = vm?.proxy?.$el as HTMLElement | undefined
+				const input = root?.querySelector('input') as HTMLInputElement | null
+				input?.select()
+			}, 0)
+		}
 	}
 	const handleMousedownMenuIcon = (e: MouseEvent) => {
 		if (menuDisabled.value) return
@@ -791,8 +830,14 @@
 				// nothing and looks broken.
 				// Skip in multiple mode (the input is meant to be a
 				// fresh filter input, NOT a copy of any chip).
+				// We DOM-query the input instead of going through
+				// `origamTextFieldRef.value.select()` — the
+				// `forwardRefs` proxy on TextField doesn't reliably
+				// expose the HTMLInputElement's `select()` method.
 				if (props.autocomplete && !props.multiple && search.value) {
-					origamTextFieldRef.value?.select?.()
+					const root = vm?.proxy?.$el as HTMLElement | undefined
+				const input = root?.querySelector('input') as HTMLInputElement | null
+				input?.select()
 				}
 			})
 		} else {
