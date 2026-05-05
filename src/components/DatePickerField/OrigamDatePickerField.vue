@@ -378,7 +378,17 @@
 	})
 
 	const datePickerProps = computed(() => {
-		return origamDatePickerRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue'])
+		// Same exclusion list as `OrigamColorPickerField` —
+		// the field's `rounded: true` / `border: true` defaults are
+		// meant for the trigger outline, NOT the popup. Forwarding
+		// them down made the inner `<origam-date-picker>` apply the
+		// Sheet's `--rounded` modifier (24px), which doesn't match
+		// the popup menu's 8px corner — visible gap at the corners.
+		return origamDatePickerRef.value?.filterProps(props, [
+			'class', 'id', 'style', 'modelValue',
+			'rounded', 'border', 'borderColor', 'borderStyle',
+			'density', 'direction',
+		])
 	})
 
 	const isDirty = computed(() => {

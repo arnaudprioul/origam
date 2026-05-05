@@ -260,7 +260,22 @@
 	})
 
 	const colorPickerProps = computed(() => {
-		return origamColorPickerRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue'])
+		// Strip the FIELD-specific visual props (`border`, `rounded`,
+		// `density`, `direction`, …) before forwarding to the inner
+		// `<origam-color-picker>`. Pre-fix the field's defaults
+		// (`rounded: true`, `border: true` — meant for the trigger
+		// outline) cascaded through `filterProps` to the picker, which
+		// in turn propagated to its `<origam-sheet>`. Sheet's
+		// `--rounded` modifier resolves to `2xl` (24px), 3× larger
+		// than the popup menu's 8px outer radius — leaving a visible
+		// white gap at every corner of the popup, reported by the
+		// user as "le border ne devrait pas exister et surtout s'il
+		// existe devrait prendre vraiment les bord de la popup".
+		return origamColorPickerRef.value?.filterProps(props, [
+			'class', 'id', 'style', 'modelValue',
+			'rounded', 'border', 'borderColor', 'borderStyle',
+			'density', 'direction',
+		])
 	})
 
 	const isDirty = computed(() => {
