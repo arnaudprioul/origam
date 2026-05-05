@@ -346,6 +346,17 @@
 			max-width: var(--origam-chip__close---max-width, 18px);
 			user-select: var(--origam-chip__close---user-select, none);
 
+			// Breathing room between the chip body and the close button.
+			// Pre-fix the close icon was flush with the content (0px gap)
+			// while the chip's right padding was 12px — the asymmetry read
+			// as "the close has no room", per user feedback. The negative
+			// `margin-inline-end` pulls the icon slightly past the chip's
+			// inline padding to compensate for the close-circle glyph's
+			// own internal whitespace, keeping the visual right edge of
+			// the icon aligned with where a textual right edge would land.
+			margin-inline-start: var(--origam-chip__close---margin-inline-start, 6px);
+			margin-inline-end: var(--origam-chip__close---margin-inline-end, -4px);
+
 			.origam-icon {
 				font-size: inherit;
 			}

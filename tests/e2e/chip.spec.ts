@@ -82,6 +82,41 @@ test.describe('OrigamChip — closable', () => {
         await page.waitForTimeout(300)
         await expect(chip).toBeVisible()
     })
+
+    // The close button must have breathing room from the chip's content —
+    // pre-fix it sat flush against the text (0px gap) while the chip's
+    // inline padding kept 12px on the opposite side, which read as
+    // "déséquilibré". Now it carries `margin-inline-start` (gap from
+    // text) and a small negative `margin-inline-end` to compensate the
+    // close-circle glyph's intrinsic whitespace.
+    test('close button has visible breathing room from the chip content', async ({ page }) => {
+        await openVariant(page, STORY, 'Closable')
+        const sandbox = sandboxOf(page)
+
+        const chip = sandbox.locator('[data-cy="chip-closable"]').first()
+        await expect(chip).toBeVisible({ timeout: 8000 })
+
+        const layout = await chip.evaluate(el => {
+            const close = el.querySelector('.origam-chip__close') as HTMLElement
+            const content = el.querySelector('.origam-chip__content') as HTMLElement
+            const cs = getComputedStyle(close)
+            return {
+                marginInlineStart: cs.marginInlineStart,
+                contentRight: content.getBoundingClientRect().right,
+                closeLeft: close.getBoundingClientRect().left,
+            }
+        })
+
+        // CSS-level: a non-zero positive margin-inline-start
+        const marginValue = parseFloat(layout.marginInlineStart)
+        expect(marginValue).toBeGreaterThanOrEqual(4)
+
+        // Geometry-level: actual visible gap between text right-edge and
+        // close left-edge ≥ 4px (catches the case where future overrides
+        // somehow zero out the margin via cascade)
+        const gap = layout.closeLeft - layout.contentRight
+        expect(gap).toBeGreaterThanOrEqual(4)
+    })
 })
 
 // ─── Color showcase ─────────────────────────────────────────────────────────
