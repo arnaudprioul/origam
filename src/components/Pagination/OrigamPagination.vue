@@ -222,7 +222,22 @@
 						ellipsis: false,
 						icon: true,
 						disabled: !!props.disabled || +props.length < 2,
-						color: isActive ? props.activeColor : props.color,
+						// Forward the FULL IColorProps shape + `active`
+						// flag so the inner `<origam-btn>` can drive the
+						// resting / hover / active rungs through its own
+						// `useColorEffect`. Pre-fix only `color` (with
+						// the activeColor swap) was passed — `bgColor`,
+						// `hoverColor`, `hoverBgColor`, `activeBgColor`
+						// were silently dropped, so consumers reported
+						// "le bgColor sur la pagination ne fonctionne
+						// pas, on a pas le hover et active".
+						active: isActive,
+						color: props.color,
+						bgColor: props.bgColor,
+						hoverColor: props.hoverColor,
+						hoverBgColor: props.hoverBgColor,
+						activeColor: props.activeColor,
+						activeBgColor: props.activeBgColor,
 						'aria-current': isActive,
 						'aria-label': t(isActive ? props.currentPageAriaLabel : props.pageAriaLabel, item),
 						onClick: (e: Event) => setValue(e, item)

@@ -44,17 +44,53 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants. All
+			six fields surface together (Btn / Switch / SliderField /
+			Select / RatingField / Radio / Password / TextField pattern).
+			Channel mapping (Pagination forwards the full shape to each
+			inner btn item, so the rungs are driven by the Btn's own
+			`useColorEffect`):
+			  • `color`      → resting btn fg
+			  • `bgColor`    → resting btn surface
+			  • `hoverColor` / `hoverBgColor`   → hover state
+			  • `activeColor` / `activeBgColor` → currently selected page
+			Hardcoded fixtures below the interactive control give the
+			e2e suite stable `data-cy="pagination-color-fixture-{n}"`
+			selectors.
+		-->
 		<Variant
 				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({})"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-pagination v-model="page" :length="10" v-bind="state"/>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-pagination v-model="page" :length="10" v-bind="state" data-cy="pagination-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-pagination :model-value="3" :length="6"
+						                   color="primary"
+						                   data-cy="pagination-color-fixture-color-only"/>
+						<origam-pagination :model-value="3" :length="6"
+						                   bg-color="success"
+						                   data-cy="pagination-color-fixture-bg-only"/>
+						<origam-pagination :model-value="3" :length="6"
+						                   color="warning" bg-color="primary"
+						                   hover-color="info" hover-bg-color="info"
+						                   active-color="danger" active-bg-color="danger"
+						                   data-cy="pagination-color-fixture-combo"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
