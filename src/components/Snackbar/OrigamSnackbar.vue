@@ -397,6 +397,54 @@
 			}
 		}
 
+		// Status modifiers — emitted by `useStatus` as
+		// `origam-snackbar--success | --info | --warning | --danger | --error`.
+		// Each picks the matching feedback intent rungs from the design
+		// tokens:
+		//   • bgSubtle (light tinted background)
+		//   • fgSubtle (strong foreground for "coloured text on light surface")
+		//   • border   (saturated outline)
+		// The wrapper inherits the colour scheme; the timer-bar picks
+		// up `currentColor` automatically via its inline default. The
+		// snackbar root carries the colours so both `__wrapper` (where
+		// the border lives) and `__content` (where the text lives)
+		// inherit correctly.
+		@each $status in (success, info, warning, danger) {
+			&--#{$status} {
+				color: var(--origam-color-feedback-#{$status}-fgSubtle);
+				background: transparent;
+
+				:deep(#{$this}__wrapper) {
+					background-color: var(--origam-color-feedback-#{$status}-bgSubtle);
+					border-color: var(--origam-color-feedback-#{$status}-border);
+					color: var(--origam-color-feedback-#{$status}-fgSubtle);
+				}
+
+				#{$this}__timer-bar {
+					background-color: var(--origam-color-feedback-#{$status}-border);
+					opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
+				}
+			}
+		}
+
+		// `error` is an alias for `danger` (status enum exposes both —
+		// the SCSS treats them as the same feedback rung).
+		&--error {
+			color: var(--origam-color-feedback-danger-fgSubtle);
+			background: transparent;
+
+			:deep(#{$this}__wrapper) {
+				background-color: var(--origam-color-feedback-danger-bgSubtle);
+				border-color: var(--origam-color-feedback-danger-border);
+				color: var(--origam-color-feedback-danger-fgSubtle);
+			}
+
+			#{$this}__timer-bar {
+				background-color: var(--origam-color-feedback-danger-border);
+				opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
+			}
+		}
+
 		&--rounded {
 			:deep(#{$this}__wrapper) {
 				border-radius: var(--origam-snackbar__wrapper---border-radius, 4px);
