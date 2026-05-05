@@ -408,6 +408,13 @@
 			/* --origam-otp-input-field__cell---text-align: center (fallback) */
 			text-align: var(--origam-otp-input-field__cell---text-align, center);
 			width: 100%;
+			// User report: "il y a toujours un border tout autour".
+			// The native `<input>` ships a 2px UA border that stacked on
+			// top of the design's `.origam-field__outline-*` rectangle —
+			// each cell read as a double-bordered chip. Reset the UA
+			// border so only the field outline remains.
+			border: var(--origam-otp-input-field__cell---border, none);
+			background: var(--origam-otp-input-field__cell---background, transparent);
 
 			&[type=number]::-webkit-outer-spin-button,
 			&[type=number]::-webkit-inner-spin-button {
