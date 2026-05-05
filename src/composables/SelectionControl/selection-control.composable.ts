@@ -69,22 +69,18 @@ export function useSelectionControl (props: ISelectionControlProps) {
     // `activeColor` (undefined → no styles → SCSS hardcoded grey
     // shipped through). Reported by the user — "la couleur/bgColor
     // pour le switch ne fonctionne pas".
-    // Pre-fix: setting `color="primary"` on `<origam-switch>` only
-    // applied the foreground in OFF state; the ON state read
-    // `activeColor` (Vue-coerced from `undefined` to `false` because
-    // `TColor` includes `false` in its type union, so `??` doesn't
-    // catch it → produced `false` → `useColor` no-oped → SCSS
-    // hardcoded grey shipped through). Reported by the user — "la
-    // couleur/bgColor pour le switch ne fonctionne pas".
+    // Strict separation of `color` (foreground / label / thumb) and
+    // `bgColor` (background / track). The two channels NEVER cross-
+    // pollute — passing `color="primary"` alone leaves the track at
+    // its SCSS default; only `bgColor="primary"` paints the track.
+    // Hover / active variants override the respective channel on the
+    // matching interaction state.
     //
-    // Fix:
-    // 1. Fall back through `activeColor → color` (and bgColor too)
-    //    using `||` so any falsy value (false / undefined / null /
-    //    empty string) yields the next link in the chain.
-    // 2. Background gates on `props.color` as the final fallback so a
-    //    consumer `color="primary"` paints the track when checked,
-    //    matching the Material/Vuetify switch contract — no need to
-    //    pass `bgColor` separately.
+    // Fall back chain uses `||` (not `??`) because `TColor = string |
+    // false | null | undefined` lets Vue 3 coerce unset props to
+    // `false`, which `??` would not catch. Any falsy value yields the
+    // next link in the chain so the consumer's intent reaches
+    // `useColor` and gets converted into an inline declaration.
     const {textColorStyles} = useTextColor(computed(() => {
         if (props.error || props.disabled) return undefined
 
@@ -93,9 +89,7 @@ export function useSelectionControl (props: ISelectionControlProps) {
     const {backgroundColorStyles} = useBackgroundColor(computed(() => {
         if (props.error || props.disabled) return undefined
 
-        return model.value
-            ? (props.activeBgColor || props.bgColor || props.color)
-            : props.bgColor
+        return model.value ? (props.activeBgColor || props.bgColor) : props.bgColor
     }))
 
     const icon = computed(() => {

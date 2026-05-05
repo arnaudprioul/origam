@@ -4,7 +4,7 @@
 			title="Switch/OrigamSwitch"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
+		<!-- ════════════ COLOR (foreground — label + thumb) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -21,6 +21,46 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color" title="color" :options="intentList"/>
 			</template>
+		</Variant>
+
+		<!-- ════════════ BG COLOR (background — track) ════════════ -->
+		<!--
+			Strict color/bgColor separation: `color` paints label + thumb,
+			`bgColor` paints the track. This variant exercises ONLY the
+			bgColor channel — leaves color untouched so the test can
+			assert track changes per intent while the label stays neutral.
+		-->
+		<Variant
+				title="BgColor"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'success' })"
+		>
+			<template #default="{ state }">
+				<origam-switch
+						v-model="bgColorModel"
+						:bg-color="state.bgColor"
+						label="Track-tinted switch"
+						data-cy="switch-bg-color"
+				/>
+				<div data-cy="switch-bg-color-status">value = {{ bgColorModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ COLOR + BG COLOR (combined) ════════════ -->
+		<Variant title="Color + BgColor combo">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-switch :model-value="true" color="primary" bg-color="success"
+				               label="color=primary  bg-color=success"
+				               data-cy="switch-combo-1"/>
+				<origam-switch :model-value="true" color="warning" bg-color="primary"
+				               label="color=warning  bg-color=primary"
+				               data-cy="switch-combo-2"/>
+				<origam-switch :model-value="true" color="danger"  bg-color="warning"
+				               label="color=danger   bg-color=warning"
+				               data-cy="switch-combo-3"/>
+			</div>
 		</Variant>
 
 		<!-- ════════════ DENSITY ════════════ -->
@@ -188,6 +228,7 @@
 	import { densityList, intentList } from '@stories/const'
 
 	const colorModel         = ref(false)
+	const bgColorModel       = ref(false)
 	const densityModel       = ref(false)
 	const insetModel         = ref(false)
 	const indeterminateModel = ref(false)

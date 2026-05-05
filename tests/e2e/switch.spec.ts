@@ -3,42 +3,93 @@ import { expect, test } from '@playwright/test'
 const STORY_PATH = '/story/stories-components-stories-switch-origamswitch-story-vue'
 
 test.describe('OrigamSwitch', () => {
-    test('Color variant — color="primary" paints track + thumb when ON', async ({ page }) => {
-        // Pre-fix this spec only asserted "track is visible" — silently
-        // green while the actual track was hardcoded grey regardless of
-        // the `color` prop. Now assert the COMPUTED track + thumb
-        // background actually changes when toggled ON.
+    // ─── Color/bgColor strict separation contract ────────────────────────
+    // Project rule (per user request):
+    //   `color`   → label foreground + thumb (cercle)
+    //   `bgColor` → track (box derrière le cercle)
+    // Hover/active variants cross only on their respective state.
+    // The two channels NEVER cross-pollute.
+    //
+    // Token-resolved values (from src/assets/css/tokens/light.css):
+    //   primary.fgSubtle = #6d28d9 = rgb(109, 40, 217)
+    //   primary.bg       = #7c3aed = rgb(124, 58, 237)
+    //   success.bg       = #4caf50 = rgb(76, 175, 80)
+    //   warning.fgSubtle = #b45309 = rgb(180, 83, 9)
+    //   danger.fgSubtle  = #b91c1c = rgb(185, 28, 28)
+    // ──────────────────────────────────────────────────────────────────────
+
+    const sample = async (page: import('@playwright/test').Page, cy: string) => {
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const sw = sandbox.locator(`[data-cy="${cy}"]`)
+        await expect(sw).toBeVisible({ timeout: 5000 })
+        return sw.evaluate(el => {
+            const track = el.querySelector('.origam-switch__track') as HTMLElement
+            const thumb = el.querySelector('.origam-switch__thumb') as HTMLElement
+            const wrapper = el.querySelector('.origam-selection-control__wrapper') as HTMLElement
+            return {
+                trackBg: getComputedStyle(track).backgroundColor,
+                thumbBg: getComputedStyle(thumb).backgroundColor,
+                wrapperColor: getComputedStyle(wrapper).color
+            }
+        })
+    }
+
+    test('Color variant — color="primary" tints label + thumb but NOT track', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Color', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
+        const off = await sample(page, 'switch-color')
+        // Track stays at the default grey (bgColor channel untouched).
+        expect(off.trackBg).toBe('rgb(230, 230, 230)')
+        // Thumb takes the consumer's color (fgSubtle rung).
+        expect(off.thumbBg).toBe('rgb(109, 40, 217)')
+        // Wrapper carries the inline color (label inherits via currentColor).
+        expect(off.wrapperColor).toBe('rgb(109, 40, 217)')
+
+        // Toggle ON — strict separation: track still grey, thumb still primary.
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const sw = sandbox.locator('[data-cy="switch-color"]')
-        await expect(sw).toBeVisible({ timeout: 5000 })
-
-        // OFF state: track must be the muted grey default (NOT primary).
-        const off = await sw.evaluate(el => ({
-            track: getComputedStyle(el.querySelector('.origam-switch__track')!).backgroundColor,
-            thumb: getComputedStyle(el.querySelector('.origam-switch__thumb')!).backgroundColor
-        }))
-        // Default grey track / dark thumb (read from tokens; both should
-        // NOT match the primary colour rgb(124, 58, 237)).
-        expect(off.track).not.toBe('rgb(124, 58, 237)')
-        expect(off.thumb).not.toBe('rgb(124, 58, 237)')
-
-        // Toggle ON via the input (the track click forwards to it anyway).
-        await sw.locator('input[type="checkbox"]').click({ force: true })
+        await sandbox.locator('[data-cy="switch-color"] input[type="checkbox"]').click({ force: true })
         await page.waitForTimeout(500)
+        const on = await sample(page, 'switch-color')
+        expect(on.trackBg).toBe('rgb(230, 230, 230)')
+        expect(on.thumbBg).toBe('rgb(109, 40, 217)')
+    })
 
-        const on = await sw.evaluate(el => ({
-            track: getComputedStyle(el.querySelector('.origam-switch__track')!).backgroundColor,
-            thumb: getComputedStyle(el.querySelector('.origam-switch__thumb')!).backgroundColor
-        }))
-        // ON state: both track and thumb should be primary purple
-        // (#7c3aed → rgb(124, 58, 237)).
-        expect(on.track).toBe('rgb(124, 58, 237)')
-        expect(on.thumb).toBe('rgb(124, 58, 237)')
+    test('BgColor variant — bgColor="success" tints track but NOT thumb fill', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('BgColor', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const off = await sample(page, 'switch-bg-color')
+        expect(off.trackBg).toBe('rgb(76, 175, 80)')   // bgColor channel paints track
+        // Thumb stays at its token default (white) — bgColor never
+        // crosses into the color channel.
+        expect(off.thumbBg).toBe('rgb(255, 255, 255)')
+    })
+
+    test('Color + BgColor combo — both channels work side-by-side without cross-pollution', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Color + BgColor combo', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        // combo_1 — color=primary, bg=success
+        const c1 = await sample(page, 'switch-combo-1')
+        expect(c1.trackBg).toBe('rgb(76, 175, 80)')   // success — bg channel
+        expect(c1.thumbBg).toBe('rgb(109, 40, 217)')  // primary fgSubtle — color channel
+
+        // combo_2 — color=warning, bg=primary
+        const c2 = await sample(page, 'switch-combo-2')
+        expect(c2.trackBg).toBe('rgb(124, 58, 237)')  // primary bg — bg channel
+        expect(c2.thumbBg).toBe('rgb(180, 83, 9)')    // warning fgSubtle — color channel
+
+        // combo_3 — color=danger, bg=warning
+        const c3 = await sample(page, 'switch-combo-3')
+        expect(c3.trackBg).toBe('rgb(251, 140, 0)')   // warning bg — bg channel
+        expect(c3.thumbBg).toBe('rgb(185, 28, 28)')   // danger fgSubtle — color channel
     })
 
     test('Inset & flat — toggle changes inset state', async ({ page }) => {

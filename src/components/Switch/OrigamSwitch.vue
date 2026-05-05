@@ -23,9 +23,17 @@
 					@focus="handleFocus"
 					@update:model-value="handleChange"
 			>
-				<template #default="{backgroundColorStyles, textColorStyles}">
+				<template #default="{backgroundColorStyles}">
+					<!--
+						`bgColor` channel only — the track is the "box behind
+						the circle". `color` (foreground) is applied on the
+						SC wrapper (so the label inherits it) and on the
+						thumb via `background-color: currentColor` in SCSS.
+						The two channels stay strictly separate per the
+						project's color contract.
+					-->
 					<div
-							:style="[backgroundColorStyles, textColorStyles]"
+							:style="backgroundColorStyles"
 							class="origam-switch__track"
 							@click="handleTrackClick"
 					>
@@ -53,7 +61,7 @@
 					</div>
 				</template>
 
-				<template #input="{model, backgroundColorStyles, icon, props: selectionControlProps}">
+				<template #input="{model, icon, props: selectionControlProps}">
 					<input
 							ref="input"
 							:aria-checked="selectionControlProps.type === 'checkbox' ? model : undefined"
@@ -63,9 +71,18 @@
 							v-bind="selectionControlProps"
 					/>
 
+					<!--
+						Thumb (cercle) — `color` channel. Inherits via
+						`background-color: currentColor` in SCSS, where
+						`currentColor` resolves to the SC wrapper's
+						`textColorStyles` (set by `useSelectionControl`
+						from `props.color`). Pre-fix this was driven by
+						`backgroundColorStyles` which mixed the bgColor
+						channel into the thumb — violated the strict
+						color/bgColor separation contract.
+					-->
 					<div
 							:class="['origam-switch__thumb', { 'origam-switch__thumb--filled': !!icon || props.loading }]"
-							:style="props.inset ? undefined : backgroundColorStyles"
 					>
 						<origam-translate-scale>
 							<template v-if="!props.loading">
@@ -311,20 +328,16 @@
 			transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
-		// Track is FULLY OPAQUE when the switch is dirty (checked) so the
-		// consumer's color shines through; the OFF state stays at 0.6
-		// opacity (Material muted track). The `--dirty` modifier lives
-		// on the `.origam-selection-control` CHILD, not on `.origam-switch`
-		// itself — use a descendant selector accordingly. Reads the
-		// dedicated `--background-color-checked` token when the design
-		// tokens expose one — the inline `:style="backgroundColorStyles"`
-		// from `useSelectionControl` (which now falls back to
-		// `props.color` when checked) wins via inline-style specificity,
-		// so a consumer `color="primary"` paints the track without
-		// needing to override the token.
+		// Track is fully opaque on ON state. Background-color stays at
+		// the same `--background-color` token as OFF — the channel is
+		// owned by `bgColor` only, per the project's strict
+		// color/bgColor separation: `color` paints the label + thumb,
+		// `bgColor` paints the track. The inline
+		// `:style="backgroundColorStyles"` from `useSelectionControl`
+		// wins via inline-style specificity when the consumer sets
+		// `bgColor` (or `activeBgColor`).
 		.origam-selection-control--dirty &__track {
 			opacity: 1;
-			background-color: var(--origam-switch__track---background-color-checked, var(--origam-switch__track---background-color, rgb(163, 163, 163)));
 		}
 
 		// Disabled checked state.
@@ -332,10 +345,22 @@
 			background-color: var(--origam-switch__track---background-color-disabled, rgb(163, 163, 163));
 		}
 
+		// `color` prop applied — `useSelectionControl` inlines
+		// `style="color: …"` on `.origam-selection-control__wrapper`
+		// (the parent of both track and thumb). When that inline style
+		// is present, the thumb fill switches to `currentColor` so the
+		// consumer's `color` channel paints the cercle. The track
+		// stays in its own `bgColor` channel — the two never
+		// cross-pollute, per the project's color contract.
+		.origam-selection-control__wrapper[style*="color:"] &__thumb {
+			background-color: currentColor;
+		}
+
+		// Thumb default = the design token (Material white).
 		&__thumb {
 			align-items: center;
-			background-color: var(--origam-switch__thumb---background-color, rgb(71, 71, 71));
-			color: var(--origam-switch__thumb---color, rgb(255, 255, 255));
+			background-color: var(--origam-switch__thumb---background-color, rgb(255, 255, 255));
+			color: var(--origam-switch__thumb---color, currentColor);
 			border-radius: 50%;
 			display: flex;
 			font-size: 0.75rem;
