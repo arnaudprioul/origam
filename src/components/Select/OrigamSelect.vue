@@ -761,8 +761,22 @@
 
 		if (val) {
 			isSelecting.value = true
-			// @ts-expect-error TODO
-			search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
+			// Sync `search` (the input value) from the current model on focus
+			// — but ONLY in autocomplete mode, where the input is meant to
+			// be editable so the user can refine their pick. In non-
+			// autocomplete mode this writes the selected title into the
+			// `<input value>`, which then renders ALONGSIDE the
+			// `.origam-select__selection` div that ALSO carries the title
+			// → user sees "Germany Germany" in the field after a re-focus
+			// (tab-out-then-back, click-elsewhere-then-back, …). The input
+			// in non-autocomplete is effectively a screen-reader proxy
+			// (`pointer-events: none`, opacity flipped on by --active) —
+			// it must stay empty so it doesn't visually duplicate the
+			// selection.
+			if (props.autocomplete) {
+				// @ts-expect-error TODO
+				search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
+			}
 			isPristine.value = true
 
 			nextTick(() => isSelecting.value = false)

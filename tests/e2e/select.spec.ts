@@ -210,6 +210,47 @@ test.describe('OrigamSelect', () => {
         // killing cursor:pointer / ripple / keyboard activation. Items
         // must read as clickable whenever they have any of: link mode,
         // href/to, an onClick listener, or a value inside a list.
+        // Re-focusing a non-autocomplete Select that already has a
+        // selection used to write the selected title into `search` (i.e.
+        // the inner `<input value>`). Combined with the always-rendered
+        // `.origam-select__selection` div that ALSO shows the title,
+        // the field would visibly read "Germany Germany" after pick →
+        // tab-out → tab-back. The watcher now only syncs search↔model
+        // in autocomplete mode where the input is actually editable.
+        test('selection is not duplicated after re-focus', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-string"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            // Pick Germany
+            await select.locator('.origam-field').first().click()
+            await sandbox.locator('.origam-list-item').nth(1).click()
+            await page.waitForTimeout(400)
+
+            // Tab out, tab back — re-fires the focus watcher
+            await page.keyboard.press('Tab')
+            await page.waitForTimeout(200)
+            await page.keyboard.press('Shift+Tab')
+            await page.waitForTimeout(400)
+
+            // Inner input must stay empty — only the .origam-select__selection
+            // div is allowed to render the selected title in non-autocomplete
+            // mode.
+            const inputValue = await select.locator('input').first()
+                .evaluate(el => (el as HTMLInputElement).value)
+            expect(inputValue).toBe('')
+
+            // The selection div carries the title once
+            const selectionText = await select.locator('.origam-select__selection').first()
+                .evaluate(el => el.textContent?.trim())
+            expect(selectionText).toBe('Germany')
+        })
+
         test('list items show cursor:pointer (clickable affordance)', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
