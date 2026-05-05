@@ -1096,7 +1096,19 @@
 		max-width: none;
 	}
 
-	:root {
-
+	/*
+	 * Dropdown items spec — tighten the list-item baseline for the
+	 * `<select>` use-case. The default `OrigamListItem` ships with the
+	 * Material 2 list-item height (40 + 8 + 8 = 56px), which is right
+	 * for a sidebar / nav list but reads as far too sparse inside a
+	 * dropdown — five items take ~280px of vertical real-estate and
+	 * the eye has to travel between widely-spaced lines. Material 3 and
+	 * `v-select` both use 48px for menu items; we mirror that by pinning
+	 * `min-height: 32px` and trimming the block padding from 8px to 8px
+	 * (kept) — net result is 48px tall items that feel dense without
+	 * cramping the touch target.
+	 */
+	.origam-select__content .origam-list-item {
+		--origam-list-item---min-height: 32px;
 	}
 </style>

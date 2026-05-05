@@ -310,6 +310,30 @@ test.describe('OrigamSelect', () => {
             expect(selectionText).toBe('Germany')
         })
 
+        // Dropdown items use the Material 3 / v-select 48px row instead
+        // of the OrigamListItem default 56px (Material 2 sidebar list).
+        // 56px reads as too sparse inside a dropdown — pre-fix five items
+        // ate ~280px of vertical real-estate; the user reported it as a
+        // spacing bug. Override scoped to `.origam-select__content` only,
+        // so other lists (sidebar, nav, …) keep the 56px baseline.
+        test('dropdown list items use the 48px menu height', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-string"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            await select.locator('.origam-field').first().click()
+            await expect(sandbox.locator('.origam-list-item').first()).toBeVisible({ timeout: 2000 })
+
+            const itemHeight = await sandbox.locator('.origam-list-item').first()
+                .evaluate(el => el.getBoundingClientRect().height)
+            expect(itemHeight).toBe(48)
+        })
+
         test('list items show cursor:pointer (clickable affordance)', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
