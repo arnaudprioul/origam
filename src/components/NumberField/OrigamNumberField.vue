@@ -217,7 +217,7 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 	import { OrigamBtn, OrigamDivider, OrigamTextField } from "../../components"
 
-	import { useAdjacentInner, useFocus, useForm, useHold, useProps, useVModel } from "../../composables"
+	import { useAdjacentInner, useFocus, useHold, useProps, useVModel } from "../../composables"
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
@@ -225,7 +225,7 @@
 
 	import type { TOrigamTextField } from "../../types"
 
-	import { clamp, forwardRefs, omit } from "../../utils"
+	import { clamp, forwardRefs } from "../../utils"
 
 	const props = withDefaults(defineProps<INumberFieldProps>(), {
 		modelValue: null,
@@ -254,10 +254,24 @@
 
 	const origamTextFieldRef = ref<TOrigamTextField>()
 
-	const form = useForm(omit(props, ['modelValue']))
-	const controlsDisabled = computed(() => (
-			form.isDisabled.value || form.isReadonly.value
-	))
+	// Pre-fix this called `useForm(omit(props, ['modelValue']))`. That
+	// was wrong on two counts:
+	//   1. `useForm` is the FORM-CREATOR composable — meant for
+	//      `<OrigamForm>`, not for an individual field. Calling it
+	//      inside NumberField mounted a nested `provide(ORIGAM_FORM_KEY)`
+	//      scope, breaking the parent form's child registration.
+	//   2. `useForm` internally calls `useVModel(props, 'modelValue')`
+	//      and writes BOOLEAN values into it (`true` when all children
+	//      pass validation, `false` when any fail). Because `useVModel`
+	//      grabs the current instance via `getCurrentInstance()`, the
+	//      emit landed on the NumberField itself — silently overwriting
+	//      `update:modelValue` with `true` / `false`. Consumer's
+	//      `v-model="numberRef"` then received a boolean instead of a
+	//      number.
+	// `controlsDisabled` only needs `props.disabled` / `props.readonly`
+	// — the field's parent form is consulted via `useValidation`
+	// downstream (in `OrigamInput`).
+	const controlsDisabled = computed(() => !!(props.disabled || props.readonly))
 
 	const model = useVModel(props, 'modelValue', null,
 			val => val ?? null,
