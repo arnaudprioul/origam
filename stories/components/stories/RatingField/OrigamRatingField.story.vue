@@ -93,6 +93,61 @@
 			</origam-rating-field>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants.
+			Same Btn / Switch / SliderField / Select pattern: all six
+			fields surface together so consumers can explore them as one
+			cohesive concept.
+			Channel mapping for the rating field (icon-only buttons —
+			variant: text — so `color` is the dominant axis):
+			  • `color`   → star icon color (filled + outline)
+			  • `bgColor` → wrapping field surface (only visible if a
+			                non-text variant is later applied)
+			  • hover/active variants modify the matching channel on
+			    the matching interaction state.
+			The hardcoded fixtures below the interactive control give
+			the e2e suite stable `data-cy="rating-color-fixture-{n}"`
+			selectors.
+		-->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-rating-field
+							v-model="colorRating"
+							v-bind="state"
+							data-cy="rating-color"
+					/>
+					<div data-cy="rating-color-status">value = {{ colorRating }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-rating-field :model-value="3"
+						                     color="primary"
+						                     data-cy="rating-color-fixture-color-only"/>
+						<origam-rating-field :model-value="3"
+						                     color="success"
+						                     data-cy="rating-color-fixture-success"/>
+						<origam-rating-field :model-value="3"
+						                     color="warning" hover-color="danger"
+						                     data-cy="rating-color-fixture-hover"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-rating-field
@@ -146,12 +201,14 @@
 	import { ref } from 'vue'
 
 	import { OrigamRatingField } from '@origam/components'
+	import type { IColorProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { sizeList } from '@stories/const'
+	import { intentList, sizeList } from '@stories/const'
 
 	const rating = ref(3)
 	const halfRating = ref(2.5)
+	const colorRating = ref(3)
 </script>
 
 <docs lang="md" src="@docs/components/RatingField/OrigamRatingField.md"/>
