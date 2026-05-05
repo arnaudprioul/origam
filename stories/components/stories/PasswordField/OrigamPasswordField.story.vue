@@ -4,6 +4,102 @@
 			title="PasswordField/OrigamPasswordField"
 	>
 
+		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
+		<Variant
+				title="Variant"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
+		>
+			<template #default="{ state }">
+				<origam-password-field
+						v-model="variantModel"
+						:variant="state.variant"
+						label="Variant"
+						data-cy="passwordfield-variant"
+				/>
+				<div data-cy="passwordfield-variant-status">value = {{ variantModel ? '(set)' : '(empty)' }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants. All
+			six fields surface together (Btn / Switch / SliderField /
+			Select / RatingField / Radio pattern) so consumers can
+			explore them as one cohesive concept.
+			Channel mapping (TextField family — same contract as the
+			other origam-input descendants):
+			  • `color`   → label + outline / underline accent
+			  • `bgColor` → field surface (chip body)
+			  • hover/active modify the matching channel on the
+			    matching state.
+			Hardcoded fixtures below the interactive control give the
+			e2e suite stable `data-cy="passwordfield-color-fixture-{n}"`
+			selectors.
+		-->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-password-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored password (interactive)"
+							data-cy="passwordfield-color"
+					/>
+					<div data-cy="passwordfield-color-status">value = {{ colorModel ? '(set)' : '(empty)' }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-password-field :model-value="'secret123'"
+						                       color="primary"
+						                       label='color="primary" only'
+						                       data-cy="passwordfield-color-fixture-color-only"/>
+						<origam-password-field :model-value="'secret123'"
+						                       bg-color="success"
+						                       label='bg-color="success" only'
+						                       data-cy="passwordfield-color-fixture-bg-only"/>
+						<origam-password-field :model-value="'secret123'"
+						                       color="warning" bg-color="primary"
+						                       label='color="warning" + bg-color="primary"'
+						                       data-cy="passwordfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-password-field
+						v-model="densityModel"
+						:density="state.density"
+						label="Density password"
+						data-cy="passwordfield-density"
+				/>
+				<div data-cy="passwordfield-density-status">value = {{ densityModel ? '(set)' : '(empty)' }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ SHOW / HIDE ICONS ════════════ -->
 		<Variant
 				title="Show / hide icons"
@@ -182,13 +278,16 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamPasswordField } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IPasswordFieldProps } from '@origam/interfaces'
-	import type { TIcon } from '@origam/types'
+	import type { TIcon, TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, iconList, intentList } from '@stories/const'
+	import { densityList, iconList, intentList, variantInputList } from '@stories/const'
 
+	const variantModel     = ref('')
+	const colorModel       = ref('')
+	const densityModel     = ref('')
 	const iconsModel       = ref('')
 	const requirementsModel = ref('')
 	const persistentModel  = ref('')
