@@ -270,10 +270,19 @@
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
 
-	const correctPrecision = (val: number, precision = props.precision) => {
+	const correctPrecision = (val: number | string, precision = props.precision) => {
+		// `val` arrives as a number from the model in the happy path,
+		// but a parent could legitimately pass a numeric string
+		// (`v-model="someStringRef"`, JSON-deserialised modelValue, etc.).
+		// Coerce here so `.toFixed` doesn't blow up — the watch upstream
+		// already filters out NaN, but `isNaN("42")` is `false` (the
+		// string "42" is numerically valid), so without this coercion
+		// `correctPrecision("42")` crashed with `val.toFixed is not a
+		// function`.
+		const num = typeof val === 'number' ? val : Number(val)
 		const fixed = precision == null
-				? String(val)
-				: val.toFixed(precision)
+				? String(num)
+				: num.toFixed(precision)
 		return isFocused.value
 				? Number(fixed).toString() // trim zeros
 				: fixed
