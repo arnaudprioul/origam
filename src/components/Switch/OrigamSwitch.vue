@@ -359,11 +359,16 @@
 			background-color: currentColor;
 		}
 
-		// Thumb default = the design token (Material white).
+		// Thumb default = the design token (Material white) with a
+		// light translucent grey border so the cercle stays visually
+		// identifiable on light backgrounds (where a white thumb on a
+		// pale track is otherwise invisible). User feedback: remove
+		// the box-shadow approach + add a thin border instead.
 		&__thumb {
 			align-items: center;
 			background-color: var(--origam-switch__thumb---background-color, rgb(255, 255, 255));
 			color: var(--origam-switch__thumb---color, currentColor);
+			border: 1px solid var(--origam-switch__thumb---border-color, rgba(0, 0, 0, 0.18));
 			border-radius: 50%;
 			display: flex;
 			font-size: 0.75rem;
@@ -371,7 +376,7 @@
 			justify-content: center;
 			width: 20px;
 			pointer-events: none;
-			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1), 0.2s border-color cubic-bezier(0.4, 0, 0.2, 1);
 			position: relative;
 			overflow: hidden;
 
@@ -431,21 +436,11 @@
 			}
 		}
 
-		&:not(#{$this}--inset) {
-			#{$this}__thumb {
-				box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
-			}
-		}
-
-		&#{$this}--flat {
-			:not(#{$this}--inset) {
-				#{$this}__thumb {
-					background: rgb(var(--v-theme-surface-variant));
-					color: rgb(var(--v-theme-on-surface-variant));
-					box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-				}
-			}
-		}
+		// Pre-fix: `&:not(--inset) &__thumb` carried a Material 3-layer
+		// box-shadow + `&--flat` cleared it, plus an indeterminate
+		// reset. Replaced by the light translucent border on the base
+		// thumb rule above — flatter look, thumb stays identifiable
+		// without the elevation halo.
 
 		&#{$this}--indeterminate {
 			:deep(.origam-selection-control__input) {
@@ -454,7 +449,6 @@
 
 			#{$this}__thumb {
 				transform: scale(0.75);
-				box-shadow: none;
 			}
 		}
 
