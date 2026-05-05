@@ -152,10 +152,22 @@
 
 	// CLASS & STYLES
 
+	// Strict color/bgColor channel separation:
+	//   • `color` (foreground)    → applied on the SC root so the
+	//     LABEL inherits it via `currentColor` (label sits on the
+	//     root, not under the wrapper).
+	//   • `bgColor` (background)  → forwarded to the consuming
+	//     component via the slot scope (`backgroundColorStyles`); the
+	//     track / thumb / input element decides where to apply it.
+	//
+	// Pre-fix `backgroundColorStyles.value` was added to the SC
+	// ROOT styles, which painted the ENTIRE selection-control box
+	// (label + wrapper + input area) with the consumer's bgColor.
+	// Reported by the user — "il y a toujours un fond vert sur tout
+	// l'element".
 	const selectionControlStyles = computed(() => {
 		return [
 			textColorStyles.value,
-			backgroundColorStyles.value,
 			props.style
 		] as StyleValue
 	})
