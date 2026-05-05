@@ -674,10 +674,17 @@
 
 		&--disabled {
 			pointer-events: none;
-			--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.26);
+			// 0.5 → "léger voile" effect requested by the user. The
+			// previous 0.26 was the Material 2 disabled rung, which
+			// reads as "almost invisible" — ergonomically aggressive,
+			// especially in dense rows like Pagination where the
+			// disabled prev / next btns disappeared visually. 0.5
+			// keeps the bgColor recognisable while clearly signalling
+			// the disabled state.
+			--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
 
 			&:hover {
-				--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.26);
+				--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
 			}
 		}
 

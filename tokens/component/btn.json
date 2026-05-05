@@ -35,7 +35,7 @@
     "text-decoration":   { "$type": "other",      "$value": "none" },
     "text-indent":       { "$type": "dimension",  "$value": "{font.letterSpacing.widest}" },
     "opacity":           { "$type": "number",     "$value": 1 },
-    "opacity-disabled":  { "$type": "number",     "$value": "{opacity.26}" },
+    "opacity-disabled":  { "$type": "number",     "$value": "{opacity.50}" },
     "opacity-plain":     { "$type": "number",     "$value": "{opacity.70}" },
     "overlay-opacity-hover":{ "$type": "number",  "$value": "{opacity.12}" },
     "box-shadow-elevated": { "$type": "shadow",   "$value": "{shadow.md}" },

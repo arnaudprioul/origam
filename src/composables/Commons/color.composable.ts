@@ -50,18 +50,6 @@ function tokenStylesForIntent (intent: TIntent, role: 'default' | 'hover' | 'dis
         return styles
     }
     if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        // Feedback intents don't ship a `bgDisabled` / `fgDisabled`
-        // pair — only `bg`, `bgSubtle`, `fg`, `fgSubtle`, `border`.
-        // For the disabled state we reach for the `subtle` rung
-        // (`bgSubtle` is a near-white tint of the intent — e.g.
-        // `success.bgSubtle: #f0fdf4` vs `success.bg: #4caf50`),
-        // which is exactly what the user asked for: "plus clair que
-        // ce dernier" — a lighter version of the feedback bg.
-        if (role === 'disabled') {
-            styles['background-color'] = `var(--origam-color-feedback-${intent}-bgSubtle)`
-            styles.color = `var(--origam-color-feedback-${intent}-fgSubtle)`
-            return styles
-        }
         styles['background-color'] = `var(--origam-color-feedback-${intent}-bg)`
         styles.color = `var(--origam-color-feedback-${intent}-fg)`
         return styles
@@ -267,20 +255,23 @@ export function useColorEffect (
         // that intent (the consumer chose the value, they don't want us
         // re-bumping it to a hover variant of itself).
         // ─────────────────────────────────────────────────────────────────
-        // Disabled wins over hover / active — when the host component
-        // is disabled, both axes resolve to the intent's `bgDisabled` /
-        // `fgDisabled` slot (which is by design a LIGHTER version of
-        // the resting bg, e.g. `--origam-color-action-primary-bgDisabled`
-        // = #e6e6e6 vs the resting `bg` = a saturated primary). User
-        // request: "le disable s'il a un bgColor doit être plus clair
-        // que ce dernier".
-        const bgRole: 'default' | 'hover' | 'disabled' =
-            isDisabled.value ? 'disabled' :
+        // `isDisabled` is accepted here for API symmetry with `isHover`
+        // / `isActive`, but does NOT switch the bg/fg to `bgDisabled` /
+        // `fgDisabled` tokens — design contract is that disabled is a
+        // VEIL/opacity overlay on the resting color, not a token swap.
+        // The host component (e.g. `<origam-btn>`) applies its own
+        // `--disabled` rule (opacity reduction) so the user sees a
+        // lighter version of WHATEVER bgColor was picked, regardless
+        // of intent. This keeps every btn in a row (e.g. pagination)
+        // visually consistent — same color family, just dimmed.
+        // We still read `isDisabled.value` to keep the param wired —
+        // in case a future iteration wants per-intent disabled tokens.
+        void isDisabled.value
+        const bgRole: 'default' | 'hover' =
             isHover.value && !props.hoverBgColor ? 'hover' :
             isActive.value && !props.activeBgColor ? 'hover' :
             'default'
-        const fgRole: 'default' | 'hover' | 'disabled' =
-            isDisabled.value ? 'disabled' :
+        const fgRole: 'default' | 'hover' =
             isHover.value && !props.hoverColor ? 'hover' :
             isActive.value && !props.activeColor ? 'hover' :
             'default'
@@ -301,14 +292,7 @@ export function useColorEffect (
             bgDecl = `background-color: ${bgColor.value}`
         } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
             warnLegacyColor('bgColor', bgColor.value)
-            // Legacy raw-color path — when disabled, lighten via
-            // `color-mix` so the surface still reads as "disabled
-            // version of bgColor" without us having to bake a per-color
-            // disabled token. Same intent as the token path's
-            // `bgDisabled` slot.
-            bgDecl = isDisabled.value
-                ? `background-color: color-mix(in srgb, ${bgColor.value} 35%, white)`
-                : `background-color: ${bgColor.value}`
+            bgDecl = `background-color: ${bgColor.value}`
         }
 
         // ─── Foreground resolution ───────────────────────────────────────

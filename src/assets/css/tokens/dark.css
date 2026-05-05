@@ -86,7 +86,7 @@
   --origam-btn---text-decoration: none;
   --origam-btn---text-indent: 0.0893em;
   --origam-btn---opacity: 1;
-  --origam-btn---opacity-disabled: 0.26;
+  --origam-btn---opacity-disabled: 0.5;
   --origam-btn---opacity-plain: 0.7;
   --origam-btn---overlay-opacity-hover: 0.12;
   --origam-btn---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
@@ -2311,7 +2311,7 @@
     --origam-btn---text-decoration: none;
     --origam-btn---text-indent: 0.0893em;
     --origam-btn---opacity: 1;
-    --origam-btn---opacity-disabled: 0.26;
+    --origam-btn---opacity-disabled: 0.5;
     --origam-btn---opacity-plain: 0.7;
     --origam-btn---overlay-opacity-hover: 0.12;
     --origam-btn---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);

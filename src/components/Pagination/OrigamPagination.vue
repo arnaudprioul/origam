@@ -219,42 +219,21 @@
 					page: item,
 					props: {
 						ref,
+						...sharedBtnColorProps.value,
 						ellipsis: false,
 						icon: true,
 						disabled: !!props.disabled || +props.length < 2,
-						// Pagination contract — only the ACTIVE item gets
-						// the `bgColor` highlight; non-active items render
-						// with just `color` (text/icon) on a transparent
-						// surface, which is the standard <pagination>
-						// look. The `hover*` rung still applies on the
-						// non-active items so consumers can see a hover
-						// preview. User report: "tous les btn sont
-						// bgColor=primary, c'est moche".
-						...(isActive
-							? {
-								active: true,
-								// `flat` so the active page has a solid
-								// fill anchored to `bgColor` (the
-								// "selected page" highlight). With a
-								// non-text variant, useColorEffect's
-								// `bgColor` actually paints the surface.
-								variant: VARIANT.FLAT,
-								color: props.activeColor || props.color,
-								bgColor: props.activeBgColor || props.bgColor,
-							}
-							: {
-								// `text` variant on resting items keeps
-								// the row visually clean — only the
-								// icon/text inherits `color`, no surface
-								// fill, so the active item stands out as
-								// THE highlighted one. Hover still gets
-								// a subtle overlay via `hoverColor` /
-								// `hoverBgColor` (Btn's own resolution).
-								variant: VARIANT.TEXT,
-								color: props.color,
-								hoverColor: props.hoverColor,
-								hoverBgColor: props.hoverBgColor,
-							}),
+						// `active: true` lets the inner `<origam-btn>`
+						// add its own --active overlay so the current
+						// page reads as selected — without forcing the
+						// non-active items into a different shape. All
+						// six IColorProps fields are forwarded
+						// uniformly via `sharedBtnColorProps` (above),
+						// so a `color` / `bgColor` change on the
+						// pagination updates EVERY btn at once — the
+						// behaviour the user expects from a uniform row
+						// of nav buttons.
+						active: isActive,
 						'aria-current': isActive,
 						'aria-label': t(isActive ? props.currentPageAriaLabel : props.pageAriaLabel, item),
 						onClick: (e: Event) => setValue(e, item)
@@ -263,20 +242,25 @@
 			}
 		})
 	})
-	// Shared color shape forwarded to first / prev / next / last btns —
-	// they're navigation affordances, not "selected" surfaces, so they
-	// follow the resting `color` / `hoverColor` / `hoverBgColor` rules
-	// (NOT `bgColor`, which is reserved for the active page highlight).
-	// User report: "les btn suivant/precedent/last/first doivent prendre
-	// la couleur aussi".
-	const controlColorProps = computed(() => ({
-		// Same `text` treatment as resting page items so the navigation
-		// row reads as a single coherent affordance.
-		variant: VARIANT.TEXT,
+	// Uniform color contract — every btn in the row (page items,
+	// first / prev / next / last) receives the SAME six IColorProps
+	// fields. Changing `color` repaints every text/icon, changing
+	// `bgColor` repaints every surface, hover/active rungs work
+	// identically. The active item differentiates itself via
+	// `active: true` only; a disabled btn shows its standard --disabled
+	// veil (the existing Btn opacity rule), nothing intent-specific.
+	// User report: "putain pourquoi tous les btn ne sont pas gérés de
+	// la même manière sur la pagination ; je change la couleur, tous
+	// les btns voient leur couleur changer ; etc."
+	const sharedBtnColorProps = computed(() => ({
 		color: props.color,
+		bgColor: props.bgColor,
 		hoverColor: props.hoverColor,
 		hoverBgColor: props.hoverBgColor,
+		activeColor: props.activeColor,
+		activeBgColor: props.activeBgColor,
 	}))
+	const controlColorProps = sharedBtnColorProps
 
 	const controls = computed(() => {
 		const prevDisabled = !!props.disabled || page.value <= start.value
