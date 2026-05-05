@@ -70,6 +70,11 @@
 				a corner). Format is `{ component: <Vue component> }` because
 				`OrigamOverlay` forwards it to `<origam-transition>`, which
 				switches at runtime.
+
+				`:offset="0"` removes the 8px gap inherited from the Menu's
+				default offset prop. A `<select>` reads as ONE thing (field +
+				dropdown attached), not two stacked surfaces — the dropdown
+				must touch the field's bottom edge.
 			-->
 			<origam-menu
 					ref="origamMenuRef"
@@ -79,6 +84,7 @@
 					:eager="eager"
 					:location="BLOCK.BOTTOM"
 					:max-height="310"
+					:offset="0"
 					:open-on-click="false"
 					:transition="{ component: OrigamExpandY }"
 					activator="parent"
