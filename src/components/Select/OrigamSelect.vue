@@ -62,6 +62,15 @@
 		</template>
 
 		<template #default>
+			<!--
+				`:transition` overrides the menu's default `OrigamTranslateScale`
+				with `OrigamExpandY` — Material-style "drop down" reveal that
+				matches consumer expectations for a `<select>`-like dropdown
+				(grow from the activator's bottom edge instead of scaling from
+				a corner). Format is `{ component: <Vue component> }` because
+				`OrigamOverlay` forwards it to `<origam-transition>`, which
+				switches at runtime.
+			-->
 			<origam-menu
 					ref="origamMenuRef"
 					v-model="menu"
@@ -71,6 +80,7 @@
 					:location="BLOCK.BOTTOM"
 					:max-height="310"
 					:open-on-click="false"
+					:transition="{ component: OrigamExpandY }"
 					activator="parent"
 					content-class="origam-select__content"
 					v-bind="{ ...menuProps }"
@@ -284,6 +294,7 @@
 		OrigamAvatar,
 		OrigamCheckboxBtn,
 		OrigamChip,
+		OrigamExpandY,
 		OrigamIcon,
 		OrigamList,
 		OrigamListItem,
@@ -1015,7 +1026,37 @@
 	}
 </style>
 
+<!--
+	GLOBAL rules for the teleported dropdown.
+	`<origam-menu>` mounts its content into the overlay container at the
+	end of `<body>` (Teleport), so the component-scoped `[data-v-…]`
+	attribute selectors don't reach it. We therefore expose a stable
+	hook via `content-class="origam-select__content"` and write the
+	rules in a NON-scoped block.
+
+	What we override:
+	  • Default `.origam-menu__content` is `display: inline-block` +
+	    `width: max-content`, so it shrinks to its content. For a
+	    `<select>`-like UX the dropdown body must be at least as wide
+	    as the activator. The connected location strategy already sets
+	    `min-width` on `.origam-overlay__content` to the activator's
+	    width — we force the inner visual surface to FILL the overlay
+	    so its bg / border-radius / shadow span the full width.
+	  • Drop the 320px `max-width` cap inherited from the base menu
+	    on `.origam-menu__list` so each item can extend to the full
+	    dropdown width.
+-->
 <style>
+	.origam-select__content .origam-menu__content {
+		display: block;
+		width: 100%;
+		max-width: none;
+	}
+
+	.origam-select__content .origam-menu__list {
+		max-width: none;
+	}
+
 	:root {
 
 	}

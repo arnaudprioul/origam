@@ -130,4 +130,66 @@ test.describe('OrigamSelect', () => {
         await expect(sandbox.locator('[data-cy="select-playground"]')).toBeVisible({ timeout: 5000 })
         await expect(sandbox.locator('[data-cy="select-playground-status"]')).toContainText('value =', { timeout: 3000 })
     })
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Dropdown surface contract
+    // ─────────────────────────────────────────────────────────────────────
+    // (1) The visible menu surface (`.origam-menu__content`) must span at
+    //     least the width of the activator — selects feel broken when the
+    //     dropdown is narrower than the field that opened it.
+    // (2) The reveal animation must be the `OrigamExpandY` transition
+    //     (Material-style "drop down"), not the default scale-from-corner.
+    test.describe('dropdown surface', () => {
+        test('menu width matches activator width', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-string"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            await select.locator('.origam-field').first().click()
+            await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 2000 })
+
+            const activatorBox = await select.locator('.origam-field').first().boundingBox()
+            const menuContentBox = await sandbox.locator('.origam-menu__content').first().boundingBox()
+            const listItemBox = await sandbox.locator('.origam-list-item').first().boundingBox()
+
+            expect(activatorBox).not.toBeNull()
+            expect(menuContentBox).not.toBeNull()
+            expect(listItemBox).not.toBeNull()
+
+            // Visible surface ≥ activator width (the contract)
+            expect(menuContentBox!.width).toBeGreaterThanOrEqual(activatorBox!.width - 1)
+            // List-items also fill the surface — no narrow column inside a wide menu
+            expect(listItemBox!.width).toBeGreaterThanOrEqual(activatorBox!.width - 1)
+        })
+
+        test('open animation uses OrigamExpandY transition', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-string"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            // Click then read the transition classes mid-animation. The
+            // expand-y transition adds `origam-transition--expand-y-*` on
+            // the transitioning element while it animates.
+            await select.locator('.origam-field').first().click()
+            await page.waitForTimeout(50)
+
+            const classes = await sandbox.locator('.origam-overlay__content').first()
+                .evaluate(el => Array.from(el.classList))
+            const expandY = classes.filter(c => c.includes('expand-y'))
+            const translateScale = classes.filter(c => c.includes('translate-scale'))
+            // Must be expand-y, not the default scale
+            expect(expandY.length).toBeGreaterThan(0)
+            expect(translateScale).toEqual([])
+        })
+    })
 })
