@@ -284,15 +284,33 @@
 		},
 		getActiveThumb: (e: MouseEvent | TouchEvent) => {
 			if (isRange.value) {
-				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStartThumbRef.value) return
+				// Pre-fix three copy-paste typos in this branch made the
+				// STOP thumb completely unreachable in range mode:
+				//   1. `if (!start || !start)` — second clause should
+				//      check `!stop`. With STOP never validated, the
+				//      function happily proceeded with a null ref.
+				//   2. `stopOffset = …(e, START.$el, …)` — measured
+				//      the click distance to the START thumb instead
+				//      of the STOP thumb, so both offsets resolved to
+				//      the same point.
+				//   3. The ternary returned `START.$el` in BOTH
+				//      branches, so the active thumb always resolved
+				//      to START regardless of which one the user
+				//      clicked.
+				// User-reported: "je ne peux pas cliqué sur le 2eme
+				// control, je peux changé le premier mais le 2eme
+				// impossible".
+				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStopThumbRef.value) return
 
 				const startOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
-				const stopOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
+				const stopOffset  = getSliderFieldOffset(e, origamSliderFieldStopThumbRef.value.$el, props.direction)
 
 				const a = Math.abs(startOffset)
 				const b = Math.abs(stopOffset)
 
-				return (a < b || (a === b && startOffset < 0)) ? origamSliderFieldStartThumbRef.value.$el : origamSliderFieldStartThumbRef.value.$el
+				return (a < b || (a === b && startOffset < 0))
+						? origamSliderFieldStartThumbRef.value.$el
+						: origamSliderFieldStopThumbRef.value.$el
 			} else {
 				return origamSliderFieldThumbRef.value?.$el
 			}
