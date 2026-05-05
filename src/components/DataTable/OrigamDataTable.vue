@@ -159,7 +159,17 @@
 		itemsPerPage: 10,
 		tag: 'div',
 		density: DENSITY.DEFAULT,
-		hideDefaultFooter: false
+		hideDefaultFooter: false,
+		// `useDisplay` falls back to the global `mobileBreakpoint: 'lg'`
+		// (1280px) when the DataTable doesn't pin its own. That's far
+		// too aggressive — every viewport under 1280px ended up
+		// rendering each row as a stack of `[label, value]` cells (the
+		// "mobile" fallback), which the user reports as "completely
+		// bugged". Pin to `'xs'` (= 0px threshold) so the table only
+		// ever switches to mobile when the consumer explicitly opts in
+		// by passing a higher breakpoint. Aligns with Vuetify v3's
+		// `<v-data-table>` whose `mobile` is opt-in.
+		mobileBreakpoint: 'xs'
 	})
 
 	defineEmits(['update:modelValue', 'update:page', 'update:itemsPerPage', 'update:sortBy', 'update:options', 'update:groupBy', 'update:expanded', 'update:currentItems'])
