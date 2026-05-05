@@ -49,8 +49,8 @@
 
     "input": {
       "_comment": "BEM child: .origam-field__input — the actual input/textarea wrapper.",
-      "padding-top":          { "$type": "dimension",    "$value": "calc({space.2} + calc(16px + 0px))", "$description": "Top padding = field-padding-top + input-padding-top + density. Kept as calc for runtime composition." },
-      "padding-bottom":       { "$type": "dimension",    "$value": "6px",                          "$description": "Bottom padding of the input wrapper" },
+      "padding-top":          { "$type": "dimension",    "$value": "{space.3}",                    "$description": "Block-start inner padding (12px) — symmetric with `padding-bottom` so the input text reads as VERTICALLY CENTERED inside the 56px control. Pre-fix the top was 24px and bottom 6px (asymmetric) so the text sat closer to the bottom edge — `--variant-outlined` made the floating label notch swap from bottom-anchored to centered, which user described as 'fais bizarre'." },
+      "padding-bottom":       { "$type": "dimension",    "$value": "{space.3}",                    "$description": "Block-end inner padding (12px) — same value as `padding-top` for vertical centering." },
       "padding-start":        { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-start padding inside the input wrapper" },
       "padding-end":          { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-end padding inside the input wrapper" },
       "opacity":              { "$type": "number",       "$value": 0.7,                            "$description": "Default opacity for the input wrapper (transitions to 1 on active)" }
