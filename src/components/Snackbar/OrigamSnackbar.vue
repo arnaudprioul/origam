@@ -20,17 +20,29 @@
 		      class="origam-snackbar__underlay"
       />
 
+			<!--
+				CSS-only timer bar — pre-fix the timer drove an
+				`<origam-progress>` linear bar via `useCountdown`'s
+				`setInterval` (200 ms cadence), so the bar shrunk in
+				visible discrete steps ("par accout c'est moche").
+				Replaced by a single CSS scaleX transform animated over
+				the full timeout duration via a custom property — gives
+				a fluid 60 fps GPU-accelerated shrink.
+
+				Re-keying on `(isActive, timerKey)` so the animation
+				restarts cleanly when the snackbar reopens or the
+				consumer mutates the timeout / hover-pauses (the
+				existing JS `pauseTimeout` / `resumeTimeout` flow toggles
+				the `--paused` class which holds the animation via
+				`animation-play-state: paused`).
+			-->
 			<div
-					v-if="props.timer && !isHovering"
-					key="timer"
-					class="origam-snackbar__timer"
+					v-if="props.timer"
+					:key="`timer-${timerKey}`"
+					:class="['origam-snackbar__timer', { 'origam-snackbar__timer--paused': isHovering }]"
+					:style="{ '--origam-snackbar__timer---duration': `${props.timeout}ms` }"
 			>
-				<origam-progress
-						ref="origamProgressRef"
-						:max="props.timeout"
-						:model-value="countdown.time.value"
-						:type="PROGRESS_TYPE.LINEAR"
-				/>
+				<div class="origam-snackbar__timer-bar"/>
 			</div>
 
 			<div
@@ -91,12 +103,11 @@
 		watch,
 		watchEffect
 	} from 'vue'
-	import { OrigamIcon, OrigamOverlay, OrigamProgress, OrigamSnack } from '../../components'
+	import { OrigamIcon, OrigamOverlay, OrigamSnack } from '../../components'
 
 	import {
 		useBorder,
 		useBothColor,
-		useCountdown,
 		useElevation,
 		useLayout,
 		useMargin,
@@ -112,13 +123,13 @@
 
 	import { ORIGAM_LAYOUT_KEY } from '../../consts'
 
-	import { PROGRESS_TYPE, SCROLL_STRATEGIES } from '../../enums'
+	import { SCROLL_STRATEGIES } from '../../enums'
 
 	import type { ISnackbarProps } from "../../interfaces"
 
-	import type { TOrigamOverlay, TOrigamProgress, TTransitionProps } from '../../types'
+	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 
-	import { forwardRefs, refElement } from '../../utils'
+	import { forwardRefs } from '../../utils'
 
 	const props = withDefaults(defineProps<ISnackbarProps>(), {
 		timeout: 5000,
@@ -138,7 +149,6 @@
 	const isActive = useVModel(props, 'modelValue')
 	const {positionClasses} = usePosition(props)
 	const {scopeId} = useScopeId()
-	const countdown = useCountdown(Number(props.timeout))
 	const {icon, statusClasses} = useStatus(props)
 
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
@@ -149,11 +159,15 @@
 	const {elevationClasses} = useElevation(props)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
-	const origamProgressRef = ref<TOrigamProgress>()
 	const isHovering = shallowRef(false)
 	const startY = shallowRef(0)
 	const mainStyles = ref()
 	const hasLayout = inject(ORIGAM_LAYOUT_KEY, undefined)
+
+	// Bumped each time the timer should restart (open / timeout-prop
+	// change). Drives the `:key` on the timer element so Vue re-mounts
+	// it and the CSS animation runs from the top.
+	const timerKey = shallowRef(0)
 
 	useToggleScope(() => !!hasLayout, () => {
 		const layout = useLayout()
@@ -165,22 +179,22 @@
 
 	let activeTimeout = -1
 	const startTimeout = () => {
-		countdown.reset()
 		window.clearTimeout(activeTimeout)
 		const timeout = Number(props.timeout)
 
 		if (!isActive.value || timeout === -1) return
 
-		const element = refElement(origamProgressRef.value)
-
-		countdown.start(element)
+		// Re-key the timer element so Vue re-mounts it and the CSS
+		// `transform: scaleX` animation runs from `1` (full width) to
+		// `0` (collapsed) over the requested timeout. No interval-based
+		// JS counter, no staccato updates — pure GPU-accelerated.
+		timerKey.value++
 
 		activeTimeout = window.setTimeout(() => {
 			isActive.value = false
 		}, timeout)
 	}
 	const clearTimeout = () => {
-		countdown.reset()
 		window.clearTimeout(activeTimeout)
 	}
 
@@ -339,14 +353,40 @@
 			}
 		}
 
+		// Timer bar — CSS-only fluid shrink. The wrapping `__timer` div
+		// is positioned absolute at the top of the snackbar; the inner
+		// `__timer-bar` shrinks from `scaleX(1)` to `scaleX(0)` over
+		// `--origam-snackbar__timer---duration` (passed inline by the
+		// JS, reflects the `timeout` prop). `transform-origin: left`
+		// gives the natural left-to-right collapse. Pause-on-hover via
+		// the `--paused` class flipping `animation-play-state`.
 		&__timer {
 			width: 100%;
+			height: var(--origam-snackbar__timer---height, 3px);
 			position: absolute;
 			top: 0;
+			left: 0;
+			overflow: hidden;
+			pointer-events: none;
 
-			:deep(.origam-progress-linear) {
-				transition: var(--origam-snackbar__timer---transition-duration, 0.2s) var(--origam-snackbar__timer---transition-easing, linear);
+			&-bar {
+				width: 100%;
+				height: 100%;
+				background-color: var(--origam-snackbar__timer-bar---background-color, currentColor);
+				opacity: var(--origam-snackbar__timer-bar---opacity, 0.5);
+				transform-origin: left center;
+				animation: origam-snackbar__timer-shrink var(--origam-snackbar__timer---duration, 5000ms) linear forwards;
+				will-change: transform;
 			}
+
+			&--paused &-bar {
+				animation-play-state: paused;
+			}
+		}
+
+		@keyframes origam-snackbar__timer-shrink {
+			from { transform: scaleX(1); }
+			to   { transform: scaleX(0); }
 		}
 
 		&--border {
