@@ -1038,7 +1038,16 @@
 
 					&.origam-field--focused {
 						#{$this}__selection {
+							// Hide AND collapse — pre-fix the selection div
+							// only got `opacity: 0`, leaving its 66px-wide
+							// flex item still in the row. The `<input>` was
+							// pushed past the invisible chip, so the typed
+							// text appeared mid-field instead of flush with
+							// the inline padding ("Search & select" looked
+							// half-empty on the left).
 							opacity: 0;
+							position: absolute;
+							pointer-events: none;
 						}
 					}
 				}

@@ -217,6 +217,52 @@ test.describe('OrigamSelect', () => {
         // the field would visibly read "Germany Germany" after pick →
         // tab-out → tab-back. The watcher now only syncs search↔model
         // in autocomplete mode where the input is actually editable.
+        // After picking an item in an autocomplete select, the input
+        // value is left at the picked title (so the user can refine).
+        // Pre-fix the `.origam-select__selection` chip kept `display:
+        // flex; position: static; width: 66px` while only fading to
+        // `opacity: 0` — it stayed in the flex row and pushed the
+        // `<input>` 70px to the right. The visible "Germany" then
+        // appeared mid-field instead of flush with the inline padding.
+        test('autocomplete: input stays flush-left after picking', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('[data-cy="select-autocomplete"]')
+            await expect(select).toBeVisible({ timeout: 5000 })
+
+            await select.locator('.origam-field').first().click()
+            await sandbox.locator('.origam-list-item').nth(1).click() // Germany
+            await page.waitForTimeout(400)
+
+            // The hidden selection chip must NOT take layout space.
+            const layout = await select.evaluate(el => {
+                const sel = el.querySelector('.origam-select__selection') as HTMLElement
+                const input = el.querySelector('input') as HTMLInputElement
+                const cs = (e: HTMLElement) => getComputedStyle(e)
+                return {
+                    selectionPosition: cs(sel).position,
+                    selectionOpacity: cs(sel).opacity,
+                    inputLeft: input.getBoundingClientRect().left,
+                    fieldLeft: (el.querySelector('.origam-field__input') as HTMLElement)
+                        .getBoundingClientRect().left,
+                }
+            })
+            // Faded out
+            expect(parseFloat(layout.selectionOpacity)).toBe(0)
+            // Removed from layout flow
+            expect(layout.selectionPosition).toBe('absolute')
+            // Input sits within the chip's normal inline padding band —
+            // not 50+ px to the right of where the field starts. Pre-fix
+            // the offset was ~70px (the invisible selection chip's flex
+            // item width); now it's just the field's `padding-inline`
+            // tokens (~16px on the default size).
+            expect(layout.inputLeft - layout.fieldLeft).toBeLessThan(24)
+        })
+
         test('selection is not duplicated after re-focus', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
