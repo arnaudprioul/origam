@@ -23,6 +23,47 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-textarea-field v-model="colorModel" v-bind="state" label="Colored textarea (interactive)" data-cy="textareafield-color"/>
+					<div data-cy="textareafield-color-status">value = {{ colorModel ? '(set)' : '(empty)' }}</div>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-textarea-field :model-value="'Sample text'" color="primary" label='color="primary" only' data-cy="textareafield-color-fixture-color-only"/>
+						<origam-textarea-field :model-value="'Sample text'" bg-color="success" label='bg-color="success" only' data-cy="textareafield-color-fixture-bg-only"/>
+						<origam-textarea-field :model-value="'Sample text'" color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="textareafield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-textarea-field v-model="densityModel" :density="state.density" label="Density textarea" data-cy="textareafield-density"/>
+				<div data-cy="textareafield-density-status">value = {{ densityModel ? '(set)' : '(empty)' }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ ROWS ════════════ -->
 		<Variant
 				title="Rows"
@@ -210,6 +251,8 @@
 	import { densityList, intentList, variantInputList } from '@stories/const'
 
 	const variantModel    = ref('')
+	const colorModel      = ref('')
+	const densityModel    = ref('')
 	const rowsModel       = ref('')
 	const noResizeModel   = ref('')
 	const counterModel    = ref('')

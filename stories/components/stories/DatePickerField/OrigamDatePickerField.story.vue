@@ -21,6 +21,58 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
+					<origam-date-picker-field v-model="colorDate" v-bind="state" label="Colored date (interactive)" data-cy="datepickerfield-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-date-picker-field color="primary" label='color="primary" only' data-cy="datepickerfield-color-fixture-color-only"/>
+						<origam-date-picker-field bg-color="success" label='bg-color="success" only' data-cy="datepickerfield-color-fixture-bg-only"/>
+						<origam-date-picker-field color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="datepickerfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
+		<Variant
+				title="Variant"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-field v-model="variantDate" :variant="state.variant" label="Variant" data-cy="datepickerfield-variant" style="max-width: 320px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-field v-model="densityDate" :density="state.density" label="Density date" data-cy="datepickerfield-density" style="max-width: 320px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ RANGE ════════════ -->
 		<Variant title="Range">
 			<origam-date-picker-field
@@ -145,11 +197,18 @@
 	import { ref } from 'vue'
 
 	import { OrigamDatePickerField } from '@origam/components'
+	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import type { IColorProps, IDensityProps } from '@origam/interfaces'
+	import type { TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
+	import { densityList, intentList, variantInputList } from '@stories/const'
 
 	const date = ref(null)
 	const dates = ref([])
+	const colorDate = ref(null)
+	const variantDate = ref(null)
+	const densityDate = ref(null)
 </script>
 
 <docs lang="md" src="@docs/components/DatePickerField/OrigamDatePickerField.md"/>

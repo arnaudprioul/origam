@@ -21,6 +21,58 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-file-field v-model="colorModel" v-bind="state" label="Colored file (interactive)" data-cy="filefield-color" style="max-width: 400px"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-file-field color="primary" label='color="primary" only' data-cy="filefield-color-fixture-color-only" style="max-width: 400px"/>
+						<origam-file-field bg-color="success" label='bg-color="success" only' data-cy="filefield-color-fixture-bg-only" style="max-width: 400px"/>
+						<origam-file-field color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="filefield-color-fixture-combo" style="max-width: 400px"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
+		<Variant
+				title="Variant"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
+		>
+			<template #default="{ state }">
+				<origam-file-field v-model="variantModel" :variant="state.variant" label="Variant" data-cy="filefield-variant" style="max-width: 400px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-file-field v-model="densityModel" :density="state.density" label="Density file" data-cy="filefield-density" style="max-width: 400px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant
 				title="Multiple files"
@@ -185,11 +237,18 @@
 	import { ref } from 'vue'
 
 	import { OrigamBtn, OrigamFileField } from '@origam/components'
+	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import type { IColorProps, IDensityProps } from '@origam/interfaces'
+	import type { TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
+	import { densityList, intentList, variantInputList } from '@stories/const'
 
 	const files = ref(null)
 	const multiFiles = ref([])
+	const colorModel = ref(null)
+	const variantModel = ref(null)
+	const densityModel = ref(null)
 </script>
 
 <docs lang="md" src="@docs/components/FileField/OrigamFileField.md"/>

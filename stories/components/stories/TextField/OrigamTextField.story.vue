@@ -23,22 +23,56 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants. All
+			six fields surface together (Btn / Switch / SliderField /
+			Select / RatingField / Radio / PasswordField pattern).
+			Channel mapping (TextField family):
+			  • `color`   → label + outline / underline accent
+			  • `bgColor` → field surface
+			  • hover/active modify the matching channel on the matching
+			    state.
+		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-text-field
-						v-model="colorModel"
-						:color="state.color"
-						label="Colored field"
-						data-cy="textfield-color"
-				/>
-				<div data-cy="textfield-color-status">value = {{ colorModel }}</div>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-text-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored field (interactive)"
+							data-cy="textfield-color"
+					/>
+					<div data-cy="textfield-color-status">value = {{ colorModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-text-field :model-value="'Sample text'"
+						                   color="primary"
+						                   label='color="primary" only'
+						                   data-cy="textfield-color-fixture-color-only"/>
+						<origam-text-field :model-value="'Sample text'"
+						                   bg-color="success"
+						                   label='bg-color="success" only'
+						                   data-cy="textfield-color-fixture-bg-only"/>
+						<origam-text-field :model-value="'Sample text'"
+						                   color="warning" bg-color="primary"
+						                   label='color="warning" + bg-color="primary"'
+						                   data-cy="textfield-color-fixture-combo"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 

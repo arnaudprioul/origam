@@ -23,6 +23,52 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-number-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored number (interactive)"
+							data-cy="numberfield-color"
+					/>
+					<div data-cy="numberfield-color-status">value = {{ colorModel }}</div>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-number-field :model-value="42" color="primary" label='color="primary" only' data-cy="numberfield-color-fixture-color-only"/>
+						<origam-number-field :model-value="42" bg-color="success" label='bg-color="success" only' data-cy="numberfield-color-fixture-bg-only"/>
+						<origam-number-field :model-value="42" color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="numberfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-number-field v-model="densityModel" :density="state.density" label="Density number" data-cy="numberfield-density"/>
+				<div data-cy="numberfield-density-status">value = {{ densityModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ MIN / MAX / STEP ════════════ -->
 		<Variant
 				title="Min / max / step / precision"
@@ -194,6 +240,8 @@
 	import { densityList, intentList, variantInputList } from '@stories/const'
 
 	const variantModel    = ref<number | null>(null)
+	const colorModel      = ref<number | null>(null)
+	const densityModel    = ref<number | null>(null)
 	const rangeModel      = ref<number | null>(50)
 	const splitModel      = ref<number | null>(0)
 	const hideCtrlModel   = ref<number | null>(0)

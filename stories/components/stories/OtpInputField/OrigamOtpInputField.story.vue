@@ -83,6 +83,47 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-otp-input-field v-model="colorModel" v-bind="state" label="Colored OTP (interactive)" data-cy="otpfield-color"/>
+					<div data-cy="otpfield-color-status">value = {{ colorModel }}</div>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-otp-input-field :model-value="'1234'" color="primary" label='color="primary" only' data-cy="otpfield-color-fixture-color-only"/>
+						<origam-otp-input-field :model-value="'1234'" bg-color="success" label='bg-color="success" only' data-cy="otpfield-color-fixture-bg-only"/>
+						<origam-otp-input-field :model-value="'1234'" color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="otpfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-otp-input-field v-model="densityModel" :density="state.density" label="Density OTP" data-cy="otpfield-density"/>
+				<div data-cy="otpfield-density-status">value = {{ densityModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
@@ -191,6 +232,8 @@
 	const typeModel       = ref<string | null>(null)
 	const dividerModel    = ref<string | null>(null)
 	const variantModel    = ref<string | null>(null)
+	const colorModel      = ref<string | null>(null)
+	const densityModel    = ref<string | null>(null)
 	const statesModel     = ref<string | null>(null)
 	const emitModel       = ref<string | null>(null)
 	const emitFinishModel = ref<string | null>(null)
