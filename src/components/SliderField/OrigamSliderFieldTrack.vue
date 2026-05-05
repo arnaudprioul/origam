@@ -117,8 +117,16 @@
 	})
 
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
-	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(bgColor)
-	const {backgroundColorStyles} = useBackgroundColor(color)
+	// Strict color/bgColor channel separation — same rule as switch:
+	//   • `bgColor` paints the RAIL (the un-filled background of the
+	//     track).
+	//   • `color`   paints the FILL (the active progress portion) and
+	//     is inherited by the thumb via `currentColor` on the wrapper.
+	// Pre-fix the channels were swapped — `color` painted the rail
+	// and `bgColor` painted the fill, which violated the project's
+	// strict color contract and produced counter-intuitive visuals.
+	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(color)
+	const {backgroundColorStyles} = useBackgroundColor(bgColor)
 
 	const startDir = computed(() => `inset-${isVertical.value ? 'block' : 'inline'}-${indexFromEnd.value ? 'end' : 'start'}`)
 	const endDir = computed(() => isVertical.value ? 'height' : 'width')

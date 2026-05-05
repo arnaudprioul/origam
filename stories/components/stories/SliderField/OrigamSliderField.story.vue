@@ -4,24 +4,57 @@
 			title="SliderField/OrigamSliderField"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			ONE variant per interface — `IColorProps` covers `color`,
+			`bgColor`, plus the `hover*` / `active*` state variants.
+			Same strict channel separation as `<origam-switch>`:
+			  • `color`   → label foreground + thumb (cercle)
+			  • `bgColor` → track (the rail behind the thumb)
+			  • hover/active variants modify the matching channel on
+			    the matching interaction state.
+			Hardcoded fixtures below the interactive slider give the
+			e2e suite stable `data-cy` selectors.
+		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-slider-field
-						v-model="colorModel"
-						:color="state.color"
-						:min="0"
-						:max="100"
-						label="Volume"
-						data-cy="slider-color"
-				/>
-				<div data-cy="slider-color-status">value = {{ colorModel }}</div>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-slider-field
+							v-model="colorModel"
+							v-bind="state"
+							:min="0"
+							:max="100"
+							label="Volume (interactive)"
+							data-cy="slider-color"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-slider-field :model-value="40" :min="0" :max="100"
+						                     color="primary"
+						                     label='color="primary" only'
+						                     data-cy="slider-color-fixture-color-only"/>
+						<origam-slider-field :model-value="40" :min="0" :max="100"
+						                     bg-color="success"
+						                     label='bg-color="success" only'
+						                     data-cy="slider-color-fixture-bg-only"/>
+						<origam-slider-field :model-value="40" :min="0" :max="100"
+						                     color="warning" bg-color="primary"
+						                     label='color="warning" + bg-color="primary"'
+						                     data-cy="slider-color-fixture-combo"/>
+					</div>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 

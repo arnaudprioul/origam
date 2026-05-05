@@ -385,7 +385,12 @@
 	}
 
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
+		// Strip the entire IColorProps surface so `OrigamInput` (the
+		// row wrapper) doesn't paint the consumer's intent on its
+		// background. `color` / `bgColor` stay strictly scoped to the
+		// slider track + thumb (per the project's color contract).
+		// Same fix family as the OrigamSwitch wrapper-bg leak in 3b6ba3f.
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const thumbProps = computed(() => {
 		return omit(props.thumbProps ?? {}, ['modelValue', 'class', 'focused', 'min', 'max', 'position'])
