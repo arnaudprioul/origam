@@ -174,6 +174,7 @@
 		&__content {
 			display: flex;
 			align-items: center;
+			gap: var(--origam-data-table-header-cell__content---gap, 4px);
 		}
 
 		&__sort-badge {
@@ -191,9 +192,15 @@
 			height: var(--origam-data-table-header-cell__sort-badge---height, 20px)
 		}
 
-		span {
-			padding-left: 5px;
-		}
+		// `span { padding-left: 5px }` was used pre-fix to space the
+		// header title from the sort icon. Side-effect: every header
+		// title was shifted 5px to the right of its cell's content
+		// area, while body cells weren't — so headers looked indented
+		// vs body values (clearly visible at <https://> screenshots).
+		// The intent is now expressed via `gap` on `__content` (which
+		// only adds space *between* siblings, not before the first
+		// child), so a header without an icon stays flush with the
+		// body column below it.
 
 		&#{$this}--sortable {
 			cursor: var(--origam-data-table-sortable---cursor, pointer);
