@@ -1,15 +1,42 @@
-// Main-thread entrypoint for the Origam DS Sync Figma plugin.
-//
-// Phase 1 scope: bring up the plugin shell. Subsequent phases will add the
-// real handlers (token import, component sync, library publish helpers).
+/**
+ * code.ts — Main thread entrypoint for the Origam DS Sync Figma plugin.
+ *
+ * Wires the postMessage protocol from the UI (messaging.ts) to the component
+ * builders (components/*.ts) and library helpers (lib/*.ts).
+ *
+ * Phase scope implemented here:
+ *   - Phase 2: UI shell already built (ui.tsx)
+ *   - Phase 3: Lib helpers wired (variables, styles, messaging)
+ *   - Phase 4: Btn component builder
+ *   - Future phases: TextField, Select, … (add to the switch below)
+ */
+
+import { onMessageFromUI, postToUI } from './lib/messaging'
+import { findCollection } from './lib/variables'
+import { buildBtn } from './components/Btn'
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
 
 const UI_WIDTH = 360
 const UI_HEIGHT = 480
 
-interface IUiMessage {
-  type: string
-  payload?: unknown
-}
+/**
+ * The name of the Tokens Studio variable collection that Origam expects.
+ * Tokens Studio creates a collection named after the active theme group
+ * (often "Origam" or the repo folder). We look for any collection whose
+ * name starts with "Origam" (case-insensitive) and fall back to the first
+ * local collection.
+ */
+const COLLECTION_NAME_HINT = 'Origam'
+
+/** Name of the Figma page where components are generated. */
+const TARGET_PAGE_NAME = '[Origam] Components'
+
+// ---------------------------------------------------------------------------
+// Bootstrap
+// ---------------------------------------------------------------------------
 
 figma.showUI(__html__, {
   width: UI_WIDTH,
@@ -17,11 +44,165 @@ figma.showUI(__html__, {
   themeColors: true,
 })
 
-figma.ui.onmessage = (msg: IUiMessage): void => {
-  // Phase 1 — log only. Real dispatch table lands in Phase 3+.
-  console.log('[origam-ds-sync] received ui message:', msg)
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
-  if (msg && msg.type === 'close') {
+/**
+ * Find or create the `[Origam] Components` page.
+ * Reuses the existing page so repeated runs don't multiply pages.
+ */
+function ensureTargetPage(): PageNode {
+  const existing = figma.root.children.find(
+    (p) => p.type === 'PAGE' && p.name === TARGET_PAGE_NAME,
+  ) as PageNode | undefined
+
+  if (existing) return existing
+
+  const page = figma.createPage()
+  page.name = TARGET_PAGE_NAME
+  return page
+}
+
+/**
+ * Find the Tokens Studio variable collection.
+ *
+ * Strategy (in order):
+ *   1. Look for a collection whose name contains COLLECTION_NAME_HINT (case-insensitive).
+ *   2. Fall back to the first local collection (user may have renamed it).
+ *   3. Throw if no local collection exists (Tokens Studio not installed / no sync yet).
+ */
+function ensureCollection(): VariableCollection {
+  // Try the hinted name first (exact match via findCollection, then prefix search).
+  const hinted = findCollection(COLLECTION_NAME_HINT)
+  if (hinted) return hinted
+
+  // Prefix / partial search
+  const all = figma.variables.getLocalVariableCollections()
+  const partial = all.find((c) =>
+    c.name.toLowerCase().includes(COLLECTION_NAME_HINT.toLowerCase()),
+  )
+  if (partial) return partial
+
+  // Last resort: first collection
+  if (all.length > 0) {
+    figma.notify(
+      `[Origam] Could not find an "${COLLECTION_NAME_HINT}" collection. Using "${all[0].name}" instead. Variables may not bind correctly.`,
+      { error: false },
+    )
+    return all[0]
+  }
+
+  throw new Error(
+    'No Figma Variable collection found. Please install Tokens Studio for Figma and sync the origam/tokens/ folder first.',
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Message handler
+// ---------------------------------------------------------------------------
+
+onMessageFromUI(async (msg) => {
+  // ── detect-variables ──────────────────────────────────────────────────────
+  if (msg.type === 'detect-variables') {
+    try {
+      const collection = ensureCollection()
+      const missingNamespaces: string[] = []
+
+      // Spot-check a few key variables to confirm Tokens Studio has synced.
+      const requiredSamples = [
+        'btn.background-color',
+        'btn.primary.background-color',
+        'btn.border-radius',
+      ]
+
+      for (const name of requiredSamples) {
+        const v = figma.variables
+          .getLocalVariables()
+          .find((x) => x.name.toLowerCase().includes(name.replace(/\./g, '/').toLowerCase()))
+
+        if (!v) {
+          missingNamespaces.push(name)
+        }
+      }
+
+      if (missingNamespaces.length > 0) {
+        postToUI({
+          type: 'variables-detected',
+          found: false,
+          missingNamespaces,
+        })
+      } else {
+        postToUI({ type: 'variables-detected', found: true })
+      }
+
+      void collection // suppress noUnusedLocals — collection confirmed to exist
+    } catch (err) {
+      postToUI({
+        type: 'variables-detected',
+        found: false,
+        missingNamespaces: [(err as Error).message],
+      })
+    }
+    return
+  }
+
+  // ── generate-components ───────────────────────────────────────────────────
+  if (msg.type === 'generate-components') {
+    let collection: VariableCollection
+    try {
+      collection = ensureCollection()
+    } catch (err) {
+      postToUI({ type: 'error', message: (err as Error).message })
+      return
+    }
+
+    const targetPage = ensureTargetPage()
+    let count = 0
+
+    for (const name of msg.components) {
+      try {
+        if (name === 'Btn') {
+          await buildBtn({
+            targetPage,
+            collection,
+            onProgress: (current, total) => {
+              postToUI({
+                type: 'generate-progress',
+                current,
+                total,
+                component: name,
+              })
+            },
+          })
+        }
+        // Phase 5+ components will be added here:
+        // if (name === 'TextField') await buildTextField({ targetPage, collection, onProgress })
+        // if (name === 'Select')    await buildSelect({ targetPage, collection, onProgress })
+        // …
+
+        count++
+      } catch (err) {
+        postToUI({
+          type: 'error',
+          message: `Failed to build ${name}: ${(err as Error).message}`,
+        })
+      }
+    }
+
+    postToUI({ type: 'generate-done', createdSetCount: count })
+    return
+  }
+
+  // ── export ────────────────────────────────────────────────────────────────
+  if (msg.type === 'export') {
+    // Phase 7 / 8 — not yet implemented.
+    postToUI({ type: 'error', message: 'Export is not yet implemented (Phase 7).' })
+    return
+  }
+
+  // ── close ─────────────────────────────────────────────────────────────────
+  if (msg.type === 'close') {
     figma.closePlugin()
   }
-}
+})
