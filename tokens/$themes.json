@@ -91,7 +91,9 @@
       "component/defaults-provider": "enabled",
       "component/theme-provider": "enabled",
       "component/skeleton": "enabled",
-      "component/kbd": "enabled"
+      "component/kbd": "enabled",
+      "component/stepper": "enabled",
+      "component/timeline": "enabled"
     }
   },
   {
@@ -186,7 +188,9 @@
       "component/defaults-provider": "enabled",
       "component/theme-provider": "enabled",
       "component/skeleton": "enabled",
-      "component/kbd": "enabled"
+      "component/kbd": "enabled",
+      "component/stepper": "enabled",
+      "component/timeline": "enabled"
     }
   }
 ]

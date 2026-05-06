@@ -250,3 +250,7 @@ export * from './Window/window-item.interface'
 export * from './Skeleton/skeleton.interface'
 
 export * from './Kbd/kbd.interface'
+
+export * from './Stepper/stepper.interface'
+
+export * from './Timeline/timeline.interface'

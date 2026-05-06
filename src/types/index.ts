@@ -247,6 +247,10 @@ export * from './Skeleton/skeleton.type'
 
 export * from './Kbd/kbd.type'
 
+export * from './Stepper/stepper.type'
+
+export * from './Timeline/timeline.type'
+
 
 
 
