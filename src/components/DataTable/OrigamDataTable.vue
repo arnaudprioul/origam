@@ -140,7 +140,7 @@
 		useSortedItems
 	} from '../../composables'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY, MDI_ICONS } from '../../enums'
 
 	import type {
 		IDataTableGroup,
@@ -169,7 +169,14 @@
 		// ever switches to mobile when the consumer explicitly opts in
 		// by passing a higher breakpoint. Aligns with Vuetify v3's
 		// `<v-data-table>` whose `mobile` is opt-in.
-		mobileBreakpoint: 'xs'
+		mobileBreakpoint: 'xs',
+		// Sort indicators — without defaults, `getSortIcon()` returns
+		// undefined and the `<origam-icon>` renders nothing, so users
+		// got NO visual feedback when clicking a sortable header. Match
+		// Vuetify's `v-data-table` defaults: a unicode-sort triangle
+		// (`mdi-arrow-up`) that flips to `mdi-arrow-down` for DESC.
+		sortAscIcon: MDI_ICONS.ARROW_UP,
+		sortDescIcon: MDI_ICONS.ARROW_DOWN
 	})
 
 	defineEmits(['update:modelValue', 'update:page', 'update:itemsPerPage', 'update:sortBy', 'update:options', 'update:groupBy', 'update:expanded', 'update:currentItems'])

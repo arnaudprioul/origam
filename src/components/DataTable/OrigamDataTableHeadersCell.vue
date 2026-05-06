@@ -42,9 +42,18 @@
 	const origamDataTableHeaderCellRef = ref<Array<TOrigamDataTableHeaderCell>>()
 
 	const dataTableHeaderCellProps = computed(() => {
-		return origamDataTableHeaderCellRef.value?.some((headerCell) => {
-			return headerCell?.filterProps(props)
-		})
+		// Pre-fix this used `Array.prototype.some()` to "iterate" the
+		// ref collection — but `.some()` returns a BOOLEAN, not the
+		// filtered props object. Result: every per-cell `v-bind` was
+		// receiving `true`, which Vue treats as "no props bound", so
+		// `sortAscIcon` / `sortDescIcon` (and any other forwarded
+		// IHeaderCellProps) never reached the inner
+		// `<origam-data-table-header-cell>`. The sort icon then
+		// resolved through OrigamComponentIcon's fallback path with
+		// `icon: undefined`, rendering an empty `<!--v-if-->`. Take
+		// the first ref's `filterProps`: every header cell shares the
+		// same component type, so the prop schema is identical.
+		return origamDataTableHeaderCellRef.value?.[0]?.filterProps(props)
 	})
 
 	// CLASSES & STYLES

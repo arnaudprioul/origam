@@ -227,18 +227,32 @@
 
 		&__column-title {
 			font-weight: var(--origam-data-table-row__column-title---font-weight, 500);
-			text-align: left;
 		}
 
-		&__column-value {
-			text-align: right;
-		}
+		// `__column-value` previously declared `text-align: right` at
+		// root level, which forced every body cell to right-align even
+		// when the parent `<origam-data-table-cell>` resolved
+		// `--align-start` (the default). The header cell, which doesn't
+		// wrap its content in `__column-value`, kept `text-align: start`
+		// — so the user reported "header alignment differs from body".
+		// The right-alignment is only meaningful in MOBILE mode where
+		// the row turns into a `[title, value]` 2-column grid; in
+		// desktop mode the wrapper div should let its parent decide.
+		// Scoped accordingly inside `&--mobile { … }` below.
 
 		&--clickable {
 			cursor: pointer
 		}
 
 		&--mobile {
+			#{$this}__column-title {
+				text-align: left;
+			}
+
+			#{$this}__column-value {
+				text-align: right;
+			}
+
 			#{$this}__column {
 				height: fit-content;
 
