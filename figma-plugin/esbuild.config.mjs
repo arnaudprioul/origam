@@ -22,6 +22,8 @@ const DIST = resolve(__dirname, 'dist')
 const watch = process.argv.includes('--watch')
 const isProd = process.env.NODE_ENV === 'production'
 
+const pkg = JSON.parse(await readFile(resolve(__dirname, 'package.json'), 'utf8'))
+
 /** @type {import('esbuild').BuildOptions} */
 const sharedOptions = {
   bundle: true,
@@ -32,6 +34,7 @@ const sharedOptions = {
   target: ['es2017'],
   define: {
     'process.env.NODE_ENV': JSON.stringify(isProd ? 'production' : 'development'),
+    __PLUGIN_VERSION__: JSON.stringify(pkg.version),
   },
 }
 
@@ -55,9 +58,9 @@ const uiOptions = {
   outfile: resolve(DIST, 'ui.js'),
   platform: 'browser',
   jsx: 'automatic',
-  loader: {
-    '.css': 'text',
-  },
+  // Importing './ui.css' from ui.tsx makes esbuild emit a sibling
+  // dist/ui.css next to dist/ui.js. The inlineHtml() step below picks
+  // it up and inlines it as a <style> tag inside dist/ui.html.
 }
 
 async function inlineHtml() {
