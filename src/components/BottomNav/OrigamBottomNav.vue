@@ -7,28 +7,30 @@
 			@mouseleave="handleMouseleave"
 	>
 		<div class="origam-bottom-nav__content">
-			<slot name="default">
-				<template
-						v-for="(item, index) in items"
-						:key="index"
-				>
-					<slot
-							:name="`item.${index}`"
-							v-bind="{props: item}"
+			<origam-defaults-provider :defaults="slotDefaults">
+				<slot name="default">
+					<template
+							v-for="(item, index) in items"
+							:key="index"
 					>
 						<slot
-								name="item"
-								v-bind="{props: item, index}"
+								:name="`item.${index}`"
+								v-bind="{props: item}"
 						>
-							<origam-btn
-									ref="origamBtnRef"
-									class="origam-bottom-nav__btn"
-									v-bind="item"
-							/>
+							<slot
+									name="item"
+									v-bind="{props: item, index}"
+							>
+								<origam-btn
+										ref="origamBtnRef"
+										class="origam-bottom-nav__btn"
+										v-bind="item"
+								/>
+							</slot>
 						</slot>
-					</slot>
-				</template>
-			</slot>
+					</template>
+				</slot>
+			</origam-defaults-provider>
 		</div>
 	</component>
 </template>
@@ -37,7 +39,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import { OrigamBtn, OrigamDefaultsProvider } from "../../components"
 	import {
 		useActive,
 		useBorder,
@@ -78,6 +80,22 @@
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
 
+	// Push visual-token props down to every descendant `<origam-btn>` (the
+	// bottom-nav button children) as DEFAULTS — items that pass their own
+	// props still win. `OrigamBtn` already calls `useDefaults` so this is
+	// picked up automatically.
+	const slotDefaults = computed(() => ({
+		'origam-btn': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor
+		}
+	}))
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
@@ -107,19 +125,11 @@
 		absolute: toRef(props, 'absolute')
 	})
 
+	// `useDefaults` inside each `OrigamBtn` handles the visual-token fallback —
+	// no manual merge needed here. Items are spread as-is; `provideDefaults`
+	// above supplies the group-level defaults.
 	const items = computed(() => {
-		return props.items.map((item) => {
-			return {
-				...item,
-				density: props.density ?? item.density,
-				color: props.color ?? item.color,
-				bgColor: props.bgColor ?? item.bgColor,
-				hoverColor: props.hoverColor ?? item.hoverColor,
-				hoverBgColor: props.hoverBgColor ?? item.hoverBgColor,
-				activeColor: props.activeColor ?? item.activeColor,
-				activeBgColor: props.activeBgColor ?? item.activeBgColor
-			}
-		}) as Array<IBreadcrumbItemProps>
+		return props.items as Array<IBreadcrumbItemProps>
 	})
 
 	useGroup(props, ORIGAM_BTN_TOGGLE_KEY)
@@ -184,7 +194,27 @@
 
 		display: flex;
 		overflow: hidden;
+
+		// Default standalone positioning — pin to the bottom edge of the
+		// nearest positioned ancestor and stretch full width. Inside an
+		// `<origam-layout>` host, `useLayoutItem` overrides every one of
+		// these (left/right/bottom/width/transform) via inline styles, so
+		// the layout-driven slide-in animation still wins. Pre-fix the
+		// SCSS only declared `position: absolute` — when the component
+		// rendered standalone (story, modal preview, isolated test) it
+		// collapsed to its content width because no inline width was
+		// injected.
+		// `box-sizing: border-box` is required: with `width: 100%` and
+		// the default `content-box`, the inline padding tokens added
+		// ~22px of overflow on top of the parent's width, so the nav
+		// rendered slightly wider than its host. Same fix pattern as
+		// the OrigamWindow `__controls` overflow.
+		box-sizing: border-box;
 		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
 
 		transition: var(--origam-bottom-bar---transition);
 
@@ -197,7 +227,20 @@
 
 		border-color: var(--origam-bottom-bar---border-color);
 		border-style: var(--origam-bottom-bar---border-style);
-		border-width: var(--origam-bottom-bar---border-width);
+		// Use the directional border tokens declared in
+		// `tokens/component/bottom-nav.json` (border-top/left/bottom/right-width).
+		// The omnibus `--origam-bottom-bar---border-width` is set by the
+		// `&--border` modifier and acts as the override for all four
+		// sides; without that modifier the default fallback is 0 so
+		// the nav ships borderless.
+		// Pre-fix the SCSS read the undefined omnibus var directly,
+		// which CSS resolves to the property's `initial` value
+		// (`medium`, ~3px) — i.e. a 3px border was painted on every
+		// nav even when `border` was not set.
+		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
+		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
+		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
+		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-bar---border-width, 0));
 		border-radius: var(--origam-bottom-bar---border-radius);
 
 		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start) - var(--origam-bottom-bar---density));
@@ -241,19 +284,53 @@
 		}
 
 		&--elevated {
-			--origam-bottom-bar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
 		}
 
 		&--border {
+			// Set the four directional tokens so the modifier wins over
+			// the per-side defaults (which are explicitly 0). Keeping
+			// the omnibus var in sync lets ad-hoc consumers who set it
+			// directly via inline style still get a uniform border.
 			--origam-bottom-bar---border-width: thin;
+			--origam-bottom-bar---border-top-width: thin;
+			--origam-bottom-bar---border-right-width: thin;
+			--origam-bottom-bar---border-bottom-width: thin;
+			--origam-bottom-bar---border-left-width: thin;
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
-			--origam-bottom-bar---border-radius: 4px;
+			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
+		&--rounded-x-small {
+			--origam-bottom-bar---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-bottom-bar---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-bottom-bar---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-bottom-bar---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-bottom-bar---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		// Density formula `padding/height - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
-			--origam-bottom-bar---density: 8px;
+			--origam-bottom-bar---density: -8px;
 		}
 
 		&--density-default {
@@ -265,7 +342,7 @@
 		}
 
 		&--active {
-			--origam-bottom-bar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--active---box-shadow);
 		}
 
 		&--grow {
@@ -330,38 +407,5 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-bottom-bar---border-top-width: 0;
-		--origam-bottom-bar---border-left-width: 0;
-		--origam-bottom-bar---border-bottom-width: 0;
-		--origam-bottom-bar---border-right-width: 0;
-		--origam-bottom-bar---border-width: var(--origam-bottom-bar---border-top-width) var(--origam-bottom-bar---border-left-width) var(--origam-bottom-bar---border-bottom-width) var(--origam-bottom-bar---border-right-width);
-		--origam-bottom-bar---border-color: currentColor;
-		--origam-bottom-bar---border-style: solid;
-		--origam-bottom-bar---border-radius: 0;
-		--origam-bottom-bar---density: 0;
-		--origam-bottom-bar---max-width: 100%;
-		--origam-bottom-bar---height: 48px;
-		--origam-bottom-bar---box-shadow: none;
-		--origam-bottom-bar---color: rgba(0, 0, 0, 0.87);
-		--origam-bottom-bar---background: rgb(230, 230, 230);
-		--origam-bottom-bar---margin-inline-start: 0;
-		--origam-bottom-bar---margin-inline-end: 0;
-		--origam-bottom-bar---margin-block-start: 0;
-		--origam-bottom-bar---margin-block-end: 0;
-		--origam-bottom-bar---padding-block-start: 8px;
-		--origam-bottom-bar---padding-block-end: 8px;
-		--origam-bottom-bar---padding-inline-start: 8px;
-		--origam-bottom-bar---padding-inline-end: 8px;
-		--origam-bottom-bar---transition-duration: 0.2s, 0.1s;
-		--origam-bottom-bar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-bottom-bar---transition-property: transform, color;
-		--origam-bottom-bar---transition: var(--origam-bottom-bar---transition-property) var(--origam-bottom-bar---transition-duration) var(--origam-bottom-bar---transition-timing-function);
 
-		--origam-bottom-bar__content---justify-content: center;
-		--origam-bottom-bar__content---align-items: center;
-		--origam-bottom-bar__content---flex-wrap: nowrap;
-		--origam-bottom-bar__content--transform: none;
-	}
-</style>
+

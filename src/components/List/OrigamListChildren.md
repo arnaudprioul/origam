@@ -1,5 +1,0 @@
-# Origamlistchildren
-
-## Usage
-
-    <OrigamListChildren />

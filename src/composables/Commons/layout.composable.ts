@@ -46,8 +46,18 @@ export function useLayoutItem (options: {
 }) {
     const layout = inject(ORIGAM_LAYOUT_KEY)
 
+    // No layout provider in the tree: fall back to inert styles so the
+    // component (BottomNav, AppBar, …) still renders standalone — useful
+    // in stories, modal previews, or tests that don't bother wrapping
+    // the component in an OrigamLayout. Throwing here used to crash the
+    // entire sandbox.
     if (!layout) {
-        throw new Error('[Origam] Could not find injected layout')
+        return {
+            layoutItemStyles: computed<CSSProperties>(() => ({})),
+            layoutRect: shallowRef(undefined),
+            layoutItemScrimStyles: computed<CSSProperties>(() => ({})),
+            layoutId: 'origam-layout-orphan'
+        }
     }
 
     const id = options.id ?? `layout-item-${getUid()}`
@@ -225,7 +235,15 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
 
                 const item = items.value[index.value]
 
-                if (!item) throw new Error(`[Origam] Could not find layout item "${id}"`)
+                // The previous code threw when the registered item couldn't
+                // be found in `items.value` — but that crash fires every
+                // time a layout-aware component (e.g. `OrigamBottomNav`)
+                // is rendered outside a layout host, or during HMR before
+                // the parent layout's `items` computed re-runs. Both are
+                // legitimate states. Fall back to the base position styles
+                // and skip the layout-driven offsets in that case so the
+                // component still renders.
+                if (!item) return styles
 
                 const overlap = computedOverlaps.value.get(id)
 

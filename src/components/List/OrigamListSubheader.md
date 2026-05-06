@@ -1,5 +1,0 @@
-# Origamlistsubheader
-
-## Usage
-
-    <OrigamListSubheader />

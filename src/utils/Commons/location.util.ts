@@ -108,7 +108,13 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
         const targetBox = getTargetBox(data.target.value)
         const contentBox = getIntrinsicSize(data.contentEl.value)
         const scrollParents = getScrollParents(data.contentEl.value)
-        const viewportMargin = 12
+        // Configurable inward-shift guard. Defaults to 12px so the floating
+        // content never sits flush with a viewport edge. Components whose
+        // activator legitimately spans the full viewport (e.g. an
+        // `<origam-select>` filling a row) should pass `viewportMargin: 0`
+        // — otherwise the strategy would shift the dropdown 12px inward,
+        // breaking the visual alignment with the field's left edge.
+        const viewportMargin = (props as { viewportMargin?: number }).viewportMargin ?? 12
 
         if (!scrollParents.length) {
             scrollParents.push(document.documentElement)

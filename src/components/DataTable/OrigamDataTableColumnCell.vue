@@ -102,20 +102,14 @@
 
 		&--fixed {
 			position: sticky;
-			background: var(--origam-data-table-cell--fixed---background);
+			background: var(--origam-data-table-cell--fixed---background, var(--origam-color-surface-raised));
 			left: 0;
-			z-index: 1
+			z-index: var(--origam-data-table-cell--fixed---z-index, 1)
 		}
 
 		&--last-fixed {
-			border-right: 1px solid var(--origam-data-table-cell--last-fixed---border-color);
+			border-right: var(--origam-data-table-cell--last-fixed---border-right-width, 1px) solid var(--origam-data-table-cell--last-fixed---border-right-color, var(--origam-color-border-subtle));
 		}
 	}
 </style>
 
-<style>
-	:root {
-		--origam-data-table-cell--fixed---background: rgba(33, 33, 33, 1);
-		--origam-data-table-cell--last-fixed---border-color: rgba(255, 255, 255, 0.12);
-	}
-</style>

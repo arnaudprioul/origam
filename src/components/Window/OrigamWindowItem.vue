@@ -161,6 +161,17 @@
 
 <style lang="scss">
 	.origam-window-item {
+		// The wrapper had no sizing rule — slides collapsed to the
+		// height of their text content (≈23px for a single line).
+		// Force the active item to fill the parent flex track so user
+		// content with `height: 100%` actually has somewhere to grow.
+		// `min-height: 0` lets a flex child shrink below its content
+		// box (needed when content overflows the viewport).
+		flex: 1 1 auto;
+		min-height: 0;
+		min-width: 0;
+		width: 100%;
+
 		&--x-transition-enter-active,
 		&--x-transition-leave-active,
 		&--x-reverse-transition-enter-active,
@@ -169,7 +180,9 @@
 		&--y-transition-leave-active,
 		&--y-reverse-transition-enter-active,
 		&--y-reverse-transition-leave-active {
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			transition:
+				var(--origam-window-item---x-transition-duration, 0.3s)
+				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&--x-transition-leave-from,
@@ -180,9 +193,15 @@
 		&--y-transition-leave-to,
 		&--y-reverse-transition-leave-from,
 		&--y-reverse-transition-leave-to {
+			// During a transition the leaving item is taken out of the
+			// flex flow (`position: absolute`) so the entering item can
+			// claim its space. Without an explicit height the leaving
+			// item collapses mid-animation, producing a visual "snap" —
+			// pin it to the parent so the slide-out is smooth.
 			position: absolute !important;
 			top: 0;
 			width: 100%;
+			height: 100%;
 		}
 
 		&--x-transition-enter-from {
@@ -216,11 +235,5 @@
 		&--y-reverse-transition-leave-to {
 			transform: translateY(100%);
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

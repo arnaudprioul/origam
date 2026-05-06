@@ -24,42 +24,60 @@
 		</template>
 
 		<template #default>
-			<slot name="default">
-				<origam-list class="origam-menu__list">
-					<origam-list-subheader
-							v-if="title"
-							class="origam-menu__title"
-					>{{ title }}
-					</origam-list-subheader>
-					<origam-list-group class="origam-menu__items">
-						<template
-								v-for="(item, index) in items"
-								:key="index"
-						>
-							<origam-list-item
-									v-if="!hasChilds(item)"
-									class="origam-menu__item"
-									v-bind="item"
-							/>
-							<origam-menu
-									v-else
-									:offset="[8,8]"
-									:open-on-context-menu="false"
-									open-on-click
-									v-bind="{...item, ...overlayProps}"
+			<!--
+				Wrap slot content in a `.origam-menu__content` BEM child so
+				the visual surface (background, border-radius, box-shadow,
+				max-height, …) lives on the popup BODY, not on the overlay
+				ROOT. Pre-fix the visual rules were attached to
+				`.origam-menu` which is bound on the overlay root — same
+				element the overlay scoped SCSS positions
+				`position: absolute; inset: 0`. The result was a white
+				rectangle (with menu's box-shadow) covering the entire
+				teleport target whenever the menu opened, masking
+				everything below. Same family of bug as the Tooltip
+				wrapper-bg fix.
+			-->
+			<div
+					:style="colorStyles"
+					class="origam-menu__content"
+			>
+				<slot name="default">
+					<origam-list class="origam-menu__list">
+						<origam-list-subheader
+								v-if="title"
+								class="origam-menu__title"
+						>{{ title }}
+						</origam-list-subheader>
+						<origam-list-group class="origam-menu__items">
+							<template
+									v-for="(item, index) in items"
+									:key="index"
 							>
-								<template #activator="{props}">
-									<origam-list-item
-											:append-icon="MDI_ICONS.CHEVRON_RIGHT"
-											class="origam-menu__item"
-											v-bind="{...props, ...item}"
-									/>
-								</template>
-							</origam-menu>
-						</template>
-					</origam-list-group>
-				</origam-list>
-			</slot>
+								<origam-list-item
+										v-if="!hasChilds(item)"
+										class="origam-menu__item"
+										v-bind="item"
+								/>
+								<origam-menu
+										v-else
+										:offset="[8,8]"
+										:open-on-context-menu="false"
+										open-on-click
+										v-bind="{...item, ...overlayProps}"
+								>
+									<template #activator="{props}">
+										<origam-list-item
+												:append-icon="MDI_ICONS.CHEVRON_RIGHT"
+												class="origam-menu__item"
+												v-bind="{...props, ...item}"
+										/>
+									</template>
+								</origam-menu>
+							</template>
+						</origam-list-group>
+					</origam-list>
+				</slot>
+			</div>
 		</template>
 	</origam-overlay>
 </template>
@@ -68,7 +86,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, watch } from 'vue'
+	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
 	import {
 		OrigamList,
 		OrigamListGroup,
@@ -78,7 +96,7 @@
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useProps, useScopeId, useVModel } from '../../composables'
+	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
 
 	import { ORIGAM_MENU_KEY } from '../../consts'
 
@@ -106,6 +124,14 @@
 	defineEmits(['update:modelValue', 'contextmenu'])
 
 	const {filterProps} = useProps<IMenuProps>(props)
+
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props (`color`, `bgColor`). Pre-fix the
+	// SCSS read `var(--origam-menu---background)` from tokens but the
+	// consumer-facing `<origam-menu color="primary">` was a silent
+	// no-op. Wired here so the inline declaration on the
+	// `.origam-menu__content` body wins via inline-style specificity.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()
@@ -216,8 +242,6 @@
 	})
 
 	const overlayProps = computed(() => {
-		console.log(origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu']))
-
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
 
@@ -248,13 +272,32 @@
 		lang="scss"
 		scoped
 >
+	// `.origam-menu` is bound on the OVERLAY ROOT — the overlay scoped
+	// SCSS positions that root `position: absolute; inset: 0` so it
+	// spans its teleport target. Keep the root transparent and apply
+	// the visual surface (background, shadow, radius, …) on the
+	// `__content` BEM child below.
 	.origam-menu {
-
+		z-index: var(--origam-menu---z-index, 1000);
+		background: transparent;
+		box-shadow: none;
 	}
-</style>
 
-<style>
-	:root {
+	.origam-menu__content {
+		background: var(--origam-menu---background, var(--origam-color-surface-raised));
+		color: var(--origam-menu---color, var(--origam-color-text-primary));
+		border-radius: var(--origam-menu---border-radius, 8px);
+		box-shadow: var(--origam-menu---box-shadow);
+		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
+		// Size to content rather than inheriting the overlay flex layout
+		// — without these, the popup body grew to fill its parent.
+		display: inline-block;
+		width: max-content;
 
+		.origam-menu__list {
+			overflow: var(--origam-menu__content---overflow, auto);
+			max-width: var(--origam-menu__content---max-width, 320px);
+			padding: var(--origam-menu__content---padding, 4px);
+		}
 	}
 </style>

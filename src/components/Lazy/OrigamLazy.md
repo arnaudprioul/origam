@@ -1,5 +1,0 @@
-# Origamlazy
-
-## Usage
-
-    <OrigamLazy />

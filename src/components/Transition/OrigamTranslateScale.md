@@ -1,5 +1,0 @@
-# OrigamTranslateScale
-
-## Usage
-
-    <OrigamTranslateScale />

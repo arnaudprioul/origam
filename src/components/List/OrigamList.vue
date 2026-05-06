@@ -11,73 +11,75 @@
 			@keydown="handleKeydown"
 			@mousedown="handleMouseDown"
 	>
-		<slot name="default">
-			<origam-list-children
-					v-if="items"
-					:items="items"
-					:return-object="returnObject"
-			>
-				<template
-						v-if="hasChildrenItem"
-						#children="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<origam-list-children
+						v-if="items"
+						:items="items"
+						:return-object="returnObject"
 				>
-					<slot
-							name="childrenItem"
-							v-bind="{item, index}"
-					/>
-				</template>
+					<template
+							v-if="hasChildrenItem"
+							#children="{item, index}"
+					>
+						<slot
+								name="childrenItem"
+								v-bind="{item, index}"
+						/>
+					</template>
 
-				<template
-						v-if="hasDivider"
-						#divider="{itemProps}"
-				>
-					<slot
-							name="divider"
-							v-bind="itemProps"
-					/>
-				</template>
+					<template
+							v-if="hasDivider"
+							#divider="{itemProps}"
+					>
+						<slot
+								name="divider"
+								v-bind="itemProps"
+						/>
+					</template>
 
-				<template
-						v-if="hasSubheader"
-						#subheader="{itemProps}"
-				>
-					<slot
-							name="subheader"
-							v-bind="itemProps"
-					/>
-				</template>
+					<template
+							v-if="hasSubheader"
+							#subheader="{itemProps}"
+					>
+						<slot
+								name="subheader"
+								v-bind="itemProps"
+						/>
+					</template>
 
-				<template
-						v-if="hasGroup"
-						#group="{itemProps}"
-				>
-					<slot
-							name="group"
-							v-bind="itemProps"
-					/>
-				</template>
+					<template
+							v-if="hasGroup"
+							#group="{itemProps}"
+					>
+						<slot
+								name="group"
+								v-bind="itemProps"
+						/>
+					</template>
 
-				<template
-						v-if="hasGroupActivator"
-						#groupActivator="{props, isOpen, events, toggleIcon}"
-				>
-					<slot
-							name="groupActivator"
-							v-bind="{props, isOpen, events, toggleIcon}"
-					/>
-				</template>
+					<template
+							v-if="hasGroupActivator"
+							#groupActivator="{props, isOpen, events, toggleIcon}"
+					>
+						<slot
+								name="groupActivator"
+								v-bind="{props, isOpen, events, toggleIcon}"
+						/>
+					</template>
 
-				<template
-						v-if="hasItem"
-						#item="{itemProps}"
-				>
-					<slot
-							name="item"
-							v-bind="itemProps"
-					/>
-				</template>
-			</origam-list-children>
-		</slot>
+					<template
+							v-if="hasItem"
+							#item="{itemProps}"
+					>
+						<slot
+								name="item"
+								v-bind="itemProps"
+						/>
+					</template>
+				</origam-list-children>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -86,7 +88,7 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamListChildren } from '../../components'
+	import { OrigamDefaultsProvider, OrigamListChildren } from '../../components'
 
 	import {
 		useBorder,
@@ -129,6 +131,16 @@
 	defineEmits(['update:selected', 'update:opened', 'click:open', 'click:select'])
 
 	const {filterProps} = useProps<IListProps>(props)
+
+	// Push visual-token props down to every descendant `<origam-list-item>` as
+	// DEFAULTS — items that pass their own props still win.
+	const slotDefaults = computed(() => ({
+		'origam-list-item': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor
+		}
+	}))
 
 	const {items} = useItems(props)
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
@@ -263,26 +275,28 @@
 		scoped
 >
 	.origam-list {
-		padding-block-start: var(--origam-list---padding-block-start);
-		padding-block-end: var(--origam-list---padding-block-end);
-		padding-inline-start: var(--origam-list---padding-inline-start);
-		padding-inline-end: var(--origam-list---padding-inline-end);
+		// Defaults are now provided by the generated :root block from tokens/component/list.json.
+		// Fallback values reference semantic tokens via CSS variable chain.
+		padding-block-start: var(--origam-list---padding-block-start, 8px);
+		padding-block-end: var(--origam-list---padding-block-end, 8px);
+		padding-inline-start: var(--origam-list---padding-inline-start, 0);
+		padding-inline-end: var(--origam-list---padding-inline-end, 0);
 
-		position: var(--origam-list---position);
-		overflow: var(--origam-list---overflow);
-		outline: var(--origam-list---outline);
+		position: var(--origam-list---position, relative);
+		overflow: var(--origam-list---overflow, auto);
+		outline: var(--origam-list---outline, none);
 
-		border-color: var(--origam-list---border-color);
-		border-style: var(--origam-list---border-style);
-		border-width: var(--origam-list---border-width);
-		border-radius: var(--origam-list---border-radius);
+		border-color: var(--origam-list---border-color, var(--origam-color-text-primary));
+		border-style: var(--origam-list---border-style, solid);
+		border-width: var(--origam-list---border-width, 0);
+		border-radius: var(--origam-list---border-radius, 0px);
 
-		background: var(--origam-list---background);
-		box-shadow: var(--origam-list---box-shadow);
-		color: var(--origam-list---color);
+		background: var(--origam-list---background, var(--origam-color-surface-default));
+		box-shadow: var(--origam-list---box-shadow, var(--origam-shadow-none));
+		color: var(--origam-list---color, var(--origam-color-text-primary));
 
-		pointer-events: var(--origam-list---pointer-events);
-		user-select: var(--origam-list---user-select);
+		pointer-events: var(--origam-list---pointer-events, auto);
+		user-select: var(--origam-list---user-select, auto);
 
 		&--border {
 			--origam-list---border-width: thin;
@@ -296,12 +310,37 @@
 
 		&--nav {
 			--origam-list---padding-inline: 8px;
-			--origam-list-subheader---font-size: 0.75rem;
-			--origam-list---indent-padding: -8px;
+			--origam-list-subheader---font-size: var(--origam-list__subheader---nav-font-size, 0.75rem);
+			--origam-list---indent-padding: var(--origam-list---indent-padding-nav, -8px);
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
-			--origam-list---border-radius: 4px;
+			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			--origam-list---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-list---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-list---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-list---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-list---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
 		&--subheader {
@@ -309,7 +348,7 @@
 		}
 
 		&--slim {
-			--origam-list-group---prepend-width: var(--origam-list--slim---prepend-width);
+			--origam-list-group---prepend-width: var(--origam-list---slim-prepend-width, 28px);
 		}
 
 		&--density-default {
@@ -321,68 +360,19 @@
 		}
 
 		&__overlay {
-			background-color: var(--origam-list__overlay---background-color);
-			border-radius: var(--origam-list__overlay---border-radius);
-			opacity: var(--origam-list__overlay---opacity);
-			pointer-events: var(--origam-list__overlay---pointer-events);
-			position: var(--origam-list__overlay---position);
-			bottom: var(--origam-list__overlay---position-bottom);
-			left: var(--origam-list__overlay---position-left);
-			right: var(--origam-list__overlay---position-right);
-			top: var(--origam-list__overlay---position-top);
-			transition-property: var(--origam-list__overlay---transition-property);
-			transition-duration: var(--origam-list__overlay---transition-duration);
-			transition-timing-function: var(--origam-list__overlay---transition-timing-function);
+			background-color: var(--origam-list__overlay---background-color, var(--origam-color-overlay-scrim));
+			border-radius: var(--origam-list__overlay---border-radius, inherit);
+			opacity: var(--origam-list__overlay---opacity, 0);
+			pointer-events: var(--origam-list__overlay---pointer-events, none);
+			position: var(--origam-list__overlay---position, absolute);
+			bottom: var(--origam-list__overlay---position-bottom, 0);
+			left: var(--origam-list__overlay---position-left, 0);
+			right: var(--origam-list__overlay---position-right, 0);
+			top: var(--origam-list__overlay---position-top, 0);
+			transition-property: var(--origam-list__overlay---transition-property, opacity);
+			transition-duration: var(--origam-list__overlay---transition-duration, 0.2s);
+			transition-timing-function: var(--origam-list__overlay---transition-timing-function, ease-in-out);
 		}
 	}
 </style>
 
-<style>
-	:root {
-		--origam-list---indent-padding: 0px;
-
-		--origam-list---border-top-width: 0;
-		--origam-list---border-left-width: 0;
-		--origam-list---border-bottom-width: 0;
-		--origam-list---border-right-width: 0;
-		--origam-list---border-width: var(--origam-list---border-top-width) var(--origam-list---border-left-width) var(--origam-list---border-bottom-width) var(--origam-list---border-right-width);
-		--origam-list---border-color: rgba(0, 0, 0, 0.87);
-		--origam-list---border-style: solid;
-		--origam-list---border-start-start-radius: 0;
-		--origam-list---border-start-end-radius: 0;
-		--origam-list---border-end-start-radius: 0;
-		--origam-list---border-end-end-radius: 0;
-		--origam-list---border-radius: var(--origam-list---border-start-start-radius) var(--origam-list---border-start-end-radius) var(--origam-list---border-end-start-radius) var(--origam-list---border-end-end-radius);
-
-		--origam-list---padding-block-start: 8px;
-		--origam-list---padding-block-end: 8px;
-		--origam-list---padding-inline-start: 0;
-		--origam-list---padding-inline-end: 0;
-
-		--origam-list---overflow: auto;
-		--origam-list---position: relative;
-		--origam-list---outline: none;
-
-		--origam-list---pointer-events: auto;
-		--origam-list---user-select: auto;
-
-		--origam-list---color: rgba(0, 0, 0, 0.87);
-		--origam-list---box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-		--origam-list---background: rgb(255, 255, 255);
-
-		--origam-list__overlay---background-color: #000;
-		--origam-list__overlay---border-radius: inherit;
-		--origam-list__overlay---opacity: 0;
-		--origam-list__overlay---pointer-events: none;
-		--origam-list__overlay---position: absolute;
-		--origam-list__overlay---position-bottom: 0;
-		--origam-list__overlay---position-left: 0;
-		--origam-list__overlay---position-right: 0;
-		--origam-list__overlay---position-top: 0;
-		--origam-list__overlay---transition-property: opacity;
-		--origam-list__overlay---transition-duration: 0.2s;
-		--origam-list__overlay---transition-timing-function: ease-in-out;
-
-		--origam-list--slim---prepend-width: 28px;
-	}
-</style>

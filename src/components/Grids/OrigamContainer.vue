@@ -12,18 +12,16 @@
 		lang="ts"
 		setup
 >
-	import { useBorder, useBothColor, useMargin, usePadding, useProps, useRounded, useRtl } from '../../composables'
+	import { useBorder, useMargin, usePadding, useProps, useRtl } from '../../composables'
 
 	import type { IContainerProps } from '../../interfaces'
 
-	import { computed, StyleValue, toRef } from 'vue'
+	import { computed, StyleValue } from 'vue'
 
 	const props = withDefaults(defineProps<IContainerProps>(), {tag: 'div', fluid: false})
 
 	const {filterProps} = useProps<IContainerProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -33,11 +31,9 @@
 
 	const containerStyles = computed(() => {
 		return [
-			roundedStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
-			colorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -52,7 +48,6 @@
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
-			roundedClasses.value,
 			props.class
 		]
 	})
@@ -93,10 +88,6 @@
 		&--border {
 			border-width: var(--origam-container--border---border-width);
 			box-shadow: var(--origam-container--border---box-shadow);
-		}
-
-		&--rounded {
-			border-radius: var(--origam-container--rounded---border-radius);
 		}
 
 		@media (min-width: 960px) {

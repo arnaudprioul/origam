@@ -1,112 +1,33 @@
 import { MDI_ICONS } from '@origam/enums'
+import type { IOptions } from '@origam/interfaces'
 
-export const iconList = [
-    {
-        label: 'Empty',
-        value: ''
-    },
-    {
-        label: 'Account',
-        value: MDI_ICONS.ACCOUNT
-    },
-    {
-        label: 'Cancel',
-        value: MDI_ICONS.CANCEL
-    },
-    {
-        label: 'Close',
-        value: MDI_ICONS.CLOSE
-    },
-    {
-        label: 'Delete',
-        value: MDI_ICONS.DELETE
-    },
-    {
-        label: 'Success',
-        value: MDI_ICONS.CHECK
-    },
-    {
-        label: 'Info',
-        value: MDI_ICONS.INFORMATION
-    },
-    {
-        label: 'Warning',
-        value: MDI_ICONS.ALERT
-    },
-    {
-        label: 'Prev',
-        value: MDI_ICONS.SKIP_PREVIOUS
-    },
-    {
-        label: 'Next',
-        value: MDI_ICONS.SKIP_NEXT
-    },
-    {
-        label: 'CheckboxOn',
-        value: MDI_ICONS.CHECKBOX_MARKED
-    },
-    {
-        label: 'CheckboxOff',
-        value: MDI_ICONS.CHECKBOX_BLANK
-    },
-    {
-        label: 'SortAsc',
-        value: MDI_ICONS.SORT_ALPHABETICAL_ASCENDING
-    },
-    {
-        label: 'SortDesc',
-        value: MDI_ICONS.SORT_ALPHABETICAL_DESCENDING
-    },
-    {
-        label: 'Expand',
-        value: MDI_ICONS.ARROW_EXPAND
-    },
-    {
-        label: 'Menu',
-        value: MDI_ICONS.MENU
-    },
-    {
-        label: 'RadioOn',
-        value: MDI_ICONS.RADIOBOX_MARKED
-    },
-    {
-        label: 'RadioOff',
-        value: MDI_ICONS.RADIOBOX_BLANK
-    },
-    {
-        label: 'Edit',
-        value: MDI_ICONS.PENCIL
-    },
-    {
-        label: 'RatingEmpty',
-        value: MDI_ICONS.STAR
-    },
-    {
-        label: 'RatingFull',
-        value: MDI_ICONS.STAR_OUTLINE
-    },
-    {
-        label: 'RatingHalf',
-        value: MDI_ICONS.STAR_HALF
-    },
-    {
-        label: 'Loading',
-        value: MDI_ICONS.LOADING
-    },
-    {
-        label: 'File',
-        value: MDI_ICONS.FILE
-    },
-    {
-        label: 'Plus',
-        value: MDI_ICONS.PLUS
-    },
-    {
-        label: 'Minus',
-        value: MDI_ICONS.MINUS
-    },
-    {
-        label: 'Calendar',
-        value: MDI_ICONS.CALENDAR
-    }
+export const iconList: Array<IOptions<string>> = [
+    { label: '(none)', value: undefined },
+    { label: 'Home', value: MDI_ICONS.HOME },
+    { label: 'Account', value: MDI_ICONS.ACCOUNT },
+    { label: 'Magnify (Search)', value: MDI_ICONS.MAGNIFY },
+    { label: 'Close', value: MDI_ICONS.CLOSE },
+    { label: 'Check', value: MDI_ICONS.CHECK },
+    { label: 'Alert', value: MDI_ICONS.ALERT },
+    { label: 'Information', value: MDI_ICONS.INFORMATION },
+    { label: 'Plus', value: MDI_ICONS.PLUS },
+    { label: 'Minus', value: MDI_ICONS.MINUS },
+    { label: 'Pencil (Edit)', value: MDI_ICONS.PENCIL },
+    { label: 'Delete', value: MDI_ICONS.DELETE },
+    { label: 'Heart', value: MDI_ICONS.HEART },
+    { label: 'Star', value: MDI_ICONS.STAR },
+    { label: 'Arrow Right', value: MDI_ICONS.ARROW_RIGHT },
+    { label: 'Arrow Down', value: MDI_ICONS.ARROW_DOWN },
+    { label: 'Menu', value: MDI_ICONS.MENU },
+    { label: 'Cog (Settings)', value: MDI_ICONS.COG },
+    { label: 'Bell', value: MDI_ICONS.BELL },
+    { label: 'Eye', value: MDI_ICONS.EYE },
+    { label: 'Lock', value: MDI_ICONS.LOCK },
+    { label: 'Calendar', value: MDI_ICONS.CALENDAR },
+    { label: 'Download', value: MDI_ICONS.DOWNLOAD },
+    { label: 'Upload', value: MDI_ICONS.UPLOAD },
+    { label: 'Send', value: MDI_ICONS.SEND },
+    { label: 'Share', value: MDI_ICONS.SHARE },
+    { label: 'Filter', value: MDI_ICONS.FILTER },
+    { label: 'Refresh', value: MDI_ICONS.REFRESH },
 ]

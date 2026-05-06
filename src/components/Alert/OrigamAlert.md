@@ -1,5 +1,0 @@
-# Origamalert
-
-## Usage
-
-    <OrigamAlert />

@@ -94,11 +94,19 @@
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
+	// When `error` is on, force the `danger` intent on BOTH channels —
+	// `color` paints the FILL and the thumb (via currentColor), `bgColor`
+	// paints the rail (track background). Disabled keeps both `undefined`
+	// so SCSS can apply the muted neutral.
 	const color = computed(() => {
-		return error.value || isDisabled.value ? undefined : sliderColor.value ? sliderColor.value : props.color
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderColor.value || props.color
 	})
 	const bgColor = computed(() => {
-		return error.value || isDisabled.value ? undefined : sliderBgColor.value ? sliderBgColor.value : props.bgColor
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderBgColor.value || props.bgColor
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {
@@ -117,8 +125,16 @@
 	})
 
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
-	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(bgColor)
-	const {backgroundColorStyles} = useBackgroundColor(color)
+	// Strict color/bgColor channel separation — same rule as switch:
+	//   • `bgColor` paints the RAIL (the un-filled background of the
+	//     track).
+	//   • `color`   paints the FILL (the active progress portion) and
+	//     is inherited by the thumb via `currentColor` on the wrapper.
+	// Pre-fix the channels were swapped — `color` painted the rail
+	// and `bgColor` painted the fill, which violated the project's
+	// strict color contract and produced counter-intuitive visuals.
+	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(color)
+	const {backgroundColorStyles} = useBackgroundColor(bgColor)
 
 	const startDir = computed(() => `inset-${isVertical.value ? 'block' : 'inline'}-${indexFromEnd.value ? 'end' : 'start'}`)
 	const endDir = computed(() => isVertical.value ? 'height' : 'width')

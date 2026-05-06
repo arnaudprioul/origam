@@ -33,11 +33,34 @@
 					<origam-rating-field-item
 							ref="origamRatingFieldItemRef"
 							:index="-1"
+							:length="length"
 							:show-star="false"
 							:value="0"
 							v-bind="{...itemState[0], ...eventState[0]}"
 					/>
 				</div>
+
+				<!--
+					Clear button — visible only when `clearable` is on
+					AND there's a value to clear. Pre-fix the only way
+					to reset the rating was to click the SAME star a
+					second time (a hidden Vuetify-style affordance) —
+					user reported "clearable sur ratingField ne sert a
+					rien" because nothing in the UI hinted at it. Now
+					exposed as an explicit icon button next to the row
+					so the affordance is discoverable. The "click same
+					star to clear" path still works for power users.
+				-->
+				<origam-btn
+						v-if="clearable && normalizedValue > 0 && !disabled && !readonly"
+						:aria-label="t('origam.rating.clear')"
+						:icon="MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+						:variant="VARIANT.TEXT"
+						class="origam-rating-field__clear"
+						data-cy="rating-field-clear"
+						size="small"
+						@click="model = 0"
+				/>
 
 				<template
 						v-for="(range, index) in ranges"
@@ -56,12 +79,14 @@
 								<origam-rating-field-item
 										:checked="isChecked(range - 0.5)"
 										:index="index * 2"
+										:length="length"
 										:value="range - 0.5"
 										v-bind="{...itemState[index * 2], ...eventState[(index * 2) + 1]}"
 								/>
 								<origam-rating-field-item
 										:checked="isChecked(range)"
 										:index="(index * 2) + 1"
+										:length="length"
 										:value="range"
 										v-bind="{...itemState[(index * 2) + 1], ...eventState[(index * 2) + 2]}"
 								/>
@@ -70,6 +95,7 @@
 								<origam-rating-field-item
 										:checked="isChecked(range)"
 										:index="index"
+										:length="length"
 										:value="range"
 										v-bind="{...itemState[index], ...eventState[index + 1]}"
 								/>
@@ -131,11 +157,11 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
+	import { OrigamBtn, OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
 
-	import { useProps, useVModel } from '../../composables'
+	import { useLocale, useProps, useVModel } from '../../composables'
 
-	import { BLOCK, DENSITY, SIZES } from '../../enums'
+	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
 
 	import type { IRatingFieldProps } from '../../interfaces'
 
@@ -160,6 +186,7 @@
 	const origamRatingFieldItemRef = ref<TOrigamRatingFieldItem>()
 
 	const slots = useSlots()
+	const {t} = useLocale()
 
 	const model = useVModel(props, 'modelValue')
 	const attrs = useAttrs()

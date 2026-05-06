@@ -134,11 +134,13 @@
 		lang="scss"
 		scoped
 >
+	.origam-data-table-group-header-row {
+		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-color-surface-overlay));
+		color: var(--origam-data-table-group-header-row---color, var(--origam-color-text-primary));
+		font-weight: var(--origam-data-table-group-header-row---font-weight, 500);
 
-</style>
-
-<style>
-	:root {
-
+		&__column {
+			padding-inline-start: calc(var(--origam-data-table-group-header-row--depth, 0) * var(--origam-data-table-group-header-row__column---padding-inline-start-factor, 16px));
+		}
 	}
 </style>

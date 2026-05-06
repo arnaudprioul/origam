@@ -1,5 +1,0 @@
-# OrigamColorpickerfield
-
-## Usage
-
-    <OrigamColorPickerField />

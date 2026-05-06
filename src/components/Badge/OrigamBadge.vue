@@ -210,6 +210,7 @@
 			white-space: var(--origam-badge__badge---white-space);
 
 			height: var(--origam-badge__badge---height);
+			width: var(--origam-badge__badge---width, auto);
 			min-width: var(--origam-badge__badge---min-width);
 
 			padding-block-start: var(--origam-badge__badge---padding-block-start);
@@ -256,7 +257,7 @@
 
 		&--elevated {
 			#{$this}__badge {
-				--origam-badge__badge---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow-md));
 			}
 		}
 
@@ -273,8 +274,14 @@
 				--origam-badge__badge---height: 9px;
 				--origam-badge__badge---width: 9px;
 				--origam-badge__badge---min-width: 0;
-				--origam-badge__badge---padding-block: 0;
-				--origam-badge__badge---padding-inline: 0;
+				// The base SCSS consumes the four padding LONGHANDS (block-start,
+				// block-end, inline-start, inline-end), not the shorthands.
+				// Setting `--padding-block: 0` here was a no-op — kept as legacy
+				// alias but the longhands below are what actually zeros padding.
+				--origam-badge__badge---padding-block-start: 0;
+				--origam-badge__badge---padding-block-end: 0;
+				--origam-badge__badge---padding-inline-start: 0;
+				--origam-badge__badge---padding-inline-end: 0;
 				--origam-badge__badge---text-indent: -9999px;
 			}
 		}
@@ -294,74 +301,32 @@
 		}
 
 		&--warning {
-			--origam-badge__badge---background-color: var(--origam-status--warning---background-color, rgb(251, 140, 0));
-			--origam-badge__badge---color: var(--origam-status--warning---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--warning---background-color, var(--origam-color-feedback-warning-bg));
+			--origam-badge__badge---color: var(--origam-badge--warning---color, var(--origam-color-feedback-warning-fg));
 		}
 
 		&--success {
-			--origam-badge__badge---background-color: var(--origam-status--success---background-color, rgb(76, 175, 80));
-			--origam-badge__badge---color: var(--origam-status--success---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--success---background-color, var(--origam-color-feedback-success-bg));
+			--origam-badge__badge---color: var(--origam-badge--success---color, var(--origam-color-feedback-success-fg));
 		}
 
 		&--info {
-			--origam-badge__badge---background-color: var(--origam-status--info---background-color, rgb(33, 150, 243));
-			--origam-badge__badge---color: var(--origam-status--info---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--info---background-color, var(--origam-color-feedback-info-bg));
+			--origam-badge__badge---color: var(--origam-badge--info---color, var(--origam-color-feedback-info-fg));
 		}
 
 		&--error {
-			--origam-badge__badge---background-color: var(--origam-status--error---background-color, rgb(207, 102, 121));
-			--origam-badge__badge---color: var(--origam-status--error---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color-feedback-danger-bg));
+			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color-feedback-danger-fg));
 		}
 	}
 </style>
 
-<style>
-	:root {
-		--origam-badge__wrapper---display: flex;
-		--origam-badge__wrapper---align-items: stretch;
-		--origam-badge__wrapper---justify-content: start;
-		--origam-badge__wrapper---margin-inline-start: 0;
-		--origam-badge__wrapper---margin-inline-end: 0;
-		--origam-badge__wrapper---margin-block-start: 0;
-		--origam-badge__wrapper---margin-block-end: 0;
-		--origam-badge__wrapper---padding-block-start: 0;
-		--origam-badge__wrapper---padding-block-end: 0;
-		--origam-badge__wrapper---padding-inline-start: 0;
-		--origam-badge__wrapper---padding-inline-end: 0;
-
-		--origam-badge__badge---align-items: center;
-		--origam-badge__badge---justify-content: center;
-		--origam-badge__badge---display: inline-flex;
-		--origam-badge__badge---position: absolute;
-		--origam-badge__badge---font-size: 0.75rem;
-		--origam-badge__badge---font-weight: 500;
-		--origam-badge__badge---text-align: center;
-		--origam-badge__badge---text-indent: 0;
-		--origam-badge__badge---white-space: nowrap;
-		--origam-badge__badge---height: 1.25rem;
-		--origam-badge__badge---min-width: 20px;
-		--origam-badge__badge---pointer-events: auto;
-		--origam-badge__badge---transition-duration: 0.225s;
-		--origam-badge__badge---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-badge__badge---transition-property: all;
-		--origam-badge__badge---transition: var(--origam-badge__badge---transition-property) var(--origam-badge__badge---transition-duration) var(--origam-badge__badge---transition-timing-function);
-		--origam-badge__badge---margin-inline-start: 0;
-		--origam-badge__badge---margin-inline-end: 0;
-		--origam-badge__badge---margin-block-start: 0;
-		--origam-badge__badge---margin-block-end: 0;
-		--origam-badge__badge---padding-block-start: 4px;
-		--origam-badge__badge---padding-block-end: 4px;
-		--origam-badge__badge---padding-inline-start: 6px;
-		--origam-badge__badge---padding-inline-end: 6px;
-		--origam-badge__badge---color: rgba(30, 30, 30, 0.87);
-		--origam-badge__badge---background-color: rgb(230, 230, 230);
-		--origam-badge__badge---border-top-width: 0;
-		--origam-badge__badge---border-left-width: 0;
-		--origam-badge__badge---border-bottom-width: 0;
-		--origam-badge__badge---border-right-width: 0;
-		--origam-badge__badge---border-width: var(--origam-badge__badge---border-top-width) var(--origam-badge__badge---border-left-width) var(--origam-badge__badge---border-bottom-width) var(--origam-badge__badge---border-right-width);
-		--origam-badge__badge---border-color: currentColor;
-		--origam-badge__badge---border-style: solid;
-		--origam-badge__badge---border-radius: 10px;
-	}
-</style>
+<!--
+	Lot 1.5 migration — `<style>:root{}` block removed.
+	`--origam-badge__wrapper---*` and `--origam-badge__badge---*` are now
+	supplied by the generated tokens (loaded via `import 'origam/styles'`
+	or `import 'origam/tokens/css/light'`).
+	The legacy `--origam-status--*` namespace has been retired in favour
+	of the semantic feedback tokens (`--origam-color-feedback-{intent}-*`).
+-->

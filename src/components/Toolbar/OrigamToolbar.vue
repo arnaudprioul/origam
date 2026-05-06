@@ -162,22 +162,78 @@
 		transition-property: var(--origam-toolbar---transition-property);
 		transition-timing-function: var(--origam-toolbar---transition-timing-function);
 
+		// Borders — read PER-SIDE / PER-CORNER variables matching the
+		// tokens emitted by `tokens/component/toolbar.json`. Pre-fix the
+		// SCSS read the singular shorthand `--origam-toolbar---border-width`
+		// and `--origam-toolbar---border-radius` which the token build
+		// never emits, so the `var()` resolved to its CSS initial value
+		// (`medium` ≈ 3 px) and combined with `border-style: solid` from
+		// the tokens produced an unwanted ~3 px black frame on every
+		// toolbar — even with `border={false}`. Defaulting to `0` here
+		// makes the toolbar borderless out of the box (Vuetify-equivalent
+		// baseline) and lets the `&--border*` modifiers below opt in.
 		border-color: var(--origam-toolbar---border-color);
 		border-style: var(--origam-toolbar---border-style);
-		border-width: var(--origam-toolbar---border-width);
-		border-radius: var(--origam-toolbar---border-radius);
+		border-top-width: var(--origam-toolbar---border-top-width, 0);
+		border-right-width: var(--origam-toolbar---border-right-width, 0);
+		border-bottom-width: var(--origam-toolbar---border-bottom-width, 0);
+		border-left-width: var(--origam-toolbar---border-left-width, 0);
+		border-start-start-radius: var(--origam-toolbar---border-start-start-radius, 0);
+		border-start-end-radius: var(--origam-toolbar---border-start-end-radius, 0);
+		border-end-end-radius: var(--origam-toolbar---border-end-end-radius, 0);
+		border-end-start-radius: var(--origam-toolbar---border-end-start-radius, 0);
 
 		background: var(--origam-toolbar---background);
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
 
+		// `border={true}` — opt-in border on all four sides, replaces the
+		// elevation shadow with a flat outline (Vuetify parity).
 		&--border {
-			--origam-toolbar---border-width: thin;
+			--origam-toolbar---border-top-width: thin;
+			--origam-toolbar---border-right-width: thin;
+			--origam-toolbar---border-bottom-width: thin;
+			--origam-toolbar---border-left-width: thin;
 			--origam-toolbar---box-shadow: none;
 		}
 
+		// `border="top|right|bottom|left"` — single-side variants override
+		// the all-sides rule above (CSS source order). `useBorder` emits
+		// BOTH `--border` and `--border-{dir}` for direction values, so
+		// these rules need to reset the OTHER three sides back to 0.
+		&--border-top {
+			--origam-toolbar---border-top-width: thin;
+			--origam-toolbar---border-right-width: 0;
+			--origam-toolbar---border-bottom-width: 0;
+			--origam-toolbar---border-left-width: 0;
+		}
+
+		&--border-right {
+			--origam-toolbar---border-top-width: 0;
+			--origam-toolbar---border-right-width: thin;
+			--origam-toolbar---border-bottom-width: 0;
+			--origam-toolbar---border-left-width: 0;
+		}
+
+		&--border-bottom {
+			--origam-toolbar---border-top-width: 0;
+			--origam-toolbar---border-right-width: 0;
+			--origam-toolbar---border-bottom-width: thin;
+			--origam-toolbar---border-left-width: 0;
+		}
+
+		&--border-left {
+			--origam-toolbar---border-top-width: 0;
+			--origam-toolbar---border-right-width: 0;
+			--origam-toolbar---border-bottom-width: 0;
+			--origam-toolbar---border-left-width: thin;
+		}
+
 		&--rounded {
-			--origam-toolbar---border-radius: 4px;
+			--origam-toolbar---border-start-start-radius: 4px;
+			--origam-toolbar---border-start-end-radius: 4px;
+			--origam-toolbar---border-end-end-radius: 4px;
+			--origam-toolbar---border-end-start-radius: 4px;
 		}
 
 		&--absolute {
@@ -304,110 +360,5 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-toolbar---border-top-width: 0;
-		--origam-toolbar---border-left-width: 0;
-		--origam-toolbar---border-bottom-width: 0;
-		--origam-toolbar---border-right-width: 0;
-		--origam-toolbar---border-width: var(--origam-toolbar---border-top-width) var(--origam-toolbar---border-left-width) var(--origam-toolbar---border-bottom-width) var(--origam-toolbar---border-right-width);
-		--origam-toolbar---border-color: rgba(0, 0, 0, 0.87);
-		--origam-toolbar---border-style: solid;
-		--origam-toolbar---border-start-start-radius: 0;
-		--origam-toolbar---border-start-end-radius: 0;
-		--origam-toolbar---border-end-start-radius: 0;
-		--origam-toolbar---border-end-end-radius: 0;
-		--origam-toolbar---border-radius: var(--origam-toolbar---border-start-start-radius) var(--origam-toolbar---border-start-end-radius) var(--origam-toolbar---border-end-start-radius) var(--origam-toolbar---border-end-end-radius);
 
-		--origam-toolbar---max-width: 100%;
-		--origam-toolbar---width: 100%;
-		--origam-toolbar---height: 64px;
 
-		--origam-toolbar---box-sizing: border-box;
-
-		--origam-toolbar---position: relative;
-
-		--origam-toolbar---overflow: hidden;
-
-		--origam-toolbar---zIndex: 1000;
-
-		--origam-toolbar---transition-duration: 0.2s;
-		--origam-toolbar---transition-property: height, width, transform, max-width, left, right, top, bottom, box-shadow;
-		--origam-toolbar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-		--origam-toolbar---color: rgba(0, 0, 0, 0.87);
-		--origam-toolbar---box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
-		--origam-toolbar---background: rgb(255, 255, 255);
-
-		--origam-toolbar__wrapper---display: flex;
-		--origam-toolbar__wrapper---align-items: flex-start;
-		--origam-toolbar__wrapper---flex-direction: row;
-		--origam-toolbar__wrapper---justify-content: space-between;
-		--origam-toolbar__wrapper---height: 100%;
-		--origam-toolbar__wrapper---flex-wrap: wrap;
-		--origam-toolbar__wrapper---flex: 1 1 auto;
-
-		--origam-toolbar__title---align-items: center;
-		--origam-toolbar__title---align-self: stretch;
-		--origam-toolbar__title---display: flex;
-		--origam-toolbar__title---height: 100%;
-		--origam-toolbar__title---flex-grow: 0;
-		--origam-toolbar__title---flex-shrink: 0;
-		--origam-toolbar__title---flex-basis: auto;
-		--origam-toolbar__title---width: auto;
-		--origam-toolbar__title---max-width: 100%;
-		--origam-toolbar__title---min-width: 0;
-		--origam-toolbar__title---font-size: 1.25rem;
-		--origam-toolbar__title---font-weight: 400;
-		--origam-toolbar__title---letter-spacing: 0;
-		--origam-toolbar__title---line-height: 1.75rem;
-		--origam-toolbar__title---text-transform: none;
-		--origam-toolbar__title---margin-inline-start: auto;
-		--origam-toolbar__title---margin-inline-end: 10px;
-		--origam-toolbar__title---margin-inline: var(--origam-toolbar__title---margin-inline-start) var(--origam-toolbar__title---margin-inline-end);
-		--origam-toolbar__title---margin-block-start: 0;
-		--origam-toolbar__title---margin-block-end: 0;
-		--origam-toolbar__title---margin-block: var(--origam-toolbar__title---margin-inline-start) var(--origam-toolbar__title---margin-inline-end);
-		--origam-toolbar__title---padding-block-start: 0;
-		--origam-toolbar__title---padding-block-end: 0;
-		--origam-toolbar__title---padding-block: var(--origam-toolbar__title---padding-block-start) var(--origam-toolbar__title---padding-block-end);
-		--origam-toolbar__title---padding-inline-start: 0;
-		--origam-toolbar__title---padding-inline-end: 0;
-		--origam-toolbar__title---padding-inline: var(--origam-toolbar__title---padding-inline-start) var(--origam-toolbar__title---padding-inline-end);
-
-		--origam-toolbar__content---display: flex;
-		--origam-toolbar__content---align-items: center;
-		--origam-toolbar__content---position: relative;
-		--origam-toolbar__content---transition: inherit;
-		--origam-toolbar__content---height: 100%;
-		--origam-toolbar__content---flex-grow: 1;
-		--origam-toolbar__content---flex-basis: 0;
-		--origam-toolbar__content---max-width: 100%;
-
-		--origam-toolbar__append---margin-inline-start: auto;
-		--origam-toolbar__append---margin-inline-end: 10px;
-		--origam-toolbar__append---margin-inline: var(--origam-toolbar__append---margin-inline-start) var(--origam-toolbar__append---margin-inline-end);
-		--origam-toolbar__append---align-items: center;
-		--origam-toolbar__append---align-self: stretch;
-		--origam-toolbar__append---display: flex;
-		--origam-toolbar__append---height: 100%;
-		--origam-toolbar__append---flex-grow: 0;
-		--origam-toolbar__append---flex-shrink: 0;
-		--origam-toolbar__append---flex-basis: auto;
-		--origam-toolbar__append---width: auto;
-		--origam-toolbar__append---max-width: 100%;
-
-		--origam-toolbar__prepend---margin-inline-start: 10px;
-		--origam-toolbar__prepend---margin-inline-end: auto;
-		--origam-toolbar__prepend---margin-inline: var(--origam-toolbar__prepend---margin-inline-start) var(--origam-toolbar__prepend---margin-inline-end);
-		--origam-toolbar__prepend---align-items: center;
-		--origam-toolbar__prepend---align-self: stretch;
-		--origam-toolbar__prepend---display: flex;
-		--origam-toolbar__prepend---height: 100%;
-		--origam-toolbar__prepend---flex-grow: 0;
-		--origam-toolbar__prepend---flex-shrink: 0;
-		--origam-toolbar__prepend---flex-basis: auto;
-		--origam-toolbar__prepend---width: auto;
-		--origam-toolbar__prepend---max-width: 100%;
-	}
-</style>

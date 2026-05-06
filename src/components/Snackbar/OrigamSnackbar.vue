@@ -20,17 +20,29 @@
 		      class="origam-snackbar__underlay"
       />
 
+			<!--
+				CSS-only timer bar — pre-fix the timer drove an
+				`<origam-progress>` linear bar via `useCountdown`'s
+				`setInterval` (200 ms cadence), so the bar shrunk in
+				visible discrete steps ("par accout c'est moche").
+				Replaced by a single CSS scaleX transform animated over
+				the full timeout duration via a custom property — gives
+				a fluid 60 fps GPU-accelerated shrink.
+
+				Re-keying on `(isActive, timerKey)` so the animation
+				restarts cleanly when the snackbar reopens or the
+				consumer mutates the timeout / hover-pauses (the
+				existing JS `pauseTimeout` / `resumeTimeout` flow toggles
+				the `--paused` class which holds the animation via
+				`animation-play-state: paused`).
+			-->
 			<div
-					v-if="props.timer && !isHovering"
-					key="timer"
-					class="origam-snackbar__timer"
+					v-if="props.timer"
+					:key="`timer-${timerKey}`"
+					:class="['origam-snackbar__timer', { 'origam-snackbar__timer--paused': isHovering }]"
+					:style="{ '--origam-snackbar__timer---duration': `${props.timeout}ms` }"
 			>
-				<origam-progress
-						ref="origamProgressRef"
-						:max="props.timeout"
-						:model-value="countdown.time.value"
-						:type="PROGRESS_TYPE.LINEAR"
-				/>
+				<div class="origam-snackbar__timer-bar"/>
 			</div>
 
 			<div
@@ -91,12 +103,11 @@
 		watch,
 		watchEffect
 	} from 'vue'
-	import { OrigamIcon, OrigamOverlay, OrigamProgress, OrigamSnack } from '../../components'
+	import { OrigamIcon, OrigamOverlay, OrigamSnack } from '../../components'
 
 	import {
 		useBorder,
 		useBothColor,
-		useCountdown,
 		useElevation,
 		useLayout,
 		useMargin,
@@ -112,13 +123,13 @@
 
 	import { ORIGAM_LAYOUT_KEY } from '../../consts'
 
-	import { PROGRESS_TYPE, SCROLL_STRATEGIES } from '../../enums'
+	import { SCROLL_STRATEGIES } from '../../enums'
 
 	import type { ISnackbarProps } from "../../interfaces"
 
-	import type { TOrigamOverlay, TOrigamProgress, TTransitionProps } from '../../types'
+	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 
-	import { forwardRefs, refElement } from '../../utils'
+	import { forwardRefs } from '../../utils'
 
 	const props = withDefaults(defineProps<ISnackbarProps>(), {
 		timeout: 5000,
@@ -138,7 +149,6 @@
 	const isActive = useVModel(props, 'modelValue')
 	const {positionClasses} = usePosition(props)
 	const {scopeId} = useScopeId()
-	const countdown = useCountdown(Number(props.timeout))
 	const {icon, statusClasses} = useStatus(props)
 
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
@@ -149,11 +159,15 @@
 	const {elevationClasses} = useElevation(props)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
-	const origamProgressRef = ref<TOrigamProgress>()
 	const isHovering = shallowRef(false)
 	const startY = shallowRef(0)
 	const mainStyles = ref()
 	const hasLayout = inject(ORIGAM_LAYOUT_KEY, undefined)
+
+	// Bumped each time the timer should restart (open / timeout-prop
+	// change). Drives the `:key` on the timer element so Vue re-mounts
+	// it and the CSS animation runs from the top.
+	const timerKey = shallowRef(0)
 
 	useToggleScope(() => !!hasLayout, () => {
 		const layout = useLayout()
@@ -165,22 +179,22 @@
 
 	let activeTimeout = -1
 	const startTimeout = () => {
-		countdown.reset()
 		window.clearTimeout(activeTimeout)
 		const timeout = Number(props.timeout)
 
 		if (!isActive.value || timeout === -1) return
 
-		const element = refElement(origamProgressRef.value)
-
-		countdown.start(element)
+		// Re-key the timer element so Vue re-mounts it and the CSS
+		// `transform: scaleX` animation runs from `1` (full width) to
+		// `0` (collapsed) over the requested timeout. No interval-based
+		// JS counter, no staccato updates — pure GPU-accelerated.
+		timerKey.value++
 
 		activeTimeout = window.setTimeout(() => {
 			isActive.value = false
 		}, timeout)
 	}
 	const clearTimeout = () => {
-		countdown.reset()
 		window.clearTimeout(activeTimeout)
 	}
 
@@ -285,9 +299,9 @@
 		$this: &;
 
 		justify-content: center;
-		z-index: 10000;
-		margin: 8px;
-		margin-inline-end: calc(8px + 0px);
+		z-index: var(--origam-snackbar---z-index, var(--origam-z-index-toast, 1060));
+		margin: var(--origam-snackbar---margin, 8px);
+		margin-inline-end: calc(var(--origam-snackbar---margin, 8px) + 0px);
 		padding: var(--origam-layout---position-top) var(--origam-layout---position-right) var(--origam-layout---position-bottom) var(--origam-layout---position-left);
 
 		&:not(#{$this}--center) {
@@ -299,9 +313,9 @@
 		:deep(#{$this}__wrapper) {
 			align-items: center;
 			display: flex;
-			max-width: 672px;
-			min-height: 48px;
-			min-width: 344px;
+			max-width: var(--origam-snackbar__wrapper---max-width, 672px);
+			min-height: var(--origam-snackbar__wrapper---min-height, 48px);
+			min-width: var(--origam-snackbar__wrapper---min-width, 344px);
 			overflow: hidden;
 			padding: 0;
 		}
@@ -312,26 +326,26 @@
 
 		&__content {
 			flex-grow: 1;
-			font-size: 0.875rem;
-			font-weight: 400;
-			letter-spacing: 0.0178571429em;
-			line-height: 1.425;
+			font-size: var(--origam-snackbar__content---font-size, 0.875rem);
+			font-weight: var(--origam-snackbar__content---font-weight, 400);
+			letter-spacing: var(--origam-snackbar__content---letter-spacing, 0.0178571429em);
+			line-height: var(--origam-snackbar__content---line-height, 1.425);
 			margin-right: auto;
-			padding: 14px 16px;
+			padding: var(--origam-snackbar__content---padding-block, 14px) var(--origam-snackbar__content---padding-inline, 16px);
 			text-align: initial;
 			align-items: center;
 			display: flex;
 		}
 
 		&__prepend {
-			margin-inline-end: 12px;
+			margin-inline-end: var(--origam-snackbar__prepend---margin-inline-end, 12px);
 		}
 
 		&__actions {
 			align-items: center;
 			align-self: center;
 			display: flex;
-			margin-inline-end: 8px;
+			margin-inline-end: var(--origam-snackbar__actions---margin-inline-end, 8px);
 
 			> .origam-btn {
 				padding: 0 8px;
@@ -339,38 +353,112 @@
 			}
 		}
 
+		// Timer bar — CSS-only fluid shrink. The wrapping `__timer` div
+		// is positioned absolute at the top of the snackbar; the inner
+		// `__timer-bar` shrinks from `scaleX(1)` to `scaleX(0)` over
+		// `--origam-snackbar__timer---duration` (passed inline by the
+		// JS, reflects the `timeout` prop). `transform-origin: left`
+		// gives the natural left-to-right collapse. Pause-on-hover via
+		// the `--paused` class flipping `animation-play-state`.
 		&__timer {
 			width: 100%;
+			height: var(--origam-snackbar__timer---height, 3px);
 			position: absolute;
 			top: 0;
+			left: 0;
+			overflow: hidden;
+			pointer-events: none;
 
-			:deep(.origam-progress-linear) {
-				transition: 0.2s linear;
+			&-bar {
+				width: 100%;
+				height: 100%;
+				background-color: var(--origam-snackbar__timer-bar---background-color, currentColor);
+				opacity: var(--origam-snackbar__timer-bar---opacity, 0.5);
+				transform-origin: left center;
+				animation: origam-snackbar__timer-shrink var(--origam-snackbar__timer---duration, 5000ms) linear forwards;
+				will-change: transform;
 			}
+
+			&--paused &-bar {
+				animation-play-state: paused;
+			}
+		}
+
+		@keyframes origam-snackbar__timer-shrink {
+			from { transform: scaleX(1); }
+			to   { transform: scaleX(0); }
 		}
 
 		&--border {
 			:deep(#{$this}__wrapper) {
-				border-width: thin;
-				border-style: solid;
+				border-width: var(--origam-snackbar__wrapper---border-width, thin);
+				border-style: var(--origam-snackbar__wrapper---border-style, solid);
 				box-shadow: none;
+			}
+		}
+
+		// Status modifiers — emitted by `useStatus` as
+		// `origam-snackbar--success | --info | --warning | --danger | --error`.
+		// Each picks the matching feedback intent rungs from the design
+		// tokens:
+		//   • bgSubtle (light tinted background)
+		//   • fgSubtle (strong foreground for "coloured text on light surface")
+		//   • border   (saturated outline)
+		// The wrapper inherits the colour scheme; the timer-bar picks
+		// up `currentColor` automatically via its inline default. The
+		// snackbar root carries the colours so both `__wrapper` (where
+		// the border lives) and `__content` (where the text lives)
+		// inherit correctly.
+		@each $status in (success, info, warning, danger) {
+			&--#{$status} {
+				color: var(--origam-color-feedback-#{$status}-fgSubtle);
+				background: transparent;
+
+				:deep(#{$this}__wrapper) {
+					background-color: var(--origam-color-feedback-#{$status}-bgSubtle);
+					border-color: var(--origam-color-feedback-#{$status}-border);
+					color: var(--origam-color-feedback-#{$status}-fgSubtle);
+				}
+
+				#{$this}__timer-bar {
+					background-color: var(--origam-color-feedback-#{$status}-border);
+					opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
+				}
+			}
+		}
+
+		// `error` is an alias for `danger` (status enum exposes both —
+		// the SCSS treats them as the same feedback rung).
+		&--error {
+			color: var(--origam-color-feedback-danger-fgSubtle);
+			background: transparent;
+
+			:deep(#{$this}__wrapper) {
+				background-color: var(--origam-color-feedback-danger-bgSubtle);
+				border-color: var(--origam-color-feedback-danger-border);
+				color: var(--origam-color-feedback-danger-fgSubtle);
+			}
+
+			#{$this}__timer-bar {
+				background-color: var(--origam-color-feedback-danger-border);
+				opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
 			}
 		}
 
 		&--rounded {
 			:deep(#{$this}__wrapper) {
-				border-radius: 4px;
+				border-radius: var(--origam-snackbar__wrapper---border-radius, 4px);
 			}
 		}
 
 		&--absolute {
 			position: absolute;
-			z-index: 1;
+			z-index: var(--origam-snackbar--absolute---z-index, var(--origam-z-index-raised, 1));
 		}
 
 		&--multi-line {
 			#{$this}__wrapper {
-				min-height: 68px;
+				min-height: var(--origam-snackbar--multi-line---wrapper-min-height, 68px);
 			}
 		}
 
@@ -380,7 +468,7 @@
 
 				#{$this}__actions {
 					align-self: flex-end;
-					margin-bottom: 8px;
+					margin-bottom: var(--origam-snackbar--vertical---actions-margin-bottom, 8px);
 				}
 			}
 		}
@@ -409,8 +497,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

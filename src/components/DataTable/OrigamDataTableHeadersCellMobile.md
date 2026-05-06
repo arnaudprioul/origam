@@ -1,5 +1,0 @@
-# Origamdatatableheaderscellmobile
-
-## Usage
-
-    <OrigamDataTableHeadersCellMobile />

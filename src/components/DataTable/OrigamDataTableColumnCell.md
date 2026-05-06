@@ -1,5 +1,0 @@
-# Origamdatatablecolumn
-
-## Usage
-
-    <OrigamDataTableColumn />

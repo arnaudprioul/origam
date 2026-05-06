@@ -68,17 +68,23 @@
 	import { computed, nextTick, ref, shallowRef, StyleValue, useAttrs } from 'vue'
 	import { OrigamIcon, OrigamLabel } from '../../components'
 
-	import { useProps, useSelectionControl } from '../../composables'
+	import { useDefaults, useProps, useSelectionControl } from '../../composables'
 
 	import { vRipple } from '../../directives'
 
-	import type { ISelectionControlProps } from "../../interfaces"
+	import type { ISelectionControlEmits, ISelectionControlProps, ISelectionControlSlots } from "../../interfaces"
 
 	import { filterInputAttrs, forwardRefs, getUid, matchesSelector } from '../../utils'
 
-	const props = withDefaults(defineProps<ISelectionControlProps>(), {})
+	const _props = withDefaults(defineProps<ISelectionControlProps>(), {})
 
-	const emits = defineEmits(['update:modelValue', 'click:label'])
+	// Resolve props against the closest `provideDefaults({ 'origam-selection-control': … })`
+	// injected by a parent `OrigamSelectionControlGroup`.
+	const props = useDefaults(_props)
+
+	const emits = defineEmits<ISelectionControlEmits>()
+
+	defineSlots<ISelectionControlSlots>()
 
 	const {filterProps} = useProps<ISelectionControlProps>(props)
 
@@ -122,7 +128,7 @@
 		isFocused.value = false
 		isFocusVisible.value = false
 	}
-	const handleClickLabel = (e: Event) => {
+	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 	const handleInput = (e: Event) => {
@@ -146,10 +152,22 @@
 
 	// CLASS & STYLES
 
+	// Strict color/bgColor channel separation:
+	//   • `color` (foreground)    → applied on the SC root so the
+	//     LABEL inherits it via `currentColor` (label sits on the
+	//     root, not under the wrapper).
+	//   • `bgColor` (background)  → forwarded to the consuming
+	//     component via the slot scope (`backgroundColorStyles`); the
+	//     track / thumb / input element decides where to apply it.
+	//
+	// Pre-fix `backgroundColorStyles.value` was added to the SC
+	// ROOT styles, which painted the ENTIRE selection-control box
+	// (label + wrapper + input area) with the consumer's bgColor.
+	// Reported by the user — "il y a toujours un fond vert sur tout
+	// l'element".
 	const selectionControlStyles = computed(() => {
 		return [
 			textColorStyles.value,
-			backgroundColorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -274,12 +292,14 @@
 		&--error {
 			:not(#{$this}--disabled) {
 				.origam-label {
-					color: rgba(255, 0, 0, 1);
+					/* --origam-selection-control__label---color-error: {color.feedback.danger.fgSubtle} (fallback: var(--origam-color-feedback-danger-fgSubtle)) */
+					color: var(--origam-selection-control__label---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
 				}
 
 				#{$this}__input {
 					> .origam-icon {
-						color: rgba(255, 0, 0, 1);
+						/* --origam-selection-control__icon---color-error: {color.feedback.danger.fgSubtle} */
+						color: var(--origam-selection-control__icon---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
 					}
 				}
 			}
@@ -314,8 +334,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

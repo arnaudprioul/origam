@@ -1,5 +1,0 @@
-# Origamcontainer
-
-## Usage
-
-    <OrigamContainer />

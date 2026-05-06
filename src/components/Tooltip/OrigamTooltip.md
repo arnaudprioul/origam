@@ -1,5 +1,0 @@
-# Origamtooltip
-
-## Usage
-
-    <OrigamTooltip />

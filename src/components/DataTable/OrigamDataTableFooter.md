@@ -1,5 +1,0 @@
-# Origamdatatablefooter
-
-## Usage
-
-    <OrigamDataTableFooter />

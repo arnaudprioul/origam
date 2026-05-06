@@ -1,5 +1,0 @@
-# Origamexpansionpanels
-
-## Usage
-
-    <OrigamExpansionPanels />

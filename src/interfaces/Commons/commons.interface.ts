@@ -35,6 +35,16 @@ export interface ICommonsComponentProps {
     style?: string | Array<string> | object | StyleValue
 }
 
+/** Default v-model emit shape shared by every input-style component. */
+export interface ICommonsComponentEmits {
+    (e: 'update:modelValue', event: any): void
+}
+
+/** Default slot signature shared by container components. */
+export interface ICommonsComponentSlots {
+    default?: () => any
+}
+
 export interface ITagProps {
     tag?: string
 }

@@ -34,10 +34,26 @@
 						@touchstartPassive="handleSliderTouchstart"
 				>
 
+					<!--
+						Track fill bounds:
+						  • single mode  → fill from `0` to `trackStop`
+						    (0% to current value, the active progress).
+						  • range mode  → fill from `trackRangeStart`
+						    to `trackRangeStop` (between the two thumbs,
+						    the selected range).
+						Pre-fix `:start="0"` was hardcoded — in range
+						mode `trackStop` returned `undefined` and the
+						track's `stop` prop fell back to its default
+						`100`, so the fill covered the WHOLE track,
+						painting both inside and outside the range with
+						the same `color` and erasing the visual
+						distinction. User-reported: "elles sont toute
+						en color".
+					-->
 					<origam-slider-field-track
 							ref="origamSliderFieldTrackRef"
-							:start="0"
-							:stop="trackStop"
+							:start="isRange ? trackRangeStart : 0"
+							:stop="isRange ? trackRangeStop : trackStop"
 							class="origam-slider-field__track"
 							v-bind="{...trackProps}"
 					/>
@@ -284,15 +300,33 @@
 		},
 		getActiveThumb: (e: MouseEvent | TouchEvent) => {
 			if (isRange.value) {
-				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStartThumbRef.value) return
+				// Pre-fix three copy-paste typos in this branch made the
+				// STOP thumb completely unreachable in range mode:
+				//   1. `if (!start || !start)` — second clause should
+				//      check `!stop`. With STOP never validated, the
+				//      function happily proceeded with a null ref.
+				//   2. `stopOffset = …(e, START.$el, …)` — measured
+				//      the click distance to the START thumb instead
+				//      of the STOP thumb, so both offsets resolved to
+				//      the same point.
+				//   3. The ternary returned `START.$el` in BOTH
+				//      branches, so the active thumb always resolved
+				//      to START regardless of which one the user
+				//      clicked.
+				// User-reported: "je ne peux pas cliqué sur le 2eme
+				// control, je peux changé le premier mais le 2eme
+				// impossible".
+				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStopThumbRef.value) return
 
 				const startOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
-				const stopOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
+				const stopOffset  = getSliderFieldOffset(e, origamSliderFieldStopThumbRef.value.$el, props.direction)
 
 				const a = Math.abs(startOffset)
 				const b = Math.abs(stopOffset)
 
-				return (a < b || (a === b && startOffset < 0)) ? origamSliderFieldStartThumbRef.value.$el : origamSliderFieldStartThumbRef.value.$el
+				return (a < b || (a === b && startOffset < 0))
+						? origamSliderFieldStartThumbRef.value.$el
+						: origamSliderFieldStopThumbRef.value.$el
 			} else {
 				return origamSliderFieldThumbRef.value?.$el
 			}
@@ -385,7 +419,12 @@
 	}
 
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
+		// Strip the entire IColorProps surface so `OrigamInput` (the
+		// row wrapper) doesn't paint the consumer's intent on its
+		// background. `color` / `bgColor` stay strictly scoped to the
+		// slider track + thumb (per the project's color contract).
+		// Same fix family as the OrigamSwitch wrapper-bg leak in 3b6ba3f.
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const thumbProps = computed(() => {
 		return omit(props.thumbProps ?? {}, ['modelValue', 'class', 'focused', 'min', 'max', 'position'])

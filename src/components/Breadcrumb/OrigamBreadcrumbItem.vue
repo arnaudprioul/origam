@@ -72,6 +72,7 @@
 		useAdjacent,
 		useBorder,
 		useColorEffect,
+		useDefaults,
 		useDensity,
 		useHover,
 		useLink,
@@ -88,7 +89,11 @@
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 
-	const props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
+	const _props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-breadcrumb-item': … })`
+	// injected by a parent `OrigamBreadcrumb`.
+	const props = useDefaults(_props)
 
 	defineEmits(['click:append', 'click:prepend', 'click:append'])
 
@@ -105,7 +110,7 @@
 		return active.value || link.isActive?.value
 	})
 
-	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, computed(() => !!props.disabled))
 	const {densityClasses} = useDensity(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
@@ -167,6 +172,36 @@
 		scoped
 >
 	.origam-breadcrumb-item {
+		// Default values for CSS custom properties — moved from :root {} global block
+		// (no hex were present; values are semantic references or keyword values)
+		--origam-breadcrumb-item---text-decoration: none;
+		--origam-breadcrumb-item---border-top-width: 0px;
+		--origam-breadcrumb-item---border-left-width: 0px;
+		--origam-breadcrumb-item---border-bottom-width: 0px;
+		--origam-breadcrumb-item---border-right-width: 0px;
+		--origam-breadcrumb-item---border-width: var(--origam-breadcrumb-item---border-top-width) var(--origam-breadcrumb-item---border-left-width) var(--origam-breadcrumb-item---border-bottom-width) var(--origam-breadcrumb-item---border-right-width);
+		--origam-breadcrumb-item---border-color: currentColor;
+		--origam-breadcrumb-item---border-style: solid;
+		--origam-breadcrumb-item---border-radius: 0px;
+		--origam-breadcrumb-item---density: 0px;
+		--origam-breadcrumb-item---box-shadow: var(--origam-shadow-none, none);
+		// color: inherit → token breadcrumb.item.color → {color.text.primary} with inherit fallback preserved
+		--origam-breadcrumb-item---color: var(--origam-breadcrumb-item---color-token, inherit);
+		--origam-breadcrumb-item---opacity: 1;
+		--origam-breadcrumb-item---background: transparent;
+		--origam-breadcrumb-item---margin-inline-start: 0px;
+		--origam-breadcrumb-item---margin-inline-end: 0px;
+		--origam-breadcrumb-item---margin-block-start: 0px;
+		--origam-breadcrumb-item---margin-block-end: 0px;
+		--origam-breadcrumb-item---padding-block-start: 8px;
+		--origam-breadcrumb-item---padding-block-end: 8px;
+		--origam-breadcrumb-item---padding-inline-start: 8px;
+		--origam-breadcrumb-item---padding-inline-end: 8px;
+		--origam-breadcrumb-item---transition-duration: 0.2s, 0.1s;
+		--origam-breadcrumb-item---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		--origam-breadcrumb-item---transition-property: transform, color;
+		--origam-breadcrumb-item---transition: var(--origam-breadcrumb-item---transition-property) var(--origam-breadcrumb-item---transition-duration) var(--origam-breadcrumb-item---transition-timing-function);
+
 		align-items: center;
 		display: inline-flex;
 		vertical-align: middle;
@@ -196,7 +231,8 @@
 		margin-inline-end: var(--origam-breadcrumb-item---margin-inline-end);
 
 		&--disabled {
-			--origam-breadcrumb-item---opacity: 0.5;
+			// Token breadcrumb.item.opacity-disabled → {opacity.50} = 0.5
+			--origam-breadcrumb-item---opacity: var(--origam-breadcrumb-item---opacity-disabled, 0.5);
 			pointer-events: none;
 		}
 
@@ -204,8 +240,9 @@
 
 		}
 
+		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
-			--origam-breadcrumb-item---density: 8px;
+			--origam-breadcrumb-item---density: -8px;
 		}
 
 		&--density-default {
@@ -221,36 +258,5 @@
 			align-items: center;
 			display: inline-flex;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-breadcrumb-item---text-decoration: none;
-		--origam-breadcrumb-item---border-top-width: 0;
-		--origam-breadcrumb-item---border-left-width: 0;
-		--origam-breadcrumb-item---border-bottom-width: 0;
-		--origam-breadcrumb-item---border-right-width: 0;
-		--origam-breadcrumb-item---border-width: var(--origam-breadcrumb-item---border-top-width) var(--origam-breadcrumb-item---border-left-width) var(--origam-breadcrumb-item---border-bottom-width) var(--origam-breadcrumb-item---border-right-width);
-		--origam-breadcrumb-item---border-color: currentColor;
-		--origam-breadcrumb-item---border-style: solid;
-		--origam-breadcrumb-item---border-radius: 0;
-		--origam-breadcrumb-item---density: 0;
-		--origam-breadcrumb-item---box-shadow: none;
-		--origam-breadcrumb-item---color: inherit;
-		--origam-breadcrumb-item---opacity: 1;
-		--origam-breadcrumb-item---background: transparent;
-		--origam-breadcrumb-item---margin-inline-start: 0;
-		--origam-breadcrumb-item---margin-inline-end: 0;
-		--origam-breadcrumb-item---margin-block-start: 0;
-		--origam-breadcrumb-item---margin-block-end: 0;
-		--origam-breadcrumb-item---padding-block-start: 8px;
-		--origam-breadcrumb-item---padding-block-end: 8px;
-		--origam-breadcrumb-item---padding-inline-start: 8px;
-		--origam-breadcrumb-item---padding-inline-end: 8px;
-		--origam-breadcrumb-item---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb-item---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb-item---transition-property: transform, color;
-		--origam-breadcrumb-item---transition: var(--origam-breadcrumb-item---transition-property) var(--origam-breadcrumb-item---transition-duration) var(--origam-breadcrumb-item---transition-timing-function);
 	}
 </style>

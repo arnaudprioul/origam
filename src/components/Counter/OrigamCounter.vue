@@ -25,12 +25,12 @@
 >
 	import { OrigamSlideY, OrigamTransition } from "../../components"
 
-	import { useProps, useSsrBoot } from "../../composables"
+	import { useBothColor, useProps, useSsrBoot } from "../../composables"
 
 	import type { ICounterProps } from "../../interfaces"
 	import type { TTransitionProps } from "../../types"
 
-	import { computed, StyleValue } from "vue"
+	import { computed, StyleValue, toRef } from "vue"
 
 	const props = withDefaults(defineProps<ICounterProps>(), {
 		value: 0,
@@ -39,6 +39,13 @@
 	})
 
 	const {filterProps} = useProps<ICounterProps>(props)
+
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props. ICounterProps already extends
+	// IColorProps but the component never consumed it — `<origam-counter
+	// color="primary">` was a silent no-op despite the type system
+	// promising otherwise. Audit-fix.
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {isBooted} = useSsrBoot()
 
@@ -50,6 +57,7 @@
 
 	const counterStyles = computed(() => {
 		return [
+			colorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -82,8 +90,6 @@
 	}
 </style>
 
-<style>
-	:root {
+<!-- Lot 6 — empty `<style>:root{}` removed; tokens come from
+     `tokens/component/counter.json` via the generated CSS. -->
 
-	}
-</style>

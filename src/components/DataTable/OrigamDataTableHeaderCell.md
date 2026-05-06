@@ -1,5 +1,0 @@
-# Origamdatatableheadercell
-
-## Usage
-
-    <OrigamDataTableHeaderCell />

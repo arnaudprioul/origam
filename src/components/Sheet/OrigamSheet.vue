@@ -35,7 +35,7 @@
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses} = useElevation(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -49,6 +49,7 @@
 			dimensionStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
+			elevationStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
@@ -87,7 +88,15 @@
 
 		border-color: var(--origam-sheet---border-color);
 		border-style: var(--origam-sheet---border-style);
-		border-width: var(--origam-sheet---border-width);
+		// Directional tokens (defined in `tokens/component/sheet.json`)
+		// with omnibus var as the consumer-override fallback. Pre-fix
+		// the SCSS read the undefined `--origam-sheet---border-width`
+		// directly, resolving to CSS `medium` (~3px) — Sheets shipped
+		// with a 3px solid border by default.
+		border-top-width: var(--origam-sheet---border-top-width, var(--origam-sheet---border-width, 0));
+		border-right-width: var(--origam-sheet---border-right-width, var(--origam-sheet---border-width, 0));
+		border-bottom-width: var(--origam-sheet---border-bottom-width, var(--origam-sheet---border-width, 0));
+		border-left-width: var(--origam-sheet---border-left-width, var(--origam-sheet---border-width, 0));
 		border-radius: var(--origam-sheet---border-radius);
 
 		width: var(--origam-sheet---width);
@@ -112,12 +121,50 @@
 		color: var(--origam-sheet---color);
 
 		&--border {
-			border-width: var(--origam-sheet--border---border-width);
+			// Override the four directional tokens — the base rule reads
+			// each side independently, so a single `border-width`
+			// shorthand here would only land if its specificity wins
+			// the cascade. Setting the per-side vars keeps the SCSS
+			// "directional first" contract consistent.
+			// Pre-fix this modifier read `--origam-sheet--border---border-width`,
+			// a token Style Dictionary never generated → the shorthand
+			// resolved to CSS `medium` (~3px).
+			--origam-sheet---border-top-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-right-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-bottom-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-left-width: var(--origam-border-width-thin, 1px);
 			box-shadow: var(--origam-sheet--border---box-shadow);
 		}
 
+		// Rounded variants — mirrors the OrigamBtn pattern. Each variant
+		// binds `--origam-sheet---border-radius` to a primitive
+		// `--origam-radius-*` token so theme switches stay seamless.
 		&--rounded {
-			border-radius: var(--origam-sheet--rounded---border-radius);
+			--origam-sheet---border-radius: var(--origam-sheet--rounded---border-radius, var(--origam-radius-2xl, 24px));
+		}
+
+		&--rounded-x-small {
+			--origam-sheet---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-sheet---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-sheet---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-sheet---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-sheet---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-sheet---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
 		&--absolute {
@@ -138,54 +185,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-sheet---position: relative;
-		--origam-sheet---display: block;
-		--origam-sheet---box-sizing: border-box;
-
-		--origam-sheet---border-top-width: 0;
-		--origam-sheet---border-left-width: 0;
-		--origam-sheet---border-bottom-width: 0;
-		--origam-sheet---border-right-width: 0;
-		--origam-sheet---border-width: var(--origam-sheet---border-top-width) var(--origam-sheet---border-left-width) var(--origam-sheet---border-bottom-width) var(--origam-sheet---border-right-width);
-		--origam-sheet---border-color: rgba(0, 0, 0, 0.87);
-		--origam-sheet---border-style: solid;
-
-		--origam-sheet---border-start-start-radius: 0;
-		--origam-sheet---border-start-end-radius: 0;
-		--origam-sheet---border-end-start-radius: 0;
-		--origam-sheet---border-end-end-radius: 0;
-		--origam-sheet---border-radius: var(--origam-sheet---border-start-start-radius) var(--origam-sheet---border-start-end-radius) var(--origam-sheet---border-end-start-radius) var(--origam-sheet---border-end-end-radius);
-
-		--origam-sheet---color: rgba(0, 0, 0, 0.87);
-		--origam-sheet---box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-		--origam-sheet---background: rgb(255, 255, 255);
-
-		--origam-sheet---width: 100%;
-		--origam-sheet---max-width: 100%;
-		--origam-sheet---min-width: 0;
-		--origam-sheet---height: 100%;
-		--origam-sheet---max-height: 100%;
-		--origam-sheet---min-height: 0;
-
-		--origam-sheet---padding-block-start: 0;
-		--origam-sheet---padding-block-end: 0;
-		--origam-sheet---padding-inline-start: 0;
-		--origam-sheet---padding-inline-end: 0;
-
-		--origam-sheet---margin-block-start: 0;
-		--origam-sheet---margin-block-end: 0;
-		--origam-sheet---margin-inline-end: 0;
-		--origam-sheet---margin-inline-start: 0;
-
-		--origam-sheet--border---border-top-width: thin;
-		--origam-sheet--border---border-left-width: thin;
-		--origam-sheet--border---border-bottom-width: thin;
-		--origam-sheet--border---border-right-width: thin;
-		--origam-sheet--border---border-width: var(--origam-sheet---border-top-width) var(--origam-sheet---border-left-width) var(--origam-sheet---border-bottom-width) var(--origam-sheet---border-right-width);
-		--origam-sheet--border---box-shadow: none;
-
-		--origam-sheet--rounded---border-radius: 4px;
-	}
-</style>

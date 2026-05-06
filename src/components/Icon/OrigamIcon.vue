@@ -81,33 +81,50 @@
 
 <style
 		lang="scss"
-		scoped
 >
+	// Intentionally non-scoped: OrigamIcon is a thin dispatcher that renders
+	// one of the leaf icon components (Class/Ligature/Svg/Component). Vue's
+	// scoped CSS attaches a data-v-* attribute to the element rendered in
+	// THIS template, but the actual leaf <i> / <div> / <svg> is rendered by
+	// the leaf component's template — so a scoped selector here would never
+	// match. The `.origam-icon` namespace is unique enough to stay global.
 	.origam-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		// Default colour comes from the design tokens — `currentColor` so an
+		// ancestor's `color` value cascades through to <path fill> in SVG and
+		// to the glyph in font-icons. Tokens are still resolvable via
+		// `--origam-icon---color` for one-off overrides.
+		color: var(--origam-icon---color, currentColor);
+		transition-duration: var(--origam-icon---transition-duration, 150ms);
+		transition-timing-function: var(--origam-icon---transition-timing-function, ease);
+		transition-property: color, background-color, transform;
+
+		&--clickable {
+			cursor: pointer;
+		}
+
+		// Named sizes — pinned to the typography scale tokens so an icon
+		// rendered next to body text inherits the matching cap-height.
 		&--size-x-small {
-			font-size: 1em;
+			font-size: var(--origam-icon---font-size-xs, 1em);
 		}
 
 		&--size-small {
-			font-size: 1.25em;
+			font-size: var(--origam-icon---font-size-sm, 1.25em);
 		}
 
 		&--size-default {
-			font-size: 1.5em;
+			font-size: var(--origam-icon---font-size-md, 1.5em);
 		}
 
 		&--size-large {
-			font-size: 1.75em;
+			font-size: var(--origam-icon---font-size-lg, 1.75em);
 		}
 
 		&--size-x-large {
-			font-size: 2em;
+			font-size: var(--origam-icon---font-size-xl, 2em);
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

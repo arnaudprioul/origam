@@ -7,6 +7,7 @@ import {
     COLOR_DELTA_Y_MIN,
     COLOR_MAPPERS,
     CSS_COLOR_REGEX,
+    CSS_NAMED_COLORS,
     GCO,
     LO_CLIP,
     LO_CON_FACTOR,
@@ -30,8 +31,20 @@ import type { TColorType, THex, THSLA, THSVA, TLAB, TRGBA, TXYZ } from '../../ty
 
 import { chunk, clamp, consoleWarn, has, int, padEnd } from '../../utils'
 
+/**
+ * Recognise any string the CSS engine treats as a colour:
+ *   - hex (`#abc`, `#aabbcc`, `#aabbccdd`)
+ *   - functional notation (`rgb()`, `rgba()`, `hsl()`, `hsla()`,
+ *     `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`)
+ *   - CSS variable (`var(--…)`)
+ *   - one of the 148 named colours OR a CSS-wide keyword
+ *     (`transparent`, `currentColor`, `inherit`, …)
+ */
 export function isCssColor (color?: string | null | false): boolean {
-    return !!color && /^(#|var\(--|(rgb|hsl)a?\()/.test(color)
+    return !!color && (
+        /^(#|var\(--|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\()/i.test(color) ||
+        CSS_NAMED_COLORS.has(color.toLowerCase())
+    )
 }
 
 export function isParsableColor (color: string): boolean {

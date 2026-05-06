@@ -1,5 +1,0 @@
-# Origamform
-
-## Usage
-
-    <OrigamForm />

@@ -70,7 +70,10 @@
 					:eager="eager"
 					:location="BLOCK.BOTTOM"
 					:max-height="310"
+					:offset="0"
 					:open-on-click="false"
+					:transition="{ component: OrigamExpandY }"
+					:viewport-margin="0"
 					activator="parent"
 					content-class="origam-select__content"
 					v-bind="{ ...menuProps }"
@@ -108,7 +111,13 @@
 										:items="displayItems"
 										renderless
 								>
-									<template #item:renderless="{item, index, itemRef}">
+									<!-- Slot name MUST be `item.renderless` (with a dot) —
+									     OrigamVirtualScroll declares `<slot name="item.renderless">`
+									     and `<slot name="item.renderless.${index}">`. The previous
+									     `#item:renderless` (colon) parsed as a different slot name
+									     and never matched, so the v-for produced zero items in the
+									     dropdown — the menu opened but the list was empty. -->
+									<template #item.renderless="{item, index, itemRef}">
 										<slot
 												name="item"
 												v-bind="{item, index, props: menuListItemProps(item, itemRef, index)}"
@@ -263,6 +272,7 @@
 >
 	import {
 		computed,
+		getCurrentInstance,
 		inject,
 		mergeProps,
 		nextTick,
@@ -278,6 +288,7 @@
 		OrigamAvatar,
 		OrigamCheckboxBtn,
 		OrigamChip,
+		OrigamExpandY,
 		OrigamIcon,
 		OrigamList,
 		OrigamListItem,
@@ -331,7 +342,7 @@
 		itemChildren: 'children',
 		itemProps: 'props',
 		valueComparator: deepEqual,
-		menuIcon: MDI_ICONS.MENU_DOWN_OUTLINE,
+		menuIcon: MDI_ICONS.CHEVRON_DOWN,
 		divider: ',',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
 		filterKeys: () => ['title'],
@@ -352,6 +363,13 @@
 	const origamVirtualScrollRef = ref<TOrigamVirtualScroll>()
 	const origamListRef = ref<TOrigamList>()
 	const origamChipsRef = ref<TOrigamChip>()
+
+	// Component instance — used as a fallback path to reach the
+	// underlying `<input>` (`vm.proxy.$el.querySelector('input')`) when
+	// the `forwardRefs`-based proxy on `origamTextFieldRef` doesn't
+	// expose certain props/methods (notably `$el`, which the proxy filters
+	// because of its `$` prefix).
+	const vm = getCurrentInstance()
 
 	const slots = useSlots()
 
@@ -515,6 +533,37 @@
 		if (menuDisabled.value) return
 
 		menu.value = !menu.value
+
+		// Select-all the input text on every field click in autocomplete-
+		// single mode when there's a selection. The focus watcher already
+		// runs select() on the focus TRANSITION, but that fires only on
+		// the false→true edge — clicking an already-focused field, OR a
+		// click that races with the menu's focus management (focusin
+		// steal / scroll-strategy refocus), leaves the cursor at the end
+		// with the selection cleared. Wiring it here too means EVERY
+		// mousedown re-selects, so the next keystroke always replaces.
+		// We DOM-query the `<input>` instead of going through the
+		// `origamTextFieldRef` proxy — `forwardRefs` doesn't reliably
+		// expose the underlying HTMLInputElement's `select()` method.
+		// Two `nextTick`s — one for Vue to flush, one to land AFTER the
+		// menu's focusin handler has run.
+		if (props.autocomplete && !props.multiple && search.value) {
+			// `setTimeout(0)` instead of `nextTick` — the browser's
+			// click cursor-placement and the TextField's
+			// `handleFocus` chain (which calls `input.focus()` →
+			// cursor jumps to end) run AFTER mousedown's synchronous
+			// handlers AND after Vue's microtask queue. A microtask
+			// `nextTick` resolves too early (before the click cycle
+			// finishes its cursor placement) so our select() takes
+			// effect for an instant then gets clobbered. A macrotask
+			// (setTimeout) lands AFTER all that, so the selection
+			// sticks.
+			setTimeout(() => {
+				const root = vm?.proxy?.$el as HTMLElement | undefined
+				const input = root?.querySelector('input') as HTMLInputElement | null
+				input?.select()
+			}, 0)
+		}
 	}
 	const handleMousedownMenuIcon = (e: MouseEvent) => {
 		if (menuDisabled.value) return
@@ -737,11 +786,46 @@
 
 		if (val) {
 			isSelecting.value = true
-			// @ts-expect-error TODO
-			search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
+			// Sync `search` (the input value) from the current model on focus
+			// — but ONLY in autocomplete mode, where the input is meant to
+			// be editable so the user can refine their pick. In non-
+			// autocomplete mode this writes the selected title into the
+			// `<input value>`, which then renders ALONGSIDE the
+			// `.origam-select__selection` div that ALSO carries the title
+			// → user sees "Germany Germany" in the field after a re-focus
+			// (tab-out-then-back, click-elsewhere-then-back, …). The input
+			// in non-autocomplete is effectively a screen-reader proxy
+			// (`pointer-events: none`, opacity flipped on by --active) —
+			// it must stay empty so it doesn't visually duplicate the
+			// selection.
+			if (props.autocomplete) {
+				// @ts-expect-error TODO
+				search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
+			}
 			isPristine.value = true
 
-			nextTick(() => isSelecting.value = false)
+			nextTick(() => {
+				isSelecting.value = false
+
+				// Select-all the input text in single-autocomplete mode
+				// when there IS a selection. The user expects: "click
+				// the field with `France` already picked, start typing
+				// → my keystrokes REPLACE the selection". Without the
+				// select-all the cursor lands at the end and typing
+				// appends — `France` + `S` → `FranceS` filters against
+				// nothing and looks broken.
+				// Skip in multiple mode (the input is meant to be a
+				// fresh filter input, NOT a copy of any chip).
+				// We DOM-query the input instead of going through
+				// `origamTextFieldRef.value.select()` — the
+				// `forwardRefs` proxy on TextField doesn't reliably
+				// expose the HTMLInputElement's `select()` method.
+				if (props.autocomplete && !props.multiple && search.value) {
+					const root = vm?.proxy?.$el as HTMLElement | undefined
+				const input = root?.querySelector('input') as HTMLInputElement | null
+				input?.select()
+				}
+			})
 		} else {
 			if (!props.multiple && search.value == null) model.value = []
 			else if (
@@ -939,6 +1023,19 @@
 						opacity: 1;
 						pointer-events: auto;
 						caret-color: inherit;
+						// The base Select rule pins the input to
+						// `position: absolute` so it sits as an invisible
+						// a11y proxy. Autocomplete needs it BACK in the
+						// flex flow — otherwise the typed text starts at
+						// the wrapper's BORDER (left=16) but the picked
+						// text (which uses the static-position branch
+						// when a sibling selection chip exists) sits
+						// inside the wrapper's padding (left=32). User
+						// reported the 16px jump between typing and
+						// picked states. Forcing `static` keeps the
+						// input in flow at all times → typed text and
+						// picked text both land at left=32.
+						position: static;
 					}
 				}
 
@@ -978,9 +1075,18 @@
 			&#{$this}--single {
 				:deep(.origam-field) {
 					input {
+						// Pre-fix `padding-inline: inherit` cascaded the
+						// parent `.origam-field__input`'s 16px padding
+						// onto the input ON TOP of the field's own 16px
+						// outer padding AND the wrapper's 16px inner
+						// padding. Net offset before the typed text was
+						// 48px (16 + 16 + 16) — the field looked
+						// half-empty on the left after picking. Drop it;
+						// the wrapper's padding already provides the
+						// text indent.
 						left: 0;
 						right: 0;
-						padding-inline: inherit;
+						padding-inline: 0;
 						opacity: 1;
 					}
 
@@ -1000,7 +1106,16 @@
 
 					&.origam-field--focused {
 						#{$this}__selection {
+							// Hide AND collapse — pre-fix the selection div
+							// only got `opacity: 0`, leaving its 66px-wide
+							// flex item still in the row. The `<input>` was
+							// pushed past the invisible chip, so the typed
+							// text appeared mid-field instead of flush with
+							// the inline padding ("Search & select" looked
+							// half-empty on the left).
 							opacity: 0;
+							position: absolute;
+							pointer-events: none;
 						}
 					}
 				}
@@ -1009,8 +1124,62 @@
 	}
 </style>
 
-<style>
-	:root {
+<!--
+	GLOBAL rules for the teleported dropdown.
+	`<origam-menu>` mounts its content into the overlay container at the
+	end of `<body>` (Teleport), so the component-scoped `[data-v-…]`
+	attribute selectors don't reach it. We therefore expose a stable
+	hook via `content-class="origam-select__content"` and write the
+	rules in a NON-scoped block.
 
+	What we override:
+	  • Default `.origam-menu__content` is `display: inline-block` +
+	    `width: max-content`, so it shrinks to its content. For a
+	    `<select>`-like UX the dropdown body must be at least as wide
+	    as the activator. The connected location strategy already sets
+	    `min-width` on `.origam-overlay__content` to the activator's
+	    width — we force the inner visual surface to FILL the overlay
+	    so its bg / border-radius / shadow span the full width.
+	  • Drop the 320px `max-width` cap inherited from the base menu
+	    on `.origam-menu__list` so each item can extend to the full
+	    dropdown width.
+-->
+<style>
+	.origam-select__content .origam-menu__content {
+		display: block;
+		width: 100%;
+		max-width: none;
+	}
+
+	.origam-select__content .origam-menu__list {
+		max-width: none;
+	}
+
+	/*
+	 * Dropdown items spec — tighten the list-item baseline for the
+	 * `<select>` use-case. The default `OrigamListItem` ships with the
+	 * Material 2 list-item height (40 + 8 + 8 = 56px), which is right
+	 * for a sidebar / nav list but reads as far too sparse inside a
+	 * dropdown — five items take ~280px of vertical real-estate and
+	 * the eye has to travel between widely-spaced lines. Material 3 and
+	 * `v-select` both use 48px for menu items; we mirror that by pinning
+	 * `min-height: 32px` and trimming the block padding from 8px to 8px
+	 * (kept) — net result is 48px tall items that feel dense without
+	 * cramping the touch target.
+	 *
+	 * Inline padding bumped from 16px to 32px so the item TEXT lines up
+	 * with the field's text position (chip 16px + wrapper 16px = 32px).
+	 * Pre-fix the dropdown items started at 16px while the picked text
+	 * inside the field landed at 32px → a 16px horizontal jump every
+	 * time a user picked an item. Reported by the user when comparing
+	 * the open-dropdown screenshot to the picked-state screenshot.
+	 *
+	 * The hover/active overlay still spans the full row (it sits on the
+	 * item itself, not on its padding box) — only the title text is
+	 * inset, which matches the v-select / Material 3 visual.
+	 */
+	.origam-select__content .origam-list-item {
+		--origam-list-item---min-height: 32px;
+		--origam-list-item---padding-inline-start: 32px;
 	}
 </style>

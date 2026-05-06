@@ -94,50 +94,40 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef, useSlots } from 'vue'
+	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 	import { OrigamMessages } from '../../components/Messages'
 
 	import {
 		useAdjacent,
-		useBorder,
 		useBothColor,
+		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useRtl,
 		useValidation
 	} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { IInputProps } from '../../interfaces'
+	import type { IInputEmits, IInputProps, IInputSlots } from '../../interfaces'
 
-	import { getUid } from '../../utils'
+	import { getUid, wrapInArray } from '../../utils'
 
-	const props = withDefaults(defineProps<IInputProps>(), {
+	const _props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
 		density: DENSITY.DEFAULT
 	})
+	const props = useDefaults(_props)
 
-	defineEmits(['update:modelValue', 'click:append', 'click:prepend'])
+	const emits = defineEmits<IInputEmits>()
 
-	const {filterProps} = useProps<IInputProps>(props)
+	defineSlots<IInputSlots>()
+	const slots = useSlots()
 
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {roundedStyles, roundedClasses} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
-	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
-	const {rtlClasses} = useRtl()
+	const attrs = useAttrs()
 
 	const uid = getUid()
 	const id = computed(() => {
@@ -172,10 +162,10 @@
 		if (props.errorMessages?.length || (!isPristine.value && errorMessages.value.length)) {
 			return errorMessages.value
 		} else if (props.hint && (props.persistentHint || props.focused)) {
-			return props.hint
+			return wrapInArray(props.hint)
 		}
 
-		return props.messages ?? []
+		return wrapInArray(props.messages ?? [])
 	})
 
 	const inputProps = computed(() => {
@@ -194,7 +184,6 @@
 		}
 	})
 
-	const slots = useSlots()
 	const hasMessages = computed(() => {
 		return messages.value.length > 0
 	})
@@ -207,10 +196,15 @@
 
 	// CLASS & STYLES
 
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	const {rtlClasses} = useRtl()
+
 	const inputStyles = computed(() => {
 		return [
 			dimensionStyles.value,
-			marginStyles.value,
+			colorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -223,32 +217,29 @@
 				'origam-input--hide-spin-buttons': props.hideSpinButtons
 			},
 			densityClasses.value,
-			roundedClasses.value,
-			borderClasses.value,
-			paddingClasses.value,
-			marginClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
 			props.class
 		]
 	})
-	const inputControlStyles = computed(() => {
-		return [
-			roundedStyles.value,
-			borderStyles.value,
-			paddingStyles.value,
-			colorStyles.value,
-			props.style
-		] as StyleValue
-	})
 	const inputControlClasses = computed(() => {
 		return [
-			'origam-input__control',
-			elevationClasses.value
+			'origam-input__control'
 		]
 	})
+	// `inputControlStyles` was referenced in the template (`<div
+	// :style="inputControlStyles">`) but never declared in the script,
+	// so every render emitted:
+	//   [Vue warn]: Property "inputControlStyles" was accessed during
+	//   render but is not defined on instance.
+	// Wired as an empty StyleValue array — keeps the template binding
+	// valid and gives consumers a future hook (override via inline
+	// `style` would slot in here).
+	const inputControlStyles = computed<StyleValue>(() => [])
 
 	// EXPOSE
+
+	const {filterProps} = useProps<IInputProps>(props)
 
 	defineExpose({
 		filterProps
@@ -264,9 +255,9 @@
 
 		display: grid;
 		flex: 1 1 auto;
-		font-size: 1rem;
-		font-weight: 400;
-		line-height: 1.5;
+		font-size: var(--origam-input---font-size, 1rem);
+		font-weight: var(--origam-input---font-weight, 400);
+		line-height: var(--origam-input---line-height, 1.5);
 
 		--origam-input---padding-top: 16px;
 		--origam-input__control---height: 56px;
@@ -289,7 +280,7 @@
 		&__prepend,
 		&__append {
 			> .origam-icon {
-				opacity: 0.7;
+				opacity: var(--origam-input---icon-opacity, 0.7);
 			}
 		}
 
@@ -323,18 +314,6 @@
 
 		&--density-compact {
 			--origam-input---density: -8px;
-		}
-
-		&--border {
-			#{$this}__control {
-				border: 1px solid currentColor;
-			}
-		}
-
-		&--rounded {
-			#{$this}__control {
-				border-radius: 4px;
-			}
 		}
 
 		&--vertical {
@@ -386,7 +365,7 @@
 			#{$this}__details,
 			#{$this}__prepend,
 			#{$this}__append {
-				opacity: 0.5;
+				opacity: var(--origam-input---disabled-opacity, 0.5);
 			}
 		}
 
@@ -394,7 +373,7 @@
 			&:not(#{$this}--disabled) {
 				#{$this}__details {
 					> .origam-messages {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-input---error-color, var(--origam-color-feedback-danger-fg-subtle));
 					}
 				}
 
@@ -402,7 +381,7 @@
 				#{$this}__prepend,
 				#{$this}__append {
 					> .origam-icon {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-input---error-color, var(--origam-color-feedback-danger-fg-subtle));
 					}
 				}
 			}
@@ -432,8 +411,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-input---density: 0px;
-	}
-</style>

@@ -4,21 +4,23 @@
 			:id="id"
 			:class="btnGroupClasses"
 	>
-		<slot name="default">
-			<template v-if="hasItems">
-				<template
-						v-for="(item, index) in items"
-						:key="index"
-				>
-					<slot
-							name="item"
-							v-bind="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<template v-if="hasItems">
+					<template
+							v-for="(item, index) in items"
+							:key="index"
 					>
-						<origam-btn v-bind="item"/>
-					</slot>
+						<slot
+								name="item"
+								v-bind="{item, index}"
+						>
+							<origam-btn v-bind="item"/>
+						</slot>
+					</template>
 				</template>
-			</template>
-		</slot>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -26,7 +28,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from '../../components'
+	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
 		useBorder,
 		useColorEffect,
@@ -57,20 +59,29 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	const items = computed(() => {
-		return props.items?.map((item) => {
-			return {
-				...item,
-				density: props.density ?? item.density,
-				color: props.color ?? item.color,
-				bgColor: props.bgColor ?? item.bgColor,
-				activeColor: props.activeColor ?? item.activeColor,
-				activeBgColor: props.activeBgColor ?? item.activeBgColor,
-				hoverColor: props.hoverColor ?? item.hoverColor,
-				hoverBgColor: props.hoverBgColor ?? item.hoverBgColor
-			}
-		}) as Array<IBtnProps>
-	})
+	// Push the visual-token props down to every descendant `<origam-btn>`
+	// as DEFAULTS — children that pass their own `density` / `color` /
+	// `bgColor` / etc. still win (that's the contract: parent provides
+	// defaults, child overrides). Children consume this map via
+	// `useDefaults(props)` inside `OrigamBtn.vue`.
+	const slotDefaults = computed(() => ({
+		'origam-btn': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor
+		}
+	}))
+
+	// The `items` array path used to manually merge with `props.x ?? item.x`,
+	// which made the parent OVERRIDE the item (the inverse of the documented
+	// "parent default, item override" contract). The merge is no longer
+	// needed — `useDefaults` inside each child enforces the correct
+	// resolution order and respects per-item overrides automatically.
+	const items = computed(() => (props.items ?? []) as Array<IBtnProps>)
 
 	const slots = useSlots()
 	const hasItems = computed(() => {
@@ -146,10 +157,39 @@
 			--origam-btn-group---border-width: thin;
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
-			--origam-btn-group---border-radius: 24px;
+			--origam-btn-group---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
+		&--rounded-x-small {
+			--origam-btn-group---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-btn-group---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-btn-group---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-btn-group---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-btn-group---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-btn-group---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		// Density formula on the btn-group is `height + density`, so:
+		//   • comfortable → density POSITIVE → height grows
+		//   • compact     → density NEGATIVE → height shrinks
+		// Pre-fix both rungs were +8, making them visually identical.
 		&--density-comfortable {
 			--origam-btn-group---density: 8px;
 		}
@@ -159,7 +199,7 @@
 		}
 
 		&--density-compact {
-			--origam-btn-group---density: 8px;
+			--origam-btn-group---density: -8px;
 		}
 
 		:deep(.origam-btn) {

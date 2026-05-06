@@ -51,7 +51,14 @@ export interface ILayoutProps extends ICommonsComponentProps {
 
 export interface ILayoutItemProps extends ICommonsComponentProps {
     name?: string
-    order: string | number
+    /**
+     * Stacking order in the parent OrigamLayout. Optional — components
+     * that consume `useLayoutItem` (Drawer, BottomNav, AppBar, …)
+     * fall back to a unique-ID-based order when the consumer omits
+     * the prop. Marking it required here triggered a `[Vue warn]:
+     * Missing required prop: "order"` on every standalone usage.
+     */
+    order?: string | number
     absolute?: boolean
     location?: TDirectionBoth
 }

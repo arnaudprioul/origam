@@ -1,0 +1,21 @@
+{
+  "textarea-field": {
+    "_comment": "TextareaField component tokens — Lot 3.2B. Extends TextField with auto-grow, manual resize grip, and row-height management.",
+
+    "textarea": {
+      "opacity":               { "$type": "number",    "$value": "{opacity.0}" },
+      "opacity-active":        { "$type": "number",    "$value": "{opacity.100}" },
+      "transition-duration":   { "$type": "duration",  "$value": "0.15s" },
+      "transition-easing":     { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+      "line-height":           { "$type": "number",    "$value": 1 }
+    },
+
+    "grip": {
+      "border-color":          { "$type": "color",     "$value": "{color.border.subtle}",
+        "$description": "Replaces legacy `#ddd` fallback (Lot 3.1). `{color.border.subtle}` resolves to neutral.300 in light and its dark-theme counterpart." },
+      "opacity":               { "$type": "number",    "$value": "{opacity.26}",
+        "$description": "Grip resting opacity (was hardcoded 0.2 — aligned to nearest palette step opacity.26 pending opacity.20 decision from Lot 2D arbitrage)." },
+      "height":                { "$type": "dimension", "$value": "9px" }
+    }
+  }
+}

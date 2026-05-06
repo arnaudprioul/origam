@@ -1,5 +1,0 @@
-# Origammessages
-
-## Usage
-
-    <OrigamMessages />

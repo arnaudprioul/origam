@@ -1,5 +1,0 @@
-# Origamprogresslinear
-
-## Usage
-
-    <OrigamProgressLinear />

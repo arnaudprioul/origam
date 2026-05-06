@@ -1,7 +1,20 @@
 <template>
+	<!--
+		`defer` (Vue 3.5+) waits until the current render cycle has
+		settled before resolving the teleport target. Pre-fix the teleport
+		evaluated `:to="#layout-0 .origam-layout__wrapper"` while the
+		wrapper was still being mounted by the parent OrigamLayout — Vue
+		warned `Failed to locate Teleport target` and `Invalid Teleport
+		target on mount: null`, the drawer never mounted, and a cascade
+		of `Cannot set properties of null (setting '__vnode')` errors
+		took the rest of the variant down. With `defer`, the target lookup
+		runs after the layout's wrapper is in the DOM.
+	-->
 	<teleport
 			v-if="isActive"
+			:disabled="isLayoutOrphan"
 			:to="teleportDrawer"
+			defer
 	>
 		<component
 				:is="tag"
@@ -188,7 +201,17 @@
 		)
 	})
 
+	// `useLayoutItem` falls back to `layoutId: 'origam-layout-orphan'`
+	// when no `<OrigamLayout>` ancestor is in the tree (stories, modal
+	// previews, tests). The corresponding `#origam-layout-orphan
+	// .origam-layout__wrapper` selector doesn't exist in the DOM, so
+	// `<teleport :to="…">` silently no-ops and the drawer never mounts.
+	// Detect the orphan case and disable the teleport — Vue's
+	// `disabled` flag falls back to inline rendering at the declared
+	// position, which is what the consumer expects in standalone use.
+	const isLayoutOrphan = computed(() => layoutId.value === 'origam-layout-orphan')
 	const teleportDrawer = computed(() => {
+		if (isLayoutOrphan.value) return undefined
 		return `#${layoutId.value} .origam-layout__wrapper`
 	})
 
@@ -281,69 +304,87 @@
 	.origam-drawer {
 		-webkit-overflow-scrolling: touch;
 
-		display: var(--origam-drawer--display);
-		flex-direction: var(--origam-drawer--flex-direction);
+		display: var(--origam-drawer---display);
+		flex-direction: var(--origam-drawer---flex-direction);
 
-		height: var(--origam-drawer--height);
-		max-width: var(--origam-drawer--max-width);
+		height: var(--origam-drawer---height);
+		max-width: var(--origam-drawer---max-width);
 		width: var(--origam-drawer---width);
 
-		pointer-events: var(--origam-drawer--pointer-events);
+		pointer-events: var(--origam-drawer---pointer-events);
 
 		transform: var(--origam-layout---transform);
-		transition-duration: var(--origam-drawer--transition-duration);
-		transition-property: var(--origam-drawer--transition-property);
-		transition-timing-function: var(--origam-drawer--transition-timing-function);
+		transition-duration: var(--origam-drawer---transition-duration);
+		transition-property: var(--origam-drawer---transition-property);
+		transition-timing-function: var(--origam-drawer---transition-timing-function);
 
-		position: var(--origam-layout---position, var(--origam-drawer--position));
+		position: var(--origam-layout---position, var(--origam-drawer---position));
 		z-index: var(--origam-layout---zIndex, 1000);
 
-		border-color: var(--origam-drawer--border-color);
-		border-style: var(--origam-drawer--border-color);
-		border-width: var(--origam-drawer--border-width);
-		border-radius: var(--origam-drawer--border-radius);
+		// Pre-fix two SCSS bugs were stacked here:
+		// 1. Every `--origam-drawer--{prop}` (double-dash) read a CSS
+		//    variable the token build never emits — tokens emit
+		//    `--origam-drawer---{prop}` (TRIPLE dash). Net effect: 36/37
+		//    drawer variables resolved to nothing, so the drawer rendered
+		//    with browser-default backgrounds, transitions, and
+		//    dimensions instead of the design tokens.
+		// 2. `border-style` mistakenly read the `--border-color` variable
+		//    (typo). Even if the var name were correct it would still
+		//    produce an invalid `border-style` value.
+		// Fixed in this commit by rewriting all reads to triple-dash and
+		// pointing `border-style` at the correct variable. Per-side
+		// widths + per-corner radii match the chromique pattern.
+		border-color: var(--origam-drawer---border-color);
+		border-style: var(--origam-drawer---border-style);
+		border-top-width: var(--origam-drawer---border-top-width, 0);
+		border-right-width: var(--origam-drawer---border-right-width, 0);
+		border-bottom-width: var(--origam-drawer---border-bottom-width, 0);
+		border-left-width: var(--origam-drawer---border-left-width, 0);
+		border-start-start-radius: var(--origam-drawer---border-start-start-radius, 0);
+		border-start-end-radius: var(--origam-drawer---border-start-end-radius, 0);
+		border-end-end-radius: var(--origam-drawer---border-end-end-radius, 0);
+		border-end-start-radius: var(--origam-drawer---border-end-start-radius, 0);
 
-		background: var(--origam-drawer--background);
-		box-shadow: var(--origam-drawer--box-shadow);
-		color: var(--origam-drawer--color);
+		background: var(--origam-drawer---background);
+		box-shadow: var(--origam-drawer---box-shadow);
+		color: var(--origam-drawer---color);
 
+		// `border={true}` — opt-in border on all four sides (Vuetify
+		// parity). The per-side reads above pick up these var values
+		// automatically; the duplicate `border-{side}-width` declarations
+		// previously baked into each directional modifier were redundant.
 		&--border {
-			--origam-drawer--border-width: thin;
-			--origam-drawer--box-shadow: none;
+			--origam-drawer---border-top-width: thin;
+			--origam-drawer---border-right-width: thin;
+			--origam-drawer---border-bottom-width: thin;
+			--origam-drawer---border-left-width: thin;
+			--origam-drawer---box-shadow: none;
 		}
 
+		// Edge-anchored variants — only the side adjacent to the
+		// content gets a border, mimicking the Material drawer treatment.
 		&--top {
-			--origam-drawer--border-bottom-width: thin;
-
 			top: 0;
-			border-bottom-width: var(--origam-drawer--border-bottom-width);
+			--origam-drawer---border-bottom-width: thin;
 		}
 
 		&--bottom {
-			--origam-drawer--border-top-width: thin;
-
 			left: 0;
-			border-top-width: var(--origam-drawer--border-top-width);
+			--origam-drawer---border-top-width: thin;
 		}
 
 		&--left {
-			--origam-drawer--border-right-width: thin;
-
 			top: 0;
 			left: 0;
 			right: auto;
-
-			border-right-width: var(--origam-drawer--border-right-width);
+			--origam-drawer---border-right-width: thin;
 		}
 
 		&--right {
-			--origam-drawer--border-left-width: thin;
-
 			top: 0;
 			left: auto;
 			right: 0;
-
-			border-left-width: var(--origam-drawer--border-left-width);
+			--origam-drawer---border-left-width: thin;
 		}
 
 		&--floating {
@@ -351,12 +392,12 @@
 		}
 
 		&--temporary {
-			--origam-drawer--box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+			--origam-drawer---box-shadow: var(--origam-shadow-lg);
 		}
 
 		&--sticky {
-			--origam-drawer--height: auto;
-			--origam-drawer--transition-property: box-shadow, transform, visibility, width, height, left, right;
+			--origam-drawer---height: auto;
+			--origam-drawer---transition-property: box-shadow, transform, visibility, width, height, left, right;
 		}
 
 		&:deep(.origam-list) {
@@ -387,15 +428,18 @@
 		}
 
 		&__scrim {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: black;
-			opacity: 0.2;
-			transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			z-index: 1;
+			/* CSS-first: toutes les valeurs passent par les tokens — pas de valeur hardcodée */
+			position: var(--origam-drawer__scrim---position, absolute);
+			top: var(--origam-drawer__scrim---position-top, 0);
+			left: var(--origam-drawer__scrim---position-left, 0);
+			width: var(--origam-drawer__scrim---width, 100%);
+			height: var(--origam-drawer__scrim---height, 100%);
+			background: var(--origam-drawer__scrim---background, var(--origam-color-overlay-scrim));
+			opacity: var(--origam-drawer__scrim---opacity, 0.2);
+			transition-property: var(--origam-drawer__scrim---transition-property, opacity);
+			transition-duration: var(--origam-drawer__scrim---transition-duration, var(--origam-motion-duration-medium));
+			transition-timing-function: var(--origam-drawer__scrim---transition-timing-function, var(--origam-motion-easing-standard));
+			z-index: var(--origam-drawer__scrim---z-index, var(--origam-z-index-raised));
 		}
 
 		&__prepend,
@@ -406,38 +450,6 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-drawer--display: flex;
-		--origam-drawer--flex-direction: column;
-
-		--origam-drawer--border-top-width: 0;
-		--origam-drawer--border-left-width: 0;
-		--origam-drawer--border-bottom-width: 0;
-		--origam-drawer--border-right-width: 0;
-		--origam-drawer--border-width: var(--origam-drawer--border-top-width) var(--origam-drawer--border-left-width) var(--origam-drawer--border-bottom-width) var(--origam-drawer--border-right-width);
-		--origam-drawer--border-color: rgba(0, 0, 0, 0.87);
-		--origam-drawer--border-style: solid;
-		--origam-drawer--border-start-start-radius: 0;
-		--origam-drawer--border-start-end-radius: 0;
-		--origam-drawer--border-end-start-radius: 0;
-		--origam-drawer--border-end-end-radius: 0;
-		--origam-drawer--border-radius: var(--origam-drawer--border-start-start-radius) var(--origam-drawer--border-start-end-radius) var(--origam-drawer--border-end-start-radius) var(--origam-drawer--border-end-end-radius);
-
-		--origam-drawer--position: absolute;
-
-		--origam-drawer--transition-duration: 0.2s;
-		--origam-drawer--transition-property: box-shadow, transform, visibility, width, height, left, right, top, bottom;
-		--origam-drawer--transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-		--origam-drawer--height: 100%;
-		--origam-drawer--width: 100%;
-		--origam-drawer--max-width: 100%;
-
-		--origam-drawer--pointer-events: auto;
-
-		--origam-drawer--color: rgba(0, 0, 0, 0.87);
-		--origam-drawer--box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-		--origam-drawer--background: rgb(255, 255, 255);
-	}
-</style>
+<!-- Les valeurs par défaut des CSS custom properties ci-dessus sont désormais
+     émises par Style Dictionary depuis tokens/component/drawer.json.
+     Le bloc :root global a été supprimé — Lot 2D migration design tokens. -->

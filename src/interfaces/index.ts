@@ -16,6 +16,7 @@ export * from './Breadcrumb/breadcrumb-divider.interface'
 export * from './Btn/btn.interface'
 export * from './Btn/btn-group.interface'
 export * from './Btn/btn-toggle.interface'
+export * from './ItemGroup/item-group.interface'
 
 export * from './Card/card.interface'
 export * from './Card/card-header.interface'
@@ -36,6 +37,8 @@ export * from './Chip/chip-group.interface'
 
 export * from './ColorPicker/color-picker.interface'
 export * from './ColorPicker/color-picker-canvas.interface'
+
+export * from './ConfirmWrapper/confirm-wrapper.interface'
 export * from './ColorPicker/color-picker-preview.interface'
 export * from './ColorPicker/color-picker-edit.interface'
 export * from './ColorPicker/color-picker-swatches.interface'
@@ -60,6 +63,7 @@ export * from './Commons/dimension.interface'
 export * from './Commons/delay.interface'
 export * from './Commons/density.interface'
 export * from './Commons/direction.interface'
+export * from './Commons/variant.interface'
 export * from './Commons/display.interface'
 export * from './Commons/elevation.interface'
 export * from './Commons/filters.interface'
@@ -71,6 +75,7 @@ export * from './Commons/hover.interface'
 export * from './Commons/intersect.interface'
 export * from './Commons/justify.interface'
 export * from './Commons/layout.interface'
+export * from './Commons/options.interface'
 export * from './Commons/lazy.interface'
 export * from './Commons/link.interface'
 export * from './Commons/loader.interface'
@@ -123,6 +128,8 @@ export * from './DatePicker/date-picker-years.interface'
 
 export * from './DatePickerField/date-picker-field.interface'
 
+export * from './DefaultProvider/default-provider.interface'
+
 export * from './Dialog/dialog.interface'
 export * from './Dialog/dialog-confirmation.interface'
 
@@ -138,6 +145,8 @@ export * from './ExpensionPanel/expansion-panel-content.interface'
 export * from './Field/field.interface'
 
 export * from './FileField/file-field.interface'
+export * from './FileField/file-field-dragndrop-item.interface'
+export * from './FileField/file-field-list-item.interface'
 
 export * from './Form/form.interface'
 
@@ -145,8 +154,6 @@ export * from './Grids/container.interface'
 export * from './Grids/row.interface'
 export * from './Grids/col.interface'
 export * from './Grids/spacer.interface'
-
-export * from './Highlight/highlight.interface'
 
 export * from './Icon/icon.interface'
 

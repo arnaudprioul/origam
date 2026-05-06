@@ -1,5 +1,0 @@
-# Origamdatepickerheader
-
-## Usage
-
-    <OrigamDatePickerHeader />

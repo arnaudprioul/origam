@@ -1,5 +1,0 @@
-# Origamdatepickeryears
-
-## Usage
-
-    <OrigamDatePickerYears />

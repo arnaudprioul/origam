@@ -13,12 +13,12 @@
 				class="origam-progress__stream"
 		/>
 		<div
+				:class="['origam-progress__background', backgroundColorClasses]"
 				:style="backgroundStyles"
-				class="origam-progress__background"
 		/>
 
 		<origam-transition :transition="transition">
-			<div class="origam-progress__loader">
+			<div :class="['origam-progress__loader', loaderColorClasses]">
 				<template v-if="indeterminate">
 					<div
 							v-for="bar in ['long', 'short']"
@@ -57,13 +57,13 @@
 	import { OrigamFade, OrigamSlideX, OrigamTransition } from '../../components'
 
 	import {
-		useBackgroundColor,
 		useIntersectionObserver,
 		useLocation,
 		useProgress,
 		useProps,
 		useRounded,
-		useRtl
+		useRtl,
+		useTextColor
 	} from '../../composables'
 
 	import type { IProgressLinearProps } from '../../interfaces'
@@ -83,8 +83,8 @@
 	const {progressClasses, progressStyles, normalizedValue, thickness, progress, max, hasContent} = useProgress(props)
 	const {roundedClasses} = useRounded(props)
 	const {intersectionRef} = useIntersectionObserver()
-	const {backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
-	const {backgroundColorStyles: loaderColorStyles} = useBackgroundColor(toRef(props, 'color'))
+	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'), undefined, 'origam-progress__background')
+	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'), undefined, 'origam-progress__loader')
 	const {isRtl, rtlClasses} = useRtl()
 
 	const normalizedBuffer = computed(() => {
@@ -186,8 +186,9 @@
 			#{$this}__background {
 				background: currentColor;
 				bottom: 0;
+				color: var(--origam-progress-linear__background---color, inherit);
 				left: 0;
-				opacity: 0.5;
+				opacity: var(--origam-progress-linear__background---opacity, 0.5);
 				position: absolute;
 				top: 0;
 				transition-property: width, left, right;
@@ -207,6 +208,8 @@
 			}
 
 			#{$this}__loader {
+				color: var(--origam-progress-linear__loader---color, inherit);
+
 				> * {
 					background: currentColor;
 				}
@@ -331,10 +334,6 @@
 </style>
 
 <style>
-	:root {
-
-	}
-
 	@keyframes indeterminate-ltr {
 		0% {
 			left: -90%;

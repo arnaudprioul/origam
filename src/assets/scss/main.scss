@@ -1,0 +1,30 @@
+// origam design system — main SCSS entry point
+//
+// Consumers can do either of:
+//   @use 'origam/styles';            // → this file
+//   @use 'origam/tokens/scss/light'; // → individual theme partial
+//   @use 'origam/scss/helpers' as ds; // → mixins only
+//
+// Order matters: primitives must load first so semantic and component layers
+// can resolve their alias references. Light is loaded as the default theme;
+// dark is layered on top and activated by `data-theme="dark"` (or the
+// `prefers-color-scheme` media query handled inside the dark partial).
+
+@forward 'tokens/primitive';
+@forward 'tokens/light';
+@forward 'tokens/dark';
+
+// Public mixin surface.
+@forward 'helpers';
+
+// Minimal global reset.
+// Migrated from `OrigamLayout.vue` during Lot 2A — `box-sizing: border-box`
+// is the de-facto standard for a sane layout model and was previously declared
+// inside the Layout component's `<style>:root{}` block, which caused it to
+// be loaded multiple times when several Layouts mounted on the same page.
+// Now lives once at the document root.
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}

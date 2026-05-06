@@ -1,5 +1,0 @@
-# Origambreadcrumbdivider
-
-## Usage
-
-    <OrigamBreadcrumbDivider />

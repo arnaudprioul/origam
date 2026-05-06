@@ -1,5 +1,0 @@
-# Origamprogresscircular
-
-## Usage
-
-    <OrigamProgressCircular />

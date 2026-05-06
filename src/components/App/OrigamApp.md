@@ -1,5 +1,0 @@
-# Origampagebuilder
-
-## Usage
-
-    <OrigamApp />

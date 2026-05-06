@@ -151,3 +151,26 @@
 		filterProps
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-virtual-scroll {
+		overflow-y: auto;
+		scroll-padding: var(--origam-virtual-scroll---scroll-padding, 0px);
+
+		&__container {
+			position: relative;
+		}
+
+		&__item {
+			transition-duration: var(--origam-virtual-scroll---transition-duration, 100ms);
+			transition-timing-function: var(--origam-virtual-scroll---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+		}
+
+		&__spacer {
+			display: block;
+		}
+	}
+</style>

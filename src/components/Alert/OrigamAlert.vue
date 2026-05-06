@@ -190,7 +190,14 @@
 	// SLOTS
 
 	const hasIcon = computed(() => {
-		return !!(props.icon || props.status)
+		// Pre-fix: `!!(props.icon || props.status)` returned true as soon
+		// as a `status` was set, even when the resolved `icon` was empty
+		// (`useStatus` only assigns `statusIcon` to `icon` when
+		// `statusIconPosition === 'replace'`). The header then rendered
+		// `<origam-icon :icon="undefined">` — an empty `<i.origam-icon>`
+		// placeholder squeezed in next to the title. Pin the gate to the
+		// actual resolved icon used by the template.
+		return !!icon.value
 	})
 	const hasTitle = computed(() => {
 		return !!(slots.title || props.title)
@@ -275,7 +282,18 @@
 		margin-inline-start: var(--origam-alert---margin-inline-start);
 		margin-inline-end: var(--origam-alert---margin-inline-end);
 
-		border-width: var(--origam-alert---border-width);
+		// Use the directional border tokens declared in the JSON
+		// (border-{top,right,bottom,left}-width). The omnibus
+		// `--origam-alert---border-width` is consumed by ad-hoc
+		// inline overrides only — falling back to it lets a consumer
+		// set a single var to drive all four sides.
+		// Pre-fix the SCSS read the undefined omnibus var directly,
+		// which CSS resolves to `initial` (`medium`, ~3px) — alerts
+		// shipped with a 3px solid border on every render.
+		border-top-width: var(--origam-alert---border-top-width, var(--origam-alert---border-width, 0));
+		border-right-width: var(--origam-alert---border-right-width, var(--origam-alert---border-width, 0));
+		border-bottom-width: var(--origam-alert---border-bottom-width, var(--origam-alert---border-width, 0));
+		border-left-width: var(--origam-alert---border-left-width, var(--origam-alert---border-width, 0));
 		border-style: var(--origam-alert---border-style);
 		border-color: var(--origam-alert---border-color);
 		border-radius: var(--origam-alert---border-radius);
@@ -284,7 +302,7 @@
 		color: var(--origam-alert---color);
 
 		&--elevated {
-			box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow-md));
 		}
 
 		&--border {
@@ -325,12 +343,44 @@
 			}
 		}
 
+		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
+		// Each rung binds `--origam-alert---border-radius` to a
+		// primitive `--origam-radius-*` token.
 		&--rounded {
-			--origam-alert---border-radius: 4px;
+			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
+		&--rounded-x-small {
+			--origam-alert---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-alert---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-alert---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-alert---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-alert---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		// Density formula on the alert is `padding - density`, so:
+		//   • comfortable → density must be NEGATIVE so `padding − (−8)` grows
+		//   • compact     → density must be POSITIVE so `padding − 8` shrinks
+		// Pre-fix both rungs were +8, making `comfortable` indistinguishable
+		// from `compact` (both shrunk the padding).
 		&--density-comfortable {
-			--origam-alert---density: 8px;
+			--origam-alert---density: -8px;
 		}
 
 		&--density-default {
@@ -342,23 +392,23 @@
 		}
 
 		&--warning {
-			--origam-alert---background-color: var(--origam-status--warning---background-color, rgb(251, 140, 0));
-			--origam-alert---color: var(--origam-status--warning---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--warning---bg, var(--origam-color-feedback-warning-bg, rgb(251, 140, 0)));
+			--origam-alert---color: var(--origam-alert--warning---fg, var(--origam-color-feedback-warning-fg, #ffffff));
 		}
 
 		&--success {
-			--origam-alert---background-color: var(--origam-status--success---background-color, rgb(76, 175, 80));
-			--origam-alert---color: var(--origam-status--success---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--success---bg, var(--origam-color-feedback-success-bg, rgb(76, 175, 80)));
+			--origam-alert---color: var(--origam-alert--success---fg, var(--origam-color-feedback-success-fg, #ffffff));
 		}
 
 		&--info {
-			--origam-alert---background-color: var(--origam-status--info---background-color, rgb(33, 150, 243));
-			--origam-alert---color: var(--origam-status--info---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--info---bg, var(--origam-color-feedback-info-bg, rgb(33, 150, 243)));
+			--origam-alert---color: var(--origam-alert--info---fg, var(--origam-color-feedback-info-fg, #ffffff));
 		}
 
 		&--error {
-			--origam-alert---background-color: var(--origam-status--error---background-color, rgb(207, 102, 121));
-			--origam-alert---color: var(--origam-status--error---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--danger---bg, var(--origam-color-feedback-danger-bg, rgb(207, 102, 121)));
+			--origam-alert---color: var(--origam-alert--danger---fg, var(--origam-color-feedback-danger-fg, #ffffff));
 		}
 
 		&--absolute {
@@ -459,68 +509,3 @@
 
 </style>
 
-<style>
-	:root {
-		--origam-alert---border-top-width: 0;
-		--origam-alert---border-left-width: 0;
-		--origam-alert---border-bottom-width: 0;
-		--origam-alert---border-right-width: 0;
-		--origam-alert---border-width: var(--origam-alert---border-top-width) var(--origam-alert---border-left-width) var(--origam-alert---border-bottom-width) var(--origam-alert---border-right-width);
-		--origam-alert---border-color: transparent;
-		--origam-alert---border-style: solid;
-		--origam-alert---border-radius: 0px;
-		--origam-alert---color: rgba(30, 30, 30, 0.87);
-		--origam-alert---background-color: rgb(230, 230, 230);
-		--origam-alert---position: static;
-		--origam-alert---margin-inline-start: 0;
-		--origam-alert---margin-inline-end: 0;
-		--origam-alert---margin-block-start: 0;
-		--origam-alert---margin-block-end: 0;
-		--origam-alert---padding-block-start: 16px;
-		--origam-alert---padding-block-end: 16px;
-		--origam-alert---padding-inline-start: 16px;
-		--origam-alert---padding-inline-end: 16px;
-
-		--origam-alert__prepend---align-items: center;
-		--origam-alert__prepend---margin-inline-start: 0;
-		--origam-alert__prepend---margin-inline-end: 16px;
-		--origam-alert__prepend---margin-block-start: 0;
-		--origam-alert__prepend---margin-block-end: 0;
-		--origam-alert__prepend---padding-block-start: 0;
-		--origam-alert__prepend---padding-block-end: 0;
-		--origam-alert__prepend---padding-inline-start: 0;
-		--origam-alert__prepend---padding-inline-end: 0;
-
-		--origam-alert__append---align-items: center;
-		--origam-alert__append---margin-inline-start: 16px;
-		--origam-alert__append---margin-inline-end: 0;
-		--origam-alert__append---margin-block-start: 0;
-		--origam-alert__append---margin-block-end: 0;
-		--origam-alert__append---padding-block-start: 0;
-		--origam-alert__append---padding-block-end: 0;
-		--origam-alert__append---padding-inline-start: 0;
-		--origam-alert__append---padding-inline-end: 0;
-
-		--origam-alert__close---margin-inline-start: 16px;
-		--origam-alert__close---margin-inline-end: 0;
-		--origam-alert__close---margin-block-start: 0;
-		--origam-alert__close---margin-block-end: 0;
-		--origam-alert__close---padding-block-start: 0;
-		--origam-alert__close---padding-block-end: 0;
-		--origam-alert__close---padding-inline-start: 0;
-		--origam-alert__close---padding-inline-end: 0;
-
-		--origam-alert__title---align-items: center;
-		--origam-alert__title---font-size: 1.25rem;
-		--origam-alert__title---font-weight: 500;
-		--origam-alert__title---hyphens: auto;
-		--origam-alert__title---letter-spacing: 0.0125em;
-		--origam-alert__title---line-height: 1.75rem;
-		--origam-alert__title---overflow-wrap: normal;
-		--origam-alert__title---text-transform: none;
-		--origam-alert__title---word-break: normal;
-		--origam-alert__title---word-wrap: break-word;
-
-		--origam-alert__underlay---border-radius: 4px;
-	}
-</style>

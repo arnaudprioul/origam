@@ -6,7 +6,9 @@
 			:class="textareaFieldClasses"
 			:focused="isFocused"
 			:style="textareaFieldStyles"
-			v-bind="{ ...rootAttrs, ...inputProps }"
+			v-bind="{...rootAttrs, ...inputProps, rules: enrichedRules}"
+			@click:prepend="handleClickPrepend"
+			@click:append="handleClickAppend"
 	>
 		<template
 				v-if="slots.prepend"
@@ -68,14 +70,14 @@
 					<slot name="prefix"/>
 				</template>
 
-				<template #default="{class: fieldSlotClass, ...fieldSlotProps}">
+				<template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
 					<div
 							:class="fieldSlotClass"
 							data-no-activator=""
 					>
 						<slot
 								name="default"
-								v-bind="fieldSlotProps"
+								v-bind="{ref, ...fieldSlotProps}"
 						/>
 						<textarea
 								ref="textareaRef"
@@ -94,7 +96,7 @@
 						/>
 					</div>
 					<div
-							v-if="!autoGrow"
+							v-if="!autoGrow && !noResize"
 							ref="verticalDragger"
 							class="origam-textarea-field__grip"
 					>
@@ -162,11 +164,11 @@
 				>
 					<template
 							v-if="slots.counter"
-							#default="{counter, value, max}"
+							#default="{counter, max, value}"
 					>
 						<slot
 								name="counter"
-								v-bind="{counter, value, max}"
+								v-bind="{counter, max, value}"
 						/>
 					</template>
 				</origam-counter>
@@ -206,6 +208,7 @@
 		ref,
 		shallowRef,
 		StyleValue,
+		toRef,
 		useAttrs,
 		useSlots,
 		watch,
@@ -213,57 +216,58 @@
 	} from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import { useAdjacentInner, useDragResizer, useFocus, useProps, useVModel } from '../../composables'
+	import { useAdjacent, useAdjacentInner, useDefaults, useDragResizer, useFocus, useLocale, useProps, useVModel } from '../../composables'
 
 	import { vIntersect } from '../../directives'
 
 	import { AXIS, DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { ITextareaFieldProps } from '../../interfaces'
+	import type { ITextareaFieldEmits, ITextareaFieldProps, ITextareaFieldSlots } from '../../interfaces'
 
 	import type { TOrigamField, TOrigamInput } from '../../types'
 
-	import { clamp, convertToUnit, filterInputAttrs } from '../../utils'
+	import { clamp, convertToUnit, filterInputAttrs, forwardRefs } from '../../utils'
 
-	const props = withDefaults(defineProps<ITextareaFieldProps>(), {
+	const _props = withDefaults(defineProps<ITextareaFieldProps>(), {
 		density: DENSITY.DEFAULT,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
-		border: true,
 		rounded: true,
 		rows: 3
 	})
+	const props = useDefaults(_props)
 
-	const emits = defineEmits(['click:control', 'mousedown:control', 'update:focused', 'update:modelValue', 'click:clear', 'click:prepend', 'click:append', 'click:appendInner', 'click:prependInner'])
+	const emits = defineEmits<ITextareaFieldEmits>()
 
-	const {filterProps} = useProps<ITextareaFieldProps>(props)
-
-	const attrs = useAttrs()
+	defineSlots<ITextareaFieldSlots>()
 	const slots = useSlots()
 
+	const attrs = useAttrs()
+
+	const {t} = useLocale()
+
 	const model = useVModel(props, 'modelValue')
-	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
+
+	/*********************************************************
+	 * Adjacent inner
+	 *
+	 * @description
+	 *
+	 ********************************************************/
 	const {
 		onClickAppendInner: handleClickAppendInner,
 		onClickPrependInner: handleClickPrependInner
 	} = useAdjacentInner(props)
+	const {
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	const counterValue = computed(() => {
-		return typeof props.counterValue === 'function'
-				? props.counterValue(model.value)
-				: (model.value || '').toString().length
-	})
-	const max = computed(() => {
-		if (attrs.maxlength) return attrs.maxlength as string | number
-
-		if (
-				!props.counter ||
-				(typeof props.counter !== 'number' &&
-						typeof props.counter !== 'string')
-		) return undefined
-
-		return props.counter
-	})
-
+	/*********************************************************
+	 * Intersect
+	 *
+	 * @description
+	 *
+	 ********************************************************/
 	const intersect = computed(() => {
 		return [{
 			handler: handleIntersect
@@ -276,11 +280,24 @@
 		(entries[0].target as HTMLInputElement)?.focus?.()
 	}
 
+	/*********************************************************
+	 * Reference Html
+	 *
+	 * @description
+	 *
+	 ********************************************************/
 	const origamInputRef = ref<TOrigamInput>()
 	const origamFieldRef = ref<TOrigamField>()
 	const textareaRef = ref<HTMLTextAreaElement>()
 	const verticalDragger = ref<HTMLElement>()
 
+	/*********************************************************
+	 * Events & controls
+	 *
+	 * @description
+	 *
+	 ********************************************************/
+	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
 	const isActive = computed(() => {
 		return props.persistentPlaceholder || isFocused.value || props.active
 	})
@@ -329,15 +346,37 @@
 		focus()
 	}
 
-	const rows = ref(+props.rows)
+	/*********************************************************
+	 * Height management
+	 *
+	 * @description
+	 *
+	 ********************************************************/
+	const rows = ref(+(props.rows ?? 3))
 
 	const isUniqueRow = computed(() => {
 		return rows.value === 1
 	})
 
 	watchEffect(() => {
-		if (!props.autoGrow) rows.value = +props.rows
+		if (!props.autoGrow) rows.value = +(props.rows ?? 3)
 	})
+
+	const parseCssFloat = (value: string, fallback = 0): number => {
+		const parsed = parseFloat(value)
+		return Number.isNaN(parsed) ? fallback : parsed
+	}
+
+	const getPadding = (style: CSSStyleDeclaration): number => {
+		return parseCssFloat(style.getPropertyValue('--origam-field---padding-top')) +
+				parseCssFloat(style.getPropertyValue('--origam-input---padding-top')) +
+				parseCssFloat(style.getPropertyValue('--origam-field---padding-bottom'))
+	}
+
+	const getLineHeight = (style: CSSStyleDeclaration): number => {
+		const lh = parseCssFloat(style.lineHeight)
+		return lh > 0 ? lh : parseCssFloat(style.fontSize, 16) * 1.5
+	}
 
 	const minHeight = computed(() => {
 		if (!textareaRef.value || !origamFieldRef.value) return 0
@@ -345,29 +384,30 @@
 		const style = getComputedStyle(textareaRef.value)
 		const fieldStyle = getComputedStyle(origamFieldRef.value.$el)
 
-		const padding = parseFloat(style.getPropertyValue('--origam-field---padding-top')) +
-				parseFloat(style.getPropertyValue('--origam-input---padding-top')) +
-				parseFloat(style.getPropertyValue('--origam-field---padding-bottom'))
-
-		const lineHeight = parseFloat(style.lineHeight)
+		const padding = getPadding(style)
+		const lineHeight = getLineHeight(style)
+		const rowCount = +(props.rows ?? 3)
+		const fieldMinHeight = parseCssFloat(fieldStyle.getPropertyValue('--origam-input__control---height'))
 
 		return Math.max(
-				parseFloat(props.rows) * lineHeight + padding,
-				parseFloat(fieldStyle.getPropertyValue('--origam-input__control---height'))
+				rowCount * lineHeight + padding,
+				fieldMinHeight
 		)
 	})
 	const maxHeight = computed(() => {
-		if (!textareaRef.value) return 0
+		if (!textareaRef.value) return Infinity
+
+		if (props.maxRows == null) return Infinity
 
 		const style = getComputedStyle(textareaRef.value)
 
-		const padding = parseFloat(style.getPropertyValue('--origam-field---padding-top')) +
-				parseFloat(style.getPropertyValue('--origam-input---padding-top')) +
-				parseFloat(style.getPropertyValue('--origam-field---padding-bottom'))
+		const padding = getPadding(style)
+		const lineHeight = getLineHeight(style)
+		const maxRowCount = +(props.maxRows)
 
-		const lineHeight = parseFloat(style.lineHeight)
+		if (Number.isNaN(maxRowCount) || maxRowCount <= 0) return Infinity
 
-		return parseFloat(props.maxRows!) * lineHeight + padding || Infinity as number
+		return maxRowCount * lineHeight + padding
 	})
 	const controlHeight = shallowRef(0)
 
@@ -377,13 +417,16 @@
 		nextTick(() => {
 			if (!textareaRef.value) return
 
-			const style = getComputedStyle(textareaRef.value)
+			const padding = getPadding(getComputedStyle(textareaRef.value))
 
-			const padding = parseFloat(style.getPropertyValue('--origam-field---padding-top')) +
-					parseFloat(style.getPropertyValue('--origam-input---padding-top')) +
-					parseFloat(style.getPropertyValue('--origam-field---padding-bottom'))
+			// Reset height so scrollHeight reflects real content
+			textareaRef.value.style.height = '0'
+			const scrollHeight = textareaRef.value.scrollHeight
+			textareaRef.value.style.height = ''
 
-			controlHeight.value = clamp((textareaRef.value?.scrollHeight ?? 0) + padding, minHeight.value, maxHeight.value)
+			controlHeight.value = clamp(scrollHeight + padding, minHeight.value, maxHeight.value)
+
+			emits('update:height', controlHeight.value)
 		})
 	}
 
@@ -404,10 +447,10 @@
 
 			const style = getComputedStyle(textareaRef.value)
 
-			const padding = parseFloat(style.getPropertyValue('--origam-field---padding-top')) +
-					parseFloat(style.getPropertyValue('--origam-input---padding-top')) +
-					parseFloat(style.getPropertyValue('--origam-field---padding-bottom'))
-			const lineHeight = parseFloat(style.lineHeight)
+			const padding = getPadding(style)
+			const lineHeight = getLineHeight(style)
+
+			if (lineHeight <= 0) return
 
 			rows.value = Math.floor((newHeight - padding) / lineHeight)
 		})
@@ -427,6 +470,28 @@
 		observer?.disconnect()
 	})
 
+	/*********************************************************
+	 * Counter & details
+	 *
+	 * @description
+	 *
+	 ********************************************************/
+	const counterValue = computed(() => {
+		return typeof props.counterValue === 'function'
+				? props.counterValue(model.value)
+				: (model.value || '').toString().length
+	})
+	const max = computed(() => {
+		if (attrs.maxlength) return attrs.maxlength as string | number
+
+		if (
+				!props.counter ||
+				(typeof props.counter !== 'number' &&
+						typeof props.counter !== 'string')
+		) return undefined
+
+		return props.counter
+	})
 	const hasCounter = computed(() => {
 		return slots.counter || props.counter || props.counterValue
 	})
@@ -434,18 +499,45 @@
 		return hasCounter.value || slots.details
 	})
 
-	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+	/*********************************************************
+	 * Validation
+	 *
+	 * @description
+	 *
+	 ********************************************************/
+	const enrichedRules = computed(() => {
+		const base = Array.isArray(props.rules) ? [...props.rules] : []
 
+		if (props.counter && typeof props.counter === 'number') {
+			const limit = props.counter
+			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', [limit]))
+		}
+
+		return base
+	})
+
+	/*********************************************************
+	 * Props
+	 *
+	 * @description
+	 *
+	 ********************************************************/
+	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
 	})
-
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'active', 'dirty', 'disabled', 'focused', 'error', 'centerAffix'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * textareaFieldClasses is a computed property that returns an array of classes for the textareaField element.
+	 * textareaFieldStyles is a computed property that returns an array of styles for the textareaField element.
+	 * textareaFieldFieldStyles is a computed property that returns an array of styles for the field element.
+	 ********************************************************/
 	const textareaFieldStyles = computed(() => {
 		return [
 			props.style
@@ -471,11 +563,16 @@
 		}
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes functions and components to the world.
+	 *    filterProps is a function that filters out props that are not defined in the `ITextareaFieldProps` interface.
+	 ********************************************************/
+	const {filterProps} = useProps<ITextareaFieldProps>(props)
 
-	defineExpose({
-		filterProps
-	})
+	defineExpose(forwardRefs({filterProps}, origamFieldRef, origamInputRef, textareaRef))
 </script>
 
 <style
@@ -484,6 +581,8 @@
 >
 	.origam-textarea-field {
 		$this: &;
+
+		--origam-field__input---padding-bottom: var(--origam-field__input---padding-top);
 
 		:deep(.origam-field) {
 			--origam-textarea-field__control---height: var(--origam-input__control---height);
@@ -504,6 +603,12 @@
 				textarea {
 					opacity: 1;
 				}
+			}
+
+			textarea {
+				border: none;
+				background: transparent;
+				resize: none;
 			}
 		}
 
@@ -531,19 +636,19 @@
 		}
 
 		&__grip {
-			width: 100%;
 			position: absolute;
 			bottom: 0;
-			left: 0;
-			border: 1px solid #ddd;
+			left: calc(0px - var(--origam-field---padding-start));
+			border: 1px solid var(--origam-textarea-field__grip---border-color, var(--origam-color-border-subtle));
 			border-top-width: 0;
 			cursor: ns-resize;
-			height: 9px;
+			height: var(--origam-textarea-field__grip---height, 9px);
 			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			opacity: 0.2;
+			opacity: var(--origam-textarea-field__grip---opacity, 0.2);
+			width: calc(100% + var(--origam-field---padding-start) + var(--origam-field---padding-end));
 
 			&:hover {
 				color: currentColor;

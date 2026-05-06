@@ -44,7 +44,7 @@
 
 	import { useLocale, useProps } from "../../composables"
 
-	import { MDI_ICONS } from "../../enums"
+	import { MDI_ICONS, VARIANT } from "../../enums"
 
 	import type { IRatingFieldItemProps } from '../../interfaces'
 
@@ -76,7 +76,15 @@
 		const icon = isFullIcon ? props.fullIcon : props.emptyIcon
 		const btnProps = origamBtnRef.value?.filterProps(props, ['class', 'style', 'id', 'bgColor', 'activeBgColor', 'hoverBgColor'])
 
-		return {...btnProps, icon}
+		// `variant: text` so each star reads as an icon-only affordance —
+		// the rating field is supposed to look like a row of stars, not
+		// a row of buttons. Pre-fix the `<origam-btn>` rendered with its
+		// default elevated/tonal chrome (background + border + shadow),
+		// turning the row into a series of pill-buttons. The user
+		// specifically reported "il faut que les btn soit en text, on
+		// ne doit pas voir le background". Spread last so a consumer
+		// override on the item itself still wins.
+		return {variant: VARIANT.TEXT, ...btnProps, icon}
 	})
 
 	const handleMouseEnter = (e: MouseEvent) => {

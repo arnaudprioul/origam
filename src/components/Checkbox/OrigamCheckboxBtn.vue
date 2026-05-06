@@ -48,7 +48,7 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { ICheckboxBtnProps } from '../../interfaces'
+	import type { ICheckboxBtnEmits, ICheckboxBtnProps, ICheckboxBtnSlots } from '../../interfaces'
 
 	import type { TOrigamSelectionControl } from "../../types"
 
@@ -61,7 +61,9 @@
 		indeterminateIcon: MDI_ICONS.MINUS_BOX
 	})
 
-	const emits = defineEmits(['update:modelValue', 'update:focused', 'update:indeterminate', 'click:label'])
+	const emits = defineEmits<ICheckboxBtnEmits>()
+
+	defineSlots<ICheckboxBtnSlots>()
 
 	const {filterProps} = useProps<ICheckboxBtnProps>(props)
 
@@ -77,7 +79,7 @@
 			indeterminate.value = false
 		}
 	}
-	const handleClickLabel = (e: Event) => {
+	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 

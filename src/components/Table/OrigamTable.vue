@@ -106,3 +106,135 @@
 		filterProps
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-table {
+		background-color: var(--origam-table---background-color, var(--origam-color-surface-default));
+		color: var(--origam-table---color, var(--origam-color-text-primary));
+		font-size: var(--origam-table---font-size, 0.875rem);
+		border-radius: var(--origam-table---border-radius, 0);
+		overflow: hidden;
+
+		&__wrapper {
+			overflow-x: auto;
+
+			table {
+				border-collapse: var(--origam-table---border-collapse, collapse);
+				width: 100%;
+			}
+
+			:deep(th) {
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
+				color: var(--origam-table__header-cell---color, var(--origam-color-text-primary));
+				font-weight: var(--origam-table__header-cell---font-weight, 600);
+				padding-block: var(--origam-table__header-cell---padding-block, 12px);
+				padding-inline: var(--origam-table__header-cell---padding-inline, 16px);
+				border-bottom: var(--origam-table__header-cell---border-bottom-width, 2px) solid var(--origam-table__header-cell---border-bottom-color, var(--origam-color-border-default));
+				text-align: start;
+			}
+
+			:deep(td) {
+				padding-block: var(--origam-table__cell---padding-block, 12px);
+				padding-inline: var(--origam-table__cell---padding-inline, 16px);
+				border-bottom: var(--origam-table__cell---border-width, 1px) solid var(--origam-table__cell---border-color, var(--origam-color-border-subtle));
+			}
+
+			:deep(tr:hover td) {
+				background-color: var(--origam-table__row---hover-background-color, var(--origam-color-surface-sunken));
+			}
+		}
+
+		// Density rungs — override the cell-padding tokens so the table
+		// breathes (`comfortable`) or tightens (`compact`). The header-cell
+		// and body-cell are tracked separately so the header can stay
+		// slightly chunkier than rows.
+		//
+		//   compact     → 6px block / 8px inline
+		//   default     → 12px / 16px (token defaults)
+		//   comfortable → 18px / 24px
+		&--density-compact {
+			--origam-table__header-cell---padding-block: 6px;
+			--origam-table__header-cell---padding-inline: 8px;
+			--origam-table__cell---padding-block: 6px;
+			--origam-table__cell---padding-inline: 8px;
+		}
+
+		&--density-default {
+			--origam-table__header-cell---padding-block: 12px;
+			--origam-table__header-cell---padding-inline: 16px;
+			--origam-table__cell---padding-block: 12px;
+			--origam-table__cell---padding-inline: 16px;
+		}
+
+		&--density-comfortable {
+			--origam-table__header-cell---padding-block: 18px;
+			--origam-table__header-cell---padding-inline: 24px;
+			--origam-table__cell---padding-block: 18px;
+			--origam-table__cell---padding-inline: 24px;
+		}
+
+		// Rounded variant — applies a border-radius token so the table corners
+		// are rounded. The overflow: hidden on the parent clips the cell backgrounds.
+		&--rounded {
+			--origam-table---border-radius: var(--origam-table--rounded---border-radius, 4px);
+		}
+
+		&--rounded-x-small {
+			--origam-table---border-radius: var(--origam-radius-xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-table---border-radius: var(--origam-radius-sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-table---border-radius: var(--origam-radius-md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-table---border-radius: var(--origam-radius-lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-table---border-radius: var(--origam-radius-xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-table---border-radius: var(--origam-radius-2xl, 24px);
+		}
+
+		// Fixed header — the thead stays in place while the tbody scrolls.
+		// The wrapper must be given an explicit max-height for overflow to
+		// actually kick in (consumers set this via the dimension props).
+		&--fixed-header {
+			.origam-table__wrapper {
+				overflow-y: auto;
+			}
+
+			:deep(thead th) {
+				position: sticky;
+				top: 0;
+				z-index: 1;
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
+			}
+		}
+
+		// Fixed footer — the tfoot stays in place while the tbody scrolls.
+		&--fixed-footer {
+			.origam-table__wrapper {
+				overflow-y: auto;
+			}
+
+			:deep(tfoot td),
+			:deep(tfoot th) {
+				position: sticky;
+				bottom: 0;
+				z-index: 1;
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
+			}
+		}
+	}
+</style>

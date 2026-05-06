@@ -5,14 +5,22 @@
 			:activator-props="activatorProps"
 			:class="dialogClasses"
 			:style="dialogStyles"
-			aria-modal="true"
-			role="dialog"
 			v-bind="{...overlayProps, ...scopeId}"
 	>
-		<template
-				v-if="slots.activator"
-				#activator="{props}"
-		>
+		<!--
+			Always forward the activator slot to OrigamOverlay regardless
+			of whether the consumer provided one — the inner `<slot>` is a
+			no-op when empty. Pre-fix the wrapping template was guarded by
+			`v-if="slots.activator"` which (in some Vue 3 slot-resolution
+			paths) caused OrigamOverlay to receive an EMPTY activator slot,
+			so the merged activator-props (`onClick`, `ref`, …) never
+			reached the consumer's button. The dialog never opened on
+			click — clicking the activator only fired OrigamBtn's local
+			`handleClick`, never `useActivator.handleClick` which is what
+			toggles `isActive`. Removing the guard fixes the v-model flow
+			while keeping the no-activator case a clean no-op.
+		-->
+		<template #activator="{props}">
 			<slot
 					name="activator"
 					v-bind="{props}"
@@ -24,8 +32,23 @@
 					name="default"
 					v-bind="{isActive}"
 			>
+				<!--
+					Apply `role="dialog"` + `aria-modal="true"` here on the
+					actual dialog body (the card), not on `<origam-overlay>`.
+					Pre-fix the dialog template passed these attrs to the
+					overlay component which has multiple template roots
+					(activator slot + teleport) — Vue couldn't auto-inherit
+					them and warned `Extraneous non-props attributes
+					(aria-modal, role) were passed to component but could
+					not be automatically inherited because component renders
+					fragment or text or teleport root nodes`. Moving them
+					to `<origam-card>` (single root) silences the warning
+					and gives screen readers the correct landmark.
+				-->
 				<origam-card
 						ref="origamCardRef"
+						aria-modal="true"
+						role="dialog"
 						v-bind="cardProps"
 				>
 					<template
@@ -141,7 +164,16 @@
 		origin: 'center center',
 		scrollStrategy: 'block',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
-		zIndex: 2400
+		zIndex: 2400,
+		// Vue 3's Boolean prop coercion turns `undefined` into `false`,
+		// so without an explicit default here Dialog's resolved
+		// `props.openOnClick` is `false` even though OrigamOverlay's
+		// withDefaults declares `true`. The chain `Dialog → Overlay →
+		// useActivator.activatorEvents` then drops `onClick` from the
+		// activator merge, the consumer's button receives no click
+		// handler, and the dialog never opens. Anchoring the default
+		// here lines up the resolved prop with the parent's intent.
+		openOnClick: true
 	})
 
 	const emits = defineEmits(['update:modelValue', 'isRead', 'click:outside'])
@@ -269,10 +301,12 @@
 		margin: auto;
 
 		> :deep(.origam-overlay__content) {
-			max-height: calc(100% - 48px);
+			max-height: var(--origam-dialog---max-height, calc(100% - 48px));
 			width: calc(100% - 48px);
-			max-width: calc(100% - 48px);
+			max-width: var(--origam-dialog---max-width, calc(100% - 48px));
 			margin: 24px;
+			border-radius: var(--origam-dialog---border-radius, 12px);
+			box-shadow: var(--origam-dialog---box-shadow);
 
 			&,
 			> form {
@@ -298,13 +332,13 @@
 
 		&--fullscreen {
 			> :deep(.origam-overlay__content) {
-				border-radius: 0;
+				border-radius: var(--origam-dialog__fullscreen---border-radius, 0px);
 				margin: 0;
 				padding: 0;
 				width: 100%;
 				height: 100%;
-				max-width: 100%;
-				max-height: 100%;
+				max-width: var(--origam-dialog__fullscreen---max-width, 100%);
+				max-height: var(--origam-dialog__fullscreen---max-height, 100%);
 				overflow-y: auto;
 				top: 0;
 				left: 0;
@@ -315,14 +349,10 @@
 					> .origam-sheet {
 						min-height: 100%;
 						min-width: 100%;
-						border-radius: 0;
+						border-radius: var(--origam-dialog__fullscreen---border-radius, 0px);
 					}
 				}
 			}
 		}
 	}
-</style>
-
-<style>
-
 </style>

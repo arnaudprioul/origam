@@ -1,5 +1,0 @@
-# Origamcard
-
-## Usage
-
-    <OrigamCard />

@@ -1,5 +1,0 @@
-# Origamnumberfield
-
-## Usage
-
-    <OrigamNumberField />

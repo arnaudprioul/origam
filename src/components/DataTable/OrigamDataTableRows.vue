@@ -143,6 +143,16 @@
 						index,
 						item,
 						cellProps: props.cellProps,
+						// Forward `mobileBreakpoint` so each row's own
+						// `useDisplay(props)` resolves to the SAME
+						// threshold the table-level resolved. Pre-fix
+						// only `mobile: mobile.value` was passed but the
+						// row's interface declares `mobileBreakpoint`,
+						// not `mobile` — so the row fell back to the
+						// global `'lg'` (1280px), forcing mobile mode
+						// on every viewport <1280px regardless of what
+						// the consumer set on the DataTable.
+						mobileBreakpoint: props.mobileBreakpoint,
 						mobile: mobile.value
 					},
 					getPrefixedEventHandlers(attrs, ':row', () => slotPropsLocal),
@@ -170,13 +180,13 @@
 >
 	.origam-data-table-rows {
 		&--no-data {
-			text-align: center;
+			text-align: var(--origam-data-table-empty---text-align, center);
+			color: var(--origam-data-table-rows--no-data---color, var(--origam-color-text-secondary));
+		}
+
+		&--loading {
+			color: var(--origam-data-table-rows--loading---color, var(--origam-color-text-secondary));
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

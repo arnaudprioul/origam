@@ -85,6 +85,14 @@
 	import { animate, convertToUnit, getScrollParent } from '../../utils'
 
 	const props = withDefaults(defineProps<IOverlayProps>(), {
+		// `openOnClick` defaults to `true` so the activator button opens
+		// the overlay out of the box. Without this default, `useActivator`'s
+		// fallback (`props.openOnClick == null && !openOnHover && !openOnFocus`)
+		// resolved to `undefined` when Vue coerces the missing boolean prop
+		// to `false` — and the strict equality `props.openOnClick == null`
+		// never matched, leaving every event hook off. Consumers can still
+		// pass `:open-on-click="false"` explicitly to disable.
+		openOnClick: true,
 		scrim: true,
 		zIndex: 2000,
 		closeOnBack: true,
@@ -92,6 +100,15 @@
 		location: BLOCK.BOTTOM,
 		origin: 'auto',
 		scrollStrategy: SCROLL_STRATEGIES.BLOCK,
+		// 12px breathing room from each viewport edge enforced by the
+		// connected location strategy. Components whose activator can
+		// span the full viewport (`<origam-select>`) override to `0`
+		// to keep the dropdown flush with the activator's left edge.
+		// Listed here in `withDefaults` so the SFC compiler emits the
+		// explicit prop declaration — type-only inheritance through
+		// `IOverlayProps → ILocationStrategyProps` doesn't always make
+		// it into the runtime declaration through HMR.
+		viewportMargin: 12,
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
@@ -321,12 +338,12 @@
 		}
 
 		&__scrim {
-			pointer-events: auto;
-			background: rgb(255, 255, 255);
+			pointer-events: var(--origam-overlay__scrim---pointer-events, auto);
+			background-color: var(--origam-overlay__scrim---background-color, var(--origam-color-overlay-scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
 			border-radius: inherit;
 			bottom: 0;
 			left: 0;
-			opacity: 0.32;
+			opacity: var(--origam-overlay__scrim---opacity, 0.32);
 			position: fixed;
 			right: 0;
 			top: 0;
@@ -346,8 +363,4 @@
 			padding-inline-end: 0px;
 		}
 	}
-</style>
-
-<style>
-
 </style>

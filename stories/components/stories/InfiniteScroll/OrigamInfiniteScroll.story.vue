@@ -1,0 +1,195 @@
+<template>
+	<Story
+			group="components"
+			title="InfiniteScroll/OrigamInfiniteScroll"
+	>
+
+		<!-- ════════════ BASIC (end side, intersect) ════════════ -->
+		<Variant title="Basic — end side">
+			<origam-infinite-scroll
+					height="300"
+					@load="handleLoad"
+					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+			>
+				<div
+						v-for="item in items"
+						:key="item"
+						style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+				>
+					Item {{ item }}
+				</div>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<!-- ════════════ MANUAL MODE ════════════ -->
+		<Variant title="Manual mode">
+			<origam-infinite-scroll
+					height="300"
+					mode="manual"
+					@load="handleLoad"
+					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+			>
+				<div
+						v-for="item in items"
+						:key="item"
+						style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+				>
+					Item {{ item }}
+				</div>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<!-- ════════════ BOTH SIDES ════════════ -->
+		<Variant title="Both sides">
+			<origam-infinite-scroll
+					height="300"
+					side="both"
+					@load="handleLoad"
+					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+			>
+				<div
+						v-for="item in items"
+						:key="item"
+						style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+				>
+					Item {{ item }}
+				</div>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<!-- ════════════ SLOT: loading ════════════ -->
+		<Variant title="Slot — loading">
+			<origam-infinite-scroll
+					height="300"
+					mode="manual"
+					@load="handleLoad"
+					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+			>
+				<div
+						v-for="item in items"
+						:key="item"
+						style="padding: 12px;"
+				>
+					Item {{ item }}
+				</div>
+				<template #loading>
+					<div style="text-align: center; padding: 16px; opacity: 0.6;">Loading more…</div>
+				</template>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<!-- ════════════ SLOT: empty ════════════ -->
+		<Variant title="Slot — empty">
+			<origam-infinite-scroll
+					height="200"
+					@load="handleLoadEmpty"
+					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+			>
+				<div style="padding: 12px;">Only item</div>
+				<template #empty>
+					<div style="text-align: center; padding: 16px; opacity: 0.6;">No more items</div>
+				</template>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<!-- ════════════ EMIT: load ════════════ -->
+		<Variant title="Emit — load">
+			<origam-infinite-scroll
+					height="300"
+					@load="(e) => { logEvent('load', { side: e.side }); e.done('ok') }"
+					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+			>
+				<div
+						v-for="item in items"
+						:key="item"
+						style="padding: 12px;"
+				>
+					Item {{ item }}
+				</div>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<!-- ════════════ PLAYGROUND ════════════ -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{
+					side?: string
+					mode?: string
+					height?: number
+				}>({
+					side: 'end',
+					mode: 'intersect',
+					height: 300
+				})"
+		>
+			<template #default="{ state }">
+				<origam-infinite-scroll
+						:side="state.side"
+						:mode="state.mode"
+						:height="state.height"
+						@load="handleLoad"
+						style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+				>
+					<div
+							v-for="item in items"
+							:key="item"
+							style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+					>
+						Item {{ item }}
+					</div>
+				</origam-infinite-scroll>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.side" title="side" :options="sideList"/>
+				<HstSelect v-model="state.mode" title="mode" :options="modeList"/>
+				<HstNumber v-model="state.height" title="height (px)" :min="100"/>
+			</template>
+		</Variant>
+	</Story>
+</template>
+
+<script
+		lang="ts"
+		setup
+>
+	import { logEvent } from 'histoire/client'
+	import { ref } from 'vue'
+
+	import { OrigamInfiniteScroll } from '@origam/components'
+
+	import { useStoryInitState } from '@stories/composables'
+
+	const items = ref(Array.from({ length: 20 }, (_, i) => i + 1))
+
+	const handleLoad = ({ side, done }: { side: string; done: (status: string) => void }) => {
+		const currentMax = items.value[items.value.length - 1] ?? 0
+
+		if (currentMax >= 60) {
+			done('empty')
+			return
+		}
+
+		setTimeout(() => {
+			const next = Array.from({ length: 10 }, (_, i) => currentMax + i + 1)
+			items.value = [...items.value, ...next]
+			done('ok')
+		}, 800)
+	}
+
+	const handleLoadEmpty = ({ done }: { done: (status: string) => void }) => {
+		done('empty')
+	}
+
+	const sideList = [
+		{ label: 'end',   value: 'end' },
+		{ label: 'start', value: 'start' },
+		{ label: 'both',  value: 'both' },
+	]
+
+	const modeList = [
+		{ label: 'intersect', value: 'intersect' },
+		{ label: 'manual',    value: 'manual' },
+	]
+</script>
+
+<docs lang="md" src="@docs/components/InfiniteScroll/OrigamInfiniteScroll.md"/>

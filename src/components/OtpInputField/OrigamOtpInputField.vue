@@ -55,7 +55,7 @@
 					<template #default>
 						<input
 								ref="inputRef"
-								:aria-label="t(label, i + 1)"
+								:aria-label="t('origam.input.otp', i + 1)"
 								:autofocus="i === 0 && autofocus"
 								:disabled="disabled"
 								:inputmode="type === 'number' ? 'numeric' : 'text'"
@@ -140,19 +140,20 @@
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 
-	import type { IOtpInputFieldProps } from "../../interfaces"
+	import type { IOtpInputFieldEmits, IOtpInputFieldProps, IOtpInputFieldSlots } from "../../interfaces"
 
 	import type { TOrigamField } from "../../types"
 
-	import { filterInputAttrs, focusChild } from "../../utils"
+	import { filterInputAttrs, focusChild, forwardRefs } from "../../utils"
 
 	const props = withDefaults(defineProps<IOtpInputFieldProps>(), {
 		type: OTP_INPUT_FIELD_TYPE.NUMBER,
-		label: 'origam.input.otp',
 		length: 6
 	})
 
-	const emits = defineEmits(['finish', 'update:focused', 'update:modelValue'])
+	const emits = defineEmits<IOtpInputFieldEmits>()
+
+	defineSlots<IOtpInputFieldSlots>()
 
 	const {filterProps} = useProps<IOtpInputFieldProps>(props)
 
@@ -195,9 +196,11 @@
 	}
 
 	const handleInput = () => {
+		if (!current.value) return
+
 		// The maxlength attribute doesn't work for the number type input, so the text type is used.
 		// The following logic simulates the behavior of a number input.
-		if (isValidNumber(current.value.value)) {
+		if (isInvalidValue(current.value.value)) {
 			current.value.value = ''
 			return
 		}
@@ -265,7 +268,7 @@
 
 		const clipboardText = e?.clipboardData?.getData('Text').slice(0, length.value) ?? ''
 
-		if (isValidNumber(clipboardText)) return
+		if (isInvalidValue(clipboardText)) return
 
 		model.value = clipboardText.split('')
 
@@ -276,8 +279,20 @@
 		model.value = []
 	}
 
+	const handleClear = (e: MouseEvent) => {
+		e.stopPropagation()
+
+		model.value = []
+
+		nextTick(() => {
+			inputRef.value?.[0]?.focus()
+		})
+
+		emits('click:clear', e)
+	}
+
 	const handleFocus = (_e: FocusEvent, index: number) => {
-		focus()
+		if (!isFocused.value) focus()
 
 		focusIndex.value = index
 	}
@@ -288,8 +303,8 @@
 		focusIndex.value = -1
 	}
 
-	const isValidNumber = (value: string) => {
-		return props.type === 'number' && /[^0-9]/g.test(value)
+	const isInvalidValue = (value: string) => {
+		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /[^0-9]/g.test(value)
 	}
 
 	watch(model, (val) => {
@@ -323,17 +338,20 @@
 
 	// EXPOSE
 
-	defineExpose({
+	defineExpose(forwardRefs({
 		blur: () => {
-			inputRef.value?.some(input => input.blur())
+			inputRef.value?.some(input => {
+				input.blur()
+				return true
+			})
 		},
 		focus: () => {
-			inputRef.value?.[0].focus()
+			inputRef.value?.[0]?.focus()
 		},
 		reset,
 		isFocused,
 		filterProps
-	})
+	}))
 
 </script>
 
@@ -347,9 +365,11 @@
 		align-items: center;
 		display: flex;
 		justify-content: center;
-		padding: .5rem 0;
+		/* --origam-otp-input-field---padding-block: 0.5rem (fallback) */
+		padding: var(--origam-otp-input-field---padding-block, .5rem) 0;
 		position: relative;
-		border-radius: 4px;
+		/* --origam-otp-input-field---border-radius: 4px (fallback) */
+		border-radius: var(--origam-otp-input-field---border-radius, 4px);
 
 		.origam-field {
 			height: 100%;
@@ -358,28 +378,43 @@
 		}
 
 		&__divider {
-			margin: 0 8px;
+			/* --origam-otp-input-field__divider---margin-inline: 8px (fallback) */
+			margin: 0 var(--origam-otp-input-field__divider---margin-inline, 8px);
 		}
 
 		&__content {
 			align-items: center;
 			display: flex;
-			gap: .5rem;
-			height: 64px;
-			padding: .5rem;
+			/* --origam-otp-input-field---gap: 0.5rem (fallback) */
+			gap: var(--origam-otp-input-field---gap, .5rem);
+			/* --origam-otp-input-field__content---height: 64px (fallback) */
+			height: var(--origam-otp-input-field__content---height, 64px);
+			/* --origam-otp-input-field__content---padding: 0.5rem (fallback) */
+			padding: var(--origam-otp-input-field__content---padding, .5rem);
 			justify-content: center;
-			max-width: 320px;
+			/* --origam-otp-input-field__content---max-width: 320px (fallback) */
+			max-width: var(--origam-otp-input-field__content---max-width, 320px);
 			position: relative;
 			border-radius: inherit;
 		}
 
 		&__field {
-			color: inherit;
-			font-size: 1.25rem;
+			color: var(--origam-otp-input-field__cell---color, inherit);
+			/* --origam-otp-input-field__cell---font-size: 1.25rem (fallback) */
+			font-size: var(--origam-otp-input-field__cell---font-size, 1.25rem);
 			height: 100%;
-			outline: none;
-			text-align: center;
+			/* --origam-otp-input-field__cell---outline: none (fallback) */
+			outline: var(--origam-otp-input-field__cell---outline, none);
+			/* --origam-otp-input-field__cell---text-align: center (fallback) */
+			text-align: var(--origam-otp-input-field__cell---text-align, center);
 			width: 100%;
+			// User report: "il y a toujours un border tout autour".
+			// The native `<input>` ships a 2px UA border that stacked on
+			// top of the design's `.origam-field__outline-*` rectangle —
+			// each cell read as a double-bordered chip. Reset the UA
+			// border so only the field outline remains.
+			border: var(--origam-otp-input-field__cell---border, none);
+			background: var(--origam-otp-input-field__cell---background, transparent);
 
 			&[type=number]::-webkit-outer-spin-button,
 			&[type=number]::-webkit-inner-spin-button {
@@ -406,15 +441,11 @@
 
 		&--divided {
 			#{$this}__content {
-				max-width: 360px;
+				/* --origam-otp-input-field__content---max-width-divided: 360px (fallback) */
+				max-width: var(--origam-otp-input-field__content---max-width-divided, 360px);
 			}
 		}
 	}
 
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

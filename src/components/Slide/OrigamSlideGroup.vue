@@ -13,7 +13,6 @@
 				@click="handleFocusAffixes"
 				@mousedown="hasPrev && scrollTo('prev')"
 		>
-			>
 			<slot name="prev">
 				<origam-fade>
 					<origam-icon :icon="prevIcon"/>
@@ -48,7 +47,6 @@
 				@click="handleFocusAffixes"
 				@mousedown="hasNext && scrollTo('next')"
 		>
-			>
 			<slot name="next">
 				<origam-fade>
 					<origam-icon :icon="nextIcon"/>
@@ -93,9 +91,17 @@
 	} from "../../utils"
 
 	const props = withDefaults(defineProps<ISlideGroupProps>(), {
+		// `tag` MUST default to a real string — without it the root
+		// `<component :is="tag">` resolved to `<component :is="undefined">`
+		// which Vue renders as a `<!--[object Object]-->` placeholder
+		// and silently swallows the rest of the template (no error
+		// surface, the story shell looked empty).
+		tag: 'div',
 		direction: DIRECTION.HORIZONTAL,
-		prevIcon: MDI_ICONS.CHEVRON_RIGHT,
-		nextIcon: MDI_ICONS.CHEVRON_LEFT,
+		// Affix icons were swapped: prev pointed RIGHT, next pointed LEFT.
+		// Reversed so the chevrons match the scroll direction they trigger.
+		prevIcon: MDI_ICONS.CHEVRON_LEFT,
+		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		selectedClass: 'origam-slide-group-item--active'
 	})
 
@@ -199,7 +205,16 @@
 				Math.abs(newPosition - scrollPosition) < 16
 		) return
 
-		if (isHorizontal.value && containerRef.value) {
+		// In RTL, scroll positions are mirrored: position 0 is the
+		// right-most edge and increases as you go left. Flip
+		// `newPosition` against the max scrollable distance so the
+		// caller always works in LTR-style coordinates. In LTR, leave
+		// the requested position untouched — the previous code applied
+		// this flip unconditionally, which sent every "go to N" call
+		// to `(maxScroll − N)` instead of `N`. With a 5-tab viewport
+		// that meant clicking "next" jumped past the middle of the
+		// list and skipped tabs.
+		if (isHorizontal.value && isRtl.value && containerRef.value) {
 			const {scrollWidth, offsetWidth: containerWidth} = containerRef.value!
 
 			newPosition = (scrollWidth - containerWidth) - newPosition
@@ -308,20 +323,14 @@
 	}
 
 	const scrollTo = (location: 'prev' | 'next') => {
-		const direction = 1
-
-		const offsetStep = (location === 'prev' ? -direction : direction) * containerSize.value
-
-		let newPosition = scrollOffset.value + offsetStep
-
-		// TODO: improve it
-		if (isHorizontal.value && containerRef.value) {
-			const {scrollWidth, offsetWidth: containerWidth} = containerRef.value!
-
-			newPosition += scrollWidth - containerWidth
-		}
-
-		scrollToPosition(newPosition)
+		// Step one container-width per click, in the direction of the
+		// affix. The previous implementation added `scrollWidth -
+		// containerWidth` on top of the step, jumping straight to the
+		// far end on the first click and then walking back from there —
+		// arrows looked broken. A pure `currentOffset ± containerSize`
+		// behaviour is the standard pattern for slide groups.
+		const offsetStep = (location === 'prev' ? -1 : 1) * containerSize.value
+		scrollToPosition(scrollOffset.value + offsetStep)
 	}
 
 	const slotProps = computed(() => ({
@@ -418,7 +427,10 @@
 		return [
 			'origam-slide-group__next',
 			{
-				'origam-slide-group__next--disabled': !hasPrev.value
+				// Was `!hasPrev.value` (copy-paste from the prev affix
+				// classes) — the next button stayed enabled at the end
+				// of the scroll and disabled at the start.
+				'origam-slide-group__next--disabled': !hasNext.value
 			}
 		]
 	})
@@ -429,3 +441,75 @@
 		filterProps
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-slide-group {
+		$this: &;
+
+		display: var(--origam-slide-group---display, flex);
+		overflow: var(--origam-slide-group---overflow, hidden);
+
+		&__prev,
+		&__next {
+			align-items: center;
+			display: flex;
+			flex: 0 1 var(--origam-slide-group__prev---min-width, 52px);
+			justify-content: center;
+			min-width: var(--origam-slide-group__prev---min-width, 52px);
+			cursor: var(--origam-slide-group__prev---cursor, pointer);
+			color: var(--origam-slide-group__prev---color, inherit);
+
+			&--disabled {
+				pointer-events: none;
+				opacity: var(--origam-slide-group__prev---opacity-disabled, 0.6);
+			}
+		}
+
+		&__content {
+			display: var(--origam-slide-group__content---display, flex);
+			flex: var(--origam-slide-group__content---flex, 1 0 auto);
+			position: var(--origam-slide-group__content---position, relative);
+			transition:
+				var(--origam-slide-group---transition-duration, 0.2s)
+				all
+				var(--origam-slide-group---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			white-space: var(--origam-slide-group__content---white-space, nowrap);
+
+			> * {
+				white-space: initial;
+			}
+		}
+
+		&__container {
+			contain: content;
+			display: var(--origam-slide-group__container---display, flex);
+			flex: var(--origam-slide-group__container---flex, 1 1 auto);
+			overflow-x: var(--origam-slide-group__container---overflow-x, auto);
+			overflow-y: var(--origam-slide-group__container---overflow-y, hidden);
+			scrollbar-width: none;
+			scrollbar-color: var(--origam-slide-group__container---scrollbar-color, transparent);
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		&--vertical {
+			max-height: var(--origam-slide-group--vertical---max-height, inherit);
+
+			&,
+			#{$this}__container,
+			#{$this}__content {
+				flex-direction: column;
+			}
+
+			#{$this}__container {
+				overflow-x: var(--origam-slide-group--vertical---content-overflow-x, hidden);
+				overflow-y: var(--origam-slide-group--vertical---content-overflow-y, auto);
+			}
+		}
+	}
+</style>

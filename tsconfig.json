@@ -1,5 +1,4 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "allowUnreachableCode": false,
     "noImplicitReturns": true,
@@ -8,47 +7,52 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "outDir": "./dist",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "noEmit": false,
+    "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationMap": true,
+
+    /* Paths */
+    "paths": {
+      "@origam": ["./src"],
+      "@origam/*": ["./src/*"],
+      "@stories": ["./stories"],
+      "@stories/*": ["./stories/*"],
+      "@docs": ["./docs"],
+      "@docs/*": ["./docs/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": [
-      "vitest/globals"
-    ]
+    "types": ["node"]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",
-    "node_modules/cypress/types/cypress-global-vars.d.ts"
+    "src/**/*.vue"
   ],
   "exclude": [
     ".history",
     "dist/**/*",
-    "src/**/*.cy.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.story.vue",
     "node_modules"
   ],
   "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
+    { "path": "./tsconfig.node.json" },
+//    { "path": "./tsconfig.build.json" },
+    { "path": "./stories/tsconfig.json" },
+    { "path": "./docs/tsconfig.json" },
+    { "path": "./tests/TU/tsconfig.json" },
+    { "path": "./tests/e2e/tsconfig.json" }
   ]
 }

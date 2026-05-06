@@ -92,7 +92,7 @@
 
 	import { useDisplay, useLocale, useProps, useRefs, useResizeObserver, useVModel } from "../../composables"
 
-	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
+	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
 
 	import type { IPaginationProps } from "../../interfaces"
 
@@ -195,6 +195,26 @@
 			return [start.value, props.ellipsis, ...createRange(rangeLength, rangeStart), props.ellipsis, length.value]
 		}
 	})
+	// Uniform color contract — every btn in the row (page items 1..n,
+	// the ellipsis, AND first / prev / next / last) receives the SAME
+	// six IColorProps fields. Changing `color` repaints every text/icon,
+	// changing `bgColor` repaints every surface, hover/active rungs
+	// work identically. The active item differentiates itself via
+	// `active: true` only; a disabled btn shows its standard --disabled
+	// veil (Btn's opacity rule), nothing intent-specific.
+	// User report: "putain pourquoi tous les btn ne sont pas gérés de
+	// la même manière sur la pagination ; je change la couleur, tous
+	// les btns voient leur couleur changer ; etc."
+	const sharedBtnColorProps = computed(() => ({
+		color: props.color,
+		bgColor: props.bgColor,
+		hoverColor: props.hoverColor,
+		hoverBgColor: props.hoverBgColor,
+		activeColor: props.activeColor,
+		activeBgColor: props.activeBgColor,
+	}))
+	const controlColorProps = sharedBtnColorProps
+
 	const items = computed(() => {
 		return range.value.map((item, index) => {
 			const ref = (e: any) => updateRef(e, index)
@@ -206,6 +226,16 @@
 					page: item,
 					props: {
 						ref,
+						// Same six IColorProps as the rest of the row —
+						// even though the ellipsis is non-clickable
+						// (`disabled: true`), it must read as visually
+						// part of the same nav row, just dimmed by the
+						// Btn's --disabled veil. Pre-fix it rendered
+						// in the default neutral grey while the
+						// surrounding btns took the consumer's bgColor,
+						// breaking the user's "tous les btn ensemble"
+						// expectation.
+						...sharedBtnColorProps.value,
 						ellipsis: true,
 						icon: true,
 						disabled: true
@@ -219,10 +249,21 @@
 					page: item,
 					props: {
 						ref,
+						...sharedBtnColorProps.value,
 						ellipsis: false,
 						icon: true,
 						disabled: !!props.disabled || +props.length < 2,
-						color: isActive ? props.activeColor : props.color,
+						// `active: true` lets the inner `<origam-btn>`
+						// add its own --active overlay so the current
+						// page reads as selected — without forcing the
+						// non-active items into a different shape. All
+						// six IColorProps fields are forwarded
+						// uniformly via `sharedBtnColorProps` (above),
+						// so a `color` / `bgColor` change on the
+						// pagination updates EVERY btn at once — the
+						// behaviour the user expects from a uniform row
+						// of nav buttons.
+						active: isActive,
 						'aria-current': isActive,
 						'aria-label': t(isActive ? props.currentPageAriaLabel : props.pageAriaLabel, item),
 						onClick: (e: Event) => setValue(e, item)
@@ -237,6 +278,7 @@
 
 		return {
 			first: {
+				...controlColorProps.value,
 				icon: props.firstIcon,
 				onClick: (e: Event) => setValue(e, start.value, 'first'),
 				disabled: prevDisabled,
@@ -244,6 +286,7 @@
 				'aria-disabled': prevDisabled
 			},
 			prev: {
+				...controlColorProps.value,
 				icon: props.prevIcon,
 				onClick: (e: Event) => setValue(e, page.value - 1, 'prev'),
 				disabled: prevDisabled,
@@ -251,6 +294,7 @@
 				'aria-disabled': prevDisabled
 			},
 			next: {
+				...controlColorProps.value,
 				icon: props.nextIcon,
 				onClick: (e: Event) => setValue(e, page.value + 1, 'next'),
 				disabled: nextDisabled,
@@ -258,6 +302,7 @@
 				'aria-disabled': nextDisabled
 			},
 			last: {
+				...controlColorProps.value,
 				icon: props.lastIcon,
 				onClick: (e: Event) => setValue(e, start.value + length.value - 1, 'last'),
 				disabled: nextDisabled,
@@ -334,7 +379,7 @@
 		&__item {
 			&--is-active {
 				:deep(.origam-btn__overlay) {
-					opacity: var(--origam-pagination__item--is-active---border-opacity)
+					opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, var(--origam-pagination__item---active-overlay-opacity, 0.12))
 				}
 			}
 		}
@@ -344,25 +389,23 @@
 		&__prev,
 		&__next,
 		&__last {
-			margin: .3rem;
+			margin: var(--origam-pagination---gap, 4px);
 		}
 
 		:deep(.origam-btn) {
-			border-radius: 4px;
+			border-radius: var(--origam-pagination---border-radius, 4px);
 		}
 
 		:deep(.origam-btn--rounded) {
-			border-radius: 50%;
+			border-radius: var(--origam-pagination---border-radius-rounded, 24px);
+		}
+
+		:deep(.origam-btn--icon) {
+			border-radius: var(--origam-pagination---border-radius-circle, 9999px);
 		}
 
 		:deep(.origam-btn__overlay) {
 			transition: none;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-pagination__item--is-active---border-opacity: 0.12;
 	}
 </style>

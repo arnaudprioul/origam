@@ -1,5 +1,0 @@
-# Origamsystembar
-
-## Usage
-
-    <OrigamSystemBar />

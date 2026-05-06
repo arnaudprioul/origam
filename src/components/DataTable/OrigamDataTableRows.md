@@ -1,5 +1,0 @@
-# Origamdatatablerows
-
-## Usage
-
-    <OrigamDataTableRows />

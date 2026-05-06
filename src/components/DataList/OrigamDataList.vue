@@ -190,10 +190,27 @@
 		scoped
 >
 	.origam-data-list {
+		display: var(--origam-data-list---display, block);
+		overflow: var(--origam-data-list---overflow, hidden);
+		background-color: var(--origam-data-list---background-color, transparent);
+		color: var(--origam-data-list---color, inherit);
+		border-radius: var(--origam-data-list---border-radius, 0);
+		padding: var(--origam-data-list---padding, 0);
+		gap: var(--origam-data-list---gap, 0);
 
+		&__title {
+			font-size: var(--origam-data-list__title---font-size, 0.75rem);
+			font-weight: var(--origam-data-list__title---font-weight, 500);
+			color: var(--origam-data-list__title---color, inherit);
+			line-height: var(--origam-data-list__title---line-height, 1.5);
+			letter-spacing: var(--origam-data-list__title---letter-spacing, 0.009375em);
+		}
+
+		&__text {
+			font-size: var(--origam-data-list__text---font-size, 0.875rem);
+			color: var(--origam-data-list__text---color, inherit);
+			line-height: var(--origam-data-list__text---line-height, 1.5);
+			letter-spacing: var(--origam-data-list__text---letter-spacing, 0em);
+		}
 	}
-</style>
-
-<style lang="scss">
-
 </style>
