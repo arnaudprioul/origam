@@ -135,6 +135,14 @@
 	})
 	const dataTableHeaderCellStyles = computed(() => {
 		return [
+			// `colorStyles` from `useBothColor` was only applied to the
+			// sort badge pre-fix — meaning consumers passing `color` /
+			// `bgColor` on the DataTable saw NO effect on the header
+			// row itself (the visual surface they actually want to
+			// theme). Apply at the cell level so `bg-color="primary"`
+			// paints the title row, and `color="primary"` tints the
+			// title text + sort indicator.
+			colorStyles.value,
 			{
 				width: convertToUnit(props.column.width),
 				minWidth: convertToUnit(props.column.minWidth),

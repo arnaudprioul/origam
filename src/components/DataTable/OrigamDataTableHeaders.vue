@@ -1,52 +1,59 @@
 <template>
+	<!--
+		Pre-fix: `<template v-if="loading">…</template><template v-else>…</template>`
+		caused the progress bar to REPLACE the header row entirely — column
+		titles vanished while loading, and the user reported "loading is
+		misplaced". Vuetify's `<v-data-table loading>` keeps the header
+		visible and shows a thin LinearProgress UNDER the header row. We do
+		the same: render the columns ALWAYS, then conditionally append the
+		progress row below.
+	-->
+	<template v-if="mobile">
+		<slot
+				name="mobile"
+				v-bind="slotProps"
+		>
+			<origam-data-table-headers-cell-mobile
+					ref="origamDataTableHeadersCellMobileRef"
+					:class="dataTableHeadersClasses"
+					:columns="columns"
+					:style="dataTableHeadersStyles"
+					v-bind="dataTableHeadersCellMobileProps"
+			/>
+		</slot>
+	</template>
+	<template v-else>
+		<slot
+				name="default"
+				v-bind="slotProps"
+		>
+			<origam-data-table-headers-cell
+					ref="origamDataTableHeadersCellRef"
+					:class="dataTableHeadersClasses"
+					:headers="headers"
+					:style="dataTableHeadersStyles"
+					v-bind="dataTableHeadersCellProps"
+			/>
+		</slot>
+	</template>
+
 	<template v-if="loading">
 		<tr class="origam-data-table-headers origam-data-table-headers--progress">
 			<th
 					:colspan="columns.length"
-					class="origam-data-table-header-cell"
+					class="origam-data-table-headers__progress-cell"
 			>
 				<slot name="loader">
 					<origam-progress
 							:color="color"
 							:type="PROGRESS_TYPE.LINEAR"
-							absolute
 							active
 							indeterminate
-							thickness="4"
+							thickness="2"
 					/>
 				</slot>
 			</th>
 		</tr>
-	</template>
-	<template v-else>
-		<template v-if="mobile">
-			<slot
-					name="mobile"
-					v-bind="slotProps"
-			>
-				<origam-data-table-headers-cell-mobile
-						ref="origamDataTableHeadersCellMobileRef"
-						:class="dataTableHeadersClasses"
-						:columns="columns"
-						:style="dataTableHeadersStyles"
-						v-bind="dataTableHeadersCellMobileProps"
-				/>
-			</slot>
-		</template>
-		<template v-else>
-			<slot
-					name="default"
-					v-bind="slotProps"
-			>
-				<origam-data-table-headers-cell
-						ref="origamDataTableHeadersCellRef"
-						:class="dataTableHeadersClasses"
-						:headers="headers"
-						:style="dataTableHeadersStyles"
-						v-bind="dataTableHeadersCellProps"
-				/>
-			</slot>
-		</template>
 	</template>
 </template>
 
@@ -132,15 +139,19 @@
 		scoped
 >
 	.origam-data-table-headers {
-		&__progress {
-			> .origam-data-table-headers-cell {
-				border: none;
-				height: auto;
-				padding: 0;
-			}
+		&--progress {
+			height: auto;
+		}
+
+		&__progress-cell {
+			border: none;
+			padding: 0;
+			height: auto;
+			line-height: 0;
 
 			&:deep(.origam-progress) {
 				position: relative;
+				display: block;
 			}
 		}
 	}

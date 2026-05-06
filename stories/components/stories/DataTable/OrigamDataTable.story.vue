@@ -94,6 +94,67 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!--
+			Same pattern as Btn / Switch / Select / Pagination / … —
+			ONE variant per interface, six controls (color / bgColor +
+			hover* / active*) plus 3 hardcoded fixtures so the e2e suite
+			has stable selectors. Channel mapping for DataTable:
+			  • `color`      → header text + sort-icon color
+			  • `bgColor`    → header surface
+			  • `hoverColor` / `hoverBgColor`   → header cell on hover
+			  • `activeColor` / `activeBgColor` → header of the currently
+			                                     sorted column
+			Forwarded down through `IDataTableHeadersProps` →
+			`useBothColor` on the inner header cell.
+		-->
+		<Variant
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px;">
+					<origam-data-table
+							:headers="sortableHeaders"
+							:items="items"
+							v-bind="state"
+							data-cy="data-table-color"
+					/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-data-table
+								:headers="sortableHeaders"
+								:items="items"
+								color="primary"
+								data-cy="data-table-color-fixture-color-only"
+						/>
+						<origam-data-table
+								:headers="sortableHeaders"
+								:items="items"
+								bg-color="success"
+								data-cy="data-table-color-fixture-bg-only"
+						/>
+						<origam-data-table
+								:headers="sortableHeaders"
+								:items="items"
+								color="warning" bg-color="primary"
+								hover-color="info" hover-bg-color="info"
+								active-color="danger" active-bg-color="danger"
+								data-cy="data-table-color-fixture-combo"
+						/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ SLOT: top ════════════ -->
 		<Variant title="Slot — top">
 			<origam-data-table
@@ -156,8 +217,10 @@
 	import { ref } from 'vue'
 
 	import { OrigamDataTable, OrigamTextField } from '@origam/components'
+	import type { IColorProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
+	import { intentList } from '@stories/const'
 
 	const selected = ref([])
 	const search = ref('')
