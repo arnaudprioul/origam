@@ -5,14 +5,165 @@
 	>
 
 		<!-- ════════════ BASIC ════════════ -->
+		<!--
+			Modelled on Vuetify's first `<v-card>` showcase example
+			(https://vuetifyjs.com/en/components/cards/) — image on top,
+			title + subtitle, supporting paragraph, two action buttons
+			in the footer. A "real-world" composition is more useful for
+			spotting layout bugs than a bare text-only card.
+		-->
 		<Variant title="Basic">
-			<div style="padding: 16px;">
+			<div style="padding: 16px; max-width: 400px;">
 				<origam-card
 						data-cy="card-basic"
-						title="Card title"
-						subtitle="Subtitle"
-						text="Supporting body text for this card."
-				/>
+						title="Top 10 Australian Beaches"
+						subtitle="Number 10"
+						image="https://picsum.photos/seed/beach/600/200"
+						text="Whitehaven Beach, Whitsunday Island, Whitsunday Islands"
+						rounded
+				>
+					<template #footer>
+						<div style="display: flex; gap: 8px; padding: 12px; justify-content: flex-end;">
+							<origam-btn text="Share" data-cy="card-basic-share"/>
+							<origam-btn color="primary" text="Explore" data-cy="card-basic-explore"/>
+						</div>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<!-- ════════════ SHOWCASE — Action card (Word of the Day) ════════════ -->
+		<!--
+			Vuetify's "Word of the Day" pattern — large display word,
+			hint adjective/noun, definition, single CTA. Tests the
+			default slot composition + footer + typography hierarchy.
+		-->
+		<Variant title="Showcase — Action">
+			<div style="padding: 16px; max-width: 344px;">
+				<origam-card data-cy="card-showcase-action" rounded>
+					<div style="padding: 16px;">
+						<div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 8px;">Word of the Day</div>
+						<div style="font-size: 2rem; font-weight: 900; margin-bottom: 4px;">benevolent</div>
+						<div style="font-style: italic; opacity: 0.7; margin-bottom: 12px;">adjective</div>
+						<div>well meaning and kindly. <em>"a benevolent smile"</em></div>
+					</div>
+					<template #footer>
+						<div style="display: flex; padding: 8px 12px; justify-content: flex-start;">
+							<origam-btn color="primary" text="Learn More" data-cy="card-showcase-action-cta"/>
+						</div>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<!-- ════════════ SHOWCASE — Profile (avatar + content) ════════════ -->
+		<!--
+			Vuetify's "Profile card" pattern — prepend avatar, full-name
+			title, role subtitle, body quote, metrics footer. Tests the
+			adjacent (prepend-avatar) + multi-line body composition.
+		-->
+		<Variant title="Showcase — Profile">
+			<div style="padding: 16px; max-width: 400px;">
+				<origam-card
+						data-cy="card-showcase-profile"
+						title="Evan You"
+						subtitle="Vue Creator"
+						prepend-avatar="https://i.pravatar.cc/64?u=evan"
+						rounded
+				>
+					<div style="padding: 0 16px 12px;">
+						Turns out semicolon-less style is easier and safer in TS because invalid syntax tends to error in fewer cases. Vue is now a TS-first framework.
+					</div>
+					<template #footer>
+						<div style="display: flex; gap: 16px; padding: 12px 16px; opacity: 0.7; font-size: 0.875rem; border-top: 1px solid var(--origam-color-border-subtle);">
+							<span>256 Likes</span>
+							<span>·</span>
+							<span>45 Shares</span>
+						</div>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<!-- ════════════ SHOWCASE — Media (picture + caption) ════════════ -->
+		<!--
+			Vuetify's "Media card" pattern — full-width image, title +
+			subtitle below, single right-aligned CTA with append icon.
+			Tests image asset + footer alignment + button-with-icon.
+		-->
+		<Variant title="Showcase — Media">
+			<div style="padding: 16px; max-width: 340px;">
+				<origam-card
+						data-cy="card-showcase-media"
+						title="Evening Sunset"
+						subtitle="Take a walk down the beach"
+						image="https://picsum.photos/seed/sunset/600/200"
+						rounded
+				>
+					<template #footer>
+						<div style="display: flex; padding: 12px; justify-content: flex-end;">
+							<origam-btn
+									color="danger"
+									text="Book Activity"
+									:append-icon="MDI_ICONS.CHEVRON_RIGHT"
+									data-cy="card-showcase-media-cta"
+							/>
+						</div>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<!-- ════════════ SHOWCASE — Info banner ════════════ -->
+		<!--
+			Vuetify's "Welcome to Vuetify" info-banner pattern —
+			prepend icon, title with strong weight, subtitle,
+			descriptive paragraph. No image, no footer.
+			Tests the icon-prepend + title+subtitle stacking.
+		-->
+		<Variant title="Showcase — Info banner">
+			<div style="padding: 16px; max-width: 400px;">
+				<origam-card
+						data-cy="card-showcase-info"
+						title="Welcome to origam"
+						subtitle="The Vue 3 design system"
+						:prepend-icon="MDI_ICONS.INFORMATION_OUTLINE"
+						border
+						rounded
+				>
+					<div style="padding: 0 16px 16px;">
+						origam ships ready-to-use Vue 3 components, design tokens (Style Dictionary), Histoire docs, and Cypress + Playwright tests. CSS-first, JS-fallback. Multi-theme via <code>data-theme</code>.
+					</div>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<!-- ════════════ SHOWCASE — Pricing ════════════ -->
+		<!--
+			Compact pricing card — emoji "icon", goal title + subtitle,
+			right-aligned CTA, large numeric progress, helper text.
+			Tests inline content composition + footer + visual hierarchy
+			at small widths.
+		-->
+		<Variant title="Showcase — Pricing">
+			<div style="padding: 16px; max-width: 500px;">
+				<origam-card data-cy="card-showcase-pricing" rounded border>
+					<div style="display: flex; align-items: center; gap: 12px; padding: 16px;">
+						<div style="font-size: 2rem;">🎯</div>
+						<div style="flex: 1;">
+							<div style="font-weight: 700;">Set an earnings goal</div>
+							<div style="font-size: 0.875rem; opacity: 0.7;">Earn my first $100</div>
+						</div>
+						<origam-btn color="primary" text="Create Goal" data-cy="card-showcase-pricing-cta"/>
+					</div>
+					<div style="padding: 0 16px 16px;">
+						<div style="font-size: 1.5rem; font-weight: 900; margin-bottom: 8px;">0%</div>
+						<div style="background: var(--origam-color-border-subtle); height: 4px; border-radius: 999px; overflow: hidden; margin-bottom: 8px;">
+							<div style="background: var(--origam-color-action-primary); height: 100%; width: 2%;"></div>
+						</div>
+						<div style="font-size: 0.75rem; opacity: 0.7;">$0 of $100 earned — 7 days left</div>
+					</div>
+				</origam-card>
 			</div>
 		</Variant>
 

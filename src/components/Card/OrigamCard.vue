@@ -322,6 +322,21 @@
 		border-end-end-radius: var(--origam-card---border-end-end-radius, 0);
 		border-end-start-radius: var(--origam-card---border-end-start-radius, 0);
 
+		// Asset wrapper — pre-fix had NO height/aspect constraint. If
+		// the underlying `<origam-img>` was still loading (or the
+		// network blocked the asset), the picture's intrinsic
+		// `aspect-ratio: 0` made the wrapper claim unbounded vertical
+		// space, blowing up the card to ~500 px tall on a 340 px wide
+		// card. Default to `16/9` so the asset area is always bounded
+		// and matches the proportions Vuetify uses on `<v-card image>`.
+		// Consumers needing a different ratio override either via the
+		// `#asset` slot (full control) or by setting
+		// `--origam-card__asset---aspect-ratio` on the card.
+		&__asset {
+			aspect-ratio: var(--origam-card__asset---aspect-ratio, 16 / 9);
+			overflow: hidden;
+		}
+
 		&__overlay {
 			background-color: var(--origam-card__overlay---background-color, var(--origam-color-overlay-scrim));
 			border-radius: var(--origam-card__overlay---border-radius, inherit);
