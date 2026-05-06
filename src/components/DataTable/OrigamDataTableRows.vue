@@ -1,15 +1,42 @@
 <template>
-	<template v-if="loading">
-		<tr
-				key="loading"
-				class="origam-data-table-rows origam-data-table-rows--loading"
-		>
-			<td :colspan="columns.length">
-				<slot name="loading">
-					{{ t(loadingText) }}
-				</slot>
-			</td>
-		</tr>
+	<!--
+		Loader dispatcher — resolves `loading` via useLoader (defaultKind='line').
+		- kind='skeleton': render N skeleton rows in <tbody> (N=5, fixed).
+		  Headers suppress their progress bar in skeleton mode (see OrigamDataTableHeaders).
+		- kind='line' | 'circular' (or boolean `true`): keep the legacy "Loading items…"
+		  text row for backward compat.
+		TODO: expose a `skeletonRows` prop (requires IDataTableRowsProps change) to let
+		consumers override the fixed count of 5 skeleton rows.
+	-->
+	<template v-if="loaderConfig.isActive">
+		<template v-if="loaderConfig.kind === 'skeleton'">
+			<tr
+					v-for="rowIndex in SKELETON_ROW_COUNT"
+					:key="`skeleton-row_${rowIndex}`"
+					class="origam-data-table-rows origam-data-table-rows--skeleton"
+					aria-busy="true"
+			>
+				<td
+						v-for="col in columns"
+						:key="`skeleton-cell_${col.key}`"
+						class="origam-data-table-rows__skeleton-cell"
+				>
+					<origam-skeleton variant="text" :loading="true" />
+				</td>
+			</tr>
+		</template>
+		<template v-else>
+			<tr
+					key="loading"
+					class="origam-data-table-rows origam-data-table-rows--loading"
+			>
+				<td :colspan="columns.length">
+					<slot name="loading">
+						{{ t(loadingText) }}
+					</slot>
+				</td>
+			</tr>
+		</template>
 	</template>
 
 	<template v-else-if="!(items && items.length) && !hideNoData">
@@ -69,9 +96,9 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow } from '../../components'
+	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow, OrigamSkeleton } from '../../components'
 
-	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLocale, useProps, useSelection } from '../../composables'
+	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLoader, useLocale, useProps, useSelection } from '../../composables'
 
 	import type {
 		IDataTableGroup,
@@ -95,6 +122,11 @@
 	const {filterProps} = useProps<IDataTableRowsProps>(props)
 
 	const {t} = useLocale()
+
+	/** Fixed number of skeleton placeholder rows when kind='skeleton'. */
+	const SKELETON_ROW_COUNT = 5
+
+	const {loaderConfig} = useLoader(props, 'line')
 
 	const {columns} = useHeaders()
 	const {expandOnClick, toggleExpand, isExpanded} = useExpanded()
@@ -186,6 +218,15 @@
 
 		&--loading {
 			color: var(--origam-data-table-rows--loading---color, var(--origam-color-text-secondary));
+		}
+
+		// Skeleton mode: each cell gets zero padding so the skeleton bar
+		// fills the cell naturally. Matched by `origam-data-table-rows--skeleton`
+		// on the <tr> rendered in skeleton loader mode.
+		&--skeleton {
+			> .origam-data-table-rows__skeleton-cell {
+				padding: var(--origam-data-table-rows--skeleton---cell-padding, 4px 8px);
+			}
 		}
 	}
 </style>

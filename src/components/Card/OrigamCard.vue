@@ -22,106 +22,116 @@
 			<template v-if="hasLoading">
 				<slot name="loader">
 					<div class="origam-card__loader">
+						<origam-skeleton
+								v-if="loaderConfig.kind === 'skeleton'"
+								variant="card"
+								:loading="true"
+								v-bind="loaderConfig.overrides"
+						/>
 						<origam-progress
-								:active="!!props.loading"
+								v-else
+								:active="true"
 								:color="props.color"
-								:indeterminate="typeof props.loading !== 'number'"
-								:model-value="typeof props.loading === 'number' ? props.loading : undefined"
+								:indeterminate="loaderConfig.indeterminate"
+								:model-value="loaderConfig.modelValue"
 								:type="PROGRESS_TYPE.LINEAR"
 								class="origam-card__progress origam-card__progress--linear"
 								thickness="4"
+								v-bind="loaderConfig.overrides"
 						/>
 					</div>
 				</slot>
 			</template>
 
-			<template v-if="hasHeader">
-				<slot name="header">
-					<origam-card-header
-							key="item"
-							:append-avatar="appendAvatar"
-							:append-icon="appendIcon"
-							:density="density"
-							:prepend-avatar="prependAvatar"
-							:prepend-icon="prependIcon"
-							:subtitle="subtitle"
-							:title="title"
-							class="origam-card__header"
-							@click:prepend="handleClickPrepend"
-							@click:append="handleClickAppend"
-					>
-						<template
-								v-if="slots['header.append']"
-								#append
+			<template v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'">
+				<template v-if="hasHeader">
+					<slot name="header">
+						<origam-card-header
+								key="item"
+								:append-avatar="appendAvatar"
+								:append-icon="appendIcon"
+								:density="density"
+								:prepend-avatar="prependAvatar"
+								:prepend-icon="prependIcon"
+								:subtitle="subtitle"
+								:title="title"
+								class="origam-card__header"
+								@click:prepend="handleClickPrepend"
+								@click:append="handleClickAppend"
 						>
-							<slot name="header.append"/>
-						</template>
+							<template
+									v-if="slots['header.append']"
+									#append
+							>
+								<slot name="header.append"/>
+							</template>
 
-						<template
-								v-if="slots['header.prepend']"
-								#prepend
-						>
-							<slot name="header.prepend"/>
-						</template>
+							<template
+									v-if="slots['header.prepend']"
+									#prepend
+							>
+								<slot name="header.prepend"/>
+							</template>
 
-						<template
-								v-if="slots['header.title']"
-								#title
-						>
-							<slot name="header.title"/>
-						</template>
+							<template
+									v-if="slots['header.title']"
+									#title
+							>
+								<slot name="header.title"/>
+							</template>
 
-						<template
-								v-if="slots['header.subtitle']"
-								#subtitle
-						>
-							<slot name="header.subtitle"/>
-						</template>
+							<template
+									v-if="slots['header.subtitle']"
+									#subtitle
+							>
+								<slot name="header.subtitle"/>
+							</template>
 
-						<template
-								v-if="slots['header.content']"
-								#default
-						>
-							<slot name="header.content"/>
-						</template>
-					</origam-card-header>
-				</slot>
-			</template>
-
-			<template v-if="hasAsset">
-				<div
-						key="image"
-						class="origam-card__asset"
-				>
-					<slot name="asset">
-						<origam-img
-								key="image-img"
-								:src="props.image"
-								class="origam-card__image"
-								cover
-						/>
-					</slot>
-				</div>
-			</template>
-
-			<div class="origam-card__content">
-				<template v-if="hasText">
-					<slot name="text">
-						<origam-card-text
-								key="text"
-								:text="props.text"
-								class="origam-card__text"
-						/>
+							<template
+									v-if="slots['header.content']"
+									#default
+							>
+								<slot name="header.content"/>
+							</template>
+						</origam-card-header>
 					</slot>
 				</template>
 
-				<slot name="default"/>
-			</div>
+				<template v-if="hasAsset">
+					<div
+							key="image"
+							class="origam-card__asset"
+					>
+						<slot name="asset">
+							<origam-img
+									key="image-img"
+									:src="props.image"
+									class="origam-card__image"
+									cover
+							/>
+						</slot>
+					</div>
+				</template>
 
-			<template v-if="hasFooter">
-				<div class="origam-card__footer">
-					<slot name="footer"/>
+				<div class="origam-card__content">
+					<template v-if="hasText">
+						<slot name="text">
+							<origam-card-text
+									key="text"
+									:text="props.text"
+									class="origam-card__text"
+							/>
+						</slot>
+					</template>
+
+					<slot name="default"/>
 				</div>
+
+				<template v-if="hasFooter">
+					<div class="origam-card__footer">
+						<slot name="footer"/>
+					</div>
+				</template>
 			</template>
 		</slot>
 	</component>
@@ -131,7 +141,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress } from '../../components'
+	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useAdjacent,
@@ -181,7 +191,7 @@
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
-	const {loaderClasses} = useLoader(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -222,7 +232,7 @@
 		return slots.text || props.text != null
 	})
 	const hasLoading = computed(() => {
-		return slots.loader || !!props.loading
+		return slots.loader || loaderConfig.isActive
 	})
 
 	// CLASS & STYLES

@@ -14,18 +14,12 @@
 			role="status"
 	>
 		<div
-				:class="[...skeletonBaseClasses, `${NAME}--circular`]"
+				:class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--circular']"
 				:style="circularStyle"
 		/>
-		<div :class="`${NAME}__lines`">
-			<div
-					:class="[...skeletonBaseClasses, `${NAME}--text`]"
-					:style="{ width: '60%' }"
-			/>
-			<div
-					:class="[...skeletonBaseClasses, `${NAME}--text`]"
-					:style="{ width: '40%', opacity: 0.7 }"
-			/>
+		<div class="origam-skeleton__lines">
+			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
 		</div>
 	</div>
 
@@ -38,22 +32,10 @@
 			aria-label="Loading"
 			role="status"
 	>
-		<div
-				:class="[...skeletonBaseClasses, `${NAME}--rectangular`]"
-				:style="{ height: '80px', marginBottom: '10px' }"
-		/>
-		<div
-				:class="[...skeletonBaseClasses, `${NAME}--text`]"
-				:style="{ width: '70%', marginBottom: '6px' }"
-		/>
-		<div
-				:class="[...skeletonBaseClasses, `${NAME}--text`]"
-				:style="{ width: '90%', marginBottom: '4px', opacity: 0.7 }"
-		/>
-		<div
-				:class="[...skeletonBaseClasses, `${NAME}--text`]"
-				:style="{ width: '50%', opacity: 0.7 }"
-		/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--rectangular']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
 	</div>
 
 	<!-- default: single skeleton block -->
@@ -71,12 +53,11 @@
 		lang="ts"
 		setup
 >
-	import { useProps, useRounded, useSize } from '../../composables'
+	import { useBothColor, useProps, useRounded, useSize } from '../../composables'
 	import type { ISkeletonProps } from '../../interfaces'
 	import { convertToUnit } from '../../utils'
-	import { computed } from 'vue'
-
-	const NAME = 'origam-skeleton'
+	import { computed, toRef } from 'vue'
+	import type { StyleValue } from 'vue'
 
 	const props = withDefaults(defineProps<ISkeletonProps>(), {
 		variant: 'rectangular',
@@ -87,6 +68,7 @@
 	const {filterProps} = useProps<ISkeletonProps>(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	// ── Resolve width / height to CSS strings ──────────────────────────────
 	const resolvedWidth = computed(() => {
@@ -112,46 +94,34 @@
 		height: circularSize.value
 	}))
 
-	// ── Base classes for inner elements of composite variants (card, list-item).
-	// Variant class is appended by each call-site in the template.
-	const skeletonBaseClasses = computed(() => [
-		NAME,
-		{[`${NAME}--pulse`]: props.pulse}
-	])
-
 	// ── Composite-variant container ────────────────────────────────────────
 	const skeletonContainerClasses = computed(() => [
-		`${NAME}-wrapper`,
-		`${NAME}-wrapper--${props.variant}`,
+		'origam-skeleton-wrapper',
+		`origam-skeleton-wrapper--${props.variant}`,
 		props.class
 	])
 
-	const skeletonContainerStyles = computed(() => [
+	const skeletonContainerStyles = computed<StyleValue>(() => [
 		props.style
 	])
 
 	// ── Single-block classes & styles ──────────────────────────────────────
 	const skeletonClasses = computed(() => [
-		NAME,
-		`${NAME}--${props.variant}`,
-		{[`${NAME}--pulse`]: props.pulse},
+		'origam-skeleton',
+		`origam-skeleton--${props.variant}`,
+		{'origam-skeleton--pulse': props.pulse},
 		roundedClasses.value,
 		sizeClasses.value,
 		props.class
 	])
 
-	const skeletonStyles = computed(() => {
+	const skeletonStyles = computed<StyleValue>(() => {
 		const styles: Record<string, string | undefined> = {}
-
-		if (props.bgColor) {
-			// Pass through a CSS var override for custom bg color intent
-			styles['--origam-skeleton---background-color'] = `var(--origam-color-action-${props.bgColor}-bg, ${props.bgColor})`
-		}
 
 		if (resolvedWidth.value) styles['width'] = resolvedWidth.value
 		if (resolvedHeight.value) styles['height'] = resolvedHeight.value
 
-		return [styles, roundedStyles.value, sizeStyles.value, props.style]
+		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style]
 	})
 
 	// EXPOSE
@@ -172,8 +142,6 @@
 	}
 
 	.origam-skeleton {
-		$this: &;
-
 		display: block;
 		background-color: var(--origam-skeleton---background-color);
 		border-radius: var(--origam-skeleton---border-radius);
@@ -210,20 +178,54 @@
 	.origam-skeleton-wrapper {
 		&--list-item {
 			display: flex;
-			gap: 12px;
+			gap: var(--origam-skeleton---gap, 12px);
 			align-items: center;
 
-			.origam-skeleton__lines {
+			> .origam-skeleton--circular {
+				flex-shrink: 0;
+			}
+
+			> .origam-skeleton__lines {
 				flex: 1;
 				display: flex;
 				flex-direction: column;
 				gap: 6px;
+
+				> .origam-skeleton:nth-child(1) {
+					width: 60%;
+				}
+
+				> .origam-skeleton:nth-child(2) {
+					width: 40%;
+					opacity: 0.7;
+				}
 			}
 		}
 
 		&--card {
 			display: flex;
 			flex-direction: column;
+
+			> .origam-skeleton:nth-child(1) {
+				height: 80px;
+				margin-bottom: 10px;
+			}
+
+			> .origam-skeleton:nth-child(2) {
+				width: 70%;
+				margin-bottom: 6px;
+			}
+
+			> .origam-skeleton:nth-child(3) {
+				width: 90%;
+				margin-bottom: 4px;
+				opacity: 0.7;
+			}
+
+			> .origam-skeleton:nth-child(4) {
+				width: 50%;
+				opacity: 0.7;
+			}
 		}
 	}
 </style>

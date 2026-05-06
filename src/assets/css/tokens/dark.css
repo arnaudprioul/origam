@@ -2231,6 +2231,7 @@
   --origam-skeleton---opacity-min: 0.4;
   --origam-skeleton---opacity-max: 0.8;
   --origam-skeleton---text-height: 1.2em;
+  --origam-skeleton---gap: 12px;
   --origam-kbd---background-color: #262626;
   --origam-kbd---color: #fafafa;
   --origam-kbd---border-color: #262626;
@@ -4554,6 +4555,7 @@
     --origam-skeleton---opacity-min: 0.4;
     --origam-skeleton---opacity-max: 0.8;
     --origam-skeleton---text-height: 1.2em;
+    --origam-skeleton---gap: 12px;
     --origam-kbd---background-color: #262626;
     --origam-kbd---color: #fafafa;
     --origam-kbd---border-color: #262626;

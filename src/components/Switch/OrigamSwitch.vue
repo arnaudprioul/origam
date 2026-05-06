@@ -1,5 +1,16 @@
 <template>
+	<!-- Skeleton mode: replace the entire switch with a skeleton placeholder -->
+	<origam-skeleton
+			v-if="isSkeletonLoading"
+			variant="rectangular"
+			:rounded="true"
+			:width="'52px'"
+			:height="'32px'"
+			v-bind="loaderConfig.overrides"
+	/>
+
 	<origam-input
+			v-else
 			:id="id"
 			ref="origamInputRef"
 			v-model="model"
@@ -82,10 +93,10 @@
 						color/bgColor separation contract.
 					-->
 					<div
-							:class="['origam-switch__thumb', { 'origam-switch__thumb--filled': !!icon || props.loading }]"
+							:class="['origam-switch__thumb', { 'origam-switch__thumb--filled': !!icon || loaderConfig.isActive }]"
 					>
 						<origam-translate-scale>
-							<template v-if="!props.loading">
+							<template v-if="!loaderConfig.isActive">
 								<origam-icon
 										v-if="icon"
 										:icon="icon"
@@ -97,14 +108,15 @@
 								<slot name="loader">
 									<div class="origam-switch__loader">
 										<origam-progress
-												:active="!!props.loading"
+												:active="loaderConfig.isActive"
 												:color="props.color"
-												:indeterminate="typeof props.loading !== 'number'"
-												:model-value="typeof props.loading === 'number' ? props.loading : undefined"
+												:indeterminate="loaderConfig.indeterminate"
+												:model-value="loaderConfig.modelValue"
 												:size="SIZES.X_SMALL"
 												:type="PROGRESS_TYPE.CIRCULAR"
 												class="origam-switch__progress origam-switch__progress--circular"
 												thickness="2"
+												v-bind="loaderConfig.overrides"
 										/>
 									</div>
 								</slot>
@@ -127,6 +139,7 @@
 		OrigamInput,
 		OrigamProgress,
 		OrigamSelectionControl,
+		OrigamSkeleton,
 		OrigamTranslateScale
 	} from '../../components'
 
@@ -158,7 +171,7 @@
 	const attrs = useAttrs()
 	const slots = useSlots()
 
-	const {loaderClasses} = useLoader(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
 
 	const uid = getUid()
 	const id = computed(() => {
@@ -191,7 +204,12 @@
 	})
 
 	const hasLoading = computed(() => {
-		return slots.loader || !!props.loading
+		return slots.loader || loaderConfig.value.isActive
+	})
+
+	// True when the whole switch should be replaced by a skeleton placeholder.
+	const isSkeletonLoading = computed(() => {
+		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
 	})
 
 	// CLASS & STYLES

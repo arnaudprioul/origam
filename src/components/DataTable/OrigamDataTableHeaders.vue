@@ -52,8 +52,12 @@
 		first body row. NO `absolute` positioning — the bar just sits
 		in document flow with `padding: 0` on the `<th>` collapsing the
 		space around it.
+
+		When kind='skeleton', the skeleton rows are rendered by OrigamDataTableRows
+		inside <tbody>. Headers suppress the progress bar in that mode so the
+		skeleton rows serve as the sole loading indicator.
 	-->
-	<template v-if="loading">
+	<template v-if="loaderConfig.isActive && loaderConfig.kind !== 'skeleton'">
 		<tr class="origam-data-table-headers origam-data-table-headers--progress">
 			<th
 					:colspan="columns.length"
@@ -62,10 +66,12 @@
 				<slot name="loader">
 					<origam-progress
 							:color="color"
-							:type="PROGRESS_TYPE.LINEAR"
-							active
-							indeterminate
+							:type="loaderConfig.kind === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR"
+							:active="true"
+							:indeterminate="loaderConfig.indeterminate"
+							:model-value="loaderConfig.modelValue"
 							thickness="2"
+							v-bind="loaderConfig.overrides"
 					/>
 				</slot>
 			</th>
@@ -98,7 +104,7 @@
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()
 	const {columns, headers} = useHeaders()
-	const {loaderClasses} = useLoader(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 	const {getSortIcon} = useHeadersCell(props)
 
 	const {displayClasses, mobile} = useDisplay(props)
