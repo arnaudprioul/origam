@@ -62,20 +62,6 @@
 		</template>
 
 		<template #default>
-			<!--
-				`:transition` overrides the menu's default `OrigamTranslateScale`
-				with `OrigamExpandY` — Material-style "drop down" reveal that
-				matches consumer expectations for a `<select>`-like dropdown
-				(grow from the activator's bottom edge instead of scaling from
-				a corner). Format is `{ component: <Vue component> }` because
-				`OrigamOverlay` forwards it to `<origam-transition>`, which
-				switches at runtime.
-
-				`:offset="0"` removes the 8px gap inherited from the Menu's
-				default offset prop. A `<select>` reads as ONE thing (field +
-				dropdown attached), not two stacked surfaces — the dropdown
-				must touch the field's bottom edge.
-			-->
 			<origam-menu
 					ref="origamMenuRef"
 					v-model="menu"
@@ -356,7 +342,7 @@
 		itemChildren: 'children',
 		itemProps: 'props',
 		valueComparator: deepEqual,
-		menuIcon: MDI_ICONS.MENU_DOWN_OUTLINE,
+		menuIcon: MDI_ICONS.CHEVRON_DOWN,
 		divider: ',',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
 		filterKeys: () => ['title'],

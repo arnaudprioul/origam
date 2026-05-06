@@ -45,7 +45,6 @@ if (typeof document !== 'undefined') {
             s.id = 'origam-iframe-fit'
             s.textContent = `
                 iframe[src*="__sandbox"] {
-                    width: 100% !important;
                     max-width: 100% !important;
                     height: 100% !important;
                     max-height: 100% !important;
