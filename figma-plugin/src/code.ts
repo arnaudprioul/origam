@@ -8,12 +8,27 @@
  *   - Phase 2: UI shell already built (ui.tsx)
  *   - Phase 3: Lib helpers wired (variables, styles, messaging)
  *   - Phase 4: Btn component builder
- *   - Future phases: TextField, Select, … (add to the switch below)
+ *   - Phase 5: TextField, Textarea, Select, Checkbox, Radio, Switch (injected below)
+ *   - Phase 6: Card, Chip, Avatar, Alert, Dialog, Toolbar, Badge
  */
 
 import { onMessageFromUI, postToUI } from './lib/messaging'
 import { findCollection } from './lib/variables'
 import { buildBtn } from './components/Btn'
+import { buildTextField } from './components/TextField'
+import { buildTextarea } from './components/Textarea'
+import { buildSelect } from './components/Select'
+import { buildCheckbox } from './components/Checkbox'
+import { buildRadio } from './components/Radio'
+import { buildSwitch } from './components/Switch'
+import { buildCard } from './components/Card'
+import { buildChip } from './components/Chip'
+import { buildAvatar } from './components/Avatar'
+import { buildAlert } from './components/Alert'
+import { buildDialog } from './components/Dialog'
+import { buildToolbar } from './components/Toolbar'
+import { buildBadge } from './components/Badge'
+import type { BuildOpts } from './components/Btn'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -160,27 +175,44 @@ onMessageFromUI(async (msg) => {
     const targetPage = ensureTargetPage()
     let count = 0
 
-    for (const name of msg.components) {
-      try {
-        if (name === 'Btn') {
-          await buildBtn({
-            targetPage,
-            collection,
-            onProgress: (current, total) => {
-              postToUI({
-                type: 'generate-progress',
-                current,
-                total,
-                component: name,
-              })
-            },
-          })
-        }
-        // Phase 5+ components will be added here:
-        // if (name === 'TextField') await buildTextField({ targetPage, collection, onProgress })
-        // if (name === 'Select')    await buildSelect({ targetPage, collection, onProgress })
-        // …
+    // Builder map — Phase 5 injects TextField/Textarea/Select/Checkbox/Radio/Switch HERE
+    // (append to this map, do not replace it)
+    const builders: Record<string, (opts: BuildOpts) => Promise<ComponentSetNode>> = {
+      Btn:       buildBtn,
+      // ── Phase 5 ─────────────────────────────────────────────────────────────
+      TextField: buildTextField,
+      Textarea:  buildTextarea,
+      Select:    buildSelect,
+      Checkbox:  buildCheckbox,
+      Radio:     buildRadio,
+      Switch:    buildSwitch,
+      // ────────────────────────────────────────────────────────────────────────
+      Card:      buildCard,
+      Chip:    buildChip,
+      Avatar:  buildAvatar,
+      Alert:   buildAlert,
+      Dialog:  buildDialog,
+      Toolbar: buildToolbar,
+      Badge:   buildBadge,
+    }
 
+    for (const name of msg.components) {
+      const builder = builders[name]
+      if (!builder) continue
+
+      try {
+        await builder({
+          targetPage,
+          collection,
+          onProgress: (current, total) => {
+            postToUI({
+              type: 'generate-progress',
+              current,
+              total,
+              component: name,
+            })
+          },
+        })
         count++
       } catch (err) {
         postToUI({
