@@ -37,6 +37,22 @@
 		</slot>
 	</template>
 
+	<!--
+		Mirrors Vuetify's `VDataTableHeaders.tsx` exactly:
+		  <tr class="v-data-table-progress">
+		    <th :colspan="columns.length">
+		      <LoaderSlot active indeterminate />
+		    </th>
+		  </tr>
+		With SCSS:
+		  .v-data-table-progress > th { border: none; height: auto;
+		                                padding: 0 }
+		The progress bar uses its natural ~2–4px height and renders as
+		a thin animated indicator between the header titles row and the
+		first body row. NO `absolute` positioning — the bar just sits
+		in document flow with `padding: 0` on the `<th>` collapsing the
+		space around it.
+	-->
 	<template v-if="loading">
 		<tr class="origam-data-table-headers origam-data-table-headers--progress">
 			<th
@@ -139,20 +155,16 @@
 		scoped
 >
 	.origam-data-table-headers {
-		&--progress {
-			height: auto;
-		}
-
-		&__progress-cell {
+		// 1:1 mirror of Vuetify's `.v-data-table-progress`:
+		//   .v-data-table-progress > th { border: none; height: auto;
+		//                                  padding: 0 }
+		// The progress bar's own ~2–4px height defines the row height;
+		// the `<th>` strips its inherited cell padding so the bar
+		// reads as a thin underline of the header titles row.
+		&--progress > &__progress-cell {
 			border: none;
-			padding: 0;
 			height: auto;
-			line-height: 0;
-
-			&:deep(.origam-progress) {
-				position: relative;
-				display: block;
-			}
+			padding: 0;
 		}
 	}
 </style>
