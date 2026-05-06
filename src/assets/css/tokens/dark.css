@@ -1331,6 +1331,9 @@
   --origam-pagination---border-radius: 4px;
   --origam-pagination---border-radius-rounded: 24px;
   --origam-pagination---border-radius-circle: 9999px;
+  --origam-pagination---input-width: 40px;
+  --origam-pagination---input-padding-inline: 8px;
+  --origam-pagination---label-gap: 8px;
   --origam-table---background-color: #0a0a0a;
   --origam-table---color: #fafafa;
   --origam-table---font-size: 0.875rem;
@@ -2221,6 +2224,37 @@
   --origam-grids__col---padding-block-end: 8px;
   --origam-grids__spacer---flex-grow: 1;
   --origam-grids__spacer---min-size: 0px;
+  --origam-skeleton---background-color: #262626;
+  --origam-skeleton---border-radius: 4px;
+  --origam-skeleton---border-radius-circular: 9999px;
+  --origam-skeleton---animation-duration: 400ms;
+  --origam-skeleton---opacity-min: 0.4;
+  --origam-skeleton---opacity-max: 0.8;
+  --origam-skeleton---text-height: 1.2em;
+  --origam-kbd---background-color: #262626;
+  --origam-kbd---color: #fafafa;
+  --origam-kbd---border-color: #262626;
+  --origam-kbd---border-width: 1px;
+  --origam-kbd---border-radius: 4px;
+  --origam-kbd---padding-block: 0.125em;
+  --origam-kbd---padding-inline: 0.4em;
+  --origam-kbd---font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  --origam-kbd---font-size: 0.875em;
+  --origam-kbd---font-weight: 500;
+  --origam-kbd---box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  --origam-kbd---gap: 4px;
+  --origam-kbd---font-size-xs: 0.625rem;
+  --origam-kbd---font-size-sm: 0.75rem;
+  --origam-kbd---font-size-md: 0.875rem;
+  --origam-kbd---font-size-lg: 1rem;
+  --origam-kbd---font-size-xl: 1.125rem;
+  --origam-kbd__filled---background-color: #171717;
+  --origam-kbd__filled---border-width: 1px;
+  --origam-kbd--outlined---background-color: rgba(0, 0, 0, 0);
+  --origam-kbd--outlined---border-width: 1px;
+  --origam-kbd__tonal---background-color: #0a0a0a;
+  --origam-kbd__tonal---border-width: 0px;
+  --origam-kbd__separator---color: #a3a3a3;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
@@ -3556,6 +3590,9 @@
     --origam-pagination---border-radius: 4px;
     --origam-pagination---border-radius-rounded: 24px;
     --origam-pagination---border-radius-circle: 9999px;
+    --origam-pagination---input-width: 40px;
+    --origam-pagination---input-padding-inline: 8px;
+    --origam-pagination---label-gap: 8px;
     --origam-table---background-color: #0a0a0a;
     --origam-table---color: #fafafa;
     --origam-table---font-size: 0.875rem;
@@ -4446,5 +4483,36 @@
     --origam-grids__col---padding-block-end: 8px;
     --origam-grids__spacer---flex-grow: 1;
     --origam-grids__spacer---min-size: 0px;
+    --origam-skeleton---background-color: #262626;
+    --origam-skeleton---border-radius: 4px;
+    --origam-skeleton---border-radius-circular: 9999px;
+    --origam-skeleton---animation-duration: 400ms;
+    --origam-skeleton---opacity-min: 0.4;
+    --origam-skeleton---opacity-max: 0.8;
+    --origam-skeleton---text-height: 1.2em;
+    --origam-kbd---background-color: #262626;
+    --origam-kbd---color: #fafafa;
+    --origam-kbd---border-color: #262626;
+    --origam-kbd---border-width: 1px;
+    --origam-kbd---border-radius: 4px;
+    --origam-kbd---padding-block: 0.125em;
+    --origam-kbd---padding-inline: 0.4em;
+    --origam-kbd---font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    --origam-kbd---font-size: 0.875em;
+    --origam-kbd---font-weight: 500;
+    --origam-kbd---box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+    --origam-kbd---gap: 4px;
+    --origam-kbd---font-size-xs: 0.625rem;
+    --origam-kbd---font-size-sm: 0.75rem;
+    --origam-kbd---font-size-md: 0.875rem;
+    --origam-kbd---font-size-lg: 1rem;
+    --origam-kbd---font-size-xl: 1.125rem;
+    --origam-kbd__filled---background-color: #171717;
+    --origam-kbd__filled---border-width: 1px;
+    --origam-kbd--outlined---background-color: rgba(0, 0, 0, 0);
+    --origam-kbd--outlined---border-width: 1px;
+    --origam-kbd__tonal---background-color: #0a0a0a;
+    --origam-kbd__tonal---border-width: 0px;
+    --origam-kbd__separator---color: #a3a3a3;
   }
 }

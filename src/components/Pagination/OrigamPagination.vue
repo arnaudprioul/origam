@@ -8,78 +8,157 @@
 			role="navigation"
 			@keydown="handleKeydown"
 	>
-		<ul class="origam-pagination__list">
-			<template v-if="showFirstLastPage">
-				<li
-						key="first"
-						class="origam-pagination__first"
-				>
-					<slot
-							name="first"
-							v-bind="{...controls.first}"
+		<!-- ════ COMPACT MODE ════ -->
+		<template v-if="compact">
+			<ul class="origam-pagination__list origam-pagination__list--compact">
+				<template v-if="showFirstLastPage">
+					<li
+							key="first"
+							class="origam-pagination__first"
 					>
-						<origam-btn v-bind="{...controls.first }"/>
-					</slot>
-				</li>
-			</template>
-
-			<li
-					key="prev"
-					class="origam-pagination__prev"
-			>
-				<slot
-						name="prev"
-						v-bind="{...controls.prev}"
-				>
-					<origam-btn v-bind="{...controls.prev }"/>
-				</slot>
-			</li>
-
-			<template
-					v-for="(item) in items"
-					:key="item.key"
-			>
-				<li
-						:class="{'origam-pagination__item--is-active': item.isActive}"
-						class="origam-pagination__item"
-				>
-					<slot :name="`item-${item.key}`">
-						<slot name="item">
-							<origam-btn
-									:text="item.page.toString()"
-									v-bind="{ ...item.props }"
-							/>
+						<slot
+								name="first"
+								v-bind="{...controls.first}"
+						>
+							<origam-btn v-bind="{...controls.first }"/>
 						</slot>
-					</slot>
-				</li>
-			</template>
+					</li>
+				</template>
 
-			<li
-					key="next"
-					class="origam-pagination__next"
-			>
-				<slot
-						name="next"
-						v-bind="{...controls.next}"
-				>
-					<origam-btn v-bind="{...controls.next }"/>
-				</slot>
-			</li>
-
-			<template v-if="showFirstLastPage">
 				<li
-						key="last"
-						class="origam-pagination__last"
+						key="prev"
+						class="origam-pagination__prev"
 				>
 					<slot
-							name="last"
-							v-bind="{...controls.last}"
+							name="prev"
+							v-bind="{...controls.prev}"
 					>
-						<origam-btn v-bind="{...controls.last }"/>
+						<origam-btn v-bind="{...controls.prev }"/>
 					</slot>
 				</li>
-			</template>
-		</ul>
+
+				<li class="origam-pagination__compact-label">
+					<span>{{ t(pageText) }}</span>
+					<input
+							ref="compactInputRef"
+							:value="page"
+							:min="start"
+							:max="length"
+							:disabled="disabled"
+							type="number"
+							class="origam-pagination__compact-input"
+							aria-label="Page number"
+							data-cy="pagination-compact-input"
+							@change="handleCompactInput"
+							@keydown.enter.prevent="handleCompactInput"
+					/>
+					<span>{{ t(ofText) }}</span>
+					<span>{{ length }}</span>
+				</li>
+
+				<li
+						key="next"
+						class="origam-pagination__next"
+				>
+					<slot
+							name="next"
+							v-bind="{...controls.next}"
+					>
+						<origam-btn v-bind="{...controls.next }"/>
+					</slot>
+				</li>
+
+				<template v-if="showFirstLastPage">
+					<li
+							key="last"
+							class="origam-pagination__last"
+					>
+						<slot
+								name="last"
+								v-bind="{...controls.last}"
+						>
+							<origam-btn v-bind="{...controls.last }"/>
+						</slot>
+					</li>
+				</template>
+			</ul>
+		</template>
+
+		<!-- ════ DEFAULT MODE ════ -->
+		<template v-else>
+			<ul class="origam-pagination__list">
+				<template v-if="showFirstLastPage">
+					<li
+							key="first"
+							class="origam-pagination__first"
+					>
+						<slot
+								name="first"
+								v-bind="{...controls.first}"
+						>
+							<origam-btn v-bind="{...controls.first }"/>
+						</slot>
+					</li>
+				</template>
+
+				<li
+						key="prev"
+						class="origam-pagination__prev"
+				>
+					<slot
+							name="prev"
+							v-bind="{...controls.prev}"
+					>
+						<origam-btn v-bind="{...controls.prev }"/>
+					</slot>
+				</li>
+
+				<template
+						v-for="(item) in items"
+						:key="item.key"
+				>
+					<li
+							:class="{'origam-pagination__item--is-active': item.isActive}"
+							class="origam-pagination__item"
+					>
+						<slot :name="`item-${item.key}`">
+							<slot name="item">
+								<origam-btn
+										:text="item.page.toString()"
+										v-bind="{ ...item.props }"
+								/>
+							</slot>
+						</slot>
+					</li>
+				</template>
+
+				<li
+						key="next"
+						class="origam-pagination__next"
+				>
+					<slot
+							name="next"
+							v-bind="{...controls.next}"
+					>
+						<origam-btn v-bind="{...controls.next }"/>
+					</slot>
+				</li>
+
+				<template v-if="showFirstLastPage">
+					<li
+							key="last"
+							class="origam-pagination__last"
+					>
+						<slot
+								name="last"
+								v-bind="{...controls.last}"
+						>
+							<origam-btn v-bind="{...controls.last }"/>
+						</slot>
+					</li>
+				</template>
+			</ul>
+		</template>
 	</component>
 </template>
 
@@ -87,7 +166,7 @@
 		lang="ts"
 		setup
 >
-	import { ComponentPublicInstance, computed, nextTick, shallowRef, StyleValue } from "vue"
+	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
 	import { OrigamBtn } from "../../components"
 
 	import { useDisplay, useLocale, useProps, useRefs, useResizeObserver, useVModel } from "../../composables"
@@ -114,7 +193,10 @@
 		firstAriaLabel: 'origam.pagination.ariaLabel.first',
 		previousAriaLabel: 'origam.pagination.ariaLabel.previous',
 		nextAriaLabel: 'origam.pagination.ariaLabel.next',
-		lastAriaLabel: 'origam.pagination.ariaLabel.last'
+		lastAriaLabel: 'origam.pagination.ariaLabel.last',
+		compact: false,
+		pageText: 'origam.pagination.page',
+		ofText: 'origam.pagination.of'
 	})
 
 	const emits = defineEmits([
@@ -342,6 +424,22 @@
 		}
 	}
 
+	// COMPACT
+
+	const compactInputRef = ref<HTMLInputElement | null>(null)
+
+	const handleCompactInput = (e: Event) => {
+		const input = e.target as HTMLInputElement
+		const raw = parseInt(input.value, 10)
+		const clamped = isNaN(raw)
+			? start.value
+			: Math.min(Math.max(raw, start.value), length.value)
+
+		// Sync the input's displayed value to the clamped value
+		input.value = String(clamped)
+		page.value = clamped
+	}
+
 	// CLASS & STYLES
 
 	const paginationClasses = computed(() => {
@@ -406,6 +504,46 @@
 
 		:deep(.origam-btn__overlay) {
 			transition: none;
+		}
+
+		&__list--compact {
+			flex-wrap: nowrap;
+			align-items: center;
+			width: auto;
+		}
+
+		&__compact-label {
+			display: inline-flex;
+			align-items: center;
+			gap: var(--origam-pagination---label-gap, 8px);
+			list-style: none;
+			margin: var(--origam-pagination---gap, 4px);
+			white-space: nowrap;
+		}
+
+		&__compact-input {
+			display: inline-block;
+			width: var(--origam-pagination---input-width, 3em);
+			padding-inline: var(--origam-pagination---input-padding-inline, 4px);
+			text-align: center;
+			border: 1px solid currentColor;
+			border-radius: var(--origam-pagination---border-radius, 4px);
+			font: inherit;
+			line-height: 1.5;
+
+			/* Hide browser spinner arrows */
+			appearance: textfield;
+
+			&::-webkit-inner-spin-button,
+			&::-webkit-outer-spin-button {
+				appearance: none;
+				margin: 0;
+			}
+
+			&:focus-visible {
+				outline: 2px solid currentColor;
+				outline-offset: 2px;
+			}
 		}
 	}
 </style>

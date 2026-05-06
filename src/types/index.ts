@@ -243,6 +243,10 @@ export * from './Theme/theme.type'
 
 export * from './Window/window-item.type'
 
+export * from './Skeleton/skeleton.type'
+
+export * from './Kbd/kbd.type'
+
 
 
 

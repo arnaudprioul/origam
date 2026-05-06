@@ -96,7 +96,9 @@
         "currentPage": "Page {0}, Current page",
         "first": "First page",
         "last": "Last page"
-      }
+      },
+      "page": "Page",
+      "of": "of"
     },
     "stepper": {
       "next": "Next",

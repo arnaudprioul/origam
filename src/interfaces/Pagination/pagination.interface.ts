@@ -29,4 +29,7 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
     lastAriaLabel?: string
     ellipsis?: string
     showFirstLastPage?: boolean
+    compact?: boolean
+    pageText?: string
+    ofText?: string
 }

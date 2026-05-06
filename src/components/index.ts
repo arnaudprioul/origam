@@ -141,3 +141,7 @@ export * from './Tooltip'
 export * from './VirtualScroll'
 
 export * from './Window'
+
+export * from './Skeleton'
+
+export * from './Kbd'

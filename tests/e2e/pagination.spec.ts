@@ -96,4 +96,70 @@ test.describe('OrigamPagination', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 5000 })
     })
+
+    // ════ COMPACT variant ════
+
+    test('Compact — renders an <input type="number"> element', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Compact', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const input = sandbox.locator('[data-cy="pagination-compact-input"]')
+        await expect(input).toBeVisible({ timeout: 5000 })
+        await expect(input).toHaveAttribute('type', 'number')
+    })
+
+    test('Compact — does NOT render page-number buttons', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Compact', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        // No page-number items (buttons with aria-label "Go to page N")
+        const pageItems = sandbox.locator('.origam-pagination__item')
+        await expect(pageItems).toHaveCount(0, { timeout: 5000 })
+    })
+
+    test('Compact — typing a valid page and pressing Enter updates the value', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Compact', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const input = sandbox.locator('[data-cy="pagination-compact-input"]')
+        await input.fill('5')
+        await input.press('Enter')
+        await expect(input).toHaveValue('5', { timeout: 3000 })
+    })
+
+    test('Compact — typing a value above length clamps to length', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Compact', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const input = sandbox.locator('[data-cy="pagination-compact-input"]')
+        await input.fill('99')
+        await input.press('Enter')
+        // length=12, so should clamp to 12
+        await expect(input).toHaveValue('12', { timeout: 3000 })
+    })
+
+    test('Compact + showFirstLastPage — all four chevrons are rendered', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Compact + showFirstLastPage', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('.origam-pagination__first').first()).toBeAttached({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-pagination__last').first()).toBeAttached({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-pagination__prev').first()).toBeAttached({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-pagination__next').first()).toBeAttached({ timeout: 5000 })
+    })
 })

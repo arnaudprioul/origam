@@ -246,3 +246,7 @@ export * from './VirtualScroll/virtual-scroll-item.interface'
 
 export * from './Window/window.interface'
 export * from './Window/window-item.interface'
+
+export * from './Skeleton/skeleton.interface'
+
+export * from './Kbd/kbd.interface'

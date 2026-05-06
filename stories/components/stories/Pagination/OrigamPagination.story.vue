@@ -117,6 +117,16 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ COMPACT ════════════ -->
+		<Variant title="Compact">
+			<origam-pagination v-model="page" :length="12" compact data-cy="pagination-compact"/>
+		</Variant>
+
+		<!-- ════════════ COMPACT + FIRST/LAST ════════════ -->
+		<Variant title="Compact + showFirstLastPage">
+			<origam-pagination v-model="page" :length="12" compact show-first-last-page data-cy="pagination-compact-first-last"/>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
