@@ -31,6 +31,23 @@ import { buildBadge } from './components/Badge'
 import type { BuildOpts } from './components/Btn'
 
 // ---------------------------------------------------------------------------
+// Utility — uint8ArrayToBase64
+// ---------------------------------------------------------------------------
+
+/**
+ * Encode a Uint8Array to a base-64 string without relying on `Buffer`
+ * (unavailable in the Figma sandboxed runtime).
+ */
+function uint8ArrayToBase64(bytes: Uint8Array): string {
+  let binary = ''
+  const len = bytes.byteLength
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
+// ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
@@ -228,8 +245,33 @@ onMessageFromUI(async (msg) => {
 
   // ── export ────────────────────────────────────────────────────────────────
   if (msg.type === 'export') {
-    // Phase 7 / 8 — not yet implemented.
-    postToUI({ type: 'error', message: 'Export is not yet implemented (Phase 7).' })
+    if (msg.format === 'w3c') {
+      postToUI({ type: 'error', message: 'W3C exporter is v2 — not yet implemented.' })
+      return
+    }
+
+    try {
+      let result: { filename: string; mimeType: string; bytes: Uint8Array }
+
+      if (msg.format === 'scss-origam') {
+        const { exportScssOrigam } = await import('./exporters/scss-origam')
+        result = await exportScssOrigam()
+      } else {
+        // 'tokens-studio' — default branch
+        const { exportTokensStudio } = await import('./exporters/tokens-studio')
+        result = await exportTokensStudio()
+      }
+
+      const base64 = uint8ArrayToBase64(result.bytes)
+      postToUI({
+        type: 'export-ready',
+        filename: result.filename,
+        mimeType: result.mimeType,
+        base64,
+      })
+    } catch (err) {
+      postToUI({ type: 'error', message: `Export failed: ${(err as Error).message}` })
+    }
     return
   }
 
