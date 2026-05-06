@@ -122,7 +122,7 @@
   --origam-card---z-index: 0;
   --origam-card---background: #ffffff;
   --origam-card---color: #171717;
-  --origam-card---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
+  --origam-card---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
   --origam-card---box-shadow-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
   --origam-card---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
   --origam-card---opacity: 1;
@@ -135,7 +135,7 @@
   --origam-card---transition-duration: 280ms;
   --origam-card---transition-property: box-shadow, opacity, background;
   --origam-card---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --origam-card---border-color: #171717;
+  --origam-card---border-color: #d4d4d4;
   --origam-card---border-style: solid;
   --origam-card---border-top-width: 0px;
   --origam-card---border-left-width: 0px;
@@ -145,7 +145,7 @@
   --origam-card---border-start-end-radius: 0px;
   --origam-card---border-end-start-radius: 0px;
   --origam-card---border-end-end-radius: 0px;
-  --origam-card---border-radius-rounded: 4px;
+  --origam-card---border-radius-rounded: 8px;
   --origam-card---padding-block-start: 0px;
   --origam-card---padding-block-end: 0px;
   --origam-card---padding-inline-start: 0px;

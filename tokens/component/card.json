@@ -8,7 +8,7 @@
 
     "background":           { "$type": "color",      "$value": "{color.surface.raised}" },
     "color":                { "$type": "color",      "$value": "{color.text.primary}" },
-    "box-shadow":           { "$type": "shadow",     "$value": "{shadow.none}" },
+    "box-shadow":           { "$type": "shadow",     "$value": "{shadow.sm}" },
     "box-shadow-hover":     { "$type": "shadow",     "$value": "{shadow.lg}" },
     "box-shadow-elevated":  { "$type": "shadow",     "$value": "{shadow.md}" },
 
@@ -25,7 +25,7 @@
     "transition-property":  { "$type": "other",      "$value": "box-shadow, opacity, background" },
     "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
 
-    "border-color":         { "$type": "color",      "$value": "{color.text.primary}" },
+    "border-color":         { "$type": "color",      "$value": "{color.border.subtle}" },
     "border-style":         { "$type": "other",      "$value": "solid" },
     "border-top-width":     { "$type": "dimension",  "$value": "{border.width.0}" },
     "border-left-width":    { "$type": "dimension",  "$value": "{border.width.0}" },
@@ -35,7 +35,7 @@
     "border-start-end-radius":   { "$type": "dimension", "$value": "{radius.none}" },
     "border-end-start-radius":   { "$type": "dimension", "$value": "{radius.none}" },
     "border-end-end-radius":     { "$type": "dimension", "$value": "{radius.none}" },
-    "border-radius-rounded": { "$type": "dimension", "$value": "{radius.sm}" },
+    "border-radius-rounded": { "$type": "dimension", "$value": "{radius.md}" },
 
     "padding-block-start":  { "$type": "dimension",  "$value": "{space.0}" },
     "padding-block-end":    { "$type": "dimension",  "$value": "{space.0}" },
