@@ -340,6 +340,50 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ LOADING — interactive ════════════ -->
+		<Variant
+				title="Loading — interactive"
+				:init-state="() => useStoryInitState<{
+					enabled: boolean
+					kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+					progress: number
+					circularSize: number
+				}>({
+					enabled: true,
+					kind: 'bool',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-btn
+							:loading="resolveLoading(state)"
+							text="Click me"
+							color="primary"
+							data-cy="btn-loading-interactive"
+					/>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<!--
 			Demonstrates the full `TLoadingValue` polymorphic API:
@@ -436,7 +480,7 @@
 		IRoundedProps,
 		ISizeProps
 	} from '@origam/interfaces'
-	import type { TVariant } from '@origam/types'
+	import type { TLoadingValue, TVariant } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
@@ -449,6 +493,28 @@
 		tagList,
 		variantList
 	} from '@stories/const'
+
+	interface ILoadingState {
+		enabled: boolean
+		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		progress: number
+		circularSize: number
+	}
+
+	const resolveLoading = (state: ILoadingState): TLoadingValue => {
+		if (!state.enabled) return false
+		if (state.kind === 'bool') return true
+		if (state.kind === 'number') return state.progress
+		if (state.kind === 'line') return { type: 'line' }
+		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
+		if (state.kind === 'skeleton') return { type: 'skeleton' }
+		return false
+	}
+
+	const describeLoading = (state: ILoadingState): string => {
+		const v = resolveLoading(state)
+		return JSON.stringify(v, null, 2)
+	}
 </script>
 
 <docs lang="md" src="@docs/components/Btn/OrigamBtn.md"/>
