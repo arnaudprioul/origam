@@ -561,6 +561,48 @@
 			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
+
+			// Pre-fix: every icon-only btn rendered its glyph ~1.25 px
+			// off-centre (reported by the user as "le point noir n'est
+			// pas centré"). Two compounding causes:
+			//
+			// 1. The base `__loader` is `display: inline-grid` with
+			//    `grid-template-columns: max-content auto max-content`.
+			//    With no prepend/append rendered, the auto column hugs
+			//    the icon's intrinsic width (≈ 16 px) rather than
+			//    stretching to fill the btn — and `inline-grid` then
+			//    placed that 16-px content column with sub-pixel drift
+			//    against the 36-px btn box. Probe-measured Δx = +1.25
+			//    px on every icon-mode btn.
+			//
+			// 2. The `<i>` MDI glyph itself has an advance-width wider
+			//    than 1 em (the font's natural metric), so even when
+			//    centred its bbox sits asymmetrically over the visual
+			//    ink.
+			//
+			// Fix:
+			// - Switch `__loader` to `display: flex` + center alignment
+			//   in icon mode. The grid was only meaningful when
+			//   prepend/content/append all coexisted; in icon mode
+			//   there's only one child.
+			// - Force `.origam-icon` to a 1 em × 1 em square with
+			//   `line-height: 1` and `text-align: center` so the glyph
+			//   is drawn in a deterministic em-box.
+			#{$this}__loader {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				grid-template-areas: none;
+				grid-template-columns: none;
+			}
+
+			#{$this}__content :deep(.origam-icon) {
+				width: 1em;
+				height: 1em;
+				line-height: 1;
+				text-align: center;
+				font-size: inherit;
+			}
 		}
 
 		&--flat,
