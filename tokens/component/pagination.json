@@ -30,6 +30,10 @@
 
     "border-radius":            { "$type": "dimension",  "$value": "{radius.sm}",                  "$description": "Default border-radius of each page button (4px square)" },
     "border-radius-rounded":    { "$type": "dimension",  "$value": "{radius.2xl}",                 "$description": "Border-radius used with --rounded variant (pill-like)" },
-    "border-radius-circle":     { "$type": "dimension",  "$value": "{radius.full}",                "$description": "Border-radius used with --circle variant (perfect circle)" }
+    "border-radius-circle":     { "$type": "dimension",  "$value": "{radius.full}",                "$description": "Border-radius used with --circle variant (perfect circle)" },
+
+    "input-width":              { "$type": "dimension",  "$value": "{space.10}",                   "$description": "Width of the page number input in compact mode" },
+    "input-padding-inline":     { "$type": "dimension",  "$value": "{space.2}",                    "$description": "Inline padding of the page number input in compact mode" },
+    "label-gap":                { "$type": "dimension",  "$value": "{space.2}",                    "$description": "Gap between labels and input in compact mode" }
   }
 }

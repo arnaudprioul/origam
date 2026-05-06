@@ -87,7 +87,12 @@
     "component/transition",
     "component/grids",
     "component/defaults-provider",
-    "component/theme-provider"
+    "component/theme-provider",
+    "component/skeleton",
+    "component/kbd",
+    "component/stepper",
+    "component/timeline",
+    "component/treeview"
   ],
   "_note": "FUTURE: add semantic/brand-a.json and semantic/brand-b.json here between semantic/dark and component/* to enable brand theming. Each brand file overrides only the semantic tokens it needs (and optionally a primitive-override file for a different brand color ramp)."
 }

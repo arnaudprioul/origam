@@ -1,0 +1,267 @@
+<template>
+	<Story
+		group="components"
+		title="Timeline/OrigamTimeline"
+	>
+
+		<!-- ════════════ DEFAULT — 4 release entries (matches maquette) ════════════ -->
+		<Variant title="Default">
+			<origam-timeline :items="releaseEntries" data-cy="timeline-default"/>
+		</Variant>
+
+		<!-- ════════════ WITH ICONS ════════════ -->
+		<Variant title="With icons">
+			<origam-timeline :items="iconEntries" data-cy="timeline-icons"/>
+		</Variant>
+
+		<!-- ════════════ SIDES ════════════ -->
+		<Variant title="Sides">
+			<div style="display: flex; gap: 32px; flex-wrap: wrap;">
+				<div>
+					<p style="font-size: 0.75rem; margin-bottom: 8px; font-weight: 600;">side="start"</p>
+					<origam-timeline
+						:items="simpleEntries"
+						side="start"
+						data-cy="timeline-side-start"
+					/>
+				</div>
+				<div>
+					<p style="font-size: 0.75rem; margin-bottom: 8px; font-weight: 600;">side="end"</p>
+					<origam-timeline
+						:items="simpleEntries"
+						side="end"
+						data-cy="timeline-side-end"
+					/>
+				</div>
+				<div>
+					<p style="font-size: 0.75rem; margin-bottom: 8px; font-weight: 600;">side="alternating"</p>
+					<origam-timeline
+						:items="simpleEntries"
+						side="alternating"
+						data-cy="timeline-side-alternating"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<!-- ════════════ INTENT MIX ════════════ -->
+		<Variant title="Intent mix">
+			<origam-timeline :items="intentEntries" data-cy="timeline-intent"/>
+		</Variant>
+
+		<!-- ════════════ COLOR ════════════ -->
+		<Variant
+			title="Color"
+			:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-timeline
+					:color="state.color"
+					:bg-color="state.bgColor"
+					:items="simpleEntries"
+					data-cy="timeline-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ SIZE / DENSITY ════════════ -->
+		<Variant
+			title="Size / Density"
+			:init-state="() => useStoryInitState<ISizeProps & IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-timeline
+					:density="state.density"
+					:size="state.size"
+					:items="simpleEntries"
+					data-cy="timeline-size-density"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+				<HstSelect v-model="state.size"    title="size"    :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ SLOT — default (custom content) ════════════ -->
+		<Variant title="Slot — default (custom content)">
+			<origam-timeline data-cy="timeline-slot-default">
+				<origam-timeline-item
+					title="v1.0.0"
+					subtitle="May 5, 2026"
+					intent="primary"
+					:is-last="false"
+					data-cy="timeline-slot-item-0"
+				>
+					<template #default>
+						<div class="timeline-custom-content">
+							<p style="font-weight: 600; margin: 0 0 4px;">v1.0.0 — Stable release</p>
+							<ul style="margin: 0; padding-left: 16px; font-size: 0.75rem;">
+								<li>240 components shipped</li>
+								<li>Full token coverage</li>
+								<li>Playwright e2e suite</li>
+							</ul>
+						</div>
+					</template>
+				</origam-timeline-item>
+				<origam-timeline-item
+					title="v0.9-rc"
+					subtitle="Apr 28, 2026"
+					intent="success"
+					:is-last="true"
+					data-cy="timeline-slot-item-1"
+				>
+					<template #default>
+						<p style="margin: 0; font-size: 0.75rem; color: var(--origam-color-text-secondary)">
+							Release candidate — API surface frozen.
+						</p>
+					</template>
+				</origam-timeline-item>
+			</origam-timeline>
+		</Variant>
+
+		<!-- ════════════ TRUNCATE LINE ════════════ -->
+		<Variant
+			title="Truncate line"
+			:init-state="() => useStoryInitState<{ truncateLine: boolean }>({ truncateLine: true })"
+		>
+			<template #default="{ state }">
+				<origam-timeline
+					:items="simpleEntries"
+					:truncate-line="state.truncateLine"
+					data-cy="timeline-truncate"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.truncateLine" title="truncateLine"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ PLAYGROUND ════════════ -->
+		<Variant
+			title="Playground"
+			:init-state="() => useStoryInitState<ITimelineProps>({
+				side: 'start',
+				truncateLine: false,
+				color: undefined,
+				bgColor: undefined,
+				density: DENSITY.DEFAULT
+			})"
+		>
+			<template #default="{ state }">
+				<origam-timeline
+					v-bind="state"
+					:items="releaseEntries"
+					data-cy="timeline-playground"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.side"         title="side"         :options="sideList"/>
+				<HstCheckbox v-model="state.truncateLine" title="truncateLine"/>
+				<HstSelect   v-model="state.color"        title="color"        :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
+				<HstSelect   v-model="state.density"      title="density"      :options="densityList"/>
+				<HstSelect   v-model="state.size"         title="size"         :options="sizeList"/>
+			</template>
+		</Variant>
+
+	</Story>
+</template>
+
+<script lang="ts" setup>
+	import {
+		OrigamTimeline,
+		OrigamTimelineItem
+	} from '@origam/components'
+	import { DENSITY, MDI_ICONS } from '@origam/enums'
+	import type { IColorProps, IDensityProps, IOptions, ISizeProps } from '@origam/interfaces'
+	import type { ITimelineEntry, ITimelineProps } from '@origam/interfaces'
+	import type { TTimelineSide } from '@origam/types'
+
+	import { useStoryInitState } from '@stories/composables'
+	import { densityList, intentList, sizeList } from '@stories/const'
+
+	// ── Side options ────────────────────────────────────────────────────────
+	const sideList: Array<IOptions<TTimelineSide>> = [
+		{ label: 'start',       value: 'start' },
+		{ label: 'end',         value: 'end' },
+		{ label: 'alternating', value: 'alternating' }
+	]
+
+	// ── Fixture data ────────────────────────────────────────────────────────
+	const releaseEntries: ITimelineEntry[] = [
+		{
+			title: 'v1.0.0',
+			subtitle: 'May 5, 2026',
+			description: 'Stable release · 240 components',
+			intent: 'primary'
+		},
+		{
+			title: 'v0.9-rc',
+			subtitle: 'Apr 28, 2026',
+			description: 'Release candidate, API freeze',
+			intent: 'success'
+		},
+		{
+			title: 'v0.8',
+			subtitle: 'Apr 12, 2026',
+			description: 'Dark theme tokens, motion system',
+			intent: 'info'
+		},
+		{
+			title: 'v0.7',
+			subtitle: 'Mar 30, 2026',
+			description: 'Forms refactor, OTP component',
+			intent: 'warning'
+		}
+	]
+
+	const iconEntries: ITimelineEntry[] = [
+		{
+			title: 'v1.0.0',
+			subtitle: 'May 5, 2026',
+			description: 'Stable release · 240 components',
+			intent: 'primary',
+			icon: MDI_ICONS.ROCKET_LAUNCH
+		},
+		{
+			title: 'v0.9-rc',
+			subtitle: 'Apr 28, 2026',
+			description: 'Release candidate, API freeze',
+			intent: 'success',
+			icon: MDI_ICONS.PACKAGE
+		},
+		{
+			title: 'v0.8',
+			subtitle: 'Apr 12, 2026',
+			description: 'Dark theme tokens, motion system',
+			intent: 'info',
+			icon: MDI_ICONS.TAG
+		},
+		{
+			title: 'v0.7',
+			subtitle: 'Mar 30, 2026',
+			description: 'Forms refactor, OTP component',
+			intent: 'warning',
+			icon: MDI_ICONS.HISTORY
+		}
+	]
+
+	const simpleEntries: ITimelineEntry[] = [
+		{ title: 'Step 1', subtitle: 'Jan 2026', description: 'First milestone', intent: 'primary' },
+		{ title: 'Step 2', subtitle: 'Feb 2026', description: 'Second milestone', intent: 'success' },
+		{ title: 'Step 3', subtitle: 'Mar 2026', description: 'Third milestone', intent: 'info' }
+	]
+
+	const intentEntries: ITimelineEntry[] = [
+		{ title: 'Primary',   subtitle: 'Intent primary',   description: 'Primary intent dot',   intent: 'primary' },
+		{ title: 'Success',   subtitle: 'Intent success',   description: 'Success intent dot',   intent: 'success' },
+		{ title: 'Warning',   subtitle: 'Intent warning',   description: 'Warning intent dot',   intent: 'warning' },
+		{ title: 'Danger',    subtitle: 'Intent danger',    description: 'Danger intent dot',    intent: 'danger' },
+		{ title: 'Info',      subtitle: 'Intent info',      description: 'Info intent dot',      intent: 'info' }
+	]
+</script>

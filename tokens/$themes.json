@@ -89,7 +89,12 @@
       "component/transition": "enabled",
       "component/grids": "enabled",
       "component/defaults-provider": "enabled",
-      "component/theme-provider": "enabled"
+      "component/theme-provider": "enabled",
+      "component/skeleton": "enabled",
+      "component/kbd": "enabled",
+      "component/stepper": "enabled",
+      "component/timeline": "enabled",
+      "component/treeview": "enabled"
     }
   },
   {
@@ -182,7 +187,12 @@
       "component/transition": "enabled",
       "component/grids": "enabled",
       "component/defaults-provider": "enabled",
-      "component/theme-provider": "enabled"
+      "component/theme-provider": "enabled",
+      "component/skeleton": "enabled",
+      "component/kbd": "enabled",
+      "component/stepper": "enabled",
+      "component/timeline": "enabled",
+      "component/treeview": "enabled"
     }
   }
 ]
