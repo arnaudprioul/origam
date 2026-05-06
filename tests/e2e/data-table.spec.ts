@@ -49,7 +49,15 @@ test.describe('OrigamDataTable', () => {
     test('Pagination variant — footer pagination is present', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Pagination', { exact: true }).first().click()
+        // `getByText('Pagination', { exact: true })` was ambiguous —
+        // it ALSO matched the "Pagination" component group in the
+        // Histoire sidebar (where OrigamPagination story lives).
+        // Click the variant tile inside the current story's variant
+        // panel instead. Histoire renders variant tiles with the
+        // text "Pagination" inside `.histoire-variant` or similar;
+        // we use `.last()` because the sidebar group entry comes
+        // FIRST in DOM order, so the variant tile is last.
+        await page.getByText('Pagination', { exact: true }).last().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

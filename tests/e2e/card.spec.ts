@@ -64,9 +64,11 @@ test.describe('OrigamCard', () => {
 
 		const rounded = await sandbox.locator('[data-cy="card-rounded-true"]')
 			.evaluate(el => getComputedStyle(el as HTMLElement).borderTopLeftRadius)
-		// Card's `&--rounded` modifier sets all four corners to a 4 px
-		// `--origam-card---border-radius-rounded` fallback.
-		expect(rounded).toBe('4px')
+		// Card's `&--rounded` modifier resolves to
+		// `--origam-card---border-radius-rounded` which now defaults to
+		// `radius.md` (8px, Vuetify parity) — was 4px (radius.sm)
+		// pre-d6fe224 when cards looked too subtle.
+		expect(rounded).toBe('8px')
 	})
 
 	test('Color showcase — bgColor prop paints each intent on the card root', async ({ page }) => {
