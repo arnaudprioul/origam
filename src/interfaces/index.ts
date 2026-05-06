@@ -254,3 +254,5 @@ export * from './Kbd/kbd.interface'
 export * from './Stepper/stepper.interface'
 
 export * from './Timeline/timeline.interface'
+
+export * from './Treeview/treeview.interface'

@@ -2297,6 +2297,28 @@
   --origam-timeline---title-font-weight: 600;
   --origam-timeline---subtitle-font-size: 0.75rem;
   --origam-timeline---subtitle-color: #a3a3a3;
+  --origam-treeview---background-color: #0a0a0a;
+  --origam-treeview---color: #fafafa;
+  --origam-treeview---padding-block: 4px;
+  --origam-treeview---padding-inline: 8px;
+  --origam-treeview---indent-size: 16px;
+  --origam-treeview---row-height: 32px;
+  --origam-treeview---row-gap: 8px;
+  --origam-treeview---row-padding-inline: 8px;
+  --origam-treeview---row-bg-hover: #262626;
+  --origam-treeview---row-bg-selected: #4c1d95;
+  --origam-treeview---row-color-selected: #c4b5fd;
+  --origam-treeview---row-color-disabled: #525252;
+  --origam-treeview---chevron-size: 16px;
+  --origam-treeview---chevron-color: #a3a3a3;
+  --origam-treeview---icon-size: 16px;
+  --origam-treeview---icon-color: #fafafa;
+  --origam-treeview---label-font-size: 0.75rem;
+  --origam-treeview---label-color: #fafafa;
+  --origam-treeview---size-font-size: 0.625rem;
+  --origam-treeview---size-color: #a3a3a3;
+  --origam-treeview---guide-color: #262626;
+  --origam-treeview---guide-thickness: 1px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
@@ -4598,5 +4620,27 @@
     --origam-timeline---title-font-weight: 600;
     --origam-timeline---subtitle-font-size: 0.75rem;
     --origam-timeline---subtitle-color: #a3a3a3;
+    --origam-treeview---background-color: #0a0a0a;
+    --origam-treeview---color: #fafafa;
+    --origam-treeview---padding-block: 4px;
+    --origam-treeview---padding-inline: 8px;
+    --origam-treeview---indent-size: 16px;
+    --origam-treeview---row-height: 32px;
+    --origam-treeview---row-gap: 8px;
+    --origam-treeview---row-padding-inline: 8px;
+    --origam-treeview---row-bg-hover: #262626;
+    --origam-treeview---row-bg-selected: #4c1d95;
+    --origam-treeview---row-color-selected: #c4b5fd;
+    --origam-treeview---row-color-disabled: #525252;
+    --origam-treeview---chevron-size: 16px;
+    --origam-treeview---chevron-color: #a3a3a3;
+    --origam-treeview---icon-size: 16px;
+    --origam-treeview---icon-color: #fafafa;
+    --origam-treeview---label-font-size: 0.75rem;
+    --origam-treeview---label-color: #fafafa;
+    --origam-treeview---size-font-size: 0.625rem;
+    --origam-treeview---size-color: #a3a3a3;
+    --origam-treeview---guide-color: #262626;
+    --origam-treeview---guide-thickness: 1px;
   }
 }

@@ -251,6 +251,8 @@ export * from './Stepper/stepper.type'
 
 export * from './Timeline/timeline.type'
 
+export * from './Treeview/treeview.type'
+
 
 
 

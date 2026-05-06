@@ -93,7 +93,8 @@
       "component/skeleton": "enabled",
       "component/kbd": "enabled",
       "component/stepper": "enabled",
-      "component/timeline": "enabled"
+      "component/timeline": "enabled",
+      "component/treeview": "enabled"
     }
   },
   {
@@ -190,7 +191,8 @@
       "component/skeleton": "enabled",
       "component/kbd": "enabled",
       "component/stepper": "enabled",
-      "component/timeline": "enabled"
+      "component/timeline": "enabled",
+      "component/treeview": "enabled"
     }
   }
 ]

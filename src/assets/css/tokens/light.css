@@ -2298,4 +2298,26 @@
   --origam-timeline---title-font-weight: 600;
   --origam-timeline---subtitle-font-size: 0.75rem;
   --origam-timeline---subtitle-color: #525252;
+  --origam-treeview---background-color: #ffffff;
+  --origam-treeview---color: #171717;
+  --origam-treeview---padding-block: 4px;
+  --origam-treeview---padding-inline: 8px;
+  --origam-treeview---indent-size: 16px;
+  --origam-treeview---row-height: 32px;
+  --origam-treeview---row-gap: 8px;
+  --origam-treeview---row-padding-inline: 8px;
+  --origam-treeview---row-bg-hover: #f5f5f5;
+  --origam-treeview---row-bg-selected: #f5f3ff;
+  --origam-treeview---row-color-selected: #6d28d9;
+  --origam-treeview---row-color-disabled: #a3a3a3;
+  --origam-treeview---chevron-size: 16px;
+  --origam-treeview---chevron-color: #525252;
+  --origam-treeview---icon-size: 16px;
+  --origam-treeview---icon-color: #171717;
+  --origam-treeview---label-font-size: 0.75rem;
+  --origam-treeview---label-color: #171717;
+  --origam-treeview---size-font-size: 0.625rem;
+  --origam-treeview---size-color: #525252;
+  --origam-treeview---guide-color: #d4d4d4;
+  --origam-treeview---guide-thickness: 1px;
 }
