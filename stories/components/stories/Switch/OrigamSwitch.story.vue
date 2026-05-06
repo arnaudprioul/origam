@@ -170,6 +170,36 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<!--
+			Switch defaultKind = 'circular'. All fixtures use :model-value="false"
+			+ disabled so this is a pure visual demo — no interaction side-effects.
+		-->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={true}</code>
+					<origam-switch :model-value="false" loading disabled label="Bool" data-cy="switch-loading-bool"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={42}</code>
+					<origam-switch :model-value="false" :loading="42" disabled label="42%" data-cy="switch-loading-number"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<origam-switch :model-value="false" :loading="{ type: 'line' }" disabled label="Line loader" data-cy="switch-loading-line"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<origam-switch :model-value="false" :loading="{ type: 'circular', size: 16 }" disabled label="Small spinner" data-cy="switch-loading-circular-override"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<origam-switch :model-value="false" :loading="{ type: 'skeleton' }" disabled label="Skeleton mode" data-cy="switch-loading-skeleton"/>
+				</div>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"

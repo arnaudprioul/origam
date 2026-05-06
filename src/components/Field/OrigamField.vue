@@ -7,23 +7,31 @@
 	>
 		<div class="origam-field__overlay"/>
 
-		<template v-if="hasLoader">
+		<!--
+			Skeleton kind: render OUTSIDE `.origam-field__loader` (which is the
+			thin 2px-tall progress bar at the bottom edge — would clip the
+			skeleton). The skeleton fills the field's content box and replaces
+			the input/label/icons rendering below.
+		-->
+		<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
+			<origam-skeleton
+					class="origam-field__skeleton"
+					variant="rectangular"
+					:loading="true"
+					v-bind="loaderConfig.overrides"
+			/>
+		</template>
+
+		<template v-if="hasLoader && loaderConfig.kind !== 'skeleton'">
 			<slot name="loader">
 				<div class="origam-field__loader">
-					<origam-skeleton
-							v-if="loaderConfig.kind === 'skeleton'"
-							variant="rectangular"
-							:loading="true"
-							v-bind="loaderConfig.overrides"
-					/>
 					<origam-progress
-							v-else
 							:active="true"
 							:color="props.color"
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
-							:type="PROGRESS_TYPE.LINEAR"
-							class="origam-field__progress origam-field__progress--linear"
+							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+							:class="['origam-field__progress', `origam-field__progress--${loaderConfig.kind}`]"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -491,6 +499,17 @@
 >
 	.origam-field {
 		$this: &;
+
+		// Skeleton-mode replacement element. Sized to fill the field's
+		// content box so consumer code switching `loading` between values
+		// keeps a stable visual footprint.
+		&__skeleton {
+			width: 100%;
+			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 56px));
+			border-radius: var(--origam-field---rounded);
+			grid-column: 1 / -1;
+			grid-row: 1;
+		}
 
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";

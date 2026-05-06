@@ -34,8 +34,8 @@
 								:color="props.color"
 								:indeterminate="loaderConfig.indeterminate"
 								:model-value="loaderConfig.modelValue"
-								:type="PROGRESS_TYPE.LINEAR"
-								class="origam-card__progress origam-card__progress--linear"
+								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+								:class="['origam-card__progress', `origam-card__progress--${loaderConfig.kind}`]"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>

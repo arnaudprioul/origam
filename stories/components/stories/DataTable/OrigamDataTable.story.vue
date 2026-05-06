@@ -167,6 +167,17 @@
 			</origam-data-table>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-data-table :headers="headers" :items="items" loading data-cy="data-table-loading-bool"/>
+				<origam-data-table :headers="headers" :items="items" :loading="42" data-cy="data-table-loading-number"/>
+				<origam-data-table :headers="headers" :items="items" :loading="{ type: 'line' }" data-cy="data-table-loading-line"/>
+				<origam-data-table :headers="headers" :items="items" :loading="{ type: 'circular' }" data-cy="data-table-loading-circular"/>
+				<origam-data-table :headers="headers" :items="items" :loading="{ type: 'skeleton' }" data-cy="data-table-loading-skeleton"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"

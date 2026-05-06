@@ -450,6 +450,74 @@
 			</div>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<!--
+			Card defaultKind = 'line'. Each fixture uses a consistent card
+			composition (title + subtitle + text + image) so the loading
+			overlay renders against a realistic card body.
+			The skeleton fixture replaces the entire card body — the header,
+			asset, and footer should NOT be rendered when kind='skeleton'.
+		-->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={true}</code>
+					<origam-card
+							loading
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-bool"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={42}</code>
+					<origam-card
+							:loading="42"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-number"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<origam-card
+							:loading="{ type: 'line' }"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-line"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<origam-card
+							:loading="{ type: 'circular', size: 16 }"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-circular-override"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<origam-card
+							:loading="{ type: 'skeleton' }"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-skeleton"
+					/>
+				</div>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"

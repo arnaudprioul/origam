@@ -246,6 +246,17 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-text-field label="loading={true}" loading data-cy="text-field-loading-bool"/>
+				<origam-text-field label="loading={42}" :loading="42" data-cy="text-field-loading-number"/>
+				<origam-text-field label="loading={ type: 'line' }" :loading="{ type: 'line' }" data-cy="text-field-loading-line"/>
+				<origam-text-field label="loading={ type: 'circular' }" :loading="{ type: 'circular' }" data-cy="text-field-loading-circular"/>
+				<origam-text-field label="loading={ type: 'skeleton' }" :loading="{ type: 'skeleton' }" data-cy="text-field-loading-skeleton"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"

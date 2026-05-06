@@ -340,6 +340,40 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<!--
+			Demonstrates the full `TLoadingValue` polymorphic API:
+			  • boolean true  → defaultKind=circular, indeterminate
+			  • number 42     → defaultKind=circular, determinate at 42 %
+			  • { type: 'line' }                  → explicit linear renderer
+			  • { type: 'circular', size: 16 }    → circular with size override
+			  • { type: 'skeleton' }              → skeleton replaces content
+		-->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={true}</code>
+					<origam-btn loading text="Saving..." data-cy="btn-loading-bool"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={42}</code>
+					<origam-btn :loading="42" text="42%" data-cy="btn-loading-number"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<origam-btn :loading="{ type: 'line' }" text="Line loader" data-cy="btn-loading-line"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<origam-btn :loading="{ type: 'circular', size: 16 }" text="Small spinner" data-cy="btn-loading-circular-override"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<origam-btn :loading="{ type: 'skeleton' }" text="Skeleton mode" data-cy="btn-loading-skeleton"/>
+				</div>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"

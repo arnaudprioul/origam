@@ -118,6 +118,76 @@ test.describe('OrigamSwitch', () => {
         await expect(sandbox.locator('[data-cy="switch-slot-track"]')).toBeVisible({ timeout: 5000 })
     })
 
+    test.describe('Loading shapes', () => {
+        test('loading=true → default kind circular progress present in thumb', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('[data-cy="switch-loading-bool"]')
+            await expect(sw).toBeVisible({ timeout: 5000 })
+            // Switch defaultKind = 'circular' → circular progress inside the thumb
+            await expect(sw.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+        })
+
+        test('loading=42 → determinate circular progress mounted', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('[data-cy="switch-loading-number"]')
+            await expect(sw).toBeVisible({ timeout: 5000 })
+            // Number input → defaultKind circular, determinate
+            await expect(sw.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+        })
+
+        test('loading={ type: "line" } → switch component still visible with loading state', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('[data-cy="switch-loading-line"]')
+            await expect(sw).toBeVisible({ timeout: 5000 })
+            // Switch carries the loading modifier when loading prop is active
+            // (line type → the switch loading state is active)
+            await expect(sw).toHaveClass(/origam-switch--loading|origam-input--loading/, { timeout: 5000 })
+        })
+
+        test('loading={ type: "circular", size: 16 } → circular progress present', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('[data-cy="switch-loading-circular-override"]')
+            await expect(sw).toBeVisible({ timeout: 5000 })
+            await expect(sw.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+        })
+
+        test('loading={ type: "skeleton" } → origam-skeleton replaces the switch', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('[data-cy="switch-loading-skeleton"]')
+            await expect(sw).toBeVisible({ timeout: 5000 })
+            // Skeleton kind: the whole switch is replaced by origam-skeleton
+            // (v-if="isSkeletonLoading" at the root of OrigamSwitch template)
+            await expect(sw.locator('.origam-skeleton')).toBeAttached({ timeout: 5000 })
+            // The origam-input wrapper must NOT be rendered when skeleton is active
+            await expect(sw.locator('.origam-input')).not.toBeAttached({ timeout: 5000 })
+        })
+    })
+
     test('Playground — renders without errors', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')

@@ -154,6 +154,27 @@
 			</origam-expansion-panels>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel loading title="loading={true}" content="Loading panel content here." data-cy="ep-loading-bool"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="42" title="loading={42}" content="Loading panel content here." data-cy="ep-loading-number"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="{ type: 'line' }" title="loading={ type: 'line' }" content="Loading panel content here." data-cy="ep-loading-line"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="{ type: 'circular' }" title="loading={ type: 'circular' }" content="Loading panel content here." data-cy="ep-loading-circular"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="{ type: 'skeleton' }" title="loading={ type: 'skeleton' }" data-cy="ep-loading-skeleton"/>
+				</origam-expansion-panels>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"

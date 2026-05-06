@@ -17,8 +17,8 @@
 							:active="true"
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
-							:type="PROGRESS_TYPE.LINEAR"
-							class="origam-expansion-panel__progress origam-expansion-panel__progress--linear"
+							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+							:class="['origam-expansion-panel__progress', `origam-expansion-panel__progress--${loaderConfig.kind}`]"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>

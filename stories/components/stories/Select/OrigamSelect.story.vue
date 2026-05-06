@@ -254,6 +254,17 @@
 			<div data-cy="select-emit-clear-status">value = {{ emitClearModel }}</div>
 		</Variant>
 
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-select :items="stringItems" label="loading={true}" loading data-cy="select-loading-bool"/>
+				<origam-select :items="stringItems" label="loading={42}" :loading="42" data-cy="select-loading-number"/>
+				<origam-select :items="stringItems" label="loading={ type: 'line' }" :loading="{ type: 'line' }" data-cy="select-loading-line"/>
+				<origam-select :items="stringItems" label="loading={ type: 'circular' }" :loading="{ type: 'circular' }" data-cy="select-loading-circular"/>
+				<origam-select :items="stringItems" label="loading={ type: 'skeleton' }" :loading="{ type: 'skeleton' }" data-cy="select-loading-skeleton"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
