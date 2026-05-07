@@ -22,6 +22,12 @@
 
 	import type { ITitleProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITitleProps>(), {tag: 'h1'})
 
 	const {filterProps} = useProps<ITitleProps>(props)
@@ -37,8 +43,12 @@
 		return slots.default || props.text
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const titleStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -59,8 +69,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

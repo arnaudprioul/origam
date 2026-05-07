@@ -41,6 +41,12 @@
 
 	import type { ITableProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITableProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT
@@ -50,6 +56,12 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element and wrapper classes / styles.
+	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {borderClasses, borderStyles} = useBorder(props)
@@ -57,8 +69,6 @@
 	const {elevationClasses} = useElevation(props)
 	const {paddingStyles, paddingClasses} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
-
-	// CLASS & STYLES
 
 	const tableStyles = computed(() => {
 		return [
@@ -100,8 +110,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

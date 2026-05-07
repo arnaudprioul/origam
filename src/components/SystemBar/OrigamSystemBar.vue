@@ -26,12 +26,26 @@
 
 	import type { ISystemBarProps } from "../../interfaces"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISystemBarProps>(), {
 		tag: 'div'
 	})
 
 	const {filterProps} = useProps<ISystemBarProps>(props)
 
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Layout item registration — positions the system bar at
+	 * the top of the layout with a height derived from the
+	 * `window` prop (32px) or default (24px).
+	 ********************************************************/
 	const {dimensionStyles} = useDimension(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedStyles, roundedClasses} = useRounded(props)
@@ -51,8 +65,12 @@
 		absolute: toRef(props, 'absolute')
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const systemBarStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -77,8 +95,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
