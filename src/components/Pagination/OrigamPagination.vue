@@ -8,7 +8,6 @@
 			role="navigation"
 			@keydown="handleKeydown"
 	>
-		<!-- ════ WITH-INFO LABEL (left side) ════ -->
 		<span
 				v-if="withInfo"
 				class="origam-pagination__info"
@@ -22,7 +21,6 @@
 			</slot>
 		</span>
 
-		<!-- ════ COMPACT MODE ════ -->
 		<template v-if="compact">
 			<ul class="origam-pagination__list origam-pagination__list--compact">
 				<template v-if="showFirstLastPage">
@@ -98,7 +96,6 @@
 			</ul>
 		</template>
 
-		<!-- ════ DEFAULT MODE ════ -->
 		<template v-else>
 			<ul class="origam-pagination__list">
 				<template v-if="showFirstLastPage">
@@ -191,6 +188,12 @@
 
 	import { createRange, int } from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the Pagination component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IPaginationProps>(), {
 		prevIcon: MDI_ICONS.CHEVRON_LEFT,
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
@@ -228,6 +231,13 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * page is the controlled current-page number.
+	 * width / maxButtons support the responsive total-visible calculation.
+	 ********************************************************/
 	const page = useVModel(props, 'modelValue', props.start)
 	const {width} = useDisplay()
 	const maxButtons = shallowRef(-1)
@@ -250,6 +260,19 @@
 	})
 	const {refs, updateRef} = useRefs<ComponentPublicInstance>()
 
+	/*********************************************************
+	 * Range & items
+	 *
+	 * @description
+	 * length / start are int-coerced copies of the props.
+	 * totalVisible computes how many page buttons fit.
+	 * range produces the raw sequence (numbers + ellipsis strings).
+	 * sharedBtnColorProps / controlColorProps forward the uniform six-field
+	 * IColorProps contract to every btn in the row so `color`/`bgColor`
+	 * changes repaint them all simultaneously.
+	 * items maps range to the full button prop objects.
+	 * controls produces the first/prev/next/last button prop objects.
+	 ********************************************************/
 	const length = computed(() => {
 		return int(props.length)
 	})
@@ -411,6 +434,15 @@
 		}
 	})
 
+	/*********************************************************
+	 * Keyboard navigation
+	 *
+	 * @description
+	 * handleKeydown moves the page with arrow keys and updates focus.
+	 * getMax computes the maximum visible buttons from available width.
+	 * setValue sets the page value and fires the named event.
+	 * updateFocus focuses the newly-active page button.
+	 ********************************************************/
 	const getMax = (totalWidth: number, itemWidth: number) => {
 		const minButtons = props.showFirstLastPage ? 5 : 3
 		return Math.max(0, Math.floor(
@@ -441,8 +473,13 @@
 		}
 	}
 
-	// COMPACT
-
+	/*********************************************************
+	 * Compact mode
+	 *
+	 * @description
+	 * compactInputRef holds the native number input for compact mode.
+	 * handleCompactInput clamps and applies the typed value.
+	 ********************************************************/
 	const compactInputRef = ref<HTMLInputElement | null>(null)
 
 	const handleCompactInput = (e: Event) => {
@@ -457,13 +494,17 @@
 		page.value = clamped
 	}
 
-	// WITH INFO — "Showing 21-40 of 248" range label
-	//
-	// `total` (items count) drives the right-hand bound; `perPage` slices
-	// the range; `currentPage` (== `page.value`) anchors it. When `total`
-	// is omitted we fall back to `length * perPage` so the label still
-	// renders something sensible. End is clamped to `total` so the last
-	// page reads "41-43 of 43" rather than "41-50 of 43".
+	/*********************************************************
+	 * With-info label
+	 *
+	 * @description
+	 * "Showing 21-40 of 248" range label.
+	 * `total` (items count) drives the right-hand bound; `perPage` slices
+	 * the range; `currentPage` (== `page.value`) anchors it. When `total`
+	 * is omitted we fall back to `length * perPage` so the label still
+	 * renders something sensible. End is clamped to `total` so the last
+	 * page reads "41-43 of 43" rather than "41-50 of 43".
+	 ********************************************************/
 	const perPageInt = computed(() => {
 		const v = int(props.perPage)
 		return Number.isFinite(v) && v > 0 ? v : 10
@@ -481,14 +522,17 @@
 		return Math.min(infoStart.value + perPageInt.value - 1, totalInt.value)
 	})
 
-	// CLASS & STYLES
-
-	// `--colored` modifier — toggled as soon as the consumer passes any
-	// truthy intent on `color`/`bgColor`. Drives the SCSS branch that
-	// lets the inner OrigamBtn instances render with their own intent
-	// fill (PDF "stylé" look). When absent, the SCSS overrides the
-	// btn's default surface to a transparent neutral so the row reads
-	// as a subtle, ghost-like nav.
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * `--colored` modifier is toggled as soon as the consumer passes any
+	 * truthy intent on `color`/`bgColor`. Drives the SCSS branch that
+	 * lets the inner OrigamBtn instances render with their own intent
+	 * fill (PDF "stylé" look). When absent, the SCSS overrides the
+	 * btn's default surface to a transparent neutral so the row reads
+	 * as a subtle, ghost-like nav.
+	 ********************************************************/
 	const isColored = computed(() => !!(props.color || props.bgColor))
 
 	const paginationClasses = computed(() => {
@@ -508,8 +552,12 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -551,7 +599,6 @@
 			padding: 0;
 		}
 
-		// ════ DEFAULT (subtle) LOOK ════
 		// When the consumer passes NO intent (no `color`/`bgColor`), the
 		// pagination overrides the inner OrigamBtn's default filled
 		// surface with the `--origam-pagination---*` tokens — yielding
@@ -571,7 +618,6 @@
 			}
 		}
 
-		// ════ "PRIMARY" (filled) LOOK ════
 		// When the consumer passes color="primary" specifically, fold a
 		// subtle box-shadow under each button to match the PDF mock's
 		// elevated look. Btn's own intent rules already paint the fill;

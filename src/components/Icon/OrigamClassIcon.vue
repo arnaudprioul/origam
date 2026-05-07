@@ -19,14 +19,22 @@
 
 	import { computed, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
 
-	// Numeric `size` → explicit font-size (pixel-perfect override). Named
-	// sizes are wired through the `.origam-icon--size-{name}` rule emitted by
-	// OrigamIcon — see that component's <style> block. We DO NOT re-emit the
-	// rule here so a single source of truth stays for icon sizing tokens.
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const iconStyles = computed(() => {
 		const numericSize = typeof props.size === 'number'
 				? convertToUnit(props.size)
@@ -54,8 +62,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

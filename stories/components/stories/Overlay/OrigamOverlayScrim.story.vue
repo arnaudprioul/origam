@@ -3,7 +3,6 @@
 			group="components"
 			title="Overlay/OrigamOverlayScrim"
 	>
-		<!-- ════════════ DEFAULT (toggled active) ════════════ -->
 		<Variant title="Default">
 			<div class="story-host" data-cy="scrim-default-host">
 				<origam-btn
@@ -19,7 +18,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ ACTIVE TOGGLE ════════════ -->
 		<Variant
 				title="Active"
 				:init-state="() => useStoryInitState<{ active: boolean }>({ active: false })"
@@ -38,7 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SCRIM COLOR ════════════ -->
 		<Variant
 				title="Scrim color"
 				:init-state="() => useStoryInitState<{ scrim: boolean | string }>({ scrim: 'primary' })"
@@ -67,7 +64,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMITS — click ════════════ -->
 		<Variant title="Emits — click">
 			<div class="story-host" data-cy="scrim-emit-host">
 				<origam-btn
@@ -84,7 +80,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IOverlayScrimProps>({

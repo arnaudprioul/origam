@@ -44,6 +44,13 @@
 
 	import { computed, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and mode / input prop computation.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerEditProps>(), {
 		mode: COLOR_MODES_NAMES.RGBA,
 		modes: () => [COLOR_MODES_NAMES.RGB, COLOR_MODES_NAMES.RGBA, COLOR_MODES_NAMES.HSL, COLOR_MODES_NAMES.HSLA, COLOR_MODES_NAMES.HEX, COLOR_MODES_NAMES.HEXA]
@@ -91,7 +98,12 @@
 		emits('update:mode', enabledModes.value[(mi + 1) % enabledModes.value.length].name)
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const colorPickerEditStyles = computed(() => {
 		return [
@@ -105,7 +117,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

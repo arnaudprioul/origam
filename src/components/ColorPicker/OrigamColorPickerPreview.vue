@@ -78,6 +78,14 @@
 
 	import { computed, onUnmounted, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, eye-dropper support and hue / alpha
+	 * update handlers.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerPreviewProps>(), {})
 
 	const emits = defineEmits(['update:colorHsv'])
@@ -115,7 +123,12 @@
 		abortController.abort()
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM modifier classes and passes through host styles.
+	 ********************************************************/
 
 	const colorPickerPreviewStyles = computed(() => {
 		return [
@@ -132,7 +145,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

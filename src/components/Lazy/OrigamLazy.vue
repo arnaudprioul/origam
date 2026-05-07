@@ -31,6 +31,13 @@
 
 	import type { TTransitionProps } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ILazyComponentProps>(), {
 		tag: 'div',
 		options: () => ({
@@ -49,6 +56,13 @@
 
 	const isActive = useVModel(props, 'modelValue')
 
+	/*********************************************************
+	 * Intersection
+	 *
+	 * @description
+	 * Intersection observer config and activation handler.
+	 ********************************************************/
+
 	const intersect = computed(() => {
 		return [
 			{handler: handleIntersect, options: props.options},
@@ -63,7 +77,12 @@
 		isActive.value = isIntersecting
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const lazyStyles = computed(() => {
 		return [
@@ -78,7 +97,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

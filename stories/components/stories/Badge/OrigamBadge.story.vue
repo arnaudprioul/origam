@@ -3,7 +3,6 @@
 			group="components"
 			title="Badge/OrigamBadge"
 	>
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div class="demo-host">
 				<origam-badge :model-value="true" :content="3">
@@ -12,7 +11,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -49,7 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CONTENT ════════════ -->
 		<Variant
 				title="Content"
 				:init-state="() => useStoryInitState<{ content?: string | number, max?: number | string }>({
@@ -74,7 +71,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DOT ════════════ -->
 		<Variant
 				title="Dot"
 				:init-state="() => useStoryInitState<{ dot?: boolean }>({ dot: true })"
@@ -91,7 +87,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INLINE ════════════ -->
 		<Variant
 				title="Inline"
 				:init-state="() => useStoryInitState<{ inline?: boolean }>({ inline: true })"
@@ -112,7 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FLOATING ════════════ -->
 		<Variant
 				title="Floating"
 				:init-state="() => useStoryInitState<{ floating?: boolean }>({ floating: true })"
@@ -129,7 +123,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOCATION ════════════ -->
 		<Variant
 				title="Location"
 				:init-state="() => useStoryInitState<{ location?: string }>({ location: 'top right' })"
@@ -150,7 +143,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATUS ════════════ -->
 		<Variant
 				title="Status"
 				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'success' })"
@@ -167,7 +159,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -185,7 +176,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ICON ════════════ -->
 		<Variant
 				title="Icon"
 				:init-state="() => useStoryInitState<{ icon?: string }>({ icon: 'mdi:mdi-heart' })"
@@ -202,7 +192,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'default' })"
@@ -219,7 +208,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<{ elevation?: number }>({ elevation: 4 })"
@@ -236,7 +224,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<{ border?: boolean }>({ border: true })"
@@ -253,7 +240,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TOGGLE (modelValue) ════════════ -->
 		<Variant
 				title="Model value (toggle)"
 				:init-state="() => useStoryInitState<{ modelValue?: boolean }>({ modelValue: true })"
@@ -270,7 +256,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: badge ════════════ -->
 		<Variant title="Slot — badge">
 			<div class="demo-host">
 				<origam-badge :model-value="true" bg-color="success">
@@ -282,7 +267,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMITS ════════════ -->
 		<Variant title="Emit — update:hover">
 			<div class="demo-host">
 				<origam-badge
@@ -296,7 +280,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBadgeProps>({

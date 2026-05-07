@@ -4,7 +4,6 @@
 			title="Messages/OrigamMessages"
 	>
 
-		<!-- ════════════ DEFAULT (single message) ════════════ -->
 		<Variant title="Default">
 			<origam-messages
 					:messages="['This field is required.']"
@@ -12,7 +11,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE MESSAGES ════════════ -->
 		<Variant title="Multiple">
 			<origam-messages
 					:messages="['Too short.', 'Must contain a number.']"
@@ -20,7 +18,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ ACTIVE (transition) ════════════ -->
 		<Variant
 				title="Active"
 				:init-state="() => useStoryInitState<{ active: boolean }>({ active: false })"
@@ -37,7 +34,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<{ color?: string }>({ color: 'danger' })"
@@ -54,7 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -71,7 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (custom render) ════════════ -->
 		<Variant title="Slot — default">
 			<origam-messages
 					:messages="['Custom rendered message']"
@@ -83,7 +77,6 @@
 			</origam-messages>
 		</Variant>
 
-		<!-- ════════════ DYNAMIC (add/remove messages) ════════════ -->
 		<Variant title="Dynamic">
 			<div class="story-shell" data-cy="messages-dynamic-shell">
 				<origam-messages
@@ -98,7 +91,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IMessagesProps>({

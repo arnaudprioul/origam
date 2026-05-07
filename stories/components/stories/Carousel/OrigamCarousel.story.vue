@@ -4,7 +4,6 @@
 			title="Carousel/OrigamCarousel"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant title="Basic">
 			<origam-carousel style="max-width: 600px">
 				<origam-carousel-item
@@ -20,7 +19,6 @@
 			</origam-carousel>
 		</Variant>
 
-		<!-- ════════════ AUTO-PLAY (cycle) ════════════ -->
 		<Variant
 				title="Auto-play"
 				:init-state="() => useStoryInitState<{ cycle?: boolean; interval?: number }>({ cycle: false, interval: 3000 })"
@@ -49,7 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DELIMITERS ════════════ -->
 		<Variant
 				title="Delimiters"
 				:init-state="() => useStoryInitState<{
@@ -84,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HEIGHT ════════════ -->
 		<Variant
 				title="Height"
 				:init-state="() => useStoryInitState<{ height?: number }>({ height: 300 })"
@@ -108,7 +104,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: item (custom delimiter) ════════════ -->
 		<Variant title="Slot — item (custom delimiter)">
 			<origam-carousel style="max-width: 600px">
 				<origam-carousel-item
@@ -127,7 +122,6 @@
 			</origam-carousel>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-carousel
 					style="max-width: 600px"
@@ -146,7 +140,6 @@
 			</origam-carousel>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

@@ -4,7 +4,6 @@
 			title="RatingField/OrigamRatingField"
 	>
 
-		<!-- ════════════ LENGTH ════════════ -->
 		<Variant
 				title="Length"
 				:init-state="() => useStoryInitState<{ length?: number }>({ length: 5 })"
@@ -17,7 +16,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HALF INCREMENTS ════════════ -->
 		<Variant
 				title="Half increments"
 				:init-state="() => useStoryInitState<{ halfIncrements?: boolean }>({ halfIncrements: true })"
@@ -30,7 +28,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HOVER ════════════ -->
 		<Variant
 				title="Hover preview"
 				:init-state="() => useStoryInitState<{ hover?: boolean }>({ hover: true })"
@@ -43,7 +40,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{
@@ -62,7 +58,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<{ size?: string }>({ size: undefined })"
@@ -75,7 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ITEM LABELS ════════════ -->
 		<Variant title="Item labels">
 			<origam-rating-field
 					v-model="rating"
@@ -84,7 +78,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
 		<Variant title="Slot — label">
 			<origam-rating-field v-model="rating">
 				<template #label>
@@ -93,24 +86,6 @@
 			</origam-rating-field>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants.
-			Same Btn / Switch / SliderField / Select pattern: all six
-			fields surface together so consumers can explore them as one
-			cohesive concept.
-			Channel mapping for the rating field (icon-only buttons —
-			variant: text — so `color` is the dominant axis):
-			  • `color`   → star icon color (filled + outline)
-			  • `bgColor` → wrapping field surface (only visible if a
-			                non-text variant is later applied)
-			  • hover/active variants modify the matching channel on
-			    the matching interaction state.
-			The hardcoded fixtures below the interactive control give
-			the e2e suite stable `data-cy="rating-color-fixture-{n}"`
-			selectors.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -148,7 +123,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-rating-field
 					v-model="rating"
@@ -156,7 +130,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

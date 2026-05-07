@@ -18,6 +18,12 @@
 
 	import { computed, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IContainerProps>(), {tag: 'div', fluid: false})
 
 	const {filterProps} = useProps<IContainerProps>(props)
@@ -27,8 +33,12 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {rtlClasses} = useRtl()
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const containerStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -52,8 +62,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

@@ -4,7 +4,6 @@
 			title="Parallax/OrigamParallax"
 	>
 
-		<!-- ════════════ EVENT — MOVE (mouse) ════════════ -->
 		<Variant title="Event — Move">
 			<origam-parallax :event="PARALLAX_EVENT.MOVE" :style="hostStyle">
 				<origam-parallax-element :strength="20">
@@ -13,7 +12,6 @@
 			</origam-parallax>
 		</Variant>
 
-		<!-- ════════════ EVENT — SCROLL (window) ════════════ -->
 		<Variant title="Event — Scroll">
 			<origam-parallax :event="PARALLAX_EVENT.SCROLL" :style="hostStyle">
 				<origam-parallax-element :strength="20">
@@ -23,7 +21,6 @@
 			<div :style="scrollFiller"></div>
 		</Variant>
 
-		<!-- ════════════ EVENT — ORIENTATION (device) ════════════ -->
 		<Variant title="Event — Orientation">
 			<origam-parallax :event="PARALLAX_EVENT.ORIENTATION" :style="hostStyle">
 				<origam-parallax-element :strength="20">
@@ -32,7 +29,6 @@
 			</origam-parallax>
 		</Variant>
 
-		<!-- ════════════ EVENT (interactive picker — runtime swap) ════════════ -->
 		<Variant
 				title="Event (picker)"
 				:init-state="() => useStoryInitState<{ event?: TParallaxEvent }>({ event: PARALLAX_EVENT.MOVE })"
@@ -50,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ACTIVE (kill-switch) ════════════ -->
 		<Variant
 				title="Active"
 				:init-state="() => useStoryInitState<{ active?: boolean }>({ active: true })"
@@ -67,7 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TIMING (duration / easing) ════════════ -->
 		<Variant
 				title="Timing"
 				:init-state="() => useStoryInitState<{ duration?: number, easing?: string }>({ duration: 1000, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' })"
@@ -85,7 +79,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PERSPECTIVE ════════════ -->
 		<Variant
 				title="Perspective"
 				:init-state="() => useStoryInitState<{ perspective?: number }>({ perspective: 1000 })"
@@ -102,7 +95,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -119,7 +111,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-parallax :style="hostStyle">
 				<origam-parallax-element :strength="15" type="translate">
@@ -131,7 +122,6 @@
 			</origam-parallax>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IParallaxProps>({

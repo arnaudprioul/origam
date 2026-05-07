@@ -4,14 +4,6 @@
 			title="Card/OrigamCard"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
-		<!--
-			Modelled on Vuetify's first `<v-card>` showcase example
-			(https://vuetifyjs.com/en/components/cards/) — image on top,
-			title + subtitle, supporting paragraph, two action buttons
-			in the footer. A "real-world" composition is more useful for
-			spotting layout bugs than a bare text-only card.
-		-->
 		<Variant title="Basic">
 			<div style="padding: 16px; max-width: 400px;">
 				<origam-card
@@ -32,12 +24,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOWCASE — Action card (Word of the Day) ════════════ -->
-		<!--
-			Vuetify's "Word of the Day" pattern — large display word,
-			hint adjective/noun, definition, single CTA. Tests the
-			default slot composition + footer + typography hierarchy.
-		-->
 		<Variant title="Showcase — Action">
 			<div style="padding: 16px; max-width: 344px;">
 				<origam-card data-cy="card-showcase-action" rounded>
@@ -56,12 +42,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOWCASE — Profile (avatar + content) ════════════ -->
-		<!--
-			Vuetify's "Profile card" pattern — prepend avatar, full-name
-			title, role subtitle, body quote, metrics footer. Tests the
-			adjacent (prepend-avatar) + multi-line body composition.
-		-->
 		<Variant title="Showcase — Profile">
 			<div style="padding: 16px; max-width: 400px;">
 				<origam-card
@@ -85,12 +65,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOWCASE — Media (picture + caption) ════════════ -->
-		<!--
-			Vuetify's "Media card" pattern — full-width image, title +
-			subtitle below, single right-aligned CTA with append icon.
-			Tests image asset + footer alignment + button-with-icon.
-		-->
 		<Variant title="Showcase — Media">
 			<div style="padding: 16px; max-width: 340px;">
 				<origam-card
@@ -114,13 +88,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOWCASE — Info banner ════════════ -->
-		<!--
-			Vuetify's "Welcome to Vuetify" info-banner pattern —
-			prepend icon, title with strong weight, subtitle,
-			descriptive paragraph. No image, no footer.
-			Tests the icon-prepend + title+subtitle stacking.
-		-->
 		<Variant title="Showcase — Info banner">
 			<div style="padding: 16px; max-width: 400px;">
 				<origam-card
@@ -138,13 +105,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOWCASE — Pricing ════════════ -->
-		<!--
-			Compact pricing card — emoji "icon", goal title + subtitle,
-			right-aligned CTA, large numeric progress, helper text.
-			Tests inline content composition + footer + visual hierarchy
-			at small widths.
-		-->
 		<Variant title="Showcase — Pricing">
 			<div style="padding: 16px; max-width: 500px;">
 				<origam-card data-cy="card-showcase-pricing" rounded border>
@@ -167,14 +127,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<!--
-			Side-by-side render of every intent so the e2e suite can
-			assert the runtime computed `backgroundColor` differs per
-			value. Pre-fix `ICardProps` didn't even extend `IColorProps`
-			— `<origam-card color="primary">` was a silent no-op.
-			Closes the user-reported audit gap on color/bgColor coverage.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -202,7 +154,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<{ elevation?: number, flat?: boolean }>({})"
@@ -224,7 +175,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED (IRoundedProps) ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -247,7 +197,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -272,7 +221,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -292,7 +240,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HEADER (adjacent icons) ════════════ -->
 		<Variant
 				title="Header (adjacent)"
 				:init-state="() => useStoryInitState<IAdjacentProps & { title?: string, subtitle?: string }>({
@@ -319,7 +266,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{
@@ -347,7 +293,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ IMAGE / ASSET ════════════ -->
 		<Variant
 				title="Image"
 				:init-state="() => useStoryInitState<{ image?: string }>({ image: 'https://picsum.photos/600/200' })"
@@ -367,7 +312,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<div style="padding: 16px;">
 				<origam-card data-cy="card-slot-default">
@@ -378,7 +322,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: header ════════════ -->
 		<Variant title="Slot — header">
 			<div style="padding: 16px;">
 				<origam-card data-cy="card-slot-header">
@@ -390,7 +333,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: footer ════════════ -->
 		<Variant title="Slot — footer">
 			<div style="padding: 16px;">
 				<origam-card title="Footer card" text="Card with footer." data-cy="card-slot-footer">
@@ -404,7 +346,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: loader ════════════ -->
 		<Variant title="Slot — loader">
 			<div style="padding: 16px;">
 				<origam-card loading title="Custom loader" data-cy="card-slot-loader">
@@ -415,7 +356,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: asset ════════════ -->
 		<Variant title="Slot — asset">
 			<div style="padding: 16px; max-width: 400px;">
 				<origam-card title="Asset slot" data-cy="card-slot-asset">
@@ -428,7 +368,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:prepend ════════════ -->
 		<Variant title="Emit — click:prepend">
 			<div style="padding: 16px;">
 				<origam-card
@@ -440,7 +379,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:append ════════════ -->
 		<Variant title="Emit — click:append">
 			<div style="padding: 16px;">
 				<origam-card
@@ -452,7 +390,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -493,14 +430,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
-		<!--
-			Card defaultKind = 'line'. Each fixture uses a consistent card
-			composition (title + subtitle + text + image) so the loading
-			overlay renders against a realistic card body.
-			The skeleton fixture replaces the entire card body — the header,
-			asset, and footer should NOT be rendered when kind='skeleton'.
-		-->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
 				<div style="display: flex; align-items: center; gap: 12px;">
@@ -561,7 +490,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ICardProps>({

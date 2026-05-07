@@ -4,7 +4,6 @@
 			title="NumberField/OrigamNumberField"
 	>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -55,7 +53,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -69,7 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MIN / MAX / STEP ════════════ -->
 		<Variant
 				title="Min / max / step / precision"
 				:init-state="() => useStoryInitState<{ min: number, max: number, step: number, precision: number }>({ min: 0, max: 100, step: 1, precision: 0 })"
@@ -94,7 +90,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SPLIT ════════════ -->
 		<Variant
 				title="Split mode"
 				:init-state="() => useStoryInitState<{ split: boolean }>({ split: true })"
@@ -113,7 +108,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HIDE CONTROLS ════════════ -->
 		<Variant
 				title="Hide controls"
 				:init-state="() => useStoryInitState<{ hideControls: boolean }>({ hideControls: true })"
@@ -132,7 +126,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -156,7 +149,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-number-field
 					v-model="emitModel"
@@ -167,7 +159,6 @@
 			<div data-cy="numberfield-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: increment / decrement ════════════ -->
 		<Variant title="Emit — increment / decrement">
 			<origam-number-field
 					v-model="emitIncModel"
@@ -179,7 +170,6 @@
 			<div data-cy="numberfield-emit-inc-status">value = {{ emitIncModel }}</div>
 		</Variant>
 
-		<!-- ════════════ COMPACT ════════════ -->
 		<Variant
 				title="Compact"
 				:init-state="() => useStoryInitState<{ min: number, max: number, step: number }>({ min: 0, max: 99, step: 1 })"
@@ -203,7 +193,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<INumberFieldProps>({

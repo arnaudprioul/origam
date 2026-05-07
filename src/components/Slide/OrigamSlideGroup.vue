@@ -90,6 +90,13 @@
 		getScrollSize
 	} from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, composables and group registration.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ISlideGroupProps>(), {
 		// `tag` MUST default to a real string — without it the root
 		// `<component :is="tag">` resolved to `<component :is="undefined">`
@@ -173,6 +180,13 @@
 
 	const isFocused = shallowRef(false)
 
+	/*********************************************************
+	 * Scroll helpers
+	 *
+	 * @description
+	 * Scroll-to-children and scroll-to-position utilities.
+	 ********************************************************/
+
 	const scrollToChildren = (children: HTMLElement, center?: boolean) => {
 		let target = calculateUpdatedTarget({
 			containerElement: containerRef.value!,
@@ -226,6 +240,13 @@
 			goTo(newPosition, goToOptions.value)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Scroll, focus, keyboard and affix click handlers.
+	 ********************************************************/
 
 	const handleScroll = (e: Event) => {
 		const {scrollTop, scrollLeft} = e.target as HTMLElement
@@ -333,6 +354,13 @@
 		scrollToPosition(scrollOffset.value + offsetStep)
 	}
 
+	/*********************************************************
+	 * Affixes & slot props
+	 *
+	 * @description
+	 * Arrow visibility logic and group slot props.
+	 ********************************************************/
+
 	const slotProps = computed(() => ({
 		next: group.next,
 		prev: group.prev,
@@ -388,7 +416,12 @@
 		return scrollSizeMax - Math.abs(scrollOffset.value) > 1
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const slideGroupStyles = computed(() => {
 		return [
@@ -435,7 +468,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

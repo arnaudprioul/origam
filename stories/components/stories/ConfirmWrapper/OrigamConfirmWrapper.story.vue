@@ -4,7 +4,6 @@
 			title="ConfirmWrapper/OrigamConfirmWrapper"
 	>
 
-		<!-- ════════════ DEFAULT (field shorthand) ════════════ -->
 		<Variant title="Default (field shorthand)">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-default">
 				<origam-confirm-wrapper
@@ -17,7 +16,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction: string }>({ direction: 'vertical' })"
@@ -46,7 +44,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LABEL + ICON ════════════ -->
 		<Variant title="Label and prepend icon">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-label">
 				<origam-confirm-wrapper
@@ -61,7 +58,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{
@@ -89,7 +85,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VALIDATION (mismatch) ════════════ -->
 		<Variant title="Validation (mismatch error)">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-validation">
 				<origam-confirm-wrapper
@@ -105,7 +100,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: header ════════════ -->
 		<Variant title="Slot — header">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-header">
 				<origam-confirm-wrapper
@@ -122,7 +116,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: default + confirm ════════════ -->
 		<Variant title="Slot — default + confirm">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-custom">
 				<origam-confirm-wrapper
@@ -138,7 +131,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-emit">
 				<origam-confirm-wrapper
@@ -153,7 +145,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IConfirmWrapperProps>({

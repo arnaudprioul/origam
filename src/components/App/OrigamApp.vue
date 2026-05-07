@@ -25,6 +25,12 @@
 
 	import { computed, ref, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and utility hooks for the App root component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ILayoutProps>(), {fullHeight: true})
 
 	const {filterProps} = useProps<ILayoutProps>(props)
@@ -33,8 +39,12 @@
 
 	const origamAppRef = ref<TOrigamApp>()
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes RTL and consumer classes onto the root layout.
+	 ********************************************************/
 	const appStyles = computed(() => {
 		return [props.style] as StyleValue
 	})
@@ -46,8 +56,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

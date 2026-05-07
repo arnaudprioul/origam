@@ -1,6 +1,5 @@
 <template>
 	<div :class="itemClasses" :style="itemStyles" role="listitem">
-		<!-- Track column: dot + connector -->
 		<div class="origam-timeline-item__track" aria-hidden="true">
 			<div class="origam-timeline-item__dot" :style="dotStyles">
 				<slot name="dot">
@@ -18,7 +17,6 @@
 			/>
 		</div>
 
-		<!-- Content column -->
 		<div class="origam-timeline-item__content">
 			<slot name="default">
 				<div class="origam-timeline-item__header">
@@ -156,7 +154,6 @@
 		gap: var(--origam-timeline---gap, 14px);
 		position: relative;
 
-		// Default: track on left, content on right
 		&__track {
 			display: flex;
 			flex-direction: column;
@@ -225,7 +222,6 @@
 			line-height: 1.5;
 		}
 
-		// When content is on the "end" side (right-to-left track layout)
 		&--content-end {
 			flex-direction: row-reverse;
 
@@ -238,7 +234,6 @@
 			}
 		}
 
-		// Last item doesn't need extra bottom padding
 		&--last {
 			.origam-timeline-item__content {
 				padding-bottom: 0;

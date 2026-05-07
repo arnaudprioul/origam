@@ -46,9 +46,6 @@
 		scoped
 >
 	.origam-theme-provider {
-		// Wrapper is style-transparent by default. Consumers add layout/spacing
-		// via class/style props if needed. The whole point is to scope the
-		// `data-theme` attribute, not to introduce visual chrome.
 		display: contents;
 	}
 </style>

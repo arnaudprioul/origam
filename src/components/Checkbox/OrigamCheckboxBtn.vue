@@ -54,6 +54,13 @@
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, indeterminate and model binding.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICheckboxBtnProps>(), {
 		density: DENSITY.DEFAULT,
 		trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE,
@@ -98,7 +105,12 @@
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'falseIcon', 'trueIcon', 'type', 'class', 'style'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const checkboxBtnStyles = computed(() => {
 		return [
@@ -112,7 +124,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

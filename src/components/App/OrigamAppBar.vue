@@ -63,6 +63,12 @@
 
 	import { computed, ComputedRef, ref, shallowRef, StyleValue, toRef, useSlots, watchEffect } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and slot detection for the AppBar component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IAppBarProps>(), {
 		tag: 'header',
 		density: DENSITY.DEFAULT,
@@ -98,7 +104,13 @@
 
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 
-	// SCROLL
+	/*********************************************************
+	 * Scroll
+	 *
+	 * @description
+	 * Scroll-behaviour driven visibility, collapse and
+	 * elevation logic for the sticky app bar.
+	 ********************************************************/
 	const scrollBehavior = computed(() => {
 		const behavior = new Set(props.scrollBehavior?.split(' ') ?? [])
 
@@ -159,8 +171,13 @@
 		return props.height ?? 0
 	})
 
-	// LAYOUT
-
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Registers the bar as a layout item so sibling regions
+	 * (main, nav drawer) offset correctly.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => int(props.order as string)),
@@ -171,8 +188,12 @@
 		absolute: toRef(props, 'absolute')
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes layout item styles and active modifier class.
+	 ********************************************************/
 	const appBarStyles = computed(() => {
 		return [
 			layoutItemStyles.value,
@@ -189,8 +210,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps forwarded from toolbar ref.
+	 ********************************************************/
 	defineExpose(forwardRefs({
 		filterProps
 	}, origamToolbarRef))

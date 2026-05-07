@@ -4,13 +4,6 @@
 			title="Main/OrigamMain"
 	>
 
-		<!--
-			OrigamMain reads the surrounding OrigamLayout. To keep stories
-			self-contained, every variant wraps the component in a small
-			layout shell so the layout-aware behaviour is visible.
-		-->
-
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<origam-layout style="height: 280px; border: 1px dashed var(--origam-color-border-default, #ccc);">
 				<origam-main>
@@ -19,7 +12,6 @@
 			</origam-layout>
 		</Variant>
 
-		<!-- ════════════ SCROLLABLE ════════════ -->
 		<Variant
 				title="Scrollable"
 				:init-state="() => useStoryInitState<{ scrollable?: boolean }>({ scrollable: true })"
@@ -38,7 +30,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -55,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'main' })"
@@ -72,7 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-layout style="height: 220px;">
 				<origam-main>
@@ -84,7 +73,6 @@
 			</origam-layout>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IMainProps>({

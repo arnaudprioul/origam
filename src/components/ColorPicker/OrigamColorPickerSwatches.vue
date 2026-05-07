@@ -49,6 +49,13 @@
 
 	import { computed, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and swatch color conversion helpers.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerSwatchesProps>(), {
 		maxHeight: 150
 	})
@@ -75,7 +82,12 @@
 		}
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and injects maxHeight style.
+	 ********************************************************/
 
 	const colorPickerSwatchesStyles = computed(() => {
 		return [
@@ -92,7 +104,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

@@ -65,6 +65,12 @@
 
 	import { forwardRefs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, and composable setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IFormProps>(), {})
 	const props = useDefaults(_props)
 
@@ -172,8 +178,12 @@
 		e.preventDefault()
 	}
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const formStyles = computed(() => {
 		return [
 			props.style
@@ -187,6 +197,12 @@
 		]
 	})
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps and form helpers to parent components.
+	 ********************************************************/
 	defineExpose(forwardRefs({ filterProps, ...form, errorMessages, formIsValid, scrollToFirstError }, formRef))
 </script>
 

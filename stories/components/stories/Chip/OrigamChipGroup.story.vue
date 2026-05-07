@@ -4,7 +4,6 @@
 			title="Chip/OrigamChipGroup"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="chip-group-default-shell">
 				<origam-chip-group v-model="defaultSelected" data-cy="chip-group-default">
@@ -16,7 +15,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<div class="story-shell" data-cy="chip-group-multiple-shell">
 				<origam-chip-group v-model="multipleSelected" multiple data-cy="chip-group-multiple">
@@ -28,7 +26,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MANDATORY ════════════ -->
 		<Variant
 				title="Mandatory"
 				:init-state="() => useStoryInitState<{ mandatory: boolean }>({ mandatory: true })"
@@ -47,7 +44,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FILTER ════════════ -->
 		<Variant title="Filter">
 			<div class="story-shell" data-cy="chip-group-filter-shell">
 				<origam-chip-group v-model="filterGroupSelected" filter data-cy="chip-group-filter">
@@ -59,7 +55,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLUMN ════════════ -->
 		<Variant
 				title="Column"
 				:init-state="() => useStoryInitState<{ column: boolean }>({ column: true })"
@@ -76,7 +71,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<{ color?: string }>({ color: 'primary' })"
@@ -92,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IChipGroupProps>({

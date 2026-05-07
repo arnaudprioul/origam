@@ -21,12 +21,22 @@
 
 	import { convertToUnit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const iconStyles = computed(() => {
 		const numericSize = typeof props.size === 'number'
 				? convertToUnit(props.size)
@@ -53,8 +63,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -64,11 +78,6 @@
 		lang="scss"
 		scoped
 >
-	// Material-style ligature icons render the icon name as text and rely on
-	// the icon font (Material Icons, Material Symbols, …) to substitute the
-	// text by the glyph at render time. The font itself must be loaded by
-	// the host app — typically by including the Google Fonts CSS at the
-	// document level. We DO NOT load the font here.
 	.origam-icon--ligature {
 		font-family: 'Material Icons', 'Material Symbols Outlined', sans-serif;
 		font-weight: normal;

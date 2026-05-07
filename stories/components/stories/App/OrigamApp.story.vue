@@ -4,7 +4,6 @@
 			title="App/OrigamApp"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-default">
 				<origam-app data-cy="app-default-inner">
@@ -16,7 +15,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ WITH DRAWER ════════════ -->
 		<Variant
 				title="With Drawer"
 				:init-state="() => useStoryInitState<{ drawerOpen: boolean }>({ drawerOpen: true })"
@@ -48,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FULL HEIGHT ════════════ -->
 		<Variant
 				title="Full height"
 				:init-state="() => useStoryInitState<{ fullHeight: boolean }>({ fullHeight: true })"
@@ -68,7 +65,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-slot-default-host">
 				<origam-app data-cy="app-slot-default">
@@ -80,7 +76,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ILayoutProps>({

@@ -32,6 +32,14 @@
 
 	import { computed, ref, StyleValue } from "vue";
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, group selection and defaults propagation
+	 * to child chips.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IChipGroupProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
@@ -65,7 +73,12 @@
 		return origamSlideGroupRef.value?.filterProps(props)
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM modifier classes and passes through host styles.
+	 ********************************************************/
 
 	const chipGroupStyles = computed(() => {
 		return [
@@ -82,7 +95,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

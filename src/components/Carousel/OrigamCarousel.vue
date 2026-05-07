@@ -105,6 +105,13 @@
 
 	import { computed, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, model binding and slide-cycle timer.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICarouselProps>(), {
 		delimiterIcon: MDI_ICONS.CIRCLE,
 		height: 500,
@@ -171,7 +178,12 @@
 
 	const slots = useSlots()
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM modifier classes and height/position styles.
+	 ********************************************************/
 
 	const carouselStyles = computed(() => {
 		return [
@@ -199,7 +211,12 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

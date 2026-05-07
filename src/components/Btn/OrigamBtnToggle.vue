@@ -45,6 +45,12 @@
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and group selection state for the toggle.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBtnToggleProps>(), {tag: 'div', items: () => [], density: DENSITY.DEFAULT})
 
 	defineEmits(['update:modelValue'])
@@ -61,8 +67,12 @@
 		return origamBtnGroupRef.value?.filterProps(props)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Thin wrapper — adds only the toggle BEM modifier class.
+	 ********************************************************/
 	const btnToggleStyles = computed(() => {
 		return [
 			props.style
@@ -75,8 +85,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: group navigation + filterProps.
+	 ********************************************************/
 	defineExpose({
 		next,
 		prev,

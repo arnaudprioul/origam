@@ -4,7 +4,6 @@
 			title="PasswordField/OrigamPasswordField"
 	>
 
-		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -23,23 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField /
-			Select / RatingField / Radio pattern) so consumers can
-			explore them as one cohesive concept.
-			Channel mapping (TextField family — same contract as the
-			other origam-input descendants):
-			  • `color`   → label + outline / underline accent
-			  • `bgColor` → field surface (chip body)
-			  • hover/active modify the matching channel on the
-			    matching state.
-			Hardcoded fixtures below the interactive control give the
-			e2e suite stable `data-cy="passwordfield-color-fixture-{n}"`
-			selectors.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -81,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -100,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SHOW / HIDE ICONS ════════════ -->
 		<Variant
 				title="Show / hide icons"
 				:init-state="() => useStoryInitState<{ onIcon?: TIcon, offIcon?: TIcon }>({ onIcon: MDI_ICONS.EYE, offIcon: MDI_ICONS.EYE_OFF })"
@@ -121,7 +101,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ REQUIREMENTS ════════════ -->
 		<Variant
 				title="Strength requirements"
 				:init-state="() => useStoryInitState<{
@@ -157,7 +136,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PERSISTENT REQUIREMENTS ════════════ -->
 		<Variant
 				title="Persistent requirements"
 				:init-state="() => useStoryInitState<{ persistentRequirements: boolean }>({ persistentRequirements: true })"
@@ -178,7 +156,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -202,7 +179,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-password-field
 					v-model="emitModel"
@@ -213,7 +189,6 @@
 			<div data-cy="passwordfield-emit-status">value = {{ emitModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-password-field
 					v-model="emitFocusModel"
@@ -224,12 +199,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ MODE 1 — STRENGTH BAR ════════════
-			One of the 6 PDF-validated display modes. The 4-segment bar
-			under the input fills as `computeStrength()` returns higher
-			scores. Token-driven colours: bg-weak (danger),
-			bg-fair (warning), bg-good (info), bg-strong (success).
-		-->
 		<Variant title="Strength bar">
 			<origam-password-field
 					v-model="strengthBarModel"
@@ -241,12 +210,6 @@
 			<div data-cy="password-field-strength-bar-status">value = {{ strengthBarModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
-		<!-- ════════════ MODE 2 — REQUIREMENTS LIST ════════════
-			Vertical checklist (default `requirementsLayout`). Default
-			rule set: ≥8 chars, ≥1 uppercase, ≥1 number, ≥1 special.
-			Each row toggles its check / cross icon and colour as the
-			password is typed.
-		-->
 		<Variant title="Requirements (list)">
 			<origam-password-field
 					v-model="requirementsListModel"
@@ -258,10 +221,6 @@
 			<div data-cy="password-field-requirements-list-status">value = {{ requirementsListModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
-		<!-- ════════════ MODE 3 — REQUIREMENTS TILES ════════════
-			Same data, different layout — rules render as `OrigamChip`
-			pills. Satisfied chips switch to `bg-color="success"`.
-		-->
 		<Variant title="Requirements (tiles)">
 			<origam-password-field
 					v-model="requirementsTilesModel"
@@ -273,10 +232,6 @@
 			<div data-cy="password-field-requirements-tiles-status">value = {{ requirementsTilesModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
-		<!-- ════════════ MODE 4 — PARTIALLY FILLED ════════════
-			Pre-filled with a 4-char value to show mid-typing state:
-			some segments coloured, only the matching rules ticked.
-		-->
 		<Variant title="Partially filled">
 			<origam-password-field
 					v-model="partialModel"
@@ -289,10 +244,6 @@
 			<div data-cy="password-field-partial-status">value = "{{ partialModel }}"</div>
 		</Variant>
 
-		<!-- ════════════ MODE 5 — MINIMAL ════════════
-			Stripped-down field for confirm-password sub-fields: no
-			toggle eye, no strength bar, no checklist. Just the input.
-		-->
 		<Variant title="Minimal">
 			<origam-password-field
 					v-model="minimalModel"
@@ -303,10 +254,6 @@
 			<div data-cy="password-field-minimal-status">value = {{ minimalModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
-		<!-- ════════════ MODE 6 — COMBINED ════════════
-			Default sign-up affordance: strength bar + checklist
-			stacked under the input. The PDF "secured" mode.
-		-->
 		<Variant title="Combined (bar + list)">
 			<origam-password-field
 					v-model="combinedModel"
@@ -319,7 +266,6 @@
 			<div data-cy="password-field-combined-status">value = {{ combinedModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IPasswordFieldProps>({

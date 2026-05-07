@@ -3,12 +3,10 @@
 			group="components"
 			title="Avatar/OrigamAvatarGroup"
 	>
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<origam-avatar-group :items="people"/>
 		</Variant>
 
-		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction?: TDirection }>({ direction: 'horizontal' })"
@@ -23,7 +21,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MAX ════════════ -->
 		<Variant
 				title="Max"
 				:init-state="() => useStoryInitState<{ max?: number }>({ max: 3 })"
@@ -36,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EXPAND ON HOVER ════════════ -->
 		<Variant
 				title="Expand on hover"
 				:init-state="() => useStoryInitState<{ expandOnHover?: boolean }>({ expandOnHover: true })"
@@ -53,7 +49,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EXPAND ON CLICK ════════════ -->
 		<Variant
 				title="Expand on click"
 				:init-state="() => useStoryInitState<{ expandOnClick?: boolean }>({ expandOnClick: true })"
@@ -70,7 +65,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -83,7 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FORWARDED PROPS (size / rounded / border) ════════════ -->
 		<Variant
 				title="Forwarded props"
 				:init-state="() => useStoryInitState<{ size?: TSize, rounded?: boolean, border?: boolean }>({
@@ -107,7 +100,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: avatar ════════════ -->
 		<Variant title="Slot — avatar">
 			<origam-avatar-group :items="people" :max="4">
 				<template #avatar="{ item, index }">
@@ -120,7 +112,6 @@
 			</origam-avatar-group>
 		</Variant>
 
-		<!-- ════════════ SLOT: rest (overflow) ════════════ -->
 		<Variant title="Slot — rest">
 			<origam-avatar-group :items="people" :max="3">
 				<template #rest="{ length }">
@@ -133,7 +124,6 @@
 			</origam-avatar-group>
 		</Variant>
 
-		<!-- ════════════ EMITS ════════════ -->
 		<Variant title="Emit — update:active / update:hover">
 			<origam-avatar-group
 					:items="people"
@@ -145,7 +135,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IAvatarGroupProps & { size?: TSize }>({

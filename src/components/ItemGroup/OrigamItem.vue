@@ -15,25 +15,6 @@
   lang="ts"
   setup
 >
-  /**
-   * Renderless item primitive — pairs with `<OrigamItemGroup>`.
-   * Renders only its default slot, exposing the group registration
-   * helpers as scope: `isSelected`, `selectedClass`, `toggle`,
-   * `select`, `value`, `disabled`. Mirrors Vuetify's `<v-item>`.
-   *
-   * Typical usage — a card that toggles its border on selection:
-   *
-   *   <OrigamItemGroup v-model="picked">
-   *     <OrigamItem v-for="opt in options"
-   *                  :key="opt.value"
-   *                  :value="opt.value"
-   *                  v-slot="{ isSelected, toggle }">
-   *       <OrigamCard :class="{ active: isSelected }" @click="toggle">
-   *         {{ opt.label }}
-   *       </OrigamCard>
-   *     </OrigamItem>
-   *   </OrigamItemGroup>
-   */
   import { computed, StyleValue } from 'vue'
 
   import { useGroupItem, useProps } from '../../composables'
@@ -42,13 +23,6 @@
 
   import type { IItemGroupItemProps } from '../../interfaces'
 
-  // Vue 3's `defineProps<T>()` compile-time prop extraction occasionally
-  // misses inherited props on multi-extends imported interfaces. Even
-  // with `tag?: string` shadowed in `IItemGroupItemProps`, the runtime
-  // sometimes warns `Property "tag" was accessed during render but is
-  // not defined on instance` on every <OrigamItem>. Mirroring the
-  // imported props onto a *local* interface that the SFC compiler
-  // resolves entirely within this file forces the runtime registration.
   interface Props extends IItemGroupItemProps {
     tag?: string
     value?: any
@@ -56,6 +30,12 @@
     selectedClass?: string
   }
 
+  /*********************************************************
+   * Global
+   *
+   * @description
+   * Props, group registration, and slot props.
+   ********************************************************/
   const props = withDefaults(defineProps<Props>(), {
     tag: 'div'
   })
@@ -77,8 +57,12 @@
     disabled: groupItem.disabled.value
   }))
 
-  // CLASS
-
+  /*********************************************************
+   * Class & Style
+   *
+   * @description
+   * Composable-driven class and style composition.
+   ********************************************************/
   const itemClasses = computed(() => {
     return [
       'origam-item',
@@ -92,8 +76,12 @@
     ] as StyleValue
   })
 
-  // EXPOSE
-
+  /*********************************************************
+   * Expose
+   *
+   * @description
+   * Forwards filterProps and group toggle to parent components.
+   ********************************************************/
   defineExpose({
     filterProps,
     toggle: groupItem.toggle

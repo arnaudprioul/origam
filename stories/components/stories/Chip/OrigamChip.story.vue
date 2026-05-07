@@ -4,12 +4,10 @@
 			title="Chip/OrigamChip"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<origam-chip text="My chip" data-cy="chip-default"/>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -36,7 +34,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CLOSABLE ════════════ -->
 		<Variant title="Closable">
 			<div class="story-shell" data-cy="chip-closable-shell">
 				<origam-chip
@@ -51,7 +48,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ FILTER ════════════ -->
 		<Variant title="Filter">
 			<div class="story-shell">
 				<origam-chip-group v-model="filterSelected" filter data-cy="chip-filter-group">
@@ -63,7 +59,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PILL ════════════ -->
 		<Variant
 				title="Pill"
 				:init-state="() => useStoryInitState<{ pill: boolean }>({ pill: true })"
@@ -76,7 +71,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LABEL ════════════ -->
 		<Variant
 				title="Label shape"
 				:init-state="() => useStoryInitState<{ label: boolean }>({ label: true })"
@@ -89,7 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({})"
@@ -102,7 +95,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -115,7 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -129,7 +120,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ADJACENT (prepend / append) ════════════ -->
 		<Variant
 				title="Adjacent"
 				:init-state="() => useStoryInitState<IAdjacentProps & { text?: string }>({ text: 'Chip', prependIcon: MDI_ICONS.ACCOUNT })"
@@ -144,7 +134,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DRAGGABLE ════════════ -->
 		<Variant
 				title="Draggable"
 				:init-state="() => useStoryInitState<{ draggable: boolean }>({ draggable: true })"
@@ -157,7 +146,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: click ════════════ -->
 		<Variant title="Emit — click">
 			<origam-chip
 					link
@@ -167,14 +155,12 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-chip data-cy="chip-slot-default">
 				<span style="font-style: italic;">Custom slot</span>
 			</origam-chip>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-chip text="With prepend" data-cy="chip-slot-prepend">
 				<template #prepend>
@@ -183,7 +169,6 @@
 			</origam-chip>
 		</Variant>
 
-		<!-- ════════════ SLOT: close ════════════ -->
 		<Variant title="Slot — close">
 			<origam-chip closable text="Custom close" data-cy="chip-slot-close">
 				<template #close>
@@ -192,7 +177,6 @@
 			</origam-chip>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
@@ -209,7 +193,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IChipProps>({

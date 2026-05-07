@@ -101,6 +101,13 @@
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and slot resolution for the card header.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICardHeaderProps>(), {tag: 'OrigamToolbar'})
 
 	defineEmits(['click:prepend', 'click:append'])
@@ -110,12 +117,26 @@
 	const slots = useSlots()
 	const {densityClasses} = useDensity(props)
 
+	/*********************************************************
+	 * Adjacent (prepend / append)
+	 *
+	 * @description
+	 * Resolves prepend/append icons and click handlers.
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
 		hasPrepend,
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags for conditional title / subtitle rendering.
+	 ********************************************************/
 
 	const hasTitle = computed(() => {
 		return slots.title || props.title != null
@@ -124,7 +145,12 @@
 		return slots.subtitle || props.subtitle != null
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes density classes and passes through host styles.
+	 ********************************************************/
 
 	const cardHeaderStyles = computed(() => {
 		return [
@@ -139,7 +165,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

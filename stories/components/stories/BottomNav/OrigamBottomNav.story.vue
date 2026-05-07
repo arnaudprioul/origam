@@ -4,20 +4,6 @@
 			title="BottomNav/OrigamBottomNav"
 	>
 
-		<!--
-			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
-
-			Each <Variant> drives one orthogonal concern:
-			  • one variant per "prop family" (color, size, density, …)
-			  • one variant per slot
-			  • one variant per emit — wire the listener to
-			    `logEvent('event-name', $event)` (imported from
-			    'histoire/client') so the emit shows up in histoire's
-			    Events tab.
-			  • one "playground" variant that exposes everything together
-		-->
-
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -47,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -67,7 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -87,7 +71,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -107,7 +90,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 8 })"
@@ -127,7 +109,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ GROW ════════════ -->
 		<Variant
 				title="Grow"
 				:init-state="() => useStoryInitState<{ grow: boolean }>({ grow: true })"
@@ -147,7 +128,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODE (vertical / horizontal / shift) ════════════ -->
 		<Variant
 				title="Mode"
 				:init-state="() => useStoryInitState<{ mode?: TMode }>({ mode: MODE.VERTICAL })"
@@ -167,7 +147,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
 		<Variant title="Items prop">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav
@@ -178,7 +157,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ VISIBLE (modelValue toggle) ════════════ -->
 		<Variant
 				title="Visible (modelValue)"
 				:init-state="() => useStoryInitState<{ visible: boolean }>({ visible: true })"
@@ -197,7 +175,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav :model-value="true" data-cy="bottom-nav-slot-default">
@@ -208,7 +185,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: item ════════════ -->
 		<Variant title="Slot — item">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav :model-value="true" :items="navItems" data-cy="bottom-nav-slot-item">
@@ -223,7 +199,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav
@@ -235,7 +210,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:active ════════════ -->
 		<Variant title="Emit — update:active">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav
@@ -247,7 +221,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBottomNavProps>({

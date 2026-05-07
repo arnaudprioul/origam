@@ -4,7 +4,6 @@
 			title="OtpInputField/OrigamOtpInputField"
 	>
 
-		<!-- ════════════ LENGTH ════════════ -->
 		<Variant
 				title="Length"
 				:init-state="() => useStoryInitState<{ length: number }>({ length: 6 })"
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TYPE ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type: string }>({ type: 'text' })"
@@ -43,7 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIVIDER ════════════ -->
 		<Variant
 				title="Divider"
 				:init-state="() => useStoryInitState<{ divider: string }>({ divider: '-' })"
@@ -63,7 +60,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -83,7 +79,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -110,7 +105,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -124,7 +118,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -149,7 +142,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-otp-input-field
 					v-model="emitModel"
@@ -161,7 +153,6 @@
 			<div data-cy="otp-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: finish ════════════ -->
 		<Variant title="Emit — finish">
 			<origam-otp-input-field
 					v-model="emitFinishModel"
@@ -173,7 +164,6 @@
 			<div data-cy="otp-emit-finish-status">value = {{ emitFinishModel }}</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IOtpInputFieldProps>({

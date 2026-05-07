@@ -4,18 +4,6 @@
 			title="Checkbox/OrigamCheckbox"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField /
-			Select / RatingField / Radio pattern).
-			Channel mapping (Checkbox = SelectionControl family):
-			  • `color`   → label foreground + the check glyph when on
-			  • `bgColor` → checkbox box surface
-			  • hover/active modify the matching channel on the matching
-			    state.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -57,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -76,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -95,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{
@@ -122,7 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ERROR / VALIDATION ════════════ -->
 		<Variant
 				title="Error & validation"
 				:init-state="() => useStoryInitState<{ error: boolean, errorMessages: string }>({ error: false, errorMessages: 'This field is required' })"
@@ -143,7 +127,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
 		<Variant title="Slot — label">
 			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-label">
 				<template #label>
@@ -155,7 +138,6 @@
 			<div data-cy="checkbox-slot-label-status">value = {{ slotLabelModel }}</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: input ════════════ -->
 		<Variant title="Slot — input">
 			<origam-checkbox v-model="slotInputModel" label="Custom input" data-cy="checkbox-slot-input">
 				<template #input="{ props: inputProps, icon, model }">
@@ -171,7 +153,6 @@
 			<div data-cy="checkbox-slot-input-status">value = {{ slotInputModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-checkbox
 					v-model="emitModel"
@@ -182,7 +163,6 @@
 			<div data-cy="checkbox-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-checkbox
 					v-model="emitFocusModel"
@@ -193,7 +173,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:label ════════════ -->
 		<Variant title="Emit — click:label">
 			<origam-checkbox
 					v-model="emitClickLabelModel"
@@ -203,7 +182,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ICheckboxProps>({

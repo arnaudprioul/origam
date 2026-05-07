@@ -3,12 +3,7 @@
 			group="components"
 			title="Progress/OrigamProgressCircular"
 	>
-		<!--
-			OrigamProgressCircular renders a SVG ring. Determinate by default
-			(model-value), or indeterminate (looping dash + rotation).
-		-->
 
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div class="demo-row" style="display:flex; gap: 24px; align-items: center;">
 				<origam-progress-circular :model-value="35"/>
@@ -16,7 +11,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DETERMINATE / VALUE ════════════ -->
 		<Variant
 				title="Value (determinate)"
 				:init-state="() => useStoryInitState<{ modelValue?: number, max?: number }>({
@@ -38,7 +32,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INDETERMINATE ════════════ -->
 		<Variant
 				title="Indeterminate"
 				:init-state="() => useStoryInitState<{ indeterminate?: boolean }>({ indeterminate: true })"
@@ -55,7 +48,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({ size: 'default' })"
@@ -72,7 +64,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ THICKNESS ════════════ -->
 		<Variant
 				title="Thickness"
 				:init-state="() => useStoryInitState<{ thickness?: number }>({ thickness: 4 })"
@@ -90,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROTATE ════════════ -->
 		<Variant
 				title="Rotate"
 				:init-state="() => useStoryInitState<{ rotate?: number }>({ rotate: 0 })"
@@ -108,7 +98,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -127,7 +116,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (label) ════════════ -->
 		<Variant title="Slot - default (label)">
 			<origam-progress-circular
 					:model-value="73"
@@ -140,7 +128,6 @@
 			</origam-progress-circular>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IProgressCircularProps>({

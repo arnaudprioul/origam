@@ -201,6 +201,13 @@
 
 	import { filterInputAttrs, forwardRefs } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and composables.
+	 ********************************************************/
+
 	const _props = withDefaults(defineProps<ITextFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
@@ -231,6 +238,13 @@
 		onClickAppend: handleClickAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
+	/*********************************************************
+	 * Counter
+	 *
+	 * @description
+	 * Counter value and max calculation for character counting.
+	 ********************************************************/
+
 	const counterValue = computed(() => {
 		if (typeof props.counterValue === 'function') {
 			return props.counterValue(model.value)
@@ -252,6 +266,13 @@
 		return props.counter
 	})
 
+	/*********************************************************
+	 * Intersection
+	 *
+	 * @description
+	 * Autofocus via IntersectionObserver on first paint.
+	 ********************************************************/
+
 	const intersect = computed(() => {
 		return [{
 			handler: handleIntersect
@@ -263,6 +284,13 @@
 		(entries[0].target as HTMLInputElement)?.focus?.()
 	}
 
+	/*********************************************************
+	 * Refs & active state
+	 *
+	 * @description
+	 * Template refs for input, field and outer input container.
+	 ********************************************************/
+
 	const origamInputRef = ref<TOrigamInput>()
 	const origamFieldRef = ref<TOrigamField>()
 	const inputRef = ref<HTMLInputElement>()
@@ -270,6 +298,13 @@
 	const isActive = computed(() => {
 		return ACTIVE_TEXT_FIELD_TYPE.includes(props.type) || props.persistentPlaceholder || isFocused.value || props.active
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Focus, control click/mousedown, clear and input handlers.
+	 ********************************************************/
 
 	const handleFocus = () => {
 		nextTick(() => {
@@ -321,6 +356,13 @@
 		}
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered attrs and props passed down to inner components.
+	 ********************************************************/
+
 	const hasCounter = computed(() => {
 		return slots.counter || (props.counter !== false && props.counter != null)
 	})
@@ -347,7 +389,12 @@
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const textFieldStyles = computed(() => {
 		return [

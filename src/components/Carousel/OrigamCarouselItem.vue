@@ -51,6 +51,13 @@
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, child refs and delegated prop filtering.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICarouselItemProps>(), {
 		transition: undefined,
 		reverseTransition: undefined
@@ -72,7 +79,12 @@
 
 	const slots = useSlots()
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const carouselItemStyles = computed(() => {
 		return [
@@ -86,7 +98,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

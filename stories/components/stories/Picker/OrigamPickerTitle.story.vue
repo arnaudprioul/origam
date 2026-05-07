@@ -3,7 +3,6 @@
 			group="components"
 			title="Picker/OrigamPickerTitle"
 	>
-		<!-- ════════════ DEFAULT (title prop) ════════════ -->
 		<Variant title="Default">
 			<origam-picker-title
 					title="Pick a date"
@@ -11,7 +10,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ TITLE PROP ════════════ -->
 		<Variant
 				title="Title prop"
 				:init-state="() => useStoryInitState<{ title: string }>({ title: 'Custom title' })"
@@ -27,7 +25,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag: string }>({ tag: 'h2' })"
@@ -48,14 +45,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DEFAULT SLOT ════════════ -->
 		<Variant title="Slot — default">
 			<origam-picker-title data-cy="picker-title-slot">
 				Custom <strong data-cy="picker-title-slot-strong">rich</strong> content
 			</origam-picker-title>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IPickerTitleProps>({

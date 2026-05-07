@@ -4,7 +4,6 @@
 			title="Parallax/OrigamParallaxElement"
 	>
 
-		<!-- ════════════ TYPE (translate / rotate / scale / depth / …) ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type?: TParallaxElementType }>({ type: PARALLAX_ELEMENT_TYPE.TRANSLATE })"
@@ -21,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STRENGTH ════════════ -->
 		<Variant
 				title="Strength"
 				:init-state="() => useStoryInitState<{ strength?: number }>({ strength: 30 })"
@@ -38,7 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ AXIS ════════════ -->
 		<Variant
 				title="Axis"
 				:init-state="() => useStoryInitState<{ axis?: TAxis }>({ axis: undefined })"
@@ -55,7 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ORIGIN (transformOrigin / originX / originY) ════════════ -->
 		<Variant
 				title="Origin"
 				:init-state="() => useStoryInitState<{ transformOrigin?: TAnchor, originX?: number, originY?: number }>({
@@ -83,7 +79,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CLAMPING (min / max X & Y) ════════════ -->
 		<Variant
 				title="Clamping"
 				:init-state="() => useStoryInitState<{ minX?: number, maxX?: number, minY?: number, maxY?: number }>({
@@ -108,7 +103,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CYCLIC MODE ════════════ -->
 		<Variant
 				title="Cycle"
 				:init-state="() => useStoryInitState<{ cycle?: number }>({ cycle: 2 })"
@@ -125,7 +119,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -142,7 +135,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-parallax :style="hostStyle">
 				<origam-parallax-element :strength="30">
@@ -151,7 +143,6 @@
 			</origam-parallax>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IParallaxElementProps>({

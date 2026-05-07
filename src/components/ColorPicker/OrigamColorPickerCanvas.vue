@@ -33,6 +33,13 @@
 
 	import { computed, onMounted, ref, shallowRef, StyleValue, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, canvas rendering and pointer interaction.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerCanvasProps>(), {
 		height: 150,
 		width: '100%'
@@ -209,7 +216,12 @@
 		} : {x: 0, y: 0}
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const colorPickerCanvasStyles = computed(() => {
 		return [
@@ -223,7 +235,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

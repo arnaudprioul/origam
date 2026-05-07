@@ -44,6 +44,13 @@
 
 	import { getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and filterProps for the
+	 * SelectionControlGroup component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISelectionControlGroupProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
@@ -56,17 +63,19 @@
 
 	const {filterProps} = useProps<ISelectionControlGroupProps>(props)
 
-	// Push visual-token + behavioural props down to every descendant
-	// `<origam-selection-control>` as DEFAULTS — controls that pass
-	// their own value still win.
-	// Pre-fix only `density` + `color` were forwarded, so passing
-	// `<origam-selection-control-group type="radio">` left every
-	// child at `type=undefined` and the rendered `<input>` shipped
-	// without a `type` attribute. A click then never fired `change`,
-	// the model never updated, and the radio looked broken. Forward
-	// `type` plus the rest of the group-level surface so children
-	// behave as the consumer expects.
-	// (Closes task #24.)
+	/*********************************************************
+	 * Slot defaults (group → children)
+	 *
+	 * @description
+	 * Push visual-token + behavioural props down to every
+	 * descendant `<origam-selection-control>` as DEFAULTS —
+	 * controls that pass their own value still win.
+	 * Previously only `density` + `color` were forwarded, so
+	 * passing `type="radio"` left every child without a `type`
+	 * attribute — clicks never fired `change`, the model never
+	 * updated and the radio looked broken. Forward `type` plus
+	 * the rest of the group-level surface. (Closes task #24.)
+	 ********************************************************/
 	const slotDefaults = computed(() => ({
 		'origam-selection-control': {
 			density: props.density,
@@ -109,8 +118,13 @@
 		}
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * selectionControlGroupStyles and selectionControlGroupClasses
+	 * compose the BEM block.
+	 ********************************************************/
 	const selectionControlGroupStyles = computed(() => {
 		return [
 			props.style
@@ -124,8 +138,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

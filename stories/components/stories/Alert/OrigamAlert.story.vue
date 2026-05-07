@@ -4,12 +4,10 @@
 			title="Alert/OrigamAlert"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<origam-alert text="This is a default alert." data-cy="alert-default"/>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -36,7 +34,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATUS ════════════ -->
 		<Variant
 				title="Status"
 				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'info' })"
@@ -54,7 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CLOSABLE ════════════ -->
 		<Variant title="Closable">
 			<div class="story-shell" data-cy="alert-closable-shell">
 				<origam-alert
@@ -69,7 +65,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ TITLE prop (heading) ════════════ -->
 		<Variant
 				title="Title prop"
 				:init-state="() => useStoryInitState<{ title?: string }>({ title: 'Alert title' })"
@@ -82,7 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TEXT prop (body) ════════════ -->
 		<Variant
 				title="Text prop"
 				:init-state="() => useStoryInitState<{ text?: string }>({ text: 'Alert body text.' })"
@@ -95,7 +89,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PROMINENT ════════════ -->
 		<Variant
 				title="Prominent"
 				:init-state="() => useStoryInitState<{ prominent: boolean }>({ prominent: true })"
@@ -114,7 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -127,7 +119,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -141,7 +132,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: title ════════════ -->
 		<Variant title="Slot — title">
 			<origam-alert text="Body text." data-cy="alert-slot-title">
 				<template #title>
@@ -150,7 +140,6 @@
 			</origam-alert>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-alert text="Custom prepend slot." data-cy="alert-slot-prepend">
 				<template #prepend>
@@ -159,7 +148,6 @@
 			</origam-alert>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:close ════════════ -->
 		<Variant title="Emit — click:close">
 			<origam-alert
 					closable
@@ -169,7 +157,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IAlertProps>({

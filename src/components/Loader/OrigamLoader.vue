@@ -5,11 +5,6 @@
 			:style="loaderStyles"
 	>
 		<template v-if="isLoading">
-			<!--
-				Mirror of OrigamLoader: the `__progress` class lives on the
-				default spinner directly (no wrapper) so consumers replacing
-				`#loader` get a clean slot without an extra DOM node.
-			-->
 			<slot name="loader">
 				<origam-progress
 						:color="color"
@@ -39,15 +34,34 @@
 
 	import type { ILoaderProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composables.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ILoaderProps>(), {tag: 'span'})
 
 	const {filterProps} = useProps<ILoaderProps>(props)
+
+	/*********************************************************
+	 * Loader state
+	 *
+	 * @description
+	 * Derived boolean indicating whether loading is active.
+	 ********************************************************/
 
 	const isLoading = computed(() => {
 		return !!props.loading
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const loaderStyles = computed(() => {
 		return [
@@ -61,19 +75,18 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps
 	})
 </script>
 
-<!--
-	Restored scoped style block (mirrors OrigamLoader exactly). Only sets
-	the wrapper height + the progress margin: NO display rule, so the host
-	(e.g. OrigamBtn `__loader`) keeps full control of the layout
-	(grid/flex) without specificity tug-of-war.
--->
 <style
 		lang="scss"
 		scoped

@@ -208,16 +208,10 @@
 					</template>
 				</origam-counter>
 
-				<!-- ════════════ STRENGTH BAR + INLINE REQUIREMENTS ════════════
-					 Both sit under the field (inside `#details` so they live
-					 inside the input flow but below the control). The whole
-					 block is suppressed when `minimal` is true.
-				-->
 				<div
 						v-if="hasInlineFooter && !props.minimal"
 						class="origam-password-field__inline-footer"
 				>
-					<!-- 4-segment strength bar — fills as `score` rises. -->
 					<div
 							v-if="props.strengthBar"
 							class="origam-password-field__strength"
@@ -234,7 +228,6 @@
 						/>
 					</div>
 
-					<!-- Requirements checklist — `list` (default) or `tiles`. -->
 					<template v-if="hasInlineRequirements">
 						<ul
 								v-if="props.requirementsLayout !== 'tiles'"
@@ -841,11 +834,3 @@
 	}
 </style>
 
-<!--
-	Lot 3.0/3.1 port — the entire OrigamPasswordField has been ported
-	with the namespace adapted (`Origam*` → `Origam*`, classes/CSS vars
-	mirrored, `origam.validation.must_contains`). The bg-color="rgba(230,230,230, 0.50)"
-	hardcoded on each requirement Sheet was dropped — the Sheet's
-	`color` prop already drives the theme-aware tint via the design
-	tokens, no inline RGBA needed.
--->

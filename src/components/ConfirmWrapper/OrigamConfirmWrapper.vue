@@ -557,9 +557,3 @@
 		}
 	}
 </style>
-
-<!--
-	The `<style>:root{}` block from origam has been removed during the
-	port — defaults now flow from `tokens/component/confirm-wrapper.json`
-	through the generated `--origam-confirm-wrapper---*` CSS vars.
--->

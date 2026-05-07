@@ -17,14 +17,6 @@
 		lang="ts"
 		setup
 >
-	/**
-	 * Generic, renderless selection group — origam's equivalent of
-	 * Vuetify's `<v-item-group>`. The component imposes no visual; it
-	 * only manages the v-model selection (single / multiple / mandatory)
-	 * and exposes per-item selection state through the matching
-	 * `<OrigamItem>` slot scope. Use it to build "card-as-radio",
-	 * "tile-as-checkbox", or any custom selectable surface.
-	 */
 	import { computed, StyleValue, useSlots } from 'vue'
 
 	import { OrigamDefaultsProvider } from '../../components'

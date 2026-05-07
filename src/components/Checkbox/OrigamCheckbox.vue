@@ -73,6 +73,13 @@
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, model binding and focus tracking.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICheckboxProps>(), {
 		density: DENSITY.DEFAULT
 	})
@@ -109,7 +116,12 @@
 		return origamCheckboxBtnRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'disabled', 'readonly', 'error'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const checkboxStyles = computed(() => {
 		return [
@@ -123,7 +135,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

@@ -3,16 +3,7 @@
 			group="components"
 			title="Progress/OrigamProgress"
 	>
-		<!--
-			OrigamProgress is a *dispatcher* that picks either
-			OrigamProgressCircular (type="circular") or OrigamProgressLinear
-			(type="linear") and forwards every prop via `filterProps`.
 
-			Each Variant below covers one orthogonal concern — same convention
-			as the Btn reference story.
-		-->
-
-		<!-- ════════════ TYPE (circular vs linear) ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type?: TProgressType }>({ type: PROGRESS_TYPE.CIRCULAR })"
@@ -33,7 +24,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DETERMINATE / VALUE ════════════ -->
 		<Variant
 				title="Value (determinate)"
 				:init-state="() => useStoryInitState<{ type?: TProgressType, modelValue?: number, max?: number }>({
@@ -57,7 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INDETERMINATE ════════════ -->
 		<Variant
 				title="Indeterminate"
 				:init-state="() => useStoryInitState<{ type?: TProgressType, indeterminate?: boolean }>({
@@ -78,7 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE (circular variant) ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({ size: 'default' })"
@@ -96,7 +84,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps & { type?: TProgressType }>({
@@ -119,7 +106,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ THICKNESS ════════════ -->
 		<Variant
 				title="Thickness"
 				:init-state="() => useStoryInitState<{ type?: TProgressType, thickness?: number }>({
@@ -141,7 +127,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (label) ════════════ -->
 		<Variant title="Slot - default (label)">
 			<origam-progress
 					type="circular"
@@ -155,7 +140,6 @@
 			</origam-progress>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IProgressProps>({

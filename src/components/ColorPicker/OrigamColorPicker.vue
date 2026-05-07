@@ -118,6 +118,14 @@
 
 	import { computed, onBeforeMount, ref, StyleValue, useSlots, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, model binding, color conversion and
+	 * child ref delegation.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerProps>(), {
 		canvasHeight: 150,
 		canvasWidth: '100%',
@@ -211,7 +219,13 @@
 		if (!props.modes.includes(mode.value)) mode.value = props.modes[0]
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM mode modifier class and injects the current
+	 * HSV color as a CSS custom property.
+	 ********************************************************/
 
 	const colorPickerStyles = computed(() => {
 		return [
@@ -230,7 +244,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

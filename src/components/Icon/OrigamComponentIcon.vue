@@ -27,6 +27,12 @@
 	import type { TSize } from '../../types'
 	import { convertToUnit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composable setup, and icon component resolution.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
@@ -38,10 +44,12 @@
 		return props.icon as Component
 	})
 
-	// CLASS & STYLES
-
-	// Numeric size pins the wrapper's font-size; the inner Vue component icon
-	// is expected to size in `em` (most icon libs do — feather, lucide, hugeicons).
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const iconStyles = computed(() => {
 		const numericSize = typeof props.size === 'number'
 				? convertToUnit(props.size)
@@ -70,8 +78,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

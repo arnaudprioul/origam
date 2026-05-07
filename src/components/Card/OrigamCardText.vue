@@ -19,11 +19,23 @@
 
 	import { computed, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filter for the card text body area.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICardTextProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ICardTextProps>(props)
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const cardTextStyles = computed(() => {
 		return [
@@ -37,7 +49,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

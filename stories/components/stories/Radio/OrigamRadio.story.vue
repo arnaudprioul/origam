@@ -4,25 +4,6 @@
 			title="Radio/OrigamRadio"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField /
-			Select / RatingField pattern) so consumers can explore them
-			as one cohesive concept.
-			Channel mapping (Radio = SelectionControl family — same
-			contract as Checkbox / Switch):
-			  • `color`   → label foreground + the active dot inside
-			                the radio circle when checked
-			  • `bgColor` → outer ring of the radio (the surface that
-			                wraps the dot)
-			  • hover/active variants modify the matching channel on
-			    the matching interaction state.
-			Hardcoded fixtures below the interactive control give the
-			e2e suite stable `data-cy="radio-color-fixture-{n}"`
-			selectors to assert no cross-pollution.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -74,7 +55,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -94,7 +74,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -114,7 +93,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
@@ -136,7 +114,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
 		<Variant title="Slot — label">
 			<origam-radio v-model="slotLabelModel" value="custom" data-cy="radio-slot-label">
 				<template #label>
@@ -146,7 +123,6 @@
 			<div data-cy="radio-slot-label-status">value = {{ slotLabelModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-radio
 					v-model="emitModel"
@@ -158,7 +134,6 @@
 			<div data-cy="radio-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-radio
 					v-model="emitFocusModel"
@@ -170,7 +145,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IRadioProps>({

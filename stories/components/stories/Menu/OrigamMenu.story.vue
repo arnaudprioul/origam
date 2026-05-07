@@ -4,7 +4,6 @@
 			title="Menu/OrigamMenu"
 	>
 
-		<!-- ════════════ DEFAULT (items prop) ════════════ -->
 		<Variant title="Default">
 			<div style="padding: 24px;" data-cy="menu-default-host">
 				<origam-menu :items="defaultItems">
@@ -15,7 +14,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ TITLE ════════════ -->
 		<Variant title="Title">
 			<div style="padding: 24px;" data-cy="menu-title-host">
 				<origam-menu title="Actions" :items="defaultItems">
@@ -26,7 +24,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ OPEN ON HOVER ════════════ -->
 		<Variant
 				title="Open on hover"
 				:init-state="() => useStoryInitState<{ openOnHover: boolean }>({ openOnHover: true })"
@@ -45,7 +42,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ OFFSET ════════════ -->
 		<Variant
 				title="Offset"
 				:init-state="() => useStoryInitState<{ offset: number }>({ offset: 8 })"
@@ -64,7 +60,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (custom content) ════════════ -->
 		<Variant title="Slot — default">
 			<div style="padding: 24px;" data-cy="menu-slot-default-host">
 				<origam-menu>
@@ -79,7 +74,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 24px;" data-cy="menu-emit-host">
 				<origam-menu
@@ -93,7 +87,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IMenuProps>({

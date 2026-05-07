@@ -3,13 +3,7 @@
 			group="components"
 			title="Progress/OrigamProgressLinear"
 	>
-		<!--
-			OrigamProgressLinear renders a horizontal bar. Supports buffer +
-			stream, indeterminate marquee, reverse direction, rounded corners
-			and pinned positioning (absolute / fixed).
-		-->
 
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div style="display:flex; flex-direction: column; gap: 16px; min-width: 320px;">
 				<origam-progress-linear :model-value="35" color="primary"/>
@@ -17,7 +11,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DETERMINATE / VALUE ════════════ -->
 		<Variant
 				title="Value (determinate)"
 				:init-state="() => useStoryInitState<{ modelValue?: number, max?: number }>({
@@ -38,7 +31,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INDETERMINATE ════════════ -->
 		<Variant
 				title="Indeterminate"
 				:init-state="() => useStoryInitState<{ indeterminate?: boolean, active?: boolean }>({
@@ -59,7 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BUFFER + STREAM ════════════ -->
 		<Variant
 				title="Buffer + Stream"
 				:init-state="() => useStoryInitState<{ modelValue?: number, bufferValue?: number, stream?: boolean, active?: boolean }>({
@@ -86,7 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ THICKNESS ════════════ -->
 		<Variant
 				title="Thickness"
 				:init-state="() => useStoryInitState<{ thickness?: number }>({ thickness: 4 })"
@@ -103,7 +93,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -121,7 +110,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
@@ -139,7 +127,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ REVERSE ════════════ -->
 		<Variant
 				title="Reverse"
 				:init-state="() => useStoryInitState<{ reverse?: boolean }>({ reverse: false })"
@@ -156,7 +143,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ABSOLUTE ════════════ -->
 		<Variant
 				title="Absolute (positioned)"
 				:init-state="() => useStoryInitState<{ absolute?: boolean, location?: string }>({
@@ -189,7 +175,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (label) ════════════ -->
 		<Variant title="Slot - default (label)">
 			<origam-progress-linear
 					:model-value="73"
@@ -205,7 +190,6 @@
 			</origam-progress-linear>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IProgressLinearProps>({

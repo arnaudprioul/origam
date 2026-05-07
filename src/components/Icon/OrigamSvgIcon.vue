@@ -47,6 +47,12 @@
 
 	import { convertToUnit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composable setup, and array-path guard for multi-path SVGs.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
@@ -55,8 +61,12 @@
 		return Array.isArray(data)
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const iconStyles = computed(() => {
 		const numericSize = typeof props.size === 'number'
 				? convertToUnit(props.size)
@@ -85,8 +95,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -97,10 +111,6 @@
 		scoped
 >
 	.origam-icon--svg {
-		// Make the inline SVG inherit the host's text color so the design-token
-		// `currentColor` chain works end-to-end (set `color: …` on an ancestor
-		// → the path is filled with that colour). Width/height mirror the
-		// font-size driven by the named-size class on .origam-icon.
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;

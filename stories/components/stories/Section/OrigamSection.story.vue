@@ -4,13 +4,6 @@
 			title="Section/OrigamSection"
 	>
 
-		<!--
-			OrigamSection is currently a stub component (no props, no slots).
-			This story exposes the placeholder so testers can spot it in
-			Histoire and track the day it gains its real API.
-		-->
-
-		<!-- ════════════ BASIC USAGE (placeholder) ════════════ -->
 		<Variant title="Basic usage (WIP)">
 			<origam-section/>
 			<p style="margin-top: 12px; font-style: italic; opacity: 0.7;">
@@ -20,7 +13,6 @@
 			</p>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant title="Playground">
 			<origam-section/>
 		</Variant>

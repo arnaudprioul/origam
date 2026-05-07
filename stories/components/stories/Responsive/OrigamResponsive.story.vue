@@ -4,7 +4,6 @@
 			title="Responsive/OrigamResponsive"
 	>
 
-		<!-- ════════════ ASPECT RATIO ════════════ -->
 		<Variant
 				title="Aspect ratio"
 				:init-state="() => useStoryInitState<{ aspectRatio?: string | number }>({ aspectRatio: '16/9' })"
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INLINE ════════════ -->
 		<Variant
 				title="Inline"
 				:init-state="() => useStoryInitState<{ inline?: boolean }>({ inline: true })"
@@ -48,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIMENSIONS ════════════ -->
 		<Variant
 				title="Dimensions"
 				:init-state="() => useStoryInitState<IDimensionProps & { aspectRatio?: string }>({
@@ -70,7 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODIFIERS (rounded / border) ════════════ -->
 		<Variant
 				title="Modifiers"
 				:init-state="() => useStoryInitState<{
@@ -96,7 +92,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-responsive aspect-ratio="16/9" style="max-width: 480px;">
 				<div class="demo-fill">
@@ -105,7 +100,6 @@
 			</origam-responsive>
 		</Variant>
 
-		<!-- ════════════ SLOT: additional ════════════ -->
 		<Variant title="Slot — additional (overlay)">
 			<origam-responsive aspect-ratio="16/9" style="max-width: 480px; position: relative;">
 				<div class="demo-fill">main media</div>
@@ -117,7 +111,6 @@
 			</origam-responsive>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IResponsiveProps>({

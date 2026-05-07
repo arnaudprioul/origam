@@ -17,12 +17,22 @@
 
 	import type { ISpacerProps } from "../../interfaces"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISpacerProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ISpacerProps>(props)
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const spacerStyles = computed(() => {
 		return [
 			props.style
@@ -35,8 +45,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

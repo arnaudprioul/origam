@@ -3,14 +3,12 @@
 			group="components"
 			title="Picker/OrigamPicker"
 	>
-		<!-- ════════════ DEFAULT (title prop, body slot) ════════════ -->
 		<Variant title="Default">
 			<origam-picker title="Pick something" data-cy="picker-default">
 				<p data-cy="picker-default-body">Body content lives in the default slot.</p>
 			</origam-picker>
 		</Variant>
 
-		<!-- ════════════ TITLE PROP (string) ════════════ -->
 		<Variant
 				title="Title prop"
 				:init-state="() => useStoryInitState<{ title: string }>({ title: 'Pick a date' })"
@@ -25,7 +23,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HIDE HEADER ════════════ -->
 		<Variant
 				title="Hide header"
 				:init-state="() => useStoryInitState<{ hideHeader: boolean }>({ hideHeader: true })"
@@ -44,7 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LANDSCAPE ════════════ -->
 		<Variant
 				title="Landscape"
 				:init-state="() => useStoryInitState<{ landscape: boolean }>({ landscape: true })"
@@ -66,7 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ACTIONS SLOT ════════════ -->
 		<Variant title="Slot — actions">
 			<origam-picker title="With actions" data-cy="picker-actions">
 				<div data-cy="picker-actions-body" style="padding: 12px 16px;">Body</div>
@@ -84,7 +79,6 @@
 			</origam-picker>
 		</Variant>
 
-		<!-- ════════════ HEADER SLOT ════════════ -->
 		<Variant title="Slot — header">
 			<origam-picker title="With header" data-cy="picker-header">
 				<template #header>
@@ -96,7 +90,6 @@
 			</origam-picker>
 		</Variant>
 
-		<!-- ════════════ TITLE SLOT (override) ════════════ -->
 		<Variant title="Slot — title">
 			<origam-picker data-cy="picker-title-slot">
 				<template #title>
@@ -110,7 +103,6 @@
 			</origam-picker>
 		</Variant>
 
-		<!-- ════════════ COLOR / BG-COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -130,7 +122,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({})"
@@ -149,7 +140,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -169,7 +159,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IPickerProps>({

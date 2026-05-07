@@ -3,7 +3,6 @@
 			group="components"
 			title="Overlay/OrigamOverlay"
 	>
-		<!-- ════════════ DEFAULT (toggle via activator slot) ════════════ -->
 		<Variant title="Default">
 			<div class="story-host" data-cy="overlay-default-host">
 				<origam-overlay v-model="defaultOpen">
@@ -32,7 +31,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SCRIM (boolean / color) ════════════ -->
 		<Variant
 				title="Scrim"
 				:init-state="() => useStoryInitState<{ scrim: boolean | string }>({ scrim: true })"
@@ -72,7 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PERSISTENT (no outside-click close) ════════════ -->
 		<Variant
 				title="Persistent"
 				:init-state="() => useStoryInitState<{ persistent: boolean }>({ persistent: true })"
@@ -111,7 +108,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant
 				title="Disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
@@ -146,7 +142,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CONTAINED (within parent) ════════════ -->
 		<Variant
 				title="Contained"
 				:init-state="() => useStoryInitState<{ contained: boolean }>({ contained: true })"
@@ -189,7 +184,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ Z-INDEX ════════════ -->
 		<Variant
 				title="Z-index"
 				:init-state="() => useStoryInitState<{ zIndex: number }>({ zIndex: 2000 })"
@@ -228,7 +222,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IOverlayProps>({

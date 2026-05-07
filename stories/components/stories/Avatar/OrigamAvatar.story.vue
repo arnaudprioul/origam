@@ -3,7 +3,6 @@
 			group="components"
 			title="Avatar/OrigamAvatar"
 	>
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div class="demo-row">
 				<origam-avatar text="AP"/>
@@ -12,12 +11,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			One variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants.
-			Hardcoded showcase fixtures below for stable e2e selectors.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -44,7 +37,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({})"
@@ -57,7 +49,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -70,7 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -84,7 +74,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATUS ════════════ -->
 		<Variant
 				title="Status"
 				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'success' })"
@@ -97,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
@@ -114,7 +102,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<{ elevation?: number }>({ elevation: 4 })"
@@ -127,7 +114,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<{ border?: boolean }>({ border: true })"
@@ -140,7 +126,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HOVER / ACTIVE (forced) ════════════ -->
 		<Variant
 				title="Hover / Active"
 				:init-state="() => useStoryInitState<{ hover?: boolean, active?: boolean }>({})"
@@ -159,7 +144,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -172,7 +156,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: text ════════════ -->
 		<Variant title="Slot — text">
 			<origam-avatar text="AP">
 				<template #text>
@@ -181,17 +164,14 @@
 			</origam-avatar>
 		</Variant>
 
-		<!-- ════════════ SLOT: icon ════════════ -->
 		<Variant title="Slot — icon">
 			<origam-avatar :icon="MDI_ICONS.HEART"/>
 		</Variant>
 
-		<!-- ════════════ SLOT: avatar (image) ════════════ -->
 		<Variant title="Slot — avatar (image)">
 			<origam-avatar image="https://picsum.photos/seed/origam-avatar-slot/120/120"/>
 		</Variant>
 
-		<!-- ════════════ EMITS ════════════ -->
 		<Variant title="Emit — update:active / update:hover">
 			<origam-avatar
 					tag="button"
@@ -202,7 +182,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IAvatarProps>({

@@ -4,12 +4,10 @@
 			title="Pagination/OrigamPagination"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant title="Basic">
 			<origam-pagination v-model="page" :length="10"/>
 		</Variant>
 
-		<!-- ════════════ LENGTH & VISIBLE ════════════ -->
 		<Variant
 				title="Length and total visible"
 				:init-state="() => useStoryInitState<{ length?: number; totalVisible?: number }>({ length: 20, totalVisible: 7 })"
@@ -27,7 +25,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FIRST / LAST PAGE ════════════ -->
 		<Variant
 				title="First / last page buttons"
 				:init-state="() => useStoryInitState<{ showFirstLastPage?: boolean }>({ showFirstLastPage: true })"
@@ -44,23 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField /
-			Select / RatingField / Radio / Password / TextField pattern).
-			Channel mapping (Pagination forwards the full shape to each
-			inner btn item, so the rungs are driven by the Btn's own
-			`useColorEffect`):
-			  • `color`      → resting btn fg
-			  • `bgColor`    → resting btn surface
-			  • `hoverColor` / `hoverBgColor`   → hover state
-			  • `activeColor` / `activeBgColor` → currently selected page
-			Hardcoded fixtures below the interactive control give the
-			e2e suite stable `data-cy="pagination-color-fixture-{n}"`
-			selectors.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -94,12 +74,10 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant title="Disabled">
 			<origam-pagination v-model="page" :length="10" disabled/>
 		</Variant>
 
-		<!-- ════════════ SLOT: item ════════════ -->
 		<Variant title="Slot — item">
 			<origam-pagination v-model="page" :length="5">
 				<template #item>
@@ -108,7 +86,6 @@
 			</origam-pagination>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-pagination
 					v-model="page"
@@ -117,14 +94,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ COMPACT ════════════ -->
-		<!--
-			P3·G — surface the existing `compact` prop on its own variant
-			so the e2e suite can exercise it independently. Compact swaps
-			the page-number list for a single `<input type="number">`
-			between the prev/next chevrons. Useful for very dense DataTable
-			toolbars or mobile screens where the full list would wrap.
-		-->
 		<Variant
 				title="Compact"
 				:init-state="() => useStoryInitState<{ compact?: boolean }>({ compact: true })"
@@ -142,26 +111,10 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COMPACT + FIRST/LAST ════════════ -->
 		<Variant title="Compact + showFirstLastPage">
 			<origam-pagination v-model="page" :length="12" compact show-first-last-page data-cy="pagination-compact-first-last"/>
 		</Variant>
 
-		<!-- ════════════ COLOR DEFAULT vs PRIMARY (P3·G) ════════════ -->
-		<!--
-			P3·G — the user reviewed the PDF and asked: the default look
-			should be subtle (text-only, transparent surface), and the
-			"styled" filled look should kick in ONLY when the consumer
-			passes color="primary". Two side-by-side fixtures make the
-			difference unmistakable in the e2e suite (and in human review):
-
-			  • [data-cy="pagination-default-look"]    → no `color` prop
-			  • [data-cy="pagination-primary-look"]    → color="primary"
-
-			The default fixture's page-button background should resolve
-			to `transparent` (rgba(0,0,0,0)); the primary fixture's
-			should resolve to a non-transparent intent fill.
-		-->
 		<Variant title="Color — default vs primary">
 			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 				<div>
@@ -188,14 +141,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ WITH INFO (P3·G) ════════════ -->
-		<!--
-			P3·G — `withInfo` mode renders a left-side "Showing N-M of T"
-			label next to the standard list. The range is computed from
-			`currentPage * perPage` clamped to `total`. The i18n key
-			`origam.pagination.info` accepts three positional args
-			(start, end, total).
-		-->
 		<Variant
 				title="With info"
 				:init-state="() => useStoryInitState<{ total?: number; perPage?: number; withInfo?: boolean }>({ total: 248, perPage: 20, withInfo: true })"
@@ -217,7 +162,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{
