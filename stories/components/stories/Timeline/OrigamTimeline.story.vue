@@ -4,17 +4,14 @@
 		title="Timeline/OrigamTimeline"
 	>
 
-		<!-- ════════════ DEFAULT — 4 release entries (matches maquette) ════════════ -->
 		<Variant title="Default">
 			<origam-timeline :items="releaseEntries" data-cy="timeline-default"/>
 		</Variant>
 
-		<!-- ════════════ WITH ICONS ════════════ -->
 		<Variant title="With icons">
 			<origam-timeline :items="iconEntries" data-cy="timeline-icons"/>
 		</Variant>
 
-		<!-- ════════════ SIDES ════════════ -->
 		<Variant title="Sides">
 			<div style="display: flex; gap: 32px; flex-wrap: wrap;">
 				<div>
@@ -44,12 +41,10 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ INTENT MIX ════════════ -->
 		<Variant title="Intent mix">
 			<origam-timeline :items="intentEntries" data-cy="timeline-intent"/>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 			title="Color"
 			:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -68,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE / DENSITY ════════════ -->
 		<Variant
 			title="Size / Density"
 			:init-state="() => useStoryInitState<ISizeProps & IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -87,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT — default (custom content) ════════════ -->
 		<Variant title="Slot — default (custom content)">
 			<origam-timeline data-cy="timeline-slot-default">
 				<origam-timeline-item
@@ -124,7 +117,6 @@
 			</origam-timeline>
 		</Variant>
 
-		<!-- ════════════ TRUNCATE LINE ════════════ -->
 		<Variant
 			title="Truncate line"
 			:init-state="() => useStoryInitState<{ truncateLine: boolean }>({ truncateLine: true })"
@@ -141,7 +133,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 			title="Playground"
 			:init-state="() => useStoryInitState<ITimelineProps>({

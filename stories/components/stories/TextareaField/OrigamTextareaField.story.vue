@@ -4,7 +4,6 @@
 			title="TextareaField/OrigamTextareaField"
 	>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -50,7 +48,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -64,7 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROWS ════════════ -->
 		<Variant
 				title="Rows"
 				:init-state="() => useStoryInitState<{ rows: number, autoGrow: boolean, maxRows: number }>({ rows: 3, autoGrow: false, maxRows: 8 })"
@@ -87,7 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ NO RESIZE ════════════ -->
 		<Variant
 				title="No resize"
 				:init-state="() => useStoryInitState<{ noResize: boolean }>({ noResize: true })"
@@ -105,7 +100,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COUNTER ════════════ -->
 		<Variant
 				title="Counter"
 				:init-state="() => useStoryInitState<{ counter: number }>({ counter: 500 })"
@@ -124,7 +118,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -148,7 +141,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend / append ════════════ -->
 		<Variant title="Slot — prepend / append">
 			<origam-textarea-field v-model="slotOuterModel" label="With outer slots" data-cy="textarea-slot-outer">
 				<template #prepend>
@@ -161,7 +153,6 @@
 			<div data-cy="textarea-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-textarea-field
 					v-model="emitModel"
@@ -172,7 +163,6 @@
 			<div data-cy="textarea-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-textarea-field
 					v-model="emitFocusModel"
@@ -183,7 +173,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:height ════════════ -->
 		<Variant title="Emit — update:height">
 			<origam-textarea-field
 					v-model="emitHeightModel"
@@ -194,7 +183,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -232,7 +220,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<origam-textarea-field label="loading={true}" loading data-cy="textarea-loading-bool"/>
@@ -243,7 +230,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITextareaFieldProps>({

@@ -4,28 +4,24 @@
 			title="ThemeProvider/OrigamThemeProvider"
 	>
 
-		<!-- ════════════ LIGHT ════════════ -->
 		<Variant title="Light theme">
 			<origam-theme-provider theme="light" style="padding: 16px; display: block;">
 				<origam-btn color="primary" text="Light theme button"/>
 			</origam-theme-provider>
 		</Variant>
 
-		<!-- ════════════ DARK ════════════ -->
 		<Variant title="Dark theme">
 			<origam-theme-provider theme="dark" style="padding: 16px; display: block;">
 				<origam-btn color="primary" text="Dark theme button"/>
 			</origam-theme-provider>
 		</Variant>
 
-		<!-- ════════════ AUTO ════════════ -->
 		<Variant title="Auto (inherits from ancestor)">
 			<origam-theme-provider theme="auto" style="padding: 16px; display: block;">
 				<origam-btn color="primary" text="Auto theme button"/>
 			</origam-theme-provider>
 		</Variant>
 
-		<!-- ════════════ NESTED ════════════ -->
 		<Variant title="Nested providers">
 			<origam-theme-provider theme="light" style="padding: 16px; display: block;">
 				<origam-btn text="Light" color="primary" style="margin-bottom: 8px; display: block;"/>
@@ -35,7 +31,6 @@
 			</origam-theme-provider>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'section' })"
@@ -50,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-theme-provider theme="dark" style="padding: 16px; display: block;">
 				<template #default>
@@ -59,7 +53,6 @@
 			</origam-theme-provider>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ theme?: string; tag?: string }>({ theme: 'light', tag: 'div' })"
