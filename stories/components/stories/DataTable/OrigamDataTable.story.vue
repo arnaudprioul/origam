@@ -167,6 +167,56 @@
 			</origam-data-table>
 		</Variant>
 
+		<!-- ════════════ LOADING — interactive ════════════ -->
+		<Variant
+				title="Loading — interactive"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'line',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-data-table
+							:headers="headers"
+							:items="items"
+							:loading="resolveDtLoading(state)"
+							data-cy="data-table-loading-interactive"
+					/>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeDtLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-data-table :headers="headers" :items="items" loading data-cy="data-table-loading-bool"/>
+				<origam-data-table :headers="headers" :items="items" :loading="42" data-cy="data-table-loading-number"/>
+				<origam-data-table :headers="headers" :items="items" :loading="{ type: 'line' }" data-cy="data-table-loading-line"/>
+				<origam-data-table :headers="headers" :items="items" :loading="{ type: 'circular' }" data-cy="data-table-loading-circular"/>
+				<origam-data-table :headers="headers" :items="items" :loading="{ type: 'skeleton' }" data-cy="data-table-loading-skeleton"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -218,9 +268,32 @@
 
 	import { OrigamDataTable, OrigamTextField } from '@origam/components'
 	import type { IColorProps } from '@origam/interfaces'
+	import type { TLoadingValue } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { intentList } from '@stories/const'
+
+	interface ILoadingState {
+		enabled: boolean
+		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		progress: number
+		circularSize: number
+	}
+
+	const resolveDtLoading = (state: ILoadingState): TLoadingValue => {
+		if (!state.enabled) return false
+		if (state.kind === 'bool') return true
+		if (state.kind === 'number') return state.progress
+		if (state.kind === 'line') return { type: 'line' }
+		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
+		if (state.kind === 'skeleton') return { type: 'skeleton' }
+		return false
+	}
+
+	const describeDtLoading = (state: ILoadingState): string => {
+		const v = resolveDtLoading(state)
+		return JSON.stringify(v, null, 2)
+	}
 
 	const selected = ref([])
 	const search = ref('')

@@ -257,6 +257,76 @@ test.describe('OrigamCard', () => {
 		await expect(card).toBeVisible({ timeout: 5000 })
 	})
 
+	test.describe('Loading shapes', () => {
+		test('loading=true → default kind line (linear) progress present', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-loading-bool"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+			// Card defaultKind = 'line' → linear progress bar mounted
+			await expect(card.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+		})
+
+		test('loading=42 → determinate linear progress mounted', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-loading-number"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+			// Number input → defaultKind line, determinate
+			await expect(card.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+		})
+
+		test('loading={ type: "line" } → explicit linear renderer mounted', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-loading-line"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+			await expect(card.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+		})
+
+		test('loading={ type: "circular", size: 16 } → circular progress overrides line default', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-loading-circular-override"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+			// Explicit type='circular' wins over Card's line default
+			await expect(card.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+		})
+
+		test('loading={ type: "skeleton" } → skeleton mounted, header/asset/footer absent', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-loading-skeleton"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+			// Skeleton renderer is mounted
+			await expect(card.locator('.origam-skeleton')).toBeAttached({ timeout: 5000 })
+			// Header, asset and footer must NOT be rendered
+			// (OrigamCard wraps them in v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'")
+			await expect(card.locator('.origam-card__header')).not.toBeAttached({ timeout: 5000 })
+			await expect(card.locator('.origam-card__asset')).not.toBeAttached({ timeout: 5000 })
+		})
+	})
+
 	test('Playground — card renders with all default props', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')

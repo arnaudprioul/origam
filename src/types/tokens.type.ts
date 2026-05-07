@@ -2029,6 +2029,7 @@ export type TTokenName =
   | '--origam-skeleton---background-color'
   | '--origam-skeleton---border-radius'
   | '--origam-skeleton---border-radius-circular'
+  | '--origam-skeleton---gap'
   | '--origam-skeleton---opacity-max'
   | '--origam-skeleton---opacity-min'
   | '--origam-skeleton---text-height'

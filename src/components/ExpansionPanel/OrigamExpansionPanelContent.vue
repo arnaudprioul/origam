@@ -7,16 +7,40 @@
 				:style="expansionPanelContentStyles"
 		>
 			<div class="origam-expansion-panel-content__wrapper">
-				<template v-if="hasContent">
-					<slot name="default">
-						<template v-if="isComponent">
-							<component :is="content"/>
-						</template>
-
-						<template v-else>
-							{{ content }}
-						</template>
+				<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
+					<slot name="loader">
+						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
 					</slot>
+				</template>
+
+				<template v-else-if="loaderConfig.isActive">
+					<slot name="loader">
+						<origam-progress
+								:active="true"
+								:indeterminate="loaderConfig.indeterminate"
+								:model-value="loaderConfig.modelValue"
+								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+								:class="['origam-expansion-panel-content__progress', `origam-expansion-panel-content__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+								thickness="4"
+								v-bind="loaderConfig.overrides"
+						/>
+					</slot>
+				</template>
+
+				<template v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'">
+					<template v-if="hasContent">
+						<slot name="default">
+							<template v-if="isComponent">
+								<component :is="content"/>
+							</template>
+
+							<template v-else>
+								{{ content }}
+							</template>
+						</slot>
+					</template>
 				</template>
 			</div>
 		</component>
@@ -28,18 +52,21 @@
 		setup
 >
 	import { computed, inject, StyleValue, toRef } from 'vue'
-	import { OrigamExpandY } from '../../components'
+	import { OrigamExpandY, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useBorder,
 		useBothColor,
 		useDensity,
 		useLazy,
+		useLoader,
 		useMargin,
 		usePadding,
 		useProps,
 		useRounded
 	} from '../../composables'
+
+	import { PROGRESS_TYPE } from '../../enums'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
@@ -63,6 +90,7 @@
 	const {densityClasses} = useDensity(props)
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 
 	const isSelected = computed(() => {
 		return expansionPanel.isSelected.value
@@ -86,6 +114,7 @@
 	const expansionPanelContentClasses = computed(() => {
 		return [
 			'origam-expansion-panel-content',
+			loaderClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

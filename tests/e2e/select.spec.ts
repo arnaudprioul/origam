@@ -544,6 +544,64 @@ test.describe('OrigamSelect', () => {
             expect(bg).not.toBe('rgb(255, 255, 255)')
         })
 
+        test.describe('Loading shapes', () => {
+            async function goToVariant(page: Parameters<Parameters<typeof test>[1]>[0]) {
+                await page.goto(STORY_PATH)
+                await page.waitForLoadState('networkidle')
+                await page.getByText('Loading shapes', { exact: true }).first().click()
+                await page.waitForTimeout(800)
+            }
+
+            test('loading=true → default kind renderer mounted', async ({ page }) => {
+                await goToVariant(page)
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('[data-cy="select-loading-bool"]')
+                await expect(field).toBeVisible({ timeout: 5000 })
+                await expect(field.locator('.origam-field__loader')).toBeVisible({ timeout: 3000 })
+                await expect(field.locator('.origam-field__progress--linear')).toBeVisible({ timeout: 3000 })
+            })
+
+            test('loading=42 → determinate progress at 42 %', async ({ page }) => {
+                await goToVariant(page)
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('[data-cy="select-loading-number"]')
+                await expect(field).toBeVisible({ timeout: 5000 })
+                await expect(field.locator('.origam-field__loader')).toBeVisible({ timeout: 3000 })
+                const progressBar = field.locator('[role="progressbar"]').first()
+                await expect(progressBar).toBeVisible({ timeout: 3000 })
+                const valueNow = await progressBar.getAttribute('aria-valuenow')
+                expect(valueNow).toBe('42')
+            })
+
+            test('loading={ type: "line" } → linear progress mounted', async ({ page }) => {
+                await goToVariant(page)
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('[data-cy="select-loading-line"]')
+                await expect(field).toBeVisible({ timeout: 5000 })
+                await expect(field.locator('.origam-field__progress--linear')).toBeVisible({ timeout: 3000 })
+            })
+
+            test('loading={ type: "circular" } → circular progress mounted', async ({ page }) => {
+                await goToVariant(page)
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('[data-cy="select-loading-circular"]')
+                await expect(field).toBeVisible({ timeout: 5000 })
+                await expect(field.locator('.origam-field__loader')).toBeVisible({ timeout: 3000 })
+                await expect(field.locator('[role="progressbar"]').first()).toBeVisible({ timeout: 3000 })
+                await expect(field.locator('.origam-field__progress--linear')).not.toBeVisible()
+            })
+
+            test('loading={ type: "skeleton" } → origam-skeleton replaces content', async ({ page }) => {
+                await goToVariant(page)
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('[data-cy="select-loading-skeleton"]')
+                await expect(field).toBeVisible({ timeout: 5000 })
+                await expect(field.locator('.origam-field__skeleton').first()).toBeVisible({ timeout: 3000 })
+                // Input must be hidden when skeleton active
+                await expect(field.locator('input')).not.toBeVisible()
+            })
+        })
+
         test('open animation uses OrigamExpandY transition', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')

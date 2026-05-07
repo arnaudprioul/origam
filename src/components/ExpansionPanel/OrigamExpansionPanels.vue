@@ -124,6 +124,7 @@
 		useDensity,
 		useElevation,
 		useGroup,
+		useLoader,
 		useMargin,
 		usePadding,
 		useProps,
@@ -165,6 +166,7 @@
 	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {loaderClasses} = useLoader(props, 'line')
 
 	// CLASSES & STYLES
 
@@ -187,6 +189,7 @@
 				'origam-expansion-panels--popout': props.popout,
 				'origam-expansion-panels--inset': props.inset
 			},
+			loaderClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

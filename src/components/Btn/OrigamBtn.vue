@@ -34,9 +34,21 @@
 							name="loader"
 							v-bind="progressProps"
 					>
-						<origam-progress-circular
+						<!-- skeleton: fills the btn bounds -->
+						<origam-skeleton
+								v-if="loaderConfig.kind === 'skeleton'"
+								variant="rectangular"
+								:width="'100%'"
+								:height="'100%'"
+								v-bind="loaderConfig.overrides"
+						/>
+
+						<!-- circular / line: reuse progressProps which already encodes kind -->
+						<origam-progress
+								v-else
 								ref="origamProgressRef"
 								v-bind="progressProps"
+								:active="true"
 						/>
 					</slot>
 				</template>
@@ -113,7 +125,7 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
-	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgressCircular } from '../../components'
+	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useActive,
@@ -145,11 +157,11 @@
 
 	import { vRipple } from '../../directives'
 
-	import { DENSITY, SIZES } from '../../enums'
+	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
 	import type { IBtnProps } from '../../interfaces'
 
-	import type { TOrigamProgressCircular } from "../../types"
+	import type { TOrigamProgress } from "../../types"
 
 	const attrs = useAttrs()
 
@@ -174,7 +186,7 @@
 
 	const {filterProps} = useProps<IBtnProps>(props)
 
-	const origamProgressRef = ref<TOrigamProgressCircular>()
+	const origamProgressRef = ref<TOrigamProgress>()
 
 	const group = useGroupItem(props, ORIGAM_BTN_TOGGLE_KEY, false)
 	const link = useLink(props, attrs)
@@ -214,7 +226,7 @@
 
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {loaderClasses} = useLoader(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -260,7 +272,7 @@
 		return !!(icon.value && props.icon !== true)
 	})
 	const hasLoader = computed(() => {
-		return slots.loader || props.loading
+		return slots.loader || loaderConfig.value.isActive
 	})
 
 	const progressProps = computed(() => {
@@ -273,11 +285,15 @@
 		// seeing INSIDE the loading button. Verified via Playwright DOM
 		// dump: depth 2 was a <button> with bg rgb(239,239,239) and
 		// border "2px outset rgb(0,0,0)" — straight UA defaults.
+		const cfg = loaderConfig.value
 		return Object.assign({
 					size: '23',
-					indeterminate: true
+					indeterminate: cfg.indeterminate,
+					modelValue: cfg.modelValue,
+					type: cfg.kind === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR
 				},
-				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id', 'tag', 'size', 'type']))
+				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id', 'tag', 'size', 'type']),
+				cfg.overrides)
 	})
 
 	// CLASS & STYLES
@@ -309,7 +325,7 @@
 				// so consumers can pick either spelling.
 				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
-				'origam-btn--loading': props.loading,
+				'origam-btn--loading': loaderConfig.value.isActive,
 				'origam-btn--slim': props.slim,
 				'origam-btn--stacked': props.stacked
 			},

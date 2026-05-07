@@ -170,6 +170,76 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ LOADING — interactive ════════════ -->
+		<Variant
+				title="Loading — interactive"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'bool',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-switch
+							:model-value="false"
+							disabled
+							:loading="resolveSwitchLoading(state)"
+							label="Demo switch"
+							data-cy="switch-loading-interactive"
+					/>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSwitchLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<!--
+			Switch defaultKind = 'circular'. All fixtures use :model-value="false"
+			+ disabled so this is a pure visual demo — no interaction side-effects.
+		-->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={true}</code>
+					<origam-switch :model-value="false" loading disabled label="Bool" data-cy="switch-loading-bool"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={42}</code>
+					<origam-switch :model-value="false" :loading="42" disabled label="42%" data-cy="switch-loading-number"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<origam-switch :model-value="false" :loading="{ type: 'line' }" disabled label="Line loader" data-cy="switch-loading-line"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<origam-switch :model-value="false" :loading="{ type: 'circular', size: 16 }" disabled label="Small spinner" data-cy="switch-loading-circular-override"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<origam-switch :model-value="false" :loading="{ type: 'skeleton' }" disabled label="Skeleton mode" data-cy="switch-loading-skeleton"/>
+				</div>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -216,9 +286,32 @@
 	import { OrigamSwitch } from '@origam/components'
 	import { DENSITY } from '@origam/enums'
 	import type { IColorProps, IDensityProps, ISwitchProps } from '@origam/interfaces'
+	import type { TLoadingValue } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { densityList, intentList } from '@stories/const'
+
+	interface ILoadingState {
+		enabled: boolean
+		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		progress: number
+		circularSize: number
+	}
+
+	const resolveSwitchLoading = (state: ILoadingState): TLoadingValue => {
+		if (!state.enabled) return false
+		if (state.kind === 'bool') return true
+		if (state.kind === 'number') return state.progress
+		if (state.kind === 'line') return { type: 'line' }
+		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
+		if (state.kind === 'skeleton') return { type: 'skeleton' }
+		return false
+	}
+
+	const describeSwitchLoading = (state: ILoadingState): string => {
+		const v = resolveSwitchLoading(state)
+		return JSON.stringify(v, null, 2)
+	}
 
 	const colorModel         = ref(false)
 	const densityModel       = ref(false)

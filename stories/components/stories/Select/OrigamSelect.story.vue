@@ -254,6 +254,56 @@
 			<div data-cy="select-emit-clear-status">value = {{ emitClearModel }}</div>
 		</Variant>
 
+		<!-- ════════════ LOADING — interactive ════════════ -->
+		<Variant
+				title="Loading — interactive"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'line',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-select
+							:items="stringItems"
+							:loading="resolveSelectLoading(state)"
+							label="Demo field"
+							data-cy="select-loading-interactive"
+					/>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSelectLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-select :items="stringItems" label="loading={true}" loading data-cy="select-loading-bool"/>
+				<origam-select :items="stringItems" label="loading={42}" :loading="42" data-cy="select-loading-number"/>
+				<origam-select :items="stringItems" label="loading={ type: 'line' }" :loading="{ type: 'line' }" data-cy="select-loading-line"/>
+				<origam-select :items="stringItems" label="loading={ type: 'circular' }" :loading="{ type: 'circular' }" data-cy="select-loading-circular"/>
+				<origam-select :items="stringItems" label="loading={ type: 'skeleton' }" :loading="{ type: 'skeleton' }" data-cy="select-loading-skeleton"/>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -309,10 +359,32 @@
 	import { OrigamIcon, OrigamSelect } from '@origam/components'
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, ISelectProps } from '@origam/interfaces'
-	import type { TVariantInput } from '@origam/types'
+	import type { TLoadingValue, TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { densityList, intentList, variantInputList } from '@stories/const'
+
+	interface ILoadingState {
+		enabled: boolean
+		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		progress: number
+		circularSize: number
+	}
+
+	const resolveSelectLoading = (state: ILoadingState): TLoadingValue => {
+		if (!state.enabled) return false
+		if (state.kind === 'bool') return true
+		if (state.kind === 'number') return state.progress
+		if (state.kind === 'line') return { type: 'line' }
+		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
+		if (state.kind === 'skeleton') return { type: 'skeleton' }
+		return false
+	}
+
+	const describeSelectLoading = (state: ILoadingState): string => {
+		const v = resolveSelectLoading(state)
+		return JSON.stringify(v, null, 2)
+	}
 
 	const stringItems = ['France', 'Germany', 'Spain', 'Italy', 'Portugal']
 	const objectItems = [

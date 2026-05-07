@@ -7,148 +7,166 @@
 	>
 		<div class="origam-field__overlay"/>
 
-		<template v-if="hasLoader">
+		<!--
+			Skeleton kind: render OUTSIDE `.origam-field__loader` (which is the
+			thin 2px-tall progress bar at the bottom edge — would clip the
+			skeleton). The skeleton fills the field's content box and replaces
+			the input/label/icons rendering below.
+		-->
+		<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
+			<origam-skeleton
+					class="origam-field__skeleton"
+					variant="rectangular"
+					:loading="true"
+					v-bind="loaderConfig.overrides"
+			/>
+		</template>
+
+		<template v-if="hasLoader && loaderConfig.kind !== 'skeleton'">
 			<slot name="loader">
 				<div class="origam-field__loader">
 					<origam-progress
-							:active="!!props.loading"
+							:active="true"
 							:color="props.color"
-							:indeterminate="typeof props.loading !== 'number'"
-							:model-value="typeof props.loading === 'number' ? props.loading : undefined"
-							:type="PROGRESS_TYPE.LINEAR"
-							class="origam-field__progress origam-field__progress--linear"
+							:indeterminate="loaderConfig.indeterminate"
+							:model-value="loaderConfig.modelValue"
+							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+							:class="['origam-field__progress', `origam-field__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
 							thickness="4"
+							v-bind="loaderConfig.overrides"
 					/>
 				</div>
 			</slot>
 		</template>
 
-		<div
-				v-if="hasPrependInner"
-				key="prependInner"
-				class="origam-field__prepend-inner"
-				@click="handleClickPrependInner"
-		>
-			<slot name="prependInner">
-				<origam-avatar
-						v-if="props.prependInnerAvatar"
-						key="prepend-avatar"
-						:density="props.density"
-						:image="props.prependInnerAvatar"
-				/>
-				<origam-icon
-						v-if="props.prependInnerIcon"
-						key="prepend-icon"
-						:density="props.density"
-						:icon="props.prependInnerIcon"
-				/>
-			</slot>
-		</div>
-
-		<div
-				class="origam-field__field"
-				data-no-activator=""
-		>
-			<template v-if="hasLabel">
-				<slot
-						name="label"
-						v-bind="labelProps"
-				>
-					<origam-label
-							v-bind="labelProps"
-							ref="origamLabelRef"
-					/>
-				</slot>
-			</template>
-
-			<span
-					v-if="hasPrefix"
-					class="origam-field__prefix"
-			>
-         <slot name="prefix">
-          <span>
-            {{ prefix }}
-          </span>
-         </slot>
-      </span>
-
-			<slot
-					name="default"
-					v-bind="slotProps"
-			/>
-
-			<span
-					v-if="hasSuffix"
-					class="origam-field__suffix"
-			>
-        <slot name="suffix">
-          <span>
-            {{ suffix }}
-          </span>
-        </slot>
-      </span>
-		</div>
-
-		<origam-expand-x
-				v-if="hasClear"
-				key="clear"
-		>
+		<template v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'">
 			<div
-					v-show="props.dirty"
-					class="origam-field__clearable"
-					@mousedown="handleMousedownClear"
+					v-if="hasPrependInner"
+					key="prependInner"
+					class="origam-field__prepend-inner"
+					@click="handleClickPrependInner"
 			>
-				<slot name="clear">
+				<slot name="prependInner">
+					<origam-avatar
+							v-if="props.prependInnerAvatar"
+							key="prepend-avatar"
+							:density="props.density"
+							:image="props.prependInnerAvatar"
+					/>
 					<origam-icon
-							:icon="props.clearIcon"
-							@blur="handleBlur"
-							@focus="handleFocus"
-							@keydown="handleKeydownClear"
+							v-if="props.prependInnerIcon"
+							key="prepend-icon"
+							:density="props.density"
+							:icon="props.prependInnerIcon"
 					/>
 				</slot>
 			</div>
-		</origam-expand-x>
 
-		<div
-				v-if="hasAppendInner"
-				key="appendInner"
-				class="origam-field__append-inner"
-				@click="handleClickAppendInner"
-		>
-			<slot name="appendInner">
-				<origam-avatar
-						v-if="props.appendInnerAvatar"
-						key="append-avatar"
-						:density="props.density"
-						:image="props.appendInnerAvatar"
-				/>
-				<origam-icon
-						v-if="props.appendInnerIcon"
-						key="append-icon"
-						:density="props.density"
-						:icon="props.appendInnerIcon"
-				/>
-			</slot>
-		</div>
-
-		<div class="origam-field__outlines">
-			<div class="origam-field__outline origam-field__outline--start"/>
-			<div class="origam-field__outline origam-field__outline--notch">
-				<template v-if="hasFloatingLabel">
+			<div
+					class="origam-field__field"
+					data-no-activator=""
+			>
+				<template v-if="hasLabel">
 					<slot
-							name="floatingLabel"
-							v-bind="floatingLabelProps"
+							name="label"
+							v-bind="labelProps"
 					>
 						<origam-label
-								key="floating-label"
-								v-bind="floatingLabelProps"
-								ref="origamFloatingLabelRef"
+								v-bind="labelProps"
+								ref="origamLabelRef"
 						/>
 					</slot>
 				</template>
+
+				<span
+						v-if="hasPrefix"
+						class="origam-field__prefix"
+				>
+	         <slot name="prefix">
+	          <span>
+	            {{ prefix }}
+	          </span>
+	         </slot>
+	      </span>
+
+				<slot
+						name="default"
+						v-bind="slotProps"
+				/>
+
+				<span
+						v-if="hasSuffix"
+						class="origam-field__suffix"
+				>
+	        <slot name="suffix">
+	          <span>
+	            {{ suffix }}
+	          </span>
+	        </slot>
+	      </span>
 			</div>
-			<div class="origam-field__outline origam-field__outline--end"/>
-		</div>
+
+			<origam-expand-x
+					v-if="hasClear"
+					key="clear"
+			>
+				<div
+						v-show="props.dirty"
+						class="origam-field__clearable"
+						@mousedown="handleMousedownClear"
+				>
+					<slot name="clear">
+						<origam-icon
+								:icon="props.clearIcon"
+								@blur="handleBlur"
+								@focus="handleFocus"
+								@keydown="handleKeydownClear"
+						/>
+					</slot>
+				</div>
+			</origam-expand-x>
+
+			<div
+					v-if="hasAppendInner"
+					key="appendInner"
+					class="origam-field__append-inner"
+					@click="handleClickAppendInner"
+			>
+				<slot name="appendInner">
+					<origam-avatar
+							v-if="props.appendInnerAvatar"
+							key="append-avatar"
+							:density="props.density"
+							:image="props.appendInnerAvatar"
+					/>
+					<origam-icon
+							v-if="props.appendInnerIcon"
+							key="append-icon"
+							:density="props.density"
+							:icon="props.appendInnerIcon"
+					/>
+				</slot>
+			</div>
+
+			<div class="origam-field__outlines">
+				<div class="origam-field__outline origam-field__outline--start"/>
+				<div class="origam-field__outline origam-field__outline--notch">
+					<template v-if="hasFloatingLabel">
+						<slot
+								name="floatingLabel"
+								v-bind="floatingLabelProps"
+						>
+							<origam-label
+									key="floating-label"
+									v-bind="floatingLabelProps"
+									ref="origamFloatingLabelRef"
+							/>
+						</slot>
+					</template>
+				</div>
+				<div class="origam-field__outline origam-field__outline--end"/>
+			</div>
+		</template>
 
 	</div>
 </template>
@@ -158,7 +176,7 @@
 		setup
 >
 	import { computed, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
-	import { OrigamAvatar, OrigamExpandX, OrigamIcon, OrigamLabel, OrigamProgress } from '../../components'
+	import { OrigamAvatar, OrigamExpandX, OrigamIcon, OrigamLabel, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useActive,
@@ -168,6 +186,7 @@
 		useDensity,
 		useElevation,
 		useFocus,
+		useLoader,
 		useProps,
 		useRounded,
 		useRtl,
@@ -321,8 +340,10 @@
 	 * @description
 	 *
 	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
 	const hasLoader = computed(() => {
-		return slots.loader || !!props.loading
+		return slots.loader || loaderConfig.value.isActive
 	})
 
 	/*********************************************************
@@ -444,10 +465,10 @@
 				'origam-field--reverse': props.reverse,
 				'origam-field--single-line': props.singleLine,
 				'origam-field--no-label': !hasLabel.value,
-				'origam-field--loading': props.loading,
 				'origam-text-field--prefixed': props.prefix,
 				'origam-text-field--suffixed': props.suffix
 			},
+			loaderClasses.value,
 			rtlClasses.value,
 			densityClasses.value,
 			focusClasses.value,
@@ -478,6 +499,32 @@
 >
 	.origam-field {
 		$this: &;
+
+		// Skeleton-mode replacement element. Sized to fill the field's
+		// content box so consumer code switching `loading` between values
+		// keeps a stable visual footprint.
+		&__skeleton {
+			width: 100%;
+			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 56px));
+			border-radius: var(--origam-field---rounded);
+			grid-column: 1 / -1;
+			grid-row: 1;
+		}
+
+		// Loader bar (line / circular kinds) — absolutely positioned at
+		// the bottom edge of the field. Pre-fix this rule was missing,
+		// so the wrapper rendered with `display: block` + 0 height and
+		// the inner `<origam-progress>` was clipped to invisibility.
+		&__loader {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: var(--origam-field__loader---height, 4px);
+			z-index: 1;
+			pointer-events: none;
+			grid-column: 1 / -1;
+		}
 
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";

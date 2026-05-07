@@ -450,6 +450,115 @@
 			</div>
 		</Variant>
 
+		<!-- ════════════ LOADING — interactive ════════════ -->
+		<Variant
+				title="Loading — interactive"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'line',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-card
+							:loading="resolveCardLoading(state)"
+							title="Interactive loading card"
+							subtitle="Subtitle"
+							text="Body text for the card demo."
+							image="https://picsum.photos/seed/interactive/400/200"
+							data-cy="card-loading-interactive"
+					/>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeCardLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<!--
+			Card defaultKind = 'line'. Each fixture uses a consistent card
+			composition (title + subtitle + text + image) so the loading
+			overlay renders against a realistic card body.
+			The skeleton fixture replaces the entire card body — the header,
+			asset, and footer should NOT be rendered when kind='skeleton'.
+		-->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={true}</code>
+					<origam-card
+							loading
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-bool"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code style="min-width: 240px;">loading={42}</code>
+					<origam-card
+							:loading="42"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-number"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<origam-card
+							:loading="{ type: 'line' }"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-line"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<origam-card
+							:loading="{ type: 'circular', size: 16 }"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-circular-override"
+					/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<origam-card
+							:loading="{ type: 'skeleton' }"
+							title="Loading card"
+							subtitle="Loading content"
+							text="Body text"
+							image="https://picsum.photos/seed/loading/400/200"
+							data-cy="card-loading-skeleton"
+					/>
+				</div>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -504,6 +613,7 @@
 		IDensityProps,
 		IRoundedProps
 	} from '@origam/interfaces'
+	import type { TLoadingValue } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
@@ -513,6 +623,28 @@
 		intentList,
 		roundedList
 	} from '@stories/const'
+
+	interface ILoadingState {
+		enabled: boolean
+		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		progress: number
+		circularSize: number
+	}
+
+	const resolveCardLoading = (state: ILoadingState): TLoadingValue => {
+		if (!state.enabled) return false
+		if (state.kind === 'bool') return true
+		if (state.kind === 'number') return state.progress
+		if (state.kind === 'line') return { type: 'line' }
+		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
+		if (state.kind === 'skeleton') return { type: 'skeleton' }
+		return false
+	}
+
+	const describeCardLoading = (state: ILoadingState): string => {
+		const v = resolveCardLoading(state)
+		return JSON.stringify(v, null, 2)
+	}
 </script>
 
 <docs lang="md" src="@docs/components/Card/OrigamCard.md"/>

@@ -9,6 +9,23 @@
 				class="origam-expansion-panel__shadow"
 		/>
 
+		<template v-if="hasLoading">
+			<slot name="loader">
+				<div class="origam-expansion-panel__loader">
+					<origam-progress
+							v-if="loaderConfig.kind !== 'skeleton'"
+							:active="true"
+							:indeterminate="loaderConfig.indeterminate"
+							:model-value="loaderConfig.modelValue"
+							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+							:class="['origam-expansion-panel__progress', `origam-expansion-panel__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+							thickness="4"
+							v-bind="loaderConfig.overrides"
+					/>
+				</div>
+			</slot>
+		</template>
+
 		<template v-if="hasHeader">
 			<slot
 					name="header"
@@ -85,7 +102,7 @@
 		setup
 >
 	import { computed, provide, ref, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader } from '../../components'
+	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useBorder,
@@ -94,6 +111,7 @@
 		useDensity,
 		useElevation,
 		useGroupItem,
+		useLoader,
 		useMargin,
 		usePadding,
 		useProps,
@@ -101,6 +119,8 @@
 	} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+
+	import { PROGRESS_TYPE } from '../../enums'
 
 	import type { IExpansionPanelProps } from '../../interfaces'
 
@@ -131,6 +151,7 @@
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 
 	const isDisabled = computed(() => {
 		return groupItem?.disabled.value || props.disabled
@@ -169,6 +190,9 @@
 		provide(ORIGAM_EXPANSION_PANEL_KEY, groupItem)
 	}
 
+	const hasLoading = computed(() => {
+		return slots.loader || loaderConfig.value.isActive
+	})
 	const hasContent = computed(() => {
 		return slots.content || !!props.content
 	})
@@ -204,6 +228,7 @@
 				'origam-expansion-panel--after-active': isAfterSelected.value,
 				'origam-expansion-panel--disabled': isDisabled.value
 			},
+			loaderClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

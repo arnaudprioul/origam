@@ -154,6 +154,68 @@
 			</origam-expansion-panels>
 		</Variant>
 
+		<!-- ════════════ LOADING — interactive ════════════ -->
+		<Variant
+				title="Loading — interactive"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'line',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-expansion-panels :model-value="[0]" multiple>
+						<origam-expansion-panel
+								:loading="resolveEpLoading(state)"
+								title="Interactive loading panel"
+								content="Panel body content goes here."
+								data-cy="ep-loading-interactive"
+						/>
+					</origam-expansion-panels>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeEpLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ════════════ LOADING SHAPES ════════════ -->
+		<Variant title="Loading shapes">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel loading title="loading={true}" content="Loading panel content here." data-cy="ep-loading-bool"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="42" title="loading={42}" content="Loading panel content here." data-cy="ep-loading-number"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="{ type: 'line' }" title="loading={ type: 'line' }" content="Loading panel content here." data-cy="ep-loading-line"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="{ type: 'circular' }" title="loading={ type: 'circular' }" content="Loading panel content here." data-cy="ep-loading-circular"/>
+				</origam-expansion-panels>
+				<origam-expansion-panels :model-value="[0]" multiple>
+					<origam-expansion-panel :loading="{ type: 'skeleton' }" title="loading={ type: 'skeleton' }" data-cy="ep-loading-skeleton"/>
+				</origam-expansion-panels>
+			</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -207,8 +269,30 @@
 		IExpansionPanelProps,
 		IRoundedProps
 	} from '@origam/interfaces'
-	import type { TIcon } from '@origam/types'
+	import type { TIcon, TLoadingValue } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { densityList, iconList, intentList, roundedList } from '@stories/const'
+
+	interface ILoadingState {
+		enabled: boolean
+		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		progress: number
+		circularSize: number
+	}
+
+	const resolveEpLoading = (state: ILoadingState): TLoadingValue => {
+		if (!state.enabled) return false
+		if (state.kind === 'bool') return true
+		if (state.kind === 'number') return state.progress
+		if (state.kind === 'line') return { type: 'line' }
+		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
+		if (state.kind === 'skeleton') return { type: 'skeleton' }
+		return false
+	}
+
+	const describeEpLoading = (state: ILoadingState): string => {
+		const v = resolveEpLoading(state)
+		return JSON.stringify(v, null, 2)
+	}
 </script>

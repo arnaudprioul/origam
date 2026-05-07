@@ -105,6 +105,86 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
         await btn.click()
     })
 
+    test.describe('Loading shapes', () => {
+        // Navigate once and reuse the variant for all assertions in sub-tests
+        // by relying on the `page` fixture scoped to the describe block.
+
+        test('loading=true → default kind circular renderer present', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-loading-bool"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+            // Btn defaultKind = 'circular' → the circular progress must be mounted
+            await expect(btn.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+        })
+
+        test('loading=42 → determinate circular progress mounted', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-loading-number"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+            // Number input → defaultKind circular, determinate
+            await expect(btn.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+            // The btn must carry the loading modifier class
+            await expect(btn).toHaveClass(/origam-btn--loading/)
+        })
+
+        test('loading={ type: "line" } → linear progress mounted', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-loading-line"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+            await expect(btn.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+        })
+
+        test('loading={ type: "circular", size: 16 } → override prop honored', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-loading-circular-override"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+            // The circular progress must be present (kind = circular)
+            const progress = btn.locator('.origam-progress--circular')
+            await expect(progress).toBeAttached({ timeout: 5000 })
+            // size=16 override → progress element width should be ≤ 20px
+            const width = await progress.evaluate(el => (el as HTMLElement).offsetWidth)
+            expect(width).toBeLessThanOrEqual(20)
+        })
+
+        test('loading={ type: "skeleton" } → origam-skeleton mounted, content hidden', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-loading-skeleton"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+            // Skeleton renderer is mounted
+            await expect(btn.locator('.origam-skeleton')).toBeAttached({ timeout: 5000 })
+            // The btn content opacity becomes 0 during loading (SCSS rule)
+            const contentOpacity = await btn.locator('.origam-btn__content').evaluate(
+                el => getComputedStyle(el as HTMLElement).opacity
+            )
+            expect(Number(contentOpacity)).toBeLessThan(0.1)
+        })
+    })
+
     test.fixme('Visual regression — Variant grid — no baseline yet', async ({ page }) => {
         // This test requires a committed screenshot baseline to compare against.
         // Run `npx playwright test --update-snapshots` once to create the
