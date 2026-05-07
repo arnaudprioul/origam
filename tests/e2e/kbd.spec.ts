@@ -10,6 +10,10 @@ import { expect, test, type Page } from '@playwright/test'
  *   - variant="filled" adds the --variant-filled modifier class
  *   - size prop changes the computed font-size on the element
  *   - slot default override takes precedence over the text prop
+ *
+ * Current Variant titles in OrigamKbd.story.vue:
+ *   "Basic usage", "Showcase — Keyboard shortcuts", "Variant", "Color",
+ *   "Size", "Rounded", "Border", "Separator", "Slot — default", "Playground"
  */
 
 const STORY = '/story/stories-components-stories-kbd-origamkbd-story-vue'
@@ -20,18 +24,19 @@ const sandboxOf = (page: Page) =>
 const openVariant = async (page: Page, variant: string) => {
     await page.goto(STORY)
     await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
+    await page.getByRole('link', { name: variant, exact: true }).click()
     await page.waitForTimeout(800)
 }
 
-// ─── Default ────────────────────────────────────────────────────────────────
+// ─── Default (single key) ────────────────────────────────────────────────────
+// Maps to "Basic usage" variant, data-cy="kbd-basic-single"
 
 test.describe('OrigamKbd — default', () => {
     test('renders a <kbd> element with the origam-kbd class', async ({ page }) => {
-        await openVariant(page, 'Default')
+        await openVariant(page, 'Basic usage')
         const sandbox = sandboxOf(page)
 
-        const kbd = sandbox.locator('[data-cy="kbd-default"]').first()
+        const kbd = sandbox.locator('[data-cy="kbd-basic-single"]').first()
         await expect(kbd).toBeVisible({ timeout: 8000 })
 
         const tagName = await kbd.evaluate(el => el.tagName.toLowerCase())
@@ -42,23 +47,24 @@ test.describe('OrigamKbd — default', () => {
     })
 
     test('renders the text prop content', async ({ page }) => {
-        await openVariant(page, 'Default')
+        await openVariant(page, 'Basic usage')
         const sandbox = sandboxOf(page)
 
-        const kbd = sandbox.locator('[data-cy="kbd-default"]').first()
+        const kbd = sandbox.locator('[data-cy="kbd-basic-single"]').first()
         await expect(kbd).toBeVisible({ timeout: 8000 })
         await expect(kbd).toContainText('⌘')
     })
 })
 
 // ─── Combination ─────────────────────────────────────────────────────────────
+// Maps to "Basic usage" variant, data-cy="kbd-basic-combination"
 
 test.describe('OrigamKbd — combination', () => {
     test('renders multiple nested <kbd> elements joined by separator', async ({ page }) => {
-        await openVariant(page, 'Combination')
+        await openVariant(page, 'Basic usage')
         const sandbox = sandboxOf(page)
 
-        const parent = sandbox.locator('[data-cy="kbd-combination"]').first()
+        const parent = sandbox.locator('[data-cy="kbd-basic-combination"]').first()
         await expect(parent).toBeVisible({ timeout: 8000 })
 
         // Should contain 3 nested <kbd> (Ctrl, Shift, Z)
@@ -91,7 +97,7 @@ test.describe('OrigamKbd — variant', () => {
         expect(cls).toContain('origam-kbd--variant-outlined')
     })
 
-    test('variant="filled" adds the --variant-filled modifier class and box-shadow', async ({ page }) => {
+    test('variant="filled" adds the --variant-filled modifier class and key box-shadow', async ({ page }) => {
         await openVariant(page, 'Variant')
         const sandbox = sandboxOf(page)
 
@@ -101,8 +107,12 @@ test.describe('OrigamKbd — variant', () => {
         const cls = await kbd.evaluate(el => el.className)
         expect(cls).toContain('origam-kbd--variant-filled')
 
-        // Filled variant must have a non-none box-shadow (key embossing)
-        const shadow = await kbd.evaluate(el => getComputedStyle(el).boxShadow)
+        // kbd-variant-filled is a combination kbd: the outer wrapper resets box-shadow
+        // to transparent for the shell, while each inner __key carries the filled
+        // box-shadow. Assert on the first inner key instead of the outer wrapper.
+        const firstKey = kbd.locator('kbd.origam-kbd__key').first()
+        await expect(firstKey).toBeVisible()
+        const shadow = await firstKey.evaluate(el => getComputedStyle(el).boxShadow)
         expect(shadow).not.toBe('none')
     })
 

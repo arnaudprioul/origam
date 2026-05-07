@@ -10,9 +10,17 @@ test.describe('OrigamConfirmWrapper', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const wrapper = sandbox.locator('[data-cy="confirm-wrapper-default"]')
-		await expect(wrapper).toBeVisible({ timeout: 5000 })
-		await expect(wrapper).toHaveClass(/origam-confirm-wrapper/)
+		// `confirm-wrapper-default` is the OUTER fixture <div> with
+		// padding/max-width — the OrigamConfirmWrapper sits inside it
+		// and carries the data-cy `confirm-wrapper-default-input`. Assert
+		// the wrapper class on the actual component, not on the styling
+		// container (which has no class). Pre-fix the test asserted the
+		// class on the outer div and only ever passed by mistake when
+		// the suite was first written.
+		const fixture = sandbox.locator('[data-cy="confirm-wrapper-default"]')
+		await expect(fixture).toBeVisible({ timeout: 5000 })
+		const wrapper = sandbox.locator('[data-cy="confirm-wrapper-default-input"]')
+		await expect(wrapper).toHaveClass(/origam-confirm-wrapper/, { timeout: 3000 })
 	})
 
 	test('Direction — wrapper renders with direction variant', async ({ page }) => {
@@ -103,8 +111,11 @@ test.describe('OrigamConfirmWrapper', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const wrapper = sandbox.locator('[data-cy="confirm-wrapper-playground"]')
-		await expect(wrapper).toBeVisible({ timeout: 5000 })
-		await expect(wrapper).toHaveClass(/origam-confirm-wrapper/)
+		const fixture = sandbox.locator('[data-cy="confirm-wrapper-playground"]')
+		await expect(fixture).toBeVisible({ timeout: 5000 })
+		// Assert the class on the actual OrigamConfirmWrapper, not on
+		// the outer fixture <div>. See note in `Default` test above.
+		const wrapper = sandbox.locator('[data-cy="confirm-wrapper-playground-input"]')
+		await expect(wrapper).toHaveClass(/origam-confirm-wrapper/, { timeout: 3000 })
 	})
 })

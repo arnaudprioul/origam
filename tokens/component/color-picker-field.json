@@ -4,8 +4,8 @@
     "min-width":  { "$type": "dimension", "$value": "200px" },
 
     "swatch": {
-      "width":         { "$type": "dimension", "$value": "20px" },
-      "height":        { "$type": "dimension", "$value": "20px" },
+      "width":         { "$type": "dimension", "$value": "24px" },
+      "height":        { "$type": "dimension", "$value": "24px" },
       "border-radius": { "$type": "dimension", "$value": "{radius.sm}" },
       "border-color":  { "$type": "color",     "$value": "{color.border.subtle}" },
       "border-width":  { "$type": "dimension", "$value": "{border.width.thin}" }

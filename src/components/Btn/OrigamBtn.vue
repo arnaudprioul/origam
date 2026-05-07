@@ -924,6 +924,20 @@
 			--origam-btn---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-btn---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-btn---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-btn---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-btn---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
+		}
+
 		// __loader BEM block (base layout) was moved next to the BEM
 		// children below — see `&__loader` further down. The base rule had
 		// to live AFTER the modifier blocks (`&--stacked`, `&--loading`,

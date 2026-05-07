@@ -167,6 +167,20 @@
 			--origam-sheet---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-sheet---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-sheet---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-sheet---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-sheet---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
+		}
+
 		&--absolute {
 			--origam-sheet---position: absolute;
 		}

@@ -249,3 +249,51 @@ test.describe('OrigamChip — draggable', () => {
         expect(draggable).toBe('true')
     })
 })
+
+test.describe('OrigamChip — rounded shaped / shaped-invert', () => {
+    test('shaped — TL and BR are rounded, TR and BL are 0', async ({ page }) => {
+        await openVariant(page, STORY, 'Rounded')
+        const sandbox = sandboxOf(page)
+
+        const chip = sandbox.locator('[data-cy="chip-rounded-shaped"]')
+        await expect(chip).toBeVisible({ timeout: 5000 })
+
+        const radii = await chip.evaluate(el => {
+            const cs = getComputedStyle(el as HTMLElement)
+            return {
+                tl: cs.borderTopLeftRadius,
+                tr: cs.borderTopRightRadius,
+                br: cs.borderBottomRightRadius,
+                bl: cs.borderBottomLeftRadius
+            }
+        })
+        expect(radii.tl, 'top-left should be rounded').not.toBe('0px')
+        expect(radii.br, 'bottom-right should be rounded').not.toBe('0px')
+        expect(radii.tr, 'top-right should be 0').toBe('0px')
+        expect(radii.bl, 'bottom-left should be 0').toBe('0px')
+        expect(radii.tl).toBe(radii.br)
+    })
+
+    test('shaped-invert — TR and BL are rounded, TL and BR are 0', async ({ page }) => {
+        await openVariant(page, STORY, 'Rounded')
+        const sandbox = sandboxOf(page)
+
+        const chip = sandbox.locator('[data-cy="chip-rounded-shaped-invert"]')
+        await expect(chip).toBeVisible({ timeout: 5000 })
+
+        const radii = await chip.evaluate(el => {
+            const cs = getComputedStyle(el as HTMLElement)
+            return {
+                tl: cs.borderTopLeftRadius,
+                tr: cs.borderTopRightRadius,
+                br: cs.borderBottomRightRadius,
+                bl: cs.borderBottomLeftRadius
+            }
+        })
+        expect(radii.tr, 'top-right should be rounded').not.toBe('0px')
+        expect(radii.bl, 'bottom-left should be rounded').not.toBe('0px')
+        expect(radii.tl, 'top-left should be 0').toBe('0px')
+        expect(radii.br, 'bottom-right should be 0').toBe('0px')
+        expect(radii.tr).toBe(radii.bl)
+    })
+})

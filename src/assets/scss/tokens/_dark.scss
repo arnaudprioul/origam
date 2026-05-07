@@ -944,6 +944,8 @@
   --origam-number-field__decrement---color-disabled: #525252;
   --origam-number-field__decrement---cursor: pointer;
   --origam-number-field__decrement---cursor-disabled: not-allowed;
+  --origam-number-field__compact---gap: 8px;
+  --origam-number-field__compact---input-width: 3em;
   --origam-otp-input-field---background-color: #0a0a0a;
   --origam-otp-input-field---color: #fafafa;
   --origam-otp-input-field---border-radius: 4px;
@@ -1264,6 +1266,11 @@
   --origam-dialog---max-height: calc(100% - 48px);
   --origam-dialog---z-index: 1050;
   --origam-dialog---box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12);
+  --origam-dialog---width-xs: 320px;
+  --origam-dialog---width-sm: 400px;
+  --origam-dialog---width-md: 720px;
+  --origam-dialog---width-lg: 960px;
+  --origam-dialog---width-xl: 1080px;
   --origam-dialog---transition-duration: 200ms;
   --origam-dialog---transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   --origam-dialog__header---padding: 16px;
@@ -1955,8 +1962,8 @@
   --origam-color-picker---alpha-slider-height: 12px;
   --origam-color-picker---alpha-slider-border-radius: 9999px;
   --origam-color-picker-field---min-width: 200px;
-  --origam-color-picker-field__swatch---width: 20px;
-  --origam-color-picker-field__swatch---height: 20px;
+  --origam-color-picker-field__swatch---width: 24px;
+  --origam-color-picker-field__swatch---height: 24px;
   --origam-color-picker-field__swatch---border-radius: 4px;
   --origam-color-picker-field__swatch---border-color: #262626;
   --origam-color-picker-field__swatch---border-width: 1px;

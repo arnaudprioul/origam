@@ -151,7 +151,7 @@
 >
 	import { computed, mergeProps, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
 	import { OrigamBtn, OrigamCard, OrigamIcon, OrigamOverlay, OrigamTranslateScale } from '../../components'
-	import { useProps, useScopeId, useStatus, useVModel } from '../../composables'
+	import { useProps, useScopeId, useSize, useStatus, useVModel } from '../../composables'
 	import { IN_BROWSER } from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { MDI_ICONS } from '../../enums'
@@ -184,6 +184,7 @@
 	const {scopeId} = useScopeId()
 	const slots = useSlots()
 	const {icon, statusClasses} = useStatus(props)
+	const {sizeClasses} = useSize(props, 'origam-dialog')
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 	const origamCardRef = ref<TOrigamCard>()
@@ -279,6 +280,7 @@
 				'origam-dialog--fullscreen': props.fullscreen,
 				'origam-dialog--scrollable': props.scrollable
 			},
+			sizeClasses.value,
 			statusClasses.value,
 			props.class
 		]
@@ -300,10 +302,24 @@
 		justify-content: center;
 		margin: auto;
 
+		&--size-x-small  { --origam-dialog---width: var(--origam-dialog---width-xs, 320px); }
+		&--size-small    { --origam-dialog---width: var(--origam-dialog---width-sm, 400px); }
+		&--size-default  { --origam-dialog---width: var(--origam-dialog---width-md, 720px); }
+		&--size-large    { --origam-dialog---width: var(--origam-dialog---width-lg, 960px); }
+		&--size-x-large  { --origam-dialog---width: var(--origam-dialog---width-xl, 1080px); }
+
 		> :deep(.origam-overlay__content) {
-			max-height: var(--origam-dialog---max-height, calc(100% - 48px));
-			width: calc(100% - 48px);
-			max-width: var(--origam-dialog---max-width, calc(100% - 48px));
+			// Mobile-safety clamps use VIEWPORT units (vw/vh) instead of `%`
+			// so the dialog respects its declared size even when it teleports
+			// into a constrained parent (Histoire iframe sandbox, portaled
+			// container that hasn't reached body root, …). The
+			// `calc(100vw - 48px)` math still leaves a 24-px gutter on each
+			// side for narrow screens, but a 1080-px xl dialog rendered on a
+			// 1600-px viewport no longer clamps to "100% of the iframe
+			// parent" (which was 720 px in the Histoire sandbox).
+			max-height: var(--origam-dialog---max-height, calc(100vh - 48px));
+			width: min(var(--origam-dialog---width, auto), calc(100vw - 48px));
+			max-width: var(--origam-dialog---max-width, calc(100vw - 48px));
 			margin: 24px;
 			border-radius: var(--origam-dialog---border-radius, 12px);
 			box-shadow: var(--origam-dialog---box-shadow);
@@ -331,14 +347,19 @@
 		}
 
 		&--fullscreen {
+			--origam-dialog---width: 100vw;
+			--origam-dialog---max-width: 100vw;
+			--origam-dialog---max-height: 100vh;
+			--origam-dialog---border-radius: 0;
+
 			> :deep(.origam-overlay__content) {
-				border-radius: var(--origam-dialog__fullscreen---border-radius, 0px);
+				border-radius: var(--origam-dialog---border-radius, 0px);
 				margin: 0;
 				padding: 0;
 				width: 100%;
 				height: 100%;
-				max-width: var(--origam-dialog__fullscreen---max-width, 100%);
-				max-height: var(--origam-dialog__fullscreen---max-height, 100%);
+				max-width: var(--origam-dialog---max-width, 100%);
+				max-height: var(--origam-dialog---max-height, 100%);
 				overflow-y: auto;
 				top: 0;
 				left: 0;

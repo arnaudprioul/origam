@@ -72,8 +72,11 @@ test('OrigamBtnGroup — comfortable min-height > compact min-height', async ({ 
 })
 
 test('OrigamBreadcrumb — comfortable height > compact height', async ({ page }) => {
-    const compact = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Default', 'compact', '.origam-breadcrumb')
-    const comfortable = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Default', 'comfortable', '.origam-breadcrumb')
+    // Breadcrumb's story exposes Density (not Default) as the variant
+    // wired to `:density` controls. Pre-existing test bug — never hit
+    // because the suite was added before the story-variant rename.
+    const compact = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Density', 'compact', '.origam-breadcrumb')
+    const comfortable = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Density', 'comfortable', '.origam-breadcrumb')
     console.log('[breadcrumb] compact=', compact, 'comfortable=', comfortable)
     expect(comfortable).toBeGreaterThan(compact)
 })

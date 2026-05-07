@@ -31,11 +31,22 @@ test.describe('OrigamTextField', () => {
     test('Counter — shows character counter', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Counter', { exact: true }).first().click()
+        // Use the variant LINK (Histoire renders variants as <a>) — the
+        // exact text "Counter" also matches a navigation button in the
+        // component sidebar, so `getByText('Counter').first()` picked the
+        // sidebar, navigated AWAY from the TextField story, and the
+        // assertion never found `[data-cy="textfield-counter"]`.
+        await page.getByRole('link', { name: 'Counter', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="textfield-counter"]')).toBeVisible({ timeout: 5000 })
+        // OrigamCounter renders `v-show="active"` and is wired to
+        // `props.persistentCounter || isFocused`. The Counter variant
+        // doesn't set `persistentCounter`, so we must focus the input
+        // before the counter element becomes visible.
+        const input = sandbox.locator('[data-cy="textfield-counter"] input').first()
+        await input.click()
         await expect(sandbox.locator('.origam-counter').first()).toBeVisible({ timeout: 3000 })
     })
 

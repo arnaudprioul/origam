@@ -51,6 +51,95 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ SIZES ════════════ -->
+		<Variant title="Sizes">
+			<div style="padding: 16px; display: flex; flex-wrap: wrap; gap: 8px;" data-cy="dialog-sizes-host">
+				<origam-dialog v-model="sizeXsOpen" size="x-small" title="xs · 320px">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="xs · 320" data-cy="dialog-size-xs-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Size x-small — 320px</p>
+					</template>
+					<template #footer>
+						<div style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" data-cy="dialog-size-xs-close" @click="sizeXsOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+
+				<origam-dialog v-model="sizeSmOpen" size="small" title="sm · 400px">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="sm · 400" data-cy="dialog-size-sm-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Size small — 400px</p>
+					</template>
+					<template #footer>
+						<div style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" data-cy="dialog-size-sm-close" @click="sizeSmOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+
+				<origam-dialog v-model="sizeMdOpen" size="default" title="md · 720px">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="md · 720" data-cy="dialog-size-md-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Size default — 720px</p>
+					</template>
+					<template #footer>
+						<div style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" data-cy="dialog-size-md-close" @click="sizeMdOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+
+				<origam-dialog v-model="sizeLgOpen" size="large" title="lg · 960px">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="lg · 960" data-cy="dialog-size-lg-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Size large — 960px</p>
+					</template>
+					<template #footer>
+						<div style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" data-cy="dialog-size-lg-close" @click="sizeLgOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+
+				<origam-dialog v-model="sizeXlOpen" size="x-large" title="xl · 1080px">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="xl · 1080" data-cy="dialog-size-xl-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Size x-large — 1080px</p>
+					</template>
+					<template #footer>
+						<div style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" data-cy="dialog-size-xl-close" @click="sizeXlOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+
+				<origam-dialog v-model="sizeFsOpen" :fullscreen="true" title="fullscreen">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="fullscreen" data-cy="dialog-size-fs-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Fullscreen — 100vw × 100vh</p>
+					</template>
+					<template #footer>
+						<div style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" data-cy="dialog-size-fs-close" @click="sizeFsOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
 		<!-- ════════════ SCROLLABLE ════════════ -->
 		<Variant title="Scrollable">
 			<div style="padding: 16px;" data-cy="dialog-scrollable-host">
@@ -242,6 +331,12 @@
 	const emitOpen = ref(false)
 	const emitOutsideOpen = ref(false)
 	const playgroundOpen = ref(false)
+	const sizeXsOpen = ref(false)
+	const sizeSmOpen = ref(false)
+	const sizeMdOpen = ref(false)
+	const sizeLgOpen = ref(false)
+	const sizeXlOpen = ref(false)
+	const sizeFsOpen = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Dialog/OrigamDialog.md"/>

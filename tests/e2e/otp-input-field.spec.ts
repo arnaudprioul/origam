@@ -6,13 +6,14 @@ test.describe('OrigamOtpInputField', () => {
     test('Length — renders 6 input cells by default', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Length', { exact: true }).first().click()
+        await page.getByRole('link', { name: 'Length', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="otp-length"]')).toBeVisible({ timeout: 5000 })
-        // 6 individual inputs
-        const inputs = sandbox.locator('[data-cy="otp-length"] input')
+        // 6 individual visible cell inputs + 1 hidden consolidation input = 7 total.
+        // Assert on the visible cells only (excluding the hidden input used for form submission).
+        const inputs = sandbox.locator('[data-cy="otp-length"] input:not([type=hidden])')
         await expect(inputs).toHaveCount(6, { timeout: 5000 })
     })
 
@@ -29,7 +30,7 @@ test.describe('OrigamOtpInputField', () => {
     test('Divider — divider character appears between cells', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Divider', { exact: true }).first().click()
+        await page.getByRole('link', { name: 'Divider', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -22,7 +22,9 @@ const openVariant = async (page: Page, variant: string) => {
 }
 
 test('Default variant: BottomNav width === sandbox viewport width (no overflow)', async ({ page }) => {
-    await openVariant(page, 'Default')
+    // BottomNav story has no "Default" variant; use Color (the first
+    // variant) which renders a vanilla nav at full width.
+    await openVariant(page, 'Color')
     const sandbox = sandboxOf(page)
     const nav = sandbox.locator('.origam-bottom-nav').first()
     await expect(nav).toBeVisible({ timeout: 8000 })
@@ -44,8 +46,8 @@ test('Default variant: BottomNav has bottom:0 / left:0 / width:100% computed', a
     // initial containing block, which the iframe's reported body
     // dimensions don't always match). Instead pin the contract at the
     // CSS level: the computed style must include the defaults we just
-    // added to the SCSS.
-    await openVariant(page, 'Default')
+    // added to the SCSS. (Variant "Default" doesn't exist; use Color.)
+    await openVariant(page, 'Color')
     const sandbox = sandboxOf(page)
     const nav = sandbox.locator('.origam-bottom-nav').first()
     await expect(nav).toBeVisible({ timeout: 8000 })

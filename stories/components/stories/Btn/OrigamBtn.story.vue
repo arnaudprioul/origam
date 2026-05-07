@@ -145,11 +145,13 @@
 					<origam-btn :rounded="state.rounded" text="Button" data-cy="btn-rounded"/>
 
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px; align-items: center;">
-						<origam-btn text="default"     data-cy="btn-rounded-default"/>
-						<origam-btn :rounded="0"       text="0"      data-cy="btn-rounded-0"/>
-						<origam-btn rounded="sm"       text="sm"     data-cy="btn-rounded-sm"/>
-						<origam-btn rounded="lg"       text="lg"     data-cy="btn-rounded-lg"/>
-						<origam-btn rounded="circle"   text="●"      data-cy="btn-rounded-circle"/>
+						<origam-btn text="default"                   data-cy="btn-rounded-default"/>
+						<origam-btn :rounded="0"                     text="0"              data-cy="btn-rounded-0"/>
+						<origam-btn rounded="sm"                     text="sm"             data-cy="btn-rounded-sm"/>
+						<origam-btn rounded="lg"                     text="lg"             data-cy="btn-rounded-lg"/>
+						<origam-btn rounded="circle"                 text="●"              data-cy="btn-rounded-circle"/>
+						<origam-btn rounded="shaped"                 text="Shaped"         data-cy="btn-rounded-shaped"/>
+						<origam-btn rounded="shaped-invert"          text="Shaped Invert"  data-cy="btn-rounded-shaped-invert"/>
 					</div>
 				</div>
 			</template>

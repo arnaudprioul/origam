@@ -237,6 +237,8 @@
 						<small>Showcase fixtures:</small>
 						<origam-card title='rounded={false} (default)' data-cy="card-rounded-default"/>
 						<origam-card title='rounded={true}' :rounded="true" data-cy="card-rounded-true"/>
+						<origam-card title='Shaped (TL+BR)' rounded="shaped" data-cy="card-rounded-shaped"/>
+						<origam-card title='Shaped Invert (TR+BL)' rounded="shaped-invert" data-cy="card-rounded-shaped-invert"/>
 					</div>
 				</div>
 			</template>

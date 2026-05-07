@@ -166,7 +166,7 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
             expect(width).toBeLessThanOrEqual(20)
         })
 
-        test('loading={ type: "skeleton" } → origam-skeleton mounted, content hidden', async ({ page }) => {
+        test('loading={ type: "skeleton" } → origam-skeleton mounted, content unmounted', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
             await page.getByText('Loading shapes', { exact: true }).first().click()
@@ -177,11 +177,67 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
             await expect(btn).toBeVisible({ timeout: 5000 })
             // Skeleton renderer is mounted
             await expect(btn.locator('.origam-skeleton')).toBeAttached({ timeout: 5000 })
-            // The btn content opacity becomes 0 during loading (SCSS rule)
-            const contentOpacity = await btn.locator('.origam-btn__content').evaluate(
-                el => getComputedStyle(el as HTMLElement).opacity
-            )
-            expect(Number(contentOpacity)).toBeLessThan(0.1)
+            // OrigamLoader's template is `<template v-if="isLoading">…<template
+            // v-else>…`: during skeleton loading the loader slot REPLACES the
+            // default slot, so `.origam-btn__content` is unmounted (not just
+            // hidden via opacity). Assert detachment, not opacity.
+            await expect(btn.locator('.origam-btn__content')).not.toBeAttached({ timeout: 3000 })
+        })
+    })
+
+    test.describe('Rounded — shaped / shaped-invert corner asymmetry', () => {
+        test('shaped — TL and BR are rounded, TR and BL are 0', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Rounded', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-rounded-shaped"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+
+            const radii = await btn.evaluate(el => {
+                const cs = getComputedStyle(el as HTMLElement)
+                return {
+                    tl: cs.borderTopLeftRadius,
+                    tr: cs.borderTopRightRadius,
+                    br: cs.borderBottomRightRadius,
+                    bl: cs.borderBottomLeftRadius
+                }
+            })
+            expect(radii.tl, 'top-left should be rounded').not.toBe('0px')
+            expect(radii.br, 'bottom-right should be rounded').not.toBe('0px')
+            expect(radii.tr, 'top-right should be 0').toBe('0px')
+            expect(radii.bl, 'bottom-left should be 0').toBe('0px')
+            // TL and BR should be equal (symmetric shaped)
+            expect(radii.tl).toBe(radii.br)
+        })
+
+        test('shaped-invert — TR and BL are rounded, TL and BR are 0', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Rounded', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-rounded-shaped-invert"]')
+            await expect(btn).toBeVisible({ timeout: 5000 })
+
+            const radii = await btn.evaluate(el => {
+                const cs = getComputedStyle(el as HTMLElement)
+                return {
+                    tl: cs.borderTopLeftRadius,
+                    tr: cs.borderTopRightRadius,
+                    br: cs.borderBottomRightRadius,
+                    bl: cs.borderBottomLeftRadius
+                }
+            })
+            expect(radii.tr, 'top-right should be rounded').not.toBe('0px')
+            expect(radii.bl, 'bottom-left should be rounded').not.toBe('0px')
+            expect(radii.tl, 'top-left should be 0').toBe('0px')
+            expect(radii.br, 'bottom-right should be 0').toBe('0px')
+            // TR and BL should be equal (symmetric shaped-invert)
+            expect(radii.tr).toBe(radii.bl)
         })
     })
 

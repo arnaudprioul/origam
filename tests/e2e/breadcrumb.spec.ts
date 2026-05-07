@@ -131,6 +131,11 @@ test.describe('OrigamBreadcrumb — Slot: default', () => {
     test('renders OrigamBreadcrumbDivider children in the default slot', async ({ page }) => {
         await openVariant(page, 'Slot — default')
         const sandbox = sandboxOf(page)
+        // Wait for the variant root to mount before counting children —
+        // `.count()` does NOT auto-retry like `expect()`, so without this
+        // gate the assertion runs while the previous variant's DOM is
+        // still in place and returns 0.
+        await expect(sandbox.locator('[data-cy="breadcrumb-slot-default"]').first()).toBeVisible({ timeout: 8000 })
         const dividers = await sandbox.locator('[data-cy^="breadcrumb-slot-div"]').count()
         expect(dividers).toBeGreaterThanOrEqual(2)
     })

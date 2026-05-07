@@ -103,7 +103,11 @@
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
 		>
 			<template #default="{ state }">
-				<origam-avatar :rounded="state.rounded" text="AP"/>
+				<div style="display: flex; gap: 12px; align-items: center; padding: 16px;">
+					<origam-avatar :rounded="state.rounded"      text="AP" data-cy="avatar-rounded"/>
+					<origam-avatar rounded="shaped"              text="S"  data-cy="avatar-rounded-shaped"/>
+					<origam-avatar rounded="shaped-invert"       text="SI" data-cy="avatar-rounded-shaped-invert"/>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>

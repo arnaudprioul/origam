@@ -15,6 +15,10 @@ export const roundedList: Array<IOptions<TRounded | boolean | string>> = [
     { label: 'large (radius.xl / 16px)', value: ROUNDED.LARGE },
     { label: 'x-large (radius.2xl / 24px)', value: ROUNDED.X_LARGE },
 
+    // ── Asymmetric / diagonal ───────────────────────────────────
+    { label: 'Shaped (TL + BR rounded, diagonal)', value: ROUNDED.SHAPED },
+    { label: 'Shaped Invert (TR + BL rounded, diagonal)', value: ROUNDED.SHAPED_INVERT },
+
     // ── Free-form CSS escape hatches ────────────────────────────
     { label: 'Circled (9999px)', value: '9999px' },
     { label: 'Right Rounded', value: '0 4px 0 4px' },

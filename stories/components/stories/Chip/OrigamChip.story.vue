@@ -192,6 +192,23 @@
 			</origam-chip>
 		</Variant>
 
+		<!-- ════════════ ROUNDED ════════════ -->
+		<Variant
+				title="Rounded"
+				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 12px; align-items: center; padding: 16px; flex-wrap: wrap;">
+					<origam-chip :rounded="state.rounded" text="Interactive"     data-cy="chip-rounded"/>
+					<origam-chip rounded="shaped"         text="Shaped"          data-cy="chip-rounded-shaped"/>
+					<origam-chip rounded="shaped-invert"  text="Shaped Invert"   data-cy="chip-rounded-shaped-invert"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -244,6 +261,7 @@
 		IChipProps,
 		IColorProps,
 		IDensityProps,
+		IRoundedProps,
 		ISizeProps
 	} from '@origam/interfaces'
 

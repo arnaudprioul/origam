@@ -179,6 +179,30 @@
 			<div data-cy="numberfield-emit-inc-status">value = {{ emitIncModel }}</div>
 		</Variant>
 
+		<!-- ════════════ COMPACT ════════════ -->
+		<Variant
+				title="Compact"
+				:init-state="() => useStoryInitState<{ min: number, max: number, step: number }>({ min: 0, max: 99, step: 1 })"
+		>
+			<template #default="{ state }">
+				<origam-number-field
+						v-model="compactModel"
+						:min="state.min"
+						:max="state.max"
+						:step="state.step"
+						compact
+						label="Quantity"
+						data-cy="numberfield-compact"
+				/>
+				<div data-cy="numberfield-compact-status">value = {{ compactModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider v-model="state.min"  title="min"  :min="-100" :max="0"/>
+				<HstSlider v-model="state.max"  title="max"  :min="1"    :max="1000"/>
+				<HstSlider v-model="state.step" title="step" :min="1"    :max="50"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -193,6 +217,7 @@
 					precision: 0,
 					split: false,
 					hideControls: false,
+					compact: false,
 					disabled: false,
 					readonly: false,
 					error: false,
@@ -216,6 +241,7 @@
 				<HstSlider   v-model="state.step"         title="step"     :min="1"    :max="50"/>
 				<HstCheckbox v-model="state.split"        title="split"/>
 				<HstCheckbox v-model="state.hideControls" title="hideControls"/>
+				<HstCheckbox v-model="state.compact"      title="compact"/>
 				<HstCheckbox v-model="state.disabled"     title="disabled"/>
 				<HstCheckbox v-model="state.readonly"     title="readonly"/>
 				<HstCheckbox v-model="state.error"        title="error"/>
@@ -248,6 +274,7 @@
 	const statesModel     = ref<number | null>(0)
 	const emitModel       = ref<number | null>(0)
 	const emitIncModel    = ref<number | null>(0)
+	const compactModel    = ref<number | null>(3)
 	const playgroundModel = ref<number | null>(0)
 </script>
 

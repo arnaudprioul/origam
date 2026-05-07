@@ -1077,6 +1077,20 @@
 			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-xl, 14px);
 		}
 
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-field---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-field---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-field---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-field---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
+		}
+
 		@media (hover: hover) {
 			&:hover {
 				#{$this}__clearable {

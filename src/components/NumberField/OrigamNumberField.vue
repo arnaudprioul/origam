@@ -1,5 +1,43 @@
 <template>
+	<template v-if="props.compact">
+		<div
+				:class="compactClasses"
+				:style="numberFieldStyles"
+				role="group"
+				:aria-label="props.label"
+		>
+			<origam-btn
+					:icon="MDI_ICONS.MINUS"
+					:disabled="!canDecrease"
+					size="small"
+					data-cy="numberfield-compact-decrement"
+					aria-label="Decrement"
+					@click="handleCompactDecrement"
+			/>
+			<input
+					v-model="compactInputText"
+					type="text"
+					inputmode="numeric"
+					class="origam-number-field__compact-input"
+					:aria-label="props.label"
+					data-cy="numberfield-compact-input"
+					@blur="handleBlur"
+					@focus="handleFocus"
+					@beforeinput="handleBeforeInput"
+					@keydown="handleKeydown"
+			/>
+			<origam-btn
+					:icon="MDI_ICONS.PLUS"
+					:disabled="!canIncrease"
+					size="small"
+					data-cy="numberfield-compact-increment"
+					aria-label="Increment"
+					@click="handleCompactIncrement"
+			/>
+		</div>
+	</template>
 	<origam-text-field
+			v-else
 			ref="origamTextFieldRef"
 			v-model:model-value="inputText"
 			:class="numberFieldClasses"
@@ -241,6 +279,7 @@
 		rounded: true,
 		centerAffix: true,
 		split: false,
+		compact: false,
 		type: TEXT_FIELD_TYPE.NUMBER
 	})
 
@@ -555,6 +594,36 @@
 		] as StyleValue
 	})
 
+	// COMPACT MODE
+
+	const compactClasses = computed(() => {
+		return [
+			'origam-number-field',
+			'origam-number-field--compact',
+			props.class
+		]
+	})
+
+	const compactInputText = computed<string>({
+		get: () => model.value != null ? String(model.value) : '',
+		set (val: string) {
+			if (val === '') {
+				model.value = null
+			} else if (!isNaN(Number(val))) {
+				const clamped = clamp(Number(val), props.min, props.max)
+				model.value = clamped
+			}
+		}
+	})
+
+	const handleCompactIncrement = () => {
+		toggleUpDown(true)
+	}
+
+	const handleCompactDecrement = () => {
+		toggleUpDown(false)
+	}
+
 	defineExpose(forwardRefs({filterProps}, origamTextFieldRef))
 
 </script>
@@ -634,6 +703,25 @@
 			:deep(.origam-field__input) {
 				width: 0;
 				padding-inline: 0;
+			}
+		}
+
+		&--compact {
+			display: inline-flex;
+			align-items: center;
+			gap: var(--origam-number-field--compact---gap, 8px);
+
+			.origam-number-field__compact-input {
+				width: var(--origam-number-field--compact__input---width, 3em);
+				text-align: center;
+				font-variant-numeric: tabular-nums;
+				border: 0;
+				background: transparent;
+				padding: 0;
+				color: inherit;
+				font-size: inherit;
+				font-family: inherit;
+				outline: none;
 			}
 		}
 	}

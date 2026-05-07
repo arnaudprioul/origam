@@ -232,7 +232,19 @@
 		return slots.text || props.text != null
 	})
 	const hasLoading = computed(() => {
-		return slots.loader || loaderConfig.isActive
+		// `loaderConfig` is a `ComputedRef<IResolvedLoader>` from
+		// `useLoader`. In `<script setup>` JS the ref must be unwrapped via
+		// `.value` to read its fields — pre-fix this read `loaderConfig
+		// .isActive` (a property of the Ref object itself, always
+		// `undefined`) so `hasLoading` was permanently falsy and the
+		// `<template v-if="hasLoading">` block — including the
+		// `<origam-card__loader>` div with the linear/circular/skeleton
+		// renderer — never mounted. The Card was visually marked
+		// `origam-card--loading` (because `loaderClasses` does the
+		// auto-unwrap correctly) yet rendered no loader, breaking the
+		// "Loading shapes" e2e suite. Btn already uses the correct
+		// `loaderConfig.value.isActive` form.
+		return slots.loader || loaderConfig.value.isActive
 	})
 
 	// CLASS & STYLES
@@ -418,6 +430,20 @@
 			--origam-card---border-start-end-radius: var(--origam-card---border-radius-rounded, 4px);
 			--origam-card---border-end-end-radius: var(--origam-card---border-radius-rounded, 4px);
 			--origam-card---border-end-start-radius: var(--origam-card---border-radius-rounded, 4px);
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-card---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
 		}
 
 		&--absolute {

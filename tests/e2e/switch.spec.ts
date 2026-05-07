@@ -174,17 +174,26 @@ test.describe('OrigamSwitch', () => {
         test('loading={ type: "skeleton" } → origam-skeleton replaces the switch', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Loading shapes', { exact: true }).first().click()
+            await page.getByRole('link', { name: 'Loading shapes', exact: true }).click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const sw = sandbox.locator('[data-cy="switch-loading-skeleton"]')
-            await expect(sw).toBeVisible({ timeout: 5000 })
-            // Skeleton kind: the whole switch is replaced by origam-skeleton
-            // (v-if="isSkeletonLoading" at the root of OrigamSwitch template)
-            await expect(sw.locator('.origam-skeleton')).toBeAttached({ timeout: 5000 })
-            // The origam-input wrapper must NOT be rendered when skeleton is active
-            await expect(sw.locator('.origam-input')).not.toBeAttached({ timeout: 5000 })
+
+            // When loading.type="skeleton", OrigamSwitch renders <origam-skeleton v-if="isSkeletonLoading">
+            // as its root element instead of <origam-input>. The data-cy attr is bound via rootAttrs
+            // only to the <origam-input v-else> branch, so [data-cy="switch-loading-skeleton"] is absent
+            // from the DOM in skeleton mode — the locator cannot find it.
+            //
+            // Verification strategy: the "Loading shapes" variant renders 5 switches.
+            // 4 of them are non-skeleton (bool, number, line, circular) and render as .origam-input.
+            // The 5th (skeleton) renders as .origam-skeleton instead of .origam-input.
+            // Assert: exactly 4 .origam-input elements AND at least 1 .origam-skeleton.
+            await expect(sandbox.locator('.origam-input').filter({ hasText: /Bool|42%|Line loader|Small spinner/ })).toHaveCount(4, { timeout: 5000 })
+            await expect(sandbox.locator('.origam-skeleton').first()).toBeAttached({ timeout: 5000 })
+
+            // The skeleton switch is the LAST child row — the outer container has exactly
+            // 5 rows. Verify no 5th .origam-input (only 4 rendered, the 5th is a skeleton).
+            await expect(sandbox.locator('.origam-input')).toHaveCount(4, { timeout: 5000 })
         })
     })
 
