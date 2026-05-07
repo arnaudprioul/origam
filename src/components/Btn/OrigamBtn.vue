@@ -690,15 +690,29 @@
 		&--variant-ghost {
 			background-color: var(
 				--origam-btn---background-color-ghost,
-				color-mix(in srgb, currentColor 8%, transparent)
+				color-mix(in srgb, currentColor 12%, transparent)
 			) !important;
 			border-width: var(--origam-btn---border-width-ghost, var(--origam-border-width-thin));
 			border-style: solid;
 			border-color: var(
 				--origam-btn---border-color-ghost,
-				color-mix(in srgb, currentColor 16%, transparent)
+				color-mix(in srgb, currentColor 24%, transparent)
 			);
-			box-shadow: none;
+
+			// Glassmorphic glow — soft halo bleeding the intent colour
+			// outward + an inner highlight that mimics a frosted pane
+			// catching ambient light. The two-shadow stack matches the
+			// reference designs the user shared (purple/red/green/blue
+			// "luminous" buttons).
+			//
+			//   1st  outer halo  —  spread the intent color softly
+			//   2nd  inner ring  —  thin reflective edge for glass feel
+			box-shadow: var(
+				--origam-btn---box-shadow-ghost,
+				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
+				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
+				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
+			);
 
 			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
 				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
@@ -710,7 +724,7 @@
 				// reads as a discrete surface (Safari < 9, IE legacy).
 				background-color: var(
 					--origam-btn---background-color-ghost,
-					color-mix(in srgb, currentColor 14%, transparent)
+					color-mix(in srgb, currentColor 18%, transparent)
 				) !important;
 			}
 
@@ -718,8 +732,16 @@
 			&:focus-visible {
 				background-color: var(
 					--origam-btn---background-color-ghost-hover,
-					color-mix(in srgb, currentColor 14%, transparent)
+					color-mix(in srgb, currentColor 18%, transparent)
 				) !important;
+				// Hover: pump the halo intensity (~1.5x) so the glow
+				// reads as actively responding to the cursor.
+				box-shadow: var(
+					--origam-btn---box-shadow-ghost-hover,
+					0 0 0 1px color-mix(in srgb, currentColor 26%, transparent),
+					0 6px 24px 0 color-mix(in srgb, currentColor 40%, transparent),
+					0 1px 0 0 color-mix(in srgb, white 45%, transparent) inset
+				);
 			}
 		}
 

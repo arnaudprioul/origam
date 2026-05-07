@@ -20,7 +20,14 @@
 			controls panel matches the component's own prop interfaces.
 		-->
 
-		<!-- ════════════ VARIANTS (text/flat/elevated/tonal/outlined/plain) ════════════ -->
+		<!-- ════════════ VARIANTS (text/flat/elevated/tonal/outlined/ghost/plain) ════════════ -->
+		<!--
+			Default `color="primary"` so the variants (especially `ghost`'s
+			glassmorphic glow + intent border tint) read clearly against
+			the Histoire neutral background. Without an intent the ghost
+			variant inherits Btn's default text color and the halo barely
+			shows.
+		-->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariant }>({ variant: undefined })"
@@ -28,6 +35,7 @@
 			<template #default="{ state }">
 				<origam-btn
 						:variant="state.variant"
+						color="primary"
 						text="Button"
 				/>
 			</template>
