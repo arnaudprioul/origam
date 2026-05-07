@@ -224,6 +224,101 @@
 			/>
 		</Variant>
 
+		<!-- ════════════ MODE 1 — STRENGTH BAR ════════════
+			One of the 6 PDF-validated display modes. The 4-segment bar
+			under the input fills as `computeStrength()` returns higher
+			scores. Token-driven colours: bg-weak (danger),
+			bg-fair (warning), bg-good (info), bg-strong (success).
+		-->
+		<Variant title="Strength bar">
+			<origam-password-field
+					v-model="strengthBarModel"
+					strength-bar
+					label="Password (strength bar)"
+					data-cy="password-field-strength-bar"
+					@update:strength="logEvent('update:strength', $event)"
+			/>
+			<div data-cy="password-field-strength-bar-status">value = {{ strengthBarModel ? '(set)' : '(empty)' }}</div>
+		</Variant>
+
+		<!-- ════════════ MODE 2 — REQUIREMENTS LIST ════════════
+			Vertical checklist (default `requirementsLayout`). Default
+			rule set: ≥8 chars, ≥1 uppercase, ≥1 number, ≥1 special.
+			Each row toggles its check / cross icon and colour as the
+			password is typed.
+		-->
+		<Variant title="Requirements (list)">
+			<origam-password-field
+					v-model="requirementsListModel"
+					:requirements="true"
+					requirements-layout="list"
+					label="Password (requirements list)"
+					data-cy="password-field-requirements-list"
+			/>
+			<div data-cy="password-field-requirements-list-status">value = {{ requirementsListModel ? '(set)' : '(empty)' }}</div>
+		</Variant>
+
+		<!-- ════════════ MODE 3 — REQUIREMENTS TILES ════════════
+			Same data, different layout — rules render as `OrigamChip`
+			pills. Satisfied chips switch to `bg-color="success"`.
+		-->
+		<Variant title="Requirements (tiles)">
+			<origam-password-field
+					v-model="requirementsTilesModel"
+					:requirements="true"
+					requirements-layout="tiles"
+					label="Password (requirements tiles)"
+					data-cy="password-field-requirements-tiles"
+			/>
+			<div data-cy="password-field-requirements-tiles-status">value = {{ requirementsTilesModel ? '(set)' : '(empty)' }}</div>
+		</Variant>
+
+		<!-- ════════════ MODE 4 — PARTIALLY FILLED ════════════
+			Pre-filled with a 4-char value to show mid-typing state:
+			some segments coloured, only the matching rules ticked.
+		-->
+		<Variant title="Partially filled">
+			<origam-password-field
+					v-model="partialModel"
+					strength-bar
+					:requirements="true"
+					requirements-layout="list"
+					label="Mid-typing (partial)"
+					data-cy="password-field-partial"
+			/>
+			<div data-cy="password-field-partial-status">value = "{{ partialModel }}"</div>
+		</Variant>
+
+		<!-- ════════════ MODE 5 — MINIMAL ════════════
+			Stripped-down field for confirm-password sub-fields: no
+			toggle eye, no strength bar, no checklist. Just the input.
+		-->
+		<Variant title="Minimal">
+			<origam-password-field
+					v-model="minimalModel"
+					minimal
+					label="Confirm password"
+					data-cy="password-field-minimal"
+			/>
+			<div data-cy="password-field-minimal-status">value = {{ minimalModel ? '(set)' : '(empty)' }}</div>
+		</Variant>
+
+		<!-- ════════════ MODE 6 — COMBINED ════════════
+			Default sign-up affordance: strength bar + checklist
+			stacked under the input. The PDF "secured" mode.
+		-->
+		<Variant title="Combined (bar + list)">
+			<origam-password-field
+					v-model="combinedModel"
+					strength-bar
+					:requirements="true"
+					requirements-layout="list"
+					label="Sign-up password"
+					data-cy="password-field-combined"
+			/>
+			<div data-cy="password-field-combined-status">value = {{ combinedModel ? '(set)' : '(empty)' }}</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -295,6 +390,22 @@
 	const emitModel        = ref('')
 	const emitFocusModel   = ref('')
 	const playgroundModel  = ref('')
+
+	// 6 PDF-validated display modes — one ref per Variant so the
+	// histoire interactivity does not bleed across panels.
+	const strengthBarModel       = ref('')
+	const requirementsListModel  = ref('')
+	const requirementsTilesModel = ref('')
+	// Pre-seed with a 4-char value so the "Partially filled" Variant
+	// renders the mid-typing UI without manual interaction. Score=0
+	// (no length-8 yet, no uppercase, no number, no special) → all
+	// segments empty AND no rules satisfied. To better illustrate the
+	// "partial" state — segments + some rules satisfied — we seed
+	// with `Abcd1` (length=5, mixed case, has digit → fair, length-8
+	// rule fails, uppercase + number satisfied).
+	const partialModel           = ref('Abcd1')
+	const minimalModel           = ref('')
+	const combinedModel          = ref('')
 </script>
 
 <docs lang="md" src="@docs/components/PasswordField/OrigamPasswordField.md"/>

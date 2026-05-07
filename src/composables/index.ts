@@ -76,6 +76,8 @@ export * from './DataTable/options.composable'
 export * from './DataTable/cell.composable'
 export * from './NumberField/hold.composable'
 
+export * from './PasswordField/passwordStrength.composable'
+
 export * from './Theme/theme.composable'
 
 export * from './CssSupport/cssSupport.composable'

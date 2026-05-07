@@ -37,6 +37,7 @@ export * from './Commons/virtual.util'
 export * from './Commons/forwardRefs.util'
 export * from './Commons/event.util'
 export * from './Commons/autocomplete.util'
+export * from './Commons/format-bytes.util'
 
 export * from './ColorPicker/color-picker.util'
 

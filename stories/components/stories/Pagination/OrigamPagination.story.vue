@@ -118,13 +118,103 @@
 		</Variant>
 
 		<!-- ════════════ COMPACT ════════════ -->
-		<Variant title="Compact">
-			<origam-pagination v-model="page" :length="12" compact data-cy="pagination-compact"/>
+		<!--
+			P3·G — surface the existing `compact` prop on its own variant
+			so the e2e suite can exercise it independently. Compact swaps
+			the page-number list for a single `<input type="number">`
+			between the prev/next chevrons. Useful for very dense DataTable
+			toolbars or mobile screens where the full list would wrap.
+		-->
+		<Variant
+				title="Compact"
+				:init-state="() => useStoryInitState<{ compact?: boolean }>({ compact: true })"
+		>
+			<template #default="{ state }">
+				<origam-pagination
+						v-model="page"
+						:length="12"
+						:compact="state.compact"
+						data-cy="pagination-compact"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.compact" title="compact"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ COMPACT + FIRST/LAST ════════════ -->
 		<Variant title="Compact + showFirstLastPage">
 			<origam-pagination v-model="page" :length="12" compact show-first-last-page data-cy="pagination-compact-first-last"/>
+		</Variant>
+
+		<!-- ════════════ COLOR DEFAULT vs PRIMARY (P3·G) ════════════ -->
+		<!--
+			P3·G — the user reviewed the PDF and asked: the default look
+			should be subtle (text-only, transparent surface), and the
+			"styled" filled look should kick in ONLY when the consumer
+			passes color="primary". Two side-by-side fixtures make the
+			difference unmistakable in the e2e suite (and in human review):
+
+			  • [data-cy="pagination-default-look"]    → no `color` prop
+			  • [data-cy="pagination-primary-look"]    → color="primary"
+
+			The default fixture's page-button background should resolve
+			to `transparent` (rgba(0,0,0,0)); the primary fixture's
+			should resolve to a non-transparent intent fill.
+		-->
+		<Variant title="Color — default vs primary">
+			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+				<div>
+					<small style="display: block; margin-bottom: 8px; color: #666;">
+						Default — subtle text-only, transparent surface
+					</small>
+					<origam-pagination
+							:model-value="3"
+							:length="6"
+							data-cy="pagination-default-look"
+					/>
+				</div>
+				<div>
+					<small style="display: block; margin-bottom: 8px; color: #666;">
+						color="primary" — filled "stylé" look from the PDF
+					</small>
+					<origam-pagination
+							:model-value="3"
+							:length="6"
+							color="primary"
+							data-cy="pagination-primary-look"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<!-- ════════════ WITH INFO (P3·G) ════════════ -->
+		<!--
+			P3·G — `withInfo` mode renders a left-side "Showing N-M of T"
+			label next to the standard list. The range is computed from
+			`currentPage * perPage` clamped to `total`. The i18n key
+			`origam.pagination.info` accepts three positional args
+			(start, end, total).
+		-->
+		<Variant
+				title="With info"
+				:init-state="() => useStoryInitState<{ total?: number; perPage?: number; withInfo?: boolean }>({ total: 248, perPage: 20, withInfo: true })"
+		>
+			<template #default="{ state }">
+				<origam-pagination
+						v-model="page"
+						:length="Math.ceil((state.total ?? 0) / (state.perPage ?? 10))"
+						:total="state.total"
+						:per-page="state.perPage"
+						:with-info="state.withInfo"
+						data-cy="pagination-with-info"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.withInfo" title="withInfo"/>
+				<HstNumber   v-model="state.total"   title="total"   :min="0"/>
+				<HstNumber   v-model="state.perPage" title="perPage" :min="1" :max="100"/>
+			</template>
 		</Variant>
 
 		<!-- ════════════ PLAYGROUND ════════════ -->

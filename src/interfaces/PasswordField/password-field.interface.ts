@@ -9,11 +9,12 @@ import type {
     IInputEmits,
     IInputSlots,
     IMenuProps,
+    IPasswordRequirement,
     IRoundedProps,
     ITextFieldProps
 } from '../../interfaces'
 
-import type { TIcon } from '../../types'
+import type { TIcon, TPasswordStrengthLevel } from '../../types'
 
 /**
  * Props for `<OrigamPasswordField>` — a TextField specialised for password
@@ -62,11 +63,44 @@ export interface IPasswordFieldProps extends ICommonsComponentProps,
     menuProps?: IMenuProps
     /** Reserved — toggle the requirements menu programmatically. */
     menu?: boolean
+    /**
+     * Renders a 4-segment strength bar under the input. Each segment fills
+     * as the password gets stronger (weak → fair → good → strong) using
+     * `--origam-password-field__strength---bg-{level}` semantic tokens.
+     */
+    strengthBar?: boolean
+    /**
+     * Inline requirements checklist (the modern, layout-aware API).
+     * Pass an array of `IPasswordRequirement` predicates to render a
+     * checklist under the input. When `requirements === true` and
+     * `requirementRules` is undefined, the component falls back to
+     * `DEFAULT_PASSWORD_REQUIREMENTS` (≥8 chars, ≥1 uppercase, ≥1
+     * number, ≥1 special).
+     *
+     * Distinct from `rules` (inherited from `IValidationProps`) which
+     * is the form-level validation rule array — those still flow through
+     * to the underlying `<origam-input>`.
+     */
+    requirementRules?: IPasswordRequirement[]
+    /**
+     * Layout for the requirements checklist:
+     *   - `list` (default) — vertical `<ul>` of `<li>` rows
+     *   - `tiles` — wrap of `<OrigamChip>` pills
+     */
+    requirementsLayout?: 'list' | 'tiles'
+    /**
+     * Strip every decoration (toggle eye, strength bar, requirements
+     * checklist). Useful for confirm-password sub-fields where the
+     * adornments would only add noise.
+     */
+    minimal?: boolean
 }
 
 export interface IPasswordFieldEmits extends IFieldEmits, IInputEmits {
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void
+    /** Fires when the computed strength level changes (v-model:strength). */
+    (e: 'update:strength', value: TPasswordStrengthLevel): void
 }
 
 export interface IPasswordFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {

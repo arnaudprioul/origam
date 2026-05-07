@@ -16,7 +16,7 @@ import type {
     IRoundedProps
 } from "../../interfaces"
 
-import type { TFile, TFileSize } from "../../types"
+import type { TFile, TFileFieldDisplay, TFileSize } from "../../types"
 
 export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps {
     chips?: boolean
@@ -44,6 +44,24 @@ export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, ID
     dropzoneSubtitle?: string
     browseText?: string
     maxFileSizeErrorString?: string
+    /**
+     * How a multi-file selection is rendered:
+     *   - `'list'`     (default) — vertical card stack under the field.
+     *   - `'chips'`    — each file as a closable `<OrigamChip>` inline.
+     *   - `'counter'`  — single text "{n} files" + an `<OrigamCounter>`.
+     *
+     * Single-file selection ignores this prop and always shows the file
+     * name with a paperclip prepend.
+     */
+    display?: TFileFieldDisplay
+    /**
+     * Render the field as a large outlined drop-zone instead of an inline
+     * input. Equivalent to (and aliased by) the legacy `dragndrop` prop —
+     * keep both for backward-compat. When `true`, the wrapper accepts
+     * native drag-and-drop events, paints a `--dragging` modifier on
+     * dragover, and falls back to a click-to-browse interaction.
+     */
+    dropzone?: boolean
 }
 
 export interface IFileFieldEmits extends IFieldEmits, IInputEmits {

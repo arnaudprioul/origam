@@ -190,6 +190,7 @@ export * from './Parallax/parallax.interface'
 export * from './Parallax/parallax-element.interface'
 
 export * from './PasswordField/password-field.interface'
+export * from './PasswordField/password-requirement.interface'
 
 export * from './Picker/picker.interface'
 export * from './Picker/picker-title.interface'

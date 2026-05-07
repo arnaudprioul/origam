@@ -175,6 +175,7 @@ export * from './Parallax/parallax.type'
 export * from './Parallax/parallax-element.type'
 
 export * from './PasswordField/password-field.type'
+export * from './PasswordField/password-strength.type'
 
 export * from './Picker/picker.type'
 export * from './Picker/picker-title.type'

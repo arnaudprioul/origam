@@ -8,6 +8,20 @@
 			role="navigation"
 			@keydown="handleKeydown"
 	>
+		<!-- ════ WITH-INFO LABEL (left side) ════ -->
+		<span
+				v-if="withInfo"
+				class="origam-pagination__info"
+				data-cy="pagination-info"
+		>
+			<slot
+					name="info"
+					v-bind="{ start: infoStart, end: infoEnd, total: totalInt }"
+			>
+				{{ t(infoText, infoStart, infoEnd, totalInt) }}
+			</slot>
+		</span>
+
 		<!-- ════ COMPACT MODE ════ -->
 		<template v-if="compact">
 			<ul class="origam-pagination__list origam-pagination__list--compact">
@@ -196,7 +210,10 @@
 		lastAriaLabel: 'origam.pagination.ariaLabel.last',
 		compact: false,
 		pageText: 'origam.pagination.page',
-		ofText: 'origam.pagination.of'
+		ofText: 'origam.pagination.of',
+		withInfo: false,
+		infoText: 'origam.pagination.info',
+		perPage: 10
 	})
 
 	const emits = defineEmits([
@@ -440,11 +457,48 @@
 		page.value = clamped
 	}
 
+	// WITH INFO — "Showing 21-40 of 248" range label
+	//
+	// `total` (items count) drives the right-hand bound; `perPage` slices
+	// the range; `currentPage` (== `page.value`) anchors it. When `total`
+	// is omitted we fall back to `length * perPage` so the label still
+	// renders something sensible. End is clamped to `total` so the last
+	// page reads "41-43 of 43" rather than "41-50 of 43".
+	const perPageInt = computed(() => {
+		const v = int(props.perPage)
+		return Number.isFinite(v) && v > 0 ? v : 10
+	})
+	const totalInt = computed(() => {
+		if (props.total != null) return int(props.total)
+		return length.value * perPageInt.value
+	})
+	const infoStart = computed(() => {
+		if (totalInt.value <= 0) return 0
+		return (page.value - start.value) * perPageInt.value + 1
+	})
+	const infoEnd = computed(() => {
+		if (totalInt.value <= 0) return 0
+		return Math.min(infoStart.value + perPageInt.value - 1, totalInt.value)
+	})
+
 	// CLASS & STYLES
+
+	// `--colored` modifier — toggled as soon as the consumer passes any
+	// truthy intent on `color`/`bgColor`. Drives the SCSS branch that
+	// lets the inner OrigamBtn instances render with their own intent
+	// fill (PDF "stylé" look). When absent, the SCSS overrides the
+	// btn's default surface to a transparent neutral so the row reads
+	// as a subtle, ghost-like nav.
+	const isColored = computed(() => !!(props.color || props.bgColor))
 
 	const paginationClasses = computed(() => {
 		return [
 			'origam-pagination',
+			{
+				'origam-pagination--colored': isColored.value,
+				'origam-pagination--compact': !!props.compact,
+				'origam-pagination--with-info': !!props.withInfo
+			},
 			props.class
 		]
 	})
@@ -466,12 +520,66 @@
 		scoped
 >
 	.origam-pagination {
+		// Root layout — flex so the optional __info label sits to the
+		// left of the list when withInfo=true. Centred otherwise.
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: var(--origam-pagination---gap-info, 16px);
+		padding-block: var(--origam-pagination---padding-block, 0);
+		padding-inline: var(--origam-pagination---padding-inline, 0);
+
+		&--with-info {
+			justify-content: space-between;
+		}
+
+		&__info {
+			display: inline-flex;
+			align-items: center;
+			color: var(--origam-pagination--info---color, currentColor);
+			font-size: var(--origam-pagination--info---font-size, 0.75rem);
+			font-weight: var(--origam-pagination--info---font-weight, 400);
+			white-space: nowrap;
+		}
 
 		&__list {
 			display: inline-flex;
 			list-style-type: none;
 			justify-content: center;
-			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		// ════ DEFAULT (subtle) LOOK ════
+		// When the consumer passes NO intent (no `color`/`bgColor`), the
+		// pagination overrides the inner OrigamBtn's default filled
+		// surface with the `--origam-pagination---*` tokens — yielding
+		// a transparent text-only nav. The `--colored` modifier (added
+		// by JS as soon as a truthy intent is set) drops these
+		// overrides so the btn's own intent rendering shines through —
+		// reproducing the PDF "stylé" filled look for color="primary".
+		&:not(&--colored) {
+			:deep(.origam-btn:not(.origam-btn--active):not(:hover)) {
+				--origam-btn---background-color: var(--origam-pagination---background-color, transparent);
+				--origam-btn---color: var(--origam-pagination---color, currentColor);
+			}
+
+			:deep(.origam-btn:hover:not(.origam-btn--active)) {
+				--origam-btn---background-color: var(--origam-pagination---background-color-hover, rgba(0, 0, 0, 0.04));
+				--origam-btn---color: var(--origam-pagination---color, currentColor);
+			}
+		}
+
+		// ════ "PRIMARY" (filled) LOOK ════
+		// When the consumer passes color="primary" specifically, fold a
+		// subtle box-shadow under each button to match the PDF mock's
+		// elevated look. Btn's own intent rules already paint the fill;
+		// we only add the elevation that's pagination-specific.
+		&--colored {
+			:deep(.origam-btn) {
+				box-shadow: var(--origam-pagination--primary---box-shadow, none);
+			}
 		}
 
 		&__item {

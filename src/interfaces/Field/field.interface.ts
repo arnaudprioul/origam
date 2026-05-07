@@ -22,7 +22,16 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean
-    error?: boolean
+    /**
+     * Error state for the field.
+     *   - `boolean` — paints the `--error` modifier (rules-driven flow).
+     *   - `string`  — paints the modifier AND becomes the inline error
+     *     message rendered by consumers that opt-in (e.g. FileField's
+     *     dropzone). For consumers that don't read the string, the
+     *     truthy semantics still apply.
+     *   - `false` / omitted — no error.
+     */
+    error?: string | boolean
     flat?: boolean
     inline?: boolean
     label?: string

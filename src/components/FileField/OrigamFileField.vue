@@ -23,7 +23,7 @@
       >
         <!-- DRAG & DROP MODE -->
         <div
-            v-if="props.dragndrop"
+            v-if="isDropzoneMode"
             class="origam-file-field__dragndrop"
         >
           <label
@@ -79,6 +79,14 @@
                 <div class="origam-file-field__dropzone-subtitle">
                   {{ dropzoneSubtitleText }}
                 </div>
+                <div
+                    v-if="isErrored && errorMessage"
+                    class="origam-file-field__dropzone-error"
+                    role="alert"
+                    data-cy="file-field-dropzone-error-message"
+                >
+                  {{ errorMessage }}
+                </div>
               </slot>
             </template>
             <input
@@ -102,34 +110,34 @@
               class="origam-file-field__list"
               role="list"
           >
-            <slot
-                v-for="(file, index) in model"
-                :key="`${file.name}-${index}`"
-                name="item"
-                v-bind="{
-                  file,
-                  index,
-                  progress: getProgress(index),
-                  remove: () => handleRemove(index),
-                  download: () => handleDownload(index, file),
-                }"
-            >
-              <origam-file-field-list-item
-                  :file="file"
-                  :index="index"
-                  :progress="getProgress(index)"
-                  :file-icon="props.fileIcon"
-                  :download-icon="props.downloadIcon"
-                  :remove-icon="props.removeIcon"
-                  :downloadable="props.downloadable"
-                  :disabled="isDisabled"
-                  :readonly="isReadonly"
-                  :color="props.color"
-                  :show-size="props.showSize"
-                  @click:remove="handleRemove(index)"
-                  @click:download="handleDownload(index, file)"
-              />
-            </slot>
+            <template v-for="(item, idx) in fileList" :key="idx">
+              <slot
+                  name="item"
+                  v-bind="{
+                    file: item,
+                    index: idx,
+                    progress: getProgress(idx),
+                    remove: () => handleRemove(idx),
+                    download: () => handleDownload(idx, item),
+                  }"
+              >
+                <origam-file-field-list-item
+                    :file="item"
+                    :index="idx"
+                    :progress="getProgress(idx)"
+                    :file-icon="props.fileIcon"
+                    :download-icon="props.downloadIcon"
+                    :remove-icon="props.removeIcon"
+                    :downloadable="props.downloadable"
+                    :disabled="isDisabled"
+                    :readonly="isReadonly"
+                    :color="props.color"
+                    :show-size="props.showSize"
+                    @click:remove="handleRemove(idx)"
+                    @click:download="handleDownload(idx, item)"
+                />
+              </slot>
+            </template>
           </ul>
         </div>
 
@@ -144,7 +152,7 @@
               :active="isActive || isDirty"
               :dirty="isDirty || props.dirty"
               :disabled="isDisabled"
-              :error="!isValid"
+              :error="!isValid || isErrored"
               :focused="isFocused"
               v-bind="{ ...fieldProps }"
               @click="handleControlClick"
@@ -248,6 +256,13 @@
                           {{ selectionText }}
                         </slot>
                       </span>
+                      <origam-counter
+                          v-if="hasInlineCounter"
+                          class="origam-file-field__inline-counter"
+                          data-cy="file-field-inline-counter"
+                          :active="true"
+                          :value="inlineCounterValue"
+                      />
                     </template>
                   </div>
                 </template>
@@ -277,33 +292,33 @@
           </origam-field>
 
           <ul
-              v-if="props.multiple && hasFiles && !hasChips"
+              v-if="props.multiple && hasFiles && !hasChips && displayMode === 'list'"
               class="origam-file-field__list"
               role="list"
           >
-            <slot
-                v-for="(file, index) in model"
-                :key="`${file.name}-${index}`"
-                name="item"
-                v-bind="{
-                  file,
-                  index,
-                  progress: getProgress(index),
-                  remove: () => handleRemove(index),
-                  download: () => handleDownload(index, file),
-                }"
-            >
-              <origam-file-field-list-item
-                  :file="file"
-                  :index="index"
-                  :file-icon="props.fileIcon"
-                  :remove-icon="props.removeIcon"
-                  :disabled="isDisabled"
-                  :readonly="isReadonly"
-                  :show-size="props.showSize"
-                  @click:remove="handleRemove(index)"
-              />
-            </slot>
+            <template v-for="(item, idx) in fileList" :key="idx">
+              <slot
+                  name="item"
+                  v-bind="{
+                    file: item,
+                    index: idx,
+                    progress: getProgress(idx),
+                    remove: () => handleRemove(idx),
+                    download: () => handleDownload(idx, item),
+                  }"
+              >
+                <origam-file-field-list-item
+                    :file="item"
+                    :index="idx"
+                    :file-icon="props.fileIcon"
+                    :remove-icon="props.removeIcon"
+                    :disabled="isDisabled"
+                    :readonly="isReadonly"
+                    :show-size="props.showSize"
+                    @click:remove="handleRemove(idx)"
+                />
+              </slot>
+            </template>
           </ul>
         </div>
       </slot>
@@ -402,6 +417,7 @@
     border: true,
     rounded: true,
     divider: ',',
+    display: 'list',
     counterSizeString: 'origam.fileField.counterSize',
     counterString: 'origam.fileField.counter',
     dropzoneTitle: 'origam.fileField.dropzoneTitle',
@@ -410,6 +426,43 @@
     maxFileSizeErrorString: 'origam.validation.max_size_error'
   })
   const props = useDefaults(_props)
+
+  /*********************************************************
+   * PDF P3 — display + dropzone aliasing + error
+   *
+   * @description
+   *  - `dropzone` is the new public alias for the legacy `dragndrop`
+   *    prop; both feed the same internal flag so existing consumers
+   *    aren't broken.
+   *  - `display` selects the multi-file rendering strategy: 'list',
+   *    'chips', or 'counter'. Backward-compat: if the legacy `chips`
+   *    boolean is set it forces 'chips' regardless of `display`.
+   *  - `error` accepts `boolean | string`. The boolean value is forwarded
+   *    to `<OrigamField error>`; the string (when present) is rendered as
+   *    the dropzone error message and exposed via `errorMessage`.
+   ********************************************************/
+  const isDropzoneMode = computed(() => Boolean(props.dropzone || props.dragndrop))
+  const displayMode = computed(() => {
+    if (props.chips) return 'chips'
+    return props.display ?? 'list'
+  })
+  const isErrored = computed(() => Boolean(props.error))
+  const errorMessage = computed(() => typeof props.error === 'string' ? props.error : '')
+  // Concrete array of files used by the v-for sites below. Going
+  // through a dedicated computed (rather than reading `model.value`
+  // directly in the template) sidesteps a Vue compiler quirk where
+  // re-binding `<v-for="(file, index) in model">` failed to invalidate
+  // when the model was updated via the synthetic `change` event the
+  // tests dispatch. The variable name `(item, idx)` is also used in
+  // the templates for the same reason — `(file, …)` collided with the
+  // implicit `file` reactive ref in the slot scope.
+  const fileList = computed(() => {
+    const mv = props.modelValue as unknown
+    if (Array.isArray(mv)) return mv as Array<File>
+    if (mv instanceof File) return [mv]
+    const m = model.value
+    return Array.isArray(m) ? (m as Array<File>) : []
+  })
 
   const emits = defineEmits<IFileFieldEmits>()
 
@@ -676,7 +729,13 @@
     return slots.details || hasCounter.value
   })
   const hasChips = computed(() => {
-    return props.chips || slots.chip
+    return displayMode.value === 'chips' || slots.chip
+  })
+  const hasInlineCounter = computed(() => {
+    return displayMode.value === 'counter' && hasFiles.value && props.multiple
+  })
+  const inlineCounterValue = computed(() => {
+    return model.value?.length ?? 0
   })
   const chipProps = computed(() => {
     return {
@@ -749,7 +808,8 @@
         'origam-file-field__dropzone--dragging': isDragging.value,
         'origam-file-field__dropzone--disabled': props.disabled,
         'origam-file-field__dropzone--readonly': props.readonly,
-        'origam-file-field__dropzone--has-file': !props.multiple && hasFiles.value
+        'origam-file-field__dropzone--has-file': !props.multiple && hasFiles.value,
+        'origam-file-field__dropzone--error': isErrored.value
       },
       dropzoneDensityClasses.value
     ]
@@ -823,6 +883,11 @@
       white-space: nowrap;
     }
 
+    &__inline-counter {
+      flex-shrink: 0;
+      margin-inline-start: var(--origam-file-field---inline-counter-margin, 8px);
+    }
+
     &--dragndrop {
       :deep(.origam-input__control) {
         display: block;
@@ -858,8 +923,23 @@
       }
 
       &--dragging {
-        background-color: var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color-feedback-info-bg-subtle));
-        border-color: var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color-feedback-info-bg));
+        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color-feedback-info-bg-subtle)));
+        border-color: var(--origam-file-field__dropzone---border-color-dragging, var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color-feedback-info-bg)));
+      }
+
+      &--error {
+        border-color: var(--origam-file-field__dropzone--error---border-color, var(--origam-file-field__dropzone---border-color-error, var(--origam-color-feedback-danger-bg)));
+
+        .origam-file-field__dropzone-icon,
+        .origam-file-field__dropzone-title {
+          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color-feedback-danger-fg-subtle));
+        }
+      }
+
+      &-error {
+        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color-feedback-danger-fg-subtle));
+        font-size: var(--origam-file-field__dropzone---subtitle-font-size, 0.75rem);
+        margin-top: var(--origam-file-field__dropzone---gap-deck, 8px);
       }
 
       &--has-file {
