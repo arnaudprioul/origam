@@ -258,6 +258,14 @@
 			}
 		}
 
+		&--density-compact {
+			--origam-toolbar---height: var(--origam-toolbar---height-compact);
+		}
+
+		&--density-default {
+			--origam-toolbar---height: var(--origam-toolbar---height-default);
+		}
+
 		&--flat {
 			--origam-toolbar---box-shadow: none;
 		}

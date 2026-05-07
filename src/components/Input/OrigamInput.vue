@@ -106,6 +106,7 @@
 		useDimension,
 		useProps,
 		useRtl,
+		useSize,
 		useValidation
 	} from '../../composables'
 
@@ -200,6 +201,7 @@
 	const {dimensionStyles} = useDimension(props)
 	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 	const {rtlClasses} = useRtl()
+	const {sizeClasses} = useSize(props, 'origam-input')
 
 	const inputStyles = computed(() => {
 		return [
@@ -217,6 +219,7 @@
 				'origam-input--hide-spin-buttons': props.hideSpinButtons
 			},
 			densityClasses.value,
+			sizeClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
 			props.class
@@ -260,7 +263,16 @@
 		line-height: var(--origam-input---line-height, 1.5);
 
 		--origam-input---padding-top: 16px;
-		--origam-input__control---height: 56px;
+
+		// `--origam-input__control---height` is now ALWAYS sourced from the
+		// component-token cascade. The default value is 36 px (the `md`
+		// rung emitted by `tokens/component/input.json::control.height-md`,
+		// referenced by the unprefixed `control.height` token). Pre-fix
+		// the SCSS hard-coded `--origam-input__control---height: 56px;`
+		// here and silently overrode the token cascade for every
+		// consumer — that's why every TextField rendered at Material's
+		// 56 px even after the PDF spec moved the default down to 36 px.
+		// See `tokens/component/input.json` for the full size scale.
 
 		&__details {
 			align-items: flex-end;
@@ -314,6 +326,39 @@
 
 		&--density-compact {
 			--origam-input---density: -8px;
+		}
+
+		// ── Size scale (PDF Phase 1 alignment) ───────────────────────────
+		// Matches Btn so a button + adjacent input share a single height.
+		// `useSize` emits `origam-input--size-{name}`; the rule overrides
+		// `--origam-input__control---height` and the matching
+		// `--origam-field__input---padding-top/-bottom`. CSS custom
+		// properties inherit, so simply setting them on the
+		// `.origam-input--size-{name}` block cascades into the nested
+		// `<origam-field>` (which IS a descendant of `.origam-input`)
+		// without needing `:deep()`.
+		&--size-small {
+			--origam-input__control---height:        var(--origam-input__control---height-sm, 28px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-sm, 2px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-sm, 2px);
+		}
+
+		&--size-default {
+			--origam-input__control---height:        var(--origam-input__control---height-md, 36px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-md, 6px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-md, 6px);
+		}
+
+		&--size-large {
+			--origam-input__control---height:        var(--origam-input__control---height-lg, 44px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-lg, 10px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-lg, 10px);
+		}
+
+		&--size-x-large {
+			--origam-input__control---height:        var(--origam-input__control---height-xl, 52px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-xl, 14px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-xl, 14px);
 		}
 
 		&--vertical {

@@ -15,7 +15,12 @@
     "error-color":             { "$type": "color",     "$value": "{color.feedback.danger.fgSubtle}" },
 
     "control": {
-      "height":                { "$type": "dimension", "$value": "56px" }
+      "_comment":              "Control height scale — Phase 1 PDF alignment. Maps to SIZES enum: small=28, default=36, large=44, x-large=52. Aligned with btn.height-XX so a button + adjacent input share the exact same vertical footprint. The unprefixed `height` references `height-md` (the default). Material's 56px default has been retired — every existing TextField shrinks to 36px (md) unless a `size` prop is passed.",
+      "height-sm":             { "$type": "dimension", "$value": "28px" },
+      "height-md":             { "$type": "dimension", "$value": "36px" },
+      "height-lg":             { "$type": "dimension", "$value": "44px" },
+      "height-xl":             { "$type": "dimension", "$value": "52px" },
+      "height":                { "$type": "dimension", "$value": "{input.control.height-md}" }
     },
 
     "details": {

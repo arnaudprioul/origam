@@ -39,6 +39,62 @@ test.describe('OrigamTextField', () => {
         await expect(sandbox.locator('.origam-counter').first()).toBeVisible({ timeout: 3000 })
     })
 
+    test('Size — control min-height matches PDF Phase 1 scale (28/36/44/52)', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Size', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+        // Showcase fixtures, side by side, each pinned to a size rung.
+        const expectations: Array<{ cy: string; size: number; cls: RegExp }> = [
+            { cy: 'textfield-size-fixture-sm', size: 28, cls: /origam-input--size-small/ },
+            { cy: 'textfield-size-fixture-md', size: 36, cls: /origam-input--size-default/ },
+            { cy: 'textfield-size-fixture-lg', size: 44, cls: /origam-input--size-large/ },
+            { cy: 'textfield-size-fixture-xl', size: 52, cls: /origam-input--size-x-large/ },
+        ]
+
+        for (const { cy, size, cls } of expectations) {
+            const wrapper = sandbox.locator(`[data-cy="${cy}"]`)
+            await expect(wrapper).toBeVisible({ timeout: 5000 })
+            // Class lives on the OrigamInput root (TextField forwards `size` straight through).
+            await expect(wrapper).toHaveClass(cls, { timeout: 3000 })
+
+            // The internal `.origam-field__input` reads min-height from the cascaded
+            // `--origam-input__control---height` token. This is the load-bearing
+            // assertion: it would have caught the silently-overridden 56px literal
+            // before this PR.
+            const fieldInput = wrapper.locator('.origam-field__input').first()
+            await expect(fieldInput).toBeVisible({ timeout: 3000 })
+            const minHeight = await fieldInput.evaluate(
+                (el) => parseFloat(getComputedStyle(el).minHeight),
+            )
+            // Allow ±0.5 px tolerance for sub-pixel rounding.
+            expect(Math.round(minHeight)).toBe(size)
+        }
+    })
+
+    test('Size — default (no size prop) falls back to 36 px (PDF md, down from Material 56)', async ({ page }) => {
+        // Cover the most-impactful breaking change: every existing TextField
+        // without an explicit `size` prop must now render at 36 px, not 56 px.
+        // Pick any existing variant fixture (Variant story) and measure.
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Variant', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const wrapper = sandbox.locator('[data-cy="textfield-variant"]')
+        await expect(wrapper).toBeVisible({ timeout: 5000 })
+
+        const fieldInput = wrapper.locator('.origam-field__input').first()
+        const minHeight = await fieldInput.evaluate(
+            (el) => parseFloat(getComputedStyle(el).minHeight),
+        )
+        expect(Math.round(minHeight)).toBe(36)
+    })
+
     test('States — disabled field has disabled attribute on input', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
@@ -98,6 +154,34 @@ test.describe('OrigamTextField', () => {
         const input = sandbox.locator('[data-cy="textfield-playground"] input').first()
         await input.fill('test value')
         await expect(sandbox.locator('[data-cy="textfield-playground-status"]')).toContainText('test value', { timeout: 3000 })
+    })
+
+    test('Inline — applies origam-field--inline class and has no visible border on idle', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Inline', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const wrapper = sandbox.locator('[data-cy="textfield-inline"]')
+        await expect(wrapper).toBeVisible({ timeout: 5000 })
+
+        // The origam-field root inside the wrapper must carry the --inline modifier
+        const field = wrapper.locator('.origam-field').first()
+        await expect(field).toHaveClass(/origam-field--inline/, { timeout: 3000 })
+
+        // On idle the field must have no visible border: box-shadow should be
+        // "none" (or the browser-resolved equivalent "0px 0px 0px 0px") so the
+        // input reads as part of the surrounding text flow.
+        const boxShadow = await field.evaluate((el) => getComputedStyle(el).boxShadow)
+        const isNoBorder = boxShadow === 'none' || boxShadow === '' || /^0px/.test(boxShadow)
+        expect(isNoBorder).toBe(true)
+
+        // Input must remain accessible (visible and interactable)
+        const input = wrapper.locator('input').first()
+        await expect(input).toBeVisible({ timeout: 3000 })
+        await input.fill('inline test')
+        await expect(sandbox.locator('[data-cy="textfield-inline-status"]')).toContainText('inline test', { timeout: 3000 })
     })
 
     test.describe('Loading shapes', () => {

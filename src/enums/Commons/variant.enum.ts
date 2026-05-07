@@ -27,8 +27,6 @@ export enum VARIANT {
  * action surfaces (elevated / tonal / outlined).
  */
 export enum VARIANT_INPUT {
-    SOLO_INVERTED = 'solo-inverted',
-    SOLO_FILLED = 'solo-filled',
     UNDERLINED = 'underlined',
     FILLED = 'filled',
     SOLO = 'solo',

@@ -269,7 +269,14 @@
 		}
 
 		.origam-selection-control {
-			min-height: calc(var(--origam-input__control---height, 56px) + var(--origam-input---density, 0px));
+			// Pre-PDF-Phase-1 the Switch borrowed `--origam-input__control---height`
+			// as its track height (56px). After Phase 1 the input control
+			// shrinks to 36px; we DELIBERATELY keep the Switch at 56px to
+			// preserve thumb/track proportions — Switch sizing follows its
+			// own scale, not the TextField scale. Re-routed to a dedicated
+			// token so a future Switch redesign can override without
+			// touching the input cascade.
+			min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
 			:deep(.origam-selection-control__input) {
 				border-radius: 50%;

@@ -76,6 +76,43 @@
 			</template>
 		</Variant>
 
+		<!-- ════════════ SIZE ════════════ -->
+		<!--
+			PDF Phase 1 size scale: small=28 / default=36 / large=44 /
+			x-large=52. The unprefixed default has dropped from Material's
+			56px to 36px — that's an intentional, visible breaking change.
+			The interactive picker drives one field; the showcase below
+			exposes all four side-by-side so designers can eyeball the
+			ladder.
+		-->
+		<Variant
+				title="Size"
+				:init-state="() => useStoryInitState<{ size: TSize }>({ size: SIZES.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-text-field
+							v-model="sizeModel"
+							:size="state.size"
+							label="Size field (interactive)"
+							data-cy="textfield-size"
+					/>
+					<div data-cy="textfield-size-status">size = {{ state.size }} · value = {{ sizeModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase — Sizes side by side (PDF heights: 28 / 36 / 44 / 52 px)</small>
+						<origam-text-field size="small"   label='size="small" — 28px'   data-cy="textfield-size-fixture-sm"/>
+						<origam-text-field size="default" label='size="default" — 36px' data-cy="textfield-size-fixture-md"/>
+						<origam-text-field size="large"   label='size="large" — 44px'   data-cy="textfield-size-fixture-lg"/>
+						<origam-text-field size="x-large" label='size="x-large" — 52px' data-cy="textfield-size-fixture-xl"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
@@ -295,6 +332,29 @@
 			</div>
 		</Variant>
 
+		<!-- ════════════ INLINE ════════════ -->
+		<!--
+			PDF "TextField · LABEL PLACEMENT · Inline" mode.
+			The field renders without chrome (no border, no background) at idle.
+			A subtle bottom line appears on hover and a heavier primary-color
+			bottom line on focus, so the editable region reads as part of the
+			surrounding text flow: "Origam · ___".
+		-->
+		<Variant title="Inline">
+			<div style="display: flex; align-items: baseline; gap: 8px; padding: 16px; font-size: 16px;">
+				<span>Origam</span>
+				<span aria-hidden="true">·</span>
+				<origam-text-field
+						v-model="inlineModel"
+						:inline="true"
+						placeholder="Your value"
+						data-cy="textfield-inline"
+						aria-label="Inline editable value"
+				/>
+			</div>
+			<div data-cy="textfield-inline-status">value = {{ inlineModel }}</div>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -345,12 +405,12 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamTextField } from '@origam/components'
-	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
+	import { DENSITY, MDI_ICONS, SIZES, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IOptions, ITextFieldProps } from '@origam/interfaces'
-	import type { TLoadingValue, TVariantInput } from '@origam/types'
+	import type { TLoadingValue, TSize, TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantInputList } from '@stories/const'
+	import { densityList, intentList, sizeList, variantInputList } from '@stories/const'
 
 	interface ILoadingState {
 		enabled: boolean
@@ -376,6 +436,8 @@
 
 	const variantModel   = ref('')
 	const colorModel     = ref('')
+	const sizeModel      = ref('')
+	const inlineModel    = ref('')
 	const densityModel   = ref('')
 	const typeModel      = ref('')
 	const counterModel   = ref('')

@@ -14,15 +14,17 @@ import type {
     ILabelProps,
     ILoaderProps,
     IRoundedProps,
+    ISizeProps,
     IVariantProps
 } from '../../interfaces'
 
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps {
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean
     error?: boolean
     flat?: boolean
+    inline?: boolean
     label?: string
     prefix?: string
     suffix?: string

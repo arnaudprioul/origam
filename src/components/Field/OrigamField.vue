@@ -190,6 +190,7 @@
 		useProps,
 		useRounded,
 		useRtl,
+		useSize,
 		useVariant
 	} from '../../composables'
 
@@ -439,6 +440,7 @@
 	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {rtlClasses} = useRtl()
 	const {variantClasses} = useVariant(props)
+	const {sizeClasses} = useSize(props, 'origam-field')
 
 	const fieldStyles = computed(() => {
 		return [
@@ -460,6 +462,7 @@
 				'origam-field--error': props.error,
 				'origam-field--flat': props.flat,
 				'origam-field--has-background': !!props.bgColor,
+				'origam-field--inline': props.inline,
 				'origam-field--persistent-clear': props.persistentClear,
 				'origam-field--prepended': hasPrependInner.value,
 				'origam-field--reverse': props.reverse,
@@ -475,6 +478,7 @@
 			variantClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
+			sizeClasses.value,
 			props.class
 		]
 	})
@@ -518,10 +522,13 @@
 
 		// Skeleton-mode replacement element. Sized to fill the field's
 		// content box so consumer code switching `loading` between values
-		// keeps a stable visual footprint.
+		// keeps a stable visual footprint. Fallback rung is now 36 px (md)
+		// — the PDF Phase 1 default. Pre-fix this read 56 px to mirror
+		// Material; size variants scale via `--origam-input__control---height`
+		// cascade upstream.
 		&__skeleton {
 			width: 100%;
-			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 56px));
+			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 36px));
 			border-radius: var(--origam-field---rounded);
 			grid-column: 1 / -1;
 			grid-row: 1;
@@ -554,14 +561,14 @@
 			flex-wrap: wrap;
 			letter-spacing: 0.009375em;
 			opacity: 0.7;
-			// `box-sizing: border-box` so the inline padding tokens
-			// (24px-top + 6px-bottom by default) are INCLUDED in the
-			// 56px min-height target. Pre-fix the default `content-box`
-			// stacked padding ON TOP of the height — every text field
-			// rendered at 86px (56 + 24 + 6) instead of the 56px Material
-			// baseline. User-reported.
+			// `box-sizing: border-box` so the inline padding tokens are
+			// INCLUDED in the min-height target (now 36 px by default
+			// after the PDF Phase 1 alignment, down from Material's
+			// 56 px). Without `border-box`, the default `content-box`
+			// stacks padding ON TOP of the height — every text field
+			// renders too tall.
 			box-sizing: border-box;
-			min-height: max(calc(var(--origam-input__control---height, 56px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
+			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
 			padding-inline: var(--origam-field__input---padding-start) var(--origam-field__input---padding-end);
 			padding-top: var(--origam-field__input---padding-top);
@@ -620,7 +627,9 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			min-height: max(56px, 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
+			// Tracks the current control height (default 36 px after PDF
+			// Phase 1) so prefix/suffix never grow taller than the input.
+			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
 		}
@@ -847,27 +856,58 @@
 			}
 		}
 
-		&--variant {
-			&-solo,
-			&-solo-filled,
-			&-solo-inverted {
-				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow-sm)));
+		// ── inline ──────────────────────────────────────────────────────────
+		// Chromeless idle state — no border, no background. Reads as part of
+		// surrounding text flow (PDF "TextField · Inline" mode).
+		// On hover: subtle bottom shadow cue. On focus-within: heavier bottom
+		// shadow using the focus token. Labels are suppressed because the
+		// inline value IS the label context.
+		&--inline {
+			background-color: transparent;
+			padding-inline: var(--origam-field--inline---padding-inline, 4px);
+			border-radius: 0;
+
+			#{$this}__outlines {
+				display: none;
 			}
 
-			&-solo,
-			&-solo-filled {
-				border-color: transparent;
-				--origam-field__input---padding-top: 20px;
+			// Hide label and floating-label visually — the surrounding text
+			// flow provides context. We keep the elements in the DOM (no
+			// display:none) so aria-for linkage and focus management remain
+			// intact; only their visual rendering is removed.
+			#{$this}__label {
+				opacity: 0;
+				pointer-events: none;
 			}
 
-			&-solo-inverted {
-				&#{$this}--focused {
-					background: var(--origam-field---background-color);
+			:deep(.origam-field__input) {
+				padding-top: 0;
+				padding-bottom: 0;
+				padding-inline: 0;
+				min-height: unset;
+			}
+
+			// Idle: no chrome
+			box-shadow: none;
+
+			// Hover: subtle bottom line
+			@media (hover: hover) {
+				&:hover:not(#{$this}--focused):not(#{$this}--disabled) {
+					box-shadow: 0 1px 0 0 var(--origam-color-border-subtle, currentColor);
 				}
 			}
 
-			&-solo-filled {
-				background: var(--origam-field---background-color);
+			// Focus-within: heavier bottom line with primary color
+			&#{$this}--focused {
+				box-shadow: 0 1px 0 0 var(--origam-color-border-focus, var(--origam-color-action-primary-bg, currentColor));
+			}
+		}
+
+		&--variant {
+			&-solo {
+				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow-sm)));
+				border-color: transparent;
+				--origam-field__input---padding-top: 20px;
 			}
 
 			// ── filled ──────────────────────────────────────────────────────
@@ -1006,6 +1046,35 @@
 					--origam-field---border-opacity: 1;
 				}
 			}
+		}
+
+		// ── Size scale (PDF Phase 1 alignment) ───────────────────────────
+		// Self-sufficient when Field is used WITHOUT an outer Input wrapper
+		// (e.g. SelectField mounts Field directly). Otherwise the Input
+		// wrapper already cascades the same `--origam-input__control---height`
+		// via its own `&--size-{name}` modifier.
+		&--size-small {
+			--origam-input__control---height: var(--origam-input__control---height-sm, 28px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-sm, 2px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-sm, 2px);
+		}
+
+		&--size-default {
+			--origam-input__control---height: var(--origam-input__control---height-md, 36px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-md, 6px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md, 6px);
+		}
+
+		&--size-large {
+			--origam-input__control---height: var(--origam-input__control---height-lg, 44px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-lg, 10px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-lg, 10px);
+		}
+
+		&--size-x-large {
+			--origam-input__control---height: var(--origam-input__control---height-xl, 52px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-xl, 14px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-xl, 14px);
 		}
 
 		@media (hover: hover) {

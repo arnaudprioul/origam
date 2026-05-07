@@ -16,7 +16,8 @@ test.describe('OrigamField', () => {
         await expect(sandbox.locator('[data-cy="field-variant-input"]')).toBeVisible({ timeout: 3000 })
     })
 
-    test('Variants showcase — all seven variant rungs are rendered', async ({ page }) => {
+    test('Variants showcase — all five variant rungs are rendered', async ({ page }) => {
+        // solo-filled and solo-inverted were removed in the PDF-alignment cleanup (2026-05-06)
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Variants showcase', { exact: true }).first().click()
@@ -24,7 +25,7 @@ test.describe('OrigamField', () => {
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
-        const variants = ['outlined', 'filled', 'plain', 'underlined', 'solo', 'solo-filled', 'solo-inverted']
+        const variants = ['outlined', 'filled', 'plain', 'underlined', 'solo']
         for (const v of variants) {
             const el = sandbox.locator(`[data-cy="field-showcase-${v}"]`)
             await expect(el).toBeVisible({ timeout: 5000 })
