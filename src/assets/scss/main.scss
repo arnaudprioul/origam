@@ -14,6 +14,14 @@
 @forward 'tokens/light';
 @forward 'tokens/dark';
 
+// Global utility classes (`.origam--bg-primary`, `.origam--shadow-md`, …).
+// MUST load AFTER the token vars (so `var(--origam-…)` resolves) and BEFORE
+// any component scoped CSS — Vite places component `<style scoped>` after
+// the global stylesheet by default, which keeps `.origam-btn--variant-flat`
+// (component layer) winning over `.origam--bg-primary` (utility layer) on
+// equal specificity (0,1,0) thanks to source order.
+@forward 'tokens/origam-utilities';
+
 // Public mixin surface.
 @forward 'helpers';
 

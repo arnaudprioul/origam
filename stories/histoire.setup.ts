@@ -12,6 +12,13 @@ import '@origam/assets/css/tokens/primitive.css'
 import '@origam/assets/css/tokens/light.css'
 import '@origam/assets/css/tokens/dark.css'
 
+// Global utility classes (`.origam--bg-primary`, `.origam--shadow-md`, …).
+// Loaded AFTER tokens so the `var(--origam-…)` references resolve, and
+// BEFORE component <style scoped> blocks (Vite injects scoped CSS after the
+// imports above, so source order keeps component selectors winning the
+// specificity tie at 0,1,0).
+import '@origam/assets/css/tokens/origam-utilities.css'
+
 // Material Design Icons font — every component that renders an icon
 // (OrigamIcon, OrigamListGroup activator's expand chevron, OrigamBtn
 // prepend-icon, OrigamChip close button, …) ships with class names
