@@ -4,7 +4,6 @@
 			title="Drawer/OrigamDrawer"
 	>
 
-		<!-- ════════════ DEFAULT (open in layout) ════════════ -->
 		<Variant title="Default (permanent)">
 			<div style="position: relative; height: 280px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
 				<origam-drawer permanent data-cy="drawer-default" style="position: relative; height: 100%;">
@@ -14,7 +13,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ TEMPORARY ════════════ -->
 		<Variant
 				title="Temporary"
 				:init-state="() => useStoryInitState<{ open: boolean }>({ open: false })"
@@ -44,7 +42,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ RAIL ════════════ -->
 		<Variant
 				title="Rail"
 				:init-state="() => useStoryInitState<{ rail?: boolean }>({ rail: true })"
@@ -70,7 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOCATION ════════════ -->
 		<Variant
 				title="Location"
 				:init-state="() => useStoryInitState<{ location: string }>({ location: 'left' })"
@@ -100,7 +96,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<div style="position: relative; height: 280px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
 				<origam-drawer permanent data-cy="drawer-slot-prepend" style="position: relative; height: 100%;">
@@ -115,7 +110,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: append ════════════ -->
 		<Variant title="Slot — append">
 			<div style="position: relative; height: 280px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
 				<origam-drawer permanent data-cy="drawer-slot-append" style="position: relative; height: 100%;">
@@ -130,7 +124,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 16px;">
 				<origam-btn
@@ -142,7 +135,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IDrawerProps>({

@@ -126,6 +126,13 @@
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props resolved through the parent OrigamExpansionPanels defaults
+	 * provider, group registration, and composable setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IExpansionPanelProps>(), {
 		tag: 'div'
 	})
@@ -144,15 +151,13 @@
 	const groupItem = useGroupItem(props, ORIGAM_EXPANSION_PANEL_KEY)
 	const slots = useSlots()
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
-
+	/*********************************************************
+	 * Group
+	 *
+	 * @description
+	 * Tracks selection state, position relative to selected siblings,
+	 * and provides the group context to child header/content.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return groupItem?.disabled.value || props.disabled
 	})
@@ -190,9 +195,24 @@
 		provide(ORIGAM_EXPANSION_PANEL_KEY, groupItem)
 	}
 
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Controls the line/circular/skeleton loader at the panel top.
+	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
 	const hasLoading = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
 	})
+
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Determines which structural sections to render.
+	 ********************************************************/
 	const hasContent = computed(() => {
 		return slots.content || !!props.content
 	})
@@ -207,7 +227,19 @@
 		return origamExpansionPanelContentRef.value?.filterProps(props, ['class', 'id', 'style', 'tag'])
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {densityClasses} = useDensity(props)
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {elevationClasses} = useElevation(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	const expansionPanelStyles = computed(() => {
 		return [
@@ -239,8 +271,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -250,8 +286,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json.
-	// Bug fix (port Origam): hex values and Vuetify shadow vars replaced with Origam tokens.
 	.origam-expansion-panel {
 		flex: var(--origam-expansion-panel---flex, 1 0 100%);
 		max-width: var(--origam-expansion-panel---max-width, 100%);

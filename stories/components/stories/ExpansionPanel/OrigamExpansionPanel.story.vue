@@ -4,7 +4,6 @@
 			title="ExpansionPanel/OrigamExpansionPanel"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -20,7 +19,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -35,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -50,7 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HEADER PROPS (expandIcon / collapseIcon / hideActions / readonly) ════════════ -->
 		<Variant
 				title="Header props"
 				:init-state="() => useStoryInitState<{ expandIcon?: TIcon, collapseIcon?: TIcon, hideActions: boolean, readonly: boolean, focusable: boolean }>({ expandIcon: MDI_ICONS.CHEVRON_DOWN, collapseIcon: MDI_ICONS.CHEVRON_UP, hideActions: false, readonly: false, focusable: false })"
@@ -78,7 +74,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (disabled) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: false })"
@@ -94,7 +89,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (content) ════════════ -->
 		<Variant title="Slot — default (content)">
 			<origam-expansion-panels>
 				<origam-expansion-panel title="Panel with slot content" data-cy="ep-slot-default">
@@ -108,7 +102,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ SLOT: title ════════════ -->
 		<Variant title="Slot — title">
 			<origam-expansion-panels>
 				<origam-expansion-panel content="Content here" data-cy="ep-slot-title">
@@ -120,7 +113,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-expansion-panels>
 				<origam-expansion-panel title="With prepend" content="Content here" data-cy="ep-slot-prepend">
@@ -131,7 +123,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ SLOT: append ════════════ -->
 		<Variant title="Slot — append">
 			<origam-expansion-panels>
 				<origam-expansion-panel title="With append" content="Content here" data-cy="ep-slot-append">
@@ -142,7 +133,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ EMIT: group:selected ════════════ -->
 		<Variant title="Emit — group:selected">
 			<origam-expansion-panels>
 				<origam-expansion-panel
@@ -154,7 +144,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -195,7 +184,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<origam-expansion-panels :model-value="[0]" multiple>
@@ -216,7 +204,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IExpansionPanelProps>({

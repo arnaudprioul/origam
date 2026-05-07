@@ -4,7 +4,6 @@
 			title="DefaultsProvider/OrigamDefaultsProvider"
 	>
 
-		<!-- ════════════ GLOBAL DEFAULTS ════════════ -->
 		<Variant title="Global defaults (density)">
 			<origam-defaults-provider
 					:defaults="{ global: { density: 'compact' } }"
@@ -17,7 +16,6 @@
 			</origam-defaults-provider>
 		</Variant>
 
-		<!-- ════════════ COMPONENT-LEVEL DEFAULTS ════════════ -->
 		<Variant title="Component-level defaults">
 			<origam-defaults-provider
 					:defaults="{ 'origam-btn': { color: 'primary', variant: 'flat' } }"
@@ -29,7 +27,6 @@
 			</origam-defaults-provider>
 		</Variant>
 
-		<!-- ════════════ SCOPED (no parent inheritance) ════════════ -->
 		<Variant title="Scoped (no parent inheritance)">
 			<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'primary' } }">
 				<origam-btn text="Sees primary" style="margin-bottom: 8px; display: block;"/>
@@ -42,7 +39,6 @@
 			</origam-defaults-provider>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant title="Disabled (pass-through)">
 			<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'primary' } }">
 				<origam-btn text="Outer default (primary)" style="margin-bottom: 8px; display: block;"/>
@@ -52,7 +48,6 @@
 			</origam-defaults-provider>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-defaults-provider :defaults="{ global: { size: 'small' } }">
 				<template #default>
@@ -61,7 +56,6 @@
 			</origam-defaults-provider>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

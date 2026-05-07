@@ -108,6 +108,12 @@
 
 	import type { IExpansionPanelHeaderProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and injection of the parent expansion panel context.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelHeaderProps>(), {
 		tag: 'button',
 		expandIcon: MDI_ICONS.CHEVRON_DOWN,
@@ -124,20 +130,12 @@
 
 	const slots = useSlots()
 
-	const {
-		hasAppend,
-		hasPrepend,
-		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend
-	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
-
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-
+	/*********************************************************
+	 * Group & Expand
+	 *
+	 * @description
+	 * Selection state, expand/collapse toggle, and slot props.
+	 ********************************************************/
 	const handleExpand = () => {
 		if (!props.readonly) {
 			expansionPanel.toggle()
@@ -165,7 +163,31 @@
 		return slots.default || props.title
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Adjacent
+	 *
+	 * @description
+	 * Prepend/append icon slots and click handlers.
+	 ********************************************************/
+	const {
+		hasAppend,
+		hasPrepend,
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {densityClasses} = useDensity(props)
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	const expansionPanelHeaderStyles = computed(() => {
 		return [
@@ -194,8 +216,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -205,7 +231,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json header section.
 	.origam-expansion-panel-header {
 		$this: &;
 

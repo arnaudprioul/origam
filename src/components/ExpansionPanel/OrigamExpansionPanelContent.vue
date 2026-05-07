@@ -72,6 +72,12 @@
 
 	import type { IExpansionPanelContentProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and injection of the parent expansion panel context.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelContentProps>(), {
 		tag: 'div'
 	})
@@ -82,15 +88,13 @@
 
 	if (!expansionPanel) throw new Error('[Origam] expansion-panel-content needs to be placed inside expansion-panel')
 
+	/*********************************************************
+	 * Lazy & Selection
+	 *
+	 * @description
+	 * Deferred content rendering tied to the panel's selection state.
+	 ********************************************************/
 	const {hasContent, onAfterLeave: handleAfterLeave} = useLazy(props, expansionPanel.isSelected)
-
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 
 	const isSelected = computed(() => {
 		return expansionPanel.isSelected.value
@@ -99,7 +103,26 @@
 		return typeof props.content !== 'string'
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Line/circular/skeleton loading state for the content area.
+	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {densityClasses} = useDensity(props)
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	const expansionPanelContentStyles = computed(() => {
 		return [
@@ -124,8 +147,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -135,7 +162,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json content section.
 	.origam-expansion-panel-content {
 		display: var(--origam-expansion-panel__content---display, flex);
 

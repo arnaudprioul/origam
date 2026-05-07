@@ -1,15 +1,4 @@
 <template>
-	<!--
-		`defer` (Vue 3.5+) waits until the current render cycle has
-		settled before resolving the teleport target. Pre-fix the teleport
-		evaluated `:to="#layout-0 .origam-layout__wrapper"` while the
-		wrapper was still being mounted by the parent OrigamLayout — Vue
-		warned `Failed to locate Teleport target` and `Invalid Teleport
-		target on mount: null`, the drawer never mounted, and a cascade
-		of `Cannot set properties of null (setting '__vnode')` errors
-		took the rest of the variant down. With `defer`, the target lookup
-		runs after the layout's wrapper is in the DOM.
-	-->
 	<teleport
 			v-if="isActive"
 			:disabled="isLayoutOrphan"
@@ -104,6 +93,12 @@
 
 	import { getUid, int } from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and composable bootstrapping.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IDrawerProps>(), {
 		tag: 'nav',
 		permanent: null,
@@ -131,6 +126,12 @@
 	const {ssrBootStyles} = useSsrBoot()
 	const {scopeId} = useScopeId()
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Active state, width derivation, and location/sticky flags.
+	 ********************************************************/
 	const isActive = useVModel(props, 'modelValue', false, v => !!v)
 	const rootEl = ref<HTMLElement>()
 	const isHovering = shallowRef(false)
@@ -168,8 +169,12 @@
 		isActive.value = props.permanent as boolean
 	})
 
-	// DRAG
-
+	/*********************************************************
+	 * Drag
+	 *
+	 * @description
+	 * Touch-drag to open/close the drawer.
+	 ********************************************************/
 	const {isDragging, dragProgress, dragStyles} = useTouch({
 		isActive: isActive as Ref<boolean>,
 		isTemporary,
@@ -178,8 +183,14 @@
 		position: location
 	})
 
-	// LAYOUT
-
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Registers the drawer as a layout item. When no OrigamLayout
+	 * ancestor exists, `layoutId` is 'origam-layout-orphan' and the
+	 * teleport is disabled so the drawer renders inline.
+	 ********************************************************/
 	const layoutSize = computed(() => {
 		const size = isTemporary.value ? 0
 				: props.rail && props.expandOnHover ? Number(props.railWidth)
@@ -217,7 +228,12 @@
 
 	const {isStuck, stickyStyles} = useSticky({rootEl, isSticky, layoutItemStyles})
 
-	// SCRIM
+	/*********************************************************
+	 * Scrim
+	 *
+	 * @description
+	 * Scrim opacity follows drag progress when dragging.
+	 ********************************************************/
 	const scrimStyles = computed(() => ({
 		...isDragging.value ? {
 			opacity: dragProgress.value * 0.2,
@@ -230,8 +246,12 @@
 		isActive.value = false
 	}
 
-	// HOVER
-
+	/*********************************************************
+	 * Hover
+	 *
+	 * @description
+	 * Expand-on-hover rail mode toggle.
+	 ********************************************************/
 	const handleMouseEnter = () => {
 		isHovering.value = true
 	}
@@ -239,8 +259,12 @@
 		isHovering.value = false
 	}
 
-	// SLOTS
-
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Detects presence of prepend, default (content), and append slots.
+	 ********************************************************/
 	const hasPrepend = computed(() => {
 		return slots.prepend
 	})
@@ -251,8 +275,12 @@
 		return slots.append
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * drawerClasses and drawerStyles computed properties.
+	 ********************************************************/
 	const drawerStyles = computed(() => {
 		return [
 			backgroundColorStyles.value,
@@ -290,8 +318,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -321,19 +353,6 @@
 		position: var(--origam-layout---position, var(--origam-drawer---position));
 		z-index: var(--origam-layout---zIndex, 1000);
 
-		// Pre-fix two SCSS bugs were stacked here:
-		// 1. Every `--origam-drawer--{prop}` (double-dash) read a CSS
-		//    variable the token build never emits — tokens emit
-		//    `--origam-drawer---{prop}` (TRIPLE dash). Net effect: 36/37
-		//    drawer variables resolved to nothing, so the drawer rendered
-		//    with browser-default backgrounds, transitions, and
-		//    dimensions instead of the design tokens.
-		// 2. `border-style` mistakenly read the `--border-color` variable
-		//    (typo). Even if the var name were correct it would still
-		//    produce an invalid `border-style` value.
-		// Fixed in this commit by rewriting all reads to triple-dash and
-		// pointing `border-style` at the correct variable. Per-side
-		// widths + per-corner radii match the chromique pattern.
 		border-color: var(--origam-drawer---border-color);
 		border-style: var(--origam-drawer---border-style);
 		border-top-width: var(--origam-drawer---border-top-width, 0);
@@ -349,10 +368,6 @@
 		box-shadow: var(--origam-drawer---box-shadow);
 		color: var(--origam-drawer---color);
 
-		// `border={true}` — opt-in border on all four sides (Vuetify
-		// parity). The per-side reads above pick up these var values
-		// automatically; the duplicate `border-{side}-width` declarations
-		// previously baked into each directional modifier were redundant.
 		&--border {
 			--origam-drawer---border-top-width: thin;
 			--origam-drawer---border-right-width: thin;
@@ -361,8 +376,6 @@
 			--origam-drawer---box-shadow: none;
 		}
 
-		// Edge-anchored variants — only the side adjacent to the
-		// content gets a border, mimicking the Material drawer treatment.
 		&--top {
 			top: 0;
 			--origam-drawer---border-bottom-width: thin;
@@ -428,7 +441,6 @@
 		}
 
 		&__scrim {
-			/* CSS-first: toutes les valeurs passent par les tokens — pas de valeur hardcodée */
 			position: var(--origam-drawer__scrim---position, absolute);
 			top: var(--origam-drawer__scrim---position-top, 0);
 			left: var(--origam-drawer__scrim---position-left, 0);
@@ -450,6 +462,3 @@
 	}
 </style>
 
-<!-- Les valeurs par défaut des CSS custom properties ci-dessus sont désormais
-     émises par Style Dictionary depuis tokens/component/drawer.json.
-     Le bloc :root global a été supprimé — Lot 2D migration design tokens. -->

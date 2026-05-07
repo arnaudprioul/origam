@@ -4,20 +4,6 @@
 			title="ExpansionPanel/OrigamExpansionPanels"
 	>
 
-		<!--
-			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
-
-			Each <Variant> drives one orthogonal concern:
-			  • one variant per "prop family" (color, size, density, …)
-			  • one variant per slot
-			  • one variant per emit — wire the listener to
-			    `logEvent('event-name', $event)` (imported from
-			    'histoire/client') so the emit shows up in histoire's
-			    Events tab.
-			  • one "playground" variant that exposes everything together
-		-->
-
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -34,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -50,7 +35,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -66,7 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -82,7 +65,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
@@ -98,7 +80,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ICONS (expand / collapse) ════════════ -->
 		<Variant
 				title="Icons"
 				:init-state="() => useStoryInitState<{ expandIcon?: TIcon, collapseIcon?: TIcon, hideActions: boolean }>({ expandIcon: MDI_ICONS.CHEVRON_DOWN, collapseIcon: MDI_ICONS.CHEVRON_UP, hideActions: false })"
@@ -121,7 +102,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LAYOUT (flat / accordion / popout / inset) ════════════ -->
 		<Variant
 				title="Layout"
 				:init-state="() => useStoryInitState<{ flat: boolean, accordion: boolean, popout: boolean, inset: boolean }>({ flat: false, accordion: false, popout: false, inset: false })"
@@ -147,7 +127,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SELECTION (multiple / mandatory) ════════════ -->
 		<Variant
 				title="Selection"
 				:init-state="() => useStoryInitState<{ multiple: boolean, mandatory: boolean }>({ multiple: false, mandatory: false })"
@@ -169,12 +148,10 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
 		<Variant title="Items prop">
 			<origam-expansion-panels :items="panelItems" data-cy="expansion-items"/>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (explicit children with title / content slots) ════════════ -->
 		<Variant title="Slot — default">
 			<origam-expansion-panels data-cy="expansion-slot-default">
 				<origam-expansion-panel data-cy="expansion-slot-p1">
@@ -196,7 +173,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ SLOT: item ════════════ -->
 		<Variant title="Slot — item">
 			<origam-expansion-panels :items="panelItems" data-cy="expansion-slot-item">
 				<template #item="{ item, index, expandIcon, collapseIcon }">
@@ -211,7 +187,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ SLOT: header ════════════ -->
 		<Variant title="Slot — header">
 			<origam-expansion-panels data-cy="expansion-slot-header">
 				<origam-expansion-panel data-cy="expansion-slot-header-p1">
@@ -231,7 +206,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ SLOT: title ════════════ -->
 		<Variant title="Slot — title">
 			<origam-expansion-panels data-cy="expansion-slot-title">
 				<origam-expansion-panel data-cy="expansion-slot-title-p1">
@@ -245,7 +219,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-expansion-panels
 					data-cy="expansion-emit-model"
@@ -256,7 +229,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ EMIT: group:selected (via panel) ════════════ -->
 		<Variant title="Emit — group:selected">
 			<origam-expansion-panels data-cy="expansion-emit-selected">
 				<origam-expansion-panel
@@ -274,7 +246,6 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IExpansionPanelsProps>({

@@ -4,7 +4,6 @@
 			title="Dialog/OrigamDialog"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<div style="padding: 16px;" data-cy="dialog-default-host">
 				<origam-dialog v-model="defaultOpen" title="Dialog title">
@@ -24,7 +23,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ FULLSCREEN ════════════ -->
 		<Variant
 				title="Fullscreen"
 				:init-state="() => useStoryInitState<{ fullscreen: boolean }>({ fullscreen: true })"
@@ -51,7 +49,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZES ════════════ -->
 		<Variant title="Sizes">
 			<div style="padding: 16px; display: flex; flex-wrap: wrap; gap: 8px;" data-cy="dialog-sizes-host">
 				<origam-dialog v-model="sizeXsOpen" size="x-small" title="xs · 320px">
@@ -140,7 +137,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SCROLLABLE ════════════ -->
 		<Variant title="Scrollable">
 			<div style="padding: 16px;" data-cy="dialog-scrollable-host">
 				<origam-dialog v-model="scrollableOpen" scrollable title="Scrollable dialog">
@@ -161,7 +157,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PERSISTENT ════════════ -->
 		<Variant title="Persistent">
 			<div style="padding: 16px;" data-cy="dialog-persistent-host">
 				<origam-dialog v-model="persistentOpen" persistent title="Persistent dialog">
@@ -180,7 +175,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ STATUS ════════════ -->
 		<Variant
 				title="Status"
 				:init-state="() => useStoryInitState<{ status?: string }>({ status: 'success' })"
@@ -217,7 +211,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: header-prepend ════════════ -->
 		<Variant title="Slot — header-prepend">
 			<div style="padding: 16px;" data-cy="dialog-slot-header-prepend-host">
 				<origam-dialog v-model="slotPrependOpen" title="With prepend icon">
@@ -234,7 +227,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 16px;" data-cy="dialog-emit-host">
 				<origam-dialog
@@ -253,7 +245,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:outside ════════════ -->
 		<Variant title="Emit — click:outside">
 			<div style="padding: 16px;" data-cy="dialog-emit-outside-host">
 				<origam-dialog
@@ -271,7 +262,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IDialogProps>({

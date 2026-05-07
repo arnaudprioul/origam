@@ -135,6 +135,13 @@
 
 	import type { IExpansionPanelsProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, group registration, and slot defaults that cascade
+	 * visual-token props to child expansion panels.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelsProps>(), {
 		tag: 'div'
 	})
@@ -159,6 +166,12 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -167,8 +180,6 @@
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {loaderClasses} = useLoader(props, 'line')
-
-	// CLASSES & STYLES
 
 	const expansionPanelsStyles = computed(() => {
 		return [
@@ -200,8 +211,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -211,7 +226,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json.
 	.origam-expansion-panels {
 		$this: &;
 
@@ -339,9 +353,6 @@
 			}
 		}
 
-		// Rounded variants — propagated via CSS var to child expansion-panels.
-		// The root sets --origam-expansion-panels---border-radius and child
-		// panels inherit via border-radius: var(...) on their own root.
 		&--rounded {
 			--origam-expansion-panels---border-radius: var(--origam-radius-2xl, 24px);
 			border-radius: var(--origam-expansion-panels---border-radius);

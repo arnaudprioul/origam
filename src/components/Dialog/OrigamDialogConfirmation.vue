@@ -133,6 +133,12 @@
 
 	import type { TOrigamDialog } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, and ref to the inner OrigamDialog.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IDialogConfirmationProps>(), {
 		cancellable: true
 	})
@@ -143,15 +149,27 @@
 
 	const origamDialogRef = ref<TOrigamDialog>()
 
+	const slots = useSlots()
+
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Two-way binding for open/close state and validation guard.
+	 ********************************************************/
 	const isActive = useVModel(props, 'modelValue')
 	const validatable = ref(false)
-
-	const slots = useSlots()
 
 	const dialogProps = computed(() => {
 		return origamDialogRef.value?.filterProps(props, ['class', 'style', 'id', 'modelValue'])
 	})
 
+	/*********************************************************
+	 * Events
+	 *
+	 * @description
+	 * Handlers for read-state, validate, and cancel actions.
+	 ********************************************************/
 	const handleIsRead = (value: boolean) => {
 		validatable.value = value
 	}
@@ -166,8 +184,12 @@
 		isActive.value = false
 	}
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

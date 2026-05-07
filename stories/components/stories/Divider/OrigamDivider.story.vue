@@ -4,7 +4,6 @@
 			title="Divider/OrigamDivider"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -31,7 +30,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction?: TDirection }>({ direction: undefined })"
@@ -53,7 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LENGTH ════════════ -->
 		<Variant
 				title="Length"
 				:init-state="() => useStoryInitState<{ length?: number | string }>({ length: 120 })"
@@ -66,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ THICKNESS ════════════ -->
 		<Variant
 				title="Thickness"
 				:init-state="() => useStoryInitState<{ thickness?: number | string }>({ thickness: 2 })"
@@ -79,7 +75,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IDividerProps>({
