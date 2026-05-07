@@ -62,6 +62,12 @@
 
 	import { convertToUnit, int } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, slots, and slider context injection.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldTrackProps>(), {
 		start: 0,
 		stop: 100,
@@ -91,6 +97,13 @@
 		indexFromEnd
 	} = slider
 
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Derived color, bgColor, size and tick visibility from
+	 * the parent slider context.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
@@ -136,6 +149,13 @@
 	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(color)
 	const {backgroundColorStyles} = useBackgroundColor(bgColor)
 
+	/*********************************************************
+	 * Track geometry
+	 *
+	 * @description
+	 * Direction-aware start/end logical CSS properties, fill
+	 * width/height, and tick positions.
+	 ********************************************************/
 	const startDir = computed(() => `inset-${isVertical.value ? 'block' : 'inline'}-${indexFromEnd.value ? 'end' : 'start'}`)
 	const endDir = computed(() => isVertical.value ? 'height' : 'width')
 
@@ -182,8 +202,13 @@
 		]
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Classes and styles for the track root, background fill,
+	 * active fill, and ticks container.
+	 ********************************************************/
 	const sliderFieldTrackStyles = computed(() => {
 		return [
 			{
@@ -234,8 +259,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

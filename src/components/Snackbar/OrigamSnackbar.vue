@@ -16,8 +16,8 @@
 	>
 		<template #default>
       <span
-		      key="underlay"
-		      class="origam-snackbar__underlay"
+	      key="underlay"
+	      class="origam-snackbar__underlay"
       />
 
 			<!--
@@ -131,6 +131,12 @@
 
 	import { forwardRefs } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISnackbarProps>(), {
 		timeout: 5000,
 		location: 'bottom',
@@ -146,17 +152,17 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & Countdown
+	 *
+	 * @description
+	 * v-model active state, countdown timer, and auto-dismiss
+	 * timeout management.
+	 ********************************************************/
 	const isActive = useVModel(props, 'modelValue')
 	const {positionClasses} = usePosition(props)
 	const {scopeId} = useScopeId()
 	const {icon, statusClasses} = useStatus(props)
-
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 	const isHovering = shallowRef(false)
@@ -205,6 +211,12 @@
 		if (isActive.value) startTimeout()
 	})
 
+	/*********************************************************
+	 * Interaction
+	 *
+	 * @description
+	 * Hover pause/resume, swipe-to-dismiss touch handling.
+	 ********************************************************/
 	const handlePointerenter = () => {
 		isHovering.value = true
 		clearTimeout()
@@ -221,6 +233,20 @@
 			isActive.value = false
 		}
 	}
+
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered overlay props and merged content wrapper props
+	 * (color, rounded, border, padding, margin, hover handlers).
+	 ********************************************************/
+	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {elevationClasses} = useElevation(props)
 
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['class', 'style', 'id', 'contentProps', 'modelValue', 'disableGlobalStack', 'noClickAnimation', 'persistent', 'scrim', 'scrollStrategy'])
@@ -242,6 +268,12 @@
 		}, props.contentProps)
 	})
 
+	/*********************************************************
+	 * Slot helpers
+	 *
+	 * @description
+	 * Computed flags for conditional slot / icon rendering.
+	 ********************************************************/
 	const hasPrepend = computed(() => {
 		return !!(slots['prepend'] || icon.value)
 	})
@@ -250,8 +282,12 @@
 	})
 	const hasContent = slots.default || slots.text || !!(props.text) || hasPrepend.value
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element location classes and styles.
+	 ********************************************************/
 	const locationClasses = computed(() => {
 		return props.location.split(' ').reduce((acc, loc) => {
 			acc[`origam-snackbar--${loc}`] = true
@@ -286,8 +322,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
 </script>
 

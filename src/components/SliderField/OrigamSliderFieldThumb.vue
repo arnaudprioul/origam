@@ -59,6 +59,12 @@
 
 	import { clamp, convertToUnit, int } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and slider context injection.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldThumbProps>(), {
 		ripple: true,
 		size: 20,
@@ -93,6 +99,13 @@
 		indexFromEnd
 	} = slider
 
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Derived disabled / readonly state, resolved color,
+	 * size, and position percentage from parent slider context.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
@@ -138,6 +151,13 @@
 			'circle', 'center']] : undefined
 	})
 
+	/*********************************************************
+	 * Keyboard
+	 *
+	 * @description
+	 * Keyboard navigation — arrow keys, Home/End, PageUp/Down
+	 * with shift/ctrl multipliers for fine/coarse stepping.
+	 ********************************************************/
 	const {elevationClasses} = useElevation(elevationProps)
 	const {borderClasses, borderStyles} = useBorder(borderProps)
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
@@ -186,6 +206,12 @@
 		}
 	}
 
+	/*********************************************************
+	 * Label
+	 *
+	 * @description
+	 * Label visibility and formatted numeric display.
+	 ********************************************************/
 	const showLabel = computed(() => {
 		return (props.label && props.focused) || props.label === 'always'
 	})
@@ -193,8 +219,13 @@
 		return props.modelValue.toFixed(step.value ? decimals.value : 1)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Classes and styles for the thumb, its surface, and the
+	 * ripple layer.
+	 ********************************************************/
 	const sliderFieldThumbStyles = computed(() => {
 		return [
 			{
@@ -237,8 +268,12 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

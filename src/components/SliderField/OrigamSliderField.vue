@@ -213,6 +213,12 @@
 
 	import { getSliderFieldOffset, omit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and component refs.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
@@ -234,6 +240,14 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & Range
+	 *
+	 * @description
+	 * Model value management, range mode detection, and the
+	 * core useSlider composable wiring (drag, thumb refs,
+	 * start/end/move callbacks).
+	 ********************************************************/
 	const isRange = computed(() => {
 		return props.range
 	})
@@ -348,6 +362,13 @@
 			}
 	) as WritableComputedRef<[number, number] | number> & { readonly externalValue: Array<number> | number }
 
+	/*********************************************************
+	 * Focus
+	 *
+	 * @description
+	 * Focus state and range-thumb focus routing — ensures the
+	 * correct thumb is focused when thumbs overlap at min/max.
+	 ********************************************************/
 	const {isFocused, onFocus, onBlur} = useFocus(props)
 	const {rtlClasses} = useRtl()
 
@@ -394,6 +415,12 @@
 		}
 	}
 
+	/*********************************************************
+	 * Track positions
+	 *
+	 * @description
+	 * Computed track fill positions for single and range mode.
+	 ********************************************************/
 	const trackStop = computed(() => {
 		if (isRange.value) return
 
@@ -418,6 +445,12 @@
 		model.value = v
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props forwarded to child Input, Thumb and Track.
+	 ********************************************************/
 	const inputProps = computed(() => {
 		// Strip the entire IColorProps surface so `OrigamInput` (the
 		// row wrapper) doesn't paint the consumer's intent on its
@@ -437,8 +470,12 @@
 		return !!(props.label) || slots.label || slots.prepend
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const sliderFieldStyles = computed(() => {
 		return [
 			props.style
@@ -459,8 +496,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
