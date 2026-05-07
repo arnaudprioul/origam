@@ -90,10 +90,25 @@
 
 	import { convertToUnit, getCurrentInstance, getScrollParent } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollProps>(), {})
 
 	const {filterProps} = useProps<IVirtualScrollProps>(props)
 
+	/*********************************************************
+	 * Virtual scroll engine
+	 *
+	 * @description
+	 * Core useVirtual composable that manages the visible item
+	 * window, padding spacers, and item resize callbacks.
+	 * In renderless mode, scroll listeners attach to the
+	 * nearest scrollable ancestor instead of an inner div.
+	 ********************************************************/
 	const vm = getCurrentInstance('OrigamVirtualScroll')
 	const {dimensionStyles} = useDimension(props)
 	const {
@@ -129,8 +144,12 @@
 		onScopeDispose(handleListeners)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles (non-renderless mode).
+	 ********************************************************/
 	const virtualScrollStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -144,8 +163,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		scrollToIndex,
 		filterProps
