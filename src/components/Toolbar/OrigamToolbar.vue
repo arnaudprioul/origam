@@ -59,6 +59,12 @@
 
 	import type { IToolbarProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IToolbarProps>(), {
 		tag: 'header',
 		density: DENSITY.DEFAULT,
@@ -67,6 +73,32 @@
 
 	const {filterProps} = useProps<IToolbarProps>(props)
 
+	const slots = useSlots()
+
+	/*********************************************************
+	 * Slot helpers
+	 *
+	 * @description
+	 * Computed flags for conditional prepend / title / append
+	 * rendering in the default wrapper slot.
+	 ********************************************************/
+	const hasPrepend = computed(() => {
+		return slots.prepend
+	})
+	const hasTitle = computed(() => {
+		return !!(props.title || slots.title)
+	})
+	const hasAppend = computed(() => {
+		return slots.append
+	})
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles, plus useStyle for
+	 * injected CSS custom property sheet.
+	 ********************************************************/
 	const {rtlClasses} = useRtl()
 
 	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
@@ -78,20 +110,6 @@
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {positionStyles, positionClasses} = usePosition(props)
-
-	const slots = useSlots()
-
-	const hasPrepend = computed(() => {
-		return slots.prepend
-	})
-	const hasTitle = computed(() => {
-		return !!(props.title || slots.title)
-	})
-	const hasAppend = computed(() => {
-		return slots.append
-	})
-
-	// CLASS & STYLES
 
 	const barStyles = computed(() => {
 		return [
@@ -128,8 +146,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(barStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,

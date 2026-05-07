@@ -19,6 +19,12 @@
 
 	import { omit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITransitionComponentProps>(), {
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
@@ -28,6 +34,14 @@
 	const attrs = useAttrs()
 	const {isDisabled} = useTransition(props)
 
+	/*********************************************************
+	 * Transition resolution
+	 *
+	 * @description
+	 * Resolves the dynamic component (named Vue Transition or
+	 * a custom component) and merges props + attrs into the
+	 * final transitionProps object.
+	 ********************************************************/
 	const component = computed(() => {
 		return typeof props.transition === 'object' && props.transition.component ? props.transition.component : Transition
 	})
@@ -41,8 +55,12 @@
 				{disabled: isDisabled.value})
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

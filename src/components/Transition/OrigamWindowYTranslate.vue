@@ -16,16 +16,33 @@
 
 	import type { ITransitionProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITransitionProps>(), {
 		name: 'origam-transition--window-y-translate'
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
 
+	/*********************************************************
+	 * Transition
+	 *
+	 * @description
+	 * Window vertical forward-slide transition delegated to
+	 * useWindowTransition.
+	 ********************************************************/
 	const {name, tag, transitionProps} = useWindowTransition(props)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
