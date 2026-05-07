@@ -500,6 +500,22 @@
 	.origam-field {
 		$this: &;
 
+		// Direct declarations FIRST (Sass 2.0 mixed-decls compliance —
+		// declarations after nested rules will change semantics in a
+		// future Sass major). All `&__*` sub-rules go below.
+		display: grid;
+		grid-template-areas: "prepend-inner field clear append-inner";
+		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;
+		font-size: 16px;
+		letter-spacing: 0.009375em;
+		max-width: 100%;
+		border-radius: var(--origam-field---rounded);
+		contain: layout;
+		flex: 1 0;
+		grid-area: control;
+		position: relative;
+		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
+
 		// Skeleton-mode replacement element. Sized to fill the field's
 		// content box so consumer code switching `loading` between values
 		// keeps a stable visual footprint.
@@ -525,19 +541,6 @@
 			pointer-events: none;
 			grid-column: 1 / -1;
 		}
-
-		display: grid;
-		grid-template-areas: "prepend-inner field clear append-inner";
-		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;
-		font-size: 16px;
-		letter-spacing: 0.009375em;
-		max-width: 100%;
-		border-radius: var(--origam-field---rounded);
-		contain: layout;
-		flex: 1 0;
-		grid-area: control;
-		position: relative;
-		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 
 		.origam-chip {
 			--origam-chip---height: 24px;
