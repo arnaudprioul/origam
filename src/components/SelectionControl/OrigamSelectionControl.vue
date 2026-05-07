@@ -4,7 +4,10 @@
     :style="selectionControlStyles"
     v-bind="rootAttrs"
   >
-    <div class="origam-selection-control__wrapper">
+    <div
+      :class="['origam-selection-control__wrapper', wrapperColorClasses]"
+      :style="wrapperColorStyles"
+    >
       <slot
         name="default"
         v-bind="{ model, color, bgColor, icon, props: { onFocus: handleFocus, onBlur: handleBlur, id } }"
@@ -71,7 +74,7 @@
   import type { TOrigamLabel } from "../../types";
   import { OrigamIcon, OrigamLabel } from '../../components'
 
-  import { useBackgroundColor, useDefaults, useDensity, useProps, useTextColor, useVModel } from '../../composables'
+  import { useDefaults, useDensity, useProps, useTextColor, useVModel } from '../../composables'
 
   import { vRipple } from '../../directives'
 
@@ -79,10 +82,17 @@
 
   import { deepEqual, filterInputAttrs, forwardRefs, getUid, matchesSelector, wrapInArray } from '../../utils'
 
+  /*********************************************************
+   * Global
+   *
+   * @description
+   * Props, emits, slots and filterProps for the SelectionControl
+   * component. Defaults are resolved against the closest
+   * `provideDefaults({ 'origam-selection-control': … })` injected
+   * by a parent `OrigamSelectionControlGroup`.
+   ********************************************************/
   const _props = withDefaults(defineProps<ISelectionControlProps>(), {})
 
-  // Resolve props against the closest `provideDefaults({ 'origam-selection-control': … })`
-  // injected by a parent `OrigamSelectionControlGroup`.
   const props = useDefaults(_props)
 
   const emits = defineEmits<ISelectionControlEmits>()
@@ -91,12 +101,26 @@
 
   const { filterProps } = useProps<ISelectionControlProps>(props)
 
+  /*********************************************************
+   * DOM refs & group
+   *
+   * @description
+   * Input element ref for force-update path. Group inject for
+   * linked SelectionControlGroup parent.
+   ********************************************************/
   const inputRef = ref<HTMLInputElement>()
 
   const attrs = useAttrs()
 
   const group = inject(ORIGAM_SELECTION_CONTROL_GROUP_KEY, undefined)
 
+  /*********************************************************
+   * Value & model
+   *
+   * @description
+   * Density classes, v-model, true/false value derivation,
+   * multiple mode and value comparator.
+   ********************************************************/
   const {densityClasses} = useDensity(props)
 
   const modelValue = useVModel(props, 'modelValue')
@@ -161,6 +185,12 @@
     }
   })
 
+  /*********************************************************
+   * Event handlers
+   *
+   * @description
+   * Focus, blur, label click and input change handlers.
+   ********************************************************/
   const origamLabelRef = ref<TOrigamLabel>()
 
   const labelProps = computed(() => {
@@ -204,6 +234,18 @@
     return model.value ? (props.activeBgColor || props.bgColor) : props.bgColor
   })
 
+  // Phase 5 — fix Switch thumb tint regression (commit 5039394).
+  // The wrapper carries the consumer's `color` intent so that:
+  //   • The Switch thumb can pick the tint up via `currentColor` (the
+  //     SCSS rule `.origam--color-{intent} &__thumb { background-color:
+  //     currentColor }` re-instates the previous behaviour with the
+  //     class-first selector instead of the brittle `[style*="color:"]`
+  //     attribute selector).
+  //   • Legacy raw colors (hex/rgb) keep working through the inline
+  //     style fallback — `useTextColor` returns `[]` for non-tokenisable
+  //     values and pushes the inline declaration only.
+  const {textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles} = useTextColor(color)
+
   const rippleProp = computed(() => {
     if (props.ripple) {
       return [ !props.disabled && !props.readonly, null, [ 'center', 'circle' ] ]
@@ -212,8 +254,13 @@
     return [ false, null, [ 'center', 'circle' ] ]
   })
 
-  // CLASS & STYLES
-
+  /*********************************************************
+   * Class & Style
+   *
+   * @description
+   * selectionControlStyles and selectionControlClasses compose
+   * the BEM block.
+   ********************************************************/
   const selectionControlStyles = computed(() => {
     return [
       props.style
@@ -235,8 +282,13 @@
     ]
   })
 
-  // EXPOSE
-
+  /*********************************************************
+   * Expose
+   *
+   * @description
+   * Exposes filterProps to parent ref consumers, forwarded
+   * through inputRef.
+   ********************************************************/
   defineExpose(forwardRefs({ filterProps }, inputRef))
 </script>
 
@@ -340,13 +392,11 @@
     &--error {
       :not(#{$this}--disabled) {
         .origam-label {
-          /* --origam-selection-control__label---color-error: {color.feedback.danger.fgSubtle} (fallback: var(--origam-color-feedback-danger-fgSubtle)) */
           color: var(--origam-selection-control__label---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
         }
 
         #{$this}__input {
           > .origam-icon {
-            /* --origam-selection-control__icon---color-error: {color.feedback.danger.fgSubtle} */
             color: var(--origam-selection-control__icon---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
           }
         }

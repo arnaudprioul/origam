@@ -23,13 +23,17 @@ test.describe('OrigamSwitch', () => {
         const sw = sandbox.locator(`[data-cy="${cy}"]`)
         await expect(sw).toBeVisible({ timeout: 5000 })
         return sw.evaluate(el => {
-            const track = el.querySelector('.origam-switch__track') as HTMLElement
+            // Phase 4 correction (Cas A): the track was extracted into its own
+            // sub-component `OrigamSwitchTrack` whose BEM root is
+            // `origam-switch-track` (no `__` separator). Using `.origam-switch__track`
+            // returned null and caused `getComputedStyle(null)` to throw.
+            const track = el.querySelector('.origam-switch-track') as HTMLElement
             const thumb = el.querySelector('.origam-switch__thumb') as HTMLElement
             const wrapper = el.querySelector('.origam-selection-control__wrapper') as HTMLElement
             return {
-                trackBg: getComputedStyle(track).backgroundColor,
-                thumbBg: getComputedStyle(thumb).backgroundColor,
-                wrapperColor: getComputedStyle(wrapper).color
+                trackBg: track ? getComputedStyle(track).backgroundColor : 'MISSING',
+                thumbBg: thumb ? getComputedStyle(thumb).backgroundColor : 'MISSING',
+                wrapperColor: wrapper ? getComputedStyle(wrapper).color : 'MISSING'
             }
         })
     }
