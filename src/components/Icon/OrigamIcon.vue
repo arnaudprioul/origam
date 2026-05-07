@@ -24,13 +24,20 @@
 
 	import { flattenFragments } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables, and slot icon resolution.
+	 ********************************************************/
 	const attrs = useAttrs()
 
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -46,8 +53,12 @@
 		)[0]?.children as string
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const iconStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -64,6 +75,7 @@
 			{
 				'origam-icon--clickable': !!attrs.onClick
 			},
+			colorClasses.value,
 			sizeClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -72,8 +84,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -82,20 +98,10 @@
 <style
 		lang="scss"
 >
-	// Intentionally non-scoped: OrigamIcon is a thin dispatcher that renders
-	// one of the leaf icon components (Class/Ligature/Svg/Component). Vue's
-	// scoped CSS attaches a data-v-* attribute to the element rendered in
-	// THIS template, but the actual leaf <i> / <div> / <svg> is rendered by
-	// the leaf component's template — so a scoped selector here would never
-	// match. The `.origam-icon` namespace is unique enough to stay global.
 	.origam-icon {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		// Default colour comes from the design tokens — `currentColor` so an
-		// ancestor's `color` value cascades through to <path fill> in SVG and
-		// to the glyph in font-icons. Tokens are still resolvable via
-		// `--origam-icon---color` for one-off overrides.
 		color: var(--origam-icon---color, currentColor);
 		transition-duration: var(--origam-icon---transition-duration, 150ms);
 		transition-timing-function: var(--origam-icon---transition-timing-function, ease);
@@ -105,8 +111,6 @@
 			cursor: pointer;
 		}
 
-		// Named sizes — pinned to the typography scale tokens so an icon
-		// rendered next to body text inherits the matching cap-height.
 		&--size-x-small {
 			font-size: var(--origam-icon---font-size-xs, 1em);
 		}

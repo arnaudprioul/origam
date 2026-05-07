@@ -164,7 +164,8 @@
 		openOnSelect
 	} = useNestedItem(id, false)
 	const list = useList()
-	const {backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -305,6 +306,7 @@
 				'origam-list-item--slim': props.slim,
 				[`${props.activeClass}`]: props.activeClass && isActive.value
 			},
+			backgroundColorClasses.value,
 			borderClasses.value,
 			densityClasses.value,
 			elevationClasses.value,

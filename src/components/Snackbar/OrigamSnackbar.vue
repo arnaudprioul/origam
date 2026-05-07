@@ -241,7 +241,11 @@
 	 * Filtered overlay props and merged content wrapper props
 	 * (color, rounded, border, padding, margin, hover handlers).
 	 ********************************************************/
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for tokenised intents on the snackbar wrapper; `colorStyles` keeps
+	// the legacy raw-color fallback in parallel.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -254,7 +258,13 @@
 	const contentProps = computed(() => {
 		return mergeProps({
 			class: [
-				'origam-snackbar__wrapper'
+				'origam-snackbar__wrapper',
+				// Color utility class lives ONLY on the wrapper (where the
+				// `colorStyles` already paints the surface). The other
+				// composables (`rounded`/`border`/`padding`/`margin`/
+				// `elevation`) are already injected on the root via
+				// `snackbarClasses` so we don't duplicate them here.
+				colorClasses.value
 			],
 			style: [
 				colorStyles.value,

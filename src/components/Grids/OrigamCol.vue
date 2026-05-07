@@ -20,17 +20,28 @@
 
 	import { computed, StyleValue, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IColProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IColProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const colStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -43,19 +54,17 @@
 	const colClasses = computed(() => {
 		const classes = [
 			'origam-col',
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class
 		]
 
-		// `cols` is special — emits `origam-col--{value}` (no `--cols-` prefix).
 		if (props.cols) {
 			classes.push(`origam-col--${props.cols}`)
 		}
 
-		// Standard prop families: each entry covers the base prop + per-breakpoint
-		// variants. Every prop emits `origam-col--{toKebabCase(prop)}-{value}`.
 		const propFamilies = {
 			align:      ['align',  'alignSm',  'alignMd',  'alignLg',  'alignXl',  'alignXxl'],
 			offset:     ['offset', 'offsetSm', 'offsetMd', 'offsetLg', 'offsetXl', 'offsetXxl'],
@@ -73,8 +82,12 @@
 		return classes
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -87,12 +100,7 @@
 	$breakpoints: ('sm': 600px, 'md': 960px, 'lg': 1280px, 'xl': 1920px, 'xxl': 2560px);
 	$sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 	$aligns: ('start': flex-start, 'end': flex-end, 'center': center, 'baseline': baseline, 'stretch': stretch);
-	// Order rungs — `first` resolves to a very negative number (always
-	// before any positional sibling) and `last` to a large positive
-	// number (always after). Numeric rungs 0..12 cover the common
-	// reorder cases (12-column grid).
 	$orders: ('first': -9999, 'last': 9999);
-
 	%default {
 		width: var(--origam-col---width);
 
@@ -115,10 +123,6 @@
 		flex-shrink: var(--origam-col---flex-shrink);
 		flex-basis: var(--origam-col---flex-basis);
 		align-self: var(--origam-col---align-self);
-		// Default `order: 0` — sits in source order. The `&--order-*`
-		// rules below override the var when the consumer reorders the
-		// column. Without this base read, the per-rung CSS variables
-		// would be set but never read by the layout engine.
 		order: var(--origam-col---order, 0);
 
 		max-width: var(--origam-col---max-width);
@@ -156,9 +160,6 @@
 			}
 		}
 
-		// Order rungs — named keywords (`first` / `last`) plus 0..12.
-		// Mirror the same per-breakpoint emission pattern used by the
-		// align / size / offset families.
 		@each $name, $value in $orders {
 			&--order-#{$name} {
 				--origam-col---order: #{$value};
@@ -207,11 +208,6 @@
 				}
 			}
 
-			// Per-breakpoint order — `&--order-sm-3 { order: 3 @ ≥600px }`,
-			// `&--order-md-first { order: -9999 @ ≥960px }`, etc. Class
-			// names match the JS emission `origam-col--order-{bp}-{value}`
-			// produced by `toKebabCase('orderSm')` etc. in the script
-			// block above.
 			@each $name, $value in $orders {
 				&--order-#{$breakpoint}-#{$name} {
 					@media (min-width: $breakpointSize) {

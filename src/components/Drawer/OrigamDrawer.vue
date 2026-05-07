@@ -114,7 +114,11 @@
 
 	const {filterProps} = useProps<IDrawerProps>(props)
 
-	const {backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `backgroundColorClasses` ships `.origam--bg-{intent}` for tokenised
+	// intents on the drawer root; `backgroundColorStyles` keeps the
+	// legacy raw-color fallback in parallel.
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
@@ -308,6 +312,7 @@
 				'origam-drawer--active': isActive.value,
 				'origam-drawer--sticky': isSticky.value
 			},
+			backgroundColorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

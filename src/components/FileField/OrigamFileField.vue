@@ -796,7 +796,11 @@
       props.class
     ]
   })
-  const { colorStyles: dropzoneColorStyles } = useBothColor(
+  // Phase 3 (Vague B) — class-first companion alongside inline styles.
+  // `dropzoneColorClasses` carries `.origam--bg-{intent}` /
+  // `.origam--color-{intent}` for tokenised intents on the dropzone;
+  // `dropzoneColorStyles` keeps the legacy fallback for raw colors.
+  const { colorClasses: dropzoneColorClasses, colorStyles: dropzoneColorStyles } = useBothColor(
       toRef(props, 'bgColor'),
       toRef(props, 'color'),
   )
@@ -811,6 +815,7 @@
         'origam-file-field__dropzone--has-file': !props.multiple && hasFiles.value,
         'origam-file-field__dropzone--error': isErrored.value
       },
+      dropzoneColorClasses.value,
       dropzoneDensityClasses.value
     ]
   })

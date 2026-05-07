@@ -48,6 +48,12 @@
 
 	import { getCenter, getTargetBox, inViewport } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the Parallax component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IParallaxProps>(), {
 		duration: 1000,
 		easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
@@ -59,19 +65,39 @@
 
 	const {filterProps} = useProps<IParallaxProps>(props)
 
+	/*********************************************************
+	 * Decorators & display
+	 *
+	 * @description
+	 * Audio, display, color, border, rounded, elevation, padding and
+	 * margin composables. Pre-fix `IParallaxProps` did not extend
+	 * `IColorProps` — the SCSS read `var(--origam-parallax---background-color)`
+	 * from tokens but the consumer's intent had no override path.
+	 ********************************************************/
 	const {audioRef, audioData, onStop: handleStop} = useAudio(props)
 	const {platform} = useDisplay()
 	const {dimensionStyles} = useDimension(props)
 	// Pre-fix `IParallaxProps` did not extend `IColorProps` — the SCSS
 	// read `var(--origam-parallax---background-color)` from tokens but
 	// the consumer's intent had no override path.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderStyles, borderClasses} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * root is the DOM ref for the parallax container.
+	 * isMoving / leftOnce track mouse in/out state.
+	 * shape caches the bounding rect.
+	 * movement holds the current normalised x/y offset.
+	 * data holds the raw mouse event coordinates.
+	 ********************************************************/
 	const root = ref<HTMLElement>()
 
 	const isMoving = ref(false)
@@ -83,6 +109,14 @@
 	})
 	const data = ref()
 
+	/*********************************************************
+	 * Event calculations
+	 *
+	 * @description
+	 * isTouch detects touch / device orientation mode.
+	 * eventActions maps each event type to its action function and condition.
+	 * eventMap resolves the actual window event name for each mode.
+	 ********************************************************/
 	const isTouch = computed(() => {
 		return platform.value.touch
 	})
@@ -156,6 +190,20 @@
 		return {x, y, target}
 	}
 
+	/*********************************************************
+	 * Movement handler & window events
+	 *
+	 * @description
+	 * handleMovement is throttled to avoid excessive recomputations.
+	 * addEvents / removeEvents are parametrised on `event` so we
+	 * detach the OLD listener and attach the NEW one when the consumer
+	 * flips the `event` prop at runtime. The previous implementation
+	 * only ever read `props.event` via the closure, so `removeEvents()`
+	 * would try to remove a listener that was never installed — leaving
+	 * the old listener attached and the new one missing. Result:
+	 * switching `event="move"` → `event="scroll"` at runtime silently
+	 * kept the page on `move` mode.
+	 ********************************************************/
 	const handleMovement = useThrottleFn((event: MouseEvent & DeviceOrientationEvent) => {
 		if (!props.active && !root.value) return
 
@@ -230,16 +278,21 @@
 		movement.value = { x: 0, y: 0 }
 	})
 
-	// `toRef(props, 'key')` (2-arg form) returns a *reactive* ref tracking
-	// the prop. The previous code used `toRef(value)` (1-arg) which froze
-	// every ref to its initial value — provided `isMoving` was stuck on
-	// `false`, so `<OrigamParallaxElement>` always saw a zero movement
-	// and never translated. Same bug for `event`/`duration`/`easing`.
-	// `animationDuration` is an alias for `duration` (kept for backwards compat).
-	// When both are set, `animationDuration` wins so existing consumers that
-	// used the old prop name are not silently ignored. A one-shot
-	// `console.warn` flags the deprecated prop so consumers migrate to
-	// `duration` before the v3.0.0 removal.
+	/*********************************************************
+	 * Provide to child elements
+	 *
+	 * @description
+	 * `toRef(props, 'key')` (2-arg form) returns a *reactive* ref tracking
+	 * the prop. The previous code used `toRef(value)` (1-arg) which froze
+	 * every ref to its initial value — provided `isMoving` was stuck on
+	 * `false`, so `<OrigamParallaxElement>` always saw a zero movement
+	 * and never translated. Same bug for `event`/`duration`/`easing`.
+	 * `animationDuration` is an alias for `duration` (kept for backwards compat).
+	 * When both are set, `animationDuration` wins so existing consumers that
+	 * used the old prop name are not silently ignored. A one-shot
+	 * `console.warn` flags the deprecated prop so consumers migrate to
+	 * `duration` before the v3.0.0 removal.
+	 ********************************************************/
 	let _animationDurationWarned = false
 	const resolvedDuration = computed(() => {
 		if (props.animationDuration != null && !_animationDurationWarned) {
@@ -264,8 +317,14 @@
 		shape
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * parallaxStyles and parallaxClasses compose the BEM root element.
+	 * `perspective` is forwarded as a component-scoped CSS variable so
+	 * the SCSS owns the actual `perspective:` declaration.
+	 ********************************************************/
 	const parallaxStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -288,6 +347,7 @@
 	const parallaxClasses = computed(() => {
 		return [
 			'origam-parallax',
+			colorClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
@@ -297,8 +357,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

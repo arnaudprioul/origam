@@ -177,7 +177,8 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
 	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {loaderClasses} = useLoader(props, 'line')
 
@@ -201,6 +202,7 @@
 				'origam-expansion-panels--inset': props.inset
 			},
 			loaderClasses.value,
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

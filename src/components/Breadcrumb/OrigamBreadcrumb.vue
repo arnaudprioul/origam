@@ -76,6 +76,13 @@
 
 	import { computed, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child items via
+	 * OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBreadcrumbProps>(), {
 		divider: '/',
 		items: () => [] as Array<TBreadcrumbItem>,
@@ -95,13 +102,15 @@
 		}
 	}))
 
-	const {colorStyles} = useColorEffect(props, undefined, undefined, computed(() => !!props.disabled))
-	const {densityClasses} = useDensity(props)
-	const {elevationStyles, elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	/*********************************************************
+	 * Items
+	 *
+	 * @description
+	 * Normalises string/object items, marks the last item as
+	 * disabled and active, and exposes slot presence flag.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useColorEffect(props, undefined, undefined, computed(() => !!props.disabled))
 
 	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
 	// density/color fallback — no manual merge needed here.
@@ -125,7 +134,19 @@
 		return slots.default || items.value
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all spacing, color, elevation and variant
+	 * classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {elevationStyles, elevationClasses} = useElevation(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
 
 	const breadcrumbStyles = computed(() => {
 		return [
@@ -141,6 +162,7 @@
 	const breadcrumbClasses = computed(() => {
 		return [
 			'origam-breadcrumb',
+			colorClasses.value,
 			elevationClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
@@ -153,8 +175,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -170,7 +196,6 @@
 		scoped
 >
 	.origam-breadcrumb {
-		// Runtime-composed transition (property + duration + timing from tokens via :root from style-dictionary output)
 		--origam-breadcrumb---border-top-width: 0px;
 		--origam-breadcrumb---border-left-width: 0px;
 		--origam-breadcrumb---border-bottom-width: 0px;
@@ -181,7 +206,6 @@
 		--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-token, 0px);
 		--origam-breadcrumb---density: 0px;
 		--origam-breadcrumb---box-shadow: var(--origam-shadow-none, none);
-		// Hex retirés : rgba(0,0,0,0.87) → var(--origam-color-text-primary) ; rgb(230,230,230) → transparent (token breadcrumb.background)
 		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color-text-primary));
 		--origam-breadcrumb---background: var(--origam-breadcrumb---background-token, transparent);
 		--origam-breadcrumb---margin-inline-start: 0px;
@@ -233,7 +257,6 @@
 		}
 
 		&--elevated {
-			// Hex retirés : rgba(0,0,0,0.05) + rgba(0,0,0,0.08) → var(--origam-shadow-md)
 			--origam-breadcrumb---box-shadow: var(--origam-shadow-md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
 		}
 
@@ -241,9 +264,6 @@
 			--origam-breadcrumb---border-width: thin;
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
-		// Direct border-radius declarations ensure the computed property
-		// updates immediately without CSS var cascade delays.
 		&--rounded {
 			border-radius: var(--origam-radius-2xl, 24px);
 		}
@@ -272,7 +292,6 @@
 			border-radius: var(--origam-radius-2xl, 24px);
 		}
 
-		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
 			--origam-breadcrumb---density: -8px;
 		}
@@ -286,4 +305,3 @@
 		}
 	}
 </style>
-

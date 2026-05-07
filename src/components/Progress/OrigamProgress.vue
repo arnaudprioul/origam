@@ -35,6 +35,12 @@
 
 	import type { TOrigamProgressCircular, TOrigamProgressLinear } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the Progress wrapper component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressProps>(), {
 		tag: 'div',
 		modelValue: 0,
@@ -45,11 +51,31 @@
 
 	const {filterProps} = useProps<IProgressProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Ref to the rendered circular or linear sub-component
+	 * so we can forward filterProps.
+	 ********************************************************/
 	const origamProgressRef = ref<TOrigamProgressCircular | TOrigamProgressLinear>()
 
+	/*********************************************************
+	 * Decorators & progress state
+	 *
+	 * @description
+	 * Size utilities and normalized value / hasContent flags.
+	 ********************************************************/
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {normalizedValue, hasContent} = useProgress(props)
 
+	/*********************************************************
+	 * Component selection
+	 *
+	 * @description
+	 * Switch between circular and linear sub-component based
+	 * on the `type` prop.
+	 ********************************************************/
 	const isCircular = computed(() => {
 		return props.type === PROGRESS_TYPE.CIRCULAR
 	})
@@ -60,8 +86,12 @@
 		return origamProgressRef.value?.filterProps(props)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * progressStyles and progressClasses compose the BEM block.
+	 ********************************************************/
 	const progressStyles = computed(() => {
 		return [
 			sizeStyles.value,
@@ -75,8 +105,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

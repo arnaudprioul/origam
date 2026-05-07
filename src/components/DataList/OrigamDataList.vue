@@ -267,7 +267,8 @@
 		return (v as IDataListKVItemValueComponent).children
 	}
 
-	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 
 	// CLASS & STYLES
 
@@ -285,6 +286,7 @@
 		return [
 			'origam-data-list',
 			`origam-data-list--mode-${props.mode}`,
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

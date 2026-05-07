@@ -7,12 +7,6 @@
 	>
 		<div class="origam-field__overlay"/>
 
-		<!--
-			Skeleton kind: render OUTSIDE `.origam-field__loader` (which is the
-			thin 2px-tall progress bar at the bottom edge — would clip the
-			skeleton). The skeleton fills the field's content box and replaces
-			the input/label/icons rendering below.
-		-->
 		<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
 			<origam-skeleton
 					class="origam-field__skeleton"
@@ -434,7 +428,8 @@
 		return isActive.value && isFocused.value && props.activeBgColor ? props.activeBgColor : props.bgColor
 	})
 
-	const {colorStyles} = useBothColor(bgColor, color)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 	const {densityClasses} = useDensity(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
@@ -472,6 +467,7 @@
 				'origam-text-field--suffixed': props.suffix
 			},
 			loaderClasses.value,
+			colorClasses.value,
 			rtlClasses.value,
 			densityClasses.value,
 			focusClasses.value,
@@ -487,8 +483,7 @@
 	 * Expose
 	 *
 	 * @description
-	 * Exposes functions and components to the world.
-	 *    filterProps is a function that filters out props that are not defined in the `IFieldProps` interface.
+	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IFieldProps>(props)
 
@@ -520,12 +515,6 @@
 		position: relative;
 		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 
-		// Skeleton-mode replacement element. Sized to fill the field's
-		// content box so consumer code switching `loading` between values
-		// keeps a stable visual footprint. Fallback rung is now 36 px (md)
-		// — the PDF Phase 1 default. Pre-fix this read 56 px to mirror
-		// Material; size variants scale via `--origam-input__control---height`
-		// cascade upstream.
 		&__skeleton {
 			width: 100%;
 			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 36px));
@@ -534,10 +523,6 @@
 			grid-row: 1;
 		}
 
-		// Loader bar (line / circular kinds) — absolutely positioned at
-		// the bottom edge of the field. Pre-fix this rule was missing,
-		// so the wrapper rendered with `display: block` + 0 height and
-		// the inner `<origam-progress>` was clipped to invisibility.
 		&__loader {
 			position: absolute;
 			bottom: 0;
@@ -561,12 +546,6 @@
 			flex-wrap: wrap;
 			letter-spacing: 0.009375em;
 			opacity: 0.7;
-			// `box-sizing: border-box` so the inline padding tokens are
-			// INCLUDED in the min-height target (now 36 px by default
-			// after the PDF Phase 1 alignment, down from Material's
-			// 56 px). Without `border-box`, the default `content-box`
-			// stacks padding ON TOP of the height — every text field
-			// renders too tall.
 			box-sizing: border-box;
 			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
@@ -627,8 +606,6 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			// Tracks the current control height (default 36 px after PDF
-			// Phase 1) so prefix/suffix never grow taller than the input.
 			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
@@ -856,12 +833,6 @@
 			}
 		}
 
-		// ── inline ──────────────────────────────────────────────────────────
-		// Chromeless idle state — no border, no background. Reads as part of
-		// surrounding text flow (PDF "TextField · Inline" mode).
-		// On hover: subtle bottom shadow cue. On focus-within: heavier bottom
-		// shadow using the focus token. Labels are suppressed because the
-		// inline value IS the label context.
 		&--inline {
 			background-color: transparent;
 			padding-inline: var(--origam-field--inline---padding-inline, 4px);
@@ -871,10 +842,6 @@
 				display: none;
 			}
 
-			// Hide label and floating-label visually — the surrounding text
-			// flow provides context. We keep the elements in the DOM (no
-			// display:none) so aria-for linkage and focus management remain
-			// intact; only their visual rendering is removed.
 			#{$this}__label {
 				opacity: 0;
 				pointer-events: none;
@@ -887,17 +854,14 @@
 				min-height: unset;
 			}
 
-			// Idle: no chrome
 			box-shadow: none;
 
-			// Hover: subtle bottom line
 			@media (hover: hover) {
 				&:hover:not(#{$this}--focused):not(#{$this}--disabled) {
 					box-shadow: 0 1px 0 0 var(--origam-color-border-subtle, currentColor);
 				}
 			}
 
-			// Focus-within: heavier bottom line with primary color
 			&#{$this}--focused {
 				box-shadow: 0 1px 0 0 var(--origam-color-border-focus, var(--origam-color-action-primary-bg, currentColor));
 			}
@@ -910,10 +874,6 @@
 				--origam-field__input---padding-top: 20px;
 			}
 
-			// ── filled ──────────────────────────────────────────────────────
-			// Solid background + bottom border only; no visible outer outline.
-			// The background token defaults to a light surface overlay so the
-			// field reads as "filled" on any theme background.
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
 				border-radius: var(--origam-field---rounded) var(--origam-field---rounded) 0 0;
@@ -944,10 +904,6 @@
 				}
 			}
 
-			// ── plain ────────────────────────────────────────────────────────
-			// No chrome at all: transparent background, no border, no outline.
-			// Useful for inline / dense contexts where the surrounding layout
-			// provides enough visual affordance.
 			&-plain {
 				background: transparent;
 				--origam-field---border-width: 0px;
@@ -1048,11 +1004,6 @@
 			}
 		}
 
-		// ── Size scale (PDF Phase 1 alignment) ───────────────────────────
-		// Self-sufficient when Field is used WITHOUT an outer Input wrapper
-		// (e.g. SelectField mounts Field directly). Otherwise the Input
-		// wrapper already cascades the same `--origam-input__control---height`
-		// via its own `&--size-{name}` modifier.
 		&--size-small {
 			--origam-input__control---height: var(--origam-input__control---height-sm, 28px);
 			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-sm, 2px);

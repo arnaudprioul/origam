@@ -70,6 +70,12 @@
 
 	import { convertToUnit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the ProgressLinear component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressLinearProps>(), {
 		tag: 'div',
 		modelValue: 0,
@@ -79,6 +85,13 @@
 
 	const {filterProps} = useProps<IProgressLinearProps>(props)
 
+	/*********************************************************
+	 * Decorators & layout
+	 *
+	 * @description
+	 * Location, progress state, rounding, RTL direction and
+	 * color utilities for the background and loader tracks.
+	 ********************************************************/
 	const {locationStyles} = useLocation(props)
 	const {progressClasses, progressStyles, normalizedValue, thickness, progress, max, hasContent} = useProgress(props)
 	const {roundedClasses} = useRounded(props)
@@ -87,6 +100,13 @@
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'), undefined, 'origam-progress__loader')
 	const {isRtl, rtlClasses} = useRtl()
 
+	/*********************************************************
+	 * Computed state
+	 *
+	 * @description
+	 * Buffer normalisation, indeterminate transition and
+	 * reversed direction flag.
+	 ********************************************************/
 	const normalizedBuffer = computed(() => {
 		return parseFloat(props.bufferValue as string) / max.value * 100
 	})
@@ -97,6 +117,13 @@
 		return isRtl.value !== props.reverse
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Click handler for the clickable progress bar — maps the
+	 * click position to a normalized value.
+	 ********************************************************/
 	const handleClick = (e: MouseEvent) => {
 		if (!intersectionRef.value) return
 
@@ -106,8 +133,13 @@
 		progress.value = Math.round(value / width * max.value)
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * progressLinearStyles and progressLinearClasses compose
+	 * the BEM block.
+	 ********************************************************/
 	const progressLinearStyles = computed(() => {
 		return [
 			{
@@ -162,8 +194,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

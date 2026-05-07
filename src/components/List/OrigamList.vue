@@ -143,7 +143,8 @@
 	}))
 
 	const {items} = useItems(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses} = useElevation(props)
@@ -247,6 +248,7 @@
 				'origam-list--nav': props.nav,
 				'origam-list--slim': props.slim
 			},
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,

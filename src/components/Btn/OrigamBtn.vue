@@ -235,7 +235,14 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive, isDisabled)
+	// Phase 3 (Vague A) — strategy (a): we destructure BOTH `colorClasses`
+	// and `colorStyles`. The classes hit the `.origam--bg-{intent}` /
+	// `.origam--color-{intent}` global utilities for the resting state;
+	// the inline styles still own hover/active/disabled (no utility class
+	// for those slots) and any non-tokenisable raw color (legacy). Keeping
+	// both in parallel guarantees zero visual regression while shrinking
+	// the inline declaration count for tokenised intents.
+	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive, isDisabled)
 	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
 	const {variantClasses} = useVariant(props)
 	const {
@@ -331,6 +338,7 @@
 			},
 			variantClasses.value,
 			borderClasses.value,
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,

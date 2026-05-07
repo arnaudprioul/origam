@@ -111,13 +111,20 @@
 
 	import { convertToUnit, getCurrentInstance, pick } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, composables, and image load lifecycle setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IImgProps>(), {})
 
 	const emits = defineEmits(['loadstart', 'load', 'error'])
 
 	const {filterProps} = useProps<IImgProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -278,8 +285,12 @@
 		options: props.options
 	}, null, ['once']])
 
-	// STATE
-
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Computed booleans derived from the image load state machine.
+	 ********************************************************/
 	const isLoaded = computed(() => {
 		return state.value === IMG_STATE.LOADED
 	})
@@ -293,8 +304,12 @@
 		return slots.default
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const imgStyles = computed(() => {
 		return [
 			{'width': convertToUnit(props.width === 'auto' ? naturalWidth.value : props.width)},
@@ -310,6 +325,7 @@
 		return [
 			'origam-img',
 			{'origam-img--booting': !isBooted.value},
+			colorClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -338,8 +354,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -360,7 +380,6 @@
 			}
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
 			border-radius: var(--origam-radius-2xl, 24px);
 		}

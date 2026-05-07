@@ -69,10 +69,16 @@
 
 	import { SIZES } from '../../enums'
 
-	// Default size to `SIZES.DEFAULT` so the SCSS rule
-	// `.origam-progress--circular.origam-progress--size-default { width: 32px; height: 32px }`
-	// pins a width/height — without this the SVG (position: absolute) collapses
-	// to 0×0 and the component renders invisible.
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the ProgressCircular component.
+	 * Default size to `SIZES.DEFAULT` so the SCSS rule
+	 * `.origam-progress--circular.origam-progress--size-default`
+	 * pins width/height — without this the SVG (position: absolute)
+	 * collapses to 0×0 and the component renders invisible.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressCircularProps>(), {
 		tag: 'div',
 		modelValue: 0,
@@ -83,21 +89,40 @@
 
 	const {filterProps} = useProps<IProgressCircularProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Root element ref for resize / intersection observers.
+	 ********************************************************/
+	const root = ref<HTMLElement>()
+
+	/*********************************************************
+	 * Decorators & size
+	 *
+	 * @description
+	 * Progress composable, resize / intersection observers, size
+	 * and color utilities.
+	 * Pass an explicit name so `useSize` emits
+	 * `origam-progress--size-{size}`, matching the SCSS rule
+	 * `.origam-progress--circular.origam-progress--size-x` —
+	 * otherwise the class would be `origam-progress-circular--size-x`
+	 * and the pinned width/height would never apply (0×0 SVG).
+	 ********************************************************/
 	const {progressClasses, progressStyles, normalizedValue, thickness, hasContent} = useProgress(props)
 	const {resizeRef, contentRect} = useResizeObserver()
 	const {intersectionRef} = useIntersectionObserver()
-	// Pass an explicit name so `useSize` emits `origam-progress--size-{size}`,
-	// matching the SCSS rule `.origam-progress--circular.origam-progress--size-x` —
-	// otherwise the class would be `origam-progress-circular--size-x` and the
-	// pinned width/height would never apply (resulting in a 0×0 SVG).
 	const {sizeStyles, sizeClasses} = useSize(props, 'origam-progress')
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 
-	const root = ref<HTMLElement>()
-
+	/*********************************************************
+	 * SVG geometry
+	 *
+	 * @description
+	 * Derived dimensions for the circular SVG track.
+	 ********************************************************/
 	const size = computed(() => {
-		// Get size from element if size prop value is small, large etc
 		if (sizeStyles.value.length) {
 			return Number(props.size)
 		}
@@ -126,8 +151,13 @@
 		resizeRef.value = root.value
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * progressCircularStyles and progressCircularClasses compose
+	 * the BEM block.
+	 ********************************************************/
 	const progressCircularStyles = computed(() => {
 		return [
 			progressStyles.value,
@@ -156,8 +186,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -167,7 +201,6 @@
 		lang="scss"
 		scoped
 >
-	// TODO - use css variables
 	.origam-progress {
 		$this: &;
 

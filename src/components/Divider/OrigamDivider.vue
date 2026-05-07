@@ -57,7 +57,8 @@
 	 * dividerClasses and dividerStyles computed properties.
 	 * Length and thickness are forwarded as CSS custom properties.
 	 ********************************************************/
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {marginClasses, marginStyles} = useMargin(props)
 
 	const dividerClasses = computed(() => {
@@ -67,6 +68,7 @@
 			{
 				'origam-divider--inset': props.inset
 			},
+			colorClasses.value,
 			marginClasses.value,
 			props.class
 		]

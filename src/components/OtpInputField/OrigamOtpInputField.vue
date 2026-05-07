@@ -146,6 +146,12 @@
 
 	import { filterInputAttrs, focusChild, forwardRefs } from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and filterProps for the OtpInputField component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IOtpInputFieldProps>(), {
 		type: OTP_INPUT_FIELD_TYPE.NUMBER,
 		length: 6
@@ -161,9 +167,23 @@
 	const attrs = useAttrs()
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Dimension & focus
+	 *
+	 * @description
+	 * dimensionStyles drives width/height CSS vars from props.
+	 * isFocused tracks whether any cell has focus.
+	 ********************************************************/
 	const {dimensionStyles} = useDimension(props)
 	const {isFocused, onFocus: focus, onBlur: blur} = useFocus(props)
 
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * model is a char-array split from the string v-model value.
+	 * length / fields drive the rendered cell count.
+	 ********************************************************/
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -179,6 +199,16 @@
 		return Array(length.value).fill(0)
 	})
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * focusIndex tracks which cell currently has focus (-1 = none).
+	 * contentRef is the scrollable wrapper used by focusChild.
+	 * inputRef holds native <input> references, one per cell.
+	 * origamFieldRef holds OrigamField component references.
+	 * current is the currently focused native input.
+	 ********************************************************/
 	const focusIndex = ref(-1)
 
 	const contentRef = ref<HTMLElement>()
@@ -195,6 +225,16 @@
 		return origamFieldRef.value?.[index]?.filterProps(props, ['class', 'style', 'id', 'label'])
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * handleInput, handleKeydown, handlePaste manage OTP cell navigation.
+	 * handleFocus / handleBlur track focusIndex and isFocused state.
+	 * handleClear resets the model and returns focus to the first cell.
+	 * reset is exposed for external programmatic clearing.
+	 * isInvalidValue guards non-numeric characters in number mode.
+	 ********************************************************/
 	const handleInput = () => {
 		if (!current.value) return
 
@@ -319,8 +359,12 @@
 		})
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * otpInputFieldStyles and otpInputFieldClasses compose the BEM root.
+	 ********************************************************/
 	const otpInputFieldStyles = computed(() => {
 		return [
 			props.style
@@ -336,8 +380,13 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes blur, focus, reset, isFocused and filterProps to
+	 * parent ref consumers.
+	 ********************************************************/
 	defineExpose(forwardRefs({
 		blur: () => {
 			inputRef.value?.some(input => {
@@ -448,4 +497,3 @@
 	}
 
 </style>
-

@@ -78,7 +78,8 @@
 	const {someSelected, allSelected, selectAll} = useSelection()
 	const {getSortIcon} = useHeadersCell(props)
 	const {getPadding} = useCell()
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const headerProps = mergeProps(props.headerProps ?? {})
 
@@ -130,6 +131,7 @@
 				'origam-data-table-header-cell--sorted': isSorted(props.column),
 				'origam-data-table-header-cell--fixed': props.column.fixed
 			},
+			colorClasses.value,
 			props.class
 		]
 	})

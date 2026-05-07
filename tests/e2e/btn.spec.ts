@@ -65,6 +65,13 @@ test.describe('OrigamBtn — visual & a11y baseline', () => {
             await expect(btn).toBeVisible({ timeout: 5000 })
             const bg = await btn.evaluate(el => getComputedStyle(el).backgroundColor)
             expect(bg, `btn-color-${intent}`).toBe(rgb)
+            // Phase 3 Vague A — class-first companion: the global utility
+            // `.origam--bg-{intent}` lands on the root for tokenised
+            // intents. The computed bg above and the class below must
+            // both be present (classes ET styles, strategy "a").
+            await expect(btn, `btn-color-${intent} utility class`).toHaveClass(
+                new RegExp(`origam--bg-${intent}`)
+            )
         }
     })
 

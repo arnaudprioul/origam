@@ -68,7 +68,8 @@
 	const {filterProps} = useProps<ISkeletonProps>(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	// ── Resolve width / height to CSS strings ──────────────────────────────
 	const resolvedWidth = computed(() => {
@@ -110,6 +111,7 @@
 		'origam-skeleton',
 		`origam-skeleton--${props.variant}`,
 		{'origam-skeleton--pulse': props.pulse},
+		colorClasses.value,
 		roundedClasses.value,
 		sizeClasses.value,
 		props.class

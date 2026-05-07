@@ -20,18 +20,29 @@
 
 	import { toKebabCase } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRowProps>(), {tag: 'div', density: DENSITY.DEFAULT})
 
 	const {filterProps} = useProps<IRowProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const rowStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -44,6 +55,7 @@
 	const rowClasses = computed(() => {
 		const classes = [
 			'origam-row',
+			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -51,9 +63,6 @@
 			props.class
 		]
 
-		// Standard prop families: each entry covers the base prop + per-breakpoint
-		// variants. Every prop emits `origam-row--{toKebabCase(prop)}-{value}`.
-		// `direction` has no breakpoint variants — it's a single-axis prop.
 		const propFamilies = {
 			align:     ['align',   'alignSm',   'alignMd',   'alignLg',   'alignXl',   'alignXxl'],
 			justify:   ['justify', 'justifySm', 'justifyMd', 'justifyLg', 'justifyXl', 'justifyXxl'],
@@ -70,8 +79,12 @@
 		return classes
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -108,14 +121,6 @@
 			margin-block-start: calc((var(--origam-row---margin-block-start) + var(--origam-row---density)) * -1);
 		}
 
-		// Density rungs — controls the gutter compensation applied to the
-		// row's outer margins. Negative values pull the row outward (so the
-		// outermost columns hug the container edges); positive values push
-		// it inward (extra breathing room).
-		//
-		//   default     →  0    (no compensation)
-		//   compact     → -8px  (tighter — outer columns flush)
-		//   comfortable →  8px  (looser — extra outer padding)
 		&--density-default {
 			--origam-row---density: 0;
 		}
@@ -190,11 +195,6 @@
 		--origam-row---margin-inline-start: -4px;
 		--origam-row---margin-inline-end: -4px;
 
-		/* `density` defaults to 0 here so the calc() in `.origam-row` margin
-		   rules always resolves — without this fallback, an Origam Row rendered
-		   without a density-* class would silently drop its margins (var()
-		   lookup fails, the whole calc() becomes invalid, the property is
-		   dropped). */
 		--origam-row---density: 0;
 
 		--origam-row---align-items: stretch;

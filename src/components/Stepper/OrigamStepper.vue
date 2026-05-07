@@ -109,7 +109,8 @@
 
 	// CLASS & STYLES
 
-	const { colorStyles } = useColorEffect(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const { colorClasses, colorStyles } = useColorEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
@@ -123,6 +124,7 @@
 	const stepperClasses = computed(() => [
 		'origam-stepper',
 		`origam-stepper--${props.orientation ?? 'horizontal'}`,
+		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,
 		props.class

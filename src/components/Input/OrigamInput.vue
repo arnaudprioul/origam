@@ -116,6 +116,12 @@
 
 	import { getUid, wrapInArray } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, and identity setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
@@ -195,11 +201,20 @@
 		)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	// Phase 3 (Vague A) — class-first companion alongside inline styles.
+	// When `color`/`bgColor` resolve to a tokenisable intent, `colorClasses`
+	// hits `.origam--bg-{intent}` / `.origam--color-{intent}` and
+	// `colorStyles` returns `[]` (no visible inline). For raw / legacy
+	// hex, `colorClasses=[]` and `colorStyles` keeps the inline fallback.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 	const {rtlClasses} = useRtl()
 	const {sizeClasses} = useSize(props, 'origam-input')
 
@@ -218,6 +233,7 @@
 				'origam-input--center-affix': props.centerAffix,
 				'origam-input--hide-spin-buttons': props.hideSpinButtons
 			},
+			colorClasses.value,
 			densityClasses.value,
 			sizeClasses.value,
 			validationClasses.value,
@@ -230,18 +246,14 @@
 			'origam-input__control'
 		]
 	})
-	// `inputControlStyles` was referenced in the template (`<div
-	// :style="inputControlStyles">`) but never declared in the script,
-	// so every render emitted:
-	//   [Vue warn]: Property "inputControlStyles" was accessed during
-	//   render but is not defined on instance.
-	// Wired as an empty StyleValue array — keeps the template binding
-	// valid and gives consumers a future hook (override via inline
-	// `style` would slot in here).
 	const inputControlStyles = computed<StyleValue>(() => [])
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	const {filterProps} = useProps<IInputProps>(props)
 
 	defineExpose({
@@ -263,16 +275,6 @@
 		line-height: var(--origam-input---line-height, 1.5);
 
 		--origam-input---padding-top: 16px;
-
-		// `--origam-input__control---height` is now ALWAYS sourced from the
-		// component-token cascade. The default value is 36 px (the `md`
-		// rung emitted by `tokens/component/input.json::control.height-md`,
-		// referenced by the unprefixed `control.height` token). Pre-fix
-		// the SCSS hard-coded `--origam-input__control---height: 56px;`
-		// here and silently overrode the token cascade for every
-		// consumer — that's why every TextField rendered at Material's
-		// 56 px even after the PDF spec moved the default down to 36 px.
-		// See `tokens/component/input.json` for the full size scale.
 
 		&__details {
 			align-items: flex-end;
@@ -328,15 +330,6 @@
 			--origam-input---density: -8px;
 		}
 
-		// ── Size scale (PDF Phase 1 alignment) ───────────────────────────
-		// Matches Btn so a button + adjacent input share a single height.
-		// `useSize` emits `origam-input--size-{name}`; the rule overrides
-		// `--origam-input__control---height` and the matching
-		// `--origam-field__input---padding-top/-bottom`. CSS custom
-		// properties inherit, so simply setting them on the
-		// `.origam-input--size-{name}` block cascades into the nested
-		// `<origam-field>` (which IS a descendant of `.origam-input`)
-		// without needing `:deep()`.
 		&--size-small {
 			--origam-input__control---height:        var(--origam-input__control---height-sm, 28px);
 			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-sm, 2px);

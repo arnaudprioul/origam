@@ -134,6 +134,12 @@
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IInfiniteScrollProps>(), {
 		direction: DIRECTION.VERTICAL,
 		side: INFINITE_SCROLL_SIDE.END,
@@ -150,7 +156,8 @@
 	const {t} = useLocale()
 
 	const {dimensionStyles} = useDimension(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const rootEl = ref<HTMLDivElement>()
 	const isIntersecting = shallowRef(false)
@@ -280,8 +287,12 @@
 		return status.value === INFINITE_SCROLL_STATUS.LOADING
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const infiniteScrollStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -297,12 +308,17 @@
 				'origam-infinite-scroll--start': hasStartIntersect.value,
 				'origam-infinite-scroll--end': hasEndIntersect.value
 			},
+			colorClasses.value,
 			props.class
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

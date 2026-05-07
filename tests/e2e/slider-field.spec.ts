@@ -128,6 +128,17 @@ test.describe('OrigamSliderField', () => {
             const thumbBg = await slider.locator('.origam-slider-field-thumb__surface')
                 .first().evaluate(el => getComputedStyle(el).backgroundColor)
             expect(thumbBg).toBe(DANGER_FG_SUBTLE)
+
+            // Phase 3 Vague B — class-first companion: the fill, rail and
+            // thumb surface all carry the matching `.origam--bg-danger` /
+            // `.origam--color-danger` utility class alongside the inline
+            // computed style asserted above.
+            await expect(slider.locator('.origam-slider-field-track__fill').first())
+                .toHaveClass(/origam--bg-danger/)
+            await expect(slider.locator('.origam-slider-field-track__background').first())
+                .toHaveClass(/origam--bg-danger/)
+            await expect(slider.locator('.origam-slider-field-thumb__surface').first())
+                .toHaveClass(/origam--color-danger/)
         })
 
         test('error overrides consumer color="primary" + bg-color="success"', async ({ page }) => {

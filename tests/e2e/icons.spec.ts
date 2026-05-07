@@ -75,11 +75,15 @@ test.describe('OrigamIcon — dispatcher', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         // First icon has color="primary" — its computed color must not be
         // the default transparent or rgba(0,0,0,0).
-        const colorValue = await sandbox.locator('.origam-icon').first().evaluate(
+        const firstIcon = sandbox.locator('.origam-icon').first()
+        const colorValue = await firstIcon.evaluate(
             el => getComputedStyle(el).color
         )
         expect(colorValue).not.toBe('rgba(0, 0, 0, 0)')
         expect(colorValue).not.toBe('transparent')
+        // Phase 3 Vague D — class-first companion: the first icon (intent
+        // "primary") must also carry the global utility class.
+        await expect(firstIcon).toHaveClass(/origam--color-primary/)
     })
 
     test('Click button mode — icon gets origam-icon--clickable class', async ({ page }) => {

@@ -15,9 +15,9 @@
 		        v-show="modelValue"
 		        :id="id"
 		        :aria-label="t(label, content)"
+		        :class="['origam-badge__badge', colorClasses]"
 		        aria-atomic="true"
 		        aria-live="polite"
-		        class="origam-badge__badge"
 		        role="status"
 		        v-bind="badgeAttrs"
         >
@@ -64,6 +64,12 @@
 
 	import { computed, ComputedRef, ref, StyleValue, useAttrs } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, locale and attributes splitting for the Badge.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBadgeProps>(), {
 		tag: 'div',
 		location: 'top right',
@@ -76,9 +82,18 @@
 
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state, color and location resolution.
+	 ********************************************************/
 	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
 	const {activeClasses, isActive} = useActive(props, 'modelValue')
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	// The badge pill (`__badge` span) is the visual surface; classes go
+	// there, not on the wrapper root.
+	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
@@ -95,6 +110,12 @@
 		)
 	})
 
+	/*********************************************************
+	 * Content
+	 *
+	 * @description
+	 * Badge content capped at `max` and icon flag.
+	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!icon.value
 	})
@@ -130,8 +151,14 @@
 		])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all classes/styles for the root wrapper and
+	 * applies location/color styles to the badge pill via
+	 * useStyle.
+	 ********************************************************/
 	const badgeStyles = computed(() => {
 		return [
 			props.style
@@ -167,8 +194,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -274,10 +305,6 @@
 				--origam-badge__badge---height: 9px;
 				--origam-badge__badge---width: 9px;
 				--origam-badge__badge---min-width: 0;
-				// The base SCSS consumes the four padding LONGHANDS (block-start,
-				// block-end, inline-start, inline-end), not the shorthands.
-				// Setting `--padding-block: 0` here was a no-op — kept as legacy
-				// alias but the longhands below are what actually zeros padding.
 				--origam-badge__badge---padding-block-start: 0;
 				--origam-badge__badge---padding-block-end: 0;
 				--origam-badge__badge---padding-inline-start: 0;

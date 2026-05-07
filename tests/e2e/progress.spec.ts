@@ -385,6 +385,10 @@ test.describe('OrigamProgressLinear', () => {
         const color = await loader.evaluate(el => getComputedStyle(el).color)
         expect(color).not.toBe('')
         expect(color).not.toBe('rgba(0, 0, 0, 0)')
+        // Phase 3 Vague D — class-first companion: the loader carries the
+        // global utility class for the resting `color="primary"` intent
+        // alongside the inline computed color above.
+        await expect(loader).toHaveClass(/origam--color-primary/)
     })
 
     test('Rounded — applies the rounded modifier when toggled', async ({ page }) => {

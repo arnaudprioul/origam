@@ -51,7 +51,8 @@
 	const {roundedStyles, roundedClasses} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {ssrBootStyles} = useSsrBoot()
 	const height = computed(() => props.height ?? (props.window ? 32 : 24))
@@ -88,6 +89,7 @@
 			{
 				'origam-system-bar--window': props.window
 			},
+			colorClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,

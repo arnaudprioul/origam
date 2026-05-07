@@ -47,17 +47,16 @@
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child buttons
+	 * via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
-
-	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {colorStyles, bgColor} = useColorEffect(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 
 	// Push the visual-token props down to every descendant `<origam-btn>`
 	// as DEFAULTS — children that pass their own `density` / `color` /
@@ -88,7 +87,20 @@
 		return slots.default || !!items.value
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes border, color, elevation, rounding and spacing
+	 * classes/styles onto the group root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {colorStyles, bgColor} = useColorEffect(props)
+	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
 
 	const btnGroupStyles = computed(() => {
 		return [
@@ -119,8 +131,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(btnGroupStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -157,7 +173,6 @@
 			--origam-btn-group---border-width: thin;
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
 			--origam-btn-group---border-radius: var(--origam-radius-2xl, 24px);
 		}
@@ -186,10 +201,6 @@
 			--origam-btn-group---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
-		// Density formula on the btn-group is `height + density`, so:
-		//   • comfortable → density POSITIVE → height grows
-		//   • compact     → density NEGATIVE → height shrinks
-		// Pre-fix both rungs were +8, making them visually identical.
 		&--density-comfortable {
 			--origam-btn-group---density: 8px;
 		}

@@ -22,10 +22,23 @@
 
 	import type { IMainProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props / filterProps for the component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IMainProps>(), {tag: 'main'})
 
 	const {filterProps} = useProps<IMainProps>(props)
 
+	/*********************************************************
+	 * Layout & decorators
+	 *
+	 * @description
+	 * Layout position offsets, SSR boot guard, rounded, border,
+	 * padding and margin composables.
+	 ********************************************************/
 	const {mainStyles: mainLayoutStyles} = useLayout()
 	const {ssrBootStyles} = useSsrBoot()
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -33,8 +46,13 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * mainStyles aggregates layout, ssr-boot and decorator styles.
+	 * mainClasses emits BEM modifiers.
+	 ********************************************************/
 	const mainStyles = computed(() => {
 		return [
 			mainLayoutStyles.value,
@@ -60,8 +78,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -118,4 +140,3 @@
 		}
 	}
 </style>
-

@@ -73,16 +73,34 @@
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the RadioGroup component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRadioGroupProps>(), {
 		density: DENSITY.DEFAULT
 	})
 
 	const {filterProps} = useProps<IRadioGroupProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Refs to sub-components for forward-prop delegation.
+	 ********************************************************/
 	const origamSelectionControlGroupRef = ref<TOrigamSelectionControlGroup>()
 	const origamInputRef = ref<TOrigamInput>()
 	const origamRadioRef = ref<TOrigamRadio>()
 
+	/*********************************************************
+	 * Value & identity
+	 *
+	 * @description
+	 * v-model binding, attrs splitting, uid and id derivation.
+	 ********************************************************/
 	const attrs = useAttrs()
 
 	const uid = getUid()
@@ -91,6 +109,13 @@
 	})
 	const model = useVModel(props, 'modelValue')
 
+	/*********************************************************
+	 * Forwarded props
+	 *
+	 * @description
+	 * Attrs split between root and control; props forwarded to
+	 * Input, SelectionControlGroup and Radio sub-components.
+	 ********************************************************/
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'id', 'focused', 'style', 'class'])
@@ -111,8 +136,12 @@
 		})
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * radioGroupStyles and radioGroupClasses compose the BEM block.
+	 ********************************************************/
 	const radioGroupStyles = computed(() => {
 		return [
 			props.style
@@ -125,8 +154,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

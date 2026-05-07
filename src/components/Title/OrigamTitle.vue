@@ -32,7 +32,8 @@
 
 	const {filterProps} = useProps<ITitleProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const slots = useSlots()
 	const {borderClasses, borderStyles} = useBorder(props)
@@ -61,6 +62,7 @@
 	const titleClasses = computed(() => {
 		return [
 			'origam-title',
+			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,

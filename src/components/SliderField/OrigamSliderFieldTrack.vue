@@ -146,8 +146,14 @@
 	// Pre-fix the channels were swapped — `color` painted the rail
 	// and `bgColor` painted the fill, which violated the project's
 	// strict color contract and produced counter-intuitive visuals.
-	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(color)
-	const {backgroundColorStyles} = useBackgroundColor(bgColor)
+	// Phase 3 (Vague B) — class-first companion. `*Classes` drops the
+	// global `.origam--bg-{intent}` utility on the matching DOM node;
+	// `*Styles` still ships the inline fallback for legacy raw colors.
+	const {
+		backgroundColorClasses: trackFillColorClasses,
+		backgroundColorStyles: trackFillColorStyles
+	} = useBackgroundColor(color)
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(bgColor)
 
 	/*********************************************************
 	 * Track geometry
@@ -236,7 +242,8 @@
 			'origam-slider-field-track__background',
 			{
 				'origam-slider-field-track__background--opacity': !!color.value
-			}
+			},
+			backgroundColorClasses.value
 		]
 	})
 	const sliderFieldTrackFillStyles = computed(() => {
@@ -247,7 +254,8 @@
 	})
 	const sliderFieldTrackFillClasses = computed(() => {
 		return [
-			'origam-slider-field-track__fill'
+			'origam-slider-field-track__fill',
+			trackFillColorClasses.value
 		]
 	})
 	const sliderFieldTrackTicksClasses = computed(() => {

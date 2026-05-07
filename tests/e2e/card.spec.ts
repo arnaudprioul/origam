@@ -93,6 +93,12 @@ test.describe('OrigamCard', () => {
 			await expect(card).toBeVisible({ timeout: 5000 })
 			const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor)
 			expect(bg, `card-color-${intent}`).toBe(expected)
+			// Phase 3 Vague A — class-first companion: utility class
+			// `.origam--bg-{intent}` must land on the card root for
+			// tokenised intents.
+			await expect(card, `card-color-${intent} utility class`).toHaveClass(
+				new RegExp(`origam--bg-${intent}`)
+			)
 		}
 	})
 

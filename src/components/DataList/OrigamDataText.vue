@@ -102,7 +102,8 @@
 		return isHover.value ? hoverBgColor.value : props.bgColor
 	})
 
-	const {colorStyles} = useBothColor(bgColor, color)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 
 	// CLASS & STYLES
 
@@ -117,6 +118,7 @@
 	const dataTextClasses = computed(() => {
 		return [
 			'origam-data-text',
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,

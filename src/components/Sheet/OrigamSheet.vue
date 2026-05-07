@@ -65,7 +65,12 @@
 
 	const {filterProps} = useProps<ISheetProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for tokenised intents; `colorStyles` keeps the legacy raw-color
+	// fallback. Both are wired in parallel (strategy "a") so consumers
+	// transitioning from hex to intents never see a regression.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
@@ -192,6 +197,7 @@
 	const sheetClasses = computed(() => {
 		return [
 			'origam-sheet',
+			colorClasses.value,
 			elevationClasses.value,
 			positionClasses.value,
 			borderClasses.value,

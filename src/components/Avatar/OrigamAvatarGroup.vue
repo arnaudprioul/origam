@@ -31,13 +31,6 @@
 						name="rest"
 						v-bind="{rest: restItems, length: restItems.length}"
 				>
-					<!--
-						`avatarProps` is a function (line 104). Without the
-						call parens, Vue tries to spread the function ref
-						itself as props — `density`, `size`, `color`, …
-						forwarded from OrigamAvatarGroup never reached the
-						rest chip. Calling it () returns the merged props.
-					-->
 					<origam-avatar
 							ref="origamAvatarRef"
 							class="origam-avatar-group__rest"
@@ -69,6 +62,13 @@
 	import type { StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and slot defaults propagation to
+	 * child avatars via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IAvatarGroupProps>(), {
 		items: () => [],
 		max: 5,
@@ -93,6 +93,13 @@
 
 	const {isRtl} = useRtl()
 
+	/*********************************************************
+	 * Group items
+	 *
+	 * @description
+	 * Computes which items to display and which overflow
+	 * into the rest (+N) chip based on the `max` prop.
+	 ********************************************************/
 	const max = ref(props.max)
 
 	const restItems = computed(() => {
@@ -114,11 +121,15 @@
 		return props.items
 	})
 
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover / active state with optional expand-on-hover and
+	 * expand-on-click behaviour.
+	 ********************************************************/
 	const {hoverClasses, isHover, onMouseleave, onMouseenter} = useHover(props)
 	const {activeClasses, isActive, onActive} = useActive(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {densityClasses} = useDensity(props)
 
 	const origamAvatarRef = ref<TOrigamAvatar>()
 	const avatarProps = (item: IAvatarProps = {}) => {
@@ -155,7 +166,16 @@
 		onActive()
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes direction, RTL, hover/active, density and
+	 * spacing classes/styles onto the root element.
+	 ********************************************************/
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {densityClasses} = useDensity(props)
 
 	const avatarGroupStyles = computed(() => {
 		return [
@@ -184,8 +204,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(avatarGroupStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -226,18 +250,6 @@
 			margin-inline-end: var(--origam-avatar-group__item---margin-inline-end);
 		}
 
-		// Transition on the margin LONGHAND directly — CSS variables don't
-		// trigger transitions when their value changes; only the consumer
-		// property (here `margin-inline-start` / `margin-block-start`)
-		// does, and only when that exact property is in
-		// `transition-property`. Composing the longhands manually because
-		// the tokens expose `-property` / `-duration` / `-timing-function`
-		// individually (no shorthand `--…--transition` token).
-		// `__rest` (the +N chip) is part of the same overlap chain — it
-		// sits at the end of the cluster and must chevauche the last
-		// `__item` exactly like every other non-first slot. Both
-		// selectors are applied below in `--horizontal` / `--vertical`
-		// and in the transition declaration.
 		&--expand-on-hover,
 		&--expand-on-click {
 			#{$this}__item:not(:first-child),
@@ -248,10 +260,6 @@
 			}
 		}
 
-		// `expand-on-click` is the actionable variant — the wrapper itself
-		// is the click target. Surface that affordance with `cursor:
-		// pointer` so users know the cluster is interactive (hover-only
-		// expand stays on the default cursor — no click handler).
 		&--expand-on-click {
 			cursor: pointer;
 		}
@@ -260,14 +268,6 @@
 			box-shadow: var(--origam-avatar-group---box-shadow-elevated, var(--origam-shadow-md));
 		}
 
-		// Density rungs — offset added to the cluster's overlap margin
-		// (`calc(-18px + density)`):
-		//   compact      = -6px  → total margin -24px → tightest stack
-		//   default      =  0    → total margin -18px → standard
-		//   comfortable  = 10px  → total margin  -8px → roomy stack
-		// Compact and comfortable used to share `8px` — the two rungs
-		// rendered identically and `compact` actually loosened the stack
-		// instead of tightening it.
 		&--density-compact {
 			--origam-avatar-group---density: -6px;
 		}
@@ -280,11 +280,6 @@
 			--origam-avatar-group---density: 10px;
 		}
 
-		// Horizontal stack — overlapping margins on every non-first item.
-		// Apply margin DIRECTLY (not via a CSS variable) so the
-		// `transition-property: margin` declared above can pick up the
-		// change to `margin-inline-start` when the wrapper enters the
-		// `:hover` / `--active` state.
 		&--horizontal {
 			flex-direction: row;
 

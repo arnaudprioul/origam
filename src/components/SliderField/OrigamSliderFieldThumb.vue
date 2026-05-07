@@ -18,8 +18,8 @@
 
 		<div
 				v-ripple="rippleProps"
+				:class="['origam-slider-field-thumb__ripple', textColorClasses]"
 				:style="sliderFieldThumbRippleStyles"
-				class="origam-slider-field-thumb__ripple"
 		/>
 
 		<origam-translate-scale origin="bottom center">
@@ -162,7 +162,12 @@
 	const {borderClasses, borderStyles} = useBorder(borderProps)
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
 
-	const {textColorStyles} = useTextColor(color)
+	// Phase 3 (Vague B) — class-first companion alongside inline styles.
+	// `textColorClasses` carries the global `.origam--color-{intent}` for
+	// tokenised intents, while `textColorStyles` keeps the legacy raw-color
+	// fallback. Both are applied on the surface AND ripple layers below
+	// (the cercle + the halo inherit `currentColor`).
+	const {textColorClasses, textColorStyles} = useTextColor(color)
 
 	const relevantKeys = [KEYBOARD_VALUES.PAGEUP, KEYBOARD_VALUES.PAGEDOWN, KEYBOARD_VALUES.END, KEYBOARD_VALUES.HOME, KEYBOARD_VALUES.LEFT, KEYBOARD_VALUES.RIGHT, KEYBOARD_VALUES.DOWN, KEYBOARD_VALUES.UP]
 
@@ -258,7 +263,8 @@
 			'origam-slider-field-thumb__surface',
 			elevationClasses.value,
 			borderClasses.value,
-			roundedClasses.value
+			roundedClasses.value,
+			textColorClasses.value
 		]
 	})
 	const sliderFieldThumbRippleStyles = computed(() => {

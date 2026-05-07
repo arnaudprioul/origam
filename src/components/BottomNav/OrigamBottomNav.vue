@@ -67,6 +67,13 @@
 
 	import { computed, ComputedRef, Ref, StyleValue, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child buttons
+	 * via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBottomNavProps>(), {
 		tag: 'nav',
 		name: 'bottom-navigation',
@@ -96,15 +103,29 @@
 		}
 	}))
 
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active, color and scroll-aware visibility state.
+	 ********************************************************/
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// ONLY for the resting state — `useColorEffect` returns `[]` for
+	// hover/active so the inline `colorStyles` keeps owning those slots
+	// (no utility class exists for `bgHover`/`bgActive` rungs).
+	const {colorClasses, colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Registers as a layout item so sibling regions offset
+	 * correctly; height accounts for density.
+	 ********************************************************/
 	const {ssrBootStyles} = useSsrBoot()
 
 	const height = computed(() => {
@@ -134,7 +155,18 @@
 
 	useGroup(props, ORIGAM_BTN_TOGGLE_KEY)
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes slide-in transform, layout, color, rounding
+	 * and spacing classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {elevationClasses} = useElevation(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
 
 	const bottomNavStyles = computed(() => {
 		return [
@@ -162,6 +194,7 @@
 			activeClasses.value,
 			hoverClasses.value,
 			borderClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
 			roundedClasses.value,
@@ -173,8 +206,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -195,20 +232,6 @@
 		display: flex;
 		overflow: hidden;
 
-		// Default standalone positioning — pin to the bottom edge of the
-		// nearest positioned ancestor and stretch full width. Inside an
-		// `<origam-layout>` host, `useLayoutItem` overrides every one of
-		// these (left/right/bottom/width/transform) via inline styles, so
-		// the layout-driven slide-in animation still wins. Pre-fix the
-		// SCSS only declared `position: absolute` — when the component
-		// rendered standalone (story, modal preview, isolated test) it
-		// collapsed to its content width because no inline width was
-		// injected.
-		// `box-sizing: border-box` is required: with `width: 100%` and
-		// the default `content-box`, the inline padding tokens added
-		// ~22px of overflow on top of the parent's width, so the nav
-		// rendered slightly wider than its host. Same fix pattern as
-		// the OrigamWindow `__controls` overflow.
 		box-sizing: border-box;
 		position: absolute;
 		left: 0;
@@ -227,16 +250,6 @@
 
 		border-color: var(--origam-bottom-bar---border-color);
 		border-style: var(--origam-bottom-bar---border-style);
-		// Use the directional border tokens declared in
-		// `tokens/component/bottom-nav.json` (border-top/left/bottom/right-width).
-		// The omnibus `--origam-bottom-bar---border-width` is set by the
-		// `&--border` modifier and acts as the override for all four
-		// sides; without that modifier the default fallback is 0 so
-		// the nav ships borderless.
-		// Pre-fix the SCSS read the undefined omnibus var directly,
-		// which CSS resolves to the property's `initial` value
-		// (`medium`, ~3px) — i.e. a 3px border was painted on every
-		// nav even when `border` was not set.
 		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
 		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
 		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
@@ -288,10 +301,6 @@
 		}
 
 		&--border {
-			// Set the four directional tokens so the modifier wins over
-			// the per-side defaults (which are explicitly 0). Keeping
-			// the omnibus var in sync lets ad-hoc consumers who set it
-			// directly via inline style still get a uniform border.
 			--origam-bottom-bar---border-width: thin;
 			--origam-bottom-bar---border-top-width: thin;
 			--origam-bottom-bar---border-right-width: thin;
@@ -299,7 +308,6 @@
 			--origam-bottom-bar---border-left-width: thin;
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
 			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
 		}
@@ -328,7 +336,6 @@
 			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
-		// Density formula `padding/height - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
 			--origam-bottom-bar---density: -8px;
 		}
@@ -406,6 +413,3 @@
 		}
 	}
 </style>
-
-
-

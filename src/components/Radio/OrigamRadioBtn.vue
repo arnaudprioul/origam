@@ -51,6 +51,12 @@
 
 	import type { TOrigamSelectionControl } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the RadioBtn component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRadioBtnProps>(), {
 		density: DENSITY.DEFAULT,
 		trueIcon: MDI_ICONS.RADIOBOX_MARKED,
@@ -61,22 +67,51 @@
 
 	const {filterProps} = useProps<IRadioBtnProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Ref to the SelectionControl sub-component for forward-prop
+	 * delegation via filterProps.
+	 ********************************************************/
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 
+	/*********************************************************
+	 * Value & slots
+	 *
+	 * @description
+	 * v-model binding and slots for conditional template delegation.
+	 ********************************************************/
 	const model = useVModel(props, 'modelValue')
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Label click forwarded up to Radio / RadioGroup.
+	 ********************************************************/
 	const handleClickLabel = (e: Event) => {
 		emits('click:label', e)
 	}
 
+	/*********************************************************
+	 * Forwarded props
+	 *
+	 * @description
+	 * Props forwarded to SelectionControl via filterProps.
+	 ********************************************************/
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['class', 'style', 'id', 'modelValue', 'falseIcon', 'trueIcon', 'type'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * radioBtnStyles and radioBtnClasses compose the BEM block.
+	 ********************************************************/
 	const radioBtnStyles = computed(() => {
 		return [
 			props.style
@@ -89,8 +124,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

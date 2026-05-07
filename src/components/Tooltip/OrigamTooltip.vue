@@ -38,8 +38,8 @@
 				popup body get the styling it deserves.
 			-->
 			<div
+					:class="['origam-tooltip__content', colorClasses]"
 					:style="colorStyles"
-					class="origam-tooltip__content"
 			>
 				<slot name="default">
 					<span>{{ text }}</span>
@@ -92,7 +92,8 @@
 	// `var(--origam-tooltip---background-color)` from the design tokens.
 	// Wired here so the inline declaration on `.origam-tooltip__content`
 	// wins via inline-style specificity.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()

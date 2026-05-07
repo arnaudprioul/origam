@@ -96,8 +96,8 @@
 							:key="index"
 					>
 						<div
+								:class="['origam-date-picker-field__selection-chips', textColorClasses]"
 								:style="[textColorStyles]"
-								class="origam-date-picker-field__selection-chips"
 						>
 							<template v-if="isMultiple">
 								<slot
@@ -252,7 +252,10 @@
 		model.value = value
 	}
 
-	const {textColorStyles} = useTextColor(toRef(props, 'color'))
+	// Phase 3 (Vague B) — class-first companion alongside inline styles.
+	// `textColorClasses` carries the global `.origam--color-{intent}` for
+	// tokenised values; `textColorStyles` keeps the legacy fallback path.
+	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
 
 	const menuState = useVModel(props, 'menu')
 	const menu = computed<boolean>({

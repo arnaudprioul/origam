@@ -45,7 +45,8 @@
 	// IColorProps but the component never consumed it — `<origam-counter
 	// color="primary">` was a silent no-op despite the type system
 	// promising otherwise. Audit-fix.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {isBooted} = useSsrBoot()
 
@@ -67,6 +68,7 @@
 			{
 				'origam-counter--error': props.max && !props.disabled && parseFloat(props.value) > parseFloat(props.max)
 			},
+			colorClasses.value,
 			props.class
 		]
 	})

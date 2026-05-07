@@ -30,21 +30,40 @@
 
 	import { computed, StyleValue, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props for the BreadcrumbDivider component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBreadcrumbDividerProps>(), {tag: 'span', divider: '/'})
 
 	const {filterProps} = useProps<IBreadcrumbDividerProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {densityClasses} = useDensity(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {sizeStyles, sizeClasses} = useSize(props)
+	/*********************************************************
+	 * Icon detection
+	 *
+	 * @description
+	 * Determines whether the divider value is an MDI icon
+	 * identifier (renders OrigamIcon) or a plain string.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isIcon = computed(() => {
 		return typeof props.divider !== 'string' || Object.values(MDI_ICONS).includes(props.divider as TValueOf<typeof MDI_ICONS>)
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes spacing, color, size and density classes/styles.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {sizeStyles, sizeClasses} = useSize(props)
 
 	const breadcrumbDividerStyles = computed(() => {
 		return [
@@ -58,6 +77,7 @@
 	const breadcrumbDividerClasses = computed(() => {
 		return [
 			'origam-breadcrumb-divider',
+			colorClasses.value,
 			densityClasses.value,
 			sizeClasses.value,
 			paddingClasses.value,
@@ -68,8 +88,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbDividerStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -85,8 +109,6 @@
 		scoped
 >
 	.origam-breadcrumbs-divider {
-		// Default values for CSS custom properties — moved from :root {} global block
-		// (no hex were present; values are keyword values only)
 		--origam-breadcrumb-divider---border-top-width: 0px;
 		--origam-breadcrumb-divider---border-left-width: 0px;
 		--origam-breadcrumb-divider---border-bottom-width: 0px;
@@ -97,7 +119,6 @@
 		--origam-breadcrumb-divider---border-radius: 0px;
 		--origam-breadcrumb-divider---density: 0px;
 		--origam-breadcrumb-divider---box-shadow: var(--origam-shadow-none, none);
-		// color: inherit → token breadcrumb.divider.color → {color.text.secondary} with inherit fallback preserved
 		--origam-breadcrumb-divider---color: var(--origam-breadcrumb-divider---color-token, inherit);
 		--origam-breadcrumb-divider---opacity: 1;
 		--origam-breadcrumb-divider---background: transparent;
@@ -107,7 +128,6 @@
 		--origam-breadcrumb-divider---margin-block-end: 0px;
 		--origam-breadcrumb-divider---padding-block-start: 0px;
 		--origam-breadcrumb-divider---padding-block-end: 0px;
-		// Token breadcrumb.divider.padding-inline → {space.2} = 8px
 		--origam-breadcrumb-divider---padding-inline-start: var(--origam-breadcrumb-divider---padding-inline, 8px);
 		--origam-breadcrumb-divider---padding-inline-end: var(--origam-breadcrumb-divider---padding-inline, 8px);
 		--origam-breadcrumb-divider---transition-duration: 0.2s, 0.1s;
@@ -140,7 +160,6 @@
 		margin-inline-start: var(--origam-breadcrumb-divider---margin-inline-start);
 		margin-inline-end: var(--origam-breadcrumb-divider---margin-inline-end);
 
-		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
 			--origam-breadcrumb-divider---density: -8px;
 		}

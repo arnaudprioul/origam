@@ -41,6 +41,12 @@
 
 	import { computed, StyleValue, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IKbdProps>(), {
 		separator: '+',
 		variant: 'outlined',
@@ -53,10 +59,15 @@
 	const { sizeClasses, sizeStyles } = useSize(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
-	const { colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const kbdClasses = computed(() => {
 		return [
 			'origam-kbd',
@@ -64,6 +75,7 @@
 				[`origam-kbd--variant-${props.variant}`]: props.variant,
 				'origam-kbd--combination': props.combination && props.combination.length > 0,
 			},
+			colorClasses.value,
 			sizeClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
@@ -81,8 +93,12 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({ filterProps })
 </script>
 
@@ -90,11 +106,6 @@
 		lang="scss"
 		scoped
 >
-	// Single-key shape — applied to:
-	//   1. The outer `<kbd class="origam-kbd">` when NO combination is in use
-	//   2. Each inner `<kbd class="origam-kbd__key">` inside a combination
-	// Sharing one mixin keeps the visual identity consistent: a single
-	// ⌘ looks the same as one of the keys inside ⌘+S.
 	@mixin key-surface {
 		display: inline-flex;
 		align-items: center;
@@ -119,9 +130,6 @@
 		background-color: var(--origam-kbd---background-color, var(--origam-color-surface-raised, #fff));
 		color: var(--origam-kbd---color, var(--origam-color-text-primary, #171717));
 
-		// Soft top-highlight + bottom-shadow for the embossed "physical
-		// key" feel from the reference design — same trick as the Btn
-		// ghost glow but tighter and more keycap-shaped.
 		box-shadow: var(
 			--origam-kbd---box-shadow,
 			0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
@@ -130,19 +138,12 @@
 	}
 
 	.origam-kbd {
-		// Single-key default (no `combination` prop) — apply the mixin.
-		// When `--combination` modifier is on the wrapper, the outer
-		// `<kbd>` is RESET to a transparent shell (see below) and the
-		// individual `__key` children carry the visible surface.
 		@include key-surface;
 
 		font-size: var(--origam-kbd---font-size, 0.875em);
 
 		gap: var(--origam-kbd---gap, 4px);
 
-		// ── Combination mode: outer <kbd> becomes a transparent
-		// inline-flex shell that just spaces the child keys with `gap`.
-		// All visible key-cap rendering is delegated to `__key` below.
 		&--combination {
 			display: inline-flex;
 			align-items: center;
@@ -156,15 +157,10 @@
 			min-width: 0;
 		}
 
-		// Inner key surface — same shape as a standalone kbd.
 		&__key {
 			@include key-surface;
 		}
 
-		// ── Variants — applied to the surface (single-key OR each
-		// combination key). When `--combination` is on the wrapper the
-		// variant modifier still propagates via the `&` selector chain
-		// to the inner key.
 		&--variant-outlined,
 		&--variant-outlined &__key {
 			--origam-kbd---background-color: var(--origam-color-surface-raised, #fff);
@@ -189,9 +185,6 @@
 			--origam-kbd---box-shadow: none;
 		}
 
-		// Combination-mode reset overrides (must come AFTER the variant
-		// rules so the outer wrapper stays transparent regardless of
-		// variant — the inner keys carry the variant surface).
 		&--combination#{&}--variant-outlined,
 		&--combination#{&}--variant-filled,
 		&--combination#{&}--variant-tonal {
@@ -201,15 +194,12 @@
 			box-shadow: none;
 		}
 
-		// Size scale — drives `font-size` on the wrapper; everything
-		// inside (padding via em, border-radius, key sizing) follows.
 		&--size-x-small { font-size: var(--origam-kbd---font-size-xs, 0.625rem); }
 		&--size-small   { font-size: var(--origam-kbd---font-size-sm, 0.75rem); }
 		&--size-default { font-size: var(--origam-kbd---font-size-md, 0.875rem); }
 		&--size-large   { font-size: var(--origam-kbd---font-size-lg, 1rem); }
 		&--size-x-large { font-size: var(--origam-kbd---font-size-xl, 1.125rem); }
 
-		// Rounded overrides
 		&--rounded         { --origam-kbd---border-radius: var(--origam-radius-sm, 4px); }
 		&--rounded-x-small { --origam-kbd---border-radius: var(--origam-radius-xs, 2px); }
 		&--rounded-small   { --origam-kbd---border-radius: var(--origam-radius-sm, 4px); }
@@ -218,7 +208,6 @@
 		&--rounded-large   { --origam-kbd---border-radius: var(--origam-radius-xl, 16px); }
 		&--rounded-x-large { --origam-kbd---border-radius: var(--origam-radius-2xl, 24px); }
 
-		// Separator between keys ("+", etc.) — neutral text, NOT a key.
 		&__separator {
 			color: var(--origam-kbd__separator---color, var(--origam-color-text-secondary, rgba(0, 0, 0, 0.55)));
 			font-family: inherit;

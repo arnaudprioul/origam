@@ -34,10 +34,23 @@
 
 	import type { IResponsiveProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the Responsive component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IResponsiveProps>(), {})
 
 	const {filterProps} = useProps<IResponsiveProps>(props)
 
+	/*********************************************************
+	 * Decorators & layout
+	 *
+	 * @description
+	 * Aspect ratio, dimension, rounding, border, padding and
+	 * margin composables.
+	 ********************************************************/
 	const {aspectStyles} = useAspectRatio(props)
 	const {dimensionStyles} = useDimension(props)
 	const slots = useSlots()
@@ -46,8 +59,12 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * responsiveStyles and responsiveClasses compose the BEM block.
+	 ********************************************************/
 	const responsiveStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -76,8 +93,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -124,8 +145,3 @@
 		}
 	}
 </style>
-
-<!-- Lot 6 — `<style>:root{}` block removed; tokens now live in
-     `tokens/component/responsive.json` (aspect-ratio + layout) and
-     are emitted as theme-aware CSS variables by the build pipeline. -->
-

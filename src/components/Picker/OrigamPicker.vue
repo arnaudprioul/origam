@@ -9,6 +9,7 @@
 			<template v-if="!hideHeader">
 				<div
 						key="header"
+						:class="backgroundColorClasses"
 						:style="backgroundColorStyles"
 				>
 					<template v-if="hasTitle">
@@ -55,25 +56,50 @@
 
 	import type { TOrigamSheet } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, slots and filterProps for the Picker component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IPickerProps>(), {})
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IPickerProps>(props)
 
-	const {backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
+	/*********************************************************
+	 * Background color & title guard
+	 *
+	 * @description
+	 * backgroundColorStyles drives the header background from bgColor.
+	 * hasTitle guards the title slot / title prop render.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 
 	const hasTitle = computed(() => {
 		return !!(props.title || slots.title)
 	})
 
+	/*********************************************************
+	 * Sheet ref
+	 *
+	 * @description
+	 * origamSheetRef allows filtering Sheet props from the Picker's
+	 * own props before passing them down.
+	 ********************************************************/
 	const origamSheetRef = ref<TOrigamSheet>()
 
 	const sheetProps = computed(() => {
 		return origamSheetRef.value?.filterProps(props, ['class', 'style'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * pickerStyles and pickerClasses compose the BEM root.
+	 ********************************************************/
 	const pickerStyles = computed(() => {
 		return [
 			props.style
@@ -90,8 +116,12 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
