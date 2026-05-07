@@ -1,0 +1,224 @@
+<template>
+	<div
+			:class="switchTrackClasses"
+			:style="switchTrackStyles"
+			@click="handleClick"
+	>
+		<div
+				v-if="slots['track.true']"
+				key="prepend"
+				class="origam-switch-track__true"
+		>
+			<slot
+					name="track.true"
+					v-bind="slotProps"
+			/>
+		</div>
+
+		<div
+				v-if="slots['track.false']"
+				key="append"
+				class="origam-switch-track__false"
+		>
+			<slot
+					name="track.false"
+					v-bind="slotProps"
+			/>
+		</div>
+	</div>
+</template>
+
+<script
+		lang="ts"
+		setup
+>
+	import { computed, StyleValue, useSlots } from 'vue'
+
+	import { useBackgroundColor, useProps } from '../../composables'
+
+	import type { ISwitchTrackEmits, ISwitchTrackProps, ISwitchTrackSlots } from "../../interfaces"
+
+	const props = withDefaults(defineProps<ISwitchTrackProps>(), {
+		modelValue: false,
+		isValid: null,
+		disabled: false,
+		readonly: false,
+		error: false,
+		inset: false
+	})
+
+	const emits = defineEmits<ISwitchTrackEmits>()
+
+	defineSlots<ISwitchTrackSlots>()
+
+	const {filterProps} = useProps<ISwitchTrackProps>(props)
+
+	const slots = useSlots()
+
+	// Strict channel separation — `bgColor` ONLY paints the rail. The
+	// `color` prop is exposed for slot consumers but is NOT applied here:
+	// the foreground (thumb / label) is handled by the surrounding
+	// SelectionControl wrapper via `currentColor`.
+	const trackBgColor = computed(() => {
+		// Disabled / error are token-driven (see SCSS) — return undefined
+		// so the consumer's `bgColor` doesn't override them.
+		if (props.disabled || props.error) return undefined
+
+		return props.bgColor
+	})
+
+	const {backgroundColorStyles} = useBackgroundColor(trackBgColor)
+
+	const slotProps = computed(() => ({
+		model: props.modelValue,
+		isValid: props.isValid
+	}))
+
+	const handleClick = (e: MouseEvent) => {
+		if (props.disabled || props.readonly) return
+
+		// Stop the click from bubbling to the underlying SelectionControl
+		// AND prevent the default browser behaviour — the consumer is
+		// expected to forward the click manually to the hidden `<input>`
+		// via this emit (see OrigamSwitch). Pre-fix the click bubbled and
+		// the input toggled twice (once from the bubble, once from the
+		// emit-driven `.click()`), which silently swallowed every other
+		// click.
+		e.stopPropagation()
+		e.preventDefault()
+		emits('click', e)
+	}
+
+	// CLASS & STYLES
+
+	const switchTrackStyles = computed(() => {
+		return [
+			backgroundColorStyles.value,
+			props.style
+		] as StyleValue
+	})
+	const switchTrackClasses = computed(() => {
+		return [
+			'origam-switch-track',
+			{
+				'origam-switch-track--dirty': props.modelValue,
+				'origam-switch-track--disabled': props.disabled,
+				'origam-switch-track--readonly': props.readonly,
+				'origam-switch-track--error': props.error,
+				'origam-switch-track--inset': props.inset
+			},
+			props.class
+		]
+	})
+
+	// EXPOSE
+
+	defineExpose({
+		filterProps
+	})
+</script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-switch-track {
+		$this: &;
+
+		// Rail (the "box behind the cercle"). Reads from CSS variables so
+		// the design-token layer can override per theme, and so the inline
+		// `:style="backgroundColorStyles"` (set when the consumer passes
+		// `bgColor`) wins via inline-style specificity.
+		display: inline-flex;
+		align-items: center;
+		font-size: 0.5rem;
+		padding: 0 5px;
+		background-color: var(--origam-switch__track---background-color, rgb(163, 163, 163));
+		border-radius: 9999px;
+		height: 14px;
+		opacity: 0.6;
+		min-width: 36px;
+		cursor: pointer;
+		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+
+		// Track keeps its 0.6 opacity on BOTH ON and OFF states (Material
+		// rail). The opacity makes the track visually distinct from the
+		// thumb (control-input) regardless of the `bgColor` channel.
+
+		@media (forced-colors: active) {
+			border: 1px solid;
+			color: buttontext;
+			transition: none;
+		}
+
+		// True/false slot containers. `track.true` sits on the LEFT
+		// (visible when ON), `track.false` sits on the RIGHT (visible
+		// when OFF). The opposite-side slot fades to 0 via the modifier
+		// rules below.
+		&__true {
+			margin-inline-end: auto;
+		}
+
+		&__false {
+			margin-inline-start: auto;
+		}
+
+		// OFF state — hide the `track.true` slot.
+		&:not(#{$this}--dirty) {
+			#{$this}__true {
+				opacity: 0;
+			}
+		}
+
+		// ON state — hide the `track.false` slot.
+		&--dirty {
+			#{$this}__false {
+				opacity: 0;
+			}
+		}
+
+		// Disabled — both states share the same muted background.
+		&--disabled {
+			cursor: default;
+		}
+
+		&--dirty#{$this}--disabled {
+			background-color: var(--origam-switch__track---background-color-disabled, rgb(163, 163, 163));
+		}
+
+		// Error — overrides any consumer-provided `bgColor` (the inline
+		// style is suppressed when `error` is true, so this rule wins).
+		&--error {
+			&:not(#{$this}--disabled) {
+				background-color: rgba(255, 0, 0, 1);
+				color: rgba(255, 255, 255, 1);
+			}
+		}
+
+		// Inset variant — Material's tall rounded rail.
+		&--inset {
+			border-radius: 9999px;
+			font-size: 0.75rem;
+			height: 32px;
+			min-width: 52px;
+
+			@media (forced-colors: active) {
+				border-width: 2px;
+			}
+		}
+
+		// Forced-colors — the ON state uses `highlight` for the rail.
+		@media (forced-colors: active) {
+			&--dirty {
+				background-color: highlight;
+				color: highlight;
+			}
+		}
+	}
+</style>
+
+<style>
+	:root {
+
+	}
+</style>

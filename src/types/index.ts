@@ -210,6 +210,7 @@ export * from './SliderField/slider-field-thumb.type'
 export * from './Snackbar/snackbar.type'
 
 export * from './Switch/switch.type'
+export * from './Switch/switch-track.type'
 
 export * from './Table/table.type'
 

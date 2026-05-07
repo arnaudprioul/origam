@@ -34,7 +34,7 @@
 					@focus="handleFocus"
 					@update:model-value="handleChange"
 			>
-				<template #default="{backgroundColorStyles}">
+				<template #default="{bgColor: scBgColor}">
 					<!--
 						`bgColor` channel only — the track is the "box behind
 						the circle". `color` (foreground) is applied on the
@@ -42,34 +42,42 @@
 						thumb via `background-color: currentColor` in SCSS.
 						The two channels stay strictly separate per the
 						project's color contract.
+
+						The track is now its own component (`OrigamSwitchTrack`)
+						so the rail can be styled / extended in isolation —
+						the slot payload (`model`, `isValid`) stays the same
+						so consumers don't see a breaking change.
 					-->
-					<div
-							:style="backgroundColorStyles"
-							class="origam-switch__track"
+					<origam-switch-track
+							:bg-color="scBgColor"
+							:disabled="isDisabled"
+							:error="isValid === false"
+							:inset="props.inset"
+							:is-valid="isValid"
+							:model-value="model"
+							:readonly="isReadonly"
 							@click="handleTrackClick"
 					>
-						<div
+						<template
 								v-if="slots['track.true']"
-								key="prepend"
-								class="origam-switch__track-true"
+								#track.true="slotProps"
 						>
 							<slot
 									name="track.true"
-									v-bind="{model, isValid}"
+									v-bind="slotProps"
 							/>
-						</div>
+						</template>
 
-						<div
+						<template
 								v-if="slots['track.false']"
-								key="append"
-								class="origam-switch__track-false"
+								#track.false="slotProps"
 						>
 							<slot
 									name="track.false"
-									v-bind="{model, isValid}"
+									v-bind="slotProps"
 							/>
-						</div>
-					</div>
+						</template>
+					</origam-switch-track>
 				</template>
 
 				<template #input="{model, icon, props: selectionControlProps}">
@@ -81,17 +89,6 @@
 							:checked="model"
 							v-bind="selectionControlProps"
 					/>
-
-					<!--
-						Thumb (cercle) — `color` channel. Inherits via
-						`background-color: currentColor` in SCSS, where
-						`currentColor` resolves to the SC wrapper's
-						`textColorStyles` (set by `useSelectionControl`
-						from `props.color`). Pre-fix this was driven by
-						`backgroundColorStyles` which mixed the bgColor
-						channel into the thumb — violated the strict
-						color/bgColor separation contract.
-					-->
 					<div
 							:class="['origam-switch__thumb', { 'origam-switch__thumb--filled': !!icon || loaderConfig.isActive }]"
 					>
@@ -140,6 +137,7 @@
 		OrigamProgress,
 		OrigamSelectionControl,
 		OrigamSkeleton,
+		OrigamSwitchTrack,
 		OrigamTranslateScale
 	} from '../../components'
 
@@ -183,9 +181,11 @@
 			indeterminate.value = false
 		}
 	}
-	const handleTrackClick = (e: Event) => {
-		e.stopPropagation()
-		e.preventDefault()
+	const handleTrackClick = (_e: MouseEvent) => {
+		// `OrigamSwitchTrack` already calls `stopPropagation` /
+		// `preventDefault` on the native event before emitting — we just
+		// need to forward the click to the hidden `<input>` so the
+		// SelectionControl picks it up and toggles `model`.
 		origamSelectionControlRef.value?.inputRef?.click()
 	}
 
@@ -258,7 +258,8 @@
 			}
 		}
 
-		&__track,
+		// Thumb-only — the track now owns its own transitions (and forced-
+		// colors styles) inside `OrigamSwitchTrack.vue`.
 		&__thumb {
 			transition: none;
 
@@ -295,25 +296,14 @@
 				}
 			}
 
+			// Thumb error state — track error is owned by `OrigamSwitchTrack`
+			// (driven by its own `error` prop).
 			&--error {
 				&:not(.origam-selection-control--disabled) {
-					#{$this}__track,
 					#{$this}__thumb {
 						background-color: rgba(255, 0, 0, 1);
-						color: rgba(255, 255, 255, 5);
+						color: rgba(255, 255, 255, 1);
 					}
-				}
-			}
-
-			&:not(.origam-selection-control--dirty) {
-				#{$this}__track-true {
-					opacity: 0;
-				}
-			}
-
-			&--dirty {
-				#{$this}__track-false {
-					opacity: 0;
 				}
 			}
 		}
@@ -332,46 +322,9 @@
 			}
 		}
 
-		&__track-true {
-			margin-inline-end: auto;
-		}
-
-		&__track-false {
-			margin-inline-start: auto;
-		}
-
-		// Track + thumb: read from CSS variables so the design-token
-		// layer can override them per theme, AND so the inline
-		// `:style="backgroundColorStyles"` (which sets `background-color`
-		// directly) wins via inline-style specificity when the consumer
-		// passes `color`/`bgColor` and the switch is checked.
-		&__track {
-			display: inline-flex;
-			align-items: center;
-			font-size: 0.5rem;
-			padding: 0 5px;
-			background-color: var(--origam-switch__track---background-color, rgb(163, 163, 163));
-			border-radius: 9999px;
-			height: 14px;
-			opacity: 0.6;
-			min-width: 36px;
-			cursor: pointer;
-			transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
-		}
-
-		// Track keeps its transparency on BOTH states (Material rail).
-		// The 0.6 opacity is intentional — it makes the track visually
-		// distinct from the thumb (control-input) regardless of the
-		// `bgColor` channel. Pre-fix this rule overrode opacity to 1
-		// on `--dirty`, which made the ON-state track fully opaque and
-		// erased the visual contrast with the thumb. Reported by the
-		// user — "avec une transparence pour avoir une difference avec
-		// le control-input".
-
-		// Disabled checked state.
-		.origam-selection-control--dirty.origam-selection-control--disabled &__track {
-			background-color: var(--origam-switch__track---background-color-disabled, rgb(163, 163, 163));
-		}
+		// Track block (`origam-switch-track`) owns its own dimensions,
+		// background color, true/false slots, dirty/disabled/error/inset
+		// modifiers — see `OrigamSwitchTrack.vue`.
 
 		// `color` prop applied — `useSelectionControl` inlines
 		// `style="color: …"` on `.origam-selection-control__wrapper`
@@ -411,16 +364,8 @@
 		}
 
 		&#{$this}--inset {
-			#{$this}__track {
-				border-radius: 9999px;
-				font-size: 0.75rem;
-				height: 32px;
-				min-width: 52px;
-
-				@media (forced-colors: active) {
-					border-width: 2px;
-				}
-			}
+			// Track inset sizing is handled by `OrigamSwitchTrack` via its
+			// own `--inset` modifier (it receives the `inset` prop).
 
 			#{$this}__thumb {
 				height: 24px;
@@ -481,12 +426,6 @@
 			#{$this}__thumb {
 				@media (forced-colors: active) {
 					background-color: graytext;
-				}
-			}
-
-			#{$this}__track,
-			#{$this}__thumb {
-				@media (forced-colors: active) {
 					color: graytext;
 				}
 			}
@@ -523,14 +462,7 @@
 
 		&:not(.origam-input--disabled) {
 			.origam-selection-control--dirty {
-				#{$this}__track {
-					@media (forced-colors: active) {
-						background-color: highlight;
-					}
-				}
-
-				#{$this}__track,
-				#{$this}_thumb {
+				#{$this}__thumb {
 					@media (forced-colors: active) {
 						color: highlight;
 					}

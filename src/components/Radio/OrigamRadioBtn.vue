@@ -19,11 +19,11 @@
 
 		<template
 				v-if="slots.input"
-				#input="{props, icon, textColorStyles, backgroundColorStyles, model}"
+				#input="{props, icon, model}"
 		>
 			<slot
 					name="input"
-					v-bind="{props, icon, textColorStyles, backgroundColorStyles, model}"
+					v-bind="{props, icon, model}"
 			/>
 		</template>
 

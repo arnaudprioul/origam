@@ -1,5 +1,5 @@
-import type { IColorProps, ICommonsComponentEmits, ICommonsComponentProps, ICommonsComponentSlots, ISelectionControlGroupProps } from '../../interfaces'
-import type { TColor, TIcon } from '../../types'
+import type { IColorProps, ICommonsComponentEmits, ICommonsComponentProps, ISelectionControlGroupProps } from '../../interfaces'
+import type { TIcon } from '../../types'
 
 export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps {
     label?: string
@@ -13,8 +13,8 @@ export interface ISelectionControlEmits extends ICommonsComponentEmits {
     (e: 'click:label', event: MouseEvent): void
 }
 
-export interface ISelectionControlSlots extends ICommonsComponentSlots {
-    default?: (model: any, textColorStyles: TColor, backgroundColorStyles: TColor, icon: TIcon, props: any) => any
+export interface ISelectionControlSlots {
+    default?: (model: any, icon: TIcon, props: any) => any
     label?: () => any
-    input?: (props: any, icon: TIcon, textColorStyles: TColor, backgroundColorStyles: TColor, model: any) => any
+    input?: (props: any, icon: TIcon, model: any) => any
 }
