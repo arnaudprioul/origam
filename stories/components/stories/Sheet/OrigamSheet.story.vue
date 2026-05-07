@@ -139,6 +139,69 @@
 			</origam-sheet>
 		</Variant>
 
+		<!-- ════════════ BOTTOM — SWIPEABLE ════════════ -->
+		<!--
+			Mobile-style bottom sheet with touch-drag-up to expand.
+			Hosts the swipe composable when `swipeable && side==='bottom'`.
+			Variant covers:
+			  - `defaultSnap` driven via HstSelect (closed/peek/half/full).
+			  - `persistent` toggle blocking dismissal beyond the bottom-most
+			    non-zero snap.
+			The container is given a fixed height + relative positioning so
+			the absolute sheet anchors visually, even inside the Histoire
+			sandbox iframe. The scrolling list of items is what the user
+			should be able to reveal by dragging up.
+		-->
+		<Variant
+				title="Bottom — swipeable"
+				:init-state="() => useStoryInitState<{
+					defaultSnap: 'closed' | 'peek' | 'half' | 'full'
+					persistent: boolean
+				}>({ defaultSnap: 'peek', persistent: false })"
+		>
+			<template #default="{ state }">
+				<div style="position: relative; height: 480px; background: var(--origam-color-surface-overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+					<div style="padding: 16px;">
+						<strong>Page content</strong>
+						<p style="font-size: 12px; color: var(--origam-color-text-secondary);">
+							Drag the pill at the top of the sheet to expand or dismiss.
+						</p>
+					</div>
+					<origam-sheet
+							:swipeable="true"
+							side="bottom"
+							:default-snap="state.defaultSnap"
+							:persistent="state.persistent"
+							elevation="lg"
+							style="background: var(--origam-color-surface-default);"
+							data-cy="sheet-bottom-swipeable"
+					>
+						<template #default>
+							<div style="padding: 0 16px 16px;">
+								<h3 style="margin: 4px 0 12px; font-size: 14px; font-weight: 600;">Choose a destination</h3>
+								<ul style="list-style: none; padding: 0; margin: 0;">
+									<li v-for="i in 16" :key="i" style="padding: 12px 0; border-bottom: 1px solid var(--origam-color-border-subtle, #ddd);">
+										Item {{ i }} — Lorem ipsum dolor sit amet
+									</li>
+								</ul>
+							</div>
+						</template>
+					</origam-sheet>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.defaultSnap"
+						title="defaultSnap"
+						:options="snapList"
+				/>
+				<HstCheckbox
+						v-model="state.persistent"
+						title="persistent"
+				/>
+			</template>
+		</Variant>
+
 		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
@@ -194,6 +257,16 @@
 		roundedList,
 		tagList
 	} from '@stories/const'
+
+	// Local list — Sheet is the only consumer of TSheetSnapId today, so
+	// there's no upside to promoting this to `@stories/const`. Promote
+	// the day a second component needs the same dropdown.
+	const snapList = [
+		{ label: 'closed', value: 'closed' },
+		{ label: 'peek',   value: 'peek' },
+		{ label: 'half',   value: 'half' },
+		{ label: 'full',   value: 'full' }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/Sheet/OrigamSheet.md"/>

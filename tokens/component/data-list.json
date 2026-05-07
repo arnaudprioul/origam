@@ -41,6 +41,22 @@
     "striped": {
       "item-even-background-color": { "$type": "color", "$value": "{color.surface.overlay}" },
       "item-odd-background-color":  { "$type": "color", "$value": "transparent" }
+    },
+
+    "kv": {
+      "display":               { "$type": "other",      "$value": "block" },
+      "row-padding-block":     { "$type": "dimension",  "$value": "{space.3}" },
+      "row-divider":           { "$type": "color",      "$value": "{color.border.subtle}" },
+      "key-width":             { "$type": "dimension",  "$value": "160px" },
+      "key-color":             { "$type": "color",      "$value": "{color.text.secondary}" },
+      "key-font-size":         { "$type": "dimension",  "$value": "{font.size.md}" },
+      "key-font-weight":       { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "key-line-height":       { "$type": "number",     "$value": "{font.lineHeight.normal}" },
+      "value-color":           { "$type": "color",      "$value": "{color.text.primary}" },
+      "value-font-size":       { "$type": "dimension",  "$value": "{font.size.md}" },
+      "value-line-height":     { "$type": "number",     "$value": "{font.lineHeight.normal}" },
+      "gap-key-value":         { "$type": "dimension",  "$value": "{space.4}" },
+      "value-inline-gap":      { "$type": "dimension",  "$value": "{space.2}" }
     }
   }
 }

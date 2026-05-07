@@ -199,6 +199,7 @@ export * from './SelectionControl/selection-control.type'
 export * from './SelectionControl/selection-control-group.type'
 
 export * from './Sheet/sheet.type'
+export * from './Sheet/sheet-snap-point.type'
 
 export * from './Slide/slide-group.type'
 

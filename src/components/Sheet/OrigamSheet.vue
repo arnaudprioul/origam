@@ -1,9 +1,29 @@
 <template>
 	<component
 			:is="tag"
+			:ref="rootEl"
 			:class="sheetClasses"
 			:style="sheetStyles"
 	>
+		<!--
+			Drag-handle pill (visible only when `swipeable && side==='bottom'`).
+			Sits above the content as a visual cue + sole pointer target.
+			Authoring note: the handle is rendered *outside* the default
+			slot so consumers don't need to re-insert it manually when
+			migrating an existing Sheet to swipeable.
+		-->
+		<div
+				v-if="showHandle"
+				ref="handleEl"
+				class="origam-sheet__handle"
+				role="separator"
+				aria-orientation="horizontal"
+				aria-label="Drag handle"
+				data-cy="sheet-bottom-handle"
+		>
+			<span class="origam-sheet__handle-pill"/>
+		</div>
+
 		<slot name="default"/>
 	</component>
 </template>
@@ -12,7 +32,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef } from 'vue'
+	import { computed, ref, StyleValue, toRef, watch } from 'vue'
 	import {
 		useBorder,
 		useBothColor,
@@ -23,12 +43,25 @@
 		usePadding,
 		usePosition,
 		useProps,
-		useRounded
+		useRounded,
+		useSheetSwipe
 	} from '../../composables'
 
-	import type { ISheetProps } from "../../interfaces"
+	import type { ISheetEmits, ISheetProps } from "../../interfaces"
 
-	const props = withDefaults(defineProps<ISheetProps>(), {tag: 'div'})
+	import type { TSheetSnapId, TSheetSnapPoint } from "../../types"
+
+	const props = withDefaults(defineProps<ISheetProps>(), {
+		tag: 'div',
+		swipeable: false,
+		side: undefined,
+		defaultSnap: 'half',
+		open: undefined,
+		disabled: false,
+		persistent: false
+	})
+
+	const emit = defineEmits<ISheetEmits>()
 
 	const {filterProps} = useProps<ISheetProps>(props)
 
@@ -42,7 +75,104 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASS & STYLES
+	// ───────────────────────── swipe gesture ────────────────────────────
+
+	const rootEl = ref<HTMLElement | null>(null)
+	const handleEl = ref<HTMLElement | null>(null)
+
+	/**
+	 * The default snap-point preset is mirrored from the composable so
+	 * consumers can pass a partial array without losing the rest. We
+	 * accept the prop verbatim when present.
+	 */
+	const DEFAULT_SNAP_POINTS: ReadonlyArray<TSheetSnapPoint> = [
+		{ id: 'closed', height: 0 },
+		{ id: 'peek',   height: '120px' },
+		{ id: 'half',   height: '50vh' },
+		{ id: 'full',   height: '90vh' }
+	]
+
+	const swipeEnabled = computed(() => props.swipeable && props.side === 'bottom')
+	const showHandle = computed(() => swipeEnabled.value)
+
+	const snapPointsRef = computed(() => props.snapPoints ?? DEFAULT_SNAP_POINTS)
+	const defaultSnapRef = computed<TSheetSnapId>(() => props.defaultSnap ?? 'half')
+	const disabledRef = computed(() => props.disabled || !swipeEnabled.value)
+	const persistentRef = computed(() => !!props.persistent)
+
+	// `useSheetSwipe` mounts pointer listeners regardless — we gate
+	// activation via `disabled`. This avoids re-instantiating the
+	// composable when the user toggles `swipeable` at runtime.
+	const {
+		currentSnap,
+		dragOffset,
+		isDragging,
+		currentSnapHeight,
+		snapTo
+	} = useSheetSwipe({
+		el: rootEl,
+		handle: handleEl,
+		snapPoints: snapPointsRef,
+		defaultSnap: defaultSnapRef,
+		disabled: disabledRef,
+		persistent: persistentRef
+	})
+
+	// Sync v-model:open ↔ snap-point semantics:
+	// - external `:open=false` → snapTo('closed')
+	// - external `:open=true`  → snapTo(defaultSnap) when currently closed
+	watch(() => props.open, (next) => {
+		if (next === undefined || !swipeEnabled.value) return
+		if (next === false && currentSnap.value !== 'closed') {
+			snapTo('closed')
+		} else if (next === true && currentSnap.value === 'closed') {
+			snapTo(defaultSnapRef.value)
+		}
+	}, {immediate: true})
+
+	watch(currentSnap, (next, prev) => {
+		emit('update:snap', next)
+		const wasClosed = prev === 'closed'
+		const isClosed = next === 'closed'
+		if (wasClosed !== isClosed) {
+			emit('update:open', !isClosed)
+		}
+	})
+
+	// ───────────────────────── classes & styles ─────────────────────────
+
+	/**
+	 * Inline gesture styles applied only when the swipe is active. We
+	 * intentionally keep the rest of the height/transform contract in
+	 * the SCSS block — calc()-based defaults and CSS variables stay
+	 * consumer-overridable, while the live values during a drag are
+	 * driven from JS to track the pointer pixel-perfectly.
+	 */
+	const swipeStyles = computed(() => {
+		if (!swipeEnabled.value) return {}
+		// Sheet's effective height = current snap height + live drag
+		// offset (capped to the largest snap so the user can't pull it
+		// off-screen at the top).
+		const maxHeight = Math.max(...snapPointsRef.value.map((s) => {
+			const h = s.height
+			if (typeof h === 'number') return h
+			const m = String(h).match(/^([\d.]+)(px|vh|vw|%|rem|em)?$/i)
+			if (!m) return 0
+			const num = parseFloat(m[1])
+			const unit = (m[2] ?? 'px').toLowerCase()
+			if (typeof window === 'undefined') return num
+			if (unit === 'vh' || unit === '%') return (window.innerHeight * num) / 100
+			if (unit === 'vw') return (window.innerWidth * num) / 100
+			return num
+		}))
+		const liveHeight = isDragging.value
+			? Math.min(maxHeight, Math.max(0, currentSnapHeight.value + dragOffset.value))
+			: currentSnapHeight.value
+		return {
+			'--origam-sheet---swipe-height': `${liveHeight}px`,
+			'transition': isDragging.value ? 'none' : 'height 200ms ease'
+		}
+	})
 
 	const sheetStyles = computed(() => {
 		return [
@@ -54,9 +184,11 @@
 			paddingStyles.value,
 			marginStyles.value,
 			colorStyles.value,
+			swipeStyles.value,
 			props.style
 		] as StyleValue
 	})
+
 	const sheetClasses = computed(() => {
 		return [
 			'origam-sheet',
@@ -66,6 +198,10 @@
 			paddingClasses.value,
 			marginClasses.value,
 			roundedClasses.value,
+			swipeEnabled.value && 'origam-sheet--swipeable',
+			swipeEnabled.value && `origam-sheet--side-${props.side}`,
+			swipeEnabled.value && `origam-sheet--snap-${currentSnap.value}`,
+			isDragging.value && 'origam-sheet--dragging',
 			props.class
 		]
 	})
@@ -73,7 +209,12 @@
 	// EXPOSE
 
 	defineExpose({
-		filterProps
+		filterProps,
+		// Imperative gesture handles for advanced consumers (test hooks,
+		// programmatic open/close from Dialog wrappers, …).
+		snapTo,
+		currentSnap,
+		isDragging
 	})
 </script>
 
@@ -195,6 +336,77 @@
 
 		&--sticky {
 			--origam-sheet---position: sticky;
+		}
+
+		// ─── Swipeable mode (mobile bottom-sheet) ───────────────────────────
+		// Activated when `swipeable && side==='bottom'`. The sheet:
+		//  • sticks to the bottom edge of its containing block (consumers
+		//    typically render it inside `position: relative` or full-
+		//    viewport `position: fixed; inset: 0` ancestor),
+		//  • resolves its height from `--origam-sheet---swipe-height`,
+		//    a JS-driven CSS variable updated on every pointermove,
+		//  • disables vertical native scroll on the handle so the user's
+		//    finger drives the sheet, not the page.
+		//
+		// Token names use Style Dictionary's BEM-child convention:
+		// `tokens/component/sheet.json#sheet.swipeable.border-radius`
+		// emits `--origam-sheet__swipeable---border-radius`. The class
+		// modifier itself is `&--swipeable` (the SCSS BEM separator) so
+		// don't confuse the two.
+		&--swipeable {
+			--origam-sheet---position: absolute;
+			--origam-sheet---width: 100%;
+			--origam-sheet---max-width: 100%;
+			--origam-sheet---height: var(--origam-sheet---swipe-height, 0px);
+			--origam-sheet---max-height: 100%;
+			// Round the top edges by default — Material 3 / iOS sheet
+			// defaults. Consumers can override via the existing
+			// `rounded` modifiers.
+			--origam-sheet---border-radius: var(--origam-sheet__swipeable---border-radius, var(--origam-radius-2xl, 24px));
+			border-end-start-radius: 0;
+			border-end-end-radius: 0;
+			overflow: hidden;
+		}
+
+		&--side-bottom {
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+
+		&--dragging {
+			// Disable any default transition during a drag so the sheet
+			// tracks the finger 1:1; the JS-side `swipeStyles` also
+			// removes the transition for paranoia.
+			transition: none !important;
+		}
+
+		// Drag-handle pill — top-anchored, 32×4 px rounded by default,
+		// per PDF reference. Visual is driven entirely by tokens (see
+		// `tokens/component/sheet.json` → `sheet.handle`).
+		&__handle {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			padding-block: var(--origam-sheet__handle---margin-block, 8px);
+			cursor: grab;
+			// Block native scroll-on-touch so the gesture composable
+			// can interpret the move as a sheet drag, not a page scroll.
+			touch-action: none;
+			user-select: none;
+		}
+
+		&--dragging &__handle {
+			cursor: grabbing;
+		}
+
+		&__handle-pill {
+			display: block;
+			width: var(--origam-sheet__handle---width, 32px);
+			height: var(--origam-sheet__handle---height, 4px);
+			background-color: var(--origam-sheet__handle---color, var(--origam-color-border-subtle));
+			border-radius: var(--origam-sheet__handle---border-radius, var(--origam-radius-full, 9999px));
 		}
 	}
 </style>

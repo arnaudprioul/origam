@@ -103,6 +103,7 @@ export * from './ContextualMenu/contextual-menu.interface'
 
 export * from './Counter/counter.interface'
 
+export * from './DataList/data-list-kv-item.interface'
 export * from './DataList/data-list.interface'
 export * from './DataList/data-text.interface'
 export * from './DataList/data-title.interface'

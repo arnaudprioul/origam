@@ -1,8 +1,14 @@
 # OrigamDataList
 
-`<OrigamDataList>` renders a definition list (`<dl>`) from a structured `items` array. Each item can have a title (`IDataTitleProps`) and one or more text rows (`IDataTextProps`).
+`<OrigamDataList>` renders a definition list (`<dl>`) from a structured
+`items` array. Two layouts are available, picked by the `mode` prop:
 
-## Basic usage
+| `mode`         | Use case                                                                                  | Items shape           |
+|----------------|-------------------------------------------------------------------------------------------|-----------------------|
+| `"avatar"` (default) | Stacked title + multi-row text items, optionally with prepend/append icons or avatars | `IDataItem`           |
+| `"kv"`         | PDF-aligned key / value rows — label on the left, value on the right                       | `IDataListKVItem`     |
+
+## Avatar mode (default — back-compatible)
 
 ```vue
 <template>
@@ -11,19 +17,13 @@
 
 <script setup>
 const items = [
-    {
-        title: { text: 'Status' },
-        text: [{ text: 'Active' }]
-    },
-    {
-        title: { text: 'Created' },
-        text: [{ text: '2024-01-15' }]
-    }
+    { title: { text: 'Status' }, text: [{ text: 'Active' }] },
+    { title: { text: 'Created' }, text: [{ text: '2024-01-15' }] },
 ]
 </script>
 ```
 
-## Items structure
+### Items structure
 
 ```ts
 interface IDataItem {
@@ -32,47 +32,95 @@ interface IDataItem {
 }
 ```
 
-Pass either an array or a keyed object:
+Pass either an array or a keyed object.
+
+### Prepend / append icons
+
+```vue
+<OrigamDataList :items="items" prepend-icon="mdi-information" />
+```
+
+Adjacent props (`prependIcon`, `appendIcon`, `prependAvatar`, `appendAvatar`)
+are forwarded to each `OrigamDataTitle`.
+
+### Density
+
+```vue
+<OrigamDataList :items="items" density="compact" />
+```
+
+## KV mode (PDF-aligned key/value rows)
 
 ```vue
 <template>
-    <OrigamDataList :items="{ status: { title: { text: 'Status' }, text: [{ text: 'Active' }] } }" />
+    <OrigamDataList mode="kv" :items="kv" />
 </template>
+
+<script setup lang="ts">
+import type { IDataListKVItem } from '@origam/interfaces'
+import { OrigamChip } from '@origam/components'
+
+const kv: IDataListKVItem[] = [
+    { key: 'Status',     value: { component: OrigamChip, props: { text: 'Active', bgColor: 'success' } } },
+    { key: 'Owner',      value: 'Arnaud Martin' },
+    { key: 'Created at', value: 'Apr 12, 2026' },
+]
+</script>
 ```
 
-## Prepend / append icons
+### Items structure
 
-```vue
-<template>
-    <OrigamDataList :items="items" prepend-icon="mdi-information" />
-</template>
+```ts
+interface IDataListKVItem {
+    key: string
+    value: string | number | VNode | IDataListKVItemValueComponent
+    id?: string | number
+}
+
+interface IDataListKVItemValueComponent {
+    component: string | object       // tag name OR imported component
+    props?: Record<string, unknown>
+    children?: string | number       // optional default-slot text
+}
 ```
 
-Adjacent props (`prependIcon`, `appendIcon`, `prependAvatar`, `appendAvatar`) are forwarded to each `OrigamDataTitle`.
+The component renders a `<dl>` with one `<dt>` (key) and one `<dd>`
+(value) per row. Rows are stacked vertically with a 1px subtle divider
+between them; the layout uses CSS grid with a fixed key column and a
+fluid value column.
 
-## Density
+### Per-row test hooks
 
-```vue
-<template>
-    <OrigamDataList :items="items" density="compact" />
-</template>
-```
+Each row carries `data-cy="data-list-kv-row-{kebab(key)}"` so e2e tests
+can target specific rows without relying on text content order.
 
-## Slots
+### Slots
 
-| Slot | Bindings | Description |
-|---|---|---|
-| `default` | `{ items }` | Full list override |
-| `item` | `{ item, index }` | Custom item renderer |
-| `item-{n}` | `{ item, index }` | Override for item at index `n` |
-| `item.title` | `props` | Custom title for every item |
-| `item-{n}.title` | `props` | Custom title for item at index `n` |
-| `item.title.prepend` | — | Prepend slot for every title |
-| `item.title.append` | — | Append slot for every title |
-| `item.text` | — | Custom text renderer |
-| `item-{n}.text` | — | Custom text for item at index `n` |
-| `item.text.prepend` | — | Prepend slot for every text row |
-| `item.text.append` | — | Append slot for every text row |
+#### Avatar mode
+
+| Slot                      | Bindings           | Description                            |
+|---------------------------|--------------------|----------------------------------------|
+| `default`                 | `{ items }`        | Full list override                     |
+| `item`                    | `{ item, index }`  | Custom item renderer                   |
+| `item-{n}`                | `{ item, index }`  | Override for item at index `n`         |
+| `item.title`              | `props`            | Custom title for every item            |
+| `item-{n}.title`          | `props`            | Custom title for item at index `n`     |
+| `item.title.prepend`      | —                  | Prepend slot for every title           |
+| `item.title.append`       | —                  | Append slot for every title            |
+| `item.text`               | —                  | Custom text renderer                   |
+| `item-{n}.text`           | —                  | Custom text for item at index `n`      |
+| `item.text.prepend`       | —                  | Prepend slot for every text row        |
+| `item.text.append`        | —                  | Append slot for every text row         |
+
+#### KV mode
+
+| Slot               | Bindings                              | Description                              |
+|--------------------|---------------------------------------|------------------------------------------|
+| `default`          | `{ items }`                           | Full list override                       |
+| `key`              | `{ key, item, index }`                | Custom key (`<dt>`) renderer for every row |
+| `item-{n}.key`     | `{ key, item, index }`                | Override the key cell for row `n`        |
+| `value`            | `{ key, value, item, index }`         | Custom value (`<dd>`) renderer for every row |
+| `item-{n}.value`   | `{ key, value, item, index }`         | Override the value cell for row `n`      |
 
 ## Emits
 
@@ -80,11 +128,24 @@ Adjacent props (`prependIcon`, `appendIcon`, `prependAvatar`, `appendAvatar`) ar
 
 ## Design tokens
 
-| Token | Description |
-|---|---|
-| `--origam-data-list---display` | Display mode |
-| `--origam-data-list---overflow` | Overflow rule |
-| `--origam-data-list---gap` | Gap between items |
-| `--origam-data-list__title---font-size` | Title font size |
-| `--origam-data-list__title---font-weight` | Title font weight |
-| `--origam-data-list__text---font-size` | Text font size |
+### Shared (avatar + kv)
+
+| Token                                  | Description       |
+|----------------------------------------|-------------------|
+| `--origam-data-list---display`         | Display mode      |
+| `--origam-data-list---overflow`        | Overflow rule     |
+| `--origam-data-list---gap`             | Gap between items |
+| `--origam-data-list__title---font-size`| Title font size   |
+| `--origam-data-list__text---font-size` | Text font size    |
+
+### KV-specific
+
+| Token                                       | Description                          |
+|---------------------------------------------|--------------------------------------|
+| `--origam-data-list--kv---row-padding-block`| Vertical padding per row             |
+| `--origam-data-list--kv---row-divider`      | Color of the 1px row divider         |
+| `--origam-data-list--kv---key-width`        | Width reserved for the key column    |
+| `--origam-data-list--kv---key-color`        | Key (label) text color               |
+| `--origam-data-list--kv---value-color`      | Value text color                     |
+| `--origam-data-list--kv---gap-key-value`    | Column gap between key and value     |
+| `--origam-data-list--kv---value-inline-gap` | Gap between inline value items (chips, …) |
