@@ -18,6 +18,24 @@ const INTENTS: ReadonlySet<string> = new Set([
     'success', 'warning', 'danger', 'info'
 ])
 
+/**
+ * Subset of `TIntent` for which a global utility class exists in
+ * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
+ *
+ * `ghost` is intentionally excluded — the design system does not ship
+ * `.origam--bg-ghost` because the intent is meant to be a transparent
+ * surface that adopts the parent's color, which can't be expressed by
+ * a single utility class. Falls back to the inline-style path.
+ */
+const UTILITY_INTENTS: ReadonlySet<string> = new Set([
+    'neutral', 'primary', 'secondary',
+    'success', 'warning', 'danger', 'info'
+])
+
+function isUtilityIntent (v: TColor | TIntent | null | undefined): v is TIntent {
+    return typeof v === 'string' && UTILITY_INTENTS.has(v)
+}
+
 const _warnedKeys = new Set<string>()
 function warnLegacyColor (kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor', value: string) {
     if (typeof console === 'undefined') return
@@ -106,6 +124,23 @@ function tokenForegroundForIntent (intent: TIntent): string {
 // ────────────────────────────────────────────────────────────────────────────
 
 export function useColor (colors: ComputedRef<{ background?: TColor, text?: TColor }>) {
+    // Classes-first companion: when bg/text values resolve to a utility
+    // intent, expose the matching `.origam--bg-*` / `.origam--color-*`
+    // class so consumers can opt into the global utility layer in their
+    // `:class` binding. The matching `*Styles` stays populated during
+    // the Phase 2 → Phase 3 transition to guarantee zero visual
+    // regression for components that haven't migrated yet.
+    const colorClasses = computed<string[]>(() => {
+        const classes: string[] = []
+        if (colors.value.background && isUtilityIntent(colors.value.background)) {
+            classes.push(`origam--bg-${colors.value.background}`)
+        }
+        if (colors.value.text && isUtilityIntent(colors.value.text)) {
+            classes.push(`origam--color-${colors.value.text}`)
+        }
+        return classes
+    })
+
     const colorStyles = computed(() => {
         const styles: string[] = []
 
@@ -166,7 +201,7 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         return styles
     })
 
-    return {colorStyles}
+    return {colorClasses, colorStyles}
 }
 
 export function useBothColor<T extends Record<K, TColor>, K extends string> (bgColorProps: T | Ref<TColor> | ComputedRef<TColor>, colorProps: T | Ref<TColor> | ComputedRef<TColor>, name?: K) {
@@ -188,9 +223,9 @@ export function useTextColor<T extends Record<K, TColor>, K extends string> (
         text: isRef(props) ? props.value : (name ? props[name] : null)
     }))
 
-    const {colorStyles: textColorStyles} = useColor(colors)
+    const {colorClasses: textColorClasses, colorStyles: textColorStyles} = useColor(colors)
 
-    return {textColorStyles}
+    return {textColorClasses, textColorStyles}
 }
 
 export function useBackgroundColor<T extends Record<K, TColor>, K extends string> (
@@ -201,9 +236,9 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
         background: isRef(props) ? props.value : (name ? props[name] : null)
     }))
 
-    const {colorStyles: backgroundColorStyles} = useColor(colors)
+    const {colorClasses: backgroundColorClasses, colorStyles: backgroundColorStyles} = useColor(colors)
 
-    return {backgroundColorStyles}
+    return {backgroundColorClasses, backgroundColorStyles}
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -238,6 +273,37 @@ export function useColorEffect (
     const hoverBgColor = computed(() => props.hoverBgColor ? props.hoverBgColor : props.bgColor)
     const bgColor = computed(() => {
         return isHover.value ? hoverBgColor.value : isActive.value ? activeBgColor.value : props.bgColor
+    })
+
+    // Utility classes for the resting state ONLY. When the component is
+    // in hover / active state, slot resolution kicks the bg/fg to their
+    // `bgHover` / `fgHover` token rungs — there is no matching utility
+    // class for those slots, so we emit nothing and let the inline
+    // styles win. Same goes for legacy raw colors (hex/rgb).
+    const colorClasses = computed<string[]>(() => {
+        // Bypass the utility layer in hover/active/disabled because the
+        // resolved token is not the resting `--origam-color-action-*-bg`
+        // referenced by the utility class.
+        if (isHover.value || isActive.value || isDisabled.value) return []
+
+        const classes: string[] = []
+        const bgVal = bgColor.value
+        const fgVal = color.value
+
+        if (bgVal && isUtilityIntent(bgVal)) {
+            classes.push(`origam--bg-${bgVal}`)
+        }
+        if (fgVal && isUtilityIntent(fgVal)) {
+            classes.push(`origam--color-${fgVal}`)
+        } else if (!fgVal && bgVal && isUtilityIntent(bgVal)) {
+            // Auto-contrast: a bg-only intent pairs the matching fg
+            // token. We don't emit a `.origam--color-*` class here
+            // because the utility uses the intent's `*-fg` token while
+            // the inline style emits the WCAG-paired surface foreground
+            // (handled below). The component's SCSS picks up the
+            // inline style during the transition.
+        }
+        return classes
     })
 
     const colorStyles = computed<string[]>(() => {
@@ -340,5 +406,5 @@ export function useColorEffect (
         return styles
     })
 
-    return {colorStyles, color, bgColor}
+    return {colorClasses, colorStyles, color, bgColor}
 }

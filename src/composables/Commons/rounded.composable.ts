@@ -9,6 +9,27 @@ import type { TRounded } from '../../types'
 import { convertToUnit, formatRoundedStylesVar, getCurrentInstanceName } from '../../utils'
 
 /**
+ * Set of rounded values for which a global utility class exists in
+ * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
+ *
+ * NOTE: this set does NOT overlap the legacy `PREDIFINED_ROUNDED`
+ * (`x-small | small | default | medium | large | x-large | shaped |
+ * shaped-invert`) — the utility manifest follows the modern
+ * `xs|sm|md|lg|xl` taxonomy plus `none|full`. Components that pass
+ * `rounded="default"` or `rounded="x-small"` keep emitting their
+ * component-local class (no utility companion). This mismatch is
+ * documented in the Phase 2 report; a Phase 1.5 may bridge the
+ * legacy ROUNDED enum onto utility names.
+ */
+const UTILITY_ROUNDED: ReadonlySet<string> = new Set([
+    'none', 'xs', 'sm', 'md', 'lg', 'xl', 'full'
+])
+
+function isUtilityRounded (value: unknown): value is string {
+    return typeof value === 'string' && UTILITY_ROUNDED.has(value)
+}
+
+/**
  * Resolve the consumer's `rounded` prop into either a class (named variant
  * or legacy boolean) or an inline `border-radius` declaration (free-form
  * CSS value). Mirrors the origam-design-system implementation but uses a
@@ -40,6 +61,17 @@ export function useRounded (
 
         if (!rounded && rounded !== '') return classes
 
+        // Modern utility variant: `'xs' | 'sm' | 'md' | 'lg' | 'xl' |
+        // 'none' | 'full'` lands on the matching `.origam--rounded-*`
+        // utility class. These are the names emitted by the Phase 1
+        // manifest. They do NOT overlap with `PREDIFINED_ROUNDED`
+        // (legacy enum); the legacy values continue to emit their
+        // component-local class below.
+        if (isUtilityRounded(rounded)) {
+            classes.push(`origam--rounded-${rounded}`)
+            return classes
+        }
+
         // Named variant: `'small' | 'large' | …` matches one of the
         // entries in PREDIFINED_ROUNDED. Emits a class so the component's
         // SCSS can pick the right `--origam-{cmp}---border-radius` token.
@@ -50,9 +82,11 @@ export function useRounded (
 
         // Legacy boolean / empty-string opt-in for the single-state
         // `--rounded` chrome (kept for backward compat with
-        // `<OrigamBtn rounded>`).
-        if (rounded === true || rounded === '') {
+        // `<OrigamBtn rounded>`). The legacy boolean form historically
+        // means "default radius" — companion utility class is `md`.
+        if (rounded === true || (typeof rounded === 'string' && rounded === '')) {
             classes.push(`${name}--rounded`)
+            classes.push('origam--rounded-md')
         }
 
         return classes
@@ -62,10 +96,11 @@ export function useRounded (
         const rounded = isRef(props) ? props.value : props.rounded
         const styles: Array<string> = []
 
-        // Named variants and boolean true are handled by `roundedClasses`
-        // — no inline style needed.
+        // Named variants, modern utility values and boolean true are
+        // handled by `roundedClasses` — no inline style needed.
         if (rounded === true || rounded === '' || rounded == null || rounded === false) return styles
         if (typeof rounded === 'string' && PREDIFINED_ROUNDED.includes(rounded as TRounded)) return styles
+        if (isUtilityRounded(rounded)) return styles
 
         if (typeof rounded === 'string') {
             const match = BORDER_RADIUS_REGEX.exec(rounded)?.groups
