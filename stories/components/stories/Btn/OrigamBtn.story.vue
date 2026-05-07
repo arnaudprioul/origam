@@ -33,11 +33,21 @@
 				:init-state="() => useStoryInitState<{ variant?: TVariant }>({ variant: undefined })"
 		>
 			<template #default="{ state }">
-				<origam-btn
-						:variant="state.variant"
-						color="primary"
-						text="Button"
-				/>
+				<!--
+					`min-height` + generous `padding` give the ghost variant's
+					box-shadow halo (`0 4px 18-24px 0` × 2 layers, hover bumps
+					to 24px) room to render. Histoire's default render frame
+					tightens to the content's bbox, so a 18 px outer halo gets
+					clipped at the bottom edge if the wrapper doesn't reserve
+					space. `overflow: visible` for the same reason.
+				-->
+				<div style="display: flex; align-items: center; justify-content: center; min-height: 120px; padding: 24px; overflow: visible;">
+					<origam-btn
+							:variant="state.variant"
+							color="primary"
+							text="Button"
+					/>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect

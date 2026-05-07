@@ -56,6 +56,26 @@ if (typeof document !== 'undefined') {
         // Cross-origin or no top window — silently no-op.
     }
 
+    // Disable clipping inside Histoire's per-story render frame so
+    // box-shadow halos (e.g. the Btn ghost glow) and other "outside the
+    // box" effects are NOT cut off. Histoire's default
+    // `.histoire-generic-render-story` ships with `overflow: auto` which
+    // clips ~18-24 px halos at the frame edges. We make it `visible`
+    // and add a min-height so the frame still reserves space for content
+    // that was relying on the auto sizing.
+    if (!document.getElementById('origam-render-frame-fix')) {
+        const s = document.createElement('style')
+        s.id = 'origam-render-frame-fix'
+        s.textContent = `
+            .histoire-generic-render-story,
+            .__histoire-render-story {
+                overflow: visible !important;
+                min-height: 80px;
+            }
+        `
+        document.head.appendChild(s)
+    }
+
     // Load Material Icons + Material Symbols Outlined fonts for
     // `OrigamLigatureIcon`. The component itself does NOT load any font
     // (each host app declares its own icon strategy), but the stories
