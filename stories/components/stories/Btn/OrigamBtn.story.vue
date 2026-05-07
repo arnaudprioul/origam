@@ -343,12 +343,7 @@
 		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
-				:init-state="() => useStoryInitState<{
-					enabled: boolean
-					kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
-					progress: number
-					circularSize: number
-				}>({
+				:init-state="() => useStoryInitState({
 					enabled: true,
 					kind: 'bool',
 					progress: 42,
@@ -404,15 +399,15 @@
 					<origam-btn :loading="42" text="42%" data-cy="btn-loading-number"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
 					<origam-btn :loading="{ type: 'line' }" text="Line loader" data-cy="btn-loading-line"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
 					<origam-btn :loading="{ type: 'circular', size: 16 }" text="Small spinner" data-cy="btn-loading-circular-override"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
 					<origam-btn :loading="{ type: 'skeleton' }" text="Skeleton mode" data-cy="btn-loading-skeleton"/>
 				</div>
 			</div>

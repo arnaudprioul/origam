@@ -249,12 +249,7 @@
 		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
-				:init-state="() => useStoryInitState<{
-					enabled: boolean
-					kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
-					progress: number
-					circularSize: number
-				}>({
+				:init-state="() => useStoryInitState({
 					enabled: true,
 					kind: 'line',
 					progress: 42,

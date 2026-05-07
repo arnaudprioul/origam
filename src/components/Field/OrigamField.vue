@@ -31,7 +31,7 @@
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-							:class="['origam-field__progress', `origam-field__progress--${loaderConfig.kind}`]"
+							:class="['origam-field__progress', `origam-field__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -509,6 +509,21 @@
 			border-radius: var(--origam-field---rounded);
 			grid-column: 1 / -1;
 			grid-row: 1;
+		}
+
+		// Loader bar (line / circular kinds) — absolutely positioned at
+		// the bottom edge of the field. Pre-fix this rule was missing,
+		// so the wrapper rendered with `display: block` + 0 height and
+		// the inner `<origam-progress>` was clipped to invisibility.
+		&__loader {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: var(--origam-field__loader---height, 4px);
+			z-index: 1;
+			pointer-events: none;
+			grid-column: 1 / -1;
 		}
 
 		display: grid;

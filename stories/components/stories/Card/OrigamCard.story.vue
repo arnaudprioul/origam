@@ -453,12 +453,7 @@
 		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
-				:init-state="() => useStoryInitState<{
-					enabled: boolean
-					kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
-					progress: number
-					circularSize: number
-				}>({
+				:init-state="() => useStoryInitState({
 					enabled: true,
 					kind: 'line',
 					progress: 42,
@@ -529,7 +524,7 @@
 					/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
 					<origam-card
 							:loading="{ type: 'line' }"
 							title="Loading card"
@@ -540,7 +535,7 @@
 					/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
 					<origam-card
 							:loading="{ type: 'circular', size: 16 }"
 							title="Loading card"
@@ -551,7 +546,7 @@
 					/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
 					<origam-card
 							:loading="{ type: 'skeleton' }"
 							title="Loading card"

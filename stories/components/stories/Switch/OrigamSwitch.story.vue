@@ -173,12 +173,7 @@
 		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
-				:init-state="() => useStoryInitState<{
-					enabled: boolean
-					kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
-					progress: number
-					circularSize: number
-				}>({
+				:init-state="() => useStoryInitState({
 					enabled: true,
 					kind: 'bool',
 					progress: 42,
@@ -231,15 +226,15 @@
 					<origam-switch :model-value="false" :loading="42" disabled label="42%" data-cy="switch-loading-number"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'line' }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
 					<origam-switch :model-value="false" :loading="{ type: 'line' }" disabled label="Line loader" data-cy="switch-loading-line"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
 					<origam-switch :model-value="false" :loading="{ type: 'circular', size: 16 }" disabled label="Small spinner" data-cy="switch-loading-circular-override"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
+					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
 					<origam-switch :model-value="false" :loading="{ type: 'skeleton' }" disabled label="Skeleton mode" data-cy="switch-loading-skeleton"/>
 				</div>
 			</div>
