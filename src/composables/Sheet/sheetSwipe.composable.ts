@@ -2,31 +2,20 @@ import {
     computed,
     onBeforeUnmount,
     onMounted,
-    Ref,
     ref,
     shallowRef,
     watch
 } from 'vue'
 
+import { DEFAULT_SHEET_SNAP_POINTS } from '../../consts'
+import type { ISheetSwipeOptions, ISheetSwipeReturn } from '../../interfaces'
 import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
 
-/**
- * Default snap-point set used when the component does not provide one.
- *
- * Heights are intentionally a mix of px and viewport units to match the
- * PDF reference: `peek` shows ~120 px of content (the drag handle plus a
- * teaser line), `half` is roughly 50% of the viewport, and `full`
- * leaves a 10vh strip at the top so the underlying scrim is still
- * visible / dismissable. `closed` collapses the sheet height to zero —
- * the parent component is responsible for unmounting / hiding the host
- * after the snap settles.
- */
-export const DEFAULT_SHEET_SNAP_POINTS: ReadonlyArray<TSheetSnapPoint> = [
-    { id: 'closed', height: 0 },
-    { id: 'peek',   height: '120px' },
-    { id: 'half',   height: '50vh' },
-    { id: 'full',   height: '90vh' }
-] as const
+// Re-export so existing `import { DEFAULT_SHEET_SNAP_POINTS } from
+// '@/composables'` callsites continue to resolve. The const itself
+// lives in `src/consts/Sheet/sheet-snap-points.const.ts` per the
+// global CLAUDE.md "Constants ONLY in src/consts/" rule.
+export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts'
 
 /**
  * Velocity threshold (in **pixels per millisecond**) above which the
@@ -37,36 +26,6 @@ export const DEFAULT_SHEET_SNAP_POINTS: ReadonlyArray<TSheetSnapPoint> = [
  * right for a deliberate up/down flick on a phone.
  */
 const FAST_FLICK_THRESHOLD = 0.5
-
-export interface ISheetSwipeOptions {
-    /** The sheet root element — used to read its current rendered height. */
-    el: Ref<HTMLElement | null | undefined>
-    /** The drag-handle element — pointer events bind to this only. */
-    handle: Ref<HTMLElement | null | undefined>
-    /** Ordered list of snap points (top → bottom or any order; we sort). */
-    snapPoints?: Ref<ReadonlyArray<TSheetSnapPoint>>
-    /** Initial snap id; defaults to `'half'`. */
-    defaultSnap?: Ref<TSheetSnapId>
-    /** When true, ignore pointer events entirely. */
-    disabled?: Ref<boolean | undefined>
-    /** When true, dragging past `closed` snaps back instead of dismissing. */
-    persistent?: Ref<boolean | undefined>
-}
-
-export interface ISheetSwipeReturn {
-    /** The currently-active snap id. */
-    currentSnap: Ref<TSheetSnapId>
-    /** Live drag delta during a gesture (px from snap baseline). */
-    dragOffset: Ref<number>
-    /** True while a pointer is held on the handle. */
-    isDragging: Ref<boolean>
-    /** Imperative snap (programmatic). */
-    snapTo: (id: TSheetSnapId) => void
-    /** Convenience — alias for `snapTo('closed')`. */
-    dismiss: () => void
-    /** Resolved height (in px) of the active snap point. */
-    currentSnapHeight: Ref<number>
-}
 
 /**
  * Resolve a height token (number → px, string → CSS length) to absolute

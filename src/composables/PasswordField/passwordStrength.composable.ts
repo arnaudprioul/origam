@@ -23,13 +23,8 @@
  * __strength---bg-{level}`).
  */
 
-import type { IPasswordRequirement } from '../../interfaces'
+import type { IPasswordStrength } from '../../interfaces'
 import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types'
-
-export interface IPasswordStrength {
-    score: TPasswordStrengthScore
-    level: TPasswordStrengthLevel
-}
 
 /**
  * Compute the strength of a password string. Pure — no side effects,
@@ -61,36 +56,9 @@ export function computeStrength (value: string | null | undefined): IPasswordStr
     return { score, level }
 }
 
-/**
- * `DEFAULT_PASSWORD_REQUIREMENTS` — used when `requirements` is passed
- * as `true` (no explicit array). Mirrors the legacy `need*` flag set
- * but exposed as composable predicates so the new checklist UI can
- * iterate them generically.
- *
- * Intentionally not localised here — the labels are picked up via the
- * `t()` helper at render time when consumers want i18n. The defaults
- * carry English strings so a bare `requirements` boolean still renders
- * something sensible.
- */
-export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [
-    {
-        id: 'min-length',
-        label: 'At least 8 characters',
-        test: (v: string) => (v ?? '').length >= 8
-    },
-    {
-        id: 'uppercase',
-        label: 'At least 1 uppercase letter',
-        test: (v: string) => /[A-Z]/.test(v ?? '')
-    },
-    {
-        id: 'number',
-        label: 'At least 1 number',
-        test: (v: string) => /\d/.test(v ?? '')
-    },
-    {
-        id: 'special',
-        label: 'At least 1 special character',
-        test: (v: string) => /[^A-Za-z0-9]/.test(v ?? '')
-    }
-]
+// `DEFAULT_PASSWORD_REQUIREMENTS` lives in `src/consts/PasswordField/
+// password-requirements.const.ts` per the global CLAUDE.md "Constants
+// ONLY in src/consts/" rule. Re-import + re-export it here so existing
+// `import { DEFAULT_PASSWORD_REQUIREMENTS } from '@/composables'`
+// callsites keep resolving without a barrel-file change.
+export { DEFAULT_PASSWORD_REQUIREMENTS } from '../../consts'

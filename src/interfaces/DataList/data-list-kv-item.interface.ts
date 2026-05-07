@@ -1,24 +1,6 @@
-import type { VNode } from "vue"
+import type { VNode } from 'vue'
 
-/**
- * Dynamic-component descriptor for a KV row value.
- *
- * Used when a consumer wants the value cell to render a registered Origam
- * component (chip, avatar, link, …) without writing a slot. The
- * `component` field accepts either:
- *   - the Vue component itself (imported), or
- *   - a registered global tag name (e.g. `'origam-chip'`).
- *
- * `props` is forwarded as-is to the resolved component. `children`, when
- * provided, is rendered inside the component's default slot — handy for
- * components that take their text as a slot rather than a prop (e.g.
- * `<origam-chip>{{ label }}</origam-chip>`).
- */
-export interface IDataListKVItemValueComponent {
-    component: string | object
-    props?: Record<string, unknown>
-    children?: string | number
-}
+import type { IDataListKVItemValueComponent } from './data-list-kv-item-value-component.interface'
 
 /**
  * Shape of a single key/value row when the parent `<OrigamDataList>` runs
@@ -34,6 +16,13 @@ export interface IDataListKVItemValueComponent {
  *
  * For per-row overrides beyond what this contract exposes, use the
  * `#value` / `#key` slots — they receive the full item.
+ *
+ * The `IDataListKVItemValueComponent` interface lives in its own file
+ * (`data-list-kv-item-value-component.interface.ts`) per the project
+ * convention "one interface per file under `src/interfaces/`".
+ *
+ * The companion type-guard `isDataListKVItemValueComponent` lives in
+ * `src/utils/DataList/` (functions belong in utils, not interfaces).
  */
 export interface IDataListKVItem {
     key: string
@@ -44,15 +33,4 @@ export interface IDataListKVItem {
      * supply your own when keys may repeat across instances.
      */
     id?: string | number
-}
-
-/**
- * Type-guard helper — narrows `value` to the dynamic-component shape so
- * the template can call `<component :is>` without optional chaining
- * gymnastics.
- */
-export function isDataListKVItemValueComponent (
-    v: IDataListKVItem["value"]
-): v is IDataListKVItemValueComponent {
-    return typeof v === "object" && v !== null && "component" in (v as object)
 }

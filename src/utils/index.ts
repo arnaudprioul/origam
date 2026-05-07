@@ -41,6 +41,8 @@ export * from './Commons/format-bytes.util'
 
 export * from './ColorPicker/color-picker.util'
 
+export * from './DataList/data-list-kv-item-value-component.util'
+
 export * from './Input/input.util'
 
 export * from './List/list-item.util'

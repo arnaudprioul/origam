@@ -103,6 +103,7 @@ export * from './ContextualMenu/contextual-menu.interface'
 
 export * from './Counter/counter.interface'
 
+export * from './DataList/data-list-kv-item-value-component.interface'
 export * from './DataList/data-list-kv-item.interface'
 export * from './DataList/data-list.interface'
 export * from './DataList/data-text.interface'
@@ -192,6 +193,7 @@ export * from './Parallax/parallax-element.interface'
 
 export * from './PasswordField/password-field.interface'
 export * from './PasswordField/password-requirement.interface'
+export * from './PasswordField/password-strength.interface'
 
 export * from './Picker/picker.interface'
 export * from './Picker/picker-title.interface'
@@ -215,6 +217,9 @@ export * from './SelectionControl/selection-control.interface'
 export * from './SelectionControl/selection-control-group.interface'
 
 export * from './Sheet/sheet.interface'
+export * from './Sheet/sheet-emits.interface'
+export * from './Sheet/sheet-swipe-options.interface'
+export * from './Sheet/sheet-swipe-return.interface'
 
 export * from './Slide/slide-group.interface'
 
@@ -225,6 +230,7 @@ export * from './SliderField/slider-field-thumb.interface'
 export * from './Snackbar/snackbar.interface'
 
 export * from './Switch/switch.interface'
+export * from './Switch/switch-track.interface'
 
 export * from './SystemBar/system-bar.interface'
 

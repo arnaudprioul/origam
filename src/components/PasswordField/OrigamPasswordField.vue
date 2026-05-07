@@ -322,7 +322,6 @@
 
 	import {
 		computeStrength,
-		DEFAULT_PASSWORD_REQUIREMENTS,
 		useAdjacent,
 		useAdjacentInner,
 		useDefaults,
@@ -332,6 +331,7 @@
 		useVModel
 	} from '../../composables'
 	import {
+		DEFAULT_PASSWORD_REQUIREMENTS,
 		REQUIREMENT_MIN_LENGTH,
 		REQUIREMENT_NUMBER,
 		REQUIREMENT_SPECIAL,

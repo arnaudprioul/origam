@@ -67,9 +67,8 @@ export interface ISheetProps extends ITagProps, ICommonsComponentProps, IPadding
     persistent?: boolean
 }
 
-export interface ISheetEmits {
-    /** Fires whenever the gesture or `snapTo()` settles on a new snap. */
-    (e: 'update:snap', id: TSheetSnapId): void
-    /** v-model:open companion — emitted on closed/non-closed boundary. */
-    (e: 'update:open', value: boolean): void
-}
+// `ISheetEmits` lives in its own file
+// (`src/interfaces/Sheet/sheet-emits.interface.ts`) per the project
+// convention that interface declarations are split per concern. It is
+// re-exported through the `src/interfaces` barrel — consumers should
+// `import type { ISheetEmits } from '@/interfaces'`.

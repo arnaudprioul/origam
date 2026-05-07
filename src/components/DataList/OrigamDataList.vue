@@ -195,7 +195,11 @@
 		IDataListKVItemValueComponent,
 		IDataListProps
 	} from "../../interfaces"
-	import { isDataListKVItemValueComponent } from "../../interfaces"
+	// `isDataListKVItemValueComponent` is a type-guard FUNCTION — it
+	// belongs in `src/utils/`, not `src/interfaces/`, per the global
+	// CLAUDE.md rule that interface directories must contain interface
+	// declarations only.
+	import { isDataListKVItemValueComponent } from "../../utils"
 
 	import { isEmpty, toKebabCase } from "../../utils"
 
