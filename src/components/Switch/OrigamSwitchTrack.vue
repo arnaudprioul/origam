@@ -32,6 +32,12 @@
 		lang="ts"
 		setup
 >
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and composables for OrigamSwitchTrack.
+	 ********************************************************/
 	import { computed, StyleValue, useSlots } from 'vue'
 
 	import { useBackgroundColor, useProps } from '../../composables'
@@ -55,6 +61,13 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Track background color resolution and slot props.
+	 ********************************************************/
+
 	// Strict channel separation — `bgColor` ONLY paints the rail. The
 	// `color` prop is exposed for slot consumers but is NOT applied here:
 	// the foreground (thumb / label) is handled by the surrounding
@@ -74,6 +87,13 @@
 		isValid: props.isValid
 	}))
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Click handler with propagation control for toggle forwarding.
+	 ********************************************************/
+
 	const handleClick = (e: MouseEvent) => {
 		if (props.disabled || props.readonly) return
 
@@ -89,7 +109,12 @@
 		emits('click', e)
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const switchTrackStyles = computed(() => {
 		return [
@@ -111,7 +136,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components via template refs.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

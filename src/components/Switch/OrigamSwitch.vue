@@ -1,5 +1,4 @@
 <template>
-	<!-- Skeleton mode: replace the entire switch with a skeleton placeholder -->
 	<origam-skeleton
 			v-if="isSkeletonLoading"
 			variant="rectangular"
@@ -35,19 +34,6 @@
 					@update:model-value="handleChange"
 			>
 				<template #default="{bgColor: scBgColor}">
-					<!--
-						`bgColor` channel only — the track is the "box behind
-						the circle". `color` (foreground) is applied on the
-						SC wrapper (so the label inherits it) and on the
-						thumb via `background-color: currentColor` in SCSS.
-						The two channels stay strictly separate per the
-						project's color contract.
-
-						The track is now its own component (`OrigamSwitchTrack`)
-						so the rail can be styled / extended in isolation —
-						the slot payload (`model`, `isValid`) stays the same
-						so consumers don't see a breaking change.
-					-->
 					<origam-switch-track
 							:bg-color="scBgColor"
 							:disabled="isDisabled"
@@ -151,6 +137,13 @@
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ISwitchProps>(), {
 		density: DENSITY.DEFAULT,
 		centerAffix: true
@@ -162,6 +155,13 @@
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 	const origamInputRef = ref<TOrigamInput>()
+
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Model binding, indeterminate state and focus handling.
+	 ********************************************************/
 
 	const indeterminate = useVModel(props, 'indeterminate')
 	const model = useVModel(props, 'modelValue')
@@ -176,6 +176,13 @@
 		return props.id || `switch-${uid}`
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Change and track-click handlers.
+	 ********************************************************/
+
 	const handleChange = () => {
 		if (indeterminate.value) {
 			indeterminate.value = false
@@ -189,19 +196,33 @@
 		origamSelectionControlRef.value?.inputRef?.click()
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered attrs and props passed down to inner components.
+	 * `color` and `bgColor` are STRICTLY scoped to the SelectionControl
+	 * (track / thumb / label). Stripping them from `inputProps` prevents
+	 * `OrigamInput` (the outer row wrapper) from also applying them as
+	 * `background-color` on its root — pre-fix the consumer's
+	 * `bg-color="success"` painted the entire switch row green
+	 * (including the label area), instead of just the track.
+	 ********************************************************/
+
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
-	// `color` and `bgColor` are STRICTLY scoped to the SelectionControl
-	// (track / thumb / label). Stripping them from `inputProps` prevents
-	// `OrigamInput` (the outer row wrapper) from also applying them as
-	// `background-color` on its root — pre-fix the consumer's
-	// `bg-color="success"` painted the entire switch row green
-	// (including the label area), instead of just the track.
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id'])
 	})
+
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Derived flags combining slot and prop loading states.
+	 ********************************************************/
 
 	const hasLoading = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
@@ -212,7 +233,12 @@
 		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const switchStyles = computed(() => {
 		return [
@@ -232,7 +258,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps
@@ -333,6 +364,16 @@
 		// consumer's `color` channel paints the cercle. The track
 		// stays in its own `bgColor` channel — the two never
 		// cross-pollute, per the project's color contract.
+		.origam-selection-control__wrapper.origam--color-primary &__thumb,
+		.origam-selection-control__wrapper.origam--color-secondary &__thumb,
+		.origam-selection-control__wrapper.origam--color-success &__thumb,
+		.origam-selection-control__wrapper.origam--color-warning &__thumb,
+		.origam-selection-control__wrapper.origam--color-danger &__thumb,
+		.origam-selection-control__wrapper.origam--color-info &__thumb,
+		.origam-selection-control__wrapper.origam--color-neutral &__thumb {
+			background-color: currentColor;
+		}
+
 		.origam-selection-control__wrapper[style*="color:"] &__thumb {
 			background-color: currentColor;
 		}
