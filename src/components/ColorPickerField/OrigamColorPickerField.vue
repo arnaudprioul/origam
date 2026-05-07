@@ -146,6 +146,13 @@
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, composables and top-level refs.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
@@ -170,6 +177,13 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Model, selected value, and color-picker interactions.
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -193,6 +207,13 @@
 	const hasSelectedValue = computed(() => {
 		return selectedValue.value !== null
 	})
+
+	/*********************************************************
+	 * Menu
+	 *
+	 * @description
+	 * Menu open/close state management and disabled guard.
+	 ********************************************************/
 
 	const menuState = useVModel(props, 'menu')
 	const menu = computed<boolean>({
@@ -221,6 +242,13 @@
 			}
 		}
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Clear, mouse, blur, change and after-leave interactions.
+	 ********************************************************/
 
 	const handleClear = () => {
 		model.value = COLOR_NULL
@@ -254,6 +282,13 @@
 			origamTextFieldRef.value?.focus()
 		}
 	}
+
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props passed down to inner components.
+	 ********************************************************/
 
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
@@ -295,7 +330,12 @@
 		deep: true
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const colorPickerFieldStyles = computed(() => {
 		return [
@@ -312,7 +352,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose(forwardRefs({
 		filterProps,

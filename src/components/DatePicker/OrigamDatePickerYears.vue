@@ -28,6 +28,13 @@
 
 	import { computed, nextTick, onMounted, StyleValue, watchEffect } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables and model binding.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDatePickerYearsProps>(), {})
 
 	const emits = defineEmits(['update:year'])
@@ -38,6 +45,13 @@
 	const model = useVModel(props, 'year', adapter.getYear(adapter.date()), (v) => {
 		return int(v || 0)
 	})
+
+	/*********************************************************
+	 * Years list
+	 *
+	 * @description
+	 * Computed year entries clamped between min and max bounds.
+	 ********************************************************/
 
 	const years = computed(() => {
 		const year = adapter.getYear(adapter.date())
@@ -72,6 +86,13 @@
 		model.value = model.value ?? adapter.getYear(adapter.date())
 	})
 
+	/*********************************************************
+	 * Item
+	 *
+	 * @description
+	 * Button props factory, click handler and scroll-into-view on mount.
+	 ********************************************************/
+
 	const yearRef = templateRef()
 
 	const btnProps = (year: { text: string, value: number }) => {
@@ -99,7 +120,12 @@
 		yearRef.el?.scrollIntoView({block: 'center'})
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerYearsStyles = computed(() => {
 		return [
@@ -116,7 +142,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

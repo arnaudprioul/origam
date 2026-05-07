@@ -66,6 +66,13 @@
 
 	import { computed, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDatePickerControlsProps>(), {
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		prevIcon: MDI_ICONS.CHEVRON_LEFT,
@@ -76,6 +83,13 @@
 	const emits = defineEmits(['click:year', 'click:month', 'click:prev', 'click:next', 'click:text'])
 
 	const {filterProps} = useProps<IDatePickerControlsProps>(props)
+
+	/*********************************************************
+	 * Disabled state
+	 *
+	 * @description
+	 * Per-control disabled flag derived from global and per-control props.
+	 ********************************************************/
 
 	const disableMonth = computed(() => {
 		return props.disabled || props.disabledMonth
@@ -90,6 +104,13 @@
 		return props.disabled || props.disabledNext
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Click handlers for navigation and view-mode controls.
+	 ********************************************************/
+
 	const handleClickPrev = () => {
 		emits('click:prev')
 	}
@@ -103,7 +124,12 @@
 		emits('click:month')
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerControlsStyles = computed(() => {
 		return [
@@ -117,7 +143,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

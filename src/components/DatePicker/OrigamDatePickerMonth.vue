@@ -109,6 +109,13 @@
 
 	import { computed, ref, shallowRef, StyleValue, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables and calendar data.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDatePickerMonthProps>(), {
 		weekdays: () => [0, 1, 2, 3, 4, 5, 6],
 		weeksInMonth: CALENDAR_STRATEGY.DYNAMIC,
@@ -122,6 +129,13 @@
 
 	const {daysInMonth, model, weekNumbers} = useCalendar(props)
 	const adapter = useDate()
+
+	/*********************************************************
+	 * Range selection
+	 *
+	 * @description
+	 * Range start/stop refs and transition direction tracking.
+	 ********************************************************/
 
 	const rangeStart = shallowRef()
 	const rangeStop = shallowRef()
@@ -158,6 +172,13 @@
 		immediate: true,
 		deep: true
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Click handlers for range, multiple and single selection.
+	 ********************************************************/
 
 	const handleRangeClick = (value: unknown) => {
 		const startDay = adapter.startOfDay(value)
@@ -241,7 +262,12 @@
 		}
 	}
 
-	// ITEM
+	/*********************************************************
+	 * Item
+	 *
+	 * @description
+	 * Per-day class computation and disabled state.
+	 ********************************************************/
 
 	const origamBtnRef = ref<TOrigamBtn>()
 
@@ -262,7 +288,12 @@
 		]
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerMonthStyles = computed(() => {
 		return [
@@ -276,7 +307,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps

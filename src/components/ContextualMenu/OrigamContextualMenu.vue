@@ -45,6 +45,13 @@
 
 	import { computed, ref, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables and top-level refs.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IContextualMenuProps>(), {
 		target: 'cursor',
 		openOnClick: false,
@@ -66,11 +73,24 @@
 	const modelValue = useVModel(props, 'modelValue', false)
 
 	const origamMenuRef = ref<TOrigamMenu>()
+
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props passed down to the inner menu component.
+	 ********************************************************/
+
 	const menuProps = computed(() => {
 		return origamMenuRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue', 'activator', 'target', 'openOnClick', 'openOnContextualMenu'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const contextualMenuStyles = computed(() => {
 		return [
@@ -84,7 +104,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose(forwardRefs({filterProps}, origamMenuRef))
 

@@ -80,6 +80,13 @@
 
 	import { computed, StyleValue, toRef, useSlots } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDatePickerHeaderProps>(), {})
 
 	const emits = defineEmits(['click'])
@@ -97,6 +104,13 @@
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
+	/*********************************************************
+	 * Content
+	 *
+	 * @description
+	 * Derived content visibility and click forwarding.
+	 ********************************************************/
+
 	const hasContent = computed(() => {
 		return !!(slots.default || props.header)
 	})
@@ -105,7 +119,12 @@
 		emits('click')
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerHeaderStyles = computed(() => {
 		return [
@@ -120,7 +139,12 @@
 		]
 	})
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
 		filterProps
