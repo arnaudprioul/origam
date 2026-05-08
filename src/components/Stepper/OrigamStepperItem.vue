@@ -190,16 +190,24 @@
 				line-height: 1;
 			}
 
-			&--active {
-				background-color: var(--origam-stepper---indicator-active-bg, var(--origam-color-action-primary-bg));
-				color: var(--origam-stepper---indicator-active-color, var(--origam-color-action-primary-fg));
-				border-color: var(--origam-stepper---indicator-active-bg, var(--origam-color-action-primary-bg));
-			}
-
+			&--active,
 			&--done {
-				background-color: var(--origam-stepper---indicator-done-bg, var(--origam-color-action-primary-bg));
-				color: var(--origam-stepper---indicator-done-color, var(--origam-color-action-primary-fg));
-				border-color: var(--origam-stepper---indicator-done-bg, var(--origam-color-action-primary-bg));
+				color: var(
+					--origam-stepper---color,
+					var(--origam-color-action-primary-bg)
+				);
+				border-color: var(
+					--origam-stepper---color,
+					var(--origam-color-action-primary-bg)
+				);
+				background-color: var(
+					--origam-stepper---background-color,
+					color-mix(
+						in srgb,
+						var(--origam-stepper---color, var(--origam-color-action-primary-bg)) 16%,
+						transparent
+					)
+				);
 			}
 
 			&--error {

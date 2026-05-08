@@ -168,8 +168,6 @@
 		gap: 0;
 		padding-block: var(--origam-stepper---padding-block, 8px);
 		padding-inline: var(--origam-stepper---padding-inline, 8px);
-		background-color: var(--origam-stepper---background-color, var(--origam-color-surface-default));
-		color: var(--origam-stepper---color, var(--origam-color-text-primary));
 		width: 100%;
 		box-sizing: border-box;
 
@@ -199,7 +197,10 @@
 			transition: background-color 0.2s ease;
 
 			&--done {
-				background-color: var(--origam-stepper---connector-color-done, var(--origam-color-action-primary-bg));
+				background-color: var(
+					--origam-stepper---connector-color-done,
+					var(--origam-stepper---color, var(--origam-color-action-primary-bg))
+				);
 			}
 
 			.origam-stepper--vertical & {
@@ -222,6 +223,41 @@
 		&--density-compact {
 			padding-block: 4px;
 			padding-inline: 4px;
+		}
+
+		&--size-x-small {
+			--origam-stepper---indicator-size: 24px;
+			--origam-stepper---indicator-font-size: 0.625rem;
+			--origam-stepper---title-font-size: 0.75rem;
+			--origam-stepper---subtitle-font-size: 0.625rem;
+		}
+
+		&--size-small {
+			--origam-stepper---indicator-size: 28px;
+			--origam-stepper---indicator-font-size: 0.6875rem;
+			--origam-stepper---title-font-size: 0.8125rem;
+			--origam-stepper---subtitle-font-size: 0.6875rem;
+		}
+
+		&--size-default {
+			--origam-stepper---indicator-size: 32px;
+			--origam-stepper---indicator-font-size: 0.75rem;
+			--origam-stepper---title-font-size: 0.875rem;
+			--origam-stepper---subtitle-font-size: 0.75rem;
+		}
+
+		&--size-large {
+			--origam-stepper---indicator-size: 40px;
+			--origam-stepper---indicator-font-size: 0.875rem;
+			--origam-stepper---title-font-size: 1rem;
+			--origam-stepper---subtitle-font-size: 0.8125rem;
+		}
+
+		&--size-x-large {
+			--origam-stepper---indicator-size: 48px;
+			--origam-stepper---indicator-font-size: 1rem;
+			--origam-stepper---title-font-size: 1.125rem;
+			--origam-stepper---subtitle-font-size: 0.875rem;
 		}
 	}
 </style>
