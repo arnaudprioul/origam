@@ -4,7 +4,6 @@
 			title="Breadcrumb/OrigamBreadcrumbDivider"
 	>
 
-		<!-- ════════════ DIVIDER (string vs icon) ════════════ -->
 		<Variant
 				title="Divider string vs icon"
 				:init-state="() => useStoryInitState<{ divider: string }>({ divider: '/' })"
@@ -19,7 +18,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -35,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
@@ -50,7 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -65,14 +61,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ICON DIVIDER ════════════ -->
 		<Variant title="Icon divider">
 			<div style="display: flex; align-items: center; gap: 8px;">
 				<origam-breadcrumb-divider :divider="MDI_ICONS.CHEVRON_RIGHT" data-cy="breadcrumb-divider-icon"/>
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<div style="display: flex; align-items: center; gap: 8px;">
 				<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-divider-slot">
@@ -83,7 +77,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBreadcrumbDividerProps>({

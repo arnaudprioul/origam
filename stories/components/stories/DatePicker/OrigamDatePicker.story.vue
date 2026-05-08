@@ -4,22 +4,18 @@
 			title="DatePicker/OrigamDatePicker"
 	>
 
-		<!-- ════════════ SINGLE DATE ════════════ -->
 		<Variant title="Single date">
 			<origam-date-picker v-model="date"/>
 		</Variant>
 
-		<!-- ════════════ RANGE ════════════ -->
 		<Variant title="Range">
 			<origam-date-picker v-model="dates" range/>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<origam-date-picker v-model="dates" multiple/>
 		</Variant>
 
-		<!-- ════════════ CONSTRAINTS ════════════ -->
 		<Variant
 				title="Constraints (min / max)"
 				:init-state="() => useStoryInitState<{ min?: string; max?: string }>({ min: minDefault, max: maxDefault })"
@@ -37,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SHOW WEEK ════════════ -->
 		<Variant
 				title="Show week numbers"
 				:init-state="() => useStoryInitState<{ showWeek?: boolean }>({ showWeek: true })"
@@ -50,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: actions ════════════ -->
 		<Variant title="Slot — actions">
 			<origam-date-picker v-model="date">
 				<template #actions>
@@ -60,7 +54,6 @@
 			</origam-date-picker>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-date-picker
 					v-model="date"
@@ -68,7 +61,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:month ════════════ -->
 		<Variant title="Emit — update:month">
 			<origam-date-picker
 					v-model="date"
@@ -76,7 +68,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:year ════════════ -->
 		<Variant title="Emit — update:year">
 			<origam-date-picker
 					v-model="date"
@@ -84,7 +75,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

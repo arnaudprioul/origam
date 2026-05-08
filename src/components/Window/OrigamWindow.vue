@@ -286,13 +286,6 @@
 		}
 
 		&__controls {
-			// `box-sizing: border-box` MUST stay — without it, `width: 100%`
-			// + `padding: 0 16px` resolves to `100% + 32px` (content-box
-			// default), which makes the affix container 32px wider than
-			// the window host. The prev arrow ends up nudged 2px out of
-			// the host's left edge and the next arrow gets clipped by the
-			// host's `overflow: hidden`. Pin the box model so 100% really
-			// means 100% of the host.
 			box-sizing: border-box;
 			position: var(--origam-window__controls---position, absolute);
 			left: var(--origam-window__controls---position-left, 0);

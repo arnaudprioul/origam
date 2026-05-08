@@ -144,9 +144,6 @@
 			position: fixed;
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
-		// The root SCSS now reads `--origam-system-bar---border-radius`
-		// so modifier rules only need to set the var.
 		&--rounded {
 			border-radius: var(--origam-radius-2xl, 24px);
 		}

@@ -4,7 +4,6 @@
 			title="Slide/OrigamSlideGroup"
 	>
 
-		<!-- ════════════ DEFAULT (horizontal scroller) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="slidegroup-default">
 				<origam-slide-group :style="hostStyle" data-cy="slidegroup-default-host">
@@ -18,7 +17,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DIRECTION (horizontal vs vertical) ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction: TDirection }>({ direction: DIRECTION.HORIZONTAL })"
@@ -44,7 +42,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SHOW ARROWS (always / never / overflow) ════════════ -->
 		<Variant
 				title="Show arrows"
 				:init-state="() => useStoryInitState<{ showArrows: boolean | string }>({ showArrows: 'always' })"
@@ -66,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ NO OVERFLOW (small content, arrows hidden) ════════════ -->
 		<Variant title="No overflow">
 			<div class="story-shell" data-cy="slidegroup-no-overflow">
 				<origam-slide-group :style="hostStyle" data-cy="slidegroup-no-overflow-host">
@@ -75,7 +71,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ direction: TDirection, showArrows: boolean | string, centerActive: boolean }>({

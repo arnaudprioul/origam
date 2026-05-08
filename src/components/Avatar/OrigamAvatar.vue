@@ -386,10 +386,3 @@
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	`--origam-avatar---*`, `--origam-avatar__wrapper---*`, and
-	`--origam-avatar__image---*` are now supplied by the generated tokens
-	(`tokens/component/avatar.json` → `src/assets/css/tokens/light.css`).
-	The legacy `--origam-status--*` namespace has been retired.
--->

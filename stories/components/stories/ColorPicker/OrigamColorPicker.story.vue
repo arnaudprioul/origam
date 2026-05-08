@@ -4,7 +4,6 @@
 			title="ColorPicker/OrigamColorPicker"
 	>
 
-		<!-- ════════════ CANVAS ════════════ -->
 		<Variant
 				title="Canvas"
 				:init-state="() => useStoryInitState<{
@@ -28,7 +27,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODE ════════════ -->
 		<Variant
 				title="Mode"
 				:init-state="() => useStoryInitState<{ mode?: TColorModes }>({ mode: COLOR_MODES_NAMES.RGBA })"
@@ -45,7 +43,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLIDERS & INPUTS ════════════ -->
 		<Variant
 				title="Sliders and inputs"
 				:init-state="() => useStoryInitState<{
@@ -66,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SWATCHES ════════════ -->
 		<Variant
 				title="Swatches"
 				:init-state="() => useStoryInitState<{
@@ -87,7 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: title ════════════ -->
 		<Variant title="Slot — title">
 			<origam-color-picker v-model="color">
 				<template #title>
@@ -96,7 +91,6 @@
 			</origam-color-picker>
 		</Variant>
 
-		<!-- ════════════ SLOT: actions ════════════ -->
 		<Variant title="Slot — actions">
 			<origam-color-picker v-model="color">
 				<template #actions>
@@ -105,7 +99,6 @@
 			</origam-color-picker>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-color-picker
 					v-model="color"
@@ -113,7 +106,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:mode ════════════ -->
 		<Variant title="Emit — update:mode">
 			<origam-color-picker
 					v-model="color"
@@ -121,7 +113,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

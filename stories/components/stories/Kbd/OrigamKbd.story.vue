@@ -4,13 +4,6 @@
 			title="Kbd/OrigamKbd"
 	>
 
-		<!-- ════════════ BASIC USAGE ════════════ -->
-		<!--
-			Single-key + combination side-by-side so the consumer sees
-			both modes at a glance. Same rendering shape (key surface)
-			is shared between the standalone <kbd> and each child
-			<kbd class="origam-kbd__key"> inside a combination.
-		-->
 		<Variant title="Basic usage">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<div style="display: flex; align-items: center; gap: 12px;">
@@ -24,13 +17,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOWCASE ════════════ -->
-		<!--
-			Real-world keyboard shortcuts, mirroring the reference
-			design the user shared (Save / Search / Undo). Demonstrates
-			how Kbd reads in the context it's actually used in: an
-			inline help text or tooltip body.
-		-->
 		<Variant title="Showcase — Keyboard shortcuts">
 			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; max-width: 480px; font-size: 14px; line-height: 1.6;">
 				<div style="display: flex; align-items: center; gap: 8px;">
@@ -52,13 +38,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ VARIANT (HstSelect — canonical) ════════════ -->
-		<!--
-			Avatar / Btn / Card pattern: ONE interactive Variant with an
-			HstSelect to switch between `outlined`, `filled`, `tonal`.
-			Plus an inline showcase row at the bottom for visual
-			comparison between all three values.
-		-->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TKbdVariant }>({ variant: 'outlined' })"
@@ -83,12 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per IColorProps interface — 6 controls + 3
-			showcase fixtures (color-only / bg-only / combo). Same
-			pattern Btn / Pagination / Card use.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -121,7 +94,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE (HstSelect — canonical) ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({ size: 'default' })"
@@ -144,7 +116,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'default' })"
@@ -159,7 +130,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -174,7 +144,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SEPARATOR ════════════ -->
 		<Variant
 				title="Separator"
 				:init-state="() => useStoryInitState<{ separator: string }>({ separator: '+' })"
@@ -193,7 +162,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT — default ════════════ -->
 		<Variant title="Slot — default">
 			<div style="display: flex; align-items: center; gap: 12px; padding: 16px;">
 				<origam-kbd data-cy="kbd-slot-default">
@@ -203,7 +171,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IKbdProps>({

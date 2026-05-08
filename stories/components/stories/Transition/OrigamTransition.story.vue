@@ -4,16 +4,6 @@
 			title="Transition/OrigamTransition"
 	>
 
-		<!--
-			OrigamTransition — top-level dispatcher. Wraps either Vue's native
-			<Transition> or any registered origam-* transition leaf and forwards
-			its TransitionProps. Stories below use a toggle button (`show`) to
-			drive each variant: Playwright can navigate, click, and assert that
-			the slot enters/leaves with the expected `*-enter-active` /
-			`*-leave-active` classes.
-		-->
-
-		<!-- ════════════ DEFAULT (string-name dispatch → fade) ════════════ -->
 		<Variant title="Default — string name">
 			<template #default>
 				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
@@ -37,7 +27,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COMPONENT DISPATCH (TTransitionProps) ════════════ -->
 		<Variant title="Component dispatch">
 			<template #default>
 				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
@@ -61,7 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant title="Disabled">
 			<template #default>
 				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
@@ -85,7 +73,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; transition?: string }>({

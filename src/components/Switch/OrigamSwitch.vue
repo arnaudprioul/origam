@@ -289,8 +289,6 @@
 			}
 		}
 
-		// Thumb-only — the track now owns its own transitions (and forced-
-		// colors styles) inside `OrigamSwitchTrack.vue`.
 		&__thumb {
 			transition: none;
 
@@ -301,13 +299,6 @@
 		}
 
 		.origam-selection-control {
-			// Pre-PDF-Phase-1 the Switch borrowed `--origam-input__control---height`
-			// as its track height (56px). After Phase 1 the input control
-			// shrinks to 36px; we DELIBERATELY keep the Switch at 56px to
-			// preserve thumb/track proportions — Switch sizing follows its
-			// own scale, not the TextField scale. Re-routed to a dedicated
-			// token so a future Switch redesign can override without
-			// touching the input cascade.
 			min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
 			:deep(.origam-selection-control__input) {
@@ -327,8 +318,6 @@
 				}
 			}
 
-			// Thumb error state — track error is owned by `OrigamSwitchTrack`
-			// (driven by its own `error` prop).
 			&--error {
 				&:not(.origam-selection-control--disabled) {
 					#{$this}__thumb {
@@ -353,17 +342,6 @@
 			}
 		}
 
-		// Track block (`origam-switch-track`) owns its own dimensions,
-		// background color, true/false slots, dirty/disabled/error/inset
-		// modifiers — see `OrigamSwitchTrack.vue`.
-
-		// `color` prop applied — `useSelectionControl` inlines
-		// `style="color: …"` on `.origam-selection-control__wrapper`
-		// (the parent of both track and thumb). When that inline style
-		// is present, the thumb fill switches to `currentColor` so the
-		// consumer's `color` channel paints the cercle. The track
-		// stays in its own `bgColor` channel — the two never
-		// cross-pollute, per the project's color contract.
 		.origam-selection-control__wrapper.origam--color-primary &__thumb,
 		.origam-selection-control__wrapper.origam--color-secondary &__thumb,
 		.origam-selection-control__wrapper.origam--color-success &__thumb,
@@ -378,11 +356,6 @@
 			background-color: currentColor;
 		}
 
-		// Thumb default = the design token (Material white) with a
-		// light translucent grey border so the cercle stays visually
-		// identifiable on light backgrounds (where a white thumb on a
-		// pale track is otherwise invisible). User feedback: remove
-		// the box-shadow approach + add a thin border instead.
 		&__thumb {
 			align-items: center;
 			background-color: var(--origam-switch__thumb---background-color, rgb(255, 255, 255));
@@ -405,8 +378,6 @@
 		}
 
 		&#{$this}--inset {
-			// Track inset sizing is handled by `OrigamSwitchTrack` via its
-			// own `--inset` modifier (it receives the `inset` prop).
 
 			#{$this}__thumb {
 				height: 24px;
@@ -425,7 +396,6 @@
 						transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1);
 					}
 				}
-
 
 			}
 
@@ -446,12 +416,6 @@
 				}
 			}
 		}
-
-		// Pre-fix: `&:not(--inset) &__thumb` carried a Material 3-layer
-		// box-shadow + `&--flat` cleared it, plus an indeterminate
-		// reset. Replaced by the light translucent border on the base
-		// thumb rule above — flatter look, thumb stays identifiable
-		// without the elevation halo.
 
 		&#{$this}--indeterminate {
 			:deep(.origam-selection-control__input) {

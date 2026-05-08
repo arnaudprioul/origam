@@ -4,7 +4,6 @@
 			title="DataTable/OrigamDataTable"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant title="Basic">
 			<origam-data-table
 					:headers="headers"
@@ -12,7 +11,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SORTING ════════════ -->
 		<Variant
 				title="Sorting"
 				:init-state="() => useStoryInitState<{ multiSort?: boolean; mustSort?: boolean }>({ multiSort: false, mustSort: false })"
@@ -31,7 +29,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PAGINATION ════════════ -->
 		<Variant
 				title="Pagination"
 				:init-state="() => useStoryInitState<{ itemsPerPage?: number }>({ itemsPerPage: 5 })"
@@ -48,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SELECTION ════════════ -->
 		<Variant title="Selection">
 			<origam-data-table
 					v-model="selected"
@@ -62,7 +58,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SEARCH ════════════ -->
 		<Variant title="Search">
 			<origam-text-field
 					v-model="search"
@@ -77,7 +72,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING ════════════ -->
 		<Variant
 				title="Loading"
 				:init-state="() => useStoryInitState<{ loading?: boolean }>({ loading: true })"
@@ -94,20 +88,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			Same pattern as Btn / Switch / Select / Pagination / … —
-			ONE variant per interface, six controls (color / bgColor +
-			hover* / active*) plus 3 hardcoded fixtures so the e2e suite
-			has stable selectors. Channel mapping for DataTable:
-			  • `color`      → header text + sort-icon color
-			  • `bgColor`    → header surface
-			  • `hoverColor` / `hoverBgColor`   → header cell on hover
-			  • `activeColor` / `activeBgColor` → header of the currently
-			                                     sorted column
-			Forwarded down through `IDataTableHeadersProps` →
-			`useBothColor` on the inner header cell.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -155,7 +135,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: top ════════════ -->
 		<Variant title="Slot — top">
 			<origam-data-table
 					:headers="headers"
@@ -167,7 +146,6 @@
 			</origam-data-table>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -206,7 +184,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<origam-data-table :headers="headers" :items="items" loading data-cy="data-table-loading-bool"/>
@@ -217,7 +194,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

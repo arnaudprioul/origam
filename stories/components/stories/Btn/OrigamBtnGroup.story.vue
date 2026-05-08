@@ -4,7 +4,6 @@
 			title="Btn/OrigamBtnGroup"
 	>
 
-		<!-- ════════════ DEFAULT (3 buttons via slot) ════════════ -->
 		<Variant title="Default">
 			<origam-btn-group data-cy="btn-group-default">
 				<origam-btn text="One"   data-cy="btn-group-default-1"/>
@@ -13,12 +12,10 @@
 			</origam-btn-group>
 		</Variant>
 
-		<!-- ════════════ ITEMS PROP (data-driven) ════════════ -->
 		<Variant title="Items prop">
 			<origam-btn-group :items="actions" data-cy="btn-group-items"/>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<{ density?: TDensity }>({ density: DENSITY.DEFAULT })"
@@ -35,7 +32,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIVIDED ════════════ -->
 		<Variant
 				title="Divided"
 				:init-state="() => useStoryInitState<{ divided: boolean }>({ divided: true })"
@@ -52,7 +48,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -68,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<{ border: boolean }>({ border: true })"
@@ -84,7 +78,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent on group) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -102,7 +95,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ITEM SLOT ════════════ -->
 		<Variant title="Item slot (custom render)">
 			<origam-btn-group :items="actions" data-cy="btn-group-item-slot">
 				<template #item="{ item, index }">
@@ -115,7 +107,6 @@
 			</origam-btn-group>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBtnGroupProps & { divided?: boolean }>({

@@ -1057,18 +1057,6 @@
 						opacity: 1;
 						pointer-events: auto;
 						caret-color: inherit;
-						// The base Select rule pins the input to
-						// `position: absolute` so it sits as an invisible
-						// a11y proxy. Autocomplete needs it BACK in the
-						// flex flow — otherwise the typed text starts at
-						// the wrapper's BORDER (left=16) but the picked
-						// text (which uses the static-position branch
-						// when a sibling selection chip exists) sits
-						// inside the wrapper's padding (left=32). User
-						// reported the 16px jump between typing and
-						// picked states. Forcing `static` keeps the
-						// input in flow at all times → typed text and
-						// picked text both land at left=32.
 						position: static;
 					}
 				}
@@ -1109,15 +1097,6 @@
 			&#{$this}--single {
 				:deep(.origam-field) {
 					input {
-						// Pre-fix `padding-inline: inherit` cascaded the
-						// parent `.origam-field__input`'s 16px padding
-						// onto the input ON TOP of the field's own 16px
-						// outer padding AND the wrapper's 16px inner
-						// padding. Net offset before the typed text was
-						// 48px (16 + 16 + 16) — the field looked
-						// half-empty on the left after picking. Drop it;
-						// the wrapper's padding already provides the
-						// text indent.
 						left: 0;
 						right: 0;
 						padding-inline: 0;
@@ -1140,13 +1119,6 @@
 
 					&.origam-field--focused {
 						#{$this}__selection {
-							// Hide AND collapse — pre-fix the selection div
-							// only got `opacity: 0`, leaving its 66px-wide
-							// flex item still in the row. The `<input>` was
-							// pushed past the invisible chip, so the typed
-							// text appeared mid-field instead of flush with
-							// the inline padding ("Search & select" looked
-							// half-empty on the left).
 							opacity: 0;
 							position: absolute;
 							pointer-events: none;

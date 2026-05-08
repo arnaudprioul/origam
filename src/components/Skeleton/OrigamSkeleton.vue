@@ -1,10 +1,8 @@
 <template>
-	<!-- When not loading, render the slot content instead -->
 	<template v-if="!props.loading">
 		<slot/>
 	</template>
 
-	<!-- list-item: circular avatar + 2 text lines -->
 	<div
 			v-else-if="props.variant === 'list-item'"
 			:class="skeletonContainerClasses"
@@ -23,7 +21,6 @@
 		</div>
 	</div>
 
-	<!-- card: image rectangle + 3 text lines -->
 	<div
 			v-else-if="props.variant === 'card'"
 			:class="skeletonContainerClasses"
@@ -38,7 +35,6 @@
 		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
 	</div>
 
-	<!-- default: single skeleton block -->
 	<div
 			v-else
 			:class="skeletonClasses"
@@ -166,13 +162,11 @@
 
 		&--circular {
 			border-radius: var(--origam-skeleton---border-radius-circular, 50%);
-			// width & height are set via inline style for circular
 			flex-shrink: 0;
 		}
 
 		&--card,
 		&--list-item {
-			// composite variants — rendered by wrapper, not this class
 			display: none;
 		}
 	}

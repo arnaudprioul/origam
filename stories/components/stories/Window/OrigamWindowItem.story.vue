@@ -4,7 +4,6 @@
 			title="Window/OrigamWindowItem"
 	>
 
-		<!-- ════════════ DEFAULT (selected via parent) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="windowitem-default">
 				<origam-window v-model="defaultStep" :style="hostStyle">
@@ -22,7 +21,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DISABLED (item is skipped by group) ════════════ -->
 		<Variant title="Disabled">
 			<div class="story-shell" data-cy="windowitem-disabled">
 				<origam-window v-model="disabledStep" :style="hostStyle">
@@ -40,7 +38,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ TRANSITION (false / custom name) ════════════ -->
 		<Variant
 				title="Transition"
 				:init-state="() => useStoryInitState<{ transition: string | boolean | undefined, step: number }>({ transition: undefined, step: 1 })"
@@ -59,7 +56,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ step: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ step: 1, transition: undefined, reverseTransition: undefined })"

@@ -4,7 +4,6 @@
 			title="Form/OrigamForm"
 	>
 
-		<!-- ════════════ BASIC WIRING ════════════ -->
 		<Variant title="Basic wiring (TextField + NumberField)">
 			<origam-form v-model="basicValid" data-cy="form-basic" @submit.prevent="handleBasicSubmit">
 				<origam-text-field
@@ -27,7 +26,6 @@
 			<div data-cy="form-basic-submit-status">submitted = {{ basicSubmitted }}</div>
 		</Variant>
 
-		<!-- ════════════ VALIDATE ON ════════════ -->
 		<Variant
 				title="Validate on"
 				:init-state="() => useStoryInitState<{ validateOn: TValidateOn }>({ validateOn: 'blur' })"
@@ -48,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant
 				title="Disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
@@ -64,7 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ READONLY ════════════ -->
 		<Variant
 				title="Readonly"
 				:init-state="() => useStoryInitState<{ readonly: boolean }>({ readonly: true })"
@@ -79,7 +75,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FAST FAIL ════════════ -->
 		<Variant
 				title="Fast fail"
 				:init-state="() => useStoryInitState<{ fastFail: boolean }>({ fastFail: true })"
@@ -106,7 +101,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: actions ════════════ -->
 		<Variant title="Slot — actions">
 			<origam-form data-cy="form-slot-actions">
 				<origam-text-field v-model="actionsName" label="Name" data-cy="form-actions-field"/>
@@ -129,7 +123,6 @@
 			</origam-form>
 		</Variant>
 
-		<!-- ════════════ EMIT: submit ════════════ -->
 		<Variant title="Emit — submit">
 			<origam-form data-cy="form-emit-submit" @submit.prevent="logEvent('submit', $event)">
 				<origam-text-field v-model="emitSubmitName" label="Name" data-cy="form-emit-field"/>
@@ -137,7 +130,6 @@
 			</origam-form>
 		</Variant>
 
-		<!-- ════════════ EMIT: reset ════════════ -->
 		<Variant title="Emit — reset">
 			<origam-form data-cy="form-emit-reset" @reset="logEvent('reset', $event)">
 				<origam-text-field v-model="emitResetName" label="Name" data-cy="form-emit-reset-field"/>
@@ -145,7 +137,6 @@
 			</origam-form>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IFormProps>({

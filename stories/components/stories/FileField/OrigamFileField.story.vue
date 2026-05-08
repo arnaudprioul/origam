@@ -4,7 +4,6 @@
 			title="FileField/OrigamFileField"
 	>
 
-		<!-- ════════════ MODE 1: SINGLE + PAPERCLIP (default) ════════════ -->
 		<Variant title="Single + paperclip">
 			<origam-file-field
 					v-model="files"
@@ -17,7 +16,6 @@
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 2: EMPTY ════════════ -->
 		<Variant title="Empty">
 			<origam-file-field
 					:model-value="null"
@@ -31,7 +29,6 @@
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 3: MULTIPLE + CHIPS ════════════ -->
 		<Variant title="Multiple chips">
 			<origam-file-field
 					v-model="multiFiles"
@@ -46,7 +43,6 @@
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 4: MULTIPLE TEXT + COUNTER ════════════ -->
 		<Variant title="Multiple counter">
 			<origam-file-field
 					v-model="multiFiles"
@@ -61,7 +57,6 @@
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 5: DRAG-DROP EMPTY ════════════ -->
 		<Variant title="Dropzone empty">
 			<origam-file-field
 					v-model="files"
@@ -75,7 +70,6 @@
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 6: DRAG-DROP DRAGGING (programmatic demo) ════════════ -->
 		<Variant title="Dropzone dragging">
 			<origam-file-field
 					v-model="files"
@@ -94,7 +88,6 @@ const z = document.querySelector('[data-cy="file-field-dropzone-dragging"] .orig
 z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer: new DataTransfer() {{ '}' }}))</pre>
 		</Variant>
 
-		<!-- ════════════ MODE 7: DRAG-DROP SINGLE (file dropped) ════════════ -->
 		<Variant title="Dropzone single">
 			<origam-file-field
 					v-model="dropzoneSingleFile"
@@ -110,7 +103,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 8: DRAG-DROP MULTIPLE ════════════ -->
 		<Variant title="Dropzone multiple">
 			<origam-file-field
 					v-model="dropzoneMultiFiles"
@@ -126,7 +118,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 9: DRAG-DROP ERROR ════════════ -->
 		<Variant title="Dropzone error">
 			<origam-file-field
 					v-model="files"
@@ -142,7 +133,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</p>
 		</Variant>
 
-		<!-- ════════════ MODE 10: DISABLED / READONLY ════════════ -->
 		<Variant
 				title="Disabled and readonly"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean; dropzone?: boolean }>({ disabled: true, readonly: false, dropzone: true })"
@@ -165,7 +155,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODE 11: SHOW SIZE ════════════ -->
 		<Variant title="Show size">
 			<origam-file-field
 					v-model="sizedFiles"
@@ -180,7 +169,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</p>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -196,7 +184,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -209,7 +196,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -222,7 +208,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT slots — kept from previous story for non-regression ════════════ -->
 		<Variant title="Slot — dropzone">
 			<origam-file-field
 					v-model="files"
@@ -269,7 +254,6 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

@@ -499,9 +499,6 @@
 	.origam-field {
 		$this: &;
 
-		// Direct declarations FIRST (Sass 2.0 mixed-decls compliance —
-		// declarations after nested rules will change semantics in a
-		// future Sass major). All `&__*` sub-rules go below.
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";
 		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;

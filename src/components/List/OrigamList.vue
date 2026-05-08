@@ -277,8 +277,6 @@
 		scoped
 >
 	.origam-list {
-		// Defaults are now provided by the generated :root block from tokens/component/list.json.
-		// Fallback values reference semantic tokens via CSS variable chain.
 		padding-block-start: var(--origam-list---padding-block-start, 8px);
 		padding-block-end: var(--origam-list---padding-block-end, 8px);
 		padding-inline-start: var(--origam-list---padding-inline-start, 0);
@@ -316,7 +314,6 @@
 			--origam-list---indent-padding: var(--origam-list---indent-padding-nav, -8px);
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
 			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
 		}

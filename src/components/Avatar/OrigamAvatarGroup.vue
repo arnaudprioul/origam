@@ -315,8 +315,3 @@
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	`--origam-avatar-group---*` and `--origam-avatar-group__avatar---*`
-	are now generated from `tokens/component/avatar-group.json`.
--->

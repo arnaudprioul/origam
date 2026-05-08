@@ -4,7 +4,6 @@
 			title="Table/OrigamTable"
 	>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -42,7 +40,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({})"
@@ -61,7 +58,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<{ border?: boolean }>({})"
@@ -80,7 +76,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIMENSION ════════════ -->
 		<Variant
 				title="Dimension"
 				:init-state="() => useStoryInitState<IDimensionProps>({ height: 160 })"
@@ -104,7 +99,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -120,7 +114,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-table border>
 				<thead><tr><th>Name</th><th>Email</th></tr></thead>
@@ -131,7 +124,6 @@
 			</origam-table>
 		</Variant>
 
-		<!-- ════════════ SLOT: top ════════════ -->
 		<Variant title="Slot — top">
 			<origam-table border>
 				<template #top>
@@ -144,7 +136,6 @@
 			</origam-table>
 		</Variant>
 
-		<!-- ════════════ SLOT: bottom ════════════ -->
 		<Variant title="Slot — bottom">
 			<origam-table border>
 				<thead><tr><th>Name</th></tr></thead>
@@ -157,7 +148,6 @@
 			</origam-table>
 		</Variant>
 
-		<!-- ════════════ SLOT: wrapper (advanced) ════════════ -->
 		<Variant title="Slot — wrapper (advanced)">
 			<origam-table border>
 				<template #wrapper>
@@ -168,12 +158,6 @@
 			</origam-table>
 		</Variant>
 
-		<!-- ════════════ FIXED HEADER ════════════ -->
-		<!--
-			`fixedHeader` activates sticky positioning on <thead> so the
-			header stays visible while the body scrolls. The wrapper must
-			have an explicit height for overflow to kick in.
-		-->
 		<Variant title="Fixed header">
 			<origam-table fixed-header border :max-height="160">
 				<thead><tr><th>Name</th><th>Email</th></tr></thead>
@@ -186,7 +170,6 @@
 			</origam-table>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITableProps>({

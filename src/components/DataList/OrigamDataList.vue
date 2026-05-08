@@ -3,7 +3,6 @@
 			:class="dataListClasses"
 			:style="dataListStyles"
 	>
-		<!-- ─────────────── KV mode (PDF design) ─────────────── -->
 		<template v-if="isKvMode">
 			<slot
 					name="default"
@@ -63,7 +62,6 @@
 			</slot>
 		</template>
 
-		<!-- ─────────────── Avatar mode (legacy default) ─────────────── -->
 		<template v-else-if="slots.default || hasItems">
 			<slot
 					name="default"
@@ -333,10 +331,6 @@
 			letter-spacing: var(--origam-data-list__text---letter-spacing, 0em);
 		}
 
-		// ─── KV layout (PDF-aligned key/value rows) ─────────────────
-		// Layout: each row is a 2-column grid, keys aligned in a fixed
-		// (configurable) column; values in a fluid column. Rows are
-		// separated by a 1px subtle divider; the last row drops it.
 		&--mode-kv {
 			display: var(--origam-data-list__kv---display, block);
 		}
@@ -369,7 +363,7 @@
 			font-size: var(--origam-data-list__kv---value-font-size, 0.875rem);
 			line-height: var(--origam-data-list__kv---value-line-height, 1.5);
 			margin: 0;
-			min-width: 0; // let long text truncate inside grid cell
+			min-width: 0;
 			display: flex;
 			align-items: center;
 			gap: var(--origam-data-list__kv---value-inline-gap, 0.5rem);

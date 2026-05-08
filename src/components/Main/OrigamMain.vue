@@ -93,15 +93,6 @@
 		lang="scss"
 		scoped
 >
-	// Pre-fix every `var(--origam-main--{prop})` read used DOUBLE-dash
-	// while the token build emits TRIPLE-dash (`--origam-main---{prop}`,
-	// matching the project's component block/property convention). All
-	// 11 reads resolved to nothing, so the main element used CSS browser
-	// defaults instead of the design tokens (`flex: 1 0 auto`,
-	// `max-width: 100%`, transitions, etc.). Same family of bug as the
-	// OrigamDrawer fix in 0b7ea51 — confirmed by token-grep:
-	//   tokens emit: 13× `--origam-main---*` triple-dash
-	//   SCSS read:   11× `--origam-main--*`  double-dash (resolved → ∅)
 	.origam-main {
 		$this: &;
 

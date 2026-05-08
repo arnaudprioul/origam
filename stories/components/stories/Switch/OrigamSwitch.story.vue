@@ -4,21 +4,6 @@
 			title="Switch/OrigamSwitch"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn pattern) so the consumer
-			can explore them as one cohesive concept.
-			Strict channel separation:
-			  • `color`   → label foreground + thumb (cercle)
-			  • `bgColor` → track (box derrière le cercle)
-			  • hover/active variants modify the matching channel on
-			    the matching interaction state.
-			The hardcoded fixtures below the interactive switch let the
-			e2e suite assert no cross-pollution at runtime via stable
-			`data-cy="switch-color-fixture-{n}"` selectors.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -56,7 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -75,7 +59,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INSET / FLAT ════════════ -->
 		<Variant
 				title="Inset & flat"
 				:init-state="() => useStoryInitState<{ inset: boolean, flat: boolean }>({ inset: false, flat: false })"
@@ -96,7 +79,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INDETERMINATE ════════════ -->
 		<Variant
 				title="Indeterminate"
 				:init-state="() => useStoryInitState<{ indeterminate: boolean }>({ indeterminate: true })"
@@ -114,7 +96,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
@@ -135,7 +116,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: track.true / track.false ════════════ -->
 		<Variant title="Slot — track.true / track.false">
 			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track">
 				<template #track.true>
@@ -148,7 +128,6 @@
 			<div data-cy="switch-slot-track-status">value = {{ slotTrackModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-switch
 					v-model="emitModel"
@@ -159,7 +138,6 @@
 			<div data-cy="switch-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-switch
 					v-model="emitFocusModel"
@@ -170,7 +148,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -210,11 +187,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
-		<!--
-			Switch defaultKind = 'circular'. All fixtures use :model-value="false"
-			+ disabled so this is a pure visual demo — no interaction side-effects.
-		-->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
 				<div style="display: flex; align-items: center; gap: 12px;">
@@ -240,7 +212,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISwitchProps>({

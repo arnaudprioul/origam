@@ -372,27 +372,18 @@
 >
 	.origam-color-picker-field {
 		:deep(.origam-field) {
-			// Remove the start padding so the swatch sits flush with the
-			// field's left edge (no gap between border and swatch).
 			--origam-field---padding-start: 0;
 		}
 
-		// The swatch occupies the full prepend-inner cell height so it
-		// fills the visible control area from top to bottom.  The Field's
-		// `--center-affix` modifier already sets `align-items: center` and
-		// removes `padding-top`; we only need to make the swatch stretch.
 		:deep(.origam-field__prepend-inner) {
 			align-self: stretch;
 			align-items: stretch;
 			padding-top: 0;
 			padding-bottom: 0;
-			// No horizontal padding — the swatch itself is the start edge.
 			padding-inline-start: 0;
 			overflow: hidden;
 
 			> .origam-sheet {
-				// Fill the full cell height; width is driven by the
-				// `--origam-color-picker-field__swatch---width` token (24 px).
 				width: var(--origam-color-picker-field__swatch---width, 24px);
 				height: 100%;
 				min-width: var(--origam-color-picker-field__swatch---width, 24px);
@@ -401,8 +392,6 @@
 			}
 		}
 
-		// Hex value text — monospace to keep hex digits aligned, matching
-		// the PDF spec.
 		:deep(.origam-color-picker-field__selection-text) {
 			font-family: var(--origam-font-family-mono);
 			font-size: 0.875em;

@@ -4,7 +4,6 @@
 			title="Layout/OrigamLayout"
 	>
 
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<origam-layout style="height: 320px; border: 1px dashed var(--origam-color-border-default, #ccc);">
 				<div class="demo-stack">
@@ -15,7 +14,6 @@
 			</origam-layout>
 		</Variant>
 
-		<!-- ════════════ FULL HEIGHT ════════════ -->
 		<Variant
 				title="Full height"
 				:init-state="() => useStoryInitState<{ fullHeight?: boolean }>({ fullHeight: false })"
@@ -36,7 +34,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ OVERLAPS ════════════ -->
 		<Variant
 				title="Overlaps"
 				:init-state="() => useStoryInitState<{ overlaps?: string }>({ overlaps: 'AppBar:Drawer' })"
@@ -60,14 +57,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-layout style="height: 240px;">
 				<div class="demo-main">Custom slot content</div>
 			</origam-layout>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ILayoutProps>({

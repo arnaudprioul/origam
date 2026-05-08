@@ -568,8 +568,6 @@
 		scoped
 >
 	.origam-pagination {
-		// Root layout — flex so the optional __info label sits to the
-		// left of the list when withInfo=true. Centred otherwise.
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -599,13 +597,6 @@
 			padding: 0;
 		}
 
-		// When the consumer passes NO intent (no `color`/`bgColor`), the
-		// pagination overrides the inner OrigamBtn's default filled
-		// surface with the `--origam-pagination---*` tokens — yielding
-		// a transparent text-only nav. The `--colored` modifier (added
-		// by JS as soon as a truthy intent is set) drops these
-		// overrides so the btn's own intent rendering shines through —
-		// reproducing the PDF "stylé" filled look for color="primary".
 		&:not(&--colored) {
 			:deep(.origam-btn:not(.origam-btn--active):not(:hover)) {
 				--origam-btn---background-color: var(--origam-pagination---background-color, transparent);
@@ -618,10 +609,6 @@
 			}
 		}
 
-		// When the consumer passes color="primary" specifically, fold a
-		// subtle box-shadow under each button to match the PDF mock's
-		// elevated look. Btn's own intent rules already paint the fill;
-		// we only add the elevation that's pagination-specific.
 		&--colored {
 			:deep(.origam-btn) {
 				box-shadow: var(--origam-pagination--primary---box-shadow, none);
@@ -685,7 +672,6 @@
 			font: inherit;
 			line-height: 1.5;
 
-			/* Hide browser spinner arrows */
 			appearance: textfield;
 
 			&::-webkit-inner-spin-button,

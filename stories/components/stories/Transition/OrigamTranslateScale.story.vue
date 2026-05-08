@@ -4,12 +4,6 @@
 			title="Transition/OrigamTranslateScale"
 	>
 
-		<!--
-			TranslateScale is special: when a `target` is supplied, the
-			transition switches to a JS-driven animate() path (no CSS classes).
-			The CSS-only path stays the assertion subject for runtime tests.
-		-->
-
 		<Variant title="Default (CSS-only path)">
 			<template #default>
 				<div class="story-shell">

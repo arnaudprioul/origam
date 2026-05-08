@@ -4,7 +4,6 @@
 			title="ColorPickerField/OrigamColorPickerField"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant
 				title="Basic"
 				:init-state="() => useStoryInitState<{ label?: string }>({ label: 'Brand colour' })"
@@ -21,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -47,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -60,7 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -73,7 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CLOSE ON SELECT ════════════ -->
 		<Variant
 				title="Close on select"
 				:init-state="() => useStoryInitState<{ closeOnSelect?: boolean }>({ closeOnSelect: true })"
@@ -91,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean }>({ disabled: false, readonly: false })"
@@ -111,7 +105,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: colorSelection ════════════ -->
 		<Variant title="Slot — colorSelection">
 			<origam-color-picker-field
 					v-model="color"
@@ -124,7 +117,6 @@
 			</origam-color-picker-field>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-color-picker-field
 					v-model="color"
@@ -134,7 +126,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:menu ════════════ -->
 		<Variant title="Emit — update:menu">
 			<origam-color-picker-field
 					v-model="color"
@@ -144,7 +135,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

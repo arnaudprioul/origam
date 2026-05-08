@@ -3,17 +3,7 @@
 			group="components"
 			title="Loader/OrigamLoader"
 	>
-		<!--
-			OrigamLoader is a thin conditional wrapper:
-			  • when `loading` is truthy  → renders the #loader slot
-			    (default = OrigamProgress, type=circular, indeterminate)
-			  • when `loading` is falsy   → renders the #default slot
 
-			Each Variant below isolates one orthogonal concern so a Playwright
-			spec can click directly into it and assert runtime behavior.
-		-->
-
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div class="demo-row" style="display:flex; gap: 24px; align-items: center;">
 				<origam-loader loading/>
@@ -23,7 +13,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ LOADING STATE TOGGLE ════════════ -->
 		<Variant
 				title="Loading"
 				:init-state="() => useStoryInitState<{ loading?: boolean }>({ loading: true })"
@@ -38,7 +27,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -51,7 +39,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG (polymorphism) ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -64,14 +51,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot - default (idle)">
 			<origam-loader>
 				<span style="font-style: italic;">Custom default slot content</span>
 			</origam-loader>
 		</Variant>
 
-		<!-- ════════════ SLOT: loader ════════════ -->
 		<Variant title="Slot - loader">
 			<origam-loader loading>
 				<template #loader>
@@ -80,7 +65,6 @@
 			</origam-loader>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ILoaderProps>({

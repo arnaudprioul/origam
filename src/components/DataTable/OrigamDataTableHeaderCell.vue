@@ -170,14 +170,6 @@
 		$this: &;
 
 		align-items: center;
-		// Pre-fix this used `--origam-color-text-inverse` which evaluates
-		// to WHITE on the light theme — but the header background
-		// (`surface-raised`) is `rgb(245, 245, 245)` (near-white). White
-		// text on near-white background = invisible. The header content
-		// (title + sort icon + badge) needs to inherit the body text
-		// color — i.e. the SAME contrast role as a regular cell — so
-		// the sort triangle is actually readable. Switched to
-		// `--origam-color-text-primary` everywhere this default applies.
 		color: var(--origam-data-table-header-cell---color, var(--origam-color-text-primary));
 
 		&__sort-icon {
@@ -203,24 +195,12 @@
 			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space-1, 4px));
 			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius-full, 9999px));
 			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color-border-default));
-			// Same fix as `__sort-icon`: the badge counter (multiSort
-			// position indicator) was rendering white-on-light too.
 			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color-text-primary));
 			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, 20px);
 			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, 20px);
 			width: var(--origam-data-table-header-cell__sort-badge---width, 20px);
 			height: var(--origam-data-table-header-cell__sort-badge---height, 20px)
 		}
-
-		// `span { padding-left: 5px }` was used pre-fix to space the
-		// header title from the sort icon. Side-effect: every header
-		// title was shifted 5px to the right of its cell's content
-		// area, while body cells weren't — so headers looked indented
-		// vs body values (clearly visible at <https://> screenshots).
-		// The intent is now expressed via `gap` on `__content` (which
-		// only adds space *between* siblings, not before the first
-		// child), so a header without an icon stays flush with the
-		// body column below it.
 
 		&#{$this}--sortable {
 			cursor: var(--origam-data-table-sortable---cursor, pointer);
@@ -244,8 +224,6 @@
 
 		&:deep(.origam-data-table-cell) {
 			background: var(--origam-data-table-header-cell---background, var(--origam-color-surface-raised));
-			// Match the header text/icon color fix above — text-inverse
-			// resolves to white on a light surface-raised background.
 			color: var(--origam-data-table-header-cell---color, var(--origam-color-text-primary));
 		}
 	}

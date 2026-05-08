@@ -161,14 +161,6 @@
 			}
 		}
 
-		// Density rungs — override the cell-padding tokens so the table
-		// breathes (`comfortable`) or tightens (`compact`). The header-cell
-		// and body-cell are tracked separately so the header can stay
-		// slightly chunkier than rows.
-		//
-		//   compact     → 6px block / 8px inline
-		//   default     → 12px / 16px (token defaults)
-		//   comfortable → 18px / 24px
 		&--density-compact {
 			--origam-table__header-cell---padding-block: 6px;
 			--origam-table__header-cell---padding-inline: 8px;
@@ -190,8 +182,6 @@
 			--origam-table__cell---padding-inline: 24px;
 		}
 
-		// Rounded variant — applies a border-radius token so the table corners
-		// are rounded. The overflow: hidden on the parent clips the cell backgrounds.
 		&--rounded {
 			--origam-table---border-radius: var(--origam-table--rounded---border-radius, 4px);
 		}
@@ -220,9 +210,6 @@
 			--origam-table---border-radius: var(--origam-radius-2xl, 24px);
 		}
 
-		// Fixed header — the thead stays in place while the tbody scrolls.
-		// The wrapper must be given an explicit max-height for overflow to
-		// actually kick in (consumers set this via the dimension props).
 		&--fixed-header {
 			.origam-table__wrapper {
 				overflow-y: auto;
@@ -236,7 +223,6 @@
 			}
 		}
 
-		// Fixed footer — the tfoot stays in place while the tbody scrolls.
 		&--fixed-footer {
 			.origam-table__wrapper {
 				overflow-y: auto;

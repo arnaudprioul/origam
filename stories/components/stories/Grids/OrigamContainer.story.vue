@@ -4,7 +4,6 @@
 			title="Grids/OrigamContainer"
 	>
 
-		<!-- ════════════ MODIFIERS (fluid / fullscreen) ════════════ -->
 		<Variant
 				title="Modifiers"
 				:init-state="() => useStoryInitState<{
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -38,7 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-container>
 				<origam-row>
@@ -52,7 +49,6 @@
 			</origam-container>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IContainerProps>({

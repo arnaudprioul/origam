@@ -414,10 +414,8 @@
 		align-items: center;
 		display: flex;
 		justify-content: center;
-		/* --origam-otp-input-field---padding-block: 0.5rem (fallback) */
 		padding: var(--origam-otp-input-field---padding-block, .5rem) 0;
 		position: relative;
-		/* --origam-otp-input-field---border-radius: 4px (fallback) */
 		border-radius: var(--origam-otp-input-field---border-radius, 4px);
 
 		.origam-field {
@@ -427,21 +425,16 @@
 		}
 
 		&__divider {
-			/* --origam-otp-input-field__divider---margin-inline: 8px (fallback) */
 			margin: 0 var(--origam-otp-input-field__divider---margin-inline, 8px);
 		}
 
 		&__content {
 			align-items: center;
 			display: flex;
-			/* --origam-otp-input-field---gap: 0.5rem (fallback) */
 			gap: var(--origam-otp-input-field---gap, .5rem);
-			/* --origam-otp-input-field__content---height: 64px (fallback) */
 			height: var(--origam-otp-input-field__content---height, 64px);
-			/* --origam-otp-input-field__content---padding: 0.5rem (fallback) */
 			padding: var(--origam-otp-input-field__content---padding, .5rem);
 			justify-content: center;
-			/* --origam-otp-input-field__content---max-width: 320px (fallback) */
 			max-width: var(--origam-otp-input-field__content---max-width, 320px);
 			position: relative;
 			border-radius: inherit;
@@ -449,19 +442,11 @@
 
 		&__field {
 			color: var(--origam-otp-input-field__cell---color, inherit);
-			/* --origam-otp-input-field__cell---font-size: 1.25rem (fallback) */
 			font-size: var(--origam-otp-input-field__cell---font-size, 1.25rem);
 			height: 100%;
-			/* --origam-otp-input-field__cell---outline: none (fallback) */
 			outline: var(--origam-otp-input-field__cell---outline, none);
-			/* --origam-otp-input-field__cell---text-align: center (fallback) */
 			text-align: var(--origam-otp-input-field__cell---text-align, center);
 			width: 100%;
-			// User report: "il y a toujours un border tout autour".
-			// The native `<input>` ships a 2px UA border that stacked on
-			// top of the design's `.origam-field__outline-*` rectangle —
-			// each cell read as a double-bordered chip. Reset the UA
-			// border so only the field outline remains.
 			border: var(--origam-otp-input-field__cell---border, none);
 			background: var(--origam-otp-input-field__cell---background, transparent);
 
@@ -490,7 +475,6 @@
 
 		&--divided {
 			#{$this}__content {
-				/* --origam-otp-input-field__content---max-width-divided: 360px (fallback) */
 				max-width: var(--origam-otp-input-field__content---max-width-divided, 360px);
 			}
 		}

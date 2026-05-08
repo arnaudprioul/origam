@@ -4,12 +4,10 @@
 			title="DataList/OrigamDataList"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant title="Basic">
 			<origam-data-list :items="basicItems" data-cy="data-list-basic"/>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: undefined })"
@@ -22,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ADJACENT ICONS ════════════ -->
 		<Variant
 				title="Adjacent icons"
 				:init-state="() => useStoryInitState<IAdjacentProps>({})"
@@ -36,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER & ROUNDED ════════════ -->
 		<Variant
 				title="Border and rounded"
 				:init-state="() => useStoryInitState<IBorderProps & IRoundedProps>({ border: false, rounded: undefined })"
@@ -50,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: item ════════════ -->
 		<Variant title="Slot — item">
 			<origam-data-list :items="basicItems" data-cy="data-list-slot-item">
 				<template #item="{ item, index }">
@@ -62,7 +57,6 @@
 			</origam-data-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: item.title ════════════ -->
 		<Variant title="Slot — item.title">
 			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title">
 				<template #item.title="props">
@@ -71,17 +65,14 @@
 			</origam-data-list>
 		</Variant>
 
-		<!-- ════════════ KV — BASIC (PDF design) ════════════ -->
 		<Variant title="KV — basic">
 			<origam-data-list mode="kv" :items="kvBasicItems" data-cy="data-list-kv-basic"/>
 		</Variant>
 
-		<!-- ════════════ KV — MIXED VALUES ════════════ -->
 		<Variant title="KV — mixed values">
 			<origam-data-list mode="kv" :items="kvMixedItems" data-cy="data-list-kv-mixed"/>
 		</Variant>
 
-		<!-- ════════════ KV — SLOT OVERRIDE ════════════ -->
 		<Variant title="KV — slot override">
 			<origam-data-list mode="kv" :items="kvBasicItems" data-cy="data-list-kv-slot">
 				<template #value="{ key, value }">
@@ -97,7 +88,6 @@
 			</origam-data-list>
 		</Variant>
 
-		<!-- ════════════ KV — MODE TOGGLE (HstSelect) ════════════ -->
 		<Variant
 				title="KV — mode toggle"
 				:init-state="() => useStoryInitState<{ mode: 'avatar' | 'kv' }>({ mode: 'kv' })"
@@ -118,7 +108,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IDensityProps & IAdjacentProps & IBorderProps & IRoundedProps>({

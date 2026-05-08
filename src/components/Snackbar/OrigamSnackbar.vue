@@ -20,22 +20,6 @@
 	      class="origam-snackbar__underlay"
       />
 
-			<!--
-				CSS-only timer bar — pre-fix the timer drove an
-				`<origam-progress>` linear bar via `useCountdown`'s
-				`setInterval` (200 ms cadence), so the bar shrunk in
-				visible discrete steps ("par accout c'est moche").
-				Replaced by a single CSS scaleX transform animated over
-				the full timeout duration via a custom property — gives
-				a fluid 60 fps GPU-accelerated shrink.
-
-				Re-keying on `(isActive, timerKey)` so the animation
-				restarts cleanly when the snackbar reopens or the
-				consumer mutates the timeout / hover-pauses (the
-				existing JS `pauseTimeout` / `resumeTimeout` flow toggles
-				the `--paused` class which holds the animation via
-				`animation-play-state: paused`).
-			-->
 			<div
 					v-if="props.timer"
 					:key="`timer-${timerKey}`"
@@ -403,13 +387,6 @@
 			}
 		}
 
-		// Timer bar — CSS-only fluid shrink. The wrapping `__timer` div
-		// is positioned absolute at the top of the snackbar; the inner
-		// `__timer-bar` shrinks from `scaleX(1)` to `scaleX(0)` over
-		// `--origam-snackbar__timer---duration` (passed inline by the
-		// JS, reflects the `timeout` prop). `transform-origin: left`
-		// gives the natural left-to-right collapse. Pause-on-hover via
-		// the `--paused` class flipping `animation-play-state`.
 		&__timer {
 			width: 100%;
 			height: var(--origam-snackbar__timer---height, 3px);
@@ -447,18 +424,6 @@
 			}
 		}
 
-		// Status modifiers — emitted by `useStatus` as
-		// `origam-snackbar--success | --info | --warning | --danger | --error`.
-		// Each picks the matching feedback intent rungs from the design
-		// tokens:
-		//   • bgSubtle (light tinted background)
-		//   • fgSubtle (strong foreground for "coloured text on light surface")
-		//   • border   (saturated outline)
-		// The wrapper inherits the colour scheme; the timer-bar picks
-		// up `currentColor` automatically via its inline default. The
-		// snackbar root carries the colours so both `__wrapper` (where
-		// the border lives) and `__content` (where the text lives)
-		// inherit correctly.
 		@each $status in (success, info, warning, danger) {
 			&--#{$status} {
 				color: var(--origam-color-feedback-#{$status}-fgSubtle);
@@ -477,8 +442,6 @@
 			}
 		}
 
-		// `error` is an alias for `danger` (status enum exposes both —
-		// the SCSS treats them as the same feedback rung).
 		&--error {
 			color: var(--origam-color-feedback-danger-fgSubtle);
 			background: transparent;

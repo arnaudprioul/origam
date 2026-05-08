@@ -165,7 +165,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults are now provided by the generated :root block from tokens/component/list.json.
 	.origam-list-group {
 		$this: &;
 

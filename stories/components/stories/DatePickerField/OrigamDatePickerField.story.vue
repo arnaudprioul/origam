@@ -4,7 +4,6 @@
 			title="DatePickerField/OrigamDatePickerField"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant
 				title="Basic"
 				:init-state="() => useStoryInitState<{ label?: string }>({ label: 'Appointment' })"
@@ -21,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -47,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -60,7 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -73,7 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ RANGE ════════════ -->
 		<Variant title="Range">
 			<origam-date-picker-field
 					v-model="dates"
@@ -83,7 +78,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<origam-date-picker-field
 					v-model="dates"
@@ -93,7 +87,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ CLOSE ON SELECT ════════════ -->
 		<Variant
 				title="Close on select"
 				:init-state="() => useStoryInitState<{ closeOnSelect?: boolean }>({ closeOnSelect: true })"
@@ -111,7 +104,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean }>({ disabled: false, readonly: false })"
@@ -131,7 +123,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-date-picker-field
 					v-model="date"
@@ -141,7 +132,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:menu ════════════ -->
 		<Variant title="Emit — update:menu">
 			<origam-date-picker-field
 					v-model="date"
@@ -151,7 +141,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

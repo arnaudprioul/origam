@@ -4,20 +4,6 @@
 			title="List/OrigamList"
 	>
 
-		<!--
-			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
-
-			Each <Variant> drives one orthogonal concern:
-			  • one variant per "prop family" (color, size, density, …)
-			  • one variant per slot
-			  • one variant per emit — wire the listener to
-			    `logEvent('event-name', $event)` (imported from
-			    'histoire/client') so the emit shows up in histoire's
-			    Events tab.
-			  • one "playground" variant that exposes everything together
-		-->
-
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -34,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -51,7 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -67,7 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -83,7 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
@@ -99,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LINES ════════════ -->
 		<Variant
 				title="Lines"
 				:init-state="() => useStoryInitState<{ lines?: TLines }>({ lines: LINES.ONE })"
@@ -116,7 +97,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODIFIERS (slim / nav / disabled) ════════════ -->
 		<Variant
 				title="Modifiers"
 				:init-state="() => useStoryInitState<{ slim: boolean, nav: boolean, disabled: boolean }>({ slim: false, nav: false, disabled: false })"
@@ -135,12 +115,10 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
 		<Variant title="Items prop">
 			<origam-list :items="listItems" data-cy="list-items"/>
 		</Variant>
 
-		<!-- ════════════ GROUP (OrigamListGroup) ════════════ -->
 		<Variant title="Group">
 			<origam-list data-cy="list-group">
 				<origam-list-group title="Fruits" data-cy="list-group-fruits">
@@ -159,7 +137,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SUBHEADER ════════════ -->
 		<Variant title="Subheader">
 			<origam-list data-cy="list-subheader">
 				<origam-list-subheader title="Section A" data-cy="list-subheader-a"/>
@@ -171,7 +148,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-list data-cy="list-slot-default">
 				<origam-list-item title="Alpha"   data-cy="list-slot-alpha"/>
@@ -180,7 +156,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: item (via items prop) ════════════ -->
 		<Variant title="Slot — item">
 			<origam-list :items="listItems" data-cy="list-slot-item">
 				<template #item="{ itemProps }">
@@ -193,7 +168,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: subheader ════════════ -->
 		<Variant title="Slot — subheader">
 			<origam-list :items="listItemsWithSubheader" data-cy="list-slot-subheader">
 				<template #subheader="{ title }">
@@ -202,7 +176,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: groupActivator ════════════ -->
 		<Variant title="Slot — groupActivator">
 			<origam-list :items="listItemsWithGroup" data-cy="list-slot-group-activator">
 				<template #groupActivator="{ props, isOpen, events, toggleIcon }">
@@ -218,7 +191,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:selected ════════════ -->
 		<Variant title="Emit — update:selected">
 			<origam-list
 					:items="selectableItems"
@@ -227,7 +199,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:select ════════════ -->
 		<Variant title="Emit — click:select">
 			<origam-list
 					:items="selectableItems"
@@ -236,7 +207,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:opened ════════════ -->
 		<Variant title="Emit — update:opened">
 			<origam-list
 					:items="listItemsWithGroup"
@@ -245,7 +215,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IListProps>({

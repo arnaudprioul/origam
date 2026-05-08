@@ -10,7 +10,6 @@
 						v-for="(item, index) in items"
 						:key="index"
 				>
-					<!-- Connector BEFORE item (not before first) -->
 					<template v-if="showConnectors && index > 0">
 						<span
 								:class="connectorClasses(index)"
@@ -160,7 +159,6 @@
 		width: 100%;
 		box-sizing: border-box;
 
-		// Vertical orientation
 		&--vertical {
 			flex-direction: column;
 
@@ -174,27 +172,21 @@
 			}
 		}
 
-		// Connector line between steps
 		&__connector {
 			flex: 1;
 			height: var(--origam-stepper---connector-thickness, 2px);
 			min-width: 16px;
 			margin-inline: 4px;
-			// Align connector to the center of the indicator: indicator-size / 2 from the top of the item.
-			// Items themselves are top-aligned (align-items: flex-start on parent), so we use
-			// margin-block-start to push the connector down to visually center it with the circle.
 			margin-block-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
 			align-self: flex-start;
 			background-color: var(--origam-stepper---connector-color, var(--origam-color-border-subtle));
 			border-radius: var(--origam-radius-full, 9999px);
 			transition: background-color 0.2s ease;
 
-			// When the connector is "done" (preceding step has been completed)
 			&--done {
 				background-color: var(--origam-stepper---connector-color-done, var(--origam-color-action-primary-bg));
 			}
 
-			// Vertical connector — override width/height
 			.origam-stepper--vertical & {
 				flex: 0 0 auto;
 				margin-block-start: 0;
@@ -202,7 +194,6 @@
 			}
 		}
 
-		// Density variants
 		&--density-comfortable {
 			padding-block: 12px;
 			padding-inline: 12px;

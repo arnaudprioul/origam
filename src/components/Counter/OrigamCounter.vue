@@ -92,6 +92,3 @@
 	}
 </style>
 
-<!-- Lot 6 — empty `<style>:root{}` removed; tokens come from
-     `tokens/component/counter.json` via the generated CSS. -->
-

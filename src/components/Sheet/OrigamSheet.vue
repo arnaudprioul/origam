@@ -5,13 +5,6 @@
 			:class="sheetClasses"
 			:style="sheetStyles"
 	>
-		<!--
-			Drag-handle pill (visible only when `swipeable && side==='bottom'`).
-			Sits above the content as a visual cue + sole pointer target.
-			Authoring note: the handle is rendered *outside* the default
-			slot so consumers don't need to re-insert it manually when
-			migrating an existing Sheet to swipeable.
-		-->
 		<div
 				v-if="showHandle"
 				ref="handleEl"
@@ -235,11 +228,6 @@
 
 		border-color: var(--origam-sheet---border-color);
 		border-style: var(--origam-sheet---border-style);
-		// Directional tokens (defined in `tokens/component/sheet.json`)
-		// with omnibus var as the consumer-override fallback. Pre-fix
-		// the SCSS read the undefined `--origam-sheet---border-width`
-		// directly, resolving to CSS `medium` (~3px) — Sheets shipped
-		// with a 3px solid border by default.
 		border-top-width: var(--origam-sheet---border-top-width, var(--origam-sheet---border-width, 0));
 		border-right-width: var(--origam-sheet---border-right-width, var(--origam-sheet---border-width, 0));
 		border-bottom-width: var(--origam-sheet---border-bottom-width, var(--origam-sheet---border-width, 0));
@@ -268,14 +256,6 @@
 		color: var(--origam-sheet---color);
 
 		&--border {
-			// Override the four directional tokens — the base rule reads
-			// each side independently, so a single `border-width`
-			// shorthand here would only land if its specificity wins
-			// the cascade. Setting the per-side vars keeps the SCSS
-			// "directional first" contract consistent.
-			// Pre-fix this modifier read `--origam-sheet--border---border-width`,
-			// a token Style Dictionary never generated → the shorthand
-			// resolved to CSS `medium` (~3px).
 			--origam-sheet---border-top-width: var(--origam-border-width-thin, 1px);
 			--origam-sheet---border-right-width: var(--origam-border-width-thin, 1px);
 			--origam-sheet---border-bottom-width: var(--origam-border-width-thin, 1px);
@@ -283,9 +263,6 @@
 			box-shadow: var(--origam-sheet--border---box-shadow);
 		}
 
-		// Rounded variants — mirrors the OrigamBtn pattern. Each variant
-		// binds `--origam-sheet---border-radius` to a primitive
-		// `--origam-radius-*` token so theme switches stay seamless.
 		&--rounded {
 			--origam-sheet---border-radius: var(--origam-sheet--rounded---border-radius, var(--origam-radius-2xl, 24px));
 		}
@@ -344,30 +321,12 @@
 			--origam-sheet---position: sticky;
 		}
 
-		// ─── Swipeable mode (mobile bottom-sheet) ───────────────────────────
-		// Activated when `swipeable && side==='bottom'`. The sheet:
-		//  • sticks to the bottom edge of its containing block (consumers
-		//    typically render it inside `position: relative` or full-
-		//    viewport `position: fixed; inset: 0` ancestor),
-		//  • resolves its height from `--origam-sheet---swipe-height`,
-		//    a JS-driven CSS variable updated on every pointermove,
-		//  • disables vertical native scroll on the handle so the user's
-		//    finger drives the sheet, not the page.
-		//
-		// Token names use Style Dictionary's BEM-child convention:
-		// `tokens/component/sheet.json#sheet.swipeable.border-radius`
-		// emits `--origam-sheet__swipeable---border-radius`. The class
-		// modifier itself is `&--swipeable` (the SCSS BEM separator) so
-		// don't confuse the two.
 		&--swipeable {
 			--origam-sheet---position: absolute;
 			--origam-sheet---width: 100%;
 			--origam-sheet---max-width: 100%;
 			--origam-sheet---height: var(--origam-sheet---swipe-height, 0px);
 			--origam-sheet---max-height: 100%;
-			// Round the top edges by default — Material 3 / iOS sheet
-			// defaults. Consumers can override via the existing
-			// `rounded` modifiers.
 			--origam-sheet---border-radius: var(--origam-sheet__swipeable---border-radius, var(--origam-radius-2xl, 24px));
 			border-end-start-radius: 0;
 			border-end-end-radius: 0;
@@ -381,15 +340,9 @@
 		}
 
 		&--dragging {
-			// Disable any default transition during a drag so the sheet
-			// tracks the finger 1:1; the JS-side `swipeStyles` also
-			// removes the transition for paranoia.
 			transition: none !important;
 		}
 
-		// Drag-handle pill — top-anchored, 32×4 px rounded by default,
-		// per PDF reference. Visual is driven entirely by tokens (see
-		// `tokens/component/sheet.json` → `sheet.handle`).
 		&__handle {
 			display: flex;
 			align-items: center;
@@ -397,8 +350,6 @@
 			width: 100%;
 			padding-block: var(--origam-sheet__handle---margin-block, 8px);
 			cursor: grab;
-			// Block native scroll-on-touch so the gesture composable
-			// can interpret the move as a sheet drag, not a page scroll.
 			touch-action: none;
 			user-select: none;
 		}

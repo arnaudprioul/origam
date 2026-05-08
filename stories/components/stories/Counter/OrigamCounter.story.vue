@@ -4,7 +4,6 @@
 			title="Counter/OrigamCounter"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -31,7 +30,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VALUE / MAX ════════════ -->
 		<Variant
 				title="Value & max"
 				:init-state="() => useStoryInitState<{ value: number, max: number }>({ value: 42, max: 100 })"
@@ -50,7 +48,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ACTIVE ════════════ -->
 		<Variant
 				title="Active"
 				:init-state="() => useStoryInitState<{ active: boolean }>({ active: true })"
@@ -68,7 +65,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant
 				title="Disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
@@ -87,7 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ OVERFLOW (value > max) ════════════ -->
 		<Variant title="Overflow (value > max)">
 			<origam-counter
 					:value="150"
@@ -97,7 +92,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ICounterProps>({

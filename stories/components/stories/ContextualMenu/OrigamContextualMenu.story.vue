@@ -4,16 +4,6 @@
 			title="ContextualMenu/OrigamContextualMenu"
 	>
 
-		<!-- ════════════ DEFAULT (right-click) ════════════ -->
-		<!--
-			With `activator="cursor"` the trigger is `document.body` —
-			right-clicking anywhere opens the menu. The visual hint `<div>`
-			is therefore a SIBLING of `<origam-contextual-menu>`, not a
-			child: passing it as a default slot child would override the
-			`<origam-list :items>` rendering inside `<origam-menu>` and
-			the menu would render an empty popup (now that the wrapper
-			forwards slots properly).
-		-->
 		<Variant title="Default (right-click)">
 			<div style="padding: 32px;" data-cy="contextual-menu-default-host">
 				<div
@@ -26,7 +16,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ WITH TITLE ════════════ -->
 		<Variant title="With title">
 			<div style="padding: 32px;" data-cy="contextual-menu-title-host">
 				<div
@@ -39,7 +28,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ RICH ITEMS ════════════ -->
 		<Variant title="Rich items (icons)">
 			<div style="padding: 32px;" data-cy="contextual-menu-icons-host">
 				<div
@@ -52,17 +40,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (custom content) ════════════ -->
-		<!--
-			`activator="cursor"` resolves to `document.body` (see
-			`getTargetActivator` in src/utils/Commons/activator.util.ts) so
-			right-clicking ANYWHERE on the page opens the menu. The
-			visual hint `<div>` therefore lives as a sibling of
-			`<origam-contextual-menu>` — passing it as a default-slot child
-			would conflict with `<template #default>` and Vue would drop
-			one of them with the "Extraneous children found when component
-			already has explicitly named default slot" warning.
-		-->
 		<Variant title="Slot — default">
 			<div style="padding: 32px;" data-cy="contextual-menu-slot-host">
 				<div
@@ -82,7 +59,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 32px;" data-cy="contextual-menu-emit-host">
 				<div
@@ -99,7 +75,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IContextualMenuProps>({

@@ -1,13 +1,4 @@
 <template>
-	<!--
-		Loader dispatcher — resolves `loading` via useLoader (defaultKind='line').
-		- kind='skeleton': render N skeleton rows in <tbody> (N=5, fixed).
-		  Headers suppress their progress bar in skeleton mode (see OrigamDataTableHeaders).
-		- kind='line' | 'circular' (or boolean `true`): keep the legacy "Loading items…"
-		  text row for backward compat.
-		TODO: expose a `skeletonRows` prop (requires IDataTableRowsProps change) to let
-		consumers override the fixed count of 5 skeleton rows.
-	-->
 	<template v-if="loaderConfig.isActive">
 		<template v-if="loaderConfig.kind === 'skeleton'">
 			<tr
@@ -63,7 +54,6 @@
 							:key="`group-header_${item.id}`"
 							v-bind="groupHeaderSlotProps(item, index)"
 					>
-						<!-- TODO SLOT BODY-->
 					</origam-data-table-group-header-row>
 				</slot>
 			</template>
@@ -77,7 +67,6 @@
 							:item="item"
 							v-bind="{...itemSlotProps(item, index).props}"
 					>
-						<!-- TODO SLOT BODY-->
 					</origam-data-table-row>
 				</slot>
 
@@ -220,9 +209,6 @@
 			color: var(--origam-data-table-rows--loading---color, var(--origam-color-text-secondary));
 		}
 
-		// Skeleton mode: each cell gets zero padding so the skeleton bar
-		// fills the cell naturally. Matched by `origam-data-table-rows--skeleton`
-		// on the <tr> rendered in skeleton loader mode.
 		&--skeleton {
 			> .origam-data-table-rows__skeleton-cell {
 				padding: var(--origam-data-table-rows--skeleton---cell-padding, 4px 8px);

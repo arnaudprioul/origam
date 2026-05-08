@@ -4,20 +4,6 @@
 			title="SelectionControl/OrigamSelectionControlGroup"
 	>
 
-		<!--
-			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
-
-			Each <Variant> drives one orthogonal concern:
-			  • one variant per "prop family" (color, size, density, …)
-			  • one variant per slot
-			  • one variant per emit — wire the listener to
-			    `logEvent('event-name', $event)` (imported from
-			    'histoire/client') so the emit shows up in histoire's
-			    Events tab.
-			  • one "playground" variant that exposes everything together
-		-->
-
-		<!-- ════════════ TYPE (checkbox / radio / switch) ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type: string }>({ type: 'checkbox' })"
@@ -38,7 +24,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -59,7 +44,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -80,7 +64,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SELECTION MODIFIERS (inline / multiple) ════════════ -->
 		<Variant
 				title="Selection modifiers"
 				:init-state="() => useStoryInitState<{ inline: boolean, multiple: boolean }>({ inline: false, multiple: false })"
@@ -104,7 +87,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ICON OVERRIDES (trueIcon / falseIcon) ════════════ -->
 		<Variant
 				title="Icons (trueIcon / falseIcon)"
 				:init-state="() => useStoryInitState<{ trueIcon?: TIcon, falseIcon?: TIcon }>({ trueIcon: MDI_ICONS.CHECK_CIRCLE, falseIcon: MDI_ICONS.CIRCLE_OUTLINE })"
@@ -127,7 +109,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (disabled / readonly / error) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -152,7 +133,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ITEMS PROP ════════════ -->
 		<Variant title="Items prop">
 			<origam-selection-control-group
 					v-model="itemsModel"
@@ -170,7 +150,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-selection-control-group
 					v-model="slotDefaultModel"
@@ -183,7 +162,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ SLOT: item ════════════ -->
 		<Variant title="Slot — item">
 			<origam-selection-control-group
 					v-model="slotItemModel"
@@ -200,7 +178,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-selection-control-group
 					v-model="emitModel"
@@ -213,7 +190,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISelectionControlGroupProps>({

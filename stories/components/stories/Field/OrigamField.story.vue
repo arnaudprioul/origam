@@ -4,7 +4,6 @@
 			title="Field/OrigamField"
 	>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -25,7 +24,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANTS SHOWCASE ════════════ -->
 		<Variant title="Variants showcase">
 			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 				<div
@@ -48,7 +46,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -69,7 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -90,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PREFIX / SUFFIX ════════════ -->
 		<Variant
 				title="Prefix & suffix"
 				:init-state="() => useStoryInitState<{ prefix: string, suffix: string }>({ prefix: '$', suffix: '.00' })"
@@ -113,7 +108,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, error: boolean, dirty: boolean }>({ disabled: false, error: false, dirty: false })"
@@ -138,7 +132,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prependInner / appendInner ════════════ -->
 		<Variant title="Slot — prependInner / appendInner">
 			<origam-field label="With inner slots" data-cy="field-slot-inner">
 				<template #prependInner>
@@ -153,7 +146,6 @@
 			</origam-field>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
 		<Variant title="Slot — label">
 			<origam-field data-cy="field-slot-label">
 				<template #label>
@@ -165,7 +157,6 @@
 			</origam-field>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-field
 					label="Focus & blur"
@@ -179,7 +170,6 @@
 			</origam-field>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:clear ════════════ -->
 		<Variant title="Emit — click:clear">
 			<origam-field
 					label="Clearable field"
@@ -193,7 +183,6 @@
 			</origam-field>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IFieldProps>({

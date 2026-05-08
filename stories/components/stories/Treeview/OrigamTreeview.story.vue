@@ -3,7 +3,6 @@
 			group="components"
 			title="Treeview/OrigamTreeview"
 	>
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<origam-treeview
 					:items="fileTree"
@@ -11,7 +10,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SELECTION — SINGLE ════════════ -->
 		<Variant
 				title="Selection single"
 				:init-state="() => useStoryInitState<{ selected: string }>({ selected: '' })"
@@ -33,7 +31,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SELECTION — MULTIPLE ════════════ -->
 		<Variant
 				title="Selection multiple"
 				:init-state="() => useStoryInitState<{ selected: string[] }>({ selected: [] })"
@@ -55,7 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EXPAND ON CLICK ════════════ -->
 		<Variant title="Expand on click">
 			<origam-treeview
 					:items="fileTree"
@@ -64,7 +60,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SHOW LINES ════════════ -->
 		<Variant title="Show lines">
 			<origam-treeview
 					:items="fileTree"
@@ -74,7 +69,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ NO LINES ════════════ -->
 		<Variant title="No lines">
 			<origam-treeview
 					:items="fileTree"
@@ -84,7 +78,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ DISABLED NODES ════════════ -->
 		<Variant title="Disabled nodes">
 			<origam-treeview
 					:items="treeWithDisabled"
@@ -95,7 +88,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -123,7 +115,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE / DENSITY ════════════ -->
 		<Variant
 				title="Size / Density"
 				:init-state="() => useStoryInitState<{ size: TSize; density: TDensity }>({ size: 'default', density: 'default' })"
@@ -143,7 +134,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT — custom node rendering ════════════ -->
 		<Variant title="Slot node">
 			<origam-treeview
 					:items="fileTree"
@@ -165,7 +155,6 @@
 			</origam-treeview>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITreeviewProps>({

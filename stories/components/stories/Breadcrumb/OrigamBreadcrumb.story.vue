@@ -4,20 +4,6 @@
 			title="Breadcrumb/OrigamBreadcrumb"
 	>
 
-		<!--
-			REFERENCE STORY — pattern mirrors OrigamBtn.story.vue.
-
-			Each <Variant> drives one orthogonal concern:
-			  • one variant per "prop family" (color, size, density, …)
-			  • one variant per slot
-			  • one variant per emit — wire the listener to
-			    `logEvent('event-name', $event)` (imported from
-			    'histoire/client') so the emit shows up in histoire's
-			    Events tab.
-			  • one "playground" variant that exposes everything together
-		-->
-
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -36,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -53,7 +38,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -70,7 +54,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -87,7 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
@@ -104,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIVIDER (string) ════════════ -->
 		<Variant
 				title="Divider (string)"
 				:init-state="() => useStoryInitState<{ divider: string }>({ divider: '>' })"
@@ -121,7 +102,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIVIDER (icon) ════════════ -->
 		<Variant title="Divider (icon)">
 			<origam-breadcrumb
 					:divider="MDI_ICONS.CHEVRON_RIGHT"
@@ -130,7 +110,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant
 				title="Disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
@@ -147,7 +126,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (explicit children) ════════════ -->
 		<Variant title="Slot — default">
 			<origam-breadcrumb data-cy="breadcrumb-slot-default">
 				<ol class="origam-breadcrumb__items">
@@ -170,7 +148,6 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<!-- ════════════ SLOT: item ════════════ -->
 		<Variant title="Slot — item">
 			<origam-breadcrumb :items="items" data-cy="breadcrumb-slot-item">
 				<template #item="{ item, index }">
@@ -183,7 +160,6 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<!-- ════════════ SLOT: divider ════════════ -->
 		<Variant title="Slot — divider">
 			<origam-breadcrumb :items="items" data-cy="breadcrumb-slot-divider">
 				<template #divider>
@@ -192,7 +168,6 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBreadcrumbProps>({

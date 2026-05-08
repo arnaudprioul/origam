@@ -204,7 +204,6 @@
 			outline: none;
 		}
 
-		// Size variants
 		&--size-x-small {
 			--origam-treeview---label-font-size: var(--origam-font-size-xs, 0.625rem);
 		}
@@ -221,7 +220,6 @@
 			--origam-treeview---row-height: 48px;
 		}
 
-		// Density variants
 		&--density-compact {
 			--origam-treeview---row-height: 24px;
 			--origam-treeview---padding-block: 2px;

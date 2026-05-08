@@ -3,7 +3,6 @@
 			group="components"
 			title="Stepper/OrigamStepper"
 	>
-		<!-- ════════════ DEFAULT — 4 horizontal steps ════════════ -->
 		<Variant title="Default">
 			<origam-stepper
 					:items="defaultItems"
@@ -12,7 +11,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ VERTICAL ════════════ -->
 		<Variant title="Vertical">
 			<origam-stepper
 					:items="defaultItems"
@@ -22,7 +20,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ STATUS MIX (explicit statuses) ════════════ -->
 		<Variant title="Status mix">
 			<origam-stepper
 					:items="statusMixItems"
@@ -30,7 +27,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ WITH ICONS ════════════ -->
 		<Variant title="With icons">
 			<origam-stepper
 					:items="iconItems"
@@ -39,7 +35,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ CLICKABLE (v-model demo) ════════════ -->
 		<Variant
 				title="Clickable"
 				:init-state="() => useStoryInitState<{ step: number }>({ step: 0 })"
@@ -62,7 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -90,7 +84,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE / DENSITY ════════════ -->
 		<Variant
 				title="Size / Density"
 				:init-state="() => useStoryInitState<{ size: TSize; density: TDensity }>({ size: 'default', density: 'default' })"
@@ -110,7 +103,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IStepperProps>({

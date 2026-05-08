@@ -4,7 +4,6 @@
 			title="Select/OrigamSelect"
 	>
 
-		<!-- ════════════ ITEMS (string list) ════════════ -->
 		<Variant title="Items — string list">
 			<origam-select
 					v-model="stringModel"
@@ -15,7 +14,6 @@
 			<div data-cy="select-string-status">value = {{ stringModel }}</div>
 		</Variant>
 
-		<!-- ════════════ ITEMS (object list) ════════════ -->
 		<Variant title="Items — object list">
 			<origam-select
 					v-model="objectModel"
@@ -28,7 +26,6 @@
 			<div data-cy="select-object-status">value = {{ objectModel }}</div>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<origam-select
 					v-model="multipleModel"
@@ -40,7 +37,6 @@
 			<div data-cy="select-multiple-status">value = {{ multipleModel }}</div>
 		</Variant>
 
-		<!-- ════════════ CHIPS ════════════ -->
 		<Variant
 				title="Chips"
 				:init-state="() => useStoryInitState<{ chips: boolean, closableChips: boolean }>({ chips: true, closableChips: false })"
@@ -63,7 +59,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ AUTOCOMPLETE ════════════ -->
 		<Variant
 				title="Autocomplete"
 				:init-state="() => useStoryInitState<{ autocomplete: boolean }>({ autocomplete: true })"
@@ -83,7 +78,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -103,25 +97,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField
-			pattern) so the consumer can explore them as one cohesive
-			concept.
-			Strict channel separation (consistent with the rest of the
-			form-control family):
-			  • `color`   → label foreground + the inner field text /
-			                floating-label color
-			  • `bgColor` → field surface (the rounded box behind the
-			                input + the dropdown menu when opened)
-			  • hover/active variants modify the matching channel on
-			    the matching interaction state.
-			The hardcoded fixtures below the interactive select give the
-			e2e suite stable `data-cy="select-color-fixture-{n}"`
-			selectors to assert no cross-pollution.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -164,7 +139,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -189,7 +163,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ NO DATA ════════════ -->
 		<Variant title="No data">
 			<origam-select
 					v-model="noDataModel"
@@ -200,7 +173,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend / append ════════════ -->
 		<Variant title="Slot — prepend / append">
 			<origam-select
 					v-model="slotOuterModel"
@@ -218,7 +190,6 @@
 			<div data-cy="select-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-select
 					v-model="emitModel"
@@ -230,7 +201,6 @@
 			<div data-cy="select-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:menu ════════════ -->
 		<Variant title="Emit — update:menu">
 			<origam-select
 					v-model="emitMenuModel"
@@ -241,7 +211,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:clear ════════════ -->
 		<Variant title="Emit — click:clear">
 			<origam-select
 					v-model="emitClearModel"
@@ -254,7 +223,6 @@
 			<div data-cy="select-emit-clear-status">value = {{ emitClearModel }}</div>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -293,7 +261,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<origam-select :items="stringItems" label="loading={true}" loading data-cy="select-loading-bool"/>
@@ -304,7 +271,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISelectProps>({

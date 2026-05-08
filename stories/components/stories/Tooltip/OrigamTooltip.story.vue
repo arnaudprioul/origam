@@ -4,7 +4,6 @@
 			title="Tooltip/OrigamTooltip"
 	>
 
-		<!-- ════════════ DEFAULT (hover) ════════════ -->
 		<Variant title="Default (hover)">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;" data-cy="tooltip-default-host">
 				<origam-tooltip text="This is a tooltip">
@@ -15,7 +14,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ LOCATION ════════════ -->
 		<Variant
 				title="Location"
 				:init-state="() => useStoryInitState<{ location: string }>({ location: 'top' })"
@@ -43,7 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TEXT ════════════ -->
 		<Variant
 				title="Text"
 				:init-state="() => useStoryInitState<{ text: string }>({ text: 'Tooltip content' })"
@@ -62,7 +59,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ OPEN ON CLICK ════════════ -->
 		<Variant title="Open on click">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;" data-cy="tooltip-click-host">
 				<origam-tooltip text="Click tooltip" open-on-click :open-on-hover="false">
@@ -73,7 +69,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ OFFSET ════════════ -->
 		<Variant
 				title="Offset"
 				:init-state="() => useStoryInitState<{ offset: number }>({ offset: 20 })"
@@ -92,7 +87,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (custom content) ════════════ -->
 		<Variant title="Slot — default">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;" data-cy="tooltip-slot-default-host">
 				<origam-tooltip location="top">
@@ -104,7 +98,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center; gap: 16px;" data-cy="tooltip-emit-host">
 				<origam-tooltip
@@ -118,7 +111,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITooltipProps>({

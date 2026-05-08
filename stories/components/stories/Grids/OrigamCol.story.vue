@@ -4,18 +4,6 @@
     title="Grids/OrigamCol"
   >
 
-    <!--
-      Pattern mirrored from OrigamBtn.story.vue:
-        • one <Variant> per orthogonal concern
-        • Playground at the end exposes everything together
-
-      Note: every <origam-row> is wrapped in <origam-container> on
-      purpose. <OrigamRow> applies negative inline margins and would
-      otherwise overflow the viewport, producing an unwanted horizontal
-      scrollbar in the Histoire iframe.
-    -->
-
-    <!-- ════════════ COLS (1..12 / auto) ════════════ -->
     <Variant
       title="Cols"
       :init-state="() => useStoryInitState<{ cols?: TCols }>({ cols: '6' })"
@@ -23,11 +11,6 @@
       <template #default="{ state }">
         <origam-container>
           <origam-row :justify="JUSTIFY.SPACE_BETWEEN">
-            <!--
-              Guard against NaN / Infinity / 0:
-                • cols='auto' or true → Number() = NaN → fallback to 3 cards
-                • cols missing / 0    → division by zero → fallback to 3 cards
-            -->
             <origam-col
               v-for="n in (Number(state.cols) > 0 ? Math.floor(12 / Number(state.cols)) : 3)"
               :key="n"
@@ -43,7 +26,6 @@
       </template>
     </Variant>
 
-    <!-- ════════════ BREAKPOINTS (sm/md/lg/xl/xxl) ════════════ -->
     <Variant
       title="Breakpoints"
       :init-state="() => useStoryInitState<{
@@ -76,7 +58,6 @@
       </template>
     </Variant>
 
-    <!-- ════════════ OFFSET ════════════ -->
     <Variant
       title="Offset"
       :init-state="() => useStoryInitState<{ cols?: TCols, offset?: TCols }>({ cols: '4', offset: '2' as TCols })"
@@ -96,7 +77,6 @@
       </template>
     </Variant>
 
-    <!-- ════════════ ORDER ════════════ -->
     <Variant
       title="Order"
       :init-state="() => useStoryInitState<{ orderA?: number, orderB?: number }>({ orderA: 2, orderB: 1 })"
@@ -119,7 +99,6 @@
       </template>
     </Variant>
 
-    <!-- ════════════ ALIGN (self) ════════════ -->
     <Variant
       title="Align (align-self)"
       :init-state="() => useStoryInitState<IAlignProps>({})"
@@ -144,7 +123,6 @@
       </template>
     </Variant>
 
-    <!-- ════════════ TAG (polymorphism) ════════════ -->
     <Variant
       title="Tag"
       :init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -163,7 +141,6 @@
       </template>
     </Variant>
 
-    <!-- ════════════ SLOT: default ════════════ -->
     <Variant title="Slot — default">
       <origam-container>
         <origam-row>
@@ -177,7 +154,6 @@
       </origam-container>
     </Variant>
 
-    <!-- ════════════ PLAYGROUND ════════════ -->
     <Variant
       title="Playground"
       :init-state="() => useStoryInitState<IColProps>({

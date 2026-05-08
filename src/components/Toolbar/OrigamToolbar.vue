@@ -189,16 +189,6 @@
 		transition-property: var(--origam-toolbar---transition-property);
 		transition-timing-function: var(--origam-toolbar---transition-timing-function);
 
-		// Borders — read PER-SIDE / PER-CORNER variables matching the
-		// tokens emitted by `tokens/component/toolbar.json`. Pre-fix the
-		// SCSS read the singular shorthand `--origam-toolbar---border-width`
-		// and `--origam-toolbar---border-radius` which the token build
-		// never emits, so the `var()` resolved to its CSS initial value
-		// (`medium` ≈ 3 px) and combined with `border-style: solid` from
-		// the tokens produced an unwanted ~3 px black frame on every
-		// toolbar — even with `border={false}`. Defaulting to `0` here
-		// makes the toolbar borderless out of the box (Vuetify-equivalent
-		// baseline) and lets the `&--border*` modifiers below opt in.
 		border-color: var(--origam-toolbar---border-color);
 		border-style: var(--origam-toolbar---border-style);
 		border-top-width: var(--origam-toolbar---border-top-width, 0);
@@ -214,8 +204,6 @@
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
 
-		// `border={true}` — opt-in border on all four sides, replaces the
-		// elevation shadow with a flat outline (Vuetify parity).
 		&--border {
 			--origam-toolbar---border-top-width: thin;
 			--origam-toolbar---border-right-width: thin;
@@ -224,10 +212,6 @@
 			--origam-toolbar---box-shadow: none;
 		}
 
-		// `border="top|right|bottom|left"` — single-side variants override
-		// the all-sides rule above (CSS source order). `useBorder` emits
-		// BOTH `--border` and `--border-{dir}` for direction values, so
-		// these rules need to reset the OTHER three sides back to 0.
 		&--border-top {
 			--origam-toolbar---border-top-width: thin;
 			--origam-toolbar---border-right-width: 0;
@@ -394,6 +378,4 @@
 		}
 	}
 </style>
-
-
 

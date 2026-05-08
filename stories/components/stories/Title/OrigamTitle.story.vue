@@ -4,7 +4,6 @@
 			title="Title/OrigamTitle"
 	>
 
-		<!-- ════════════ TAG (heading level) ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string, text?: string }>({ tag: 'h1', text: 'OrigamTitle' })"
@@ -21,13 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<!--
-			`colorList` mixes intents and every CSS-color format the prop
-			accepts. On Title the intent values are no-op (no intent →
-			SCSS mapping is wired); CSS values resolve via `useColor` and
-			produce inline `color` / `background-color` declarations.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -41,14 +33,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-title tag="h2">
 				Welcome <em>back</em>
 			</origam-title>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITitleProps>({

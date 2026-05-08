@@ -4,12 +4,10 @@
 			title="Toolbar/OrigamToolbar"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant title="Basic">
 			<origam-toolbar title="My Application" data-cy="toolbar-basic"/>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -27,7 +25,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<{ elevation?: number, flat?: boolean }>({})"
@@ -46,7 +43,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -63,7 +59,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -80,7 +75,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODIFIERS ════════════ -->
 		<Variant
 				title="Modifiers"
 				:init-state="() => useStoryInitState<{
@@ -103,11 +97,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER (IBorderProps) ════════════ -->
-		<!--
-			ONE variant per interface. Interactive control + hardcoded
-			showcase fixtures for the e2e suite (`data-cy="toolbar-border-{rung}"`).
-		-->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<{ border?: boolean | 'top' | 'right' | 'bottom' | 'left' }>({ border: true })"
@@ -142,7 +131,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">
 				<template #prepend>
@@ -151,7 +139,6 @@
 			</origam-toolbar>
 		</Variant>
 
-		<!-- ════════════ SLOT: append ════════════ -->
 		<Variant title="Slot — append">
 			<origam-toolbar title="With Append" data-cy="toolbar-slot-append">
 				<template #append>
@@ -161,7 +148,6 @@
 			</origam-toolbar>
 		</Variant>
 
-		<!-- ════════════ SLOT: content ════════════ -->
 		<Variant title="Slot — content">
 			<origam-toolbar title="With Content" data-cy="toolbar-slot-content">
 				<template #content>
@@ -171,7 +157,6 @@
 			</origam-toolbar>
 		</Variant>
 
-		<!-- ════════════ SLOT: title ════════════ -->
 		<Variant title="Slot — title">
 			<origam-toolbar data-cy="toolbar-slot-title">
 				<template #title>
@@ -180,7 +165,6 @@
 			</origam-toolbar>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IToolbarProps>({

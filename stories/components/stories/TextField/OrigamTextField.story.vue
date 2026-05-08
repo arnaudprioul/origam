@@ -4,7 +4,6 @@
 			title="TextField/OrigamTextField"
 	>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -23,18 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField /
-			Select / RatingField / Radio / PasswordField pattern).
-			Channel mapping (TextField family):
-			  • `color`   → label + outline / underline accent
-			  • `bgColor` → field surface
-			  • hover/active modify the matching channel on the matching
-			    state.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -76,15 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE ════════════ -->
-		<!--
-			PDF Phase 1 size scale: small=28 / default=36 / large=44 /
-			x-large=52. The unprefixed default has dropped from Material's
-			56px to 36px — that's an intentional, visible breaking change.
-			The interactive picker drives one field; the showcase below
-			exposes all four side-by-side so designers can eyeball the
-			ladder.
-		-->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<{ size: TSize }>({ size: SIZES.DEFAULT })"
@@ -113,7 +91,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -132,7 +109,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TYPE ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type: string }>({ type: 'text' })"
@@ -151,7 +127,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COUNTER ════════════ -->
 		<Variant
 				title="Counter"
 				:init-state="() => useStoryInitState<{ counter: number | boolean }>({ counter: 100 })"
@@ -170,7 +145,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PREFIX / SUFFIX ════════════ -->
 		<Variant
 				title="Prefix & suffix"
 				:init-state="() => useStoryInitState<{ prefix: string, suffix: string }>({ prefix: '$', suffix: '.00' })"
@@ -191,7 +165,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -215,7 +188,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prependInner / appendInner ════════════ -->
 		<Variant title="Slot — prependInner / appendInner">
 			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-inner">
 				<template #prependInner>
@@ -228,7 +200,6 @@
 			<div data-cy="textfield-slot-inner-status">value = {{ slotInnerModel }}</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend / append ════════════ -->
 		<Variant title="Slot — prepend / append">
 			<origam-text-field v-model="slotOuterModel" label="With outer slots" data-cy="textfield-slot-outer">
 				<template #prepend>
@@ -241,7 +212,6 @@
 			<div data-cy="textfield-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
 		<Variant title="Slot — label">
 			<origam-text-field v-model="slotLabelModel" data-cy="textfield-slot-label">
 				<template #label>
@@ -250,7 +220,6 @@
 			</origam-text-field>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-text-field
 					v-model="emitModel"
@@ -261,7 +230,6 @@
 			<div data-cy="textfield-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-text-field
 					v-model="emitFocusModel"
@@ -272,7 +240,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:clear ════════════ -->
 		<Variant title="Emit — click:clear">
 			<origam-text-field
 					v-model="emitClearModel"
@@ -283,7 +250,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -321,7 +287,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<origam-text-field label="loading={true}" loading data-cy="text-field-loading-bool"/>
@@ -332,14 +297,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ INLINE ════════════ -->
-		<!--
-			PDF "TextField · LABEL PLACEMENT · Inline" mode.
-			The field renders without chrome (no border, no background) at idle.
-			A subtle bottom line appears on hover and a heavier primary-color
-			bottom line on focus, so the editable region reads as part of the
-			surrounding text flow: "Origam · ___".
-		-->
 		<Variant title="Inline">
 			<div style="display: flex; align-items: baseline; gap: 8px; padding: 16px; font-size: 16px;">
 				<span>Origam</span>
@@ -355,7 +312,6 @@
 			<div data-cy="textfield-inline-status">value = {{ inlineModel }}</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITextFieldProps>({

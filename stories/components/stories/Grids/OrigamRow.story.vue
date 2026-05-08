@@ -4,14 +4,6 @@
 			title="Grids/OrigamRow"
 	>
 
-		<!--
-			Note: every <origam-row> here is wrapped in <origam-container> on
-			purpose. <OrigamRow> applies negative inline margins (the gutter
-			compensation) and would otherwise overflow the viewport, producing
-			an unwanted horizontal scrollbar in the Histoire iframe.
-		-->
-
-		<!-- ════════════ ALIGN ════════════ -->
 		<Variant
 				title="Align"
 				:init-state="() => useStoryInitState<IAlignProps>({ align: 'center' })"
@@ -36,7 +28,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ JUSTIFY ════════════ -->
 		<Variant
 				title="Justify"
 				:init-state="() => useStoryInitState<IJustifyProps>({ justify: 'space-between' })"
@@ -61,7 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -86,7 +76,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction?: TFlexDirection }>({ direction: undefined })"
@@ -115,7 +104,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -137,7 +125,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-container>
 				<origam-row>
@@ -151,7 +138,6 @@
 			</origam-container>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IRowProps>({

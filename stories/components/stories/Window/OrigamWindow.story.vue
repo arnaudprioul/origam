@@ -4,7 +4,6 @@
 			title="Window/OrigamWindow"
 	>
 
-		<!-- ════════════ DEFAULT (horizontal, 3 slides) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="window-default">
 				<origam-window v-model="defaultStep" :style="hostStyle">
@@ -16,7 +15,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DIRECTION (horizontal vs vertical) ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction: TDirection, step: number }>({ direction: DIRECTION.HORIZONTAL, step: 1 })"
@@ -35,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CONTINUOUS (wraps at edges) ════════════ -->
 		<Variant title="Continuous">
 			<div class="story-shell" data-cy="window-continuous">
 				<origam-window v-model="continuousStep" continuous :style="hostStyle">
@@ -47,7 +44,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SHOW ARROWS (always / hover / never) ════════════ -->
 		<Variant
 				title="Show arrows"
 				:init-state="() => useStoryInitState<{ showArrows: string | boolean | undefined, step: number }>({ showArrows: true, step: 1 })"
@@ -66,7 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TOUCH (swipe disabled vs enabled) ════════════ -->
 		<Variant
 				title="Touch"
 				:init-state="() => useStoryInitState<{ touch: boolean, step: number }>({ touch: true, step: 1 })"
@@ -85,7 +80,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IWindowProps & { step: number }>({

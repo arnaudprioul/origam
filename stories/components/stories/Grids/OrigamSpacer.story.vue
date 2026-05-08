@@ -4,7 +4,6 @@
 			title="Grids/OrigamSpacer"
 	>
 
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<div class="demo-flex-row">
 				<span class="demo-cell">left</span>
@@ -13,7 +12,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE SPACERS ════════════ -->
 		<Variant title="Multiple spacers">
 			<div class="demo-flex-row">
 				<span class="demo-cell">A</span>
@@ -24,7 +22,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ FLEX-GROW OVERRIDE ════════════ -->
 		<Variant
 				title="Flex-grow override"
 				:init-state="() => useStoryInitState<{ growA?: number, growB?: number }>({ growA: 1, growB: 2 })"
@@ -44,7 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'span' })"
@@ -61,7 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default (rare)">
 			<div class="demo-flex-row">
 				<span class="demo-cell">left</span>
@@ -72,7 +67,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISpacerProps>({ tag: 'div' })"

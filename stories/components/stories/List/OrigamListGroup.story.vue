@@ -4,7 +4,6 @@
 			title="List/OrigamListGroup"
 	>
 
-		<!-- ════════════ ICONS (expand / collapse) ════════════ -->
 		<Variant
 				title="Icons"
 				:init-state="() => useStoryInitState<{ expandIcon?: TIcon, collapseIcon?: TIcon }>({ expandIcon: MDI_ICONS.CHEVRON_DOWN, collapseIcon: MDI_ICONS.CHEVRON_UP })"
@@ -30,7 +29,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -51,7 +49,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ADJACENT (prepend / append icon) ════════════ -->
 		<Variant
 				title="Adjacent"
 				:init-state="() => useStoryInitState<IAdjacentProps>({ prependIcon: MDI_ICONS.FOLDER })"
@@ -72,7 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FLUID ════════════ -->
 		<Variant
 				title="Fluid"
 				:init-state="() => useStoryInitState<{ fluid: boolean }>({ fluid: true })"
@@ -92,7 +88,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ NESTED GROUPS ════════════ -->
 		<Variant title="Nested">
 			<origam-list data-cy="list-group-nested">
 				<origam-list-group title="Parent" :prepend-icon="MDI_ICONS.FOLDER" data-cy="list-group-parent">
@@ -109,7 +104,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-list>
 				<origam-list-group data-cy="list-group-slot-default">
@@ -118,7 +112,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: activator ════════════ -->
 		<Variant title="Slot — activator">
 			<origam-list>
 				<origam-list-group title="Group A" data-cy="list-group-slot-activator">
@@ -140,7 +133,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: items ════════════ -->
 		<Variant title="Slot — items">
 			<origam-list>
 				<origam-list-group title="Custom items" data-cy="list-group-slot-items">
@@ -152,7 +144,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:activator ════════════ -->
 		<Variant title="Emit — click:activator">
 			<origam-list>
 				<origam-list-group
@@ -167,7 +158,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IListGroupProps>({

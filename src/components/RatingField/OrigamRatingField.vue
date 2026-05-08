@@ -40,17 +40,6 @@
 					/>
 				</div>
 
-				<!--
-					Clear button — visible only when `clearable` is on
-					AND there's a value to clear. Pre-fix the only way
-					to reset the rating was to click the SAME star a
-					second time (a hidden Vuetify-style affordance) —
-					user reported "clearable sur ratingField ne sert a
-					rien" because nothing in the UI hinted at it. Now
-					exposed as an explicit icon button next to the row
-					so the affordance is discoverable. The "click same
-					star to clear" path still works for power users.
-				-->
 				<origam-btn
 						v-if="clearable && normalizedValue > 0 && !disabled && !readonly"
 						:aria-label="t('origam.rating.clear')"

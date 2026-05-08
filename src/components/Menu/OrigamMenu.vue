@@ -313,11 +313,6 @@
 		lang="scss"
 		scoped
 >
-	// `.origam-menu` is bound on the OVERLAY ROOT — the overlay scoped
-	// SCSS positions that root `position: absolute; inset: 0` so it
-	// spans its teleport target. Keep the root transparent and apply
-	// the visual surface (background, shadow, radius, …) on the
-	// `__content` BEM child below.
 	.origam-menu {
 		z-index: var(--origam-menu---z-index, 1000);
 		background: transparent;
@@ -330,8 +325,6 @@
 		border-radius: var(--origam-menu---border-radius, 8px);
 		box-shadow: var(--origam-menu---box-shadow);
 		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
-		// Size to content rather than inheriting the overlay flex layout
-		// — without these, the popup body grew to fill its parent.
 		display: inline-block;
 		width: max-content;
 

@@ -571,16 +571,6 @@
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	The component now consumes the generated tokens from
-	`src/assets/css/tokens/{primitive,light,dark}.css` (loaded once via the
-	consumer's `import 'origam/styles'` or `import 'origam/tokens/css/light'`).
-
-	Calc-based fallbacks (border-width compound, border-radius compound)
-	live in the `<style scoped>` block below as defaults on the element itself,
-	so a consumer who hasn't loaded the token CSS still sees a working card.
--->
 <style
 		lang="scss"
 		scoped

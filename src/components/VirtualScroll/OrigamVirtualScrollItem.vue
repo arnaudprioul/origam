@@ -90,8 +90,5 @@
 		scoped
 >
 	.origam-virtual-scroll-item {
-		/* Item height is measured at runtime via ResizeObserver (update:height event).
-		   The token --origam-virtual-scroll---item-height (48px) is the initial
-		   estimated value used by the virtual engine before measurement. */
 	}
 </style>

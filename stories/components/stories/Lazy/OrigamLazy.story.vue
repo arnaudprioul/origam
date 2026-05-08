@@ -4,7 +4,6 @@
 			title="Lazy/OrigamLazy"
 	>
 
-		<!-- ════════════ BASIC ════════════ -->
 		<Variant title="Basic — scroll to reveal">
 			<div style="height: 600px; overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); padding: 16px; border-radius: 4px;">
 				<p style="margin-bottom: 400px; opacity: 0.5;">Scroll down to reveal the lazy content below.</p>
@@ -16,7 +15,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ CONTROLLED (v-model) ════════════ -->
 		<Variant title="Controlled (v-model)">
 			<div style="display: flex; gap: 16px; align-items: flex-start;">
 				<origam-lazy v-model="isVisible" height="80">
@@ -28,7 +26,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ WITH OPTIONS ════════════ -->
 		<Variant title="With intersection options">
 			<div style="height: 500px; overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); padding: 16px; border-radius: 4px;">
 				<p style="margin-bottom: 300px; opacity: 0.5;">Scroll — triggers 200px before entering viewport.</p>
@@ -40,7 +37,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-lazy v-model="isVisible2" height="100">
 				<div style="padding: 16px; border-radius: 4px; border: 2px dashed var(--origam-color-border-default, #ccc);">
@@ -50,7 +46,6 @@
 			<origam-btn style="margin-top: 8px;" text="Reveal" @click="isVisible2 = true"/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="height: 400px; overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); padding: 16px; border-radius: 4px;">
 				<p style="margin-bottom: 200px; opacity: 0.5;">Scroll down to trigger the emit.</p>
@@ -65,7 +60,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

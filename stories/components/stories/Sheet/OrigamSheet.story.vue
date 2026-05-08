@@ -4,13 +4,6 @@
 			title="Sheet/OrigamSheet"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<!--
-			`colorList` mixes intents and every CSS-color format the prop
-			accepts. On Sheet the intent values are no-op (no intent →
-			SCSS mapping is wired); CSS values resolve via `useColor`
-			and produce inline `color` / `background-color` declarations.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -26,7 +19,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({})"
@@ -41,7 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -56,7 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ POSITION ════════════ -->
 		<Variant
 				title="Position"
 				:init-state="() => useStoryInitState<{ position?: TPosition }>({ position: undefined })"
@@ -79,7 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIMENSION ════════════ -->
 		<Variant
 				title="Dimension"
 				:init-state="() => useStoryInitState<IDimensionProps>({ width: 240, height: 120 })"
@@ -97,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODIFIERS (border / rounded) ════════════ -->
 		<Variant
 				title="Modifiers"
 				:init-state="() => useStoryInitState<{
@@ -116,7 +104,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -131,7 +118,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-sheet border rounded style="padding: 16px;">
 				<strong>Custom default slot</strong>
@@ -139,19 +125,6 @@
 			</origam-sheet>
 		</Variant>
 
-		<!-- ════════════ BOTTOM — SWIPEABLE ════════════ -->
-		<!--
-			Mobile-style bottom sheet with touch-drag-up to expand.
-			Hosts the swipe composable when `swipeable && side==='bottom'`.
-			Variant covers:
-			  - `defaultSnap` driven via HstSelect (closed/peek/half/full).
-			  - `persistent` toggle blocking dismissal beyond the bottom-most
-			    non-zero snap.
-			The container is given a fixed height + relative positioning so
-			the absolute sheet anchors visually, even inside the Histoire
-			sandbox iframe. The scrolling list of items is what the user
-			should be able to reveal by dragging up.
-		-->
 		<Variant
 				title="Bottom — swipeable"
 				:init-state="() => useStoryInitState<{
@@ -202,7 +175,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISheetProps>({

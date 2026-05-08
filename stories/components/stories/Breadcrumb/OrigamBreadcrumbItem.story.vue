@@ -4,7 +4,6 @@
 			title="Breadcrumb/OrigamBreadcrumbItem"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -26,7 +25,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -45,7 +43,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ADJACENT (prepend / append) ════════════ -->
 		<Variant
 				title="Adjacent"
 				:init-state="() => useStoryInitState<IAdjacentProps>({ prependIcon: MDI_ICONS.HOME })"
@@ -67,7 +64,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -86,7 +82,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (active / disabled) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, active: boolean }>({ disabled: false, active: false })"
@@ -112,7 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-breadcrumb>
 				<ol class="origam-breadcrumb__items">
@@ -127,7 +121,6 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-breadcrumb>
 				<ol class="origam-breadcrumb__items">
@@ -142,7 +135,6 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<!-- ════════════ SLOT: append ════════════ -->
 		<Variant title="Slot — append">
 			<origam-breadcrumb>
 				<ol class="origam-breadcrumb__items">
@@ -157,7 +149,6 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({

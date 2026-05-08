@@ -21,7 +21,6 @@
           name="field"
           v-bind="{id, isDisabled, isDirty, isValid, isReadonly}"
       >
-        <!-- DRAG & DROP MODE -->
         <div
             v-if="isDropzoneMode"
             class="origam-file-field__dragndrop"
@@ -34,7 +33,6 @@
               @dragleave.prevent="handleDragLeave"
               @drop.prevent="handleDrop"
           >
-            <!-- Single file mode: show uploaded file inside the dropzone -->
             <template v-if="!props.multiple && hasFiles">
               <slot
                   name="item"
@@ -63,7 +61,6 @@
                 />
               </slot>
             </template>
-            <!-- Default: show dropzone content -->
             <template v-else>
               <slot
                   name="dropzone"
@@ -141,7 +138,6 @@
           </ul>
         </div>
 
-        <!-- DEFAULT FIELD MODE -->
         <div
             v-else
             class="origam-file-field__field"

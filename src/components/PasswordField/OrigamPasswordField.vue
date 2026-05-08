@@ -744,10 +744,6 @@
 			font-weight: var(--origam-password-field__icon---font-weight, bold);
 		}
 
-		// ─── Inline footer: strength bar + requirements checklist ────
-		// The whole block is rendered inside the `#details` slot of
-		// `<origam-input>`, so it sits below the field control. We add
-		// margin via a token to keep the spacing themeable.
 		&__inline-footer {
 			display: flex;
 			flex-direction: column;

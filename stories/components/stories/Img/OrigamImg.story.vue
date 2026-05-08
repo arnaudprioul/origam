@@ -3,7 +3,6 @@
 			group="components"
 			title="Img/OrigamImg"
 	>
-		<!-- ════════════ BASIC USAGE ════════════ -->
 		<Variant title="Basic usage">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -13,7 +12,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ COVER / CONTAIN ════════════ -->
 		<Variant
 				title="Cover"
 				:init-state="() => useStoryInitState<{ cover?: boolean, position?: string }>({ cover: false })"
@@ -34,7 +32,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ASPECT RATIO ════════════ -->
 		<Variant
 				title="Aspect ratio"
 				:init-state="() => useStoryInitState<{ aspectRatio?: number }>({ aspectRatio: 16 / 9 })"
@@ -53,7 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LAZY-SRC ════════════ -->
 		<Variant title="Lazy src (preload blur)">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -66,7 +62,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EAGER ════════════ -->
 		<Variant
 				title="Eager"
 				:init-state="() => useStoryInitState<{ eager?: boolean }>({ eager: true })"
@@ -86,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ GRADIENT ════════════ -->
 		<Variant
 				title="Gradient"
 				:init-state="() => useStoryInitState<{ gradient?: string }>({
@@ -108,7 +102,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'default' })"
@@ -128,7 +121,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -149,7 +141,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ERROR (broken src) ════════════ -->
 		<Variant title="Error state (broken src)">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -168,7 +159,6 @@
 			</origam-img>
 		</Variant>
 
-		<!-- ════════════ SLOT: placeholder ════════════ -->
 		<Variant title="Slot — placeholder">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -188,7 +178,6 @@
 			</origam-img>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (overlay) ════════════ -->
 		<Variant title="Slot — default (overlay)">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -206,7 +195,6 @@
 			</origam-img>
 		</Variant>
 
-		<!-- ════════════ EMIT: @load ════════════ -->
 		<Variant title="Emit — load">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -221,7 +209,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IImgProps & { width?: string }>({

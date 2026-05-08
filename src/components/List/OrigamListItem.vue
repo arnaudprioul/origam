@@ -333,8 +333,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults are now provided by the generated :root block from tokens/component/list.json.
-	// Fallback values reference semantic tokens via CSS variable chain.
 	.origam-list-item {
 		$this: &;
 
@@ -446,27 +444,6 @@
 			}
 		}
 
-		// Material-like state layer (the `__overlay` BEM child).
-		//
-		// Pre-fix the rule below was a 3×3 cross of selectors —
-		//
-		//   &, &--active, [aria-haspopup=menu][aria-expanded=true] {
-		//       &, &:hover, &:focus-visible { > __overlay { opacity: 0.12 } }
-		//   }
-		//
-		// — and the OUTER `&` (= every `.origam-list-item`) AND the INNER
-		// `&` (= every state) both matched unconditionally. Result: every
-		// item carried the same 0.12 overlay opacity at rest AS at hover,
-		// so hover produced zero visual change. Reported by the user.
-		//
-		// Tiered to a Material state-layer ramp:
-		//   • Resting clickable item     → 0    (overlay invisible)
-		//   • Hover / focus-visible      → 0.08 (faint surface)
-		//   • Active / selected          → 0.12 (persistent)
-		//   • Active + hover/focus       → 0.16 (intensified)
-		//
-		// Hover/focus opacity is gated on `--link` (= `isClickable`) so
-		// non-clickable items don't suddenly grow a hover surface.
 		&--link {
 			&:hover,
 			&:focus-visible {
@@ -491,13 +468,6 @@
 		}
 
 		&__overlay {
-			// `currentColor` so the state layer always provides contrast
-			// against the surface — dark text → dark overlay on a light
-			// menu, light text → light overlay on a dark menu. Pre-fix
-			// the overlay defaulted to `--origam-color-overlay-scrim`,
-			// which is `#ffffff` in the light theme; a white overlay on
-			// the white menu surface produced ZERO visible hover even
-			// once the opacity tier was correct.
 			background-color: var(--origam-list-item__overlay---background-color, currentColor);
 			border-radius: var(--origam-list-item__overlay---border-radius, inherit);
 			opacity: var(--origam-list-item__overlay---opacity, 0);

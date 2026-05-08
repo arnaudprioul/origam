@@ -4,7 +4,6 @@
 			title="VirtualScroll/OrigamVirtualScroll"
 	>
 
-		<!-- ════════════ DEFAULT (1000 rows) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="vs-default">
 				<origam-virtual-scroll
@@ -21,7 +20,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ ITEM HEIGHT ════════════ -->
 		<Variant
 				title="Item height"
 				:init-state="() => useStoryInitState<{ itemHeight: number }>({ itemHeight: 32 })"
@@ -50,7 +48,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HEIGHT (viewport height) ════════════ -->
 		<Variant
 				title="Height"
 				:init-state="() => useStoryInitState<{ height: number }>({ height: 240 })"
@@ -75,7 +72,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SCROLL TO INDEX (imperative) ════════════ -->
 		<Variant title="scrollToIndex">
 			<div class="story-shell" data-cy="vs-scroll-to-index">
 				<origam-virtual-scroll
@@ -99,7 +95,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DYNAMIC ITEMS (push / replace) ════════════ -->
 		<Variant title="Dynamic items">
 			<div class="story-shell" data-cy="vs-dynamic">
 				<origam-virtual-scroll
@@ -121,7 +116,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ itemHeight: number, height: number, count: number }>({ itemHeight: 48, height: 320, count: 200 })"

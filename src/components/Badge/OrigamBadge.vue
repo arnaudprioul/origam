@@ -349,11 +349,3 @@
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	`--origam-badge__wrapper---*` and `--origam-badge__badge---*` are now
-	supplied by the generated tokens (loaded via `import 'origam/styles'`
-	or `import 'origam/tokens/css/light'`).
-	The legacy `--origam-status--*` namespace has been retired in favour
-	of the semantic feedback tokens (`--origam-color-feedback-{intent}-*`).
--->

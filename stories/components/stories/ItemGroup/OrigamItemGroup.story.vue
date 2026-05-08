@@ -4,7 +4,6 @@
 			title="ItemGroup/OrigamItemGroup"
 	>
 
-		<!-- ════════════ DEFAULT (radio-style — single selection) ════════════ -->
 		<Variant title="Default">
 			<div class="ig-row">
 				<origam-item-group v-model="defaultModel">
@@ -27,7 +26,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<div class="ig-row">
 				<origam-item-group v-model="multipleModel" multiple>
@@ -48,7 +46,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MANDATORY ════════════ -->
 		<Variant title="Mandatory">
 			<div class="ig-row">
 				<origam-item-group v-model="mandatoryModel" mandatory>
@@ -70,7 +67,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DISABLED ITEM ════════════ -->
 		<Variant title="Disabled item">
 			<div class="ig-row">
 				<origam-item-group v-model="disabledModel">
@@ -91,7 +87,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ CUSTOM SELECTED CLASS ════════════ -->
 		<Variant title="Custom selectedClass">
 			<div class="ig-row">
 				<origam-item-group v-model="customClassModel" selected-class="my-custom-active">
@@ -111,7 +106,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ multiple: boolean, mandatory: boolean }>({ multiple: false, mandatory: false })"

@@ -4,7 +4,6 @@
 			title="Transition/OrigamFade"
 	>
 
-		<!-- ════════════ DEFAULT (toggle) ════════════ -->
 		<Variant title="Default">
 			<template #default>
 				<div class="story-shell">
@@ -28,7 +27,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ APPEAR (mounts visible) ════════════ -->
 		<Variant title="Appear (mount)">
 			<template #default>
 				<div class="story-shell">
@@ -48,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant title="Disabled">
 			<template #default>
 				<div class="story-shell">
@@ -72,7 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ GROUP (TransitionGroup) ════════════ -->
 		<Variant title="Group">
 			<template #default>
 				<div class="story-shell">
@@ -94,7 +90,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITransitionProps>({

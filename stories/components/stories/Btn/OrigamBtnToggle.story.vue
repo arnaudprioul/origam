@@ -4,7 +4,6 @@
 			title="Btn/OrigamBtnToggle"
 	>
 
-		<!-- ════════════ DEFAULT (single selection) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="btn-toggle-default">
 				<origam-btn-toggle v-model="defaultValue">
@@ -16,7 +15,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MULTIPLE ════════════ -->
 		<Variant title="Multiple">
 			<div class="story-shell" data-cy="btn-toggle-multiple">
 				<origam-btn-toggle v-model="multipleValue" multiple>
@@ -28,7 +26,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MANDATORY ════════════ -->
 		<Variant
 				title="Mandatory"
 				:init-state="() => useStoryInitState<{ mandatory: boolean }>({ mandatory: true })"
@@ -48,7 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DISABLED ════════════ -->
 		<Variant
 				title="Disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
@@ -67,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<{ density?: TDensity }>({ density: DENSITY.DEFAULT })"
@@ -84,7 +79,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<{ rounded?: boolean | string }>({ rounded: true })"
@@ -100,7 +94,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (intent) ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -117,7 +110,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBtnToggleProps>({

@@ -4,7 +4,6 @@
 			title="Icon/OrigamIcon"
 	>
 
-		<!-- ════════════ SIZE ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
@@ -20,7 +19,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -37,7 +35,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG (polymorphism) ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
@@ -53,7 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CLICK (button mode) ════════════ -->
 		<Variant title="Emit — click (button mode)">
 			<origam-icon
 					:icon="MDI_ICONS.CLOSE"
@@ -62,17 +58,14 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SLOT: default (string override) ════════════ -->
 		<Variant title="Slot — default (ligature string)">
 			<origam-icon>mdi-heart</origam-icon>
 		</Variant>
 
-		<!-- ════════════ DISPATCHER: SVG path ════════════ -->
 		<Variant title="Dispatch — SVG path">
 			<origam-icon :icon="SVG_PATH_HEART"/>
 		</Variant>
 
-		<!-- ════════════ ALL SIZES side by side ════════════ -->
 		<Variant title="All sizes — side by side">
 			<div style="display:flex;gap:16px;align-items:center;">
 				<origam-icon :icon="MDI_ICONS.HOME" size="x-small"/>
@@ -83,7 +76,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ ALL INTENTS side by side ════════════ -->
 		<Variant title="All intents — side by side">
 			<div style="display:flex;gap:16px;align-items:center;">
 				<origam-icon :icon="MDI_ICONS.HEART" color="primary"/>
@@ -94,7 +86,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IIconComponentProps>({

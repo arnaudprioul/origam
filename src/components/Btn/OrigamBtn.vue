@@ -34,7 +34,6 @@
 							name="loader"
 							v-bind="progressProps"
 					>
-						<!-- skeleton: fills the btn bounds -->
 						<origam-skeleton
 								v-if="loaderConfig.kind === 'skeleton'"
 								variant="rectangular"
@@ -43,7 +42,6 @@
 								v-bind="loaderConfig.overrides"
 						/>
 
-						<!-- circular / line: reuse progressProps which already encodes kind -->
 						<origam-progress
 								v-else
 								ref="origamProgressRef"
@@ -389,20 +387,11 @@
 		transition-duration: var(--origam-btn---transition-duration, 0.28s);
 		transition-timing-function: var(--origam-btn---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
-		// Density modulates BOTH the explicit height/min-height AND the
-		// horizontal padding so the visual difference between
-		// compact / default / comfortable is unmistakable. Previously
-		// density only nudged `min-height` while a fixed `height: 36px`
-		// took precedence, so `compact` (negative offset) was a no-op.
 		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
 		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0px)));
 		max-width: var(--origam-btn---max-width, 100%);
-		// Density is folded INTO the rendered height, not just min-height,
-		// so `compact` (negative offset) actually shrinks the button. The
-		// min-height var indirection is preserved for consumer overrides
-		// (e.g. forcing a tighter button via `--origam-btn---min-height`).
 		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
 		max-height: var(--origam-btn---max-height, 100%);
@@ -418,26 +407,11 @@
 		border-width: var(--origam-btn-group---border-width);
 		border-style: var(--origam-btn-group---border-style);
 		border-color: var(--origam-btn-group---border-color);
-		// Read `--origam-btn---border-radius` first so the `&--rounded`,
-		// `&--icon` and consumer `:style` overrides actually take effect.
-		// Falls back to the inherited group radius (or 4px) when unset.
 		border-radius: var(
 			--origam-btn---border-radius,
 			var(--origam-btn-group---border-radius, 4px)
 		);
 
-		// ──────────────────────────────────────────────────────────────
-		// __loader BEM child — declared FIRST (before any `&--*`
-		// modifier) so the source-order tie-breaker between equally
-		// specific selectors gives the win to the modifier overrides
-		// (e.g. `&--stacked __loader { grid-template-areas: …vertical… }`,
-		// `&--loading __loader { display: inline-flex }`). Previously this
-		// rule lived at the bottom of the block, so every modifier on
-		// `__loader` was silently shadowed and the stacked layout stayed
-		// horizontal. Verified via Playwright DOM dump: rule 1
-		// (`.origam-btn--stacked .origam-btn__loader[data-v]`) and rule 2
-		// (`.origam-btn .origam-btn__loader[data-v]`) had identical
-		// (0,3,0) specificity, so source order decided.
 		#{$this}__loader {
 			align-items: center;
 			justify-content: center;
@@ -453,10 +427,6 @@
 			}
 		}
 
-		// Size variants: each one re-applies the density-aware horizontal
-		// padding so `compact` / `comfortable` keeps modulating the
-		// breathing room regardless of size. Without `density-padding-x`,
-		// these blocks would wipe out the base `padding: 0 calc(...)` rule.
 		&--size-x-small {
 			--origam-btn---height: 20px;
 			--origam-btn---font-size: 0.625rem;
@@ -512,10 +482,6 @@
 			}
 		}
 
-		// Density tokens — offsets applied to height + horizontal padding.
-		// Sign convention: positive grows the button, negative shrinks it.
-		// `density-padding-x` is half of `density` so the horizontal change
-		// scales with the vertical one without dwarfing the label.
 		&--density-comfortable {
 			--origam-btn---density: 8px;
 			--origam-btn---density-padding-x: 4px;
@@ -551,13 +517,6 @@
 			}
 		}
 
-		// Active state has its OWN opacity token now — using the hover
-		// rung made selected btns inside an `OrigamBtnToggle` look exactly
-		// like a hovered (non-selected) sibling, so the user couldn't see
-		// which option was current. Bumped the default to 0.2 so the
-		// selected affordance is visible without being heavy. The
-		// active+hover composite stacks one rung above (0.28) — keeps the
-		// "selected and the cursor is on it" peak distinct.
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
@@ -577,41 +536,10 @@
 			--origam-btn---border-radius: var(--origam-btn---border-radius-icon, 50%);
 
 			--origam-btn---min-width: 0;
-			// Square button: width must match the rendered height (which
-			// already includes density via the base `height` rule). We add
-			// density here too so width keeps parity with height — but we
-			// do NOT touch `--origam-btn---height` itself, otherwise the
-			// base rule would re-add density and double-count.
 			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
 
-			// Pre-fix: every icon-only btn rendered its glyph ~1.25 px
-			// off-centre (reported by the user as "le point noir n'est
-			// pas centré"). Two compounding causes:
-			//
-			// 1. The base `__loader` is `display: inline-grid` with
-			//    `grid-template-columns: max-content auto max-content`.
-			//    With no prepend/append rendered, the auto column hugs
-			//    the icon's intrinsic width (≈ 16 px) rather than
-			//    stretching to fill the btn — and `inline-grid` then
-			//    placed that 16-px content column with sub-pixel drift
-			//    against the 36-px btn box. Probe-measured Δx = +1.25
-			//    px on every icon-mode btn.
-			//
-			// 2. The `<i>` MDI glyph itself has an advance-width wider
-			//    than 1 em (the font's natural metric), so even when
-			//    centred its bbox sits asymmetrically over the visual
-			//    ink.
-			//
-			// Fix:
-			// - Switch `__loader` to `display: flex` + center alignment
-			//   in icon mode. The grid was only meaningful when
-			//   prepend/content/append all coexisted; in icon mode
-			//   there's only one child.
-			// - Force `.origam-icon` to a 1 em × 1 em square with
-			//   `line-height: 1` and `text-align: center` so the glyph
-			//   is drawn in a deterministic em-box.
 			#{$this}__loader {
 				display: flex;
 				align-items: center;
@@ -631,20 +559,8 @@
 
 		&--flat,
 		&--variant-flat {
-			// Default rendering — keeps the intent bg + fg from useColorEffect.
-			// `--flat` is the legacy boolean shortcut for `variant="flat"`; both
-			// classes are emitted while `flat: boolean` remains in the API.
 			box-shadow: none;
 		}
-
-		// ────────────────────────────────────────────────────────────
-		// Variants — each one overrides the rendered chrome on top of
-		// the intent vars set inline by `useColorEffect`. `!important`
-		// is required because `useColorEffect` ships its colors as
-		// inline `:style="{ '--origam-btn---background-color': … }"`,
-		// which beats class-level CSS in normal cascade order. Mirrors
-		// Vuetify's `.v-btn--variant-{name}` strategy.
-		// ────────────────────────────────────────────────────────────
 
 		&--variant-text {
 			background-color: transparent !important;
@@ -656,9 +572,6 @@
 		}
 
 		&--variant-tonal {
-			// Tonal: tinted background, original color text. Uses the inline
-			// intent's bg with reduced opacity via `color-mix` when supported,
-			// falling back to the surface-overlay token.
 			background-color: var(
 				--origam-btn---background-color-tonal,
 				var(--origam-color-surface-overlay)
@@ -685,16 +598,6 @@
 			}
 		}
 
-		// Glassmorphism — translucent tint of the current text color +
-		// backdrop-filter blur. The tint uses `currentColor` so the
-		// effect adapts to whichever foreground intent is active and
-		// flips correctly between light and dark themes (bg-color-mix
-		// is naturally theme-aware via the inherited text color).
-		//
-		// CSS-first / JS-fallback principle: `backdrop-filter` is
-		// gated by `@supports`. Browsers that lack it fall back to a
-		// stronger tint (no blur) so the variant still reads as a
-		// distinct surface.
 		&--variant-ghost {
 			background-color: var(
 				--origam-btn---background-color-ghost,
@@ -707,14 +610,6 @@
 				color-mix(in srgb, currentColor 24%, transparent)
 			);
 
-			// Glassmorphic glow — soft halo bleeding the intent colour
-			// outward + an inner highlight that mimics a frosted pane
-			// catching ambient light. The two-shadow stack matches the
-			// reference designs the user shared (purple/red/green/blue
-			// "luminous" buttons).
-			//
-			//   1st  outer halo  —  spread the intent color softly
-			//   2nd  inner ring  —  thin reflective edge for glass feel
 			box-shadow: var(
 				--origam-btn---box-shadow-ghost,
 				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
@@ -728,8 +623,6 @@
 			}
 
 			@supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
-				// No blur support — bump the tint a bit so the variant still
-				// reads as a discrete surface (Safari < 9, IE legacy).
 				background-color: var(
 					--origam-btn---background-color-ghost,
 					color-mix(in srgb, currentColor 18%, transparent)
@@ -742,8 +635,6 @@
 					--origam-btn---background-color-ghost-hover,
 					color-mix(in srgb, currentColor 18%, transparent)
 				) !important;
-				// Hover: pump the halo intensity (~1.5x) so the glow
-				// reads as actively responding to the cursor.
 				box-shadow: var(
 					--origam-btn---box-shadow-ghost-hover,
 					0 0 0 1px color-mix(in srgb, currentColor 26%, transparent),
@@ -762,13 +653,6 @@
 
 		&--disabled {
 			pointer-events: none;
-			// 0.5 → "léger voile" effect requested by the user. The
-			// previous 0.26 was the Material 2 disabled rung, which
-			// reads as "almost invisible" — ergonomically aggressive,
-			// especially in dense rows like Pagination where the
-			// disabled prev / next btns disappeared visually. 0.5
-			// keeps the bgColor recognisable while clearly signalling
-			// the disabled state.
 			--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
 
 			&:hover {
@@ -785,12 +669,6 @@
 				opacity: 0;
 			}
 
-			// During loading, OrigamLoader's `v-if/v-else` removes the
-			// __prepend/__content/__append children entirely, so the
-			// 3-column grid below collapses to empty cells that can read
-			// as a "white square" depending on the parent bg. Switch to a
-			// centered flex layout so only the spinner shows, perfectly
-			// centered.
 			#{$this}__loader {
 				display: inline-flex;
 				align-items: center;
@@ -835,9 +713,6 @@
 				white-space: normal;
 			}
 
-			// Same density-aware padding pattern as the non-stacked size
-			// variants — keeps `compact`/`comfortable` modulating breathing
-			// room across all stacked sizes.
 			&#{$this}--size-x-small {
 				--origam-btn---height: 56px;
 				font-size: 0.625rem;
@@ -873,12 +748,6 @@
 				padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
 			}
 
-			// Stacked amplifies the density delta — the icon-over-label
-			// layout reads "wider" so it needs a stronger compression /
-			// expansion to feel different from the size-x-large baseline.
-			// The base height rule (`calc(--origam-btn---height + density)`)
-			// picks these new values up automatically — no explicit `height`
-			// override needed.
 			&#{$this}--density-comfortable {
 				--origam-btn---density: 16px;
 			}
@@ -892,14 +761,6 @@
 			padding: 0 8px;
 		}
 
-		// ────────────────────────────────────────────────────────────
-		// Rounded variants — mirror the origam enum-driven API.
-		// `useRounded` emits one of:
-		//   - `--rounded`            → legacy boolean (max curvature)
-		//   - `--rounded-{name}`     → named variant from `ROUNDED` enum
-		// Each variant binds `--origam-btn---border-radius` to a primitive
-		// `--origam-radius-*` token so theme switches stay seamless.
-		// ────────────────────────────────────────────────────────────
 		&--rounded {
 			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, var(--origam-radius-2xl, 24px));
 
@@ -945,13 +806,6 @@
 			border-end-start-radius: var(--origam-btn---border-radius-rounded, 16px);
 			border-end-end-radius: 0;
 		}
-
-		// __loader BEM block (base layout) was moved next to the BEM
-		// children below — see `&__loader` further down. The base rule had
-		// to live AFTER the modifier blocks (`&--stacked`, `&--loading`,
-		// etc.) that override grid-template-areas, otherwise CSS source
-		// order at equal specificity made the base win unconditionally
-		// (e.g. stacked stayed horizontal). Cf. Playwright DOM dump.
 
 		&__content,
 		&__prepend,
@@ -1014,25 +868,11 @@
 	}
 </style>
 
-<!--
-	Lot 1 migration — `<style>:root{}` block removed.
-	The component now consumes the generated tokens from
-	`src/assets/css/tokens/{primitive,light,dark}.css` (loaded once via the
-	consumer's `import 'origam/styles'` or `import 'origam/tokens/css/light'`).
-
-	Calc-based fallbacks (margins/paddings tied to height) live in the
-	`<style scoped>` block above as defaults on the element itself, so a
-	consumer who hasn't loaded the token CSS still sees a working button.
--->
 <style
 		lang="scss"
 		scoped
 >
 	.origam-btn {
-		// Calc-based defaults that depend on local --origam-btn---height —
-		// these can't live in the token JSON because they reference the
-		// resolved value at the component-instance level (size variant,
-		// density modifier, etc.).
 		--origam-btn__content---margin-inline-start: 0;
 		--origam-btn__content---margin-inline-end: 0;
 

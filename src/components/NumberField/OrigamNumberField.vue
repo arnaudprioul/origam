@@ -731,7 +731,6 @@
 			height: 100%;
 
 			.origam-btn {
-				/* --origam-number-field__control---background-color: transparent (fallback) */
 				background-color: var(--origam-number-field__control---background-color, transparent);
 				border-radius: var(--origam-number-field__control---border-radius, 0);
 			}

@@ -372,12 +372,6 @@
 		lang="scss"
 		scoped
 >
-	// Chromique — every visual knob resolves through component-scoped CSS
-	// variables fed by `tokens/component/parallax.json`. The Style-Dictionary
-	// build emits the `:root, [data-theme=...] { --origam-parallax---*: ... }`
-	// defaults; the SCSS only consumes them. The `--origam-parallax---perspective`
-	// override is forwarded from JS (see `parallaxStyles` above) so the
-	// runtime `perspective` prop still wins over the token default.
 	.origam-parallax {
 		display: flex;
 		flex-direction: column;
@@ -388,11 +382,6 @@
 
 		perspective: var(--origam-parallax---perspective, 1000px);
 		transform-origin: var(--origam-parallax---transform-origin, center center);
-		// `transition-duration` / `transition-timing-function` are read by
-		// the descendant `<OrigamParallaxElement>` via the provided
-		// `duration` / `easing` refs — surfaced here for siblings or
-		// consumers that want to animate parallax-adjacent layers (overlay,
-		// caption, …) at the same cadence as the parallax layers.
 		transition-duration: var(--origam-parallax---transition-duration, 600ms);
 		transition-timing-function: var(--origam-parallax---transition-timing-function, cubic-bezier(0.23, 1, 0.32, 1));
 

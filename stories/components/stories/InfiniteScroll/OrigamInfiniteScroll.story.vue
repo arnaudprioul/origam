@@ -4,7 +4,6 @@
 			title="InfiniteScroll/OrigamInfiniteScroll"
 	>
 
-		<!-- ════════════ BASIC (end side, intersect) ════════════ -->
 		<Variant title="Basic — end side">
 			<origam-infinite-scroll
 					height="300"
@@ -21,7 +20,6 @@
 			</origam-infinite-scroll>
 		</Variant>
 
-		<!-- ════════════ MANUAL MODE ════════════ -->
 		<Variant title="Manual mode">
 			<origam-infinite-scroll
 					height="300"
@@ -39,7 +37,6 @@
 			</origam-infinite-scroll>
 		</Variant>
 
-		<!-- ════════════ BOTH SIDES ════════════ -->
 		<Variant title="Both sides">
 			<origam-infinite-scroll
 					height="300"
@@ -57,7 +54,6 @@
 			</origam-infinite-scroll>
 		</Variant>
 
-		<!-- ════════════ SLOT: loading ════════════ -->
 		<Variant title="Slot — loading">
 			<origam-infinite-scroll
 					height="300"
@@ -78,7 +74,6 @@
 			</origam-infinite-scroll>
 		</Variant>
 
-		<!-- ════════════ SLOT: empty ════════════ -->
 		<Variant title="Slot — empty">
 			<origam-infinite-scroll
 					height="200"
@@ -92,7 +87,6 @@
 			</origam-infinite-scroll>
 		</Variant>
 
-		<!-- ════════════ EMIT: load ════════════ -->
 		<Variant title="Emit — load">
 			<origam-infinite-scroll
 					height="300"
@@ -109,7 +103,6 @@
 			</origam-infinite-scroll>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

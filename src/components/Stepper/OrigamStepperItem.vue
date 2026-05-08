@@ -8,7 +8,6 @@
 			:disabled="isClickable && resolvedStatus === 'active' ? true : undefined"
 			@click="handleClick"
 	>
-		<!-- Indicator (number / icon / checkmark / error) -->
 		<span
 				:class="indicatorClasses"
 				aria-hidden="true"
@@ -27,7 +26,6 @@
 			</template>
 		</span>
 
-		<!-- Label area -->
 		<span class="origam-stepper-item__label">
 			<span
 					v-if="title"
@@ -209,8 +207,6 @@
 			min-width: 0;
 		}
 
-		// Vertical orientation: items flex row (indicator left, label right)
-		// and labels align to start.
 		&--vertical {
 			flex-direction: row;
 			align-items: flex-start;

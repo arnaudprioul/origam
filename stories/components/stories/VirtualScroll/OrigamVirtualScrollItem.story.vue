@@ -4,7 +4,6 @@
 			title="VirtualScroll/OrigamVirtualScrollItem"
 	>
 
-		<!-- ════════════ DEFAULT (renders + emits update:height) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="vsi-default">
 				<origam-virtual-scroll-item
@@ -18,7 +17,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DYNAMIC HEIGHT (resize → emits update:height) ════════════ -->
 		<Variant
 				title="Dynamic height"
 				:init-state="() => useStoryInitState<{ rows: number }>({ rows: 1 })"
@@ -44,7 +42,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ RENDERLESS (consumer owns the wrapper) ════════════ -->
 		<Variant title="Renderless">
 			<div class="story-shell" data-cy="vsi-renderless">
 				<origam-virtual-scroll-item
@@ -66,7 +63,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ INSIDE A LIST (rendered N times) ════════════ -->
 		<Variant title="Inside a list">
 			<div class="story-shell" data-cy="vsi-list">
 				<origam-virtual-scroll-item

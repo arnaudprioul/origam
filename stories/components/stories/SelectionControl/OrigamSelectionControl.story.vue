@@ -4,7 +4,6 @@
 			title="SelectionControl/OrigamSelectionControl"
 	>
 
-		<!-- ════════════ TYPE (checkbox / radio / switch) ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type: string }>({ type: 'checkbox' })"
@@ -20,7 +19,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LABEL ════════════ -->
 		<Variant
 				title="Label"
 				:init-state="() => useStoryInitState<{ label?: string, required: boolean }>({ label: 'Accept terms', required: false })"
@@ -41,7 +39,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -56,7 +53,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -71,7 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ICONS (trueIcon / falseIcon) ════════════ -->
 		<Variant
 				title="Icons (trueIcon / falseIcon)"
 				:init-state="() => useStoryInitState<{ trueIcon?: TIcon, falseIcon?: TIcon }>({ trueIcon: MDI_ICONS.CHECK_CIRCLE, falseIcon: MDI_ICONS.CIRCLE_OUTLINE })"
@@ -93,7 +88,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ VALUES (trueValue / falseValue) ════════════ -->
 		<Variant
 				title="Values (trueValue / falseValue)"
 				:init-state="() => useStoryInitState<{ trueValue?: any, falseValue?: any }>({ trueValue: 'YES', falseValue: 'NO' })"
@@ -117,7 +111,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (disabled / readonly) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
@@ -139,7 +132,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-selection-control-group v-model="slotDefaultModel" type="checkbox">
 				<origam-selection-control value="custom" data-cy="sc-slot-default">
@@ -155,7 +147,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
 		<Variant title="Slot — label">
 			<origam-selection-control-group v-model="slotLabelModel" type="checkbox">
 				<origam-selection-control value="a" data-cy="sc-slot-label">
@@ -166,7 +157,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ SLOT: input ════════════ -->
 		<Variant title="Slot — input">
 			<origam-selection-control-group v-model="slotInputModel" type="checkbox">
 				<origam-selection-control value="a" label="Custom input" data-cy="sc-slot-input">
@@ -183,7 +173,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:label ════════════ -->
 		<Variant title="Emit — click:label">
 			<origam-selection-control-group v-model="emitModel" type="checkbox">
 				<origam-selection-control
@@ -195,7 +184,6 @@
 			</origam-selection-control-group>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISelectionControlProps>({

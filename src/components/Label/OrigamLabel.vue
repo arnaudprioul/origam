@@ -92,14 +92,10 @@
 		transition-duration:        var(--origam-label---transition-duration);
 		transition-timing-function: var(--origam-label---transition-easing);
 
-		// Required indicator — the <sup>*</sup> child element.
 		sup {
 			color: var(--origam-label---required-indicator-color);
 		}
 
-		// Floating state — the cloned label used in the notch animation.
-		// Visibility is driven by the label token; the float animation itself
-		// is done by OrigamField's JS. The rule here makes the token consumable.
 		&--floating {
 			font-size:  var(--origam-label__floating---font-size);
 			visibility: var(--origam-label__floating---visibility);

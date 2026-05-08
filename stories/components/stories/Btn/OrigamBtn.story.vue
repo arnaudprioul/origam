@@ -4,43 +4,11 @@
 			title="Btn/OrigamBtn"
 	>
 
-		<!--
-			REFERENCE STORY — pattern for every other component story.
-
-			Each <Variant> drives one orthogonal concern:
-			  • one variant per "prop family" (color, size, density, …)
-			  • one variant per slot
-			  • one variant per emit — wire the listener to
-			    `logEvent('event-name', $event)` (imported from
-			    'histoire/client') so the emit shows up in histoire's
-			    Events tab. Don't roll your own counter / log list.
-			  • one "playground" variant that exposes everything together
-
-			Histoire's `init-state` is typed via `useStoryInitState<T>` so the
-			controls panel matches the component's own prop interfaces.
-		-->
-
-		<!-- ════════════ VARIANTS (text/flat/elevated/tonal/outlined/ghost/plain) ════════════ -->
-		<!--
-			Default `color="primary"` so the variants (especially `ghost`'s
-			glassmorphic glow + intent border tint) read clearly against
-			the Histoire neutral background. Without an intent the ghost
-			variant inherits Btn's default text color and the halo barely
-			shows.
-		-->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariant }>({ variant: undefined })"
 		>
 			<template #default="{ state }">
-				<!--
-					`min-height` + generous `padding` give the ghost variant's
-					box-shadow halo (`0 4px 18-24px 0` × 2 layers, hover bumps
-					to 24px) room to render. Histoire's default render frame
-					tightens to the content's bbox, so a 18 px outer halo gets
-					clipped at the bottom edge if the wrapper doesn't reserve
-					space. `overflow: visible` for the same reason.
-				-->
 				<div style="display: flex; align-items: center; justify-content: center; min-height: 120px; padding: 24px; overflow: visible;">
 					<origam-btn
 							:variant="state.variant"
@@ -58,7 +26,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -85,7 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZES ════════════ -->
 		<Variant
 				title="Size"
 				:init-state="() => useStoryInitState<ISizeProps>({})"
@@ -101,7 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
@@ -117,7 +82,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<{ elevation?: number, flat?: boolean }>({})"
@@ -135,7 +99,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED (IRoundedProps) ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'sm' })"
@@ -160,7 +123,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ BORDER (IBorderProps) ════════════ -->
 		<Variant
 				title="Border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
@@ -182,7 +144,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ADJACENT (prepend / append icon, avatar) ════════════ -->
 		<Variant
 				title="Adjacent"
 				:init-state="() => useStoryInitState<IAdjacentProps & { text?: string }>({ text: 'Button' })"
@@ -199,7 +160,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (active / disabled / loading / readonly) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{
@@ -226,7 +186,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ MODIFIERS (block / slim / stacked / icon-only) ════════════ -->
 		<Variant
 				title="Modifiers"
 				:init-state="() => useStoryInitState<{
@@ -237,13 +196,6 @@
 				}>({})"
 		>
 			<template #default="{ state }">
-				<!--
-					Stacked example exposes the 3 vertical slots so the
-					layout reads as designed: prepend icon on top, label
-					in the middle, append icon at the bottom. Without
-					append-icon you'd only see top + middle and the
-					stacked layout would look incomplete.
-				-->
 				<origam-btn
 						v-bind="state"
 						:prepend-icon="state.stacked ? MDI_ICONS.HEART : undefined"
@@ -260,7 +212,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG (polymorphism) ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string, href?: string }>({ tag: undefined })"
@@ -278,14 +229,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-btn>
 				<span style="font-style: italic;">Custom slot content</span>
 			</origam-btn>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-btn text="Button">
 				<template #prepend>
@@ -294,7 +243,6 @@
 			</origam-btn>
 		</Variant>
 
-		<!-- ════════════ SLOT: append ════════════ -->
 		<Variant title="Slot — append">
 			<origam-btn text="Button">
 				<template #append>
@@ -303,7 +251,6 @@
 			</origam-btn>
 		</Variant>
 
-		<!-- ════════════ SLOT: loader ════════════ -->
 		<Variant title="Slot — loader">
 			<origam-btn loading text="Button">
 				<template #loader>
@@ -312,7 +259,6 @@
 			</origam-btn>
 		</Variant>
 
-		<!-- ════════════ SLOT: wrapper (full override) ════════════ -->
 		<Variant title="Slot — wrapper (advanced)">
 			<origam-btn>
 				<template #wrapper>
@@ -324,14 +270,6 @@
 			</origam-btn>
 		</Variant>
 
-		<!--
-			Emit variants — each one wires the listener to histoire's
-			`logEvent(name, payload)` so emits show up in the dedicated
-			"Events" tab of the story (no custom counters / log lists
-			needed). Mirrors the origam convention.
-		-->
-
-		<!-- ════════════ EMIT: @click ════════════ -->
 		<Variant title="Emit — click">
 			<origam-btn
 					color="primary"
@@ -340,7 +278,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: @click:prepend ════════════ -->
 		<Variant title="Emit — click:prepend">
 			<origam-btn
 					color="primary"
@@ -350,7 +287,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: @click:append ════════════ -->
 		<Variant title="Emit — click:append">
 			<origam-btn
 					color="primary"
@@ -360,7 +296,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -399,15 +334,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
-		<!--
-			Demonstrates the full `TLoadingValue` polymorphic API:
-			  • boolean true  → defaultKind=circular, indeterminate
-			  • number 42     → defaultKind=circular, determinate at 42 %
-			  • { type: 'line' }                  → explicit linear renderer
-			  • { type: 'circular', size: 16 }    → circular with size override
-			  • { type: 'skeleton' }              → skeleton replaces content
-		-->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
 				<div style="display: flex; align-items: center; gap: 12px;">
@@ -433,7 +359,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND (everything together) ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IBtnProps>({

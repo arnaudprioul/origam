@@ -4,7 +4,6 @@
 			title="List/OrigamListSubheader"
 	>
 
-		<!-- ════════════ TEXT / TITLE ════════════ -->
 		<Variant
 				title="Title"
 				:init-state="() => useStoryInitState<{ title?: string }>({ title: 'Section Title' })"
@@ -21,7 +20,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -38,7 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -54,7 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INSET ════════════ -->
 		<Variant
 				title="Inset"
 				:init-state="() => useStoryInitState<{ inset: boolean }>({ inset: true })"
@@ -71,7 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STICKY ════════════ -->
 		<Variant
 				title="Sticky"
 				:init-state="() => useStoryInitState<{ sticky: boolean }>({ sticky: true })"
@@ -87,7 +82,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-list>
 				<origam-list-subheader data-cy="list-subheader-slot-default">
@@ -99,7 +93,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IListSubheader>({

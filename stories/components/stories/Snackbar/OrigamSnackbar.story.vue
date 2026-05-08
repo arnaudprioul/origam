@@ -4,7 +4,6 @@
 			title="Snackbar/OrigamSnackbar"
 	>
 
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-default-host">
 				<origam-btn text="Show snackbar" data-cy="snackbar-default-trigger" @click="defaultOpen = true"/>
@@ -12,7 +11,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ LOCATION ════════════ -->
 		<Variant
 				title="Location"
 				:init-state="() => useStoryInitState<{ location: string }>({ location: 'bottom' })"
@@ -48,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TIMEOUT ════════════ -->
 		<Variant
 				title="Timeout"
 				:init-state="() => useStoryInitState<{ timeout: number }>({ timeout: 3000 })"
@@ -69,7 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TIMER ════════════ -->
 		<Variant title="Timer bar">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-timer-host">
 				<origam-btn text="Show with timer" data-cy="snackbar-timer-trigger" @click="timerOpen = true"/>
@@ -77,7 +73,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ MULTI-LINE ════════════ -->
 		<Variant title="Multi-line">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-multiline-host">
 				<origam-btn text="Show multi-line" data-cy="snackbar-multiline-trigger" @click="multilineOpen = true"/>
@@ -90,7 +85,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ STATUS ════════════ -->
 		<Variant
 				title="Status"
 				:init-state="() => useStoryInitState<{ status?: string }>({ status: 'success' })"
@@ -121,7 +115,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: action ════════════ -->
 		<Variant title="Slot — action">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-action-host">
 				<origam-btn text="Show with action" data-cy="snackbar-action-trigger" @click="actionOpen = true"/>
@@ -138,7 +131,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: text ════════════ -->
 		<Variant title="Slot — text">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-text-host">
 				<origam-btn text="Show custom text" data-cy="snackbar-text-trigger" @click="textSlotOpen = true"/>
@@ -150,7 +142,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-emit-host">
 				<origam-btn text="Show snackbar (watch Events)" data-cy="snackbar-emit-trigger" @click="emitOpen = true"/>
@@ -164,7 +155,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISnackbarProps>({

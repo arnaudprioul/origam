@@ -4,7 +4,6 @@
 			title="Input/OrigamInput"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -33,7 +32,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -56,7 +54,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ HINT ════════════ -->
 		<Variant
 				title="Hint & persistentHint"
 				:init-state="() => useStoryInitState<{ hint: string, persistentHint: boolean }>({ hint: 'Helper text here', persistentHint: true })"
@@ -81,7 +78,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PREPEND / APPEND ════════════ -->
 		<Variant
 				title="Prepend & append"
 				:init-state="() => useStoryInitState<{ prependIcon?: TIcon, appendIcon?: TIcon }>({ prependIcon: MDI_ICONS.ACCOUNT, appendIcon: MDI_ICONS.STAR })"
@@ -106,7 +102,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -134,7 +129,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-input v-model="slotPrependModel" label="With prepend slot" data-cy="input-slot-prepend">
 				<template #prepend>
@@ -147,7 +141,6 @@
 			<div data-cy="input-slot-prepend-status">value = {{ slotPrependModel }}</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: messages ════════════ -->
 		<Variant title="Slot — messages">
 			<origam-input
 					v-model="slotMsgModel"
@@ -165,7 +158,6 @@
 			</origam-input>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-input
 					v-model="emitModel"
@@ -180,7 +172,6 @@
 			<div data-cy="input-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:prepend / click:append ════════════ -->
 		<Variant title="Emit — click:prepend / click:append">
 			<origam-input
 					v-model="emitClickModel"
@@ -197,7 +188,6 @@
 			</origam-input>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IInputProps>({

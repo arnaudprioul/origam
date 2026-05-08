@@ -101,7 +101,6 @@
 							ref="origamDataTableFooterRef"
 							v-bind="dataTableFooterProps"
 					>
-						<!-- TODO SLOT FOOTER-->
 					</origam-data-table-footer>
 				</template>
 			</slot>

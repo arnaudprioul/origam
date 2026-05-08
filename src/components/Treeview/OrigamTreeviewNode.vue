@@ -3,7 +3,6 @@
 			:class="nodeWrapperClasses"
 			role="none"
 	>
-		<!-- Row -->
 		<div
 				:class="rowClasses"
 				:style="rowStyles"
@@ -17,7 +16,6 @@
 				@click="handleRowClick"
 				@keydown="handleKeydown"
 		>
-			<!-- Indent guides -->
 			<template v-if="depth > 0 && treeview?.showLines.value">
 				<span
 						v-for="level in depth"
@@ -27,7 +25,6 @@
 				/>
 			</template>
 
-			<!-- Chevron or spacer -->
 			<span
 					:class="chevronClasses"
 					aria-hidden="true"
@@ -38,7 +35,6 @@
 				</template>
 			</span>
 
-			<!-- Icon -->
 			<span
 					v-if="node.icon || hasChildren"
 					class="origam-treeview-node__icon"
@@ -51,17 +47,14 @@
 				<template v-else>📄</template>
 			</span>
 
-			<!-- Label -->
 			<span class="origam-treeview-node__label">{{ node.label }}</span>
 
-			<!-- Size -->
 			<span
 					v-if="node.size"
 					class="origam-treeview-node__size"
 			>{{ node.size }}</span>
 		</div>
 
-		<!-- Slot override for custom node rendering -->
 		<slot
 				name="node"
 				:node="node"
@@ -70,7 +63,6 @@
 				:is-selected="isNodeSelected"
 		/>
 
-		<!-- Recursive children — only mounted when expanded (v-if removes from DOM) -->
 		<div
 				v-if="isNodeExpanded && hasChildren"
 				class="origam-treeview-node__children"
@@ -302,7 +294,6 @@
 			align-self: stretch;
 			background-color: var(--origam-treeview---guide-color, var(--origam-color-border-subtle));
 			width: var(--origam-treeview---guide-thickness, 1px);
-			// Each guide spacer takes one indent-size slot
 			margin-inline-end: calc(var(--origam-treeview---indent-size, 16px) - var(--origam-treeview---guide-thickness, 1px));
 		}
 

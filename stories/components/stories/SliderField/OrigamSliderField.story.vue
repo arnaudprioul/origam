@@ -4,18 +4,6 @@
 			title="SliderField/OrigamSliderField"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants.
-			Same strict channel separation as `<origam-switch>`:
-			  • `color`   → label foreground + thumb (cercle)
-			  • `bgColor` → track (the rail behind the thumb)
-			  • hover/active variants modify the matching channel on
-			    the matching interaction state.
-			Hardcoded fixtures below the interactive slider give the
-			e2e suite stable `data-cy` selectors.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -58,7 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ RANGE ════════════ -->
 		<Variant
 				title="Range (two-thumb)"
 				:init-state="() => useStoryInitState<{ range: boolean }>({ range: true })"
@@ -79,7 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STEP ════════════ -->
 		<Variant
 				title="Step"
 				:init-state="() => useStoryInitState<{ step: number }>({ step: 10 })"
@@ -100,7 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TICKS ════════════ -->
 		<Variant
 				title="Ticks"
 				:init-state="() => useStoryInitState<{ showTicks: string }>({ showTicks: 'always' })"
@@ -122,7 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DIRECTION ════════════ -->
 		<Variant
 				title="Direction"
 				:init-state="() => useStoryInitState<{ direction: string }>({ direction: 'horizontal' })"
@@ -145,7 +129,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ REVERSE ════════════ -->
 		<Variant
 				title="Reverse"
 				:init-state="() => useStoryInitState<{ reverse: boolean }>({ reverse: true })"
@@ -166,16 +149,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
-		<!--
-			ONE variant covers `disabled`, `readonly`, `error`.
-			Hardcoded fixtures below the interactive slider give the
-			e2e suite stable selectors. The `error` fixtures verify the
-			project's contract: an errored slider paints BOTH channels
-			(color = fill + thumb, bgColor = rail) with the `danger`
-			intent — overriding the consumer's `color="primary"` so the
-			error stays visible.
-		-->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -214,7 +187,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
 		<Variant title="Emit — update:modelValue">
 			<origam-slider-field
 					v-model="emitModel"
@@ -227,7 +199,6 @@
 			<div data-cy="slider-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISliderFieldProps>({

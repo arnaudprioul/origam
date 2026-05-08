@@ -4,13 +4,6 @@
 			title="SystemBar/OrigamSystemBar"
 	>
 
-		<!--
-			OrigamSystemBar is a layout-aware item — it expects an
-			OrigamLayout ancestor. Every variant wraps the bar in a small
-			layout shell so the registration code resolves.
-		-->
-
-		<!-- ════════════ WINDOW MODE ════════════ -->
 		<Variant
 				title="Window mode"
 				:init-state="() => useStoryInitState<{ window?: boolean }>({ window: false })"
@@ -30,7 +23,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
 				title="Color (intent)"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -51,7 +43,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ELEVATION ════════════ -->
 		<Variant
 				title="Elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({})"
@@ -71,7 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
@@ -91,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ABSOLUTE (layout-item) ════════════ -->
 		<Variant
 				title="Absolute"
 				:init-state="() => useStoryInitState<{ absolute?: boolean }>({ absolute: false })"
@@ -111,7 +100,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -131,7 +119,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
 				<origam-system-bar window name="systembar" order="0">
@@ -144,7 +131,6 @@
 			</origam-layout>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISystemBarProps>({

@@ -4,7 +4,6 @@
 			title="List/OrigamListItem"
 	>
 
-		<!-- ════════════ ADJACENT (prepend / append icon, avatar) ════════════ -->
 		<Variant
 				title="Adjacent"
 				:init-state="() => useStoryInitState<IAdjacentProps & { title?: string }>({ title: 'List item' })"
@@ -23,7 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -38,7 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -54,7 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ ROUNDED ════════════ -->
 		<Variant
 				title="Rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
@@ -69,7 +65,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LINES ════════════ -->
 		<Variant
 				title="Lines"
 				:init-state="() => useStoryInitState<{ lines?: TLines }>({ lines: LINES.TWO })"
@@ -89,7 +84,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (active / disabled / link / nav) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ active: boolean, disabled: boolean, nav: boolean, slim: boolean }>({ active: false, disabled: false, nav: false, slim: false })"
@@ -116,7 +110,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-list>
 				<origam-list-item data-cy="list-item-slot-default">
@@ -125,7 +118,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: title ════════════ -->
 		<Variant title="Slot — title">
 			<origam-list>
 				<origam-list-item data-cy="list-item-slot-title">
@@ -136,7 +128,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: subtitle ════════════ -->
 		<Variant title="Slot — subtitle">
 			<origam-list>
 				<origam-list-item title="Main title" data-cy="list-item-slot-subtitle">
@@ -147,7 +138,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: prepend ════════════ -->
 		<Variant title="Slot — prepend">
 			<origam-list>
 				<origam-list-item title="Item with custom prepend" data-cy="list-item-slot-prepend">
@@ -158,7 +148,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: append ════════════ -->
 		<Variant title="Slot — append">
 			<origam-list>
 				<origam-list-item title="Item with custom append" data-cy="list-item-slot-append">
@@ -169,7 +158,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ SLOT: wrapper ════════════ -->
 		<Variant title="Slot — wrapper">
 			<origam-list>
 				<origam-list-item data-cy="list-item-slot-wrapper">
@@ -183,7 +171,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ EMIT: click ════════════ -->
 		<Variant title="Emit — click">
 			<origam-list>
 				<origam-list-item
@@ -196,7 +183,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:prepend ════════════ -->
 		<Variant title="Emit — click:prepend">
 			<origam-list>
 				<origam-list-item
@@ -208,7 +194,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:append ════════════ -->
 		<Variant title="Emit — click:append">
 			<origam-list>
 				<origam-list-item
@@ -220,7 +205,6 @@
 			</origam-list>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IListItemProps>({

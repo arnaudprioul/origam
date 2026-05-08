@@ -3,7 +3,6 @@
 			group="components"
 			title="Skeleton/OrigamSkeleton"
 	>
-		<!-- ════════════ DEFAULT (text line, 200px) ════════════ -->
 		<Variant title="Default">
 			<origam-skeleton
 					variant="text"
@@ -12,7 +11,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ VARIANTS ════════════ -->
 		<Variant title="Variants">
 			<div style="display: flex; flex-direction: column; gap: 20px; max-width: 320px; padding: 16px;">
 				<div>
@@ -57,7 +55,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
@@ -109,7 +106,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE / DENSITY / ROUNDED ════════════ -->
 		<Variant
 				title="Size / Density / Rounded"
 				:init-state="() => useStoryInitState<{ size?: TSize; rounded?: TRounded | boolean }>({ size: 'default' })"
@@ -130,7 +126,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING TOGGLE ════════════ -->
 		<Variant
 				title="Loading toggle"
 				:init-state="() => useStoryInitState<{ loading: boolean }>({ loading: true })"
@@ -150,7 +145,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PULSE ════════════ -->
 		<Variant
 				title="Pulse animation"
 				:init-state="() => useStoryInitState<{ pulse: boolean }>({ pulse: true })"
@@ -168,7 +162,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISkeletonProps>({

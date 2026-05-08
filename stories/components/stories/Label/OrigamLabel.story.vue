@@ -4,12 +4,6 @@
 			title="Label/OrigamLabel"
 	>
 
-		<!-- ════════════ COLOR ════════════ -->
-		<!--
-			`colorList` mixes intents and every CSS-color format the prop
-			accepts. Label has no intent → SCSS mapping wired, so the
-			intent values resolve as raw CSS strings via `useColor`.
-		-->
 		<Variant
 				title="Color"
 				:init-state="() => useStoryInitState<IColorProps>({})"
@@ -23,7 +17,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES (required / floating) ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ required?: boolean, floating?: boolean }>({})"
@@ -37,7 +30,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TAG (polymorphism) ════════════ -->
 		<Variant
 				title="Tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'label' })"
@@ -50,14 +42,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
 			<origam-label>
 				Email <em style="opacity: .6;">(optional)</em>
 			</origam-label>
 		</Variant>
 
-		<!-- ════════════ EMIT: @click ════════════ -->
 		<Variant title="Emit — click">
 			<origam-label
 					text="Click me"
@@ -65,7 +55,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ILabelProps>({
