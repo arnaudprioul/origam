@@ -83,6 +83,11 @@
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()
 	const {columns, headers} = useHeaders()
+
+	/*********************************************************
+	 * Loader
+	 ********************************************************/
+
 	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 	const {getSortIcon} = useHeadersCell(props)
 
@@ -101,6 +106,10 @@
 			getSortIcon
 		} satisfies IDataTableHeadersSlotProps
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const dataTableHeadersCellProps = computed(() => {
 		return origamDataTableHeadersCellRef.value?.filterProps(props)

@@ -109,6 +109,11 @@
 	 * @description
 	 * Hover, active, color and scroll-aware visibility state.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
@@ -117,6 +122,11 @@
 	// ONLY for the resting state — `useColorEffect` returns `[]` for
 	// hover/active so the inline `colorStyles` keeps owning those slots
 	// (no utility class exists for `bgHover`/`bgActive` rungs).
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
 
 	/*********************************************************

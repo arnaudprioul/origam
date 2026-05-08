@@ -35,6 +35,11 @@
 	 * CSS-driven snackbar scale/opacity transition delegated
 	 * to useCssTransition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useCssTransition(props)
 
 	/*********************************************************

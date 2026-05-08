@@ -95,6 +95,10 @@
 		return `${props.name}-${String(props.value).replace('.', '-')}`
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const ratingBtnProps = computed(() => {
 		const isFullIcon = props.isHovering ? props.isHovered : props.isFilled
 		const icon = isFullIcon ? props.fullIcon : props.emptyIcon

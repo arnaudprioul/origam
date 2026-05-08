@@ -158,6 +158,11 @@
 	 * Keyboard navigation — arrow keys, Home/End, PageUp/Down
 	 * with shift/ctrl multipliers for fine/coarse stepping.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {elevationClasses} = useElevation(elevationProps)
 	const {borderClasses, borderStyles} = useBorder(borderProps)
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
@@ -167,6 +172,11 @@
 	// tokenised intents, while `textColorStyles` keeps the legacy raw-color
 	// fallback. Both are applied on the surface AND ripple layers below
 	// (the cercle + the halo inherit `currentColor`).
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {textColorClasses, textColorStyles} = useTextColor(color)
 
 	const relevantKeys = [KEYBOARD_VALUES.PAGEUP, KEYBOARD_VALUES.PAGEDOWN, KEYBOARD_VALUES.END, KEYBOARD_VALUES.HOME, KEYBOARD_VALUES.LEFT, KEYBOARD_VALUES.RIGHT, KEYBOARD_VALUES.DOWN, KEYBOARD_VALUES.UP]
@@ -203,6 +213,11 @@
 
 		return clamp(value, props.min, props.max)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		const newValue = parseKeydown(e, props.modelValue)
 

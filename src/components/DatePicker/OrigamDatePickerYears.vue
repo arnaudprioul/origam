@@ -42,6 +42,11 @@
 	const {filterProps} = useProps<IDatePickerYearsProps>(props)
 
 	const adapter = useDate()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'year', adapter.getYear(adapter.date()), (v) => {
 		return int(v || 0)
 	})
@@ -106,6 +111,11 @@
 			onClick: () => handleClick(year.value)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (year: number) => {
 		if (model.value === year) {
 			emits('update:year', model.value)

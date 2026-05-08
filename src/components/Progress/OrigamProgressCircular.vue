@@ -109,10 +109,20 @@
 	 * otherwise the class would be `origam-progress-circular--size-x`
 	 * and the pinned width/height would never apply (0×0 SVG).
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {progressClasses, progressStyles, normalizedValue, thickness, hasContent} = useProgress(props)
 	const {resizeRef, contentRect} = useResizeObserver()
 	const {intersectionRef} = useIntersectionObserver()
 	const {sizeStyles, sizeClasses} = useSize(props, 'origam-progress')
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 

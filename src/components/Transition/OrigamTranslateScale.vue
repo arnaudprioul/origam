@@ -45,6 +45,10 @@
 		return !!props.target
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleBeforeEnter = (el: Element) => {
 		(el as HTMLElement).style.pointerEvents = 'none'
 		;(el as HTMLElement).style.visibility = 'hidden'

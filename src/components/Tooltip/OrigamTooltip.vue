@@ -89,6 +89,10 @@
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()
 
@@ -123,6 +127,10 @@
 			'aria-describedby': id.value
 		}, props.activatorProps)
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'class', 'style', 'modelValue', 'location', 'origin', 'transition', 'disableGlobalStack', 'absolute', 'persistent', 'id'])

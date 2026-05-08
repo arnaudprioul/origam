@@ -220,6 +220,10 @@
 		return slots.header || slots.title || slots.prepend || slots.append || !!props.title
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const expansionPanelHeaderProps = computed(() => {
 		return origamExpansionPanelHeaderRef.value?.filterProps(props, ['class', 'id', 'style', 'tag'])
 	})
@@ -233,11 +237,21 @@
 	 * @description
 	 * Composable-driven class and style composition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)

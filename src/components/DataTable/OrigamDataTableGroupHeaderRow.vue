@@ -83,6 +83,10 @@
 		return isGroupOpen(props.item) ? MDI_ICONS.CHEVRON_DOWN : MDI_ICONS.CHEVRON_RIGHT
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = () => toggleGroup(props.item)
 
 	const modelValue = computed(() => {

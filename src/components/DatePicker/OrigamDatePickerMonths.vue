@@ -44,6 +44,11 @@
 	const {filterProps} = useProps<IDatePickerMonthsProps>(props)
 
 	const adapter = useDate()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'month', adapter.getMonth(adapter.date()), (v) => {
 		return int(v || 0)
 	})
@@ -101,6 +106,11 @@
 			onClick: () => handleClick(i)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (i: number) => {
 		if (model.value === i) {
 			emits('update:month', model.value)

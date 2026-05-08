@@ -44,6 +44,11 @@
 	 * an inline background-color declaration.
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(computed(() => {
 		return typeof props.scrim === 'string' ? props.scrim : null
 	}))

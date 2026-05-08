@@ -91,6 +91,10 @@
 
 	const {filterProps} = useProps<IAvatarGroupProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isRtl} = useRtl()
 
 	/*********************************************************
@@ -138,6 +142,10 @@
 
 		return mergeProps(item as VNodeProps, avatarDefaultProps, {hover: isHover.value, active: isActive.value})
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleMouseEnter = () => {
 		if (props.expandOnHover) {

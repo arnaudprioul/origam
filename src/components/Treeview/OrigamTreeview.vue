@@ -144,6 +144,11 @@
 	})
 
 	// Keyboard navigation: collect all currently visible rows and move focus
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		const tree = e.currentTarget as HTMLElement
 		const rows = Array.from(

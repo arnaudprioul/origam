@@ -35,6 +35,11 @@
 	 * Window vertical forward-slide transition delegated to
 	 * useWindowTransition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useWindowTransition(props)
 
 	/*********************************************************

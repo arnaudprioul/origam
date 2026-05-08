@@ -110,6 +110,11 @@
 	 * disabled and active, and exposes slot presence flag.
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useColorEffect(props, undefined, undefined, computed(() => !!props.disabled))
 
 	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
@@ -141,6 +146,11 @@
 	 * Composes all spacing, color, elevation and variant
 	 * classes/styles onto the root element.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {elevationStyles, elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)

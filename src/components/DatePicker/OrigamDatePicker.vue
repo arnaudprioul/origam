@@ -357,6 +357,10 @@
 	const origamDatePickerMonthsRef = ref<TOrigamDatePickerMonths>()
 	const origamDatePickerYearsRef = ref<TOrigamDatePickerYears>()
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const pickerProps = computed(() => {
 		return origamPickerRef.value?.filterProps(props, ['class', 'style', 'title', 'id'])
 	})

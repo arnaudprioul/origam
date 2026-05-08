@@ -100,6 +100,11 @@
 	 * du formulaire, et s'enregistre auprès d'un éventuel
 	 * formulaire parent (nested forms).
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		errorMessages,
 		isValid: formIsValid,
@@ -139,6 +144,10 @@
 
 		el.scrollIntoView(scrollOptions)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleReset = (e: Event) => {
 		e.preventDefault()

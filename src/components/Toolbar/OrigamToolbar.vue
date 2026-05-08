@@ -99,12 +99,22 @@
 	 * Root element classes and styles, plus useStyle for
 	 * injected CSS custom property sheet.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {rtlClasses} = useRtl()
 
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// for tokenised intents on the toolbar root; `colorStyles` keeps the
 	// legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), toRef(props, 'bgColor'))
 	const {roundedClasses, roundedStyles} = useRounded(props)

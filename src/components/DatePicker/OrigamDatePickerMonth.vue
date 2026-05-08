@@ -127,6 +127,10 @@
 
 	const daysRef = ref()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {daysInMonth, model, weekNumbers} = useCalendar(props)
 	const adapter = useDate()
 

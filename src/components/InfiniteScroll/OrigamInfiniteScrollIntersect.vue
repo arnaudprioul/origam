@@ -15,11 +15,19 @@
 
 	import type { IInfiniteScrollIntersectProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IInfiniteScrollIntersectProps>(), {})
 
 	const emits = defineEmits(['intersect'])
 
 	const {filterProps} = useProps<IInfiniteScrollIntersectProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {intersectionRef, isIntersecting} = useIntersectionObserver(() => {
 	}, props.margin ? {rootMargin: props.margin} : undefined)

@@ -34,6 +34,10 @@
 
 	const {filterProps} = useProps<ILayoutProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {layoutClasses, layoutRef: origamLayoutRef, getLayoutItem, items, layoutId} = useCreateLayout(props)
 
 	/*********************************************************

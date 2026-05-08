@@ -163,7 +163,16 @@
 
 	const {filterProps} = useProps<IDialogProps>(props)
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {scopeId} = useScopeId()
 	const slots = useSlots()
 
@@ -178,6 +187,11 @@
 	 * Cycles focus between first and last focusable element when
 	 * the user tabs past either boundary.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleFocusin = (e: FocusEvent) => {
 		const before = e.relatedTarget as HTMLElement | null
 		const after = e.target as HTMLElement | null
@@ -232,6 +246,11 @@
 	 * @description
 	 * Resolves the status icon shown in the header-prepend area.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, statusClasses} = useStatus(props)
 	const {sizeClasses} = useSize(props, 'origam-dialog')
 
@@ -255,6 +274,11 @@
 			'aria-expanded': String(isActive.value)
 		}, props.activatorProps)
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'class', 'style', 'modelValue'])
 	})

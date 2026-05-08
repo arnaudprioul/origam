@@ -52,7 +52,15 @@
 
 	const {filterProps} = useProps<ILazyComponentProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const isActive = useVModel(props, 'modelValue')
 
@@ -70,6 +78,10 @@
 			isActive.value ? [] : ['once']
 		]
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleIntersect = (isIntersecting: boolean) => {
 		if (isActive.value) return

@@ -469,6 +469,10 @@
 
   const { t } = useLocale()
 
+  /*********************************************************
+   * Value
+   ********************************************************/
+
   const model = useVModel(
       props,
       'modelValue',
@@ -483,6 +487,15 @@
    * @description
    * Handles click events for prepend/append and inner icons.
    ********************************************************/
+
+  /*********************************************************
+   * Icon
+   ********************************************************/
+
+  /*********************************************************
+   * Composables
+   ********************************************************/
+
   const {
     onClickPrepend,
     onClickAppend: handleClickAppend
@@ -508,11 +521,20 @@
    * @description
    * Focus management, control clicks, clear, and input change handlers.
    ********************************************************/
+
+  /*********************************************************
+   * Effect
+   ********************************************************/
+
   const { isFocused, onFocus, onBlur: handleBlur } = useFocus(props)
 
   const isActive = computed(() => {
     return isFocused.value || props.active
   })
+
+  /*********************************************************
+   * Event handlers
+   ********************************************************/
 
   const handleFocus = () => {
     nextTick(() => {
@@ -763,6 +785,11 @@
    * Filtered props for the underlying origam-input and origam-field components.
    ********************************************************/
   const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+
+  /*********************************************************
+   * Forwarded props
+   ********************************************************/
+
   const inputProps = computed(() => {
     return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
   })
@@ -796,6 +823,11 @@
   // `dropzoneColorClasses` carries `.origam--bg-{intent}` /
   // `.origam--color-{intent}` for tokenised intents on the dropzone;
   // `dropzoneColorStyles` keeps the legacy fallback for raw colors.
+
+  /*********************************************************
+   * Color
+   ********************************************************/
+
   const { colorClasses: dropzoneColorClasses, colorStyles: dropzoneColorStyles } = useBothColor(
       toRef(props, 'bgColor'),
       toRef(props, 'color'),

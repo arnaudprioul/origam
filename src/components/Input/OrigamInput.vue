@@ -144,6 +144,10 @@
 		return `${id.value}-messages`
 	})
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		errorMessages,
 		isDirty,
@@ -157,6 +161,10 @@
 		validate,
 		validationClasses
 	} = useValidation(props, 'origam-input', id)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		hasPrepend,
@@ -214,6 +222,11 @@
 	// hits `.origam--bg-{intent}` / `.origam--color-{intent}` and
 	// `colorStyles` returns `[]` (no visible inline). For raw / legacy
 	// hex, `colorClasses=[]` and `colorStyles` keeps the inline fallback.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 	const {rtlClasses} = useRtl()
 	const {sizeClasses} = useSize(props, 'origam-input')

@@ -46,12 +46,22 @@
 	 * the top of the layout with a height derived from the
 	 * `window` prop (32px) or default (24px).
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedStyles, roundedClasses} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {ssrBootStyles} = useSsrBoot()

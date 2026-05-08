@@ -93,6 +93,10 @@
 		}
 	}))
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const modelValue = useVModel(props, 'modelValue')
 	const uid = getUid()
 	const id = computed(() => {

@@ -70,6 +70,10 @@
 	const origamWindowItemRef = ref<TOrigamWindowItem>()
 	const origamImgRef = ref<TOrigamImg>()
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const windowItemProps = computed(() => {
 		return origamWindowItemRef.value?.filterProps(props)
 	})

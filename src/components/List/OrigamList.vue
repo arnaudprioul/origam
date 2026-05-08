@@ -113,6 +113,10 @@
 
 	import { deepEqual, focusChild } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IListProps>(), {
 		tag: 'div',
 		lines: LINES.ONE,
@@ -142,8 +146,17 @@
 		}
 	}))
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {items} = useItems(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
@@ -168,6 +181,10 @@
 	const tabIndex = computed(() => {
 		return (props.disabled || isFocused.value) ? -1 : 0
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocus = (e: FocusEvent) => {
 		if (!isFocused.value && !(e.relatedTarget && contentRef.value?.contains(e.relatedTarget as Node))) {

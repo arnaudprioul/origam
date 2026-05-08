@@ -90,6 +90,10 @@
 		})
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateMode = () => {
 		const mi = enabledModes.value.findIndex((m) => {
 			return m.name === props.mode

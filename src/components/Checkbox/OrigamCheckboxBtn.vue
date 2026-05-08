@@ -76,10 +76,18 @@
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const indeterminate = useVModel(props, 'indeterminate')
 	const model = useVModel(props, 'modelValue')
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleChange = () => {
 		if (indeterminate.value) {
@@ -100,6 +108,10 @@
 				? props.indeterminateIcon
 				: props.trueIcon
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'falseIcon', 'trueIcon', 'type', 'class', 'style'])

@@ -81,10 +81,19 @@
 
 	const {filterProps} = useProps<IAppBarProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {ssrBootStyles} = useSsrBoot()
 	const slots = useSlots()
 
 	const origamToolbarRef = ref<TOrigamToolbar>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const toolbarProps = computed(() => {
 		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat'])
 	})
@@ -101,6 +110,10 @@
 	const hasAppend = computed(() => {
 		return slots.append
 	})
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
 
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 

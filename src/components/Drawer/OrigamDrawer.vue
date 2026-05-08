@@ -118,6 +118,11 @@
 	// `backgroundColorClasses` ships `.origam--bg-{intent}` for tokenised
 	// intents on the drawer root; `backgroundColorStyles` keeps the
 	// legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -245,6 +250,10 @@
 		} : undefined,
 		...layoutItemScrimStyles.value
 	}))
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClickScrim = () => {
 		isActive.value = false

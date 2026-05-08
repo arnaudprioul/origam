@@ -33,6 +33,10 @@
 		tag?: string
 	}
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<Props>(), {
 		theme: 'auto',
 		tag: 'div'

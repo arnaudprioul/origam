@@ -393,9 +393,23 @@
 	// hits `.origam--color-{intent}` on the selection chip; `textColorStyles`
 	// stays in parallel to cover legacy raw colors and to keep zero-regression
 	// during the transition (strategy "a").
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {items, transformIn, transformOut} = useItems(props as IItemProps)
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -505,6 +519,10 @@
 		onListScroll: handleListScroll,
 		onListKeydown: handleListKeydown
 	} = useScrolling(origamListRef, origamTextFieldRef)
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleSelect = (item: IInternalListItem, set: boolean | null = true) => {
 		if (item.props?.disabled) return
@@ -900,6 +918,10 @@
 	const hasList = computed(() => {
 		return !props.hideNoData || displayItems.value.length || slots.prependItem || slots.appendItem || slots.noData
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])

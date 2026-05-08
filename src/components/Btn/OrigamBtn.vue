@@ -251,6 +251,11 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
 	// Phase 3 (Vague A) — strategy (a): we destructure BOTH `colorClasses`
 	// and `colorStyles`. The classes hit the `.origam--bg-{intent}` /
@@ -259,6 +264,11 @@
 	// for those slots) and any non-tokenisable raw color (legacy). Keeping
 	// both in parallel guarantees zero visual regression while shrinking
 	// the inline declaration count for tokenised intents.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive, isDisabled)
 	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
 	const {variantClasses} = useVariant(props)
@@ -304,6 +314,10 @@
 	const hasLoader = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const progressProps = computed(() => {
 		// Exclude `size`, `type` and (critically) `tag` from filterProps.

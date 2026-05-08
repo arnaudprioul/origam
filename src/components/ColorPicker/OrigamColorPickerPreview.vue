@@ -94,6 +94,10 @@
 
 	const abortController = new AbortController()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const colorHsv = useVModel(props, 'colorHsv', COLOR_NULL)
 
 	const openEyeDropper = async () => {
@@ -109,6 +113,10 @@
 			consoleWarn(err as any)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleUpdateColorHue = (h: number) => {
 		colorHsv.value!.h = h

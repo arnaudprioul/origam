@@ -138,9 +138,23 @@
 	// `colorClasses` lands the global `.origam--bg-{intent}` /
 	// `.origam--color-{intent}` utility on the menu body for tokenised
 	// intents; `colorStyles` keeps the legacy raw-color fallback.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {scopeId} = useScopeId()
 
 	const uid = getUid()
@@ -185,6 +199,11 @@
 	 * handleKeydown handles Tab and arrow navigation.
 	 * handleActivatorKeydown opens the menu on ArrowDown/Up.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleFocusIn = async (e: FocusEvent) => {
 		const before = e.relatedTarget as HTMLElement | null
 		const after = e.target as HTMLElement | null
@@ -273,6 +292,10 @@
 			onKeydown: handleActivatorKeydown
 		}, props.activatorProps)
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])

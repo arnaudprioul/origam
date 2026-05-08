@@ -126,6 +126,10 @@
 	const {filterProps} = useProps<ICarouselProps>(props)
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const origamWindowRef = ref<TOrigamWindow>()
 
@@ -150,6 +154,10 @@
 	})
 
 	onMounted(startTimeout)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const windowProps = computed(() => {
 		return origamWindowRef.value?.filterProps(props, ['modelValue'])

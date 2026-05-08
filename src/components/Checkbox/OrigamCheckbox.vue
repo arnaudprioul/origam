@@ -93,6 +93,10 @@
 	const origamInputRef = ref<TOrigamInput>()
 	const origamCheckboxBtnRef = ref<TOrigamCheckboxBtn>()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
 	const attrs = useAttrs()
@@ -103,11 +107,19 @@
 		return props.id || `checkbox-${uid}`
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])

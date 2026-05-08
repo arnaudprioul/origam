@@ -85,6 +85,10 @@
 		color: computed(() => props.color)
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleItemClick = (index: number) => {
 		if (!props.clickable) return
 		internalModel.value = index

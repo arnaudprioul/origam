@@ -35,6 +35,10 @@
 
 	const {filterProps} = useProps<ILayoutProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {rtlClasses} = useRtl()
 
 	const origamAppRef = ref<TOrigamApp>()

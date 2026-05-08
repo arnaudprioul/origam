@@ -228,6 +228,10 @@
 
 	import { clamp, convertToUnit, filterInputAttrs, forwardRefs } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const _props = withDefaults(defineProps<ITextareaFieldProps>(), {
 		density: DENSITY.DEFAULT,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
@@ -245,6 +249,10 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 
 	/*********************************************************
@@ -253,10 +261,20 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickAppendInner: handleClickAppendInner,
 		onClickPrependInner: handleClickPrependInner
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend
@@ -273,6 +291,10 @@
 			handler: handleIntersect
 		}, null, ['once']]
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleIntersect = (isIntersecting: boolean, entries: IntersectionObserverEntry[]) => {
 		if (!props.autofocus || !isIntersecting) return
@@ -297,6 +319,11 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
 	const isActive = computed(() => {
 		return props.persistentPlaceholder || isFocused.value || props.active
@@ -523,6 +550,11 @@
 	 *
 	 ********************************************************/
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
 	})

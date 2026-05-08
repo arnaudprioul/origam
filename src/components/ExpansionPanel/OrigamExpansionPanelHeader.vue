@@ -136,6 +136,11 @@
 	 * @description
 	 * Selection state, expand/collapse toggle, and slot props.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleExpand = () => {
 		if (!props.readonly) {
 			expansionPanel.toggle()
@@ -169,6 +174,15 @@
 	 * @description
 	 * Prepend/append icon slots and click handlers.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		hasAppend,
 		hasPrepend,
@@ -187,6 +201,11 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 

@@ -62,6 +62,10 @@
 		resetStyles(el)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleBeforeEnter = (el: Element) => {
 		const element = el as IHTMLExpandElement
 

@@ -66,6 +66,11 @@
 	 * @description
 	 * Size utilities and normalized value / hasContent flags.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {normalizedValue, hasContent} = useProgress(props)
 
@@ -82,6 +87,11 @@
 	const progressComponent = computed(() => {
 		return isCircular.value ? OrigamProgressCircular : OrigamProgressLinear
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const progressProps = computed(() => {
 		return origamProgressRef.value?.filterProps(props)
 	})

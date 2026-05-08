@@ -60,6 +60,10 @@
 
 	const {filterProps} = useProps<IContextualMenuProps>(props)
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const modelValue = useVModel(props, 'modelValue', false)
 
 	const origamMenuRef = ref<TOrigamMenu>()
@@ -69,6 +73,10 @@
 	 *
 	 * @description
 	 * Filtered props passed down to the inner menu component.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
 	 ********************************************************/
 
 	const menuProps = computed(() => {

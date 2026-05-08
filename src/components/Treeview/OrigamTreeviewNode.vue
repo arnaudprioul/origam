@@ -138,6 +138,10 @@
 	const isNodeExpanded = computed(() => treeview?.isExpanded(props.node.id) ?? false)
 	const isNodeSelected = computed(() => treeview?.isSelected(props.node.id) ?? false)
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleChevronClick = () => {
 		if (!hasChildren.value || props.node.disabled) return
 		treeview?.toggleExpanded(props.node.id)

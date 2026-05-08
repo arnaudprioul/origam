@@ -94,6 +94,11 @@
 	 * @description
 	 * Deferred content rendering tied to the panel's selection state.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {hasContent, onAfterLeave: handleAfterLeave} = useLazy(props, expansionPanel.isSelected)
 
 	const isSelected = computed(() => {
@@ -122,6 +127,11 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 

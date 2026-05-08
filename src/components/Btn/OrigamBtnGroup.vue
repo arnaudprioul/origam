@@ -94,9 +94,19 @@
 	 * Composes border, color, elevation, rounding and spacing
 	 * classes/styles onto the group root element.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorStyles, bgColor} = useColorEffect(props)
 	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
 	const {paddingClasses, paddingStyles} = usePadding(props)

@@ -92,6 +92,10 @@
 		return 'pending'
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = () => {
 		if (!isClickable.value) return
 		emit('click', props.index ?? 0)

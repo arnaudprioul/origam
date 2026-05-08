@@ -48,6 +48,11 @@
 	 * identifier (renders OrigamIcon) or a plain string.
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isIcon = computed(() => {
@@ -60,6 +65,11 @@
 	 * @description
 	 * Composes spacing, color, size and density classes/styles.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)

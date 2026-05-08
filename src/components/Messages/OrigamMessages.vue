@@ -96,7 +96,17 @@
 	 * isBooted gates the transition so messages don't animate on SSR.
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)

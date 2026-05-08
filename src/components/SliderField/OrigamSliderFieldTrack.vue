@@ -137,6 +137,10 @@
 		return props.rounded ?? sliderRounded.value
 	})
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
 	// Strict color/bgColor channel separation — same rule as switch:
 	//   • `bgColor` paints the RAIL (the un-filled background of the

@@ -100,7 +100,17 @@
 	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
 	const {activeClasses, isActive, onActive: handleClick} = useActive(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
 
 	/*********************************************************
@@ -135,6 +145,10 @@
 
 		return imgSrc
 	})
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {statusClasses} = useStatus(props)
 

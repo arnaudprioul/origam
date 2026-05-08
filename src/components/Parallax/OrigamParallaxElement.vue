@@ -51,6 +51,11 @@
 	 ********************************************************/
 	// Chrome composables — mirror the IParallaxElementProps interface
 	// (IBorderProps / IPaddingProps / IMarginProps / IRoundedProps / IElevationProps).
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses} = useElevation(props)

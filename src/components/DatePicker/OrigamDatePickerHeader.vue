@@ -95,7 +95,15 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -114,6 +122,10 @@
 	const hasContent = computed(() => {
 		return !!(slots.default || props.header)
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClick = () => {
 		emits('click')

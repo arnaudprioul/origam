@@ -189,6 +189,10 @@
 	const attrs = useAttrs()
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {elevationClasses} = useElevation(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
@@ -197,11 +201,25 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginStyles, marginClasses} = useMargin(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const isActive = useVModel(props, 'modelValue')
 	const group = useGroupItem(props, ORIGAM_CHIP_GROUP_KEY, false)
 	const link = useLink(props, attrs)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -241,6 +259,10 @@
 		link.navigate?.(e)
 		group?.toggle()
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClickClose = (e: MouseEvent) => {
 		e.preventDefault()

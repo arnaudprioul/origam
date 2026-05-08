@@ -124,7 +124,17 @@
 	const {filterProps} = useProps<IImgProps>(props)
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -216,6 +226,10 @@
 
 		emits('load', image.value?.currentSrc || normalisedSrc.value.src)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleLoad = () => {
 		onLoad()

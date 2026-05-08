@@ -219,6 +219,11 @@
 
 	const {densityClasses} = useDensity(props)
 	const {elevationClasses} = useElevation(props)
+
+	/*********************************************************
+	 * Loader
+	 ********************************************************/
+
 	const {loaderClasses} = useLoader(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
@@ -274,6 +279,11 @@
 	}
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 
 	/*********************************************************

@@ -74,6 +74,11 @@
 	 * `IColorProps` — the SCSS read `var(--origam-parallax---background-color)`
 	 * from tokens but the consumer's intent had no override path.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {audioRef, audioData, onStop: handleStop} = useAudio(props)
 	const {platform} = useDisplay()
 	const {dimensionStyles} = useDimension(props)
@@ -81,6 +86,11 @@
 	// read `var(--origam-parallax---background-color)` from tokens but
 	// the consumer's intent had no override path.
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderStyles, borderClasses} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -204,6 +214,11 @@
 	 * switching `event="move"` → `event="scroll"` at runtime silently
 	 * kept the page on `move` mode.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleMovement = useThrottleFn((event: MouseEvent & DeviceOrientationEvent) => {
 		if (!props.active && !root.value) return
 

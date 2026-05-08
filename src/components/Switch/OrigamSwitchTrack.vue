@@ -80,6 +80,10 @@
 		return props.bgColor
 	})
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {backgroundColorStyles} = useBackgroundColor(trackBgColor)
 
 	const slotProps = computed(() => ({

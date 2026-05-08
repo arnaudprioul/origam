@@ -92,10 +92,20 @@
 	 * Location, progress state, rounding, RTL direction and
 	 * color utilities for the background and loader tracks.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {locationStyles} = useLocation(props)
 	const {progressClasses, progressStyles, normalizedValue, thickness, progress, max, hasContent} = useProgress(props)
 	const {roundedClasses} = useRounded(props)
 	const {intersectionRef} = useIntersectionObserver()
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'), undefined, 'origam-progress__background')
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'), undefined, 'origam-progress__loader')
 	const {isRtl, rtlClasses} = useRtl()

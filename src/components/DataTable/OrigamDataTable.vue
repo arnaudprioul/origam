@@ -271,6 +271,10 @@
 		search
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const tableProps = computed(() => {
 		return origamTableRef.value?.filterProps(props)
 	})

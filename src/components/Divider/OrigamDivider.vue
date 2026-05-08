@@ -58,7 +58,17 @@
 	 * Length and thickness are forwarded as CSS custom properties.
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {marginClasses, marginStyles} = useMargin(props)
 
 	const dividerClasses = computed(() => {

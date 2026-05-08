@@ -37,7 +37,17 @@
 	const {filterProps} = useProps<IIconComponentProps>(props)
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)

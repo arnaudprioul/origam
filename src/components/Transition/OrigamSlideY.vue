@@ -35,6 +35,11 @@
 	 * CSS-driven vertical slide transition delegated to
 	 * useCssTransition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useCssTransition(props)
 
 	/*********************************************************

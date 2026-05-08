@@ -332,12 +332,27 @@
 	 * string the user types and the clamped numeric model.
 	 * _inputText is the internal mutable string buffer.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue', null,
 			val => val ?? null,
 			val => val == null
 					? val ?? null
 					: clamp(Number(val), props.min, props.max))
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur} = useFocus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
@@ -616,6 +631,11 @@
 	 * OrigamTextField instance.
 	 * hasAppendInner guards the appendInner slot template.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'validationValue'])
 	})

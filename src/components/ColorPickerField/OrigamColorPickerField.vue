@@ -290,6 +290,10 @@
 	 * Filtered props passed down to inner components.
 	 ********************************************************/
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})

@@ -141,6 +141,10 @@
 
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const _props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
 
 	// Resolve props against the closest `provideDefaults({ 'origam-list-item': … })`
@@ -154,6 +158,11 @@
 	const slots = useSlots()
 	const link = useLink(props, attrs)
 	const id = computed(() => props.value === undefined ? link.href.value : props.value)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		select,
 		isSelected,
@@ -173,6 +182,10 @@
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded({rounded: props.rounded || props.nav})
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -245,6 +258,11 @@
 			select(!isSelected.value, e)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: MouseEvent) => {
 		click(e)
 	}

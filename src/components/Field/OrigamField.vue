@@ -196,6 +196,10 @@
 
 	import { animate, convertToUnit, getUid, nullifyTransforms } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const _props = withDefaults(defineProps<IFieldProps>(), {
 		variant: VARIANT_INPUT.OUTLINED,
 		density: DENSITY.DEFAULT,
@@ -217,6 +221,11 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		hasAppendInner,
 		onClickAppendInner: handleClickAppendInner,
@@ -242,6 +251,11 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: MouseEvent) => {
 		if (e.target !== document.activeElement) {
 			e.preventDefault()
@@ -294,6 +308,11 @@
 	const hasLabel = computed(() => {
 		return !props.singleLine && !!(props.label || slots.label)
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const labelProps = computed(() => {
 		const defaultLabelProps = origamLabelRef.value?.filterProps(props, ['text', 'class', 'style'])
 
@@ -429,6 +448,11 @@
 	})
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 	const {densityClasses} = useDensity(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)

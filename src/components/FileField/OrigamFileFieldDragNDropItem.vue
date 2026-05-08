@@ -75,6 +75,11 @@
    * @description
    * Handlers for remove actions.
    ********************************************************/
+
+  /*********************************************************
+   * Event handlers
+   ********************************************************/
+
   const handleRemove = () => {
     emits('click:remove', { file: props.file, index: props.index })
   }

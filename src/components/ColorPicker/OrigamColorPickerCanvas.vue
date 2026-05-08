@@ -52,6 +52,10 @@
 	const isInteracting = shallowRef(false)
 	const canvasRef = ref<HTMLCanvasElement | null>()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {resizeRef} = useResizeObserver((entries: ResizeObserverEntry[]) => {
 		if (!resizeRef.value?.offsetParent) return
 
@@ -145,6 +149,10 @@
 		ctx.fillStyle = valueGradient
 		ctx.fillRect(0, 0, canvas.width, canvas.height)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleMouseDown = (e: MouseEvent | TouchEvent) => {
 		if (e.type === 'mousedown') {

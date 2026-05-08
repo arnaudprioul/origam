@@ -174,7 +174,17 @@
 	 * dimensionStyles drives width/height CSS vars from props.
 	 * isFocused tracks whether any cell has focus.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus: focus, onBlur: blur} = useFocus(props)
 
 	/*********************************************************
@@ -184,6 +194,11 @@
 	 * model is a char-array split from the string v-model value.
 	 * length / fields drive the rendered cell count.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',

@@ -172,14 +172,29 @@
 	 * @description
 	 * Composable-driven class and style composition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
 	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
+
+	/*********************************************************
+	 * Loader
+	 ********************************************************/
+
 	const {loaderClasses} = useLoader(props, 'line')
 
 	const expansionPanelsStyles = computed(() => {

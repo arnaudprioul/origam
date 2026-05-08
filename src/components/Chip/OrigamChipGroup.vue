@@ -53,6 +53,10 @@
 
 	const origamSlideGroupRef = ref<TOrigamSlideGroup>()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_CHIP_GROUP_KEY)
 
 	// Push the visual-token props down to every descendant `<origam-chip>`
@@ -68,6 +72,10 @@
 			hoverBgColor: props.hoverBgColor
 		}
 	}))
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const slideGroupProps = computed(() => {
 		return origamSlideGroupRef.value?.filterProps(props)

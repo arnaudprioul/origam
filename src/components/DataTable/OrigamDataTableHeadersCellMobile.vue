@@ -240,6 +240,10 @@
 		return allSelected.value ? MDI_ICONS.CHECKBOX_MARKED_OUTLINE : someSelected.value ? MDI_ICONS.MINUS_BOX : MDI_ICONS.CHECKBOX_BLANK_OUTLINE
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClear = (e: MouseEvent) => {
 		sortBy.value = []
 		emits('click:clear', e)

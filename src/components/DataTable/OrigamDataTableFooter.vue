@@ -116,9 +116,17 @@
 		}
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateItemsPerPage = (v: number) => {
 		setItemsPerPage(Number(v))
 	}
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const paginationProps = computed(() => {
 		return origamPaginationRef.value?.filterProps(props, ['class', 'style', 'id', 'totalVisible', 'modelValue', 'length', 'rounded', 'showFirstLastPage', 'density'])

@@ -239,6 +239,11 @@
 	 * width / maxButtons support the responsive total-visible calculation.
 	 ********************************************************/
 	const page = useVModel(props, 'modelValue', props.start)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {width} = useDisplay()
 	const maxButtons = shallowRef(-1)
 
@@ -463,6 +468,11 @@
 
 		refs.value[currentIndex]?.$el.focus()
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		if (e.key === KEYBOARD_VALUES.LEFT && !props.disabled && page.value > +props.start) {
 			page.value = page.value - 1

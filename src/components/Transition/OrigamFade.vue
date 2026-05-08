@@ -34,6 +34,11 @@
 	 * @description
 	 * CSS-driven fade transition delegated to useCssTransition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useCssTransition(props)
 
 	/*********************************************************

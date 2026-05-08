@@ -125,6 +125,10 @@
 		return props.appendIcon || toggleIcon.value
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: Event) => {
 		emits('click:activator', {open: !isOpen.value, event: e})
 

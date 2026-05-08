@@ -87,6 +87,11 @@
 	const {getSortIcon} = useHeadersCell(props)
 	const {getPadding} = useCell()
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const headerProps = mergeProps(props.headerProps ?? {})
@@ -109,6 +114,10 @@
 	const hasColumn = (name: string) => {
 		return props.column.key === name
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClick = () => {
 		if (props.column.sortable) {

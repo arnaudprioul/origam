@@ -74,6 +74,10 @@
 		return RGBtoCSS(rgba(color))
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateColor = (color: TRGBA) => {
 		const colorUpdate = hsva(color)
 

@@ -124,6 +124,11 @@
 	})
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, computed(() => !!props.disabled))
 
 	/*********************************************************
@@ -132,6 +137,15 @@
 	 * @description
 	 * Resolves prepend/append icons and click handlers.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		hasAppend,
 		hasPrepend,

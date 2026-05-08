@@ -62,6 +62,11 @@
 	 * @description
 	 * Root element and wrapper classes / styles.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {borderClasses, borderStyles} = useBorder(props)

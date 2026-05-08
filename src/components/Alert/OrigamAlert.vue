@@ -175,6 +175,11 @@
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// for the resting state only — `useColorEffect` returns `[]` for hover/
 	// active so the inline `colorStyles` keeps owning those slots.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
 
 	/*********************************************************
@@ -183,7 +188,16 @@
 	 * @description
 	 * Resolves prepend/append icons and click handlers.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -199,6 +213,11 @@
 	 * Computed flags that control conditional rendering of
 	 * icon, title, header and close button sections.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClose = (e: MouseEvent) => {
 		onActive()
 

@@ -35,6 +35,11 @@
 	 * CSS-driven scale-rotate transition delegated to
 	 * useCssTransition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useCssTransition(props)
 
 	/*********************************************************

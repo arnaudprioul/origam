@@ -165,6 +165,11 @@
 
 	const indeterminate = useVModel(props, 'indeterminate')
 	const model = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
 	const attrs = useAttrs()
 	const slots = useSlots()
@@ -210,6 +215,11 @@
 	 ********************************************************/
 
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})

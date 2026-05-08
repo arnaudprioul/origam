@@ -172,6 +172,10 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const confirmModel = useVModel(props, 'confirm')
 
@@ -181,6 +185,15 @@
 	 * Prepend / append slot machinery shared with all input-style
 	 * components — drives the icon/avatar render in the header.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		hasPrepend,
 		hasAppend,
@@ -199,6 +212,11 @@
 	const hasHeader = computed(() => {
 		return hasPrepend.value || hasAppend.value || hasTitle.value || slots.header
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const labelProps = computed(() => {
 		return origamLabelRef.value?.filterProps(props, ['class', 'style', 'id', 'tag'])
 	})

@@ -110,6 +110,11 @@
 	 * nearest scrollable ancestor instead of an inner div.
 	 ********************************************************/
 	const vm = getCurrentInstance('OrigamVirtualScroll')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
 	const {
 		containerRef,

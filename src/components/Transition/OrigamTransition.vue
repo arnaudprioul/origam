@@ -32,6 +32,11 @@
 	const {filterProps} = useProps<ITransitionComponentProps>(props)
 
 	const attrs = useAttrs()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isDisabled} = useTransition(props)
 
 	/*********************************************************

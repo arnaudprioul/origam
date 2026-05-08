@@ -39,6 +39,11 @@
 	 * Layout position offsets, SSR boot guard, rounded, border,
 	 * padding and margin composables.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {mainStyles: mainLayoutStyles} = useLayout()
 	const {ssrBootStyles} = useSsrBoot()
 	const {roundedClasses, roundedStyles} = useRounded(props)

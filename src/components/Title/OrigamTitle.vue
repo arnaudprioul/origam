@@ -33,7 +33,17 @@
 	const {filterProps} = useProps<ITitleProps>(props)
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const slots = useSlots()
 	const {borderClasses, borderStyles} = useBorder(props)

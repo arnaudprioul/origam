@@ -73,6 +73,11 @@
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	// ── Resolve width / height to CSS strings ──────────────────────────────

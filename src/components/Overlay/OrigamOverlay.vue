@@ -153,6 +153,11 @@
 	 * useActivator wires activator events, target ref, content events
 	 * and scrim events.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {teleportTarget} = useTeleport(computed(() => props.attach || props.contained))
 	const {hasContent, onAfterLeave} = useLazy(props, isActive)
 	const {globalTop, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), props.disableGlobalStack)
@@ -221,6 +226,11 @@
 	 * closeConditional guards the directive so it only fires
 	 * while the overlay is active and at the top of the stack.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClickOutside = (e: MouseEvent) => {
 		emits('click:outside', e)
 

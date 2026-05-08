@@ -172,6 +172,10 @@
 		return toDisplayString(slotProps(index, column).value)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleCheckBoxClick = () => {
 		withModifiers(() => toggleSelect(props.item), ['stop'])
 		emits('select')

@@ -35,6 +35,11 @@
 	 * CSS-driven picker-translate (forward direction) delegated
 	 * to useCssTransition.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useCssTransition(props)
 
 	/*********************************************************

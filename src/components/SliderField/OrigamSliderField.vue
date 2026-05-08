@@ -237,6 +237,11 @@
 	})
 
 	const steps = useSteps(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		activeThumbRef,
 		min,
@@ -330,6 +335,11 @@
 			}
 		}
 	})
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -353,8 +363,17 @@
 	 * Focus state and range-thumb focus routing — ensures the
 	 * correct thumb is focused when thumbs overlap at min/max.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur} = useFocus(props)
 	const {rtlClasses} = useRtl()
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocus = () => {
 		onFocus()
@@ -435,6 +454,11 @@
 	 * @description
 	 * Filtered props forwarded to child Input, Thumb and Track.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		// Strip the entire IColorProps surface so `OrigamInput` (the
 		// row wrapper) doesn't paint the consumer's intent on its

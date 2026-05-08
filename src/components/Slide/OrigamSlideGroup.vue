@@ -116,6 +116,10 @@
 
 	const {filterProps} = useProps<ISlideGroupProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)

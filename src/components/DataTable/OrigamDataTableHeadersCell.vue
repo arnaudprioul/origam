@@ -45,6 +45,10 @@
 
 	const origamDataTableHeaderCellRef = ref<Array<TOrigamDataTableHeaderCell>>()
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const dataTableHeaderCellProps = computed(() => {
 		// Pre-fix this used `Array.prototype.some()` to "iterate" the
 		// ref collection — but `.some()` returns a BOOLEAN, not the

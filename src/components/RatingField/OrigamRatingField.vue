@@ -195,6 +195,10 @@
 	const slots = useSlots()
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const attrs = useAttrs()
 

@@ -201,7 +201,20 @@
 	// the token defaults exactly like every other coloured component.
 	// Phase 3 (Vague A): also pull `colorClasses` for the global
 	// `.origam--bg-*` / `.origam--color-*` utilities.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,

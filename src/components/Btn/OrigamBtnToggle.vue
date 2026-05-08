@@ -57,11 +57,19 @@
 
 	const {filterProps} = useProps<IBtnToggleProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isSelected, next, prev, select, selected} = useGroup(props, ORIGAM_BTN_TOGGLE_KEY)
 
 	const slots = useSlots()
 
 	const origamBtnGroupRef = ref<TOrigamBtnGroup>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const btnGroupProps = computed(() => {
 		return origamBtnGroupRef.value?.filterProps(props)

@@ -143,9 +143,24 @@
 	 * v-model active state, countdown timer, and auto-dismiss
 	 * timeout management.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {positionClasses} = usePosition(props)
 	const {scopeId} = useScopeId()
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, statusClasses} = useStatus(props)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
@@ -201,6 +216,11 @@
 	 * @description
 	 * Hover pause/resume, swipe-to-dismiss touch handling.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handlePointerenter = () => {
 		isHovering.value = true
 		clearTimeout()
@@ -229,12 +249,21 @@
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// for tokenised intents on the snackbar wrapper; `colorStyles` keeps
 	// the legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {elevationClasses} = useElevation(props)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['class', 'style', 'id', 'contentProps', 'modelValue', 'disableGlobalStack', 'noClickAnimation', 'persistent', 'scrim', 'scrollStrategy'])

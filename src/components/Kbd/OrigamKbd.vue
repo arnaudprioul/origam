@@ -56,10 +56,19 @@
 
 	const { filterProps } = useProps<IKbdProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const { sizeClasses, sizeStyles } = useSize(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	/*********************************************************

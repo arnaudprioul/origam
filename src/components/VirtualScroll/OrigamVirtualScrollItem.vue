@@ -49,6 +49,11 @@
 	 * updates to the parent virtual scroll engine so it can
 	 * recalculate padding spacers and the visible window.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {resizeRef, contentRect} = useResizeObserver(undefined, 'border')
 
 	watch(() => contentRect.value?.height, (height) => {

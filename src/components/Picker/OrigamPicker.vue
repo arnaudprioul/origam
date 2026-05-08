@@ -75,6 +75,11 @@
 	 * hasTitle guards the title slot / title prop render.
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 
 	const hasTitle = computed(() => {
@@ -89,6 +94,10 @@
 	 * own props before passing them down.
 	 ********************************************************/
 	const origamSheetRef = ref<TOrigamSheet>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const sheetProps = computed(() => {
 		return origamSheetRef.value?.filterProps(props, ['class', 'style'])

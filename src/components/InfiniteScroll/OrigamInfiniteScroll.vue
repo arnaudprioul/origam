@@ -155,8 +155,17 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const rootEl = ref<HTMLDivElement>()
@@ -221,6 +230,11 @@
 	})
 
 	let previousScrollSize = 0
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleIntersect = (side: TInfiniteScrollSide, _isIntersecting: boolean) => {
 		isIntersecting.value = _isIntersecting
 

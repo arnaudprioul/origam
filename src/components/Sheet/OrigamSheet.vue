@@ -84,6 +84,11 @@
 	// ───────────────────────── swipe gesture ────────────────────────────
 
 	const rootEl = ref<HTMLElement | null>(null)
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleEl = ref<HTMLElement | null>(null)
 
 	/**

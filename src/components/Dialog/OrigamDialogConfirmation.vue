@@ -160,6 +160,10 @@
 	const isActive = useVModel(props, 'modelValue')
 	const validatable = ref(false)
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const dialogProps = computed(() => {
 		return origamDialogRef.value?.filterProps(props, ['class', 'style', 'id', 'modelValue'])
 	})
@@ -170,6 +174,11 @@
 	 * @description
 	 * Handlers for read-state, validate, and cancel actions.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleIsRead = (value: boolean) => {
 		validatable.value = value
 	}

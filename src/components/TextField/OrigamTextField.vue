@@ -227,12 +227,26 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend
@@ -382,6 +396,11 @@
 	})
 
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
 	})
@@ -409,6 +428,10 @@
 	})
 
 	const {filterProps} = useProps<ITextFieldProps>(props)
+
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 
 	defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
 </script>

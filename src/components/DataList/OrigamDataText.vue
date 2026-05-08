@@ -85,6 +85,10 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -111,6 +115,11 @@
 	})
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 
 	/*********************************************************

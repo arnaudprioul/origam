@@ -121,7 +121,16 @@
    * Density classes, v-model, true/false value derivation,
    * multiple mode and value comparator.
    ********************************************************/
+
+  /*********************************************************
+   * Composables
+   ********************************************************/
+
   const {densityClasses} = useDensity(props)
+
+  /*********************************************************
+   * Value
+   ********************************************************/
 
   const modelValue = useVModel(props, 'modelValue')
 
@@ -193,6 +202,10 @@
    ********************************************************/
   const origamLabelRef = ref<TOrigamLabel>()
 
+  /*********************************************************
+   * Forwarded props
+   ********************************************************/
+
   const labelProps = computed(() => {
     return origamLabelRef.value?.filterProps(props, ['text', 'color', 'bgColor', 'class', 'style', 'id', 'for'])
   })
@@ -244,6 +257,11 @@
   //   • Legacy raw colors (hex/rgb) keep working through the inline
   //     style fallback — `useTextColor` returns `[]` for non-tokenisable
   //     values and pushes the inline declaration only.
+
+  /*********************************************************
+   * Color
+   ********************************************************/
+
   const {textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles} = useTextColor(color)
 
   const rippleProp = computed(() => {

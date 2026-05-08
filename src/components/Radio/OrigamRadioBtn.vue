@@ -82,6 +82,11 @@
 	 * @description
 	 * v-model binding and slots for conditional template delegation.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 
 	const slots = useSlots()

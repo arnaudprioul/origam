@@ -146,6 +146,11 @@
 	 * @description
 	 * v-model binding, focus state, attrs, slots, uid and id.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
 	const attrs = useAttrs()

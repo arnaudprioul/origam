@@ -53,6 +53,11 @@
 
 	const window = inject(ORIGAM_WINDOW_KEY)
 	const groupItem = useGroupItem(props, ORIGAM_WINDOW_GROUP_KEY)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isBooted} = useSsrBoot()
 
 	if (!window || !groupItem) throw new Error('[Origam] window-item must be used inside window')
@@ -71,6 +76,10 @@
 	const hasTransition = computed(() => {
 		return isBooted.value && (window.isReversed.value ? props.reverseTransition !== false : props.transition !== false)
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleAfterTransition = () => {
 		if (!isTransitioning.value || !window) {

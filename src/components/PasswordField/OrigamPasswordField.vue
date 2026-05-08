@@ -384,15 +384,29 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 
 	/*********************************************************
 	 * Adjacent (outer + inner)
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend

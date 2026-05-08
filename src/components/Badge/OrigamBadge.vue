@@ -93,10 +93,25 @@
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// The badge pill (`__badge` span) is the visual surface; classes go
 	// there, not on the wrapper root.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, statusClasses} = useStatus(props)
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating

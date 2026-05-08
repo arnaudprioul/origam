@@ -140,7 +140,15 @@
 	const slots = useSlots()
 	const {filterProps} = useProps<IColorPickerProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {rtlClasses} = useRtl()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const mode = useVModel(props, 'mode')
 	const hue = ref<number | null>(null)
@@ -184,6 +192,10 @@
 		hue.value = v.h
 	}, {immediate: true})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateColor = (hsva: THSVA) => {
 		externalChange = false
 		hue.value = hsva.h
@@ -198,6 +210,10 @@
 	const origamColorPickerPreviewRef = ref<TOrigamColorPickerPreview>()
 	const origamColorPickerEditRef = ref<TOrigamColorPickerEdit>()
 	const origamColorPickerSwatchesRef = ref<TOrigamColorPickerSwatches>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const pickerProps = computed(() => {
 		return origamPickerRef.value?.filterProps(props)
