@@ -20,6 +20,10 @@ function isUtilityBorder (value: unknown): value is string {
 }
 
 // TODO Create composable for border position
+
+/*********************************************************
+ * useBorder
+ ********************************************************/
 export function useBorder (props: IBorderProps | Ref<boolean | number | string | TDirectionBoth | Array<TDirectionBoth> | null | undefined>, name = getCurrentInstanceName()) {
     const borderClasses = computed(() => {
         const border = isRef(props) ? props.value : props.border

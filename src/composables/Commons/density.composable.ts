@@ -7,6 +7,9 @@ import type { TDensity } from '../../types'
 
 import { getCurrentInstanceName } from '../../utils'
 
+/*********************************************************
+ * useDensity
+ ********************************************************/
 export function useDensity (props: IDensityProps | Ref<number | string | undefined>, name = getCurrentInstanceName()) {
     const densityClasses = computed(() => {
         const density = isRef(props) ? props.value : props.density

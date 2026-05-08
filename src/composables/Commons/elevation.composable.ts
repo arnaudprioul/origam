@@ -71,6 +71,10 @@ function warnBgColorUsage (bgColor: TColor) {
  *   - `elevationStyles` is still a string array — emits a single `box-shadow:`
  *     declaration that references the appropriate `--origam-shadow-*` token.
  */
+
+/*********************************************************
+ * useElevation
+ ********************************************************/
 export function useElevation (
     props: IElevationProps | Ref<number | string | undefined>,
     flat: Ref<boolean> = ref(false),

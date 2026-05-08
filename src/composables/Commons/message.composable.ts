@@ -1,5 +1,8 @@
 import { computed, ComputedRef, Ref, ref, useSlots } from 'vue'
 
+/*********************************************************
+ * useMessage
+ ********************************************************/
 export function useMessage (props: any, otherMessages: Ref<Array<any>> | ComputedRef<Array<any>> = ref([])) {
     const $slots = useSlots()
 

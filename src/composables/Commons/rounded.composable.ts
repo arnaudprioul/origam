@@ -51,6 +51,10 @@ function isUtilityRounded (value: unknown): value is string {
  * Free-form strings are parsed by `BORDER_RADIUS_REGEX`. Anything that
  * doesn't match is silently dropped (no inline style emitted).
  */
+
+/*********************************************************
+ * useRounded
+ ********************************************************/
 export function useRounded (
     props: IRoundedProps | Ref<boolean | number | string | TRounded | null | undefined>,
     name = getCurrentInstanceName()

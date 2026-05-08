@@ -43,6 +43,10 @@ export interface IResolvedLoader {
  * @param name - Override the kebab-case component name used to build the
  *   `${name}--loading` class. Defaults to `getCurrentInstanceName()`.
  */
+
+/*********************************************************
+ * useLoader
+ ********************************************************/
 export function useLoader (
     props: ILoaderProps,
     defaultKind: TLoaderKind = 'circular',

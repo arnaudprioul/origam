@@ -4,6 +4,9 @@ import { IActiveProps } from "../../interfaces"
 
 import { getCurrentInstanceName } from "../../utils"
 
+/*********************************************************
+ * useActive
+ ********************************************************/
 export function useActive (props: IActiveProps & Record<string, any>, prop = 'active', name = getCurrentInstanceName()) {
     const isActive = useVModel(props, prop as keyof typeof props)
 

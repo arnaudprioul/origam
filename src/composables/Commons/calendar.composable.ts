@@ -4,6 +4,9 @@ import type { ICalendarProps, IDay } from "../../interfaces"
 import { DateAdapter } from "../../services"
 import { getWeek, wrapInArray } from "../../utils"
 
+/*********************************************************
+ * useCalendar
+ ********************************************************/
 export function useCalendar (props: ICalendarProps) {
     const adapter = useDate()
     const model = useVModel(

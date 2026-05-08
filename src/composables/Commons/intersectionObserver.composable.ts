@@ -1,6 +1,9 @@
 import { onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import { SUPPORTS_INTERSECTION } from '../../consts'
 
+/*********************************************************
+ * useIntersectionObserver
+ ********************************************************/
 export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: IntersectionObserverInit) {
     const intersectionRef = ref<HTMLElement>()
     const isIntersecting = shallowRef(false)

@@ -20,6 +20,9 @@ import {
     watch
 } from 'vue'
 
+/*********************************************************
+ * useValidation
+ ********************************************************/
 export function useValidation (props: IValidationProps, name = getCurrentInstanceName(), id: MaybeRef<string | number> = getUid()) {
     const model = useVModel(props, 'modelValue')
     const validationModel = computed(() => {

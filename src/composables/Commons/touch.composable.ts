@@ -5,6 +5,9 @@ import { oops } from '../../utils'
 import { computed, onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
 
 
+/*********************************************************
+ * useTouch
+ ********************************************************/
 export function useTouch ({isActive, isTemporary, width, touchless, position}: {
     isActive: Ref<boolean>
     isTemporary: Ref<boolean>

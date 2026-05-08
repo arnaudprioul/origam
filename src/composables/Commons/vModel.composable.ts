@@ -6,6 +6,9 @@ import { getCurrentInstance, toKebabCase } from '../../utils'
 
 import { computed, ref, Ref, toRaw, watch } from 'vue'
 
+/*********************************************************
+ * useVModel
+ ********************************************************/
 export function useVModel<
     Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },
     Prop extends Extract<keyof Props, string>,

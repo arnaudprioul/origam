@@ -28,6 +28,9 @@ const LEGACY_SIZE_TO_UTILITY: Readonly<Record<string, string>> = {
     'x-large': 'xl'
 }
 
+/*********************************************************
+ * useSize
+ ********************************************************/
 export function useSize (props: ISizeProps, name = getCurrentInstanceName()) {
     const sizeClasses = computed(() => {
         const size = isRef(props) ? props.value : props.size

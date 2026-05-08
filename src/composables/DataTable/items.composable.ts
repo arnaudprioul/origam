@@ -3,6 +3,9 @@ import type { IDataTableItemsProps, IInternalDataTableHeader } from '../../inter
 
 import { transformDataTableItems } from '../../utils'
 
+/*********************************************************
+ * useDataTableItems
+ ********************************************************/
 export function useDataTableItems (props: IDataTableItemsProps, columns: Ref<Array<IInternalDataTableHeader>>) {
     const items = computed(() => transformDataTableItems(props, props.items, columns.value))
 

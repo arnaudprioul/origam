@@ -67,6 +67,9 @@ export const useIcon = (props: Ref<TIcon | undefined>) => {
     return {iconData}
 }
 
+/*********************************************************
+ * createIcons
+ ********************************************************/
 export function createIcons (options?: TIconOptions) {
     return mergeDeep({
         defaultSet: 'mdi',

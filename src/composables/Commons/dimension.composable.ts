@@ -5,6 +5,9 @@ import type { IDimensionProps } from '../../interfaces'
 
 import { convertToUnit, toKebabCase } from '../../utils'
 
+/*********************************************************
+ * useDimension
+ ********************************************************/
 export function useDimension (props: IDimensionProps) {
     const dimensionStyles = computed(() => {
         const dimensions: Array<string> = []

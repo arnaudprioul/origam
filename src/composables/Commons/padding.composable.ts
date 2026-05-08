@@ -23,6 +23,9 @@ function isUtilityPaddingScale (value: unknown): value is string {
     return typeof value === 'string' && UTILITY_PADDING_SCALE.has(value)
 }
 
+/*********************************************************
+ * usePadding
+ ********************************************************/
 export function usePadding (props: IPaddingProps, name = getCurrentInstanceName()) {
 
     const paddingClasses = computed(() => {

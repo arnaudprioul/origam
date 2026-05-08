@@ -4,6 +4,9 @@ import { IHotkeyOptions } from "../../interfaces"
 import { TKeyboardModifiers } from "../../types"
 import { consoleWarn, getCurrentInstance, splitKeyCombination, splitKeySequence } from "../../utils"
 
+/*********************************************************
+ * useHotkey
+ ********************************************************/
 export function useHotkey (
     keys: MaybeRef<string | undefined>,
     callback: (e: KeyboardEvent) => void,

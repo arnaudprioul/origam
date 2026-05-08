@@ -26,6 +26,10 @@ import { getCurrentInstanceName } from "../../utils"
  * were silently dead. The current contract treats `props.hover` strictly
  * as an override.
  */
+
+/*********************************************************
+ * useHover
+ ********************************************************/
 export function useHover (props: IHoverProps, name = getCurrentInstanceName()) {
     const isHovered = ref(false)
     const forced = ref<boolean>(props.hover === true)

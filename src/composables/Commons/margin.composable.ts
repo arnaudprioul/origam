@@ -27,6 +27,9 @@ function isUtilityMarginScale (value: unknown): value is string {
     return typeof value === 'string' && UTILITY_MARGIN_SCALE.has(value)
 }
 
+/*********************************************************
+ * useMargin
+ ********************************************************/
 export function useMargin (props: IMarginProps, name = getCurrentInstanceName()) {
 
     const marginClasses = computed(() => {

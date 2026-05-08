@@ -86,6 +86,10 @@ function resolveHeightPx (height: number | string): number {
  * - `persistent` blocks the `closed` snap; the gesture falls back to
  *   the next-lowest snap point.
  */
+
+/*********************************************************
+ * useSheetSwipe
+ ********************************************************/
 export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
     const {
         el,
@@ -199,8 +203,9 @@ export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
         snapTo('closed')
     }
 
-    // ───────────────────────── pointer handlers ────────────────────────────
-
+    /*********************************************************
+     * pointer handlers
+     ********************************************************/
     function onPointerDown (e: PointerEvent) {
         if (disabled?.value) return
         const target = handle.value
@@ -262,8 +267,9 @@ export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
         activePointer = null
     }
 
-    // ───────────────────────── lifecycle ───────────────────────────────────
-
+    /*********************************************************
+     * lifecycle
+     ********************************************************/
     function bind () {
         const target = handle.value
         if (!target) return

@@ -3,6 +3,9 @@ import type { IAdjacentProps, IStatusProps } from "../../interfaces"
 import { getCurrentInstanceName } from '../../utils'
 import { computed } from 'vue'
 
+/*********************************************************
+ * useStatus
+ ********************************************************/
 export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurrentInstanceName()) {
     const statusIcon = computed(() => {
         return `$${props.status}`

@@ -30,6 +30,10 @@ import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types
  * Compute the strength of a password string. Pure — no side effects,
  * safe to call inside a `computed()` block.
  */
+
+/*********************************************************
+ * computeStrength
+ ********************************************************/
 export function computeStrength (value: string | null | undefined): IPasswordStrength {
     const v = (value ?? '').toString()
 

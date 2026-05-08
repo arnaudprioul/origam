@@ -1,6 +1,9 @@
 import { watch } from 'vue'
 import { noop, resolveUnref, tryOnScopeDispose, unrefElement } from '../../utils'
 
+/*********************************************************
+ * useEventListener
+ ********************************************************/
 export function useEventListener (...args: Array<any>) {
     let target
     let events

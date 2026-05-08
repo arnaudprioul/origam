@@ -5,6 +5,9 @@ import type { TFilterKeyFunctions, TFilterMatch } from '../../types'
 
 import { filterItems } from '../../utils'
 
+/*********************************************************
+ * useFilter
+ ********************************************************/
 export function useFilter<T extends IInternalItem> (
     props: IFiltersProps,
     items: MaybeRef<T[]>,

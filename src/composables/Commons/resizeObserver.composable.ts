@@ -5,6 +5,9 @@ import type { IResizeState } from '../../interfaces'
 import { refElement } from '../../utils'
 import { onBeforeUnmount, readonly, ref, watch } from 'vue'
 
+/*********************************************************
+ * useResizeObserver
+ ********************************************************/
 export function useResizeObserver (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState {
     const contentRect = ref<DOMRectReadOnly>()
     const resizeRef = ref<HTMLElement | null>()

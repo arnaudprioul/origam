@@ -4,6 +4,9 @@ import { pick } from "../../utils"
 
 import { ExtractPropTypes } from "vue"
 
+/*********************************************************
+ * useProps
+ ********************************************************/
 export function useProps<T extends Record<string, any>> (props: T): IFilterPropsOptions<T> {
     const defaultExcludes = ['class', 'style', 'id']
 

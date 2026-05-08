@@ -153,7 +153,9 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         let bgIntentFg: string | null = null
         let bgDecl: string | null = null
 
-        // ─── Background resolution ───────────────────────────────────────
+        /*********************************************************
+         * Background resolution
+         ********************************************************/
         if (colors.value.background) {
             if (isIntent(colors.value.background)) {
                 const m = tokenStylesForIntent(colors.value.background, 'default')
@@ -166,7 +168,9 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
             }
         }
 
-        // ─── Foreground resolution ───────────────────────────────────────
+        /*********************************************************
+         * Foreground resolution
+         ********************************************************/
         // `color` is foreground-only by design: setting `color="primary"`
         // changes the text colour, NOT the surface. The text resolves to
         // the intent's *own* colour (via `fgSubtle` — designed for coloured
@@ -364,7 +368,9 @@ export function useColorEffect (
         // contrast inside the design-system without `getForeground`).
         let bgIntentFg: string | null = null
 
-        // ─── Background resolution ───────────────────────────────────────
+        /*********************************************************
+         * Background resolution
+         ********************************************************/
         if (bgColor.value && isIntent(bgColor.value)) {
             const m = tokenStylesForIntent(bgColor.value, bgRole)
             bgDecl = `background-color: ${m['background-color']}`
@@ -376,7 +382,9 @@ export function useColorEffect (
             bgDecl = `background-color: ${bgColor.value}`
         }
 
-        // ─── Foreground resolution ───────────────────────────────────────
+        /*********************************************************
+         * Foreground resolution
+         ********************************************************/
         // Universal design-system contract (matches `useColor`):
         //   • `color` is FOREGROUND-ONLY — it never paints the surface.
         //   • `bgColor` owns the surface; if the consumer wants both
