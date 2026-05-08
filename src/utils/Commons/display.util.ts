@@ -6,6 +6,12 @@ import type { TSSROptions } from '../../types'
 
 import { mergeDeep } from '../../utils'
 
+/**
+ * Parse display options.
+ *
+ * @param options …
+ * @returns …
+ */
 export function parseDisplayOptions (options: IDisplayOptions = DEFAULT_DISPLAY_OPTIONS): IInternalDisplayOptions {
     return mergeDeep(
         DEFAULT_DISPLAY_OPTIONS as Record<string, unknown>,
@@ -13,18 +19,34 @@ export function parseDisplayOptions (options: IDisplayOptions = DEFAULT_DISPLAY_
     ) as unknown as IInternalDisplayOptions
 }
 
+/**
+ * Get client width.
+ *
+ * @param ssr …
+ */
 export function getClientWidth (ssr?: TSSROptions) {
     return IN_BROWSER && !ssr
         ? window.innerWidth
         : (typeof ssr === 'object' && ssr.clientWidth) || 0
 }
 
+/**
+ * Get client height.
+ *
+ * @param ssr …
+ */
 export function getClientHeight (ssr?: TSSROptions) {
     return IN_BROWSER && !ssr
         ? window.innerHeight
         : (typeof ssr === 'object' && ssr.clientHeight) || 0
 }
 
+/**
+ * Get platform.
+ *
+ * @param ssr …
+ * @returns …
+ */
 export function getPlatform (ssr?: TSSROptions): IDisplayPlatform {
     const userAgent = IN_BROWSER && !ssr
         ? window.navigator.userAgent

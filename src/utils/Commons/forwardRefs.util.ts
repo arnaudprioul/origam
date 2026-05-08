@@ -3,6 +3,13 @@ import { FORWARD_REFS } from '../../consts'
 
 import type { TOmitPrefix, TOmitProps, TUnionToIntersection } from '../../types'
 
+/**
+ * Forward refs.
+ *
+ * @param target …
+ * @param refs   …
+ * @returns …
+ */
 export function forwardRefs<T extends Record<string, unknown>, U extends Ref<HTMLElement | Omit<ComponentPublicInstance, '$emit' | '$slots'> | undefined>[]> (
     target: T,
     ...refs: U
@@ -91,6 +98,12 @@ export function forwardRefs<T extends Record<string, unknown>, U extends Ref<HTM
     }) as any
 }
 
+/**
+ * Get descriptor.
+ *
+ * @param obj …
+ * @param key …
+ */
 export function getDescriptor (obj: any, key: PropertyKey) {
     let currentObj = obj
 

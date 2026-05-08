@@ -2,6 +2,12 @@ import { HANDLERS } from '../../consts'
 
 import { eventName, isOn } from '../../utils'
 
+/**
+ * Bind props.
+ *
+ * @param el    …
+ * @param props …
+ */
 export function bindProps (el: HTMLElement, props: Record<string, any>) {
     Object.keys(props).forEach(k => {
         if (isOn(k)) {
@@ -32,6 +38,12 @@ export function bindProps (el: HTMLElement, props: Record<string, any>) {
     })
 }
 
+/**
+ * Unbind props.
+ *
+ * @param el    …
+ * @param props …
+ */
 export function unbindProps (el: HTMLElement, props: Record<string, any>) {
     Object.keys(props).forEach(k => {
         if (isOn(k)) {

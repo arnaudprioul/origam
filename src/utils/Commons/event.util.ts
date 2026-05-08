@@ -1,6 +1,14 @@
 import type { TEventHandler } from '../../types'
 import { isOn } from '../../utils'
 
+/**
+ * Get prefixed event handlers.
+ *
+ * @param attrs   …
+ * @param suffix  …
+ * @param getData …
+ * @returns …
+ */
 export function getPrefixedEventHandlers<T extends `:${string}`> (
     attrs: Record<string, any>,
     suffix: T,

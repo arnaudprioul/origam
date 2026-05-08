@@ -6,6 +6,13 @@ import type { TRippleEvent } from '../../types'
 
 import { isObject } from '../../utils'
 
+/**
+ * Update ripple.
+ *
+ * @param el         …
+ * @param binding    …
+ * @param wasEnabled …
+ */
 export function updateRipple (el: IRippleHtmlElement, binding: IRippleDirectiveBinding, wasEnabled: boolean) {
     const {value, modifiers} = binding
     const enabled = isRippleEnabled(value)
@@ -50,18 +57,43 @@ export function updateRipple (el: IRippleHtmlElement, binding: IRippleDirectiveB
     }
 }
 
+/**
+ * Is ripple enabled.
+ *
+ * @param value …
+ * @returns …
+ */
 export function isRippleEnabled (value: any): value is true {
     return typeof value === 'undefined' || !!value
 }
 
+/**
+ * Is touch event.
+ *
+ * @param e …
+ * @returns …
+ */
 export function isTouchEvent (e: TRippleEvent): e is TouchEvent {
     return e.constructor.name === 'TouchEvent'
 }
 
+/**
+ * Is keyboard event.
+ *
+ * @param e …
+ * @returns …
+ */
 export function isKeyboardEvent (e: TRippleEvent): e is KeyboardEvent {
     return e.constructor.name === 'KeyboardEvent'
 }
 
+/**
+ * Calculate.
+ *
+ * @param e     …
+ * @param el    …
+ * @param value …
+ */
 export function calculate (
     e: TRippleEvent,
     el: IRippleHtmlElement,
@@ -96,6 +128,11 @@ export function calculate (
     return {radius, scale, x, y, centerX, centerY}
 }
 
+/**
+ * Ripple show.
+ *
+ * @param e …
+ */
 export function rippleShow (e: TRippleEvent) {
     const value: IRippleOptions = {}
     const element = e.currentTarget as IRippleHtmlElement | undefined
@@ -140,10 +177,20 @@ export function rippleShow (e: TRippleEvent) {
     }
 }
 
+/**
+ * Ripple stop.
+ *
+ * @param e …
+ */
 export function rippleStop (e: TRippleEvent) {
     e[ORIGAM_RIPPLE_STOP_KEY] = true
 }
 
+/**
+ * Ripple hide.
+ *
+ * @param e …
+ */
 export function rippleHide (e: Event) {
     const element = e.currentTarget as IRippleHtmlElement | null
     if (!element?._ripple) return
@@ -171,6 +218,11 @@ export function rippleHide (e: Event) {
     RIPPLES.hide(element)
 }
 
+/**
+ * Ripple cancel show.
+ *
+ * @param e …
+ */
 export function rippleCancelShow (e: MouseEvent | TouchEvent) {
     const element = e.currentTarget as IRippleHtmlElement | undefined
 
@@ -183,6 +235,11 @@ export function rippleCancelShow (e: MouseEvent | TouchEvent) {
     window.clearTimeout(element._ripple.showTimer)
 }
 
+/**
+ * Ripple remove listeners.
+ *
+ * @param el …
+ */
 export function rippleRemoveListeners (el: IRippleHtmlElement) {
     el.removeEventListener('mousedown', rippleShow)
     el.removeEventListener('touchstart', rippleShow)
@@ -197,6 +254,12 @@ export function rippleRemoveListeners (el: IRippleHtmlElement) {
     el.removeEventListener('blur', focusRippleHide)
 }
 
+/**
+ * Ripple transform.
+ *
+ * @param el    …
+ * @param value …
+ */
 export function rippleTransform (el: IRippleHtmlElement, value: string) {
     el.style.transform = value
     el.style.webkitTransform = value
@@ -204,6 +267,11 @@ export function rippleTransform (el: IRippleHtmlElement, value: string) {
 
 let keyboardRipple = false
 
+/**
+ * Keyboard ripple show.
+ *
+ * @param e …
+ */
 export function keyboardRippleShow (e: KeyboardEvent) {
     if (!keyboardRipple && ((e.keyCode === KEYCODES.enter || e.keyCode === KEYCODES.space) || (e.code === KEYCODES.enter.toString() || e.code === KEYCODES.space.toString()))) {
         keyboardRipple = true
@@ -211,11 +279,21 @@ export function keyboardRippleShow (e: KeyboardEvent) {
     }
 }
 
+/**
+ * Keyboard ripple hide.
+ *
+ * @param e …
+ */
 export function keyboardRippleHide (e: KeyboardEvent) {
     keyboardRipple = false
     rippleHide(e)
 }
 
+/**
+ * Focus ripple hide.
+ *
+ * @param e …
+ */
 export function focusRippleHide (e: FocusEvent) {
     if (keyboardRipple) {
         keyboardRipple = false

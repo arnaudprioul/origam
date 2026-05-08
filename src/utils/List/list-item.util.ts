@@ -2,6 +2,12 @@ import type { IInternalListItem, IInternalListItemChildren, IItemProps } from '.
 
 import { getPropertyFromItem, omit } from '../../utils'
 
+/**
+ * Transform list items.
+ *
+ * @param props …
+ * @param items …
+ */
 export function transformListItems (props: IItemProps & { itemType?: string }, items: Array<(string | object)>) {
     const array: Array<IInternalListItemChildren> = []
 
@@ -12,6 +18,13 @@ export function transformListItems (props: IItemProps & { itemType?: string }, i
     return array
 }
 
+/**
+ * Transform list item.
+ *
+ * @param props …
+ * @param item  …
+ * @returns …
+ */
 export function transformListItem (props: Omit<IItemProps, 'items'>, item: any): IInternalListItem {
     const title = getPropertyFromItem(item, props.itemTitle, item)
     const value = getPropertyFromItem(item, props.itemValue, title)

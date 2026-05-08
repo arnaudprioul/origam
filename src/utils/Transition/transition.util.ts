@@ -6,6 +6,12 @@ export function getChildren (el: Element) {
     return els && [...els]
 }
 
+/**
+ * Get dimensions.
+ *
+ * @param target …
+ * @param el     …
+ */
 export function getDimensions (target: HTMLElement | [x: number, y: number], el: HTMLElement) {
     const targetBox = getTargetBox(target)
     const elBox = nullifyTransforms(el)

@@ -1,6 +1,12 @@
 import type { IBox } from '../../interfaces'
 import { Box } from '../../services'
 
+/**
+ * Get overflow.
+ *
+ * @param a …
+ * @param b …
+ */
 export function getOverflow (a: IBox, b: IBox) {
     return {
         x: {
@@ -14,6 +20,12 @@ export function getOverflow (a: IBox, b: IBox) {
     }
 }
 
+/**
+ * Get target box.
+ *
+ * @param target …
+ * @returns …
+ */
 export function getTargetBox (target: HTMLElement | [x: number, y: number]): IBox | DOMRect {
     if (Array.isArray(target)) {
         return new Box({

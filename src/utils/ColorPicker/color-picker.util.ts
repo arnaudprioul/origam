@@ -2,6 +2,12 @@ import type { THSVA } from "../../types"
 
 import { has, HSVtoHex, HSVtoHSL, HSVtoRGB } from "../../utils"
 
+/**
+ * Strip alpha.
+ *
+ * @param color      …
+ * @param stripAlpha …
+ */
 export function stripAlpha (color: any, stripAlpha: boolean) {
     if (stripAlpha) {
         const result = {...color}
@@ -14,6 +20,12 @@ export function stripAlpha (color: any, stripAlpha: boolean) {
     return color
 }
 
+/**
+ * Extract color.
+ *
+ * @param color …
+ * @param input …
+ */
 export function extractColor (color: THSVA, input: any) {
     if (input == null || typeof input === 'string') {
         const hex = HSVtoHex(color)
@@ -33,6 +45,11 @@ export function extractColor (color: THSVA, input: any) {
     return color
 }
 
+/**
+ * Has alpha.
+ *
+ * @param color …
+ */
 export function hasAlpha (color: any) {
     if (!color) return false
 

@@ -47,10 +47,22 @@ export function isCssColor (color?: string | null | false): boolean {
     )
 }
 
+/**
+ * Is parsable color.
+ *
+ * @param color …
+ * @returns …
+ */
 export function isParsableColor (color: string): boolean {
     return isCssColor(color) && !/^((rgb|hsl)a?\()?var\(--/.test(color)
 }
 
+/**
+ * Parse color.
+ *
+ * @param color …
+ * @returns …
+ */
 export function parseColor (color: TColorType): TRGBA {
     if (typeof color === 'number') {
         if (isNaN(color) || color < 0 || color > 0xFFFFFF) { // int can't have opacity
@@ -103,6 +115,11 @@ export function parseColor (color: TColorType): TRGBA {
     throw new TypeError(`Invalid color: ${color == null ? color : (String(color) || (color as any).constructor.name)}\nExpected #hex, #hexa, rgb(), rgba(), hsl(), hsla(), object or number`)
 }
 
+/**
+ * Get foreground.
+ *
+ * @param color …
+ */
 export function getForeground (color: TColorType) {
     const blackContrast = Math.abs(APCAcontrast(parseColor(0), parseColor(color)))
     const whiteContrast = Math.abs(APCAcontrast(parseColor(0xffffff), parseColor(color)))
@@ -111,10 +128,22 @@ export function getForeground (color: TColorType) {
     return whiteContrast > Math.min(blackContrast, 50) ? '#fff' : '#000'
 }
 
+/**
+ * Hs lto rgb.
+ *
+ * @param hsla …
+ * @returns …
+ */
 export function HSLtoRGB (hsla: THSLA): TRGBA {
     return HSVtoRGB(HSLtoHSV(hsla))
 }
 
+/**
+ * Rg bto hsv.
+ *
+ * @param rgba …
+ * @returns …
+ */
 export function RGBtoHSV (rgba: TRGBA): THSVA {
     if (!rgba) return {h: 0, s: 1, v: 1, a: 1}
 
@@ -144,6 +173,12 @@ export function RGBtoHSV (rgba: TRGBA): THSVA {
     return {h: hsv[0], s: hsv[1], v: hsv[2], a: rgba.a}
 }
 
+/**
+ * Hs vto hsl.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoHSL (hsva: THSVA): THSLA {
     const {h, s, v, a} = hsva
 
@@ -154,6 +189,12 @@ export function HSVtoHSL (hsva: THSVA): THSLA {
     return {h, s: sprime, l, a}
 }
 
+/**
+ * Hs lto hsv.
+ *
+ * @param hsl …
+ * @returns …
+ */
 export function HSLtoHSV (hsl: THSLA): THSVA {
     const {h, s, l, a} = hsl
 
@@ -164,19 +205,42 @@ export function HSLtoHSV (hsl: THSLA): THSVA {
     return {h, s: sprime, v, a}
 }
 
+/**
+ * Rg bto css.
+ *
+ * @param options …
+ * @returns …
+ */
 export function RGBtoCSS ({r, g, b, a}: TRGBA): string {
     return a === undefined ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+/**
+ * Hs vto css.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoCSS (hsva: THSVA): string {
     return RGBtoCSS(HSVtoRGB(hsva))
 }
 
+/**
+ * To hex.
+ *
+ * @param v …
+ */
 export function toHex (v: number) {
     const h = Math.round(v).toString(16)
     return ('00'.substr(0, 2 - h.length) + h).toUpperCase()
 }
 
+/**
+ * Rg bto hex.
+ *
+ * @param options …
+ * @returns …
+ */
 export function RGBtoHex ({r, g, b, a}: TRGBA): THex {
     return `#${[
         toHex(r),
@@ -186,6 +250,12 @@ export function RGBtoHex ({r, g, b, a}: TRGBA): THex {
     ].join('')}` as THex
 }
 
+/**
+ * Hex to rgb.
+ *
+ * @param hex …
+ * @returns …
+ */
 export function HexToRGB (hex: THex): TRGBA {
     hex = parseHex(hex)
     const [r, g, b, a] = chunk(hex, 2).map((c: string) => int(c, 16))
@@ -194,15 +264,33 @@ export function HexToRGB (hex: THex): TRGBA {
     return {r, g, b, a: alpha}
 }
 
+/**
+ * Hex to hsv.
+ *
+ * @param hex …
+ * @returns …
+ */
 export function HexToHSV (hex: THex): THSVA {
     const rgb = HexToRGB(hex)
     return RGBtoHSV(rgb)
 }
 
+/**
+ * Hs vto hex.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoHex (hsva: THSVA): THex {
     return RGBtoHex(HSVtoRGB(hsva))
 }
 
+/**
+ * Hs vto rgb.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoRGB (hsva: THSVA): TRGBA {
     const {h, s, v, a} = hsva
     const f = (n: number) => {
@@ -215,6 +303,12 @@ export function HSVtoRGB (hsva: THSVA): TRGBA {
     return {r: rgb[0], g: rgb[1], b: rgb[2], a}
 }
 
+/**
+ * Parse hex.
+ *
+ * @param hex …
+ * @returns …
+ */
 export function parseHex (hex: string): THex {
     if (hex.startsWith('#')) {
         hex = hex.slice(1)
@@ -233,6 +327,13 @@ export function parseHex (hex: string): THex {
     return hex as THex
 }
 
+/**
+ * Lighten.
+ *
+ * @param value  …
+ * @param amount …
+ * @returns …
+ */
 export function lighten (value: TRGBA, amount: number): TRGBA {
     const lab = XyztoLab(RgbtoXyz(value))
     lab[0] = lab[0] + amount * 10
@@ -240,6 +341,13 @@ export function lighten (value: TRGBA, amount: number): TRGBA {
     return XyzToRgb(LabtoXyz(lab))
 }
 
+/**
+ * Darken.
+ *
+ * @param value  …
+ * @param amount …
+ * @returns …
+ */
 export function darken (value: TRGBA, amount: number): TRGBA {
     const lab = XyztoLab(RgbtoXyz(value))
     lab[0] = lab[0] - amount * 10
@@ -247,6 +355,12 @@ export function darken (value: TRGBA, amount: number): TRGBA {
     return XyzToRgb(LabtoXyz(lab))
 }
 
+/**
+ * Get contrast.
+ *
+ * @param first  …
+ * @param second …
+ */
 export function getContrast (first: TColorType, second: TColorType) {
     const l1 = getLuma(first)
     const l2 = getLuma(second)
@@ -257,12 +371,23 @@ export function getContrast (first: TColorType, second: TColorType) {
     return (light + 0.05) / (dark + 0.05)
 }
 
+/**
+ * Get luma.
+ *
+ * @param color …
+ */
 export function getLuma (color: TColorType) {
     const rgb = parseColor(color)
 
     return RgbtoXyz(rgb)[1]
 }
 
+/**
+ * Parse gradient.
+ *
+ * @param gradient …
+ * @param colors   …
+ */
 export function parseGradient (
     gradient: string,
     colors: Record<string, Record<string, string>>
@@ -274,6 +399,13 @@ export function parseGradient (
     })
 }
 
+/**
+ * Class to hex.
+ *
+ * @param color  …
+ * @param colors …
+ * @returns …
+ */
 export function classToHex (
     color: string,
     colors: Record<string, Record<string, string>>
@@ -293,6 +425,12 @@ export function classToHex (
     return hexColor
 }
 
+/**
+ * Xyz to rgb.
+ *
+ * @param xyz …
+ * @returns …
+ */
 export function XyzToRgb (xyz: TXYZ): TRGBA {
     const rgb: number[] = Array(3)
     const transform = SRGB_FORWARD_TRANSFORM
@@ -315,6 +453,12 @@ export function XyzToRgb (xyz: TXYZ): TRGBA {
     }
 }
 
+/**
+ * Rgbto xyz.
+ *
+ * @param options …
+ * @returns …
+ */
 export function RgbtoXyz ({r, g, b}: TRGBA): TXYZ {
     const xyz: TXYZ = [0, 0, 0]
     const transform = SRGB_REVERSE_TRANSFORM
@@ -333,6 +477,12 @@ export function RgbtoXyz ({r, g, b}: TRGBA): TXYZ {
     return xyz
 }
 
+/**
+ * Xyzto lab.
+ *
+ * @param xyz …
+ * @returns …
+ */
 export function XyztoLab (xyz: TXYZ): TLAB {
     const transform = CIELAB_FORWARD_TRANSFORM
     const transformedY = transform(xyz[1])
@@ -344,6 +494,12 @@ export function XyztoLab (xyz: TXYZ): TLAB {
     ]
 }
 
+/**
+ * Labto xyz.
+ *
+ * @param lab …
+ * @returns …
+ */
 export function LabtoXyz (lab: TLAB): TXYZ {
     const transform = CIELAB_REVERSE_TRANSFORM
     const Ln = (lab[0] + 16) / 116
@@ -354,6 +510,12 @@ export function LabtoXyz (lab: TLAB): TXYZ {
     ]
 }
 
+/**
+ * Apc acontrast.
+ *
+ * @param text       …
+ * @param background …
+ */
 export function APCAcontrast (text: TRGBA, background: TRGBA) {
     // Linearize sRGB
     const Rtxt = (text.r / 255) ** MAIN_TRC

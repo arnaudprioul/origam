@@ -3,6 +3,13 @@ import type { IDataTableSortItem, IInternalItem } from '../../interfaces'
 import type { TDataTableCompareFunction } from '../../types'
 import { isEmpty } from '../../utils'
 
+/**
+ * Sort items.
+ *
+ * @param items       …
+ * @param sortByItems …
+ * @param options     …
+ */
 export function sortItems<T extends IInternalItem> (
     items: T[],
     sortByItems: Array<IDataTableSortItem>,

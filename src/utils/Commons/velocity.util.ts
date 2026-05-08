@@ -1,5 +1,10 @@
 import type { ISample } from "../../interfaces"
 
+/**
+ * Calculate impulse velocity.
+ *
+ * @param samples …
+ */
 export function calculateImpulseVelocity (samples: Array<ISample>) {
     // The input should be in reversed time order (most recent sample at index i=0)
     if (samples.length < 2) {
@@ -36,6 +41,11 @@ export function calculateImpulseVelocity (samples: Array<ISample>) {
     return kineticEnergyToVelocity(work) * 1000
 }
 
+/**
+ * Kinetic energy to velocity.
+ *
+ * @param work …
+ */
 export function kineticEnergyToVelocity (work: number) {
     const sqrt2 = 1.41421356237
     return (work < 0 ? -1.0 : 1.0) * Math.sqrt(Math.abs(work)) * sqrt2

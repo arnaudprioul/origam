@@ -6,6 +6,14 @@ function defaultConditional (): boolean {
     return true
 }
 
+/**
+ * Check event.
+ *
+ * @param e       …
+ * @param el      …
+ * @param binding …
+ * @returns …
+ */
 export function checkEvent (e: MouseEvent, el: HTMLElement, binding: IClickOutsideDirectiveBinding): boolean {
     // The include element callbacks below can be expensive
     // so we should avoid calling them when we're not active.
@@ -37,12 +45,26 @@ export function checkEvent (e: MouseEvent, el: HTMLElement, binding: IClickOutsi
     return !elements.some(el => el?.contains(e.target as Node))
 }
 
+/**
+ * Check is active.
+ *
+ * @param e       …
+ * @param binding …
+ * @returns …
+ */
 export function checkIsActive (e: MouseEvent, binding: IClickOutsideDirectiveBinding): boolean | void {
     const isActive = (typeof binding.value === 'object' && binding.value.closeConditional) || defaultConditional
 
     return isActive(e)
 }
 
+/**
+ * Directive.
+ *
+ * @param e       …
+ * @param el      …
+ * @param binding …
+ */
 export function directive (e: MouseEvent, el: HTMLElement, binding: IClickOutsideDirectiveBinding) {
     const handler = typeof binding.value === 'function' ? binding.value : binding.value.handler
 
@@ -55,6 +77,12 @@ export function directive (e: MouseEvent, el: HTMLElement, binding: IClickOutsid
     }
 }
 
+/**
+ * Handle shadow.
+ *
+ * @param el       …
+ * @param callback …
+ */
 export function handleShadow (el: HTMLElement, callback: (root: Document | ShadowRoot) => void): void {
     const root = attachedRoot(el)
 

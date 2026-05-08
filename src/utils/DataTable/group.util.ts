@@ -2,6 +2,12 @@ import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces'
 
 import { getObjectValueByPath } from '../../utils'
 
+/**
+ * Group items by property.
+ *
+ * @param items   …
+ * @param groupBy …
+ */
 export function groupItemsByProperty<T extends IDataTableGroupableItem> (items: Array<T>, groupBy: string) {
     if (!items.length) return []
 
@@ -18,6 +24,14 @@ export function groupItemsByProperty<T extends IDataTableGroupableItem> (items: 
     return groups
 }
 
+/**
+ * Group items.
+ *
+ * @param items   …
+ * @param groupBy …
+ * @param depth   …
+ * @param prefix  …
+ */
 export function groupItems<T extends IDataTableGroupableItem> (items: Array<T>, groupBy: Array<string>, depth = 0, prefix = 'root') {
     if (!groupBy.length) return []
 
@@ -41,6 +55,13 @@ export function groupItems<T extends IDataTableGroupableItem> (items: Array<T>, 
     return groups
 }
 
+/**
+ * Flatten items.
+ *
+ * @param items  …
+ * @param opened …
+ * @returns …
+ */
 export function flattenItems<T extends IDataTableGroupableItem> (items: Array<(T | IDataTableGroup<T>)>, opened: Set<string>): Array<(T | IDataTableGroup<T>)> {
     const flatItems: Array<(T | IDataTableGroup<T>)> = []
 

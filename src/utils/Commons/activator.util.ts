@@ -3,6 +3,13 @@ import { useActivator } from '../../composables'
 import type { IActivatorProps } from '../../interfaces'
 import { bindProps, unbindProps } from '../../utils'
 
+/**
+ * Activator.
+ *
+ * @param props   …
+ * @param vm      …
+ * @param options …
+ */
 export function activator (
     props: IActivatorProps,
     vm: ComponentInternalInstance,
@@ -53,6 +60,13 @@ export function activator (
     }
 }
 
+/**
+ * Get target activator.
+ *
+ * @param selector …
+ * @param vm       …
+ * @returns …
+ */
 export function getTargetActivator<T extends 'parent' | string | Element | ComponentPublicInstance | [x: number, y: number] | undefined> (
     selector: T,
     vm: ComponentInternalInstance
