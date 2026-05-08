@@ -49,6 +49,10 @@
 	import type { IStepperProps } from '../../interfaces'
 	import type { TStepperItemStatus } from '../../types'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IStepperProps>(), {
 		orientation: 'horizontal',
 		clickable: false,
@@ -110,6 +114,10 @@
 	 * Class & Style
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const { colorClasses, colorStyles } = useColorEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)

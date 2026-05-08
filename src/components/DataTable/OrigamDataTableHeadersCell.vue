@@ -35,6 +35,10 @@
 
 	import { computed, ref, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})
 
 	const {filterProps} = useProps<IDataTableHeadersCellProps>(props)

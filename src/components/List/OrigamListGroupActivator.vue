@@ -17,6 +17,10 @@
 
 	import type { IListActivatorProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IListActivatorProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IListActivatorProps>(props)

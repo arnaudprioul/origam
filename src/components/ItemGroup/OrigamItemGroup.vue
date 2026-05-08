@@ -26,6 +26,10 @@
 
 	import type { IItemGroupProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IItemGroupProps>(), {
 		tag: 'div',
 		selectedClass: 'origam-item--selected'
@@ -34,6 +38,10 @@
 	defineEmits(['update:modelValue'])
 
 	const {filterProps} = useProps<IItemGroupProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_ITEM_GROUP_KEY)
 

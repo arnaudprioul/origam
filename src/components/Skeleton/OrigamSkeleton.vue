@@ -55,6 +55,10 @@
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ISkeletonProps>(), {
 		variant: 'rectangular',
 		loading: true,
@@ -62,6 +66,10 @@
 	})
 
 	const {filterProps} = useProps<ISkeletonProps>(props)
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
@@ -92,6 +100,10 @@
 	}))
 
 	// ── Composite-variant container ────────────────────────────────────────
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
+
 	const skeletonContainerClasses = computed(() => [
 		'origam-skeleton-wrapper',
 		`origam-skeleton-wrapper--${props.variant}`,

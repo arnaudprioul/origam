@@ -52,6 +52,10 @@
 
 	import type { IStepperItemProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IStepperItemProps>(), {
 		index: 0
 	})

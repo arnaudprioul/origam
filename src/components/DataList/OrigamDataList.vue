@@ -201,6 +201,10 @@
 
 	import { isEmpty, toKebabCase } from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataListProps>(), {
 		mode: 'avatar'
 	})
@@ -208,6 +212,10 @@
 	const {filterProps} = useProps<IDataListProps>(props)
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
 	const {elevationClasses} = useElevation(props)

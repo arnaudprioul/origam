@@ -55,6 +55,10 @@
 
 	import { computed, ref, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableFooterProps>(), {
 		itemsPerPageOptions: () => [
 			{value: 10, title: '10'},
@@ -76,6 +80,10 @@
 	const {t} = useLocale()
 
 	const origamPaginationRef = ref<TOrigamPagination>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {page, pageCount, startIndex, stopIndex, itemsLength, itemsPerPage, setItemsPerPage} = usePagination()
 

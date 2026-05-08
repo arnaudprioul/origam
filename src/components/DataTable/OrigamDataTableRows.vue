@@ -103,6 +103,10 @@
 
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableRowsProps>(), {
 		loadingText: 'origam.dataIterator.loadingText',
 		noDataText: 'origam.noDataText'
@@ -114,6 +118,10 @@
 
 	/** Fixed number of skeleton placeholder rows when kind='skeleton'. */
 	const SKELETON_ROW_COUNT = 5
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {loaderConfig} = useLoader(props, 'line')
 

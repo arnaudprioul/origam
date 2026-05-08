@@ -52,6 +52,10 @@
 
 	import { forwardRefs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITooltipProps>(), {
 		closeOnBack: false,
 		location: INLINE.RIGHT,
@@ -79,6 +83,10 @@
 	// Wired here so the inline declaration on `.origam-tooltip__content`
 	// wins via inline-style specificity.
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isActive = useVModel(props, 'modelValue')

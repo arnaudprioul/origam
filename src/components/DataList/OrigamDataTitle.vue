@@ -72,9 +72,17 @@
 	import type { IDataTitleProps } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTitleProps>(), {})
 
 	const {filterProps} = useProps<IDataTitleProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)

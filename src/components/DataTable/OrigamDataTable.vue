@@ -153,6 +153,10 @@
 
 	import { computed, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableProps>(), {
 		page: 1,
 		itemsPerPage: 10,
@@ -206,6 +210,10 @@
 	})
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {items} = useDataTableItems(props, columns)
 

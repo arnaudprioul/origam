@@ -70,9 +70,17 @@
 
 	import { computed, CSSProperties, mergeProps, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeaderCellProps>(), {})
 
 	const {filterProps} = useProps<IDataTableHeaderCellProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()

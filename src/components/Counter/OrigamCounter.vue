@@ -32,6 +32,10 @@
 
 	import { computed, StyleValue, toRef } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICounterProps>(), {
 		value: 0,
 		tag: 'div',
@@ -46,6 +50,10 @@
 	// color="primary">` was a silent no-op despite the type system
 	// promising otherwise. Audit-fix.
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {isBooted} = useSsrBoot()

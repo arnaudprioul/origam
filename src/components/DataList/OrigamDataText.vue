@@ -69,9 +69,17 @@
 	import type { IDataTextProps } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTextProps>(), {})
 
 	const {filterProps} = useProps<IDataTextProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)

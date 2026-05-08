@@ -198,6 +198,10 @@
 
 	import { computed, mergeProps, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeadersCellMobileProps>(), {})
 
 	const emits = defineEmits(['click:clear', 'click:prepend', 'click:append'])
@@ -207,6 +211,10 @@
 	const {t} = useLocale()
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()

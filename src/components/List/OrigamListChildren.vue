@@ -88,6 +88,10 @@
 
 	import type { IInternalListItemChildren, IListItemChildren } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IListItemChildren>(), {})
 
 	const {filterProps} = useProps<IListItemChildren>(props)

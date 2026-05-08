@@ -96,11 +96,19 @@
 
 	const vm = getCurrentInstance('dataTableRow')
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableRowProps>(), {})
 
 	const emits = defineEmits(['expand', 'select'])
 
 	const {filterProps} = useProps<IDataTableRowProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {displayClasses, mobile} = useDisplay(props, 'origam-data-table-row')
 	const {isSelected, toggleSelect, someSelected, allSelected, selectAll} = useSelection()

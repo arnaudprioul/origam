@@ -44,6 +44,10 @@
 
 	import type { TSheetSnapId, TSheetSnapPoint } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ISheetProps>(), {
 		tag: 'div',
 		swipeable: false,
@@ -63,6 +67,10 @@
 	// for tokenised intents; `colorStyles` keeps the legacy raw-color
 	// fallback. Both are wired in parallel (strategy "a") so consumers
 	// transitioning from hex to intents never see a regression.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {dimensionStyles} = useDimension(props)
@@ -186,6 +194,10 @@
 			props.style
 		] as StyleValue
 	})
+
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 
 	const sheetClasses = computed(() => {
 		return [

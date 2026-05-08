@@ -39,6 +39,10 @@
 		ariaLabel?: string
 	}
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITimelinePropsWithTag>(), {
 		side: 'start',
 		truncateLine: false,
@@ -46,6 +50,10 @@
 	})
 
 	const { filterProps } = useProps<ITimelinePropsWithTag>(props)
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
@@ -58,6 +66,10 @@
 			return typeof c === 'string' ? c : undefined
 		}
 	})
+
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 
 	const timelineClasses = computed(() => [
 		'origam-timeline',

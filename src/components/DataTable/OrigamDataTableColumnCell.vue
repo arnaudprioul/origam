@@ -22,12 +22,20 @@
 
 	import { computed, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableColumnProps>(), {
 		align: ALIGN.START,
 		tag: 'td'
 	})
 
 	const {filterProps} = useProps<IDataTableColumnProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {dimensionStyles} = useDimension(props)
 	const {paddingStyles, paddingClasses} = usePadding(props)

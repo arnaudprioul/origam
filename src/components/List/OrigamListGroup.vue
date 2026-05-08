@@ -64,6 +64,10 @@
 
 	import type { IListActivatorProps, IListGroupProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IListGroupProps>(), {
 		tag: 'div',
 		expandIcon: MDI_ICONS.CHEVRON_DOWN,
@@ -84,6 +88,10 @@
 	}))
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)

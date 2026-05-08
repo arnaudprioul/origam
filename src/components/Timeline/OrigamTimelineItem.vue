@@ -50,6 +50,10 @@
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITimelineItemProps & { description?: string }>(), {
 		side: 'start',
 		isLast: false,
@@ -61,6 +65,10 @@
 	const timelineCtx = inject(TIMELINE_CONTEXT_KEY, null)
 
 	const { filterProps } = useProps<ITimelineItemProps>(props)
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
@@ -124,6 +132,10 @@
 		}
 		return side
 	})
+
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 
 	const itemClasses = computed(() => [
 		'origam-timeline-item',

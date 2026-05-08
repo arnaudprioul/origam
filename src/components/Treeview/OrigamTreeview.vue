@@ -32,6 +32,10 @@
 
 	import type { ITreeviewProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITreeviewProps & { ariaLabel?: string }>(), {
 		selectMode: 'none',
 		selectableNodes: 'leaf',
@@ -161,6 +165,10 @@
 	 * Class & Style
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const { colorClasses, colorStyles } = useColorEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)

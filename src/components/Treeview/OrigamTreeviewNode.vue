@@ -103,6 +103,10 @@
 
 	defineOptions({ name: 'OrigamTreeviewNode' })
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITreeviewNodeProps>(), {
 		depth: 0
 	})

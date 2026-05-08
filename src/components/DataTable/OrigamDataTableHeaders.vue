@@ -65,12 +65,20 @@
 
 	import { computed, ref, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeadersProps>(), {})
 
 	const {filterProps} = useProps<IDataTableHeadersProps>(props)
 
 	const origamDataTableHeadersCellRef = ref<TOrigamDataTableHeadersCell>()
 	const origamDataTableHeadersCellMobileRef = ref<TOrigamDataTableHeadersCellMobile>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()

@@ -60,9 +60,17 @@
 
 	import { computed, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableGroupHeaderRowProps>(), {})
 
 	const {filterProps} = useProps<IDataTableGroupHeaderRowProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {isGroupOpen, toggleGroup, extractRows} = useGroupBy()
 	const {isSelected, isSomeSelected, select} = useSelection()

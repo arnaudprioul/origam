@@ -22,6 +22,10 @@
 
 	import type { ILabelEmits, ILabelProps, ILabelSlots } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const _props = withDefaults(defineProps<ILabelProps>(), {
 		tag: 'label'
 	})
@@ -38,6 +42,10 @@
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
