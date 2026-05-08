@@ -151,10 +151,14 @@
 		lang="scss"
 		scoped
 >
-	@keyframes origam-skeleton-pulse {
-		0%   { opacity: var(--origam-skeleton---opacity-min, 0.4) }
-		50%  { opacity: var(--origam-skeleton---opacity-max, 0.8) }
-		100% { opacity: var(--origam-skeleton---opacity-min, 0.4) }
+	@keyframes origam-skeleton-wave {
+		0%   { background-position: -200% 0 }
+		100% { background-position: 200% 0 }
+	}
+
+	@keyframes origam-skeleton-spin {
+		from { transform: rotate(0deg) }
+		to   { transform: rotate(360deg) }
 	}
 
 	.origam-skeleton {
@@ -163,10 +167,6 @@
 		border-radius: var(--origam-skeleton---border-radius);
 		width: 100%;
 		height: var(--origam-skeleton---text-height);
-
-		&--pulse {
-			animation: origam-skeleton-pulse var(--origam-skeleton---animation-duration, 1500ms) ease-in-out infinite;
-		}
 
 		&--text {
 			height: var(--origam-skeleton---text-height);
@@ -186,6 +186,36 @@
 		&--card,
 		&--list-item {
 			display: none;
+		}
+
+		&--text.origam-skeleton--pulse,
+		&--rectangular.origam-skeleton--pulse {
+			background-image: linear-gradient(
+				90deg,
+				transparent 0%,
+				var(
+					--origam-skeleton---wave-color,
+					color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)
+				) 50%,
+				transparent 100%
+			);
+			background-repeat: no-repeat;
+			background-size: 200% 100%;
+			animation: origam-skeleton-wave var(--origam-skeleton---animation-duration, 1500ms) linear infinite;
+		}
+
+		&--circular.origam-skeleton--pulse {
+			background:
+				conic-gradient(
+					from 0deg,
+					transparent 0deg,
+					var(
+						--origam-skeleton---wave-color,
+						color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)
+					) 90deg,
+					var(--origam-skeleton---background-color) 270deg
+				);
+			animation: origam-skeleton-spin var(--origam-skeleton---animation-duration, 1500ms) linear infinite;
 		}
 	}
 
