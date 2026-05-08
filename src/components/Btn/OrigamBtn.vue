@@ -703,6 +703,8 @@
 
 		&--loading {
 			pointer-events: none;
+			position: relative;
+			overflow: hidden;
 
 			#{$this}__content,
 			#{$this}__prepend,
@@ -716,6 +718,23 @@
 				justify-content: center;
 				grid-template-areas: none;
 				grid-template-columns: none;
+			}
+
+			:deep(.origam-progress--linear) {
+				position: absolute;
+				inset-inline: 0;
+				inset-block-end: 0;
+				width: 100%;
+				height: var(--origam-btn__progress---linear-height, 3px);
+				margin: 0;
+			}
+
+			:deep(.origam-skeleton--rectangular) {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				border-radius: inherit;
 			}
 		}
 
