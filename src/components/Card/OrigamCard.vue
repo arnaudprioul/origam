@@ -464,6 +464,42 @@
 			--origam-card---border-end-start-radius: var(--origam-card---border-radius-rounded, 4px);
 		}
 
+		&--loading {
+			min-width: var(--origam-card---loading-min-width, 240px);
+			min-height: var(--origam-card---loading-min-height, 120px);
+		}
+
+		&__loader {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			min-height: var(--origam-card__loader---min-height, 4px);
+
+			:deep(.origam-progress--linear) {
+				position: absolute;
+				inset-inline: 0;
+				inset-block-start: 0;
+				width: 100%;
+				height: var(--origam-card__progress---linear-height, 4px);
+			}
+
+			:deep(.origam-progress--circular) {
+				margin: var(--origam-card__progress---circular-margin, 24px auto);
+			}
+
+			:deep(.origam-skeleton-wrapper--card),
+			:deep(.origam-skeleton--rectangular),
+			:deep(.origam-skeleton--text) {
+				width: 100%;
+			}
+
+			:deep(.origam-skeleton-wrapper--card) {
+				min-height: var(--origam-card__loader---min-height-skeleton, 200px);
+			}
+		}
+
 		&--rounded-shaped {
 			border-start-start-radius: var(--origam-card---border-radius-rounded, 16px);
 			border-start-end-radius: 0;
