@@ -9,6 +9,9 @@ import type { TAnchor } from '../../types'
 
 import { parseAnchor } from '../../utils'
 
+/*********************************************************
+ * useLocation
+ ********************************************************/
 export function useLocation (props: ILocationProps, opposite = false, offset?: (side: string) => number) {
 
     const locationStyles = computed(() => {
@@ -60,6 +63,9 @@ export function useLocation (props: ILocationProps, opposite = false, offset?: (
     return {locationStyles}
 }
 
+/*********************************************************
+ * useLocationStrategies
+ ********************************************************/
 export function useLocationStrategies (
     props: ILocationStrategyProps,
     data: ILocationStrategyData

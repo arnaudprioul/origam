@@ -19,6 +19,9 @@ import type { TDirectionBoth } from "../../types"
 
 import { convertToUnit, findChildrenWithProvide, generateLayers, getCurrentInstance, getUid, int } from '../../utils'
 
+/*********************************************************
+ * useLayout
+ ********************************************************/
 export function useLayout () {
     const layout = inject(ORIGAM_LAYOUT_KEY)
 
@@ -34,6 +37,9 @@ export function useLayout () {
     }
 }
 
+/*********************************************************
+ * useLayoutItem
+ ********************************************************/
 export function useLayoutItem (options: {
     id: string | undefined
     order: Ref<number>
@@ -95,6 +101,9 @@ export function useLayoutItem (options: {
     }
 }
 
+/*********************************************************
+ * useCreateLayout
+ ********************************************************/
 export function useCreateLayout (props: { id?: string, overlaps?: Array<string>, fullHeight?: boolean }) {
     const parentLayout = inject(ORIGAM_LAYOUT_KEY, null)
 

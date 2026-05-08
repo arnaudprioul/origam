@@ -123,6 +123,9 @@ function tokenForegroundForIntent (intent: TIntent): string {
 // Legacy `useColor` API (kept for backward compat — used by ~49 components)
 // ────────────────────────────────────────────────────────────────────────────
 
+/*********************************************************
+ * useColor
+ ********************************************************/
 export function useColor (colors: ComputedRef<{ background?: TColor, text?: TColor }>) {
     // Classes-first companion: when bg/text values resolve to a utility
     // intent, expose the matching `.origam--bg-*` / `.origam--color-*`
@@ -204,6 +207,9 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
     return {colorClasses, colorStyles}
 }
 
+/*********************************************************
+ * useBothColor
+ ********************************************************/
 export function useBothColor<T extends Record<K, TColor>, K extends string> (bgColorProps: T | Ref<TColor> | ComputedRef<TColor>, colorProps: T | Ref<TColor> | ComputedRef<TColor>, name?: K) {
     const bothColors = computed(() => {
         return {
@@ -215,6 +221,9 @@ export function useBothColor<T extends Record<K, TColor>, K extends string> (bgC
     return useColor(bothColors)
 }
 
+/*********************************************************
+ * useTextColor
+ ********************************************************/
 export function useTextColor<T extends Record<K, TColor>, K extends string> (
     props: T | Ref<TColor>,
     name?: K
@@ -228,6 +237,9 @@ export function useTextColor<T extends Record<K, TColor>, K extends string> (
     return {textColorClasses, textColorStyles}
 }
 
+/*********************************************************
+ * useBackgroundColor
+ ********************************************************/
 export function useBackgroundColor<T extends Record<K, TColor>, K extends string> (
     props: T | Ref<TColor>,
     name?: K
@@ -258,6 +270,9 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
 //   - When in hover state with no `hoverColor` override, intent values use
 //     the `bgHover`/`fgHover` slot of the same intent's action set.
 
+/*********************************************************
+ * useColorEffect
+ ********************************************************/
 export function useColorEffect (
     props: IColorProps,
     isHover: Ref<boolean> | ComputedRef<boolean> = ref(false),

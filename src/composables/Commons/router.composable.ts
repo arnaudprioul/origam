@@ -14,16 +14,25 @@ import {
 } from 'vue-router'
 
 
+/*********************************************************
+ * useRoute
+ ********************************************************/
 export function useRoute (): Ref<RouteLocationNormalizedLoaded | undefined> {
     const vm = getCurrentInstance('useRoute')
 
     return computed(() => vm?.proxy?.$route)
 }
 
+/*********************************************************
+ * useRouter
+ ********************************************************/
 export function useRouter (): Router | undefined {
     return getCurrentInstance('useRouter')?.proxy?.$router
 }
 
+/*********************************************************
+ * useLink
+ ********************************************************/
 export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['attrs']): ILink {
     const RouterLink = resolveDynamicComponent('RouterLink') as typeof _RouterLink | string
 
@@ -63,6 +72,9 @@ export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['att
 
 let inTransition = false
 
+/*********************************************************
+ * useBackButton
+ ********************************************************/
 export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext) => void) {
     let popped = false
     let removeBefore: (() => void) | undefined

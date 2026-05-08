@@ -166,6 +166,9 @@ export interface IUseCssSupport {
     has: (feature: TCssFeatureName) => ComputedRef<boolean>
 }
 
+/*********************************************************
+ * useCssSupport
+ ********************************************************/
 export function useCssSupport (): IUseCssSupport {
     ensureInitialized()
 
@@ -206,6 +209,10 @@ export function useCssSupport (): IUseCssSupport {
  *
  * @internal
  */
+
+/*********************************************************
+ * _resetCssSupportCache
+ ********************************************************/
 export function _resetCssSupportCache () {
     _cache.clear()
     _initialized = false

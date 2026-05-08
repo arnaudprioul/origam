@@ -14,6 +14,10 @@ let _id = 0
  * @param css
  * @param options
  */
+
+/*********************************************************
+ * useStyleTag
+ ********************************************************/
 export function useStyleTag (
     css: MaybeRef<string>,
     options: IStyleTagOptions = {}
@@ -81,6 +85,9 @@ export function useStyleTag (
     }
 }
 
+/*********************************************************
+ * useStyle
+ ********************************************************/
 export function useStyle (styles: ComputedRef, uniq = undefined, name = getCurrentInstanceName()) {
     const id = computed(() => {
         return uniq ?? `${name}-${getUid()}`

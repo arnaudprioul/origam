@@ -9,6 +9,9 @@ import { DateAdapter } from "../../services"
 
 import { createInstance, mergeDeep } from "../../utils"
 
+/*********************************************************
+ * createDate
+ ********************************************************/
 export function createDate (options: IDateOptions | undefined, locale: ILocaleInstance) {
     const _options = mergeDeep({
         adapter: DateAdapter,
@@ -63,6 +66,9 @@ export function createDate (options: IDateOptions | undefined, locale: ILocaleIn
     }
 }
 
+/*********************************************************
+ * useDate
+ ********************************************************/
 export function useDate () {
     const options = inject(ORIGAM_DATE_OPTIONS_KEY)
 

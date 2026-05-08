@@ -43,6 +43,10 @@ function camelize (str: string): string {
  * that wants to read another component's defaults). Defaults to the current
  * instance's kebab-cased name (`getCurrentInstanceName()`).
  */
+
+/*********************************************************
+ * useDefaults
+ ********************************************************/
 export function useDefaults<T extends Record<string, any>> (
     props: T,
     name = getCurrentInstanceName()
@@ -131,6 +135,10 @@ export function useDefaults<T extends Record<string, any>> (
  *   - `scoped` — same effect as `reset`, declarative variant.
  *   - default — deep-merge parent defaults under this provider's defaults.
  */
+
+/*********************************************************
+ * provideDefaults
+ ********************************************************/
 export function provideDefaults (
     defaults?: Ref<IDefault> | IDefault,
     options?: {
@@ -169,6 +177,10 @@ export function provideDefaults (
  * Plugin-side factory used by `createOrigam()` to seed the root defaults
  * map from the host app's options.
  */
+
+/*********************************************************
+ * createDefaults
+ ********************************************************/
 export function createDefaults (options?: IDefault): Ref<IDefault> {
     return ref(options ?? {})
 }

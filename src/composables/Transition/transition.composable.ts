@@ -4,6 +4,9 @@ import { convertToUnit } from '../../utils'
 
 import { Component, computed, inject, nextTick, ShallowRef, shallowRef, Transition, TransitionGroup } from 'vue'
 
+/*********************************************************
+ * useTransition
+ ********************************************************/
 export function useTransition (props: ITransitionProps) {
 
     const isDisabled = computed(() => {
@@ -16,6 +19,9 @@ export function useTransition (props: ITransitionProps) {
     return {name: transitionName, isDisabled}
 }
 
+/*********************************************************
+ * useCssTransition
+ ********************************************************/
 export function useCssTransition (props: ITransitionProps) {
 
     const {name, isDisabled} = useTransition(props)
@@ -81,6 +87,9 @@ export function useCssTransition (props: ITransitionProps) {
     return {tag, name, isDisabled, transitionProps}
 }
 
+/*********************************************************
+ * useWindowTransition
+ ********************************************************/
 export function useWindowTransition (props: ITransitionProps) {
 
     const {name, isDisabled} = useTransition(props)

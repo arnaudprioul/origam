@@ -3,6 +3,9 @@ import type { IAdjacentInnerProps, IAdjacentProps } from '../../interfaces'
 
 import { getCurrentInstance } from "../../utils"
 
+/*********************************************************
+ * useAdjacent
+ ********************************************************/
 export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | ComputedRef, appendIcon?: Ref | ComputedRef) {
     const vm = getCurrentInstance('OrigamAdjacent')
 
@@ -47,6 +50,9 @@ export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | Computed
     }
 }
 
+/*********************************************************
+ * useAdjacentInner
+ ********************************************************/
 export function useAdjacentInner (props: IAdjacentInnerProps) {
     const vm = getCurrentInstance('OrigamAdjacentInner')
 

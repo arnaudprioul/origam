@@ -5,6 +5,9 @@ import { ORIGAM_DATA_TABLE_PAGINATION_KEY } from '../../consts'
 import type { IDataTableGroup, IDataTablePaginationProps, IDataTableProvidePagination } from '../../interfaces'
 import { clamp, getCurrentInstance } from '../../utils'
 
+/*********************************************************
+ * createPagination
+ ********************************************************/
 export function createPagination (props: IDataTablePaginationProps) {
     const page = useVModel(props, 'page', undefined, value => +(value ?? 1))
     const itemsPerPage = useVModel(props, 'itemsPerPage', undefined, value => +(value ?? 10))
@@ -12,6 +15,9 @@ export function createPagination (props: IDataTablePaginationProps) {
     return {page, itemsPerPage}
 }
 
+/*********************************************************
+ * providePagination
+ ********************************************************/
 export function providePagination (options: {
     page: Ref<number>
     itemsPerPage: Ref<number>
@@ -73,6 +79,9 @@ export function providePagination (options: {
     return data
 }
 
+/*********************************************************
+ * usePagination
+ ********************************************************/
 export function usePagination () {
     const data = inject(ORIGAM_DATA_TABLE_PAGINATION_KEY)
 
@@ -81,6 +90,9 @@ export function usePagination () {
     return data
 }
 
+/*********************************************************
+ * usePaginatedItems
+ ********************************************************/
 export function usePaginatedItems<T> (options: {
     items: Ref<readonly (T | IDataTableGroup<T>)[]>
     startIndex: Ref<number>

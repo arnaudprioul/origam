@@ -15,6 +15,9 @@ import type {
 
 import { createVueI18nAdapter, getCurrentInstanceName, mergeDeep } from "../../utils"
 
+/*********************************************************
+ * createLocale
+ ********************************************************/
 export function createLocale (options?: ILocaleOptions & IRtlOptions) {
     const i18nOptions = mergeDeep({
         locale: 'en',
@@ -30,6 +33,9 @@ export function createLocale (options?: ILocaleOptions & IRtlOptions) {
     return {...locale, ...rtl}
 }
 
+/*********************************************************
+ * useLocale
+ ********************************************************/
 export function useLocale () {
     const locale = inject(ORIGAM_LOCALE_KEY)
 
@@ -38,6 +44,9 @@ export function useLocale () {
     return locale
 }
 
+/*********************************************************
+ * provideLocale
+ ********************************************************/
 export function provideLocale (props: ILocaleProps & IRtlProps) {
     const locale = inject(ORIGAM_LOCALE_KEY)
 
@@ -53,6 +62,9 @@ export function provideLocale (props: ILocaleProps & IRtlProps) {
     return data
 }
 
+/*********************************************************
+ * createRtl
+ ********************************************************/
 export function createRtl (i18n: ILocaleInstance, options?: IRtlOptions): IRtlInstance {
     const rtl = ref<Record<string, boolean>>(options?.rtl ?? LOCALE_RTL_DEFAULT)
     const isRtl = computed(() => rtl.value[i18n.current.value] ?? false)
@@ -63,6 +75,9 @@ export function createRtl (i18n: ILocaleInstance, options?: IRtlOptions): IRtlIn
     }
 }
 
+/*********************************************************
+ * useRtl
+ ********************************************************/
 export function useRtl (name = getCurrentInstanceName()) {
     const locale = inject(ORIGAM_LOCALE_KEY)
 
@@ -75,6 +90,9 @@ export function useRtl (name = getCurrentInstanceName()) {
     return {isRtl: locale.isRtl, rtlClasses}
 }
 
+/*********************************************************
+ * provideRtl
+ ********************************************************/
 export function provideRtl (locale: ILocaleInstance, rtl: IRtlInstance['rtl'], props: IRtlProps): IRtlInstance {
     const isRtl = computed(() => props.rtl ?? rtl.value[locale.current.value] ?? false)
 

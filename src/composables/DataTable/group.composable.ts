@@ -11,12 +11,18 @@ import type {
 } from '../../interfaces'
 import { flattenItems, groupItems } from '../../utils'
 
+/*********************************************************
+ * createGroupBy
+ ********************************************************/
 export function createGroupBy (props: IDataTableGroupProps) {
     const groupBy = useVModel(props, 'groupBy', [])
 
     return {groupBy}
 }
 
+/*********************************************************
+ * provideGroupBy
+ ********************************************************/
 export function provideGroupBy (options: {
     groupBy: Ref<Array<IDataTableSortItem>>,
     sortBy: Ref<Array<IDataTableSortItem>>
@@ -66,6 +72,9 @@ export function provideGroupBy (options: {
     return data
 }
 
+/*********************************************************
+ * useGroupedItems
+ ********************************************************/
 export function useGroupedItems<T extends IDataTableGroupableItem> (
     items: ComputedRef<Array<T>>,
     groupBy: Ref<Array<IDataTableSortItem>>,
@@ -82,6 +91,9 @@ export function useGroupedItems<T extends IDataTableGroupableItem> (
     return {flatItems}
 }
 
+/*********************************************************
+ * useGroupBy
+ ********************************************************/
 export function useGroupBy () {
     const data = inject(ORIGAM_DATA_TABLE_GROUP_KEY)
 
