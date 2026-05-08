@@ -268,8 +268,9 @@
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataListStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -296,8 +297,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

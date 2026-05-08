@@ -157,8 +157,9 @@
 		}
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const { colorClasses, colorStyles } = useColorEffect(props)
 	const { densityClasses } = useDensity(props)
@@ -176,8 +177,9 @@
 		props.class
 	])
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		isExpanded,

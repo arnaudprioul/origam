@@ -251,8 +251,9 @@
 		e.stopPropagation()
 	}
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersCellClasses = computed(() => {
 		return [
 			props.class
@@ -264,8 +265,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

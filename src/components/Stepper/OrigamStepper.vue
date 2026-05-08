@@ -106,8 +106,9 @@
 		`origam-stepper__connector--${connectorStatus(index)}`
 	]
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const { colorClasses, colorStyles } = useColorEffect(props)
 	const { densityClasses } = useDensity(props)
@@ -131,8 +132,9 @@
 
 	const { id, css, load, isLoaded, unload } = useStyle(stepperStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,

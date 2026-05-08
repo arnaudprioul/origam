@@ -56,8 +56,9 @@
 		return origamDataTableHeaderCellRef.value?.[0]?.filterProps(props)
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersCellClasses = computed(() => {
 		return [
 			props.class
@@ -69,8 +70,9 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

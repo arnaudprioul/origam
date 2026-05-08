@@ -54,8 +54,9 @@
 		return props.max ? `${props.value} / ${props.max}` : String(props.value)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const counterStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -73,8 +74,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

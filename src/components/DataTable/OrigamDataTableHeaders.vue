@@ -101,8 +101,9 @@
 		return origamDataTableHeadersCellMobileRef.value?.filterProps(props)
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersClasses = computed(() => {
 		return [
 			'origam-data-table-headers',
@@ -120,8 +121,9 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

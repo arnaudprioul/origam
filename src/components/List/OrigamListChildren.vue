@@ -102,8 +102,9 @@
 		})
 	})
 
-	// SLOTS
-
+	/*********************************************************
+	 * Slots
+	 ********************************************************/
 	const hasSubheaderTitle = computed(() => {
 		return slots.subheaderTitle
 	})
@@ -121,8 +122,9 @@
 		return item.children && item.children.length
 	}
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

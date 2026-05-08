@@ -32,8 +32,9 @@
 	const {dimensionStyles} = useDimension(props)
 	const {paddingStyles, paddingClasses} = usePadding(props)
 
-	// CLASSES && STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableColumnClasses = computed(() => {
 		return [
 			'origam-data-table-cell',
@@ -58,8 +59,9 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

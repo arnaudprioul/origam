@@ -161,6 +161,9 @@
 
 	import type { TOrigamProgress } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 	const attrs = useAttrs()
 
 	const _props = withDefaults(defineProps<IBtnProps>(), {
@@ -192,6 +195,9 @@
 
 	useSelectLink(link, group?.select)
 
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
 	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
 	const {isActive: active} = useActive(props)
 
@@ -206,7 +212,14 @@
 
 		return group?.isSelected.value
 	})
+	/*********************************************************
+	 * Disabled
+	 ********************************************************/
 	const isDisabled = computed(() => group?.disabled.value || props.disabled)
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 	const valueAttr = computed(() => {
 		if (props.value === undefined || typeof props.value === 'symbol') return undefined
 
@@ -214,6 +227,9 @@
 				? JSON.stringify(props.value, null, 0)
 				: props.value
 	})
+	/*********************************************************
+	 * Ripple
+	 ********************************************************/
 	const isRipple = computed(() => {
 		return [
 			!isDisabled.value && props.ripple,
@@ -222,6 +238,9 @@
 		]
 	})
 
+	/*********************************************************
+	 * Composables — visual chrome (size, density, color, …)
+	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
@@ -250,6 +269,9 @@
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
 
+	/*********************************************************
+	 * Click handler
+	 ********************************************************/
 	const handleClick = (e: MouseEvent) => {
 		if (
 				isDisabled.value ||
@@ -273,6 +295,9 @@
 		// previous state.
 	}
 
+	/*********************************************************
+	 * Icon & Loader
+	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!(icon.value && props.icon !== true)
 	})
@@ -301,8 +326,9 @@
 				cfg.overrides)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const btnStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -352,8 +378,9 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(btnStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		group,
 		filterProps,

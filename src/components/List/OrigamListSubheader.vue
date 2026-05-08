@@ -43,8 +43,9 @@
 		return slots.default || props.title
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const listSubheaderStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -71,8 +72,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

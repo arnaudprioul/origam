@@ -96,8 +96,9 @@
 		}
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const orientation = computed(() => stepper?.orientation.value ?? 'horizontal')
 
 	const itemClasses = computed(() => [
@@ -115,8 +116,9 @@
 		`origam-stepper-item__indicator--${resolvedStatus.value}`
 	])
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		resolvedStatus

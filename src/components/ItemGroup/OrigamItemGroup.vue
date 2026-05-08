@@ -55,8 +55,9 @@
 
 	const slots = useSlots()
 
-	// CLASS
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const itemGroupClasses = computed(() => {
 		return [
 			'origam-item-group',
@@ -69,8 +70,9 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		next,

@@ -120,8 +120,9 @@
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'class', 'style', 'modelValue', 'location', 'origin', 'transition', 'disableGlobalStack', 'absolute', 'persistent', 'id'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const tooltipStyles = computed(() => {
 		return [
 			props.style
@@ -134,8 +135,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
 </script>
 

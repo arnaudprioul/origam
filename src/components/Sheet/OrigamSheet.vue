@@ -205,8 +205,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		// Imperative gesture handles for advanced consumers (test hooks,

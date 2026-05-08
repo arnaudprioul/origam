@@ -198,6 +198,9 @@
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, toRef, useSlots, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 	const props = withDefaults(defineProps<IDatePickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
@@ -224,6 +227,9 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & adapter
+	 ********************************************************/
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -252,11 +258,17 @@
 		model.value = value
 	}
 
+	/*********************************************************
+	 * Color
+	 ********************************************************/
 	// Phase 3 (Vague B) — class-first companion alongside inline styles.
 	// `textColorClasses` carries the global `.origam--color-{intent}` for
 	// tokenised values; `textColorStyles` keeps the legacy fallback path.
 	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
 
+	/*********************************************************
+	 * Menu state & selection
+	 ********************************************************/
 	const menuState = useVModel(props, 'menu')
 	const menu = computed<boolean>({
 		get: () => menuState.value,
@@ -308,6 +320,9 @@
 		}
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 	const handleClear = () => {
 		model.value = []
 
@@ -341,6 +356,9 @@
 		}
 	}
 
+	/*********************************************************
+	 * Chips
+	 ********************************************************/
 	const chipSlotProps = (item: string) => {
 		return {
 			closable: props.closableChips,
@@ -376,6 +394,9 @@
 		e.stopPropagation()
 	}
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
@@ -394,6 +415,9 @@
 		])
 	})
 
+	/*********************************************************
+	 * Derived state
+	 ********************************************************/
 	const isDirty = computed(() => {
 		return model.value.length > 0
 	})
@@ -414,8 +438,9 @@
 		deep: true
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const datePickerFieldStyles = computed(() => {
 		return [
 			props.style
@@ -432,8 +457,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose(forwardRefs({
 		filterProps,
 		isFocused,

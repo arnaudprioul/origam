@@ -122,8 +122,9 @@
 		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

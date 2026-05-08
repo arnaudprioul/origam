@@ -106,8 +106,9 @@
 		}
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableGroupHeaderRowClasses = computed(() => {
 		return [
 			'origam-data-table-group-header-row',
@@ -123,8 +124,9 @@
 		] as StyleValue
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

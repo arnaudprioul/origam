@@ -105,8 +105,9 @@
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTextStyles = computed(() => {
 		return [
 			paddingStyles.value,
@@ -126,8 +127,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

@@ -305,8 +305,9 @@
 		return origamDataTableFooterRef.value?.filterProps(props, ['class', 'style', 'id'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableStyles = computed(() => {
 		return [
 			props.style
@@ -323,8 +324,9 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
