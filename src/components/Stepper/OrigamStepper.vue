@@ -179,6 +179,7 @@
 			.origam-stepper__connector {
 				width: var(--origam-stepper---connector-thickness, 2px);
 				height: var(--origam-stepper---gap, 16px);
+				min-width: 0;
 				min-height: 16px;
 				margin-inline-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
 				margin-block: 4px;
