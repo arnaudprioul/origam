@@ -747,8 +747,14 @@
 		// position-top: 0`). Label, prepend, append all stay visible so
 		// the user reads what's being processed — same pattern as
 		// OrigamCard's loader.
+		//
+		// Note: `:deep()` is required around `.origam-btn__progress`
+		// because Vue 3 scoped CSS does NOT match the ROOT of a child
+		// component (`<origam-progress>`), even when the class is
+		// propagated through. Without `:deep()` the selector silently
+		// no-ops.
 		&--loader-line {
-			#{$this}__progress {
+			:deep(#{$this}__progress) {
 				position: absolute;
 				inset-inline: 0;
 				inset-block-end: var(--origam-btn__progress---linear-position, 0);
@@ -757,6 +763,7 @@
 				margin: 0;
 				z-index: 1;
 				pointer-events: none;
+				height: var(--origam-btn__progress---linear-height, 3px);
 			}
 
 			:deep(.origam-progress--linear) {
@@ -768,7 +775,9 @@
 		// Circular spinner — centred absolutely so it sits over the
 		// (invisible-but-still-laid-out) label. Hiding the content via
 		// opacity preserves the btn's natural width while the spinner
-		// stays exactly in the middle.
+		// stays exactly in the middle. `:deep()` required for the same
+		// reason as the linear case (`.origam-btn__progress` sits on a
+		// child-component root).
 		&--loader-circular {
 			#{$this}__content,
 			#{$this}__prepend,
@@ -776,7 +785,7 @@
 				opacity: 0;
 			}
 
-			#{$this}__progress {
+			:deep(#{$this}__progress) {
 				position: absolute;
 				inset: 0;
 				display: flex;
