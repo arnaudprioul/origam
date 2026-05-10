@@ -23,11 +23,11 @@
 
 		<slot name="wrapper">
 			<origam-loader
-					:loading="loading"
+					:loading="isSkeletonLoading"
 					class="origam-btn__loader"
 			>
 				<template
-						v-if="hasLoader"
+						v-if="hasLoader && isSkeletonLoading"
 						#loader
 				>
 					<slot
@@ -35,23 +35,23 @@
 							v-bind="progressProps"
 					>
 						<origam-skeleton
-								v-if="loaderConfig.kind === 'skeleton'"
 								variant="rectangular"
 								:width="'100%'"
 								:height="'100%'"
 								v-bind="loaderConfig.overrides"
 						/>
-
-						<origam-progress
-								v-else
-								ref="origamProgressRef"
-								v-bind="progressProps"
-								:active="true"
-						/>
 					</slot>
 				</template>
 
 				<template #default>
+					<origam-progress
+							v-if="isOverlayLoading"
+							ref="origamProgressRef"
+							class="origam-btn__progress"
+							v-bind="progressProps"
+							:active="true"
+					/>
+
           <span
 		          v-if="hasPrepend"
 		          key="prepend"
@@ -313,6 +313,26 @@
 	})
 	const hasLoader = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
+	})
+
+	// Skeleton mode REPLACES the btn content entirely — OrigamLoader's
+	// v-if removes the default slot from the DOM, so the btn collapses
+	// to the skeleton's bounds. Used as the `:loading` prop of the
+	// wrapping OrigamLoader.
+	const isSkeletonLoading = computed(() => {
+		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
+	})
+
+	// Line / circular loaders OVERLAY the regular content (so the label
+	// stays in the DOM, reserving the btn's natural width and — for
+	// linear — staying visible behind the progress strip). Driven inside
+	// the #default slot of OrigamLoader, which renders only when
+	// `:loading` is false (= non-skeleton modes).
+	const isOverlayLoading = computed(() => {
+		return loaderConfig.value.isActive && (
+			loaderConfig.value.kind === 'line' ||
+			loaderConfig.value.kind === 'circular'
+		)
 	})
 
 	/*********************************************************
@@ -712,56 +732,59 @@
 			pointer-events: none;
 			position: relative;
 			overflow: hidden;
-
-			#{$this}__loader {
-				display: inline-flex;
-				align-items: center;
-				justify-content: center;
-				grid-template-areas: none;
-				grid-template-columns: none;
-			}
 		}
 
-		// Linear / number progress — strip overlay at top OR bottom of the
-		// btn (configurable via the `--linear-position` token). Label,
-		// prepend and append stay visible (like OrigamCard's loader) so
-		// the user reads what's being processed.
-		&--loader-line,
-		&--loader-number {
-			:deep(.origam-progress--linear) {
+		// Linear progress — strip overlay at the BOTTOM edge of the btn
+		// (configurable to the top via `--origam-btn__progress---linear-
+		// position-top: 0`). Label, prepend, append all stay visible so
+		// the user reads what's being processed — same pattern as
+		// OrigamCard's loader.
+		&--loader-line {
+			#{$this}__progress {
 				position: absolute;
 				inset-inline: 0;
 				inset-block-end: var(--origam-btn__progress---linear-position, 0);
 				inset-block-start: var(--origam-btn__progress---linear-position-top, auto);
 				width: 100%;
-				height: var(--origam-btn__progress---linear-height, 3px);
 				margin: 0;
 				z-index: 1;
+				pointer-events: none;
+			}
+
+			:deep(.origam-progress--linear) {
+				width: 100%;
+				height: var(--origam-btn__progress---linear-height, 3px);
 			}
 		}
 
-		// Circular spinner — label/prepend/append disappear so the
-		// spinner sits alone in the centre of the btn.
+		// Circular spinner — centred absolutely so it sits over the
+		// (invisible-but-still-laid-out) label. Hiding the content via
+		// opacity preserves the btn's natural width while the spinner
+		// stays exactly in the middle.
 		&--loader-circular {
 			#{$this}__content,
 			#{$this}__prepend,
 			#{$this}__append {
 				opacity: 0;
 			}
+
+			#{$this}__progress {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				pointer-events: none;
+			}
 		}
 
-		// Skeleton — rectangular placeholder fills the whole btn, label
-		// disappears. The btn keeps a min-width so it stays at a usable
-		// size even when the label was the only thing dictating its width.
+		// Skeleton — rectangular placeholder REPLACES the btn content
+		// entirely (OrigamLoader's #loader branch). The btn collapses to
+		// the skeleton's natural size unless we give it a sensible
+		// min-width / min-height.
 		&--loader-skeleton {
 			min-width: var(--origam-btn---loader-skeleton-min-width, 96px);
 			min-height: var(--origam-btn---loader-skeleton-min-height, 36px);
-
-			#{$this}__content,
-			#{$this}__prepend,
-			#{$this}__append {
-				opacity: 0;
-			}
 
 			:deep(.origam-skeleton--rectangular) {
 				position: absolute;
