@@ -10,7 +10,7 @@ test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', asy
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
-    for (const dataCy of ['btn-loading-line', 'btn-loading-circular-override', 'btn-loading-skeleton']) {
+    for (const dataCy of ['btn-loading-line', 'btn-loading-line-primary', 'btn-loading-circular-override', 'btn-loading-circular-success', 'btn-loading-skeleton']) {
         const btn = sandbox.locator(`[data-cy="${dataCy}"]`).first()
         await btn.scrollIntoViewIfNeeded()
         const report = await btn.evaluate((el) => {
@@ -19,23 +19,20 @@ test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', asy
             const progress = el.querySelector('.origam-btn__progress')
             const progressCs = progress ? getComputedStyle(progress as Element) : null
             const progressRect = progress ? (progress as Element).getBoundingClientRect() : null
+            // The visible coloured bits inside the progress (linear has __background
+            // / __bar; circular has __overlay / __underlay-strokes inside SVG).
+            const bg = progress?.querySelector('.origam-progress__background') as Element | null
+            const bar = progress?.querySelector('.origam-progress__bar')        as Element | null
+            const underlay = progress?.querySelector('.origam-progress__underlay') as SVGElement | null
+            const overlay  = progress?.querySelector('.origam-progress__overlay')  as SVGElement | null
             return {
-                tag: el.tagName,
-                classes: el.className,
                 btnSize: { w: rect.width, h: rect.height },
-                btnPosition: cs.position,
-                btnOverflow: cs.overflow,
-                hasProgressEl: !!progress,
-                progressClasses: progress ? (progress as Element).className : null,
-                progressPosition: progressCs?.position ?? null,
-                progressInset: progressCs ? `${progressCs.top} / ${progressCs.right} / ${progressCs.bottom} / ${progressCs.left}` : null,
                 progressSize: progressRect ? { w: progressRect.width, h: progressRect.height } : null,
-                progressHeight: progressCs?.height ?? null,
-                progressMargin: progressCs?.margin ?? null,
-                progressTop: progressCs?.top ?? null,
-                progressLeft: progressCs?.left ?? null,
-                progressInlineStyle: (progress as HTMLElement | null)?.getAttribute('style') ?? null,
-                innerHTML: el.innerHTML.replace(/\s+/g, ' ').slice(0, 500),
+                progressColor: progressCs?.color ?? null,             // <- currentColor source
+                bgComputed: bg ? getComputedStyle(bg).backgroundColor : null,
+                barComputed: bar ? getComputedStyle(bar).backgroundColor : null,
+                underlayStroke: underlay ? getComputedStyle(underlay).stroke : null,
+                overlayStroke:  overlay  ? getComputedStyle(overlay).stroke  : null,
             }
         })
         // eslint-disable-next-line no-console

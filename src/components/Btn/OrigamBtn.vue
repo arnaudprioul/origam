@@ -34,6 +34,7 @@
 				class="origam-btn__progress"
 				v-bind="progressProps"
 				:thickness="loaderConfig.kind === 'line' ? 3 : undefined"
+				:color="props.color"
 				:active="true"
 		/>
 

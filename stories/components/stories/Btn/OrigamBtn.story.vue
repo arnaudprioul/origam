@@ -349,8 +349,16 @@
 					<origam-btn :loading="{ type: 'line' }" text="Line loader" data-cy="btn-loading-line"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }} color="primary"</code>
+					<origam-btn :loading="{ type: 'line' }" color="primary" text="Line + primary" data-cy="btn-loading-line-primary"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
 					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
 					<origam-btn :loading="{ type: 'circular', size: 16 }" text="Small spinner" data-cy="btn-loading-circular-override"/>
+				</div>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<code v-pre style="min-width: 240px;">loading={{ type: 'circular' }} color="success"</code>
+					<origam-btn :loading="{ type: 'circular' }" color="success" text="Circular + success" data-cy="btn-loading-circular-success"/>
 				</div>
 				<div style="display: flex; align-items: center; gap: 12px;">
 					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
