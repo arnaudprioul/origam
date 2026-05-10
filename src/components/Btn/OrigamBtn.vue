@@ -743,41 +743,42 @@
 		}
 
 		// Linear progress — strip overlay at the BOTTOM edge of the btn
-		// (configurable to the top via `--origam-btn__progress---linear-
-		// position-top: 0`). Label, prepend, append all stay visible so
-		// the user reads what's being processed — same pattern as
-		// OrigamCard's loader.
+		// (configurable to the top via the `--linear-position-top: 0`
+		// token). Label / prepend / append stay visible — same pattern
+		// as OrigamCard's linear loader.
 		//
-		// Note: `:deep()` is required around `.origam-btn__progress`
-		// because Vue 3 scoped CSS does NOT match the ROOT of a child
-		// component (`<origam-progress>`), even when the class is
-		// propagated through. Without `:deep()` the selector silently
-		// no-ops.
+		// Two non-obvious bits:
+		//  1. `:deep()` is required around `.origam-btn__progress`
+		//     because Vue 3 scoped CSS does NOT match the ROOT of a
+		//     child component (`<origam-progress>`), even when the
+		//     class is propagated through. Without `:deep()` the
+		//     selector silently no-ops.
+		//  2. `!important` is required to win against the inline
+		//     `width: 23px; height: 23px` that OrigamProgress's
+		//     `useSize(props)` injects (the btn's progressProps sets
+		//     `size: '23'` for the circular case — it leaks onto the
+		//     linear branch and would render the strip as a 23×23
+		//     square otherwise).
 		&--loader-line {
 			:deep(#{$this}__progress) {
-				position: absolute;
-				inset-inline: 0;
-				inset-block-end: var(--origam-btn__progress---linear-position, 0);
-				inset-block-start: var(--origam-btn__progress---linear-position-top, auto);
-				width: 100%;
-				margin: 0;
+				position: absolute !important;
+				inset-inline: 0 !important;
+				inset-block-end: var(--origam-btn__progress---linear-position, 0) !important;
+				inset-block-start: var(--origam-btn__progress---linear-position-top, auto) !important;
+				width: 100% !important;
+				height: var(--origam-btn__progress---linear-height, 3px) !important;
+				margin: 0 !important;
 				z-index: 1;
 				pointer-events: none;
-				height: var(--origam-btn__progress---linear-height, 3px);
-			}
-
-			:deep(.origam-progress--linear) {
-				width: 100%;
-				height: var(--origam-btn__progress---linear-height, 3px);
 			}
 		}
 
-		// Circular spinner — centred absolutely so it sits over the
-		// (invisible-but-still-laid-out) label. Hiding the content via
-		// opacity preserves the btn's natural width while the spinner
-		// stays exactly in the middle. `:deep()` required for the same
-		// reason as the linear case (`.origam-btn__progress` sits on a
-		// child-component root).
+		// Circular spinner — centred absolutely over the
+		// (invisible-but-still-laid-out) label. The `inset: 0` +
+		// `margin: auto` pattern centres an absolutely-positioned
+		// element when it has intrinsic width/height (the spinner is
+		// 16-23 px square from its `size` prop). Hiding the label via
+		// opacity preserves the btn's natural width.
 		&--loader-circular {
 			#{$this}__content,
 			#{$this}__prepend,
@@ -786,11 +787,9 @@
 			}
 
 			:deep(#{$this}__progress) {
-				position: absolute;
-				inset: 0;
-				display: flex;
-				align-items: center;
-				justify-content: center;
+				position: absolute !important;
+				inset: 0 !important;
+				margin: auto !important;
 				pointer-events: none;
 			}
 		}
