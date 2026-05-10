@@ -3,30 +3,55 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeaders"
 	>
+
 		<!--
-			Note: <origam-data-table-headers> is a sub-component of <origam-data-table>.
-			The stories below render it inside its parent so it has the
-			surrounding context (provide/inject keys) it needs.
+			<origam-data-table-headers> is the header row container. Best
+			seen inside its parent <origam-data-table>. The story below
+			focuses on what changes in the header row across modes.
 		-->
 
-		<Variant title="Default">
-			<origam-data-table data-cy="origam-data-table-headers-default-parent">
-				<origam-data-table-headers data-cy="origam-data-table-headers-default"/>
-			</origam-data-table>
+		<Variant title="Default header">
+			<origam-data-table :headers="headers" :items="items" data-cy="headers-default"/>
 		</Variant>
 
 		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IDataTableHeadersProps>({  })"
+				title="Sortable headers"
+				:init-state="() => useStoryInitState<{ multiSort: boolean }>({ multiSort: false })"
 		>
 			<template #default="{ state }">
-			<origam-data-table data-cy="origam-data-table-headers-playground-parent">
-				<origam-data-table-headers v-bind="state" data-cy="origam-data-table-headers-playground"/>
-			</origam-data-table>
+				<origam-data-table
+						:headers="sortableHeaders"
+						:items="items"
+						:multi-sort="state.multiSort"
+						data-cy="headers-sortable"
+				/>
+				<p style="padding: 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+					Click a column title to sort. Hold shift to add a secondary sort if multiSort is on.
+				</p>
 			</template>
 			<template #controls="{ state }">
-				<!-- TODO: add HstControl bindings for the prop surface -->
+				<HstCheckbox v-model="state.multiSort" title="multiSort"/>
 			</template>
+		</Variant>
+
+		<Variant title="With selection column">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					show-select
+					data-cy="headers-select"
+			/>
+		</Variant>
+
+		<Variant title="Hide default header (custom slot)">
+			<origam-data-table :headers="headers" :items="items" hide-default-header data-cy="headers-hide-default">
+				<template #headers>
+					<tr style="background: var(--origam-color-action-primary-bg); color: var(--origam-color-action-primary-fg);">
+						<th style="padding: 12px; text-align: start;">Custom team roster</th>
+						<th style="padding: 12px; text-align: end;" :colspan="2">{{ items.length }} members</th>
+					</tr>
+				</template>
+			</origam-data-table>
 		</Variant>
 	</Story>
 </template>
@@ -35,10 +60,23 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableHeaders, OrigamDataTable } from '@origam/components'
-	import type { IDataTableHeadersProps } from '@origam/interfaces'
+	import { OrigamDataTable, OrigamDataTableHeaders } from '@origam/components'
 
 	import { useStoryInitState } from '@stories/composables'
+
+	const headers = [
+		{ title: 'Name',    key: 'name'    },
+		{ title: 'Team',    key: 'team'    },
+		{ title: 'Commits', key: 'commits', align: 'end' },
+	]
+
+	const sortableHeaders = headers.map((h) => ({ ...h, sortable: true }))
+
+	const items = [
+		{ name: 'Alice', team: 'Frontend', commits: 142 },
+		{ name: 'Bob',   team: 'Backend',  commits: 98  },
+		{ name: 'Carol', team: 'Design',   commits: 31  },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/DataTable/OrigamDataTableHeaders.md"/>

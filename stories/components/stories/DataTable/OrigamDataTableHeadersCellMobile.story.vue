@@ -3,30 +3,41 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeadersCellMobile"
 	>
+
 		<!--
-			Note: <origam-data-table-headers-cell-mobile> is a sub-component of <origam-data-table>.
-			The stories below render it inside its parent so it has the
-			surrounding context (provide/inject keys) it needs.
+			<origam-data-table-headers-cell-mobile> is the mobile fallback
+			variant of the header cell — typically used when the table
+			collapses to a stacked card layout below a breakpoint. Best
+			previewed by narrowing the viewport (or use the playground).
 		-->
 
-		<Variant title="Default">
-			<origam-data-table data-cy="origam-data-table-headers-cell-mobile-default-parent">
-				<origam-data-table-headers-cell-mobile data-cy="origam-data-table-headers-cell-mobile-default"/>
-			</origam-data-table>
+		<Variant title="Default (mobile-style stacked header)">
+			<div style="max-width: 360px; padding: 16px;">
+				<origam-data-table :headers="headers" :items="items" mobile data-cy="mobile-cell-default"/>
+			</div>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IDataTableHeadersCellMobileProps>({ colspan: 0 })"
-		>
-			<template #default="{ state }">
-			<origam-data-table data-cy="origam-data-table-headers-cell-mobile-playground-parent">
-				<origam-data-table-headers-cell-mobile v-bind="state" data-cy="origam-data-table-headers-cell-mobile-playground"/>
-			</origam-data-table>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.colspan" title="colspan"/>
-			</template>
+		<Variant title="Sortable on mobile">
+			<div style="max-width: 360px; padding: 16px;">
+				<origam-data-table :headers="sortableHeaders" :items="items" mobile data-cy="mobile-cell-sortable"/>
+			</div>
+		</Variant>
+
+		<Variant title="With selection (mobile checkbox row)">
+			<div style="max-width: 360px; padding: 16px;">
+				<origam-data-table :headers="headers" :items="items" mobile show-select data-cy="mobile-cell-select"/>
+			</div>
+		</Variant>
+
+		<Variant title="Note">
+			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
+				<p>
+					<code>OrigamDataTableHeadersCellMobile</code> is automatically
+					selected when the parent <code>OrigamDataTable</code> is in
+					mobile / narrow layout mode. There's rarely a reason to
+					instantiate it yourself.
+				</p>
+			</div>
 		</Variant>
 	</Story>
 </template>
@@ -35,10 +46,20 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableHeadersCellMobile, OrigamDataTable } from '@origam/components'
-	import type { IDataTableHeadersCellMobileProps } from '@origam/interfaces'
+	import { OrigamDataTable, OrigamDataTableHeadersCellMobile } from '@origam/components'
 
-	import { useStoryInitState } from '@stories/composables'
+	const headers = [
+		{ title: 'Name',    key: 'name'    },
+		{ title: 'Team',    key: 'team'    },
+		{ title: 'Commits', key: 'commits', align: 'end' },
+	]
+
+	const sortableHeaders = headers.map((h) => ({ ...h, sortable: true }))
+
+	const items = [
+		{ name: 'Alice', team: 'Frontend', commits: 142 },
+		{ name: 'Bob',   team: 'Backend',  commits: 98  },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/DataTable/OrigamDataTableHeadersCellMobile.md"/>

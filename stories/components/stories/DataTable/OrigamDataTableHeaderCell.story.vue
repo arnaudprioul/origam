@@ -3,31 +3,34 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeaderCell"
 	>
+
 		<!--
-			Note: <origam-data-table-header-cell> is a sub-component of <origam-data-table>.
-			The stories below render it inside its parent so it has the
-			surrounding context (provide/inject keys) it needs.
+			<origam-data-table-header-cell> is a single cell inside the
+			header row. Each header column maps to one of these. Realistic
+			previews go through the parent table.
 		-->
 
-		<Variant title="Default">
-			<origam-data-table data-cy="origam-data-table-header-cell-default-parent">
-				<origam-data-table-header-cell data-cy="origam-data-table-header-cell-default"/>
-			</origam-data-table>
+		<Variant title="Default cell">
+			<origam-data-table :headers="headers" :items="items" data-cy="header-cell-default"/>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IDataTableHeaderCellProps>({ x: 0, y: 0 })"
-		>
-			<template #default="{ state }">
-			<origam-data-table data-cy="origam-data-table-header-cell-playground-parent">
-				<origam-data-table-header-cell v-bind="state" data-cy="origam-data-table-header-cell-playground"/>
+		<Variant title="Sortable cell (sort indicator)">
+			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="header-cell-sortable"/>
+		</Variant>
+
+		<Variant title="Aligned cells (start / center / end)">
+			<origam-data-table :headers="alignedHeaders" :items="items" data-cy="header-cell-aligned"/>
+		</Variant>
+
+		<Variant title="Slot — header.{key} (per-column override)">
+			<origam-data-table :headers="headers" :items="items" data-cy="header-cell-slot">
+				<template #header.commits>
+					<span style="display: inline-flex; align-items: center; gap: 4px;">
+						<origam-icon :icon="MDI_ICONS.STAR" :size="12"/>
+						<strong>Total commits</strong>
+					</span>
+				</template>
 			</origam-data-table>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.x" title="x"/>
-				<HstNumber v-model="state.y" title="y"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
@@ -36,10 +39,28 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableHeaderCell, OrigamDataTable } from '@origam/components'
-	import type { IDataTableHeaderCellProps } from '@origam/interfaces'
+	import { OrigamDataTable, OrigamDataTableHeaderCell, OrigamIcon } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 
-	import { useStoryInitState } from '@stories/composables'
+	const headers = [
+		{ title: 'Name',    key: 'name'    },
+		{ title: 'Team',    key: 'team'    },
+		{ title: 'Commits', key: 'commits' },
+	]
+
+	const sortableHeaders = headers.map((h) => ({ ...h, sortable: true }))
+
+	const alignedHeaders = [
+		{ title: 'Start',  key: 'name', align: 'start' },
+		{ title: 'Center', key: 'team', align: 'center' },
+		{ title: 'End',    key: 'commits', align: 'end' },
+	]
+
+	const items = [
+		{ name: 'Alice', team: 'Frontend', commits: 142 },
+		{ name: 'Bob',   team: 'Backend',  commits: 98  },
+		{ name: 'Carol', team: 'Design',   commits: 31  },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/DataTable/OrigamDataTableHeaderCell.md"/>
