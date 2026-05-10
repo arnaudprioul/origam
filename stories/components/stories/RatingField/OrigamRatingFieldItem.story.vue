@@ -3,41 +3,110 @@
 			group="components"
 			title="RatingField/OrigamRatingFieldItem"
 	>
+
 		<!--
-			Note: <origam-rating-field-item> is a sub-component of <origam-rating-field>.
-			The stories below render it inside its parent so it has the
-			surrounding context (provide/inject keys) it needs.
+			<origam-rating-field-item> is a single star (or custom icon)
+			in an <origam-rating-field>. Stories below use the parent
+			rating-field for realistic wiring.
 		-->
 
-		<Variant title="Default">
-			<origam-rating-field data-cy="origam-rating-field-item-default-parent">
-				<origam-rating-field-item data-cy="origam-rating-field-item-default"/>
-			</origam-rating-field>
+		<Variant title="Embedded in RatingField (real wiring)">
+			<div style="padding: 24px;">
+				<origam-rating-field v-model="defaultValue" :length="5" data-cy="rating-item-default"/>
+			</div>
 		</Variant>
 
 		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IRatingFieldItemProps>({ name: '', index: 0, value: 0, label: '', showStar: false, isFilled: false, isHovered: false, isHovering: false, disabled: false, readonly: false, halfIncrements: false, checked: false, length: 0 })"
+				title="Color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'warning' })"
 		>
 			<template #default="{ state }">
-			<origam-rating-field data-cy="origam-rating-field-item-playground-parent">
-				<origam-rating-field-item v-bind="state" data-cy="origam-rating-field-item-playground"/>
-			</origam-rating-field>
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="colorValue" :length="5" v-bind="state" data-cy="rating-item-color"/>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText v-model="state.name" title="name"/>
-				<HstNumber v-model="state.index" title="index"/>
-				<HstNumber v-model="state.value" title="value"/>
-				<HstText v-model="state.label" title="label"/>
-				<HstCheckbox v-model="state.showStar" title="showStar"/>
-				<HstCheckbox v-model="state.isFilled" title="isFilled"/>
-				<HstCheckbox v-model="state.isHovered" title="isHovered"/>
+				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
+				<HstSelect v-model="state.activeColor"  title="activeColor"  :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="densityValue" :length="5" :density="state.density" data-cy="rating-item-density"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Size"
+				:init-state="() => useStoryInitState<ISizeProps>({ size: SIZES.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="sizeValue" :length="5" :size="state.size" data-cy="rating-item-size"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Custom icon (heart)">
+			<div style="padding: 24px;">
+				<origam-rating-field
+						v-model="customIconValue"
+						:length="5"
+						:full-icon="MDI_ICONS.HEART"
+						:empty-icon="MDI_ICONS.HEART_OUTLINE"
+						color="danger"
+						data-cy="rating-item-heart"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Read-only / Disabled">
+			<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+				<origam-rating-field :model-value="3.5" :length="5" readonly half-increments data-cy="rating-item-readonly"/>
+				<origam-rating-field :model-value="2"   :length="5" disabled data-cy="rating-item-disabled"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Playground (raw item)"
+				:init-state="() => useStoryInitState<IRatingFieldItemProps>({
+					value: 3,
+					index: 1,
+					name: 'rating',
+					label: 'Item',
+					showStar: true,
+					isFilled: true,
+					isHovered: false,
+					isHovering: false,
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
+					<origam-rating-field-item v-bind="state" data-cy="rating-item-playground"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber   v-model="state.value"      title="value"      :min="0" :max="5" :step="0.5"/>
+				<HstNumber   v-model="state.index"      title="index"      :min="0" :max="10"/>
+				<HstText     v-model="state.name"       title="name"/>
+				<HstText     v-model="state.label"      title="label"/>
+				<HstCheckbox v-model="state.showStar"   title="showStar"/>
+				<HstCheckbox v-model="state.isFilled"   title="isFilled"/>
+				<HstCheckbox v-model="state.isHovered"  title="isHovered"/>
 				<HstCheckbox v-model="state.isHovering" title="isHovering"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstCheckbox v-model="state.halfIncrements" title="halfIncrements"/>
-				<HstCheckbox v-model="state.checked" title="checked"/>
-				<HstNumber v-model="state.length" title="length"/>
 			</template>
 		</Variant>
 	</Story>
@@ -47,10 +116,20 @@
 		lang="ts"
 		setup
 >
-	import { OrigamRatingFieldItem, OrigamRatingField } from '@origam/components'
-	import type { IRatingFieldItemProps } from '@origam/interfaces'
+	import { ref } from 'vue'
+
+	import { OrigamRatingField, OrigamRatingFieldItem } from '@origam/components'
+	import { DENSITY, MDI_ICONS, SIZES } from '@origam/enums'
+	import type { IColorProps, IDensityProps, IRatingFieldItemProps, ISizeProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
+	import { densityList, intentList, sizeList } from '@stories/const'
+
+	const defaultValue    = ref(3)
+	const colorValue      = ref(4)
+	const densityValue    = ref(3)
+	const sizeValue       = ref(2)
+	const customIconValue = ref(4)
 </script>
 
 <docs lang="md" src="@docs/components/RatingField/OrigamRatingFieldItem.md"/>
