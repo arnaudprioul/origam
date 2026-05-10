@@ -371,6 +371,13 @@
 				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
 				'origam-btn--loading': loaderConfig.value.isActive,
+				// Loader-kind discriminator so SCSS can branch per kind:
+				//   • `--loader-line`     → linear progress strip overlay,
+				//      keeps the label visible (like OrigamCard's loader).
+				//   • `--loader-circular` → centred spinner; label hidden.
+				//   • `--loader-skeleton` → full-box shimmer; label hidden,
+				//      btn keeps a min-width so it doesn't collapse.
+				[`origam-btn--loader-${loaderConfig.value.kind}`]: loaderConfig.value.isActive,
 				'origam-btn--slim': props.slim,
 				'origam-btn--stacked': props.stacked
 			},
@@ -706,12 +713,6 @@
 			position: relative;
 			overflow: hidden;
 
-			#{$this}__content,
-			#{$this}__prepend,
-			#{$this}__append {
-				opacity: 0;
-			}
-
 			#{$this}__loader {
 				display: inline-flex;
 				align-items: center;
@@ -719,14 +720,47 @@
 				grid-template-areas: none;
 				grid-template-columns: none;
 			}
+		}
 
+		// Linear / number progress — strip overlay at top OR bottom of the
+		// btn (configurable via the `--linear-position` token). Label,
+		// prepend and append stay visible (like OrigamCard's loader) so
+		// the user reads what's being processed.
+		&--loader-line,
+		&--loader-number {
 			:deep(.origam-progress--linear) {
 				position: absolute;
 				inset-inline: 0;
-				inset-block-end: 0;
+				inset-block-end: var(--origam-btn__progress---linear-position, 0);
+				inset-block-start: var(--origam-btn__progress---linear-position-top, auto);
 				width: 100%;
 				height: var(--origam-btn__progress---linear-height, 3px);
 				margin: 0;
+				z-index: 1;
+			}
+		}
+
+		// Circular spinner — label/prepend/append disappear so the
+		// spinner sits alone in the centre of the btn.
+		&--loader-circular {
+			#{$this}__content,
+			#{$this}__prepend,
+			#{$this}__append {
+				opacity: 0;
+			}
+		}
+
+		// Skeleton — rectangular placeholder fills the whole btn, label
+		// disappears. The btn keeps a min-width so it stays at a usable
+		// size even when the label was the only thing dictating its width.
+		&--loader-skeleton {
+			min-width: var(--origam-btn---loader-skeleton-min-width, 96px);
+			min-height: var(--origam-btn---loader-skeleton-min-height, 36px);
+
+			#{$this}__content,
+			#{$this}__prepend,
+			#{$this}__append {
+				opacity: 0;
 			}
 
 			:deep(.origam-skeleton--rectangular) {
