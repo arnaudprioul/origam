@@ -21,6 +21,22 @@
 				class="origam-btn__underlay"
 		/>
 
+		<!--
+			Overlay loaders (line / circular) — rendered as direct children
+			of the btn root so they can be absolutely positioned relative
+			to the btn box. Putting them INSIDE the OrigamLoader's
+			default-slot grid would make them claim a `prepend`-slot cell
+			and shove the label off-centre.
+		-->
+		<origam-progress
+				v-if="isOverlayLoading"
+				ref="origamProgressRef"
+				class="origam-btn__progress"
+				v-bind="progressProps"
+				:thickness="loaderConfig.kind === 'line' ? 3 : undefined"
+				:active="true"
+		/>
+
 		<slot name="wrapper">
 			<origam-loader
 					:loading="isSkeletonLoading"
@@ -44,14 +60,6 @@
 				</template>
 
 				<template #default>
-					<origam-progress
-							v-if="isOverlayLoading"
-							ref="origamProgressRef"
-							class="origam-btn__progress"
-							v-bind="progressProps"
-							:active="true"
-					/>
-
           <span
 		          v-if="hasPrepend"
 		          key="prepend"
