@@ -3,30 +3,46 @@
 			group="components"
 			title="List/OrigamListChildren"
 	>
+
 		<!--
-			Note: <origam-list-children> is a sub-component of <origam-list>.
-			The stories below render it inside its parent so it has the
-			surrounding context (provide/inject keys) it needs.
+			<origam-list-children> renders a recursive items array. The
+			parent <origam-list> uses it internally to traverse nested
+			children. Probing it standalone is useful for flat tests;
+			the realistic flow drives it through the parent list.
 		-->
 
-		<Variant title="Default">
-			<origam-list data-cy="origam-list-children-default-parent">
-				<origam-list-children data-cy="origam-list-children-default"/>
+		<Variant title="Default — flat list rendered via children prop">
+			<origam-list data-cy="list-children-flat">
+				<origam-list-children :items="flatItems" return-object/>
 			</origam-list>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IListChildrenProps>({  })"
-		>
-			<template #default="{ state }">
-			<origam-list data-cy="origam-list-children-playground-parent">
-				<origam-list-children v-bind="state" data-cy="origam-list-children-playground"/>
+		<Variant title="Nested groups (recursive)">
+			<origam-list data-cy="list-children-nested">
+				<origam-list-children :items="nestedItems"/>
 			</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<!-- TODO: add HstControl bindings for the prop surface -->
-			</template>
+		</Variant>
+
+		<Variant title="Embedded in a List (real wiring with items prop)">
+			<origam-list :items="nestedItems" data-cy="list-children-embedded"/>
+		</Variant>
+
+		<Variant title="Note about the raw component">
+			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
+				<p>
+					<code>&lt;origam-list-children&gt;</code> is the recursive
+					internal renderer for <code>OrigamList</code>'s items
+					tree. It rarely needs to be used standalone — passing
+					<code>items</code> directly to <code>&lt;origam-list&gt;</code>
+					yields the same render and exposes a richer prop surface.
+				</p>
+				<p>
+					Use this component when you need to render a sub-tree of
+					list items inside a custom container, while still
+					inheriting the parent list's group / select / activator
+					context.
+				</p>
+			</div>
 		</Variant>
 	</Story>
 </template>
@@ -35,10 +51,36 @@
 		lang="ts"
 		setup
 >
-	import { OrigamListChildren, OrigamList } from '@origam/components'
-	import type { IListChildrenProps } from '@origam/interfaces'
+	import { OrigamList, OrigamListChildren } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 
-	import { useStoryInitState } from '@stories/composables'
+	const flatItems = [
+		{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
+		{ title: 'Starred', prependIcon: MDI_ICONS.STAR },
+		{ title: 'Sent',    prependIcon: MDI_ICONS.SEND },
+		{ title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE },
+	]
+
+	const nestedItems = [
+		{
+			title: 'Mail',
+			prependIcon: MDI_ICONS.EMAIL_OUTLINE,
+			children: [
+				{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
+				{ title: 'Sent',    prependIcon: MDI_ICONS.SEND },
+				{ title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE },
+			],
+		},
+		{
+			title: 'Calendar',
+			prependIcon: MDI_ICONS.CALENDAR,
+			children: [
+				{ title: 'Today',    prependIcon: MDI_ICONS.CALENDAR_TODAY },
+				{ title: 'Upcoming', prependIcon: MDI_ICONS.CALENDAR_CLOCK },
+			],
+		},
+		{ title: 'Settings', prependIcon: MDI_ICONS.COG_OUTLINE },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/List/OrigamListChildren.md"/>
