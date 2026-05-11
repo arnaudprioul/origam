@@ -299,5 +299,32 @@
 			--origam-btn---border-radius-icon: var(--origam-app-bar---btn-border-radius, 8px);
 			border-radius: var(--origam-app-bar---btn-border-radius, 8px);
 		}
+
+		// Breathing room between the prepend / append btn cluster and
+		// the title. The Toolbar's title var `margin-inline-start: auto`
+		// is a flex-justification trick (pushes title to centre / right),
+		// NOT a gap — so the menu btn ends up flush against the title.
+		// We add a small inline margin on the prepend / append blocks
+		// instead, leaving the consumer a CSS var to retune.
+		:deep(.origam-toolbar__prepend) {
+			margin-inline-end: var(--origam-app-bar__prepend---margin-inline-end, 12px);
+		}
+		:deep(.origam-toolbar__append) {
+			margin-inline-start: var(--origam-app-bar__append---margin-inline-start, 12px);
+		}
+
+		// Title color inheritance. OrigamTitle's own SCSS pins its color
+		// to `--origam-title---color` (a fixed neutral token) which does
+		// NOT inherit from its parent's currentColor. So when the AppBar
+		// is given `color="primary"`, the toolbar root paints primary
+		// via useBothColor's inline style, but the OrigamTitle inside
+		// stays neutral — the user reported "color works on btn icons
+		// but not on the title". Repoint the title's color var to
+		// currentColor so it picks up whatever the toolbar root is using
+		// (intent-resolved fg, or the auto-contrast pair when bgColor
+		// triggers the clash detection).
+		:deep(.origam-toolbar__title .origam-title) {
+			--origam-title---color: var(--origam-app-bar__title---color, currentColor);
+		}
 	}
 </style>

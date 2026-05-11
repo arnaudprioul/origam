@@ -4,8 +4,12 @@ import {
     BLK_THRS,
     CIELAB_FORWARD_TRANSFORM,
     CIELAB_REVERSE_TRANSFORM,
+    COLOR_ACTIVE_MIX_PCT,
     COLOR_DELTA_Y_MIN,
+    COLOR_HOVER_MIX_PCT,
+    COLOR_INTENTS,
     COLOR_MAPPERS,
+    COLOR_UTILITY_INTENTS,
     CSS_COLOR_REGEX,
     CSS_NAMED_COLORS,
     GCO,
@@ -27,9 +31,17 @@ import {
     SRGB_REVERSE_TRANSFORM
 } from '../../consts'
 
-import type { TColorType, THex, THSLA, THSVA, TLAB, TRGBA, TXYZ } from '../../types'
+import type { TBgFgRole, TColor, TColorType, THex, THSLA, THSVA, TIntent, TLAB, TRGBA, TXYZ } from '../../types'
 
-import { chunk, clamp, consoleWarn, has, int, padEnd } from '../../utils'
+// Direct imports from sibling util files (NOT the barrel) to avoid a
+// circular `utils/index → color.util → utils/index` chain. The barrel
+// cycle worked for the pre-existing exports thanks to ES module live
+// bindings, but vitest's module loader (vite-node) returns `undefined`
+// for late-added exports under that cycle — caught when the newly-added
+// `isIntent` / `isUtilityIntent` helpers landed in this file. Sidestep
+// the cycle entirely by importing from the source files directly.
+import { chunk, clamp, has, int, padEnd } from './commons.util'
+import { consoleWarn } from './console.util'
 
 /**
  * Recognise any string the CSS engine treats as a colour:
@@ -569,4 +581,158 @@ export function APCAcontrast (text: TRGBA, background: TRGBA) {
     }
 
     return outputContrast * 100
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Intent / token-cascade helpers (consumed by useColor & useColorEffect)
+// ════════════════════════════════════════════════════════════════════════════
+// Pure helpers that translate a semantic intent ('primary', 'danger', …) into
+// the right CSS token reference. Kept in this util file (NOT inline in the
+// composable) per project rule: composables hold ONLY `use*` functions.
+
+/**
+ * Type guard: is `v` a known semantic intent?
+ */
+export function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
+    return typeof v === 'string' && COLOR_INTENTS.has(v)
+}
+
+/**
+ * Type guard: is `v` an intent for which a global utility class ships
+ * (`.origam--bg-<intent>` / `.origam--color-<intent>`)? `ghost` is
+ * intentionally excluded — the design system does not ship
+ * `.origam--bg-ghost`.
+ */
+export function isUtilityIntent (v: TColor | TIntent | null | undefined): v is TIntent {
+    return typeof v === 'string' && COLOR_UTILITY_INTENTS.has(v)
+}
+
+/**
+ * Resolve the token-base prefix for a given intent. Drives every other
+ * helper below:
+ *
+ *   'neutral'  → 'action-secondary'
+ *   'primary'  → 'action-primary'
+ *   'success'  → 'feedback-success'
+ *   'danger'   → 'feedback-danger'
+ *   …
+ */
+export function intentTokenBase (intent: TIntent): string {
+    if (intent === 'neutral') return 'action-secondary'
+    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
+        return `feedback-${intent}`
+    }
+    // primary / secondary / ghost
+    return `action-${intent}`
+}
+
+/**
+ * Emit a state-aware bg expression for an intent:
+ *
+ *   • `default`  → `var(--…-bg)`
+ *   • `hover`    → `var(--…-bgHover, color-mix(in srgb, var(--…-bg), black 20%))`
+ *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
+ *   • `disabled` → `var(--…-bgDisabled)`
+ */
+export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
+    const base = intentTokenBase(intent)
+    const baseVar = `var(--origam-color-${base}-bg)`
+    if (role === 'default') return baseVar
+    if (role === 'disabled') return `var(--origam-color-${base}-bgDisabled)`
+    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
+    const slot = role === 'hover' ? 'bgHover' : 'bgActive'
+    return `var(--origam-color-${base}-${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
+}
+
+/**
+ * Foreground stays the same hue across hover / active by design — we
+ * darken the surface around the text, the text itself keeps the
+ * WCAG-paired contrast token.
+ */
+export function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
+    const base = intentTokenBase(intent)
+    const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
+    return `var(--origam-color-${base}-${slot})`
+}
+
+/**
+ * Build the CSS-vars override map for an intent (foreground + background)
+ * for a given interaction state.
+ */
+export function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = 'default'): Record<string, string> {
+    return {
+        'background-color': intentBgExpr(intent, role),
+        color: intentFgExpr(intent, role),
+    }
+}
+
+/**
+ * Derive a state-aware bg from a raw CSS color value (hex/rgb/etc.) via
+ * `color-mix`. Used in the legacy raw-color path so consumers passing
+ * `bgColor="#abcdef"` still get a hover/active darken (matches the
+ * intent path's behaviour, just without the token cascade).
+ */
+export function rawBgExprWithState (raw: string, role: TBgFgRole): string {
+    if (role === 'default') return raw
+    if (role === 'disabled') return raw // veil/opacity handles disabled
+    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
+    return `color-mix(in srgb, ${raw}, black ${pct}%)`
+}
+
+/**
+ * Resolve the **foreground-only** colour for an intent — the token used
+ * when the consumer says `color="primary"` and expects the *text itself*
+ * to be primary-coloured (no surface implied).
+ *
+ * This is NOT the same as `tokenStylesForIntent(...).color`:
+ *   - That one returns the WCAG-contrasted text colour to put ON TOP of
+ *     the matching `bg` token (typically white on a dark surface).
+ *   - This helper returns the `fgSubtle` rung — a darker shade of the
+ *     intent itself, designed for "coloured text on a light surface".
+ *
+ * Falls back gracefully on intents without a `fgSubtle` rung
+ * (`secondary`, `ghost`, `neutral`).
+ */
+export function tokenForegroundForIntent (intent: TIntent): string {
+    if (intent === 'neutral' || intent === 'secondary') {
+        // No fgSubtle — `fg` is already a dark neutral text colour.
+        return 'var(--origam-color-action-secondary-fg)'
+    }
+    if (intent === 'ghost') {
+        // ghost.fg is already primary.600 — the intent's own colour.
+        return 'var(--origam-color-action-ghost-fg)'
+    }
+    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
+        return `var(--origam-color-feedback-${intent}-fgSubtle)`
+    }
+    // primary → action.primary.fgSubtle (color.primary.700)
+    return `var(--origam-color-action-${intent}-fgSubtle)`
+}
+
+// ── Legacy raw-color deprecation warning ────────────────────────────────────
+// Tracks once-per-(prop, value) so the noisy warning doesn't spam the console.
+// Module-scope state is acceptable here because the cache is purely
+// runtime book-keeping, not a re-configurable constant.
+
+const _warnedColorKeys = new Set<string>()
+
+/**
+ * Warn (once per prop / value) that the consumer passed a raw CSS color
+ * to a prop where the design system expects a `TIntent`. Raw color
+ * support is deprecated and will be removed in v3.0.0.
+ */
+export function warnLegacyColor (
+    kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor',
+    value: string,
+): void {
+    if (typeof console === 'undefined') return
+    const key = `${kind}::${value}`
+    if (_warnedColorKeys.has(key)) return
+    _warnedColorKeys.add(key)
+    // eslint-disable-next-line no-console
+    console.warn(
+        `[origam] received a raw color for prop "${kind}" (value: ${value}). ` +
+        `Pass a TIntent ('primary' | 'success' | 'warning' | 'danger' | 'info' | 'secondary' | 'ghost' | 'neutral') ` +
+        `or use a :style binding for one-off custom colors. Raw color support is deprecated and will be removed in v3.0.0.`
+    )
 }

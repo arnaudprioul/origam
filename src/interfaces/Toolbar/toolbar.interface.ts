@@ -1,4 +1,5 @@
 import type {
+    IBgColorProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
@@ -13,7 +14,7 @@ import type {
 } from '../../interfaces'
 
 
-export interface IToolbarProps extends ITagProps, ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IDensityProps, IColorProps, IPaddingProps, IMarginProps, IPositionProps, IDimensionProps {
+export interface IToolbarProps extends ITagProps, ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IDensityProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IPositionProps, IDimensionProps {
     collapse?: boolean
     flat?: boolean
     floating?: boolean

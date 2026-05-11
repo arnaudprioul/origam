@@ -1,166 +1,51 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, isRef, ref } from 'vue'
-import {
-    COLOR_ACTIVE_MIX_PCT,
-    COLOR_HOVER_MIX_PCT,
-    COLOR_INTENTS,
-    COLOR_UTILITY_INTENTS
-} from "../../consts"
 import type { IBgColorProps, IColorProps } from "../../interfaces"
-import type { TBgFgRole, TColor, TIntent } from '../../types'
-import { getForeground, isCssColor, isParsableColor, parseColor } from '../../utils'
+import type { TBgFgRole, TColor } from '../../types'
+// Explicit `.ts` extension: a stale sibling `color.util.js` lingers in
+// the source tree (legacy build artefact) and the module resolver picks
+// it up first when no extension is given — that older file lacks the
+// recently-added intent helpers, so they resolve to `undefined` at
+// runtime. Forcing `.ts` here pins the import to the canonical source.
+// The 295 orphan `.js` files across `src/` should be cleaned up in a
+// dedicated pass.
+import {
+    getForeground,
+    isCssColor,
+    isIntent,
+    isParsableColor,
+    isUtilityIntent,
+    parseColor,
+    rawBgExprWithState,
+    tokenForegroundForIntent,
+    tokenStylesForIntent,
+    warnLegacyColor,
+} from '../../utils/Commons/color.util.ts'
 
 // ────────────────────────────────────────────────────────────────────────────
-// Intent detection (Lot 1)
-// ────────────────────────────────────────────────────────────────────────────
-// `useColorEffect` accepts both raw CSS colors (legacy) and semantic intents.
-// When an intent is provided, we emit references to design tokens so the
-// theme switches automatically (light/dark/brand-x). When a raw color is
-// provided, we keep the legacy JS-side behaviour and warn once per key —
-// hex/rgb support will be removed in v3.0.0.
+// Composable rule: ONLY `use*` functions live in this file.
+// Helper functions (isIntent, isUtilityIntent, intentBgExpr, …) and the
+// legacy-warning module state live in `src/utils/Commons/color.util.ts`.
+// Constants live in `src/consts/Commons/color.const.ts`. Types live in
+// `src/types/Commons/color.type.ts`.
 //
-// Runtime intent sets and the state-derivation percentages live in
-// `src/consts/Commons/color.const.ts`. The state-role union (`TBgFgRole`)
-// lives in `src/types/Commons/color.type.ts`. Keep this file free of
-// inline constants / type aliases per the project's "single home per
-// kind" rule.
-
-function isUtilityIntent (v: TColor | TIntent | null | undefined): v is TIntent {
-    return typeof v === 'string' && COLOR_UTILITY_INTENTS.has(v)
-}
-
-const _warnedKeys = new Set<string>()
-function warnLegacyColor (kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor', value: string) {
-    if (typeof console === 'undefined') return
-    const key = `${kind}::${value}`
-    if (_warnedKeys.has(key)) return
-    _warnedKeys.add(key)
-    // eslint-disable-next-line no-console
-    console.warn(
-        `[origam] useColorEffect received a raw color for prop "${kind}" (value: ${value}). ` +
-        `Pass a TIntent ('primary' | 'success' | 'warning' | 'danger' | 'info' | 'secondary' | 'ghost' | 'neutral') ` +
-        `or use a :style binding for one-off custom colors. Raw color support is deprecated and will be removed in v3.0.0.`
-    )
-}
-
-function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
-    return typeof v === 'string' && COLOR_INTENTS.has(v)
-}
-
-// ── State derivation rule (cross-component) ─────────────────────────────────
+// `useColorEffect` accepts both raw CSS colors (legacy) and semantic
+// intents. When an intent is provided, we emit references to design
+// tokens so the theme switches automatically (light/dark/brand-x).
+// When a raw color is provided, we keep the legacy JS-side behaviour
+// and warn once per key — hex/rgb support will be removed in v3.0.0.
 //
-// Cross-component color logic (per user spec):
+// Cross-component derivation rule (per user spec):
 //
 //     normal  →  bgColor
-//     hover   →  bgColor + 20 % darker
-//     active  →  bgColor + 30 % darker
+//     hover   →  bgColor + 20 % darker   (designer token, color-mix fallback)
+//     active  →  bgColor + 30 % darker   (designer token, color-mix fallback)
 //
-// Implementation strategy: cascading CSS var with `color-mix` fallback.
+// Implementation strategy: cascading CSS var:
 //
 //     var(--bgHover, color-mix(in srgb, bg, black 20%))
-//
-// • If the designer defined a `bgHover` / `bgActive` token, it wins
-//   (designer keeps theme-aware artistic control).
-// • Otherwise the browser falls back to the math derivation — uniform
-//   -20 % / -30 % for every intent that omits the rung, and the same
-//   formula applies cleanly to raw CSS colors and `transparent`.
-//
-// Note: the design system currently ships `bgHover` for every intent
-// (designer-tuned) but does NOT ship `bgActive`. Active state therefore
-// resolves to the math fallback for now; designers can override per
-// intent later by adding `--origam-color-{tokenBase}-bgActive`.
+// ────────────────────────────────────────────────────────────────────────────
 
-function intentTokenBase (intent: TIntent): string {
-    if (intent === 'neutral') return 'action-secondary'
-    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        return `feedback-${intent}`
-    }
-    // primary / secondary / ghost
-    return `action-${intent}`
-}
-
-/**
- * Emit a state-aware bg expression for an intent:
- *
- *   • `default`  → `var(--…-bg)`
- *   • `hover`    → `var(--…-bgHover, color-mix(in srgb, var(--…-bg), black 20%))`
- *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
- *   • `disabled` → `var(--…-bgDisabled)`
- */
-function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
-    const base = intentTokenBase(intent)
-    const baseVar = `var(--origam-color-${base}-bg)`
-    if (role === 'default') return baseVar
-    if (role === 'disabled') return `var(--origam-color-${base}-bgDisabled)`
-    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
-    const slot = role === 'hover' ? 'bgHover' : 'bgActive'
-    return `var(--origam-color-${base}-${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
-}
-
-/**
- * Foreground in hover/active stays the same as default by design —
- * we darken the surface around the text, the text itself keeps the
- * WCAG-paired contrast token.
- */
-function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
-    const base = intentTokenBase(intent)
-    const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
-    return `var(--origam-color-${base}-${slot})`
-}
-
-/**
- * Build the CSS-vars override map for an intent (foreground + background)
- * for a given interaction state.
- */
-function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = 'default'): Record<string, string> {
-    return {
-        'background-color': intentBgExpr(intent, role),
-        color: intentFgExpr(intent, role),
-    }
-}
-
-/**
- * Derive a state-aware bg from a raw CSS color value (hex/rgb/etc.) via
- * `color-mix`. Used in the legacy raw-color path so consumers passing
- * `bgColor="#abcdef"` still get a hover/active darken (matches the
- * intent path's behaviour, just without the token cascade).
- */
-function rawBgExprWithState (raw: string, role: TBgFgRole): string {
-    if (role === 'default') return raw
-    if (role === 'disabled') return raw // veil/opacity handles disabled
-    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
-    return `color-mix(in srgb, ${raw}, black ${pct}%)`
-}
-
-/**
- * Resolve the **foreground-only** colour for an intent — the token used
- * when the consumer says `color="primary"` and expects the *text itself*
- * to be primary-coloured (no surface implied).
- *
- * This is NOT the same as `tokenStylesForIntent(...).color`:
- *   - That one returns the WCAG-contrasted text colour to put ON TOP of
- *     the matching `bg` token (typically white on a dark surface).
- *   - This helper returns the `fgSubtle` rung — a darker shade of the
- *     intent itself, designed for "coloured text on a light surface".
- *
- * Falls back gracefully on intents without a `fgSubtle` rung
- * (`secondary`, `ghost`, `neutral`).
- */
-function tokenForegroundForIntent (intent: TIntent): string {
-    if (intent === 'neutral' || intent === 'secondary') {
-        // No fgSubtle — `fg` is already a dark neutral text colour.
-        return 'var(--origam-color-action-secondary-fg)'
-    }
-    if (intent === 'ghost') {
-        // ghost.fg is already primary.600 — the intent's own colour.
-        return 'var(--origam-color-action-ghost-fg)'
-    }
-    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        return `var(--origam-color-feedback-${intent}-fgSubtle)`
-    }
-    // primary → action.primary.fgSubtle (color.primary.700)
-    return `var(--origam-color-action-${intent}-fgSubtle)`
-}
 
 // ────────────────────────────────────────────────────────────────────────────
 // Legacy `useColor` API (kept for backward compat — used by ~49 components)
