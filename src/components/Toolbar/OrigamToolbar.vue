@@ -184,6 +184,12 @@
 	.origam-toolbar {
 		$this: &;
 
+		// ── Top-level declarations FIRST (before any nested rule) ────
+		// Modern Sass (and the future CSS spec) hoist nested rules
+		// above bare declarations; keeping the order
+		// "declarations → nested rules" prevents the `mixed-decls`
+		// deprecation warnings that were spamming `npm run story:dev`.
+
 		max-width: var(--origam-toolbar---max-width);
 		width: var(--origam-toolbar---width);
 		height: var(--origam-toolbar---height);
@@ -191,12 +197,17 @@
 
 		// Default inline gutter so content (prepend / title / append)
 		// never sits flush against the bar's edges — applies to every
-		// Toolbar usage (AppBar, standalone, footer, etc.). User
-		// reported the title was glued to the left edge when no prepend
-		// btn was rendered; this is the universal fix. 16 px matches
+		// Toolbar usage (AppBar, standalone, footer, etc.). 16 px matches
 		// Material / iOS bar spec; consumer can override per-instance
 		// via the public CSS var.
 		padding-inline: var(--origam-toolbar---padding-inline, 16px);
+
+		// ── Btn surface / fg base (consumed by nested btn rules below) ─
+		// Dedicated CSS vars (NOT the bar's own bg / fg) so the nested
+		// btn defaults to a transparent fill on top of the bar's
+		// surface, then derives hover / active via color-mix.
+		--btn-bg-base: var(--origam-toolbar---btn-background-color, transparent);
+		--btn-fg-base: var(--origam-toolbar---btn-color, currentColor);
 
 		overflow: var(--origam-toolbar---overflow);
 
@@ -405,21 +416,17 @@
 		// ── Nested-btn chrome contract (applies to every Toolbar usage) ─
 		//
 		// User reported AppBar btns rendering as gray circles when the
-		// chrome should read as a uniform bar. Hoisted from AppBar's
-		// scoped block to the Toolbar level so EVERY toolbar consumer
+		// chrome should read as a uniform bar. Every toolbar consumer
 		// (AppBar, Drawer top bar, footer, standalone, …) gets the same
-		// chrome treatment for free.
+		// chrome treatment via the `--btn-bg-base` / `--btn-fg-base`
+		// declarations hoisted to the top of this block (cf. above):
 		//
 		//   normal  →  --btn-bg-base (transparent by default)
 		//   hover   →  color-mix(--btn-bg-base, black 20 %)
 		//   active  →  color-mix(--btn-bg-base, black 30 %)
 		//
 		// Shape: rounded SQUARE (8 px), overrides Btn's default
-		// `&--icon { border-radius: 50% }` (the circles the user
-		// flagged).
-		--btn-bg-base: var(--origam-toolbar---btn-background-color, transparent);
-		--btn-fg-base: var(--origam-toolbar---btn-color, currentColor);
-
+		// `&--icon { border-radius: 50% }`.
 		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
 			--origam-btn---background-color: var(--btn-bg-base);
 			--origam-btn---color: var(--btn-fg-base);
