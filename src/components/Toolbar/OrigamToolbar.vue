@@ -312,6 +312,12 @@
 			justify-content: var(--origam-toolbar__wrapper---justify-content);
 			height: var(--origam-toolbar__wrapper---height);
 			flex-wrap: var(--origam-toolbar__wrapper---flex-wrap);
+			// Gap between prepend / title / content / append flex children.
+			// User reported the prepend btn was glued to the title — the
+			// previous margin-based attempt on `__prepend` / `__append`
+			// didn't compose with the `__title { margin-inline: auto }`
+			// flex trick. `gap` on the flex wrapper is the canonical fix.
+			gap: var(--origam-toolbar__wrapper---gap, 12px);
 		}
 
 		&__content,
@@ -434,19 +440,6 @@
 			--origam-btn---border-radius: var(--origam-toolbar---btn-border-radius, 8px);
 			--origam-btn---border-radius-icon: var(--origam-toolbar---btn-border-radius, 8px);
 			border-radius: var(--origam-toolbar---btn-border-radius, 8px);
-		}
-
-		// Breathing room between the prepend / append btn cluster and
-		// the title. The Toolbar's title var `margin-inline-start: auto`
-		// is a flex-justification trick (pushes title to centre / right),
-		// NOT a gap — so the menu btn would otherwise end up flush against
-		// the title. We add a small inline margin on the prepend / append
-		// blocks instead, leaving the consumer a CSS var to retune.
-		:deep(#{$this}__prepend) {
-			margin-inline-end: var(--origam-toolbar__prepend---margin-inline-end, 12px);
-		}
-		:deep(#{$this}__append) {
-			margin-inline-start: var(--origam-toolbar__append---margin-inline-start, 12px);
 		}
 
 		// Title color inheritance. OrigamTitle's text uses a fixed
