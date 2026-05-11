@@ -234,3 +234,70 @@
 	}, origamToolbarRef))
 
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	// ── Btn surface contract inside the AppBar ─────────────────────────
+	//
+	// Same approach as OrigamPagination: the bar itself owns the surface
+	// (whether transparent over the page or filled via a `color`/`bgColor`
+	// prop on OrigamAppBar), and every nested OrigamBtn defaults to a
+	// transparent fill so the chrome reads as a uniform bar — NOT a row
+	// of competing intent-coloured pills.
+	//
+	//   normal  →  --bg-base (transparent by default)
+	//   hover   →  color-mix(--bg-base, black 20 %)   ← derived
+	//   active  →  color-mix(--bg-base, black 30 %)   ← derived
+	//
+	// Shape: rounded-SQUARE (8 px). The Btn's own `&--icon { border-radius:
+	// 50% }` rule would otherwise circle every icon-only btn inside the bar
+	// (menu, dots, search, …) — that looked off against the bar's straight
+	// edges. The square keeps the icon hit-area aligned with the bar's
+	// rhythm (and matches the same fix already applied to Pagination).
+
+	.origam-app-bar {
+		// ── Btn surface base (DEDICATED var, NOT the AppBar's own bg) ──
+		// `--origam-app-bar---background-color` is the bar's OWN
+		// surface (typically white in light theme). If we pointed the
+		// btn surface at that, every nested btn would paint white on a
+		// white bar → invisible. The btn surface needs its own knob,
+		// defaulting to `transparent` so the bar's fill shows through.
+		// Declarations BEFORE nested rules (Sass mixed-decls).
+		--btn-bg-base: var(--origam-app-bar---btn-background-color, transparent);
+		--btn-fg-base: var(--origam-app-bar---btn-color, currentColor);
+
+		// Normal state — transparent fill, btn icon reads on the bar.
+		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
+			--origam-btn---background-color: var(--btn-bg-base);
+			--origam-btn---color: var(--btn-fg-base);
+		}
+
+		// Hover state — 20 % darker than --btn-bg-base. With a
+		// transparent base, color-mix produces rgba(0, 0, 0, 0.2),
+		// i.e. a subtle dark overlay on the bar's surface.
+		:deep(.origam-btn:hover:not(.origam-btn--active)) {
+			--origam-btn---background-color: var(
+				--origam-app-bar---btn-background-color-hover,
+				color-mix(in srgb, var(--btn-bg-base), black 20%)
+			);
+		}
+
+		// Active state — 30 % darker.
+		:deep(.origam-btn.origam-btn--active) {
+			--origam-btn---background-color: var(
+				--origam-app-bar---btn-background-color-active,
+				color-mix(in srgb, var(--btn-bg-base), black 30%)
+			);
+		}
+
+		// Shape — rounded square (8 px) on every nested btn, overriding
+		// the Btn's default `&--icon { border-radius: 50% }`.
+		:deep(.origam-btn) {
+			--origam-btn---border-radius: var(--origam-app-bar---btn-border-radius, 8px);
+			--origam-btn---border-radius-icon: var(--origam-app-bar---btn-border-radius, 8px);
+			border-radius: var(--origam-app-bar---btn-border-radius, 8px);
+		}
+	}
+</style>
