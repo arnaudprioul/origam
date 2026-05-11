@@ -182,7 +182,24 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         let fgDecl: string | null = null
         if (colors.value.text) {
             if (isIntent(colors.value.text)) {
-                fgDecl = `color: ${tokenForegroundForIntent(colors.value.text)}`
+                // ── Color-clash auto-contrast (cross-component rule) ────
+                // When `text` and `background` resolve to the SAME intent
+                // (e.g. `color="primary" bgColor="primary"`), painting the
+                // fg with `tokenForegroundForIntent` returns a same-hue
+                // shade (primary.fgSubtle = primary.700) — that's hue-on-
+                // hue, unreadable. Swap to the bg's paired contrast token
+                // (white on a saturated brand surface, dark on a soft
+                // surface) so the text is always legible without forcing
+                // the consumer to spell out both values.
+                if (
+                    bgIntentFg &&
+                    isIntent(colors.value.background) &&
+                    colors.value.text === colors.value.background
+                ) {
+                    fgDecl = `color: ${bgIntentFg}`
+                } else {
+                    fgDecl = `color: ${tokenForegroundForIntent(colors.value.text)}`
+                }
             } else if (isCssColor(colors.value.text)) {
                 fgDecl = `color: ${colors.value.text}`
             }
@@ -398,11 +415,30 @@ export function useColorEffect (
         // auto-contrasts the text to the intent's fg pair below) or set
         // both explicitly.
         if (color.value && isIntent(color.value)) {
-            // `tokenForegroundForIntent` returns the intent's *foreground*
-            // token (e.g. `var(--origam-color-action-primary-fgSubtle)`),
-            // designed to be legible on a neutral surface — exactly the
-            // semantics consumers want from `color` alone.
-            fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
+            // ── Color-clash auto-contrast (cross-component rule) ────────
+            // When the consumer passes the SAME intent on both axes
+            // (e.g. `color="primary" bgColor="primary"`), painting the
+            // fg with `tokenForegroundForIntent` returns the intent's
+            // own hue (fgSubtle = primary.700) ON TOP of the bg's intent
+            // surface — hue-on-hue, unreadable ("violet on violet"). Swap
+            // to the bg's paired contrast token instead (white on a
+            // saturated brand surface, dark on a soft surface) so the
+            // text is always legible without forcing the consumer to
+            // spell out both values explicitly.
+            if (
+                bgIntentFg &&
+                bgColor.value &&
+                isIntent(bgColor.value) &&
+                color.value === bgColor.value
+            ) {
+                fgDecl = `color: ${bgIntentFg}`
+            } else {
+                // `tokenForegroundForIntent` returns the intent's *foreground*
+                // token (e.g. `var(--origam-color-action-primary-fgSubtle)`),
+                // designed to be legible on a neutral surface — exactly the
+                // semantics consumers want from `color` alone.
+                fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
+            }
         } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
             if (color.value !== 'transparent') warnLegacyColor('color', color.value)
             fgDecl = `color: ${color.value}`

@@ -121,3 +121,44 @@ describe('useColorEffect — classes-first', () => {
         expect(colorStyles.value.length).toBeGreaterThan(0)
     })
 })
+
+describe('useColorEffect — color-clash auto-contrast', () => {
+    // When the consumer passes the SAME intent on both `color` and `bgColor`
+    // (e.g. <OrigamBtn color="primary" bgColor="primary">), the previous
+    // behaviour resolved the fg to `tokenForegroundForIntent(color)` which
+    // returns the intent's OWN hue (`primary.fgSubtle` = primary 700). That
+    // produced "violet text on violet surface" — unreadable. We now detect
+    // the clash and swap the fg to the bg's paired contrast token (white
+    // for primary).
+    it('color === bgColor (both primary) → fg swaps to the bg contrast token', () => {
+        const props = ref({ color: 'primary' as const, bgColor: 'primary' as const })
+        const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
+        const fg = colorStyles.value.find((s) => s.startsWith('color:'))
+        // Should resolve to the bg's paired fg, NOT to fgSubtle (same hue).
+        expect(fg).toContain('var(--origam-color-action-primary-fg)')
+        expect(fg).not.toContain('fgSubtle')
+    })
+
+    it('color === bgColor (both danger) → fg swaps to the feedback contrast token', () => {
+        const props = ref({ color: 'danger' as const, bgColor: 'danger' as const })
+        const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
+        const fg = colorStyles.value.find((s) => s.startsWith('color:'))
+        expect(fg).toContain('var(--origam-color-feedback-danger-fg)')
+        expect(fg).not.toContain('fgSubtle')
+    })
+
+    it('color !== bgColor → keeps the intent\'s own fgSubtle (no swap)', () => {
+        const props = ref({ color: 'primary' as const, bgColor: 'neutral' as const })
+        const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
+        const fg = colorStyles.value.find((s) => s.startsWith('color:'))
+        // Different intents — leave the consumer's choice alone.
+        expect(fg).toContain('var(--origam-color-action-primary-fgSubtle)')
+    })
+
+    it('color only (no bgColor) → keeps the intent\'s own fgSubtle (no swap)', () => {
+        const props = ref({ color: 'primary' as const })
+        const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
+        const fg = colorStyles.value.find((s) => s.startsWith('color:'))
+        expect(fg).toContain('var(--origam-color-action-primary-fgSubtle)')
+    })
+})
