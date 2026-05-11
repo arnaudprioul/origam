@@ -161,13 +161,32 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     })
 
     const mainStyles = computed<CSSProperties>(() => {
+        const left = convertToUnit(mainRect.value.left) ?? '0px'
+        const right = convertToUnit(mainRect.value.right) ?? '0px'
+        const top = convertToUnit(mainRect.value.top) ?? '0px'
+        const bottom = convertToUnit(mainRect.value.bottom) ?? '0px'
+        // Emit BOTH:
+        //   • the standard `left / right / top / bottom` props for
+        //     consumers that use `position: absolute` (e.g.
+        //     OrigamMain in scrollable mode, OrigamSnackbar);
+        //   • the matching CSS custom properties so that consumers
+        //     using `padding-inline-start: var(--origam-layout---
+        //     position-left)` (default OrigamMain) actually receive
+        //     the reserved-space values. Without the latter, the
+        //     drawer reserved its width via useLayoutItem but the
+        //     main content never offset → "drawer overlays main
+        //     instead of pushing it" (user report).
         return {
-            'left': convertToUnit(mainRect.value.left),
-            'right': convertToUnit(mainRect.value.right),
-            'top': convertToUnit(mainRect.value.top),
-            'bottom': convertToUnit(mainRect.value.bottom),
+            'left': left,
+            'right': right,
+            'top': top,
+            'bottom': bottom,
+            '--origam-layout---position-left': left,
+            '--origam-layout---position-right': right,
+            '--origam-layout---position-top': top,
+            '--origam-layout---position-bottom': bottom,
             ...(transitionsEnabled.value ? undefined : {transition: 'none'})
-        }
+        } as CSSProperties
     })
 
     const items = computed(() => {

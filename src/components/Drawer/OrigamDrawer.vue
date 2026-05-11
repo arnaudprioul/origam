@@ -77,7 +77,7 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamOverlayScrim, OrigamTransition } from '../../components'
+	import { OrigamOverlayScrim, OrigamSlideX, OrigamTransition } from '../../components'
 
 	import {
 		useBackgroundColor,
@@ -120,14 +120,16 @@
 		location: INLINE.LEFT,
 		modelValue: true,
 		// Default enter/leave animation when the drawer toggles open
-		// (v-model). Matches Vue's <transition name="…"> convention:
-		// the framework auto-injects `…-enter-from` / `…-enter-active`
-		// / `…-leave-to` etc. classes, which OrigamSlideX / SlideY ship
-		// with horizontal / vertical slide keyframes. Consumer can
-		// override by passing `:transition="false"` (no animation),
-		// any other string (other named transition), or a full
-		// TTransitionProps object.
-		transition: 'origam-transition--slide-x'
+		// (v-model). We pass the OrigamSlideX **component** itself
+		// (not just its name string) so that
+		//   (a) Vue uses OrigamSlideX as the transition wrapper, and
+		//   (b) the keyframes CSS that ships in OrigamSlideX.vue is
+		//       loaded into the page even if no consumer renders the
+		//       transition component elsewhere. Passing only a string
+		//       name relies on the keyframes being already present in
+		//       the cascade — which they aren't when the drawer is the
+		//       only consumer.
+		transition: () => ({ component: OrigamSlideX })
 	})
 
 	const emits = defineEmits(['update:rail'])
