@@ -320,7 +320,18 @@
 			class: ['origam-field__label'],
 			for: id.value,
 			text: props.label,
-			...defaultLabelProps
+			...defaultLabelProps,
+			// The field's `border` / `rounded` visual props belong to
+			// the FIELD outline (the input box). Forwarding them onto
+			// the `<origam-label>` would draw a chip-like border + 8px
+			// radius around the label text — which is what user
+			// reported on OrigamFileField (the default `border: true,
+			// rounded: true` defaults of FileField were bleeding into
+			// the "Document" label). Reset them to `false` here so the
+			// label always renders as plain text regardless of what the
+			// surrounding field declares.
+			border: false,
+			rounded: false,
 		}
 	})
 
