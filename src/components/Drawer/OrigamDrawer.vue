@@ -1,45 +1,56 @@
 <template>
 	<teleport
-			v-if="isActive"
 			:disabled="isLayoutOrphan"
 			:to="teleportDrawer"
 			defer
 	>
-		<component
-				:is="tag"
-				:ref="rootEl"
-				:class="drawerClasses"
-				:style="drawerStyles"
-				v-bind="{...scopeId, ...$attrs}"
-				@mouseenter="handleMouseEnter"
-				@mouseleave="handleMouseLeave"
-		>
-			<div class="origam-drawer__wrapper">
-				<slot name="wrapper">
-					<div
-							v-if="hasPrepend"
-							class="origam-drawer__prepend"
-					>
-						<slot name="prepend"/>
-					</div>
+		<!--
+			`<origam-transition>` wraps the conditional <component v-if>
+			so the drawer animates on mount/unmount instead of popping
+			in / out. Default transition is `origam-transition--slide-x`
+			(horizontal slide keyframes shipped by OrigamSlideX). The
+			teleport itself stays mounted so transition events fire on
+			the inner element.
+		-->
+		<origam-transition :transition="transition">
+			<component
+					v-if="isActive"
+					:is="tag"
+					:ref="rootEl"
+					:class="drawerClasses"
+					:style="drawerStyles"
+					v-bind="{...scopeId, ...$attrs}"
+					@mouseenter="handleMouseEnter"
+					@mouseleave="handleMouseLeave"
+			>
+				<div class="origam-drawer__wrapper">
+					<slot name="wrapper">
+						<div
+								v-if="hasPrepend"
+								class="origam-drawer__prepend"
+						>
+							<slot name="prepend"/>
+						</div>
 
-					<div
-							v-if="hasContent"
-							class="origam-drawer__content"
-					>
-						<slot name="default"/>
-					</div>
+						<div
+								v-if="hasContent"
+								class="origam-drawer__content"
+						>
+							<slot name="default"/>
+						</div>
 
-					<div
-							v-if="hasAppend"
-							class="origam-drawer__append"
-					>
-						<slot name="append"/>
-					</div>
-				</slot>
-			</div>
-		</component>
+						<div
+								v-if="hasAppend"
+								class="origam-drawer__append"
+						>
+							<slot name="append"/>
+						</div>
+					</slot>
+				</div>
+			</component>
+		</origam-transition>
 		<origam-overlay-scrim
+				v-if="isActive"
 				:active="isTemporary && (isDragging || isActive && !!scrim)"
 				:scrim="scrim"
 				:style="scrimStyles"
@@ -66,7 +77,7 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamOverlayScrim } from '../../components'
+	import { OrigamOverlayScrim, OrigamTransition } from '../../components'
 
 	import {
 		useBackgroundColor,
@@ -107,7 +118,16 @@
 		scrim: true,
 		width: 256,
 		location: INLINE.LEFT,
-		modelValue: true
+		modelValue: true,
+		// Default enter/leave animation when the drawer toggles open
+		// (v-model). Matches Vue's <transition name="…"> convention:
+		// the framework auto-injects `…-enter-from` / `…-enter-active`
+		// / `…-leave-to` etc. classes, which OrigamSlideX / SlideY ship
+		// with horizontal / vertical slide keyframes. Consumer can
+		// override by passing `:transition="false"` (no animation),
+		// any other string (other named transition), or a full
+		// TTransitionProps object.
+		transition: 'origam-transition--slide-x'
 	})
 
 	const emits = defineEmits(['update:rail'])
