@@ -676,6 +676,36 @@
 		scoped
 >
 	.origam-pagination {
+		// ── Unified color logic ────────────────────────────────────
+		//
+		// Single derivation rule, identical to what every component
+		// in the design system should do (cf. ADR on color logic):
+		//
+		//     normal  →  bgColor
+		//     hover   →  color-mix(bgColor, black 20 %)   ← derived
+		//     active  →  color-mix(bgColor, black 30 %)   ← derived
+		//
+		// Consumers can short-circuit any state by setting the
+		// matching CSS var (the JS-level `activeBgColor` /
+		// `hoverBgColor` props funnel into these vars upstream).
+		//
+		//   --origam-pagination---background-color           (normal)
+		//   --origam-pagination---background-color-hover     (hover  override)
+		//   --origam-pagination__item--is-active---background-color
+		//                                                    (active override)
+		//
+		// `--colored` just repoints the base bg to the intent
+		// token (and the paired fg) — every state cascades from it
+		// automatically, so we no longer maintain two branches.
+		//
+		// IMPORTANT: these CSS-custom-property declarations live BEFORE
+		// the nested rules below. Modern Sass (and the future CSS spec)
+		// will hoist nested rules above bare declarations, so keeping
+		// the order is "declarations → nested rules" prevents the
+		// `mixed-decls` deprecation warning.
+		--bg-base: var(--origam-pagination---background-color, transparent);
+		--fg-base: var(--origam-pagination---color, currentColor);
+
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -704,30 +734,6 @@
 			margin: 0;
 			padding: 0;
 		}
-
-		// ── Unified color logic ────────────────────────────────────
-		//
-		// Single derivation rule, identical to what every component
-		// in the design system should do (cf. ADR on color logic):
-		//
-		//     normal  →  bgColor
-		//     hover   →  color-mix(bgColor, black 20 %)   ← derived
-		//     active  →  color-mix(bgColor, black 30 %)   ← derived
-		//
-		// Consumers can short-circuit any state by setting the
-		// matching CSS var (the JS-level `activeBgColor` /
-		// `hoverBgColor` props funnel into these vars upstream).
-		//
-		//   --origam-pagination---background-color           (normal)
-		//   --origam-pagination---background-color-hover     (hover  override)
-		//   --origam-pagination__item--is-active---background-color
-		//                                                    (active override)
-		//
-		// `--colored` just repoints the base bg to the intent
-		// token (and the paired fg) — every state cascades from it
-		// automatically, so we no longer maintain two branches.
-		--bg-base: var(--origam-pagination---background-color, transparent);
-		--fg-base: var(--origam-pagination---color, currentColor);
 
 		&--colored {
 			--bg-base: var(
