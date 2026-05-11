@@ -4,6 +4,7 @@ import type {
     IAdjacentInnerEmits,
     IAdjacentInnerProps,
     IAdjacentInnerSlots,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
@@ -18,7 +19,7 @@ import type {
     IVariantProps
 } from '../../interfaces'
 
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps {
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean

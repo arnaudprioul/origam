@@ -1,6 +1,7 @@
 import type {
     IAdjacentProps,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDataListKVItem,
@@ -29,7 +30,7 @@ import type {
  */
 export type TDataListMode = 'avatar' | 'kv'
 
-export interface IDataListProps extends ICommonsComponentProps, IAdjacentProps, IColorProps, IMarginProps, IPaddingProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps {
+export interface IDataListProps extends ICommonsComponentProps, IAdjacentProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps {
     /**
      * Selects the layout. Defaults to `"avatar"` so existing call sites
      * keep their current rendering. Set to `"kv"` for the PDF-aligned

@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, isRef, ref } from 'vue'
-import type { IColorProps } from "../../interfaces"
+import type { IBgColorProps, IColorProps } from "../../interfaces"
 import type { TColor, TIntent } from '../../types'
 import { getForeground, isCssColor, isParsableColor, parseColor } from '../../utils'
 
@@ -350,7 +350,7 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
  * useColorEffect
  ********************************************************/
 export function useColorEffect (
-    props: IColorProps,
+    props: IColorProps & IBgColorProps,
     isHover: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isActive: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isDisabled: Ref<boolean> | ComputedRef<boolean> = ref(false)

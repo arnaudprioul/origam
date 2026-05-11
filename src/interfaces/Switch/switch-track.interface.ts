@@ -1,4 +1,5 @@
 import type {
+    IBgColorProps,
     IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
@@ -18,7 +19,7 @@ import type {
  *              not the track) — exposed here so the slot content can
  *              react to it (e.g. an icon inside `track.true`).
  */
-export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps {
+export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, IBgColorProps {
     /** Whether the switch is currently ON. Drives the `--dirty` modifier. */
     modelValue?: boolean
     /** Validation state forwarded from the surrounding `<OrigamInput>`. */

@@ -3,6 +3,7 @@ import type {
     IAdjacentProps,
     IAdjacentSlots,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
@@ -18,7 +19,7 @@ import type {
     IValidationProps
 } from '../../interfaces'
 
-export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps {
+export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps {
     centerAffix?: boolean
     hideDetails?: boolean | string
     hideSpinButtons?: boolean
