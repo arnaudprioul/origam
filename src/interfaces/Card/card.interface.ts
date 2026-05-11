@@ -1,6 +1,7 @@
 import type {
     IAdjacentProps,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -25,7 +26,7 @@ import type { TCardType } from '../../types'
 // SCSS reading `var(--origam-card---color)` / `--background`.
 // Reported by the user in the audit pass that surfaced the Switch
 // `color` regression.
-export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps {
+export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps {
     disabled?: boolean
     flat?: boolean
     hover?: boolean
