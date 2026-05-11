@@ -48,12 +48,6 @@
 
 <script lang="ts" setup>
     import { OrigamCard, OrigamCardText } from '@origam/components'
-    import {
-        HstBorder,
-        HstMargin,
-        HstPadding,
-        HstRounded
-    } from '@stories/components/controls'
 </script>
 
 <docs lang="md">

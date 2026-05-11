@@ -393,16 +393,17 @@
 						ref,
 						...sharedBtnColorProps.value,
 						ellipsis: false,
-						// `icon: true` forces OrigamBtn into icon-mode
-						// (circular 50% radius via `&--icon`). In `withInfo`
-						// the Prev / Next siblings are TEXT pills (no
-						// `--icon` class), so leaving `icon: true` here
-						// would mix a circular page button between two
-						// rectangular pills — the inconsistency the user
-						// reported ("carré d'un côté, rond de l'autre").
-						// In default mode we keep the circular icon-mode so
-						// all of `‹ 1 2 3 › … 12` share a consistent shape.
-						icon: !props.withInfo,
+						// `icon: true` keeps the btn in icon-mode so its
+						// width clamps to its height — a 36×36 square at
+						// the default size. The pagination SCSS override
+						// re-sets the corner radius from the btn's
+						// default 50% to 8px, producing the rounded-SQUARE
+						// shape the PDF prescribes (NOT a full circle).
+						// Inactive page btns paint a transparent surface
+						// via the `&:not(&--colored) .origam-btn:not(--active)`
+						// rule below, so they read as plain numbers; only
+						// the active page paints the intent-coloured fill.
+						icon: true,
 						disabled: !!props.disabled || +props.length < 2,
 						// `active: true` lets the inner `<origam-btn>`
 						// add its own --active overlay so the current
@@ -694,16 +695,29 @@
 			margin: var(--origam-pagination---gap, 4px);
 		}
 
+		// All pagination buttons (numbered pages + prev / next chevrons
+		// + ellipsis) share a single rounded-square shape (PDF spec:
+		// active "2" rendered as an ~8px-radius purple square, NOT a
+		// circle). The earlier `--icon` override forced 9999px on every
+		// btn that received `icon: true|"mdi-…"` — producing the round
+		// page numbers + round chevrons the user reported as a mismatch
+		// against the print mockups.
 		:deep(.origam-btn) {
-			border-radius: var(--origam-pagination---border-radius, 4px);
+			border-radius: var(--origam-pagination---border-radius, 8px);
 		}
 
 		:deep(.origam-btn--rounded) {
 			border-radius: var(--origam-pagination---border-radius-rounded, 24px);
 		}
 
+		// Explicitly override the `--icon` btn's default 50% radius back
+		// to the pagination shape. Without this the inner OrigamBtn's
+		// own `&--icon { border-radius: 50% }` (set inside the btn's
+		// scoped styles) wins, restoring the circular pages.
 		:deep(.origam-btn--icon) {
-			border-radius: var(--origam-pagination---border-radius-circle, 9999px);
+			--origam-btn---border-radius: var(--origam-pagination---border-radius, 8px);
+			--origam-btn---border-radius-icon: var(--origam-pagination---border-radius, 8px);
+			border-radius: var(--origam-pagination---border-radius, 8px);
 		}
 
 		:deep(.origam-btn__overlay) {

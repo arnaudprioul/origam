@@ -81,7 +81,6 @@
 
 <script lang="ts" setup>
     import { OrigamCarousel, OrigamCarouselItem } from '@origam/components'
-    import { HstDimension } from '@stories/components/controls'
 </script>
 
 <docs lang="md">

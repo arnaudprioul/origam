@@ -68,7 +68,6 @@
 
 <script lang="ts" setup>
     import { OrigamCheckboxBtn } from '@origam/components'
-    import { HstColor, HstIcon } from '@stories/components/controls'
     import { ref } from 'vue'
 
     const checked = ref(false)

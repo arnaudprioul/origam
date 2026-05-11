@@ -71,12 +71,6 @@
 <script lang="ts" setup>
     import { OrigamCard, OrigamCardHeader } from '@origam/components'
     import { MDI_ICONS } from '@origam/enums'
-    import {
-        HstBorder,
-        HstDensity,
-        HstIcon,
-        HstRounded
-    } from '@stories/components/controls'
 </script>
 
 <docs lang="md">

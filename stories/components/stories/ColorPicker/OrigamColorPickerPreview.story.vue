@@ -64,7 +64,6 @@
 
 <script lang="ts" setup>
     import { OrigamColorPickerPreview } from '@origam/components'
-    import { HstDimension } from '@stories/components/controls'
 
     const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 0.6 }
 </script>

@@ -118,13 +118,6 @@
 <script lang="ts" setup>
     import { OrigamAppBar, OrigamBtn } from '@origam/components'
     import { MDI_ICONS } from '@origam/enums'
-    import {
-        HstBorder,
-        HstColor,
-        HstDensity,
-        HstElevation,
-        HstRounded
-    } from '@stories/components/controls'
 </script>
 
 <docs lang="md">
