@@ -54,39 +54,94 @@ function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
     return typeof v === 'string' && INTENTS.has(v)
 }
 
-/**
- * Build the CSS-vars override map for an intent (foreground + background).
- *
- * `bgKey` controls which `action.{intent}.bgXxx` slot is read (`bg`,
- * `bgHover`, `bgDisabled`). `feedbackBg` is `bg` or `bgSubtle`.
- */
-function tokenStylesForIntent (intent: TIntent, role: 'default' | 'hover' | 'disabled' = 'default'): Record<string, string> {
-    const styles: Record<string, string> = {}
-    if (intent === 'neutral') {
-        styles['background-color'] = `var(--origam-color-action-secondary-${bgSlot(role)})`
-        styles.color = `var(--origam-color-action-secondary-${fgSlot(role)})`
-        return styles
-    }
+// ── State derivation rule (cross-component) ─────────────────────────────────
+//
+// Cross-component color logic (per user spec):
+//
+//     normal  →  bgColor
+//     hover   →  bgColor + 20 % darker
+//     active  →  bgColor + 30 % darker
+//
+// Implementation strategy: cascading CSS var with `color-mix` fallback.
+//
+//     var(--bgHover, color-mix(in srgb, bg, black 20%))
+//
+// • If the designer defined a `bgHover` / `bgActive` token, it wins
+//   (designer keeps theme-aware artistic control).
+// • Otherwise the browser falls back to the math derivation — uniform
+//   -20 % / -30 % for every intent that omits the rung, and the same
+//   formula applies cleanly to raw CSS colors and `transparent`.
+//
+// Note: the design system currently ships `bgHover` for every intent
+// (designer-tuned) but does NOT ship `bgActive`. Active state therefore
+// resolves to the math fallback for now; designers can override per
+// intent later by adding `--origam-color-{tokenBase}-bgActive`.
+
+const HOVER_MIX_PCT = 20
+const ACTIVE_MIX_PCT = 30
+
+function intentTokenBase (intent: TIntent): string {
+    if (intent === 'neutral') return 'action-secondary'
     if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        styles['background-color'] = `var(--origam-color-feedback-${intent}-bg)`
-        styles.color = `var(--origam-color-feedback-${intent}-fg)`
-        return styles
+        return `feedback-${intent}`
     }
     // primary / secondary / ghost
-    styles['background-color'] = `var(--origam-color-action-${intent}-${bgSlot(role)})`
-    styles.color = `var(--origam-color-action-${intent}-${fgSlot(role)})`
-    return styles
+    return `action-${intent}`
 }
 
-function bgSlot (role: 'default' | 'hover' | 'disabled'): string {
-    if (role === 'hover') return 'bgHover'
-    if (role === 'disabled') return 'bgDisabled'
-    return 'bg'
+/**
+ * Emit a state-aware bg expression for an intent:
+ *
+ *   • `default`  → `var(--…-bg)`
+ *   • `hover`    → `var(--…-bgHover, color-mix(in srgb, var(--…-bg), black 20%))`
+ *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
+ *   • `disabled` → `var(--…-bgDisabled)`
+ */
+function intentBgExpr (intent: TIntent, role: BgFgRole): string {
+    const base = intentTokenBase(intent)
+    const baseVar = `var(--origam-color-${base}-bg)`
+    if (role === 'default') return baseVar
+    if (role === 'disabled') return `var(--origam-color-${base}-bgDisabled)`
+    const pct = role === 'hover' ? HOVER_MIX_PCT : ACTIVE_MIX_PCT
+    const slot = role === 'hover' ? 'bgHover' : 'bgActive'
+    return `var(--origam-color-${base}-${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
 }
 
-function fgSlot (role: 'default' | 'hover' | 'disabled'): string {
-    if (role === 'disabled') return 'fgDisabled'
-    return 'fg'
+/**
+ * Foreground in hover/active stays the same as default by design —
+ * we darken the surface around the text, the text itself keeps the
+ * WCAG-paired contrast token.
+ */
+function intentFgExpr (intent: TIntent, role: BgFgRole): string {
+    const base = intentTokenBase(intent)
+    const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
+    return `var(--origam-color-${base}-${slot})`
+}
+
+type BgFgRole = 'default' | 'hover' | 'active' | 'disabled'
+
+/**
+ * Build the CSS-vars override map for an intent (foreground + background)
+ * for a given interaction state.
+ */
+function tokenStylesForIntent (intent: TIntent, role: BgFgRole = 'default'): Record<string, string> {
+    return {
+        'background-color': intentBgExpr(intent, role),
+        color: intentFgExpr(intent, role),
+    }
+}
+
+/**
+ * Derive a state-aware bg from a raw CSS color value (hex/rgb/etc.) via
+ * `color-mix`. Used in the legacy raw-color path so consumers passing
+ * `bgColor="#abcdef"` still get a hover/active darken (matches the
+ * intent path's behaviour, just without the token cascade).
+ */
+function rawBgExprWithState (raw: string, role: BgFgRole): string {
+    if (role === 'default') return raw
+    if (role === 'disabled') return raw // veil/opacity handles disabled
+    const pct = role === 'hover' ? HOVER_MIX_PCT : ACTIVE_MIX_PCT
+    return `color-mix(in srgb, ${raw}, black ${pct}%)`
 }
 
 /**
@@ -369,13 +424,22 @@ export function useColorEffect (
         // We still read `isDisabled.value` to keep the param wired —
         // in case a future iteration wants per-intent disabled tokens.
         void isDisabled.value
-        const bgRole: 'default' | 'hover' =
+        // ── State role per axis ──────────────────────────────────────────
+        // hover and active resolve to DIFFERENT roles so the cross-
+        // component spec ("hover -20 %, active -30 %") holds. The
+        // previous code collapsed isActive into the 'hover' slot, which
+        // was wrong: the two states landed on the same darkening rung
+        // (designer-tuned bgHover) and were visually indistinguishable.
+        //
+        // Per-axis selection is preserved: an explicit hover/activeBgColor
+        // takes precedence over the role bump for THAT axis only.
+        const bgRole: BgFgRole =
             isHover.value && !props.hoverBgColor ? 'hover' :
-            isActive.value && !props.activeBgColor ? 'hover' :
+            isActive.value && !props.activeBgColor ? 'active' :
             'default'
-        const fgRole: 'default' | 'hover' =
+        const fgRole: BgFgRole =
             isHover.value && !props.hoverColor ? 'hover' :
-            isActive.value && !props.activeColor ? 'hover' :
+            isActive.value && !props.activeColor ? 'active' :
             'default'
 
         let bgDecl: string | null = null
@@ -391,12 +455,21 @@ export function useColorEffect (
         if (bgColor.value && isIntent(bgColor.value)) {
             const m = tokenStylesForIntent(bgColor.value, bgRole)
             bgDecl = `background-color: ${m['background-color']}`
-            bgIntentFg = m.color
+            // The intent's contrast fg is fixed across roles — pull from
+            // the default slot regardless of bgRole so hover/active text
+            // never darkens with the bg.
+            bgIntentFg = tokenStylesForIntent(bgColor.value, 'default').color
         } else if (bgColor.value === 'transparent') {
-            bgDecl = `background-color: ${bgColor.value}`
+            // Default mode (transparent base): math derivation gives a
+            // subtle gray on hover, a stronger gray on active — matches
+            // the pagination-style "neutral progression" expectation.
+            bgDecl = `background-color: ${rawBgExprWithState('transparent', bgRole)}`
         } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
             warnLegacyColor('bgColor', bgColor.value)
-            bgDecl = `background-color: ${bgColor.value}`
+            // Raw color path: apply the same -20 % / -30 % derivation
+            // for hover / active. Default mode keeps the raw value
+            // untouched (no transformation at rest).
+            bgDecl = `background-color: ${rawBgExprWithState(bgColor.value, bgRole)}`
         }
 
         /*********************************************************

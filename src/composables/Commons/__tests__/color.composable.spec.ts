@@ -162,3 +162,80 @@ describe('useColorEffect — color-clash auto-contrast', () => {
         expect(fg).toContain('var(--origam-color-action-primary-fgSubtle)')
     })
 })
+
+describe('useColorEffect — hover / active darken derivation', () => {
+    // Cross-component rule (per user spec):
+    //   normal → bgColor
+    //   hover  → bgColor + 20 % darker (designer-tuned token, math fallback)
+    //   active → bgColor + 30 % darker (no token rung yet, math fallback)
+    //
+    // Implementation: emit a cascading CSS var so the designer's
+    // bgHover / bgActive token wins when present, and `color-mix(in srgb, …)`
+    // takes over otherwise.
+
+    it('intent bgColor at rest → flat token reference (no cascade needed)', () => {
+        const props = { bgColor: 'primary' as const }
+        const { colorStyles } = useColorEffect(props as any, ref(false), ref(false), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(bg).toContain('var(--origam-color-action-primary-bg)')
+        expect(bg).not.toContain('color-mix')
+    })
+
+    it('intent bgColor + hover → bgHover token with 20 % math fallback', () => {
+        const props = { bgColor: 'primary' as const }
+        const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        // Cascading var: designer token wins, math fallback kicks in if missing.
+        expect(bg).toContain('var(--origam-color-action-primary-bgHover')
+        expect(bg).toContain('color-mix(in srgb, var(--origam-color-action-primary-bg), black 20%)')
+    })
+
+    it('intent bgColor + active → bgActive token with 30 % math fallback', () => {
+        const props = { bgColor: 'primary' as const }
+        const { colorStyles } = useColorEffect(props as any, ref(false), ref(true), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(bg).toContain('var(--origam-color-action-primary-bgActive')
+        expect(bg).toContain('color-mix(in srgb, var(--origam-color-action-primary-bg), black 30%)')
+    })
+
+    it('hover and active land on DIFFERENT bg slots (regression: they used to collapse)', () => {
+        const props = { bgColor: 'primary' as const }
+        const hover = useColorEffect(props as any, ref(true), ref(false), ref(false))
+        const active = useColorEffect(props as any, ref(false), ref(true), ref(false))
+        const hoverBg = hover.colorStyles.value.find((s) => s.startsWith('background-color:'))
+        const activeBg = active.colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(hoverBg).not.toBe(activeBg)
+        expect(hoverBg).toContain('bgHover')
+        expect(activeBg).toContain('bgActive')
+    })
+
+    it('explicit hoverBgColor short-circuits the derivation', () => {
+        const props = { bgColor: 'primary' as const, hoverBgColor: 'danger' as const }
+        const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        // hover uses danger (the explicit override) instead of derived primary.
+        expect(bg).toContain('var(--origam-color-feedback-danger-bg)')
+        expect(bg).not.toContain('color-mix')
+    })
+
+    it('raw bgColor + hover → math 20 % derive (no token cascade)', () => {
+        const props = { bgColor: '#abcdef' }
+        const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(bg).toBe('background-color: color-mix(in srgb, #abcdef, black 20%)')
+    })
+
+    it('raw bgColor + active → math 30 % derive', () => {
+        const props = { bgColor: '#abcdef' }
+        const { colorStyles } = useColorEffect(props as any, ref(false), ref(true), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(bg).toBe('background-color: color-mix(in srgb, #abcdef, black 30%)')
+    })
+
+    it('transparent bgColor + hover → math derive on transparent (gray-on-transparent)', () => {
+        const props = { bgColor: 'transparent' as const }
+        const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(bg).toBe('background-color: color-mix(in srgb, transparent, black 20%)')
+    })
+})
