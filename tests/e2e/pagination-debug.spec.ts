@@ -43,18 +43,26 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
 
     const info = await sandbox.locator('[data-cy="pagination-with-info"]').first().evaluate((el) => {
         const infoLabel = el.querySelector('.origam-pagination__info')
-        const prev = el.querySelector('.origam-pagination__prev .origam-btn')
-        const next = el.querySelector('.origam-pagination__next .origam-btn')
+        const prev = el.querySelector('.origam-pagination__prev .origam-btn') as HTMLElement | null
+        const next = el.querySelector('.origam-pagination__next .origam-btn') as HTMLElement | null
         const pageItems = el.querySelectorAll('.origam-pagination__item')
+        const pageBtn = el.querySelector('.origam-pagination__item .origam-btn') as HTMLElement | null
+        const shape = (b: HTMLElement | null) => b ? ({
+            classes: b.className,
+            hasIconClass: b.classList.contains('origam-btn--icon'),
+            borderRadius: getComputedStyle(b).borderRadius,
+            size: `${b.getBoundingClientRect().width.toFixed(1)} × ${b.getBoundingClientRect().height.toFixed(1)}`,
+        }) : null
         return {
             hasInfoLabel: !!infoLabel,
             infoText: infoLabel?.textContent?.trim() ?? null,
-            prevText: (prev as HTMLElement | null)?.innerText?.trim() ?? null,
-            prevClasses: prev?.className ?? null,
-            nextText: (next as HTMLElement | null)?.innerText?.trim() ?? null,
-            nextClasses: next?.className ?? null,
+            prevText: prev?.innerText?.trim() ?? null,
+            prevShape: shape(prev),
+            nextText: next?.innerText?.trim() ?? null,
+            nextShape: shape(next),
             visiblePageItems: pageItems.length,
             pageItemTexts: Array.from(pageItems).map((el) => (el as HTMLElement).innerText.trim()),
+            pageBtnShape: shape(pageBtn),
         }
     })
     // eslint-disable-next-line no-console

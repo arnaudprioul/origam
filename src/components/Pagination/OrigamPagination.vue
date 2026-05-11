@@ -393,7 +393,16 @@
 						ref,
 						...sharedBtnColorProps.value,
 						ellipsis: false,
-						icon: true,
+						// `icon: true` forces OrigamBtn into icon-mode
+						// (circular 50% radius via `&--icon`). In `withInfo`
+						// the Prev / Next siblings are TEXT pills (no
+						// `--icon` class), so leaving `icon: true` here
+						// would mix a circular page button between two
+						// rectangular pills — the inconsistency the user
+						// reported ("carré d'un côté, rond de l'autre").
+						// In default mode we keep the circular icon-mode so
+						// all of `‹ 1 2 3 › … 12` share a consistent shape.
+						icon: !props.withInfo,
 						disabled: !!props.disabled || +props.length < 2,
 						// `active: true` lets the inner `<origam-btn>`
 						// add its own --active overlay so the current
