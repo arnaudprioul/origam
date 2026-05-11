@@ -58,23 +58,18 @@
 	import type { ITimelineProps } from '../../interfaces'
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
-	interface ITimelinePropsWithTag extends ITimelineProps {
-		tag?: string
-		ariaLabel?: string
-	}
-
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ITimelinePropsWithTag>(), {
+	const props = withDefaults(defineProps<ITimelineProps>(), {
 		side: 'start',
 		orientation: 'vertical',
 		truncateLine: false,
 		tag: 'div'
 	})
 
-	const { filterProps } = useProps<ITimelinePropsWithTag>(props)
+	const { filterProps } = useProps<ITimelineProps>(props)
 
 	const orientation = computed(() => props.orientation ?? 'vertical')
 

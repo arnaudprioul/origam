@@ -1,5 +1,21 @@
-import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
+import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps, ITagProps } from '../../interfaces'
 import type { TIcon, TIntent, TTimelineOrientation } from '../../types'
+
+/**
+ * Shape of the context object provided by OrigamTimeline to its
+ * nested OrigamTimelineItem children. Used via inject so each item
+ * picks up the parent's layout direction / shared visual props
+ * without having to receive them as explicit props.
+ *
+ * The matching injection key lives in
+ * `src/consts/Timeline/timeline.const.ts` (TIMELINE_CONTEXT_KEY).
+ */
+export interface ITimelineContext {
+    side: 'start' | 'end' | 'alternating'
+    truncateLine: boolean
+    orientation: TTimelineOrientation
+    color?: string
+}
 
 export interface ITimelineEntry {
     title: string
@@ -9,7 +25,7 @@ export interface ITimelineEntry {
     intent?: TIntent
 }
 
-export interface ITimelineProps extends ICommonsComponentProps, IColorProps, ISizeProps, IDensityProps {
+export interface ITimelineProps extends ICommonsComponentProps, ITagProps, IColorProps, ISizeProps, IDensityProps {
     items?: ITimelineEntry[]
     /**
      * Layout direction.
@@ -22,6 +38,7 @@ export interface ITimelineProps extends ICommonsComponentProps, IColorProps, ISi
     orientation?: TTimelineOrientation
     side?: 'start' | 'end' | 'alternating'
     truncateLine?: boolean
+    ariaLabel?: string
 }
 
 export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps {
