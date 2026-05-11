@@ -189,6 +189,15 @@
 		height: var(--origam-toolbar---height);
 		box-sizing: var(--origam-toolbar---box-sizing);
 
+		// Default inline gutter so content (prepend / title / append)
+		// never sits flush against the bar's edges — applies to every
+		// Toolbar usage (AppBar, standalone, footer, etc.). User
+		// reported the title was glued to the left edge when no prepend
+		// btn was rendered; this is the universal fix. 16 px matches
+		// Material / iOS bar spec; consumer can override per-instance
+		// via the public CSS var.
+		padding-inline: var(--origam-toolbar---padding-inline, 16px);
+
 		overflow: var(--origam-toolbar---overflow);
 
 		position: var(--origam-toolbar---position);

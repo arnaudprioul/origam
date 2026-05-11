@@ -268,13 +268,11 @@
 		--btn-bg-base: var(--origam-app-bar---btn-background-color, transparent);
 		--btn-fg-base: var(--origam-app-bar---btn-color, currentColor);
 
-		// Inline gutter so the content (icon prepend / title / icon
-		// append) never sits flush against the bar's edges. With a
-		// prepend btn the gutter looks natural; WITHOUT a prepend the
-		// title was previously glued to the left edge — user reported
-		// "si pas d'icon, le titre est trop collé au bord". 16 px matches
-		// Material / iOS app-bar spec for inline padding.
-		padding-inline: var(--origam-app-bar---padding-inline, 16px);
+		// NB: inline gutter now lives on OrigamToolbar itself
+		// (`--origam-toolbar---padding-inline`, default 16 px). It
+		// applies universally to every Toolbar usage. AppBar consumers
+		// can still retune via that same toolbar var, or via a per-
+		// instance override.
 
 		// Normal state — transparent fill, btn icon reads on the bar.
 		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
