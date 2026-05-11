@@ -180,7 +180,7 @@
 	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
 	import { OrigamBtn } from "../../components"
 
-	import { useDisplay, useLocale, useProps, useRefs, useResizeObserver, useVModel } from "../../composables"
+	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useVModel } from "../../composables"
 
 	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
 
@@ -298,6 +298,16 @@
 	const range = computed(() => {
 		if (length.value <= 0 || isNaN(length.value) || length.value > Number.MAX_SAFE_INTEGER) return []
 
+		// `withInfo` mode collapses the page-number row to just the
+		// current page button — the spec (PDF: WITH INFO) shows a
+		// single page indicator between the Prev / Next text buttons,
+		// since the `Showing N–M of total` label on the left already
+		// expresses position within the range. Pre-fix this rendered
+		// the full numbered list, drowning the simpler info layout.
+		if (props.withInfo) {
+			return [page.value]
+		}
+
 		if (totalVisible.value <= 0) return []
 		else if (totalVisible.value === 1) return [page.value]
 
@@ -339,6 +349,11 @@
 		hoverBgColor: props.hoverBgColor,
 		activeColor: props.activeColor,
 		activeBgColor: props.activeBgColor,
+		// Size / density flow through to every nav btn so the whole row
+		// scales consistently — matches the PDF spec which shows the
+		// pagination at sm / default / lg sizes (no per-btn override).
+		size: props.size,
+		density: props.density,
 	}))
 	const controlColorProps = sharedBtnColorProps
 
@@ -403,6 +418,30 @@
 		const prevDisabled = !!props.disabled || page.value <= start.value
 		const nextDisabled = !!props.disabled || page.value >= start.value + length.value - 1
 
+		// `withInfo` mode renders Prev / Next as TEXT BUTTONS with the
+		// chevron as a prepend / append icon (PDF spec: WITH INFO).
+		// Default mode keeps them icon-only (the chevron alone). The
+		// first / last controls always stay icon-only — they only show
+		// when `showFirstLastPage` is set and are decorative anchors.
+		const prevTextual = props.withInfo
+			? {
+				text: t(props.previousText ?? 'origam.pagination.previous'),
+				prependIcon: props.prevIcon,
+				icon: false,
+			}
+			: {
+				icon: props.prevIcon,
+			}
+		const nextTextual = props.withInfo
+			? {
+				text: t(props.nextText ?? 'origam.pagination.next'),
+				appendIcon: props.nextIcon,
+				icon: false,
+			}
+			: {
+				icon: props.nextIcon,
+			}
+
 		return {
 			first: {
 				...controlColorProps.value,
@@ -414,7 +453,7 @@
 			},
 			prev: {
 				...controlColorProps.value,
-				icon: props.prevIcon,
+				...prevTextual,
 				onClick: (e: Event) => setValue(e, page.value - 1, 'prev'),
 				disabled: prevDisabled,
 				'aria-label': props.previousAriaLabel,
@@ -422,7 +461,7 @@
 			},
 			next: {
 				...controlColorProps.value,
-				icon: props.nextIcon,
+				...nextTextual,
 				onClick: (e: Event) => setValue(e, page.value + 1, 'next'),
 				disabled: nextDisabled,
 				'aria-label': props.nextAriaLabel,
@@ -545,6 +584,9 @@
 	 ********************************************************/
 	const isColored = computed(() => !!(props.color || props.bgColor))
 
+	const { sizeClasses } = useSize(props)
+	const { densityClasses } = useDensity(props)
+
 	const paginationClasses = computed(() => {
 		return [
 			'origam-pagination',
@@ -553,6 +595,8 @@
 				'origam-pagination--compact': !!props.compact,
 				'origam-pagination--with-info': !!props.withInfo
 			},
+			sizeClasses.value,
+			densityClasses.value,
 			props.class
 		]
 	})

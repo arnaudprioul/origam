@@ -162,6 +162,14 @@
 			</template>
 		</Variant>
 
+		<Variant title="Sizes — small · default · large (stacked rows)">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-pagination v-model="page" :length="3" size="small" data-cy="pagination-size-small"/>
+				<origam-pagination v-model="page" :length="3" size="default" data-cy="pagination-size-default"/>
+				<origam-pagination v-model="page" :length="3" size="large" data-cy="pagination-size-large"/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{

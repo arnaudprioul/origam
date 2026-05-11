@@ -2,15 +2,17 @@ import type {
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
+    IDensityProps,
     IElevationProps,
     IMarginProps,
     IPaddingProps,
+    ISizeProps,
     ITagProps
 } from "../../interfaces"
 
 import type { TIcon } from "../../types"
 
-export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps {
+export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps {
     start?: number
     modelValue?: number
     disabled?: boolean
@@ -53,4 +55,17 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
     perPage?: number | string
     /** i18n key for the `withInfo` label. Receives `{0}=start`, `{1}=end`, `{2}=total`. */
     infoText?: string
+    /**
+     * Label rendered next to the prev chevron in `withInfo` mode.
+     * Default falls back to the `origam.pagination.previous` i18n key
+     * (`"Prev"` in English). Useful for setting a translated label
+     * inline without touching the locale catalogue.
+     */
+    previousText?: string
+    /**
+     * Label rendered next to the next chevron in `withInfo` mode.
+     * Default falls back to the `origam.pagination.next` i18n key
+     * (`"Next"` in English).
+     */
+    nextText?: string
 }

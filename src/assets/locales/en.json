@@ -99,7 +99,9 @@
       },
       "page": "Page",
       "of": "of",
-      "info": "Showing {0}-{1} of {2}"
+      "info": "Showing {0}-{1} of {2}",
+      "next": "Next",
+      "previous": "Prev"
     },
     "stepper": {
       "next": "Next",
