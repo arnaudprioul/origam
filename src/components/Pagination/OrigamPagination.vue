@@ -661,94 +661,81 @@
 			padding: 0;
 		}
 
-		&:not(&--colored) {
-			:deep(.origam-btn:not(.origam-btn--active):not(:hover)) {
-				--origam-btn---background-color: var(--origam-pagination---background-color, transparent);
-				--origam-btn---color: var(--origam-pagination---color, currentColor);
-			}
-
-			:deep(.origam-btn:hover:not(.origam-btn--active)) {
-				--origam-btn---background-color: var(--origam-pagination---background-color-hover, rgba(0, 0, 0, 0.04));
-				--origam-btn---color: var(--origam-pagination---color, currentColor);
-			}
-		}
+		// ── Unified color logic ────────────────────────────────────
+		//
+		// Single derivation rule, identical to what every component
+		// in the design system should do (cf. ADR on color logic):
+		//
+		//     normal  →  bgColor
+		//     hover   →  color-mix(bgColor, black 20 %)   ← derived
+		//     active  →  color-mix(bgColor, black 30 %)   ← derived
+		//
+		// Consumers can short-circuit any state by setting the
+		// matching CSS var (the JS-level `activeBgColor` /
+		// `hoverBgColor` props funnel into these vars upstream).
+		//
+		//   --origam-pagination---background-color           (normal)
+		//   --origam-pagination---background-color-hover     (hover  override)
+		//   --origam-pagination__item--is-active---background-color
+		//                                                    (active override)
+		//
+		// `--colored` just repoints the base bg to the intent
+		// token (and the paired fg) — every state cascades from it
+		// automatically, so we no longer maintain two branches.
+		--bg-base: var(--origam-pagination---background-color, transparent);
+		--fg-base: var(--origam-pagination---color, currentColor);
 
 		&--colored {
+			--bg-base: var(
+				--origam-pagination---background-color-colored,
+				var(--origam-color-action-primary-bg)
+			);
+			--fg-base: var(
+				--origam-pagination---color-colored,
+				var(--origam-color-action-primary-fg)
+			);
+
 			:deep(.origam-btn) {
 				box-shadow: var(--origam-pagination--primary---box-shadow, none);
 			}
 		}
 
-		&__item {
-			&--is-active {
-				// The selected page must contrast against its
-				// siblings, but the *kind* of contrast depends on
-				// the variant the consumer opted into:
-				//
-				//   • Default (uncolored) → neutral surface fill
-				//     (e.g. light-gray) on top of the otherwise
-				//     transparent page row. Text stays at
-				//     currentColor so it picks up the page's
-				//     foreground — never tinted with the same
-				//     hue as the bg.
-				//
-				//   • Colored (consumer passed color="primary",
-				//     "success", …) → solid intent fill + the
-				//     matching foreground token (white over a
-				//     saturated brand color, dark over a soft
-				//     surface token). Handled below in the
-				//     `&--colored` branch so it only kicks in
-				//     when the user explicitly asked for it.
-				//
-				// We collapse the legacy 12 % overlay either way —
-				// it produced "invisible" selection states on top
-				// of a transparent surface.
-				:deep(.origam-btn) {
-					--origam-btn---background-color: var(
-						--origam-pagination__item--is-active---background-color,
-						var(--origam-color-neutral-200)
-					);
-					// `currentColor` defers to the page-level text
-					// color, which is dark in light mode and light
-					// in dark mode — automatically contrasted
-					// against the neutral fill on either theme.
-					--origam-btn---color: var(
-						--origam-pagination__item--is-active---color,
-						currentColor
-					);
-					--origam-btn---border-color: var(
-						--origam-pagination__item--is-active---border-color,
-						transparent
-					);
-				}
-
-				:deep(.origam-btn__overlay) {
-					opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 0);
-				}
-			}
+		// Normal state — every non-hover, non-active btn paints --bg-base.
+		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
+			--origam-btn---background-color: var(--bg-base);
+			--origam-btn---color: var(--fg-base);
 		}
 
-		&--colored {
-			.origam-pagination__item--is-active {
-				// In colored mode the consumer asked for an intent
-				// fill (e.g. `color="primary"` on OrigamPagination),
-				// so the active page legitimately wears the brand
-				// color with its paired foreground token.
-				:deep(.origam-btn) {
-					--origam-btn---background-color: var(
-						--origam-pagination__item--is-active---background-color-colored,
-						var(--origam-color-action-primary-bg)
-					);
-					--origam-btn---color: var(
-						--origam-pagination__item--is-active---color-colored,
-						var(--origam-color-action-primary-fg)
-					);
-					--origam-btn---border-color: var(
-						--origam-pagination__item--is-active---border-color-colored,
-						var(--origam-color-action-primary-bg)
-					);
-				}
-			}
+		// Hover state — derived: 20 % darker than --bg-base.
+		// Consumer can override via --origam-pagination---background-color-hover.
+		:deep(.origam-btn:hover:not(.origam-btn--active)) {
+			--origam-btn---background-color: var(
+				--origam-pagination---background-color-hover,
+				color-mix(in srgb, var(--bg-base), black 20%)
+			);
+			--origam-btn---color: var(--origam-pagination---color-hover, var(--fg-base));
+		}
+
+		// Active state — derived: 30 % darker than --bg-base.
+		// Consumer can override via the matching `is-active` vars.
+		&__item--is-active :deep(.origam-btn) {
+			--origam-btn---background-color: var(
+				--origam-pagination__item--is-active---background-color,
+				color-mix(in srgb, var(--bg-base), black 30%)
+			);
+			--origam-btn---color: var(
+				--origam-pagination__item--is-active---color,
+				var(--fg-base)
+			);
+			--origam-btn---border-color: var(
+				--origam-pagination__item--is-active---border-color,
+				transparent
+			);
+		}
+
+		&__item--is-active :deep(.origam-btn__overlay) {
+			// Legacy overlay collapsed — solid fill carries the contrast.
+			opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 0);
 		}
 
 		&__item,

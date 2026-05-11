@@ -65,8 +65,10 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
     expect(sample.active?.bg).not.toBe('rgba(0, 0, 0, 0)')
     // Assert active bg != inactive bg
     expect(sample.contrastPair.activeBg).not.toBe(sample.contrastPair.inactiveBg)
-    // Assert active bg is the neutral gray, NOT primary violet
-    expect(sample.active?.bg).toBe('rgb(230, 230, 230)') // --origam-color-neutral-200 #e6e6e6
+    // Assert active bg is derived from transparent + black 30 % = 30 % black overlay.
+    // Chrome reports `color-mix(in srgb, …)` outputs in the new color() syntax,
+    // both forms are equivalent.
+    expect(sample.active?.bg).toMatch(/^(rgba\(0,\s*0,\s*0,\s*0\.3\)|color\(srgb\s+0\s+0\s+0\s*\/\s*0\.3\))$/)
 })
 
 test('DEBUG pagination — colored mode active stays primary fill', async ({ page }) => {
