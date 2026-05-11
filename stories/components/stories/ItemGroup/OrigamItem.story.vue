@@ -178,11 +178,33 @@
 </script>
 
 <style scoped>
+/*
+ * <origam-item> renders a <div> wrapper by default (tag: 'div').
+ * That wrapper is the grid cell; the button inside it must stretch
+ * to fill the cell, otherwise it sits at its natural content-width
+ * and the layout looks "recroquevillé" (cramped) inside huge gaps.
+ *
+ * The :deep() selectors below reach through the scoped-style
+ * boundary into the OrigamItem-rendered wrappers so they behave
+ * as block-level grid items.
+ */
+:deep(.origam-item-group) > div {
+	width: 100%;
+}
+:deep(.origam-item-group) > div > div {
+	/* origam-item wrapper — make sure it occupies its grid cell */
+	display: block;
+	height: 100%;
+}
+
 .demo-card {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 	padding: 16px;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
 	text-align: start;
 	background: var(--origam-color-surface-default);
 	border: 1px solid var(--origam-color-border-subtle);
@@ -216,8 +238,12 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	gap: 6px;
 	padding: 14px 10px;
+	width: 100%;
+	min-height: 88px;
+	box-sizing: border-box;
 	background: var(--origam-color-surface-default);
 	border: 1px solid var(--origam-color-border-subtle);
 	border-radius: 10px;
