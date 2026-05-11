@@ -85,6 +85,35 @@ export const CIELAB_REVERSE_TRANSFORM = (t: number): number => (
 )
 export const MAIN_TRC = 2.4
 
+// ── Intent runtime detection ────────────────────────────────────────────────
+// Runtime set of every semantic intent recognised by `useColorEffect` /
+// `useColor`. Keep this in sync with the `TIntent` type — adding a new
+// intent there must also add the literal here, otherwise the type guard
+// `isIntent` will reject it at runtime.
+export const COLOR_INTENTS: ReadonlySet<string> = new Set([
+    'neutral', 'primary', 'secondary', 'ghost',
+    'success', 'warning', 'danger', 'info'
+])
+
+// Subset of `COLOR_INTENTS` for which a global utility class ships in
+// `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
+//
+// `ghost` is intentionally excluded — the design system does not ship
+// `.origam--bg-ghost` because the intent is meant to be a transparent
+// surface that adopts the parent's color, which can't be expressed by
+// a single utility class. Falls back to the inline-style path.
+export const COLOR_UTILITY_INTENTS: ReadonlySet<string> = new Set([
+    'neutral', 'primary', 'secondary',
+    'success', 'warning', 'danger', 'info'
+])
+
+// ── State darken progression (cross-component) ──────────────────────────────
+// Hover / active states derive from the rest-state bgColor by mixing
+// with black. The percentages below are the math-fallback values used
+// when a designer-tuned `bgHover` / `bgActive` token is missing.
+export const COLOR_HOVER_MIX_PCT = 20
+export const COLOR_ACTIVE_MIX_PCT = 30
+
 export const RCO = 0.2126729
 export const GCO = 0.7151522
 export const BCO = 0.0721750

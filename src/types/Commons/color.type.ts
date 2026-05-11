@@ -8,3 +8,16 @@ export type THSLA = { h: number, s: number, l: number, a?: number }
 export type THex = string & { __hexBrand: never }
 
 export type TColorType = string | number | THSVA | TRGBA | THSLA
+
+/**
+ * Interaction role for state-aware color resolution.
+ *
+ * Used by `useColorEffect` (and its helpers) to pick the right token
+ * rung / math-derivation for a given visual state:
+ *
+ *   • `default`  → resting bgColor (no transformation)
+ *   • `hover`    → cascading `var(bgHover, color-mix(bg, black 20%))`
+ *   • `active`   → cascading `var(bgActive, color-mix(bg, black 30%))`
+ *   • `disabled` → resting `bgDisabled` token (per-intent)
+ */
+export type TBgFgRole = 'default' | 'hover' | 'active' | 'disabled'

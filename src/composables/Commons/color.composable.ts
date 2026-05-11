@@ -1,7 +1,13 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, isRef, ref } from 'vue'
+import {
+    COLOR_ACTIVE_MIX_PCT,
+    COLOR_HOVER_MIX_PCT,
+    COLOR_INTENTS,
+    COLOR_UTILITY_INTENTS
+} from "../../consts"
 import type { IBgColorProps, IColorProps } from "../../interfaces"
-import type { TColor, TIntent } from '../../types'
+import type { TBgFgRole, TColor, TIntent } from '../../types'
 import { getForeground, isCssColor, isParsableColor, parseColor } from '../../utils'
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -12,28 +18,15 @@ import { getForeground, isCssColor, isParsableColor, parseColor } from '../../ut
 // theme switches automatically (light/dark/brand-x). When a raw color is
 // provided, we keep the legacy JS-side behaviour and warn once per key —
 // hex/rgb support will be removed in v3.0.0.
-
-const INTENTS: ReadonlySet<string> = new Set([
-    'neutral', 'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info'
-])
-
-/**
- * Subset of `TIntent` for which a global utility class exists in
- * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
- *
- * `ghost` is intentionally excluded — the design system does not ship
- * `.origam--bg-ghost` because the intent is meant to be a transparent
- * surface that adopts the parent's color, which can't be expressed by
- * a single utility class. Falls back to the inline-style path.
- */
-const UTILITY_INTENTS: ReadonlySet<string> = new Set([
-    'neutral', 'primary', 'secondary',
-    'success', 'warning', 'danger', 'info'
-])
+//
+// Runtime intent sets and the state-derivation percentages live in
+// `src/consts/Commons/color.const.ts`. The state-role union (`TBgFgRole`)
+// lives in `src/types/Commons/color.type.ts`. Keep this file free of
+// inline constants / type aliases per the project's "single home per
+// kind" rule.
 
 function isUtilityIntent (v: TColor | TIntent | null | undefined): v is TIntent {
-    return typeof v === 'string' && UTILITY_INTENTS.has(v)
+    return typeof v === 'string' && COLOR_UTILITY_INTENTS.has(v)
 }
 
 const _warnedKeys = new Set<string>()
@@ -51,7 +44,7 @@ function warnLegacyColor (kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgCol
 }
 
 function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
-    return typeof v === 'string' && INTENTS.has(v)
+    return typeof v === 'string' && COLOR_INTENTS.has(v)
 }
 
 // ── State derivation rule (cross-component) ─────────────────────────────────
@@ -77,9 +70,6 @@ function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
 // resolves to the math fallback for now; designers can override per
 // intent later by adding `--origam-color-{tokenBase}-bgActive`.
 
-const HOVER_MIX_PCT = 20
-const ACTIVE_MIX_PCT = 30
-
 function intentTokenBase (intent: TIntent): string {
     if (intent === 'neutral') return 'action-secondary'
     if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
@@ -97,12 +87,12 @@ function intentTokenBase (intent: TIntent): string {
  *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
  *   • `disabled` → `var(--…-bgDisabled)`
  */
-function intentBgExpr (intent: TIntent, role: BgFgRole): string {
+function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
     const base = intentTokenBase(intent)
     const baseVar = `var(--origam-color-${base}-bg)`
     if (role === 'default') return baseVar
     if (role === 'disabled') return `var(--origam-color-${base}-bgDisabled)`
-    const pct = role === 'hover' ? HOVER_MIX_PCT : ACTIVE_MIX_PCT
+    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     const slot = role === 'hover' ? 'bgHover' : 'bgActive'
     return `var(--origam-color-${base}-${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
 }
@@ -112,19 +102,17 @@ function intentBgExpr (intent: TIntent, role: BgFgRole): string {
  * we darken the surface around the text, the text itself keeps the
  * WCAG-paired contrast token.
  */
-function intentFgExpr (intent: TIntent, role: BgFgRole): string {
+function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
     const base = intentTokenBase(intent)
     const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
     return `var(--origam-color-${base}-${slot})`
 }
 
-type BgFgRole = 'default' | 'hover' | 'active' | 'disabled'
-
 /**
  * Build the CSS-vars override map for an intent (foreground + background)
  * for a given interaction state.
  */
-function tokenStylesForIntent (intent: TIntent, role: BgFgRole = 'default'): Record<string, string> {
+function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = 'default'): Record<string, string> {
     return {
         'background-color': intentBgExpr(intent, role),
         color: intentFgExpr(intent, role),
@@ -137,10 +125,10 @@ function tokenStylesForIntent (intent: TIntent, role: BgFgRole = 'default'): Rec
  * `bgColor="#abcdef"` still get a hover/active darken (matches the
  * intent path's behaviour, just without the token cascade).
  */
-function rawBgExprWithState (raw: string, role: BgFgRole): string {
+function rawBgExprWithState (raw: string, role: TBgFgRole): string {
     if (role === 'default') return raw
     if (role === 'disabled') return raw // veil/opacity handles disabled
-    const pct = role === 'hover' ? HOVER_MIX_PCT : ACTIVE_MIX_PCT
+    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     return `color-mix(in srgb, ${raw}, black ${pct}%)`
 }
 
@@ -433,14 +421,19 @@ export function useColorEffect (
         //
         // Per-axis selection is preserved: an explicit hover/activeBgColor
         // takes precedence over the role bump for THAT axis only.
-        const bgRole: BgFgRole =
+        const bgRole: TBgFgRole =
             isHover.value && !props.hoverBgColor ? 'hover' :
             isActive.value && !props.activeBgColor ? 'active' :
             'default'
-        const fgRole: BgFgRole =
+        // `fgRole` is intentionally kept in the closure for API symmetry
+        // — future intents may differentiate fg slots per state. Today
+        // every fg token lives on the same `fg` rung regardless of state
+        // (per intentFgExpr), so we reference but don't consume it.
+        const _fgRole: TBgFgRole =
             isHover.value && !props.hoverColor ? 'hover' :
             isActive.value && !props.activeColor ? 'active' :
             'default'
+        void _fgRole
 
         let bgDecl: string | null = null
         let fgDecl: string | null = null
