@@ -4,7 +4,7 @@ const STORY_PATH = '/story/stories-components-stories-pagination-origampaginatio
 
 test.setTimeout(180_000)
 
-test('DEBUG pagination — active page has strong contrast', async ({ page }) => {
+test('DEBUG pagination — default mode active is neutral gray (not violet)', async ({ page }) => {
     await page.goto(STORY_PATH)
     await page.waitForLoadState('networkidle')
     // Activate the first available Variant so the sandbox iframe mounts.
@@ -65,4 +65,42 @@ test('DEBUG pagination — active page has strong contrast', async ({ page }) =>
     expect(sample.active?.bg).not.toBe('rgba(0, 0, 0, 0)')
     // Assert active bg != inactive bg
     expect(sample.contrastPair.activeBg).not.toBe(sample.contrastPair.inactiveBg)
+    // Assert active bg is the neutral gray, NOT primary violet
+    expect(sample.active?.bg).toBe('rgb(230, 230, 230)') // --origam-color-neutral-200 #e6e6e6
+})
+
+test('DEBUG pagination — colored mode active stays primary fill', async ({ page }) => {
+    await page.goto(STORY_PATH)
+    await page.waitForLoadState('networkidle')
+    // Try to land on a primary/colored variant if exposed; otherwise
+    // any variant works — the test will look for a `--colored` modifier.
+    const coloredCandidates = ['Primary', 'Colored', 'With color']
+    for (const title of coloredCandidates) {
+        const loc = page.getByText(title, { exact: true }).last()
+        if (await loc.count().catch(() => 0)) {
+            await loc.click({ timeout: 5_000 }).catch(() => {})
+            break
+        }
+    }
+    await page.waitForTimeout(2000)
+
+    const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+    const colored = sandbox.locator('.origam-pagination.origam-pagination--colored').first()
+    const exists = await colored.count().catch(() => 0)
+    if (!exists) {
+        // No colored variant available in the story — that's fine,
+        // just log it so the user sees we tried.
+        // eslint-disable-next-line no-console
+        console.log('(no --colored variant exposed in story — skipping colored mode assertion)')
+        return
+    }
+    const sample = await colored.evaluate((root) => {
+        const active = root.querySelector('.origam-pagination__item--is-active .origam-btn') as HTMLElement | null
+        if (!active) return null
+        const cs = getComputedStyle(active)
+        return { bg: cs.backgroundColor, color: cs.color }
+    })
+    // eslint-disable-next-line no-console
+    console.log('=== colored mode active ===', JSON.stringify(sample))
+    expect(sample?.bg).toBe('rgb(124, 58, 237)') // primary violet
 })

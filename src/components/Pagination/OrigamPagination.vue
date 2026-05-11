@@ -681,38 +681,72 @@
 
 		&__item {
 			&--is-active {
-				// PDF spec for the active page: solid intent fill +
-				// contrasting text (e.g. purple square + white "2"),
-				// NOT a translucent 12 % overlay over a transparent
-				// surface — that earlier approach left the selected
-				// page indistinguishable from its siblings.
+				// The selected page must contrast against its
+				// siblings, but the *kind* of contrast depends on
+				// the variant the consumer opted into:
 				//
-				// We paint the inner OrigamBtn via its public CSS
-				// vars so themes / intent overrides keep working
-				// (consumers can re-point
-				// `--origam-pagination__item--is-active---background-color`
-				// to any token), and we collapse the overlay since
-				// the fill now carries the contrast.
+				//   • Default (uncolored) → neutral surface fill
+				//     (e.g. light-gray) on top of the otherwise
+				//     transparent page row. Text stays at
+				//     currentColor so it picks up the page's
+				//     foreground — never tinted with the same
+				//     hue as the bg.
+				//
+				//   • Colored (consumer passed color="primary",
+				//     "success", …) → solid intent fill + the
+				//     matching foreground token (white over a
+				//     saturated brand color, dark over a soft
+				//     surface token). Handled below in the
+				//     `&--colored` branch so it only kicks in
+				//     when the user explicitly asked for it.
+				//
+				// We collapse the legacy 12 % overlay either way —
+				// it produced "invisible" selection states on top
+				// of a transparent surface.
 				:deep(.origam-btn) {
 					--origam-btn---background-color: var(
 						--origam-pagination__item--is-active---background-color,
-						var(--origam-color-action-primary-bg)
+						var(--origam-color-neutral-200)
 					);
+					// `currentColor` defers to the page-level text
+					// color, which is dark in light mode and light
+					// in dark mode — automatically contrasted
+					// against the neutral fill on either theme.
 					--origam-btn---color: var(
 						--origam-pagination__item--is-active---color,
-						var(--origam-color-action-primary-fg)
+						currentColor
 					);
 					--origam-btn---border-color: var(
 						--origam-pagination__item--is-active---border-color,
-						var(--origam-color-action-primary-bg)
+						transparent
 					);
 				}
 
 				:deep(.origam-btn__overlay) {
-					// Overlay no longer needed — the solid fill above
-					// provides full contrast. Kept as a CSS var so
-					// brand themes can re-introduce a subtle highlight.
 					opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 0);
+				}
+			}
+		}
+
+		&--colored {
+			.origam-pagination__item--is-active {
+				// In colored mode the consumer asked for an intent
+				// fill (e.g. `color="primary"` on OrigamPagination),
+				// so the active page legitimately wears the brand
+				// color with its paired foreground token.
+				:deep(.origam-btn) {
+					--origam-btn---background-color: var(
+						--origam-pagination__item--is-active---background-color-colored,
+						var(--origam-color-action-primary-bg)
+					);
+					--origam-btn---color: var(
+						--origam-pagination__item--is-active---color-colored,
+						var(--origam-color-action-primary-fg)
+					);
+					--origam-btn---border-color: var(
+						--origam-pagination__item--is-active---border-color-colored,
+						var(--origam-color-action-primary-bg)
+					);
 				}
 			}
 		}
