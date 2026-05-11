@@ -342,19 +342,63 @@
 	// User report: "putain pourquoi tous les btn ne sont pas gérés de
 	// la même manière sur la pagination ; je change la couleur, tous
 	// les btns voient leur couleur changer ; etc."
-	const sharedBtnColorProps = computed(() => ({
-		color: props.color,
-		bgColor: props.bgColor,
-		hoverColor: props.hoverColor,
-		hoverBgColor: props.hoverBgColor,
-		activeColor: props.activeColor,
-		activeBgColor: props.activeBgColor,
-		// Size / density flow through to every nav btn so the whole row
-		// scales consistently — matches the PDF spec which shows the
-		// pagination at sm / default / lg sizes (no per-btn override).
-		size: props.size,
-		density: props.density,
-	}))
+	const sharedBtnColorProps = computed(() => {
+		// ── Surface / text contrast synthesis (colored mode) ──────────
+		// In `--colored` mode the pagination paints the inner btn's
+		// surface via the SCSS `--bg-base` CSS var — useColorEffect on
+		// the inner btn doesn't see the bg side of the contract because
+		// the consumer didn't necessarily pass `bgColor` to the
+		// pagination root. Without that info, the btn's fg resolves to
+		// `tokenForegroundForIntent(color)` = the same-hue subtle rung
+		// (e.g. primary.fgSubtle = primary.700 — dark violet on a
+		// primary.500 surface, the very "violet-on-violet" the user
+		// just spotted on screen).
+		//
+		// Synthesise bgColor = color when the consumer only specified
+		// `color`: the inner btn's useColorEffect then detects the
+		// color-clash (`color === bgColor` both intents) and swaps fg
+		// to the bg's paired contrast token (primary.fg = white). The
+		// JS-side bg is the same intent the SCSS already paints, so the
+		// inline declaration is harmless (same value), and the fg now
+		// wins by virtue of being on the same axis as the synthesised
+		// bg. Symmetric mirroring for hoverColor / activeColor keeps the
+		// per-state contrast consistent.
+		// NB: `TColor = string | false | null | undefined`, and Vue's
+		// defineProps emits `false` (not `undefined`) when a TColor prop
+		// is omitted. We MUST use `||` (truthy fallback), NOT `??`
+		// (nullish only) — `false ?? "primary"` keeps `false` and the
+		// synthesis silently no-ops, while `false || "primary"` falls
+		// through to the consumer's chosen intent as intended.
+		//
+		// We ONLY synthesise `bgColor`. Forwarding `hoverBgColor` /
+		// `activeBgColor` as the synthesised intent would defeat the
+		// inner btn's bgRole logic:
+		//     bgRole = isActive && !props.activeBgColor ? 'active' : 'default'
+		// A truthy synthesised activeBgColor falls back to the 'default'
+		// slot → no darken on the active page → hover and active become
+		// visually identical to rest. By leaving these props at `false`
+		// the inner btn promotes bgRole to 'hover' / 'active' and
+		// emits the proper bgHover / bgActive token cascade (color-mix
+		// fallback included). Auto-contrast on the fg still works
+		// because color.value defaults to props.color when hoverColor
+		// is missing, and bgColor.value defaults to props.bgColor when
+		// hoverBgColor is missing — so both axes carry the same intent
+		// in each state and the clash detection kicks for white text.
+		const baseBg = props.bgColor || props.color
+		return {
+			color: props.color,
+			bgColor: baseBg,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
+			// Size / density flow through to every nav btn so the whole row
+			// scales consistently — matches the PDF spec which shows the
+			// pagination at sm / default / lg sizes (no per-btn override).
+			size: props.size,
+			density: props.density,
+		}
+	})
 	const controlColorProps = sharedBtnColorProps
 
 	const items = computed(() => {

@@ -1,6 +1,7 @@
 import type {
     IActiveProps,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -15,7 +16,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IPaddingProps, IMarginProps, IBorderProps, IStatusProps, IElevationProps, IHoverProps, IActiveProps {
+export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IStatusProps, IElevationProps, IHoverProps, IActiveProps {
     start?: boolean,
     end?: boolean,
     image?: string | ISrcObject,
