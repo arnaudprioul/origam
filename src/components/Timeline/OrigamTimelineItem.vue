@@ -56,6 +56,7 @@
 
 	const props = withDefaults(defineProps<ITimelineItemProps & { description?: string }>(), {
 		side: 'start',
+		orientation: 'vertical',
 		isLast: false,
 		truncateLine: false,
 		index: 0
@@ -75,6 +76,11 @@
 	const effectiveSide = computed(() => {
 		if (timelineCtx?.side) return timelineCtx.side
 		return props.side
+	})
+
+	const effectiveOrientation = computed(() => {
+		if (timelineCtx?.orientation) return timelineCtx.orientation
+		return props.orientation ?? 'vertical'
 	})
 
 	const effectiveTruncateLine = computed(() => {
@@ -100,10 +106,17 @@
 		}
 	})
 
-	const connectorStyles = computed(() => ({
-		'background-color': 'var(--origam-timeline---connector-color, var(--origam-color-border-subtle))',
-		'width': 'var(--origam-timeline---connector-thickness, var(--origam-border-width-thin, 1px))'
-	}))
+	const connectorStyles = computed(() => {
+		// In horizontal layout the connector is a horizontal bar — its
+		// "thickness" becomes the height, and the width fills the
+		// available space. In vertical layout (legacy default) it's a
+		// thin vertical bar.
+		const isH = effectiveOrientation.value === 'horizontal'
+		return {
+			'background-color': 'var(--origam-timeline---connector-color, var(--origam-color-border-subtle))',
+			[isH ? 'height' : 'width']: 'var(--origam-timeline---connector-thickness, var(--origam-border-width-thin, 1px))'
+		}
+	})
 
 	function intentToBgToken(intent: string): string {
 		if (intent === 'primary' || intent === 'secondary' || intent === 'ghost' || intent === 'neutral') {
@@ -139,6 +152,7 @@
 
 	const itemClasses = computed(() => [
 		'origam-timeline-item',
+		`origam-timeline-item--orientation-${effectiveOrientation.value}`,
 		{
 			'origam-timeline-item--side-start': effectiveSide.value === 'start' || contentSide.value === 'start',
 			'origam-timeline-item--side-end': effectiveSide.value === 'end' || contentSide.value === 'end',
@@ -163,6 +177,8 @@
 
 <style lang="scss" scoped>
 	.origam-timeline-item {
+		$this: &;
+
 		display: flex;
 		flex-direction: row;
 		gap: var(--origam-timeline---gap, 14px);
@@ -206,6 +222,60 @@
 			flex: 1;
 			padding-bottom: var(--origam-timeline---gap, 14px);
 			padding-top: 0;
+		}
+
+		// ── Horizontal orientation ────────────────────────────────────
+		// Each item becomes a column (dot on top + content below). The
+		// connector runs horizontally to the next dot. `scroll-snap-align`
+		// pins each dot to the start of the scroll viewport so the user
+		// can navigate point-to-point.
+		&--orientation-horizontal {
+			flex-direction: column;
+			gap: var(--origam-timeline---gap, 14px);
+			flex-shrink: 0;
+			min-width: var(--origam-timeline-item---min-width, 160px);
+			max-width: var(--origam-timeline-item---max-width, 240px);
+			scroll-snap-align: start;
+			scroll-snap-stop: always;
+
+			#{$this}__track {
+				flex-direction: row;
+				align-items: center;
+				width: 100%;
+				height: var(--origam-timeline---track-width, 24px);
+			}
+
+			#{$this}__connector {
+				flex: 1;
+				min-height: 0;
+				min-width: 16px;
+				width: auto;
+				height: var(--origam-timeline---connector-thickness, 1px);
+				margin-top: 0;
+				margin-left: 4px;
+			}
+
+			#{$this}__content {
+				flex: none;
+				padding-bottom: 0;
+				padding-top: 0;
+				text-align: start;
+			}
+
+			#{$this}__header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 2px;
+			}
+
+			&#{$this}--last {
+				min-width: var(--origam-timeline---dot-size, 12px);
+				flex-shrink: 1;
+
+				#{$this}__connector {
+					display: none;
+				}
+			}
 		}
 
 		&__header {
