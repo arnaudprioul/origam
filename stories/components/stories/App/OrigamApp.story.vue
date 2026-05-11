@@ -6,7 +6,7 @@
 
 		<Variant title="Default">
 			<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-default">
-				<origam-app data-cy="app-default-inner">
+				<origam-app :full-height="false" data-cy="app-default-inner">
 					<origam-toolbar title="My Application" data-cy="app-default-toolbar"/>
 					<origam-main style="padding: 16px;" data-cy="app-default-main">
 						<p>Main content area</p>
@@ -20,8 +20,14 @@
 				:init-state="() => useStoryInitState<{ drawerOpen: boolean }>({ drawerOpen: true })"
 		>
 			<template #default="{ state }">
+				<!-- :full-height="false" lets OrigamApp respect its 360 px
+				     parent instead of jumping to 100 vh (the default for
+				     fullHeight: true). Without this, the inner Drawer
+				     ($height = 100 % of layout wrapper = 100 vh) overflows
+				     the 360 px story container by ~250 px — the "drawer
+				     dépasse de son layout" bug the user reported. -->
 				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-drawer-host">
-					<origam-app data-cy="app-drawer">
+					<origam-app :full-height="false" data-cy="app-drawer">
 						<origam-toolbar title="With Drawer" data-cy="app-drawer-toolbar">
 							<template #prepend>
 								<origam-btn
@@ -67,7 +73,7 @@
 
 		<Variant title="Slot — default">
 			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-slot-default-host">
-				<origam-app data-cy="app-slot-default">
+				<origam-app :full-height="false" data-cy="app-slot-default">
 					<origam-toolbar title="Slot app" data-cy="app-slot-default-toolbar"/>
 					<origam-main style="padding: 16px;" data-cy="app-slot-default-main">
 						<p>Content from the <strong>default slot</strong>.</p>

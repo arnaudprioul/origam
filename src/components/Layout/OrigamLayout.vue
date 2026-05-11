@@ -73,8 +73,28 @@
 		scoped
 >
 	.origam-layout {
+		// position: relative makes this the containing block for any
+		// position:absolute / position:relative descendants (drawer,
+		// scrim, …) so their `height: 100 %` resolves against the
+		// layout — NOT the viewport.
+		position: relative;
+
+		// `height: 100 %` so the layout inherits its parent's bounds
+		// (typical consumer wraps OrigamApp in a fixed-height container
+		// — story divs, Tauri windows, embedded dashboards …). Without
+		// this, the layout collapses to its content height, and the
+		// drawer's `height: 100 %` can't compute a meaningful value.
+		height: 100%;
+		width: 100%;
+
 		&__wrapper {
 			width: 100%;
+			// `height: 100 %` (not just `max-height`) so nested drawers
+			// in `height: 100 %` measure against the wrapper, not the
+			// viewport. Without this, the drawer inflated to 100 vh and
+			// overflowed any story / consumer container with a fixed
+			// height ("le drawer dépasse de son layout").
+			height: 100%;
 			max-height: 100%;
 			max-width: 100%;
 		}
