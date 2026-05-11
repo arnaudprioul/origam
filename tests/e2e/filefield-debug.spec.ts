@@ -19,6 +19,11 @@ test('DEBUG filefield — locate the label border bug', async ({ page }) => {
 
     if (fields.length === 0) return
 
+    // Focus the input so the floating label appears in its lifted /
+    // focused state — that's where the previous fix didn't apply.
+    await sandbox.locator('.origam-file-field input').first().focus()
+    await page.waitForTimeout(300)
+
     // Inspect the first field's label rendering — anything with a border
     // around the floating "Document" label is suspicious.
     const info = await fields[0].evaluate((el) => {
@@ -41,9 +46,17 @@ test('DEBUG filefield — locate the label border bug', async ({ page }) => {
                 })
             }
         })
+        const labels = Array.from(el.querySelectorAll('label, .origam-label')) as HTMLElement[]
         return {
             rootClasses: el.className,
-            label: (el.querySelector('label, .origam-label') as HTMLElement | null)?.outerHTML?.slice(0, 200) ?? null,
+            labelCount: labels.length,
+            labels: labels.map((l) => ({
+                cls: l.className,
+                isFloating: l.classList.contains('origam-field__label--floating'),
+                borderWidth: getComputedStyle(l).borderWidth,
+                borderRadius: getComputedStyle(l).borderRadius,
+                text: l.innerText?.trim().slice(0, 40),
+            })),
             allWithBorder: suspects.slice(0, 10),
         }
     })

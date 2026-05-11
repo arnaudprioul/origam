@@ -355,7 +355,16 @@
 			text: props.label,
 			floating: true,
 			ref: 'origamFloatingLabelRef',
-			...defaultFloatingLabelProps
+			...defaultFloatingLabelProps,
+			// Same reason as `labelProps` above — the field's `border` /
+			// `rounded` defaults belong to the field outline, NOT to the
+			// floating label that animates above/inside the input on focus.
+			// Without this override the floating "Document" label inherits
+			// `--border-thin` + `--rounded-md` from the field's defaults
+			// and renders as a chip-bordered pill, which the user reported
+			// as still wrong after fixing the static label.
+			border: false,
+			rounded: false,
 		}
 	})
 
