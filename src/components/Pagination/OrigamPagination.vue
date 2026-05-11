@@ -681,8 +681,38 @@
 
 		&__item {
 			&--is-active {
+				// PDF spec for the active page: solid intent fill +
+				// contrasting text (e.g. purple square + white "2"),
+				// NOT a translucent 12 % overlay over a transparent
+				// surface — that earlier approach left the selected
+				// page indistinguishable from its siblings.
+				//
+				// We paint the inner OrigamBtn via its public CSS
+				// vars so themes / intent overrides keep working
+				// (consumers can re-point
+				// `--origam-pagination__item--is-active---background-color`
+				// to any token), and we collapse the overlay since
+				// the fill now carries the contrast.
+				:deep(.origam-btn) {
+					--origam-btn---background-color: var(
+						--origam-pagination__item--is-active---background-color,
+						var(--origam-color-action-primary-bg)
+					);
+					--origam-btn---color: var(
+						--origam-pagination__item--is-active---color,
+						var(--origam-color-action-primary-fg)
+					);
+					--origam-btn---border-color: var(
+						--origam-pagination__item--is-active---border-color,
+						var(--origam-color-action-primary-bg)
+					);
+				}
+
 				:deep(.origam-btn__overlay) {
-					opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, var(--origam-pagination__item---active-overlay-opacity, 0.12))
+					// Overlay no longer needed — the solid fill above
+					// provides full contrast. Kept as a CSS var so
+					// brand themes can re-introduce a subtle highlight.
+					opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 0);
 				}
 			}
 		}
