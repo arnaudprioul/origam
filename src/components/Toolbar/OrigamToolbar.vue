@@ -395,6 +395,68 @@
 				border-radius: 0;
 			}
 		}
+
+		// ── Nested-btn chrome contract (applies to every Toolbar usage) ─
+		//
+		// User reported AppBar btns rendering as gray circles when the
+		// chrome should read as a uniform bar. Hoisted from AppBar's
+		// scoped block to the Toolbar level so EVERY toolbar consumer
+		// (AppBar, Drawer top bar, footer, standalone, …) gets the same
+		// chrome treatment for free.
+		//
+		//   normal  →  --btn-bg-base (transparent by default)
+		//   hover   →  color-mix(--btn-bg-base, black 20 %)
+		//   active  →  color-mix(--btn-bg-base, black 30 %)
+		//
+		// Shape: rounded SQUARE (8 px), overrides Btn's default
+		// `&--icon { border-radius: 50% }` (the circles the user
+		// flagged).
+		--btn-bg-base: var(--origam-toolbar---btn-background-color, transparent);
+		--btn-fg-base: var(--origam-toolbar---btn-color, currentColor);
+
+		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
+			--origam-btn---background-color: var(--btn-bg-base);
+			--origam-btn---color: var(--btn-fg-base);
+		}
+		:deep(.origam-btn:hover:not(.origam-btn--active)) {
+			--origam-btn---background-color: var(
+				--origam-toolbar---btn-background-color-hover,
+				color-mix(in srgb, var(--btn-bg-base), black 20%)
+			);
+		}
+		:deep(.origam-btn.origam-btn--active) {
+			--origam-btn---background-color: var(
+				--origam-toolbar---btn-background-color-active,
+				color-mix(in srgb, var(--btn-bg-base), black 30%)
+			);
+		}
+		:deep(.origam-btn) {
+			--origam-btn---border-radius: var(--origam-toolbar---btn-border-radius, 8px);
+			--origam-btn---border-radius-icon: var(--origam-toolbar---btn-border-radius, 8px);
+			border-radius: var(--origam-toolbar---btn-border-radius, 8px);
+		}
+
+		// Breathing room between the prepend / append btn cluster and
+		// the title. The Toolbar's title var `margin-inline-start: auto`
+		// is a flex-justification trick (pushes title to centre / right),
+		// NOT a gap — so the menu btn would otherwise end up flush against
+		// the title. We add a small inline margin on the prepend / append
+		// blocks instead, leaving the consumer a CSS var to retune.
+		:deep(#{$this}__prepend) {
+			margin-inline-end: var(--origam-toolbar__prepend---margin-inline-end, 12px);
+		}
+		:deep(#{$this}__append) {
+			margin-inline-start: var(--origam-toolbar__append---margin-inline-start, 12px);
+		}
+
+		// Title color inheritance. OrigamTitle's text uses a fixed
+		// `--origam-title---color` token that does NOT inherit
+		// currentColor — so when the Toolbar is given an intent color
+		// the title stayed neutral. Repoint to currentColor so it picks
+		// up whatever the toolbar root resolved to.
+		:deep(#{$this}__title .origam-title) {
+			--origam-title---color: var(--origam-toolbar__title---color, currentColor);
+		}
 	}
 </style>
 

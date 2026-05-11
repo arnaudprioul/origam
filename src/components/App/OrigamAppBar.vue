@@ -235,102 +235,24 @@
 
 </script>
 
-<style
-		lang="scss"
-		scoped
->
-	// ── Btn surface contract inside the AppBar ─────────────────────────
-	//
-	// Same approach as OrigamPagination: the bar itself owns the surface
-	// (whether transparent over the page or filled via a `color`/`bgColor`
-	// prop on OrigamAppBar), and every nested OrigamBtn defaults to a
-	// transparent fill so the chrome reads as a uniform bar — NOT a row
-	// of competing intent-coloured pills.
-	//
-	//   normal  →  --bg-base (transparent by default)
-	//   hover   →  color-mix(--bg-base, black 20 %)   ← derived
-	//   active  →  color-mix(--bg-base, black 30 %)   ← derived
-	//
-	// Shape: rounded-SQUARE (8 px). The Btn's own `&--icon { border-radius:
-	// 50% }` rule would otherwise circle every icon-only btn inside the bar
-	// (menu, dots, search, …) — that looked off against the bar's straight
-	// edges. The square keeps the icon hit-area aligned with the bar's
-	// rhythm (and matches the same fix already applied to Pagination).
+<!--
+	NB: AppBar's chrome (btn shape, transparent btn surface, prepend /
+	append gutters, title color inheritance, inline padding) now lives
+	in OrigamToolbar.vue's scoped style block — applies universally to
+	every Toolbar consumer (AppBar included, plus standalone Toolbar,
+	footer bars, etc.) so the chrome stays consistent.
 
-	.origam-app-bar {
-		// ── Btn surface base (DEDICATED var, NOT the AppBar's own bg) ──
-		// `--origam-app-bar---background-color` is the bar's OWN
-		// surface (typically white in light theme). If we pointed the
-		// btn surface at that, every nested btn would paint white on a
-		// white bar → invisible. The btn surface needs its own knob,
-		// defaulting to `transparent` so the bar's fill shows through.
-		// Declarations BEFORE nested rules (Sass mixed-decls).
-		--btn-bg-base: var(--origam-app-bar---btn-background-color, transparent);
-		--btn-fg-base: var(--origam-app-bar---btn-color, currentColor);
+	If you need to tweak per-instance, the toolbar exposes:
+	    --origam-toolbar---btn-background-color
+	    --origam-toolbar---btn-background-color-hover
+	    --origam-toolbar---btn-background-color-active
+	    --origam-toolbar---btn-color
+	    --origam-toolbar---btn-border-radius      (default 8 px)
+	    --origam-toolbar---padding-inline         (default 16 px)
+	    --origam-toolbar__prepend---margin-inline-end   (default 12 px)
+	    --origam-toolbar__append---margin-inline-start  (default 12 px)
+	    --origam-toolbar__title---color           (default currentColor)
 
-		// NB: inline gutter now lives on OrigamToolbar itself
-		// (`--origam-toolbar---padding-inline`, default 16 px). It
-		// applies universally to every Toolbar usage. AppBar consumers
-		// can still retune via that same toolbar var, or via a per-
-		// instance override.
-
-		// Normal state — transparent fill, btn icon reads on the bar.
-		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
-			--origam-btn---background-color: var(--btn-bg-base);
-			--origam-btn---color: var(--btn-fg-base);
-		}
-
-		// Hover state — 20 % darker than --btn-bg-base. With a
-		// transparent base, color-mix produces rgba(0, 0, 0, 0.2),
-		// i.e. a subtle dark overlay on the bar's surface.
-		:deep(.origam-btn:hover:not(.origam-btn--active)) {
-			--origam-btn---background-color: var(
-				--origam-app-bar---btn-background-color-hover,
-				color-mix(in srgb, var(--btn-bg-base), black 20%)
-			);
-		}
-
-		// Active state — 30 % darker.
-		:deep(.origam-btn.origam-btn--active) {
-			--origam-btn---background-color: var(
-				--origam-app-bar---btn-background-color-active,
-				color-mix(in srgb, var(--btn-bg-base), black 30%)
-			);
-		}
-
-		// Shape — rounded square (8 px) on every nested btn, overriding
-		// the Btn's default `&--icon { border-radius: 50% }`.
-		:deep(.origam-btn) {
-			--origam-btn---border-radius: var(--origam-app-bar---btn-border-radius, 8px);
-			--origam-btn---border-radius-icon: var(--origam-app-bar---btn-border-radius, 8px);
-			border-radius: var(--origam-app-bar---btn-border-radius, 8px);
-		}
-
-		// Breathing room between the prepend / append btn cluster and
-		// the title. The Toolbar's title var `margin-inline-start: auto`
-		// is a flex-justification trick (pushes title to centre / right),
-		// NOT a gap — so the menu btn ends up flush against the title.
-		// We add a small inline margin on the prepend / append blocks
-		// instead, leaving the consumer a CSS var to retune.
-		:deep(.origam-toolbar__prepend) {
-			margin-inline-end: var(--origam-app-bar__prepend---margin-inline-end, 12px);
-		}
-		:deep(.origam-toolbar__append) {
-			margin-inline-start: var(--origam-app-bar__append---margin-inline-start, 12px);
-		}
-
-		// Title color inheritance. OrigamTitle's own SCSS pins its color
-		// to `--origam-title---color` (a fixed neutral token) which does
-		// NOT inherit from its parent's currentColor. So when the AppBar
-		// is given `color="primary"`, the toolbar root paints primary
-		// via useBothColor's inline style, but the OrigamTitle inside
-		// stays neutral — the user reported "color works on btn icons
-		// but not on the title". Repoint the title's color var to
-		// currentColor so it picks up whatever the toolbar root is using
-		// (intent-resolved fg, or the auto-contrast pair when bgColor
-		// triggers the clash detection).
-		:deep(.origam-toolbar__title .origam-title) {
-			--origam-title---color: var(--origam-app-bar__title---color, currentColor);
-		}
-	}
-</style>
+	No AppBar-scoped CSS is necessary — the file no longer ships a
+	<style> block.
+-->
