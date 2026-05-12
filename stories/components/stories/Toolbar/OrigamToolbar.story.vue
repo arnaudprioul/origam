@@ -3,13 +3,42 @@
 			group="components"
 			title="Toolbar/OrigamToolbar"
 	>
-
-		<Variant title="Basic">
-			<origam-toolbar title="My Application" data-cy="toolbar-basic"/>
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IToolbarProps knob via the sidebar controls.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IToolbarProps>({
+					title: 'My App',
+					elevation: undefined,
+					flat: false,
+					collapse: false,
+					floating: false,
+					density: undefined,
+					rounded: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar v-bind="state" data-cy="toolbar-playground"/>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.title"     title="title"/>
+				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
+				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
+				<HstCheckbox v-model="state.flat"      title="flat"/>
+				<HstCheckbox v-model="state.collapse"  title="collapse"/>
+				<HstCheckbox v-model="state.floating"  title="floating"/>
+			</template>
 		</Variant>
 
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({})"
 		>
 			<template #default="{ state }">
@@ -26,8 +55,8 @@
 		</Variant>
 
 		<Variant
-				title="Elevation"
-				:init-state="() => useStoryInitState<{ elevation?: number, flat?: boolean }>({})"
+				title="Prop — elevation"
+				:init-state="() => useStoryInitState<{ elevation?: string; flat?: boolean }>({})"
 		>
 			<template #default="{ state }">
 				<origam-toolbar
@@ -44,7 +73,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
 		>
 			<template #default="{ state }">
@@ -60,7 +89,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
 		>
 			<template #default="{ state }">
@@ -76,7 +105,7 @@
 		</Variant>
 
 		<Variant
-				title="Modifiers"
+				title="Prop — collapse, flat & floating"
 				:init-state="() => useStoryInitState<{
 					collapse?: boolean
 					flat?: boolean
@@ -98,14 +127,14 @@
 		</Variant>
 
 		<Variant
-				title="Border"
-				:init-state="() => useStoryInitState<{ border?: boolean | 'top' | 'right' | 'bottom' | 'left' }>({ border: true })"
+				title="Prop — border"
+				:init-state="() => useStoryInitState<{ border?: boolean | string }>({ border: true })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
 					<origam-toolbar :border="state.border" title="Border Toolbar (interactive)" data-cy="toolbar-border"/>
 
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
+					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
 						<origam-toolbar title="border={false} (default)"           data-cy="toolbar-border-default"/>
 						<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
 						<origam-toolbar title='border="top"'    border="top"       data-cy="toolbar-border-top"/>
@@ -130,6 +159,8 @@
 				/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — prepend">
 			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">
@@ -163,34 +194,6 @@
 					<span style="font-style: italic; font-weight: 600;">Custom title</span>
 				</template>
 			</origam-toolbar>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IToolbarProps>({
-					title: 'My App',
-					elevation: undefined,
-					flat: false,
-					collapse: false,
-					floating: false,
-					density: undefined,
-					rounded: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<origam-toolbar v-bind="state" data-cy="toolbar-playground"/>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.title"     title="title"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstCheckbox v-model="state.flat"      title="flat"/>
-				<HstCheckbox v-model="state.collapse"  title="collapse"/>
-				<HstCheckbox v-model="state.floating"  title="floating"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
