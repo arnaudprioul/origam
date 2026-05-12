@@ -3,7 +3,6 @@
 			group="components"
 			title="FileField/OrigamFileFieldDragNDropItem"
 	>
-
 		<!--
 			<origam-file-field-drag-n-drop-item> renders a single dropped
 			file inside the drop-zone variant of <origam-file-field>. It
@@ -11,78 +10,7 @@
 			`new File([blob], name)`.
 		-->
 
-		<Variant title="Default — single file (PDF)">
-			<div style="padding: 24px; max-width: 480px;">
-				<origam-file-field-drag-n-drop-item
-						:file="mockFile('spec.pdf', 'application/pdf', 184320)"
-						:index="0"
-						data-cy="dnd-item-default"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="With upload progress">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-file-field-drag-n-drop-item
-						:file="mockFile('image.png', 'image/png', 4096000)"
-						:index="0"
-						:progress="35"
-						data-cy="dnd-item-progress-35"
-				/>
-				<origam-file-field-drag-n-drop-item
-						:file="mockFile('upload-finished.zip', 'application/zip', 1024000)"
-						:index="1"
-						:progress="100"
-						data-cy="dnd-item-progress-100"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Show file size (binary 1024 / decimal 1000)">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-file-field-drag-n-drop-item :file="mockFile('big.iso', 'application/octet-stream', 4 * 1024 * 1024 * 1024)" :index="0" :show-size="1024"/>
-				<origam-file-field-drag-n-drop-item :file="mockFile('big.iso', 'application/octet-stream', 4 * 1024 * 1024 * 1024)" :index="1" :show-size="1000"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
-					<origam-file-field-drag-n-drop-item
-							:file="mockFile('tinted.txt', 'text/plain', 4096)"
-							:index="0"
-							:color="state.color"
-							data-cy="dnd-item-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled / readonly">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-file-field-drag-n-drop-item :file="mockFile('disabled.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 32768)" :index="0" disabled/>
-				<origam-file-field-drag-n-drop-item :file="mockFile('readonly.txt', 'text/plain', 4096)" :index="1" readonly/>
-			</div>
-		</Variant>
-
-		<Variant title="Embedded in OrigamFileField (real wiring)">
-			<div style="padding: 24px; max-width: 600px;">
-				<origam-file-field
-						v-model="embeddedFiles"
-						label="Drop files here"
-						multiple
-						drag-n-drop
-						data-cy="dnd-item-embedded"
-				/>
-			</div>
-		</Variant>
-
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{
@@ -116,6 +44,80 @@
 				<HstCheckbox v-model="state.showSize"  title="showSize"/>
 				<HstSelect   v-model="state.color"     title="color"    :options="intentList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
+		<Variant title="Prop — file (PDF)">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-drag-n-drop-item
+						:file="mockFile('spec.pdf', 'application/pdf', 184320)"
+						:index="0"
+						data-cy="dnd-item-default"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — progress">
+			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
+				<origam-file-field-drag-n-drop-item
+						:file="mockFile('image.png', 'image/png', 4096000)"
+						:index="0"
+						:progress="35"
+						data-cy="dnd-item-progress-35"
+				/>
+				<origam-file-field-drag-n-drop-item
+						:file="mockFile('upload-finished.zip', 'application/zip', 1024000)"
+						:index="1"
+						:progress="100"
+						data-cy="dnd-item-progress-100"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showSize">
+			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
+				<origam-file-field-drag-n-drop-item :file="mockFile('big.iso', 'application/octet-stream', 4 * 1024 * 1024 * 1024)" :index="0" :show-size="1024"/>
+				<origam-file-field-drag-n-drop-item :file="mockFile('big.iso', 'application/octet-stream', 4 * 1024 * 1024 * 1024)" :index="1" :show-size="1000"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — color"
+				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 480px;">
+					<origam-file-field-drag-n-drop-item
+							:file="mockFile('tinted.txt', 'text/plain', 4096)"
+							:index="0"
+							:color="state.color"
+							data-cy="dnd-item-color"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — disabled & readonly">
+			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
+				<origam-file-field-drag-n-drop-item :file="mockFile('disabled.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 32768)" :index="0" disabled/>
+				<origam-file-field-drag-n-drop-item :file="mockFile('readonly.txt', 'text/plain', 4096)" :index="1" readonly/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — embedded in OrigamFileField">
+			<div style="padding: 24px; max-width: 600px;">
+				<origam-file-field
+						v-model="embeddedFiles"
+						label="Drop files here"
+						multiple
+						drag-n-drop
+						data-cy="dnd-item-embedded"
+				/>
+			</div>
 		</Variant>
 	</Story>
 </template>

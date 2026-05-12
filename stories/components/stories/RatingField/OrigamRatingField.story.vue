@@ -3,9 +3,45 @@
 			group="components"
 			title="RatingField/OrigamRatingField"
 	>
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{
+					length?: number
+					halfIncrements?: boolean
+					hover?: boolean
+					clearable?: boolean
+					disabled?: boolean
+					readonly?: boolean
+					size?: string
+				}>({
+					length: 5,
+					halfIncrements: false,
+					hover: false,
+					clearable: false,
+					disabled: false,
+					readonly: false,
+					size: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-rating-field v-model="rating" v-bind="state"/>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber   v-model="state.length"         title="length" :min="1" :max="20"/>
+				<HstCheckbox v-model="state.halfIncrements" title="halfIncrements"/>
+				<HstCheckbox v-model="state.hover"          title="hover"/>
+				<HstCheckbox v-model="state.clearable"      title="clearable"/>
+				<HstCheckbox v-model="state.disabled"       title="disabled"/>
+				<HstCheckbox v-model="state.readonly"       title="readonly"/>
+				<HstSelect   v-model="state.size"           title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
 
 		<Variant
-				title="Length"
+				title="Prop — length"
 				:init-state="() => useStoryInitState<{ length?: number }>({ length: 5 })"
 		>
 			<template #default="{ state }">
@@ -17,7 +53,7 @@
 		</Variant>
 
 		<Variant
-				title="Half increments"
+				title="Prop — halfIncrements"
 				:init-state="() => useStoryInitState<{ halfIncrements?: boolean }>({ halfIncrements: true })"
 		>
 			<template #default="{ state }">
@@ -29,7 +65,7 @@
 		</Variant>
 
 		<Variant
-				title="Hover preview"
+				title="Prop — hover"
 				:init-state="() => useStoryInitState<{ hover?: boolean }>({ hover: true })"
 		>
 			<template #default="{ state }">
@@ -41,7 +77,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled, readonly & clearable"
 				:init-state="() => useStoryInitState<{
 					disabled?: boolean
 					readonly?: boolean
@@ -59,7 +95,7 @@
 		</Variant>
 
 		<Variant
-				title="Size"
+				title="Prop — size"
 				:init-state="() => useStoryInitState<{ size?: string }>({ size: undefined })"
 		>
 			<template #default="{ state }">
@@ -70,7 +106,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Item labels">
+		<Variant title="Prop — itemLabels">
 			<origam-rating-field
 					v-model="rating"
 					:item-labels="['Terrible', 'Bad', 'OK', 'Good', 'Excellent']"
@@ -78,16 +114,8 @@
 			/>
 		</Variant>
 
-		<Variant title="Slot — label">
-			<origam-rating-field v-model="rating">
-				<template #label>
-					<span style="font-weight: bold;">Rate us</span>
-				</template>
-			</origam-rating-field>
-		</Variant>
-
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -123,45 +151,23 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — label">
+			<origam-rating-field v-model="rating">
+				<template #label>
+					<span style="font-weight: bold;">Rate us</span>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
 		<Variant title="Emit — update:modelValue">
 			<origam-rating-field
 					v-model="rating"
 					@update:model-value="logEvent('update:modelValue', $event)"
 			/>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<{
-					length?: number
-					halfIncrements?: boolean
-					hover?: boolean
-					clearable?: boolean
-					disabled?: boolean
-					readonly?: boolean
-					size?: string
-				}>({
-					length: 5,
-					halfIncrements: false,
-					hover: false,
-					clearable: false,
-					disabled: false,
-					readonly: false,
-					size: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<origam-rating-field v-model="rating" v-bind="state"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber   v-model="state.length"         title="length" :min="1" :max="20"/>
-				<HstCheckbox v-model="state.halfIncrements" title="halfIncrements"/>
-				<HstCheckbox v-model="state.hover"          title="hover"/>
-				<HstCheckbox v-model="state.clearable"      title="clearable"/>
-				<HstCheckbox v-model="state.disabled"       title="disabled"/>
-				<HstCheckbox v-model="state.readonly"       title="readonly"/>
-				<HstSelect   v-model="state.size"           title="size" :options="sizeList"/>
-			</template>
 		</Variant>
 	</Story>
 </template>

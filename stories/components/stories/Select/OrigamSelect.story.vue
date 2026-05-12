@@ -3,8 +3,52 @@
 			group="components"
 			title="Select/OrigamSelect"
 	>
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ISelectProps>({
+					label: 'Select',
+					color: 'primary',
+					variant: undefined,
+					density: undefined,
+					multiple: false,
+					chips: false,
+					closableChips: false,
+					autocomplete: false,
+					clearable: false,
+					disabled: false,
+					readonly: false,
+					error: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-select
+						v-model="playgroundModel"
+						:items="stringItems"
+						v-bind="state"
+						data-cy="select-playground"
+				/>
+				<div data-cy="select-playground-status">value = {{ playgroundModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.label"         title="label"/>
+				<HstSelect   v-model="state.color"         title="color"   :options="intentList"/>
+				<HstSelect   v-model="state.variant"       title="variant" :options="variantInputList"/>
+				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
+				<HstCheckbox v-model="state.multiple"      title="multiple"/>
+				<HstCheckbox v-model="state.chips"         title="chips"/>
+				<HstCheckbox v-model="state.closableChips" title="closableChips"/>
+				<HstCheckbox v-model="state.autocomplete"  title="autocomplete"/>
+				<HstCheckbox v-model="state.clearable"     title="clearable"/>
+				<HstCheckbox v-model="state.disabled"      title="disabled"/>
+				<HstCheckbox v-model="state.readonly"      title="readonly"/>
+				<HstCheckbox v-model="state.error"         title="error"/>
+			</template>
+		</Variant>
 
-		<Variant title="Items — string list">
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
+		<Variant title="Prop — items (string list)">
 			<origam-select
 					v-model="stringModel"
 					:items="stringItems"
@@ -14,7 +58,7 @@
 			<div data-cy="select-string-status">value = {{ stringModel }}</div>
 		</Variant>
 
-		<Variant title="Items — object list">
+		<Variant title="Prop — items (object list)">
 			<origam-select
 					v-model="objectModel"
 					:items="objectItems"
@@ -26,7 +70,7 @@
 			<div data-cy="select-object-status">value = {{ objectModel }}</div>
 		</Variant>
 
-		<Variant title="Multiple">
+		<Variant title="Prop — multiple">
 			<origam-select
 					v-model="multipleModel"
 					:items="stringItems"
@@ -38,7 +82,7 @@
 		</Variant>
 
 		<Variant
-				title="Chips"
+				title="Prop — chips & closableChips"
 				:init-state="() => useStoryInitState<{ chips: boolean, closableChips: boolean }>({ chips: true, closableChips: false })"
 		>
 			<template #default="{ state }">
@@ -60,7 +104,7 @@
 		</Variant>
 
 		<Variant
-				title="Autocomplete"
+				title="Prop — autocomplete"
 				:init-state="() => useStoryInitState<{ autocomplete: boolean }>({ autocomplete: true })"
 		>
 			<template #default="{ state }">
@@ -79,7 +123,7 @@
 		</Variant>
 
 		<Variant
-				title="Variant"
+				title="Prop — variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
 		>
 			<template #default="{ state }">
@@ -98,7 +142,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -140,7 +184,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled, readonly & error"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
 		>
 			<template #default="{ state }">
@@ -163,7 +207,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="No data">
+		<Variant title="Prop — noDataText (empty items)">
 			<origam-select
 					v-model="noDataModel"
 					:items="[]"
@@ -173,58 +217,8 @@
 			/>
 		</Variant>
 
-		<Variant title="Slot — prepend / append">
-			<origam-select
-					v-model="slotOuterModel"
-					:items="stringItems"
-					label="With outer slots"
-					data-cy="select-slot-outer"
-			>
-				<template #prepend>
-					<origam-icon :icon="MDI_ICONS.EARTH"/>
-				</template>
-				<template #append>
-					<origam-icon :icon="MDI_ICONS.STAR"/>
-				</template>
-			</origam-select>
-			<div data-cy="select-slot-outer-status">value = {{ slotOuterModel }}</div>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<origam-select
-					v-model="emitModel"
-					:items="stringItems"
-					label="Select one"
-					data-cy="select-emit-update"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-			<div data-cy="select-emit-status">value = {{ emitModel }}</div>
-		</Variant>
-
-		<Variant title="Emit — update:menu">
-			<origam-select
-					v-model="emitMenuModel"
-					:items="stringItems"
-					label="Open / close dropdown"
-					data-cy="select-emit-menu"
-					@update:menu="logEvent('update:menu', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — click:clear">
-			<origam-select
-					v-model="emitClearModel"
-					:items="stringItems"
-					clearable
-					label="Clearable select"
-					data-cy="select-emit-clear"
-					@click:clear="logEvent('click:clear', $event)"
-			/>
-			<div data-cy="select-emit-clear-status">value = {{ emitClearModel }}</div>
-		</Variant>
-
 		<Variant
-				title="Loading — interactive"
+				title="Prop — loading (interactive)"
 				:init-state="() => useStoryInitState({
 					enabled: true,
 					kind: 'line',
@@ -261,56 +255,58 @@
 			</template>
 		</Variant>
 
-		<Variant title="Loading shapes">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-				<origam-select :items="stringItems" label="loading={true}" loading data-cy="select-loading-bool"/>
-				<origam-select :items="stringItems" label="loading={42}" :loading="42" data-cy="select-loading-number"/>
-				<origam-select :items="stringItems" label="loading={ type: 'line' }" :loading="{ type: 'line' }" data-cy="select-loading-line"/>
-				<origam-select :items="stringItems" label="loading={ type: 'circular' }" :loading="{ type: 'circular' }" data-cy="select-loading-circular"/>
-				<origam-select :items="stringItems" label="loading={ type: 'skeleton' }" :loading="{ type: 'skeleton' }" data-cy="select-loading-skeleton"/>
-			</div>
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — prepend & append">
+			<origam-select
+					v-model="slotOuterModel"
+					:items="stringItems"
+					label="With outer slots"
+					data-cy="select-slot-outer"
+			>
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.EARTH"/>
+				</template>
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.STAR"/>
+				</template>
+			</origam-select>
+			<div data-cy="select-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ISelectProps>({
-					label: 'Select',
-					color: 'primary',
-					variant: undefined,
-					density: undefined,
-					multiple: false,
-					chips: false,
-					closableChips: false,
-					autocomplete: false,
-					clearable: false,
-					disabled: false,
-					readonly: false,
-					error: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-select
-						v-model="playgroundModel"
-						:items="stringItems"
-						v-bind="state"
-						data-cy="select-playground"
-				/>
-				<div data-cy="select-playground-status">value = {{ playgroundModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"         title="label"/>
-				<HstSelect   v-model="state.color"         title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.variant"       title="variant" :options="variantInputList"/>
-				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
-				<HstCheckbox v-model="state.multiple"      title="multiple"/>
-				<HstCheckbox v-model="state.chips"         title="chips"/>
-				<HstCheckbox v-model="state.closableChips" title="closableChips"/>
-				<HstCheckbox v-model="state.autocomplete"  title="autocomplete"/>
-				<HstCheckbox v-model="state.clearable"     title="clearable"/>
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.readonly"      title="readonly"/>
-				<HstCheckbox v-model="state.error"         title="error"/>
-			</template>
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<origam-select
+					v-model="emitModel"
+					:items="stringItems"
+					label="Select one"
+					data-cy="select-emit-update"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+			<div data-cy="select-emit-status">value = {{ emitModel }}</div>
+		</Variant>
+
+		<Variant title="Emit — update:menu">
+			<origam-select
+					v-model="emitMenuModel"
+					:items="stringItems"
+					label="Open / close dropdown"
+					data-cy="select-emit-menu"
+					@update:menu="logEvent('update:menu', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:clear">
+			<origam-select
+					v-model="emitClearModel"
+					:items="stringItems"
+					clearable
+					label="Clearable select"
+					data-cy="select-emit-clear"
+					@click:clear="logEvent('click:clear', $event)"
+			/>
+			<div data-cy="select-emit-clear-status">value = {{ emitClearModel }}</div>
 		</Variant>
 	</Story>
 </template>

@@ -3,9 +3,42 @@
 			group="components"
 			title="Checkbox/OrigamCheckbox"
 	>
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ICheckboxProps>({
+					label: 'Accept terms',
+					color: 'primary',
+					density: undefined,
+					rounded: undefined,
+					disabled: false,
+					readonly: false,
+					indeterminate: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-checkbox
+						v-model="playgroundModel"
+						v-bind="state"
+						data-cy="checkbox-playground"
+				/>
+				<div data-cy="checkbox-playground-status">value = {{ playgroundModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.label"         title="label"/>
+				<HstSelect   v-model="state.color"         title="color"    :options="intentList"/>
+				<HstSelect   v-model="state.density"       title="density"  :options="densityList"/>
+				<HstSelect   v-model="state.rounded"       title="rounded"  :options="roundedList"/>
+				<HstCheckbox v-model="state.disabled"      title="disabled"/>
+				<HstCheckbox v-model="state.readonly"      title="readonly"/>
+				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -46,7 +79,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -64,7 +97,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
 		>
 			<template #default="{ state }">
@@ -82,7 +115,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled, readonly & indeterminate"
 				:init-state="() => useStoryInitState<{
 					disabled: boolean
 					readonly: boolean
@@ -108,7 +141,7 @@
 		</Variant>
 
 		<Variant
-				title="Error & validation"
+				title="Prop — error & errorMessages"
 				:init-state="() => useStoryInitState<{ error: boolean, errorMessages: string }>({ error: false, errorMessages: 'This field is required' })"
 		>
 			<template #default="{ state }">
@@ -126,6 +159,8 @@
 				<HstText     v-model="state.errorMessages" title="errorMessages"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
 
 		<Variant title="Slot — label">
 			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-label">
@@ -153,6 +188,8 @@
 			<div data-cy="checkbox-slot-input-status">value = {{ slotInputModel }}</div>
 		</Variant>
 
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
 		<Variant title="Emit — update:modelValue">
 			<origam-checkbox
 					v-model="emitModel"
@@ -163,7 +200,7 @@
 			<div data-cy="checkbox-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<Variant title="Emit — focus / blur">
+		<Variant title="Emit — focus & blur">
 			<origam-checkbox
 					v-model="emitFocusModel"
 					label="Focus & blur me"
@@ -180,37 +217,6 @@
 					data-cy="checkbox-emit-click-label"
 					@click:label="logEvent('click:label', $event)"
 			/>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ICheckboxProps>({
-					label: 'Accept terms',
-					color: 'primary',
-					density: undefined,
-					rounded: undefined,
-					disabled: false,
-					readonly: false,
-					indeterminate: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-checkbox
-						v-model="playgroundModel"
-						v-bind="state"
-						data-cy="checkbox-playground"
-				/>
-				<div data-cy="checkbox-playground-status">value = {{ playgroundModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"         title="label"/>
-				<HstSelect   v-model="state.color"         title="color"    :options="intentList"/>
-				<HstSelect   v-model="state.density"       title="density"  :options="densityList"/>
-				<HstSelect   v-model="state.rounded"       title="rounded"  :options="roundedList"/>
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.readonly"      title="readonly"/>
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
-			</template>
 		</Variant>
 	</Story>
 </template>

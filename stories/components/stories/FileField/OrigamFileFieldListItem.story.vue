@@ -3,76 +3,13 @@
 			group="components"
 			title="FileField/OrigamFileFieldListItem"
 	>
-
 		<!--
 			<origam-file-field-list-item> renders a single file in the
 			list-style display of <origam-file-field>. Needs a real
 			File object — built via the `mockFile` helper.
 		-->
 
-		<Variant title="Default — single file">
-			<div style="padding: 24px; max-width: 480px;">
-				<origam-file-field-list-item
-						:file="mockFile('spec.pdf', 'application/pdf', 184320)"
-						:index="0"
-						data-cy="list-item-default"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Multiple files (list)">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 4px;">
-				<origam-file-field-list-item :file="mockFile('image-1.jpg', 'image/jpeg', 1245184)" :index="0"/>
-				<origam-file-field-list-item :file="mockFile('image-2.jpg', 'image/jpeg', 952832)"  :index="1"/>
-				<origam-file-field-list-item :file="mockFile('archive.zip', 'application/zip', 8388608)" :index="2"/>
-			</div>
-		</Variant>
-
-		<Variant title="With upload progress">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 4px;">
-				<origam-file-field-list-item :file="mockFile('upload-1.bin', 'application/octet-stream', 524288)" :index="0" :progress="20"/>
-				<origam-file-field-list-item :file="mockFile('upload-2.bin', 'application/octet-stream', 524288)" :index="1" :progress="65"/>
-				<origam-file-field-list-item :file="mockFile('upload-3.bin', 'application/octet-stream', 524288)" :index="2" :progress="100"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
-					<origam-file-field-list-item
-							:file="mockFile('tinted.txt', 'text/plain', 4096)"
-							:index="0"
-							:color="state.color"
-							data-cy="list-item-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled / readonly">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 4px;">
-				<origam-file-field-list-item :file="mockFile('disabled.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 32768)" :index="0" disabled/>
-				<origam-file-field-list-item :file="mockFile('readonly.txt', 'text/plain', 4096)" :index="1" readonly/>
-			</div>
-		</Variant>
-
-		<Variant title="Embedded in OrigamFileField (real wiring)">
-			<div style="padding: 24px; max-width: 600px;">
-				<origam-file-field
-						v-model="embeddedFiles"
-						label="Pick files"
-						multiple
-						data-cy="list-item-embedded"
-				/>
-			</div>
-		</Variant>
-
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{
@@ -106,6 +43,71 @@
 				<HstCheckbox v-model="state.showSize"  title="showSize"/>
 				<HstSelect   v-model="state.color"     title="color"    :options="intentList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
+		<Variant title="Prop — file (single)">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-list-item
+						:file="mockFile('spec.pdf', 'application/pdf', 184320)"
+						:index="0"
+						data-cy="list-item-default"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — file (multiple)">
+			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 4px;">
+				<origam-file-field-list-item :file="mockFile('image-1.jpg', 'image/jpeg', 1245184)" :index="0"/>
+				<origam-file-field-list-item :file="mockFile('image-2.jpg', 'image/jpeg', 952832)"  :index="1"/>
+				<origam-file-field-list-item :file="mockFile('archive.zip', 'application/zip', 8388608)" :index="2"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — progress">
+			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 4px;">
+				<origam-file-field-list-item :file="mockFile('upload-1.bin', 'application/octet-stream', 524288)" :index="0" :progress="20"/>
+				<origam-file-field-list-item :file="mockFile('upload-2.bin', 'application/octet-stream', 524288)" :index="1" :progress="65"/>
+				<origam-file-field-list-item :file="mockFile('upload-3.bin', 'application/octet-stream', 524288)" :index="2" :progress="100"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — color"
+				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 480px;">
+					<origam-file-field-list-item
+							:file="mockFile('tinted.txt', 'text/plain', 4096)"
+							:index="0"
+							:color="state.color"
+							data-cy="list-item-color"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — disabled & readonly">
+			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 4px;">
+				<origam-file-field-list-item :file="mockFile('disabled.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 32768)" :index="0" disabled/>
+				<origam-file-field-list-item :file="mockFile('readonly.txt', 'text/plain', 4096)" :index="1" readonly/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — embedded in OrigamFileField">
+			<div style="padding: 24px; max-width: 600px;">
+				<origam-file-field
+						v-model="embeddedFiles"
+						label="Pick files"
+						multiple
+						data-cy="list-item-embedded"
+				/>
+			</div>
 		</Variant>
 	</Story>
 </template>

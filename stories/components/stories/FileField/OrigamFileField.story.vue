@@ -3,257 +3,7 @@
 			group="components"
 			title="FileField/OrigamFileField"
 	>
-
-		<Variant title="Single + paperclip">
-			<origam-file-field
-					v-model="files"
-					label="Document"
-					data-cy="file-field-single-paperclip"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				Default single-file mode — paperclip prepend, file name shows after selection.
-			</p>
-		</Variant>
-
-		<Variant title="Empty">
-			<origam-file-field
-					:model-value="null"
-					label="Empty file field"
-					placeholder="No file selected"
-					data-cy="file-field-empty"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				Empty state — placeholder text + paperclip prepend, no value.
-			</p>
-		</Variant>
-
-		<Variant title="Multiple chips">
-			<origam-file-field
-					v-model="multiFiles"
-					label="Multiple chips"
-					multiple
-					display="chips"
-					data-cy="file-field-chips"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				display="chips" + multiple — each file as a closable OrigamChip.
-			</p>
-		</Variant>
-
-		<Variant title="Multiple counter">
-			<origam-file-field
-					v-model="multiFiles"
-					label="Multiple counter"
-					multiple
-					display="counter"
-					data-cy="file-field-counter"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				display="counter" + multiple — "{n} files" + an OrigamCounter pill.
-			</p>
-		</Variant>
-
-		<Variant title="Dropzone empty">
-			<origam-file-field
-					v-model="files"
-					label="Drop here"
-					dropzone
-					data-cy="file-field-dropzone-empty"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				dropzone=true + no value — large dashed-border drop area with cloud icon.
-			</p>
-		</Variant>
-
-		<Variant title="Dropzone dragging">
-			<origam-file-field
-					v-model="files"
-					label="Drag a file here"
-					dropzone
-					data-cy="file-field-dropzone-dragging"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				Hover with a file from your OS (or run the script below in DevTools)
-				to see the <code>--dragging</code> modifier paint the border + bg with
-				the primary action token.
-			</p>
-			<pre style="font-size: 0.7rem; background: rgba(0,0,0,0.05); padding: 8px; border-radius: 4px; overflow-x: auto;">// Dispatch a synthetic dragenter (Histoire devtool console):
-const z = document.querySelector('[data-cy="file-field-dropzone-dragging"] .origam-file-field__dropzone')
-z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer: new DataTransfer() {{ '}' }}))</pre>
-		</Variant>
-
-		<Variant title="Dropzone single">
-			<origam-file-field
-					v-model="dropzoneSingleFile"
-					label="Single file dropped"
-					dropzone
-					show-size
-					data-cy="file-field-dropzone-single"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				dropzone + single file in model — collapsed card preview with name +
-				size + remove action.
-			</p>
-		</Variant>
-
-		<Variant title="Dropzone multiple">
-			<origam-file-field
-					v-model="dropzoneMultiFiles"
-					label="Multiple files dropped"
-					dropzone
-					multiple
-					show-size
-					data-cy="file-field-dropzone-multiple"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				dropzone + multiple — list of cards stacked under the dropzone.
-			</p>
-		</Variant>
-
-		<Variant title="Dropzone error">
-			<origam-file-field
-					v-model="files"
-					label="Errored upload"
-					dropzone
-					error="File too large — 10 MB max."
-					data-cy="file-field-dropzone-error"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				error="…" — paints the dropzone border in danger.bg and prints
-				the message under the title.
-			</p>
-		</Variant>
-
-		<Variant
-				title="Disabled and readonly"
-				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean; dropzone?: boolean }>({ disabled: true, readonly: false, dropzone: true })"
-		>
-			<template #default="{ state }">
-				<origam-file-field
-						v-model="files"
-						label="Locked"
-						:disabled="state.disabled"
-						:readonly="state.readonly"
-						:dropzone="state.dropzone"
-						data-cy="file-field-disabled"
-						style="max-width: 400px"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstCheckbox v-model="state.dropzone" title="dropzone"/>
-			</template>
-		</Variant>
-
-		<Variant title="Show size">
-			<origam-file-field
-					v-model="sizedFiles"
-					label="Files with size"
-					multiple
-					show-size
-					data-cy="file-field-show-size"
-					style="max-width: 400px"
-			/>
-			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
-				show-size + multiple — appends "(2.4 MB)" after each file name.
-			</p>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-file-field v-model="colorModel" v-bind="state" label="Colored file (interactive)" data-cy="filefield-color" style="max-width: 400px"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Variant"
-				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
-		>
-			<template #default="{ state }">
-				<origam-file-field v-model="variantModel" :variant="state.variant" label="Variant" data-cy="filefield-variant" style="max-width: 400px"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-file-field v-model="densityModel" :density="state.density" label="Density file" data-cy="filefield-density" style="max-width: 400px"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Slot — dropzone">
-			<origam-file-field
-					v-model="files"
-					label="Custom dropzone"
-					dropzone
-					style="max-width: 400px"
-			>
-				<template #dropzone="{ isDragging, browse }">
-					<div style="text-align: center; padding: 24px;">
-						<p>{{ isDragging ? 'Release to upload!' : 'Custom dropzone — click to browse' }}</p>
-						<origam-btn size="small" text="Browse" @click="browse"/>
-					</div>
-				</template>
-			</origam-file-field>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<origam-file-field
-					v-model="files"
-					label="Upload"
-					style="max-width: 400px"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — click:remove">
-			<origam-file-field
-					v-model="multiFiles"
-					label="Upload"
-					multiple
-					display="chips"
-					style="max-width: 400px"
-					@click:remove="logEvent('click:remove', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — drop">
-			<origam-file-field
-					v-model="files"
-					label="Drop zone"
-					dropzone
-					style="max-width: 400px"
-					@drop="logEvent('drop', $event)"
-			/>
-		</Variant>
-
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{
@@ -296,6 +46,244 @@ z.dispatchEvent(new DragEvent('dragenter', {{ '{' }} bubbles: true, dataTransfer
 				<HstCheckbox v-model="state.counter"  title="counter"/>
 				<HstText     v-model="state.error"    title="error (string)"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
+		<Variant title="Prop — single + paperclip">
+			<origam-file-field
+					v-model="files"
+					label="Document"
+					data-cy="file-field-single-paperclip"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				Default single-file mode — paperclip prepend, file name shows after selection.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — empty state">
+			<origam-file-field
+					:model-value="null"
+					label="Empty file field"
+					placeholder="No file selected"
+					data-cy="file-field-empty"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				Empty state — placeholder text + paperclip prepend, no value.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — multiple (chips)">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Multiple chips"
+					multiple
+					display="chips"
+					data-cy="file-field-chips"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				display="chips" + multiple — each file as a closable OrigamChip.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — multiple (counter)">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Multiple counter"
+					multiple
+					display="counter"
+					data-cy="file-field-counter"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				display="counter" + multiple — "{n} files" + an OrigamCounter pill.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — dropzone (empty)">
+			<origam-file-field
+					v-model="files"
+					label="Drop here"
+					dropzone
+					data-cy="file-field-dropzone-empty"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				dropzone=true + no value — large dashed-border drop area with cloud icon.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — dropzone (single file)">
+			<origam-file-field
+					v-model="dropzoneSingleFile"
+					label="Single file dropped"
+					dropzone
+					show-size
+					data-cy="file-field-dropzone-single"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				dropzone + single file in model — collapsed card preview with name +
+				size + remove action.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — dropzone (multiple files)">
+			<origam-file-field
+					v-model="dropzoneMultiFiles"
+					label="Multiple files dropped"
+					dropzone
+					multiple
+					show-size
+					data-cy="file-field-dropzone-multiple"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				dropzone + multiple — list of cards stacked under the dropzone.
+			</p>
+		</Variant>
+
+		<Variant title="Prop — dropzone (error)">
+			<origam-file-field
+					v-model="files"
+					label="Errored upload"
+					dropzone
+					error="File too large — 10 MB max."
+					data-cy="file-field-dropzone-error"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				error="…" — paints the dropzone border in danger.bg and prints
+				the message under the title.
+			</p>
+		</Variant>
+
+		<Variant
+				title="Prop — disabled & readonly"
+				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean; dropzone?: boolean }>({ disabled: true, readonly: false, dropzone: true })"
+		>
+			<template #default="{ state }">
+				<origam-file-field
+						v-model="files"
+						label="Locked"
+						:disabled="state.disabled"
+						:readonly="state.readonly"
+						:dropzone="state.dropzone"
+						data-cy="file-field-disabled"
+						style="max-width: 400px"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<HstCheckbox v-model="state.readonly" title="readonly"/>
+				<HstCheckbox v-model="state.dropzone" title="dropzone"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — showSize">
+			<origam-file-field
+					v-model="sizedFiles"
+					label="Files with size"
+					multiple
+					show-size
+					data-cy="file-field-show-size"
+					style="max-width: 400px"
+			/>
+			<p style="font-size: 0.75rem; opacity: 0.6; margin-top: 8px;">
+				show-size + multiple — appends "(2.4 MB)" after each file name.
+			</p>
+		</Variant>
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-file-field v-model="colorModel" v-bind="state" label="Colored file (interactive)" data-cy="filefield-color" style="max-width: 400px"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — variant"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
+		>
+			<template #default="{ state }">
+				<origam-file-field v-model="variantModel" :variant="state.variant" label="Variant" data-cy="filefield-variant" style="max-width: 400px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-file-field v-model="densityModel" :density="state.density" label="Density file" data-cy="filefield-density" style="max-width: 400px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — dropzone">
+			<origam-file-field
+					v-model="files"
+					label="Custom dropzone"
+					dropzone
+					style="max-width: 400px"
+			>
+				<template #dropzone="{ isDragging, browse }">
+					<div style="text-align: center; padding: 24px;">
+						<p>{{ isDragging ? 'Release to upload!' : 'Custom dropzone — click to browse' }}</p>
+						<origam-btn size="small" text="Browse" @click="browse"/>
+					</div>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:remove">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Upload"
+					multiple
+					display="chips"
+					style="max-width: 400px"
+					@click:remove="logEvent('click:remove', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — drop">
+			<origam-file-field
+					v-model="files"
+					label="Drop zone"
+					dropzone
+					style="max-width: 400px"
+					@drop="logEvent('drop', $event)"
+			/>
 		</Variant>
 	</Story>
 </template>

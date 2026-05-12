@@ -3,9 +3,34 @@
 			group="components"
 			title="Counter/OrigamCounter"
 	>
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ICounterProps>({
+					value: 50,
+					max: 100,
+					active: true,
+					disabled: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-counter
+						v-bind="state"
+						data-cy="counter-playground"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider   v-model="state.value"    title="value"    :min="0"  :max="200"/>
+				<HstSlider   v-model="state.max"      title="max"      :min="1"  :max="500"/>
+				<HstCheckbox v-model="state.active"   title="active"/>
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -31,7 +56,7 @@
 		</Variant>
 
 		<Variant
-				title="Value & max"
+				title="Prop — value & max"
 				:init-state="() => useStoryInitState<{ value: number, max: number }>({ value: 42, max: 100 })"
 		>
 			<template #default="{ state }">
@@ -49,7 +74,7 @@
 		</Variant>
 
 		<Variant
-				title="Active"
+				title="Prop — active"
 				:init-state="() => useStoryInitState<{ active: boolean }>({ active: true })"
 		>
 			<template #default="{ state }">
@@ -66,7 +91,7 @@
 		</Variant>
 
 		<Variant
-				title="Disabled"
+				title="Prop — disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
 		>
 			<template #default="{ state }">
@@ -83,36 +108,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Overflow (value > max)">
+		<Variant title="Prop — value (overflow)">
 			<origam-counter
 					:value="150"
 					:max="100"
 					:active="true"
 					data-cy="counter-overflow"
 			/>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ICounterProps>({
-					value: 50,
-					max: 100,
-					active: true,
-					disabled: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-counter
-						v-bind="state"
-						data-cy="counter-playground"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSlider   v-model="state.value"    title="value"    :min="0"  :max="200"/>
-				<HstSlider   v-model="state.max"      title="max"      :min="1"  :max="500"/>
-				<HstCheckbox v-model="state.active"   title="active"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-			</template>
 		</Variant>
 	</Story>
 </template>

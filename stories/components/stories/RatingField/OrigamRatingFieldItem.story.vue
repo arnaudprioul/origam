@@ -3,85 +3,15 @@
 			group="components"
 			title="RatingField/OrigamRatingFieldItem"
 	>
-
 		<!--
 			<origam-rating-field-item> is a single star (or custom icon)
 			in an <origam-rating-field>. Stories below use the parent
 			rating-field for realistic wiring.
 		-->
 
-		<Variant title="Embedded in RatingField (real wiring)">
-			<div style="padding: 24px;">
-				<origam-rating-field v-model="defaultValue" :length="5" data-cy="rating-item-default"/>
-			</div>
-		</Variant>
-
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'warning' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<origam-rating-field v-model="colorValue" :length="5" v-bind="state" data-cy="rating-item-color"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect v-model="state.activeColor"  title="activeColor"  :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<origam-rating-field v-model="densityValue" :length="5" :density="state.density" data-cy="rating-item-density"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: SIZES.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<origam-rating-field v-model="sizeValue" :length="5" :size="state.size" data-cy="rating-item-size"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Custom icon (heart)">
-			<div style="padding: 24px;">
-				<origam-rating-field
-						v-model="customIconValue"
-						:length="5"
-						:full-icon="MDI_ICONS.HEART"
-						:empty-icon="MDI_ICONS.HEART_OUTLINE"
-						color="danger"
-						data-cy="rating-item-heart"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Read-only / Disabled">
-			<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
-				<origam-rating-field :model-value="3.5" :length="5" readonly half-increments data-cy="rating-item-readonly"/>
-				<origam-rating-field :model-value="2"   :length="5" disabled data-cy="rating-item-disabled"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Playground (raw item)"
+				title="Playground"
 				:init-state="() => useStoryInitState<IRatingFieldItemProps>({
 					value: 3,
 					index: 1,
@@ -108,6 +38,78 @@
 				<HstCheckbox v-model="state.isHovered"  title="isHovered"/>
 				<HstCheckbox v-model="state.isHovering" title="isHovering"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
+		<Variant title="Prop — embedded in RatingField">
+			<div style="padding: 24px;">
+				<origam-rating-field v-model="defaultValue" :length="5" data-cy="rating-item-default"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — color"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'warning' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="colorValue" :length="5" v-bind="state" data-cy="rating-item-color"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
+				<HstSelect v-model="state.activeColor"  title="activeColor"  :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="densityValue" :length="5" :density="state.density" data-cy="rating-item-density"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<ISizeProps>({ size: SIZES.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="sizeValue" :length="5" :size="state.size" data-cy="rating-item-size"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — fullIcon & emptyIcon (heart)">
+			<div style="padding: 24px;">
+				<origam-rating-field
+						v-model="customIconValue"
+						:length="5"
+						:full-icon="MDI_ICONS.HEART"
+						:empty-icon="MDI_ICONS.HEART_OUTLINE"
+						color="danger"
+						data-cy="rating-item-heart"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — readonly & disabled">
+			<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+				<origam-rating-field :model-value="3.5" :length="5" readonly half-increments data-cy="rating-item-readonly"/>
+				<origam-rating-field :model-value="2"   :length="5" disabled data-cy="rating-item-disabled"/>
+			</div>
 		</Variant>
 	</Story>
 </template>

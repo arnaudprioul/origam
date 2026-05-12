@@ -3,144 +3,7 @@
 			group="components"
 			title="DatePickerField/OrigamDatePickerField"
 	>
-
-		<Variant
-				title="Basic"
-				:init-state="() => useStoryInitState<{ label?: string }>({ label: 'Appointment' })"
-		>
-			<template #default="{ state }">
-				<origam-date-picker-field
-						v-model="date"
-						:label="state.label"
-						style="max-width: 320px"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.label" title="label"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
-					<origam-date-picker-field v-model="colorDate" v-bind="state" label="Colored date (interactive)" data-cy="datepickerfield-color"/>
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-date-picker-field color="primary" label='color="primary" only' data-cy="datepickerfield-color-fixture-color-only"/>
-						<origam-date-picker-field bg-color="success" label='bg-color="success" only' data-cy="datepickerfield-color-fixture-bg-only"/>
-						<origam-date-picker-field color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="datepickerfield-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Variant"
-				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
-		>
-			<template #default="{ state }">
-				<origam-date-picker-field v-model="variantDate" :variant="state.variant" label="Variant" data-cy="datepickerfield-variant" style="max-width: 320px"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-date-picker-field v-model="densityDate" :density="state.density" label="Density date" data-cy="datepickerfield-density" style="max-width: 320px"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Range">
-			<origam-date-picker-field
-					v-model="dates"
-					label="Date range"
-					range
-					style="max-width: 320px"
-			/>
-		</Variant>
-
-		<Variant title="Multiple">
-			<origam-date-picker-field
-					v-model="dates"
-					label="Select dates"
-					multiple
-					style="max-width: 320px"
-			/>
-		</Variant>
-
-		<Variant
-				title="Close on select"
-				:init-state="() => useStoryInitState<{ closeOnSelect?: boolean }>({ closeOnSelect: true })"
-		>
-			<template #default="{ state }">
-				<origam-date-picker-field
-						v-model="date"
-						label="Date"
-						:close-on-select="state.closeOnSelect"
-						style="max-width: 320px"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.closeOnSelect" title="closeOnSelect"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="States"
-				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean }>({ disabled: false, readonly: false })"
-		>
-			<template #default="{ state }">
-				<origam-date-picker-field
-						v-model="date"
-						label="Date"
-						:disabled="state.disabled"
-						:readonly="state.readonly"
-						style="max-width: 320px"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-			</template>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<origam-date-picker-field
-					v-model="date"
-					label="Date"
-					style="max-width: 320px"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:menu">
-			<origam-date-picker-field
-					v-model="date"
-					label="Date"
-					style="max-width: 320px"
-					@update:menu="logEvent('update:menu', $event)"
-			/>
-		</Variant>
-
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{
@@ -174,6 +37,131 @@
 				<HstCheckbox v-model="state.disabled"      title="disabled"/>
 				<HstCheckbox v-model="state.readonly"      title="readonly"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
+					<origam-date-picker-field v-model="colorDate" v-bind="state" label="Colored date (interactive)" data-cy="datepickerfield-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-date-picker-field color="primary" label='color="primary" only' data-cy="datepickerfield-color-fixture-color-only"/>
+						<origam-date-picker-field bg-color="success" label='bg-color="success" only' data-cy="datepickerfield-color-fixture-bg-only"/>
+						<origam-date-picker-field color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="datepickerfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — variant"
+				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-field v-model="variantDate" :variant="state.variant" label="Variant" data-cy="datepickerfield-variant" style="max-width: 320px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.variant" title="variant" :options="variantInputList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-field v-model="densityDate" :density="state.density" label="Density date" data-cy="datepickerfield-density" style="max-width: 320px"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — range">
+			<origam-date-picker-field
+					v-model="dates"
+					label="Date range"
+					range
+					style="max-width: 320px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — multiple">
+			<origam-date-picker-field
+					v-model="dates"
+					label="Select dates"
+					multiple
+					style="max-width: 320px"
+			/>
+		</Variant>
+
+		<Variant
+				title="Prop — closeOnSelect"
+				:init-state="() => useStoryInitState<{ closeOnSelect?: boolean }>({ closeOnSelect: true })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-field
+						v-model="date"
+						label="Date"
+						:close-on-select="state.closeOnSelect"
+						style="max-width: 320px"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.closeOnSelect" title="closeOnSelect"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — disabled & readonly"
+				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean }>({ disabled: false, readonly: false })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-field
+						v-model="date"
+						label="Date"
+						:disabled="state.disabled"
+						:readonly="state.readonly"
+						style="max-width: 320px"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<HstCheckbox v-model="state.readonly" title="readonly"/>
+			</template>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<origam-date-picker-field
+					v-model="date"
+					label="Date"
+					style="max-width: 320px"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:menu">
+			<origam-date-picker-field
+					v-model="date"
+					label="Date"
+					style="max-width: 320px"
+					@update:menu="logEvent('update:menu', $event)"
+			/>
 		</Variant>
 	</Story>
 </template>

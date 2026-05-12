@@ -3,9 +3,47 @@
 			group="components"
 			title="SelectionControl/OrigamSelectionControl"
 	>
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ISelectionControlProps>({
+					label: 'Control label',
+					type: 'checkbox',
+					color: undefined,
+					density: undefined,
+					trueIcon: undefined,
+					falseIcon: undefined,
+					disabled: false,
+					readonly: false,
+					required: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-selection-control-group v-model="playgroundModel" :type="state.type">
+					<origam-selection-control
+							v-bind="state"
+							value="playground-val"
+							data-cy="sc-playground"
+					/>
+				</origam-selection-control-group>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.label"     title="label"/>
+				<HstSelect   v-model="state.type"      title="type"      :options="typeList"/>
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
+				<HstSelect   v-model="state.trueIcon"  title="trueIcon"  :options="iconList"/>
+				<HstSelect   v-model="state.falseIcon" title="falseIcon" :options="iconList"/>
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
+				<HstCheckbox v-model="state.readonly"  title="readonly"/>
+				<HstCheckbox v-model="state.required"  title="required"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
 
 		<Variant
-				title="Type"
+				title="Prop — type"
 				:init-state="() => useStoryInitState<{ type: string }>({ type: 'checkbox' })"
 		>
 			<template #default="{ state }">
@@ -20,7 +58,7 @@
 		</Variant>
 
 		<Variant
-				title="Label"
+				title="Prop — label & required"
 				:init-state="() => useStoryInitState<{ label?: string, required: boolean }>({ label: 'Accept terms', required: false })"
 		>
 			<template #default="{ state }">
@@ -40,7 +78,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -54,7 +92,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -68,7 +106,7 @@
 		</Variant>
 
 		<Variant
-				title="Icons (trueIcon / falseIcon)"
+				title="Prop — trueIcon & falseIcon"
 				:init-state="() => useStoryInitState<{ trueIcon?: TIcon, falseIcon?: TIcon }>({ trueIcon: MDI_ICONS.CHECK_CIRCLE, falseIcon: MDI_ICONS.CIRCLE_OUTLINE })"
 		>
 			<template #default="{ state }">
@@ -89,7 +127,7 @@
 		</Variant>
 
 		<Variant
-				title="Values (trueValue / falseValue)"
+				title="Prop — trueValue & falseValue"
 				:init-state="() => useStoryInitState<{ trueValue?: any, falseValue?: any }>({ trueValue: 'YES', falseValue: 'NO' })"
 		>
 			<template #default="{ state }">
@@ -112,7 +150,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled & readonly"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
 		>
 			<template #default="{ state }">
@@ -131,6 +169,8 @@
 				<HstCheckbox v-model="state.readonly" title="readonly"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
 			<origam-selection-control-group v-model="slotDefaultModel" type="checkbox">
@@ -173,6 +213,8 @@
 			</origam-selection-control-group>
 		</Variant>
 
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
 		<Variant title="Emit — click:label">
 			<origam-selection-control-group v-model="emitModel" type="checkbox">
 				<origam-selection-control
@@ -182,42 +224,6 @@
 						@click:label="logEvent('click:label', $event)"
 				/>
 			</origam-selection-control-group>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ISelectionControlProps>({
-					label: 'Control label',
-					type: 'checkbox',
-					color: undefined,
-					density: undefined,
-					trueIcon: undefined,
-					falseIcon: undefined,
-					disabled: false,
-					readonly: false,
-					required: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-selection-control-group v-model="playgroundModel" :type="state.type">
-					<origam-selection-control
-							v-bind="state"
-							value="playground-val"
-							data-cy="sc-playground"
-					/>
-				</origam-selection-control-group>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"     title="label"/>
-				<HstSelect   v-model="state.type"      title="type"      :options="typeList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.trueIcon"  title="trueIcon"  :options="iconList"/>
-				<HstSelect   v-model="state.falseIcon" title="falseIcon" :options="iconList"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.readonly"  title="readonly"/>
-				<HstCheckbox v-model="state.required"  title="required"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
@@ -242,18 +248,18 @@
 	import { useStoryInitState } from '@stories/composables'
 	import { densityList, iconList, intentList } from '@stories/const'
 
-	const typeModel       = ref<string[]>([])
-	const labelModel      = ref<string[]>([])
-	const colorModel      = ref<string[]>([])
-	const densityModel    = ref<string[]>([])
-	const iconsModel      = ref<string[]>([])
-	const valuesModel     = ref<any>(undefined)
-	const statesModel     = ref<string[]>([])
+	const typeModel        = ref<string[]>([])
+	const labelModel       = ref<string[]>([])
+	const colorModel       = ref<string[]>([])
+	const densityModel     = ref<string[]>([])
+	const iconsModel       = ref<string[]>([])
+	const valuesModel      = ref<any>(undefined)
+	const statesModel      = ref<string[]>([])
 	const slotDefaultModel = ref<string[]>([])
-	const slotLabelModel  = ref<string[]>([])
-	const slotInputModel  = ref<string[]>([])
-	const emitModel       = ref<string[]>([])
-	const playgroundModel = ref<any>(undefined)
+	const slotLabelModel   = ref<string[]>([])
+	const slotInputModel   = ref<string[]>([])
+	const emitModel        = ref<string[]>([])
+	const playgroundModel  = ref<any>(undefined)
 
 	const typeList: Array<IOptions<string>> = [
 		{ label: 'checkbox', value: 'checkbox' },

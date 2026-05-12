@@ -3,9 +3,42 @@
 			group="components"
 			title="Radio/OrigamRadio"
 	>
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IRadioProps>({
+					label: 'Radio option',
+					value: 'opt',
+					color: 'primary',
+					density: undefined,
+					rounded: undefined,
+					disabled: false,
+					readonly: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-radio
+						v-model="playgroundModel"
+						v-bind="state"
+						data-cy="radio-playground"
+				/>
+				<div data-cy="radio-playground-status">value = {{ playgroundModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.label"   title="label"/>
+				<HstText     v-model="state.value"   title="value"/>
+				<HstSelect   v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect   v-model="state.density" title="density" :options="densityList"/>
+				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<HstCheckbox v-model="state.readonly" title="readonly"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ─────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -56,7 +89,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -75,7 +108,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
 		>
 			<template #default="{ state }">
@@ -94,7 +127,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled & readonly"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
 		>
 			<template #default="{ state }">
@@ -114,6 +147,8 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
 		<Variant title="Slot — label">
 			<origam-radio v-model="slotLabelModel" value="custom" data-cy="radio-slot-label">
 				<template #label>
@@ -122,6 +157,8 @@
 			</origam-radio>
 			<div data-cy="radio-slot-label-status">value = {{ slotLabelModel }}</div>
 		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
 			<origam-radio
@@ -134,7 +171,7 @@
 			<div data-cy="radio-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<Variant title="Emit — focus / blur">
+		<Variant title="Emit — focus & blur">
 			<origam-radio
 					v-model="emitFocusModel"
 					value="x"
@@ -143,37 +180,6 @@
 					@focus="logEvent('focus', $event)"
 					@blur="logEvent('blur', $event)"
 			/>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IRadioProps>({
-					label: 'Radio option',
-					value: 'opt',
-					color: 'primary',
-					density: undefined,
-					rounded: undefined,
-					disabled: false,
-					readonly: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-radio
-						v-model="playgroundModel"
-						v-bind="state"
-						data-cy="radio-playground"
-				/>
-				<div data-cy="radio-playground-status">value = {{ playgroundModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"   title="label"/>
-				<HstText     v-model="state.value"   title="value"/>
-				<HstSelect   v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.density" title="density" :options="densityList"/>
-				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
