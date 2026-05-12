@@ -3,141 +3,10 @@
 			group="components"
 			title="Grids/OrigamRow"
 	>
-
-		<Variant
-				title="Align"
-				:init-state="() => useStoryInitState<IAlignProps>({ align: 'center' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :align="state.align" style="min-height: 120px; background: var(--origam-color-surface-overlay, #ececec);">
-						<origam-col cols="4">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell" style="padding: 32px 12px;">B (taller)</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.align" title="align" :options="alignList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Justify"
-				:init-state="() => useStoryInitState<IJustifyProps>({ justify: 'space-between' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :justify="state.justify">
-						<origam-col cols="3">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="3">
-							<div class="demo-cell">B</div>
-						</origam-col>
-						<origam-col cols="3">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.justify" title="justify" :options="justifyList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :density="state.density">
-						<origam-col cols="4">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">B</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Direction"
-				:init-state="() => useStoryInitState<{ direction?: TFlexDirection }>({ direction: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :direction="state.direction">
-						<origam-col cols="4">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">B</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.direction"
-						title="direction"
-						:options="directionList"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :tag="state.tag">
-						<origam-col cols="6">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="6">
-							<div class="demo-cell">B</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<origam-container>
-				<origam-row>
-					<origam-col cols="6">
-						<div class="demo-cell">slot child A</div>
-					</origam-col>
-					<origam-col cols="6">
-						<div class="demo-cell">slot child B</div>
-					</origam-col>
-				</origam-row>
-			</origam-container>
-		</Variant>
-
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IRowProps knob via the sidebar controls.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IRowProps>({
@@ -170,6 +39,144 @@
 				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
 				<HstSelect v-model="state.tag"       title="tag"       :options="tagList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — align"
+				:init-state="() => useStoryInitState<IAlignProps>({ align: 'center' })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row :align="state.align" style="min-height: 120px; background: var(--origam-color-surface-overlay, #ececec);">
+						<origam-col cols="4">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell" style="padding: 32px 12px;">B (taller)</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.align" title="align" :options="alignList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — justify"
+				:init-state="() => useStoryInitState<IJustifyProps>({ justify: 'space-between' })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row :justify="state.justify">
+						<origam-col cols="3">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="3">
+							<div class="demo-cell">B</div>
+						</origam-col>
+						<origam-col cols="3">
+							<div class="demo-cell">C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.justify" title="justify" :options="justifyList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row :density="state.density">
+						<origam-col cols="4">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">B</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — direction"
+				:init-state="() => useStoryInitState<{ direction?: TFlexDirection }>({ direction: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row :direction="state.direction">
+						<origam-col cols="4">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">B</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.direction"
+						title="direction"
+						:options="directionList"
+				/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row :tag="state.tag">
+						<origam-col cols="6">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="6">
+							<div class="demo-cell">B</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-container>
+				<origam-row>
+					<origam-col cols="6">
+						<div class="demo-cell">slot child A</div>
+					</origam-col>
+					<origam-col cols="6">
+						<div class="demo-cell">slot child B</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
 		</Variant>
 	</Story>
 </template>
