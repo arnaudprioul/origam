@@ -554,6 +554,47 @@
 	.origam-drawer--bottom.origam-transition--drawer-leave-to {
 		transform: translateY(100%) !important;
 	}
+
+	// ── Generic-transition overrides scoped to the drawer ────────────
+	//
+	// OrigamSlideX / OrigamSlideY / OrigamFade are generic transitions
+	// used across the design system. Their keyframe transforms have NO
+	// `!important`, so when applied to the drawer they get stomped by
+	// useLayoutItem's inline `transform: translateX(0%)` — the result
+	// is that the consumer sees only the opacity portion of the
+	// keyframe (a fade) instead of the intended slide. Override
+	// per-transition on the `.origam-drawer` selector so the transforms
+	// win without affecting the same transition used on other
+	// components.
+
+	// slide-x: full panel width, location-aware.
+	.origam-drawer.origam-transition--slide-x-enter-from,
+	.origam-drawer.origam-transition--slide-x-leave-to {
+		transform: translateX(-100%) !important;
+		opacity: 0 !important;
+	}
+	.origam-drawer--right.origam-transition--slide-x-enter-from,
+	.origam-drawer--right.origam-transition--slide-x-leave-to {
+		transform: translateX(100%) !important;
+	}
+
+	// slide-y: full panel height, location-aware.
+	.origam-drawer.origam-transition--slide-y-enter-from,
+	.origam-drawer.origam-transition--slide-y-leave-to {
+		transform: translateY(-100%) !important;
+		opacity: 0 !important;
+	}
+	.origam-drawer--bottom.origam-transition--slide-y-enter-from,
+	.origam-drawer--bottom.origam-transition--slide-y-leave-to {
+		transform: translateY(100%) !important;
+	}
+
+	// fade: opacity-only, no transform. The drawer's inline transform
+	// stays at `translateX(0%)` throughout — only the alpha animates.
+	.origam-drawer.origam-transition--fade-enter-from,
+	.origam-drawer.origam-transition--fade-leave-to {
+		opacity: 0 !important;
+	}
 </style>
 
 
