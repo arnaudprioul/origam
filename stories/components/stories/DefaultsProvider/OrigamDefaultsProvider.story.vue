@@ -3,59 +3,10 @@
 			group="components"
 			title="DefaultsProvider/OrigamDefaultsProvider"
 	>
-
-		<Variant title="Global defaults (density)">
-			<origam-defaults-provider
-					:defaults="{ global: { density: 'compact' } }"
-			>
-				<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-					<origam-btn text="Button A"/>
-					<origam-btn text="Button B" color="primary"/>
-					<origam-btn text="Button C" variant="outlined"/>
-				</div>
-			</origam-defaults-provider>
-		</Variant>
-
-		<Variant title="Component-level defaults">
-			<origam-defaults-provider
-					:defaults="{ 'origam-btn': { color: 'primary', variant: 'flat' } }"
-			>
-				<div style="display: flex; gap: 8px;">
-					<origam-btn text="Inherits primary"/>
-					<origam-btn text="Override" color="danger"/>
-				</div>
-			</origam-defaults-provider>
-		</Variant>
-
-		<Variant title="Scoped (no parent inheritance)">
-			<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'primary' } }">
-				<origam-btn text="Sees primary" style="margin-bottom: 8px; display: block;"/>
-				<origam-defaults-provider
-						:defaults="{ 'origam-btn': { color: 'danger' } }"
-						scoped
-				>
-					<origam-btn text="Scoped: only danger"/>
-				</origam-defaults-provider>
-			</origam-defaults-provider>
-		</Variant>
-
-		<Variant title="Disabled (pass-through)">
-			<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'primary' } }">
-				<origam-btn text="Outer default (primary)" style="margin-bottom: 8px; display: block;"/>
-				<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'danger' } }" disabled>
-					<origam-btn text="Disabled provider — inherits primary from outer"/>
-				</origam-defaults-provider>
-			</origam-defaults-provider>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<origam-defaults-provider :defaults="{ global: { size: 'small' } }">
-				<template #default>
-					<origam-btn text="Small from slot"/>
-				</template>
-			</origam-defaults-provider>
-		</Variant>
-
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IDefaultProviderProps knob via the sidebar controls.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{
@@ -94,6 +45,62 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 				<HstCheckbox v-model="state.scoped"   title="scoped"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — defaults (global density)">
+			<origam-defaults-provider
+					:defaults="{ global: { density: 'compact' } }"
+			>
+				<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+					<origam-btn text="Button A"/>
+					<origam-btn text="Button B" color="primary"/>
+					<origam-btn text="Button C" variant="outlined"/>
+				</div>
+			</origam-defaults-provider>
+		</Variant>
+
+		<Variant title="Prop — defaults (component-level)">
+			<origam-defaults-provider
+					:defaults="{ 'origam-btn': { color: 'primary', variant: 'flat' } }"
+			>
+				<div style="display: flex; gap: 8px;">
+					<origam-btn text="Inherits primary"/>
+					<origam-btn text="Override" color="danger"/>
+				</div>
+			</origam-defaults-provider>
+		</Variant>
+
+		<Variant title="Prop — scoped (no parent inheritance)">
+			<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'primary' } }">
+				<origam-btn text="Sees primary" style="margin-bottom: 8px; display: block;"/>
+				<origam-defaults-provider
+						:defaults="{ 'origam-btn': { color: 'danger' } }"
+						scoped
+				>
+					<origam-btn text="Scoped: only danger"/>
+				</origam-defaults-provider>
+			</origam-defaults-provider>
+		</Variant>
+
+		<Variant title="Prop — disabled (pass-through)">
+			<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'primary' } }">
+				<origam-btn text="Outer default (primary)" style="margin-bottom: 8px; display: block;"/>
+				<origam-defaults-provider :defaults="{ 'origam-btn': { color: 'danger' } }" disabled>
+					<origam-btn text="Disabled provider — inherits primary from outer"/>
+				</origam-defaults-provider>
+			</origam-defaults-provider>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-defaults-provider :defaults="{ global: { size: 'small' } }">
+				<template #default>
+					<origam-btn text="Small from slot"/>
+				</template>
+			</origam-defaults-provider>
 		</Variant>
 	</Story>
 </template>
