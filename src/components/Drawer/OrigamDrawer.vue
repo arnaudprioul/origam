@@ -231,6 +231,11 @@
 	 * teleport is disabled so the drawer renders inline.
 	 ********************************************************/
 	const layoutSize = computed(() => {
+		// Push gate: if the drawer isn't supposed to push the layout,
+		// reserve 0 space so adjacent toolbar / main / footer stay full
+		// width regardless of whether the drawer is currently visible.
+		if (!isPushing.value) return 0
+
 		const size = isTemporary.value ? 0
 				: props.rail && props.expandOnHover ? Number(props.railWidth)
 						: width.value
@@ -282,10 +287,13 @@
 		position: location,
 		layoutSize,
 		elementSize: width,
-		// `active` controls whether the layout reserves space. When
-		// `push` is false we force false here so the drawer paints
-		// over its surroundings without offsetting them.
-		active: computed(() => (isActive.value || isDragging.value) && isPushing.value) as ComputedRef<boolean>,
+		// `active` controls the VISUAL transform of the drawer (open
+		// vs off-screen via translateX(0%) / translateX(-110%)).
+		// It must follow `isActive` regardless of push mode — otherwise
+		// the inline transform would stick the drawer off-screen even
+		// when the consumer is trying to display it. The PUSH gate
+		// lives in `layoutSize` above (returns 0 → no layer reservation).
+		active: computed(() => isActive.value || isDragging.value) as ComputedRef<boolean>,
 		disableTransitions: computed(() => isDragging.value),
 		absolute: computed(() =>
 				props.absolute || (isSticky.value && typeof isStuck.value !== 'string')
