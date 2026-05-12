@@ -15,6 +15,7 @@
 							<origam-img
 									key="image"
 									cover
+									eager
 									v-bind="imageProps"
 							/>
 						</slot>
@@ -271,10 +272,21 @@
 		&__image {
 			width: var(--origam-avatar__image---width);
 			height: var(--origam-avatar__image---height);
+			// OrigamImg paints its <img> with `z-index: -1` (so the
+			// optional gradient overlay can sit on top of the picture).
+			// Without a contained stacking context here, the negative
+			// z-index would push the image BEHIND the Avatar's own
+			// background — the user sees only the bg color, not the
+			// photo.
+			position: relative;
+			overflow: hidden;
+			border-radius: inherit;
 
 			&:deep(.origam-img) {
 				--origam-img---height: 100%;
 				--origam-img---width: 100%;
+				--origam-img__picture---z-index: auto;
+				--origam-img__content---z-index: auto;
 			}
 		}
 

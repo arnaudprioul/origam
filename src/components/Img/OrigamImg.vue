@@ -282,7 +282,19 @@
 
 	const isBooted = shallowRef(false)
 
-	const stop = watch(aspectRatio, (val) => {
+	// When the consumer already passes an explicit `aspect-ratio` (e.g.
+	// OrigamAvatar binds `aspectRatio: 1`), the computed starts truthy
+	// on mount. Vue's default watch semantic (fire-on-change only)
+	// missed the initial value → isBooted stayed false forever →
+	// `origam-img--booting` class kept the image hidden behind its
+	// placeholder.
+	//
+	// We can't simply pass `{ immediate: true }` because the watcher
+	// body calls `stop()` — referenced via the same `const`, which
+	// triggers a TDZ error when `immediate` fires the watcher before
+	// the assignment completes. Wrap stop() in a guard instead.
+	let stop: (() => void) | null = null
+	const markBooted = (val: number | null | undefined) => {
 		if (val) {
 			// Doesn't work with nextTick, idk why
 			requestAnimationFrame(() => {
@@ -290,9 +302,12 @@
 					isBooted.value = true
 				})
 			})
-			stop()
+			stop?.()
 		}
-	})
+	}
+	stop = watch(aspectRatio, markBooted)
+	// Cover the case where aspectRatio is ALREADY truthy on mount.
+	markBooted(aspectRatio.value)
 
 	const intersect = ref([{
 		handler: init,
