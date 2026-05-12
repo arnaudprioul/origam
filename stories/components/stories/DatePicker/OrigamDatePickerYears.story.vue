@@ -3,31 +3,57 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerYears"
 	>
-
 		<!--
-			<origam-date-picker-years> is the scrollable year grid behind
-			the year heading. Best previewed via the parent picker in
-			"years" view-mode.
+			Playground — the scrollable year grid shown behind the year
+			heading. Can be embedded in the parent picker or used
+			standalone.
 		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{ color: string; min: string; max: string }>({
+					color: 'primary',
+					min: '2020-01-01',
+					max: '2030-12-31',
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+					<origam-date-picker-years
+							:year="2026"
+							:color="state.color"
+							:min="state.min"
+							:max="state.max"
+							data-cy="dp-years-playground"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<HstText   v-model="state.min"   title="min (YYYY-MM-DD)"/>
+				<HstText   v-model="state.max"   title="max (YYYY-MM-DD)"/>
+			</template>
+		</Variant>
 
-		<Variant title="Embedded — year picker view">
-			<div style="padding: 24px;">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — realistic wiring (embedded in DatePicker, year view)">
+			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-date-picker v-model="defaultValue" view-mode="year" data-cy="dp-years-default"/>
 			</div>
 		</Variant>
 
-		<Variant title="Standalone — centered on 2026">
-			<div style="padding: 24px; max-width: 320px;">
+		<Variant title="Prop — year (standalone, centred on 2026)">
+			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 				<origam-date-picker-years :year="2026" data-cy="dp-years-standalone"/>
 			</div>
 		</Variant>
 
 		<Variant
-				title="Min / max bounds"
-				:init-state="() => useStoryInitState<{ min: string, max: string }>({ min: '2020-01-01', max: '2030-12-31' })"
+				title="Prop — min & max (bounds disable out-of-range years)"
+				:init-state="() => useStoryInitState<{ min: string; max: string }>({ min: '2020-01-01', max: '2030-12-31' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 					<origam-date-picker-years
 							:year="2026"
 							:min="state.min"
@@ -46,11 +72,11 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color"
 				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 					<origam-date-picker-years
 							:year="2026"
 							:color="state.color"

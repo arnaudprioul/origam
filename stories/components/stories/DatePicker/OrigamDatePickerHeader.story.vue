@@ -3,20 +3,44 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerHeader"
 	>
-
 		<!--
-			<origam-date-picker-header> is the big "Selected: May 8, 2026"
-			heading at the top of the picker. It shows the currently
-			selected date and reacts to the user's selection.
+			Playground — the "Selected: May 8, 2026" heading at the top of
+			the picker. Can be used standalone or inside the parent picker.
 		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IDensityProps & { color: string; header: string }>({
+					density: DENSITY.DEFAULT,
+					color: 'primary',
+					header: 'May 8, 2026',
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 320px;">
+					<origam-date-picker-header
+							:header="state.header"
+							:density="state.density"
+							:color="state.color"
+							data-cy="dp-header-playground"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText   v-model="state.header"  title="header"/>
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+			</template>
+		</Variant>
 
-		<Variant title="Embedded in OrigamDatePicker">
-			<div style="padding: 24px;">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — header (realistic, embedded in DatePicker)">
+			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-date-picker v-model="defaultValue" data-cy="dp-header-default"/>
 			</div>
 		</Variant>
 
-		<Variant title="Standalone with custom header text">
+		<Variant title="Prop — header (standalone custom text)">
 			<div style="padding: 24px; max-width: 320px;">
 				<origam-date-picker-header
 						header="May 2026"
@@ -26,7 +50,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color"
 				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -43,7 +67,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="With prepend / append icons">
+		<Variant title="Prop — prependIcon & appendIcon">
 			<div style="padding: 24px; max-width: 320px;">
 				<origam-date-picker-header
 						header="May 8, 2026"
@@ -55,7 +79,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">

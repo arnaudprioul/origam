@@ -3,20 +3,48 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerMonths"
 	>
-
 		<!--
-			<origam-date-picker-months> is the 4×3 month-name grid you see
-			when clicking the year heading. Best previewed via the parent.
+			Playground — the 4×3 month-name grid shown when clicking the
+			year heading. Can be embedded in the parent picker or used
+			standalone.
 		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{ color: string; min: string; max: string }>({
+					color: 'primary',
+					min: '2026-01-01',
+					max: '2026-12-31',
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+					<origam-date-picker-months
+							:month="4"
+							:year="2026"
+							:color="state.color"
+							:min="state.min"
+							:max="state.max"
+							data-cy="dp-months-playground"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<HstText   v-model="state.min"   title="min (YYYY-MM-DD)"/>
+				<HstText   v-model="state.max"   title="max (YYYY-MM-DD)"/>
+			</template>
+		</Variant>
 
-		<Variant title="Embedded — month picker view">
-			<div style="padding: 24px;">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — realistic wiring (embedded in DatePicker, month view)">
+			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-date-picker v-model="defaultValue" view-mode="months" data-cy="dp-months-default"/>
 			</div>
 		</Variant>
 
-		<Variant title="Standalone — May 2026">
-			<div style="padding: 24px; max-width: 320px;">
+		<Variant title="Prop — month & year (standalone, May 2026)">
+			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 				<origam-date-picker-months
 						:month="4"
 						:year="2026"
@@ -26,11 +54,11 @@
 		</Variant>
 
 		<Variant
-				title="Min / max bounds"
-				:init-state="() => useStoryInitState<{ min: string, max: string }>({ min: '2026-03-01', max: '2026-09-30' })"
+				title="Prop — min & max (bounds disable out-of-range months)"
+				:init-state="() => useStoryInitState<{ min: string; max: string }>({ min: '2026-03-01', max: '2026-09-30' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 					<origam-date-picker-months
 							:month="4"
 							:year="2026"
@@ -50,11 +78,11 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color"
 				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 					<origam-date-picker-months
 							:month="4"
 							:year="2026"

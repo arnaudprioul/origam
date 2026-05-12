@@ -3,22 +3,53 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerControls"
 	>
-
 		<!--
-			<origam-date-picker-controls> is the navigation strip at the
-			top of <origam-date-picker> (today / arrows / month-year toggle).
-			Best previewed via the parent picker.
+			Playground — navigation strip (today / arrows / month-year
+			toggle). Full wiring only works inside OrigamDatePicker; the
+			standalone variant shows the chrome in isolation.
 		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{ disabled: boolean; disabledNext: boolean; disabledPrev: boolean; disabledYear: boolean }>({
+					disabled: false,
+					disabledNext: false,
+					disabledPrev: false,
+					disabledYear: false,
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-date-picker-controls
+							:active="['date']"
+							v-bind="state"
+							data-cy="dp-controls-playground"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled"     title="disabled (all)"/>
+				<HstCheckbox v-model="state.disabledNext" title="disabledNext"/>
+				<HstCheckbox v-model="state.disabledPrev" title="disabledPrev"/>
+				<HstCheckbox v-model="state.disabledYear" title="disabledYear"/>
+			</template>
+		</Variant>
 
-		<Variant title="Embedded in OrigamDatePicker (real wiring)">
-			<div style="padding: 24px;">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — realistic wiring (embedded in DatePicker)">
+			<!--
+				The controls are automatically wired when inside the parent
+				picker — arrows fire month navigation, the heading toggles the
+				year/month grid.
+			-->
+			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-date-picker v-model="defaultValue" data-cy="dp-controls-default"/>
 			</div>
 		</Variant>
 
 		<Variant
-				title="Disabled controls"
-				:init-state="() => useStoryInitState<{ disabled: boolean, disabledNext: boolean, disabledPrev: boolean }>({ disabled: false, disabledNext: false, disabledPrev: false })"
+				title="Prop — disabled (standalone)"
+				:init-state="() => useStoryInitState<{ disabled: boolean; disabledNext: boolean; disabledPrev: boolean }>({ disabled: false, disabledNext: false, disabledPrev: false })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
@@ -38,24 +69,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Year-disabled (pin month picker)">
+		<Variant title="Prop — disabledYear (pin to month view)">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
 						:active="['date']"
 						disabled-year
 						data-cy="dp-controls-disabled-year"
 				/>
-			</div>
-		</Variant>
-
-		<Variant title="Note">
-			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
-				<p>
-					<code>OrigamDatePickerControls</code> is internal to
-					<code>OrigamDatePicker</code>. The realistic wiring (Today
-					button, arrow navigation) only works inside that parent —
-					the standalone Variants here just show the chrome.
-				</p>
 			</div>
 		</Variant>
 	</Story>
