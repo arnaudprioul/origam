@@ -96,6 +96,52 @@
 		</Variant>
 
 		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<!--
+					Hover the avatar to see the override applied. The
+					base state is primary; the hover controls pick the
+					intent that paints the surface + text on hover.
+				-->
+				<div style="display: flex; flex-direction: column; gap: 16px;">
+					<origam-avatar v-bind="state" text="A" data-cy="avatar-hover"/>
+					<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">
+						Hover the avatar above.
+					</p>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<!--
+					Press and hold to see the active override. The base
+					state is primary; the active controls pick the
+					intent shown while the avatar is being pressed.
+				-->
+				<div style="display: flex; flex-direction: column; gap: 16px;">
+					<origam-avatar v-bind="state" text="A" data-cy="avatar-active"/>
+					<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">
+						Press &amp; hold the avatar above.
+					</p>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
 		>
