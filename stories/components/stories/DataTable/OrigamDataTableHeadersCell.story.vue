@@ -3,18 +3,18 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeadersCell"
 	>
-
 		<!--
-			<origam-data-table-headers-cell> is the desktop variant of the
-			header cell — it owns the title + sort indicator combination.
-			A separate `…HeadersCellMobile` story shows the mobile fallback.
+			Playground — the desktop header cell (title + sort indicator).
+			OrigamDataTableHeadersCell is internal; override via
+			`header.{key}` on the parent table.
 		-->
-
-		<Variant title="Default header cell">
-			<origam-data-table :headers="headers" :items="items" data-cy="headers-cell-default"/>
+		<Variant title="Playground">
+			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="headers-cell-default"/>
 		</Variant>
 
-		<Variant title="Sortable + active sort indicator">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — sortable (active sort indicator)">
 			<origam-data-table
 					:headers="sortableHeaders"
 					:items="items"
@@ -23,25 +23,13 @@
 			/>
 		</Variant>
 
-		<Variant title="Selection cell (master checkbox)">
+		<Variant title="Prop — showSelect (master checkbox)">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
 					show-select
 					data-cy="headers-cell-select"
 			/>
-		</Variant>
-
-		<Variant title="Note">
-			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
-				<p>
-					<code>OrigamDataTableHeadersCell</code> is internal — its
-					rendering is dictated by the <code>headers</code> array
-					passed to <code>&lt;origam-data-table&gt;</code>. Override
-					individual cells via the <code>header.{key}</code> slot
-					instead of subclassing this component.
-				</p>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -50,7 +38,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable, OrigamDataTableHeadersCell } from '@origam/components'
+	import { OrigamDataTable } from '@origam/components'
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },

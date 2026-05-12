@@ -3,19 +3,37 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeaders"
 	>
-
 		<!--
-			<origam-data-table-headers> is the header row container. Best
-			seen inside its parent <origam-data-table>. The story below
-			focuses on what changes in the header row across modes.
+			Playground — shows the header row container via the parent
+			table with sortable columns and multiSort toggle.
 		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{ multiSort: boolean; showSelect: boolean }>({ multiSort: false, showSelect: false })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="sortableHeaders"
+						:items="items"
+						:multi-sort="state.multiSort"
+						:show-select="state.showSelect"
+						data-cy="headers-playground"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.multiSort"   title="multiSort"/>
+				<HstCheckbox v-model="state.showSelect"  title="showSelect"/>
+			</template>
+		</Variant>
 
-		<Variant title="Default header">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — headers (default non-sortable)">
 			<origam-data-table :headers="headers" :items="items" data-cy="headers-default"/>
 		</Variant>
 
 		<Variant
-				title="Sortable headers"
+				title="Prop — multiSort (click column to add secondary sort)"
 				:init-state="() => useStoryInitState<{ multiSort: boolean }>({ multiSort: false })"
 		>
 			<template #default="{ state }">
@@ -34,7 +52,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="With selection column">
+		<Variant title="Prop — showSelect (master checkbox in header)">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
@@ -43,7 +61,9 @@
 			/>
 		</Variant>
 
-		<Variant title="Hide default header (custom slot)">
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — headers (fully custom header row, hide default)">
 			<origam-data-table :headers="headers" :items="items" hide-default-header data-cy="headers-hide-default">
 				<template #headers>
 					<tr style="background: var(--origam-color-action-primary-bg); color: var(--origam-color-action-primary-fg);">
@@ -60,7 +80,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable, OrigamDataTableHeaders } from '@origam/components'
+	import { OrigamDataTable } from '@origam/components'
 
 	import { useStoryInitState } from '@stories/composables'
 

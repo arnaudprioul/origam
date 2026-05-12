@@ -3,14 +3,12 @@
 			group="components"
 			title="DataTable/OrigamDataTableGroupHeaderRow"
 	>
-
 		<!--
-			<origam-data-table-group-header-row> is the collapsable group
-			separator inserted when the table groups items by a column.
-			Best previewed via the parent table with `group-by`.
+			Playground — shows collapsible group headers via the parent
+			table's `group-by` prop. OrigamDataTableGroupHeaderRow is
+			internal; customise via the `group-header` slot.
 		-->
-
-		<Variant title="Group by — single column">
+		<Variant title="Playground">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
@@ -19,7 +17,18 @@
 			/>
 		</Variant>
 
-		<Variant title="Group by — multiple columns (nested)">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — groupBy (single column)">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:group-by="[{ key: 'team', order: 'asc' }]"
+					data-cy="group-header-single"
+			/>
+		</Variant>
+
+		<Variant title="Prop — groupBy (multiple columns, nested)">
 			<origam-data-table
 					:headers="extendedHeaders"
 					:items="extendedItems"
@@ -28,7 +37,13 @@
 			/>
 		</Variant>
 
-		<Variant title="Slot — group.header (custom group row render)">
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — group-header (custom group row)">
+			<!--
+				The group-header scoped slot receives group, items, isOpen
+				and toggleGroup — enough to build a fully custom header row.
+			-->
 			<origam-data-table
 					:headers="headers"
 					:items="items"
@@ -54,7 +69,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable, OrigamDataTableGroupHeaderRow } from '@origam/components'
+	import { OrigamDataTable } from '@origam/components'
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },
@@ -77,9 +92,9 @@
 		{ name: 'Eve',     team: 'Backend',  commits: 64  },
 	]
 
-	const extendedItems = items.map((it) => ({
+	const extendedItems = items.map((it, idx) => ({
 		...it,
-		role: ['lead', 'staff', 'senior', 'lead', 'senior'][items.indexOf(it)] ?? 'staff',
+		role: ['lead', 'staff', 'senior', 'lead', 'senior'][idx] ?? 'staff',
 	}))
 </script>
 

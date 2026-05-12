@@ -3,24 +3,13 @@
 			group="components"
 			title="DataTable/OrigamDataTableFooter"
 	>
-
 		<!--
-			<origam-data-table-footer> is the bottom bar of the table. It
-			usually shows the pagination controls and the rows-per-page
-			selector. The realistic preview is via the parent table.
+			Playground — shows the footer pagination bar via the parent
+			table. OrigamDataTableFooter is internal; control it through
+			the parent table's props and the `footer` slot.
 		-->
-
-		<Variant title="Default footer (with pagination)">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					:items-per-page="3"
-					data-cy="footer-default"
-			/>
-		</Variant>
-
 		<Variant
-				title="Items-per-page choices"
+				title="Playground"
 				:init-state="() => useStoryInitState<{ itemsPerPage: number }>({ itemsPerPage: 5 })"
 		>
 			<template #default="{ state }">
@@ -29,20 +18,48 @@
 						:items="items"
 						:items-per-page="state.itemsPerPage"
 						:items-per-page-options="[
-							{ value: 3, title: '3' },
-							{ value: 5, title: '5' },
+							{ value: 3,  title: '3' },
+							{ value: 5,  title: '5' },
 							{ value: 10, title: '10' },
 							{ value: -1, title: 'All' },
 						]"
-						data-cy="footer-itemsperpage"
+						data-cy="footer-playground"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSlider v-model="state.itemsPerPage" title="itemsPerPage" :min="1" :max="20" :step="1"/>
+				<HstNumber v-model="state.itemsPerPage" title="itemsPerPage" :min="1" :max="20" :step="1"/>
 			</template>
 		</Variant>
 
-		<Variant title="Hide default footer (use custom slot)">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — itemsPerPage (default = 3)">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:items-per-page="3"
+					data-cy="footer-default"
+			/>
+		</Variant>
+
+		<Variant title="Prop — itemsPerPageOptions (custom choices)">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:items-per-page="5"
+					:items-per-page-options="[
+						{ value: 3,  title: '3' },
+						{ value: 5,  title: '5' },
+						{ value: 10, title: '10' },
+						{ value: -1, title: 'All' },
+					]"
+					data-cy="footer-itemsperpage"
+			/>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — footer (custom footer, hide default)">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
@@ -68,7 +85,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable, OrigamDataTableFooter } from '@origam/components'
+	import { OrigamDataTable } from '@origam/components'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -81,7 +98,7 @@
 	const items = Array.from({ length: 12 }, (_, i) => ({
 		name:    `User ${i + 1}`,
 		team:    ['Frontend', 'Backend', 'Design', 'DevOps'][i % 4],
-		commits: Math.round(Math.random() * 200),
+		commits: 20 + (i * 13 % 180),
 	}))
 </script>
 

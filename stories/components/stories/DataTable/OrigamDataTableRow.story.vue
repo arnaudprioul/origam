@@ -3,18 +3,18 @@
 			group="components"
 			title="DataTable/OrigamDataTableRow"
 	>
-
 		<!--
-			<origam-data-table-row> renders a single body row. The
-			realistic flow is via the parent <origam-data-table>, which
-			creates one row per item. Stories below preview that.
+			Playground — a single body row rendered via the parent table.
+			OrigamDataTableRow is internal; use the `item` slot on
+			OrigamDataTable for custom row rendering.
 		-->
-
-		<Variant title="Default (within DataTable)">
+		<Variant title="Playground">
 			<origam-data-table :headers="headers" :items="items" data-cy="row-default"/>
 		</Variant>
 
-		<Variant title="Selectable rows">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — showSelect (selectable rows)">
 			<origam-data-table
 					v-model="selectedKeys"
 					:headers="headers"
@@ -27,7 +27,13 @@
 			</p>
 		</Variant>
 
-		<Variant title="Slot — body.item (custom row render)">
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — item (custom row render)">
+			<!--
+				The `item` scoped slot on the parent table gives full
+				control over the `<tr>` markup for every data row.
+			-->
 			<origam-data-table :headers="headers" :items="items" data-cy="row-slot">
 				<template #item="{ item }">
 					<tr style="background: color-mix(in srgb, var(--origam-color-action-primary-bg) 4%, transparent);">
@@ -41,18 +47,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<Variant title="Note">
-			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
-				<p>
-					<code>&lt;origam-data-table-row&gt;</code> is rendered by
-					<code>&lt;origam-data-table-rows&gt;</code> for each row of
-					data — you don't usually instantiate it yourself. Override
-					the <code>item</code> slot of <code>&lt;origam-data-table&gt;</code>
-					instead (see the slot Variant above).
-				</p>
-			</div>
-		</Variant>
 	</Story>
 </template>
 
@@ -62,7 +56,7 @@
 >
 	import { ref } from 'vue'
 
-	import { OrigamDataTable, OrigamDataTableRow } from '@origam/components'
+	import { OrigamDataTable } from '@origam/components'
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },
@@ -71,9 +65,9 @@
 	]
 
 	const items = [
-		{ name: 'Alice', team: 'Frontend', role: 'lead',     commits: 142 },
-		{ name: 'Bob',   team: 'Backend',  role: 'senior',   commits: 98  },
-		{ name: 'Carol', team: 'Design',   role: 'staff',    commits: 31  },
+		{ name: 'Alice', team: 'Frontend', role: 'lead',   commits: 142 },
+		{ name: 'Bob',   team: 'Backend',  role: 'senior', commits: 98  },
+		{ name: 'Carol', team: 'Design',   role: 'staff',  commits: 31  },
 	]
 
 	const selectedKeys = ref<unknown[]>([])

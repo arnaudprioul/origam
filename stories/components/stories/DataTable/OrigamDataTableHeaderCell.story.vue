@@ -3,26 +3,32 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeaderCell"
 	>
-
 		<!--
-			<origam-data-table-header-cell> is a single cell inside the
-			header row. Each header column maps to one of these. Realistic
-			previews go through the parent table.
+			Playground — shows a single header cell (sortable + aligned)
+			via the parent table. OrigamDataTableHeaderCell is internal;
+			customise via the `header.{key}` slot.
 		-->
-
-		<Variant title="Default cell">
-			<origam-data-table :headers="headers" :items="items" data-cy="header-cell-default"/>
+		<Variant title="Playground">
+			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="header-cell-default"/>
 		</Variant>
 
-		<Variant title="Sortable cell (sort indicator)">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — sortable (sort indicator)">
 			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="header-cell-sortable"/>
 		</Variant>
 
-		<Variant title="Aligned cells (start / center / end)">
+		<Variant title="Prop — align (start / center / end)">
 			<origam-data-table :headers="alignedHeaders" :items="items" data-cy="header-cell-aligned"/>
 		</Variant>
 
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
 		<Variant title="Slot — header.{key} (per-column override)">
+			<!--
+				Override a specific column header via `header.{key}` on the
+				parent table — here the `commits` column gets an icon prefix.
+			-->
 			<origam-data-table :headers="headers" :items="items" data-cy="header-cell-slot">
 				<template #header.commits>
 					<span style="display: inline-flex; align-items: center; gap: 4px;">
@@ -39,7 +45,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable, OrigamDataTableHeaderCell, OrigamIcon } from '@origam/components'
+	import { OrigamDataTable, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 
 	const headers = [
@@ -51,8 +57,8 @@
 	const sortableHeaders = headers.map((h) => ({ ...h, sortable: true }))
 
 	const alignedHeaders = [
-		{ title: 'Start',  key: 'name', align: 'start' },
-		{ title: 'Center', key: 'team', align: 'center' },
+		{ title: 'Start',  key: 'name',    align: 'start' },
+		{ title: 'Center', key: 'team',    align: 'center' },
 		{ title: 'End',    key: 'commits', align: 'end' },
 	]
 

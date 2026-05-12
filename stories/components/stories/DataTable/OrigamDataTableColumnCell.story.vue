@@ -3,23 +3,33 @@
 			group="components"
 			title="DataTable/OrigamDataTableColumnCell"
 	>
-
 		<!--
-			<origam-data-table-column-cell> is a single body cell. The
-			parent table renders one per (row × header) intersection.
-			Demos below show different cell renderings via the
-			column-level slots.
+			Playground — demonstrates the single body cell through the
+			parent table. OrigamDataTableColumnCell is internal; use the
+			parent table slots to customise cells.
 		-->
-
-		<Variant title="Default body cell">
+		<Variant title="Playground">
 			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-default"/>
 		</Variant>
 
-		<Variant title="Aligned columns (start / center / end)">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — align (start / center / end)">
+			<!--
+				Column-level align is defined on the header object.
+				start = left-aligned, center = centred, end = right-aligned.
+			-->
 			<origam-data-table :headers="alignedHeaders" :items="items" data-cy="column-cell-aligned"/>
 		</Variant>
 
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
 		<Variant title="Slot — item.{key} (custom cell render)">
+			<!--
+				Use the item.{key} slot of the parent table to override how
+				a cell's value is rendered — here `commits` is shown as a
+				colour-coded pill.
+			-->
 			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-slot">
 				<template #item.commits="{ value }">
 					<span :style="{
@@ -35,18 +45,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<Variant title="Note">
-			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
-				<p>
-					<code>OrigamDataTableColumnCell</code> is internal to
-					<code>OrigamDataTable</code>. Override individual cells
-					via the <code>item.{key}</code> slot of the parent table
-					(see slot Variant above) instead of using this component
-					directly.
-				</p>
-			</div>
-		</Variant>
 	</Story>
 </template>
 
@@ -54,7 +52,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable, OrigamDataTableColumnCell } from '@origam/components'
+	import { OrigamDataTable } from '@origam/components'
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },
