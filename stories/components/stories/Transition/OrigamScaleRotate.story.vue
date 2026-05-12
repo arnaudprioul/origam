@@ -3,43 +3,6 @@
 			group="components"
 			title="Transition/OrigamScaleRotate"
 	>
-
-		<Variant title="Default">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-default" @click="toggleDefault = !toggleDefault">Toggle</button>
-					<origam-scale-rotate>
-						<div v-if="toggleDefault" class="story-target" data-cy="target-default">Scale + rotate</div>
-					</origam-scale-rotate>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<origam-scale-rotate disabled>
-						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation</div>
-					</origam-scale-rotate>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Group">
-			<template #default>
-				<div class="story-shell">
-					<div style="display: flex; gap: 8px;">
-						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
-						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
-					</div>
-					<origam-scale-rotate group>
-						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Item {{ item }}</div>
-					</origam-scale-rotate>
-				</div>
-			</template>
-		</Variant>
-
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITransitionProps>({
@@ -68,6 +31,33 @@
 				<HstText     v-model="state.origin"        title="origin"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
+					<origam-scale-rotate disabled>
+						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
+					</origam-scale-rotate>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — group (transition-group)">
+			<template #default>
+				<div class="story-shell">
+					<div style="display: flex; gap: 8px;">
+						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
+						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
+					</div>
+					<origam-scale-rotate group>
+						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Item {{ item }}</div>
+					</origam-scale-rotate>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -81,7 +71,6 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
 	const groupItems = ref([1, 2])

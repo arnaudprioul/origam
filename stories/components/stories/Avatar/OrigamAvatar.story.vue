@@ -3,185 +3,9 @@
 			group="components"
 			title="Avatar/OrigamAvatar"
 	>
-		<Variant title="Basic usage">
-			<div class="demo-row">
-				<origam-avatar text="AP"/>
-				<origam-avatar :icon="MDI_ICONS.ACCOUNT"/>
-				<origam-avatar image="https://picsum.photos/seed/origam-avatar-basic/120/120"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-avatar v-bind="state" text="A" data-cy="avatar-color"/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
-						<origam-avatar bg-color="primary" text="P" data-cy="avatar-color-primary"/>
-						<origam-avatar bg-color="success" text="S" data-cy="avatar-color-success"/>
-						<origam-avatar bg-color="warning" text="W" data-cy="avatar-color-warning"/>
-						<origam-avatar bg-color="danger"  text="D" data-cy="avatar-color-danger"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Size"
-				:init-state="() => useStoryInitState<ISizeProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-avatar :size="state.size" text="AP"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-avatar :density="state.density" text="AP"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Color (intent)"
-				:init-state="() => useStoryInitState<IColorProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-avatar text="AP" v-bind="state"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Status"
-				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'success' })"
-		>
-			<template #default="{ state }">
-				<origam-avatar :status="state.status" text="OK"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.status" title="status" :options="statusList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; gap: 12px; align-items: center; padding: 16px;">
-					<origam-avatar :rounded="state.rounded"      text="AP" data-cy="avatar-rounded"/>
-					<origam-avatar rounded="shaped"              text="S"  data-cy="avatar-rounded-shaped"/>
-					<origam-avatar rounded="shaped-invert"       text="SI" data-cy="avatar-rounded-shaped-invert"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Elevation"
-				:init-state="() => useStoryInitState<{ elevation?: number }>({ elevation: 4 })"
-		>
-			<template #default="{ state }">
-				<origam-avatar :elevation="state.elevation" text="AP" bg-color="primary"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Border"
-				:init-state="() => useStoryInitState<{ border?: boolean }>({ border: true })"
-		>
-			<template #default="{ state }">
-				<origam-avatar :border="state.border" text="AP"/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Hover / Active"
-				:init-state="() => useStoryInitState<{ hover?: boolean, active?: boolean }>({})"
-		>
-			<template #default="{ state }">
-				<origam-avatar
-						:active="state.active"
-						:hover="state.hover"
-						text="AP"
-						bg-color="primary"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.hover"  title="hover (force visual)"/>
-				<HstCheckbox v-model="state.active" title="active (force visual)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-avatar :tag="state.tag" text="AP"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Slot — text">
-			<origam-avatar text="AP">
-				<template #text>
-					<span style="font-style: italic;">Custom</span>
-				</template>
-			</origam-avatar>
-		</Variant>
-
-		<Variant title="Slot — icon">
-			<origam-avatar :icon="MDI_ICONS.HEART"/>
-		</Variant>
-
-		<Variant title="Slot — avatar (image)">
-			<origam-avatar image="https://picsum.photos/seed/origam-avatar-slot/120/120"/>
-		</Variant>
-
-		<Variant title="Emit — update:active / update:hover">
-			<origam-avatar
-					tag="button"
-					text="AP"
-					bg-color="primary"
-					@update:active="logEvent('update:active', $event)"
-					@update:hover="logEvent('update:hover', $event)"
-			/>
-		</Variant>
-
+		<!--
+			Playground — first by convention. Exposes every IAvatarProps knob.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IAvatarProps>({
@@ -208,6 +32,150 @@
 				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
 				<HstSelect   v-model="state.status"    title="status"    :options="statusList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<ISizeProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-avatar :size="state.size" text="AP"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px;">
+					<origam-avatar v-bind="state" text="A" data-cy="avatar-color"/>
+					<div style="display: flex; gap: 12px;">
+						<origam-avatar bg-color="primary" text="P"/>
+						<origam-avatar bg-color="success" text="S"/>
+						<origam-avatar bg-color="warning" text="W"/>
+						<origam-avatar bg-color="danger"  text="D"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — status"
+				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'success' })"
+		>
+			<template #default="{ state }">
+				<origam-avatar :status="state.status" text="OK"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.status" title="status" :options="statusList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-avatar :rounded="state.rounded"      text="AP" data-cy="avatar-rounded"/>
+					<origam-avatar rounded="shaped"              text="S"  data-cy="avatar-rounded-shaped"/>
+					<origam-avatar rounded="shaped-invert"       text="SI" data-cy="avatar-rounded-shaped-invert"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — elevation"
+				:init-state="() => useStoryInitState<{ elevation?: number }>({ elevation: 4 })"
+		>
+			<template #default="{ state }">
+				<origam-avatar :elevation="state.elevation" text="AP" bg-color="primary"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — border"
+				:init-state="() => useStoryInitState<{ border?: boolean }>({ border: true })"
+		>
+			<template #default="{ state }">
+				<origam-avatar :border="state.border" text="AP"/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.border" title="border"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-avatar :density="state.density" text="AP"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-avatar :tag="state.tag" text="AP"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — text">
+			<origam-avatar text="AP">
+				<template #text>
+					<span style="font-style: italic;">Custom</span>
+				</template>
+			</origam-avatar>
+		</Variant>
+
+		<Variant title="Slot — icon">
+			<origam-avatar :icon="MDI_ICONS.HEART"/>
+		</Variant>
+
+		<Variant title="Slot — avatar (image)">
+			<origam-avatar image="https://picsum.photos/seed/origam-avatar-slot/120/120"/>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:active / update:hover">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-avatar
+						tag="button"
+						text="AP"
+						bg-color="primary"
+						@update:active="logEvent('update:active', $event)"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">Click or hover — watch the Events panel.</p>
+			</div>
 		</Variant>
 	</Story>
 </template>
@@ -248,13 +216,5 @@
 		{ label: 'Info',    value: STATUS.INFO }
 	]
 </script>
-
-<style scoped>
-	.demo-row {
-		display: flex;
-		gap: 12px;
-		align-items: center;
-	}
-</style>
 
 <docs lang="md" src="@docs/components/Avatar/OrigamAvatar.md"/>

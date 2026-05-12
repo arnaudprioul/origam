@@ -3,68 +3,10 @@
 			group="components"
 			title="Icon/OrigamSvgIcon"
 	>
-
-		<Variant title="Single path">
-			<origam-svg-icon :icon="SVG_PATH_HEART"/>
-		</Variant>
-
-		<Variant title="Multi-path (array)">
-			<origam-svg-icon :icon="SVG_PATHS_MULTI"/>
-		</Variant>
-
-		<Variant title="Multi-path with opacity tuples">
-			<origam-svg-icon :icon="SVG_PATHS_OPACITY"/>
-		</Variant>
-
-		<Variant
-				title="Size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-svg-icon
-						:size="state.size"
-						:icon="SVG_PATH_HEART"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-svg-icon
-						:tag="state.tag"
-						:icon="SVG_PATH_STAR"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="All sizes — side by side">
-			<div style="display:flex;gap:16px;align-items:center;">
-				<origam-svg-icon :icon="SVG_PATH_STAR" size="x-small"/>
-				<origam-svg-icon :icon="SVG_PATH_STAR" size="small"/>
-				<origam-svg-icon :icon="SVG_PATH_STAR" size="default"/>
-				<origam-svg-icon :icon="SVG_PATH_STAR" size="large"/>
-				<origam-svg-icon :icon="SVG_PATH_STAR" size="x-large"/>
-			</div>
-		</Variant>
-
-		<Variant title="Numeric size override">
-			<div style="display:flex;gap:16px;align-items:center;">
-				<origam-svg-icon :icon="SVG_PATH_HEART" :size="16"/>
-				<origam-svg-icon :icon="SVG_PATH_HEART" :size="24"/>
-				<origam-svg-icon :icon="SVG_PATH_HEART" :size="40"/>
-				<origam-svg-icon :icon="SVG_PATH_HEART" :size="64"/>
-			</div>
-		</Variant>
-
+		<!--
+			Playground — first by convention. OrigamSvgIcon renders an inline
+			SVG from a path string, array of paths, or opacity tuples.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
@@ -81,6 +23,73 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
 				<HstSelect v-model="state.tag"  title="tag"  :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — icon (single path)"
+		>
+			<origam-svg-icon :icon="SVG_PATH_HEART"/>
+		</Variant>
+
+		<Variant
+				title="Prop — icon (multi-path array)"
+		>
+			<origam-svg-icon :icon="SVG_PATHS_MULTI"/>
+		</Variant>
+
+		<Variant
+				title="Prop — icon (multi-path with opacity tuples)"
+		>
+			<origam-svg-icon :icon="SVG_PATHS_OPACITY"/>
+		</Variant>
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-svg-icon :size="state.size" :icon="SVG_PATH_HEART"/>
+				</div>
+				<div style="display: flex; gap: 16px; align-items: center; margin-top: 16px;">
+					<origam-svg-icon :icon="SVG_PATH_STAR" size="x-small"/>
+					<origam-svg-icon :icon="SVG_PATH_STAR" size="small"/>
+					<origam-svg-icon :icon="SVG_PATH_STAR" size="default"/>
+					<origam-svg-icon :icon="SVG_PATH_STAR" size="large"/>
+					<origam-svg-icon :icon="SVG_PATH_STAR" size="x-large"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — size (numeric override)"
+		>
+			<div style="display: flex; gap: 16px; align-items: center;">
+				<origam-svg-icon :icon="SVG_PATH_HEART" :size="16"/>
+				<origam-svg-icon :icon="SVG_PATH_HEART" :size="24"/>
+				<origam-svg-icon :icon="SVG_PATH_HEART" :size="40"/>
+				<origam-svg-icon :icon="SVG_PATH_HEART" :size="64"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-svg-icon
+						:tag="state.tag"
+						:icon="SVG_PATH_STAR"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
 			</template>
 		</Variant>
 	</Story>

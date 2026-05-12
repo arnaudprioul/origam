@@ -3,68 +3,10 @@
 			group="components"
 			title="Icon/OrigamClassIcon"
 	>
-
-		<Variant
-				title="Icon (class string)"
-				:init-state="() => useStoryInitState<{ icon?: string }>({ icon: MDI_HOME })"
-		>
-			<template #default="{ state }">
-				<origam-class-icon :icon="state.icon"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.icon" title="icon" :options="iconClassList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-class-icon
-						:size="state.size"
-						:icon="MDI_HEART"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-class-icon
-						:tag="state.tag"
-						:icon="MDI_STAR"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="All sizes — side by side">
-			<div style="display:flex;gap:16px;align-items:center;">
-				<origam-class-icon :icon="MDI_COG" size="x-small"/>
-				<origam-class-icon :icon="MDI_COG" size="small"/>
-				<origam-class-icon :icon="MDI_COG" size="default"/>
-				<origam-class-icon :icon="MDI_COG" size="large"/>
-				<origam-class-icon :icon="MDI_COG" size="x-large"/>
-			</div>
-		</Variant>
-
-		<Variant title="Numeric size override">
-			<div style="display:flex;gap:16px;align-items:center;">
-				<origam-class-icon :icon="MDI_BELL" :size="16"/>
-				<origam-class-icon :icon="MDI_BELL" :size="24"/>
-				<origam-class-icon :icon="MDI_BELL" :size="40"/>
-				<origam-class-icon :icon="MDI_BELL" :size="64"/>
-			</div>
-		</Variant>
-
+		<!--
+			Playground — first by convention. OrigamClassIcon is the leaf
+			that applies MDI class strings directly to the DOM element.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
@@ -81,6 +23,65 @@
 				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
 				<HstSelect v-model="state.tag"  title="tag"  :options="tagList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — icon (class string)"
+				:init-state="() => useStoryInitState<{ icon?: string }>({ icon: MDI_HOME })"
+		>
+			<template #default="{ state }">
+				<origam-class-icon :icon="state.icon"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.icon" title="icon" :options="iconClassList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-class-icon :size="state.size" :icon="MDI_HEART"/>
+				</div>
+				<div style="display: flex; gap: 16px; align-items: center; margin-top: 16px;">
+					<origam-class-icon :icon="MDI_COG" size="x-small"/>
+					<origam-class-icon :icon="MDI_COG" size="small"/>
+					<origam-class-icon :icon="MDI_COG" size="default"/>
+					<origam-class-icon :icon="MDI_COG" size="large"/>
+					<origam-class-icon :icon="MDI_COG" size="x-large"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-class-icon
+						:tag="state.tag"
+						:icon="MDI_STAR"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — size (numeric override)">
+			<div style="display: flex; gap: 16px; align-items: center;">
+				<origam-class-icon :icon="MDI_BELL" :size="16"/>
+				<origam-class-icon :icon="MDI_BELL" :size="24"/>
+				<origam-class-icon :icon="MDI_BELL" :size="40"/>
+				<origam-class-icon :icon="MDI_BELL" :size="64"/>
+			</div>
 		</Variant>
 	</Story>
 </template>

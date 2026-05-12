@@ -3,16 +3,38 @@
 			group="components"
 			title="Snackbar/OrigamSnackbar"
 	>
-
-		<Variant title="Default">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-default-host">
-				<origam-btn text="Show snackbar" data-cy="snackbar-default-trigger" @click="defaultOpen = true"/>
-				<origam-snackbar v-model="defaultOpen" text="File saved successfully." data-cy="snackbar-default"/>
-			</div>
+		<!--
+			Playground — first by convention. Exposes every ISnackbarProps knob.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ISnackbarProps>({
+					text: 'Snackbar message',
+					timeout: 5000,
+					multiLine: false,
+					vertical: false,
+					timer: false
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-playground-host">
+					<origam-btn text="Show" data-cy="snackbar-playground-trigger" @click="playgroundOpen = true"/>
+					<origam-snackbar v-model="playgroundOpen" v-bind="state" data-cy="snackbar-playground"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.text"      title="text"/>
+				<HstNumber   v-model="state.timeout"   title="timeout (ms)"/>
+				<HstCheckbox v-model="state.multiLine" title="multiLine"/>
+				<HstCheckbox v-model="state.vertical"  title="vertical"/>
+				<HstCheckbox v-model="state.timer"     title="timer"/>
+			</template>
 		</Variant>
 
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="Location"
+				title="Prop — location"
 				:init-state="() => useStoryInitState<{ location: string }>({ location: 'bottom' })"
 		>
 			<template #default="{ state }">
@@ -47,7 +69,7 @@
 		</Variant>
 
 		<Variant
-				title="Timeout"
+				title="Prop — timeout"
 				:init-state="() => useStoryInitState<{ timeout: number }>({ timeout: 3000 })"
 		>
 			<template #default="{ state }">
@@ -66,14 +88,14 @@
 			</template>
 		</Variant>
 
-		<Variant title="Timer bar">
+		<Variant title="Prop — timer">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-timer-host">
 				<origam-btn text="Show with timer" data-cy="snackbar-timer-trigger" @click="timerOpen = true"/>
 				<origam-snackbar v-model="timerOpen" timer text="Watch the countdown bar." data-cy="snackbar-timer"/>
 			</div>
 		</Variant>
 
-		<Variant title="Multi-line">
+		<Variant title="Prop — multiLine">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-multiline-host">
 				<origam-btn text="Show multi-line" data-cy="snackbar-multiline-trigger" @click="multilineOpen = true"/>
 				<origam-snackbar
@@ -86,7 +108,7 @@
 		</Variant>
 
 		<Variant
-				title="Status"
+				title="Prop — status"
 				:init-state="() => useStoryInitState<{ status?: string }>({ status: 'success' })"
 		>
 			<template #default="{ state }">
@@ -115,6 +137,8 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
 		<Variant title="Slot — action">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-action-host">
 				<origam-btn text="Show with action" data-cy="snackbar-action-trigger" @click="actionOpen = true"/>
@@ -142,6 +166,8 @@
 			</div>
 		</Variant>
 
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-emit-host">
 				<origam-btn text="Show snackbar (watch Events)" data-cy="snackbar-emit-trigger" @click="emitOpen = true"/>
@@ -153,31 +179,6 @@
 				/>
 				<span data-cy="snackbar-emit-state">open={{ emitOpen }}</span>
 			</div>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ISnackbarProps>({
-					text: 'Snackbar message',
-					timeout: 5000,
-					multiLine: false,
-					vertical: false,
-					timer: false
-				})"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-playground-host">
-					<origam-btn text="Show" data-cy="snackbar-playground-trigger" @click="playgroundOpen = true"/>
-					<origam-snackbar v-model="playgroundOpen" v-bind="state" data-cy="snackbar-playground"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.text"      title="text"/>
-				<HstNumber   v-model="state.timeout"   title="timeout (ms)"/>
-				<HstCheckbox v-model="state.multiLine" title="multiLine"/>
-				<HstCheckbox v-model="state.vertical"  title="vertical"/>
-				<HstCheckbox v-model="state.timer"     title="timer"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
@@ -194,7 +195,6 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultOpen = ref(false)
 	const locationOpen = ref(false)
 	const timeoutOpen = ref(false)
 	const timerOpen = ref(false)

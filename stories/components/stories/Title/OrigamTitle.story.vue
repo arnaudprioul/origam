@@ -3,42 +3,9 @@
 			group="components"
 			title="Title/OrigamTitle"
 	>
-
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string, text?: string }>({ tag: 'h1', text: 'OrigamTitle' })"
-		>
-			<template #default="{ state }">
-				<origam-title
-						:tag="state.tag"
-						:text="state.text"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="titleTagList"/>
-				<HstText   v-model="state.text" title="text"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-title v-bind="state" text="OrigamTitle"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<origam-title tag="h2">
-				Welcome <em>back</em>
-			</origam-title>
-		</Variant>
-
+		<!--
+			Playground — first by convention. Exposes every ITitleProps knob.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITitleProps>({
@@ -57,6 +24,45 @@
 				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
 				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string, text?: string }>({ tag: 'h1', text: 'OrigamTitle' })"
+		>
+			<template #default="{ state }">
+				<origam-title
+						:tag="state.tag"
+						:text="state.text"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="titleTagList"/>
+				<HstText   v-model="state.text" title="text"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — color"
+				:init-state="() => useStoryInitState<IColorProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-title v-bind="state" text="OrigamTitle"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-title tag="h2">
+				Welcome <em>back</em>
+			</origam-title>
 		</Variant>
 	</Story>
 </template>

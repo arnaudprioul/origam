@@ -3,33 +3,6 @@
 			group="components"
 			title="Transition/OrigamWindowYTranslate"
 	>
-
-		<Variant title="Default">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-default" @click="toggleDefault = !toggleDefault">Toggle</button>
-					<div class="story-window">
-						<origam-window-y-translate>
-							<div v-if="toggleDefault" class="story-target" data-cy="target-default">Window Y translate</div>
-						</origam-window-y-translate>
-					</div>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<div class="story-window">
-						<origam-window-y-translate disabled>
-							<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation</div>
-						</origam-window-y-translate>
-					</div>
-				</div>
-			</template>
-		</Variant>
-
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITransitionProps>({
@@ -53,6 +26,21 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
+					<div class="story-window">
+						<origam-window-y-translate disabled>
+							<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
+						</origam-window-y-translate>
+					</div>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -66,7 +54,6 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
 </script>

@@ -3,12 +3,38 @@
 			group="components"
 			title="Avatar/OrigamAvatarGroup"
 	>
-		<Variant title="Basic usage">
-			<origam-avatar-group :items="people"/>
+		<!--
+			Playground — first by convention. Exposes every IAvatarGroupProps knob.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IAvatarGroupProps & { size?: TSize }>({
+					items: people,
+					max: 4,
+					direction: 'horizontal',
+					expandOnHover: false,
+					expandOnClick: false,
+					density: undefined,
+					size: 'default'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-avatar-group v-bind="state"/>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber   v-model="state.max"           title="max" :min="1" :max="10"/>
+				<HstSelect   v-model="state.direction"     title="direction" :options="directionList"/>
+				<HstCheckbox v-model="state.expandOnHover" title="expandOnHover"/>
+				<HstCheckbox v-model="state.expandOnClick" title="expandOnClick"/>
+				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
+				<HstSelect   v-model="state.size"          title="size"    :options="sizeList"/>
+			</template>
 		</Variant>
 
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="Direction"
+				title="Prop — direction"
 				:init-state="() => useStoryInitState<{ direction?: TDirection }>({ direction: 'horizontal' })"
 		>
 			<template #default="{ state }">
@@ -22,7 +48,7 @@
 		</Variant>
 
 		<Variant
-				title="Max"
+				title="Prop — max"
 				:init-state="() => useStoryInitState<{ max?: number }>({ max: 3 })"
 		>
 			<template #default="{ state }">
@@ -34,7 +60,7 @@
 		</Variant>
 
 		<Variant
-				title="Expand on hover"
+				title="Prop — expandOnHover"
 				:init-state="() => useStoryInitState<{ expandOnHover?: boolean }>({ expandOnHover: true })"
 		>
 			<template #default="{ state }">
@@ -50,7 +76,7 @@
 		</Variant>
 
 		<Variant
-				title="Expand on click"
+				title="Prop — expandOnClick"
 				:init-state="() => useStoryInitState<{ expandOnClick?: boolean }>({ expandOnClick: true })"
 		>
 			<template #default="{ state }">
@@ -66,7 +92,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({})"
 		>
 			<template #default="{ state }">
@@ -78,7 +104,7 @@
 		</Variant>
 
 		<Variant
-				title="Forwarded props"
+				title="Prop — size, rounded, border (forwarded)"
 				:init-state="() => useStoryInitState<{ size?: TSize, rounded?: boolean, border?: boolean }>({
 					size: 'small',
 					rounded: false,
@@ -99,6 +125,8 @@
 				<HstCheckbox v-model="state.border"  title="border"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — avatar">
 			<origam-avatar-group :items="people" :max="4">
@@ -124,40 +152,20 @@
 			</origam-avatar-group>
 		</Variant>
 
-		<Variant title="Emit — update:active / update:hover">
-			<origam-avatar-group
-					:items="people"
-					:max="3"
-					expand-on-click
-					expand-on-hover
-					@update:active="logEvent('update:active', $event)"
-					@update:hover="logEvent('update:hover', $event)"
-			/>
-		</Variant>
+		<!-- ── Emits ────────────────────────────────────────────────── -->
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IAvatarGroupProps & { size?: TSize }>({
-					items: people,
-					max: 4,
-					direction: 'horizontal',
-					expandOnHover: false,
-					expandOnClick: false,
-					density: undefined,
-					size: 'default'
-				})"
-		>
-			<template #default="{ state }">
-				<origam-avatar-group v-bind="state"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber   v-model="state.max"           title="max" :min="1" :max="10"/>
-				<HstSelect   v-model="state.direction"     title="direction" :options="directionList"/>
-				<HstCheckbox v-model="state.expandOnHover" title="expandOnHover"/>
-				<HstCheckbox v-model="state.expandOnClick" title="expandOnClick"/>
-				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
-				<HstSelect   v-model="state.size"          title="size"    :options="sizeList"/>
-			</template>
+		<Variant title="Emit — update:active / update:hover">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-avatar-group
+						:items="people"
+						:max="3"
+						expand-on-click
+						expand-on-hover
+						@update:active="logEvent('update:active', $event)"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">Click or hover — watch the Events panel.</p>
+			</div>
 		</Variant>
 	</Story>
 </template>

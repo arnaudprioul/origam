@@ -3,43 +3,6 @@
 			group="components"
 			title="Transition/OrigamSlideX"
 	>
-
-		<Variant title="Default">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-default" @click="toggleDefault = !toggleDefault">Toggle</button>
-					<origam-slide-x>
-						<div v-if="toggleDefault" class="story-target" data-cy="target-default">Slide-X</div>
-					</origam-slide-x>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<origam-slide-x disabled>
-						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation</div>
-					</origam-slide-x>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Group">
-			<template #default>
-				<div class="story-shell">
-					<div style="display: flex; gap: 8px;">
-						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
-						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
-					</div>
-					<origam-slide-x group>
-						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Item {{ item }}</div>
-					</origam-slide-x>
-				</div>
-			</template>
-		</Variant>
-
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITransitionProps>({
@@ -65,6 +28,33 @@
 				<HstCheckbox v-model="state.group"    title="group"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
+					<origam-slide-x disabled>
+						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
+					</origam-slide-x>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — group (transition-group)">
+			<template #default>
+				<div class="story-shell">
+					<div style="display: flex; gap: 8px;">
+						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
+						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
+					</div>
+					<origam-slide-x group>
+						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Item {{ item }}</div>
+					</origam-slide-x>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -78,7 +68,6 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
 	const groupItems = ref([1, 2])

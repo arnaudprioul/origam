@@ -3,94 +3,9 @@
 			group="components"
 			title="Messages/OrigamMessages"
 	>
-
-		<Variant title="Default">
-			<origam-messages
-					:messages="['This field is required.']"
-					data-cy="messages-default"
-			/>
-		</Variant>
-
-		<Variant title="Multiple">
-			<origam-messages
-					:messages="['Too short.', 'Must contain a number.']"
-					data-cy="messages-multiple"
-			/>
-		</Variant>
-
-		<Variant
-				title="Active"
-				:init-state="() => useStoryInitState<{ active: boolean }>({ active: false })"
-		>
-			<template #default="{ state }">
-				<origam-messages
-						:active="state.active"
-						:messages="['Active = ' + state.active]"
-						data-cy="messages-active"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active" title="active"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<{ color?: string }>({ color: 'danger' })"
-		>
-			<template #default="{ state }">
-				<origam-messages
-						:color="state.color"
-						:messages="['Invalid value.']"
-						data-cy="messages-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-messages
-						:density="state.density"
-						:messages="['Density message']"
-						data-cy="messages-density"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<origam-messages
-					:messages="['Custom rendered message']"
-					data-cy="messages-slot-default"
-			>
-				<template #default="{ message }">
-					<span class="custom-message" data-cy="messages-slot-custom">{{ message }}</span>
-				</template>
-			</origam-messages>
-		</Variant>
-
-		<Variant title="Dynamic">
-			<div class="story-shell" data-cy="messages-dynamic-shell">
-				<origam-messages
-						active
-						:messages="dynamicMessages"
-						data-cy="messages-dynamic"
-				/>
-				<div style="display:flex; gap: 8px;">
-					<origam-btn size="small" text="Add" data-cy="messages-dynamic-add" @click="addMessage"/>
-					<origam-btn size="small" text="Clear" data-cy="messages-dynamic-clear" @click="dynamicMessages = []"/>
-				</div>
-			</div>
-		</Variant>
-
+		<!--
+			Playground — first by convention. Exposes every IMessagesProps knob.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IMessagesProps>({
@@ -109,6 +24,85 @@
 				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
 				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — active"
+				:init-state="() => useStoryInitState<{ active: boolean }>({ active: false })"
+		>
+			<template #default="{ state }">
+				<origam-messages
+						:active="state.active"
+						:messages="['Active = ' + state.active]"
+						data-cy="messages-active"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.active" title="active"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — color"
+				:init-state="() => useStoryInitState<{ color?: string }>({ color: 'danger' })"
+		>
+			<template #default="{ state }">
+				<origam-messages
+						:color="state.color"
+						:messages="['Invalid value.']"
+						data-cy="messages-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<origam-messages
+						:density="state.density"
+						:messages="['Density message']"
+						data-cy="messages-density"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default (custom render)">
+			<origam-messages
+					:messages="['Custom rendered message']"
+					data-cy="messages-slot-default"
+			>
+				<template #default="{ message }">
+					<span class="custom-message" data-cy="messages-slot-custom">{{ message }}</span>
+				</template>
+			</origam-messages>
+		</Variant>
+
+		<!-- ── Functional ───────────────────────────────────────────── -->
+
+		<Variant title="Dynamic (append & clear)">
+			<div class="story-shell" data-cy="messages-dynamic-shell">
+				<origam-messages
+						active
+						:messages="dynamicMessages"
+						data-cy="messages-dynamic"
+				/>
+				<div style="display:flex; gap: 8px;">
+					<origam-btn size="small" text="Add"   data-cy="messages-dynamic-add"   @click="addMessage"/>
+					<origam-btn size="small" text="Clear" data-cy="messages-dynamic-clear" @click="dynamicMessages = []"/>
+				</div>
+			</div>
 		</Variant>
 	</Story>
 </template>

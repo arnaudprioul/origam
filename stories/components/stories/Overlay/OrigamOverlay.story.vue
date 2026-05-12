@@ -3,36 +3,59 @@
 			group="components"
 			title="Overlay/OrigamOverlay"
 	>
-		<Variant title="Default">
-			<div class="story-host" data-cy="overlay-default-host">
-				<origam-overlay v-model="defaultOpen">
-					<template #activator="{ props: activator }">
-						<origam-btn
-								v-bind="activator"
-								text="Open overlay"
-								data-cy="overlay-default-activator"
-						/>
-					</template>
-
-					<origam-sheet
-							rounded
-							elevation="8"
-							style="padding: 24px;"
-							data-cy="overlay-default-content"
-					>
-						Hello from the overlay.
-						<origam-btn
-								text="Close"
-								data-cy="overlay-default-close"
-								@click="defaultOpen = false"
-						/>
-					</origam-sheet>
-				</origam-overlay>
-			</div>
+		<!--
+			Playground — first by convention. Exposes every IOverlayProps knob.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IOverlayProps>({
+					modelValue: false,
+					scrim: true,
+					persistent: false,
+					disabled: false,
+					contained: false,
+					zIndex: 2000
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-host" data-cy="overlay-playground-host">
+					<origam-overlay v-bind="state" v-model="playgroundOpen">
+						<template #activator="{ props: activator }">
+							<origam-btn
+									v-bind="activator"
+									text="Open playground"
+									data-cy="overlay-playground-activator"
+							/>
+						</template>
+						<origam-sheet
+								rounded
+								elevation="8"
+								style="padding: 24px;"
+								data-cy="overlay-playground-content"
+						>
+							Floating content.
+							<origam-btn
+									text="Close"
+									data-cy="overlay-playground-close"
+									@click="playgroundOpen = false"
+							/>
+						</origam-sheet>
+					</origam-overlay>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.scrim"      title="scrim"/>
+				<HstCheckbox v-model="state.persistent" title="persistent"/>
+				<HstCheckbox v-model="state.disabled"   title="disabled"/>
+				<HstCheckbox v-model="state.contained"  title="contained"/>
+				<HstNumber   v-model="state.zIndex"     title="zIndex"/>
+			</template>
 		</Variant>
 
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="Scrim"
+				title="Prop — scrim"
 				:init-state="() => useStoryInitState<{ scrim: boolean | string }>({ scrim: true })"
 		>
 			<template #default="{ state }">
@@ -71,7 +94,7 @@
 		</Variant>
 
 		<Variant
-				title="Persistent"
+				title="Prop — persistent"
 				:init-state="() => useStoryInitState<{ persistent: boolean }>({ persistent: true })"
 		>
 			<template #default="{ state }">
@@ -109,7 +132,7 @@
 		</Variant>
 
 		<Variant
-				title="Disabled"
+				title="Prop — disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
 		>
 			<template #default="{ state }">
@@ -143,7 +166,7 @@
 		</Variant>
 
 		<Variant
-				title="Contained"
+				title="Prop — contained"
 				:init-state="() => useStoryInitState<{ contained: boolean }>({ contained: true })"
 		>
 			<template #default="{ state }">
@@ -185,7 +208,7 @@
 		</Variant>
 
 		<Variant
-				title="Z-index"
+				title="Prop — zIndex"
 				:init-state="() => useStoryInitState<{ zIndex: number }>({ zIndex: 2000 })"
 		>
 			<template #default="{ state }">
@@ -221,52 +244,6 @@
 				<HstNumber v-model="state.zIndex" title="zIndex"/>
 			</template>
 		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IOverlayProps>({
-					modelValue: false,
-					scrim: true,
-					persistent: false,
-					disabled: false,
-					contained: false,
-					zIndex: 2000
-				})"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="overlay-playground-host">
-					<origam-overlay v-bind="state" v-model="playgroundOpen">
-						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Open playground"
-									data-cy="overlay-playground-activator"
-							/>
-						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-playground-content"
-						>
-							Floating content.
-							<origam-btn
-									text="Close"
-									data-cy="overlay-playground-close"
-									@click="playgroundOpen = false"
-							/>
-						</origam-sheet>
-					</origam-overlay>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.scrim" title="scrim"/>
-				<HstCheckbox v-model="state.persistent" title="persistent"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.contained" title="contained"/>
-				<HstNumber v-model="state.zIndex" title="zIndex"/>
-			</template>
-		</Variant>
 	</Story>
 </template>
 
@@ -279,7 +256,6 @@
 	import type { IOverlayProps } from '@origam/interfaces'
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultOpen = ref(false)
 	const scrimOpen = ref(false)
 	const persistentOpen = ref(false)
 	const disabledOpen = ref(false)

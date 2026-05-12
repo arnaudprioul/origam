@@ -3,22 +3,57 @@
 			group="components"
 			title="VirtualScroll/OrigamVirtualScrollItem"
 	>
-
-		<Variant title="Default">
-			<div class="story-shell" data-cy="vsi-default">
+		<!--
+			Playground — first by convention.
+			OrigamVirtualScrollItem is a measurement sentinel: it observes
+			the content-box height of whatever it renders and emits
+			`update:height` to the parent VirtualScroll. The Playground
+			shows the live height readout.
+		-->
+		<Variant title="Playground">
+			<div class="story-shell" data-cy="vsi-playground">
 				<origam-virtual-scroll-item
 						class="story-row"
-						data-cy="vsi-default-host"
-						@update:height="onHeight('default', $event)"
+						data-cy="vsi-playground-host"
+						@update:height="onHeight('playground', $event)"
 				>
 					<div class="story-content">Single item — content-box height is observed</div>
 				</origam-virtual-scroll-item>
-				<div class="story-status" data-cy="vsi-default-status">Last height: <strong>{{ heights.default ?? 'pending' }}</strong></div>
+				<div class="story-status" data-cy="vsi-playground-status">
+					Last height: <strong>{{ heights.playground ?? 'pending' }}</strong>
+				</div>
 			</div>
 		</Variant>
 
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="Dynamic height"
+				title="Prop — renderless (consumer owns host element)"
+		>
+			<div class="story-shell" data-cy="vsi-renderless">
+				<origam-virtual-scroll-item
+						renderless
+						@update:height="onHeight('renderless', $event)"
+				>
+					<template #renderless="{ itemRef }">
+						<article
+								:ref="itemRef"
+								class="story-card"
+								data-cy="vsi-renderless-host"
+						>
+							<h4>Renderless</h4>
+							<p>The host element is owned by the consumer; the item still emits <code>update:height</code>.</p>
+						</article>
+					</template>
+				</origam-virtual-scroll-item>
+				<div class="story-status" data-cy="vsi-renderless-status">Last height: <strong>{{ heights.renderless ?? 'pending' }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Functional ───────────────────────────────────────────── -->
+
+		<Variant
+				title="Dynamic height (content grows)"
 				:init-state="() => useStoryInitState<{ rows: number }>({ rows: 1 })"
 		>
 			<template #default="{ state }">
@@ -42,28 +77,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Renderless">
-			<div class="story-shell" data-cy="vsi-renderless">
-				<origam-virtual-scroll-item
-						renderless
-						@update:height="onHeight('renderless', $event)"
-				>
-					<template #renderless="{ itemRef }">
-						<article
-								:ref="itemRef"
-								class="story-card"
-								data-cy="vsi-renderless-host"
-						>
-							<h4>Renderless</h4>
-							<p>The host element is owned by the consumer; the item still emits <code>update:height</code>.</p>
-						</article>
-					</template>
-				</origam-virtual-scroll-item>
-				<div class="story-status" data-cy="vsi-renderless-status">Last height: <strong>{{ heights.renderless ?? 'pending' }}</strong></div>
-			</div>
-		</Variant>
-
-		<Variant title="Inside a list">
+		<Variant title="Inside a list (6 items)">
 			<div class="story-shell" data-cy="vsi-list">
 				<origam-virtual-scroll-item
 						v-for="n in 6"
@@ -89,7 +103,7 @@
 	import { useStoryInitState } from '@stories/composables'
 
 	const heights = reactive<Record<string, number | undefined>>({
-		default:    undefined,
+		playground: undefined,
 		dynamic:    undefined,
 		renderless: undefined,
 	})

@@ -3,15 +3,42 @@
 			group="components"
 			title="Skeleton/OrigamSkeleton"
 	>
-		<Variant title="Default">
-			<origam-skeleton
-					variant="text"
-					width="200"
-					data-cy="skeleton-default"
-			/>
+		<!--
+			Playground — first by convention. Exposes every ISkeletonProps knob.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ISkeletonProps>({
+					variant: 'text',
+					width: '200',
+					loading: true,
+					pulse: true,
+					rounded: undefined,
+					bgColor: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-skeleton
+						v-bind="state"
+						data-cy="skeleton-playground"
+				>
+					<p>Content loaded</p>
+				</origam-skeleton>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.variant" title="variant"  :options="variantList"/>
+				<HstText     v-model="state.width"   title="width"/>
+				<HstText     v-model="state.height"  title="height"/>
+				<HstCheckbox v-model="state.loading" title="loading"/>
+				<HstCheckbox v-model="state.pulse"   title="pulse"/>
+				<HstSelect   v-model="state.rounded" title="rounded"  :options="roundedList"/>
+				<HstSelect   v-model="state.bgColor" title="bgColor"  :options="intentList"/>
+			</template>
 		</Variant>
 
-		<Variant title="Variants">
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — variant">
 			<div style="display: flex; flex-direction: column; gap: 20px; max-width: 320px; padding: 16px;">
 				<div>
 					<p style="font-size: 12px; color: var(--origam-color-text-secondary, #666); margin-bottom: 6px;">text</p>
@@ -56,7 +83,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -68,31 +95,11 @@
 							height="48px"
 							data-cy="skeleton-color"
 					/>
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-						<origam-skeleton
-								bg-color="primary"
-								variant="text"
-								width="200"
-								data-cy="skeleton-color-primary"
-						/>
-						<origam-skeleton
-								bg-color="success"
-								variant="text"
-								width="200"
-								data-cy="skeleton-color-success"
-						/>
-						<origam-skeleton
-								bg-color="warning"
-								variant="text"
-								width="200"
-								data-cy="skeleton-color-warning"
-						/>
-						<origam-skeleton
-								bg-color="danger"
-								variant="text"
-								width="200"
-								data-cy="skeleton-color-danger"
-						/>
+					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+						<origam-skeleton bg-color="primary" variant="text" width="200" data-cy="skeleton-color-primary"/>
+						<origam-skeleton bg-color="success" variant="text" width="200" data-cy="skeleton-color-success"/>
+						<origam-skeleton bg-color="warning" variant="text" width="200" data-cy="skeleton-color-warning"/>
+						<origam-skeleton bg-color="danger"  variant="text" width="200" data-cy="skeleton-color-danger"/>
 					</div>
 				</div>
 			</template>
@@ -107,7 +114,7 @@
 		</Variant>
 
 		<Variant
-				title="Size / Density / Rounded"
+				title="Prop — size & rounded"
 				:init-state="() => useStoryInitState<{ size?: TSize; rounded?: TRounded | boolean }>({ size: 'default' })"
 		>
 			<template #default="{ state }">
@@ -117,7 +124,7 @@
 						variant="rectangular"
 						width="120"
 						height="120"
-						data-cy="skeleton-size-density-rounded"
+						data-cy="skeleton-size-rounded"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -127,7 +134,7 @@
 		</Variant>
 
 		<Variant
-				title="Loading toggle"
+				title="Prop — loading"
 				:init-state="() => useStoryInitState<{ loading: boolean }>({ loading: true })"
 		>
 			<template #default="{ state }">
@@ -146,7 +153,7 @@
 		</Variant>
 
 		<Variant
-				title="Pulse animation"
+				title="Prop — pulse"
 				:init-state="() => useStoryInitState<{ pulse: boolean }>({ pulse: true })"
 		>
 			<template #default="{ state }">
@@ -159,36 +166,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstCheckbox v-model="state.pulse" title="pulse"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ISkeletonProps>({
-					variant: 'text',
-					width: '200',
-					loading: true,
-					pulse: true,
-					rounded: undefined,
-					bgColor: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<origam-skeleton
-						v-bind="state"
-						data-cy="skeleton-playground"
-				>
-					<p>Content loaded</p>
-				</origam-skeleton>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.variant" title="variant"  :options="variantList"/>
-				<HstText     v-model="state.width"   title="width"/>
-				<HstText     v-model="state.height"  title="height"/>
-				<HstCheckbox v-model="state.loading" title="loading"/>
-				<HstCheckbox v-model="state.pulse"   title="pulse"/>
-				<HstSelect   v-model="state.rounded" title="rounded"  :options="roundedList"/>
-				<HstSelect   v-model="state.bgColor" title="bgColor"  :options="intentList"/>
 			</template>
 		</Variant>
 	</Story>

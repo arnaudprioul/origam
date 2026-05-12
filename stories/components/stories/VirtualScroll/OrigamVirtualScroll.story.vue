@@ -3,119 +3,9 @@
 			group="components"
 			title="VirtualScroll/OrigamVirtualScroll"
 	>
-
-		<Variant title="Default">
-			<div class="story-shell" data-cy="vs-default">
-				<origam-virtual-scroll
-						:items="rows1k"
-						:item-height="48"
-						height="320"
-						class="story-host"
-						data-cy="vs-default-host"
-				>
-					<template #item="{ item, index }">
-						<div class="story-row" :data-cy="`row-default-${index}`">{{ item.label }}</div>
-					</template>
-				</origam-virtual-scroll>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Item height"
-				:init-state="() => useStoryInitState<{ itemHeight: number }>({ itemHeight: 32 })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="vs-item-height">
-					<origam-virtual-scroll
-							:items="rows500"
-							:item-height="state.itemHeight"
-							height="320"
-							class="story-host"
-							data-cy="vs-item-height-host"
-					>
-						<template #item="{ item, index }">
-							<div
-									class="story-row"
-									:style="{ height: `${state.itemHeight}px`, minHeight: `${state.itemHeight}px`, lineHeight: `${state.itemHeight}px` }"
-									:data-cy="`row-item-height-${index}`"
-							>{{ item.label }}</div>
-						</template>
-					</origam-virtual-scroll>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.itemHeight" title="itemHeight (px)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Height"
-				:init-state="() => useStoryInitState<{ height: number }>({ height: 240 })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="vs-height">
-					<origam-virtual-scroll
-							:items="rows500"
-							:item-height="48"
-							:height="state.height"
-							class="story-host"
-							data-cy="vs-height-host"
-					>
-						<template #item="{ item, index }">
-							<div class="story-row" :data-cy="`row-height-${index}`">{{ item.label }}</div>
-						</template>
-					</origam-virtual-scroll>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.height" title="height (px)"/>
-			</template>
-		</Variant>
-
-		<Variant title="scrollToIndex">
-			<div class="story-shell" data-cy="vs-scroll-to-index">
-				<origam-virtual-scroll
-						ref="vsRef"
-						:items="rows1k"
-						:item-height="48"
-						height="320"
-						class="story-host"
-						data-cy="vs-scroll-to-index-host"
-				>
-					<template #item="{ item, index }">
-						<div class="story-row" :data-cy="`row-sti-${index}`">{{ item.label }}</div>
-					</template>
-				</origam-virtual-scroll>
-				<div class="story-actions">
-					<button class="story-btn" data-cy="sti-jump-0"   @click="jumpTo(0)">Top</button>
-					<button class="story-btn" data-cy="sti-jump-100" @click="jumpTo(100)">Index 100</button>
-					<button class="story-btn" data-cy="sti-jump-500" @click="jumpTo(500)">Index 500</button>
-					<button class="story-btn" data-cy="sti-jump-999" @click="jumpTo(999)">End</button>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Dynamic items">
-			<div class="story-shell" data-cy="vs-dynamic">
-				<origam-virtual-scroll
-						:items="dynamicRows"
-						:item-height="48"
-						height="240"
-						class="story-host"
-						data-cy="vs-dynamic-host"
-				>
-					<template #item="{ item, index }">
-						<div class="story-row" :data-cy="`row-dynamic-${index}`">{{ item.label }}</div>
-					</template>
-				</origam-virtual-scroll>
-				<div class="story-actions">
-					<button class="story-btn" data-cy="dynamic-add"     @click="appendRow">Append row</button>
-					<button class="story-btn" data-cy="dynamic-replace" @click="replaceRows">Replace</button>
-				</div>
-				<div class="story-status" data-cy="dynamic-count">Rows: <strong>{{ dynamicRows.length }}</strong></div>
-			</div>
-		</Variant>
-
+		<!--
+			Playground — first by convention. Exposes every prop knob.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ itemHeight: number, height: number, count: number }>({ itemHeight: 48, height: 320, count: 200 })"
@@ -144,6 +34,106 @@
 				<HstNumber v-model="state.height"     title="height (px)"/>
 				<HstNumber v-model="state.count"      title="rows"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — itemHeight"
+				:init-state="() => useStoryInitState<{ itemHeight: number }>({ itemHeight: 32 })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="vs-item-height">
+					<origam-virtual-scroll
+							:items="rows500"
+							:item-height="state.itemHeight"
+							height="320"
+							class="story-host"
+							data-cy="vs-item-height-host"
+					>
+						<template #item="{ item, index }">
+							<div
+									class="story-row"
+									:style="{ height: `${state.itemHeight}px`, minHeight: `${state.itemHeight}px`, lineHeight: `${state.itemHeight}px` }"
+									:data-cy="`row-item-height-${index}`"
+							>{{ item.label }}</div>
+						</template>
+					</origam-virtual-scroll>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber v-model="state.itemHeight" title="itemHeight (px)"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — height"
+				:init-state="() => useStoryInitState<{ height: number }>({ height: 240 })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="vs-height">
+					<origam-virtual-scroll
+							:items="rows500"
+							:item-height="48"
+							:height="state.height"
+							class="story-host"
+							data-cy="vs-height-host"
+					>
+						<template #item="{ item, index }">
+							<div class="story-row" :data-cy="`row-height-${index}`">{{ item.label }}</div>
+						</template>
+					</origam-virtual-scroll>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber v-model="state.height" title="height (px)"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — scrollToIndex (method)">
+			<div class="story-shell" data-cy="vs-scroll-to-index">
+				<origam-virtual-scroll
+						ref="vsRef"
+						:items="rows1k"
+						:item-height="48"
+						height="320"
+						class="story-host"
+						data-cy="vs-scroll-to-index-host"
+				>
+					<template #item="{ item, index }">
+						<div class="story-row" :data-cy="`row-sti-${index}`">{{ item.label }}</div>
+					</template>
+				</origam-virtual-scroll>
+				<div class="story-actions">
+					<button class="story-btn" data-cy="sti-jump-0"   @click="jumpTo(0)">Top</button>
+					<button class="story-btn" data-cy="sti-jump-100" @click="jumpTo(100)">Index 100</button>
+					<button class="story-btn" data-cy="sti-jump-500" @click="jumpTo(500)">Index 500</button>
+					<button class="story-btn" data-cy="sti-jump-999" @click="jumpTo(999)">End</button>
+				</div>
+			</div>
+		</Variant>
+
+		<!-- ── Functional ───────────────────────────────────────────── -->
+
+		<Variant title="Dynamic items (append & replace)">
+			<div class="story-shell" data-cy="vs-dynamic">
+				<origam-virtual-scroll
+						:items="dynamicRows"
+						:item-height="48"
+						height="240"
+						class="story-host"
+						data-cy="vs-dynamic-host"
+				>
+					<template #item="{ item, index }">
+						<div class="story-row" :data-cy="`row-dynamic-${index}`">{{ item.label }}</div>
+					</template>
+				</origam-virtual-scroll>
+				<div class="story-actions">
+					<button class="story-btn" data-cy="dynamic-add"     @click="appendRow">Append row</button>
+					<button class="story-btn" data-cy="dynamic-replace" @click="replaceRows">Replace</button>
+				</div>
+				<div class="story-status" data-cy="dynamic-count">Rows: <strong>{{ dynamicRows.length }}</strong></div>
+			</div>
 		</Variant>
 	</Story>
 </template>

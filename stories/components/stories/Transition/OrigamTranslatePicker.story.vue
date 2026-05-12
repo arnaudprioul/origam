@@ -3,29 +3,6 @@
 			group="components"
 			title="Transition/OrigamTranslatePicker"
 	>
-
-		<Variant title="Default">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-default" @click="toggleDefault = !toggleDefault">Toggle</button>
-					<origam-translate-picker>
-						<div v-if="toggleDefault" :key="`a-${toggleDefault}`" class="story-target" data-cy="target-default">Translate picker</div>
-					</origam-translate-picker>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<origam-translate-picker disabled>
-						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation</div>
-					</origam-translate-picker>
-				</div>
-			</template>
-		</Variant>
-
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITransitionProps>({
@@ -50,6 +27,19 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
+					<origam-translate-picker disabled>
+						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
+					</origam-translate-picker>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -63,7 +53,6 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
 </script>
