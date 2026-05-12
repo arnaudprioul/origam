@@ -5,6 +5,63 @@
 	>
 
 		<!--
+			Push vs overlay — side-by-side comparison.
+
+			The drawer doesn't ship a separate `push` prop. The
+			push / overlay behaviour is driven by `permanent`
+			(or its inverse, `temporary`):
+
+			  • `permanent: true` (or modelValue=true and no
+			    `temporary`) → drawer is registered with useLayoutItem,
+			    which reserves space in the layout grid. The toolbar /
+			    main / footer inherit `--origam-layout---position-*`
+			    CSS vars and offset themselves → PUSH.
+			  • `temporary: true` → drawer overlays the layout with
+			    its own z-index + scrim, no space reserved → OVERLAY.
+
+			Toggle the checkbox to flip mode on the same App shell.
+		-->
+		<Variant
+				title="Push vs overlay (toggle permanent)"
+				:init-state="() => useStoryInitState<{ pushMode: boolean }>({ pushMode: true })"
+		>
+			<template #default="{ state }">
+				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="drawer-push-toggle">
+					<origam-app :full-height="false">
+						<origam-toolbar title="Push vs overlay">
+							<template #prepend>
+								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Menu"/>
+							</template>
+						</origam-toolbar>
+						<origam-drawer
+								:permanent="state.pushMode"
+								:temporary="!state.pushMode"
+								:model-value="true"
+								data-cy="drawer-push-toggle-nav"
+						>
+							<div style="padding: 16px;">
+								<p style="font-weight: 700;">Drawer</p>
+								<p>Mode: <b>{{ state.pushMode ? 'permanent (push)' : 'temporary (overlay)' }}</b></p>
+							</div>
+						</origam-drawer>
+						<origam-main>
+							<p>Main content.</p>
+							<p>In <b>push</b> mode the drawer reserves its width in the
+								layout grid and the toolbar / main offset to the right
+								via the inherited <code>--origam-layout---position-*</code>
+								CSS vars.</p>
+							<p>In <b>overlay</b> mode the drawer floats on top with
+								its own z-index + scrim — toolbar / main are NOT pushed.</p>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.pushMode" title="pushMode (permanent vs temporary)"/>
+			</template>
+		</Variant>
+
+		<!--
 			Real-world app shell: AppBar on top, permanent drawer on
 			the left, main content + footer below. The drawer's
 			`permanent` mode + useLayoutItem registration reserves
@@ -14,9 +71,19 @@
 			get PUSHED past the drawer instead of being painted over.
 		-->
 		<Variant title="App shell — drawer pushes toolbar + main + footer">
+			<!--
+				Uses `<origam-app-bar>` (NOT `<origam-toolbar>`) so the
+				bar registers itself as a layout item and reserves
+				its height at the top of the layout grid. The drawer,
+				registered with a higher default `order`, then takes
+				the LEFT lane EXCLUDING the top — so it naturally
+				starts BELOW the AppBar. To get drawer-full-height
+				(clipping the AppBar from the left), set
+				`:order="0"` on the drawer.
+			-->
 			<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="drawer-app-shell">
 				<origam-app :full-height="false">
-					<origam-toolbar title="My App" data-cy="drawer-app-shell-toolbar">
+					<origam-app-bar title="My App" data-cy="drawer-app-shell-toolbar">
 						<template #prepend>
 							<origam-btn :icon="MDI_ICONS.MENU" aria-label="Menu"/>
 						</template>
@@ -24,7 +91,7 @@
 							<origam-btn :icon="MDI_ICONS.MAGNIFY" aria-label="Search"/>
 							<origam-btn :icon="MDI_ICONS.DOTS_VERTICAL" aria-label="More"/>
 						</template>
-					</origam-toolbar>
+					</origam-app-bar>
 					<origam-drawer permanent data-cy="drawer-app-shell-nav">
 						<div style="padding: 16px; font-weight: 700; border-bottom: 1px solid var(--origam-color-border-subtle, #ddd);">
 							Navigation
@@ -35,7 +102,7 @@
 							<span>· Settings</span>
 						</div>
 					</origam-drawer>
-					<origam-main style="padding: 16px;" data-cy="drawer-app-shell-main">
+					<origam-main data-cy="drawer-app-shell-main">
 						<p>Main content area. Notice it doesn't slide under the drawer.</p>
 					</origam-main>
 				</origam-app>
@@ -76,7 +143,7 @@
 								<origam-btn text="Close" data-cy="drawer-temporary-close" @click="state.open = false"/>
 							</div>
 						</origam-drawer>
-						<origam-main style="padding: 16px;">
+						<origam-main>
 							<p>Main content — drawer slides in from the left.</p>
 						</origam-main>
 					</origam-app>
@@ -111,7 +178,7 @@
 								<origam-btn :icon="MDI_ICONS.HELP_CIRCLE" aria-label="Help"/>
 							</div>
 						</origam-drawer>
-						<origam-main style="padding: 16px;">
+						<origam-main>
 							Main content — toggle the rail above.
 						</origam-main>
 					</origam-app>
@@ -142,7 +209,7 @@
 						>
 							<div style="padding: 16px;">location: <b>{{ state.location }}</b></div>
 						</origam-drawer>
-						<origam-main style="padding: 16px;">
+						<origam-main>
 							Main content. Try every location.
 						</origam-main>
 					</origam-app>
@@ -190,7 +257,7 @@
 							</div>
 						</template>
 					</origam-drawer>
-					<origam-main style="padding: 16px;">
+					<origam-main>
 						Main content
 					</origam-main>
 				</origam-app>
@@ -229,7 +296,7 @@
 								<origam-btn text="Close" @click="state.open = false"/>
 							</div>
 						</origam-drawer>
-						<origam-main style="padding: 16px;">
+						<origam-main>
 							<p>Click ≡ then change the transition.</p>
 						</origam-main>
 					</origam-app>
@@ -293,7 +360,7 @@
 						>
 							<div style="padding: 16px;">Drawer content</div>
 						</origam-drawer>
-						<origam-main style="padding: 16px;">
+						<origam-main>
 							Main content area
 						</origam-main>
 					</origam-app>
@@ -329,6 +396,7 @@
 	import { ref } from 'vue'
 	import {
 		OrigamApp,
+		OrigamAppBar,
 		OrigamBtn,
 		OrigamDrawer,
 		OrigamFade,

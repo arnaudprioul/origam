@@ -38,17 +38,24 @@
 	 * Composables
 	 ********************************************************/
 
-	const {layoutClasses, layoutRef: origamLayoutRef, getLayoutItem, items, layoutId} = useCreateLayout(props)
+	const {layoutClasses, layoutStyles, layoutRef: origamLayoutRef, getLayoutItem, items, layoutId} = useCreateLayout(props)
 
 	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
-	 * Root element classes and inline styles.
+	 * Root element classes and inline styles. `layoutStyles` from
+	 * useCreateLayout emits the `--origam-layout---position-{left,right,
+	 * top,bottom}` CSS custom properties that reflect the reserved-space
+	 * each registered layout item (drawer, bottom nav, system bar, …)
+	 * carved out of the layout. Descendants (toolbar, main, footer)
+	 * inherit them and offset themselves accordingly — that's the "push
+	 * content" behaviour. Without binding them onto the root, drawers
+	 * register their width but main / toolbar never receive the offset.
 	 ********************************************************/
 
 	const layStyles = computed(() => {
-		return [props.style] as StyleValue
+		return [layoutStyles.value, props.style] as StyleValue
 	})
 	const layClasses = computed(() => {
 		return [layoutClasses.value, props.class]

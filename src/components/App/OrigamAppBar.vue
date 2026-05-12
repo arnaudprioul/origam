@@ -178,10 +178,15 @@
 			scrollBehavior.value.elevate &&
 			(scrollBehavior.value.inverted ? currentScroll.value > 0 : currentScroll.value === 0)
 	))
+	// AppBar default height matches the toolbar's `--origam-toolbar---height`
+	// token (56 px). If the consumer overrides via `:height="…"` the prop
+	// wins. Without a default the layout reserved 0 px at the top → drawer /
+	// main covered the AppBar (user report: drawer overlaps the bar instead
+	// of starting BELOW it).
 	const height = computed(() => {
 		if (scrollBehavior.value.hide && scrollBehavior.value.inverted) return 0
 
-		return props.height ?? 0
+		return props.height ?? 56
 	})
 
 	/*********************************************************
@@ -193,7 +198,17 @@
 	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
-		order: computed(() => int(props.order as string)),
+		// `int(undefined as string)` is NaN, which silently broke the
+		// layer-chain sort in useCreateLayout (drawers ended up before
+		// the AppBar, causing the drawer to extend full-height
+		// instead of starting BELOW the bar). Fall back to 0 so AppBar
+		// reserves its top space FIRST, then drawers / side rails
+		// register after it (their own order defaults to a UID-based
+		// large number).
+		order: computed(() => {
+			const parsed = int(props.order as string)
+			return Number.isFinite(parsed) ? parsed : 0
+		}),
 		position: toRef(props, 'location'),
 		layoutSize: height,
 		elementSize: shallowRef(undefined),

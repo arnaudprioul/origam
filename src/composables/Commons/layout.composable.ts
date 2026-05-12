@@ -334,18 +334,20 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
         // Expose the layout's reserved-space (drawer width, toolbar height,
         // …) via CSS custom properties on the LAYOUT ROOT so every
         // descendant inherits them (toolbar, main, footer, snackbar, …).
-        // Consumers can then offset themselves with:
-        //     padding-inline-start: var(--origam-layout---position-left)
-        // without needing to read mainStyles directly.
-        return {
+        // Bracket-assignment is used for the `--*` custom properties
+        // because the surrounding object literal cast to `StyleValue`
+        // erases unknown keys at the Vue level otherwise (CSSProperties
+        // typing only allows camelCase known props).
+        const out: Record<string, unknown> = {
             'z-index': parentLayout ? rootZIndex.value : undefined,
             'position': parentLayout ? 'relative' as const : undefined,
             'overflow': parentLayout ? 'hidden' : undefined,
-            '--origam-layout---position-left': left,
-            '--origam-layout---position-right': right,
-            '--origam-layout---position-top': top,
-            '--origam-layout---position-bottom': bottom,
-        } as StyleValue
+        }
+        out['--origam-layout---position-left'] = left
+        out['--origam-layout---position-right'] = right
+        out['--origam-layout---position-top'] = top
+        out['--origam-layout---position-bottom'] = bottom
+        return out as StyleValue
     })
 
     return {
