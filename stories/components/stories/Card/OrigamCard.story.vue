@@ -3,133 +3,52 @@
 			group="components"
 			title="Card/OrigamCard"
 	>
-
-		<Variant title="Basic">
-			<div style="padding: 16px; max-width: 400px;">
-				<origam-card
-						data-cy="card-basic"
-						title="Top 10 Australian Beaches"
-						subtitle="Number 10"
-						image="https://picsum.photos/seed/beach/600/200"
-						text="Whitehaven Beach, Whitsunday Island, Whitsunday Islands"
-						rounded
-				>
-					<template #footer>
-						<div style="display: flex; gap: 8px; padding: 12px; justify-content: flex-end;">
-							<origam-btn text="Share" data-cy="card-basic-share"/>
-							<origam-btn color="primary" text="Explore" data-cy="card-basic-explore"/>
-						</div>
-					</template>
-				</origam-card>
-			</div>
+		<!--
+			Playground — first variant by convention. Surfaces every
+			ICardProps knob via the sidebar controls.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ICardProps>({
+					title: 'Card title',
+					subtitle: 'Subtitle',
+					text: 'Body text.',
+					elevation: undefined,
+					flat: false,
+					hover: false,
+					disabled: false,
+					loading: false,
+					rounded: undefined,
+					density: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 420px;">
+					<origam-card v-bind="state" data-cy="card-playground"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.title"     title="title"/>
+				<HstText     v-model="state.subtitle"  title="subtitle"/>
+				<HstText     v-model="state.text"      title="text"/>
+				<HstSelect   v-model="state.elevation" title="elevation"  :options="elevationList"/>
+				<HstSelect   v-model="state.rounded"   title="rounded"    :options="roundedList"/>
+				<HstSelect   v-model="state.density"   title="density"    :options="densityList"/>
+				<HstSelect   v-model="state.color"     title="color"      :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"   title="bgColor"    :options="intentList"/>
+				<HstCheckbox v-model="state.flat"      title="flat"/>
+				<HstCheckbox v-model="state.hover"     title="hover"/>
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
+				<HstCheckbox v-model="state.loading"   title="loading"/>
+				<HstCheckbox v-model="state.border"    title="border"/>
+			</template>
 		</Variant>
 
-		<Variant title="Showcase — Action">
-			<div style="padding: 16px; max-width: 344px;">
-				<origam-card data-cy="card-showcase-action" rounded>
-					<div style="padding: 16px;">
-						<div style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 8px;">Word of the Day</div>
-						<div style="font-size: 2rem; font-weight: 900; margin-bottom: 4px;">benevolent</div>
-						<div style="font-style: italic; opacity: 0.7; margin-bottom: 12px;">adjective</div>
-						<div>well meaning and kindly. <em>"a benevolent smile"</em></div>
-					</div>
-					<template #footer>
-						<div style="display: flex; padding: 8px 12px; justify-content: flex-start;">
-							<origam-btn color="primary" text="Learn More" data-cy="card-showcase-action-cta"/>
-						</div>
-					</template>
-				</origam-card>
-			</div>
-		</Variant>
-
-		<Variant title="Showcase — Profile">
-			<div style="padding: 16px; max-width: 400px;">
-				<origam-card
-						data-cy="card-showcase-profile"
-						title="Evan You"
-						subtitle="Vue Creator"
-						prepend-avatar="https://i.pravatar.cc/64?u=evan"
-						rounded
-				>
-					<div style="padding: 0 16px 12px;">
-						Turns out semicolon-less style is easier and safer in TS because invalid syntax tends to error in fewer cases. Vue is now a TS-first framework.
-					</div>
-					<template #footer>
-						<div style="display: flex; gap: 16px; padding: 12px 16px; opacity: 0.7; font-size: 0.875rem; border-top: 1px solid var(--origam-color-border-subtle);">
-							<span>256 Likes</span>
-							<span>·</span>
-							<span>45 Shares</span>
-						</div>
-					</template>
-				</origam-card>
-			</div>
-		</Variant>
-
-		<Variant title="Showcase — Media">
-			<div style="padding: 16px; max-width: 340px;">
-				<origam-card
-						data-cy="card-showcase-media"
-						title="Evening Sunset"
-						subtitle="Take a walk down the beach"
-						image="https://picsum.photos/seed/sunset/600/200"
-						rounded
-				>
-					<template #footer>
-						<div style="display: flex; padding: 12px; justify-content: flex-end;">
-							<origam-btn
-									color="danger"
-									text="Book Activity"
-									:append-icon="MDI_ICONS.CHEVRON_RIGHT"
-									data-cy="card-showcase-media-cta"
-							/>
-						</div>
-					</template>
-				</origam-card>
-			</div>
-		</Variant>
-
-		<Variant title="Showcase — Info banner">
-			<div style="padding: 16px; max-width: 400px;">
-				<origam-card
-						data-cy="card-showcase-info"
-						title="Welcome to origam"
-						subtitle="The Vue 3 design system"
-						:prepend-icon="MDI_ICONS.INFORMATION_OUTLINE"
-						border
-						rounded
-				>
-					<div style="padding: 0 16px 16px;">
-						origam ships ready-to-use Vue 3 components, design tokens (Style Dictionary), Histoire docs, and Cypress + Playwright tests. CSS-first, JS-fallback. Multi-theme via <code>data-theme</code>.
-					</div>
-				</origam-card>
-			</div>
-		</Variant>
-
-		<Variant title="Showcase — Pricing">
-			<div style="padding: 16px; max-width: 500px;">
-				<origam-card data-cy="card-showcase-pricing" rounded border>
-					<div style="display: flex; align-items: center; gap: 12px; padding: 16px;">
-						<div style="font-size: 2rem;">🎯</div>
-						<div style="flex: 1;">
-							<div style="font-weight: 700;">Set an earnings goal</div>
-							<div style="font-size: 0.875rem; opacity: 0.7;">Earn my first $100</div>
-						</div>
-						<origam-btn color="primary" text="Create Goal" data-cy="card-showcase-pricing-cta"/>
-					</div>
-					<div style="padding: 0 16px 16px;">
-						<div style="font-size: 1.5rem; font-weight: 900; margin-bottom: 8px;">0%</div>
-						<div style="background: var(--origam-color-border-subtle); height: 4px; border-radius: 999px; overflow: hidden; margin-bottom: 8px;">
-							<div style="background: var(--origam-color-action-primary); height: 100%; width: 2%;"></div>
-						</div>
-						<div style="font-size: 0.75rem; opacity: 0.7;">$0 of $100 earned — 7 days left</div>
-					</div>
-				</origam-card>
-			</div>
-		</Variant>
+		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<ICardProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
@@ -155,7 +74,7 @@
 		</Variant>
 
 		<Variant
-				title="Elevation"
+				title="Prop — elevation & flat"
 				:init-state="() => useStoryInitState<{ elevation?: number, flat?: boolean }>({})"
 		>
 			<template #default="{ state }">
@@ -176,8 +95,8 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<ICardProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
@@ -198,8 +117,8 @@
 		</Variant>
 
 		<Variant
-				title="Border"
-				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
+				title="Prop — border"
+				:init-state="() => useStoryInitState<ICardProps>({ border: true })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
@@ -222,8 +141,8 @@
 		</Variant>
 
 		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({})"
+				title="Prop — density"
+				:init-state="() => useStoryInitState<ICardProps>({})"
 		>
 			<template #default="{ state }">
 				<div style="padding: 16px;">
@@ -241,8 +160,8 @@
 		</Variant>
 
 		<Variant
-				title="Header (adjacent)"
-				:init-state="() => useStoryInitState<IAdjacentProps & { title?: string, subtitle?: string }>({
+				title="Prop — title, subtitle & text"
+				:init-state="() => useStoryInitState<ICardProps & { subtitle?: string }>({
 					title: 'Card with icons',
 					subtitle: 'Subtitle here'
 				})"
@@ -257,17 +176,17 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
-				<HstSelect v-model="state.appendIcon" title="appendIcon" :options="iconList"/>
+				<HstSelect v-model="state.prependIcon"   title="prependIcon"       :options="iconList"/>
+				<HstSelect v-model="state.appendIcon"    title="appendIcon"        :options="iconList"/>
 				<HstText   v-model="state.prependAvatar" title="prependAvatar (URL)"/>
-				<HstText   v-model="state.appendAvatar" title="appendAvatar (URL)"/>
-				<HstText   v-model="state.title" title="title"/>
-				<HstText   v-model="state.subtitle" title="subtitle"/>
+				<HstText   v-model="state.appendAvatar"  title="appendAvatar (URL)"/>
+				<HstText   v-model="state.title"         title="title"/>
+				<HstText   v-model="state.subtitle"      title="subtitle"/>
 			</template>
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled, hover & loading"
 				:init-state="() => useStoryInitState<{
 					disabled?: boolean
 					hover?: boolean
@@ -287,14 +206,14 @@
 			</template>
 			<template #controls="{ state }">
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.hover" title="hover"/>
-				<HstCheckbox v-model="state.loading" title="loading (boolean)"/>
-				<HstCheckbox v-model="state.flat" title="flat"/>
+				<HstCheckbox v-model="state.hover"    title="hover"/>
+				<HstCheckbox v-model="state.loading"  title="loading (boolean)"/>
+				<HstCheckbox v-model="state.flat"     title="flat"/>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Image"
+				title="Prop — image"
 				:init-state="() => useStoryInitState<{ image?: string }>({ image: 'https://picsum.photos/600/200' })"
 		>
 			<template #default="{ state }">
@@ -311,6 +230,48 @@
 				<HstText v-model="state.image" title="image (URL)"/>
 			</template>
 		</Variant>
+
+		<Variant
+				title="Prop — loading (interactive)"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'line',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-card
+							:loading="resolveCardLoading(state)"
+							title="Interactive loading card"
+							subtitle="Subtitle"
+							text="Body text for the card demo."
+							image="https://picsum.photos/seed/interactive/400/200"
+							data-cy="card-loading-interactive"
+					/>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeCardLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
 			<div style="padding: 16px;">
@@ -368,160 +329,45 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — click:prepend">
-			<div style="padding: 16px;">
-				<origam-card
-						title="Prepend click"
-						:prepend-icon="MDI_ICONS.ACCOUNT"
-						data-cy="card-emit-prepend"
-						@click:prepend="logEvent('click:prepend', $event)"
-				/>
-			</div>
-		</Variant>
+		<!-- ── Emits ────────────────────────────────────────────────── -->
 
-		<Variant title="Emit — click:append">
-			<div style="padding: 16px;">
-				<origam-card
-						title="Append click"
-						:append-icon="MDI_ICONS.DOTS_VERTICAL"
-						data-cy="card-emit-append"
-						@click:append="logEvent('click:append', $event)"
-				/>
-			</div>
+		<Variant
+				title="Emit — click:prepend"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px;">
+					<origam-card
+							title="Prepend click"
+							:prepend-icon="MDI_ICONS.ACCOUNT"
+							data-cy="card-emit-prepend"
+							@click:prepend="(e: Event) => { state.log = [`click:prepend fired`, ...state.log].slice(0, 5) }"
+					/>
+					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
+						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+					</ul>
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click the prepend icon to fire the event.</p>
+				</div>
+			</template>
 		</Variant>
 
 		<Variant
-				title="Loading — interactive"
-				:init-state="() => useStoryInitState({
-					enabled: true,
-					kind: 'line',
-					progress: 42,
-					circularSize: 24
-				})"
+				title="Emit — click:append"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px; max-width: 480px;">
+				<div style="padding: 16px;">
 					<origam-card
-							:loading="resolveCardLoading(state)"
-							title="Interactive loading card"
-							subtitle="Subtitle"
-							text="Body text for the card demo."
-							image="https://picsum.photos/seed/interactive/400/200"
-							data-cy="card-loading-interactive"
+							title="Append click"
+							:append-icon="MDI_ICONS.DOTS_VERTICAL"
+							data-cy="card-emit-append"
+							@click:append="(e: Event) => { state.log = [`click:append fired`, ...state.log].slice(0, 5) }"
 					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeCardLoading(state) }}</pre>
+					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
+						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+					</ul>
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click the append icon to fire the event.</p>
 				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
-				<HstSelect
-						v-model="state.kind"
-						title="kind"
-						:options="[
-							{ label: 'true (default)', value: 'bool' },
-							{ label: 'number', value: 'number' },
-							{ label: '{ type: line }', value: 'line' },
-							{ label: '{ type: circular }', value: 'circular' },
-							{ label: '{ type: skeleton }', value: 'skeleton' }
-						]"
-				/>
-				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
-				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
-			</template>
-		</Variant>
-
-		<Variant title="Loading shapes">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={true}</code>
-					<origam-card
-							loading
-							title="Loading card"
-							subtitle="Loading content"
-							text="Body text"
-							image="https://picsum.photos/seed/loading/400/200"
-							data-cy="card-loading-bool"
-					/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={42}</code>
-					<origam-card
-							:loading="42"
-							title="Loading card"
-							subtitle="Loading content"
-							text="Body text"
-							image="https://picsum.photos/seed/loading/400/200"
-							data-cy="card-loading-number"
-					/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
-					<origam-card
-							:loading="{ type: 'line' }"
-							title="Loading card"
-							subtitle="Loading content"
-							text="Body text"
-							image="https://picsum.photos/seed/loading/400/200"
-							data-cy="card-loading-line"
-					/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
-					<origam-card
-							:loading="{ type: 'circular', size: 16 }"
-							title="Loading card"
-							subtitle="Loading content"
-							text="Body text"
-							image="https://picsum.photos/seed/loading/400/200"
-							data-cy="card-loading-circular-override"
-					/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
-					<origam-card
-							:loading="{ type: 'skeleton' }"
-							title="Loading card"
-							subtitle="Loading content"
-							text="Body text"
-							image="https://picsum.photos/seed/loading/400/200"
-							data-cy="card-loading-skeleton"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ICardProps>({
-					title: 'Card title',
-					subtitle: 'Subtitle',
-					text: 'Body text.',
-					elevation: undefined,
-					flat: false,
-					hover: false,
-					disabled: false,
-					loading: false,
-					rounded: undefined,
-					density: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; max-width: 420px;">
-					<origam-card v-bind="state" data-cy="card-playground"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.title"     title="title"/>
-				<HstText     v-model="state.subtitle"  title="subtitle"/>
-				<HstText     v-model="state.text"      title="text"/>
-				<HstSelect   v-model="state.elevation" title="elevation"  :options="elevationList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"    :options="roundedList"/>
-				<HstSelect   v-model="state.density"   title="density"    :options="densityList"/>
-				<HstCheckbox v-model="state.flat"      title="flat"/>
-				<HstCheckbox v-model="state.hover"     title="hover"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.loading"   title="loading"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
 			</template>
 		</Variant>
 	</Story>
@@ -531,18 +377,9 @@
 		lang="ts"
 		setup
 >
-	import { logEvent } from 'histoire/client'
-
 	import { OrigamBtn, OrigamCard } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type {
-		IAdjacentProps,
-		IBorderProps,
-		ICardProps,
-		IColorProps,
-		IDensityProps,
-		IRoundedProps
-	} from '@origam/interfaces'
+	import type { ICardProps } from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
