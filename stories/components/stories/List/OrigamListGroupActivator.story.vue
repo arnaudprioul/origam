@@ -10,7 +10,29 @@
 			usage is via the activator slot of <origam-list-group>.
 		-->
 
-		<Variant title="Default (activator slot)">
+		<!-- ── Playground ───────────────────────────────────────────────── -->
+
+		<Variant title="Playground — multiple groups (independent activators)">
+			<!-- ListGroupActivator is normally rendered automatically by ListGroup via the title prop -->
+			<origam-list data-cy="list-group-activator-playground">
+				<origam-list-group title="Mail" :prepend-icon="MDI_ICONS.EMAIL_OUTLINE">
+					<origam-list-item title="Inbox"/>
+					<origam-list-item title="Sent"/>
+				</origam-list-group>
+				<origam-list-group title="Calendar" :prepend-icon="MDI_ICONS.CALENDAR">
+					<origam-list-item title="Today"/>
+					<origam-list-item title="Upcoming"/>
+				</origam-list-group>
+				<origam-list-group title="Settings" :prepend-icon="MDI_ICONS.COG_OUTLINE">
+					<origam-list-item title="Profile"/>
+					<origam-list-item title="Notifications"/>
+				</origam-list-group>
+			</origam-list>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — default (via title prop on ListGroup)">
 			<origam-list data-cy="list-group-activator-default">
 				<origam-list-group title="Mail">
 					<origam-list-item title="Inbox"   :prepend-icon="MDI_ICONS.INBOX"/>
@@ -24,7 +46,9 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Custom activator render via slot">
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — activator (custom render via slot)">
 			<origam-list data-cy="list-group-activator-slot">
 				<origam-list-group>
 					<template #activator="{ isOpen, props }">
@@ -46,24 +70,7 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Multiple groups (independent activators)">
-			<origam-list data-cy="list-group-activator-multi">
-				<origam-list-group title="Mail" :prepend-icon="MDI_ICONS.EMAIL_OUTLINE">
-					<origam-list-item title="Inbox"/>
-					<origam-list-item title="Sent"/>
-				</origam-list-group>
-				<origam-list-group title="Calendar" :prepend-icon="MDI_ICONS.CALENDAR">
-					<origam-list-item title="Today"/>
-					<origam-list-item title="Upcoming"/>
-				</origam-list-group>
-				<origam-list-group title="Settings" :prepend-icon="MDI_ICONS.COG_OUTLINE">
-					<origam-list-item title="Profile"/>
-					<origam-list-item title="Notifications"/>
-				</origam-list-group>
-			</origam-list>
-		</Variant>
-
-		<Variant title="Note">
+		<Variant title="Note — usage guidance">
 			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
 				<p>
 					<code>&lt;origam-list-group-activator&gt;</code> is normally

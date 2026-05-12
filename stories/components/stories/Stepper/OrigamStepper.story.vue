@@ -3,7 +3,43 @@
 			group="components"
 			title="Stepper/OrigamStepper"
 	>
-		<Variant title="Default">
+		<!-- ── Playground ───────────────────────────────────────────────── -->
+
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IStepperProps>({
+					modelValue: 1,
+					orientation: 'horizontal',
+					clickable: false,
+					showConnectors: true,
+					color: undefined,
+					bgColor: undefined,
+					density: 'default',
+					size: 'default'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-stepper
+						v-bind="state"
+						:items="defaultItems"
+						data-cy="stepper-playground"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider    v-model="state.modelValue"     title="modelValue"     :min="0" :max="3" :step="1"/>
+				<HstSelect    v-model="state.orientation"    title="orientation"    :options="orientationList"/>
+				<HstCheckbox  v-model="state.clickable"      title="clickable"/>
+				<HstCheckbox  v-model="state.showConnectors" title="showConnectors"/>
+				<HstSelect    v-model="state.color"          title="color"          :options="intentList"/>
+				<HstSelect    v-model="state.bgColor"        title="bgColor"        :options="intentList"/>
+				<HstSelect    v-model="state.density"        title="density"        :options="densityList"/>
+				<HstSelect    v-model="state.size"           title="size"           :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — default (horizontal)">
 			<origam-stepper
 					:items="defaultItems"
 					:model-value="1"

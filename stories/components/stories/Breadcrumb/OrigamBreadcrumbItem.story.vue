@@ -3,9 +3,48 @@
 			group="components"
 			title="Breadcrumb/OrigamBreadcrumbItem"
 	>
+		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Playground"
+				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({
+					title: 'Breadcrumb item',
+					href: '/',
+					disabled: false,
+					density: undefined,
+					color: undefined,
+					bgColor: undefined,
+					rounded: undefined,
+					prependIcon: undefined,
+					appendIcon: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb>
+					<ol class="origam-breadcrumb__items">
+						<li class="origam-breadcrumb__item">
+							<origam-breadcrumb-item v-bind="state" data-cy="breadcrumb-item-playground"/>
+						</li>
+					</ol>
+				</origam-breadcrumb>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.title"       title="title"/>
+				<HstText     v-model="state.href"        title="href"/>
+				<HstSelect   v-model="state.color"       title="color"       :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"     title="bgColor"     :options="intentList"/>
+				<HstSelect   v-model="state.density"     title="density"     :options="densityList"/>
+				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
+				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
+				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
+				<HstCheckbox v-model="state.disabled"    title="disabled"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -26,7 +65,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -44,7 +83,7 @@
 		</Variant>
 
 		<Variant
-				title="Adjacent"
+				title="Prop — adjacent (prependIcon / appendIcon)"
 				:init-state="() => useStoryInitState<IAdjacentProps>({ prependIcon: MDI_ICONS.HOME })"
 		>
 			<template #default="{ state }">
@@ -65,7 +104,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
@@ -83,7 +122,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled & active"
 				:init-state="() => useStoryInitState<{ disabled: boolean, active: boolean }>({ disabled: false, active: false })"
 		>
 			<template #default="{ state }">
@@ -106,6 +145,8 @@
 				<HstCheckbox v-model="state.active"   title="active"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
 			<origam-breadcrumb>
@@ -147,42 +188,6 @@
 					</li>
 				</ol>
 			</origam-breadcrumb>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({
-					title: 'Breadcrumb item',
-					href: '/',
-					disabled: false,
-					density: undefined,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					prependIcon: undefined,
-					appendIcon: undefined,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb>
-					<ol class="origam-breadcrumb__items">
-						<li class="origam-breadcrumb__item">
-							<origam-breadcrumb-item v-bind="state" data-cy="breadcrumb-item-playground"/>
-						</li>
-					</ol>
-				</origam-breadcrumb>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.title"       title="title"/>
-				<HstText     v-model="state.href"        title="href"/>
-				<HstSelect   v-model="state.color"       title="color"       :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"     title="bgColor"     :options="intentList"/>
-				<HstSelect   v-model="state.density"     title="density"     :options="densityList"/>
-				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
-				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
-				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
-				<HstCheckbox v-model="state.disabled"    title="disabled"/>
-			</template>
 		</Variant>
 	</Story>
 </template>

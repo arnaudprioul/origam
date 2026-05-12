@@ -3,9 +3,48 @@
 			group="components"
 			title="List/OrigamList"
 	>
+		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Density"
+				title="Playground"
+				:init-state="() => useStoryInitState<IListProps>({
+					density: DENSITY.DEFAULT,
+					color: undefined,
+					bgColor: undefined,
+					rounded: undefined,
+					border: false,
+					elevation: undefined,
+					lines: undefined,
+					slim: false,
+					nav: false,
+					disabled: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-list v-bind="state" data-cy="list-playground">
+					<origam-list-item title="Item one"   data-cy="list-playground-1"/>
+					<origam-list-item title="Item two"   subtitle="With subtitle" data-cy="list-playground-2"/>
+					<origam-list-item title="Item three" :prepend-icon="MDI_ICONS.STAR" data-cy="list-playground-3"/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
+				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
+				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstSelect   v-model="state.lines"     title="lines"     :options="linesList"/>
+				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstCheckbox v-model="state.slim"      title="slim"/>
+				<HstCheckbox v-model="state.nav"       title="nav"/>
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -21,7 +60,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -37,7 +76,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
@@ -52,7 +91,7 @@
 		</Variant>
 
 		<Variant
-				title="Border"
+				title="Prop — border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
 		>
 			<template #default="{ state }">
@@ -67,7 +106,7 @@
 		</Variant>
 
 		<Variant
-				title="Elevation"
+				title="Prop — elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
 		>
 			<template #default="{ state }">
@@ -82,7 +121,7 @@
 		</Variant>
 
 		<Variant
-				title="Lines"
+				title="Prop — lines"
 				:init-state="() => useStoryInitState<{ lines?: TLines }>({ lines: LINES.ONE })"
 		>
 			<template #default="{ state }">
@@ -98,7 +137,7 @@
 		</Variant>
 
 		<Variant
-				title="Modifiers"
+				title="Prop — slim / nav / disabled"
 				:init-state="() => useStoryInitState<{ slim: boolean, nav: boolean, disabled: boolean }>({ slim: false, nav: false, disabled: false })"
 		>
 			<template #default="{ state }">
@@ -115,11 +154,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Items prop">
+		<Variant title="Prop — items (API items[] vs slot)">
 			<origam-list :items="listItems" data-cy="list-items"/>
 		</Variant>
 
-		<Variant title="Group">
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — group (nested ListGroup)">
 			<origam-list data-cy="list-group">
 				<origam-list-group title="Fruits" data-cy="list-group-fruits">
 					<template #items>
@@ -137,7 +178,7 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Subheader">
+		<Variant title="Prop — subheader (ListSubheader)">
 			<origam-list data-cy="list-subheader">
 				<origam-list-subheader title="Section A" data-cy="list-subheader-a"/>
 				<origam-list-item title="Alpha" subtitle="First item"/>
@@ -191,6 +232,8 @@
 			</origam-list>
 		</Variant>
 
+		<!-- ── Emits ────────────────────────────────────────────────────── -->
+
 		<Variant title="Emit — update:selected">
 			<origam-list
 					:items="selectableItems"
@@ -215,41 +258,6 @@
 			/>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IListProps>({
-					density: DENSITY.DEFAULT,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					border: false,
-					elevation: undefined,
-					lines: undefined,
-					slim: false,
-					nav: false,
-					disabled: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-list v-bind="state" data-cy="list-playground">
-					<origam-list-item title="Item one"   data-cy="list-playground-1"/>
-					<origam-list-item title="Item two"   subtitle="With subtitle" data-cy="list-playground-2"/>
-					<origam-list-item title="Item three" :prepend-icon="MDI_ICONS.STAR" data-cy="list-playground-3"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect   v-model="state.lines"     title="lines"     :options="linesList"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
-				<HstCheckbox v-model="state.slim"      title="slim"/>
-				<HstCheckbox v-model="state.nav"       title="nav"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-			</template>
-		</Variant>
 	</Story>
 </template>
 

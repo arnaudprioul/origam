@@ -3,9 +3,44 @@
 			group="components"
 			title="Breadcrumb/OrigamBreadcrumb"
 	>
+		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Playground"
+				:init-state="() => useStoryInitState<IBreadcrumbProps>({
+					density: DENSITY.DEFAULT,
+					color: undefined,
+					bgColor: undefined,
+					rounded: undefined,
+					border: false,
+					elevation: undefined,
+					divider: '/',
+					disabled: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb
+						v-bind="state"
+						:items="items"
+						data-cy="breadcrumb-playground"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
+				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
+				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstText     v-model="state.divider"   title="divider"/>
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -23,7 +58,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -39,7 +74,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
@@ -55,7 +90,7 @@
 		</Variant>
 
 		<Variant
-				title="Border"
+				title="Prop — border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
 		>
 			<template #default="{ state }">
@@ -71,7 +106,7 @@
 		</Variant>
 
 		<Variant
-				title="Elevation"
+				title="Prop — elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
 		>
 			<template #default="{ state }">
@@ -87,7 +122,7 @@
 		</Variant>
 
 		<Variant
-				title="Divider (string)"
+				title="Prop — divider (string)"
 				:init-state="() => useStoryInitState<{ divider: string }>({ divider: '>' })"
 		>
 			<template #default="{ state }">
@@ -102,7 +137,8 @@
 			</template>
 		</Variant>
 
-		<Variant title="Divider (icon)">
+		<Variant title="Prop — divider (icon)">
+			<!-- Shows the divider prop accepting an MDI icon identifier -->
 			<origam-breadcrumb
 					:divider="MDI_ICONS.CHEVRON_RIGHT"
 					:items="items"
@@ -111,7 +147,7 @@
 		</Variant>
 
 		<Variant
-				title="Disabled"
+				title="Prop — disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
 		>
 			<template #default="{ state }">
@@ -125,6 +161,40 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
 		</Variant>
+
+		<Variant title="Prop — items (API items[] vs default slot)">
+			<!-- Demonstrates passing items as a prop array instead of using slots -->
+			<div style="display: flex; flex-direction: column; gap: 16px;">
+				<div>
+					<p style="margin: 0 0 4px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">items prop:</p>
+					<origam-breadcrumb :items="items" data-cy="breadcrumb-items-prop"/>
+				</div>
+				<div>
+					<p style="margin: 0 0 4px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">equivalent via default slot:</p>
+					<origam-breadcrumb data-cy="breadcrumb-items-slot">
+						<ol class="origam-breadcrumb__items">
+							<li class="origam-breadcrumb__item">
+								<origam-breadcrumb-item title="Home" href="/"/>
+							</li>
+							<li class="origam-breadcrumb__item">
+								<origam-breadcrumb-divider divider="/"/>
+							</li>
+							<li class="origam-breadcrumb__item">
+								<origam-breadcrumb-item title="Section" href="/section"/>
+							</li>
+							<li class="origam-breadcrumb__item">
+								<origam-breadcrumb-divider divider="/"/>
+							</li>
+							<li class="origam-breadcrumb__item">
+								<origam-breadcrumb-item title="Current"/>
+							</li>
+						</ol>
+					</origam-breadcrumb>
+				</div>
+			</div>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
 			<origam-breadcrumb data-cy="breadcrumb-slot-default">
@@ -166,38 +236,6 @@
 					<origam-icon :icon="MDI_ICONS.CHEVRON_DOUBLE_RIGHT" data-cy="breadcrumb-slot-divider-icon"/>
 				</template>
 			</origam-breadcrumb>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IBreadcrumbProps>({
-					density: DENSITY.DEFAULT,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					border: false,
-					elevation: undefined,
-					divider: '/',
-					disabled: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb
-						v-bind="state"
-						:items="items"
-						data-cy="breadcrumb-playground"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
-				<HstText     v-model="state.divider"   title="divider"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-			</template>
 		</Variant>
 	</Story>
 </template>

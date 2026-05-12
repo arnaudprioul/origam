@@ -3,73 +3,7 @@
 			group="components"
 			title="Slide/OrigamSlideGroup"
 	>
-
-		<Variant title="Default">
-			<div class="story-shell" data-cy="slidegroup-default">
-				<origam-slide-group :style="hostStyle" data-cy="slidegroup-default-host">
-					<div
-							v-for="n in 25"
-							:key="n"
-							class="story-tag"
-							:data-cy="`tag-default-${n}`"
-					>Tag {{ n }}</div>
-				</origam-slide-group>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Direction"
-				:init-state="() => useStoryInitState<{ direction: TDirection }>({ direction: DIRECTION.HORIZONTAL })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="slidegroup-direction">
-					<origam-slide-group
-							:direction="state.direction"
-							:style="state.direction === DIRECTION.VERTICAL ? hostStyleVertical : hostStyle"
-							data-cy="slidegroup-direction-host"
-					>
-						<div
-								v-for="n in 25"
-								:key="n"
-								class="story-tag"
-								:data-cy="`tag-direction-${n}`"
-						>Tag {{ n }}</div>
-					</origam-slide-group>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Show arrows"
-				:init-state="() => useStoryInitState<{ showArrows: boolean | string }>({ showArrows: 'always' })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="slidegroup-show-arrows">
-					<origam-slide-group :show-arrows="state.showArrows" :style="hostStyle" data-cy="slidegroup-arrows-host">
-						<div
-								v-for="n in 25"
-								:key="n"
-								class="story-tag"
-								:data-cy="`tag-arrows-${n}`"
-						>Tag {{ n }}</div>
-					</origam-slide-group>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.showArrows" title="showArrows" :options="showArrowsList"/>
-			</template>
-		</Variant>
-
-		<Variant title="No overflow">
-			<div class="story-shell" data-cy="slidegroup-no-overflow">
-				<origam-slide-group :style="hostStyle" data-cy="slidegroup-no-overflow-host">
-					<div v-for="n in 3" :key="n" class="story-tag" :data-cy="`tag-no-overflow-${n}`">Tag {{ n }}</div>
-				</origam-slide-group>
-			</div>
-		</Variant>
+		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
 				title="Playground"
@@ -103,6 +37,76 @@
 				<HstCheckbox v-model="state.centerActive" title="centerActive"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — default (horizontal overflow)">
+			<div class="story-shell" data-cy="slidegroup-default">
+				<origam-slide-group :style="hostStyle" data-cy="slidegroup-default-host">
+					<div
+							v-for="n in 25"
+							:key="n"
+							class="story-tag"
+							:data-cy="`tag-default-${n}`"
+					>Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — direction"
+				:init-state="() => useStoryInitState<{ direction: TDirection }>({ direction: DIRECTION.HORIZONTAL })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="slidegroup-direction">
+					<origam-slide-group
+							:direction="state.direction"
+							:style="state.direction === DIRECTION.VERTICAL ? hostStyleVertical : hostStyle"
+							data-cy="slidegroup-direction-host"
+					>
+						<div
+								v-for="n in 25"
+								:key="n"
+								class="story-tag"
+								:data-cy="`tag-direction-${n}`"
+						>Tag {{ n }}</div>
+					</origam-slide-group>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — showArrows"
+				:init-state="() => useStoryInitState<{ showArrows: boolean | string }>({ showArrows: 'always' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="slidegroup-show-arrows">
+					<origam-slide-group :show-arrows="state.showArrows" :style="hostStyle" data-cy="slidegroup-arrows-host">
+						<div
+								v-for="n in 25"
+								:key="n"
+								class="story-tag"
+								:data-cy="`tag-arrows-${n}`"
+						>Tag {{ n }}</div>
+					</origam-slide-group>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.showArrows" title="showArrows" :options="showArrowsList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — no overflow (few items)">
+			<div class="story-shell" data-cy="slidegroup-no-overflow">
+				<origam-slide-group :style="hostStyle" data-cy="slidegroup-no-overflow-host">
+					<div v-for="n in 3" :key="n" class="story-tag" :data-cy="`tag-no-overflow-${n}`">Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
 	</Story>
 </template>
 

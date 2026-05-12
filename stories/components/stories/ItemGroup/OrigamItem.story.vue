@@ -3,23 +3,56 @@
 			group="components"
 			title="ItemGroup/OrigamItem"
 	>
-
 		<!--
 			<origam-item> is a renderless registration wrapper inside
 			<origam-item-group>. It exposes a scoped slot
 			`{ isSelected, toggle, select, value }` so the consumer can
 			render any chrome on top of the group's selection model.
-
-			Three showcase shapes from the PDF print spec:
-			  1. Single — cards (radio-style) for a pricing picker.
-			  2. Multiple — tiles (checkbox-style) for feature flags.
-			  3. Segmented — chips (filter pills) for a category tab bar.
 		-->
 
-		<Variant title="Single — cards (radio, mandatory)">
+		<!-- ── Playground ───────────────────────────────────────────────── -->
+
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{ multiple: boolean, mandatory: boolean }>({ multiple: false, mandatory: false })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-item-group v-model="playgroundModel" :multiple="state.multiple" :mandatory="state.mandatory" data-cy="item-playground-group">
+						<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+							<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+								<template #default="{ isSelected, toggle }">
+									<button
+											:class="['demo-card', { 'demo-card--active': isSelected }]"
+											:aria-pressed="isSelected"
+											@click="toggle"
+											:data-cy="`item-playground-${opt.value}`"
+									>
+										<div class="demo-card__title">{{ opt.title }}</div>
+										<div class="demo-card__price">{{ opt.price }}</div>
+									</button>
+								</template>
+							</origam-item>
+						</div>
+					</origam-item-group>
+					<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+						selected = <strong>{{ JSON.stringify(playgroundModel) }}</strong>
+					</p>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.multiple"  title="multiple"/>
+				<HstCheckbox v-model="state.mandatory" title="mandatory"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — value (single selection, mandatory)">
+			<!-- Demonstrates single-select radio-style with mandatory -->
 			<div style="padding: 24px; max-width: 720px;">
 				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
-					<code>v-model="plan" · mandatory</code>
+					<code>mandatory · single-select</code>
 				</p>
 				<origam-item-group v-model="plan" mandatory data-cy="item-cards">
 					<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
@@ -49,10 +82,11 @@
 			</div>
 		</Variant>
 
-		<Variant title="Multiple — tiles (checkbox)">
+		<Variant title="Prop — multiple (checkbox-style tiles)">
+			<!-- multiple allows selecting several items at the same time -->
 			<div style="padding: 24px; max-width: 640px;">
 				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
-					<code>v-model="features[]" · multiple</code>
+					<code>multiple</code>
 				</p>
 				<origam-item-group v-model="features" multiple data-cy="item-tiles">
 					<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
@@ -86,10 +120,11 @@
 			</div>
 		</Variant>
 
-		<Variant title="Segmented — chips (filter pills)">
+		<Variant title="Prop — mandatory (segmented chips, always one selected)">
+			<!-- mandatory ensures at least one value always stays active -->
 			<div style="padding: 24px; max-width: 640px;">
 				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
-					<code>tag="span" · selectedClass="origam-chip--selected"</code>
+					<code>mandatory · tag="div"</code>
 				</p>
 				<origam-item-group
 						v-model="filterCategory"
@@ -123,7 +158,10 @@
 			</div>
 		</Variant>
 
-		<Variant title="Scoped slot — inspect what each item exposes">
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default (scoped slot inspection)">
+			<!-- Demonstrates the full scope exposed by OrigamItem's default slot -->
 			<div style="padding: 24px;">
 				<origam-item-group v-model="introspectValue" data-cy="item-introspect">
 					<origam-item value="alpha">
@@ -139,6 +177,44 @@
 				</p>
 			</div>
 		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Emit — update:modelValue (via ItemGroup)"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-item-group
+							v-model="emitModel"
+							data-cy="item-emit-group"
+							@update:model-value="(v: any) => {
+								state.log = [`update:modelValue → ${JSON.stringify(v)}`, ...state.log].slice(0, 6)
+							}"
+					>
+						<div style="display: flex; gap: 12px;">
+							<origam-item v-for="opt in plans.slice(0,3)" :key="opt.value" :value="opt.value">
+								<template #default="{ isSelected, toggle }">
+									<button
+											:class="['demo-card', { 'demo-card--active': isSelected }]"
+											:aria-pressed="isSelected"
+											@click="toggle"
+											:data-cy="`item-emit-${opt.value}`"
+									>
+										<div class="demo-card__title">{{ opt.title }}</div>
+									</button>
+								</template>
+							</origam-item>
+						</div>
+					</origam-item-group>
+					<ul v-if="state.log.length" style="font-family: monospace; font-size: 0.8rem; margin: 12px 0 0; padding-left: 16px;">
+						<li v-for="(l, i) in state.log" :key="i">{{ l }}</li>
+					</ul>
+					<p v-else style="margin: 8px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">Click a card to see events.</p>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -149,6 +225,8 @@
 	import { ref } from 'vue'
 
 	import { OrigamItem, OrigamItemGroup } from '@origam/components'
+
+	import { useStoryInitState } from '@stories/composables'
 
 	// ── Fixture data ────────────────────────────────────────────────
 	const plans = [
@@ -175,24 +253,15 @@
 	const features = ref<string[]>(['a11y', 'i18n', 'dark', 'tests'])
 	const filterCategory = ref('All')
 	const introspectValue = ref<string | undefined>(undefined)
+	const playgroundModel = ref<any>('pro')
+	const emitModel = ref<string | undefined>(undefined)
 </script>
 
 <style scoped>
-/*
- * <origam-item> renders a <div> wrapper by default (tag: 'div').
- * That wrapper is the grid cell; the button inside it must stretch
- * to fill the cell, otherwise it sits at its natural content-width
- * and the layout looks "recroquevillé" (cramped) inside huge gaps.
- *
- * The :deep() selectors below reach through the scoped-style
- * boundary into the OrigamItem-rendered wrappers so they behave
- * as block-level grid items.
- */
 :deep(.origam-item-group) > div {
 	width: 100%;
 }
 :deep(.origam-item-group) > div > div {
-	/* origam-item wrapper — make sure it occupies its grid cell */
 	display: block;
 	height: 100%;
 }
@@ -212,26 +281,14 @@
 	cursor: pointer;
 	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.demo-card:hover {
-	border-color: var(--origam-color-border-default);
-}
+.demo-card:hover { border-color: var(--origam-color-border-default); }
 .demo-card--active {
 	border-color: var(--origam-color-action-primary-bg);
 	box-shadow: 0 0 0 1px var(--origam-color-action-primary-bg);
 }
-.demo-card__title {
-	font-weight: 600;
-	font-size: 0.95rem;
-}
-.demo-card__price {
-	font-weight: 700;
-	font-size: 1.15rem;
-	color: var(--origam-color-text-primary);
-}
-.demo-card__hint {
-	font-size: 0.75rem;
-	color: var(--origam-color-text-secondary);
-}
+.demo-card__title { font-weight: 600; font-size: 0.95rem; }
+.demo-card__price { font-weight: 700; font-size: 1.15rem; color: var(--origam-color-text-primary); }
+.demo-card__hint  { font-size: 0.75rem; color: var(--origam-color-text-secondary); }
 
 .demo-tile {
 	position: relative;
@@ -250,34 +307,21 @@
 	cursor: pointer;
 	transition: border-color 0.15s ease;
 }
-.demo-tile:hover {
-	border-color: var(--origam-color-border-default);
-}
+.demo-tile:hover { border-color: var(--origam-color-border-default); }
 .demo-tile--active {
 	border-color: var(--origam-color-action-primary-bg);
 	background: color-mix(in srgb, var(--origam-color-action-primary-bg) 6%, transparent);
 }
-.demo-tile__icon {
-	font-size: 1.5rem;
-}
-.demo-tile__label {
-	font-size: 0.8125rem;
-	font-weight: 500;
-}
+.demo-tile__icon  { font-size: 1.5rem; }
+.demo-tile__label { font-size: 0.8125rem; font-weight: 500; }
 .demo-tile__check {
-	position: absolute;
-	top: 6px;
-	right: 8px;
-	width: 18px;
-	height: 18px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+	position: absolute; top: 6px; right: 8px;
+	width: 18px; height: 18px;
+	display: inline-flex; align-items: center; justify-content: center;
 	border-radius: 50%;
 	background: var(--origam-color-action-primary-bg);
 	color: var(--origam-color-action-primary-fg);
-	font-size: 0.7rem;
-	font-weight: 700;
+	font-size: 0.7rem; font-weight: 700;
 }
 
 .demo-chip {
@@ -288,9 +332,7 @@
 	cursor: pointer;
 	font-size: 0.8125rem;
 }
-.demo-chip:hover {
-	border-color: var(--origam-color-border-default);
-}
+.demo-chip:hover { border-color: var(--origam-color-border-default); }
 .demo-chip--selected {
 	background: var(--origam-color-action-primary-bg);
 	color: var(--origam-color-action-primary-fg);

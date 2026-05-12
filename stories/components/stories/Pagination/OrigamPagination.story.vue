@@ -3,8 +3,39 @@
 			group="components"
 			title="Pagination/OrigamPagination"
 	>
+		<!-- ── Playground ───────────────────────────────────────────────── -->
 
-		<Variant title="Basic">
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{
+					length?: number
+					totalVisible?: number
+					showFirstLastPage?: boolean
+					disabled?: boolean
+					color?: string
+				}>({
+					length: 15,
+					totalVisible: 7,
+					showFirstLastPage: false,
+					disabled: false,
+					color: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-pagination v-model="page" v-bind="state" data-cy="pagination-playground"/>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber   v-model="state.length"            title="length" :min="1"/>
+				<HstNumber   v-model="state.totalVisible"      title="totalVisible" :min="3"/>
+				<HstCheckbox v-model="state.showFirstLastPage" title="showFirstLastPage"/>
+				<HstCheckbox v-model="state.disabled"          title="disabled"/>
+				<HstSelect   v-model="state.color"             title="color" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — length & totalVisible">
 			<origam-pagination v-model="page" :length="10"/>
 		</Variant>
 
@@ -74,9 +105,11 @@
 			</template>
 		</Variant>
 
-		<Variant title="Disabled">
+		<Variant title="Prop — disabled">
 			<origam-pagination v-model="page" :length="10" disabled/>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — item">
 			<origam-pagination v-model="page" :length="5">
@@ -85,6 +118,8 @@
 				</template>
 			</origam-pagination>
 		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
 			<origam-pagination
@@ -170,33 +205,6 @@
 			</div>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<{
-					length?: number
-					totalVisible?: number
-					showFirstLastPage?: boolean
-					disabled?: boolean
-					color?: string
-				}>({
-					length: 15,
-					totalVisible: 7,
-					showFirstLastPage: false,
-					disabled: false,
-					color: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<origam-pagination v-model="page" v-bind="state"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber   v-model="state.length"           title="length" :min="1"/>
-				<HstNumber   v-model="state.totalVisible"     title="totalVisible" :min="3"/>
-				<HstCheckbox v-model="state.showFirstLastPage" title="showFirstLastPage"/>
-				<HstCheckbox v-model="state.disabled"         title="disabled"/>
-				<HstSelect   v-model="state.color"            title="color" :options="intentList"/>
-			</template>
-		</Variant>
 	</Story>
 </template>
 

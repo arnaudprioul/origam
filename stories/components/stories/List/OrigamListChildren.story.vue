@@ -11,23 +11,34 @@
 			the realistic flow drives it through the parent list.
 		-->
 
-		<Variant title="Default — flat list rendered via children prop">
+		<!-- ── Playground ───────────────────────────────────────────────── -->
+
+		<Variant title="Playground — nested (most realistic form)">
+			<!-- ListChildren is driven by items from the parent list context; this variant shows the realistic integration -->
+			<origam-list :items="nestedItems" data-cy="list-children-playground"/>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — items (flat list)">
 			<origam-list data-cy="list-children-flat">
 				<origam-list-children :items="flatItems" return-object/>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Nested groups (recursive)">
+		<Variant title="Prop — items (nested groups, recursive)">
 			<origam-list data-cy="list-children-nested">
 				<origam-list-children :items="nestedItems"/>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Embedded in a List (real wiring with items prop)">
+		<Variant title="Prop — items (via parent List)">
 			<origam-list :items="nestedItems" data-cy="list-children-embedded"/>
 		</Variant>
 
-		<Variant title="Note about the raw component">
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — note (usage guidance)">
 			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
 				<p>
 					<code>&lt;origam-list-children&gt;</code> is the recursive
