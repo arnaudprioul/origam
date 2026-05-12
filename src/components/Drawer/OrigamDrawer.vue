@@ -77,7 +77,7 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamOverlayScrim, OrigamSlideX, OrigamTransition } from '../../components'
+	import { OrigamOverlayScrim, OrigamTransition } from '../../components'
 
 	import {
 		useBackgroundColor,
@@ -119,17 +119,21 @@
 		width: 256,
 		location: INLINE.LEFT,
 		modelValue: true,
-		// Default enter/leave animation when the drawer toggles open
-		// (v-model). We pass the OrigamSlideX **component** itself
-		// (not just its name string) so that
-		//   (a) Vue uses OrigamSlideX as the transition wrapper, and
-		//   (b) the keyframes CSS that ships in OrigamSlideX.vue is
-		//       loaded into the page even if no consumer renders the
-		//       transition component elsewhere. Passing only a string
-		//       name relies on the keyframes being already present in
-		//       the cascade — which they aren't when the drawer is the
-		//       only consumer.
-		transition: () => ({ component: OrigamSlideX })
+		// Default enter / leave animation: the drawer slides its FULL
+		// width in / out of view. The matching `origam-transition--drawer-*`
+		// keyframes live in OrigamDrawer.vue's global <style> block at
+		// the bottom of the file — `translateX(-100%)` for left,
+		// `translateX(100%)` for right, `translateY(±100%)` for top /
+		// bottom. We pass the name as a string so Vue's <Transition>
+		// auto-applies the matching classes; the keyframes are
+		// guaranteed to be loaded because they ship with this very
+		// component.
+		//
+		// Consumer overrides:
+		//   :transition="false"                  → no animation
+		//   :transition="'origam-transition--…'" → another named transition
+		//   :transition="{ component: OrigamFade }" → custom component
+		transition: 'origam-transition--drawer'
 	})
 
 	const emits = defineEmits(['update:rail'])
@@ -497,4 +501,52 @@
 		}
 	}
 </style>
+
+<!--
+	Drawer-specific enter / leave keyframes. GLOBAL (no `scoped`) so
+	the Vue transition classes injected by OrigamTransition match.
+	Unlike the generic OrigamSlideX (15 px shift + fade), the drawer
+	slides the FULL panel width via `translateX(-100 %)` / `100 %`
+	so the open / close motion reads as a true slide rather than a
+	subtle fade with a hint of movement.
+
+	The four `--{location}-*` selectors handle each docking edge
+	(left, right, top, bottom) so the panel always slides AWAY from
+	the consumer area regardless of where it docks.
+-->
+<style lang="scss">
+	.origam-transition--drawer {
+		&-enter-active,
+		&-leave-active {
+			transition-property: transform !important;
+			transition-duration: 0.25s !important;
+			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+		}
+
+		// Default (left) — slide out to the left.
+		&-enter-from,
+		&-leave-to {
+			transform: translateX(-100%);
+		}
+	}
+
+	// Right drawer slides out to the right.
+	.origam-drawer--right.origam-transition--drawer-enter-from,
+	.origam-drawer--right.origam-transition--drawer-leave-to {
+		transform: translateX(100%);
+	}
+
+	// Top drawer slides up out of view.
+	.origam-drawer--top.origam-transition--drawer-enter-from,
+	.origam-drawer--top.origam-transition--drawer-leave-to {
+		transform: translateY(-100%);
+	}
+
+	// Bottom drawer slides down out of view.
+	.origam-drawer--bottom.origam-transition--drawer-enter-from,
+	.origam-drawer--bottom.origam-transition--drawer-leave-to {
+		transform: translateY(100%);
+	}
+</style>
+
 

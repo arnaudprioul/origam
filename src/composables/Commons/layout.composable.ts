@@ -327,10 +327,24 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     })
 
     const layoutStyles = computed(() => {
+        const left = convertToUnit(mainRect.value.left) ?? '0px'
+        const right = convertToUnit(mainRect.value.right) ?? '0px'
+        const top = convertToUnit(mainRect.value.top) ?? '0px'
+        const bottom = convertToUnit(mainRect.value.bottom) ?? '0px'
+        // Expose the layout's reserved-space (drawer width, toolbar height,
+        // …) via CSS custom properties on the LAYOUT ROOT so every
+        // descendant inherits them (toolbar, main, footer, snackbar, …).
+        // Consumers can then offset themselves with:
+        //     padding-inline-start: var(--origam-layout---position-left)
+        // without needing to read mainStyles directly.
         return {
             'z-index': parentLayout ? rootZIndex.value : undefined,
             'position': parentLayout ? 'relative' as const : undefined,
-            'overflow': parentLayout ? 'hidden' : undefined
+            'overflow': parentLayout ? 'hidden' : undefined,
+            '--origam-layout---position-left': left,
+            '--origam-layout---position-right': right,
+            '--origam-layout---position-top': top,
+            '--origam-layout---position-bottom': bottom,
         } as StyleValue
     })
 

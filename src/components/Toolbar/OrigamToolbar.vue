@@ -200,7 +200,22 @@
 		// Toolbar usage (AppBar, standalone, footer, etc.). 16 px matches
 		// Material / iOS bar spec; consumer can override per-instance
 		// via the public CSS var.
-		padding-inline: var(--origam-toolbar---padding-inline, 16px);
+		//
+		// The toolbar ALSO respects the layout's reserved-space
+		// (`--origam-layout---position-{left,right}`) so when a permanent
+		// drawer is present, the toolbar's content area is pushed past
+		// the drawer instead of being painted over it. \`calc()\` composes
+		// the toolbar's own gutter (16 px) with whatever the layout
+		// reserved on each side (defaults to 0 when no layout item is
+		// present, so the standalone case still gets the 16 px gutter).
+		padding-inline-start: calc(
+			var(--origam-toolbar---padding-inline, 16px) +
+			var(--origam-layout---position-left, 0px)
+		);
+		padding-inline-end: calc(
+			var(--origam-toolbar---padding-inline, 16px) +
+			var(--origam-layout---position-right, 0px)
+		);
 
 		// ── Btn surface / fg base (consumed by nested btn rules below) ─
 		// Dedicated CSS vars (NOT the bar's own bg / fg) so the nested

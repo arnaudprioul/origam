@@ -21,7 +21,10 @@
             </template>
         </Variant>
 
-        <Variant title="Color">
+        <Variant
+            title="Color"
+            :init-state="() => ({ color: 'primary', bgColor: 'primary', title: 'My Application' })"
+        >
             <template #default="{ state }">
                 <origam-app-bar
                     :order="0"
@@ -37,10 +40,13 @@
                 </origam-app-bar>
             </template>
             <template #controls="{ state }">
-                <hst-color
-                    v-model:bg-color="state.bgColor"
-                    v-model:color="state.color"
-                />
+                <HstText   v-model="state.title"         title="title"/>
+                <HstSelect v-model="state.color"         title="color"         :options="intentList"/>
+                <HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+                <HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
+                <HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+                <HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+                <HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
             </template>
         </Variant>
 
@@ -60,7 +66,7 @@
                 </origam-app-bar>
             </template>
             <template #controls="{ state }">
-                <hst-density v-model="state.density"/>
+                <HstSelect v-model="state.density" title="density" :options="densityList"/>
             </template>
         </Variant>
 
@@ -80,7 +86,7 @@
                 </origam-app-bar>
             </template>
             <template #controls="{ state }">
-                <hst-elevation v-model="state.elevation"/>
+                <HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
             </template>
         </Variant>
 
@@ -100,16 +106,17 @@
                 </origam-app-bar>
             </template>
             <template #controls="{ state }">
-                <hst-text v-model="state.title" title="Title"/>
-                <hst-checkbox v-model="state.modelValue" title="Visible"/>
-                <hst-checkbox v-model="state.collapse" title="Collapse"/>
-                <hst-checkbox v-model="state.flat" title="Flat"/>
-                <hst-checkbox v-model="state.floating" title="Floating"/>
-                <hst-density v-model="state.density"/>
-                <hst-elevation v-model="state.elevation"/>
-                <hst-color v-model:bg-color="state.bgColor" v-model:color="state.color"/>
-                <hst-rounded v-model="state.rounded"/>
-                <hst-border v-model="state.border"/>
+                <HstText     v-model="state.title"      title="title"/>
+                <HstCheckbox v-model="state.modelValue" title="visible"/>
+                <HstCheckbox v-model="state.collapse"   title="collapse"/>
+                <HstCheckbox v-model="state.flat"       title="flat"/>
+                <HstCheckbox v-model="state.floating"   title="floating"/>
+                <HstSelect   v-model="state.density"    title="density"   :options="densityList"/>
+                <HstSelect   v-model="state.elevation"  title="elevation" :options="elevationList"/>
+                <HstSelect   v-model="state.color"      title="color"     :options="intentList"/>
+                <HstSelect   v-model="state.bgColor"    title="bgColor"   :options="intentList"/>
+                <HstSelect   v-model="state.rounded"    title="rounded"   :options="roundedList"/>
+                <HstCheckbox v-model="state.border"     title="border"/>
             </template>
         </Variant>
     </Story>
@@ -118,6 +125,12 @@
 <script lang="ts" setup>
     import { OrigamAppBar, OrigamBtn } from '@origam/components'
     import { MDI_ICONS } from '@origam/enums'
+    import {
+        densityList,
+        elevationList,
+        intentList,
+        roundedList
+    } from '@stories/const'
 </script>
 
 <docs lang="md">
