@@ -215,14 +215,6 @@
 			</origam-avatar>
 		</Variant>
 
-		<Variant title="Slot — icon">
-			<origam-avatar :icon="MDI_ICONS.HEART"/>
-		</Variant>
-
-		<Variant title="Slot — avatar (image)">
-			<origam-avatar image="https://picsum.photos/seed/origam-avatar-slot/120/120"/>
-		</Variant>
-
 		<!-- ── Emits ────────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:active / update:hover">
