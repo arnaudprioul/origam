@@ -44,33 +44,42 @@
 
 		<!--
 			Temporary drawer: hidden by default, animates in / out on
-			toggle. The default OrigamSlideX transition glides the
-			drawer in from the left edge with a CSS keyframe-driven
-			horizontal slide. The scrim follows.
+			toggle. Drawer is wrapped in <origam-app> so it picks up a
+			real layout context (without it the drawer falls back to
+			`position: fixed` and escapes the story container).
 		-->
 		<Variant
 				title="Temporary (slide animation)"
 				:init-state="() => useStoryInitState<{ open: boolean }>({ open: false })"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 320px; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
-					<origam-btn
-							text="Open Drawer"
-							style="margin: 16px;"
-							data-cy="drawer-temporary-activator"
-							@click="state.open = true"
-					/>
-					<origam-drawer
-							v-model="state.open"
-							temporary
-							data-cy="drawer-temporary"
-					>
-						<div style="padding: 16px;">
-							<p>Temporary drawer.</p>
-							<p>Click outside the drawer or press the close btn.</p>
-							<origam-btn text="Close" data-cy="drawer-temporary-close" @click="state.open = false"/>
-						</div>
-					</origam-drawer>
+				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-toolbar title="App with temporary drawer">
+							<template #prepend>
+								<origam-btn
+										:icon="MDI_ICONS.MENU"
+										aria-label="Toggle drawer"
+										data-cy="drawer-temporary-activator"
+										@click="state.open = !state.open"
+								/>
+							</template>
+						</origam-toolbar>
+						<origam-drawer
+								v-model="state.open"
+								temporary
+								data-cy="drawer-temporary"
+						>
+							<div style="padding: 16px;">
+								<p>Temporary drawer.</p>
+								<p>Click the menu icon (or the close btn) to toggle.</p>
+								<origam-btn text="Close" data-cy="drawer-temporary-close" @click="state.open = false"/>
+							</div>
+						</origam-drawer>
+						<origam-main style="padding: 16px;">
+							<p>Main content — drawer slides in from the left.</p>
+						</origam-main>
+					</origam-app>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -88,21 +97,24 @@
 				:init-state="() => useStoryInitState<{ rail?: boolean }>({ rail: true })"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 320px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
-					<origam-drawer
-							:rail="state.rail"
-							permanent
-							data-cy="drawer-rail"
-							style="position: relative; height: 100%;"
-					>
-						<div style="padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-							<origam-btn :icon="MDI_ICONS.HOME" aria-label="Home"/>
-							<origam-btn :icon="MDI_ICONS.ACCOUNT" aria-label="Account"/>
-							<origam-btn :icon="MDI_ICONS.COG" aria-label="Settings"/>
-							<origam-btn :icon="MDI_ICONS.HELP_CIRCLE" aria-label="Help"/>
-						</div>
-					</origam-drawer>
-					<div style="flex: 1; padding: 16px;">Main content — toggle the rail above.</div>
+				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-drawer
+								:rail="state.rail"
+								permanent
+								data-cy="drawer-rail"
+						>
+							<div style="padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+								<origam-btn :icon="MDI_ICONS.HOME" aria-label="Home"/>
+								<origam-btn :icon="MDI_ICONS.ACCOUNT" aria-label="Account"/>
+								<origam-btn :icon="MDI_ICONS.COG" aria-label="Settings"/>
+								<origam-btn :icon="MDI_ICONS.HELP_CIRCLE" aria-label="Help"/>
+							</div>
+						</origam-drawer>
+						<origam-main style="padding: 16px;">
+							Main content — toggle the rail above.
+						</origam-main>
+					</origam-app>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -111,26 +123,29 @@
 		</Variant>
 
 		<!--
-			Location switcher: drawer can dock on any edge. Top /
-			bottom variants get a horizontal slide-y transition
-			automatically (see OrigamSlideY); left / right keep
-			slide-x.
+			Location switcher: drawer can dock on any edge. The slide
+			animation auto-adapts to the docking edge (translateY for
+			top/bottom, translateX for left/right) thanks to the
+			location-aware keyframes in OrigamDrawer's global style.
 		-->
 		<Variant
 				title="Location — left / right / top / bottom"
 				:init-state="() => useStoryInitState<{ location: 'left' | 'right' | 'top' | 'bottom' }>({ location: 'left' })"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 320px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
-					<origam-drawer
-							:location="state.location"
-							permanent
-							data-cy="drawer-location"
-							style="position: relative;"
-					>
-						<div style="padding: 16px;">location: <b>{{ state.location }}</b></div>
-					</origam-drawer>
-					<div style="flex: 1; padding: 16px;">Main content. Try every location.</div>
+				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-drawer
+								:location="state.location"
+								permanent
+								data-cy="drawer-location"
+						>
+							<div style="padding: 16px;">location: <b>{{ state.location }}</b></div>
+						</origam-drawer>
+						<origam-main style="padding: 16px;">
+							Main content. Try every location.
+						</origam-main>
+					</origam-app>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -154,59 +169,70 @@
 			version / sign-out at the bottom.
 		-->
 		<Variant title="Slots — prepend (header) + append (footer)">
-			<div style="position: relative; height: 360px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
-				<origam-drawer permanent data-cy="drawer-slots" style="position: relative; height: 100%;">
-					<template #prepend>
-						<div style="padding: 16px; font-weight: 700; border-bottom: 1px solid var(--origam-color-border-subtle, #ddd); display: flex; align-items: center; gap: 8px;">
-							<span style="font-size: 1.25rem;">⬡</span>
-							<span>App Logo</span>
+			<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<origam-app :full-height="false">
+					<origam-drawer permanent data-cy="drawer-slots">
+						<template #prepend>
+							<div style="padding: 16px; font-weight: 700; border-bottom: 1px solid var(--origam-color-border-subtle, #ddd); display: flex; align-items: center; gap: 8px;">
+								<span style="font-size: 1.25rem;">⬡</span>
+								<span>App Logo</span>
+							</div>
+						</template>
+						<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px;">
+							<span>· Inbox</span>
+							<span>· Sent</span>
+							<span>· Drafts</span>
+							<span>· Archive</span>
 						</div>
-					</template>
-					<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px;">
-						<span>· Inbox</span>
-						<span>· Sent</span>
-						<span>· Drafts</span>
-						<span>· Archive</span>
-					</div>
-					<template #append>
-						<div style="padding: 16px; border-top: 1px solid var(--origam-color-border-subtle, #ddd); font-size: 0.75rem; color: var(--origam-color-text-secondary);">
-							v1.0.0 — Signed in as user@example.com
-						</div>
-					</template>
-				</origam-drawer>
-				<div style="flex: 1; padding: 16px;">Main content</div>
+						<template #append>
+							<div style="padding: 16px; border-top: 1px solid var(--origam-color-border-subtle, #ddd); font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+								v1.0.0 — user@example.com
+							</div>
+						</template>
+					</origam-drawer>
+					<origam-main style="padding: 16px;">
+						Main content
+					</origam-main>
+				</origam-app>
 			</div>
 		</Variant>
 
 		<!--
-			Custom transition: override the default slide-x with a
-			fade or any other registered transition component.
-			Useful when the drawer is a side panel that overlaps
-			rather than slides in.
+			Custom transition: override the default drawer slide with
+			any other transition component (fade, slide-x, slide-y,
+			or none for instant open / close).
 		-->
 		<Variant
-				title="Custom transition (slide-x | slide-y | fade | none)"
-				:init-state="() => useStoryInitState<{ open: boolean; choice: string }>({ open: false, choice: 'slide-x' })"
+				title="Custom transition (drawer | slide-x | slide-y | fade | none)"
+				:init-state="() => useStoryInitState<{ open: boolean; choice: string }>({ open: false, choice: 'drawer' })"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 320px; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
-					<origam-btn
-							text="Toggle"
-							style="margin: 16px;"
-							data-cy="drawer-transition-toggle"
-							@click="state.open = !state.open"
-					/>
-					<origam-drawer
-							v-model="state.open"
-							temporary
-							:transition="resolveTransition(state.choice)"
-							data-cy="drawer-transition-custom"
-					>
-						<div style="padding: 16px;">
-							<p>Current transition: <b>{{ state.choice }}</b></p>
-							<origam-btn text="Close" @click="state.open = false"/>
-						</div>
-					</origam-drawer>
+				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-toolbar title="Custom transition">
+							<template #prepend>
+								<origam-btn
+										:icon="MDI_ICONS.MENU"
+										aria-label="Toggle drawer"
+										@click="state.open = !state.open"
+								/>
+							</template>
+						</origam-toolbar>
+						<origam-drawer
+								v-model="state.open"
+								temporary
+								:transition="resolveTransition(state.choice)"
+								data-cy="drawer-transition-custom"
+						>
+							<div style="padding: 16px;">
+								<p>Current transition: <b>{{ state.choice }}</b></p>
+								<origam-btn text="Close" @click="state.open = false"/>
+							</div>
+						</origam-drawer>
+						<origam-main style="padding: 16px;">
+							<p>Click ≡ then change the transition.</p>
+						</origam-main>
+					</origam-app>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -214,10 +240,11 @@
 						v-model="state.choice"
 						title="transition"
 						:options="[
-							{ label: 'slide-x (default)', value: 'slide-x' },
-							{ label: 'slide-y',           value: 'slide-y' },
-							{ label: 'fade',              value: 'fade' },
-							{ label: 'none',              value: 'none' }
+							{ label: 'drawer (default — full slide)', value: 'drawer' },
+							{ label: 'slide-x',                       value: 'slide-x' },
+							{ label: 'slide-y',                       value: 'slide-y' },
+							{ label: 'fade',                          value: 'fade' },
+							{ label: 'none',                          value: 'none' }
 						]"
 				/>
 				<HstCheckbox v-model="state.open" title="open"/>
@@ -258,15 +285,18 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 360px; display: flex; overflow: hidden; border: 1px solid var(--origam-color-border-subtle, #ccc);">
-					<origam-drawer
-							v-bind="state"
-							data-cy="drawer-playground"
-							style="position: relative; height: 100%;"
-					>
-						<div style="padding: 16px;">Drawer content</div>
-					</origam-drawer>
-					<div style="flex: 1; padding: 16px;">Main content area</div>
+				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-drawer
+								v-bind="state"
+								data-cy="drawer-playground"
+						>
+							<div style="padding: 16px;">Drawer content</div>
+						</origam-drawer>
+						<origam-main style="padding: 16px;">
+							Main content area
+						</origam-main>
+					</origam-app>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -317,11 +347,12 @@
 	// Map the HstSelect string options to the matching transition
 	// component / disable value the OrigamDrawer expects.
 	function resolveTransition (choice: string) {
-		if (choice === 'none') return false
+		if (choice === 'none')    return false
+		if (choice === 'drawer')  return 'origam-transition--drawer'
 		if (choice === 'slide-x') return { component: OrigamSlideX }
 		if (choice === 'slide-y') return { component: OrigamSlideY }
 		if (choice === 'fade')    return { component: OrigamFade }
-		return { component: OrigamSlideX }
+		return 'origam-transition--drawer'
 	}
 </script>
 
