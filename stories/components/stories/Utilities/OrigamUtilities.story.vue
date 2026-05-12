@@ -5,6 +5,48 @@
 			:layout="{ type: 'single', iframe: true }"
 	>
 
+		<!--
+			Utilities story: showcase of the global utility classes
+			emitted by Style Dictionary. There are no props, slots, or
+			emits — each Variant is one family of classes. We keep a
+			Playground first (the full kitchen-sink view) followed by
+			per-family Variants so consumers can drill into a single
+			axis at a time.
+		-->
+
+		<Variant title="Playground">
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<div>
+						<h4 style="margin: 0 0 8px;">Foreground color (.origam--color-*)</h4>
+						<div :style="rowStyle">
+							<div v-for="intent in intents" :key="`pg-fg-${intent}`" :class="`origam--color-${intent}`" :style="swatchStyle">.origam--color-{{ intent }}</div>
+						</div>
+					</div>
+					<div>
+						<h4 style="margin: 0 0 8px;">Background color (.origam--bg-*)</h4>
+						<div :style="rowStyle">
+							<div v-for="intent in intents" :key="`pg-bg-${intent}`" :class="`origam--bg-${intent}`" :style="swatchStyle">.origam--bg-{{ intent }}</div>
+						</div>
+					</div>
+					<div>
+						<h4 style="margin: 0 0 8px;">Elevation (.origam--shadow-*)</h4>
+						<div :style="rowStyle">
+							<div v-for="rung in shadows" :key="`pg-sh-${rung}`" :class="`origam--shadow-${rung}`" :style="swatchStyle">.origam--shadow-{{ rung }}</div>
+						</div>
+					</div>
+					<div>
+						<h4 style="margin: 0 0 8px;">Border radius (.origam--rounded-*)</h4>
+						<div :style="rowStyle">
+							<div v-for="rung in roundeds" :key="`pg-r-${rung}`" :class="`origam--rounded-${rung}`" :style="swatchStyle">.origam--rounded-{{ rung }}</div>
+						</div>
+					</div>
+				</div>
+			</template>
+		</Variant>
+
+		<!-- ── Per-utility-family showcases ─────────────────────────── -->
+
 		<Variant title="Foreground color (.origam--color-*)">
 			<template #default>
 				<div :style="rowStyle">

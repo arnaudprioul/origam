@@ -13,7 +13,9 @@
 			no visible chrome.
 		-->
 
-		<Variant title="Embedded in OrigamInfiniteScroll (real wiring)">
+		<!-- ── Playground ─────────────────────────────────────────────── -->
+
+		<Variant title="Playground">
 			<div style="padding: 24px;">
 				<origam-infinite-scroll
 						style="height: 300px; border: 1px solid var(--origam-color-border-subtle); border-radius: 8px;"
@@ -35,7 +37,9 @@
 			</div>
 		</Variant>
 
-		<Variant title="Both ends (intersect at top + bottom)">
+		<!-- ── Props ──────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — side='both' (intersect at top + bottom)">
 			<div style="padding: 24px;">
 				<origam-infinite-scroll
 						side="both"
@@ -50,7 +54,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Manual mode (load button instead of auto)">
+		<Variant title="Prop — mode='manual' (load button instead of auto)">
 			<div style="padding: 24px;">
 				<origam-infinite-scroll
 						mode="manual"
@@ -66,7 +70,9 @@
 			</div>
 		</Variant>
 
-		<Variant title="Note about the raw sentinel">
+		<!-- ── Notes ─────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — note (usage guidance)">
 			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
 				<p>
 					<code>&lt;origam-infinite-scroll-intersect&gt;</code> is normally

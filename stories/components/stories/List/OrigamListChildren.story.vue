@@ -13,7 +13,7 @@
 
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
-		<Variant title="Playground — nested (most realistic form)">
+		<Variant title="Playground">
 			<!-- ListChildren is driven by items from the parent list context; this variant shows the realistic integration -->
 			<origam-list :items="nestedItems" data-cy="list-children-playground"/>
 		</Variant>

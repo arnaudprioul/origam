@@ -12,7 +12,7 @@
 
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
-		<Variant title="Playground — multiple groups (independent activators)">
+		<Variant title="Playground">
 			<!-- ListGroupActivator is normally rendered automatically by ListGroup via the title prop -->
 			<origam-list data-cy="list-group-activator-playground">
 				<origam-list-group title="Mail" :prepend-icon="MDI_ICONS.EMAIL_OUTLINE">
