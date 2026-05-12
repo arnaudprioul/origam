@@ -35,6 +35,34 @@
 		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant
+				title="Prop — content (text · image · icon)"
+				:init-state="() => useStoryInitState<{ text: string, image: string, icon: string }>({
+					text: 'AP',
+					image: 'https://i.pravatar.cc/120?img=12',
+					icon: MDI_ICONS.ACCOUNT
+				})"
+		>
+			<!--
+				The three ways to fill an Avatar — text initials,
+				remote image, or icon glyph. The default image is a
+				public placeholder from pravatar.cc; the icon defaults
+				to mdi-account.
+			-->
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-avatar :text="state.text" bg-color="primary"/>
+					<origam-avatar :image="state.image"/>
+					<origam-avatar :icon="state.icon" bg-color="primary"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText   v-model="state.text"  title="text"/>
+				<HstText   v-model="state.image" title="image (URL)"/>
+				<HstSelect v-model="state.icon"  title="icon" :options="iconList"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — size"
 				:init-state="() => useStoryInitState<ISizeProps>({})"
 		>
@@ -186,6 +214,7 @@
 	import {
 		densityList,
 		elevationList,
+		iconList,
 		intentList,
 		roundedList,
 		sizeList,

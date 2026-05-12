@@ -20,7 +20,7 @@
 				<origam-ligature-icon v-bind="state"/>
 			</template>
 			<template #controls="{ state }">
-				<HstText   v-model="state.icon" title="icon (ligature name)"/>
+				<HstSelect v-model="state.icon" title="icon (ligature)" :options="ligatureList"/>
 				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
 				<HstSelect v-model="state.tag"  title="tag"  :options="tagList"/>
 			</template>
@@ -36,7 +36,7 @@
 				<origam-ligature-icon :icon="state.icon"/>
 			</template>
 			<template #controls="{ state }">
-				<HstText v-model="state.icon" title="icon (ligature name)"/>
+				<HstSelect v-model="state.icon" title="icon (ligature)" :options="ligatureList"/>
 			</template>
 		</Variant>
 
@@ -105,10 +105,32 @@
 		setup
 >
 	import { OrigamLigatureIcon } from '@origam/components'
-	import type { IIconComponentProps, ISizeProps } from '@origam/interfaces'
+	import type { IIconComponentProps, IOptions, ISizeProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { sizeList, tagList } from '@stories/const'
+
+	// Material Symbols / Material Icons font ligatures — these are
+	// font-rendered character names, NOT MDI class names. Keep a
+	// curated list of the common ones consumers reach for.
+	const ligatureList: Array<IOptions<string>> = [
+		{ label: 'home',           value: 'home' },
+		{ label: 'favorite',       value: 'favorite' },
+		{ label: 'settings',       value: 'settings' },
+		{ label: 'account_circle', value: 'account_circle' },
+		{ label: 'search',         value: 'search' },
+		{ label: 'close',          value: 'close' },
+		{ label: 'menu',           value: 'menu' },
+		{ label: 'delete',         value: 'delete' },
+		{ label: 'star',           value: 'star' },
+		{ label: 'add',            value: 'add' },
+		{ label: 'check',          value: 'check' },
+		{ label: 'edit',           value: 'edit' },
+		{ label: 'arrow_back',     value: 'arrow_back' },
+		{ label: 'arrow_forward',  value: 'arrow_forward' },
+		{ label: 'cloud_upload',   value: 'cloud_upload' },
+		{ label: 'cloud_download', value: 'cloud_download' },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/Icon/OrigamLigatureIcon.md"/>
