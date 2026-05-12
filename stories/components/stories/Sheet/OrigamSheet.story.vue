@@ -3,24 +3,59 @@
 			group="components"
 			title="Sheet/OrigamSheet"
 	>
+		<!--
+			Playground — first variant by convention. Surfaces every
+			ISheetProps knob via the sidebar controls.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ISheetProps>({
+					color: undefined,
+					bgColor: undefined,
+					elevation: undefined,
+					rounded: undefined,
+					position: undefined,
+					width: undefined,
+					height: undefined,
+					tag: 'div'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-sheet v-bind="state" style="padding: 16px;">
+					Playground sheet
+				</origam-sheet>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
+				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
+				<HstSelect   v-model="state.position"  title="position"  :options="positionList"/>
+				<HstNumber   v-model="state.width"     title="width"/>
+				<HstNumber   v-model="state.height"    title="height"/>
+				<HstSelect   v-model="state.tag"       title="tag"       :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({})"
 		>
 			<template #default="{ state }">
 				<origam-sheet v-bind="state" style="padding: 16px;">
-					Sheet
+					color={{ state.color ?? '(unset)' }}, bgColor={{ state.bgColor ?? '(unset)' }}
 				</origam-sheet>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Elevation"
+				title="Prop — elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({})"
 		>
 			<template #default="{ state }">
@@ -34,7 +69,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
 		>
 			<template #default="{ state }">
@@ -48,7 +83,7 @@
 		</Variant>
 
 		<Variant
-				title="Position"
+				title="Prop — position"
 				:init-state="() => useStoryInitState<{ position?: TPosition }>({ position: undefined })"
 		>
 			<template #default="{ state }">
@@ -70,7 +105,7 @@
 		</Variant>
 
 		<Variant
-				title="Dimension"
+				title="Prop — width & height"
 				:init-state="() => useStoryInitState<IDimensionProps>({ width: 240, height: 120 })"
 		>
 			<template #default="{ state }">
@@ -79,15 +114,15 @@
 				</origam-sheet>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber v-model="state.width"  title="width"/>
-				<HstNumber v-model="state.height" title="height"/>
+				<HstNumber v-model="state.width"     title="width"/>
+				<HstNumber v-model="state.height"    title="height"/>
 				<HstNumber v-model="state.minWidth"  title="minWidth"/>
 				<HstNumber v-model="state.maxWidth"  title="maxWidth"/>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Modifiers"
+				title="Prop — border & rounded (modifiers)"
 				:init-state="() => useStoryInitState<{
 					border?: boolean
 					rounded?: boolean
@@ -95,7 +130,7 @@
 		>
 			<template #default="{ state }">
 				<origam-sheet v-bind="state" style="padding: 16px;">
-					Modifiers
+					border={{ state.border ?? false }}, rounded={{ state.rounded ?? false }}
 				</origam-sheet>
 			</template>
 			<template #controls="{ state }">
@@ -105,7 +140,7 @@
 		</Variant>
 
 		<Variant
-				title="Tag"
+				title="Prop — tag"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
 		>
 			<template #default="{ state }">
@@ -118,15 +153,8 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-sheet border rounded style="padding: 16px;">
-				<strong>Custom default slot</strong>
-				<p>Anything goes inside a sheet.</p>
-			</origam-sheet>
-		</Variant>
-
 		<Variant
-				title="Bottom — swipeable"
+				title="Prop — swipeable (bottom sheet)"
 				:init-state="() => useStoryInitState<{
 					defaultSnap: 'closed' | 'peek' | 'half' | 'full'
 					persistent: boolean
@@ -175,34 +203,13 @@
 			</template>
 		</Variant>
 
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ISheetProps>({
-					color: undefined,
-					bgColor: undefined,
-					elevation: undefined,
-					rounded: undefined,
-					position: undefined,
-					width: undefined,
-					height: undefined,
-					tag: 'div'
-				})"
-		>
-			<template #default="{ state }">
-				<origam-sheet v-bind="state" style="padding: 16px;">
-					Playground sheet
-				</origam-sheet>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.color"     title="color"     :options="colorList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="colorList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.position"  title="position"  :options="positionList"/>
-				<HstNumber   v-model="state.width"     title="width"/>
-				<HstNumber   v-model="state.height"    title="height"/>
-				<HstSelect   v-model="state.tag"       title="tag"       :options="tagList"/>
-			</template>
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-sheet border rounded style="padding: 16px;">
+				<strong>Custom default slot</strong>
+				<p>Anything goes inside a sheet.</p>
+			</origam-sheet>
 		</Variant>
 	</Story>
 </template>
@@ -223,8 +230,8 @@
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		colorList,
 		elevationList,
+		intentList,
 		positionList,
 		roundedList,
 		tagList
