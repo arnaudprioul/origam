@@ -3,9 +3,60 @@
 			group="components"
 			title="ExpansionPanel/OrigamExpansionPanels"
 	>
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IExpansionPanelsProps knob via the sidebar controls.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IExpansionPanelsProps>({
+					density: DENSITY.DEFAULT,
+					color: undefined,
+					bgColor: undefined,
+					rounded: undefined,
+					border: false,
+					elevation: undefined,
+					flat: false,
+					accordion: false,
+					inset: false,
+					popout: false,
+					multiple: false,
+					mandatory: false,
+					hideActions: false,
+					expandIcon: MDI_ICONS.CHEVRON_DOWN,
+					collapseIcon: MDI_ICONS.CHEVRON_UP,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-expansion-panels v-bind="state" data-cy="expansion-playground">
+					<origam-expansion-panel title="Panel 1" content="Content 1"/>
+					<origam-expansion-panel title="Panel 2" content="Content 2"/>
+					<origam-expansion-panel title="Panel 3" content="Content 3"/>
+				</origam-expansion-panels>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.density"      title="density"      :options="densityList"/>
+				<HstSelect   v-model="state.color"        title="color"        :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
+				<HstSelect   v-model="state.rounded"      title="rounded"      :options="roundedList"/>
+				<HstSelect   v-model="state.elevation"    title="elevation"    :options="elevationList"/>
+				<HstSelect   v-model="state.expandIcon"   title="expandIcon"   :options="iconList"/>
+				<HstSelect   v-model="state.collapseIcon" title="collapseIcon" :options="iconList"/>
+				<HstCheckbox v-model="state.border"       title="border"/>
+				<HstCheckbox v-model="state.flat"         title="flat"/>
+				<HstCheckbox v-model="state.accordion"    title="accordion"/>
+				<HstCheckbox v-model="state.inset"        title="inset"/>
+				<HstCheckbox v-model="state.popout"       title="popout"/>
+				<HstCheckbox v-model="state.multiple"     title="multiple"/>
+				<HstCheckbox v-model="state.mandatory"    title="mandatory"/>
+				<HstCheckbox v-model="state.hideActions"  title="hideActions"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -21,7 +72,7 @@
 		</Variant>
 
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -36,7 +87,7 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
+				title="Prop — rounded"
 				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
@@ -51,7 +102,7 @@
 		</Variant>
 
 		<Variant
-				title="Border"
+				title="Prop — border"
 				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
 		>
 			<template #default="{ state }">
@@ -66,7 +117,7 @@
 		</Variant>
 
 		<Variant
-				title="Elevation"
+				title="Prop — elevation"
 				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
 		>
 			<template #default="{ state }">
@@ -81,7 +132,7 @@
 		</Variant>
 
 		<Variant
-				title="Icons"
+				title="Prop — expandIcon & collapseIcon"
 				:init-state="() => useStoryInitState<{ expandIcon?: TIcon, collapseIcon?: TIcon, hideActions: boolean }>({ expandIcon: MDI_ICONS.CHEVRON_DOWN, collapseIcon: MDI_ICONS.CHEVRON_UP, hideActions: false })"
 		>
 			<template #default="{ state }">
@@ -103,7 +154,7 @@
 		</Variant>
 
 		<Variant
-				title="Layout"
+				title="Prop — flat, accordion, popout & inset"
 				:init-state="() => useStoryInitState<{ flat: boolean, accordion: boolean, popout: boolean, inset: boolean }>({ flat: false, accordion: false, popout: false, inset: false })"
 		>
 			<template #default="{ state }">
@@ -128,7 +179,7 @@
 		</Variant>
 
 		<Variant
-				title="Selection"
+				title="Prop — multiple & mandatory (selection)"
 				:init-state="() => useStoryInitState<{ multiple: boolean, mandatory: boolean }>({ multiple: false, mandatory: false })"
 		>
 			<template #default="{ state }">
@@ -148,9 +199,11 @@
 			</template>
 		</Variant>
 
-		<Variant title="Items prop">
+		<Variant title="Prop — items">
 			<origam-expansion-panels :items="panelItems" data-cy="expansion-items"/>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
 			<origam-expansion-panels data-cy="expansion-slot-default">
@@ -219,76 +272,50 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<Variant title="Emit — update:modelValue">
-			<origam-expansion-panels
-					data-cy="expansion-emit-model"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			>
-				<origam-expansion-panel title="Panel 1" content="Click to fire emit"/>
-				<origam-expansion-panel title="Panel 2" content="Click to fire emit"/>
-			</origam-expansion-panels>
-		</Variant>
+		<!-- ── Emits ────────────────────────────────────────────────── -->
 
-		<Variant title="Emit — group:selected">
-			<origam-expansion-panels data-cy="expansion-emit-selected">
-				<origam-expansion-panel
-						title="Select me"
-						content="Content"
-						data-cy="expansion-emit-selected-p1"
-						@group:selected="logEvent('group:selected', $event)"
-				/>
-				<origam-expansion-panel
-						title="Or me"
-						content="Content"
-						data-cy="expansion-emit-selected-p2"
-						@group:selected="logEvent('group:selected', $event)"
-				/>
-			</origam-expansion-panels>
+		<Variant
+				title="Emit — update:modelValue"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+		>
+			<template #default="{ state }">
+				<origam-expansion-panels
+						data-cy="expansion-emit-model"
+						@update:model-value="(v: any) => { state.log = [`update:modelValue → ${JSON.stringify(v)}`, ...state.log].slice(0, 5) }"
+				>
+					<origam-expansion-panel title="Panel 1" content="Click to fire emit"/>
+					<origam-expansion-panel title="Panel 2" content="Click to fire emit"/>
+				</origam-expansion-panels>
+				<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
+					<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+				</ul>
+				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click a panel header to fire the event.</p>
+			</template>
 		</Variant>
 
 		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IExpansionPanelsProps>({
-					density: DENSITY.DEFAULT,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					border: false,
-					elevation: undefined,
-					flat: false,
-					accordion: false,
-					inset: false,
-					popout: false,
-					multiple: false,
-					mandatory: false,
-					hideActions: false,
-					expandIcon: MDI_ICONS.CHEVRON_DOWN,
-					collapseIcon: MDI_ICONS.CHEVRON_UP,
-				})"
+				title="Emit — group:selected"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
 		>
 			<template #default="{ state }">
-				<origam-expansion-panels v-bind="state" data-cy="expansion-playground">
-					<origam-expansion-panel title="Panel 1" content="Content 1"/>
-					<origam-expansion-panel title="Panel 2" content="Content 2"/>
-					<origam-expansion-panel title="Panel 3" content="Content 3"/>
+				<origam-expansion-panels data-cy="expansion-emit-selected">
+					<origam-expansion-panel
+							title="Select me"
+							content="Content"
+							data-cy="expansion-emit-selected-p1"
+							@group:selected="(e: any) => { state.log = [`group:selected → ${JSON.stringify(e)}`, ...state.log].slice(0, 5) }"
+					/>
+					<origam-expansion-panel
+							title="Or me"
+							content="Content"
+							data-cy="expansion-emit-selected-p2"
+							@group:selected="(e: any) => { state.log = [`group:selected → ${JSON.stringify(e)}`, ...state.log].slice(0, 5) }"
+					/>
 				</origam-expansion-panels>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"      title="density"      :options="densityList"/>
-				<HstSelect   v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-				<HstSelect   v-model="state.rounded"      title="rounded"      :options="roundedList"/>
-				<HstSelect   v-model="state.elevation"    title="elevation"    :options="elevationList"/>
-				<HstSelect   v-model="state.expandIcon"   title="expandIcon"   :options="iconList"/>
-				<HstSelect   v-model="state.collapseIcon" title="collapseIcon" :options="iconList"/>
-				<HstCheckbox v-model="state.border"       title="border"/>
-				<HstCheckbox v-model="state.flat"         title="flat"/>
-				<HstCheckbox v-model="state.accordion"    title="accordion"/>
-				<HstCheckbox v-model="state.inset"        title="inset"/>
-				<HstCheckbox v-model="state.popout"       title="popout"/>
-				<HstCheckbox v-model="state.multiple"     title="multiple"/>
-				<HstCheckbox v-model="state.mandatory"    title="mandatory"/>
-				<HstCheckbox v-model="state.hideActions"  title="hideActions"/>
+				<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
+					<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+				</ul>
+				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click a panel header.</p>
 			</template>
 		</Variant>
 	</Story>
@@ -298,8 +325,6 @@
 		lang="ts"
 		setup
 >
-	import { logEvent } from 'histoire/client'
-
 	import {
 		OrigamExpansionPanel,
 		OrigamExpansionPanelHeader,

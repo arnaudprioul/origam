@@ -3,10 +3,51 @@
 			group="components"
 			title="ExpansionPanel/OrigamExpansionPanel"
 	>
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IExpansionPanelProps knob via the sidebar controls.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IExpansionPanelProps>({
+					title: 'Panel title',
+					content: 'Panel content text',
+					color: undefined,
+					bgColor: undefined,
+					density: undefined,
+					rounded: undefined,
+					expandIcon: MDI_ICONS.CHEVRON_DOWN,
+					collapseIcon: MDI_ICONS.CHEVRON_UP,
+					hideActions: false,
+					readonly: false,
+					disabled: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-expansion-panels>
+					<origam-expansion-panel v-bind="state" data-cy="ep-playground"/>
+				</origam-expansion-panels>
+			</template>
+			<template #controls="{ state }">
+				<HstText     v-model="state.title"        title="title"/>
+				<HstText     v-model="state.content"      title="content"/>
+				<HstSelect   v-model="state.color"        title="color"        :options="intentList"/>
+				<HstSelect   v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
+				<HstSelect   v-model="state.density"      title="density"      :options="densityList"/>
+				<HstSelect   v-model="state.rounded"      title="rounded"      :options="roundedList"/>
+				<HstSelect   v-model="state.expandIcon"   title="expandIcon"   :options="iconList"/>
+				<HstSelect   v-model="state.collapseIcon" title="collapseIcon" :options="iconList"/>
+				<HstCheckbox v-model="state.hideActions"  title="hideActions"/>
+				<HstCheckbox v-model="state.readonly"     title="readonly"/>
+				<HstCheckbox v-model="state.disabled"     title="disabled"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IExpansionPanelProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
@@ -20,8 +61,8 @@
 		</Variant>
 
 		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IExpansionPanelProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
@@ -34,8 +75,8 @@
 		</Variant>
 
 		<Variant
-				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<IExpansionPanelProps>({ rounded: true })"
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
@@ -48,7 +89,7 @@
 		</Variant>
 
 		<Variant
-				title="Header props"
+				title="Prop — expandIcon, collapseIcon & hideActions"
 				:init-state="() => useStoryInitState<{ expandIcon?: TIcon, collapseIcon?: TIcon, hideActions: boolean, readonly: boolean, focusable: boolean }>({ expandIcon: MDI_ICONS.CHEVRON_DOWN, collapseIcon: MDI_ICONS.CHEVRON_UP, hideActions: false, readonly: false, focusable: false })"
 		>
 			<template #default="{ state }">
@@ -75,7 +116,7 @@
 		</Variant>
 
 		<Variant
-				title="States"
+				title="Prop — disabled"
 				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: false })"
 		>
 			<template #default="{ state }">
@@ -88,6 +129,48 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
 		</Variant>
+
+		<Variant
+				title="Prop — loading (interactive)"
+				:init-state="() => useStoryInitState({
+					enabled: true,
+					kind: 'line',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; max-width: 480px;">
+					<origam-expansion-panels :model-value="[0]" multiple>
+						<origam-expansion-panel
+								:loading="resolveEpLoading(state)"
+								title="Interactive loading panel"
+								content="Panel body content goes here."
+								data-cy="ep-loading-interactive"
+						/>
+					</origam-expansion-panels>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeEpLoading(state) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
+				<HstSelect
+						v-model="state.kind"
+						title="kind"
+						:options="[
+							{ label: 'true (default)', value: 'bool' },
+							{ label: 'number', value: 'number' },
+							{ label: '{ type: line }', value: 'line' },
+							{ label: '{ type: circular }', value: 'circular' },
+							{ label: '{ type: skeleton }', value: 'skeleton' }
+						]"
+				/>
+				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
+				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default (content)">
 			<origam-expansion-panels>
@@ -133,110 +216,25 @@
 			</origam-expansion-panels>
 		</Variant>
 
-		<Variant title="Emit — group:selected">
-			<origam-expansion-panels>
-				<origam-expansion-panel
-						title="Select me"
-						content="Content"
-						data-cy="ep-emit-selected"
-						@group:selected="logEvent('group:selected', $event)"
-				/>
-			</origam-expansion-panels>
-		</Variant>
+		<!-- ── Emits ────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Loading — interactive"
-				:init-state="() => useStoryInitState({
-					enabled: true,
-					kind: 'line',
-					progress: 42,
-					circularSize: 24
-				})"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; max-width: 480px;">
-					<origam-expansion-panels :model-value="[0]" multiple>
-						<origam-expansion-panel
-								:loading="resolveEpLoading(state)"
-								title="Interactive loading panel"
-								content="Panel body content goes here."
-								data-cy="ep-loading-interactive"
-						/>
-					</origam-expansion-panels>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeEpLoading(state) }}</pre>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
-				<HstSelect
-						v-model="state.kind"
-						title="kind"
-						:options="[
-							{ label: 'true (default)', value: 'bool' },
-							{ label: 'number', value: 'number' },
-							{ label: '{ type: line }', value: 'line' },
-							{ label: '{ type: circular }', value: 'circular' },
-							{ label: '{ type: skeleton }', value: 'skeleton' }
-						]"
-				/>
-				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
-				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
-			</template>
-		</Variant>
-
-		<Variant title="Loading shapes">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-				<origam-expansion-panels :model-value="[0]" multiple>
-					<origam-expansion-panel loading title="loading={true}" content="Loading panel content here." data-cy="ep-loading-bool"/>
-				</origam-expansion-panels>
-				<origam-expansion-panels :model-value="[0]" multiple>
-					<origam-expansion-panel :loading="42" title="loading={42}" content="Loading panel content here." data-cy="ep-loading-number"/>
-				</origam-expansion-panels>
-				<origam-expansion-panels :model-value="[0]" multiple>
-					<origam-expansion-panel :loading="{ type: 'line' }" title="loading={ type: 'line' }" content="Loading panel content here." data-cy="ep-loading-line"/>
-				</origam-expansion-panels>
-				<origam-expansion-panels :model-value="[0]" multiple>
-					<origam-expansion-panel :loading="{ type: 'circular' }" title="loading={ type: 'circular' }" content="Loading panel content here." data-cy="ep-loading-circular"/>
-				</origam-expansion-panels>
-				<origam-expansion-panels :model-value="[0]" multiple>
-					<origam-expansion-panel :loading="{ type: 'skeleton' }" title="loading={ type: 'skeleton' }" data-cy="ep-loading-skeleton"/>
-				</origam-expansion-panels>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IExpansionPanelProps>({
-					title: 'Panel title',
-					content: 'Panel content text',
-					color: undefined,
-					bgColor: undefined,
-					density: undefined,
-					rounded: undefined,
-					expandIcon: MDI_ICONS.CHEVRON_DOWN,
-					collapseIcon: MDI_ICONS.CHEVRON_UP,
-					hideActions: false,
-					readonly: false,
-					disabled: false,
-				})"
+				title="Emit — group:selected"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel v-bind="state" data-cy="ep-playground"/>
+					<origam-expansion-panel
+							title="Select me"
+							content="Content"
+							data-cy="ep-emit-selected"
+							@group:selected="(e: any) => { state.log = [`group:selected → ${JSON.stringify(e)}`, ...state.log].slice(0, 5) }"
+					/>
 				</origam-expansion-panels>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.title"        title="title"/>
-				<HstText     v-model="state.content"      title="content"/>
-				<HstSelect   v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-				<HstSelect   v-model="state.density"      title="density"      :options="densityList"/>
-				<HstSelect   v-model="state.rounded"      title="rounded"      :options="roundedList"/>
-				<HstSelect   v-model="state.expandIcon"   title="expandIcon"   :options="iconList"/>
-				<HstSelect   v-model="state.collapseIcon" title="collapseIcon" :options="iconList"/>
-				<HstCheckbox v-model="state.hideActions"  title="hideActions"/>
-				<HstCheckbox v-model="state.readonly"     title="readonly"/>
-				<HstCheckbox v-model="state.disabled"     title="disabled"/>
+				<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
+					<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+				</ul>
+				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click the panel header to fire the event.</p>
 			</template>
 		</Variant>
 	</Story>
@@ -246,15 +244,14 @@
 		lang="ts"
 		setup
 >
-	import { logEvent } from 'histoire/client'
-
-	import { OrigamExpansionPanel, OrigamExpansionPanels, OrigamIcon } from '@origam/components'
+	import {
+		OrigamExpansionPanel,
+		OrigamExpansionPanels,
+		OrigamIcon
+	} from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type {
-		IColorProps,
-		IDensityProps,
-		IExpansionPanelProps,
-		IRoundedProps
+		IExpansionPanelProps
 	} from '@origam/interfaces'
 	import type { TIcon, TLoadingValue } from '@origam/types'
 
