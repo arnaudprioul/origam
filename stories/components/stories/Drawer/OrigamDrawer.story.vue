@@ -340,7 +340,7 @@
 		-->
 		<Variant
 				title="Playground"
-				:init-state="() => useStoryInitState<IDrawerProps>({
+				:init-state="() => useStoryInitState<IDrawerProps & { push: boolean | null, clipped: boolean | null }>({
 					permanent: true,
 					temporary: false,
 					rail: false,
@@ -348,12 +348,19 @@
 					width: 256,
 					location: 'left',
 					scrim: true,
-					modelValue: true
+					modelValue: true,
+					push: null,
+					clipped: null
 				})"
 		>
 			<template #default="{ state }">
 				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
 					<origam-app :full-height="false">
+						<origam-app-bar title="My App">
+							<template #prepend>
+								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Menu"/>
+							</template>
+						</origam-app-bar>
 						<origam-drawer
 								v-bind="state"
 								data-cy="drawer-playground"
@@ -361,7 +368,7 @@
 							<div style="padding: 16px;">Drawer content</div>
 						</origam-drawer>
 						<origam-main>
-							Main content area
+							<p style="padding: 16px;">Main content area</p>
 						</origam-main>
 					</origam-app>
 				</div>
@@ -382,6 +389,24 @@
 							{ label: 'right',  value: 'right' },
 							{ label: 'top',    value: 'top' },
 							{ label: 'bottom', value: 'bottom' }
+						]"
+				/>
+				<HstSelect
+						v-model="state.push"
+						title="push"
+						:options="[
+							{ label: 'auto (permanent → push, else overlay)', value: null },
+							{ label: 'true — drawer pushes content',          value: true },
+							{ label: 'false — drawer overlays content',       value: false }
+						]"
+				/>
+				<HstSelect
+						v-model="state.clipped"
+						title="clipped"
+						:options="[
+							{ label: 'auto (HTML order — AppBar before → below)', value: null },
+							{ label: 'true — drawer slots BELOW the AppBar',      value: true },
+							{ label: 'false — drawer extends full height',        value: false }
 						]"
 				/>
 			</template>

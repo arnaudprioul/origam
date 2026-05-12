@@ -102,7 +102,7 @@
 
 	import type { IDrawerProps } from '../../interfaces'
 
-	import { getUid, int } from "../../utils"
+	import { int } from "../../utils"
 
 	/*********************************************************
 	 * Global
@@ -119,6 +119,10 @@
 		width: 256,
 		location: INLINE.LEFT,
 		modelValue: true,
+		// `null` (NOT undefined / false) so Vue's boolean prop coercion
+		// doesn't silently force the heuristic off. See IDrawerProps doc.
+		push: null,
+		clipped: null,
 		// Default enter / leave animation: the drawer slides its FULL
 		// width in / out of view. The matching `origam-transition--drawer-*`
 		// keyframes live in OrigamDrawer.vue's global <style> block at
@@ -234,13 +238,54 @@
 		return isDragging.value ? size * dragProgress.value : size
 	})
 
+	// ── Push / clipped resolution ─────────────────────────────────
+	//
+	// `push`: does the drawer reserve space in the layout grid (push
+	//          adjacent toolbar / main / footer) or overlay them?
+	//   • explicit prop wins
+	//   • else: permanent drawers push, temporary drawers overlay
+	//
+	// `clipped`: does the drawer slot BELOW the AppBar (and any other
+	//            top-anchored layout item) or extend full-height
+	//            (covering the AppBar from the left)?
+	//   • explicit prop wins
+	//   • else: HTML declaration order decides
+	//     (AppBar before Drawer → clipped; Drawer before AppBar → full-height)
+	//
+	// Effective order:
+	//   • clipped=true  → bump order to 1 so drawer comes AFTER any
+	//                     AppBar registered at order 0
+	//   • clipped=false → keep order 0 so drawer comes BEFORE the AppBar
+	//   • default (undefined) → 0 + natural HTML order via
+	//     `registered.value` insertion (top items at index < drawer index
+	//     will register first)
+	const isPushing = computed<boolean>(() => {
+		// `null` means "not set by consumer" — fall back to heuristic
+		// (permanent drawers push, temporary drawers overlay).
+		// `true` / `false` is the explicit consumer choice.
+		if (props.push === null || props.push === undefined) {
+			return !!props.permanent && !props.temporary
+		}
+		return !!props.push
+	})
+	const layoutOrder = computed(() => {
+		const explicit = int(props.order as string)
+		if (Number.isFinite(explicit)) return explicit
+		if (props.clipped === true)  return 1
+		if (props.clipped === false) return 0
+		return 0 // HTML order decides via registered.value insertion
+	})
+
 	const {layoutItemStyles, layoutItemScrimStyles, layoutId} = useLayoutItem({
 		id: props.name,
-		order: computed(() => int(props.order as string || getUid().toString() as string)),
+		order: layoutOrder,
 		position: location,
 		layoutSize,
 		elementSize: width,
-		active: computed(() => isActive.value || isDragging.value) as ComputedRef<boolean>,
+		// `active` controls whether the layout reserves space. When
+		// `push` is false we force false here so the drawer paints
+		// over its surroundings without offsetting them.
+		active: computed(() => (isActive.value || isDragging.value) && isPushing.value) as ComputedRef<boolean>,
 		disableTransitions: computed(() => isDragging.value),
 		absolute: computed(() =>
 				props.absolute || (isSticky.value && typeof isStuck.value !== 'string')
