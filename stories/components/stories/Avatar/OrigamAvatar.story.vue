@@ -15,8 +15,7 @@
 					rounded: undefined,
 					border: false,
 					elevation: undefined,
-					bgColor: 'primary',
-					status: undefined
+					bgColor: 'primary'
 				})"
 		>
 			<template #default="{ state }">
@@ -30,7 +29,6 @@
 				<HstCheckbox v-model="state.border"    title="border"/>
 				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
 				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.status"    title="status"    :options="statusList"/>
 			</template>
 		</Variant>
 
@@ -66,18 +64,6 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
 				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — status"
-				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'success' })"
-		>
-			<template #default="{ state }">
-				<origam-avatar :status="state.status" text="OK"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.status" title="status" :options="statusList"/>
 			</template>
 		</Variant>
 
@@ -187,16 +173,14 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamAvatar } from '@origam/components'
-	import { MDI_ICONS, STATUS } from '@origam/enums'
+	import { MDI_ICONS } from '@origam/enums'
 	import type {
 		IAvatarProps,
 		IColorProps,
 		IDensityProps,
-		IOptions,
 		IRoundedProps,
 		ISizeProps
 	} from '@origam/interfaces'
-	import type { TStatus } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
@@ -207,14 +191,6 @@
 		sizeList,
 		tagList
 	} from '@stories/const'
-
-	const statusList: Array<IOptions<TStatus>> = [
-		{ label: '(none)', value: undefined },
-		{ label: 'Success', value: STATUS.SUCCESS },
-		{ label: 'Warning', value: STATUS.WARNING },
-		{ label: 'Error',   value: STATUS.ERROR },
-		{ label: 'Info',    value: STATUS.INFO }
-	]
 </script>
 
 <docs lang="md" src="@docs/components/Avatar/OrigamAvatar.md"/>

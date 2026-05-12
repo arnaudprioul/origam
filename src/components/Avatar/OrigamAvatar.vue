@@ -63,7 +63,6 @@
 		useProps,
 		useRounded,
 		useSize,
-		useStatus,
 		useStyle
 	} from '../../composables'
 
@@ -147,12 +146,6 @@
 	})
 
 	/*********************************************************
-	 * Icon
-	 ********************************************************/
-
-	const {statusClasses} = useStatus(props)
-
-	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -192,7 +185,6 @@
 			paddingClasses.value,
 			marginClasses.value,
 			sizeClasses.value,
-			statusClasses.value,
 			elevationClasses.value,
 			hoverClasses.value,
 			activeClasses.value,
