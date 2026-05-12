@@ -3,19 +3,62 @@
 			group="components"
 			title="Picker/OrigamPicker"
 	>
-		<Variant title="Default">
+		<!--
+			Playground — first by convention. All main IPickerProps knobs
+			wired via the sidebar.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IPickerProps>({
+					title: 'Playground',
+					landscape: false,
+					hideHeader: false,
+					rounded: undefined,
+					elevation: undefined,
+					color: undefined,
+					bgColor: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-picker v-bind="state" data-cy="picker-playground">
+					<template v-if="!state.hideHeader" #header>
+						<div style="padding: 12px 16px; background: var(--origam-color-surface-overlay, #f3f3f3);">
+							Header zone
+						</div>
+					</template>
+					<div style="padding: 12px 16px;">Body content.</div>
+					<template #actions>
+						<origam-btn variant="text" text="Cancel"/>
+						<origam-btn text="Save"/>
+					</template>
+				</origam-picker>
+			</template>
+			<template #controls="{ state }">
+				<HstText v-model="state.title" title="title"/>
+				<HstCheckbox v-model="state.landscape"  title="landscape"/>
+				<HstCheckbox v-model="state.hideHeader" title="hideHeader"/>
+				<HstSelect v-model="state.rounded"   title="rounded"   :options="roundedList"/>
+				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstSelect v-model="state.color"     title="color"     :options="colorList"/>
+				<HstSelect v-model="state.bgColor"   title="bgColor"   :options="colorList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — title">
 			<origam-picker title="Pick something" data-cy="picker-default">
 				<p data-cy="picker-default-body">Body content lives in the default slot.</p>
 			</origam-picker>
 		</Variant>
 
 		<Variant
-				title="Title prop"
+				title="Prop — title (editable)"
 				:init-state="() => useStoryInitState<{ title: string }>({ title: 'Pick a date' })"
 		>
 			<template #default="{ state }">
 				<origam-picker :title="state.title" data-cy="picker-title-prop">
-					<p>Body</p>
+					<p style="padding: 12px 16px;">Body</p>
 				</origam-picker>
 			</template>
 			<template #controls="{ state }">
@@ -24,7 +67,7 @@
 		</Variant>
 
 		<Variant
-				title="Hide header"
+				title="Prop — hideHeader"
 				:init-state="() => useStoryInitState<{ hideHeader: boolean }>({ hideHeader: true })"
 		>
 			<template #default="{ state }">
@@ -33,7 +76,7 @@
 						:hide-header="state.hideHeader"
 						data-cy="picker-hide-header"
 				>
-					<p>Bodyless picker example.</p>
+					<p style="padding: 12px 16px;">Bodyless picker example.</p>
 				</origam-picker>
 			</template>
 			<template #controls="{ state }">
@@ -42,7 +85,7 @@
 		</Variant>
 
 		<Variant
-				title="Landscape"
+				title="Prop — landscape"
 				:init-state="() => useStoryInitState<{ landscape: boolean }>({ landscape: true })"
 		>
 			<template #default="{ state }">
@@ -61,6 +104,64 @@
 				<HstCheckbox v-model="state.landscape" title="landscape"/>
 			</template>
 		</Variant>
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IColorProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-picker
+						title="Color"
+						v-bind="state"
+						data-cy="picker-color"
+				>
+					<div style="padding: 12px 16px;">Body</div>
+				</origam-picker>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — elevation"
+				:init-state="() => useStoryInitState<IElevationProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-picker
+						title="Elevation"
+						:elevation="state.elevation"
+						data-cy="picker-elevation"
+				>
+					<div style="padding: 12px 16px;">elevation={{ state.elevation ?? '(unset)' }}</div>
+				</origam-picker>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<IRoundedProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-picker
+						title="Rounded"
+						:rounded="state.rounded"
+						border
+						data-cy="picker-rounded"
+				>
+					<div style="padding: 12px 16px;">rounded={{ state.rounded ?? '(unset)' }}</div>
+				</origam-picker>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — actions">
 			<origam-picker title="With actions" data-cy="picker-actions">
@@ -102,99 +203,6 @@
 				<div data-cy="picker-title-slot-body" style="padding: 12px 16px;">Body</div>
 			</origam-picker>
 		</Variant>
-
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-picker
-						title="Color"
-						v-bind="state"
-						data-cy="picker-color"
-				>
-					<div style="padding: 12px 16px;">Body</div>
-				</origam-picker>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="colorList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Elevation"
-				:init-state="() => useStoryInitState<IElevationProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-picker
-						title="Elevation"
-						:elevation="state.elevation"
-						data-cy="picker-elevation"
-				>
-					<div style="padding: 12px 16px;">elevation={{ state.elevation ?? '(unset)' }}</div>
-				</origam-picker>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-picker
-						title="Rounded"
-						:rounded="state.rounded"
-						border
-						data-cy="picker-rounded"
-				>
-					<div style="padding: 12px 16px;">rounded={{ state.rounded ?? '(unset)' }}</div>
-				</origam-picker>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IPickerProps>({
-					title: 'Playground',
-					landscape: false,
-					hideHeader: false,
-					rounded: undefined,
-					elevation: undefined,
-					color: undefined,
-					bgColor: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<origam-picker v-bind="state" data-cy="picker-playground">
-					<template v-if="!state.hideHeader" #header>
-						<div style="padding: 12px 16px; background: var(--origam-color-surface-overlay, #f3f3f3);">
-							Header zone
-						</div>
-					</template>
-					<div style="padding: 12px 16px;">Body content.</div>
-					<template #actions>
-						<origam-btn variant="text" text="Cancel"/>
-						<origam-btn text="Save"/>
-					</template>
-				</origam-picker>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.title" title="title"/>
-				<HstCheckbox v-model="state.landscape" title="landscape"/>
-				<HstCheckbox v-model="state.hideHeader" title="hideHeader"/>
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect v-model="state.color" title="color" :options="colorList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
-			</template>
-		</Variant>
 	</Story>
 </template>
 
@@ -209,6 +217,7 @@
 		IPickerProps,
 		IRoundedProps
 	} from '@origam/interfaces'
+
 	import { useStoryInitState } from '@stories/composables'
 	import { colorList, elevationList, roundedList } from '@stories/const'
 </script>

@@ -3,7 +3,29 @@
 			group="components"
 			title="Picker/OrigamPickerTitle"
 	>
-		<Variant title="Default">
+		<!--
+			Playground — first by convention. All IPickerTitleProps knobs
+			wired via the sidebar.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<IPickerTitleProps>({
+					title: 'Playground',
+					tag: 'div'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-picker-title v-bind="state" data-cy="picker-title-playground"/>
+			</template>
+			<template #controls="{ state }">
+				<HstText   v-model="state.title" title="title"/>
+				<HstSelect v-model="state.tag"   title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — title">
 			<origam-picker-title
 					title="Pick a date"
 					data-cy="picker-title-default"
@@ -11,7 +33,7 @@
 		</Variant>
 
 		<Variant
-				title="Title prop"
+				title="Prop — title (editable)"
 				:init-state="() => useStoryInitState<{ title: string }>({ title: 'Custom title' })"
 		>
 			<template #default="{ state }">
@@ -26,7 +48,7 @@
 		</Variant>
 
 		<Variant
-				title="Tag"
+				title="Prop — tag (polymorphic element)"
 				:init-state="() => useStoryInitState<{ tag: string }>({ tag: 'h2' })"
 		>
 			<template #default="{ state }">
@@ -45,26 +67,12 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — default">
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default (rich content)">
 			<origam-picker-title data-cy="picker-title-slot">
 				Custom <strong data-cy="picker-title-slot-strong">rich</strong> content
 			</origam-picker-title>
-		</Variant>
-
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<IPickerTitleProps>({
-					title: 'Playground',
-					tag: 'div'
-				})"
-		>
-			<template #default="{ state }">
-				<origam-picker-title v-bind="state" data-cy="picker-title-playground"/>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.title" title="title"/>
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
@@ -75,6 +83,7 @@
 >
 	import { OrigamPickerTitle } from '@origam/components'
 	import type { IPickerTitleProps } from '@origam/interfaces'
+
 	import { useStoryInitState } from '@stories/composables'
 	import { tagList } from '@stories/const'
 </script>
