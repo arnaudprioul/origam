@@ -1,75 +1,97 @@
 <template>
-    <Story
-        auto-props-disabled
-        group="components"
-        title="ColorPicker/OrigamColorPickerEdit"
-    >
-        <Variant title="Default">
-            <template #default>
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-edit
-                        :color-hsv="defaultColor"
-                        data-cy="color-picker-edit-default"
-                    />
-                </div>
-            </template>
-        </Variant>
+	<Story
+			group="components"
+			title="ColorPicker/OrigamColorPickerEdit"
+	>
+		<!--
+			Playground — first by convention. Sub-component: the numeric
+			input fields for editing color channel values.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{
+					disabled?: boolean
+					mode?: string
+				}>({ disabled: false, mode: 'rgba' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+					<origam-color-picker-edit
+							:color-hsv="defaultColor"
+							v-bind="state"
+							data-cy="color-picker-edit-playground"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<HstSelect
+						v-model="state.mode"
+						title="mode"
+						:options="[
+							{ value: 'rgb',  label: 'RGB' },
+							{ value: 'rgba', label: 'RGBA' },
+							{ value: 'hsl',  label: 'HSL' },
+							{ value: 'hsla', label: 'HSLA' },
+							{ value: 'hex',  label: 'HEX' },
+							{ value: 'hexa', label: 'HEXA' },
+						]"
+				/>
+			</template>
+		</Variant>
 
-        <Variant title="Modes">
-            <template #default="{ state }">
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-edit
-                        :color-hsv="defaultColor"
-                        v-bind="state"
-                        data-cy="color-picker-edit-modes"
-                    />
-                </div>
-            </template>
-            <template #controls="{ state }">
-                <hst-select
-                    v-model="state.mode"
-                    :options="[
-                        { value: 'rgb', label: 'RGB' },
-                        { value: 'hsl', label: 'HSL' },
-                        { value: 'hsv', label: 'HSV' },
-                        { value: 'hex', label: 'HEX' }
-                    ]"
-                    title="Mode"
-                />
-            </template>
-        </Variant>
+		<!-- ── Props ────────────────────────────────────────────────── -->
 
-        <Variant title="Playground">
-            <template #default="{ state }">
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-edit
-                        :color-hsv="defaultColor"
-                        v-bind="state"
-                        data-cy="color-picker-edit-playground"
-                    />
-                </div>
-            </template>
-            <template #controls="{ state }">
-                <hst-checkbox v-model="state.disabled" title="Disabled"/>
-                <hst-select
-                    v-model="state.mode"
-                    :options="[
-                        { value: 'rgb', label: 'RGB' },
-                        { value: 'hsl', label: 'HSL' },
-                        { value: 'hsv', label: 'HSV' },
-                        { value: 'hex', label: 'HEX' }
-                    ]"
-                    title="Mode"
-                />
-            </template>
-        </Variant>
-    </Story>
+		<Variant title="Prop — disabled">
+			<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+				<origam-color-picker-edit
+						:color-hsv="defaultColor"
+						:disabled="true"
+						data-cy="color-picker-edit-disabled"
+				/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — mode"
+				:init-state="() => useStoryInitState<{ mode: string }>({ mode: 'rgb' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+					<origam-color-picker-edit
+							:color-hsv="defaultColor"
+							:mode="state.mode"
+							data-cy="color-picker-edit-modes"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.mode"
+						title="mode"
+						:options="[
+							{ value: 'rgb',  label: 'RGB' },
+							{ value: 'rgba', label: 'RGBA' },
+							{ value: 'hsl',  label: 'HSL' },
+							{ value: 'hsla', label: 'HSLA' },
+							{ value: 'hex',  label: 'HEX' },
+							{ value: 'hexa', label: 'HEXA' },
+						]"
+				/>
+			</template>
+		</Variant>
+	</Story>
 </template>
 
-<script lang="ts" setup>
-    import { OrigamColorPickerEdit } from '@origam/components'
+<script
+		lang="ts"
+		setup
+>
+	import { OrigamColorPickerEdit } from '@origam/components'
 
-    const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 1 }
+	import { useStoryInitState } from '@stories/composables'
+
+	const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 1 }
 </script>
 
 <docs lang="md">

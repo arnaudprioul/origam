@@ -1,71 +1,67 @@
 <template>
-    <Story
-        auto-props-disabled
-        group="components"
-        title="ColorPicker/OrigamColorPickerPreview"
-    >
-        <Variant title="Default">
-            <template #default>
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-preview
-                        :color-hsv="defaultColor"
-                        data-cy="color-picker-preview-default"
-                    />
-                </div>
-            </template>
-        </Variant>
+	<Story
+			group="components"
+			title="ColorPicker/OrigamColorPickerPreview"
+	>
+		<!--
+			Playground — first by convention. Sub-component: shows the hue
+			and alpha slider tracks for colour preview.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<{
+					disabled?: boolean
+					hideAlpha?: boolean
+				}>({ disabled: false, hideAlpha: false })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+					<origam-color-picker-preview
+							:color-hsv="defaultColor"
+							v-bind="state"
+							data-cy="color-picker-preview-playground"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled"  title="disabled"/>
+				<HstCheckbox v-model="state.hideAlpha" title="hideAlpha"/>
+			</template>
+		</Variant>
 
-        <Variant title="Hide Alpha">
-            <template #default>
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-preview
-                        :color-hsv="defaultColor"
-                        :hide-alpha="true"
-                        data-cy="color-picker-preview-no-alpha"
-                    />
-                </div>
-            </template>
-        </Variant>
+		<!-- ── Props ────────────────────────────────────────────────── -->
 
-        <Variant title="Disabled">
-            <template #default>
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-preview
-                        :color-hsv="defaultColor"
-                        :disabled="true"
-                        data-cy="color-picker-preview-disabled"
-                    />
-                </div>
-            </template>
-        </Variant>
+		<Variant title="Prop — hideAlpha">
+			<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+				<origam-color-picker-preview
+						:color-hsv="defaultColor"
+						:hide-alpha="true"
+						data-cy="color-picker-preview-no-alpha"
+				/>
+			</div>
+		</Variant>
 
-        <Variant title="Playground">
-            <template #default="{ state }">
-                <div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-                    <origam-color-picker-preview
-                        :color-hsv="defaultColor"
-                        v-bind="state"
-                        data-cy="color-picker-preview-playground"
-                    />
-                </div>
-            </template>
-            <template #controls="{ state }">
-                <hst-checkbox v-model="state.disabled" title="Disabled"/>
-                <hst-checkbox v-model="state.hideAlpha" title="Hide Alpha"/>
-                <hst-dimension
-                    v-model:width="state.width"
-                    v-model:height="state.height"
-                    use-dimension
-                />
-            </template>
-        </Variant>
-    </Story>
+		<Variant title="Prop — disabled">
+			<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+				<origam-color-picker-preview
+						:color-hsv="defaultColor"
+						:disabled="true"
+						data-cy="color-picker-preview-disabled"
+				/>
+			</div>
+		</Variant>
+	</Story>
 </template>
 
-<script lang="ts" setup>
-    import { OrigamColorPickerPreview } from '@origam/components'
+<script
+		lang="ts"
+		setup
+>
+	import { OrigamColorPickerPreview } from '@origam/components'
 
-    const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 0.6 }
+	import { useStoryInitState } from '@stories/composables'
+
+	const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 0.6 }
 </script>
 
 <docs lang="md">
