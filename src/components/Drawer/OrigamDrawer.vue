@@ -515,6 +515,13 @@
 	the consumer area regardless of where it docks.
 -->
 <style lang="scss">
+	// `!important` is mandatory: useLayoutItem emits an inline
+	// `transform: translateX(0%)` on the drawer root (it manages the
+	// open / close translation itself via active.value). Inline styles
+	// beat CSS rules unless the rule is `!important`. Without it, the
+	// keyframe transforms below are stomped → drawer never animates
+	// visibly.
+
 	.origam-transition--drawer {
 		&-enter-active,
 		&-leave-active {
@@ -526,26 +533,26 @@
 		// Default (left) — slide out to the left.
 		&-enter-from,
 		&-leave-to {
-			transform: translateX(-100%);
+			transform: translateX(-100%) !important;
 		}
 	}
 
 	// Right drawer slides out to the right.
 	.origam-drawer--right.origam-transition--drawer-enter-from,
 	.origam-drawer--right.origam-transition--drawer-leave-to {
-		transform: translateX(100%);
+		transform: translateX(100%) !important;
 	}
 
 	// Top drawer slides up out of view.
 	.origam-drawer--top.origam-transition--drawer-enter-from,
 	.origam-drawer--top.origam-transition--drawer-leave-to {
-		transform: translateY(-100%);
+		transform: translateY(-100%) !important;
 	}
 
 	// Bottom drawer slides down out of view.
 	.origam-drawer--bottom.origam-transition--drawer-enter-from,
 	.origam-drawer--bottom.origam-transition--drawer-leave-to {
-		transform: translateY(100%);
+		transform: translateY(100%) !important;
 	}
 </style>
 
