@@ -5,7 +5,7 @@
 	>
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -34,8 +34,70 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-switch
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored switch (interactive)"
+							data-cy="switch-color"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-switch :model-value="true" color="primary"
+						               label='color="primary" only'
+						               data-cy="switch-color-fixture-color-only"/>
+						<origam-switch :model-value="true" bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="switch-color-fixture-bg-only"/>
+						<origam-switch :model-value="true" color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="switch-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-switch
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored switch (interactive)"
+							data-cy="switch-color"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-switch :model-value="true" color="primary"
+						               label='color="primary" only'
+						               data-cy="switch-color-fixture-color-only"/>
+						<origam-switch :model-value="true" bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="switch-color-fixture-bg-only"/>
+						<origam-switch :model-value="true" color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="switch-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

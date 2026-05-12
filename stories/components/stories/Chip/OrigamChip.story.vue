@@ -44,7 +44,7 @@
 		<!-- ── Props ────────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Prop — color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -61,8 +61,46 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="chip-color-shell">
+					<origam-chip v-bind="state" text="Interactive chip" data-cy="chip-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+						<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
+						<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
+						<origam-chip bg-color="warning" text="warning" data-cy="chip-color-warning"/>
+						<origam-chip bg-color="danger"  text="danger"  data-cy="chip-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="chip-color-shell">
+					<origam-chip v-bind="state" text="Interactive chip" data-cy="chip-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+						<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
+						<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
+						<origam-chip bg-color="warning" text="warning" data-cy="chip-color-warning"/>
+						<origam-chip bg-color="danger"  text="danger"  data-cy="chip-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

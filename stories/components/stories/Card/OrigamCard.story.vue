@@ -66,8 +66,50 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<ICardProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-card v-bind="state" title="Interactive card" text="Tweak controls →" data-cy="card-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures (intent rungs):</small>
+						<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
+						<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
+						<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
+						<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<ICardProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-card v-bind="state" title="Interactive card" text="Tweak controls →" data-cy="card-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures (intent rungs):</small>
+						<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
+						<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
+						<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
+						<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

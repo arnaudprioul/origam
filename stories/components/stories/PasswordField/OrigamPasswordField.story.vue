@@ -101,8 +101,78 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-password-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored password (interactive)"
+							data-cy="passwordfield-color"
+					/>
+					<div data-cy="passwordfield-color-status">value = {{ colorModel ? '(set)' : '(empty)' }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-password-field :model-value="'secret123'"
+						                       color="primary"
+						                       label='color="primary" only'
+						                       data-cy="passwordfield-color-fixture-color-only"/>
+						<origam-password-field :model-value="'secret123'"
+						                       bg-color="success"
+						                       label='bg-color="success" only'
+						                       data-cy="passwordfield-color-fixture-bg-only"/>
+						<origam-password-field :model-value="'secret123'"
+						                       color="warning" bg-color="primary"
+						                       label='color="warning" + bg-color="primary"'
+						                       data-cy="passwordfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-password-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored password (interactive)"
+							data-cy="passwordfield-color"
+					/>
+					<div data-cy="passwordfield-color-status">value = {{ colorModel ? '(set)' : '(empty)' }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-password-field :model-value="'secret123'"
+						                       color="primary"
+						                       label='color="primary" only'
+						                       data-cy="passwordfield-color-fixture-color-only"/>
+						<origam-password-field :model-value="'secret123'"
+						                       bg-color="success"
+						                       label='bg-color="success" only'
+						                       data-cy="passwordfield-color-fixture-bg-only"/>
+						<origam-password-field :model-value="'secret123'"
+						                       color="warning" bg-color="primary"
+						                       label='color="warning" + bg-color="primary"'
+						                       data-cy="passwordfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

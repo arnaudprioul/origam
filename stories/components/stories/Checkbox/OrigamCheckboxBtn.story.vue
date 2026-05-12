@@ -77,8 +77,46 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
 				<HstSelect v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-				<HstSelect v-model="state.activeColor"  title="activeColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+					<origam-checkbox-btn
+							v-bind="state"
+							:model-value="true"
+							label="Tinted checkbox button"
+							data-cy="checkbox-btn-color"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+					<origam-checkbox-btn
+							v-bind="state"
+							:model-value="true"
+							label="Tinted checkbox button"
+							data-cy="checkbox-btn-color"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 

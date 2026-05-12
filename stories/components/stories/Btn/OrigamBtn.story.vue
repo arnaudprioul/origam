@@ -89,8 +89,48 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-btn v-bind="state" text="Button" data-cy="btn-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-btn bg-color="primary" text="primary" data-cy="btn-color-primary"/>
+						<origam-btn bg-color="success" text="success" data-cy="btn-color-success"/>
+						<origam-btn bg-color="warning" text="warning" data-cy="btn-color-warning"/>
+						<origam-btn bg-color="danger"  text="danger"  data-cy="btn-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-btn v-bind="state" text="Button" data-cy="btn-color"/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-btn bg-color="primary" text="primary" data-cy="btn-color-primary"/>
+						<origam-btn bg-color="success" text="success" data-cy="btn-color-success"/>
+						<origam-btn bg-color="warning" text="warning" data-cy="btn-color-warning"/>
+						<origam-btn bg-color="danger"  text="danger"  data-cy="btn-color-danger"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

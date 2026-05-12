@@ -73,7 +73,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -98,8 +98,62 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-pagination v-model="page" :length="10" v-bind="state" data-cy="pagination-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-pagination :model-value="3" :length="6"
+						                   color="primary"
+						                   data-cy="pagination-color-fixture-color-only"/>
+						<origam-pagination :model-value="3" :length="6"
+						                   bg-color="success"
+						                   data-cy="pagination-color-fixture-bg-only"/>
+						<origam-pagination :model-value="3" :length="6"
+						                   color="warning" bg-color="primary"
+						                   hover-color="info" hover-bg-color="info"
+						                   active-color="danger" active-bg-color="danger"
+						                   data-cy="pagination-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-pagination v-model="page" :length="10" v-bind="state" data-cy="pagination-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-pagination :model-value="3" :length="6"
+						                   color="primary"
+						                   data-cy="pagination-color-fixture-color-only"/>
+						<origam-pagination :model-value="3" :length="6"
+						                   bg-color="success"
+						                   data-cy="pagination-color-fixture-bg-only"/>
+						<origam-pagination :model-value="3" :length="6"
+						                   color="warning" bg-color="primary"
+						                   hover-color="info" hover-bg-color="info"
+						                   active-color="danger" active-bg-color="danger"
+						                   data-cy="pagination-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

@@ -83,7 +83,7 @@
 		</Variant>
 
 		<Variant
-				title="Prop — color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -106,8 +106,58 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
+					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Channel separation:</small>
+						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
+						<origam-kbd :combination="['⌘', 'K']" bg-color="success" data-cy="kbd-color-fixture-bg-only"/>
+						<origam-kbd
+								:combination="['⌘', 'K']"
+								color="warning" bg-color="primary"
+								hover-color="info" hover-bg-color="info"
+								active-color="danger" active-bg-color="danger"
+								data-cy="kbd-color-fixture-combo"
+						/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
+					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Channel separation:</small>
+						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
+						<origam-kbd :combination="['⌘', 'K']" bg-color="success" data-cy="kbd-color-fixture-bg-only"/>
+						<origam-kbd
+								:combination="['⌘', 'K']"
+								color="warning" bg-color="primary"
+								hover-color="info" hover-bg-color="info"
+								active-color="danger" active-bg-color="danger"
+								data-cy="kbd-color-fixture-combo"
+						/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

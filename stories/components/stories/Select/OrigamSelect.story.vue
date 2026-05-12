@@ -176,8 +176,80 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-select
+							v-model="colorModel"
+							:items="stringItems"
+							v-bind="state"
+							label="Colored select (interactive)"
+							data-cy="select-color"
+					/>
+					<div data-cy="select-color-status">value = {{ colorModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-select :items="stringItems" :model-value="'France'"
+						               color="primary"
+						               label='color="primary" only'
+						               data-cy="select-color-fixture-color-only"/>
+						<origam-select :items="stringItems" :model-value="'France'"
+						               bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="select-color-fixture-bg-only"/>
+						<origam-select :items="stringItems" :model-value="'France'"
+						               color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="select-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-select
+							v-model="colorModel"
+							:items="stringItems"
+							v-bind="state"
+							label="Colored select (interactive)"
+							data-cy="select-color"
+					/>
+					<div data-cy="select-color-status">value = {{ colorModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-select :items="stringItems" :model-value="'France'"
+						               color="primary"
+						               label='color="primary" only'
+						               data-cy="select-color-fixture-color-only"/>
+						<origam-select :items="stringItems" :model-value="'France'"
+						               bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="select-color-fixture-bg-only"/>
+						<origam-select :items="stringItems" :model-value="'France'"
+						               color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="select-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

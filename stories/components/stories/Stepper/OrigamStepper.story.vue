@@ -94,7 +94,7 @@
 		</Variant>
 
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -113,10 +113,52 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-stepper
+						:items="defaultItems"
+						:model-value="1"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:active-color="state.activeColor"
+						:active-bg-color="state.activeBgColor"
+						:hover-color="state.hoverColor"
+						:hover-bg-color="state.hoverBgColor"
+						data-cy="stepper-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-stepper
+						:items="defaultItems"
+						:model-value="1"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:active-color="state.activeColor"
+						:active-bg-color="state.activeBgColor"
+						:hover-color="state.hoverColor"
+						:hover-bg-color="state.hoverBgColor"
+						data-cy="stepper-color"
+				/>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
 			</template>
 		</Variant>
 

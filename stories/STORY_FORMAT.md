@@ -19,14 +19,26 @@ emit independently without having to fiddle with controls in a single mega-Varia
      convention only — the user will see it at the top of the variant list.
 
 2. **One Variant per PROP (or per prop group when they share semantics).**
-   - Title prefix: `"Prop — <name>"` (e.g. `"Prop — color"`, `"Prop — variant"`).
+   - Title prefix: `"Prop — <name>"` (e.g. `"Prop — color & bgColor"`,
+     `"Prop — variant"`).
    - Pre-set state isolates THAT prop so the consumer can test it in isolation
      without other props interfering.
-   - Group only when props are visually equivalent (e.g. all the
-     `*BgColor` / `*Color` of a single intent surface can share one variant
-     `"Prop — color & bgColor"`; six sizes can share one variant
-     `"Prop — size"`).
+   - Group only when props are visually equivalent (e.g. six sizes share one
+     variant `"Prop — size"`).
    - When in doubt, prefer ONE variant per prop. Easier to navigate.
+
+   **Color props specifically** are split into 3 dedicated variants on every
+   component that exposes them, so the consumer can test each interaction
+   axis independently:
+
+   - `"Prop — color & bgColor"` — resting-state surface + text.
+   - `"Prop — hover (hoverColor & hoverBgColor)"` — hover-state overrides.
+   - `"Prop — active (activeColor & activeBgColor)"` — active-state overrides.
+
+   Each variant binds **only its axis** to the rendered component, with the
+   sidebar controls limited to those props (no global mega-color-control).
+   For components that consume only one axis (e.g. typography components that
+   only have `color`), keep the single `"Prop — color"` variant.
 
 3. **One Variant per SLOT.**
    - Title prefix: `"Slot — <name>"` (e.g. `"Slot — default"`, `"Slot — prepend"`,

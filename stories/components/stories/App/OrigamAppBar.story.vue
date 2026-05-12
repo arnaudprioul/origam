@@ -80,8 +80,58 @@
 				<HstText   v-model="state.title"         title="title"/>
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IAppBarProps>({ color: 'primary', bgColor: 'primary', title: 'My Application' })"
+		>
+			<template #default="{ state }">
+				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-color">
+							<template #prepend>
+								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Navigation menu"/>
+							</template>
+							<template #append>
+								<origam-btn :icon="MDI_ICONS.DOTS_VERTICAL" aria-label="More options"/>
+							</template>
+						</origam-app-bar>
+						<origam-main>
+							<div style="padding: 12px;">Main content</div>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IAppBarProps>({ color: 'primary', bgColor: 'primary', title: 'My Application' })"
+		>
+			<template #default="{ state }">
+				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-color">
+							<template #prepend>
+								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Navigation menu"/>
+							</template>
+							<template #append>
+								<origam-btn :icon="MDI_ICONS.DOTS_VERTICAL" aria-label="More options"/>
+							</template>
+						</origam-app-bar>
+						<origam-main>
+							<div style="padding: 12px;">Main content</div>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
 				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>

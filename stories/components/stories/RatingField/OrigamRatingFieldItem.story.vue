@@ -49,7 +49,7 @@
 		</Variant>
 
 		<Variant
-				title="Prop — color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'warning' })"
 		>
 			<template #default="{ state }">
@@ -59,8 +59,36 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect v-model="state.activeColor"  title="activeColor"  :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — hover (hoverColor & hoverBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'warning' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="colorValue" :length="5" v-bind="state" data-cy="rating-item-color"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
 				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
+				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active (activeColor & activeBgColor)"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'warning' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-rating-field v-model="colorValue" :length="5" v-bind="state" data-cy="rating-item-color"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
+				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
