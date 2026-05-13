@@ -22,7 +22,7 @@
 		useProps,
 		useRounded,
 		useSsrBoot
-	} from "../../composables"
+	, useStyle} from "../../composables"
 
 	import type { ISystemBarProps } from "../../interfaces"
 

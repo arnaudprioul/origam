@@ -184,7 +184,7 @@
 		OrigamTranslateScale
 	} from "../../components"
 
-	import { useDate, useLocale, useProps, useTextColor, useVModel } from "../../composables"
+	import { useDate, useLocale, useProps, useTextColor, useVModel , useStyle} from "../../composables"
 
 	import { ORIGAM_FORM_KEY } from "../../consts"
 

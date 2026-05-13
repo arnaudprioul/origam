@@ -50,7 +50,7 @@
 	import { computed, ref, StyleValue, toRef, useSlots } from "vue"
 	import { OrigamPickerTitle, OrigamSheet } from "../../components"
 
-	import { useBackgroundColor, useProps } from "../../composables"
+	import { useBackgroundColor, useProps , useStyle} from "../../composables"
 
 	import type { IPickerProps } from "../../interfaces"
 

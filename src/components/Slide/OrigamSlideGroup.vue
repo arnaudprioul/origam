@@ -73,7 +73,7 @@
 		useResizeObserver,
 		useRounded,
 		useRtl
-	} from "../../composables"
+	, useStyle} from "../../composables"
 
 	import { IN_BROWSER, ORIGAM_SLIDE_GROUP_KEY } from "../../consts"
 

@@ -25,7 +25,7 @@
 		lang="ts"
 		setup
 >
-	import { useProps, useResizeObserver } from "../../composables"
+	import { useProps, useResizeObserver , useStyle} from "../../composables"
 
 	import type { IColorPickerCanvasProps } from "../../interfaces"
 

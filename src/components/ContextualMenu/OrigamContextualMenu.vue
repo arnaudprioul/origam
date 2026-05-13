@@ -27,7 +27,7 @@
 		setup
 >
 	import { OrigamMenu, OrigamTranslateScale } from "../../components"
-	import { useProps, useVModel } from "../../composables"
+	import { useProps, useVModel , useStyle} from "../../composables"
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from "../../enums"
 	import type { IContextualMenuProps } from "../../interfaces"
 	import type { TOrigamMenu, TTransitionProps } from "../../types"

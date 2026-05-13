@@ -34,7 +34,7 @@
 >
 	import { OrigamBtn } from "../../components"
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import { COLOR_NULL, COLOR_PICKER_MODES } from "../../consts"
 

@@ -17,7 +17,7 @@
 >
 	import { OrigamLayout } from '../../components'
 
-	import { useProps, useRtl } from "../../composables"
+	import { useProps, useRtl , useStyle} from "../../composables"
 
 	import type { ILayoutProps } from '../../interfaces'
 

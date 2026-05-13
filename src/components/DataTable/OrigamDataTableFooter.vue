@@ -46,7 +46,7 @@
 >
 	import { OrigamPagination, OrigamRow, OrigamSelect } from "../../components"
 
-	import { useLocale, usePagination, useProps } from "../../composables"
+	import { useLocale, usePagination, useProps , useStyle} from "../../composables"
 
 	import { DENSITY } from "../../enums"
 

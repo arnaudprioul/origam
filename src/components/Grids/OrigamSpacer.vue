@@ -13,7 +13,7 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import type { ISpacerProps } from "../../interfaces"
 

@@ -21,7 +21,7 @@
 		setup
 >
 	import { OrigamBtn } from "../../components"
-	import { useDate, useProps, useVModel } from "../../composables"
+	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
 	import type { IDatePickerYearsProps } from "../../interfaces"
 	import { convertToUnit, createRange, int, templateRef } from "../../utils"

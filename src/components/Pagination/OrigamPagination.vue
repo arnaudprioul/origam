@@ -180,7 +180,7 @@
 	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
 	import { OrigamBtn } from "../../components"
 
-	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useVModel } from "../../composables"
+	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useVModel , useStyle} from "../../composables"
 
 	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 

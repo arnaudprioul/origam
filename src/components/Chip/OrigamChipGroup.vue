@@ -20,7 +20,7 @@
 >
 	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
 
-	import { useGroup, useProps } from "../../composables"
+	import { useGroup, useProps , useStyle} from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 

@@ -38,7 +38,7 @@
 >
 	import { OrigamIcon } from "../../components"
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import { MDI_ICONS } from "../../enums"
 

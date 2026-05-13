@@ -58,7 +58,7 @@
 >
 	import { OrigamBtn, OrigamBtnGroup, OrigamSpacer } from "../../components"
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import { DATE_MODE, MDI_ICONS } from "../../enums"
 

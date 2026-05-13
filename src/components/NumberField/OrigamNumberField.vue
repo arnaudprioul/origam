@@ -255,7 +255,7 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 	import { OrigamBtn, OrigamDivider, OrigamTextField } from "../../components"
 
-	import { useAdjacentInner, useFocus, useHold, useProps, useVModel } from "../../composables"
+	import { useAdjacentInner, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 

@@ -98,7 +98,7 @@
 		OrigamPicker
 	} from "../../components"
 
-	import { useProps, useRtl, useVModel } from "../../composables"
+	import { useProps, useRtl, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_MODES_NAMES } from "../../enums"
 

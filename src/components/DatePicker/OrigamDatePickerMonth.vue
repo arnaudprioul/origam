@@ -97,7 +97,7 @@
 >
 	import { OrigamBtn, OrigamReverseTranslatePicker, OrigamTransition, OrigamTranslatePicker } from "../../components"
 
-	import { useCalendar, useDate, useProps } from "../../composables"
+	import { useCalendar, useDate, useProps , useStyle} from "../../composables"
 
 	import { CALENDAR_STRATEGY, DENSITY } from "../../enums"
 

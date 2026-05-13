@@ -53,7 +53,7 @@
 >
 	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from "../../components"
 
-	import { useGroupBy, useHeaders, useProps, useSelection } from "../../composables"
+	import { useGroupBy, useHeaders, useProps, useSelection , useStyle} from "../../composables"
 	import { MDI_ICONS } from "../../enums"
 
 	import type { IDataTableGroupHeaderRowProps } from "../../interfaces"

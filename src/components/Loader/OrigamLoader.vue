@@ -28,7 +28,7 @@
 >
 	import { computed, StyleValue } from 'vue'
 	import { OrigamProgress } from '../../components'
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import { PROGRESS_TYPE } from '../../enums'
 
