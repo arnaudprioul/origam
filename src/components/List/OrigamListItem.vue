@@ -389,7 +389,6 @@
 
 		&--border {
 			--origam-list-item---border-width: thin;
-			--origam-list-item---box-shadow: none;
 		}
 
 		&--rounded {

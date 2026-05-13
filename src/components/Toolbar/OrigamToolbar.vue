@@ -254,7 +254,6 @@
 			--origam-toolbar---border-right-width: thin;
 			--origam-toolbar---border-bottom-width: thin;
 			--origam-toolbar---border-left-width: thin;
-			--origam-toolbar---box-shadow: none;
 		}
 
 		&--border-top {

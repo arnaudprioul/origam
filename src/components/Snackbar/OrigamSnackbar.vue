@@ -449,7 +449,6 @@
 			:deep(#{$this}__wrapper) {
 				border-width: var(--origam-snackbar__wrapper---border-width, thin);
 				border-style: var(--origam-snackbar__wrapper---border-style, solid);
-				box-shadow: none;
 			}
 		}
 

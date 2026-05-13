@@ -466,7 +466,6 @@
 			--origam-drawer---border-right-width: thin;
 			--origam-drawer---border-bottom-width: thin;
 			--origam-drawer---border-left-width: thin;
-			--origam-drawer---box-shadow: none;
 		}
 
 		&--top {
