@@ -54,12 +54,12 @@
 >
 
 	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
-	import { useActive, useDensity, useHover, useMargin, usePadding, useProps, useRtl, useStyle } from "../../composables"
+	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps } from "../../interfaces"
 	import type { TOrigamAvatar } from '../../types'
 
-	import type { StyleValue, VNodeProps } from 'vue'
+	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
 
 	/*********************************************************
@@ -142,8 +142,8 @@
 	 * Hover / active state with optional expand-on-hover and
 	 * expand-on-click behaviour.
 	 ********************************************************/
-	const {hoverClasses, isHover, onMouseleave, onMouseenter} = useHover(props)
-	const {activeClasses, isActive, onActive} = useActive(props)
+	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
+	const {activeClasses, activeState, isActive, onActive} = useActive(props)
 
 	const origamAvatarRef = ref<TOrigamAvatar>()
 	const avatarProps = (item: IAvatarProps = {}) => {
@@ -187,8 +187,10 @@
 	 * Composes direction, RTL, hover/active, density and
 	 * spacing classes/styles onto the root element.
 	 ********************************************************/
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {
+		marginClasses, marginStyles,
+		paddingClasses, paddingStyles,
+	} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 	const {densityClasses} = useDensity(props)
 
 	const avatarGroupStyles = computed(() => {

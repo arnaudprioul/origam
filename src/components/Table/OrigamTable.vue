@@ -3,6 +3,8 @@
 			:is="tag"
 			:class="tableClasses"
 			:style="tableStyles"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<slot name="top"/>
 
@@ -27,14 +29,11 @@
 >
 	import { computed, StyleValue, useSlots } from 'vue'
 	import {
-		useBorder,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
+		useHover,
 		useProps,
-		useRounded
+		useStateEffect,
 	} from '../../composables'
 
 	import { DENSITY } from '../../enums'
@@ -69,11 +68,14 @@
 
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {roundedStyles, roundedClasses} = useRounded(props)
-	const {elevationClasses} = useElevation(props)
-	const {paddingStyles, paddingClasses} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState)
 
 	const tableStyles = computed(() => {
 		return [
@@ -94,6 +96,7 @@
 				'origam-table--has-bottom': slots.bottom
 			},
 			densityClasses.value,
+			hoverClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,

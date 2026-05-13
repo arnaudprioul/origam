@@ -178,13 +178,12 @@
 		useBothColor,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useFocus,
 		useLoader,
 		useProps,
-		useRounded,
 		useRtl,
 		useSize,
+		useStateEffect,
 		useVariant
 	} from '../../composables'
 
@@ -400,7 +399,7 @@
 	 * isActive is a ref that holds a boolean value indicating whether the field is active.
 	 ********************************************************/
 	const {focusClasses, isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
-	const {isActive: active, onActive: handleActive} = useActive(props)
+	const {isActive: active, activeState, onActive: handleActive} = useActive(props)
 
 	const isActive = computed(() => {
 		return props.dirty || active.value || hasPrefix.value || hasSuffix.value
@@ -475,8 +474,14 @@
 
 	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
+	// Field re-defines its own `isActive` computed above (line 405) combining
+	// `active` from useActive + `dirty` + `hasPrefix` + `hasSuffix` — pass
+	// the computed one so the state-aware rounded / elevation cycle through
+	// any `:active="{ rounded: 'lg', elevation: 'md' }"` override.
+	const {
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+	} = useStateEffect(props, undefined, isActive, undefined, activeState)
 	const {rtlClasses} = useRtl()
 	const {variantClasses} = useVariant(props)
 	const {sizeClasses} = useSize(props, 'origam-field')
