@@ -94,10 +94,22 @@
 
 	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`
 	// as DEFAULTS — items that pass their own props still win.
+	//
+	// `bgColor` is propagated alongside `color` so each item's
+	// `useColorEffect` sees the BOTH axes — without it, the
+	// `color===bgColor` auto-contrast branch never triggers on the
+	// items, so a `<OrigamBreadcrumb color="primary" bgColor="primary">`
+	// renders items with `primary-fgSubtle` (violet) ON a `primary-bg`
+	// surface — unreadable. Same goes for hover/active overrides.
 	const slotDefaults = computed(() => ({
 		'origam-breadcrumb-item': {
 			density: props.density,
 			color: props.color,
+			bgColor: props.bgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
 			disabled: props.disabled
 		}
 	}))
