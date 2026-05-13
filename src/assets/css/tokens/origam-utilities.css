@@ -9,85 +9,85 @@
 /* import below the component layer.                         */
 
 /* ── Foreground color (intent) ───────────────────────────────── */
-.origam--color-primary { color: var(--origam-color-action-primary-fg); }
-.origam--color-secondary { color: var(--origam-color-action-secondary-fg); }
-.origam--color-success { color: var(--origam-color-feedback-success-fg); }
-.origam--color-warning { color: var(--origam-color-feedback-warning-fg); }
-.origam--color-danger { color: var(--origam-color-feedback-danger-fg); }
-.origam--color-info { color: var(--origam-color-feedback-info-fg); }
-.origam--color-neutral { color: var(--origam-color-text-primary); }
+.origam--color-primary { color: var(--origam-color__action--primary---fg); }
+.origam--color-secondary { color: var(--origam-color__action--secondary---fg); }
+.origam--color-success { color: var(--origam-color__feedback--success---fg); }
+.origam--color-warning { color: var(--origam-color__feedback--warning---fg); }
+.origam--color-danger { color: var(--origam-color__feedback--danger---fg); }
+.origam--color-info { color: var(--origam-color__feedback--info---fg); }
+.origam--color-neutral { color: var(--origam-color__text---primary); }
 
 /* ── Background color (intent) ───────────────────────────────── */
-.origam--bg-primary { background-color: var(--origam-color-action-primary-bg); }
-.origam--bg-secondary { background-color: var(--origam-color-action-secondary-bg); }
-.origam--bg-success { background-color: var(--origam-color-feedback-success-bg); }
-.origam--bg-warning { background-color: var(--origam-color-feedback-warning-bg); }
-.origam--bg-danger { background-color: var(--origam-color-feedback-danger-bg); }
-.origam--bg-info { background-color: var(--origam-color-feedback-info-bg); }
-.origam--bg-neutral { background-color: var(--origam-color-surface-default); }
+.origam--bg-primary { background-color: var(--origam-color__action--primary---bg); }
+.origam--bg-secondary { background-color: var(--origam-color__action--secondary---bg); }
+.origam--bg-success { background-color: var(--origam-color__feedback--success---bg); }
+.origam--bg-warning { background-color: var(--origam-color__feedback--warning---bg); }
+.origam--bg-danger { background-color: var(--origam-color__feedback--danger---bg); }
+.origam--bg-info { background-color: var(--origam-color__feedback--info---bg); }
+.origam--bg-neutral { background-color: var(--origam-color__surface---default); }
 
 /* ── Elevation (box-shadow) ───────────────────────────────── */
-.origam--shadow-none { box-shadow: var(--origam-shadow-none); }
-.origam--shadow-xs { box-shadow: var(--origam-shadow-xs); }
-.origam--shadow-sm { box-shadow: var(--origam-shadow-sm); }
-.origam--shadow-md { box-shadow: var(--origam-shadow-md); }
-.origam--shadow-lg { box-shadow: var(--origam-shadow-lg); }
-.origam--shadow-xl { box-shadow: var(--origam-shadow-xl); }
+.origam--shadow-none { box-shadow: var(--origam-shadow---none); }
+.origam--shadow-xs { box-shadow: var(--origam-shadow---xs); }
+.origam--shadow-sm { box-shadow: var(--origam-shadow---sm); }
+.origam--shadow-md { box-shadow: var(--origam-shadow---md); }
+.origam--shadow-lg { box-shadow: var(--origam-shadow---lg); }
+.origam--shadow-xl { box-shadow: var(--origam-shadow---xl); }
 
 /* ── Border radius ───────────────────────────────── */
-.origam--rounded-none { border-radius: var(--origam-radius-none); }
-.origam--rounded-xs { border-radius: var(--origam-radius-xs); }
-.origam--rounded-sm { border-radius: var(--origam-radius-sm); }
-.origam--rounded-md { border-radius: var(--origam-radius-md); }
-.origam--rounded-lg { border-radius: var(--origam-radius-lg); }
-.origam--rounded-xl { border-radius: var(--origam-radius-xl); }
-.origam--rounded-full { border-radius: var(--origam-radius-full); }
+.origam--rounded-none { border-radius: var(--origam-radius---none); }
+.origam--rounded-xs { border-radius: var(--origam-radius---xs); }
+.origam--rounded-sm { border-radius: var(--origam-radius---sm); }
+.origam--rounded-md { border-radius: var(--origam-radius---md); }
+.origam--rounded-lg { border-radius: var(--origam-radius---lg); }
+.origam--rounded-xl { border-radius: var(--origam-radius---xl); }
+.origam--rounded-full { border-radius: var(--origam-radius---full); }
 
 /* ── Border width (paired with solid style) ───────────────────────────────── */
-.origam--border-none { border-width: var(--origam-border-width-0); border-style: solid; }
-.origam--border-thin { border-width: var(--origam-border-width-thin); border-style: solid; }
-.origam--border-thick { border-width: var(--origam-border-width-2); border-style: solid; }
+.origam--border-none { border-width: var(--origam-border__width---0); border-style: solid; }
+.origam--border-thin { border-width: var(--origam-border__width---thin); border-style: solid; }
+.origam--border-thick { border-width: var(--origam-border__width---2); border-style: solid; }
 
 /* ── Padding ───────────────────────────────── */
-.origam--p-0 { padding: var(--origam-space-0); }
-.origam--p-1 { padding: var(--origam-space-1); }
-.origam--p-2 { padding: var(--origam-space-2); }
-.origam--p-3 { padding: var(--origam-space-3); }
-.origam--p-4 { padding: var(--origam-space-4); }
-.origam--p-5 { padding: var(--origam-space-5); }
-.origam--p-6 { padding: var(--origam-space-6); }
-.origam--p-8 { padding: var(--origam-space-8); }
-.origam--p-10 { padding: var(--origam-space-10); }
-.origam--p-12 { padding: var(--origam-space-12); }
+.origam--p-0 { padding: var(--origam-space---0); }
+.origam--p-1 { padding: var(--origam-space---1); }
+.origam--p-2 { padding: var(--origam-space---2); }
+.origam--p-3 { padding: var(--origam-space---3); }
+.origam--p-4 { padding: var(--origam-space---4); }
+.origam--p-5 { padding: var(--origam-space---5); }
+.origam--p-6 { padding: var(--origam-space---6); }
+.origam--p-8 { padding: var(--origam-space---8); }
+.origam--p-10 { padding: var(--origam-space---10); }
+.origam--p-12 { padding: var(--origam-space---12); }
 
 /* ── Margin ───────────────────────────────── */
-.origam--m-0 { margin: var(--origam-space-0); }
-.origam--m-1 { margin: var(--origam-space-1); }
-.origam--m-2 { margin: var(--origam-space-2); }
-.origam--m-3 { margin: var(--origam-space-3); }
-.origam--m-4 { margin: var(--origam-space-4); }
-.origam--m-5 { margin: var(--origam-space-5); }
-.origam--m-6 { margin: var(--origam-space-6); }
-.origam--m-8 { margin: var(--origam-space-8); }
-.origam--m-10 { margin: var(--origam-space-10); }
-.origam--m-12 { margin: var(--origam-space-12); }
+.origam--m-0 { margin: var(--origam-space---0); }
+.origam--m-1 { margin: var(--origam-space---1); }
+.origam--m-2 { margin: var(--origam-space---2); }
+.origam--m-3 { margin: var(--origam-space---3); }
+.origam--m-4 { margin: var(--origam-space---4); }
+.origam--m-5 { margin: var(--origam-space---5); }
+.origam--m-6 { margin: var(--origam-space---6); }
+.origam--m-8 { margin: var(--origam-space---8); }
+.origam--m-10 { margin: var(--origam-space---10); }
+.origam--m-12 { margin: var(--origam-space---12); }
 
 /* ── Gap (flex/grid) ───────────────────────────────── */
-.origam--gap-0 { gap: var(--origam-space-0); }
-.origam--gap-1 { gap: var(--origam-space-1); }
-.origam--gap-2 { gap: var(--origam-space-2); }
-.origam--gap-3 { gap: var(--origam-space-3); }
-.origam--gap-4 { gap: var(--origam-space-4); }
-.origam--gap-5 { gap: var(--origam-space-5); }
-.origam--gap-6 { gap: var(--origam-space-6); }
-.origam--gap-8 { gap: var(--origam-space-8); }
-.origam--gap-10 { gap: var(--origam-space-10); }
-.origam--gap-12 { gap: var(--origam-space-12); }
+.origam--gap-0 { gap: var(--origam-space---0); }
+.origam--gap-1 { gap: var(--origam-space---1); }
+.origam--gap-2 { gap: var(--origam-space---2); }
+.origam--gap-3 { gap: var(--origam-space---3); }
+.origam--gap-4 { gap: var(--origam-space---4); }
+.origam--gap-5 { gap: var(--origam-space---5); }
+.origam--gap-6 { gap: var(--origam-space---6); }
+.origam--gap-8 { gap: var(--origam-space---8); }
+.origam--gap-10 { gap: var(--origam-space---10); }
+.origam--gap-12 { gap: var(--origam-space---12); }
 
 /* ── Font size ───────────────────────────────── */
-.origam--text-xs { font-size: var(--origam-font-size-xs); }
-.origam--text-sm { font-size: var(--origam-font-size-sm); }
-.origam--text-md { font-size: var(--origam-font-size-md); }
-.origam--text-lg { font-size: var(--origam-font-size-lg); }
-.origam--text-xl { font-size: var(--origam-font-size-xl); }
-.origam--text-2xl { font-size: var(--origam-font-size-2xl); }
+.origam--text-xs { font-size: var(--origam-font__size---xs); }
+.origam--text-sm { font-size: var(--origam-font__size---sm); }
+.origam--text-md { font-size: var(--origam-font__size---md); }
+.origam--text-lg { font-size: var(--origam-font__size---lg); }
+.origam--text-xl { font-size: var(--origam-font__size---xl); }
+.origam--text-2xl { font-size: var(--origam-font__size---2xl); }
