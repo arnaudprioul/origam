@@ -149,7 +149,7 @@
 		useActive,
 		useAdjacent,
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useDimension,
 		useElevation,
@@ -195,7 +195,7 @@
 	 * Resolves prepend/append icons, click handlers and the
 	 * clickable flag that enables ripple + overlay.
 	 ********************************************************/
-	// `useColorEffect` produces inline `color: …` / `background-color: …`
+	// `useStateEffect` produces inline `color: …` / `background-color: …`
 	// declarations from intent props (`color`, `bgColor`) and also reacts
 	// to hover/active states by swapping in `hoverBgColor` / `hoverColor`
 	// / `activeBgColor` / `activeColor` overrides (or auto-darken via
@@ -212,17 +212,19 @@
 	 * Effect
 	 ********************************************************/
 
-	const {isHover, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {isActive, activeClasses, onActive} = useActive(props)
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
 
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useColorEffect(
+	const {colorClasses, colorStyles} = useStateEffect(
 			props,
 			isHover,
 			isActive as unknown as import('vue').ComputedRef<boolean>,
+			hoverState,
+			activeState,
 			computed(() => !!props.disabled)
 	)
 
@@ -246,7 +248,7 @@
 	})
 
 	// Combined click handler — drives both `isActive` (so `activeColor`
-	// / `activeBgColor` resolve via `useColorEffect`) and the link
+	// / `activeBgColor` resolve via `useStateEffect`) and the link
 	// navigation when the Card is interactive (`link` prop / clickable).
 	const handleClick = (event: MouseEvent) => {
 		onActive(event)

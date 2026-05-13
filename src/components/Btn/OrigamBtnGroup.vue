@@ -31,7 +31,7 @@
 	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useElevation,
 		useMargin,
@@ -107,8 +107,8 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorStyles, bgColor} = useColorEffect(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
+	const {colorStyles, bgColor} = useStateEffect(props)
+	const {elevationClasses, elevationStyles} = useElevation(props, ref(false, hoverState, activeState), bgColor)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 

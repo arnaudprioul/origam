@@ -71,7 +71,7 @@
 		useActive,
 		useAdjacent,
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDefaults,
 		useDensity,
 		useHover,
@@ -116,8 +116,8 @@
 	 * @description
 	 * Hover, active state and color resolution.
 	 ********************************************************/
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active, activeClasses} = useActive(props)
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive: active, activeState, activeClasses} = useActive(props)
 
 	const isActive = computed(() => {
 		return active.value || link.isActive?.value
@@ -129,7 +129,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, computed(() => !!props.disabled))
+	const {colorClasses, colorStyles} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState, computed(() => !!props.disabled))
 
 	/*********************************************************
 	 * Adjacent (prepend / append)

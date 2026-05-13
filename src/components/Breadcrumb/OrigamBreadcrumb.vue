@@ -58,7 +58,7 @@
 
 	import {
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useElevation,
 		useMargin,
@@ -96,7 +96,7 @@
 	// as DEFAULTS — items that pass their own props still win.
 	//
 	// `bgColor` is propagated alongside `color` so each item's
-	// `useColorEffect` sees the BOTH axes — without it, the
+	// `useStateEffect` sees the BOTH axes — without it, the
 	// `color===bgColor` auto-contrast branch never triggers on the
 	// items, so a `<OrigamBreadcrumb color="primary" bgColor="primary">`
 	// renders items with `primary-fgSubtle` (violet) ON a `primary-bg`
@@ -127,7 +127,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useColorEffect(props, undefined, undefined, computed(() => !!props.disabled))
+	const {colorClasses, colorStyles} = useStateEffect(props, undefined, undefined, hoverState, activeState, computed(() => !!props.disabled))
 
 	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
 	// density/color fallback — no manual merge needed here.

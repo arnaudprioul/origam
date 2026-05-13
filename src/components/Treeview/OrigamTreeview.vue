@@ -28,7 +28,7 @@
 	import { OrigamTreeviewNode } from '../../components'
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
-	import { useColorEffect, useDensity, useProps, useSize } from '../../composables'
+	import { useStateEffect, useDensity, useProps, useSize } from '../../composables'
 
 	import type { ITreeviewProps } from '../../interfaces'
 
@@ -174,7 +174,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const { colorClasses, colorStyles } = useColorEffect(props)
+	const { colorClasses, colorStyles } = useStateEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
@@ -183,8 +183,7 @@
 	})
 
 	const treeviewClasses = computed(() => [
-		'origam-treeview',
-		colorClasses.value,
+		'origam-treeview', colorClasses.value, hoverState, activeState,
 		densityClasses.value,
 		sizeClasses.value,
 		props.class

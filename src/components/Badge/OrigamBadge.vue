@@ -69,7 +69,7 @@
 	import {
 		useActive,
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useElevation,
 		useHover,
 		useLocale,
@@ -127,7 +127,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Composables

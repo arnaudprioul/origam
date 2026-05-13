@@ -121,7 +121,7 @@
 		useActive,
 		useAdjacent,
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useDimension,
 		useElevation,
@@ -170,17 +170,17 @@
 	 * Hover, active state and color resolution for the alert.
 	 ********************************************************/
 	const {activeClasses, isActive, onActive} = useActive(props, 'modelValue')
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
-	// for the resting state only — `useColorEffect` returns `[]` for hover/
+	// for the resting state only — `useStateEffect` returns `[]` for hover/
 	// active so the inline `colorStyles` keeps owning those slots.
 
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Adjacent (prepend / append)

@@ -345,7 +345,7 @@
 	const sharedBtnColorProps = computed(() => {
 		// ── Surface / text contrast synthesis (colored mode) ──────────
 		// In `--colored` mode the pagination paints the inner btn's
-		// surface via the SCSS `--bg-base` CSS var — useColorEffect on
+		// surface via the SCSS `--bg-base` CSS var — useStateEffect on
 		// the inner btn doesn't see the bg side of the contract because
 		// the consumer didn't necessarily pass `bgColor` to the
 		// pagination root. Without that info, the btn's fg resolves to
@@ -355,7 +355,7 @@
 		// just spotted on screen).
 		//
 		// Synthesise bgColor = color when the consumer only specified
-		// `color`: the inner btn's useColorEffect then detects the
+		// `color`: the inner btn's useStateEffect then detects the
 		// color-clash (`color === bgColor` both intents) and swaps fg
 		// to the bg's paired contrast token (primary.fg = white). The
 		// JS-side bg is the same intent the SCSS already paints, so the

@@ -39,7 +39,7 @@
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
 	import {
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useProps,
 		useSize,
@@ -122,20 +122,18 @@
 	 * Composables
 	 ********************************************************/
 
-	const { colorClasses, colorStyles } = useColorEffect(props)
+	const { colorClasses, colorStyles } = useStateEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
 	const stepperStyles = computed(() => {
 		return [
-			colorStyles.value,
-			props.style
+			colorStyles.value, props.style
 		] as StyleValue
 	})
 
 	const stepperClasses = computed(() => [
-		'origam-stepper',
-		`origam-stepper--${props.orientation ?? 'horizontal'}`,
+		'origam-stepper', `origam-stepper--${props.orientation ?? 'horizontal'}`, hoverState, activeState,
 		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,

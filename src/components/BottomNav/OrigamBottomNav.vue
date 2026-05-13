@@ -46,7 +46,7 @@
 	import {
 		useActive,
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useElevation,
 		useGroup,
@@ -125,11 +125,11 @@
 	 ********************************************************/
 
 	const {borderClasses, borderStyles} = useBorder(props)
-	const {isActive, activeClasses} = useActive(props, 'modelValue')
-	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses} = useActive(props, 'modelValue')
+	const {isHover, hoverState, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
-	// ONLY for the resting state — `useColorEffect` returns `[]` for
+	// ONLY for the resting state — `useStateEffect` returns `[]` for
 	// hover/active so the inline `colorStyles` keeps owning those slots
 	// (no utility class exists for `bgHover`/`bgActive` rungs).
 
@@ -139,7 +139,7 @@
 	 * @description
 	 * The BottomNav is a CONTAINER — hover/active interaction
 	 * effects belong to its child buttons, not to the nav surface
-	 * itself. We deliberately feed `ref(false)` to `useColorEffect`
+	 * itself. We deliberately feed `ref(false)` to `useStateEffect`
 	 * for both `isHover` and `isActive` so:
 	 *   • The resting bg stays on the intent's `bg` rung (same
 	 *     teinte as the child buttons in their resting state).
@@ -153,7 +153,7 @@
 	 *     `slotDefaults` — that's where they take visual effect.
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useColorEffect(props, ref(false), ref(false))
+	const {colorClasses, colorStyles} = useStateEffect(props, ref(false), ref(false, hoverState, activeState))
 
 	/*********************************************************
 	 * Layout

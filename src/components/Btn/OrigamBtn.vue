@@ -138,7 +138,7 @@
 		useActive,
 		useAdjacent,
 		useBorder,
-		useColorEffect,
+		useStateEffect,
 		useDefaults,
 		useDensity,
 		useDimension,
@@ -207,8 +207,8 @@
 	/*********************************************************
 	 * Effect
 	 ********************************************************/
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active} = useActive(props)
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive: active, activeState} = useActive(props)
 
 	const isActive = computed(() => {
 		if (active.value !== undefined) {
@@ -278,7 +278,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useColorEffect(props, isHover, isActive, isDisabled)
+	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive, hoverState, activeState, isDisabled)
 	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
 	const {variantClasses} = useVariant(props)
 	const {
