@@ -103,23 +103,33 @@
 	 * @description
 	 * Computes which items to display and which overflow
 	 * into the rest (+N) chip based on the `max` prop.
+	 *
+	 * `isExpanded` is the orthogonal toggle driven by
+	 * `expandOnHover` / `expandOnClick` — when true the visible
+	 * list shows EVERY item (effectiveMax = items.length). The
+	 * earlier implementation used a `ref(props.max)` which froze
+	 * the value at mount and never re-tracked the prop — user
+	 * report: "la prop max ne fonctionne pas".
 	 ********************************************************/
-	const max = ref(props.max)
+	const isExpanded = ref(false)
+	const effectiveMax = computed(() => {
+		return isExpanded.value ? props.items.length : props.max
+	})
 
 	const restItems = computed(() => {
-		if (props.items.length > max.value) {
-			return props.items.slice(max.value - 1, props.items.length)
+		if (props.items.length > effectiveMax.value) {
+			return props.items.slice(effectiveMax.value - 1, props.items.length)
 		}
 
 		return []
 	})
 	const displayItems = computed(() => {
-		if (props.items.length > max.value) {
-			return props.items.slice(0, max.value - 1)
+		if (props.items.length > effectiveMax.value) {
+			return props.items.slice(0, effectiveMax.value - 1)
 		}
 
-		if (props.items.length === max.value) {
-			return props.items.slice(0, max.value)
+		if (props.items.length === effectiveMax.value) {
+			return props.items.slice(0, effectiveMax.value)
 		}
 
 		return props.items
@@ -149,14 +159,14 @@
 
 	const handleMouseEnter = () => {
 		if (props.expandOnHover) {
-			max.value = props.items.length
+			isExpanded.value = true
 		}
 
 		onMouseenter()
 	}
 	const handleMouseLeave = () => {
 		if (props.expandOnHover) {
-			max.value = props.max
+			isExpanded.value = false
 		}
 
 		onMouseleave()
@@ -164,11 +174,7 @@
 
 	const handleClick = () => {
 		if (props.expandOnClick) {
-			if (isActive.value) {
-				max.value = props.max
-			} else {
-				max.value = props.items.length
-			}
+			isExpanded.value = !isActive.value
 		}
 
 		onActive()
