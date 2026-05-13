@@ -15,7 +15,7 @@
 		        v-show="modelValue"
 		        :id="id"
 		        :aria-label="t(label, content)"
-		        :class="['origam-badge__badge', colorClasses]"
+		        :class="['origam-badge__badge', colorClasses, roundedClasses, borderClasses, elevationClasses]"
 		        aria-atomic="true"
 		        aria-live="polite"
 		        role="status"
@@ -23,11 +23,34 @@
         >
           <template v-if="!dot">
             <slot name="badge">
-              <template v-if="hasIcon">
-                <origam-icon :icon="icon"/>
+              <template v-if="hasPrependIcon">
+                <slot name="prepend">
+                  <origam-icon
+                          key="prepend-icon"
+                          class="origam-badge__prepend"
+                          :icon="prependIcon"
+                  />
+                </slot>
               </template>
-              <template v-else>
-                {{ content }}
+
+              <template v-if="hasIcon">
+                <origam-icon
+                        key="content-icon"
+                        :icon="icon"
+                />
+              </template>
+              <template v-else-if="content !== undefined && content !== null && content !== ''">
+                <span class="origam-badge__content">{{ content }}</span>
+              </template>
+
+              <template v-if="hasAppendIcon">
+                <slot name="append">
+                  <origam-icon
+                          key="append-icon"
+                          class="origam-badge__append"
+                          :icon="appendIcon"
+                  />
+                </slot>
               </template>
             </slot>
           </template>
@@ -41,7 +64,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamIcon, OrigamScaleRotate, OrigamTransition } from '../../components'
+	import { OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
 
 	import {
 		useActive,
@@ -74,7 +97,13 @@
 		tag: 'div',
 		location: 'top right',
 		label: 'origam.badge',
-		transition: () => ({component: OrigamScaleRotate}) as unknown as TTransitionProps
+		// Default transition: fade — the canonical default for any
+		// `modelValue: boolean` show/hide component. Passed as a
+		// component descriptor (not a bare name string) so the matching
+		// `<style>` block of `OrigamFade` is guaranteed to be injected
+		// globally without depending on another OrigamFade instance
+		// being already mounted in the page.
+		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
 	const {filterProps} = useProps<IBadgeProps>(props)
@@ -112,7 +141,7 @@
 	 * Icon
 	 ********************************************************/
 
-	const {icon, statusClasses} = useStatus(props)
+	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating
 				? (props.dot ? 2 : 4)
@@ -133,6 +162,12 @@
 	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!icon.value
+	})
+	const hasPrependIcon = computed(() => {
+		return !!prependIcon.value
+	})
+	const hasAppendIcon = computed(() => {
+		return !!appendIcon.value
 	})
 
 	const content = computed(() => {
@@ -187,11 +222,8 @@
 				'origam-badge--floating': props.floating,
 				'origam-badge--inline': props.inline
 			},
-			elevationClasses.value,
 			activeClasses.value,
 			hoverClasses.value,
-			roundedClasses.value,
-			borderClasses.value,
 			statusClasses.value,
 			props.class
 		]
@@ -239,6 +271,7 @@
 			align-items: center;
 			justify-content: center;
 			display: inline-flex;
+			gap: var(--origam-badge__badge---gap, 2px);
 
 			position: var(--origam-badge__badge---position);
 			pointer-events: var(--origam-badge__badge---pointer-events);
@@ -270,17 +303,67 @@
 
 			background-color: var(--origam-badge__badge---background-color);
 			color: var(--origam-badge__badge---color);
+			box-shadow: var(--origam-badge__badge---box-shadow);
 
 			:deep(.origam-icon) {
 				color: inherit;
 				font-size: 0.75rem;
-				margin: 0 -2px;
 			}
 
 			:deep(img),
 			:deep(.origam-img) {
 				height: 100%;
 				width: 100%;
+			}
+
+			&#{$this}--border {
+				--origam-badge__badge---border-width: 2px;
+			}
+
+			&#{$this}--elevated {
+				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow-md));
+			}
+
+			&#{$this}--rounded {
+				--origam-badge__badge---border-radius: var(--origam-radius-md, 8px);
+			}
+
+			&#{$this}--rounded-x-small {
+				--origam-badge__badge---border-radius: var(--origam-radius-xs, 2px);
+			}
+
+			&#{$this}--rounded-small {
+				--origam-badge__badge---border-radius: var(--origam-radius-sm, 4px);
+			}
+
+			&#{$this}--rounded-default {
+				--origam-badge__badge---border-radius: var(--origam-radius-md, 8px);
+			}
+
+			&#{$this}--rounded-medium {
+				--origam-badge__badge---border-radius: var(--origam-radius-lg, 12px);
+			}
+
+			&#{$this}--rounded-large {
+				--origam-badge__badge---border-radius: var(--origam-radius-xl, 16px);
+			}
+
+			&#{$this}--rounded-x-large {
+				--origam-badge__badge---border-radius: var(--origam-radius-2xl, 24px);
+			}
+
+			&#{$this}--rounded-shaped {
+				border-start-start-radius: var(--origam-radius-xl, 16px);
+				border-start-end-radius: 0;
+				border-end-start-radius: 0;
+				border-end-end-radius: var(--origam-radius-xl, 16px);
+			}
+
+			&#{$this}--rounded-shaped-invert {
+				border-start-start-radius: 0;
+				border-start-end-radius: var(--origam-radius-xl, 16px);
+				border-end-start-radius: var(--origam-radius-xl, 16px);
+				border-end-end-radius: 0;
 			}
 		}
 
@@ -301,22 +384,9 @@
 			margin-inline-end: var(--origam-badge__wrapper---margin-inline-end);
 		}
 
-		&--elevated {
-			#{$this}__badge {
-				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow-md));
-			}
-		}
-
-		&--border {
-			#{$this}__badge {
-				--origam-badge__badge---border-width: 2px;
-			}
-		}
-
 		&--dot {
 			#{$this}__badge {
 				--origam-badge__badge---border-width: 1.5px;
-				--origam-badge__badge---border-radius: 4.5px;
 				--origam-badge__badge---height: 9px;
 				--origam-badge__badge---width: 9px;
 				--origam-badge__badge---min-width: 0;

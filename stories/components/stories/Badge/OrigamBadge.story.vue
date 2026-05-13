@@ -180,18 +180,65 @@
 		</Variant>
 
 		<Variant
-				title="Prop — status"
-				:init-state="() => useStoryInitState<{ status?: TStatus }>({ status: 'success' })"
+				title="Prop — status & statusIconPosition"
+				:init-state="() => useStoryInitState<{ status?: TStatus, statusIconPosition?: TStatusPosition, content?: string | number }>({
+					status: 'success',
+					statusIconPosition: 'prepend',
+					content: 1
+				})"
 		>
 			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :status="state.status" :model-value="true" :content="1">
-						<origam-avatar text="AP"/>
-					</origam-badge>
+				<div style="display: flex; flex-direction: column; gap: 24px;">
+					<div class="demo-host">
+						<origam-badge
+								:status="state.status"
+								:status-icon-position="state.statusIconPosition"
+								:content="state.content"
+								:model-value="true"
+						>
+							<origam-avatar text="AP"/>
+						</origam-badge>
+					</div>
+					<div style="display: flex; gap: 32px; flex-wrap: wrap;">
+						<div class="demo-cell">
+							<div class="demo-host">
+								<origam-badge status="success" status-icon-position="prepend" :content="1" :model-value="true">
+									<origam-avatar text="P"/>
+								</origam-badge>
+							</div>
+							<p class="demo-label">prepend</p>
+						</div>
+						<div class="demo-cell">
+							<div class="demo-host">
+								<origam-badge status="warning" status-icon-position="append" :content="1" :model-value="true">
+									<origam-avatar text="A"/>
+								</origam-badge>
+							</div>
+							<p class="demo-label">append</p>
+						</div>
+						<div class="demo-cell">
+							<div class="demo-host">
+								<origam-badge status="info" status-icon-position="both" :content="1" :model-value="true">
+									<origam-avatar text="B"/>
+								</origam-badge>
+							</div>
+							<p class="demo-label">both</p>
+						</div>
+						<div class="demo-cell">
+							<div class="demo-host">
+								<origam-badge status="error" status-icon-position="replace" :model-value="true">
+									<origam-avatar text="R"/>
+								</origam-badge>
+							</div>
+							<p class="demo-label">replace</p>
+						</div>
+					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.status" title="status" :options="statusList"/>
+				<HstSelect v-model="state.status"             title="status"             :options="statusList"/>
+				<HstSelect v-model="state.statusIconPosition" title="statusIconPosition" :options="statusIconPositionList"/>
+				<HstText   v-model="state.content"            title="content"/>
 			</template>
 		</Variant>
 
@@ -297,9 +344,9 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamAvatar, OrigamBadge } from '@origam/components'
-	import { STATUS } from '@origam/enums'
+	import { STATUS, STATUS_POSITION } from '@origam/enums'
 	import type { IBadgeProps, IColorProps, IOptions, IRoundedProps } from '@origam/interfaces'
-	import type { TAnchor, TStatus } from '@origam/types'
+	import type { TAnchor, TStatus, TStatusPosition } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { elevationList, iconList, intentList, roundedList } from '@stories/const'
@@ -310,6 +357,14 @@
 		{ label: 'Warning', value: STATUS.WARNING },
 		{ label: 'Error',   value: STATUS.ERROR },
 		{ label: 'Info',    value: STATUS.INFO }
+	]
+
+	const statusIconPositionList: Array<IOptions<TStatusPosition>> = [
+		{ label: '(none)',  value: undefined },
+		{ label: 'prepend', value: STATUS_POSITION.PREPEND },
+		{ label: 'append',  value: STATUS_POSITION.APPEND },
+		{ label: 'both',    value: STATUS_POSITION.BOTH },
+		{ label: 'replace', value: STATUS_POSITION.REPLACE }
 	]
 
 	const locationList: Array<IOptions<TAnchor>> = [
@@ -326,6 +381,19 @@
 	.demo-host {
 		display: inline-flex;
 		padding: 16px;
+	}
+
+	.demo-cell {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.demo-label {
+		font: 0.75rem/1 system-ui;
+		color: var(--origam-color-text-secondary);
+		margin: 0;
 	}
 </style>
 
