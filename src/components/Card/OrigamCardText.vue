@@ -14,7 +14,10 @@
 		lang="ts"
 		setup
 >
-	import { useProps } from "../../composables"
+	import {
+	useProps,
+	useStyle
+} from "../../composables"
 	import type { ICardTextProps } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'

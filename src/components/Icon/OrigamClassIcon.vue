@@ -10,7 +10,10 @@
 		lang="ts"
 		setup
 >
-	import { useProps } from "../../composables"
+	import {
+	useProps,
+	useStyle
+} from "../../composables"
 	import { SIZES_ARRAY } from '../../consts'
 	import type { IIconComponentProps } from '../../interfaces'
 	import type { TSize } from '../../types'

@@ -60,20 +60,26 @@
 		lang="ts"
 		setup
 >
-	import { computed, shallowRef, StyleValue, watch } from "vue"
-	import { OrigamFade, OrigamIcon } from "../../components"
+	import {
+	computed,
+	OrigamIcon } from "../../components"
 	import {
 		useBorder,
-		useDisplay,
-		useGoTo,
-		useGroup,
-		useMargin,
-		usePadding,
-		useProps,
-		useResizeObserver,
-		useRounded,
-		useRtl
-	} from "../../composables"
+	shallowRef,
+	StyleValue,
+	useDisplay,
+	useGoTo,
+	useGroup,
+	useMargin,
+	usePadding,
+	useProps,
+	useResizeObserver,
+	useRounded,
+	useRtl,
+	useStyle,
+	watch } from "vue"
+	import { OrigamFade
+} from "../../composables"
 
 	import { IN_BROWSER, ORIGAM_SLIDE_GROUP_KEY } from "../../consts"
 

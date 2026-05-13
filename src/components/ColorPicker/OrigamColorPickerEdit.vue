@@ -32,9 +32,14 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import {
 
-	import { useProps } from "../../composables"
+	OrigamBtn } from "../../components"
+
+	import { useProps,
+
+	useStyle
+} from "../../composables"
 
 	import { COLOR_NULL, COLOR_PICKER_MODES } from "../../consts"
 

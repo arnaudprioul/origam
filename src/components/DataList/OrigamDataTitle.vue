@@ -66,8 +66,17 @@
 		setup
 >
 
-	import { OrigamAvatar, OrigamIcon } from "../../components"
-	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps } from "../../composables"
+	import {
+	OrigamAvatar,
+	OrigamIcon } from "../../components"
+	import { useAdjacent,
+	useBothColor,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from "../../composables"
 
 	import type { IDataTitleProps } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"

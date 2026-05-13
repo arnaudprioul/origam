@@ -38,8 +38,12 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
-	import { useProps } from "../../composables"
+	import {
+	computed,
+	StyleValue } from 'vue'
+	import { useProps,
+	useStyle
+} from "../../composables"
 	import { SIZES_ARRAY } from '../../consts'
 
 	import type { IIconComponentProps } from '../../interfaces'

@@ -12,17 +12,22 @@
 		lang="ts"
 		setup
 >
-	import { computed, shallowRef, StyleValue, toRef } from "vue"
+	import {
+	computed,
+	shallowRef,
+	StyleValue,
+	toRef } from "vue"
 	import {
 		useBorder,
-		useBothColor,
-		useDimension,
-		useElevation,
-		useLayoutItem,
-		useProps,
-		useRounded,
-		useSsrBoot
-	} from "../../composables"
+	useBothColor,
+	useDimension,
+	useElevation,
+	useLayoutItem,
+	useProps,
+	useRounded,
+	useSsrBoot,
+	useStyle
+} from "../../composables"
 
 	import type { ISystemBarProps } from "../../interfaces"
 

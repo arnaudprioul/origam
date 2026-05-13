@@ -173,20 +173,28 @@
 		lang="ts"
 		setup
 >
-	import { computed, isVNode, StyleValue, toRef, useSlots, type VNode } from "vue"
-	import { OrigamDataText, OrigamDataTitle } from "../../components"
+	import {
+	computed,
+	isVNode,
+	OrigamDataTitle } from "../../components"
 
 	import {
 		useBorder,
-		useBothColor,
-		useDensity,
-		useElevation,
-		useLoader,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded
-	} from "../../composables"
+	StyleValue,
+	toRef,
+	type VNode } from "vue"
+	import { OrigamDataText,
+	useBothColor,
+	useDensity,
+	useElevation,
+	useLoader,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useSlots,
+	useStyle
+} from "../../composables"
 	import type {
 		IDataItem,
 		IDataListKVItem,

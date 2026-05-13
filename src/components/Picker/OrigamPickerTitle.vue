@@ -14,8 +14,14 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef } from "vue"
-	import { useBothColor, useProps } from "../../composables"
+	import {
+	computed,
+	StyleValue,
+	toRef } from "vue"
+	import { useBothColor,
+	useProps,
+	useStyle
+} from "../../composables"
 
 	import type { IPickerTitleProps } from "../../interfaces"
 

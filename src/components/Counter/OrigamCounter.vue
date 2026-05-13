@@ -23,9 +23,20 @@
 		lang="ts"
 		setup
 >
-	import { OrigamSlideY, OrigamTransition } from "../../components"
+	import {
 
-	import { useBothColor, useProps, useSsrBoot } from "../../composables"
+	OrigamSlideY,
+
+	OrigamTransition } from "../../components"
+
+	import { useBothColor,
+
+	useProps,
+
+	useSsrBoot,
+
+	useStyle
+} from "../../composables"
 
 	import type { ICounterProps } from "../../interfaces"
 	import type { TTransitionProps } from "../../types"

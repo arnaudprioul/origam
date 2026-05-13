@@ -20,9 +20,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import {
 
-	import { useDate, useProps, useVModel } from "../../composables"
+	OrigamBtn } from "../../components"
+
+	import { useDate,
+
+	useProps,
+
+	useStyle,
+
+	useVModel
+} from "../../composables"
 
 	import type { IDatePickerMonthsProps } from "../../interfaces"
 

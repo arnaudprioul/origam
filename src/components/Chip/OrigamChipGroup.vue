@@ -18,9 +18,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
+	import {
 
-	import { useGroup, useProps } from "../../composables"
+	OrigamDefaultsProvider,
+
+	OrigamSlideGroup } from '../../components'
+
+	import { useGroup,
+
+	useProps,
+
+	useStyle
+} from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 

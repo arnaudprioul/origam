@@ -39,10 +39,16 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue } from 'vue'
+	import {
+	computed,
+	ref,
+	StyleValue } from 'vue'
 	import { OrigamBtn } from '../../components'
 
-	import { useLocale, useProps } from "../../composables"
+	import { useLocale,
+	useProps,
+	useStyle
+} from "../../composables"
 
 	import { MDI_ICONS, VARIANT } from "../../enums"
 

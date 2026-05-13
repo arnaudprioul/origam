@@ -26,9 +26,14 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableHeaderCell } from '../../components'
+	import {
 
-	import { useProps } from "../../composables"
+	OrigamDataTableHeaderCell } from '../../components'
+
+	import { useProps,
+
+	useStyle
+} from "../../composables"
 
 	import type { IDataTableHeadersCellProps } from '../../interfaces'
 	import type { TOrigamDataTableHeaderCell } from "../../types"

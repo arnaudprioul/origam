@@ -51,9 +51,24 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from "../../components"
+	import {
 
-	import { useGroupBy, useHeaders, useProps, useSelection } from "../../composables"
+	OrigamBtn,
+
+	OrigamCheckboxBtn,
+
+	OrigamDataTableColumnCell } from "../../components"
+
+	import { useGroupBy,
+
+	useHeaders,
+
+	useProps,
+
+	useSelection,
+
+	useStyle
+} from "../../composables"
 	import { MDI_ICONS } from "../../enums"
 
 	import type { IDataTableGroupHeaderRowProps } from "../../interfaces"

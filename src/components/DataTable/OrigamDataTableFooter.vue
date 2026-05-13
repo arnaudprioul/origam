@@ -44,9 +44,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamPagination, OrigamRow, OrigamSelect } from "../../components"
+	import {
 
-	import { useLocale, usePagination, useProps } from "../../composables"
+	OrigamPagination,
+
+	OrigamRow,
+
+	OrigamSelect } from "../../components"
+
+	import { useLocale,
+
+	usePagination,
+
+	useProps,
+
+	useStyle
+} from "../../composables"
 
 	import { DENSITY } from "../../enums"
 

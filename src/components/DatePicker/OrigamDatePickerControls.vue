@@ -56,9 +56,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamBtnGroup, OrigamSpacer } from "../../components"
+	import {
 
-	import { useProps } from "../../composables"
+	OrigamBtn,
+
+	OrigamBtnGroup,
+
+	OrigamSpacer } from "../../components"
+
+	import { useProps,
+
+	useStyle
+} from "../../composables"
 
 	import { DATE_MODE, MDI_ICONS } from "../../enums"
 

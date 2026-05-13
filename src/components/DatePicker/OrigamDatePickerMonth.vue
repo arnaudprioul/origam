@@ -95,9 +95,24 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamReverseTranslatePicker, OrigamTransition, OrigamTranslatePicker } from "../../components"
+	import {
 
-	import { useCalendar, useDate, useProps } from "../../composables"
+	OrigamBtn,
+
+	OrigamReverseTranslatePicker,
+
+	OrigamTransition,
+
+	OrigamTranslatePicker } from "../../components"
+
+	import { useCalendar,
+
+	useDate,
+
+	useProps,
+
+	useStyle
+} from "../../composables"
 
 	import { CALENDAR_STRATEGY, DENSITY } from "../../enums"
 

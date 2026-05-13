@@ -15,9 +15,16 @@
 		lang="ts"
 		setup
 >
-	import { OrigamLayout } from '../../components'
+	import {
 
-	import { useProps, useRtl } from "../../composables"
+	OrigamLayout } from '../../components'
+
+	import { useProps,
+
+	useRtl,
+
+	useStyle
+} from "../../composables"
 
 	import type { ILayoutProps } from '../../interfaces'
 
