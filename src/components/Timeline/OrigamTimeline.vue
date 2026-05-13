@@ -123,8 +123,8 @@
 	.origam-timeline {
 		display: flex;
 		flex-direction: column;
-		background-color: var(--origam-timeline---background-color, var(--origam-color-surface-default));
-		color: var(--origam-timeline---color, var(--origam-color-text-primary));
+		background-color: var(--origam-timeline---background-color, var(--origam-color__surface---default));
+		color: var(--origam-timeline---color, var(--origam-color__text---primary));
 		padding-block: var(--origam-timeline---padding-block, 8px);
 		padding-inline: var(--origam-timeline---padding-inline, 16px);
 

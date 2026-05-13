@@ -37,7 +37,7 @@
 		>
 			<template #default="{ state }">
 				<origam-stepper v-model="state.step" :items="defaultItems" :clickable="true" data-cy="stepper-item-clickable"/>
-				<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary); padding: 8px;">
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); padding: 8px;">
 					Active step: {{ state.step }}
 				</p>
 			</template>

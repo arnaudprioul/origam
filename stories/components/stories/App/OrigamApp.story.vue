@@ -14,7 +14,7 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-playground-host">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-playground-host">
 					<origam-app v-bind="state" data-cy="app-playground">
 						<origam-toolbar title="Playground App" data-cy="app-playground-toolbar"/>
 						<origam-main data-cy="app-playground-main">
@@ -35,7 +35,7 @@
 				:init-state="() => useStoryInitState<{ fullHeight: boolean }>({ fullHeight: false })"
 		>
 			<template #default="{ state }">
-				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-fullheight-host">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-fullheight-host">
 					<origam-app :full-height="state.fullHeight" data-cy="app-fullheight">
 						<origam-toolbar title="Full height" data-cy="app-fullheight-toolbar"/>
 						<origam-main data-cy="app-fullheight-main">
@@ -54,7 +54,7 @@
 				:init-state="() => useStoryInitState<{ drawerOpen: boolean }>({ drawerOpen: true })"
 		>
 			<template #default="{ state }">
-				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-drawer-host">
+				<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-drawer-host">
 					<origam-app :full-height="false" data-cy="app-drawer">
 						<origam-toolbar title="With Drawer" data-cy="app-drawer-toolbar">
 							<template #prepend>
@@ -83,7 +83,7 @@
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-slot-default-host">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-slot-default-host">
 				<origam-app :full-height="false" data-cy="app-slot-default">
 					<origam-toolbar title="Slot app" data-cy="app-slot-default-toolbar"/>
 					<origam-main data-cy="app-slot-default-main">

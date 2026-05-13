@@ -184,31 +184,31 @@
 		}
 
 		&--rounded {
-			--origam-btn-group---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-btn-group---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-btn-group---border-radius: var(--origam-radius-xs, 2px);
+			--origam-btn-group---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-btn-group---border-radius: var(--origam-radius-sm, 4px);
+			--origam-btn-group---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-btn-group---border-radius: var(--origam-radius-md, 8px);
+			--origam-btn-group---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-btn-group---border-radius: var(--origam-radius-lg, 12px);
+			--origam-btn-group---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-btn-group---border-radius: var(--origam-radius-xl, 16px);
+			--origam-btn-group---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-btn-group---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-btn-group---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {

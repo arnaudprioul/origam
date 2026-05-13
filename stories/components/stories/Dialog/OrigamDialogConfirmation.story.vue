@@ -101,7 +101,7 @@
 							<li>image.png</li>
 							<li>notes.md</li>
 						</ul>
-						<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+						<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 							You can restore them within 30 days.
 						</p>
 					</template>

@@ -140,7 +140,7 @@
     z-index: 2;
 
     &__icon {
-      color: var(--origam-file-field-dragndrop-item__icon---color, var(--origam-color-text-secondary));
+      color: var(--origam-file-field-dragndrop-item__icon---color, var(--origam-color__text---secondary));
       flex-shrink: 0;
     }
 
@@ -161,7 +161,7 @@
     }
 
     &__meta {
-      color: var(--origam-file-field-dragndrop-item__meta---color, var(--origam-color-text-secondary));
+      color: var(--origam-file-field-dragndrop-item__meta---color, var(--origam-color__text---secondary));
       font-size: var(--origam-file-field-dragndrop-item__meta---font-size, 0.75rem);
     }
 

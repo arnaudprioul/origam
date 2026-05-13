@@ -738,11 +738,11 @@
 		&--colored {
 			--bg-base: var(
 				--origam-pagination---background-color-colored,
-				var(--origam-color-action-primary-bg)
+				var(--origam-color__action--primary---bg)
 			);
 			--fg-base: var(
 				--origam-pagination---color-colored,
-				var(--origam-color-action-primary-fg)
+				var(--origam-color__action--primary---fg)
 			);
 
 			:deep(.origam-btn) {

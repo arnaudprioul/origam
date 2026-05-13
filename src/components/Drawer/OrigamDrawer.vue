@@ -497,7 +497,7 @@
 		}
 
 		&--temporary {
-			--origam-drawer---box-shadow: var(--origam-shadow-lg);
+			--origam-drawer---box-shadow: var(--origam-shadow---lg);
 		}
 
 		&--sticky {
@@ -538,11 +538,11 @@
 			left: var(--origam-drawer__scrim---position-left, 0);
 			width: var(--origam-drawer__scrim---width, 100%);
 			height: var(--origam-drawer__scrim---height, 100%);
-			background: var(--origam-drawer__scrim---background, var(--origam-color-overlay-scrim));
+			background: var(--origam-drawer__scrim---background, var(--origam-color__overlay---scrim));
 			opacity: var(--origam-drawer__scrim---opacity, 0.2);
 			transition-property: var(--origam-drawer__scrim---transition-property, opacity);
-			transition-duration: var(--origam-drawer__scrim---transition-duration, var(--origam-motion-duration-medium));
-			transition-timing-function: var(--origam-drawer__scrim---transition-timing-function, var(--origam-motion-easing-standard));
+			transition-duration: var(--origam-drawer__scrim---transition-duration, var(--origam-motion__duration---medium));
+			transition-timing-function: var(--origam-drawer__scrim---transition-timing-function, var(--origam-motion__easing---standard));
 			z-index: var(--origam-drawer__scrim---z-index, var(--origam-z-index-raised));
 		}
 

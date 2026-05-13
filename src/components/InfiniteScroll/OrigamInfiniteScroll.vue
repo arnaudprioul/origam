@@ -354,7 +354,7 @@
 			padding-block: var(--origam-infinite-scroll__loader---padding-block, 12px);
 			padding-inline: var(--origam-infinite-scroll__loader---padding-inline, 0px);
 			font-size: var(--origam-infinite-scroll__loader---font-size, 0.875rem);
-			color: var(--origam-infinite-scroll__empty---color, var(--origam-color-text-secondary));
+			color: var(--origam-infinite-scroll__empty---color, var(--origam-color__text---secondary));
 		}
 	}
 </style>

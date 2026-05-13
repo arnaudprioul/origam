@@ -60,7 +60,7 @@
 							:max="state.max"
 							data-cy="dp-years-bounds"
 					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary); margin-top: 8px;">
+					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
 						Years outside [min .. max] render disabled.
 					</p>
 				</div>

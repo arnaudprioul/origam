@@ -48,7 +48,7 @@ semantic tinting:
 ```vue
 <template>
     <OrigamLabel text="Email" :style="{
-        '--origam-label---color': 'var(--origam-color-text-primary)'
+        '--origam-label---color': 'var(--origam-color__text---primary)'
     }" />
 </template>
 ```

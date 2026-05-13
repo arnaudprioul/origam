@@ -186,7 +186,7 @@
 					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
 						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color-text-secondary);">
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
 						Move the canvas or click a swatch to see events.
 					</p>
 				</div>
@@ -211,7 +211,7 @@
 					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
 						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color-text-secondary);">
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
 						Click the mode toggle button to see events.
 					</p>
 				</div>

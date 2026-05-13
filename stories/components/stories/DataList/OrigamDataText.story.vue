@@ -123,7 +123,7 @@
 		<Variant title="Slot — default">
 			<dl style="margin: 24px;">
 				<origam-data-text data-cy="data-text-slot-default">
-					<strong style="color: var(--origam-color-action-primary-bg);">
+					<strong style="color: var(--origam-color__action--primary---bg);">
 						Custom-rendered text via the default slot
 					</strong>
 				</origam-data-text>

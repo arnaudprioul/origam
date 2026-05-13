@@ -242,7 +242,7 @@
 		<Variant title="Slot — label">
 			<origam-radio v-model="slotLabelModel" value="custom" data-cy="radio-slot-label">
 				<template #label>
-					<span style="font-style: italic; color: var(--origam-color-action-primary-bg);">Custom label slot</span>
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label slot</span>
 				</template>
 			</origam-radio>
 			<div data-cy="radio-slot-label-status">value = {{ slotLabelModel }}</div>

@@ -182,9 +182,9 @@
 						<origam-card title='border="4px groove"'  border="4px groove"  data-cy="card-border-groove"/>
 
 						<small>Color:</small>
-						<origam-card title='border="2px solid primary"' border="2px solid var(--origam-color-action-primary-bg)"     data-cy="card-border-primary"/>
-						<origam-card title='border="2px solid success"' border="2px solid var(--origam-color-feedback-success-bg)"   data-cy="card-border-success"/>
-						<origam-card title='border="2px solid danger"'  border="2px solid var(--origam-color-feedback-danger-bg)"    data-cy="card-border-danger"/>
+						<origam-card title='border="2px solid primary"' border="2px solid var(--origam-color__action--primary---bg)"     data-cy="card-border-primary"/>
+						<origam-card title='border="2px solid success"' border="2px solid var(--origam-color__feedback--success---bg)"   data-cy="card-border-success"/>
+						<origam-card title='border="2px solid danger"'  border="2px solid var(--origam-color__feedback--danger---bg)"    data-cy="card-border-danger"/>
 						<origam-card title='border="3px dashed #ff8a00"' border="3px dashed #ff8a00" data-cy="card-border-orange"/>
 
 						<small>Position:</small>
@@ -310,7 +310,7 @@
 							image="https://picsum.photos/seed/interactive/400/200"
 							data-cy="card-loading-interactive"
 					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeCardLoading(state) }}</pre>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeCardLoading(state) }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -381,7 +381,7 @@
 			<div style="padding: 16px; max-width: 400px;">
 				<origam-card title="Asset slot" data-cy="card-slot-asset">
 					<template #asset>
-						<div style="background: var(--origam-color-surface-raised, #eee); height: 120px; display: flex; align-items: center; justify-content: center;">
+						<div style="background: var(--origam-color__surface---raised, #eee); height: 120px; display: flex; align-items: center; justify-content: center;">
 							Custom asset placeholder
 						</div>
 					</template>

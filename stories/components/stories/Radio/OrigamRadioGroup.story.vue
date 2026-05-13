@@ -67,7 +67,7 @@
 						:direction="DIRECTION.HORIZONTAL"
 						data-cy="radio-group-horizontal"
 				/>
-				<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary); margin-top: 8px;" data-cy="radio-group-horizontal-status">
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;" data-cy="radio-group-horizontal-status">
 					selected = {{ horizontalModel || '(none)' }}
 				</p>
 			</div>
@@ -163,8 +163,8 @@
 				>
 					<template #label="{ label, required }">
 						<strong>Custom label</strong>
-						<span v-if="required" style="color: var(--origam-color-feedback-danger-bg);"> *</span>
-						<small style="display: block; color: var(--origam-color-text-secondary);">
+						<span v-if="required" style="color: var(--origam-color__feedback--danger---bg);"> *</span>
+						<small style="display: block; color: var(--origam-color__text---secondary);">
 							{{ label }}
 						</small>
 					</template>

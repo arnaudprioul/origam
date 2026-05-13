@@ -224,7 +224,7 @@
 	const hostStyle: CSSProperties = {
 		height: '280px',
 		width: '100%',
-		background: 'var(--origam-color-surface-overlay)',
+		background: 'var(--origam-color__surface---overlay)',
 	}
 
 	const layerStyle: CSSProperties = {
@@ -234,7 +234,7 @@
 		width: '100%',
 		height: '100%',
 		fontWeight: '600',
-		color: 'var(--origam-color-text-primary)',
+		color: 'var(--origam-color__text---primary)',
 	}
 </script>
 

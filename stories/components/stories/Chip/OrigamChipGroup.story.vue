@@ -176,10 +176,10 @@
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 	:deep(.my-chip-active) {
-		background: var(--origam-color-action-primary-bg, rgb(124, 58, 237));
-		color: var(--origam-color-action-primary-fg, white);
+		background: var(--origam-color__action--primary---bg, rgb(124, 58, 237));
+		color: var(--origam-color__action--primary---fg, white);
 	}
 </style>
 

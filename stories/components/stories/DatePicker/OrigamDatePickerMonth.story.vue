@@ -44,7 +44,7 @@
 		<Variant title="Prop — multiple (multi-day selection)">
 			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-date-picker v-model="multipleValue" multiple data-cy="dp-month-multiple"/>
-				<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary); margin-top: 8px;">
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
 					{{ multipleValue.length }} dates selected
 				</p>
 			</div>

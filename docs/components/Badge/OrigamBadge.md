@@ -88,7 +88,7 @@ where overlap would crop the badge.
 ## Status
 
 `status` applies the feedback intent ladder — same semantic tokens as
-`OrigamAvatar`. The colour pair `--origam-color-feedback-{intent}-{bg|fg}`
+`OrigamAvatar`. The colour pair `--origam-color__feedback--{intent}---{bg|fg}`
 keeps the badge readable in both light and dark themes.
 
 ```vue
@@ -211,7 +211,7 @@ The full list lives in `tokens/component/badge.json`.
 
 ## Theming notes
 
-- Status colours come from the shared `--origam-color-feedback-*`
+- Status colours come from the shared `--origam-color__feedback--*---*`
   semantic tokens, so theme switching is automatic.
 - For one-off styling, the SCSS exposes
   `--origam-badge__badge---background-color` /

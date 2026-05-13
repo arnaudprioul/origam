@@ -173,7 +173,7 @@
 				<div
 						class="story-host story-host--bounded"
 						data-cy="overlay-contained-host"
-						style="position: relative; height: 280px; border: 1px dashed var(--origam-color-border-subtle, #ccc);"
+						style="position: relative; height: 280px; border: 1px dashed var(--origam-color__border---subtle, #ccc);"
 				>
 					<origam-overlay
 							v-model="containedOpen"

@@ -181,7 +181,7 @@
 		<Variant title="Slot — top (toolbar / search bar)">
 			<origam-table border>
 				<template #top>
-					<div style="padding: 12px; background: var(--origam-color-surface-overlay);">
+					<div style="padding: 12px; background: var(--origam-color__surface---overlay);">
 						Toolbar / search bar
 					</div>
 				</template>
@@ -195,7 +195,7 @@
 				<thead><tr><th>Name</th></tr></thead>
 				<tbody><tr><td>Ada Lovelace</td></tr></tbody>
 				<template #bottom>
-					<div style="padding: 12px; background: var(--origam-color-surface-overlay);">
+					<div style="padding: 12px; background: var(--origam-color__surface---overlay);">
 						Pagination / summary
 					</div>
 				</template>

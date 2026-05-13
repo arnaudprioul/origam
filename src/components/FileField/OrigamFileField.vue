@@ -937,7 +937,7 @@
     &__dropzone {
       align-items: center;
       background-color: var(--origam-file-field__dropzone---background-color, transparent);
-      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color-border-default));
+      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color__border---default));
       border-radius: var(--origam-file-field__dropzone---border-radius, 8px);
       color: var(--origam-file-field__dropzone---color, inherit);
       cursor: var(--origam-file-field__dropzone---cursor, pointer);
@@ -952,25 +952,25 @@
       transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;
 
       &:hover {
-        border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color-border-strong));
+        border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color__border---strong));
       }
 
       &--dragging {
-        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color-feedback-info-bg-subtle)));
-        border-color: var(--origam-file-field__dropzone---border-color-dragging, var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color-feedback-info-bg)));
+        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color__feedback--info---bg-subtle)));
+        border-color: var(--origam-file-field__dropzone---border-color-dragging, var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color__feedback--info---bg)));
       }
 
       &--error {
-        border-color: var(--origam-file-field__dropzone--error---border-color, var(--origam-file-field__dropzone---border-color-error, var(--origam-color-feedback-danger-bg)));
+        border-color: var(--origam-file-field__dropzone--error---border-color, var(--origam-file-field__dropzone---border-color-error, var(--origam-color__feedback--danger---bg)));
 
         .origam-file-field__dropzone-icon,
         .origam-file-field__dropzone-title {
-          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color-feedback-danger-fg-subtle));
+          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
         }
       }
 
       &-error {
-        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color-feedback-danger-fg-subtle));
+        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
         font-size: var(--origam-file-field__dropzone---subtitle-font-size, 0.75rem);
         margin-top: var(--origam-file-field__dropzone---gap-deck, 8px);
       }

@@ -60,7 +60,7 @@
 					<ul style="font-family: monospace; font-size: 0.75rem; align-self: stretch;">
 						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color-text-secondary);">
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
 						Drag the canvas picker to see events.
 					</p>
 				</div>

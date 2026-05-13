@@ -51,10 +51,10 @@
 					data-cy="group-header-slot"
 			>
 				<template #group-header="{ group, items: groupItems, isOpen, toggleGroup }">
-					<tr @click="toggleGroup(group)" style="cursor: pointer; background: var(--origam-color-surface-overlay);">
+					<tr @click="toggleGroup(group)" style="cursor: pointer; background: var(--origam-color__surface---overlay);">
 						<td colspan="3" style="padding: 8px 12px;">
 							<strong>{{ group }}</strong>
-							<small style="margin-inline-start: 8px; color: var(--origam-color-text-secondary);">
+							<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">
 								{{ groupItems.length }} member(s) — {{ isOpen ? '▼' : '▶' }}
 							</small>
 						</td>

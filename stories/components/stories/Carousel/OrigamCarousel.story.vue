@@ -225,7 +225,7 @@
 					<ul style="font-family: monospace; font-size: 0.8rem; margin: 0; padding-left: 16px;">
 						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color-text-secondary);">Navigate slides to see events.</p>
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">Navigate slides to see events.</p>
 				</div>
 			</template>
 		</Variant>

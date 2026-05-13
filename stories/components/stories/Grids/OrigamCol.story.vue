@@ -153,7 +153,7 @@
 		>
 			<template #default="{ state }">
 				<origam-container>
-					<origam-row align="start" style="min-height: 120px; background: var(--origam-color-surface-overlay, #ececec);">
+					<origam-row align="start" style="min-height: 120px; background: var(--origam-color__surface---overlay, #ececec);">
 						<origam-col cols="4">
 							<div class="demo-cell">parent (align=start)</div>
 						</origam-col>
@@ -226,11 +226,11 @@
 <style scoped>
 	.demo-cell {
 		padding: 12px;
-		background: var(--origam-color-surface-default, #fff);
-		border: 1px solid var(--origam-color-border-default, #e5e5e5);
+		background: var(--origam-color__surface---default, #fff);
+		border: 1px solid var(--origam-color__border---default, #e5e5e5);
 		border-radius: 4px;
 		text-align: center;
-		color: var(--origam-color-text-onColor, #000);
+		color: var(--origam-color__text---onColor, #000);
 	}
 </style>
 

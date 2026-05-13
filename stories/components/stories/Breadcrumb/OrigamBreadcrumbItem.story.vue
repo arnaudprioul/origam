@@ -154,7 +154,7 @@
 					<li class="origam-breadcrumb__item">
 						<origam-breadcrumb-item title="Ignored when slot used" data-cy="breadcrumb-item-slot-default">
 							<template #default>
-								<strong style="color: var(--origam-color-action-primary-bg);">Custom Content</strong>
+								<strong style="color: var(--origam-color__action--primary---bg);">Custom Content</strong>
 							</template>
 						</origam-breadcrumb-item>
 					</li>

@@ -838,18 +838,18 @@
 
 		&--error {
 			&:not(#{$this}--disabled) {
-				--origam-field---border-color: var(--origam-field--error---border-color, var(--origam-color-feedback-danger-border));
+				--origam-field---border-color: var(--origam-field--error---border-color, var(--origam-color__feedback--danger---border));
 
 				#{$this}__append-inner,
 				#{$this}__clearable,
 				#{$this}__prepend-inner {
 					> .origam-icon {
-						color: var(--origam-field--error---color, var(--origam-color-feedback-danger-fgSubtle));
+						color: var(--origam-field--error---color, var(--origam-color__feedback--danger---fgSubtle));
 					}
 				}
 
 				#{$this}__label {
-					color: var(--origam-field--error---color, var(--origam-color-feedback-danger-fgSubtle));
+					color: var(--origam-field--error---color, var(--origam-color__feedback--danger---fgSubtle));
 				}
 			}
 		}
@@ -899,18 +899,18 @@
 
 			@media (hover: hover) {
 				&:hover:not(#{$this}--focused):not(#{$this}--disabled) {
-					box-shadow: 0 1px 0 0 var(--origam-color-border-subtle, currentColor);
+					box-shadow: 0 1px 0 0 var(--origam-color__border---subtle, currentColor);
 				}
 			}
 
 			&#{$this}--focused {
-				box-shadow: 0 1px 0 0 var(--origam-color-border-focus, var(--origam-color-action-primary-bg, currentColor));
+				box-shadow: 0 1px 0 0 var(--origam-color__border---focus, var(--origam-color__action--primary---bg, currentColor));
 			}
 		}
 
 		&--variant {
 			&-solo {
-				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow-sm)));
+				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
 				border-color: transparent;
 				--origam-field__input---padding-top: 20px;
 			}
@@ -939,7 +939,7 @@
 				&#{$this}--error:not(#{$this}--disabled) {
 					#{$this}__outlines {
 						#{$this}__outline {
-							border-bottom-color: var(--origam-field---border-color, var(--origam-color-feedback-danger-border));
+							border-bottom-color: var(--origam-field---border-color, var(--origam-color__feedback--danger---border));
 						}
 					}
 				}

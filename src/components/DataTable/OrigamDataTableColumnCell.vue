@@ -112,13 +112,13 @@
 
 		&--fixed {
 			position: sticky;
-			background: var(--origam-data-table-cell--fixed---background, var(--origam-color-surface-raised));
+			background: var(--origam-data-table-cell--fixed---background, var(--origam-color__surface---raised));
 			left: 0;
 			z-index: var(--origam-data-table-cell--fixed---z-index, 1)
 		}
 
 		&--last-fixed {
-			border-right: var(--origam-data-table-cell--last-fixed---border-right-width, 1px) solid var(--origam-data-table-cell--last-fixed---border-right-color, var(--origam-color-border-subtle));
+			border-right: var(--origam-data-table-cell--last-fixed---border-right-width, 1px) solid var(--origam-data-table-cell--last-fixed---border-right-color, var(--origam-color__border---subtle));
 		}
 	}
 </style>

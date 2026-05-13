@@ -343,8 +343,8 @@
 	}
 
 	.origam-menu__content {
-		background: var(--origam-menu---background, var(--origam-color-surface-raised));
-		color: var(--origam-menu---color, var(--origam-color-text-primary));
+		background: var(--origam-menu---background, var(--origam-color__surface---raised));
+		color: var(--origam-menu---color, var(--origam-color__text---primary));
 		border-radius: var(--origam-menu---border-radius, 8px);
 		box-shadow: var(--origam-menu---box-shadow);
 		max-height: var(--origam-menu---max-height, calc(100vh - 32px));

@@ -93,14 +93,14 @@
 		align-items: center;
 		gap: 4px;
 		padding: 12px;
-		background: var(--origam-color-surface-overlay, #ececec);
+		background: var(--origam-color__surface---overlay, #ececec);
 		border-radius: 4px;
 	}
 
 	.demo-cell {
 		padding: 8px 12px;
-		background: var(--origam-color-surface-default, #fff);
-		border: 1px solid var(--origam-color-border-default, #e5e5e5);
+		background: var(--origam-color__surface---default, #fff);
+		border: 1px solid var(--origam-color__border---default, #e5e5e5);
 		border-radius: 4px;
 	}
 </style>

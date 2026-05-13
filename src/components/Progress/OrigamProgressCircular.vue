@@ -240,7 +240,7 @@
 			}
 
 			#{$this}__underlay {
-				color: var(--origam-progress-circular__underlay---color, var(--origam-color-surface-disabled));
+				color: var(--origam-progress-circular__underlay---color, var(--origam-color__surface---disabled));
 				stroke: currentColor;
 				opacity: var(--origam-progress-circular__underlay---opacity, 0.5);
 				z-index: 1;

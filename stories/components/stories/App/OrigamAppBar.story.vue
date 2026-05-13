@@ -23,7 +23,7 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="height: 160px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 160px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar v-bind="state" :order="0" data-cy="app-bar-playground">
 							<template #prepend>
@@ -60,7 +60,7 @@
 				:init-state="() => useStoryInitState<IAppBarProps>({ color: 'primary', bgColor: 'primary', title: 'My Application' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-color">
 							<template #prepend>
@@ -88,7 +88,7 @@
 				:init-state="() => useStoryInitState<IAppBarProps>({ color: 'primary', bgColor: 'primary', title: 'My Application' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-color">
 							<template #prepend>
@@ -115,7 +115,7 @@
 				:init-state="() => useStoryInitState<IAppBarProps>({ color: 'primary', bgColor: 'primary', title: 'My Application' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-color">
 							<template #prepend>
@@ -142,7 +142,7 @@
 				:init-state="() => useStoryInitState<IAppBarProps>({ density: undefined, title: 'Density AppBar' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-density">
 							<template #prepend>
@@ -165,7 +165,7 @@
 				:init-state="() => useStoryInitState<IAppBarProps>({ elevation: undefined, title: 'Elevation AppBar' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-elevation">
 							<template #prepend>
@@ -188,7 +188,7 @@
 				:init-state="() => useStoryInitState<IAppBarProps>({ rounded: undefined, title: 'Rounded AppBar' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" v-bind="state" data-cy="app-bar-rounded">
 							<template #prepend>
@@ -211,7 +211,7 @@
 				:init-state="() => useStoryInitState<{ collapse: boolean, flat: boolean, floating: boolean }>({ collapse: false, flat: false, floating: false })"
 		>
 			<template #default="{ state }">
-				<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar :order="0" :collapse="state.collapse" :flat="state.flat" :floating="state.floating" title="Modifier AppBar" data-cy="app-bar-modifiers">
 							<template #prepend>
@@ -234,7 +234,7 @@
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — prepend">
-			<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-app-bar :order="0" title="App with prepend" data-cy="app-bar-slot-prepend">
 						<template #prepend>
@@ -249,7 +249,7 @@
 		</Variant>
 
 		<Variant title="Slot — append">
-			<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-app-bar :order="0" title="App with append" data-cy="app-bar-slot-append">
 						<template #append>
@@ -265,7 +265,7 @@
 		</Variant>
 
 		<Variant title="Slot — title">
-			<div style="height: 140px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-app-bar :order="0" data-cy="app-bar-slot-title">
 						<template #title>

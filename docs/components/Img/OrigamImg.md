@@ -209,7 +209,7 @@ component blends into any surface.
 The component itself only sets neutral chrome (positioning, fit,
 preload blur). Background tints come from the host surface or the
 `bg-color` mixin. Switching `<html data-theme="dark">` re-resolves
-`--origam-color-surface-*` automatically.
+`--origam-color__surface---*` automatically.
 
 ## Related
 

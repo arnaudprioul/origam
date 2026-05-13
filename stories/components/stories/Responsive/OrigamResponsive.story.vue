@@ -67,7 +67,7 @@
 							:height="40"
 							style="vertical-align: middle;"
 					>
-						<div class="demo-fill" style="background: var(--origam-color-action-primary-bg, #1d4ed8);"/>
+						<div class="demo-fill" style="background: var(--origam-color__action--primary---bg, #1d4ed8);"/>
 					</origam-responsive>
 					inside a sentence — `inline` toggles between block and inline-flex.
 				</p>
@@ -178,9 +178,9 @@
 		justify-content: center;
 		width: 100%;
 		height: 100%;
-		background: var(--origam-color-surface-overlay, #ececec);
-		border: 1px solid var(--origam-color-border-default, #e5e5e5);
-		color: var(--origam-color-text-primary, #111);
+		background: var(--origam-color__surface---overlay, #ececec);
+		border: 1px solid var(--origam-color__border---default, #e5e5e5);
+		color: var(--origam-color__text---primary, #111);
 		font-weight: 500;
 	}
 </style>

@@ -43,7 +43,7 @@
 
 		<Variant title="Prop — swatches (custom palette)">
 			<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
-				<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary); margin-bottom: 8px;">
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-bottom: 8px;">
 					Brand palette — 4 columns × 2 rows
 				</p>
 				<origam-color-picker-swatches
@@ -73,7 +73,7 @@
 					<ul style="font-family: monospace; font-size: 0.75rem; margin-top: 12px;">
 						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color-text-secondary);">
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
 						Click a swatch to see the emitted HSV value.
 					</p>
 				</div>

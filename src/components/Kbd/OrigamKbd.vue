@@ -134,10 +134,10 @@
 		border-radius: var(--origam-kbd---border-radius, 4px);
 		border-width: var(--origam-kbd---border-width, 1px);
 		border-style: solid;
-		border-color: var(--origam-kbd---border-color, var(--origam-color-border-subtle, #d4d4d4));
+		border-color: var(--origam-kbd---border-color, var(--origam-color__border---subtle, #d4d4d4));
 
-		background-color: var(--origam-kbd---background-color, var(--origam-color-surface-raised, #fff));
-		color: var(--origam-kbd---color, var(--origam-color-text-primary, #171717));
+		background-color: var(--origam-kbd---background-color, var(--origam-color__surface---raised, #fff));
+		color: var(--origam-kbd---color, var(--origam-color__text---primary, #171717));
 
 		box-shadow: var(
 			--origam-kbd---box-shadow,
@@ -172,16 +172,16 @@
 
 		&--variant-outlined,
 		&--variant-outlined &__key {
-			--origam-kbd---background-color: var(--origam-color-surface-raised, #fff);
-			--origam-kbd---border-color: var(--origam-color-border-subtle, #d4d4d4);
+			--origam-kbd---background-color: var(--origam-color__surface---raised, #fff);
+			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
 			--origam-kbd---box-shadow: 0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 50%, transparent);
 		}
 
 		&--variant-filled,
 		&--variant-filled &__key {
-			--origam-kbd---background-color: var(--origam-color-surface-overlay, #f5f5f5);
-			--origam-kbd---border-color: var(--origam-color-border-subtle, #d4d4d4);
+			--origam-kbd---background-color: var(--origam-color__surface---overlay, #f5f5f5);
+			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
 			--origam-kbd---box-shadow: 0 1px 2px 0 color-mix(in srgb, currentColor 18%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 60%, transparent);
 		}
@@ -209,16 +209,16 @@
 		&--size-large   { font-size: var(--origam-kbd---font-size-lg, 1rem); }
 		&--size-x-large { font-size: var(--origam-kbd---font-size-xl, 1.125rem); }
 
-		&--rounded         { --origam-kbd---border-radius: var(--origam-radius-sm, 4px); }
-		&--rounded-x-small { --origam-kbd---border-radius: var(--origam-radius-xs, 2px); }
-		&--rounded-small   { --origam-kbd---border-radius: var(--origam-radius-sm, 4px); }
-		&--rounded-default { --origam-kbd---border-radius: var(--origam-radius-md, 8px); }
-		&--rounded-medium  { --origam-kbd---border-radius: var(--origam-radius-lg, 12px); }
-		&--rounded-large   { --origam-kbd---border-radius: var(--origam-radius-xl, 16px); }
-		&--rounded-x-large { --origam-kbd---border-radius: var(--origam-radius-2xl, 24px); }
+		&--rounded         { --origam-kbd---border-radius: var(--origam-radius---sm, 4px); }
+		&--rounded-x-small { --origam-kbd---border-radius: var(--origam-radius---xs, 2px); }
+		&--rounded-small   { --origam-kbd---border-radius: var(--origam-radius---sm, 4px); }
+		&--rounded-default { --origam-kbd---border-radius: var(--origam-radius---md, 8px); }
+		&--rounded-medium  { --origam-kbd---border-radius: var(--origam-radius---lg, 12px); }
+		&--rounded-large   { --origam-kbd---border-radius: var(--origam-radius---xl, 16px); }
+		&--rounded-x-large { --origam-kbd---border-radius: var(--origam-radius---2xl, 24px); }
 
 		&__separator {
-			color: var(--origam-kbd__separator---color, var(--origam-color-text-secondary, rgba(0, 0, 0, 0.55)));
+			color: var(--origam-kbd__separator---color, var(--origam-color__text---secondary, rgba(0, 0, 0, 0.55)));
 			font-family: inherit;
 			font-size: inherit;
 			user-select: none;

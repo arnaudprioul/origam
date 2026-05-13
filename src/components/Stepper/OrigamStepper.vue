@@ -192,14 +192,14 @@
 			margin-inline: 4px;
 			margin-block-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
 			align-self: flex-start;
-			background-color: var(--origam-stepper---connector-color, var(--origam-color-border-subtle));
-			border-radius: var(--origam-radius-full, 9999px);
+			background-color: var(--origam-stepper---connector-color, var(--origam-color__border---subtle));
+			border-radius: var(--origam-radius---full, 9999px);
 			transition: background-color 0.2s ease;
 
 			&--done {
 				background-color: var(
 					--origam-stepper---connector-color-done,
-					var(--origam-stepper---color, var(--origam-color-action-primary-bg))
+					var(--origam-stepper---color, var(--origam-color__action--primary---bg))
 				);
 			}
 

@@ -131,7 +131,7 @@
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-	.custom-message { color: var(--origam-color-feedback-danger-fg, #b00020); font-weight: 600; }
+	.custom-message { color: var(--origam-color__feedback--danger---fg, #b00020); font-weight: 600; }
 </style>
 
 <docs lang="md" src="@docs/components/Messages/OrigamMessages.md"/>

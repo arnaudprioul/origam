@@ -424,7 +424,7 @@
 
 		&__scrim {
 			pointer-events: var(--origam-overlay__scrim---pointer-events, auto);
-			background-color: var(--origam-overlay__scrim---background-color, var(--origam-color-overlay-scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
+			background-color: var(--origam-overlay__scrim---background-color, var(--origam-color__overlay---scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
 			border-radius: inherit;
 			bottom: 0;
 			left: 0;

@@ -397,7 +397,7 @@
 		}
 
 		:deep(.origam-color-picker-field__selection-text) {
-			font-family: var(--origam-font-family-mono);
+			font-family: var(--origam-font__family---mono);
 			font-size: 0.875em;
 			letter-spacing: 0.03em;
 		}

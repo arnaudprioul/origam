@@ -134,7 +134,7 @@
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
 					<origam-toolbar :border="state.border" title="Border Toolbar (interactive)" data-cy="toolbar-border"/>
 
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
 						<origam-toolbar title="border={false} (default)"           data-cy="toolbar-border-default"/>
 						<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
 						<origam-toolbar title='border="top"'    border="top"       data-cy="toolbar-border-top"/>

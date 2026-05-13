@@ -7,7 +7,7 @@
  *
  *   • Hex literal       — `#abc` / `#aabbcc`
  *   • CSS function      — `rgb(…)` / `rgba(…)` / `hsl(…)` / `hsla(…)`
- *   • CSS custom prop   — `var(--origam-color-action-primary-bg)` (with optional
+ *   • CSS custom prop   — `var(--origam-color__action--primary---bg)` (with optional
  *                          fallback: `var(--x, fallback)`)
  *   • Named keyword     — `red`, `currentColor`, `transparent`, etc.
  *

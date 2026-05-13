@@ -41,7 +41,7 @@
 					<span>Combination:</span>
 					<origam-kbd :combination="['Ctrl', 'Shift', 'Z']" data-cy="kbd-basic-combination"/>
 				</div>
-				<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 8px; border-top: 1px dashed var(--origam-color-border-default, #ccc); max-width: 480px; font-size: 14px; line-height: 1.6;">
+				<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 8px; border-top: 1px dashed var(--origam-color__border---default, #ccc); max-width: 480px; font-size: 14px; line-height: 1.6;">
 					<div style="display: flex; align-items: center; gap: 8px;">
 						<span style="min-width: 80px;">Save:</span>
 						<origam-kbd :combination="['⌘', 'S']" data-cy="kbd-showcase-save"/>
@@ -69,7 +69,7 @@
 							:combination="['⌘', 'S']"
 							data-cy="kbd-variant-interactive"
 					/>
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 12px; display: flex; align-items: center; gap: 16px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 12px; display: flex; align-items: center; gap: 16px;">
 						<small>All variants:</small>
 						<origam-kbd :combination="['⌘', 'S']" variant="outlined" data-cy="kbd-variant-outlined"/>
 						<origam-kbd :combination="['⌘', 'S']" variant="filled"   data-cy="kbd-variant-filled"/>
@@ -89,7 +89,7 @@
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Channel separation:</small>
 						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
 						<origam-kbd :combination="['⌘', 'K']" bg-color="success" data-cy="kbd-color-fixture-bg-only"/>
@@ -116,7 +116,7 @@
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Channel separation:</small>
 						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
 						<origam-kbd :combination="['⌘', 'K']" bg-color="success" data-cy="kbd-color-fixture-bg-only"/>
@@ -143,7 +143,7 @@
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Channel separation:</small>
 						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
 						<origam-kbd :combination="['⌘', 'K']" bg-color="success" data-cy="kbd-color-fixture-bg-only"/>
@@ -170,7 +170,7 @@
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 					<origam-kbd :combination="['⌘', 'S']" :size="state.size" data-cy="kbd-size-interactive"/>
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 12px; display: flex; align-items: center; gap: 16px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 12px; display: flex; align-items: center; gap: 16px;">
 						<small>All sizes:</small>
 						<origam-kbd :combination="['⌘', 'S']" size="x-small" data-cy="kbd-size-xs"/>
 						<origam-kbd :combination="['⌘', 'S']" size="small"   data-cy="kbd-size-sm"/>

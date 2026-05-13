@@ -49,7 +49,7 @@
 <style scoped>
 	.demo-content {
 		padding: 12px;
-		background: var(--origam-color-surface-default, #fff);
+		background: var(--origam-color__surface---default, #fff);
 	}
 </style>
 

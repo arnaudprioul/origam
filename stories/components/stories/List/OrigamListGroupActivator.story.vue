@@ -56,7 +56,7 @@
 							<div style="display: flex; align-items: center; gap: 8px; padding: 6px 0;">
 								<origam-icon :icon="isOpen ? MDI_ICONS.FOLDER_OPEN : MDI_ICONS.FOLDER"/>
 								<strong>Mail</strong>
-								<small style="color: var(--origam-color-text-secondary); margin-left: auto;">
+								<small style="color: var(--origam-color__text---secondary); margin-left: auto;">
 									{{ isOpen ? 'open' : 'closed' }}
 								</small>
 							</div>

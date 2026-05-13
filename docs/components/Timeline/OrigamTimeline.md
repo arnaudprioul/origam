@@ -64,17 +64,17 @@ const entries: ITimelineEntry[] = [
 
 | Token | CSS variable | Default |
 |---|---|---|
-| Background | `--origam-timeline---background-color` | `var(--origam-color-surface-default)` |
-| Text color | `--origam-timeline---color` | `var(--origam-color-text-primary)` |
+| Background | `--origam-timeline---background-color` | `var(--origam-color__surface---default)` |
+| Text color | `--origam-timeline---color` | `var(--origam-color__text---primary)` |
 | Gap | `--origam-timeline---gap` | `14px` |
 | Track width | `--origam-timeline---track-width` | `24px` |
 | Dot size | `--origam-timeline---dot-size` | `12px` |
-| Dot background | `--origam-timeline---dot-bg` | `var(--origam-color-action-primary-bg)` |
-| Connector color | `--origam-timeline---connector-color` | `var(--origam-color-border-subtle)` |
-| Title font size | `--origam-timeline---title-font-size` | `var(--origam-font-size-md)` |
+| Dot background | `--origam-timeline---dot-bg` | `var(--origam-color__action--primary---bg)` |
+| Connector color | `--origam-timeline---connector-color` | `var(--origam-color__border---subtle)` |
+| Title font size | `--origam-timeline---title-font-size` | `var(--origam-font__size---md)` |
 | Title weight | `--origam-timeline---title-font-weight` | `600` |
-| Subtitle font size | `--origam-timeline---subtitle-font-size` | `var(--origam-font-size-sm)` |
-| Subtitle color | `--origam-timeline---subtitle-color` | `var(--origam-color-text-secondary)` |
+| Subtitle font size | `--origam-timeline---subtitle-font-size` | `var(--origam-font__size---sm)` |
+| Subtitle color | `--origam-timeline---subtitle-color` | `var(--origam-color__text---secondary)` |
 
 ## Intents
 

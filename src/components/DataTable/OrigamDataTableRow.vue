@@ -229,14 +229,14 @@
 	.origam-data-table-row {
 		$this: &;
 
-		background-color: var(--origam-data-table-row---background-color, var(--origam-color-surface-default));
-		color: var(--origam-data-table-row---color, var(--origam-color-text-primary));
+		background-color: var(--origam-data-table-row---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table-row---color, var(--origam-color__text---primary));
 		transition-property: background-color;
 		transition-duration: var(--origam-data-table-row---transition-duration, 100ms);
 		transition-timing-function: var(--origam-data-table-row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
 		&:hover {
-			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color-surface-overlay));
+			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color__surface---overlay));
 		}
 
 		&__column-title {

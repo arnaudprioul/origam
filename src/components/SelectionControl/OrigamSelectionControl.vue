@@ -410,12 +410,12 @@
     &--error {
       :not(#{$this}--disabled) {
         .origam-label {
-          color: var(--origam-selection-control__label---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
+          color: var(--origam-selection-control__label---color-error, var(--origam-color__feedback--danger---fgSubtle, #B91C1C));
         }
 
         #{$this}__input {
           > .origam-icon {
-            color: var(--origam-selection-control__icon---color-error, var(--origam-color-feedback-danger-fgSubtle, #B91C1C));
+            color: var(--origam-selection-control__icon---color-error, var(--origam-color__feedback--danger---fgSubtle, #B91C1C));
           }
         }
       }

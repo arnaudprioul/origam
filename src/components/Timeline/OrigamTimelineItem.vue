@@ -113,29 +113,29 @@
 		// thin vertical bar.
 		const isH = effectiveOrientation.value === 'horizontal'
 		return {
-			'background-color': 'var(--origam-timeline---connector-color, var(--origam-color-border-subtle))',
-			[isH ? 'height' : 'width']: 'var(--origam-timeline---connector-thickness, var(--origam-border-width-thin, 1px))'
+			'background-color': 'var(--origam-timeline---connector-color, var(--origam-color__border---subtle))',
+			[isH ? 'height' : 'width']: 'var(--origam-timeline---connector-thickness, var(--origam-border__width---thin, 1px))'
 		}
 	})
 
 	function intentToBgToken(intent: string): string {
 		if (intent === 'primary' || intent === 'secondary' || intent === 'ghost' || intent === 'neutral') {
-			return `var(--origam-color-action-${intent}-bg, var(--origam-color-action-primary-bg))`
+			return `var(--origam-color__action--${intent}---bg, var(--origam-color__action--primary---bg))`
 		}
 		if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-			return `var(--origam-color-feedback-${intent}-bg)`
+			return `var(--origam-color__feedback--${intent}---bg)`
 		}
-		return 'var(--origam-color-action-primary-bg)'
+		return 'var(--origam-color__action--primary---bg)'
 	}
 
 	function intentToFgToken(intent: string): string {
 		if (intent === 'primary' || intent === 'secondary' || intent === 'ghost' || intent === 'neutral') {
-			return `var(--origam-color-action-${intent}-fg, var(--origam-color-action-primary-fg))`
+			return `var(--origam-color__action--${intent}---fg, var(--origam-color__action--primary---fg))`
 		}
 		if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-			return `var(--origam-color-feedback-${intent}-fg)`
+			return `var(--origam-color__feedback--${intent}---fg)`
 		}
-		return 'var(--origam-color-action-primary-fg)'
+		return 'var(--origam-color__action--primary---fg)'
 	}
 
 	const contentSide = computed(() => {
@@ -197,14 +197,14 @@
 			width: var(--origam-timeline---dot-size, 12px);
 			height: var(--origam-timeline---dot-size, 12px);
 			border-radius: 50%;
-			background-color: var(--origam-timeline-item---dot-bg, var(--origam-timeline---dot-bg, var(--origam-color-action-primary-bg)));
-			color: var(--origam-timeline-item---dot-color, var(--origam-timeline---dot-color, var(--origam-color-action-primary-fg)));
-			border: var(--origam-timeline---dot-border-width, 2px) solid var(--origam-timeline---dot-border-color, var(--origam-color-surface-default));
+			background-color: var(--origam-timeline-item---dot-bg, var(--origam-timeline---dot-bg, var(--origam-color__action--primary---bg)));
+			color: var(--origam-timeline-item---dot-color, var(--origam-timeline---dot-color, var(--origam-color__action--primary---fg)));
+			border: var(--origam-timeline---dot-border-width, 2px) solid var(--origam-timeline---dot-border-color, var(--origam-color__surface---default));
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			box-shadow: 0 0 0 1px var(--origam-color-border-default, var(--origam-color-border-subtle));
+			box-shadow: 0 0 0 1px var(--origam-color__border---default, var(--origam-color__border---subtle));
 			z-index: 1;
 			position: relative;
 		}
@@ -213,7 +213,7 @@
 			flex: 1;
 			min-height: 16px;
 			width: var(--origam-timeline---connector-thickness, 1px);
-			background-color: var(--origam-timeline---connector-color, var(--origam-color-border-subtle));
+			background-color: var(--origam-timeline---connector-color, var(--origam-color__border---subtle));
 			margin-top: 4px;
 			display: block;
 		}
@@ -286,22 +286,22 @@
 		}
 
 		&__title {
-			font-size: var(--origam-timeline---title-font-size, var(--origam-font-size-md, 0.875rem));
-			font-weight: var(--origam-timeline---title-font-weight, var(--origam-font-weight-semibold, 600));
-			font-family: var(--origam-font-family-mono, monospace);
-			color: var(--origam-timeline---color, var(--origam-color-text-primary));
+			font-size: var(--origam-timeline---title-font-size, var(--origam-font__size---md, 0.875rem));
+			font-weight: var(--origam-timeline---title-font-weight, var(--origam-font__weight---semibold, 600));
+			font-family: var(--origam-font__family---mono, monospace);
+			color: var(--origam-timeline---color, var(--origam-color__text---primary));
 			line-height: 1.4;
 		}
 
 		&__subtitle {
-			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font-size-sm, 0.75rem));
-			color: var(--origam-timeline---subtitle-color, var(--origam-color-text-secondary));
+			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font__size---sm, 0.75rem));
+			color: var(--origam-timeline---subtitle-color, var(--origam-color__text---secondary));
 			line-height: 1.4;
 		}
 
 		&__body {
-			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font-size-sm, 0.75rem));
-			color: var(--origam-timeline---subtitle-color, var(--origam-color-text-secondary));
+			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font__size---sm, 0.75rem));
+			color: var(--origam-timeline---subtitle-color, var(--origam-color__text---secondary));
 			margin-top: 4px;
 			line-height: 1.5;
 		}

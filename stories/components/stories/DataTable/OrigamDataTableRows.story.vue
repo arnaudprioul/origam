@@ -47,7 +47,7 @@
 				<template #no-data>
 					<div style="padding: 32px; text-align: center;">
 						<p style="margin: 0 0 8px; font-weight: 600;">No commits yet</p>
-						<small style="color: var(--origam-color-text-secondary);">
+						<small style="color: var(--origam-color__text---secondary);">
 							The team will appear here as soon as activity rolls in.
 						</small>
 					</div>

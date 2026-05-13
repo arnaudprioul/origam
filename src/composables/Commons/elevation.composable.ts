@@ -127,11 +127,11 @@ export function useElevation (
         if (elevation == null || flat.value) return styles
 
         // Origam-native rung shortcut — e.g. `elevation="md"` lands
-        // straight on `var(--origam-shadow-md)` without going through
+        // straight on `var(--origam-shadow---md)` without going through
         // the Material 0..24 → token mapping. Authors get an explicit
         // intent ("medium shadow") rather than an opaque number.
         if (isOrigamRung(elevation)) {
-            styles.push(`box-shadow: var(--origam-shadow-${elevation})`)
+            styles.push(`box-shadow: var(--origam-shadow---${elevation})`)
             return styles
         }
 
@@ -139,7 +139,7 @@ export function useElevation (
         if (Number.isNaN(numeric as number)) return styles
 
         const tokenName = elevationToToken(numeric as number)
-        styles.push(`box-shadow: var(--origam-shadow-${tokenName})`)
+        styles.push(`box-shadow: var(--origam-shadow---${tokenName})`)
 
         return styles
     })

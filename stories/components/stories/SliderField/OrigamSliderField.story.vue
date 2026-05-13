@@ -60,7 +60,7 @@
 							data-cy="slider-color"
 					/>
 
-					<div style="border-top: 1px dashed var(--origam-color-border-subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Showcase fixtures — channel separation:</small>
 						<origam-slider-field :model-value="40" :min="0" :max="100"
 						                     color="primary"
@@ -98,7 +98,7 @@
 							data-cy="slider-color"
 					/>
 
-					<div style="border-top: 1px dashed var(--origam-color-border-subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Showcase fixtures — channel separation:</small>
 						<origam-slider-field :model-value="40" :min="0" :max="100"
 						                     color="primary"
@@ -136,7 +136,7 @@
 							data-cy="slider-color"
 					/>
 
-					<div style="border-top: 1px dashed var(--origam-color-border-subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Showcase fixtures — channel separation:</small>
 						<origam-slider-field :model-value="40" :min="0" :max="100"
 						                     color="primary"
@@ -280,7 +280,7 @@
 					/>
 					<div data-cy="slider-states-status">value = {{ statesModel }}</div>
 
-					<div style="border-top: 1px dashed var(--origam-color-border-subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---subtle); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Showcase fixtures — error forces danger on color + bgColor:</small>
 						<origam-slider-field :model-value="40" :min="0" :max="100"
 						                     error

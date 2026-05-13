@@ -60,7 +60,7 @@
 		>
 			<template #default="{ state }">
 				<origam-treeview :items="nestedItems" data-cy="treeview-node-playground"/>
-				<p style="padding: 12px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="padding: 12px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Note: <code>node</code> and <code>depth</code> on each
 					&lt;origam-treeview-node&gt; are typically derived by the
 					parent treeview from its <code>items</code> tree.

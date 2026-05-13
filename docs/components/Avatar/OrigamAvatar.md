@@ -78,7 +78,7 @@ background. Use `:style` for one-off custom hexes.
 ## Status
 
 Pass `status` to apply one of the feedback intents. The component reads
-the same `--origam-color-feedback-{intent}-{bg|fg}` semantic tokens as
+the same `--origam-color__feedback--{intent}---{bg|fg}` semantic tokens as
 the rest of origam, so theme switches stay coherent.
 
 ```vue

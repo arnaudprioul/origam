@@ -181,7 +181,7 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 80px; width: 100%; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<div style="position: relative; height: 80px; width: 100%; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-progress-linear
 							:absolute="state.absolute"
 							:location="state.location"

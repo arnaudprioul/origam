@@ -22,7 +22,7 @@
 					show-select
 					data-cy="row-selectable"
 			/>
-			<p style="padding: 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+			<p style="padding: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 				Selected keys: {{ selectedKeys.length ? selectedKeys.join(', ') : '(none)' }}
 			</p>
 		</Variant>
@@ -36,10 +36,10 @@
 			-->
 			<origam-data-table :headers="headers" :items="items" data-cy="row-slot">
 				<template #item="{ item }">
-					<tr style="background: color-mix(in srgb, var(--origam-color-action-primary-bg) 4%, transparent);">
+					<tr style="background: color-mix(in srgb, var(--origam-color__action--primary---bg) 4%, transparent);">
 						<td style="padding: 8px;">
 							<strong>{{ item.name }}</strong>
-							<small style="display: block; color: var(--origam-color-text-secondary);">{{ item.role }}</small>
+							<small style="display: block; color: var(--origam-color__text---secondary);">{{ item.role }}</small>
 						</td>
 						<td style="padding: 8px;">{{ item.team }}</td>
 						<td style="padding: 8px; font-variant-numeric: tabular-nums;">{{ item.commits }}</td>

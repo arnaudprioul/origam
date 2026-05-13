@@ -134,8 +134,8 @@
 >
   .origam-file-field-list-item {
     align-items: center;
-    background-color: var(--origam-file-field-list-item---background-color, var(--origam-color-surface-overlay));
-    border: var(--origam-file-field-list-item---border-width, 1px) var(--origam-file-field-list-item---border-style, solid) var(--origam-file-field-list-item---border-color, var(--origam-color-border-subtle));
+    background-color: var(--origam-file-field-list-item---background-color, var(--origam-color__surface---overlay));
+    border: var(--origam-file-field-list-item---border-width, 1px) var(--origam-file-field-list-item---border-style, solid) var(--origam-file-field-list-item---border-color, var(--origam-color__border---subtle));
     border-radius: var(--origam-file-field-list-item---border-radius, 6px);
     display: flex;
     gap: var(--origam-file-field-list-item---gap, 12px);
@@ -143,7 +143,7 @@
     padding-inline: var(--origam-file-field-list-item---padding-inline, 12px);
 
     &__icon {
-      color: var(--origam-file-field-list-item__icon---color, var(--origam-color-text-secondary));
+      color: var(--origam-file-field-list-item__icon---color, var(--origam-color__text---secondary));
       flex-shrink: 0;
     }
 
@@ -164,7 +164,7 @@
     }
 
     &__meta {
-      color: var(--origam-file-field-list-item__meta---color, var(--origam-color-text-secondary));
+      color: var(--origam-file-field-list-item__meta---color, var(--origam-color__text---secondary));
       font-size: var(--origam-file-field-list-item__meta---font-size, 0.75rem);
     }
 

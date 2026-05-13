@@ -95,7 +95,7 @@
 	.origam-list-subheader {
 		align-items: center;
 		background: inherit;
-		color: var(--origam-list-subheader---color, var(--origam-color-text-secondary));
+		color: var(--origam-list-subheader---color, var(--origam-color__text---secondary));
 		display: flex;
 		font-size: var(--origam-list-subheader---font-size, 0.875rem);
 		font-weight: var(--origam-list-subheader---font-weight, 400);

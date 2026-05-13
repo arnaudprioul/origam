@@ -175,7 +175,7 @@
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 </style>
 
 <docs lang="md" src="@docs/components/Btn/OrigamBtnToggle.md"/>

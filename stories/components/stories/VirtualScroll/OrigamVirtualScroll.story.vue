@@ -178,7 +178,7 @@
 	.story-host {
 		width: 100%;
 		max-width: 480px;
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		border-radius: 6px;
 	}
 	.story-row {
@@ -188,7 +188,7 @@
 		height: 48px;
 		min-height: 48px;
 		font: 0.875rem/1 system-ui, sans-serif;
-		border-bottom: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.06));
+		border-bottom: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.06));
 		box-sizing: border-box;
 	}
 	.story-actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -202,7 +202,7 @@
 		cursor: pointer;
 		font: inherit;
 	}
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 </style>
 
 <docs lang="md" src="@docs/components/VirtualScroll/OrigamVirtualScroll.md"/>

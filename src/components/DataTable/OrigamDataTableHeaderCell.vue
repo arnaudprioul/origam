@@ -189,14 +189,14 @@
 		$this: &;
 
 		align-items: center;
-		color: var(--origam-data-table-header-cell---color, var(--origam-color-text-primary));
+		color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 
 		&__sort-icon {
 			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, 0);
-			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color-text-primary));
+			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color__text---primary));
 
 			&--active {
-				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color-text-primary));
+				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color__text---primary));
 			}
 		}
 
@@ -211,10 +211,10 @@
 			justify-content: center;
 			align-items: center;
 			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, 0.875rem);
-			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space-1, 4px));
-			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius-full, 9999px));
-			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color-border-default));
-			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color-text-primary));
+			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space---1, 4px));
+			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius---full, 9999px));
+			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color__border---default));
+			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color__text---primary));
 			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, 20px);
 			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, 20px);
 			width: var(--origam-data-table-header-cell__sort-badge---width, 20px);
@@ -242,8 +242,8 @@
 		}
 
 		&:deep(.origam-data-table-cell) {
-			background: var(--origam-data-table-header-cell---background, var(--origam-color-surface-raised));
-			color: var(--origam-data-table-header-cell---color, var(--origam-color-text-primary));
+			background: var(--origam-data-table-header-cell---background, var(--origam-color__surface---raised));
+			color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 		}
 	}
 </style>

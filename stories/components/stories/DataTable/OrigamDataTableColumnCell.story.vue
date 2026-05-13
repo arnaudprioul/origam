@@ -37,8 +37,8 @@
 						padding: '2px 8px',
 						borderRadius: '999px',
 						fontSize: '0.75rem',
-						background: value > 100 ? 'var(--origam-color-action-primary-bg)' : 'var(--origam-color-surface-overlay)',
-						color: value > 100 ? 'var(--origam-color-action-primary-fg)' : 'var(--origam-color-text-secondary)',
+						background: value > 100 ? 'var(--origam-color__action--primary---bg)' : 'var(--origam-color__surface---overlay)',
+						color: value > 100 ? 'var(--origam-color__action--primary---fg)' : 'var(--origam-color__text---secondary)',
 					}">
 						{{ value }}
 					</span>

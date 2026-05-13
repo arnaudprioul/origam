@@ -434,7 +434,7 @@
 		}
 
 		&__overlay {
-			background-color: var(--origam-card__overlay---background-color, var(--origam-color-overlay-scrim));
+			background-color: var(--origam-card__overlay---background-color, var(--origam-color__overlay---scrim));
 			border-radius: var(--origam-card__overlay---border-radius, inherit);
 			opacity: var(--origam-card__overlay---opacity, var(--origam-card---overlay-opacity, 0));
 			pointer-events: var(--origam-card__overlay---pointer-events, none);

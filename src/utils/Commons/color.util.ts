@@ -608,22 +608,28 @@ export function isUtilityIntent (v: TColor | TIntent | null | undefined): v is T
 }
 
 /**
- * Resolve the token-base prefix for a given intent. Drives every other
- * helper below:
+ * Resolve the token-base prefix (BEM block + modifier, without the
+ * `--origam-color__` / `---<prop>` envelope) for a given intent.
+ * Drives every other helper below:
  *
- *   'neutral'  → 'action-secondary'
- *   'primary'  → 'action-primary'
- *   'success'  → 'feedback-success'
- *   'danger'   → 'feedback-danger'
+ *   'neutral'  → 'action--secondary'
+ *   'primary'  → 'action--primary'
+ *   'success'  → 'feedback--success'
+ *   'danger'   → 'feedback--danger'
  *   …
+ *
+ * Consumed as ``var(--origam-color__${base}---${slot})`` — the BEM
+ * grammar matches the rest of the token namespace (`__` between
+ * domain and block, `--` between block and modifier, `---` before the
+ * property/slot).
  */
 export function intentTokenBase (intent: TIntent): string {
-    if (intent === 'neutral') return 'action-secondary'
+    if (intent === 'neutral') return 'action--secondary'
     if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        return `feedback-${intent}`
+        return `feedback--${intent}`
     }
     // primary / secondary / ghost
-    return `action-${intent}`
+    return `action--${intent}`
 }
 
 /**
@@ -636,12 +642,12 @@ export function intentTokenBase (intent: TIntent): string {
  */
 export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
     const base = intentTokenBase(intent)
-    const baseVar = `var(--origam-color-${base}-bg)`
+    const baseVar = `var(--origam-color__${base}---bg)`
     if (role === 'default') return baseVar
-    if (role === 'disabled') return `var(--origam-color-${base}-bgDisabled)`
+    if (role === 'disabled') return `var(--origam-color__${base}---bgDisabled)`
     const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     const slot = role === 'hover' ? 'bgHover' : 'bgActive'
-    return `var(--origam-color-${base}-${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
+    return `var(--origam-color__${base}---${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
 }
 
 /**
@@ -652,7 +658,7 @@ export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
 export function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
     const base = intentTokenBase(intent)
     const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
-    return `var(--origam-color-${base}-${slot})`
+    return `var(--origam-color__${base}---${slot})`
 }
 
 /**
@@ -696,17 +702,17 @@ export function rawBgExprWithState (raw: string, role: TBgFgRole): string {
 export function tokenForegroundForIntent (intent: TIntent): string {
     if (intent === 'neutral' || intent === 'secondary') {
         // No fgSubtle — `fg` is already a dark neutral text colour.
-        return 'var(--origam-color-action-secondary-fg)'
+        return 'var(--origam-color__action--secondary---fg)'
     }
     if (intent === 'ghost') {
         // ghost.fg is already primary.600 — the intent's own colour.
-        return 'var(--origam-color-action-ghost-fg)'
+        return 'var(--origam-color__action--ghost---fg)'
     }
     if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        return `var(--origam-color-feedback-${intent}-fgSubtle)`
+        return `var(--origam-color__feedback--${intent}---fgSubtle)`
     }
     // primary → action.primary.fgSubtle (color.primary.700)
-    return `var(--origam-color-action-${intent}-fgSubtle)`
+    return `var(--origam-color__action--${intent}---fgSubtle)`
 }
 
 // ── Legacy raw-color deprecation warning ────────────────────────────────────

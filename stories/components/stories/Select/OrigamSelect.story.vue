@@ -306,7 +306,7 @@
 							label="Demo field"
 							data-cy="select-loading-interactive"
 					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSelectLoading(state) }}</pre>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSelectLoading(state) }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">

@@ -83,7 +83,7 @@
 							:clickable="true"
 							data-cy="stepper-clickable"
 					/>
-					<p style="font-size: 0.875rem; color: var(--origam-color-text-secondary);">
+					<p style="font-size: 0.875rem; color: var(--origam-color__text---secondary);">
 						Active step: {{ state.step }}
 					</p>
 				</div>

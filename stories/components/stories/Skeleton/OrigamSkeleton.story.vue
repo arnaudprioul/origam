@@ -41,7 +41,7 @@
 		<Variant title="Prop — variant">
 			<div style="display: flex; flex-direction: column; gap: 20px; max-width: 320px; padding: 16px;">
 				<div>
-					<p style="font-size: 12px; color: var(--origam-color-text-secondary, #666); margin-bottom: 6px;">text</p>
+					<p style="font-size: 12px; color: var(--origam-color__text---secondary, #666); margin-bottom: 6px;">text</p>
 					<origam-skeleton
 							variant="text"
 							width="80%"
@@ -49,7 +49,7 @@
 					/>
 				</div>
 				<div>
-					<p style="font-size: 12px; color: var(--origam-color-text-secondary, #666); margin-bottom: 6px;">rectangular</p>
+					<p style="font-size: 12px; color: var(--origam-color__text---secondary, #666); margin-bottom: 6px;">rectangular</p>
 					<origam-skeleton
 							variant="rectangular"
 							width="100%"
@@ -58,7 +58,7 @@
 					/>
 				</div>
 				<div>
-					<p style="font-size: 12px; color: var(--origam-color-text-secondary, #666); margin-bottom: 6px;">circular</p>
+					<p style="font-size: 12px; color: var(--origam-color__text---secondary, #666); margin-bottom: 6px;">circular</p>
 					<origam-skeleton
 							variant="circular"
 							width="48"
@@ -66,14 +66,14 @@
 					/>
 				</div>
 				<div>
-					<p style="font-size: 12px; color: var(--origam-color-text-secondary, #666); margin-bottom: 6px;">list-item</p>
+					<p style="font-size: 12px; color: var(--origam-color__text---secondary, #666); margin-bottom: 6px;">list-item</p>
 					<origam-skeleton
 							variant="list-item"
 							data-cy="skeleton-variant-list-item"
 					/>
 				</div>
 				<div>
-					<p style="font-size: 12px; color: var(--origam-color-text-secondary, #666); margin-bottom: 6px;">card</p>
+					<p style="font-size: 12px; color: var(--origam-color__text---secondary, #666); margin-bottom: 6px;">card</p>
 					<origam-skeleton
 							variant="card"
 							data-cy="skeleton-variant-card"
@@ -95,7 +95,7 @@
 							height="48px"
 							data-cy="skeleton-color"
 					/>
-					<div style="border-top: 1px dashed var(--origam-color-border-default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
 						<origam-skeleton bg-color="primary" variant="text" width="200" data-cy="skeleton-color-primary"/>
 						<origam-skeleton bg-color="success" variant="text" width="200" data-cy="skeleton-color-success"/>
 						<origam-skeleton bg-color="warning" variant="text" width="200" data-cy="skeleton-color-warning"/>

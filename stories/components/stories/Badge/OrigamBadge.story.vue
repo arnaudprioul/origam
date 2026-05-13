@@ -332,7 +332,7 @@
 					<origam-avatar text="AP"/>
 				</origam-badge>
 			</div>
-			<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">Hover the badge — watch the Events panel.</p>
+			<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Hover the badge — watch the Events panel.</p>
 		</Variant>
 	</Story>
 </template>
@@ -395,7 +395,7 @@
 
 	.demo-label {
 		font: 0.75rem/1 system-ui;
-		color: var(--origam-color-text-secondary);
+		color: var(--origam-color__text---secondary);
 		margin: 0;
 	}
 </style>

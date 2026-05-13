@@ -48,7 +48,7 @@
 				<origam-radio-btn v-model="groupModel" value="cat"  label="Cat"  data-cy="radio-btn-group-cat"/>
 				<origam-radio-btn v-model="groupModel" value="dog"  label="Dog"  data-cy="radio-btn-group-dog"/>
 				<origam-radio-btn v-model="groupModel" value="fish" label="Fish" data-cy="radio-btn-group-fish"/>
-				<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary);" data-cy="radio-btn-group-status">
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);" data-cy="radio-btn-group-status">
 					selected = {{ groupModel || '(none)' }}
 				</p>
 			</div>
@@ -177,7 +177,7 @@
 				>
 					<template #label>
 						<strong>Custom label</strong>
-						<small style="margin-inline-start: 8px; color: var(--origam-color-text-secondary);">
+						<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">
 							rendered via slot
 						</small>
 					</template>

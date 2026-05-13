@@ -22,7 +22,7 @@
 			<template #default="{ state }">
 				<origam-picker v-bind="state" data-cy="picker-playground">
 					<template v-if="!state.hideHeader" #header>
-						<div style="padding: 12px 16px; background: var(--origam-color-surface-overlay, #f3f3f3);">
+						<div style="padding: 12px 16px; background: var(--origam-color__surface---overlay, #f3f3f3);">
 							Header zone
 						</div>
 					</template>
@@ -183,7 +183,7 @@
 		<Variant title="Slot — header">
 			<origam-picker title="With header" data-cy="picker-header">
 				<template #header>
-					<div data-cy="picker-header-content" style="padding: 12px 16px; background: var(--origam-color-surface-overlay, #f3f3f3);">
+					<div data-cy="picker-header-content" style="padding: 12px 16px; background: var(--origam-color__surface---overlay, #f3f3f3);">
 						Custom header content
 					</div>
 				</template>

@@ -70,7 +70,7 @@
 				<template #footer>
 					<tfoot>
 						<tr>
-							<td colspan="3" style="padding: 12px; text-align: end; background: var(--origam-color-surface-overlay);">
+							<td colspan="3" style="padding: 12px; text-align: end; background: var(--origam-color__surface---overlay);">
 								<small>Custom footer — {{ items.length }} total entries</small>
 							</td>
 						</tr>

@@ -74,7 +74,7 @@
 						:key="v.value"
 						style="display: flex; align-items: center; gap: 16px;"
 				>
-					<span style="min-width: 120px; font-size: 13px; color: var(--origam-color-surface-fg, currentColor); opacity: 0.7;">{{ v.label }}</span>
+					<span style="min-width: 120px; font-size: 13px; color: var(--origam-color__surface---fg, currentColor); opacity: 0.7;">{{ v.label }}</span>
 					<origam-field
 							:variant="v.value"
 							label="Label"
@@ -194,7 +194,7 @@
 		<Variant title="Slot — label">
 			<origam-field data-cy="field-slot-label">
 				<template #label>
-					<span style="font-style: italic; color: var(--origam-color-action-primary-bg);">Custom label</span>
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label</span>
 				</template>
 				<template #default="{ id, onFocus, onBlur }">
 					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>

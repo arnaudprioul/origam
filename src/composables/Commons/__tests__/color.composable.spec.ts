@@ -23,7 +23,7 @@ describe('useColor — classes-first', () => {
         expect(colorClasses.value).toContain('origam--bg-primary')
         // Strategy (a) — inline style stays populated for zero-regression
         // during the Phase 2 → Phase 3 transition.
-        expect(colorStyles.value.some(d => /background-color:\s*var\(--origam-color-action-primary-bg\)/.test(d))).toBe(true)
+        expect(colorStyles.value.some(d => /background-color:\s*var\(--origam-color__action--primary---bg\)/.test(d))).toBe(true)
     })
 
     it('utility intent on text → emits .origam--color-{intent} class', () => {
@@ -135,7 +135,7 @@ describe('useColorEffect — color-clash auto-contrast', () => {
         const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
         const fg = colorStyles.value.find((s) => s.startsWith('color:'))
         // Should resolve to the bg's paired fg, NOT to fgSubtle (same hue).
-        expect(fg).toContain('var(--origam-color-action-primary-fg)')
+        expect(fg).toContain('var(--origam-color__action--primary---fg)')
         expect(fg).not.toContain('fgSubtle')
     })
 
@@ -143,7 +143,7 @@ describe('useColorEffect — color-clash auto-contrast', () => {
         const props = ref({ color: 'danger' as const, bgColor: 'danger' as const })
         const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
         const fg = colorStyles.value.find((s) => s.startsWith('color:'))
-        expect(fg).toContain('var(--origam-color-feedback-danger-fg)')
+        expect(fg).toContain('var(--origam-color__feedback--danger---fg)')
         expect(fg).not.toContain('fgSubtle')
     })
 
@@ -152,14 +152,14 @@ describe('useColorEffect — color-clash auto-contrast', () => {
         const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
         const fg = colorStyles.value.find((s) => s.startsWith('color:'))
         // Different intents — leave the consumer's choice alone.
-        expect(fg).toContain('var(--origam-color-action-primary-fgSubtle)')
+        expect(fg).toContain('var(--origam-color__action--primary---fgSubtle)')
     })
 
     it('color only (no bgColor) → keeps the intent\'s own fgSubtle (no swap)', () => {
         const props = ref({ color: 'primary' as const })
         const { colorStyles } = useColorEffect(props.value as any, ref(false), ref(false), ref(false))
         const fg = colorStyles.value.find((s) => s.startsWith('color:'))
-        expect(fg).toContain('var(--origam-color-action-primary-fgSubtle)')
+        expect(fg).toContain('var(--origam-color__action--primary---fgSubtle)')
     })
 })
 
@@ -177,7 +177,7 @@ describe('useColorEffect — hover / active darken derivation', () => {
         const props = { bgColor: 'primary' as const }
         const { colorStyles } = useColorEffect(props as any, ref(false), ref(false), ref(false))
         const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
-        expect(bg).toContain('var(--origam-color-action-primary-bg)')
+        expect(bg).toContain('var(--origam-color__action--primary---bg)')
         expect(bg).not.toContain('color-mix')
     })
 
@@ -186,16 +186,16 @@ describe('useColorEffect — hover / active darken derivation', () => {
         const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
         const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
         // Cascading var: designer token wins, math fallback kicks in if missing.
-        expect(bg).toContain('var(--origam-color-action-primary-bgHover')
-        expect(bg).toContain('color-mix(in srgb, var(--origam-color-action-primary-bg), black 20%)')
+        expect(bg).toContain('var(--origam-color__action--primary---bgHover')
+        expect(bg).toContain('color-mix(in srgb, var(--origam-color__action--primary---bg), black 20%)')
     })
 
     it('intent bgColor + active → bgActive token with 30 % math fallback', () => {
         const props = { bgColor: 'primary' as const }
         const { colorStyles } = useColorEffect(props as any, ref(false), ref(true), ref(false))
         const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
-        expect(bg).toContain('var(--origam-color-action-primary-bgActive')
-        expect(bg).toContain('color-mix(in srgb, var(--origam-color-action-primary-bg), black 30%)')
+        expect(bg).toContain('var(--origam-color__action--primary---bgActive')
+        expect(bg).toContain('color-mix(in srgb, var(--origam-color__action--primary---bg), black 30%)')
     })
 
     it('hover and active land on DIFFERENT bg slots (regression: they used to collapse)', () => {
@@ -214,7 +214,7 @@ describe('useColorEffect — hover / active darken derivation', () => {
         const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
         const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
         // hover uses danger (the explicit override) instead of derived primary.
-        expect(bg).toContain('var(--origam-color-feedback-danger-bg)')
+        expect(bg).toContain('var(--origam-color__feedback--danger---bg)')
         expect(bg).not.toContain('color-mix')
     })
 

@@ -134,8 +134,8 @@
 		position: var(--origam-system-bar---position, relative);
 		text-align: var(--origam-system-bar---text-align, end);
 		width: var(--origam-system-bar---width, 100%);
-		background: var(--origam-system-bar---background, var(--origam-color-neutral-700, #404040));
-		color: var(--origam-system-bar---color, var(--origam-color-text-inverse, #FFFFFF));
+		background: var(--origam-system-bar---background, var(--origam-color__neutral---700, #404040));
+		color: var(--origam-system-bar---color, var(--origam-color__text---inverse, #FFFFFF));
 		font-size: var(--origam-system-bar---font-size, .75rem);
 		font-weight: var(--origam-system-bar---font-weight, 400);
 		letter-spacing: var(--origam-system-bar---letter-spacing, .0333333333em);
@@ -155,31 +155,31 @@
 		}
 
 		&--rounded {
-			border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			border-radius: var(--origam-radius-xs, 2px);
+			border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			border-radius: var(--origam-radius-sm, 4px);
+			border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			border-radius: var(--origam-radius-md, 8px);
+			border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			border-radius: var(--origam-radius-lg, 12px);
+			border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			border-radius: var(--origam-radius-xl, 16px);
+			border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--window {

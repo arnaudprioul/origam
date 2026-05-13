@@ -13,7 +13,7 @@ import { convertToUnit, formatMarginStylesVar, getCurrentInstanceName } from '..
  * `margin={number}` contract (where numbers were interpreted as raw
  * pixels via `convertToUnit`). Authors that want the design-system
  * spacing scale must pass the value as a string (`margin="4"`), which
- * resolves to `var(--origam-space-4)` (= 16px in the primitive ladder).
+ * resolves to `var(--origam-space---4)` (= 16px in the primitive ladder).
  *
  * Axis-specific utilities (`mx`, `my`, `mt`, `mb`, …) are NOT yet
  * emitted by the manifest. `marginTop`, `marginInline`, etc. continue

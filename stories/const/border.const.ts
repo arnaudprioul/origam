@@ -7,7 +7,7 @@ import type { IOptions } from '@origam/interfaces'
  *   • boolean `true`           → utility `thin`
  *   • utility keywords         → `'none' | 'thin' | 'thick'`
  *   • directional keywords     → `'top' | 'right' | 'bottom' | 'left' | 'block' | 'inline'`
- *   • free-form CSS string     → `'4px dashed red'`, `'2px solid var(--origam-color-action-primary-bg)'`, …
+ *   • free-form CSS string     → `'4px dashed red'`, `'2px solid var(--origam-color__action--primary---bg)'`, …
  *   • raw number (px width)    → `2`
  *
  * Everything (width, style, color, position) is therefore routed
@@ -35,9 +35,9 @@ export const borderList: Array<IOptions<boolean | number | string | undefined>> 
     { label: 'Style — 4px groove', value: '4px groove' },
 
     // ── Color variants (free-form CSS) ──────────────────────────
-    { label: 'Color — 2px solid primary', value: '2px solid var(--origam-color-action-primary-bg)' },
-    { label: 'Color — 2px solid success', value: '2px solid var(--origam-color-feedback-success-bg)' },
-    { label: 'Color — 2px solid danger',  value: '2px solid var(--origam-color-feedback-danger-bg)' },
+    { label: 'Color — 2px solid primary', value: '2px solid var(--origam-color__action--primary---bg)' },
+    { label: 'Color — 2px solid success', value: '2px solid var(--origam-color__feedback--success---bg)' },
+    { label: 'Color — 2px solid danger',  value: '2px solid var(--origam-color__feedback--danger---bg)' },
     { label: 'Color — 3px dashed orange', value: '3px dashed #ff8a00' },
 
     // ── Position keywords ───────────────────────────────────────

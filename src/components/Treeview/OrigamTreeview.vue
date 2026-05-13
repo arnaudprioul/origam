@@ -207,8 +207,8 @@
 		scoped
 >
 	.origam-treeview {
-		background-color: var(--origam-treeview---background-color, var(--origam-color-surface-default));
-		color: var(--origam-treeview---color, var(--origam-color-text-primary));
+		background-color: var(--origam-treeview---background-color, var(--origam-color__surface---default));
+		color: var(--origam-treeview---color, var(--origam-color__text---primary));
 		padding-block: var(--origam-treeview---padding-block, 4px);
 		padding-inline: var(--origam-treeview---padding-inline, 8px);
 		outline: none;
@@ -220,11 +220,11 @@
 		}
 
 		&--size-x-small {
-			--origam-treeview---label-font-size: var(--origam-font-size-xs, 0.625rem);
+			--origam-treeview---label-font-size: var(--origam-font__size---xs, 0.625rem);
 		}
 
 		&--size-small {
-			--origam-treeview---label-font-size: var(--origam-font-size-sm, 0.75rem);
+			--origam-treeview---label-font-size: var(--origam-font__size---sm, 0.75rem);
 		}
 
 		&--size-large {

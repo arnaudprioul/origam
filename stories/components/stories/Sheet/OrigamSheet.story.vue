@@ -87,7 +87,7 @@
 				:init-state="() => useStoryInitState<{ position?: TPosition }>({ position: undefined })"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 160px; background: var(--origam-color-surface-overlay, #ececec); border-radius: 4px;">
+				<div style="position: relative; height: 160px; background: var(--origam-color__surface---overlay, #ececec); border-radius: 4px;">
 					<origam-sheet
 							:position="state.position"
 							:top="0"
@@ -161,10 +161,10 @@
 				}>({ defaultSnap: 'peek', persistent: false })"
 		>
 			<template #default="{ state }">
-				<div style="position: relative; height: 480px; background: var(--origam-color-surface-overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<div style="position: relative; height: 480px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
 					<div style="padding: 16px;">
 						<strong>Page content</strong>
-						<p style="font-size: 12px; color: var(--origam-color-text-secondary);">
+						<p style="font-size: 12px; color: var(--origam-color__text---secondary);">
 							Drag the pill at the top of the sheet to expand or dismiss.
 						</p>
 					</div>
@@ -174,14 +174,14 @@
 							:default-snap="state.defaultSnap"
 							:persistent="state.persistent"
 							elevation="lg"
-							style="background: var(--origam-color-surface-default);"
+							style="background: var(--origam-color__surface---default);"
 							data-cy="sheet-bottom-swipeable"
 					>
 						<template #default>
 							<div style="padding: 0 16px 16px;">
 								<h3 style="margin: 4px 0 12px; font-size: 14px; font-weight: 600;">Choose a destination</h3>
 								<ul style="list-style: none; padding: 0; margin: 0;">
-									<li v-for="i in 16" :key="i" style="padding: 12px 0; border-bottom: 1px solid var(--origam-color-border-subtle, #ddd);">
+									<li v-for="i in 16" :key="i" style="padding: 12px 0; border-bottom: 1px solid var(--origam-color__border---subtle, #ddd);">
 										Item {{ i }} — Lorem ipsum dolor sit amet
 									</li>
 								</ul>

@@ -22,7 +22,7 @@
 				})"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 200px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 200px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar v-bind="state">
 						<span>SystemBar playground</span>
 					</origam-system-bar>
@@ -49,7 +49,7 @@
 				:init-state="() => useStoryInitState<{ window?: boolean }>({ window: false })"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 200px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 200px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar :window="state.window" name="systembar" order="0">
 						<span>window={{ state.window }} (32px when true)</span>
 					</origam-system-bar>
@@ -68,7 +68,7 @@
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar v-bind="state" name="systembar" order="0">
 						<span>color={{ state.color ?? '(unset)' }}, bgColor={{ state.bgColor ?? '(unset)' }}</span>
 					</origam-system-bar>
@@ -88,7 +88,7 @@
 				:init-state="() => useStoryInitState<IElevationProps>({})"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar :elevation="state.elevation" name="systembar" order="0">
 						<span>elevation={{ state.elevation ?? '(unset)' }}</span>
 					</origam-system-bar>
@@ -107,7 +107,7 @@
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar :rounded="state.rounded" name="systembar" order="0">
 						<span>rounded={{ state.rounded ?? '(unset)' }}</span>
 					</origam-system-bar>
@@ -126,7 +126,7 @@
 				:init-state="() => useStoryInitState<{ absolute?: boolean }>({ absolute: false })"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar :absolute="state.absolute" name="systembar" order="0">
 						<span>absolute={{ state.absolute }}</span>
 					</origam-system-bar>
@@ -145,7 +145,7 @@
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-system-bar :tag="state.tag" name="systembar" order="0">
 						<span>tag={{ state.tag }}</span>
 					</origam-system-bar>
@@ -162,7 +162,7 @@
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
-			<origam-layout style="height: 180px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+			<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 				<origam-system-bar window name="systembar" order="0">
 					<strong>App name</strong>
 					<span style="opacity: 0.7; margin-inline-start: 12px;">— ready</span>
@@ -199,7 +199,7 @@
 <style scoped>
 	.demo-content {
 		padding: 12px;
-		background: var(--origam-color-surface-default, #fff);
+		background: var(--origam-color__surface---default, #fff);
 	}
 </style>
 

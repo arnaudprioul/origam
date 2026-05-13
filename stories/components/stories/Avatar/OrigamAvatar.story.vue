@@ -107,7 +107,7 @@
 				-->
 				<div style="display: flex; flex-direction: column; gap: 16px;">
 					<origam-avatar v-bind="state" text="A" data-cy="avatar-hover"/>
-					<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">
+					<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">
 						Hover the avatar above.
 					</p>
 				</div>
@@ -130,7 +130,7 @@
 				-->
 				<div style="display: flex; flex-direction: column; gap: 16px;">
 					<origam-avatar v-bind="state" text="A" data-cy="avatar-active"/>
-					<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">
+					<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">
 						Press &amp; hold the avatar above.
 					</p>
 				</div>
@@ -226,7 +226,7 @@
 						@update:active="logEvent('update:active', $event)"
 						@update:hover="logEvent('update:hover', $event)"
 				/>
-				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">Click or hover — watch the Events panel.</p>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Click or hover — watch the Events panel.</p>
 			</div>
 		</Variant>
 	</Story>

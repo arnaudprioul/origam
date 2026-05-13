@@ -227,8 +227,8 @@
 		--origam-breadcrumb---border-style: solid;
 		--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-token, 0px);
 		--origam-breadcrumb---density: 0px;
-		--origam-breadcrumb---box-shadow: var(--origam-shadow-none, none);
-		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color-text-primary));
+		--origam-breadcrumb---box-shadow: var(--origam-shadow---none, none);
+		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color__text---primary));
 		--origam-breadcrumb---background: var(--origam-breadcrumb---background-token, transparent);
 		--origam-breadcrumb---margin-inline-start: 0px;
 		--origam-breadcrumb---margin-inline-end: 0px;
@@ -279,7 +279,7 @@
 		}
 
 		&--elevated {
-			--origam-breadcrumb---box-shadow: var(--origam-shadow-md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
+			--origam-breadcrumb---box-shadow: var(--origam-shadow---md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
 		}
 
 		&--border {
@@ -287,31 +287,31 @@
 		}
 
 		&--rounded {
-			border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			border-radius: var(--origam-radius-xs, 2px);
+			border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			border-radius: var(--origam-radius-sm, 4px);
+			border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			border-radius: var(--origam-radius-md, 8px);
+			border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			border-radius: var(--origam-radius-lg, 12px);
+			border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			border-radius: var(--origam-radius-xl, 16px);
+			border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {

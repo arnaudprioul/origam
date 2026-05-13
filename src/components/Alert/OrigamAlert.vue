@@ -352,7 +352,7 @@
 		color: var(--origam-alert---color);
 
 		&--elevated {
-			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow-md));
+			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--border {
@@ -394,31 +394,31 @@
 		}
 
 		&--rounded {
-			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-alert---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-alert---border-radius: var(--origam-radius-xs, 2px);
+			--origam-alert---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-alert---border-radius: var(--origam-radius-sm, 4px);
+			--origam-alert---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-alert---border-radius: var(--origam-radius-md, 8px);
+			--origam-alert---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-alert---border-radius: var(--origam-radius-lg, 12px);
+			--origam-alert---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-alert---border-radius: var(--origam-radius-xl, 16px);
+			--origam-alert---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-alert---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
@@ -434,23 +434,23 @@
 		}
 
 		&--warning {
-			--origam-alert---background-color: var(--origam-alert--warning---bg, var(--origam-color-feedback-warning-bg, rgb(251, 140, 0)));
-			--origam-alert---color: var(--origam-alert--warning---fg, var(--origam-color-feedback-warning-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--warning---bg, var(--origam-color__feedback--warning---bg, rgb(251, 140, 0)));
+			--origam-alert---color: var(--origam-alert--warning---fg, var(--origam-color__feedback--warning---fg, #ffffff));
 		}
 
 		&--success {
-			--origam-alert---background-color: var(--origam-alert--success---bg, var(--origam-color-feedback-success-bg, rgb(76, 175, 80)));
-			--origam-alert---color: var(--origam-alert--success---fg, var(--origam-color-feedback-success-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--success---bg, var(--origam-color__feedback--success---bg, rgb(76, 175, 80)));
+			--origam-alert---color: var(--origam-alert--success---fg, var(--origam-color__feedback--success---fg, #ffffff));
 		}
 
 		&--info {
-			--origam-alert---background-color: var(--origam-alert--info---bg, var(--origam-color-feedback-info-bg, rgb(33, 150, 243)));
-			--origam-alert---color: var(--origam-alert--info---fg, var(--origam-color-feedback-info-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--info---bg, var(--origam-color__feedback--info---bg, rgb(33, 150, 243)));
+			--origam-alert---color: var(--origam-alert--info---fg, var(--origam-color__feedback--info---fg, #ffffff));
 		}
 
 		&--error {
-			--origam-alert---background-color: var(--origam-alert--danger---bg, var(--origam-color-feedback-danger-bg, rgb(207, 102, 121)));
-			--origam-alert---color: var(--origam-alert--danger---fg, var(--origam-color-feedback-danger-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--danger---bg, var(--origam-color__feedback--danger---bg, rgb(207, 102, 121)));
+			--origam-alert---color: var(--origam-alert--danger---fg, var(--origam-color__feedback--danger---fg, #ffffff));
 		}
 
 		&--absolute {

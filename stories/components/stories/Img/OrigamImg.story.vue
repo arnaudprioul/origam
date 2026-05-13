@@ -186,8 +186,8 @@
 				<template #placeholder>
 					<div style="display:flex; align-items:center; justify-content:center;
 					            width:100%; height:100%;
-					            color: var(--origam-color-text-secondary, #4b5563);
-					            background: var(--origam-color-surface-overlay, #f3f4f6);">
+					            color: var(--origam-color__text---secondary, #4b5563);
+					            background: var(--origam-color__surface---overlay, #f3f4f6);">
 						Loading...
 					</div>
 				</template>
@@ -217,12 +217,12 @@
 					alt="Broken image"
 					eager
 					src="https://this-host-does-not-exist.invalid/broken.png"
-					style="width: 320px; background: var(--origam-color-surface-overlay, #f3f4f6);"
+					style="width: 320px; background: var(--origam-color__surface---overlay, #f3f4f6);"
 			>
 				<template #error>
 					<div style="display:flex; align-items:center; justify-content:center;
 					            width:100%; height:100%;
-					            color: var(--origam-color-feedback-danger-fg, #b91c1c);">
+					            color: var(--origam-color__feedback--danger---fg, #b91c1c);">
 						Failed to load image
 					</div>
 				</template>

@@ -18,19 +18,19 @@
 		<Variant title="Playground">
 			<div style="padding: 24px;">
 				<origam-infinite-scroll
-						style="height: 300px; border: 1px solid var(--origam-color-border-subtle); border-radius: 8px;"
+						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
 						@load="handleLoad"
 						data-cy="infinite-scroll-intersect-default"
 				>
 					<div
 							v-for="(item, i) in items"
 							:key="i"
-							style="padding: 8px 16px; border-bottom: 1px solid var(--origam-color-border-subtle);"
+							style="padding: 8px 16px; border-bottom: 1px solid var(--origam-color__border---subtle);"
 					>
 						Item #{{ i + 1 }} — {{ item }}
 					</div>
 				</origam-infinite-scroll>
-				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Scroll to the bottom of the box; the intersect sentinel
 					triggers a load and appends 10 more items.
 				</p>
@@ -43,7 +43,7 @@
 			<div style="padding: 24px;">
 				<origam-infinite-scroll
 						side="both"
-						style="height: 300px; border: 1px solid var(--origam-color-border-subtle); border-radius: 8px;"
+						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
 						@load="handleLoad"
 						data-cy="infinite-scroll-intersect-both"
 				>
@@ -59,7 +59,7 @@
 				<origam-infinite-scroll
 						mode="manual"
 						load-more-text="Load more rows"
-						style="height: 300px; border: 1px solid var(--origam-color-border-subtle); border-radius: 8px;"
+						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
 						@load="handleLoad"
 						data-cy="infinite-scroll-intersect-manual"
 				>

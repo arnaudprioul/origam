@@ -149,9 +149,9 @@
 	const hostStyle: CSSProperties = {
 		width: '100%',
 		height: '180px',
-		border: '1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12))',
+		border: '1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))',
 		borderRadius: '6px',
-		backgroundColor: 'var(--origam-color-surface-default, rgba(0, 0, 0, 0.03))',
+		backgroundColor: 'var(--origam-color__surface---default, rgba(0, 0, 0, 0.03))',
 	}
 
 	const palette = ['#5B8DEF', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6']
@@ -172,7 +172,7 @@
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; }
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 </style>
 
 <docs lang="md" src="@docs/components/Window/OrigamWindow.md"/>

@@ -27,7 +27,7 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="drawer-playground">
+				<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="drawer-playground">
 					<origam-app :full-height="false">
 						<origam-app-bar title="My App">
 							<template #prepend>
@@ -86,7 +86,7 @@
 		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant title="Prop — permanent">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<div style="padding: 16px;">Permanent drawer — always visible, pushes the main content.</div>
@@ -103,7 +103,7 @@
 				:init-state="() => useStoryInitState<{ open: boolean }>({ open: false })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar title="Click ≡ to toggle">
 							<template #prepend>
@@ -129,7 +129,7 @@
 				:init-state="() => useStoryInitState<{ rail: boolean }>({ rail: true })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer :rail="state.rail" permanent>
 							<div style="padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
@@ -154,7 +154,7 @@
 				:init-state="() => useStoryInitState<{ location: 'left' | 'right' | 'top' | 'bottom' }>({ location: 'left' })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer :location="state.location" permanent>
 							<div style="padding: 16px;">location: <b>{{ state.location }}</b></div>
@@ -184,7 +184,7 @@
 				:init-state="() => useStoryInitState<{ width: number }>({ width: 256 })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer :width="state.width" permanent>
 							<div style="padding: 16px;">width: <b>{{ state.width }}px</b></div>
@@ -205,7 +205,7 @@
 				:init-state="() => useStoryInitState<{ push: boolean | null }>({ push: null })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer permanent :push="state.push">
 							<div style="padding: 16px;">push: <b>{{ String(state.push) }}</b></div>
@@ -238,7 +238,7 @@
 				:init-state="() => useStoryInitState<{ clipped: boolean | null }>({ clipped: null })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar title="App"/>
 						<origam-drawer permanent :clipped="state.clipped">
@@ -273,7 +273,7 @@
 				:init-state="() => useStoryInitState<{ floating: boolean }>({ floating: true })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer permanent :floating="state.floating">
 							<div style="padding: 16px;">floating: removes the drawer's edge border so it reads as part of the surface.</div>
@@ -294,7 +294,7 @@
 				:init-state="() => useStoryInitState<{ open: boolean, scrim: boolean }>({ open: true, scrim: true })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; position: relative; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; position: relative; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer v-model="state.open" temporary :scrim="state.scrim">
 							<div style="padding: 16px;">
@@ -317,7 +317,7 @@
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
 		<Variant title="Slot — default">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px;">
@@ -335,11 +335,11 @@
 		</Variant>
 
 		<Variant title="Slot — prepend (header)">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<template #prepend>
-							<div style="padding: 16px; font-weight: 700; border-bottom: 1px solid var(--origam-color-border-subtle, #ddd); display: flex; align-items: center; gap: 8px;">
+							<div style="padding: 16px; font-weight: 700; border-bottom: 1px solid var(--origam-color__border---subtle, #ddd); display: flex; align-items: center; gap: 8px;">
 								<span style="font-size: 1.25rem;">⬡</span>
 								<span>App Logo</span>
 							</div>
@@ -354,12 +354,12 @@
 		</Variant>
 
 		<Variant title="Slot — append (footer)">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<div style="padding: 16px;">Default content.</div>
 						<template #append>
-							<div style="padding: 16px; border-top: 1px solid var(--origam-color-border-subtle, #ddd); font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+							<div style="padding: 16px; border-top: 1px solid var(--origam-color__border---subtle, #ddd); font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 								v1.0.0 — user@example.com
 							</div>
 						</template>
@@ -372,11 +372,11 @@
 		</Variant>
 
 		<Variant title="Slot — wrapper (replace the drawer's inner skeleton)">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<template #wrapper>
-							<div style="padding: 24px; background: var(--origam-color-action-primary-bgSubtle, #f5f3ff); height: 100%;">
+							<div style="padding: 24px; background: var(--origam-color__action--primary---bgSubtle, #f5f3ff); height: 100%;">
 								<p style="font-weight: 700;">Custom wrapper</p>
 								<p style="font-size: 0.875rem;">Replaces the drawer's default __prepend / __content / __append flex skeleton.</p>
 							</div>
@@ -396,7 +396,7 @@
 				:init-state="() => useStoryInitState<{ open: boolean, log: string[] }>({ open: false, log: [] })"
 		>
 			<template #default="{ state }">
-				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-app-bar title="Watch update:modelValue">
 							<template #prepend>
@@ -422,7 +422,7 @@
 								<ul style="font-family: monospace; font-size: 0.8rem;">
 									<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 								</ul>
-								<p v-if="state.log.length === 0" style="color: var(--origam-color-text-secondary);">
+								<p v-if="state.log.length === 0" style="color: var(--origam-color__text---secondary);">
 									Click ≡ to toggle the drawer.
 								</p>
 							</div>
@@ -437,7 +437,7 @@
 				:init-state="() => useStoryInitState<{ rail: boolean, log: string[] }>({ rail: true, log: [] })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);">
+				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
 						<origam-drawer
 								:rail="state.rail"

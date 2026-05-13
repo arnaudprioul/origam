@@ -37,7 +37,7 @@
 				}>({})"
 		>
 			<template #default="{ state }">
-				<origam-container v-bind="state" style="background: var(--origam-color-surface-overlay, #ececec);">
+				<origam-container v-bind="state" style="background: var(--origam-color__surface---overlay, #ececec);">
 					<div class="demo-cell">container content</div>
 				</origam-container>
 			</template>

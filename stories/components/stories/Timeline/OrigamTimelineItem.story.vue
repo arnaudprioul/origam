@@ -119,7 +119,7 @@
 					<template #default>
 						<div style="display: flex; gap: 8px; align-items: baseline;">
 							<strong style="font-size: 1.05rem;">v1.0.0</strong>
-							<small style="color: var(--origam-color-text-secondary);">May 5, 2026</small>
+							<small style="color: var(--origam-color__text---secondary);">May 5, 2026</small>
 						</div>
 						<p style="margin: 4px 0 0; font-size: 0.875rem;">
 							Custom-rendered content via the <code>default</code> slot.

@@ -382,7 +382,7 @@
 		margin-inline-start: var(--origam-list-item---margin-inline-start, 0);
 		margin-inline-end: var(--origam-list-item---margin-inline-end, 0);
 
-		border-color: var(--origam-list-item---border-color, var(--origam-color-text-primary));
+		border-color: var(--origam-list-item---border-color, var(--origam-color__text---primary));
 		border-style: var(--origam-list-item---border-style, solid);
 		border-width: var(--origam-list-item---border-width, 0);
 		border-radius: var(--origam-list-item---border-radius, 0px);

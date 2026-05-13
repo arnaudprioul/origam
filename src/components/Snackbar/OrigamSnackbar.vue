@@ -454,34 +454,34 @@
 
 		@each $status in (success, info, warning, danger) {
 			&--#{$status} {
-				color: var(--origam-color-feedback-#{$status}-fgSubtle);
+				color: var(--origam-color__feedback--#{$status}---fgSubtle);
 				background: transparent;
 
 				:deep(#{$this}__wrapper) {
-					background-color: var(--origam-color-feedback-#{$status}-bgSubtle);
-					border-color: var(--origam-color-feedback-#{$status}-border);
-					color: var(--origam-color-feedback-#{$status}-fgSubtle);
+					background-color: var(--origam-color__feedback--#{$status}---bgSubtle);
+					border-color: var(--origam-color__feedback--#{$status}---border);
+					color: var(--origam-color__feedback--#{$status}---fgSubtle);
 				}
 
 				#{$this}__timer-bar {
-					background-color: var(--origam-color-feedback-#{$status}-border);
+					background-color: var(--origam-color__feedback--#{$status}---border);
 					opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
 				}
 			}
 		}
 
 		&--error {
-			color: var(--origam-color-feedback-danger-fgSubtle);
+			color: var(--origam-color__feedback--danger---fgSubtle);
 			background: transparent;
 
 			:deep(#{$this}__wrapper) {
-				background-color: var(--origam-color-feedback-danger-bgSubtle);
-				border-color: var(--origam-color-feedback-danger-border);
-				color: var(--origam-color-feedback-danger-fgSubtle);
+				background-color: var(--origam-color__feedback--danger---bgSubtle);
+				border-color: var(--origam-color__feedback--danger---border);
+				color: var(--origam-color__feedback--danger---fgSubtle);
 			}
 
 			#{$this}__timer-bar {
-				background-color: var(--origam-color-feedback-danger-border);
+				background-color: var(--origam-color__feedback--danger---border);
 				opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
 			}
 		}

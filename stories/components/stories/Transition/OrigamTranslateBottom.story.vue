@@ -60,7 +60,7 @@
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
 	.story-toggle { appearance: none; border: 1px solid currentColor; background: transparent; color: inherit; padding: 6px 14px; border-radius: 6px; cursor: pointer; font: inherit; }
-	.story-target { padding: 12px 16px; border-radius: 6px; background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06)); border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12)); }
+	.story-target { padding: 12px 16px; border-radius: 6px; background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06)); border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)); }
 </style>
 
 <docs lang="md" src="@docs/components/Transition/OrigamTranslateBottom.md"/>

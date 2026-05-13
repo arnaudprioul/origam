@@ -645,20 +645,20 @@
 		}
 
 		&--variant-elevated {
-			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow-md));
+			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--variant-tonal {
 			background-color: var(
 				--origam-btn---background-color-tonal,
-				var(--origam-color-surface-overlay)
+				var(--origam-color__surface---overlay)
 			) !important;
 			box-shadow: none;
 		}
 
 		&--variant-outlined {
 			background-color: transparent !important;
-			border-width: var(--origam-btn---border-width-outlined, var(--origam-border-width-thin));
+			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			border-style: solid;
 			border-color: currentColor;
 			box-shadow: none;
@@ -667,7 +667,7 @@
 		&--variant-plain {
 			background-color: transparent !important;
 			box-shadow: none;
-			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity-70));
+			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity---70));
 
 			&:hover,
 			&:focus-visible {
@@ -680,7 +680,7 @@
 				--origam-btn---background-color-ghost,
 				color-mix(in srgb, currentColor 12%, transparent)
 			) !important;
-			border-width: var(--origam-btn---border-width-ghost, var(--origam-border-width-thin));
+			border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
 			border-style: solid;
 			border-color: var(
 				--origam-btn---border-color-ghost,
@@ -896,7 +896,7 @@
 		}
 
 		&--rounded {
-			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, var(--origam-radius-2xl, 24px));
+			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, var(--origam-radius---2xl, 24px));
 
 			&#{$this}--icon {
 				--origam-btn---border-radius: var(--origam-btn---border-radius, 4px);
@@ -904,27 +904,27 @@
 		}
 
 		&--rounded-x-small {
-			--origam-btn---border-radius: var(--origam-radius-xs, 2px);
+			--origam-btn---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-btn---border-radius: var(--origam-radius-sm, 4px);
+			--origam-btn---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-btn---border-radius: var(--origam-radius-md, 8px);
+			--origam-btn---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-btn---border-radius: var(--origam-radius-lg, 12px);
+			--origam-btn---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-btn---border-radius: var(--origam-radius-xl, 16px);
+			--origam-btn---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-btn---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-btn---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-shaped {
@@ -984,7 +984,7 @@
 		}
 
 		&__overlay {
-			background-color: var(--origam-color-overlay-scrim);
+			background-color: var(--origam-color__overlay---scrim);
 			border-radius: inherit;
 			opacity: var(--origam-btn__overlay---opacity, 0);
 			transition: opacity 0.2s ease-in-out;

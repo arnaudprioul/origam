@@ -128,7 +128,7 @@
 		--origam-breadcrumb-divider---border-style: solid;
 		--origam-breadcrumb-divider---border-radius: 0px;
 		--origam-breadcrumb-divider---density: 0px;
-		--origam-breadcrumb-divider---box-shadow: var(--origam-shadow-none, none);
+		--origam-breadcrumb-divider---box-shadow: var(--origam-shadow---none, none);
 		--origam-breadcrumb-divider---color: var(--origam-breadcrumb-divider---color-token, inherit);
 		--origam-breadcrumb-divider---opacity: 1;
 		--origam-breadcrumb-divider---background: transparent;

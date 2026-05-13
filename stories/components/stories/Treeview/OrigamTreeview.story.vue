@@ -24,7 +24,7 @@
 							:expanded-value="defaultExpanded"
 							data-cy="treeview-single"
 					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 						Selected: {{ state.selected || '(none)' }}
 					</p>
 				</div>
@@ -45,7 +45,7 @@
 							:expanded-value="defaultExpanded"
 							data-cy="treeview-multiple"
 					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 						Selected: {{ state.selected.length > 0 ? state.selected.join(', ') : '(none)' }}
 					</p>
 				</div>
@@ -187,7 +187,7 @@
 							:style="{
 								paddingInlineStart: `${(depth ?? 0) * 8}px`,
 								fontSize: '0.7rem',
-								color: isSelected ? 'var(--origam-color-action-primary-bg)' : 'var(--origam-color-text-secondary)',
+								color: isSelected ? 'var(--origam-color__action--primary---bg)' : 'var(--origam-color__text---secondary)',
 								fontStyle: 'italic'
 							}"
 					>

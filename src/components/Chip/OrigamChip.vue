@@ -516,31 +516,31 @@
 		}
 
 		&--rounded {
-			--origam-chip---border-radius: var(--origam-radius-sm, 4px);
+			--origam-chip---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-x-small {
-			--origam-chip---border-radius: var(--origam-radius-xs, 2px);
+			--origam-chip---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-chip---border-radius: var(--origam-radius-sm, 4px);
+			--origam-chip---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-chip---border-radius: var(--origam-radius-md, 8px);
+			--origam-chip---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-chip---border-radius: var(--origam-radius-lg, 12px);
+			--origam-chip---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-chip---border-radius: var(--origam-radius-xl, 16px);
+			--origam-chip---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-chip---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-chip---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-shaped {

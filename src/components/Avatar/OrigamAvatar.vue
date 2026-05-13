@@ -291,7 +291,7 @@
 		}
 
 		&--elevated {
-			--origam-avatar---box-shadow: var(--origam-avatar---box-shadow-elevated, var(--origam-shadow-md));
+			--origam-avatar---box-shadow: var(--origam-avatar---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--border {
@@ -299,31 +299,31 @@
 		}
 
 		&--rounded {
-			--origam-avatar---border-radius: var(--origam-avatar---border-radius-rounded, var(--origam-radius-sm, 4px));
+			--origam-avatar---border-radius: var(--origam-avatar---border-radius-rounded, var(--origam-radius---sm, 4px));
 		}
 
 		&--rounded-x-small {
-			--origam-avatar---border-radius: var(--origam-radius-xs, 2px);
+			--origam-avatar---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-avatar---border-radius: var(--origam-radius-sm, 4px);
+			--origam-avatar---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-avatar---border-radius: var(--origam-radius-md, 8px);
+			--origam-avatar---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-avatar---border-radius: var(--origam-radius-lg, 12px);
+			--origam-avatar---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-avatar---border-radius: var(--origam-radius-xl, 16px);
+			--origam-avatar---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-avatar---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-avatar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-shaped {
@@ -383,23 +383,23 @@
 		}
 
 		&--warning {
-			--origam-avatar---background-color: var(--origam-avatar--warning---background-color, var(--origam-color-feedback-warning-bg));
-			--origam-avatar---color: var(--origam-avatar--warning---color, var(--origam-color-feedback-warning-fg));
+			--origam-avatar---background-color: var(--origam-avatar--warning---background-color, var(--origam-color__feedback--warning---bg));
+			--origam-avatar---color: var(--origam-avatar--warning---color, var(--origam-color__feedback--warning---fg));
 		}
 
 		&--success {
-			--origam-avatar---background-color: var(--origam-avatar--success---background-color, var(--origam-color-feedback-success-bg));
-			--origam-avatar---color: var(--origam-avatar--success---color, var(--origam-color-feedback-success-fg));
+			--origam-avatar---background-color: var(--origam-avatar--success---background-color, var(--origam-color__feedback--success---bg));
+			--origam-avatar---color: var(--origam-avatar--success---color, var(--origam-color__feedback--success---fg));
 		}
 
 		&--info {
-			--origam-avatar---background-color: var(--origam-avatar--info---background-color, var(--origam-color-feedback-info-bg));
-			--origam-avatar---color: var(--origam-avatar--info---color, var(--origam-color-feedback-info-fg));
+			--origam-avatar---background-color: var(--origam-avatar--info---background-color, var(--origam-color__feedback--info---bg));
+			--origam-avatar---color: var(--origam-avatar--info---color, var(--origam-color__feedback--info---fg));
 		}
 
 		&--error {
-			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color-feedback-danger-bg));
-			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color-feedback-danger-fg));
+			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>

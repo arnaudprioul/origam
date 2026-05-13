@@ -178,7 +178,7 @@
 					<template #default="{ model, props: slotProps }">
 						<div
 								v-bind="slotProps"
-								style="display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--origam-color-border-subtle); border-radius: 4px; cursor: pointer;"
+								style="display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--origam-color__border---subtle); border-radius: 4px; cursor: pointer;"
 						>
 							<span>{{ model ? 'Checked' : 'Unchecked' }}</span>
 						</div>
@@ -191,7 +191,7 @@
 			<origam-selection-control-group v-model="slotLabelModel" type="checkbox">
 				<origam-selection-control value="a" data-cy="sc-slot-label">
 					<template #label>
-						<span style="font-style: italic; color: var(--origam-color-action-primary-bg);">Custom label slot</span>
+						<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label slot</span>
 					</template>
 				</origam-selection-control>
 			</origam-selection-control-group>
@@ -203,7 +203,7 @@
 					<template #input="{ props: inputProps, icon, model }">
 						<div
 								v-bind="inputProps"
-								style="width: 24px; height: 24px; border: 2px solid var(--origam-color-action-primary-bg); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+								style="width: 24px; height: 24px; border: 2px solid var(--origam-color__action--primary---bg); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
 						>
 							<origam-icon v-if="icon" :icon="icon"/>
 							<span v-else-if="model" style="font-size: 12px;">✓</span>

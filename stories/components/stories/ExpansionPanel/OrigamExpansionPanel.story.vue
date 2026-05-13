@@ -149,7 +149,7 @@
 								data-cy="ep-loading-interactive"
 						/>
 					</origam-expansion-panels>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeEpLoading(state) }}</pre>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeEpLoading(state) }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">

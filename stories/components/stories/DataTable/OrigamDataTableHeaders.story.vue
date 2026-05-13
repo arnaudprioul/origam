@@ -43,7 +43,7 @@
 						:multi-sort="state.multiSort"
 						data-cy="headers-sortable"
 				/>
-				<p style="padding: 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="padding: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Click a column title to sort. Hold shift to add a secondary sort if multiSort is on.
 				</p>
 			</template>
@@ -66,7 +66,7 @@
 		<Variant title="Slot — headers (fully custom header row, hide default)">
 			<origam-data-table :headers="headers" :items="items" hide-default-header data-cy="headers-hide-default">
 				<template #headers>
-					<tr style="background: var(--origam-color-action-primary-bg); color: var(--origam-color-action-primary-fg);">
+					<tr style="background: var(--origam-color__action--primary---bg); color: var(--origam-color__action--primary---fg);">
 						<th style="padding: 12px; text-align: start;">Custom team roster</th>
 						<th style="padding: 12px; text-align: end;" :colspan="2">{{ items.length }} members</th>
 					</tr>

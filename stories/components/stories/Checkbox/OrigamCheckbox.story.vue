@@ -235,7 +235,7 @@
 		<Variant title="Slot — label">
 			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-label">
 				<template #label>
-					<span style="font-style: italic; color: var(--origam-color-action-primary-bg);">
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">
 						I agree to the <strong>terms of service</strong>
 					</span>
 				</template>
@@ -248,10 +248,10 @@
 				<template #input="{ props: inputProps, icon, model }">
 					<div
 							v-bind="inputProps"
-							style="width: 24px; height: 24px; border: 2px solid var(--origam-color-action-primary-bg); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+							style="width: 24px; height: 24px; border: 2px solid var(--origam-color__action--primary---bg); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
 					>
 						<origam-icon v-if="icon" :icon="icon"/>
-						<span v-else-if="model" style="font-size: 12px; color: var(--origam-color-action-primary-bg);">✓</span>
+						<span v-else-if="model" style="font-size: 12px; color: var(--origam-color__action--primary---bg);">✓</span>
 					</div>
 				</template>
 			</origam-checkbox>

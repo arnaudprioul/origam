@@ -344,31 +344,31 @@
 		}
 
 		&--rounded {
-			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-bottom-bar---border-radius: var(--origam-radius-xs, 2px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-bottom-bar---border-radius: var(--origam-radius-sm, 4px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-bottom-bar---border-radius: var(--origam-radius-md, 8px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-bottom-bar---border-radius: var(--origam-radius-lg, 12px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-bottom-bar---border-radius: var(--origam-radius-xl, 16px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {

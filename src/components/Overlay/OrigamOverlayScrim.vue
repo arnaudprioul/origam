@@ -106,7 +106,7 @@
 		scoped
 >
 	.origam-scrim {
-		background-color: var(--origam-overlay-scrim---background-color, var(--origam-color-overlay-scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
+		background-color: var(--origam-overlay-scrim---background-color, var(--origam-color__overlay---scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
 		pointer-events: var(--origam-overlay-scrim---pointer-events, auto);
 		border-radius: inherit;
 		inset: 0;

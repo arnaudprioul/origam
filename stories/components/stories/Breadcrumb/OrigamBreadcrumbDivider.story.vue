@@ -103,7 +103,7 @@
 			<div style="display: flex; align-items: center; gap: 8px;">
 				<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-divider-slot">
 					<template #default>
-						<span style="font-weight: 700; color: var(--origam-color-action-primary-bg);">»</span>
+						<span style="font-weight: 700; color: var(--origam-color__action--primary---bg);">»</span>
 					</template>
 				</origam-breadcrumb-divider>
 			</div>

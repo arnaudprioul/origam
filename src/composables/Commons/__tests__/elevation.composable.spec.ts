@@ -28,7 +28,7 @@ describe('useElevation — classes-first', () => {
     it('utility rung "md" → emits origam--shadow-md class AND token style', () => {
         const { api } = mountWith('md')
         expect(api().elevationClasses.value).toContain('origam--shadow-md')
-        expect(api().elevationStyles.value).toContain('box-shadow: var(--origam-shadow-md)')
+        expect(api().elevationStyles.value).toContain('box-shadow: var(--origam-shadow---md)')
     })
 
     it.each(['none', 'xs', 'sm', 'md', 'lg', 'xl'])('utility rung %s → utility class', (rung) => {
@@ -40,7 +40,7 @@ describe('useElevation — classes-first', () => {
         const { api } = mountWith('2xl')
         const cls = api().elevationClasses.value
         expect(cls.some(c => /^origam--shadow-/.test(c))).toBe(false)
-        expect(api().elevationStyles.value).toContain('box-shadow: var(--origam-shadow-2xl)')
+        expect(api().elevationStyles.value).toContain('box-shadow: var(--origam-shadow---2xl)')
     })
 
     it('Material number 8 → maps to "md" rung utility', () => {

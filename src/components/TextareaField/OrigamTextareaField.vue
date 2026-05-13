@@ -671,7 +671,7 @@
 			position: absolute;
 			bottom: 0;
 			left: calc(0px - var(--origam-field---padding-start));
-			border: 1px solid var(--origam-textarea-field__grip---border-color, var(--origam-color-border-subtle));
+			border: 1px solid var(--origam-textarea-field__grip---border-color, var(--origam-color__border---subtle));
 			border-top-width: 0;
 			cursor: ns-resize;
 			height: var(--origam-textarea-field__grip---height, 9px);

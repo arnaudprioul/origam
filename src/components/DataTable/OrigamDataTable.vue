@@ -350,8 +350,8 @@
 >
 	.origam-data-table {
 		width: var(--origam-data-table---width, 100%);
-		background-color: var(--origam-data-table---background-color, var(--origam-color-surface-default));
-		color: var(--origam-data-table---color, var(--origam-color-text-primary));
+		background-color: var(--origam-data-table---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table---color, var(--origam-color__text---primary));
 
 		&__table {
 			width: 100%;

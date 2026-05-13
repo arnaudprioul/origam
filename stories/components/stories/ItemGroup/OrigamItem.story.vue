@@ -35,7 +35,7 @@
 							</origam-item>
 						</div>
 					</origam-item-group>
-					<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+					<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 						selected = <strong>{{ JSON.stringify(playgroundModel) }}</strong>
 					</p>
 				</div>
@@ -51,7 +51,7 @@
 		<Variant title="Prop — value (single selection, mandatory)">
 			<!-- Demonstrates single-select radio-style with mandatory -->
 			<div style="padding: 24px; max-width: 720px;">
-				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					<code>mandatory · single-select</code>
 				</p>
 				<origam-item-group v-model="plan" mandatory data-cy="item-cards">
@@ -76,7 +76,7 @@
 						</origam-item>
 					</div>
 				</origam-item-group>
-				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Selected plan: <strong>{{ plan }}</strong>
 				</p>
 			</div>
@@ -85,7 +85,7 @@
 		<Variant title="Prop — multiple (checkbox-style tiles)">
 			<!-- multiple allows selecting several items at the same time -->
 			<div style="padding: 24px; max-width: 640px;">
-				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					<code>multiple</code>
 				</p>
 				<origam-item-group v-model="features" multiple data-cy="item-tiles">
@@ -114,7 +114,7 @@
 						</origam-item>
 					</div>
 				</origam-item-group>
-				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Selected features: <strong>{{ features.length ? features.join(', ') : '(none)' }}</strong>
 				</p>
 			</div>
@@ -123,7 +123,7 @@
 		<Variant title="Prop — mandatory (segmented chips, always one selected)">
 			<!-- mandatory ensures at least one value always stays active -->
 			<div style="padding: 24px; max-width: 640px;">
-				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin: 0 0 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					<code>mandatory · tag="div"</code>
 				</p>
 				<origam-item-group
@@ -152,7 +152,7 @@
 						</origam-item>
 					</div>
 				</origam-item-group>
-				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Active filter: <strong>{{ filterCategory }}</strong>
 				</p>
 			</div>
@@ -172,7 +172,7 @@
 						</template>
 					</origam-item>
 				</origam-item-group>
-				<p style="margin-top: 12px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin-top: 12px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Click the pill to see the scoped slot props flip.
 				</p>
 			</div>
@@ -211,7 +211,7 @@
 					<ul v-if="state.log.length" style="font-family: monospace; font-size: 0.8rem; margin: 12px 0 0; padding-left: 16px;">
 						<li v-for="(l, i) in state.log" :key="i">{{ l }}</li>
 					</ul>
-					<p v-else style="margin: 8px 0 0; font-size: 0.75rem; color: var(--origam-color-text-secondary);">Click a card to see events.</p>
+					<p v-else style="margin: 8px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">Click a card to see events.</p>
 				</div>
 			</template>
 		</Variant>
@@ -275,20 +275,20 @@
 	height: 100%;
 	box-sizing: border-box;
 	text-align: start;
-	background: var(--origam-color-surface-default);
-	border: 1px solid var(--origam-color-border-subtle);
+	background: var(--origam-color__surface---default);
+	border: 1px solid var(--origam-color__border---subtle);
 	border-radius: 12px;
 	cursor: pointer;
 	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.demo-card:hover { border-color: var(--origam-color-border-default); }
+.demo-card:hover { border-color: var(--origam-color__border---default); }
 .demo-card--active {
-	border-color: var(--origam-color-action-primary-bg);
-	box-shadow: 0 0 0 1px var(--origam-color-action-primary-bg);
+	border-color: var(--origam-color__action--primary---bg);
+	box-shadow: 0 0 0 1px var(--origam-color__action--primary---bg);
 }
 .demo-card__title { font-weight: 600; font-size: 0.95rem; }
-.demo-card__price { font-weight: 700; font-size: 1.15rem; color: var(--origam-color-text-primary); }
-.demo-card__hint  { font-size: 0.75rem; color: var(--origam-color-text-secondary); }
+.demo-card__price { font-weight: 700; font-size: 1.15rem; color: var(--origam-color__text---primary); }
+.demo-card__hint  { font-size: 0.75rem; color: var(--origam-color__text---secondary); }
 
 .demo-tile {
 	position: relative;
@@ -301,16 +301,16 @@
 	width: 100%;
 	min-height: 88px;
 	box-sizing: border-box;
-	background: var(--origam-color-surface-default);
-	border: 1px solid var(--origam-color-border-subtle);
+	background: var(--origam-color__surface---default);
+	border: 1px solid var(--origam-color__border---subtle);
 	border-radius: 10px;
 	cursor: pointer;
 	transition: border-color 0.15s ease;
 }
-.demo-tile:hover { border-color: var(--origam-color-border-default); }
+.demo-tile:hover { border-color: var(--origam-color__border---default); }
 .demo-tile--active {
-	border-color: var(--origam-color-action-primary-bg);
-	background: color-mix(in srgb, var(--origam-color-action-primary-bg) 6%, transparent);
+	border-color: var(--origam-color__action--primary---bg);
+	background: color-mix(in srgb, var(--origam-color__action--primary---bg) 6%, transparent);
 }
 .demo-tile__icon  { font-size: 1.5rem; }
 .demo-tile__label { font-size: 0.8125rem; font-weight: 500; }
@@ -319,31 +319,31 @@
 	width: 18px; height: 18px;
 	display: inline-flex; align-items: center; justify-content: center;
 	border-radius: 50%;
-	background: var(--origam-color-action-primary-bg);
-	color: var(--origam-color-action-primary-fg);
+	background: var(--origam-color__action--primary---bg);
+	color: var(--origam-color__action--primary---fg);
 	font-size: 0.7rem; font-weight: 700;
 }
 
 .demo-chip {
 	padding: 6px 14px;
 	border-radius: 999px;
-	border: 1px solid var(--origam-color-border-subtle);
-	background: var(--origam-color-surface-default);
+	border: 1px solid var(--origam-color__border---subtle);
+	background: var(--origam-color__surface---default);
 	cursor: pointer;
 	font-size: 0.8125rem;
 }
-.demo-chip:hover { border-color: var(--origam-color-border-default); }
+.demo-chip:hover { border-color: var(--origam-color__border---default); }
 .demo-chip--selected {
-	background: var(--origam-color-action-primary-bg);
-	color: var(--origam-color-action-primary-fg);
-	border-color: var(--origam-color-action-primary-bg);
+	background: var(--origam-color__action--primary---bg);
+	color: var(--origam-color__action--primary---fg);
+	border-color: var(--origam-color__action--primary---bg);
 }
 
 .demo-pill {
 	padding: 8px 16px;
 	border-radius: 8px;
-	border: 1px solid var(--origam-color-border-subtle);
-	background: var(--origam-color-surface-overlay);
+	border: 1px solid var(--origam-color__border---subtle);
+	background: var(--origam-color__surface---overlay);
 	cursor: pointer;
 }
 </style>

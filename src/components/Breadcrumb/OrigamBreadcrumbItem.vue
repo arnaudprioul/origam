@@ -226,7 +226,7 @@
 		--origam-breadcrumb-item---border-style: solid;
 		--origam-breadcrumb-item---border-radius: 0px;
 		--origam-breadcrumb-item---density: 0px;
-		--origam-breadcrumb-item---box-shadow: var(--origam-shadow-none, none);
+		--origam-breadcrumb-item---box-shadow: var(--origam-shadow---none, none);
 		--origam-breadcrumb-item---color: var(--origam-breadcrumb-item---color-token, inherit);
 		--origam-breadcrumb-item---opacity: 1;
 		--origam-breadcrumb-item---background: transparent;

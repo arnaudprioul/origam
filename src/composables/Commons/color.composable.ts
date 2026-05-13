@@ -210,7 +210,7 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
 // existing callers (OrigamBtn, etc.) keep working without changes.
 //
 // `colorStyles` is an array of CSS declarations like `'background-color: …'`,
-// either pointing to a token (`var(--origam-color-action-primary-bg)`) when
+// either pointing to a token (`var(--origam-color__action--primary---bg)`) when
 // `props.color` is an intent, or to a raw value when it's a hex/rgb (legacy).
 //
 // State resolution:
@@ -246,7 +246,7 @@ export function useColorEffect (
     // styles win. Same goes for legacy raw colors (hex/rgb).
     const colorClasses = computed<string[]>(() => {
         // Bypass the utility layer in hover/active/disabled because the
-        // resolved token is not the resting `--origam-color-action-*-bg`
+        // resolved token is not the resting `--origam-color__action--*---bg`
         // referenced by the utility class.
         if (isHover.value || isActive.value || isDisabled.value) return []
 
@@ -402,7 +402,7 @@ export function useColorEffect (
                 fgDecl = `color: ${bgIntentFg}`
             } else {
                 // `tokenForegroundForIntent` returns the intent's *foreground*
-                // token (e.g. `var(--origam-color-action-primary-fgSubtle)`),
+                // token (e.g. `var(--origam-color__action--primary---fgSubtle)`),
                 // designed to be legible on a neutral surface — exactly the
                 // semantics consumers want from `color` alone.
                 fgDecl = `color: ${tokenForegroundForIntent(color.value)}`

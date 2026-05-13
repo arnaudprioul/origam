@@ -253,14 +253,14 @@
 	.ig-card__desc  { font-size: 0.8125rem; opacity: 0.66; }
 	.ig-card--active,
 	.ig-card.my-custom-active {
-		border-color: var(--origam-color-action-primary-bg, rgb(124, 58, 237));
+		border-color: var(--origam-color__action--primary---bg, rgb(124, 58, 237));
 		border-width: 2px;
-		box-shadow: 0 0 0 4px var(--origam-color-action-primary-bg-subtle, rgba(124, 58, 237, 0.1));
+		box-shadow: 0 0 0 4px var(--origam-color__action--primary---bg-subtle, rgba(124, 58, 237, 0.1));
 	}
 	.ig-card--disabled { opacity: 0.45; cursor: not-allowed; }
 	.ig-status {
 		flex-basis: 100%;
 		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66));
+		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66));
 	}
 </style>

@@ -18,7 +18,7 @@
 				})"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 260px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 260px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-main v-bind="state">
 						<div class="demo-content">
 							<p v-for="n in 10" :key="n">Line {{ n }}</p>
@@ -36,7 +36,7 @@
 		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant title="Prop — default layout">
-			<origam-layout style="height: 280px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+			<origam-layout style="height: 280px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 				<origam-main>
 					<div class="demo-content">Main content</div>
 				</origam-main>
@@ -48,7 +48,7 @@
 				:init-state="() => useStoryInitState<{ scrollable?: boolean }>({ scrollable: true })"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 280px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 280px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-main :scrollable="state.scrollable">
 						<div class="demo-content">
 							<p v-for="n in 30" :key="n">Long content line {{ n }}</p>
@@ -66,7 +66,7 @@
 				:init-state="() => useStoryInitState<IRoundedProps>({})"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 220px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 220px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-main :rounded="state.rounded">
 						<div class="demo-content">rounded={{ state.rounded ?? '(unset)' }}</div>
 					</origam-main>
@@ -82,7 +82,7 @@
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'main' })"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 220px; border: 1px dashed var(--origam-color-border-default, #ccc);">
+				<origam-layout style="height: 220px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 					<origam-main :tag="state.tag">
 						<div class="demo-content">tag={{ state.tag }}</div>
 					</origam-main>
@@ -122,7 +122,7 @@
 <style scoped>
 	.demo-content {
 		padding: 12px;
-		background: var(--origam-color-surface-default, #fff);
+		background: var(--origam-color__surface---default, #fff);
 	}
 </style>
 

@@ -15,7 +15,7 @@
 			<template #default="{ state }">
 				<div style="padding: 32px;" data-cy="contextual-menu-playground-host">
 					<div
-							style="padding: 32px; border: 2px dashed var(--origam-color-border-subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+							style="padding: 32px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
 							data-cy="contextual-menu-playground-zone"
 					>
 						Right-click to open menu
@@ -34,7 +34,7 @@
 		<Variant title="Prop — items (right-click a zone)">
 			<div style="padding: 32px;" data-cy="contextual-menu-default-host">
 				<div
-						style="padding: 32px; border: 2px dashed var(--origam-color-border-subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						style="padding: 32px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
 						data-cy="contextual-menu-default-zone"
 				>
 					Right-click anywhere
@@ -47,7 +47,7 @@
 			<!-- title displays a header above the menu items -->
 			<div style="padding: 32px;" data-cy="contextual-menu-title-host">
 				<div
-						style="padding: 32px; border: 2px dashed var(--origam-color-border-subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						style="padding: 32px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
 						data-cy="contextual-menu-title-zone"
 				>
 					Right-click for titled menu
@@ -60,7 +60,7 @@
 			<!-- Rich items using prependIcon to add visual context to each action -->
 			<div style="padding: 32px;" data-cy="contextual-menu-icons-host">
 				<div
-						style="padding: 32px; border: 2px dashed var(--origam-color-border-subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						style="padding: 32px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
 						data-cy="contextual-menu-icons-zone"
 				>
 					Right-click for icon menu
@@ -74,7 +74,7 @@
 		<Variant title="Slot — default (custom content)">
 			<div style="padding: 32px;" data-cy="contextual-menu-slot-host">
 				<div
-						style="padding: 32px; border: 2px dashed var(--origam-color-border-subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						style="padding: 32px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
 						data-cy="contextual-menu-slot-zone"
 				>
 					Right-click anywhere for custom content
@@ -99,7 +99,7 @@
 			<template #default="{ state }">
 				<div style="padding: 32px;" data-cy="contextual-menu-emit-host">
 					<div
-							style="padding: 32px; border: 2px dashed var(--origam-color-border-subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+							style="padding: 32px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
 							data-cy="contextual-menu-emit-zone"
 					>
 						Right-click to open/close
@@ -114,7 +114,7 @@
 					<ul v-if="state.log.length" style="font-family: monospace; font-size: 0.8rem; margin: 8px 0 0; padding-left: 16px;">
 						<li v-for="(l, i) in state.log" :key="i">{{ l }}</li>
 					</ul>
-					<p v-else style="font-size: 0.8rem; color: var(--origam-color-text-secondary); margin: 8px 0 0;">Right-click to see events.</p>
+					<p v-else style="font-size: 0.8rem; color: var(--origam-color__text---secondary); margin: 8px 0 0;">Right-click to see events.</p>
 				</div>
 			</template>
 		</Variant>

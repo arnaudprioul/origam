@@ -109,7 +109,7 @@
 					data-cy="timeline-slot-item-1"
 				>
 					<template #default>
-						<p style="margin: 0; font-size: 0.75rem; color: var(--origam-color-text-secondary)">
+						<p style="margin: 0; font-size: 0.75rem; color: var(--origam-color__text---secondary)">
 							Release candidate — API surface frozen.
 						</p>
 					</template>
@@ -140,7 +140,7 @@
 					:items="releaseEntries"
 					data-cy="timeline-horizontal"
 				/>
-				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 					Swipe / drag horizontally to navigate point-to-point. Each dot snaps to the start of the viewport.
 				</p>
 			</div>

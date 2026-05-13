@@ -158,7 +158,7 @@
 		<Variant title="Slot — default">
 			<origam-list>
 				<origam-list-item data-cy="list-item-slot-default">
-					<span style="font-style: italic; color: var(--origam-color-action-primary-bg);">Custom default slot content</span>
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom default slot content</span>
 				</origam-list-item>
 			</origam-list>
 		</Variant>

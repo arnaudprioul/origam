@@ -321,48 +321,48 @@
 			}
 
 			&#{$this}--elevated {
-				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow-md));
+				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow---md));
 			}
 
 			&#{$this}--rounded {
-				--origam-badge__badge---border-radius: var(--origam-radius-md, 8px);
+				--origam-badge__badge---border-radius: var(--origam-radius---md, 8px);
 			}
 
 			&#{$this}--rounded-x-small {
-				--origam-badge__badge---border-radius: var(--origam-radius-xs, 2px);
+				--origam-badge__badge---border-radius: var(--origam-radius---xs, 2px);
 			}
 
 			&#{$this}--rounded-small {
-				--origam-badge__badge---border-radius: var(--origam-radius-sm, 4px);
+				--origam-badge__badge---border-radius: var(--origam-radius---sm, 4px);
 			}
 
 			&#{$this}--rounded-default {
-				--origam-badge__badge---border-radius: var(--origam-radius-md, 8px);
+				--origam-badge__badge---border-radius: var(--origam-radius---md, 8px);
 			}
 
 			&#{$this}--rounded-medium {
-				--origam-badge__badge---border-radius: var(--origam-radius-lg, 12px);
+				--origam-badge__badge---border-radius: var(--origam-radius---lg, 12px);
 			}
 
 			&#{$this}--rounded-large {
-				--origam-badge__badge---border-radius: var(--origam-radius-xl, 16px);
+				--origam-badge__badge---border-radius: var(--origam-radius---xl, 16px);
 			}
 
 			&#{$this}--rounded-x-large {
-				--origam-badge__badge---border-radius: var(--origam-radius-2xl, 24px);
+				--origam-badge__badge---border-radius: var(--origam-radius---2xl, 24px);
 			}
 
 			&#{$this}--rounded-shaped {
-				border-start-start-radius: var(--origam-radius-xl, 16px);
+				border-start-start-radius: var(--origam-radius---xl, 16px);
 				border-start-end-radius: 0;
 				border-end-start-radius: 0;
-				border-end-end-radius: var(--origam-radius-xl, 16px);
+				border-end-end-radius: var(--origam-radius---xl, 16px);
 			}
 
 			&#{$this}--rounded-shaped-invert {
 				border-start-start-radius: 0;
-				border-start-end-radius: var(--origam-radius-xl, 16px);
-				border-end-start-radius: var(--origam-radius-xl, 16px);
+				border-start-end-radius: var(--origam-radius---xl, 16px);
+				border-end-start-radius: var(--origam-radius---xl, 16px);
 				border-end-end-radius: 0;
 			}
 		}
@@ -413,23 +413,23 @@
 		}
 
 		&--warning {
-			--origam-badge__badge---background-color: var(--origam-badge--warning---background-color, var(--origam-color-feedback-warning-bg));
-			--origam-badge__badge---color: var(--origam-badge--warning---color, var(--origam-color-feedback-warning-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--warning---background-color, var(--origam-color__feedback--warning---bg));
+			--origam-badge__badge---color: var(--origam-badge--warning---color, var(--origam-color__feedback--warning---fg));
 		}
 
 		&--success {
-			--origam-badge__badge---background-color: var(--origam-badge--success---background-color, var(--origam-color-feedback-success-bg));
-			--origam-badge__badge---color: var(--origam-badge--success---color, var(--origam-color-feedback-success-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--success---background-color, var(--origam-color__feedback--success---bg));
+			--origam-badge__badge---color: var(--origam-badge--success---color, var(--origam-color__feedback--success---fg));
 		}
 
 		&--info {
-			--origam-badge__badge---background-color: var(--origam-badge--info---background-color, var(--origam-color-feedback-info-bg));
-			--origam-badge__badge---color: var(--origam-badge--info---color, var(--origam-color-feedback-info-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--info---background-color, var(--origam-color__feedback--info---bg));
+			--origam-badge__badge---color: var(--origam-badge--info---color, var(--origam-color__feedback--info---fg));
 		}
 
 		&--error {
-			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color-feedback-danger-bg));
-			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color-feedback-danger-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>

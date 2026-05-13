@@ -149,8 +149,8 @@
 		scoped
 >
 	.origam-data-table-group-header-row {
-		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-color-surface-overlay));
-		color: var(--origam-data-table-group-header-row---color, var(--origam-color-text-primary));
+		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-color__surface---overlay));
+		color: var(--origam-data-table-group-header-row---color, var(--origam-color__text---primary));
 		font-weight: var(--origam-data-table-group-header-row---font-weight, 500);
 
 		&__column {

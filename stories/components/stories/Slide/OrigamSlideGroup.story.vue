@@ -139,7 +139,7 @@
 	const hostStyle: CSSProperties = {
 		width: '100%',
 		maxWidth: '480px',
-		border: '1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12))',
+		border: '1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))',
 		borderRadius: '6px',
 		padding: '8px',
 	}
@@ -157,8 +157,8 @@
 		padding: 8px 14px;
 		margin: 0 6px;
 		border-radius: 999px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06));
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		font: 0.875rem/1 system-ui, sans-serif;
 		white-space: nowrap;
 	}

@@ -274,39 +274,39 @@
 		color: var(--origam-sheet---color);
 
 		&--border {
-			--origam-sheet---border-top-width: var(--origam-border-width-thin, 1px);
-			--origam-sheet---border-right-width: var(--origam-border-width-thin, 1px);
-			--origam-sheet---border-bottom-width: var(--origam-border-width-thin, 1px);
-			--origam-sheet---border-left-width: var(--origam-border-width-thin, 1px);
+			--origam-sheet---border-top-width: var(--origam-border__width---thin, 1px);
+			--origam-sheet---border-right-width: var(--origam-border__width---thin, 1px);
+			--origam-sheet---border-bottom-width: var(--origam-border__width---thin, 1px);
+			--origam-sheet---border-left-width: var(--origam-border__width---thin, 1px);
 			box-shadow: var(--origam-sheet--border---box-shadow);
 		}
 
 		&--rounded {
-			--origam-sheet---border-radius: var(--origam-sheet--rounded---border-radius, var(--origam-radius-2xl, 24px));
+			--origam-sheet---border-radius: var(--origam-sheet--rounded---border-radius, var(--origam-radius---2xl, 24px));
 		}
 
 		&--rounded-x-small {
-			--origam-sheet---border-radius: var(--origam-radius-xs, 2px);
+			--origam-sheet---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-sheet---border-radius: var(--origam-radius-sm, 4px);
+			--origam-sheet---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-sheet---border-radius: var(--origam-radius-md, 8px);
+			--origam-sheet---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-sheet---border-radius: var(--origam-radius-lg, 12px);
+			--origam-sheet---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-sheet---border-radius: var(--origam-radius-xl, 16px);
+			--origam-sheet---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-sheet---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-sheet---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-shaped {
@@ -345,7 +345,7 @@
 			--origam-sheet---max-width: 100%;
 			--origam-sheet---height: var(--origam-sheet---swipe-height, 0px);
 			--origam-sheet---max-height: 100%;
-			--origam-sheet---border-radius: var(--origam-sheet__swipeable---border-radius, var(--origam-radius-2xl, 24px));
+			--origam-sheet---border-radius: var(--origam-sheet__swipeable---border-radius, var(--origam-radius---2xl, 24px));
 			border-end-start-radius: 0;
 			border-end-end-radius: 0;
 			overflow: hidden;
@@ -380,8 +380,8 @@
 			display: block;
 			width: var(--origam-sheet__handle---width, 32px);
 			height: var(--origam-sheet__handle---height, 4px);
-			background-color: var(--origam-sheet__handle---color, var(--origam-color-border-subtle));
-			border-radius: var(--origam-sheet__handle---border-radius, var(--origam-radius-full, 9999px));
+			background-color: var(--origam-sheet__handle---color, var(--origam-color__border---subtle));
+			border-radius: var(--origam-sheet__handle---border-radius, var(--origam-radius---full, 9999px));
 		}
 	}
 </style>

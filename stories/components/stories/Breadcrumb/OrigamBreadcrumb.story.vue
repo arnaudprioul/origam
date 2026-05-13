@@ -166,11 +166,11 @@
 			<!-- Demonstrates passing items as a prop array instead of using slots -->
 			<div style="display: flex; flex-direction: column; gap: 16px;">
 				<div>
-					<p style="margin: 0 0 4px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">items prop:</p>
+					<p style="margin: 0 0 4px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">items prop:</p>
 					<origam-breadcrumb :items="items" data-cy="breadcrumb-items-prop"/>
 				</div>
 				<div>
-					<p style="margin: 0 0 4px; font-size: 0.75rem; color: var(--origam-color-text-secondary);">equivalent via default slot:</p>
+					<p style="margin: 0 0 4px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">equivalent via default slot:</p>
 					<origam-breadcrumb data-cy="breadcrumb-items-slot">
 						<ol class="origam-breadcrumb__items">
 							<li class="origam-breadcrumb__item">

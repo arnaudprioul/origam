@@ -115,7 +115,7 @@
 						aria-label="Close"
 						@click="logEvent('click', $event)"
 				/>
-				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color-text-secondary);">Click the icon — watch the Events panel.</p>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Click the icon — watch the Events panel.</p>
 			</div>
 		</Variant>
 	</Story>

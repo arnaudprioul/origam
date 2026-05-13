@@ -8,12 +8,12 @@
 			<origam-infinite-scroll
 					height="300"
 					@load="handleLoad"
-					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 			>
 				<div
 						v-for="item in items"
 						:key="item"
-						style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+						style="padding: 12px; border-bottom: 1px solid var(--origam-color__border---default, #e0e0e0);"
 				>
 					Item {{ item }}
 				</div>
@@ -25,12 +25,12 @@
 					height="300"
 					mode="manual"
 					@load="handleLoad"
-					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 			>
 				<div
 						v-for="item in items"
 						:key="item"
-						style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+						style="padding: 12px; border-bottom: 1px solid var(--origam-color__border---default, #e0e0e0);"
 				>
 					Item {{ item }}
 				</div>
@@ -42,12 +42,12 @@
 					height="300"
 					side="both"
 					@load="handleLoad"
-					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 			>
 				<div
 						v-for="item in items"
 						:key="item"
-						style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+						style="padding: 12px; border-bottom: 1px solid var(--origam-color__border---default, #e0e0e0);"
 				>
 					Item {{ item }}
 				</div>
@@ -59,7 +59,7 @@
 					height="300"
 					mode="manual"
 					@load="handleLoad"
-					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 			>
 				<div
 						v-for="item in items"
@@ -78,7 +78,7 @@
 			<origam-infinite-scroll
 					height="200"
 					@load="handleLoadEmpty"
-					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 			>
 				<div style="padding: 12px;">Only item</div>
 				<template #empty>
@@ -91,7 +91,7 @@
 			<origam-infinite-scroll
 					height="300"
 					@load="(e) => { logEvent('load', { side: e.side }); e.done('ok') }"
-					style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 			>
 				<div
 						v-for="item in items"
@@ -121,12 +121,12 @@
 						:mode="state.mode"
 						:height="state.height"
 						@load="handleLoad"
-						style="overflow-y: auto; border: 1px solid var(--origam-color-border-default, #e0e0e0); border-radius: 4px;"
+						style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
 				>
 					<div
 							v-for="item in items"
 							:key="item"
-							style="padding: 12px; border-bottom: 1px solid var(--origam-color-border-default, #e0e0e0);"
+							style="padding: 12px; border-bottom: 1px solid var(--origam-color__border---default, #e0e0e0);"
 					>
 						Item {{ item }}
 					</div>

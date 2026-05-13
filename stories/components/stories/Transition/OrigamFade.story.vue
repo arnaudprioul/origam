@@ -151,8 +151,8 @@
 	.story-target {
 		padding: 12px 16px;
 		border-radius: 6px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06));
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 	}
 </style>
 

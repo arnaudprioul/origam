@@ -116,22 +116,22 @@
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; max-width: 480px; }
 	.story-row {
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		border-radius: 6px;
 		padding: 12px 16px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.03));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.03));
 	}
 	.story-content { font: 0.95rem/1.4 system-ui, sans-serif; }
 	.story-line { margin: 0 0 6px; font: 0.875rem/1.4 system-ui, sans-serif; }
 	.story-card {
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		border-radius: 8px;
 		padding: 16px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.03));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.03));
 	}
 	.story-card h4 { margin: 0 0 8px; font: 600 1rem/1.2 system-ui, sans-serif; }
 	.story-card p  { margin: 0; font: 0.875rem/1.4 system-ui, sans-serif; }
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 </style>
 
 <docs lang="md" src="@docs/components/VirtualScroll/OrigamVirtualScrollItem.md"/>

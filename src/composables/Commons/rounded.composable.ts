@@ -103,12 +103,12 @@ export function useRounded (
     // `roundedStyles` (inline-style via `useStyle`) without each one
     // re-implementing the 6-row table.
     const NAMED_RADIUS_TOKEN: Record<string, string> = {
-        'x-small': 'var(--origam-radius-xs, 2px)',
-        'small':   'var(--origam-radius-sm, 4px)',
-        'default': 'var(--origam-radius-md, 8px)',
-        'medium':  'var(--origam-radius-lg, 12px)',
-        'large':   'var(--origam-radius-xl, 16px)',
-        'x-large': 'var(--origam-radius-2xl, 24px)'
+        'x-small': 'var(--origam-radius---xs, 2px)',
+        'small':   'var(--origam-radius---sm, 4px)',
+        'default': 'var(--origam-radius---md, 8px)',
+        'medium':  'var(--origam-radius---lg, 12px)',
+        'large':   'var(--origam-radius---xl, 16px)',
+        'x-large': 'var(--origam-radius---2xl, 24px)'
     }
 
     const roundedStyles = computed(() => {
@@ -125,7 +125,7 @@ export function useRounded (
         // an inline-style companion so `useStyle` lands the radius at
         // `#id` (spec 1,0,0) and wins everywhere.
         if (isUtilityRounded(rounded)) {
-            styles.push(`border-radius: var(--origam-radius-${rounded})`)
+            styles.push(`border-radius: var(--origam-radius---${rounded})`)
             return styles
         }
 
@@ -147,7 +147,7 @@ export function useRounded (
         // inline radius so the chrome lands regardless of per-component
         // SCSS coverage. Mirrors the utility `md` rung.
         if (rounded === true || rounded === '') {
-            styles.push(`border-radius: var(--origam-radius-md, 8px)`)
+            styles.push(`border-radius: var(--origam-radius---md, 8px)`)
             return styles
         }
 

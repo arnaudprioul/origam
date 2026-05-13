@@ -279,7 +279,7 @@
 		}
 
 		&--elevated {
-			box-shadow: var(--origam-avatar-group---box-shadow-elevated, var(--origam-shadow-md));
+			box-shadow: var(--origam-avatar-group---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--density-compact {
