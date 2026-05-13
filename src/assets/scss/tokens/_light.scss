@@ -363,7 +363,7 @@
   --origam-badge__badge---border-left-width: 0px;
   --origam-badge__badge---border-bottom-width: 0px;
   --origam-badge__badge---border-right-width: 0px;
-  --origam-badge__badge---border-radius: 10px;
+  --origam-badge__badge---border-radius: 9999px;
   --origam-badge__badge---font-size: 0.75rem;
   --origam-badge__badge---font-weight: 500;
   --origam-badge__badge---text-align: center;
@@ -373,10 +373,10 @@
   --origam-badge__badge---min-width: 20px;
   --origam-badge__badge---pointer-events: auto;
   --origam-badge__badge---position: absolute;
-  --origam-badge__badge---padding-block-start: 4px;
-  --origam-badge__badge---padding-block-end: 4px;
-  --origam-badge__badge---padding-inline-start: 6px;
-  --origam-badge__badge---padding-inline-end: 6px;
+  --origam-badge__badge---padding-block-start: 0px;
+  --origam-badge__badge---padding-block-end: 0px;
+  --origam-badge__badge---padding-inline-start: 4px;
+  --origam-badge__badge---padding-inline-end: 4px;
   --origam-badge__badge---margin-block-start: 0px;
   --origam-badge__badge---margin-block-end: 0px;
   --origam-badge__badge---margin-inline-start: 0px;
@@ -540,8 +540,8 @@
   --origam-bottom-bar---transition-duration: 0.2s, 0.1s;
   --origam-bottom-bar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --origam-bottom-bar---transition-property: transform, color;
-  --origam-bottom-bar--elevated---box-shadow: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
-  --origam-bottom-bar--active---box-shadow: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-bottom-bar--elevated---box-shadow: 0px -6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-bottom-bar--active---box-shadow: 0px -6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
   --origam-bottom-bar---border-variant-border-width: 1px;
   --origam-bottom-bar__rounded---border-radius: 4px;
   --origam-bottom-bar---density-comfortable-density: 8px;
