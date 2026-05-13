@@ -23,7 +23,9 @@
 			<template #controls="{ state }">
 				<HstText     v-model="state.text"    title="text"/>
 				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
-				<HstCheckbox v-model="state.border"  title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -77,7 +79,11 @@
 	import type { ICardTextProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		roundedList
+	} from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/Card/OrigamCardText.md"/>

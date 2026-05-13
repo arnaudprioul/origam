@@ -27,7 +27,9 @@
 				<HstText   v-model="state.subtitle" title="subtitle"/>
 				<HstSelect v-model="state.density"  title="density"  :options="densityList"/>
 				<HstSelect v-model="state.rounded"  title="rounded"  :options="roundedList"/>
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -104,7 +106,11 @@
 	import type { ICardHeaderProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, roundedList
+	} from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/Card/OrigamCardHeader.md"/>

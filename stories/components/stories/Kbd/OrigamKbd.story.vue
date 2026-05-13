@@ -209,7 +209,9 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -260,7 +262,11 @@
 	} from '@origam/interfaces'
 	import type { TKbdVariant } from '@origam/types'
 
-	import { intentList, roundedList, sizeList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		intentList, roundedList, sizeList
+	} from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'
 
 	const kbdVariantList: Array<IOptions<TKbdVariant | undefined>> = [

@@ -39,7 +39,9 @@
 				<HstSelect   v-model="state.bgColor"    title="bgColor"    :options="intentList"/>
 				<HstSelect   v-model="state.rounded"    title="rounded"    :options="roundedList"/>
 				<HstSelect   v-model="state.elevation"  title="elevation"  :options="elevationList"/>
-				<HstCheckbox v-model="state.border"     title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.status"     title="status"     :options="statusList"/>
 			</template>
 		</Variant>
@@ -302,7 +304,9 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -349,7 +353,11 @@
 	import type { TAnchor, TStatus, TStatusPosition } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { elevationList, iconList, intentList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		elevationList, iconList, intentList, roundedList
+	} from '@stories/const'
 
 	const statusList: Array<IOptions<TStatus>> = [
 		{ label: '(none)', value: undefined },

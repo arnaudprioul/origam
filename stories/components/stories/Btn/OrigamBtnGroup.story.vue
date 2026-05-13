@@ -26,7 +26,9 @@
 				<HstSelect   v-model="state.density" title="density" :options="densityList"/>
 				<HstCheckbox v-model="state.divided" title="divided"/>
 				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
-				<HstCheckbox v-model="state.border"  title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.color"   title="color"   :options="intentList"/>
 				<HstSelect   v-model="state.bgColor" title="bgColor" :options="intentList"/>
 			</template>
@@ -96,7 +98,9 @@
 				</origam-btn-group>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -142,7 +146,11 @@
 	import type { IBtnGroupProps, IBtnProps, IColorProps, IRoundedProps } from '@origam/interfaces'
 	import type { TDensity } from '@origam/types'
 
-	import { densityList, intentList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, intentList, roundedList
+	} from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'
 
 	const actions: Array<IBtnProps> = [

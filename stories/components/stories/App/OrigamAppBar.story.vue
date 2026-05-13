@@ -44,7 +44,9 @@
 				<HstCheckbox v-model="state.collapse"   title="collapse"/>
 				<HstCheckbox v-model="state.flat"       title="flat"/>
 				<HstCheckbox v-model="state.floating"   title="floating"/>
-				<HstCheckbox v-model="state.border"     title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.density"    title="density"    :options="densityList"/>
 				<HstSelect   v-model="state.elevation"  title="elevation"  :options="elevationList"/>
 				<HstSelect   v-model="state.color"      title="color"      :options="intentList"/>
@@ -291,6 +293,8 @@
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		borderList,
+		borderStyleList,
 		densityList,
 		elevationList,
 		intentList,

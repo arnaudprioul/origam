@@ -31,7 +31,9 @@
 				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
 				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
 				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstText     v-model="state.divider"   title="divider"/>
 				<HstCheckbox v-model="state.disabled"  title="disabled"/>
 			</template>
@@ -101,7 +103,9 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -262,7 +266,11 @@
 	import type { TBreadcrumbItem } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, elevationList, intentList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, elevationList, intentList, roundedList
+	} from '@stories/const'
 
 	const items: Array<TBreadcrumbItem> = [
 		{ title: 'Home',    href: '/'        },

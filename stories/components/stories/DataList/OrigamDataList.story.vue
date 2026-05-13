@@ -24,7 +24,9 @@
 				<HstSelect   v-model="state.density"     title="density"     :options="densityList"/>
 				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
 				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
-				<HstCheckbox v-model="state.border"      title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
 			</template>
 		</Variant>
@@ -68,7 +70,9 @@
 				<origam-data-list :items="basicItems" v-bind="state" data-cy="data-list-border"/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border"  title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
 			</template>
 		</Variant>
@@ -150,7 +154,11 @@
 	import type { IAdjacentProps, IBorderProps, IDataListKVItem, IDensityProps, IRoundedProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, iconList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, iconList, roundedList
+	} from '@stories/const'
 
 	// Vue's reactive proxy would otherwise wrap the imported component
 	// definitions when they're stored inside an `items` array bound via

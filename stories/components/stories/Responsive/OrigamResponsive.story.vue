@@ -29,7 +29,9 @@
 				<HstNumber   v-model="state.width"       title="width"/>
 				<HstNumber   v-model="state.height"      title="height"/>
 				<HstCheckbox v-model="state.rounded"     title="rounded"/>
-				<HstCheckbox v-model="state.border"      title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -118,7 +120,9 @@
 			</template>
 			<template #controls="{ state }">
 				<HstCheckbox v-model="state.rounded" title="rounded"/>
-				<HstCheckbox v-model="state.border"  title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.aspectRatio" title="aspectRatio" :options="aspectRatioList"/>
 			</template>
 		</Variant>

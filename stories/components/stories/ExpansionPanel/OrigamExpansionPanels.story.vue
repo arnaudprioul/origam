@@ -42,7 +42,9 @@
 				<HstSelect   v-model="state.elevation"    title="elevation"    :options="elevationList"/>
 				<HstSelect   v-model="state.expandIcon"   title="expandIcon"   :options="iconList"/>
 				<HstSelect   v-model="state.collapseIcon" title="collapseIcon" :options="iconList"/>
-				<HstCheckbox v-model="state.border"       title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstCheckbox v-model="state.flat"         title="flat"/>
 				<HstCheckbox v-model="state.accordion"    title="accordion"/>
 				<HstCheckbox v-model="state.inset"        title="inset"/>
@@ -112,7 +114,9 @@
 				</origam-expansion-panels>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -343,7 +347,11 @@
 	import type { TIcon } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, elevationList, iconList, intentList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, elevationList, iconList, intentList, roundedList
+	} from '@stories/const'
 
 	const panelItems: Array<IExpansionPanelProps> = [
 		{ title: 'Item A', content: 'Content for item A' },

@@ -122,7 +122,9 @@
 			<template #controls="{ state }">
 				<HstSelect   v-model="state.size"    title="size"    :options="sizeList"/>
 				<HstCheckbox v-model="state.rounded" title="rounded"/>
-				<HstCheckbox v-model="state.border"  title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -187,7 +189,11 @@
 	import type { TDirection, TSize } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, sizeList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, sizeList
+	} from '@stories/const'
 
 	const directionList: Array<IOptions<TDirection>> = [
 		{ label: 'Horizontal', value: DIRECTION.HORIZONTAL },

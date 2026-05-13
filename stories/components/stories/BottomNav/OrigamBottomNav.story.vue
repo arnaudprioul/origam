@@ -35,7 +35,9 @@
 				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
 				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
 				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
 				<HstCheckbox v-model="state.grow"      title="grow"/>
 				<HstSelect   v-model="state.mode"      title="mode"      :options="modeList"/>
@@ -172,7 +174,9 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -349,7 +353,11 @@
 	import type { TMode } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, elevationList, intentList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, elevationList, intentList, roundedList
+	} from '@stories/const'
 
 	const modeList: Array<IOptions<TMode>> = [
 		{ label: 'vertical',   value: MODE.VERTICAL   },

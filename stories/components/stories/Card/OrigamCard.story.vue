@@ -168,17 +168,25 @@
 
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
 						<small>Showcase fixtures:</small>
-						<origam-card title='border={false} (default)'                   data-cy="card-border-default"/>
-						<origam-card title='border={true}'   :border="true"             data-cy="card-border-true"/>
-						<origam-card title='border="top"'    border="top"               data-cy="card-border-top"/>
-						<origam-card title='border="right"'  border="right"             data-cy="card-border-right"/>
-						<origam-card title='border="bottom"' border="bottom"            data-cy="card-border-bottom"/>
-						<origam-card title='border="left"'   border="left"              data-cy="card-border-left"/>
+						<origam-card title='border={false} (default)'                  data-cy="card-border-default"/>
+						<origam-card title='border={true} (= thin)' :border="true"     data-cy="card-border-true"/>
+						<origam-card title='border="thin"'    border="thin"            data-cy="card-border-thin"/>
+						<origam-card title='border="thick"'   border="thick"           data-cy="card-border-thick"/>
+						<origam-card title='border="top"'     border="top"             data-cy="card-border-top"/>
+						<origam-card title='border="right"'   border="right"           data-cy="card-border-right"/>
+						<origam-card title='border="bottom"'  border="bottom"          data-cy="card-border-bottom"/>
+						<origam-card title='border="left"'    border="left"            data-cy="card-border-left"/>
+						<origam-card title='Free-form: 2px solid currentColor' border='2px solid currentColor' data-cy="card-border-freeform-solid"/>
+						<origam-card title='Free-form: 4px dashed'    border="4px dashed"  data-cy="card-border-freeform-dashed"/>
+						<origam-card title='borderStyle="dotted"'  :border="true" border-style="dotted"  data-cy="card-border-dotted"/>
+						<origam-card title='Custom width via number' :border="6"     data-cy="card-border-number"/>
 					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect v-model="state.border"      title="border"       :options="borderList"/>
+				<HstSelect v-model="state.borderStyle" title="borderStyle"  :options="borderStyleList"/>
+				<HstText   v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -426,6 +434,8 @@
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		borderList,
+		borderStyleList,
 		densityList,
 		elevationList,
 		iconList,

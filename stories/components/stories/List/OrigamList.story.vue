@@ -34,7 +34,9 @@
 				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
 				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
 				<HstSelect   v-model="state.lines"     title="lines"     :options="linesList"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstCheckbox v-model="state.slim"      title="slim"/>
 				<HstCheckbox v-model="state.nav"       title="nav"/>
 				<HstCheckbox v-model="state.disabled"  title="disabled"/>
@@ -101,7 +103,9 @@
 				</origam-list>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.border" title="border"/>
+				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -286,7 +290,11 @@
 	import type { TLines } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, elevationList, intentList, roundedList } from '@stories/const'
+	import {
+		borderList,
+		borderStyleList,
+		densityList, elevationList, intentList, roundedList
+	} from '@stories/const'
 
 	const linesList: Array<IOptions<TLines | undefined>> = [
 		{ label: '(none)', value: undefined    },
