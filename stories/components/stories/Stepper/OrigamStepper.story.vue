@@ -103,10 +103,6 @@
 						:model-value="1"
 						:color="state.color"
 						:bg-color="state.bgColor"
-						:active-color="state.activeColor"
-						:active-bg-color="state.activeBgColor"
-						:hover-color="state.hoverColor"
-						:hover-bg-color="state.hoverBgColor"
 						data-cy="stepper-color"
 				/>
 			</template>
@@ -126,16 +122,10 @@
 						:model-value="1"
 						:color="state.color"
 						:bg-color="state.bgColor"
-						:active-color="state.activeColor"
-						:active-bg-color="state.activeBgColor"
-						:hover-color="state.hoverColor"
-						:hover-bg-color="state.hoverBgColor"
 						data-cy="stepper-color"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -149,16 +139,10 @@
 						:model-value="1"
 						:color="state.color"
 						:bg-color="state.bgColor"
-						:active-color="state.activeColor"
-						:active-bg-color="state.activeBgColor"
-						:hover-color="state.hoverColor"
-						:hover-bg-color="state.hoverBgColor"
 						data-cy="stepper-color"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 

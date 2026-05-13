@@ -54,10 +54,6 @@
 							:model-value="true"
 							:color="state.color"
 							:bg-color="state.bgColor"
-							:hover-color="state.hoverColor"
-							:hover-bg-color="state.hoverBgColor"
-							:active-color="state.activeColor"
-							:active-bg-color="state.activeBgColor"
 							:items="navItems"
 							data-cy="bottom-nav-color"
 					/>
@@ -79,18 +75,12 @@
 							:model-value="true"
 							:color="state.color"
 							:bg-color="state.bgColor"
-							:hover-color="state.hoverColor"
-							:hover-bg-color="state.hoverBgColor"
-							:active-color="state.activeColor"
-							:active-bg-color="state.activeBgColor"
 							:items="navItems"
 							data-cy="bottom-nav-color"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -104,18 +94,12 @@
 							:model-value="true"
 							:color="state.color"
 							:bg-color="state.bgColor"
-							:hover-color="state.hoverColor"
-							:hover-bg-color="state.hoverBgColor"
-							:active-color="state.activeColor"
-							:active-bg-color="state.activeBgColor"
 							:items="navItems"
 							data-cy="bottom-nav-color"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 

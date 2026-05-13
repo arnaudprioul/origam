@@ -157,8 +157,6 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -179,8 +177,6 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 

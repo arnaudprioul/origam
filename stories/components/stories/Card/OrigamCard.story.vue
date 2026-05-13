@@ -70,48 +70,51 @@
 		</Variant>
 
 		<Variant
-				title="Prop — hover (hoverColor & hoverBgColor)"
+				title="Prop — hover"
 				:init-state="() => useStoryInitState<ICardProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-card v-bind="state" title="Interactive card" text="Tweak controls →" data-cy="card-color"/>
+					<origam-card v-bind="state" title="Hover the card" text="Pick a hover config in the sidebar →" data-cy="card-hover"/>
 
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures (intent rungs):</small>
-						<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
-						<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
-						<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
-						<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+						<small>Showcase fixtures — every config routed through the single `hover` object prop:</small>
+						<origam-card bg-color="primary" :hover="{ bgColor: 'success' }"                   title="bg → success" data-cy="card-hover-bg-success"/>
+						<origam-card bg-color="primary" :hover="{ border: 'thick' }"                      title="border → thick"   data-cy="card-hover-border-thick"/>
+						<origam-card bg-color="primary" :hover="{ rounded: 'full' }"                      title="rounded → full"   data-cy="card-hover-rounded-full"/>
+						<origam-card bg-color="primary" :hover="{ elevation: 'xl' }"                      title="elevation → xl"   data-cy="card-hover-elev-xl"/>
+						<origam-card bg-color="primary" :hover="{ bgColor: 'success', border: 'thick' }"  title="combo · bg success + thick border" data-cy="card-hover-combo"/>
+						<origam-card bg-color="primary" :hover="{ enabled: true, bgColor: 'warning' }"    title="enabled + bg warning (forced on)"  data-cy="card-hover-forced"/>
 					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.hoverColor"   title="hoverColor"   :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor" title="hoverBgColor" :options="intentList"/>
+				<HstSelect v-model="state.hover"   title="hover"   :options="hoverList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor (resting)" :options="intentList"/>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — active (activeColor & activeBgColor)"
+				title="Prop — active"
 				:init-state="() => useStoryInitState<ICardProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-card v-bind="state" title="Interactive card" text="Tweak controls →" data-cy="card-color"/>
+					<origam-card v-bind="state" title="Click & hold the card" text="Pick an active config in the sidebar →" data-cy="card-active"/>
 
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures (intent rungs):</small>
-						<origam-card bg-color="primary" title="primary" data-cy="card-color-primary"/>
-						<origam-card bg-color="success" title="success" data-cy="card-color-success"/>
-						<origam-card bg-color="warning" title="warning" data-cy="card-color-warning"/>
-						<origam-card bg-color="danger"  title="danger"  data-cy="card-color-danger"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+						<small>Showcase fixtures — click & hold to see the override:</small>
+						<origam-card bg-color="primary" :active="{ bgColor: 'danger' }"                   title="bg → danger" data-cy="card-active-bg-danger"/>
+						<origam-card bg-color="primary" :active="{ rounded: 'full' }"                    title="rounded → full" data-cy="card-active-rounded-full"/>
+						<origam-card bg-color="primary" :active="{ elevation: 'lg' }"                    title="elevation → lg" data-cy="card-active-elev-lg"/>
+						<origam-card bg-color="primary" :active="{ bgColor: 'primary', border: 'thick' }" title="combo · same bg + thick border" data-cy="card-active-combo"/>
+						<origam-card bg-color="primary" :active="{ enabled: true, bgColor: 'success' }"   title="enabled + bg success (forced on)" data-cy="card-active-forced"/>
 					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
+				<HstSelect v-model="state.active"  title="active"  :options="activeList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor (resting)" :options="intentList"/>
 			</template>
 		</Variant>
 
@@ -444,9 +447,11 @@
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		activeList,
 		borderList,
 		densityList,
 		elevationList,
+		hoverList,
 		iconList,
 		intentList,
 		roundedList
