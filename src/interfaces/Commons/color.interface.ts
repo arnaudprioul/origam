@@ -4,21 +4,26 @@ import type { TColor } from "../../types"
  * Foreground-only color contract.
  *
  * Use this interface on components whose only colour-related concern is
- * the **text** / icon (`color`, plus its hover / active variants). Pure
- * typographic components (Title, Caption, Subtitle, Tooltip text, …) and
- * any chrome that doesn't paint its own surface should extend this
- * interface — NOT the combined version below.
+ * the **text** / icon (`color`). Pure typographic components (Title,
+ * Caption, Subtitle, Tooltip text, …) and any chrome that doesn't paint
+ * its own surface should extend this interface — NOT the combined
+ * version below.
  *
  *   ┌──────────────────────────────────────────────────────────────┐
  *   │  IF the component paints a background → also extend          │
  *   │     IBgColorProps                                            │
  *   │  ELSE → keep IColorProps only.                               │
  *   └──────────────────────────────────────────────────────────────┘
+ *
+ * State-aware overrides (`hoverColor`, `activeColor`) have been folded
+ * into the `hover` / `active` object props of `IHoverProps` /
+ * `IActiveProps`:
+ *
+ *     <Btn :hover="{ color: 'success' }" />          (was hover-color)
+ *     <Btn :active="{ color: 'success' }" />         (was active-color)
  */
 export interface IColorProps {
     color?: TColor
-    activeColor?: TColor
-    hoverColor?: TColor
 }
 
 /**
@@ -34,9 +39,13 @@ export interface IColorProps {
  *
  *   // Title only paints text.
  *   interface ITitleProps extends IColorProps { … }
+ *
+ * State-aware bg overrides (`hoverBgColor`, `activeBgColor`) have been
+ * folded into the `hover` / `active` object props:
+ *
+ *     <Card :hover="{ bgColor: 'success' }" />       (was hover-bg-color)
+ *     <Card :active="{ bgColor: 'success' }" />      (was active-bg-color)
  */
 export interface IBgColorProps {
     bgColor?: TColor
-    activeBgColor?: TColor
-    hoverBgColor?: TColor
 }
