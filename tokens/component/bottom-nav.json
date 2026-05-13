@@ -31,11 +31,18 @@
     "transition-property":          { "$type": "other",        "$value": "transform, color" },
 
     "elevated": {
-      "box-shadow": { "$type": "shadow", "$value": "{shadow.md}" }
+      "_comment": "Shadow projects UP (negative offsetY) — BottomNav lives at the bottom of the viewport, so a downward shadow would be clipped off-screen. We mirror the primitive shadow.md scale on the Y axis only.",
+      "box-shadow": { "$type": "shadow", "$value": [
+        { "offsetX": "0px", "offsetY": "-6px", "blur": "24px", "spread": "0px", "color": "rgba(0,0,0,0.05)" },
+        { "offsetX": "0px", "offsetY": "0px", "blur": "0px", "spread": "1px", "color": "rgba(0,0,0,0.08)" }
+      ]}
     },
 
     "active": {
-      "box-shadow": { "$type": "shadow", "$value": "{shadow.md}" }
+      "box-shadow": { "$type": "shadow", "$value": [
+        { "offsetX": "0px", "offsetY": "-6px", "blur": "24px", "spread": "0px", "color": "rgba(0,0,0,0.05)" },
+        { "offsetX": "0px", "offsetY": "0px", "blur": "0px", "spread": "1px", "color": "rgba(0,0,0,0.08)" }
+      ]}
     },
 
     "border-variant": {

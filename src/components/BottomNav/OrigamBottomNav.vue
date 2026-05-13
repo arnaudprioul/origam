@@ -1,45 +1,48 @@
 <template>
-	<component
-			:is="tag"
-			:id="id"
-			:class="bottomNavClasses"
-			@mouseenter="handleMouseenter"
-			@mouseleave="handleMouseleave"
-	>
-		<div class="origam-bottom-nav__content">
-			<origam-defaults-provider :defaults="slotDefaults">
-				<slot name="default">
-					<template
-							v-for="(item, index) in items"
-							:key="index"
-					>
-						<slot
-								:name="`item.${index}`"
-								v-bind="{props: item}"
+	<origam-transition :transition="transition">
+		<component
+				v-if="isActive"
+				:is="tag"
+				:id="id"
+				:class="bottomNavClasses"
+				@mouseenter="handleMouseenter"
+				@mouseleave="handleMouseleave"
+		>
+			<div class="origam-bottom-nav__content">
+				<origam-defaults-provider :defaults="slotDefaults">
+					<slot name="default">
+						<template
+								v-for="(item, index) in items"
+								:key="index"
 						>
 							<slot
-									name="item"
-									v-bind="{props: item, index}"
+									:name="`item.${index}`"
+									v-bind="{props: item}"
 							>
-								<origam-btn
-										ref="origamBtnRef"
-										class="origam-bottom-nav__btn"
-										v-bind="item"
-								/>
+								<slot
+										name="item"
+										v-bind="{props: item, index}"
+								>
+									<origam-btn
+											ref="origamBtnRef"
+											class="origam-bottom-nav__btn"
+											v-bind="item"
+									/>
+								</slot>
 							</slot>
-						</slot>
-					</template>
-				</slot>
-			</origam-defaults-provider>
-		</div>
-	</component>
+						</template>
+					</slot>
+				</origam-defaults-provider>
+			</div>
+		</component>
+	</origam-transition>
 </template>
 
 <script
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamDefaultsProvider } from "../../components"
+	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
 	import {
 		useActive,
 		useBorder,
@@ -61,11 +64,11 @@
 	import { MODE } from "../../enums"
 
 	import type { IBottomNavProps, IBreadcrumbItemProps } from '../../interfaces'
-	import type { TOrigamBtn } from "../../types"
+	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
 	import { convertToUnit, int } from '../../utils'
 
-	import { computed, ComputedRef, Ref, StyleValue, toRef } from 'vue'
+	import { computed, ref, Ref, StyleValue, toRef } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -80,7 +83,14 @@
 		modelValue: true,
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
-		items: () => [] as Array<TOrigamBtn>
+		items: () => [] as Array<TOrigamBtn>,
+		// Default transition — slide up from the bottom of the viewport.
+		// Passed as a component descriptor (not just a name string) so the
+		// matching `<style>` block of `OrigamTranslateBottom` is guaranteed
+		// to be injected globally; a bare name like
+		// `'origam-transition--translate-bottom'` only works if the
+		// component is already mounted somewhere else (fragile).
+		transition: () => ({component: OrigamTranslateBottom}) as unknown as TTransitionProps
 	})
 
 	defineEmits(['update:modelValue', 'update:active', 'update:hover'])
@@ -125,9 +135,25 @@
 
 	/*********************************************************
 	 * Color
+	 *
+	 * @description
+	 * The BottomNav is a CONTAINER — hover/active interaction
+	 * effects belong to its child buttons, not to the nav surface
+	 * itself. We deliberately feed `ref(false)` to `useColorEffect`
+	 * for both `isHover` and `isActive` so:
+	 *   • The resting bg stays on the intent's `bg` rung (same
+	 *     teinte as the child buttons in their resting state).
+	 *   • Hovering the nav doesn't darken the whole bar.
+	 *   • `isActive` from `useActive(props, 'modelValue')` means
+	 *     "the nav is currently displayed" (drives slide-in), NOT
+	 *     a pressed state — feeding it would resolve to `bgActive`
+	 *     (color-mix -30 %) and paint the resting bar darker than
+	 *     its buttons. `hoverColor` / `activeColor` props are still
+	 *     propagated to the child OrigamBtn instances via
+	 *     `slotDefaults` — that's where they take visual effect.
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
+	const {colorClasses, colorStyles} = useColorEffect(props, ref(false), ref(false))
 
 	/*********************************************************
 	 * Layout
@@ -181,8 +207,7 @@
 	const bottomNavStyles = computed(() => {
 		return [
 			{
-				height: props.height ? convertToUnit(height.value) : undefined,
-				transform: `translateY(${convertToUnit(!isActive.value ? 100 : 0, '%')})`
+				height: props.height ? convertToUnit(height.value) : undefined
 			},
 			roundedStyles.value,
 			colorStyles.value,
@@ -254,7 +279,7 @@
 		max-width: var(--origam-bottom-bar---max-width);
 		height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
 
-		background: var(--origam-bottom-bar---background);
+		background-color: var(--origam-bottom-bar---background);
 		box-shadow: var(--origam-bottom-bar---box-shadow);
 		color: var(--origam-bottom-bar---color);
 
