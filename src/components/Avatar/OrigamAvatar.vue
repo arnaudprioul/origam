@@ -53,17 +53,12 @@
 
 	import {
 		useActive,
-		useBorder,
-		useStateEffect,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useHover,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSize,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -105,14 +100,11 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-
 	/*********************************************************
 	 * Slots
 	 *
@@ -154,10 +146,6 @@
 	 * variant classes/styles onto the root element.
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 
 	const avatarStyles = computed(() => {

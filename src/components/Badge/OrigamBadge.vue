@@ -68,14 +68,11 @@
 
 	import {
 		useActive,
-		useBorder,
-		useStateEffect,
-		useElevation,
 		useHover,
 		useLocale,
 		useLocation,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStatus,
 		useStyle
 	} from '../../composables'
@@ -127,16 +124,11 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-
 	/*********************************************************
 	 * Icon
 	 ********************************************************/

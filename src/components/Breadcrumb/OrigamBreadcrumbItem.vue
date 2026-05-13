@@ -70,16 +70,12 @@
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useStateEffect,
 		useDefaults,
 		useDensity,
 		useHover,
 		useLink,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -129,7 +125,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState, computed(() => !!props.disabled))
+	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState, computed(() => !!props.disabled))
 
 	/*********************************************************
 	 * Adjacent (prepend / append)
@@ -160,11 +156,6 @@
 	 * Composes all spacing, color and variant classes/styles.
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-
 	const breadcrumbItemStyles = computed(() => {
 		return [
 			colorStyles.value,

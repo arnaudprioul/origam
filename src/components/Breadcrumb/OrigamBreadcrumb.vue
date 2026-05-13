@@ -57,14 +57,9 @@
 	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem, OrigamDefaultsProvider } from '../../components'
 
 	import {
-		useBorder,
-		useStateEffect,
 		useDensity,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -127,7 +122,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useStateEffect(props, undefined, undefined, hoverState, activeState, computed(() => !!props.disabled))
+	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, undefined, undefined, hoverState, activeState, computed(() => !!props.disabled))
 
 	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
 	// density/color fallback — no manual merge needed here.
@@ -164,12 +159,6 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
-	const {elevationStyles, elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-
 	const breadcrumbStyles = computed(() => {
 		return [
 			elevationStyles.value,

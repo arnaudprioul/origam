@@ -30,14 +30,9 @@
 >
 	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
-		useBorder,
-		useStateEffect,
 		useDensity,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -68,10 +63,11 @@
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor,
-			activeColor: props.activeColor,
-			activeBgColor: props.activeBgColor,
-			hoverColor: props.hoverColor,
-			hoverBgColor: props.hoverBgColor
+			// New API: `hover` / `active` accept boolean | IHoverState |
+			// IActiveState; pass-through propagates the parent's intent
+			// override to each child OrigamBtn.
+			hover: props.hover,
+			active: props.active
 		}
 	}))
 
@@ -100,18 +96,18 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const {colorStyles, bgColor} = useStateEffect(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false, hoverState, activeState), bgColor)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-
+	const {
+		colorClasses, colorStyles, bgColor,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props)
 	const btnGroupStyles = computed(() => {
 		return [
 			borderStyles.value,

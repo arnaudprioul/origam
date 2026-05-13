@@ -123,6 +123,13 @@ export function useStateEffect (
     hoverState: ComputedRef<IHoverState | undefined> = computed(() => undefined),
     activeState: ComputedRef<IActiveState | undefined> = computed(() => undefined),
     isDisabled: Ref<boolean> | ComputedRef<boolean> = noopRef,
+    /**
+     * Flat flag — when `true`, `elevationClasses` / `elevationStyles`
+     * resolve to empty (no shadow). Bridges the existing `useElevation`
+     * second-arg contract so Card / Btn can pass their `props.flat`
+     * boolean without losing the "flat overrides elevation" behaviour.
+     */
+    flat: Ref<boolean> | ComputedRef<boolean> = noopRef,
 ) {
     // ── Effective per-axis values (computed, swap on state) ──────────
     const color    = pickEffective<TColor>(props.color, isHover, isActive, hoverState, activeState, 'color')
@@ -231,7 +238,10 @@ export function useStateEffect (
     // ── Other axes — delegate to existing composables via Ref overloads
     const { borderClasses, borderStyles }       = useBorder(border)
     const { roundedClasses, roundedStyles }     = useRounded(rounded)
-    const { elevationClasses, elevationStyles } = useElevation(elevation as Ref<number | string | undefined>)
+    const { elevationClasses, elevationStyles } = useElevation(
+        elevation as Ref<number | string | undefined>,
+        flat as Ref<boolean>,
+    )
     const { paddingClasses, paddingStyles }     = usePadding({
         // `usePadding` expects an IPaddingProps; we wrap the effective
         // scalar (directional padding axes aren't surfaced through

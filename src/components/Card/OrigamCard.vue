@@ -148,20 +148,15 @@
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useStateEffect,
 		useDensity,
 		useDimension,
-		useElevation,
 		useHover,
 		useLink,
 		useLoader,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded
+		useStateEffect,
 	} from '../../composables'
 
 	import { vRipple } from '../../directives'
@@ -219,13 +214,27 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useStateEffect(
+	// Single state-aware composable for ALL 8 visual axes
+	// (color/bgColor/border/rounded/elevation/padding/margin/gap).
+	// Hover / active object overrides (e.g. `:hover="{ border: 'thick' }"`)
+	// flow through here uniformly; previously these axes were each
+	// resolved by their own per-axis composable AND missed the state
+	// swap entirely.
+	const {
+		colorClasses, colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(
 			props,
 			isHover,
 			isActive as unknown as import('vue').ComputedRef<boolean>,
 			hoverState,
 			activeState,
-			computed(() => !!props.disabled)
+			computed(() => !!props.disabled),
+			toRef(props, 'flat'),
 	)
 
 	/*********************************************************
@@ -316,24 +325,13 @@
 	 * Composes all border, color, elevation, loader and
 	 * layout classes/styles onto the root element.
 	 ********************************************************/
-	const {borderClasses, borderStyles} = useBorder(props)
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	// `elevationStyles` MUST be consumed alongside `elevationClasses`.
-	// The `.origam--shadow-*` utility class has specificity (0,1,0) and
-	// loses against Card's scoped `.origam-card[data-v-X] { box-shadow:
-	// ... }` (specificity 0,2,0) → the elevation prop would silently no-
-	// op without the inline-style path (#id selector, specificity 1,0,0
-	// via useStyle). `flat=true` already returns `[]` for both classes
-	// AND styles, so the `&--flat { --origam-card---box-shadow: none }`
-	// scoped rule alone drives the resting flat surface without
-	// competing inline declarations.
-	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'))
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {paddingStyles, paddingClasses} = usePadding(props)
+	// border / rounded / elevation / padding / margin all come from
+	// `useStateEffect` above — state-aware versions that honour
+	// `:hover="{ … }"` / `:active="{ … }"` overrides.
 
 	const cardStyles = computed(() => {
 		return [

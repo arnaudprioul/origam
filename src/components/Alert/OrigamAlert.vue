@@ -120,19 +120,14 @@
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useStateEffect,
 		useDensity,
 		useDimension,
-		useElevation,
 		useHover,
 		useLocale,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStatus,
 		useStyle
 	} from '../../composables'
@@ -180,7 +175,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Adjacent (prepend / append)
@@ -255,15 +250,9 @@
 	 * variant classes/styles onto the root element.
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
-	const {borderStyles, borderClasses} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses, positionStyles} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-
 	const alertStyles = computed(() => {
 		return [
 			dimensionStyles.value,

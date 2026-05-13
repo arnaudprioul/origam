@@ -137,24 +137,19 @@
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useStateEffect,
 		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
 		useGroupItem,
 		useHover,
 		useLink,
 		useLoader,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
 		useSelectLink,
 		useSize,
+		useStateEffect,
 		useStatus,
 		useStyle,
 		useVariant
@@ -255,10 +250,6 @@
 	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 
 	/*********************************************************
@@ -278,8 +269,14 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles, bgColor} = useStateEffect(props, isHover, isActive, hoverState, activeState, isDisabled)
-	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
+	const {
+		colorClasses, colorStyles, bgColor,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState, isDisabled, toRef(props, 'flat'))
 	const {variantClasses} = useVariant(props)
 	const {
 		onClickPrepend: handleClickPrepend,

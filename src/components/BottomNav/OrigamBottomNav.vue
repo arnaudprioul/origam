@@ -45,18 +45,13 @@
 	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
 	import {
 		useActive,
-		useBorder,
-		useStateEffect,
 		useDensity,
-		useElevation,
 		useGroup,
 		useHover,
 		useLayoutItem,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSsrBoot,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -106,10 +101,12 @@
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor,
-			hoverColor: props.hoverColor,
-			hoverBgColor: props.hoverBgColor,
-			activeColor: props.activeColor,
-			activeBgColor: props.activeBgColor
+			// New API: forward `hover` / `active` (boolean | object)
+			// to each child OrigamBtn; the legacy split `hoverColor` /
+			// `hoverBgColor` / `activeColor` / `activeBgColor` props no
+			// longer exist on the parent or the children.
+			hover: props.hover,
+			active: props.active
 		}
 	}))
 
@@ -123,8 +120,6 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-
-	const {borderClasses, borderStyles} = useBorder(props)
 	const {isActive, activeState, activeClasses} = useActive(props, 'modelValue')
 	const {isHover, hoverState, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
@@ -153,7 +148,7 @@
 	 *     `slotDefaults` — that's where they take visual effect.
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useStateEffect(props, ref(false), ref(false, hoverState, activeState))
+	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))
 
 	/*********************************************************
 	 * Layout
@@ -199,11 +194,6 @@
 	 * and spacing classes/styles onto the root element.
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-
 	const bottomNavStyles = computed(() => {
 		return [
 			{
