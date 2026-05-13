@@ -162,7 +162,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(tooltipStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(tooltipStyles)
 
 
 	/*********************************************************
@@ -173,7 +173,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	}, origamOverlayRef))
 </script>
 

@@ -390,7 +390,7 @@
 			`backgroundImage: linear-gradient(${props.gradient})`
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(imgStyles)
+	const {id, css, load, isLoaded: styleIsLoaded, unload} = useStyle(imgStyles)
 
 
 	/*********************************************************
@@ -405,7 +405,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleIsLoaded
 	})
 </script>
 

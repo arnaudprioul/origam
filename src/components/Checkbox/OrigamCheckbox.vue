@@ -151,7 +151,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(checkboxStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(checkboxStyles)
 
 
 	/*********************************************************
@@ -167,7 +167,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>
 

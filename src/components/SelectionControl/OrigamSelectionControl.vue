@@ -315,7 +315,7 @@
       props.class
     ]
   })
-	const {id, css, load, isLoaded, unload} = useStyle(selectionControlStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(selectionControlStyles)
 
 
   /*********************************************************
@@ -330,7 +330,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	}, inputRef))
 </script>
 

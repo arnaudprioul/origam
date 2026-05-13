@@ -540,7 +540,7 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IFieldProps>(props)
-	const {id, css, load, isLoaded, unload} = useStyle(fieldStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(fieldStyles)
 
 
 	defineExpose({
@@ -549,7 +549,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>
 

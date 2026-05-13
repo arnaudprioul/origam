@@ -428,7 +428,7 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<IConfirmWrapperProps>(props)
-	const {id, css, load, isLoaded, unload} = useStyle(confirmWrapperStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(confirmWrapperStyles)
 
 
 	defineExpose(forwardRefs({filterProps, validate, reset, resetValidation,
@@ -436,7 +436,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	}))
 </script>
 

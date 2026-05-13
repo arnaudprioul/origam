@@ -339,7 +339,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listItemStyles)
 
 
 	/*********************************************************
@@ -355,7 +355,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>
 

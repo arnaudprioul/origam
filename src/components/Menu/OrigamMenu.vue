@@ -334,7 +334,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(menuStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(menuStyles)
 
 
 	/*********************************************************
@@ -348,7 +348,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	}, origamOverlayRef))
 </script>
 

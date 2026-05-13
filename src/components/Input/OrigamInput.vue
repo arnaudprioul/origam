@@ -268,7 +268,7 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IInputProps>(props)
-	const {id, css, load, isLoaded, unload} = useStyle(inputStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(inputStyles)
 
 
 	defineExpose({
@@ -277,7 +277,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>
 

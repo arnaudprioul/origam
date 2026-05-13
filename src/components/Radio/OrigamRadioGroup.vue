@@ -162,7 +162,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(radioGroupStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(radioGroupStyles)
 
 
 	/*********************************************************
@@ -177,6 +177,7 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>

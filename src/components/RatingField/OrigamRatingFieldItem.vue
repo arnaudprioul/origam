@@ -145,7 +145,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldItemStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(ratingFieldItemStyles)
 
 
 	/*********************************************************
@@ -160,7 +160,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>
 

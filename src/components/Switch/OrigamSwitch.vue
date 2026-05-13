@@ -282,7 +282,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(switchStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(switchStyles)
 
 
 	/*********************************************************
@@ -298,7 +298,8 @@
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		styleId
 	})
 </script>
 
