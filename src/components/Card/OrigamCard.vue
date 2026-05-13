@@ -6,7 +6,9 @@
 			:href="link.href"
 			:style="cardStyles"
 			:tabindex="props.disabled ? -1 : undefined"
-			@click="isClickable && link.navigate"
+			@click="handleClick"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
     <span
 		    v-if="isClickable"
@@ -144,12 +146,14 @@
 	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
+		useActive,
 		useAdjacent,
 		useBorder,
-		useBothColor,
+		useColorEffect,
 		useDensity,
 		useDimension,
 		useElevation,
+		useHover,
 		useLink,
 		useLoader,
 		useLocation,
@@ -176,7 +180,7 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
 
-	defineEmits(['click:append', 'click:prepend'])
+	defineEmits(['click:append', 'click:prepend', 'update:active', 'update:hover'])
 
 	const {filterProps} = useProps<ICardProps>(props)
 
@@ -191,22 +195,36 @@
 	 * Resolves prepend/append icons, click handlers and the
 	 * clickable flag that enables ripple + overlay.
 	 ********************************************************/
-	// `useBothColor` produces inline `color: …` and `background-color: …`
-	// declarations from intent props (`color`, `bgColor`). Pre-fix
-	// `ICardProps` did NOT extend `IColorProps` and the SCSS read
-	// `var(--origam-card---color)` / `--background` from tokens only —
-	// the consumer-facing `<origam-card color="primary">` was a silent
-	// no-op. Wiring `useBothColor` here makes the consumer's intent
-	// land on the root element via inline-style specificity, overriding
-	// the token defaults exactly like every other coloured component.
-	// Phase 3 (Vague A): also pull `colorClasses` for the global
-	// `.origam--bg-*` / `.origam--color-*` utilities.
+	// `useColorEffect` produces inline `color: …` / `background-color: …`
+	// declarations from intent props (`color`, `bgColor`) and also reacts
+	// to hover/active states by swapping in `hoverBgColor` / `hoverColor`
+	// / `activeBgColor` / `activeColor` overrides (or auto-darken via
+	// color-mix when no explicit override is provided).
+	//
+	// Pre-fix Card used `useBothColor` — the legacy composable — which
+	// is stateless: passing `<origam-card hover-color="success">` was a
+	// silent no-op because the composable never saw `isHover.value`.
+	// We now wire `useHover` + `useActive` so the resting / hover /
+	// pressed cycles cascade through the same intent system as Btn /
+	// BottomNav / Alert.
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
+	const {isHover, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeClasses, onActive} = useActive(props)
 
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {colorClasses, colorStyles} = useColorEffect(
+			props,
+			isHover,
+			isActive as unknown as import('vue').ComputedRef<boolean>,
+			computed(() => !!props.disabled)
+	)
 
 	/*********************************************************
 	 * Icon
@@ -226,6 +244,16 @@
 	const isClickable = computed(() => {
 		return !props.disabled && props.link && (props.link || link.isClickable.value)
 	})
+
+	// Combined click handler — drives both `isActive` (so `activeColor`
+	// / `activeBgColor` resolve via `useColorEffect`) and the link
+	// navigation when the Card is interactive (`link` prop / clickable).
+	const handleClick = (event: MouseEvent) => {
+		onActive(event)
+		if (isClickable.value && link.navigate) {
+			link.navigate(event)
+		}
+	}
 
 	/*********************************************************
 	 * Loader
@@ -326,6 +354,8 @@
 			colorClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
+			hoverClasses.value,
+			activeClasses.value,
 			loaderClasses.value,
 			positionClasses.value,
 			roundedClasses.value,
@@ -368,7 +398,7 @@
 		user-select: var(--origam-card---user-select);
 		cursor: var(--origam-card---cursor);
 
-		background: var(--origam-card---background);
+		background-color: var(--origam-card---background);
 		box-shadow: var(--origam-card---box-shadow);
 		color: var(--origam-card---color);
 
