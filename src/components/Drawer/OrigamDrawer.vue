@@ -157,6 +157,16 @@
 
 	const {isHover, hoverState} = useHover(props)
 	const {activeState} = useActive(props)
+
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Active state, width derivation, and location/sticky flags.
+	 * Declared BEFORE `useStateEffect` so it can be passed in.
+	 ********************************************************/
+	const isActive = useVModel(props, 'modelValue', false, v => !!v)
+
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -168,14 +178,6 @@
 	const router = useRouter()
 	const {ssrBootStyles} = useSsrBoot()
 	const {scopeId} = useScopeId()
-
-	/*********************************************************
-	 * Value
-	 *
-	 * @description
-	 * Active state, width derivation, and location/sticky flags.
-	 ********************************************************/
-	const isActive = useVModel(props, 'modelValue', false, v => !!v)
 	const rootEl = ref<HTMLElement>()
 	const isHovering = shallowRef(false)
 
