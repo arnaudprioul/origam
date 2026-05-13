@@ -497,7 +497,7 @@ test.describe('OrigamSelect', () => {
         // 0 (resting) to a visible ~0.08 opacity on hover. Pre-fix the
         // SCSS rule applied 0.12 to BOTH resting AND hover states (a 3×3
         // selector cross with `&` matching everything), AND the overlay
-        // was painted with `--origam-color-overlay-scrim` (`#ffffff` in
+        // was painted with `--origam-color__overlay---scrim` (`#ffffff` in
         // the light theme) — so a white overlay sat at 12% on a white
         // menu surface, producing zero perceptible change at any state.
         test('list items have a visible hover state layer', async ({ page }) => {

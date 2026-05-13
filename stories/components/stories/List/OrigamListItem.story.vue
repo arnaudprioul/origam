@@ -187,7 +187,7 @@
 			<origam-list>
 				<origam-list-item title="Item with custom prepend" data-cy="list-item-slot-prepend">
 					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART" style="color: var(--origam-color-danger-default);"/>
+						<origam-icon :icon="MDI_ICONS.HEART" style="color: var(--origam-color__feedback--danger---bg);"/>
 					</template>
 				</origam-list-item>
 			</origam-list>

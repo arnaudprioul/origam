@@ -178,7 +178,7 @@
 		<Variant title="Slot — prepend">
 			<origam-input v-model="slotPrependModel" label="With prepend slot" data-cy="input-slot-prepend">
 				<template #prepend>
-					<origam-icon :icon="MDI_ICONS.HEART" style="color: var(--origam-color-intent-danger-bg);"/>
+					<origam-icon :icon="MDI_ICONS.HEART" style="color: var(--origam-color__feedback--danger---bg);"/>
 				</template>
 				<template #default="{ id, isDisabled }">
 					<input :id="id" v-model="slotPrependModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
@@ -196,7 +196,7 @@
 					data-cy="input-slot-messages"
 			>
 				<template #messages="{ messages }">
-					<em style="color: var(--origam-color-intent-info-bg);">{{ messages.join(', ') }}</em>
+					<em style="color: var(--origam-color__feedback--info---bg);">{{ messages.join(', ') }}</em>
 				</template>
 				<template #default="{ id, isDisabled }">
 					<input :id="id" v-model="slotMsgModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
