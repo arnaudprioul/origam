@@ -313,7 +313,6 @@
 	const resolvedDuration = computed(() => {
 		if (props.animationDuration != null && !_animationDurationWarned) {
 			_animationDurationWarned = true
-			// eslint-disable-next-line no-console
 			console.warn(
 				'[origam] OrigamParallax: the `animationDuration` prop is deprecated and will be removed in v3.0.0. ' +
 				'Use `duration` instead. Both props currently resolve to the same value (`animationDuration` wins when both are set).'

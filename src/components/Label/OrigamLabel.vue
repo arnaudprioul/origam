@@ -1,9 +1,9 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="labelClasses"
 			:style="labelStyles"
-			:id="id"
 			:name="name"
 			@click="handleClick"
 	>

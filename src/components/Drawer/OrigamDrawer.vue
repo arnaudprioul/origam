@@ -14,8 +14,8 @@
 		-->
 		<origam-transition :transition="transition">
 			<component
-					v-if="isActive"
 					:is="tag"
+					v-if="isActive"
 					:ref="rootEl"
 					:class="drawerClasses"
 					:style="drawerStyles"

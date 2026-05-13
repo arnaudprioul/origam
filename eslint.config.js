@@ -29,7 +29,13 @@ export default typescriptEslint.config(
 				"allowInterfaces": "with-single-extends"
 			}],
 			"vue/valid-v-slot": "off",
-			"vue/no-template-shadow": ["warn", { "allow": ["props"] }],
+			// Slot scopes in origam intentionally re-expose internal names
+			// already declared in the parent `<script setup>` (id from
+			// `useId()` shadowed by the resolved id surfaced by origam-input,
+			// model from the parent v-model shadowed by the slot's
+			// transformed model, etc). Renaming would break the slot API
+			// readability, so the canonical names are whitelisted.
+			"vue/no-template-shadow": ["warn", { "allow": ["props", "id", "model", "ref", "max", "isActive", "isSelected"] }],
 			"@typescript-eslint/no-unused-vars": [
 				"error",
 				{

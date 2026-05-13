@@ -41,7 +41,9 @@
    * Props, group registration, and slot props.
    ********************************************************/
   const props = withDefaults(defineProps<Props>(), {
-    tag: 'div'
+    tag: 'div',
+    value: undefined,
+    selectedClass: undefined
   })
 
   const { filterProps } = useProps<IItemGroupItemProps>(props)

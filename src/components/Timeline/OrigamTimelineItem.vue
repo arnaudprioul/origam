@@ -64,7 +64,8 @@
 		orientation: 'vertical',
 		isLast: false,
 		truncateLine: false,
-		index: 0
+		index: 0,
+		description: undefined
 	})
 
 	// Inject parent context if nested in OrigamTimeline

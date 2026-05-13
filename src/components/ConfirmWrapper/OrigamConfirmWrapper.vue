@@ -71,8 +71,8 @@
 				<div class="origam-confirm-wrapper__field">
 					<slot name="default">
 						<component
-								v-if="resolvedField"
 								:is="resolvedField"
+								v-if="resolvedField"
 								v-model="model"
 								v-bind="defaults"
 						/>
@@ -81,8 +81,8 @@
 				<div class="origam-confirm-wrapper__confirm">
 					<slot name="confirm">
 						<component
-								v-if="resolvedField"
 								:is="resolvedField"
+								v-if="resolvedField"
 								v-model="confirmModel"
 								v-bind="{...resolvedConfirmDefaults, label: resolvedConfirmLabel}"
 						/>

@@ -75,7 +75,7 @@ function mountWith (opts: MountOptions = {}) {
  * grows). The sheet treats up-motion as expansion, so to flick UP you
  * pass a negative `dy` (clientY shrinks).
  */
-async function drag (
+async function _drag (
     handle: HTMLElement,
     {
         dy,

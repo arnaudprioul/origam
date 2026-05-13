@@ -54,7 +54,6 @@ function warnBgColorUsage (bgColor: TColor) {
     const sentinel = { _: 'origam-elevation-bg-warn' } as const
     if (_bgWarned.has(sentinel)) return
     _bgWarned.add(sentinel)
-    // eslint-disable-next-line no-console
     console.warn(
         '[origam] useElevation: the `bgColor` parameter is deprecated and ignored. ' +
         'Shadows now resolve from the design tokens (`--origam-shadow-*`) and switch with the active theme. ' +

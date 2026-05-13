@@ -735,7 +735,6 @@ export function warnLegacyColor (
     const key = `${kind}::${value}`
     if (_warnedColorKeys.has(key)) return
     _warnedColorKeys.add(key)
-    // eslint-disable-next-line no-console
     console.warn(
         `[origam] received a raw color for prop "${kind}" (value: ${value}). ` +
         `Pass a TIntent ('primary' | 'success' | 'warning' | 'danger' | 'info' | 'secondary' | 'ghost' | 'neutral') ` +

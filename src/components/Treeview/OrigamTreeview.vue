@@ -48,7 +48,8 @@
 		showLines: true,
 		expandOnClick: false,
 		density: DENSITY.DEFAULT,
-		size: SIZES.DEFAULT
+		size: SIZES.DEFAULT,
+		ariaLabel: undefined
 	})
 
 	const emit = defineEmits<{

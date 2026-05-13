@@ -105,7 +105,7 @@ export function useStyle (styles: ComputedRef, uniq = undefined, name = getCurre
                 return value
             })
             .flat()
-            // @ts-expect-error
+            // @ts-expect-error value is a union of string and string[] after flat; `.length` is valid on both
             .filter((value) => value.length > 0)
 
         return `#${id.value} {${stylesArray.join(';')}}`
