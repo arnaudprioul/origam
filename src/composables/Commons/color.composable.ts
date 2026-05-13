@@ -306,17 +306,34 @@ export function useColorEffect (
         //
         // Per-axis selection is preserved: an explicit hover/activeBgColor
         // takes precedence over the role bump for THAT axis only.
+        //
+        // Same-intent rule (user spec): when the consumer passes the
+        // SAME intent on hoverBgColor / activeBgColor as on the resting
+        // bgColor (e.g. `bgColor="primary" hoverBgColor="primary"`),
+        // we treat it AS IF the override was absent — i.e. we still
+        // bump to the matching `bgHover` / `bgActive` rung so the user
+        // gets the canonical -20 % / -30 % darken instead of "nothing
+        // happens on hover because the override resolves to the same
+        // resting token". Mirror logic applies to `color` / `hoverColor`
+        // / `activeColor` for the foreground axis.
+        const sameIntentBg = (a: TColor | undefined | null, b: TColor | undefined | null) => {
+            return !!a && !!b && a === b && isIntent(a)
+        }
+        const sameIntentFg = (a: TColor | undefined | null, b: TColor | undefined | null) => {
+            return !!a && !!b && a === b && isIntent(a)
+        }
+
         const bgRole: TBgFgRole =
-            isHover.value && !props.hoverBgColor ? 'hover' :
-            isActive.value && !props.activeBgColor ? 'active' :
+            isHover.value && (!props.hoverBgColor || sameIntentBg(props.hoverBgColor, props.bgColor)) ? 'hover' :
+            isActive.value && (!props.activeBgColor || sameIntentBg(props.activeBgColor, props.bgColor)) ? 'active' :
             'default'
         // `fgRole` is intentionally kept in the closure for API symmetry
         // — future intents may differentiate fg slots per state. Today
         // every fg token lives on the same `fg` rung regardless of state
         // (per intentFgExpr), so we reference but don't consume it.
         const _fgRole: TBgFgRole =
-            isHover.value && !props.hoverColor ? 'hover' :
-            isActive.value && !props.activeColor ? 'active' :
+            isHover.value && (!props.hoverColor || sameIntentFg(props.hoverColor, props.color)) ? 'hover' :
+            isActive.value && (!props.activeColor || sameIntentFg(props.activeColor, props.color)) ? 'active' :
             'default'
         void _fgRole
 
