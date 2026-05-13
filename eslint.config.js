@@ -43,5 +43,22 @@ export default typescriptEslint.config(
 			]
 		},
 	},
+	{
+		files: ['src/**/*.{ts,vue}'],
+		rules: {
+			"no-restricted-imports": ["error", {
+				patterns: [
+					{
+						group: ["@origam", "@origam/*"],
+						message: "Do NOT use the @origam alias inside src/. mkdist keeps imports verbatim — once published, '@origam/*' cannot be resolved by consumers and the lib breaks at runtime. Use a relative path ('../../components', '../utils', ...) instead. The alias is allowed in stories/ and docs/ only."
+					},
+					{
+						group: ["@stories", "@stories/*", "@docs", "@docs/*", "@cypress", "@cypress/*"],
+						message: "Aliases pointing to non-src directories must never be reached from src/. They only exist for dev tooling (Histoire, VitePress, Cypress) and would leak external paths into the published bundle."
+					}
+				]
+			}]
+		}
+	},
 	eslintConfigPrettier
 );
