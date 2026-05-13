@@ -1,10 +1,10 @@
 <template>
 	<origam-responsive
 			v-intersect="intersect"
-			:aria-label="props.alt"
+			:aria-label="alt"
 			:aspect-ratio="aspectRatio"
 			:class="imgClasses"
-			:role="props.alt ? 'img' : undefined"
+			:role="alt ? 'img' : undefined"
 			:style="imgStyles"
 			v-bind="responsiveProps"
 	>

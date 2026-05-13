@@ -25,11 +25,11 @@
 						:id="id"
 						ref="origamFieldRef"
 						:active="isActive || isDirty"
-						:dirty="isDirty || props.dirty"
+						:dirty="isDirty || dirty"
 						:disabled="isDisabled"
 						:error="isValid === false"
 						:focused="isFocused"
-						:role="props.role"
+						:role="role"
 						v-bind="{...fieldProps}"
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
@@ -78,7 +78,7 @@
 								data-no-activator=""
 						>
 							<origam-menu
-									v-if="!props.minimal"
+									v-if="!minimal"
 									ref="origamMenuRef"
 									:model-value="showRequirements"
 									persistent
@@ -125,10 +125,10 @@
 							<input
 									ref="inputRef"
 									v-intersect="intersect"
-									:autofocus="props.autofocus"
+									:autofocus="autofocus"
 									:disabled="isDisabled"
-									:name="props.name"
-									:placeholder="props.placeholder"
+									:name="name"
+									:placeholder="placeholder"
 									:readonly="isReadonly"
 									:size="1"
 									:type="currentType"
@@ -149,7 +149,7 @@
 					</template>
 
 					<template
-							v-if="!props.minimal"
+							v-if="!minimal"
 							#appendInner
 					>
 						<div
@@ -192,8 +192,8 @@
 			>
 				<origam-counter
 						v-if="hasCounter"
-						:active="props.persistentCounter || isFocused"
-						:disabled="props.disabled"
+						:active="persistentCounter || isFocused"
+						:disabled="disabled"
 						:max="max"
 						:value="counterValue"
 				>
@@ -209,11 +209,11 @@
 				</origam-counter>
 
 				<div
-						v-if="hasInlineFooter && !props.minimal"
+						v-if="hasInlineFooter && !minimal"
 						class="origam-password-field__inline-footer"
 				>
 					<div
-							v-if="props.strengthBar"
+							v-if="strengthBar"
 							class="origam-password-field__strength"
 							:data-strength-level="strength.level"
 							:data-strength-score="strength.score"
@@ -230,7 +230,7 @@
 
 					<template v-if="hasInlineRequirements">
 						<ul
-								v-if="props.requirementsLayout !== 'tiles'"
+								v-if="requirementsLayout !== 'tiles'"
 								class="origam-password-field__requirements origam-password-field__requirements--list"
 						>
 							<li
@@ -293,9 +293,7 @@
 			/>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

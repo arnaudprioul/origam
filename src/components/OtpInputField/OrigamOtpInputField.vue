@@ -113,7 +113,7 @@
 				<template #loader>
 					<slot name="loader">
 						<origam-progress
-								:color="typeof props.loading === 'boolean' ? undefined : loading"
+								:color="typeof loading === 'boolean' ? undefined : loading"
 								:size="24"
 								:type="PROGRESS_TYPE.CIRCULAR"
 								indeterminate
@@ -126,9 +126,7 @@
 			<slot name="default"/>
 		</div>
 	</div>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

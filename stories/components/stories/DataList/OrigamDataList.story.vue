@@ -109,7 +109,7 @@
 		<Variant title="Slot — item.title">
 			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title">
 				<template #item.title="props">
-					<em>{{ props.text }}</em>
+					<em>{{ text }}</em>
 				</template>
 			</origam-data-list>
 		</Variant>
@@ -138,9 +138,7 @@
 			<origam-data-list mode="kv" :items="kvMixedItems" data-cy="data-list-kv-mixed"/>
 		</Variant>
 	</Story>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

@@ -1,10 +1,10 @@
 <template>
-	<template v-if="props.compact">
+	<template v-if="compact">
 		<div
 				:class="compactClasses"
 				:style="numberFieldStyles"
 				role="group"
-				:aria-label="props.label"
+				:aria-label="label"
 		>
 			<origam-btn
 					:icon="MDI_ICONS.MINUS"
@@ -19,7 +19,7 @@
 					type="text"
 					inputmode="numeric"
 					class="origam-number-field__compact-input"
-					:aria-label="props.label"
+					:aria-label="label"
 					data-cy="numberfield-compact-input"
 					@blur="handleBlur"
 					@focus="handleFocus"

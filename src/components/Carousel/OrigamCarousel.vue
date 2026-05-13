@@ -41,7 +41,7 @@
 					</template>
 				</div>
 
-				<template v-if="props.progress">
+				<template v-if="progress">
 					<slot
 							name="progress"
 							v-bind="{percent: (group.getItemIndex(model.value) + 1) / group.items.value.length * 100}"
@@ -85,9 +85,7 @@
 			/>
 		</template>
 	</origam-window>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

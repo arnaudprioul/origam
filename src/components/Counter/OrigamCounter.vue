@@ -11,7 +11,7 @@
 		>
 			<slot
 					name="default"
-					v-bind="{ counter, max: props.max, value: props.value}"
+					v-bind="{ counter, max: max, value: value}"
 			>
 				{{ counter }}
 			</slot>

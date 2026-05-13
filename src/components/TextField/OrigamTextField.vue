@@ -25,11 +25,11 @@
 						:id="id"
 						ref="origamFieldRef"
 						:active="isActive || isDirty"
-						:dirty="isDirty || props.dirty"
+						:dirty="isDirty || dirty"
 						:disabled="isDisabled"
 						:error="isValid === false"
 						:focused="isFocused"
-						:role="props.role"
+						:role="role"
 						v-bind="{...fieldProps}"
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
@@ -84,13 +84,13 @@
 							<input
 									ref="inputRef"
 									v-intersect="intersect"
-									:autofocus="props.autofocus"
+									:autofocus="autofocus"
 									:disabled="isDisabled"
-									:name="props.name"
-									:placeholder="props.placeholder"
+									:name="name"
+									:placeholder="placeholder"
 									:readonly="isReadonly"
 									:size="1"
-									:type="props.type"
+									:type="type"
 									:value="model"
 									v-bind="{ ...fieldSlotProps, ...inputAttrs }"
 									@blur="handleBlur"
@@ -140,8 +140,8 @@
 					v-bind="detailsSlotProps"
 			>
 				<origam-counter
-						:active="props.persistentCounter || isFocused"
-						:disabled="props.disabled"
+						:active="persistentCounter || isFocused"
+						:disabled="disabled"
 						:max="max"
 						:value="counterValue"
 				>
@@ -178,9 +178,7 @@
 			/>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

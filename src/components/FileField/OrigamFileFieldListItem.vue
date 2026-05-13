@@ -5,31 +5,31 @@
   >
     <slot>
       <origam-icon
-          :icon="props.fileIcon"
+          :icon="fileIcon"
           class="origam-file-field-list-item__icon"
       />
       <div class="origam-file-field-list-item__content">
         <div class="origam-file-field-list-item__name">
-          {{ props.file.name }}
+          {{ file.name }}
         </div>
         <div class="origam-file-field-list-item__meta">
-          {{ humanReadableFileSize(props.file.size, base) }}
+          {{ humanReadableFileSize(file.size, base) }}
         </div>
         <origam-progress
             v-if="hasProgress"
             class="origam-file-field-list-item__progress"
-            :model-value="props.progress"
-            :color="props.color"
+            :model-value="progress"
+            :color="color"
             height="4"
             rounded
         />
       </div>
       <div class="origam-file-field-list-item__actions">
         <origam-btn
-            :icon="props.removeIcon"
+            :icon="removeIcon"
             flat
             size="small"
-            :disabled="props.disabled || props.readonly"
+            :disabled="disabled || readonly"
             @click.stop="handleRemove"
         />
       </div>

@@ -38,7 +38,7 @@
 							:bg-color="scBgColor"
 							:disabled="isDisabled"
 							:error="isValid === false"
-							:inset="props.inset"
+							:inset="inset"
 							:is-valid="isValid"
 							:model-value="model"
 							:readonly="isReadonly"
@@ -92,7 +92,7 @@
 									<div class="origam-switch__loader">
 										<origam-progress
 												:active="loaderConfig.isActive"
-												:color="props.color"
+												:color="color"
 												:indeterminate="loaderConfig.indeterminate"
 												:model-value="loaderConfig.modelValue"
 												:size="SIZES.X_SMALL"
@@ -110,9 +110,7 @@
 			</origam-selection-control>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

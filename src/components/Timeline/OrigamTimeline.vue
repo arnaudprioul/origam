@@ -12,16 +12,16 @@
 		>
 			<slot name="default">
 				<origam-timeline-item
-					v-for="(entry, index) in props.items"
+					v-for="(entry, index) in items"
 					:key="index"
 					:title="entry.title"
 					:subtitle="entry.subtitle"
 					:description="entry.description"
 					:icon="entry.icon"
 					:intent="entry.intent"
-					:is-last="index === props.items!.length - 1"
-					:truncate-line="props.truncateLine ?? false"
-					:side="props.side ?? 'start'"
+					:is-last="index === items!.length - 1"
+					:truncate-line="truncateLine ?? false"
+					:side="side ?? 'start'"
 					:orientation="orientation"
 					:index="index"
 					:data-cy="`timeline-item-${index}`"
@@ -31,16 +31,16 @@
 
 		<slot v-else name="default">
 			<origam-timeline-item
-				v-for="(entry, index) in props.items"
+				v-for="(entry, index) in items"
 				:key="index"
 				:title="entry.title"
 				:subtitle="entry.subtitle"
 				:description="entry.description"
 				:icon="entry.icon"
 				:intent="entry.intent"
-				:is-last="index === props.items!.length - 1"
-				:truncate-line="props.truncateLine ?? false"
-				:side="props.side ?? 'start'"
+				:is-last="index === items!.length - 1"
+				:truncate-line="truncateLine ?? false"
+				:side="side ?? 'start'"
 				:orientation="orientation"
 				:index="index"
 				:data-cy="`timeline-item-${index}`"

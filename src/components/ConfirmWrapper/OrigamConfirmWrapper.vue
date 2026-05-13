@@ -16,14 +16,14 @@
         >
           <slot name="prepend">
             <origam-avatar
-		            v-if="props.prependAvatar"
+		            v-if="prependAvatar"
 		            key="prepend-avatar"
-		            :image="props.prependAvatar"
+		            :image="prependAvatar"
             />
             <origam-icon
-		            v-if="props.prependIcon"
+		            v-if="prependIcon"
 		            key="prepend-icon"
-		            :icon="props.prependIcon"
+		            :icon="prependIcon"
             />
           </slot>
         </span>
@@ -52,14 +52,14 @@
 				>
           <slot name="append">
             <origam-avatar
-		            v-if="props.appendAvatar"
+		            v-if="appendAvatar"
 		            key="append-avatar"
-		            :image="props.appendAvatar"
+		            :image="appendAvatar"
             />
             <origam-icon
-		            v-if="props.appendIcon"
+		            v-if="appendIcon"
 		            key="append-icon"
-		            :icon="props.appendIcon"
+		            :icon="appendIcon"
             />
           </slot>
         </span>
@@ -74,7 +74,7 @@
 								v-if="resolvedField"
 								:is="resolvedField"
 								v-model="model"
-								v-bind="props.defaults"
+								v-bind="defaults"
 						/>
 					</slot>
 				</div>

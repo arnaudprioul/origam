@@ -1,11 +1,11 @@
 <template>
 	<component
 			:is="link.tag"
-			v-ripple="isClickable && props.ripple"
+			v-ripple="isClickable && ripple"
 			:class="cardClasses"
 			:href="link.href"
 			:style="cardStyles"
-			:tabindex="props.disabled ? -1 : undefined"
+			:tabindex="disabled ? -1 : undefined"
 			@click="handleClick"
 			@mouseenter="onMouseenter"
 			@mouseleave="onMouseleave"
@@ -33,7 +33,7 @@
 						<origam-progress
 								v-else
 								:active="true"
-								:color="props.color"
+								:color="color"
 								:indeterminate="loaderConfig.indeterminate"
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
@@ -107,7 +107,7 @@
 						<slot name="asset">
 							<origam-img
 									key="image-img"
-									:src="props.image"
+									:src="image"
 									class="origam-card__image"
 									cover
 							/>
@@ -120,7 +120,7 @@
 						<slot name="text">
 							<origam-card-text
 									key="text"
-									:text="props.text"
+									:text="text"
 									class="origam-card__text"
 							/>
 						</slot>
@@ -137,9 +137,7 @@
 			</template>
 		</slot>
 	</component>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

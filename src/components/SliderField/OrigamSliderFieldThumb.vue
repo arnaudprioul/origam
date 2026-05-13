@@ -30,7 +30,7 @@
 				<div class="origam-slider-field-thumb__label">
 					<slot
 							name="default"
-							v-bind="{ modelValue: props.modelValue }"
+							v-bind="{ modelValue: modelValue }"
 					>
 						<span>{{ label }}</span>
 					</slot>

@@ -2,7 +2,7 @@
 	<component
 			:is="progressComponent"
 			ref="origamProgressRef"
-			:aria-hidden="!props.active"
+			:aria-hidden="!active"
 			:aria-valuemax="max"
 			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressClasses"

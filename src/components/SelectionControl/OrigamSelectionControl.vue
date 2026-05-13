@@ -19,7 +19,7 @@
       >
         <slot
           name="input"
-          v-bind="{ model, color, bgColor, icon, props: { ...inputAttrs, disabled: props.disabled, label: props.label, name: props.name, type: props.type, value: trueValue, onFocus: handleFocus, onBlur: handleBlur, id, onInput: handleInput } }"
+          v-bind="{ model, color, bgColor, icon, props: { ...inputAttrs, disabled: disabled, label: label, name: name, type: type, value: trueValue, onFocus: handleFocus, onBlur: handleBlur, id, onInput: handleInput } }"
         >
           <template v-if="icon">
             <origam-icon
@@ -32,13 +32,13 @@
           <input
             :id="id"
             ref="inputRef"
-            :aria-checked="props.type === 'checkbox' ? model : undefined"
-            :aria-disabled="props.disabled"
-            :aria-label="props.label"
+            :aria-checked="type === 'checkbox' ? model : undefined"
+            :aria-disabled="disabled"
+            :aria-label="label"
             :checked="model"
-            :disabled="props.disabled"
-            :name="props.name"
-            :type="props.type"
+            :disabled="disabled"
+            :name="name"
+            :type="type"
             :value="trueValue"
             v-bind="inputAttrs"
             @blur="handleBlur"
@@ -62,9 +62,7 @@
       </slot>
     </div>
   </div>
-</template>
-
-<script
+</template><script
   lang="ts"
   setup
 >

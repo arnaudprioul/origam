@@ -33,7 +33,7 @@
               @dragleave.prevent="handleDragLeave"
               @drop.prevent="handleDrop"
           >
-            <template v-if="!props.multiple && hasFiles">
+            <template v-if="!multiple && hasFiles">
               <slot
                   name="item"
                   v-bind="{
@@ -48,14 +48,14 @@
                     :file="model[0]"
                     :index="0"
                     :progress="getProgress(0)"
-                    :file-icon="props.fileIcon"
-                    :download-icon="props.downloadIcon"
-                    :remove-icon="props.removeIcon"
-                    :downloadable="props.downloadable"
+                    :file-icon="fileIcon"
+                    :download-icon="downloadIcon"
+                    :remove-icon="removeIcon"
+                    :downloadable="downloadable"
                     :disabled="isDisabled"
                     :readonly="isReadonly"
-                    :color="props.color"
-                    :show-size="props.showSize"
+                    :color="color"
+                    :show-size="showSize"
                     @click:remove="handleRemove(0)"
                     @click:download="handleDownload(0, model[0])"
                 />
@@ -67,7 +67,7 @@
                   v-bind="{ isDragging, browse: handleBrowseClick }"
               >
                 <origam-icon
-                    :icon="props.dragndropIcon"
+                    :icon="dragndropIcon"
                     class="origam-file-field__dropzone-icon"
                 />
                 <div class="origam-file-field__dropzone-title">
@@ -90,8 +90,8 @@
                 :id="id"
                 ref="inputRef"
                 :disabled="isDisabled"
-                :multiple="props.multiple"
-                :name="props.name"
+                :multiple="multiple"
+                :name="name"
                 :readonly="isReadonly"
                 class="origam-file-field__dropzone-input"
                 type="file"
@@ -103,7 +103,7 @@
           </label>
 
           <ul
-              v-if="props.multiple && hasFiles"
+              v-if="multiple && hasFiles"
               class="origam-file-field__list"
               role="list"
           >
@@ -122,14 +122,14 @@
                     :file="item"
                     :index="idx"
                     :progress="getProgress(idx)"
-                    :file-icon="props.fileIcon"
-                    :download-icon="props.downloadIcon"
-                    :remove-icon="props.removeIcon"
-                    :downloadable="props.downloadable"
+                    :file-icon="fileIcon"
+                    :download-icon="downloadIcon"
+                    :remove-icon="removeIcon"
+                    :downloadable="downloadable"
                     :disabled="isDisabled"
                     :readonly="isReadonly"
-                    :color="props.color"
-                    :show-size="props.showSize"
+                    :color="color"
+                    :show-size="showSize"
                     @click:remove="handleRemove(idx)"
                     @click:download="handleDownload(idx, item)"
                 />
@@ -146,7 +146,7 @@
               :id="id"
               ref="origamFieldRef"
               :active="isActive || isDirty"
-              :dirty="isDirty || props.dirty"
+              :dirty="isDirty || dirty"
               :disabled="isDisabled"
               :error="!isValid || isErrored"
               :focused="isFocused"
@@ -204,9 +204,9 @@
                 <input
                     ref="inputRef"
                     :disabled="isDisabled"
-                    :multiple="props.multiple"
-                    :name="props.name"
-                    :placeholder="props.placeholder"
+                    :multiple="multiple"
+                    :name="name"
+                    :placeholder="placeholder"
                     :readonly="isReadonly"
                     :size="1"
                     type="file"
@@ -219,7 +219,7 @@
 
                 <template v-if="hasFiles">
                   <div class="origam-file-field__selections">
-                    <template v-if="props.multiple && hasChips">
+                    <template v-if="multiple && hasChips">
                       <template
                           v-for="(filename, index) in fileNames"
                           :key="index"
@@ -288,7 +288,7 @@
           </origam-field>
 
           <ul
-              v-if="props.multiple && hasFiles && !hasChips && displayMode === 'list'"
+              v-if="multiple && hasFiles && !hasChips && displayMode === 'list'"
               class="origam-file-field__list"
               role="list"
           >
@@ -306,11 +306,11 @@
                 <origam-file-field-list-item
                     :file="item"
                     :index="idx"
-                    :file-icon="props.fileIcon"
-                    :remove-icon="props.removeIcon"
+                    :file-icon="fileIcon"
+                    :remove-icon="removeIcon"
                     :disabled="isDisabled"
                     :readonly="isReadonly"
-                    :show-size="props.showSize"
+                    :show-size="showSize"
                     @click:remove="handleRemove(idx)"
                 />
               </slot>
@@ -336,8 +336,8 @@
           v-bind="detailsSlotProps"
       >
         <origam-counter
-            :active="props.persistentCounter || isFocused"
-            :disabled="props.disabled"
+            :active="persistentCounter || isFocused"
+            :disabled="disabled"
             :value="counterValue"
         >
           <template
@@ -373,9 +373,7 @@
       />
     </template>
   </origam-input>
-</template>
-
-<script
+</template><script
     lang="ts"
     setup
 >

@@ -21,10 +21,10 @@
       />
 
 			<div
-					v-if="props.timer"
+					v-if="timer"
 					:key="`timer-${timerKey}`"
 					:class="['origam-snackbar__timer', { 'origam-snackbar__timer--paused': isHovering }]"
-					:style="{ '--origam-snackbar__timer---duration': `${props.timeout}ms` }"
+					:style="{ '--origam-snackbar__timer---duration': `${timeout}ms` }"
 			>
 				<div class="origam-snackbar__timer-bar"/>
 			</div>

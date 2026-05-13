@@ -1,7 +1,7 @@
 <template>
 	<component
 			:is="tag"
-			v-ripple="props.ripple"
+			v-ripple="ripple"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
 			:disabled="isDisabled"
@@ -51,7 +51,7 @@
       </span>
 
 			<span
-					v-if="hasAppend || !props.hideActions"
+					v-if="hasAppend || !hideActions"
 					key="append"
 					class="origam-expansion-panel-header__append"
 					@click="handleClickAppend"
@@ -73,7 +73,7 @@
 		          :icon="appendIcon"
           />
           <origam-icon
-		          v-if="!props.hideActions"
+		          v-if="!hideActions"
 		          :icon="isSelected ? collapseIcon : expandIcon"
           />
         </slot>

@@ -121,7 +121,7 @@
 													v-bind="menuListItemProps(item, itemRef, index)"
 											>
 												<template
-														v-if="showCheckbox || item.props.prependAvatar || item.props.prependIcon"
+														v-if="showCheckbox || item.prependAvatar || item.prependIcon"
 														#prepend="{isSelected}"
 												>
 													<origam-checkbox-btn
@@ -132,13 +132,13 @@
 													/>
 
 													<origam-avatar
-															v-if="item.props.prependAvatar"
-															:image="item.props.prependAvatar"
+															v-if="item.prependAvatar"
+															:image="item.prependAvatar"
 													/>
 
 													<origam-icon
-															v-if="item.props.prependIcon"
-															:icon="item.props.prependIcon"
+															v-if="item.prependIcon"
+															:icon="item.prependIcon"
 													/>
 												</template>
 
@@ -257,9 +257,7 @@
 			<slot name="append"/>
 		</template>
 	</origam-text-field>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

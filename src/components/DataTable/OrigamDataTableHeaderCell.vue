@@ -31,7 +31,7 @@
 					<div class="origam-data-table-header-cell__content">
 						<span>{{ column.title }}</span>
 
-						<template v-if="column.sortable && !props.disableSort">
+						<template v-if="column.sortable && !disableSort">
 							<origam-icon
 									key="icon"
 									:class="{'origam-data-table-header-cell__sort-icon--active': isSorted(column)}"
@@ -40,7 +40,7 @@
 							/>
 						</template>
 
-						<template v-if="props.multiSort && isSorted(column)">
+						<template v-if="multiSort && isSorted(column)">
 							<div
 									key="badge"
 									:style="colorStyles"
@@ -54,9 +54,7 @@
 			</slot>
 		</template>
 	</origam-data-table-column-cell>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

@@ -7,25 +7,23 @@
 			<slot/>
 		</template>
 
-		<template v-else-if="props.combination && props.combination.length > 0">
+		<template v-else-if="combination && combination.length > 0">
 			<template
-					v-for="(key, index) in props.combination"
+					v-for="(key, index) in combination"
 					:key="index"
 			>
 				<kbd class="origam-kbd__key">{{ key }}</kbd>
 				<span
-						v-if="index < props.combination.length - 1"
+						v-if="index < combination.length - 1"
 						class="origam-kbd__separator"
 						aria-hidden="true"
-				>{{ props.separator }}</span>
+				>{{ separator }}</span>
 			</template>
 		</template>
 
-		<template v-else>{{ props.text }}</template>
+		<template v-else>{{ text }}</template>
 	</kbd>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

@@ -5,7 +5,7 @@
 			:style="mainStyles"
 	>
 		<div
-				:class="{'origam-main__scroller': props.scrollable}"
+				:class="{'origam-main__scroller': scrollable}"
 				class="origam-main__wrapper"
 		>
 			<slot name="default"/>

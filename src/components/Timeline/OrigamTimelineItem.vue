@@ -4,8 +4,8 @@
 			<div class="origam-timeline-item__dot" :style="dotStyles">
 				<slot name="dot">
 					<origam-icon
-						v-if="props.icon"
-						:icon="props.icon"
+						v-if="icon"
+						:icon="icon"
 						:size="10"
 					/>
 				</slot>
@@ -21,13 +21,13 @@
 			<slot name="default">
 				<div class="origam-timeline-item__header">
 					<span
-						v-if="props.title"
+						v-if="title"
 						class="origam-timeline-item__title"
-					>{{ props.title }}</span>
+					>{{ title }}</span>
 					<span
-						v-if="props.subtitle"
+						v-if="subtitle"
 						class="origam-timeline-item__subtitle"
-					>{{ props.subtitle }}</span>
+					>{{ subtitle }}</span>
 				</div>
 				<div
 					v-if="$slots.body || description"

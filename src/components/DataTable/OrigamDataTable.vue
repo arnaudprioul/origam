@@ -22,7 +22,7 @@
 						v-bind="slotProps"
 				/>
 
-				<template v-if="!props.hideDefaultHeader">
+				<template v-if="!hideDefaultHeader">
 					<thead key="thead">
 					<origam-data-table-headers
 							ref="origamDataTableHeadersRef"
@@ -66,7 +66,7 @@
 						v-bind="slotProps"
 				/>
 
-				<template v-if="!props.hideDefaultBody">
+				<template v-if="!hideDefaultBody">
 					<tbody>
 					<slot
 							name="prepend"
@@ -106,9 +106,7 @@
 			</slot>
 		</template>
 	</origam-table>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

@@ -21,7 +21,7 @@
 				<div class="origam-field__loader">
 					<origam-progress
 							:active="true"
-							:color="props.color"
+							:color="color"
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
@@ -42,16 +42,16 @@
 			>
 				<slot name="prependInner">
 					<origam-avatar
-							v-if="props.prependInnerAvatar"
+							v-if="prependInnerAvatar"
 							key="prepend-avatar"
-							:density="props.density"
-							:image="props.prependInnerAvatar"
+							:density="density"
+							:image="prependInnerAvatar"
 					/>
 					<origam-icon
-							v-if="props.prependInnerIcon"
+							v-if="prependInnerIcon"
 							key="prepend-icon"
-							:density="props.density"
-							:icon="props.prependInnerIcon"
+							:density="density"
+							:icon="prependInnerIcon"
 					/>
 				</slot>
 			</div>
@@ -105,13 +105,13 @@
 					key="clear"
 			>
 				<div
-						v-show="props.dirty"
+						v-show="dirty"
 						class="origam-field__clearable"
 						@mousedown="handleMousedownClear"
 				>
 					<slot name="clear">
 						<origam-icon
-								:icon="props.clearIcon"
+								:icon="clearIcon"
 								@blur="handleBlur"
 								@focus="handleFocus"
 								@keydown="handleKeydownClear"
@@ -128,16 +128,16 @@
 			>
 				<slot name="appendInner">
 					<origam-avatar
-							v-if="props.appendInnerAvatar"
+							v-if="appendInnerAvatar"
 							key="append-avatar"
-							:density="props.density"
-							:image="props.appendInnerAvatar"
+							:density="density"
+							:image="appendInnerAvatar"
 					/>
 					<origam-icon
-							v-if="props.appendInnerIcon"
+							v-if="appendInnerIcon"
 							key="append-icon"
-							:density="props.density"
-							:icon="props.appendInnerIcon"
+							:density="density"
+							:icon="appendInnerIcon"
 					/>
 				</slot>
 			</div>
@@ -163,9 +163,7 @@
 		</template>
 
 	</div>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >

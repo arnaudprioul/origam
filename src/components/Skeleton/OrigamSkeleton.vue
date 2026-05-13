@@ -1,10 +1,10 @@
 <template>
-	<template v-if="!props.loading">
+	<template v-if="!loading">
 		<slot/>
 	</template>
 
 	<div
-			v-else-if="props.variant === 'list-item'"
+			v-else-if="variant === 'list-item'"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
@@ -12,27 +12,27 @@
 			role="status"
 	>
 		<div
-				:class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--circular']"
+				:class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--circular']"
 				:style="circularStyle"
 		/>
 		<div class="origam-skeleton__lines">
-			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
-			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
+			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
 		</div>
 	</div>
 
 	<div
-			v-else-if="props.variant === 'card'"
+			v-else-if="variant === 'card'"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
 			aria-label="Loading"
 			role="status"
 	>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--rectangular']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--rectangular']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
+		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
 	</div>
 
 	<div
@@ -43,9 +43,7 @@
 			aria-label="Loading"
 			role="status"
 	/>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
