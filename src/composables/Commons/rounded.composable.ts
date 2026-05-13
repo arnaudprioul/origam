@@ -96,15 +96,60 @@ export function useRounded (
         return classes
     })
 
+    // Map a `PREDIFINED_ROUNDED` named variant to its primitive radius
+    // token. Mirrors the per-component SCSS rules (Avatar, Btn, …) that
+    // historically duplicated this mapping inline. Centralising it here
+    // lets every component pick up its `border-radius` from
+    // `roundedStyles` (inline-style via `useStyle`) without each one
+    // re-implementing the 6-row table.
+    const NAMED_RADIUS_TOKEN: Record<string, string> = {
+        'x-small': 'var(--origam-radius-xs, 2px)',
+        'small':   'var(--origam-radius-sm, 4px)',
+        'default': 'var(--origam-radius-md, 8px)',
+        'medium':  'var(--origam-radius-lg, 12px)',
+        'large':   'var(--origam-radius-xl, 16px)',
+        'x-large': 'var(--origam-radius-2xl, 24px)'
+    }
+
     const roundedStyles = computed(() => {
         const rounded = isRef(props) ? props.value : props.rounded
         const styles: Array<string> = []
 
-        // Named variants, modern utility values and boolean true are
-        // handled by `roundedClasses` — no inline style needed.
-        if (rounded === true || rounded === '' || rounded == null || rounded === false) return styles
-        if (typeof rounded === 'string' && PREDIFINED_ROUNDED.includes(rounded as TRounded)) return styles
-        if (isUtilityRounded(rounded)) return styles
+        // Boolean / empty / nullish — the legacy class chrome handles it.
+        if (rounded == null || rounded === false) return styles
+
+        // Utility variants (`'xs'|'sm'|'md'|'lg'|'xl'|'none'|'full'`):
+        // the `.origam--rounded-*` utility class has specificity (0,1,0)
+        // and routinely LOSES the cascade against a component's scoped
+        // `border-radius` / per-corner declarations (spec 0,2,0). Emit
+        // an inline-style companion so `useStyle` lands the radius at
+        // `#id` (spec 1,0,0) and wins everywhere.
+        if (isUtilityRounded(rounded)) {
+            styles.push(`border-radius: var(--origam-radius-${rounded})`)
+            return styles
+        }
+
+        // Named variants (`'x-small'…'x-large'`): same cascade issue —
+        // components rarely ship per-variant scoped rules. Map to the
+        // primitive radius token and emit the inline declaration.
+        // `shaped` / `shaped-invert` are corner-asymmetric and stay
+        // owned by each component's scoped SCSS.
+        if (typeof rounded === 'string'
+            && PREDIFINED_ROUNDED.includes(rounded as TRounded)
+            && rounded !== 'shaped'
+            && rounded !== 'shaped-invert') {
+            const token = NAMED_RADIUS_TOKEN[rounded]
+            if (token) styles.push(`border-radius: ${token}`)
+            return styles
+        }
+
+        // Legacy boolean-true and empty-string opt-in: also push an
+        // inline radius so the chrome lands regardless of per-component
+        // SCSS coverage. Mirrors the utility `md` rung.
+        if (rounded === true || rounded === '') {
+            styles.push(`border-radius: var(--origam-radius-md, 8px)`)
+            return styles
+        }
 
         if (typeof rounded === 'string') {
             const match = BORDER_RADIUS_REGEX.exec(rounded)?.groups
