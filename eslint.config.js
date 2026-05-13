@@ -28,6 +28,7 @@ export default typescriptEslint.config(
 			"@typescript-eslint/no-empty-object-type": ["error", {
 				"allowInterfaces": "with-single-extends"
 			}],
+			"vue/valid-v-slot": "off",
 			"vue/no-template-shadow": ["warn", { "allow": ["props"] }],
 			"@typescript-eslint/no-unused-vars": [
 				"error",
@@ -42,6 +43,12 @@ export default typescriptEslint.config(
 				}
 			]
 		},
+	},
+	{
+		files: ['**/*.spec.ts', '**/*.spec.js', '**/*.cy.ts', '**/*.test.ts'],
+		rules: {
+			"@typescript-eslint/no-unused-vars": "warn"
+		}
 	},
 	{
 		files: ['src/**/*.{ts,vue}'],

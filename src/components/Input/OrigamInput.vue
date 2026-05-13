@@ -94,7 +94,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, StyleValue, toRef, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 	import { OrigamMessages } from '../../components/Messages'
 
@@ -130,12 +130,11 @@
 	})
 	const props = useDefaults(_props)
 
-	const emits = defineEmits<IInputEmits>()
+	defineEmits<IInputEmits>()
 
 	defineSlots<IInputSlots>()
 	const slots = useSlots()
 
-	const attrs = useAttrs()
 
 	const uid = getUid()
 	const id = computed(() => {

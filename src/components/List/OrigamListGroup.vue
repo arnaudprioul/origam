@@ -76,11 +76,10 @@
 	const emits = defineEmits(['click:activator'])
 
 
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isHover, hoverState} = useHover(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
-		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, undefined, hoverState, undefined)

@@ -125,7 +125,7 @@
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState, computed(() => !!props.disabled))
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState, computed(() => !!props.disabled))
 
 	/*********************************************************
 	 * Adjacent (prepend / append)

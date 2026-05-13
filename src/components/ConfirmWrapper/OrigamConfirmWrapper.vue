@@ -172,7 +172,7 @@
 	})
 	const props = useDefaults(_props)
 
-	const emits = defineEmits<IConfirmWrapperEmits>()
+	defineEmits<IConfirmWrapperEmits>()
 
 	defineSlots<IConfirmWrapperSlots>()
 	const slots = useSlots()

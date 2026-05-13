@@ -198,12 +198,11 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
-		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, isActive, hoverState, activeState)

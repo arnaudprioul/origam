@@ -17,7 +17,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, useSlots } from 'vue'
+	import { computed, StyleValue } from 'vue'
 
 	import { OrigamDefaultsProvider } from '../../components'
 	import {
@@ -65,7 +65,6 @@
 		selected
 	}))
 
-	const slots = useSlots()
 
 	/*********************************************************
 	 * Class & Style

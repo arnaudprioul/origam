@@ -122,7 +122,7 @@
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, undefined, undefined, hoverState, activeState, computed(() => !!props.disabled))
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, undefined, undefined, undefined, undefined, computed(() => !!props.disabled))
 
 	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
 	// density/color fallback — no manual merge needed here.

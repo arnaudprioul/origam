@@ -114,7 +114,7 @@
 		setup
 >
 	import type { ComputedRef, StyleValue } from 'vue'
-	import { computed, ref, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamBtn, OrigamIcon } from '../../components'
 
 	import {
@@ -164,7 +164,7 @@
 	 * @description
 	 * Hover, active state and color resolution for the alert.
 	 ********************************************************/
-	const {activeClasses, isActive, onActive} = useActive(props, 'modelValue')
+	const {activeClasses, isActive, activeState, onActive} = useActive(props, 'modelValue')
 	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
@@ -175,7 +175,7 @@
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Adjacent (prepend / append)

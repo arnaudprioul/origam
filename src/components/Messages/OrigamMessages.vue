@@ -34,7 +34,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, StyleValue, toRef } from 'vue'
 	import { OrigamSlideY, OrigamTransition } from '../../components'
 
 	import {
@@ -52,7 +52,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IMessagesEmits, IMessagesProps, IMessagesSlots } from '../../interfaces'
+	import type { IMessagesProps, IMessagesSlots } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
 
 	import { toKebabCase, wrapInArray } from '../../utils'
@@ -70,12 +70,7 @@
 	})
 	const props = useDefaults(_props)
 
-	const emits = defineEmits<IMessagesEmits>()
-
 	defineSlots<IMessagesSlots>()
-	const slots = useSlots()
-
-	const attrs = useAttrs()
 
 	const {filterProps} = useProps<IMessagesProps>(props)
 

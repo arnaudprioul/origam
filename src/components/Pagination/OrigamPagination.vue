@@ -182,7 +182,7 @@
 
 	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useVModel } from "../../composables"
 
-	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
+	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 
 	import type { IPaginationProps } from "../../interfaces"
 

@@ -136,14 +136,8 @@
   const {densityClasses} = useDensity(props)
 
 
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {
-		borderClasses, borderStyles,
-		roundedClasses, roundedStyles,
-		elevationClasses, elevationStyles,
-		paddingClasses, paddingStyles,
-		marginClasses, marginStyles,
-	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
+	const {isHover, hoverState} = useHover(props)
+	useStateEffect(props, isHover, undefined, hoverState, undefined)
   /*********************************************************
    * Value
    ********************************************************/

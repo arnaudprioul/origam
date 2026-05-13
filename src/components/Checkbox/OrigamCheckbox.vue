@@ -63,9 +63,7 @@
 
 	import {
 		useFocus,
-		useHover,
 		useProps,
-		useStateEffect,
 		useStyle,
 		useVModel
 } from '../../composables'

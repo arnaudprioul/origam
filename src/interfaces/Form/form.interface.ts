@@ -36,7 +36,7 @@ export interface IFormProps extends ICommonsComponentProps {
 export interface IFormSlots extends ICommonsComponentSlots {
     messages?: () => any
     message?: () => any
-    actions?: (data: { submit: Function, reset: Function }) => any
+    actions?: (data: { submit: () => void, reset: () => void }) => any
 }
 
 export interface IFormEmits {

@@ -38,11 +38,6 @@ function applyToDocument (theme: TTheme) {
     }
 }
 
-function resolveAuto (): TThemeResolved {
-    if (typeof window === 'undefined') return 'light'
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
 /**
  * `useTheme()` returns a shared, reactive theme handle.
  *

@@ -40,7 +40,7 @@
 
 	import type { IBtnGroupProps, IBtnProps } from '../../interfaces'
 
-	import { computed, ref, StyleValue, useSlots } from 'vue'
+	import { computed, StyleValue, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -101,7 +101,7 @@
 	 ********************************************************/
 
 	const {
-		colorClasses, colorStyles, bgColor,
+		colorStyles,
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
 		elevationClasses, elevationStyles,

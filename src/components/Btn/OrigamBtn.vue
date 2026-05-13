@@ -270,7 +270,7 @@
 	 ********************************************************/
 
 	const {
-		colorClasses, colorStyles, bgColor,
+		colorClasses, colorStyles,
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
 		elevationClasses, elevationStyles,

@@ -66,7 +66,7 @@
 	import { isEmpty } from "../../utils"
 
 	import type { ComputedRef, StyleValue } from 'vue'
-	import { computed, ref, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -92,15 +92,15 @@
 	 * @description
 	 * Hover, active state and color resolution for the avatar.
 	 ********************************************************/
-	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive, onActive: handleClick} = useActive(props)
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive: handleClick} = useActive(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Composables

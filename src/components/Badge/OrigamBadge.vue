@@ -82,7 +82,7 @@
 
 	import { omit, pick } from '../../utils'
 
-	import { computed, ComputedRef, ref, StyleValue, useAttrs } from 'vue'
+	import { computed, ComputedRef, StyleValue, useAttrs } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -114,8 +114,8 @@
 	 * @description
 	 * Hover, active state, color and location resolution.
 	 ********************************************************/
-	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive} = useActive(props, 'modelValue')
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState} = useActive(props, 'modelValue')
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// The badge pill (`__badge` span) is the visual surface; classes go
 	// there, not on the wrapper root.
@@ -124,7 +124,7 @@
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	/*********************************************************
 	 * Composables

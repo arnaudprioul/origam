@@ -244,7 +244,6 @@
 	 * @description
 	 * handleInput, handleKeydown, handlePaste manage OTP cell navigation.
 	 * handleFocus / handleBlur track focusIndex and isFocused state.
-	 * handleClear resets the model and returns focus to the first cell.
 	 * reset is exposed for external programmatic clearing.
 	 * isInvalidValue guards non-numeric characters in number mode.
 	 ********************************************************/
@@ -330,18 +329,6 @@
 
 	const reset = () => {
 		model.value = []
-	}
-
-	const handleClear = (e: MouseEvent) => {
-		e.stopPropagation()
-
-		model.value = []
-
-		nextTick(() => {
-			inputRef.value?.[0]?.focus()
-		})
-
-		emits('click:clear', e)
 	}
 
 	const handleFocus = (_e: FocusEvent, index: number) => {

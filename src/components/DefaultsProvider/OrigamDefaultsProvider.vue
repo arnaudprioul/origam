@@ -6,7 +6,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, useSlots } from 'vue'
+	import { computed } from 'vue'
 
 	import { provideDefaults, useProps } from '../../composables'
 	import type { IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces'
@@ -29,7 +29,6 @@
 	const props = withDefaults(defineProps<IDefaultProviderProps>(), {})
 
 	defineSlots<IDefaultProviderSlots>()
-	const slots = useSlots()
 
 	/*********************************************************
 	 * Defaults

@@ -102,7 +102,7 @@
 		setup
 >
 	import { computed, provide, ref, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress, OrigamSkeleton } from '../../components'
+	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress } from '../../components'
 
 	import {
 		useActive,
@@ -242,12 +242,12 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
-		elevationClasses, elevationStyles,
+		elevationClasses,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, isActive, hoverState, activeState)

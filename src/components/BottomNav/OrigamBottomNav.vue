@@ -120,8 +120,8 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-	const {isActive, activeState, activeClasses} = useActive(props, 'modelValue')
-	const {isHover, hoverState, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive, activeClasses} = useActive(props, 'modelValue')
+	const {hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// ONLY for the resting state — `useStateEffect` returns `[]` for
@@ -148,7 +148,7 @@
 	 *     `slotDefaults` — that's where they take visual effect.
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, bgColor, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))
 
 	/*********************************************************
 	 * Layout

@@ -56,7 +56,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots } from 'vue'
+	import { computed, nextTick, ref, StyleValue, useSlots } from 'vue'
 	import { OrigamMessages } from '../../components'
 
 	import {
@@ -86,7 +86,6 @@
 	defineSlots<IFormSlots>()
 	const slots = useSlots()
 
-	const attrs = useAttrs()
 
 	const {filterProps} = useProps<IFormProps>(props)
 
