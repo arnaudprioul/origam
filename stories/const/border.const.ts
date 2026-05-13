@@ -1,62 +1,50 @@
 import type { IOptions } from '@origam/interfaces'
 
 /**
- * Choices for the `border` prop. Mirrors the layered API of `rounded`:
+ * Choices for the `border` prop. The composable accepts a single
+ * value that may encode width / style / color / direction:
  *
- *   • Off (`false` / `undefined`)
- *   • Legacy boolean opt-in (`true`) — equivalent to the utility `thin`.
- *   • Token-driven utility widths (`'none' | 'thin' | 'thick'`) — drive
- *     `.origam--border-{rung}` from `origam-utilities.css`.
- *   • Directional keywords (top / right / bottom / left / block / inline)
- *     — drive each component's `&--border-{direction}` SCSS rule, which
- *     forces a single edge to `thin`.
- *   • Free-form CSS escape hatches (`'4px dashed currentColor'`, etc.).
+ *   • boolean `true`           → utility `thin`
+ *   • utility keywords         → `'none' | 'thin' | 'thick'`
+ *   • directional keywords     → `'top' | 'right' | 'bottom' | 'left' | 'block' | 'inline'`
+ *   • free-form CSS string     → `'4px dashed red'`, `'2px solid var(--origam-color-action-primary-bg)'`, …
+ *   • raw number (px width)    → `2`
  *
- * Use in stories alongside `borderStyleList` and `borderColorList` (the
- * `intentList` is enough for the colour swatches).
+ * Everything (width, style, color, position) is therefore routed
+ * through this one prop — no separate `borderStyle` / `borderColor`
+ * controls. The free-form strings below showcase the variety of inputs
+ * the composable supports.
  */
-export const borderList: Array<IOptions<boolean | string | undefined>> = [
+export const borderList: Array<IOptions<boolean | number | string | undefined>> = [
     // ── Off / boolean ───────────────────────────────────────────
     { label: 'No Border', value: false },
     { label: 'Border (legacy boolean → thin)', value: true },
 
-    // ── Utility widths (token-driven, theme-aware) ──────────────
-    { label: 'thin (1px)', value: 'thin' },
-    { label: 'thick (3px)', value: 'thick' },
-    { label: 'none (0)', value: 'none' },
+    // ── Utility widths ──────────────────────────────────────────
+    { label: 'Width — thin (utility, 1px)', value: 'thin' },
+    { label: 'Width — thick (utility, 3px)', value: 'thick' },
 
-    // ── Directional keywords ────────────────────────────────────
-    { label: 'top', value: 'top' },
-    { label: 'right', value: 'right' },
-    { label: 'bottom', value: 'bottom' },
-    { label: 'left', value: 'left' },
-    { label: 'block (top + bottom)', value: 'block' },
-    { label: 'inline (left + right)', value: 'inline' },
+    // ── Numeric widths ──────────────────────────────────────────
+    { label: 'Width — 4px', value: 4 },
+    { label: 'Width — 8px', value: 8 },
 
-    // ── Free-form CSS escape hatches ────────────────────────────
-    { label: '2px solid currentColor', value: '2px solid currentColor' },
-    { label: '4px dashed', value: '4px dashed' },
-    { label: '2px dotted', value: '2px dotted' },
-]
+    // ── Style variants (free-form CSS) ──────────────────────────
+    { label: 'Style — 2px dashed', value: '2px dashed' },
+    { label: 'Style — 2px dotted', value: '2px dotted' },
+    { label: 'Style — 3px double', value: '3px double' },
+    { label: 'Style — 4px groove', value: '4px groove' },
 
-export const borderStyleList: Array<IOptions<string>> = [
-    { label: 'solid', value: 'solid' },
-    { label: 'dashed', value: 'dashed' },
-    { label: 'dotted', value: 'dotted' },
-    { label: 'double', value: 'double' },
-    { label: 'groove', value: 'groove' },
-    { label: 'ridge', value: 'ridge' },
-    { label: 'inset', value: 'inset' },
-    { label: 'outset', value: 'outset' },
-]
+    // ── Color variants (free-form CSS) ──────────────────────────
+    { label: 'Color — 2px solid primary', value: '2px solid var(--origam-color-action-primary-bg)' },
+    { label: 'Color — 2px solid success', value: '2px solid var(--origam-color-feedback-success-bg)' },
+    { label: 'Color — 2px solid danger',  value: '2px solid var(--origam-color-feedback-danger-bg)' },
+    { label: 'Color — 3px dashed orange', value: '3px dashed #ff8a00' },
 
-export const borderWidthList: Array<IOptions<number | string>> = [
-    { label: 'thin (1px)', value: 'thin' },
-    { label: 'medium (3px)', value: 'medium' },
-    { label: 'thick (5px)', value: 'thick' },
-    { label: '0', value: 0 },
-    { label: '1px', value: 1 },
-    { label: '2px', value: 2 },
-    { label: '4px', value: 4 },
-    { label: '8px', value: 8 },
+    // ── Position keywords ───────────────────────────────────────
+    { label: 'Position — top',    value: 'top' },
+    { label: 'Position — right',  value: 'right' },
+    { label: 'Position — bottom', value: 'bottom' },
+    { label: 'Position — left',   value: 'left' },
+    { label: 'Position — block (top + bottom)',  value: 'block' },
+    { label: 'Position — inline (left + right)', value: 'inline' },
 ]

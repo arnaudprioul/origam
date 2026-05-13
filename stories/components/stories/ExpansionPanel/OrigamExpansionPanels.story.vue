@@ -43,8 +43,6 @@
 				<HstSelect   v-model="state.expandIcon"   title="expandIcon"   :options="iconList"/>
 				<HstSelect   v-model="state.collapseIcon" title="collapseIcon" :options="iconList"/>
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstCheckbox v-model="state.flat"         title="flat"/>
 				<HstCheckbox v-model="state.accordion"    title="accordion"/>
 				<HstCheckbox v-model="state.inset"        title="inset"/>
@@ -115,8 +113,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -349,7 +345,6 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		borderList,
-		borderStyleList,
 		densityList, elevationList, iconList, intentList, roundedList
 	} from '@stories/const'
 

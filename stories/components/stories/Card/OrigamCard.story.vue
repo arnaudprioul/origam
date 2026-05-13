@@ -40,7 +40,7 @@
 				<HstCheckbox v-model="state.hover"     title="hover"/>
 				<HstCheckbox v-model="state.disabled"  title="disabled"/>
 				<HstCheckbox v-model="state.loading"   title="loading"/>
-				<HstCheckbox v-model="state.border"    title="border"/>
+				<HstSelect   v-model="state.border"    title="border"     :options="borderList"/>
 			</template>
 		</Variant>
 
@@ -167,26 +167,36 @@
 					<origam-card v-bind="state" title="Interactive card" text="Toggle controls →" data-cy="card-border"/>
 
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-						<small>Showcase fixtures:</small>
-						<origam-card title='border={false} (default)'                  data-cy="card-border-default"/>
-						<origam-card title='border={true} (= thin)' :border="true"     data-cy="card-border-true"/>
-						<origam-card title='border="thin"'    border="thin"            data-cy="card-border-thin"/>
-						<origam-card title='border="thick"'   border="thick"           data-cy="card-border-thick"/>
-						<origam-card title='border="top"'     border="top"             data-cy="card-border-top"/>
-						<origam-card title='border="right"'   border="right"           data-cy="card-border-right"/>
-						<origam-card title='border="bottom"'  border="bottom"          data-cy="card-border-bottom"/>
-						<origam-card title='border="left"'    border="left"            data-cy="card-border-left"/>
-						<origam-card title='Free-form: 2px solid currentColor' border='2px solid currentColor' data-cy="card-border-freeform-solid"/>
-						<origam-card title='Free-form: 4px dashed'    border="4px dashed"  data-cy="card-border-freeform-dashed"/>
-						<origam-card title='borderStyle="dotted"'  :border="true" border-style="dotted"  data-cy="card-border-dotted"/>
-						<origam-card title='Custom width via number' :border="6"     data-cy="card-border-number"/>
+						<small>Showcase fixtures — every variant routed through the single `border` prop:</small>
+
+						<small>Width:</small>
+						<origam-card title='border="thin" (utility, 1px)'  border="thin"   data-cy="card-border-thin"/>
+						<origam-card title='border="thick" (utility, 3px)' border="thick"  data-cy="card-border-thick"/>
+						<origam-card title=':border="4" (px width)'        :border="4"     data-cy="card-border-w4"/>
+						<origam-card title=':border="8" (px width)'        :border="8"     data-cy="card-border-w8"/>
+
+						<small>Style:</small>
+						<origam-card title='border="2px dashed"'  border="2px dashed"  data-cy="card-border-dashed"/>
+						<origam-card title='border="2px dotted"'  border="2px dotted"  data-cy="card-border-dotted"/>
+						<origam-card title='border="3px double"'  border="3px double"  data-cy="card-border-double"/>
+						<origam-card title='border="4px groove"'  border="4px groove"  data-cy="card-border-groove"/>
+
+						<small>Color:</small>
+						<origam-card title='border="2px solid primary"' border="2px solid var(--origam-color-action-primary-bg)"     data-cy="card-border-primary"/>
+						<origam-card title='border="2px solid success"' border="2px solid var(--origam-color-feedback-success-bg)"   data-cy="card-border-success"/>
+						<origam-card title='border="2px solid danger"'  border="2px solid var(--origam-color-feedback-danger-bg)"    data-cy="card-border-danger"/>
+						<origam-card title='border="3px dashed #ff8a00"' border="3px dashed #ff8a00" data-cy="card-border-orange"/>
+
+						<small>Position:</small>
+						<origam-card title='border="top"'     border="top"     data-cy="card-border-top"/>
+						<origam-card title='border="right"'   border="right"   data-cy="card-border-right"/>
+						<origam-card title='border="bottom"'  border="bottom"  data-cy="card-border-bottom"/>
+						<origam-card title='border="left"'    border="left"    data-cy="card-border-left"/>
 					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.border"      title="border"       :options="borderList"/>
-				<HstSelect v-model="state.borderStyle" title="borderStyle"  :options="borderStyleList"/>
-				<HstText   v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -435,7 +445,6 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		borderList,
-		borderStyleList,
 		densityList,
 		elevationList,
 		iconList,

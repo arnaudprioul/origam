@@ -210,8 +210,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -264,7 +262,6 @@
 
 	import {
 		borderList,
-		borderStyleList,
 		intentList, roundedList, sizeList
 	} from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'

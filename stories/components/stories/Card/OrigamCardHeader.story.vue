@@ -28,8 +28,6 @@
 				<HstSelect v-model="state.density"  title="density"  :options="densityList"/>
 				<HstSelect v-model="state.rounded"  title="rounded"  :options="roundedList"/>
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -108,7 +106,6 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		borderList,
-		borderStyleList,
 		densityList, roundedList
 	} from '@stories/const'
 </script>

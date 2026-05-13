@@ -25,8 +25,6 @@
 				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
 				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
 			</template>
 		</Variant>
@@ -71,8 +69,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
 			</template>
 		</Variant>
@@ -156,7 +152,6 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		borderList,
-		borderStyleList,
 		densityList, iconList, roundedList
 	} from '@stories/const'
 

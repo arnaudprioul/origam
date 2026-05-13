@@ -123,8 +123,6 @@
 				<HstSelect   v-model="state.size"    title="size"    :options="sizeList"/>
 				<HstCheckbox v-model="state.rounded" title="rounded"/>
 				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
-				<HstText     v-model="state.borderColor" title="borderColor" placeholder="currentColor"/>
 			</template>
 		</Variant>
 
@@ -191,7 +189,6 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		borderList,
-		borderStyleList,
 		densityList, sizeList
 	} from '@stories/const'
 
