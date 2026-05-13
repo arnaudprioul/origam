@@ -156,7 +156,7 @@
 	const {densityClasses} = useDensity(props)
 
 	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {activeState} = useActive(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
