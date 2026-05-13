@@ -61,7 +61,11 @@
 >
 	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
 
-	import { useFocus, useProps, useVModel } from '../../composables'
+	import {
+		useFocus, useProps, useVModel,
+		useHover,
+		useStateEffect
+	} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 

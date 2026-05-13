@@ -4,6 +4,9 @@
 			:ref="rootEl"
 			:class="sheetClasses"
 			:style="sheetStyles"
+			@click="onActive"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<div
 				v-if="showHandle"
@@ -27,17 +30,15 @@
 >
 	import { computed, ref, StyleValue, toRef, watch } from 'vue'
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDimension,
-		useElevation,
+		useHover,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
-		useSheetSwipe
+		useSheetSwipe,
+		useStateEffect,
 	} from '../../composables'
 
 	import type { ISheetEmits, ISheetProps } from "../../interfaces"
@@ -72,14 +73,18 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {borderClasses, borderStyles} = useBorder(props)
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 
 	// ───────────────────────── swipe gesture ────────────────────────────
 
@@ -214,6 +219,8 @@
 			paddingClasses.value,
 			marginClasses.value,
 			roundedClasses.value,
+			hoverClasses.value,
+			activeClasses.value,
 			swipeEnabled.value && 'origam-sheet--swipeable',
 			swipeEnabled.value && `origam-sheet--side-${props.side}`,
 			swipeEnabled.value && `origam-sheet--snap-${currentSnap.value}`,

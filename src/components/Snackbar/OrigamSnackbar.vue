@@ -90,16 +90,14 @@
 	import { OrigamIcon, OrigamOverlay, OrigamSnack } from '../../components'
 
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
-		useElevation,
+		useHover,
 		useLayout,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
 		useScopeId,
+		useStateEffect,
 		useStatus,
 		useToggleScope,
 		useVModel
@@ -255,12 +253,6 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
-
 	/*********************************************************
 	 * Forwarded props
 	 ********************************************************/

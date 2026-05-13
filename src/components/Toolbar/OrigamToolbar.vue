@@ -41,17 +41,15 @@
 	import { computed, toRef, useSlots } from 'vue'
 	import { OrigamTitle } from "../../components"
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
+		useHover,
 		usePosition,
 		useProps,
-		useRounded,
 		useRtl,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -106,6 +104,16 @@
 
 	const {rtlClasses} = useRtl()
 
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState, undefined, toRef(props, 'flat'))
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// for tokenised intents on the toolbar root; `colorStyles` keeps the
@@ -116,11 +124,6 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), toRef(props, 'bgColor'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {positionStyles, positionClasses} = usePosition(props)

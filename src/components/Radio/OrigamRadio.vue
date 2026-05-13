@@ -106,7 +106,11 @@
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamInput, OrigamRadioBtn } from '../../components'
 
-	import { useFocus, useProps, useVModel } from '../../composables'
+	import {
+		useFocus, useProps, useVModel,
+		useHover,
+		useStateEffect
+	} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -128,6 +132,15 @@
 
 	const emits = defineEmits(['update:modelValue', 'update:focused', 'click:label'])
 
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<IRadioProps>(props)
 
 	/*********************************************************

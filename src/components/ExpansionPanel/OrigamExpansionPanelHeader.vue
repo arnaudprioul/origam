@@ -90,14 +90,13 @@
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 
 	import {
+		useActive,
 		useAdjacent,
-		useBorder,
 		useBothColor,
 		useDensity,
-		useMargin,
-		usePadding,
+		useHover,
 		useProps,
-		useRounded
+		useStateEffect
 	} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
@@ -196,10 +195,17 @@
 	 * @description
 	 * Composable-driven class and style composition.
 	 ********************************************************/
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
@@ -207,8 +213,6 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-
 	const expansionPanelHeaderStyles = computed(() => {
 		return [
 			colorStyles.value,

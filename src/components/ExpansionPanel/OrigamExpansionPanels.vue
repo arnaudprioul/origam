@@ -119,16 +119,14 @@
 	import { OrigamDefaultsProvider, OrigamExpansionPanel } from '../../components'
 
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDensity,
-		useElevation,
 		useGroup,
+		useHover,
 		useLoader,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded
+		useStateEffect
 	} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
@@ -176,11 +174,17 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
 	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
@@ -189,8 +193,6 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-
 	/*********************************************************
 	 * Loader
 	 ********************************************************/

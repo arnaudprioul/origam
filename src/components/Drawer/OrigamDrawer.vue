@@ -80,18 +80,16 @@
 	import { OrigamOverlayScrim, OrigamTransition } from '../../components'
 
 	import {
+		useActive,
 		useBackgroundColor,
-		useBorder,
 		useDensity,
-		useElevation,
+		useHover,
 		useLayoutItem,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useRouter,
 		useScopeId,
 		useSsrBoot,
+		useStateEffect,
 		useSticky,
 		useToggleScope,
 		useTouch,
@@ -154,12 +152,17 @@
 	 ********************************************************/
 
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
 	const slots = useSlots()
 	const router = useRouter()
 	const {ssrBootStyles} = useSsrBoot()

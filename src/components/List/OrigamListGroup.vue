@@ -49,15 +49,13 @@
 	import { OrigamDefaultsProvider, OrigamExpandY, OrigamListGroupActivator, OrigamListItem, OrigamTransition } from '../../components'
 
 	import {
-		useBorder,
 		useBothColor,
+		useHover,
 		useList,
-		useMargin,
 		useNestedItem,
-		usePadding,
 		useProps,
-		useRounded,
-		useSsrBoot
+		useSsrBoot,
+		useStateEffect
 	} from '../../composables'
 
 	import { MDI_ICONS } from "../../enums"
@@ -76,6 +74,15 @@
 
 	const emits = defineEmits(['click:activator'])
 
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<IListGroupProps>(props)
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
@@ -93,11 +100,6 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-
 	const {isOpen, open, id: _id} = useNestedItem(toRef(props, 'value'), true)
 	const id = computed(() => `origam-list-group--id-${String(_id.value)}`)
 	const list = useList()

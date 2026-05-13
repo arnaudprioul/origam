@@ -74,7 +74,11 @@
   import type { TOrigamLabel } from "../../types";
   import { OrigamIcon, OrigamLabel } from '../../components'
 
-  import { useDefaults, useDensity, useProps, useTextColor, useVModel } from '../../composables'
+  import {
+		useDefaults, useDensity, useProps, useTextColor, useVModel,
+		useHover,
+		useStateEffect
+	} from '../../composables'
 
   import { vRipple } from '../../directives'
 
@@ -128,6 +132,15 @@
 
   const {densityClasses} = useDensity(props)
 
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
   /*********************************************************
    * Value
    ********************************************************/

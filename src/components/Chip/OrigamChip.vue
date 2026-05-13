@@ -125,19 +125,16 @@
 
 	import {
 		useAdjacent,
-		useBorder,
 		useBothColor,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useGroupItem,
+		useHover,
 		useLink,
 		useLocale,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSize,
+		useStateEffect,
 		useVModel
 	} from '../../composables'
 
@@ -194,12 +191,16 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props)
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginStyles, marginClasses} = useMargin(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************

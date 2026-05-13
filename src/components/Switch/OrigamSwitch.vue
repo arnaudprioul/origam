@@ -127,7 +127,11 @@
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useFocus, useLoader, useProps, useVModel } from '../../composables'
+	import {
+		useFocus, useLoader, useProps, useVModel,
+		useHover,
+		useStateEffect
+	} from '../../composables'
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
@@ -151,6 +155,15 @@
 
 	defineEmits(['update:modelValue', 'update:focused', 'update:indeterminate', 'click:label'])
 
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<ISwitchProps>(props)
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()

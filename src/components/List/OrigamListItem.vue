@@ -117,18 +117,15 @@
 	import {
 		useAdjacent,
 		useBackgroundColor,
-		useBorder,
 		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
+		useHover,
 		useLink,
 		useList,
-		useMargin,
 		useNestedItem,
-		usePadding,
 		useProps,
-		useRounded
+		useStateEffect
 	} from '../../composables'
 
 	import { vRipple } from '../../directives'
@@ -175,14 +172,17 @@
 	const list = useList()
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded({rounded: props.rounded || props.nav})
 
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
+	const {dimensionStyles} = useDimension(props)
 	/*********************************************************
 	 * Icon
 	 ********************************************************/
