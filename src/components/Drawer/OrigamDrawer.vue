@@ -457,7 +457,7 @@
 		border-end-end-radius: var(--origam-drawer---border-end-end-radius, 0);
 		border-end-start-radius: var(--origam-drawer---border-end-start-radius, 0);
 
-		background: var(--origam-drawer---background);
+		background-color: var(--origam-drawer---background);
 		box-shadow: var(--origam-drawer---box-shadow);
 		color: var(--origam-drawer---color);
 
