@@ -24,7 +24,7 @@
 
 		<template #default>
 			<div
-					:class="['origam-tooltip__content', colorClasses]"
+					:class="tooltipContentClasses"
 					:style="colorStyles"
 			>
 				<slot name="default">
@@ -149,6 +149,12 @@
 		return [
 			props.style
 		] as StyleValue
+	})
+	const tooltipContentClasses = computed(() => {
+		return [
+			'origam-tooltip__content',
+			colorClasses.value
+		]
 	})
 	const tooltipClasses = computed(() => {
 		return [

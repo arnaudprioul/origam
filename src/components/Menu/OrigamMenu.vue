@@ -25,7 +25,7 @@
 
 		<template #default>
 			<div
-					:class="['origam-menu__content', colorClasses]"
+					:class="menuContentClasses"
 					:style="colorStyles"
 			>
 				<slot name="default">
@@ -321,6 +321,12 @@
 		return [
 			props.style
 		] as StyleValue
+	})
+	const menuContentClasses = computed(() => {
+		return [
+			'origam-menu__content',
+			colorClasses.value
+		]
 	})
 	const menuClasses = computed(() => {
 		return [

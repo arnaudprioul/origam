@@ -5,7 +5,7 @@
     v-bind="rootAttrs"
   >
     <div
-      :class="['origam-selection-control__wrapper', wrapperColorClasses]"
+      :class="selectionControlWrapperClasses"
       :style="wrapperColorStyles"
     >
       <slot
@@ -299,6 +299,12 @@
     return [
       props.style
     ] as StyleValue
+  })
+  const selectionControlWrapperClasses = computed(() => {
+    return [
+      'origam-selection-control__wrapper',
+      wrapperColorClasses.value
+    ]
   })
   const selectionControlClasses = computed(() => {
     return [

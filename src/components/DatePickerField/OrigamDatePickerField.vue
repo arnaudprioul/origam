@@ -96,7 +96,7 @@
 							:key="index"
 					>
 						<div
-								:class="['origam-date-picker-field__selection-chips', textColorClasses]"
+								:class="datePickerFieldSelectionChipsClasses"
 								:style="[textColorStyles]"
 						>
 							<template v-if="isMultiple">
@@ -445,6 +445,12 @@
 		return [
 			props.style
 		] as StyleValue
+	})
+	const datePickerFieldSelectionChipsClasses = computed(() => {
+		return [
+			'origam-date-picker-field__selection-chips',
+			textColorClasses.value
+		]
 	})
 	const datePickerFieldClasses = computed(() => {
 		return [

@@ -175,7 +175,7 @@
 					:key="index"
 			>
 				<div
-						:class="['origam-select__selection', {'origam-select__selection--selected' : index === selectionIndex}, textColorClasses]"
+						:class="getSelectionClasses(index)"
 						:style="[textColorStyles]"
 				>
 					<template v-if="hasChips">
@@ -955,6 +955,13 @@
 			props.style
 		] as StyleValue
 	})
+	const getSelectionClasses = (index: number) => {
+		return [
+			'origam-select__selection',
+			{ 'origam-select__selection--selected': index === selectionIndex.value },
+			textColorClasses.value
+		]
+	}
 	const selectClasses = computed(() => {
 		return [
 			'origam-select',

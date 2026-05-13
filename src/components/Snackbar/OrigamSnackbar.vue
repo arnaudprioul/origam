@@ -23,7 +23,7 @@
 			<div
 					v-if="timer"
 					:key="`timer-${timerKey}`"
-					:class="['origam-snackbar__timer', { 'origam-snackbar__timer--paused': isHovering }]"
+					:class="snackbarTimerClasses"
 					:style="{ '--origam-snackbar__timer---duration': `${timeout}ms` }"
 			>
 				<div class="origam-snackbar__timer-bar"/>
@@ -316,6 +316,12 @@
 			mainStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const snackbarTimerClasses = computed(() => {
+		return [
+			'origam-snackbar__timer',
+			{ 'origam-snackbar__timer--paused': isHovering.value }
+		]
 	})
 	const snackbarClasses = computed(() => {
 		return [

@@ -18,7 +18,7 @@
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-							:class="['origam-expansion-panel__progress', `origam-expansion-panel__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+							:class="expansionPanelProgressClasses"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -267,6 +267,12 @@
 			marginStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const expansionPanelProgressClasses = computed(() => {
+		return [
+			'origam-expansion-panel__progress',
+			`origam-expansion-panel__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
 	})
 	const expansionPanelClasses = computed(() => {
 		return [

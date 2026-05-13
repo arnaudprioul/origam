@@ -15,7 +15,7 @@
 		        v-show="modelValue"
 		        :id="id"
 		        :aria-label="t(label, content)"
-		        :class="['origam-badge__badge', colorClasses, roundedClasses, borderClasses, elevationClasses]"
+		        :class="badgeContentClasses"
 		        aria-atomic="true"
 		        aria-live="polite"
 		        role="status"
@@ -229,6 +229,15 @@
 			borderStyles.value,
 			props.inline ? {} : locationStyles.value
 		] as StyleValue
+	})
+	const badgeContentClasses = computed(() => {
+		return [
+			'origam-badge__badge',
+			colorClasses.value,
+			roundedClasses.value,
+			borderClasses.value,
+			elevationClasses.value
+		]
 	})
 
 	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)

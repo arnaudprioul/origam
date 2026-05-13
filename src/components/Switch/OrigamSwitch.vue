@@ -76,7 +76,7 @@
 							v-bind="selectionControlProps"
 					/>
 					<div
-							:class="['origam-switch__thumb', { 'origam-switch__thumb--filled': !!icon || loaderConfig.isActive }]"
+							:class="getSwitchThumbClasses(icon)"
 					>
 						<origam-translate-scale>
 							<template v-if="!loaderConfig.isActive">
@@ -270,6 +270,12 @@
 			props.style
 		] as StyleValue
 	})
+	const getSwitchThumbClasses = (icon: unknown) => {
+		return [
+			'origam-switch__thumb',
+			{ 'origam-switch__thumb--filled': !!icon || loaderConfig.value.isActive }
+		]
+	}
 	const switchClasses = computed(() => {
 		return [
 			'origam-switch',

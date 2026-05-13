@@ -18,7 +18,7 @@
 
 		<div
 				v-ripple="rippleProps"
-				:class="['origam-slider-field-thumb__ripple', textColorClasses]"
+				:class="sliderFieldThumbRippleClasses"
 				:style="sliderFieldThumbRippleStyles"
 		/>
 
@@ -286,6 +286,12 @@
 			elevationClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
+			textColorClasses.value
+		]
+	})
+	const sliderFieldThumbRippleClasses = computed(() => {
+		return [
+			'origam-slider-field-thumb__ripple',
 			textColorClasses.value
 		]
 	})

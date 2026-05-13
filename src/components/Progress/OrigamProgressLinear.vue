@@ -13,12 +13,12 @@
 				class="origam-progress__stream"
 		/>
 		<div
-				:class="['origam-progress__background', backgroundColorClasses]"
+				:class="progressBackgroundClasses"
 				:style="backgroundStyles"
 		/>
 
 		<origam-transition :transition="transition">
-			<div :class="['origam-progress__loader', loaderColorClasses]">
+			<div :class="progressLoaderClasses">
 				<template v-if="indeterminate">
 					<div
 							v-for="bar in ['long', 'short']"
@@ -163,6 +163,18 @@
 			progressStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const progressBackgroundClasses = computed(() => {
+		return [
+			'origam-progress__background',
+			backgroundColorClasses.value
+		]
+	})
+	const progressLoaderClasses = computed(() => {
+		return [
+			'origam-progress__loader',
+			loaderColorClasses.value
+		]
 	})
 	const progressLinearClasses = computed(() => {
 		return [

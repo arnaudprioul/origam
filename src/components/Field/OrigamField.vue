@@ -25,7 +25,7 @@
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-							:class="['origam-field__progress', `origam-field__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+							:class="fieldProgressClasses"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -492,6 +492,12 @@
 			elevationStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const fieldProgressClasses = computed(() => {
+		return [
+			'origam-field__progress',
+			`origam-field__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
 	})
 	const fieldClasses = computed(() => {
 		return [

@@ -12,12 +12,12 @@
 			role="status"
 	>
 		<div
-				:class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--circular']"
+				:class="skeletonCircularClasses"
 				:style="circularStyle"
 		/>
 		<div class="origam-skeleton__lines">
-			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
-			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
+			<div :class="skeletonTextClasses"/>
+			<div :class="skeletonTextClasses"/>
 		</div>
 	</div>
 
@@ -29,10 +29,10 @@
 			aria-label="Loading"
 			role="status"
 	>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--rectangular']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': pulse }, 'origam-skeleton--text']"/>
+		<div :class="skeletonRectangularClasses"/>
+		<div :class="skeletonTextClasses"/>
+		<div :class="skeletonTextClasses"/>
+		<div :class="skeletonTextClasses"/>
 	</div>
 
 	<div
@@ -113,6 +113,21 @@
 	 * Class & Style
 	 ********************************************************/
 
+	const skeletonCircularClasses = computed(() => [
+		'origam-skeleton',
+		{ 'origam-skeleton--pulse': props.pulse },
+		'origam-skeleton--circular'
+	])
+	const skeletonTextClasses = computed(() => [
+		'origam-skeleton',
+		{ 'origam-skeleton--pulse': props.pulse },
+		'origam-skeleton--text'
+	])
+	const skeletonRectangularClasses = computed(() => [
+		'origam-skeleton',
+		{ 'origam-skeleton--pulse': props.pulse },
+		'origam-skeleton--rectangular'
+	])
 	const skeletonContainerClasses = computed(() => [
 		'origam-skeleton-wrapper',
 		`origam-skeleton-wrapper--${props.variant}`,

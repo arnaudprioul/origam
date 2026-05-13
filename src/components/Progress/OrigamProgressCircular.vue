@@ -12,7 +12,7 @@
 		>
 			<circle
 					:r="MAGIC_RADIUS"
-					:class="['origam-progress__underlay', backgroundColorClasses]"
+					:class="progressUnderlayClasses"
 					:stroke-dasharray="CIRCUMFERENCE"
 					:stroke-width="strokeWidth"
 					:style="backgroundStyles"
@@ -24,7 +24,7 @@
 
 			<circle
 					:r="MAGIC_RADIUS"
-					:class="['origam-progress__overlay', loaderColorClasses]"
+					:class="progressOverlayClasses"
 					:stroke-dasharray="CIRCUMFERENCE"
 					:stroke-dashoffset="strokeDashOffset"
 					:stroke-width="strokeWidth"
@@ -174,6 +174,18 @@
 			progressStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const progressUnderlayClasses = computed(() => {
+		return [
+			'origam-progress__underlay',
+			backgroundColorClasses.value
+		]
+	})
+	const progressOverlayClasses = computed(() => {
+		return [
+			'origam-progress__overlay',
+			loaderColorClasses.value
+		]
 	})
 	const progressCircularClasses = computed(() => {
 		return [
