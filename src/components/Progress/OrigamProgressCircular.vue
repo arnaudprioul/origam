@@ -58,8 +58,9 @@
 		useProps,
 		useResizeObserver,
 		useSize,
+		useStyle,
 		useTextColor
-	} from '../../composables'
+} from '../../composables'
 
 	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts'
 
@@ -195,6 +196,8 @@
 			loaderColorStyles.value
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(progressCircularStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -203,7 +206,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

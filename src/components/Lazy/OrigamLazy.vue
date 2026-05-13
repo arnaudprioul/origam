@@ -23,7 +23,12 @@
 	import { computed, StyleValue } from 'vue'
 	import { OrigamFade, OrigamTransition } from '../../components'
 
-	import { useDimension, useProps, useVModel } from '../../composables'
+	import {
+	useDimension,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { vIntersect } from '../../directives'
 
@@ -108,6 +113,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(lazyStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -117,6 +124,11 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

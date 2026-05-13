@@ -39,7 +39,8 @@
 		useProps,
 		useSheetSwipe,
 		useStateEffect,
-	} from '../../composables'
+		useStyle
+} from '../../composables'
 
 	import type { ISheetEmits, ISheetProps } from "../../interfaces"
 
@@ -228,6 +229,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sheetStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -238,7 +241,12 @@
 		// programmatic open/close from Dialog wrappers, …).
 		snapTo,
 		currentSnap,
-		isDragging
+		isDragging,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

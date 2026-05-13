@@ -18,7 +18,16 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
-	import { useBorder, useBothColor, useIcon, useMargin, usePadding, useProps, useSize } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useIcon,
+	useMargin,
+	usePadding,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
 
 	import type { IIconComponentProps } from '../../interfaces'
 
@@ -93,6 +102,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(iconStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -101,7 +112,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

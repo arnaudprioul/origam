@@ -106,6 +106,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(systemBarStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -114,7 +116,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

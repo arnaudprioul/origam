@@ -63,8 +63,9 @@
 		useProps,
 		useRounded,
 		useRtl,
+		useStyle,
 		useTextColor
-	} from '../../composables'
+} from '../../composables'
 
 	import type { IProgressLinearProps } from '../../interfaces'
 
@@ -203,6 +204,8 @@
 			loaderColorStyles.value
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(progressLinearStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -211,7 +214,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

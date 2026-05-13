@@ -456,6 +456,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerFieldStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -463,7 +465,12 @@
 	defineExpose(forwardRefs({
 		filterProps,
 		isFocused,
-		menu
+		menu,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamTextFieldRef))
 </script>
 

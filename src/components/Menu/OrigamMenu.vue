@@ -83,7 +83,13 @@
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { ORIGAM_MENU_KEY } from '../../consts'
 
@@ -322,6 +328,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(menuStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -329,7 +337,13 @@
 	 * @description
 	 * Forwards overlay ref members plus openChildren and filterProps.
 	 ********************************************************/
-	defineExpose(forwardRefs({openChildren, filterProps}, origamOverlayRef))
+	defineExpose(forwardRefs({openChildren, filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style

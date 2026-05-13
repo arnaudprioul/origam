@@ -34,7 +34,8 @@
 		useHover,
 		useProps,
 		useStateEffect,
-	} from '../../composables'
+		useStyle
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -117,6 +118,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(tableStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -125,7 +128,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

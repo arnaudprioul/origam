@@ -382,7 +382,18 @@
   import { OrigamChip, OrigamCounter, OrigamField, OrigamIcon, OrigamInput } from '../../components'
   import OrigamFileFieldDragNDropItem from './OrigamFileFieldDragNDropItem.vue'
   import OrigamFileFieldListItem from './OrigamFileFieldListItem.vue'
-  import { useAdjacent, useAdjacentInner, useBothColor, useDefaults, useDensity, useFocus, useLocale, useProps, useVModel } from '../../composables'
+  import {
+	useAdjacent,
+	useAdjacentInner,
+	useBothColor,
+	useDefaults,
+	useDensity,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
   import { DENSITY, MDI_ICONS } from '../../enums'
   import type { IFileFieldEmits, IFileFieldProps, IFileFieldSlots } from '../../interfaces'
   import type { TOrigamField, TOrigamInput } from '../../types'
@@ -854,8 +865,16 @@
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldProps` interface.
    ********************************************************/
   const { filterProps } = useProps<IFileFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(fileFieldStyles)
 
-  defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
+
+  defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamInputRef, origamFieldRef, inputRef))
 </script>
 
 <style

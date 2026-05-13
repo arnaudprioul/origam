@@ -135,8 +135,9 @@
 		useProps,
 		useSize,
 		useStateEffect,
+		useStyle,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts'
 
@@ -336,6 +337,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(chipStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -345,7 +348,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

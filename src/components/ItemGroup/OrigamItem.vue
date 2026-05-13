@@ -17,7 +17,11 @@
 >
   import { computed, StyleValue } from 'vue'
 
-  import { useGroupItem, useProps } from '../../composables'
+  import {
+	useGroupItem,
+	useProps,
+	useStyle
+} from '../../composables'
 
   import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
 
@@ -75,6 +79,8 @@
       props.style
     ] as StyleValue
   })
+	const {id, css, load, isLoaded, unload} = useStyle(itemStyles)
+
 
   /*********************************************************
    * Expose
@@ -84,6 +90,11 @@
    ********************************************************/
   defineExpose({
     filterProps,
-    toggle: groupItem.toggle
-  })
+    toggle: groupItem.toggle,
+    css,
+    id,
+    load,
+    unload,
+    isLoaded
+   })
 </script>

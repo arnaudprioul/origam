@@ -59,6 +59,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(appStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -67,6 +69,11 @@
 	 * Public API surface: filterProps.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

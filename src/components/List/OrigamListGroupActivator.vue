@@ -13,7 +13,11 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useNestedGroupActivator, useProps } from '../../composables'
+	import {
+	useNestedGroupActivator,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { IListActivatorProps } from '../../interfaces'
 
@@ -41,11 +45,18 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(activatorStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

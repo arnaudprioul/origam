@@ -471,6 +471,8 @@
 			}
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(slideGroupStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -480,7 +482,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

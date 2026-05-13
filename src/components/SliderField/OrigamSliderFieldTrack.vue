@@ -52,7 +52,12 @@
 		setup
 >
 	import { computed, inject, StyleValue, useSlots } from 'vue'
-	import { useBackgroundColor, useProps, useRounded } from '../../composables'
+	import {
+	useBackgroundColor,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_SLIDER_FIELD_KEY } from '../../consts'
 
@@ -270,6 +275,8 @@
 			}
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -278,7 +285,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

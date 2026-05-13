@@ -28,7 +28,13 @@
 	import { OrigamTreeviewNode } from '../../components'
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
-	import { useStateEffect, useDensity, useProps, useSize } from '../../composables'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStateEffect,
+	useStyle
+} from '../../composables'
 
 	import type { ITreeviewProps } from '../../interfaces'
 
@@ -188,6 +194,8 @@
 		sizeClasses.value,
 		props.class
 	])
+	const {id, css, load, isLoaded, unload} = useStyle(treeviewStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -197,7 +205,12 @@
 		isExpanded,
 		isSelected,
 		toggleExpanded,
-		toggleSelected
+		toggleSelected,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

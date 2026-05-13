@@ -289,7 +289,16 @@
 		OrigamVirtualScroll
 	} from '../../components'
 
-	import { useFilter, useItems, useLocale, useProps, useScrolling, useTextColor, useVModel } from '../../composables'
+	import {
+	useFilter,
+	useItems,
+	useLocale,
+	useProps,
+	useScrolling,
+	useStyle,
+	useTextColor,
+	useVModel
+} from '../../composables'
 
 	import { IN_BROWSER, ORIGAM_FORM_KEY } from '../../consts'
 
@@ -959,6 +968,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(selectStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -971,7 +982,12 @@
 		filterProps,
 		isFocused,
 		menu,
-		handleSelect
+		handleSelect,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamTextFieldRef))
 </script>
 

@@ -97,7 +97,10 @@
 	import { computed, inject, useSlots } from 'vue'
 
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
-	import { useProps } from '../../composables'
+	import {
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ITreeviewNodeProps } from '../../interfaces'
 
@@ -235,6 +238,8 @@
 			paddingInlineStart: `calc(var(--origam-treeview---indent-size, 16px) * ${d} + var(--origam-treeview---row-padding-inline, 8px))`
 		}
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -242,7 +247,12 @@
 	defineExpose({
 		filterProps,
 		isNodeExpanded,
-		isNodeSelected
+		isNodeSelected,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

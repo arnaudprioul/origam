@@ -659,6 +659,8 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(paginationStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -667,7 +669,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

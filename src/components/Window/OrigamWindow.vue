@@ -62,7 +62,12 @@
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
 	import { OrigamBtn, OrigamSpacer } from '../../components'
 
-	import { useGroup, useLocale, useProps } from '../../composables'
+	import {
+	useGroup,
+	useLocale,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
 
@@ -253,6 +258,8 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(windowStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -262,7 +269,12 @@
 	 ********************************************************/
 	defineExpose({
 		filterProps,
-		group
+		group,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

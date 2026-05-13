@@ -47,7 +47,14 @@
 	import { computed, inject, StyleValue } from 'vue'
 	import { OrigamTranslateScale } from '../../components'
 
-	import { useBorder, useElevation, useProps, useRounded, useTextColor } from '../../composables'
+	import {
+	useBorder,
+	useElevation,
+	useProps,
+	useRounded,
+	useStyle,
+	useTextColor
+} from '../../composables'
 
 	import { ORIGAM_SLIDER_FIELD_KEY } from '../../consts'
 
@@ -288,6 +295,8 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldThumbStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -296,7 +305,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

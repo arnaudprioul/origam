@@ -44,7 +44,11 @@
   import { computed, StyleValue } from 'vue'
 
   import { OrigamBtn, OrigamIcon, OrigamProgress } from '../../components'
-  import { useDefaults, useProps } from '../../composables'
+  import {
+	useDefaults,
+	useProps,
+	useStyle
+} from '../../composables'
   import { MDI_ICONS } from '../../enums'
   import type { IFileFieldDragNDropItemEmits, IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots } from '../../interfaces'
   import { humanReadableFileSize } from '../../utils'
@@ -124,8 +128,16 @@
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldDragNDropItemProps` interface.
    ********************************************************/
   const { filterProps } = useProps<IFileFieldDragNDropItemProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(dragNDropItemStyles)
 
-  defineExpose({ filterProps })
+
+  defineExpose({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 </script>
 
 <style

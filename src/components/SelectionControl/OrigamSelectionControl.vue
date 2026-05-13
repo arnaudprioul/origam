@@ -73,10 +73,15 @@
   import { OrigamIcon, OrigamLabel } from '../../components'
 
   import {
-		useDefaults, useDensity, useProps, useTextColor, useVModel,
+		useDefaults,
+		useDensity,
 		useHover,
-		useStateEffect
-	} from '../../composables'
+		useProps,
+		useStateEffect,
+		useStyle,
+		useTextColor,
+		useVModel
+} from '../../composables'
 
   import { vRipple } from '../../directives'
 
@@ -310,6 +315,8 @@
       props.class
     ]
   })
+	const {id, css, load, isLoaded, unload} = useStyle(selectionControlStyles)
+
 
   /*********************************************************
    * Expose
@@ -318,7 +325,13 @@
    * Exposes filterProps to parent ref consumers, forwarded
    * through inputRef.
    ********************************************************/
-  defineExpose(forwardRefs({ filterProps }, inputRef))
+  defineExpose(forwardRefs({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, inputRef))
 </script>
 
 <style

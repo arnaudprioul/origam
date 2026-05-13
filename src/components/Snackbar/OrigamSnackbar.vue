@@ -99,9 +99,10 @@
 		useScopeId,
 		useStateEffect,
 		useStatus,
+		useStyle,
 		useToggleScope,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { ORIGAM_LAYOUT_KEY } from '../../consts'
 
@@ -336,6 +337,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(snackbarStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -343,7 +346,13 @@
 	 * @description
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style

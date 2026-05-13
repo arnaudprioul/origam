@@ -697,6 +697,8 @@
 	const handleCompactDecrement = () => {
 		toggleUpDown(false)
 	}
+	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -704,7 +706,13 @@
 	 * @description
 	 * Forwards TextField ref members plus filterProps.
 	 ********************************************************/
-	defineExpose(forwardRefs({filterProps}, origamTextFieldRef))
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamTextFieldRef))
 
 </script>
 

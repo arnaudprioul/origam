@@ -13,7 +13,15 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { useBorder, useBothColor, useDensity, useMargin, usePadding, useProps } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 	import { DENSITY } from '../../enums'
 
 	import type { IRowProps } from '../../interfaces'
@@ -88,6 +96,8 @@
 
 		return classes
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -96,7 +106,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

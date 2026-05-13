@@ -97,7 +97,15 @@
 	} from 'vue'
 	import { OrigamResponsive, OrigamTransition } from '../../components'
 
-	import { useBorder, useBothColor, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import { SUPPORTS_INTERSECTION } from '../../consts'
 
@@ -382,6 +390,8 @@
 			`backgroundImage: linear-gradient(${props.gradient})`
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(imgStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -390,7 +400,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

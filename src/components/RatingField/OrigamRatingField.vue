@@ -148,7 +148,12 @@
 	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamBtn, OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
 
-	import { useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
 
@@ -310,6 +315,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -318,7 +325,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

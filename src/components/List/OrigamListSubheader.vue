@@ -23,7 +23,15 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { useBorder, useBothColor, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import type { IListSubheader } from '../../interfaces'
 
@@ -79,12 +87,19 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(listSubheaderStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

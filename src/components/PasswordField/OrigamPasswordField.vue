@@ -319,8 +319,9 @@
 		useFocus,
 		useLocale,
 		useProps,
+		useStyle,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 	import {
 		DEFAULT_PASSWORD_REQUIREMENTS,
 		REQUIREMENT_MIN_LENGTH,
@@ -685,8 +686,16 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<IPasswordFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(passwordFieldStyles)
 
-	defineExpose(forwardRefs({filterProps}))
+
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}))
 </script>
 
 <style

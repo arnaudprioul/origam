@@ -56,7 +56,16 @@
 >
 	import { OrigamDataTableHeadersCell, OrigamDataTableHeadersCellMobile, OrigamProgress } from '../../components'
 
-	import { useDisplay, useHeaders, useHeadersCell, useLoader, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useDisplay,
+	useHeaders,
+	useHeadersCell,
+	useLoader,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { PROGRESS_TYPE } from '../../enums'
 
@@ -137,12 +146,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

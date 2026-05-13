@@ -151,6 +151,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerYearsStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -160,7 +162,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

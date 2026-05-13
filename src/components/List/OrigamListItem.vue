@@ -125,8 +125,9 @@
 		useList,
 		useNestedItem,
 		useProps,
-		useStateEffect
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { vRipple } from '../../directives'
 
@@ -338,6 +339,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -347,7 +350,12 @@
 		isSelected,
 		list,
 		select,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

@@ -44,7 +44,11 @@
   import { computed, StyleValue } from 'vue'
 
   import { OrigamBtn, OrigamIcon, OrigamProgress } from '../../components'
-  import { useDefaults, useProps } from '../../composables'
+  import {
+	useDefaults,
+	useProps,
+	useStyle
+} from '../../composables'
   import { MDI_ICONS } from '../../enums'
   import type { IFileFieldListItemEmits, IFileFieldListItemProps, IFileFieldListItemSlots } from '../../interfaces'
   import { humanReadableFileSize } from '../../utils'
@@ -124,8 +128,16 @@
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldListItemProps` interface.
    ********************************************************/
   const { filterProps } = useProps<IFileFieldListItemProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles)
 
-  defineExpose({ filterProps })
+
+  defineExpose({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 </script>
 
 <style

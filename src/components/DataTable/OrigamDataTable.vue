@@ -134,8 +134,9 @@
 		useOptions,
 		usePaginatedItems,
 		useProps,
-		useSortedItems
-	} from '../../composables'
+		useSortedItems,
+		useStyle
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
@@ -333,12 +334,19 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

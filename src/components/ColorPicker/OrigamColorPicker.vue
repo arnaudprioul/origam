@@ -259,6 +259,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -268,7 +270,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>

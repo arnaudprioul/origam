@@ -101,6 +101,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(contextualMenuStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -109,7 +111,13 @@
 	 * Public API surface exposed to parent components.
 	 ********************************************************/
 
-	defineExpose(forwardRefs({filterProps}, origamMenuRef))
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamMenuRef))
 
 </script>
 

@@ -185,7 +185,16 @@
 	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import { useAdjacent, useAdjacentInner, useDefaults, useFocus, useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useAdjacent,
+	useAdjacentInner,
+	useDefaults,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts'
 
@@ -426,12 +435,20 @@
 	})
 
 	const {filterProps} = useProps<ITextFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(textFieldStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 
-	defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamInputRef, origamFieldRef, inputRef))
 </script>
 
 <style

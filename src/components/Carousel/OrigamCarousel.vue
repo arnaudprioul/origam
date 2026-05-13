@@ -91,7 +91,12 @@
 >
 	import { OrigamBtn, OrigamProgressLinear, OrigamWindow } from '../../components'
 
-	import { useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
 
@@ -216,6 +221,8 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(carouselStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -225,7 +232,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>

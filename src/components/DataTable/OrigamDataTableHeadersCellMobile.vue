@@ -190,7 +190,14 @@
 >
 	import { OrigamChip, OrigamDataTableColumnCell, OrigamSelect } from '../../components'
 
-	import { useHeadersCell, useLocale, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useHeadersCell,
+	useLocale,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
@@ -276,11 +283,18 @@
 			props.style
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

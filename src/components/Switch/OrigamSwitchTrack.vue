@@ -40,7 +40,11 @@
 	 ********************************************************/
 	import { computed, StyleValue, useSlots } from 'vue'
 
-	import { useBackgroundColor, useProps } from '../../composables'
+	import {
+	useBackgroundColor,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ISwitchTrackEmits, ISwitchTrackProps, ISwitchTrackSlots } from "../../interfaces"
 
@@ -139,6 +143,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(switchTrackStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -148,7 +154,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

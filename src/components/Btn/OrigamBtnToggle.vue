@@ -33,7 +33,11 @@
 >
 	import { OrigamBtnGroup } from '../../components'
 
-	import { useGroup, useProps } from '../../composables'
+	import {
+	useGroup,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
@@ -92,6 +96,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(btnToggleStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -103,7 +109,12 @@
 		next,
 		prev,
 		select,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

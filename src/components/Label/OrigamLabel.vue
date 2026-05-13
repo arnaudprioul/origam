@@ -18,7 +18,16 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { useBorder, useBothColor, useDefaults, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useDefaults,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import type { ILabelEmits, ILabelProps, ILabelSlots } from '../../interfaces'
 
@@ -91,9 +100,16 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<ILabelProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(labelStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

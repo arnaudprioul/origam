@@ -33,7 +33,8 @@
 		useProps,
 		useRounded,
 		useSize,
-	} from '../../composables'
+		useStyle
+} from '../../composables'
 
 	import type { IKbdProps } from '../../interfaces'
 
@@ -99,6 +100,8 @@
 			props.style,
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(kbdStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -106,7 +109,13 @@
 	 * @description
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
-	defineExpose({ filterProps })
+	defineExpose({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 </script>
 
 <style

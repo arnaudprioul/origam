@@ -55,8 +55,9 @@
 		useNestedItem,
 		useProps,
 		useSsrBoot,
-		useStateEffect
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { MDI_ICONS } from "../../enums"
 
@@ -167,13 +168,20 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(listGroupStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
 		isOpen,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

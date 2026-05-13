@@ -42,7 +42,13 @@
 	import { computed, mergeProps, ref, StyleValue, toRef } from 'vue'
 	import { OrigamFade, OrigamOverlay, OrigamTranslateScale } from '../../components'
 
-	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
@@ -150,11 +156,19 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(tooltipStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style

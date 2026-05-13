@@ -44,7 +44,11 @@
 >
 	import { OrigamSelectionControl } from '../../components'
 
-	import { useProps, useVModel } from '../../composables'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
@@ -135,6 +139,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(checkboxBtnStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -144,6 +150,11 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

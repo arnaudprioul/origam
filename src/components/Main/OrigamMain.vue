@@ -18,7 +18,16 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useBorder, useLayout, useMargin, usePadding, useProps, useRounded, useSsrBoot } from '../../composables'
+	import {
+	useBorder,
+	useLayout,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useSsrBoot,
+	useStyle
+} from '../../composables'
 
 	import type { IMainProps } from '../../interfaces'
 
@@ -82,6 +91,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(mainStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -90,7 +101,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

@@ -120,7 +120,13 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
 	import { OrigamBtn, OrigamInfiniteScrollIntersect, OrigamProgress } from '../../components'
 
-	import { useBothColor, useDimension, useLocale, useProps } from '../../composables'
+	import {
+	useBothColor,
+	useDimension,
+	useLocale,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import {
 		DIRECTION,
@@ -326,6 +332,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -334,7 +342,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

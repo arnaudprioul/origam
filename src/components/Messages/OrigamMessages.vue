@@ -46,8 +46,9 @@
 		useProps,
 		useRounded,
 		useSsrBoot,
+		useStyle,
 		useTextColor
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -143,6 +144,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(messagesStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -151,7 +154,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

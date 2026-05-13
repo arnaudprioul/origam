@@ -84,7 +84,16 @@
 
 	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from '../../components'
 
-	import { useCell, useDisplay, useExpanded, useHeaders, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useCell,
+	useDisplay,
+	useExpanded,
+	useHeaders,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { MDI_ICONS, SIZES } from '../../enums'
 
@@ -213,12 +222,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

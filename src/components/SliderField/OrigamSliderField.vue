@@ -187,7 +187,15 @@
 	import { computed, ref, StyleValue, useSlots, WritableComputedRef } from 'vue'
 	import { OrigamInput, OrigamLabel, OrigamSliderFieldThumb, OrigamSliderFieldTrack } from '../../components'
 
-	import { useFocus, useProps, useRtl, useSlider, useSteps, useVModel } from '../../composables'
+	import {
+	useFocus,
+	useProps,
+	useRtl,
+	useSlider,
+	useSteps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
@@ -503,6 +511,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -511,7 +521,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

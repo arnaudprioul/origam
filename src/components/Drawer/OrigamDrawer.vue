@@ -91,10 +91,11 @@
 		useSsrBoot,
 		useStateEffect,
 		useSticky,
+		useStyle,
 		useToggleScope,
 		useTouch,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { INLINE } from '../../enums'
 
@@ -413,6 +414,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(drawerStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -421,7 +424,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

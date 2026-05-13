@@ -29,8 +29,9 @@
 		useMargin,
 		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useRounded,
+		useStyle
+} from '../../composables'
 
 	import type { IResponsiveProps } from '../../interfaces'
 
@@ -97,6 +98,8 @@
 			props.contentClass
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -105,7 +108,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

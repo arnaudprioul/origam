@@ -18,7 +18,11 @@
 >
 	import { computed, StyleValue } from 'vue'
 	import { OrigamFade, OrigamTransition } from '../../components'
-	import { useBackgroundColor, useProps } from '../../composables'
+	import {
+	useBackgroundColor,
+	useProps,
+	useStyle
+} from '../../composables'
 	import type { IOverlayScrimProps } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
 
@@ -89,6 +93,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(scrimStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -97,7 +103,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

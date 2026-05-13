@@ -155,7 +155,8 @@
 		usePosition,
 		useProps,
 		useStateEffect,
-	} from '../../composables'
+		useStyle
+} from '../../composables'
 
 	import { vRipple } from '../../directives'
 
@@ -367,6 +368,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(cardStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -375,7 +378,12 @@
 	 * Public API surface: filterProps.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

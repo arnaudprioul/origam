@@ -45,7 +45,12 @@
 	import type { StyleValue } from 'vue'
 
 	import { OrigamIcon } from '../../components'
-	import { useDensity, useProps, useSize } from '../../composables'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
 	import type { ITimelineItemProps } from '../../interfaces'
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
@@ -168,11 +173,19 @@
 	const itemStyles = computed(() => [
 		props.style
 	] as StyleValue)
+	const {id, css, load, isLoaded, unload} = useStyle(itemStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
-	defineExpose({ filterProps })
+	defineExpose({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 </script>
 
 <style lang="scss" scoped>

@@ -138,7 +138,14 @@
 		OrigamMessages
 	} from '../../components'
 
-	import { useAdjacent, useDefaults, useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useAdjacent,
+	useDefaults,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 	import { DENSITY, DIRECTION } from '../../enums'
 	import type { IConfirmWrapperEmits, IConfirmWrapperProps, IConfirmWrapperSlots } from '../../interfaces'
 	import type { TOrigamLabel } from '../../types'
@@ -421,8 +428,16 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<IConfirmWrapperProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(confirmWrapperStyles)
 
-	defineExpose(forwardRefs({filterProps, validate, reset, resetValidation}))
+
+	defineExpose(forwardRefs({filterProps, validate, reset, resetValidation,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}))
 </script>
 
 <style

@@ -22,7 +22,11 @@
 		setup
 >
 	import { computed, StyleValue, useAttrs, watch } from 'vue'
-	import { useProps, useResizeObserver } from '../../composables'
+	import {
+	useProps,
+	useResizeObserver,
+	useStyle
+} from '../../composables'
 
 	import type { IVirtualScrollItemProps } from '../../interfaces'
 
@@ -78,6 +82,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollItemStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -86,7 +92,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

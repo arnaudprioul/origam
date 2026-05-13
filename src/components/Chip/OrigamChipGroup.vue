@@ -102,6 +102,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(chipGroupStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -111,6 +113,11 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

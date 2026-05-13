@@ -20,7 +20,11 @@
 	import { computed, StyleValue, useSlots } from 'vue'
 
 	import { OrigamDefaultsProvider } from '../../components'
-	import { useGroup, useProps } from '../../composables'
+	import {
+	useGroup,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
 
@@ -77,6 +81,8 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(itemGroupStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -85,6 +91,11 @@
 		filterProps,
 		next,
 		prev,
-		select
+		select,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

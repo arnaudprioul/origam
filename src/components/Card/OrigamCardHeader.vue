@@ -95,7 +95,12 @@
 >
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 
-	import { useAdjacent, useDensity, useProps } from '../../composables'
+	import {
+	useAdjacent,
+	useDensity,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ICardHeaderProps } from '../../interfaces'
 
@@ -173,6 +178,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(cardHeaderStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -182,7 +189,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

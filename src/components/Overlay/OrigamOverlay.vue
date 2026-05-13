@@ -67,10 +67,11 @@
 		useScopeId,
 		useScrollStrategies,
 		useStack,
+		useStyle,
 		useTeleport,
 		useToggleScope,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { IN_BROWSER } from '../../consts'
 
@@ -378,6 +379,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -394,7 +397,12 @@
 		globalTop,
 		localTop,
 		updateLocation,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>

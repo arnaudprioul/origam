@@ -37,8 +37,9 @@
 		usePadding,
 		useProps,
 		useRounded,
+		useStyle,
 		useThrottleFn
-	} from '../../composables'
+} from '../../composables'
 
 	import { ORIGAM_PARALLAX_KEY } from '../../consts'
 
@@ -371,6 +372,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(parallaxStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -379,7 +382,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

@@ -19,7 +19,11 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useCreateLayout, useProps } from '../../composables'
+	import {
+	useCreateLayout,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ILayoutProps } from '../../interfaces'
 
@@ -60,6 +64,8 @@
 	const layClasses = computed(() => {
 		return [layoutClasses.value, props.class]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(layStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -71,7 +77,12 @@
 	defineExpose({
 		getLayoutItem,
 		items,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

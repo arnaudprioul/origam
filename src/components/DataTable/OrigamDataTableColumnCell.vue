@@ -12,7 +12,12 @@
 		lang="ts"
 		setup
 >
-	import { useDimension, usePadding, useProps } from '../../composables'
+	import {
+	useDimension,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ALIGN } from '../../enums'
 
@@ -66,12 +71,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableColumnStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

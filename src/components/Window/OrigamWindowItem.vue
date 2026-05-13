@@ -24,7 +24,13 @@
 	import { computed, inject, nextTick, shallowRef, StyleValue } from 'vue'
 	import { OrigamTransition } from '../../components'
 
-	import { useGroupItem, useLazy, useProps, useSsrBoot } from '../../composables'
+	import {
+	useGroupItem,
+	useLazy,
+	useProps,
+	useSsrBoot,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
 
@@ -178,6 +184,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(windowItemStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -186,7 +194,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

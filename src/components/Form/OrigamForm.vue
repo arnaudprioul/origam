@@ -59,7 +59,14 @@
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamMessages } from '../../components'
 
-	import { useDefaults, useForm, useMessage, useProps, useValidation } from '../../composables'
+	import {
+	useDefaults,
+	useForm,
+	useMessage,
+	useProps,
+	useStyle,
+	useValidation
+} from '../../composables'
 
 	import type { IFormEmits, IFormProps, IFormSlots, ISubmitEventPromise } from '../../interfaces'
 
@@ -205,6 +212,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(formStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -212,7 +221,13 @@
 	 * @description
 	 * Forwards filterProps and form helpers to parent components.
 	 ********************************************************/
-	defineExpose(forwardRefs({ filterProps, ...form, errorMessages, formIsValid, scrollToFirstError }, formRef))
+	defineExpose(forwardRefs({ filterProps, ...form, errorMessages, formIsValid, scrollToFirstError,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, formRef))
 </script>
 
 <style

@@ -47,7 +47,13 @@
 		lang="ts"
 		setup
 >
-	import { useBothColor, useProps, useRounded, useSize } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useRounded,
+	useSize,
+	useStyle
+} from '../../composables'
 	import type { ISkeletonProps } from '../../interfaces'
 	import { convertToUnit } from '../../utils'
 	import { computed, toRef } from 'vue'
@@ -136,12 +142,19 @@
 
 		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

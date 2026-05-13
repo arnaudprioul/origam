@@ -43,7 +43,10 @@
 >
 	import { OrigamImg, OrigamWindowItem } from '../../components'
 
-	import { useProps } from '../../composables'
+	import {
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ICarouselItemProps } from '../../interfaces'
 
@@ -101,6 +104,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(carouselItemStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -110,7 +115,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

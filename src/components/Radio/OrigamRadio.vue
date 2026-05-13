@@ -107,10 +107,13 @@
 	import { OrigamInput, OrigamRadioBtn } from '../../components'
 
 	import {
-		useFocus, useProps, useVModel,
+		useFocus,
 		useHover,
-		useStateEffect
-	} from '../../composables'
+		useProps,
+		useStateEffect,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -215,6 +218,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(radioStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -223,7 +228,12 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

@@ -12,7 +12,12 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useAttrs } from 'vue'
-	import { useBothColor, useMargin, useProps } from '../../composables'
+	import {
+	useBothColor,
+	useMargin,
+	useProps,
+	useStyle
+} from '../../composables'
 	import { DIRECTION } from '../../enums'
 
 	import type { IDividerProps } from '../../interfaces'
@@ -100,6 +105,8 @@
 
 		return styles as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dividerStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -108,7 +115,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

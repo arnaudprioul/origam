@@ -12,7 +12,14 @@
 		lang="ts"
 		setup
 >
-	import { useBorder, useBothColor, useMargin, usePadding, useProps } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { IColProps } from '../../interfaces'
 
@@ -91,6 +98,8 @@
 
 		return classes
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -99,7 +108,12 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

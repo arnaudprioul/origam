@@ -125,7 +125,14 @@
 >
 	import { computed, mergeProps, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
 	import { OrigamBtn, OrigamCard, OrigamIcon, OrigamOverlay, OrigamTranslateScale } from '../../components'
-	import { useProps, useScopeId, useSize, useStatus, useVModel } from '../../composables'
+	import {
+	useProps,
+	useScopeId,
+	useSize,
+	useStatus,
+	useStyle,
+	useVModel
+} from '../../composables'
 	import { IN_BROWSER } from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { MDI_ICONS } from '../../enums'
@@ -324,6 +331,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dialogStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -331,7 +340,13 @@
 	 * @description
 	 * Forwards filterProps and the overlay ref to parent components.
 	 ********************************************************/
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style

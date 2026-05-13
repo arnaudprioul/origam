@@ -43,7 +43,11 @@
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 	import { OrigamSelectionControl } from '../../components'
 
-	import { useProps, useVModel } from '../../composables'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
@@ -128,6 +132,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(radioBtnStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -136,6 +142,11 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

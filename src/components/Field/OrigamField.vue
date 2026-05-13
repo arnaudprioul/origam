@@ -182,8 +182,9 @@
 		useRtl,
 		useSize,
 		useStateEffect,
+		useStyle,
 		useVariant
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 
@@ -533,9 +534,16 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(fieldStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

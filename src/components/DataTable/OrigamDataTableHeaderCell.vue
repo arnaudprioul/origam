@@ -60,7 +60,15 @@
 >
 	import { OrigamCheckboxBtn, OrigamDataTableColumnCell, OrigamIcon } from '../../components'
 
-	import { useBothColor, useCell, useHeadersCell, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useBothColor,
+	useCell,
+	useHeadersCell,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import type { IDataTableHeaderCellProps, IDataTableSortItem, IInternalDataTableHeader } from '../../interfaces'
 
@@ -170,12 +178,19 @@
 			props.style
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeaderCellStyles)
+
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

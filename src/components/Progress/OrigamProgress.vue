@@ -27,7 +27,12 @@
 	import { computed, ref, StyleValue } from 'vue'
 	import { OrigamProgressCircular, OrigamProgressLinear } from '../../components'
 
-	import { useProgress, useProps, useSize } from '../../composables'
+	import {
+	useProgress,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
 
 	import { PROGRESS_TYPE, SIZES } from '../../enums'
 
@@ -114,6 +119,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(progressStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -122,6 +129,11 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

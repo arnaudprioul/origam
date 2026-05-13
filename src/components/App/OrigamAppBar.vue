@@ -51,7 +51,15 @@
 >
 	import { OrigamImg, OrigamToolbar } from '../../components'
 
-	import { useActive, useLayoutItem, useProps, useScroll, useSsrBoot, useToggleScope } from '../../composables'
+	import {
+	useActive,
+	useLayoutItem,
+	useProps,
+	useScroll,
+	useSsrBoot,
+	useStyle,
+	useToggleScope
+} from '../../composables'
 
 	import { BLOCK, DENSITY } from '../../enums'
 
@@ -237,6 +245,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(appBarStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -245,7 +255,12 @@
 	 * Public API surface: filterProps forwarded from toolbar ref.
 	 ********************************************************/
 	defineExpose(forwardRefs({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamToolbarRef))
 
 </script>

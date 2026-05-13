@@ -62,10 +62,13 @@
 	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
 
 	import {
-		useFocus, useProps, useVModel,
+		useFocus,
 		useHover,
-		useStateEffect
-	} from '../../composables'
+		useProps,
+		useStateEffect,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -150,6 +153,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(checkboxStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -159,7 +164,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

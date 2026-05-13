@@ -84,7 +84,13 @@
 	import { computed, onMounted, onScopeDispose, Ref, StyleValue, toRef } from 'vue'
 	import { OrigamVirtualScrollItem } from '../../components'
 
-	import { useDimension, useProps, useToggleScope, useVirtual } from '../../composables'
+	import {
+	useDimension,
+	useProps,
+	useStyle,
+	useToggleScope,
+	useVirtual
+} from '../../composables'
 
 	import type { IVirtualScrollProps } from '../../interfaces'
 
@@ -167,6 +173,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -176,7 +184,12 @@
 	 ********************************************************/
 	defineExpose({
 		scrollToIndex,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

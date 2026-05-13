@@ -107,8 +107,9 @@
 		useProps,
 		useRtl,
 		useSize,
+		useStyle,
 		useValidation
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
@@ -268,9 +269,16 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IInputProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(inputStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

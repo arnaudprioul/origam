@@ -214,7 +214,17 @@
 	} from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import { useAdjacent, useAdjacentInner, useDefaults, useDragResizer, useFocus, useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useAdjacent,
+	useAdjacentInner,
+	useDefaults,
+	useDragResizer,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { vIntersect } from '../../directives'
 
@@ -601,8 +611,16 @@
 	 *    filterProps is a function that filters out props that are not defined in the `ITextareaFieldProps` interface.
 	 ********************************************************/
 	const {filterProps} = useProps<ITextareaFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(textareaFieldStyles)
 
-	defineExpose(forwardRefs({filterProps}, origamFieldRef, origamInputRef, textareaRef))
+
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamFieldRef, origamInputRef, textareaRef))
 </script>
 
 <style

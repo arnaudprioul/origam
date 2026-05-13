@@ -34,7 +34,11 @@
 >
 	import { computed, onScopeDispose, provide, StyleValue } from 'vue'
 	import { OrigamDefaultsProvider } from '../../components'
-	import { useProps, useVModel } from '../../composables'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts'
 
@@ -141,6 +145,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(selectionControlGroupStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -149,6 +155,11 @@
 	 * Exposes filterProps to parent ref consumers.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

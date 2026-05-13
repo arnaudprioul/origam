@@ -18,7 +18,15 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { useBorder, useBothColor, useDensity, useMargin, usePadding, useProps } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ITitleProps } from '../../interfaces'
 
@@ -80,6 +88,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(titleStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -88,7 +98,12 @@
 	 * Public API surface exposed to parent refs.
 	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

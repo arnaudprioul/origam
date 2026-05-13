@@ -392,6 +392,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(otpInputFieldStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -404,8 +406,13 @@
 		blur: () => {
 			inputRef.value?.some(input => {
 				input.blur()
-				return true
-			})
+				return true,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 		},
 		focus: () => {
 			inputRef.value?.[0]?.focus()

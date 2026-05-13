@@ -126,10 +126,14 @@
 	} from '../../components'
 
 	import {
-		useFocus, useLoader, useProps, useVModel,
+		useFocus,
 		useHover,
-		useStateEffect
-	} from '../../composables'
+		useLoader,
+		useProps,
+		useStateEffect,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
@@ -278,6 +282,8 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(switchStyles)
+
 
 	/*********************************************************
 	 * Expose
@@ -287,7 +293,12 @@
 	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

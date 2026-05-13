@@ -232,6 +232,8 @@
 	})
 
 	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(badgeStyles)
+
 
 	/*********************************************************
 	 * Expose
