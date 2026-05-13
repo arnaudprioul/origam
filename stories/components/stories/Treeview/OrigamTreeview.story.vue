@@ -108,7 +108,7 @@
 		</Variant>
 
 		<Variant
-				title="Prop — hover (hoverColor & hoverBgColor)"
+				title="Prop — hover"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -121,11 +121,12 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-			</template>
+							<HstSelect v-model="state.hover" title="hover" :options="hoverList"/>
+</template>
 		</Variant>
 
 		<Variant
-				title="Prop — active (activeColor & activeBgColor)"
+				title="Prop — active"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -138,7 +139,8 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-			</template>
+							<HstSelect v-model="state.active" title="active" :options="activeList"/>
+</template>
 		</Variant>
 
 		<Variant
@@ -225,7 +227,11 @@
 	import type { TDensity, TSize, TTreeviewSelectMode, TTreeviewSelectableNodes } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, sizeList } from '@stories/const'
+	import {
+		activeList,
+		densityList, intentList, sizeList,
+		hoverList
+	} from '@stories/const'
 
 	// Select mode options
 	const selectModeList: Array<IOptions<TTreeviewSelectMode>> = [

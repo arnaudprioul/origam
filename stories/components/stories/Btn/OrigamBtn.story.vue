@@ -93,7 +93,7 @@
 		</Variant>
 
 		<Variant
-				title="Prop — hover (hoverColor & hoverBgColor)"
+				title="Prop — hover"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -109,11 +109,12 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-			</template>
+							<HstSelect v-model="state.hover" title="hover" :options="hoverList"/>
+</template>
 		</Variant>
 
 		<Variant
-				title="Prop — active (activeColor & activeBgColor)"
+				title="Prop — active"
 				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -129,7 +130,8 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-			</template>
+							<HstSelect v-model="state.active" title="active" :options="activeList"/>
+</template>
 		</Variant>
 
 		<Variant
@@ -441,9 +443,11 @@
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		activeList,
 		borderList,
 		densityList,
 		elevationList,
+		hoverList,
 		iconList,
 		intentList,
 		roundedList,
