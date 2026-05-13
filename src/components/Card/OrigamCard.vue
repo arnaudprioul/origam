@@ -317,12 +317,16 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	// `elevationStyles` is intentionally NOT consumed for Card: the SCSS
-	// reads `var(--origam-card---box-shadow)` from tokens, and the
-	// `.origam--shadow-*` utility (set in `elevationClasses`) drives the
-	// resolved value. Adding the inline style would re-introduce 12+
-	// declarations on the root for no visual gain.
-	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
+	// `elevationStyles` MUST be consumed alongside `elevationClasses`.
+	// The `.origam--shadow-*` utility class has specificity (0,1,0) and
+	// loses against Card's scoped `.origam-card[data-v-X] { box-shadow:
+	// ... }` (specificity 0,2,0) → the elevation prop would silently no-
+	// op without the inline-style path (#id selector, specificity 1,0,0
+	// via useStyle). `flat=true` already returns `[]` for both classes
+	// AND styles, so the `&--flat { --origam-card---box-shadow: none }`
+	// scoped rule alone drives the resting flat surface without
+	// competing inline declarations.
+	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'))
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -334,6 +338,7 @@
 			borderStyles.value,
 			colorStyles.value,
 			dimensionStyles.value,
+			elevationStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
 			marginStyles.value,
@@ -592,7 +597,7 @@
 			}
 		}
 
-		&--flated {
+		&--flat {
 			--origam-card---box-shadow: none;
 		}
 
