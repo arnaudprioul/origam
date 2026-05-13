@@ -1,6 +1,7 @@
 import type {
-    IBorderProps,
+    IActiveProps,
     IBgColorProps,
+    IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -8,6 +9,7 @@ import type {
     IExpansionPanelContentProps,
     IExpansionPanelHeaderProps,
     IGroupItemProps,
+    IHoverProps,
     ILazyProps,
     ILoaderProps,
     IMarginProps,
@@ -16,5 +18,5 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface IExpansionPanelProps extends ITagProps, ICommonsComponentProps, IDensityProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, IRoundedProps, IGroupItemProps, IExpansionPanelHeaderProps, IExpansionPanelContentProps, ILazyProps, ILoaderProps {
+export interface IExpansionPanelProps extends ITagProps, ICommonsComponentProps, IDensityProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, IRoundedProps, IGroupItemProps, IExpansionPanelHeaderProps, IExpansionPanelContentProps, ILazyProps, ILoaderProps, IActiveProps, IHoverProps {
 }

@@ -1,9 +1,11 @@
 import type {
+    IActiveProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IDimensionProps,
     IElevationProps,
+    IHoverProps,
     ILocationProps,
     IMarginProps,
     IPaddingProps,
@@ -14,7 +16,7 @@ import type {
 
 import type { TDirectionBoth, TSheetSnapId, TSheetSnapPoint } from '../../types'
 
-export interface ISheetProps extends ITagProps, ICommonsComponentProps, IPaddingProps, IMarginProps, IColorProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, ILocationProps, IPositionProps {
+export interface ISheetProps extends ITagProps, ICommonsComponentProps, IPaddingProps, IMarginProps, IColorProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, ILocationProps, IPositionProps, IActiveProps, IHoverProps {
     /**
      * Edge the sheet is anchored to. Drives the bottom-swipe gesture
      * (only `'bottom'` activates the touch-drag handle today; the other

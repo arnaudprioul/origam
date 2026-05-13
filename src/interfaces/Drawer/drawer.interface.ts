@@ -1,10 +1,12 @@
 import type {
-    IBorderProps,
+    IActiveProps,
     IBgColorProps,
+    IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
+    IHoverProps,
     ILayoutItemProps,
     IMarginProps,
     IPaddingProps,
@@ -15,7 +17,7 @@ import type {
 } from '../../interfaces'
 
 
-export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps {
+export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps {
     disableResizeWatcher?: boolean
     disableRouteWatcher?: boolean
     expandOnHover?: boolean

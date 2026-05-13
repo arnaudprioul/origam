@@ -1,9 +1,11 @@
 import type {
-    IBorderProps,
+    IActiveProps,
     IBgColorProps,
+    IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IElevationProps,
+    IHoverProps,
     ILocationProps,
     IMarginProps,
     IOverlayProps,
@@ -15,7 +17,7 @@ import type {
     ITransitionComponentProps
 } from '../../interfaces'
 
-export interface ISnackbarProps extends ICommonsComponentProps, ITagProps, IStatusProps, IColorProps, IBgColorProps, IOverlayProps, IPositionProps, ILocationProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ITransitionComponentProps {
+export interface ISnackbarProps extends ICommonsComponentProps, ITagProps, IStatusProps, IColorProps, IBgColorProps, IOverlayProps, IPositionProps, ILocationProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ITransitionComponentProps, IActiveProps, IHoverProps {
     multiLine?: boolean
     text?: string
     timer?: boolean | string

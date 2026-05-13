@@ -1,9 +1,11 @@
 import type {
+    IActiveProps,
     IAdjacentProps,
-    IBorderProps,
     IBgColorProps,
+    IBorderProps,
     IColorProps,
     ICommonsComponentProps,
+    IHoverProps,
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
@@ -12,7 +14,7 @@ import type {
 
 import type { TIcon } from '../../types'
 
-export interface IListGroupProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IAdjacentProps {
+export interface IListGroupProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IAdjacentProps, IActiveProps, IHoverProps {
     collapseIcon?: TIcon
     expandIcon?: TIcon
     fluid?: boolean
