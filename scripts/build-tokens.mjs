@@ -59,6 +59,7 @@ StyleDictionary.registerTransform({
         // whether the file path contains "component/".
         const filePath = token.filePath || ''
         const isComponent = filePath.includes('/component/') || filePath.includes('\\component\\')
+        const isPrimitive = filePath.endsWith('/primitive.json') || filePath.endsWith('\\primitive.json')
 
         if (isComponent) {
             const [blockName, ...rest] = path
@@ -96,7 +97,51 @@ StyleDictionary.registerTransform({
             return `origam-${blockName}---${rest.join('-')}`
         }
 
-        // primitive.* / semantic.* — flat kebab-case under origam-
+        // ──────────────────────────────────────────────────────────────
+        // Primitive + Semantic naming — unified BEM-style grammar.
+        // Aligns with the component convention so the whole token
+        // namespace reads the same way:
+        //
+        //     --origam-[domain]__[block]--[modifier]---[property|rank]
+        //                       └─ optional ─┘
+        //
+        // Examples of the mapping:
+        //
+        //   PRIMITIVE
+        //     ['color', 'black']               → 'color---black'
+        //     ['color', 'neutral', '500']      → 'color__neutral---500'
+        //     ['space', '4']                   → 'space---4'
+        //     ['radius', 'md']                 → 'radius---md'
+        //     ['shadow', 'sm']                 → 'shadow---sm'
+        //     ['border', 'width', 'thin']      → 'border__width---thin'
+        //     ['font', 'size', 'sm']           → 'font__size---sm'
+        //
+        //   SEMANTIC (no modifier — 3-segment)
+        //     ['color', 'surface', 'default']  → 'color__surface---default'
+        //     ['color', 'text', 'primary']     → 'color__text---primary'
+        //     ['color', 'border', 'subtle']    → 'color__border---subtle'
+        //     ['color', 'overlay', 'scrim']    → 'color__overlay---scrim'
+        //
+        //   SEMANTIC (modifier — 4-segment)
+        //     ['color', 'action', 'primary', 'bg']         → 'color__action--primary---bg'
+        //     ['color', 'action', 'primary', 'fgSubtle']   → 'color__action--primary---fgSubtle'
+        //     ['color', 'feedback', 'success', 'bg']       → 'color__feedback--success---bg'
+        //     ['color', 'feedback', 'warning', 'fgSubtle'] → 'color__feedback--warning---fgSubtle'
+        //
+        // Any deeper / shorter path falls back to the legacy single-dash
+        // join — surfaces a name pattern collision early instead of a
+        // silent emission.
+        // ──────────────────────────────────────────────────────────────
+        if (path.length === 2) {
+            return `origam-${path[0]}---${path[1]}`
+        }
+        if (path.length === 3) {
+            return `origam-${path[0]}__${path[1]}---${path[2]}`
+        }
+        if (path.length === 4) {
+            return `origam-${path[0]}__${path[1]}--${path[2]}---${path[3]}`
+        }
+        // Fallback for unexpected depth (shouldn't happen with current source).
         return `origam-${path.join('-')}`
     }
 })
@@ -200,13 +245,13 @@ const UTILITY_GROUPS = [
         property: 'color',
         prefix: 'color',
         items: [
-            { suffix: 'primary', token: 'origam-color-action-primary-fg' },
-            { suffix: 'secondary', token: 'origam-color-action-secondary-fg' },
-            { suffix: 'success', token: 'origam-color-feedback-success-fg' },
-            { suffix: 'warning', token: 'origam-color-feedback-warning-fg' },
-            { suffix: 'danger', token: 'origam-color-feedback-danger-fg' },
-            { suffix: 'info', token: 'origam-color-feedback-info-fg' },
-            { suffix: 'neutral', token: 'origam-color-text-primary' }
+            { suffix: 'primary',   token: 'origam-color__action--primary---fg' },
+            { suffix: 'secondary', token: 'origam-color__action--secondary---fg' },
+            { suffix: 'success',   token: 'origam-color__feedback--success---fg' },
+            { suffix: 'warning',   token: 'origam-color__feedback--warning---fg' },
+            { suffix: 'danger',    token: 'origam-color__feedback--danger---fg' },
+            { suffix: 'info',      token: 'origam-color__feedback--info---fg' },
+            { suffix: 'neutral',   token: 'origam-color__text---primary' }
         ]
     },
     {
@@ -214,13 +259,13 @@ const UTILITY_GROUPS = [
         property: 'background-color',
         prefix: 'bg',
         items: [
-            { suffix: 'primary', token: 'origam-color-action-primary-bg' },
-            { suffix: 'secondary', token: 'origam-color-action-secondary-bg' },
-            { suffix: 'success', token: 'origam-color-feedback-success-bg' },
-            { suffix: 'warning', token: 'origam-color-feedback-warning-bg' },
-            { suffix: 'danger', token: 'origam-color-feedback-danger-bg' },
-            { suffix: 'info', token: 'origam-color-feedback-info-bg' },
-            { suffix: 'neutral', token: 'origam-color-surface-default' }
+            { suffix: 'primary',   token: 'origam-color__action--primary---bg' },
+            { suffix: 'secondary', token: 'origam-color__action--secondary---bg' },
+            { suffix: 'success',   token: 'origam-color__feedback--success---bg' },
+            { suffix: 'warning',   token: 'origam-color__feedback--warning---bg' },
+            { suffix: 'danger',    token: 'origam-color__feedback--danger---bg' },
+            { suffix: 'info',      token: 'origam-color__feedback--info---bg' },
+            { suffix: 'neutral',   token: 'origam-color__surface---default' }
         ]
     },
     {
@@ -228,12 +273,12 @@ const UTILITY_GROUPS = [
         property: 'box-shadow',
         prefix: 'shadow',
         items: [
-            { suffix: 'none', token: 'origam-shadow-none' },
-            { suffix: 'xs', token: 'origam-shadow-xs' },
-            { suffix: 'sm', token: 'origam-shadow-sm' },
-            { suffix: 'md', token: 'origam-shadow-md' },
-            { suffix: 'lg', token: 'origam-shadow-lg' },
-            { suffix: 'xl', token: 'origam-shadow-xl' }
+            { suffix: 'none', token: 'origam-shadow---none' },
+            { suffix: 'xs',   token: 'origam-shadow---xs' },
+            { suffix: 'sm',   token: 'origam-shadow---sm' },
+            { suffix: 'md',   token: 'origam-shadow---md' },
+            { suffix: 'lg',   token: 'origam-shadow---lg' },
+            { suffix: 'xl',   token: 'origam-shadow---xl' }
         ]
     },
     {
@@ -241,13 +286,13 @@ const UTILITY_GROUPS = [
         property: 'border-radius',
         prefix: 'rounded',
         items: [
-            { suffix: 'none', token: 'origam-radius-none' },
-            { suffix: 'xs', token: 'origam-radius-xs' },
-            { suffix: 'sm', token: 'origam-radius-sm' },
-            { suffix: 'md', token: 'origam-radius-md' },
-            { suffix: 'lg', token: 'origam-radius-lg' },
-            { suffix: 'xl', token: 'origam-radius-xl' },
-            { suffix: 'full', token: 'origam-radius-full' }
+            { suffix: 'none', token: 'origam-radius---none' },
+            { suffix: 'xs',   token: 'origam-radius---xs' },
+            { suffix: 'sm',   token: 'origam-radius---sm' },
+            { suffix: 'md',   token: 'origam-radius---md' },
+            { suffix: 'lg',   token: 'origam-radius---lg' },
+            { suffix: 'xl',   token: 'origam-radius---xl' },
+            { suffix: 'full', token: 'origam-radius---full' }
         ]
     },
     {
@@ -261,9 +306,9 @@ const UTILITY_GROUPS = [
         // alias for `border-width-2`.
         pairedDecls: [{ property: 'border-style', value: 'solid' }],
         items: [
-            { suffix: 'none', token: 'origam-border-width-0' },
-            { suffix: 'thin', token: 'origam-border-width-thin' },
-            { suffix: 'thick', token: 'origam-border-width-2' }
+            { suffix: 'none',  token: 'origam-border__width---0' },
+            { suffix: 'thin',  token: 'origam-border__width---thin' },
+            { suffix: 'thick', token: 'origam-border__width---2' }
         ]
     },
     {
@@ -271,16 +316,16 @@ const UTILITY_GROUPS = [
         property: 'padding',
         prefix: 'p',
         items: [
-            { suffix: '0', token: 'origam-space-0' },
-            { suffix: '1', token: 'origam-space-1' },
-            { suffix: '2', token: 'origam-space-2' },
-            { suffix: '3', token: 'origam-space-3' },
-            { suffix: '4', token: 'origam-space-4' },
-            { suffix: '5', token: 'origam-space-5' },
-            { suffix: '6', token: 'origam-space-6' },
-            { suffix: '8', token: 'origam-space-8' },
-            { suffix: '10', token: 'origam-space-10' },
-            { suffix: '12', token: 'origam-space-12' }
+            { suffix: '0',  token: 'origam-space---0' },
+            { suffix: '1',  token: 'origam-space---1' },
+            { suffix: '2',  token: 'origam-space---2' },
+            { suffix: '3',  token: 'origam-space---3' },
+            { suffix: '4',  token: 'origam-space---4' },
+            { suffix: '5',  token: 'origam-space---5' },
+            { suffix: '6',  token: 'origam-space---6' },
+            { suffix: '8',  token: 'origam-space---8' },
+            { suffix: '10', token: 'origam-space---10' },
+            { suffix: '12', token: 'origam-space---12' }
         ]
     },
     {
@@ -288,16 +333,16 @@ const UTILITY_GROUPS = [
         property: 'margin',
         prefix: 'm',
         items: [
-            { suffix: '0', token: 'origam-space-0' },
-            { suffix: '1', token: 'origam-space-1' },
-            { suffix: '2', token: 'origam-space-2' },
-            { suffix: '3', token: 'origam-space-3' },
-            { suffix: '4', token: 'origam-space-4' },
-            { suffix: '5', token: 'origam-space-5' },
-            { suffix: '6', token: 'origam-space-6' },
-            { suffix: '8', token: 'origam-space-8' },
-            { suffix: '10', token: 'origam-space-10' },
-            { suffix: '12', token: 'origam-space-12' }
+            { suffix: '0',  token: 'origam-space---0' },
+            { suffix: '1',  token: 'origam-space---1' },
+            { suffix: '2',  token: 'origam-space---2' },
+            { suffix: '3',  token: 'origam-space---3' },
+            { suffix: '4',  token: 'origam-space---4' },
+            { suffix: '5',  token: 'origam-space---5' },
+            { suffix: '6',  token: 'origam-space---6' },
+            { suffix: '8',  token: 'origam-space---8' },
+            { suffix: '10', token: 'origam-space---10' },
+            { suffix: '12', token: 'origam-space---12' }
         ]
     },
     {
@@ -305,16 +350,16 @@ const UTILITY_GROUPS = [
         property: 'gap',
         prefix: 'gap',
         items: [
-            { suffix: '0', token: 'origam-space-0' },
-            { suffix: '1', token: 'origam-space-1' },
-            { suffix: '2', token: 'origam-space-2' },
-            { suffix: '3', token: 'origam-space-3' },
-            { suffix: '4', token: 'origam-space-4' },
-            { suffix: '5', token: 'origam-space-5' },
-            { suffix: '6', token: 'origam-space-6' },
-            { suffix: '8', token: 'origam-space-8' },
-            { suffix: '10', token: 'origam-space-10' },
-            { suffix: '12', token: 'origam-space-12' }
+            { suffix: '0',  token: 'origam-space---0' },
+            { suffix: '1',  token: 'origam-space---1' },
+            { suffix: '2',  token: 'origam-space---2' },
+            { suffix: '3',  token: 'origam-space---3' },
+            { suffix: '4',  token: 'origam-space---4' },
+            { suffix: '5',  token: 'origam-space---5' },
+            { suffix: '6',  token: 'origam-space---6' },
+            { suffix: '8',  token: 'origam-space---8' },
+            { suffix: '10', token: 'origam-space---10' },
+            { suffix: '12', token: 'origam-space---12' }
         ]
     },
     {
@@ -322,12 +367,12 @@ const UTILITY_GROUPS = [
         property: 'font-size',
         prefix: 'text',
         items: [
-            { suffix: 'xs', token: 'origam-font-size-xs' },
-            { suffix: 'sm', token: 'origam-font-size-sm' },
-            { suffix: 'md', token: 'origam-font-size-md' },
-            { suffix: 'lg', token: 'origam-font-size-lg' },
-            { suffix: 'xl', token: 'origam-font-size-xl' },
-            { suffix: '2xl', token: 'origam-font-size-2xl' }
+            { suffix: 'xs',  token: 'origam-font__size---xs' },
+            { suffix: 'sm',  token: 'origam-font__size---sm' },
+            { suffix: 'md',  token: 'origam-font__size---md' },
+            { suffix: 'lg',  token: 'origam-font__size---lg' },
+            { suffix: 'xl',  token: 'origam-font__size---xl' },
+            { suffix: '2xl', token: 'origam-font__size---2xl' }
         ]
     }
 ]
