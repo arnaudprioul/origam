@@ -72,22 +72,9 @@
 		lang="ts"
 		setup
 >
-	import {
+	import { OrigamAvatar, OrigamIcon, OrigamTransition } from "../../components"
 
-	OrigamAvatar,
-
-	OrigamIcon,
-
-	OrigamTransition } from "../../components"
-
-	import { useAdjacent,
-
-	useDensity,
-
-	useProps,
-
-	useStyle
-} from "../../composables"
+	import { useAdjacent, useDensity, useProps } from "../../composables"
 
 	import type { IDatePickerHeaderProps } from "../../interfaces"
 

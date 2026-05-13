@@ -47,19 +47,10 @@
 		lang="ts"
 		setup
 >
-	import {
-	computed,
-	OrigamSheet } from "../../components"
+	import { computed, ref, StyleValue, toRef, useSlots } from "vue"
+	import { OrigamPickerTitle, OrigamSheet } from "../../components"
 
-	import { useBackgroundColor,
-	ref,
-	StyleValue,
-	toRef,
-	useProps,
-	useSlots } from "vue"
-	import { OrigamPickerTitle,
-	useStyle
-} from "../../composables"
+	import { useBackgroundColor, useProps } from "../../composables"
 
 	import type { IPickerProps } from "../../interfaces"
 

@@ -110,12 +110,7 @@
 		OrigamTranslatePicker
 	} from "../../components"
 
-	import { useDate,
-		useLocale,
-		useProps,
-		useStyle,
-		useVModel
-} from "../../composables"
+	import { useDate, useLocale, useProps, useVModel } from "../../composables"
 
 	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
 

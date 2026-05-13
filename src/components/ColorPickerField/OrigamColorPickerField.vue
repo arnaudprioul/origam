@@ -130,26 +130,9 @@
 		lang="ts"
 		setup
 >
-	import {
+	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
 
-	OrigamColorPicker,
-
-	OrigamMenu,
-
-	OrigamSheet,
-
-	OrigamTextField,
-
-	OrigamTranslateScale } from "../../components"
-
-	import { useLocale,
-
-	useProps,
-
-	useStyle,
-
-	useVModel
-} from "../../composables"
+	import { useLocale, useProps, useVModel } from "../../composables"
 
 	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
 

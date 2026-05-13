@@ -131,25 +131,10 @@
 		setup
 >
 
-	import {
-	computed,
-	nextTick,
-	OrigamOverlay,
-	OrigamProgress } from "../../components"
+	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
+	import { OrigamField, OrigamOverlay, OrigamProgress } from "../../components"
 
-	import { useDimension,
-	ref,
-	StyleValue,
-	useAttrs,
-	useFocus,
-	useLocale,
-	useProps,
-	useSlots,
-	useStyle,
-	useVModel,
-	watch } from "vue"
-	import { OrigamField
-} from "../../composables"
+	import { useDimension, useFocus, useLocale, useProps, useVModel } from "../../composables"
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 

@@ -64,18 +64,9 @@
 		lang="ts"
 		setup
 >
-	import {
+	import { OrigamBtn, OrigamSliderField } from "../../components"
 
-	OrigamBtn,
-
-	OrigamSliderField } from "../../components"
-
-	import { useProps,
-
-	useStyle,
-
-	useVModel
-} from "../../composables"
+	import { useProps, useVModel } from "../../composables"
 
 	import { COLOR_NULL, SUPPORTS_EYE_DROPPER } from "../../consts"
 

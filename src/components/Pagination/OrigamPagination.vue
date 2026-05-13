@@ -177,25 +177,10 @@
 		lang="ts"
 		setup
 >
-	import {
-	ComponentPublicInstance,
-	computed,
-	nextTick,
-	ref,
-	shallowRef,
-	StyleValue } from "vue"
+	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
 	import { OrigamBtn } from "../../components"
 
-	import { useDensity,
-	useDisplay,
-	useLocale,
-	useProps,
-	useRefs,
-	useResizeObserver,
-	useSize,
-	useStyle,
-	useVModel
-} from "../../composables"
+	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useVModel } from "../../composables"
 
 	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 

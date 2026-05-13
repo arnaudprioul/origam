@@ -36,14 +36,9 @@
 		lang="ts"
 		setup
 >
-	import {
+	import { OrigamIcon } from "../../components"
 
-	OrigamIcon } from "../../components"
-
-	import { useProps,
-
-	useStyle
-} from "../../composables"
+	import { useProps } from "../../composables"
 
 	import { MDI_ICONS } from "../../enums"
 

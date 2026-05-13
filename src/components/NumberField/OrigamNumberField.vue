@@ -252,26 +252,10 @@
 		lang="ts"
 		setup
 >
-	import {
-	computed,
-	nextTick,
-	onMounted,
-	OrigamDivider,
-	OrigamTextField } from "../../components"
+	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
+	import { OrigamBtn, OrigamDivider, OrigamTextField } from "../../components"
 
-	import { useAdjacentInner,
-	ref,
-	shallowRef,
-	StyleValue,
-	useFocus,
-	useHold,
-	useProps,
-	useSlots,
-	useStyle,
-	useVModel,
-	watch } from "vue"
-	import { OrigamBtn
-} from "../../composables"
+	import { useAdjacentInner, useFocus, useHold, useProps, useVModel } from "../../composables"
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
