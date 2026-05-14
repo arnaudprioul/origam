@@ -185,8 +185,9 @@
 		useMargin,
 		usePadding,
 		useProps,
-		useRounded
-	, useStyle} from "../../composables"
+		useRounded,
+		useStyle
+	} from "../../composables"
 	import type {
 		IDataItem,
 		IDataListKVItem,
