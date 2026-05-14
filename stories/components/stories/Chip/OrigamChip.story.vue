@@ -70,7 +70,7 @@
 		>
 			<template #default="{ state }">
 				<div class="story-shell" data-cy="chip-color-shell">
-					<origam-chip v-bind="state" text="Interactive chip" data-cy="chip-color"/>
+					<origam-chip v-bind="state" :hover="state._hHover" text="Interactive chip" data-cy="chip-color"/>
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
 						<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
 						<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
@@ -81,10 +81,10 @@
 			</template>
 			<template #controls="{ state }">
 							<HstSelect
-							:model-value="state.hover"
+							:model-value="state._hHover"
 							:options="hoverList"
 							title="hover"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.hover || typeof state.hover !== 'object') state.hover = {}; const t = state.hover; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.hover = v } }"
+							@update:model-value="(v) => state._hHover = v"
 						/>
 </template>
 		</Variant>
@@ -95,7 +95,7 @@
 		>
 			<template #default="{ state }">
 				<div class="story-shell" data-cy="chip-color-shell">
-					<origam-chip v-bind="state" text="Interactive chip" data-cy="chip-color"/>
+					<origam-chip v-bind="state" :active="state._hActive" text="Interactive chip" data-cy="chip-color"/>
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
 						<origam-chip bg-color="primary" text="primary" data-cy="chip-color-primary"/>
 						<origam-chip bg-color="success" text="success" data-cy="chip-color-success"/>
@@ -106,10 +106,10 @@
 			</template>
 			<template #controls="{ state }">
 							<HstSelect
-							:model-value="state.active"
+							:model-value="state._hActive"
 							:options="activeList"
 							title="active"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.active || typeof state.active !== 'object') state.active = {}; const t = state.active; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.active = v } }"
+							@update:model-value="(v) => state._hActive = v"
 						/>
 </template>
 		</Variant>

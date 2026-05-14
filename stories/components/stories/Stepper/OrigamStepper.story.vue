@@ -127,10 +127,10 @@
 			</template>
 			<template #controls="{ state }">
 							<HstSelect
-							:model-value="state.hover"
+							:model-value="state._hHover"
 							:options="hoverList"
 							title="hover"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.hover || typeof state.hover !== 'object') state.hover = {}; const t = state.hover; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.hover = v } }"
+							@update:model-value="(v) => state._hHover = v"
 						/>
 </template>
 		</Variant>
@@ -150,10 +150,10 @@
 			</template>
 			<template #controls="{ state }">
 							<HstSelect
-							:model-value="state.active"
+							:model-value="state._hActive"
 							:options="activeList"
 							title="active"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.active || typeof state.active !== 'object') state.active = {}; const t = state.active; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.active = v } }"
+							@update:model-value="(v) => state._hActive = v"
 						/>
 </template>
 		</Variant>
@@ -193,7 +193,7 @@
 			<template #default="{ state }">
 				<origam-stepper
 						v-bind="state"
-						:items="defaultItems"
+						:active="state._hActive" :hover="state._hHover" :items="defaultItems"
 						data-cy="stepper-playground"
 				/>
 			</template>

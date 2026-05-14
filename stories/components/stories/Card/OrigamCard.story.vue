@@ -75,7 +75,7 @@
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-card v-bind="state" title="Hover the card" text="Pick a hover config in the sidebar →" data-cy="card-hover"/>
+					<origam-card v-bind="state" :hover="state._hHover" title="Hover the card" text="Pick a hover config in the sidebar →" data-cy="card-hover"/>
 
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
 						<small>Showcase fixtures — every config routed through the single `hover` object prop:</small>
@@ -90,10 +90,10 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect
-							:model-value="state.hover"
+							:model-value="state._hHover"
 							:options="hoverList"
 							title="hover"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.hover || typeof state.hover !== 'object') state.hover = {}; const t = state.hover; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.hover = v } }"
+							@update:model-value="(v) => state._hHover = v"
 						/>
 			</template>
 		</Variant>
@@ -104,7 +104,7 @@
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-card v-bind="state" title="Click & hold the card" text="Pick an active config in the sidebar →" data-cy="card-active"/>
+					<origam-card v-bind="state" :active="state._hActive" title="Click & hold the card" text="Pick an active config in the sidebar →" data-cy="card-active"/>
 
 					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
 						<small>Showcase fixtures — click & hold to see the override:</small>
@@ -118,10 +118,10 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect
-							:model-value="state.active"
+							:model-value="state._hActive"
 							:options="activeList"
 							title="active"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.active || typeof state.active !== 'object') state.active = {}; const t = state.active; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.active = v } }"
+							@update:model-value="(v) => state._hActive = v"
 						/>
 			</template>
 		</Variant>

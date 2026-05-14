@@ -115,7 +115,7 @@
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
+					<origam-kbd v-bind="state" :hover="state._hHover" :combination="['⌘', 'K']" data-cy="kbd-color"/>
 					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Channel separation:</small>
 						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
@@ -132,10 +132,10 @@
 			</template>
 			<template #controls="{ state }">
 							<HstSelect
-							:model-value="state.hover"
+							:model-value="state._hHover"
 							:options="hoverList"
 							title="hover"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.hover || typeof state.hover !== 'object') state.hover = {}; const t = state.hover; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.hover = v } }"
+							@update:model-value="(v) => state._hHover = v"
 						/>
 </template>
 		</Variant>
@@ -146,7 +146,7 @@
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-kbd v-bind="state" :combination="['⌘', 'K']" data-cy="kbd-color"/>
+					<origam-kbd v-bind="state" :active="state._hActive" :combination="['⌘', 'K']" data-cy="kbd-color"/>
 					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
 						<small>Channel separation:</small>
 						<origam-kbd :combination="['⌘', 'K']" color="primary"  data-cy="kbd-color-fixture-color-only"/>
@@ -163,10 +163,10 @@
 			</template>
 			<template #controls="{ state }">
 							<HstSelect
-							:model-value="state.active"
+							:model-value="state._hActive"
 							:options="activeList"
 							title="active"
-							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.active || typeof state.active !== 'object') state.active = {}; const t = state.active; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.active = v } }"
+							@update:model-value="(v) => state._hActive = v"
 						/>
 </template>
 		</Variant>
