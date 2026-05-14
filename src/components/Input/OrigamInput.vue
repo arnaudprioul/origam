@@ -100,44 +100,41 @@
 
 	import {
 		useAdjacent,
-		useBorder,
 		useBothColor,
+		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useRtl,
+		useSize,
+		useStyle,
 		useValidation
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { IInputProps } from '../../interfaces'
+	import type { IInputEmits, IInputProps, IInputSlots } from '../../interfaces'
 
-	import { getUid } from '../../utils'
+	import { getUid, wrapInArray } from '../../utils'
 
-	const props = withDefaults(defineProps<IInputProps>(), {
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, and identity setup.
+	 ********************************************************/
+	const _props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
 		density: DENSITY.DEFAULT
 	})
+	const props = useDefaults(_props)
 
-	defineEmits(['update:modelValue', 'click:append', 'click:prepend'])
+	defineEmits<IInputEmits>()
 
-	const {filterProps} = useProps<IInputProps>(props)
+	defineSlots<IInputSlots>()
+	const slots = useSlots()
 
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {roundedStyles, roundedClasses} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
-	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
-	const {rtlClasses} = useRtl()
 
 	const uid = getUid()
 	const id = computed(() => {
@@ -146,6 +143,10 @@
 	const messagesId = computed(() => {
 		return `${id.value}-messages`
 	})
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		errorMessages,
@@ -161,6 +162,10 @@
 		validationClasses
 	} = useValidation(props, 'origam-input', id)
 
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		hasPrepend,
 		hasAppend,
@@ -172,10 +177,10 @@
 		if (props.errorMessages?.length || (!isPristine.value && errorMessages.value.length)) {
 			return errorMessages.value
 		} else if (props.hint && (props.persistentHint || props.focused)) {
-			return props.hint
+			return wrapInArray(props.hint)
 		}
 
-		return props.messages ?? []
+		return wrapInArray(props.messages ?? [])
 	})
 
 	const inputProps = computed(() => {
@@ -194,7 +199,6 @@
 		}
 	})
 
-	const slots = useSlots()
 	const hasMessages = computed(() => {
 		return messages.value.length > 0
 	})
@@ -205,12 +209,32 @@
 		)
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	// Phase 3 (Vague A) — class-first companion alongside inline styles.
+	// When `color`/`bgColor` resolve to a tokenisable intent, `colorClasses`
+	// hits `.origam--bg-{intent}` / `.origam--color-{intent}` and
+	// `colorStyles` returns `[]` (no visible inline). For raw / legacy
+	// hex, `colorClasses=[]` and `colorStyles` keeps the inline fallback.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	const {rtlClasses} = useRtl()
+	const {sizeClasses} = useSize(props, 'origam-input')
 
 	const inputStyles = computed(() => {
 		return [
 			dimensionStyles.value,
-			marginStyles.value,
+			colorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -222,36 +246,39 @@
 				'origam-input--center-affix': props.centerAffix,
 				'origam-input--hide-spin-buttons': props.hideSpinButtons
 			},
+			colorClasses.value,
 			densityClasses.value,
-			roundedClasses.value,
-			borderClasses.value,
-			paddingClasses.value,
-			marginClasses.value,
+			sizeClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
 			props.class
 		]
 	})
-	const inputControlStyles = computed(() => {
-		return [
-			roundedStyles.value,
-			borderStyles.value,
-			paddingStyles.value,
-			colorStyles.value,
-			props.style
-		] as StyleValue
-	})
 	const inputControlClasses = computed(() => {
 		return [
-			'origam-input__control',
-			elevationClasses.value
+			'origam-input__control'
 		]
 	})
+	const inputControlStyles = computed<StyleValue>(() => [])
 
-	// EXPOSE
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
+	const {filterProps} = useProps<IInputProps>(props)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(inputStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -264,12 +291,11 @@
 
 		display: grid;
 		flex: 1 1 auto;
-		font-size: 1rem;
-		font-weight: 400;
-		line-height: 1.5;
+		font-size: var(--origam-input---font-size, 1rem);
+		font-weight: var(--origam-input---font-weight, 400);
+		line-height: var(--origam-input---line-height, 1.5);
 
 		--origam-input---padding-top: 16px;
-		--origam-input__control---height: 56px;
 
 		&__details {
 			align-items: flex-end;
@@ -289,7 +315,7 @@
 		&__prepend,
 		&__append {
 			> .origam-icon {
-				opacity: 0.7;
+				opacity: var(--origam-input---icon-opacity, 0.7);
 			}
 		}
 
@@ -325,16 +351,28 @@
 			--origam-input---density: -8px;
 		}
 
-		&--border {
-			#{$this}__control {
-				border: 1px solid currentColor;
-			}
+		&--size-small {
+			--origam-input__control---height:        var(--origam-input__control---height-sm, 28px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-sm, 2px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-sm, 2px);
 		}
 
-		&--rounded {
-			#{$this}__control {
-				border-radius: 4px;
-			}
+		&--size-default {
+			--origam-input__control---height:        var(--origam-input__control---height-md, 36px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-md, 6px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-md, 6px);
+		}
+
+		&--size-large {
+			--origam-input__control---height:        var(--origam-input__control---height-lg, 44px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-lg, 10px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-lg, 10px);
+		}
+
+		&--size-x-large {
+			--origam-input__control---height:        var(--origam-input__control---height-xl, 52px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-xl, 14px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-xl, 14px);
 		}
 
 		&--vertical {
@@ -386,7 +424,7 @@
 			#{$this}__details,
 			#{$this}__prepend,
 			#{$this}__append {
-				opacity: 0.5;
+				opacity: var(--origam-input---disabled-opacity, 0.5);
 			}
 		}
 
@@ -394,7 +432,7 @@
 			&:not(#{$this}--disabled) {
 				#{$this}__details {
 					> .origam-messages {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
 					}
 				}
 
@@ -402,7 +440,7 @@
 				#{$this}__prepend,
 				#{$this}__append {
 					> .origam-icon {
-						color: rgba(255, 0, 0, 1);
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
 					}
 				}
 			}
@@ -432,8 +470,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-input---density: 0px;
-	}
-</style>

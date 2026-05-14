@@ -61,11 +61,16 @@
 >
 	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
 
-	import { useFocus, useProps, useVModel } from '../../composables'
+	import {
+		useFocus,
+		useProps,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
-	import type { ICheckboxProps } from '../../interfaces'
+	import type { ICheckboxEmits, ICheckboxProps, ICheckboxSlots } from '../../interfaces'
 
 	import type { TOrigamCheckboxBtn, TOrigamInput } from "../../types"
 
@@ -73,16 +78,29 @@
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, model binding and focus tracking.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ICheckboxProps>(), {
 		density: DENSITY.DEFAULT
 	})
 
-	const emits = defineEmits(['update:modelValue', 'update:focused', 'click:label'])
+	const emits = defineEmits<ICheckboxEmits>()
+
+	defineSlots<ICheckboxSlots>()
 
 	const {filterProps} = useProps<ICheckboxProps>(props)
 
 	const origamInputRef = ref<TOrigamInput>()
 	const origamCheckboxBtnRef = ref<TOrigamCheckboxBtn>()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
@@ -94,11 +112,19 @@
 		return props.id || `checkbox-${uid}`
 	})
 
-	const handleClickLabel = (e: Event) => {
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
+	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
@@ -107,7 +133,12 @@
 		return origamCheckboxBtnRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'disabled', 'readonly', 'error'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const checkboxStyles = computed(() => {
 		return [
@@ -120,11 +151,24 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(checkboxStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -143,8 +187,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

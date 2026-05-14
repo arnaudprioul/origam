@@ -1,5 +1,0 @@
-# Origamlayout
-
-## Usage
-
-    <OrigamLayout />

@@ -1,10 +1,10 @@
 <template>
 	<origam-responsive
 			v-intersect="intersect"
-			:aria-label="props.alt"
+			:aria-label="alt"
 			:aspect-ratio="aspectRatio"
 			:class="imgClasses"
-			:role="props.alt ? 'img' : undefined"
+			:role="alt ? 'img' : undefined"
 			:style="imgStyles"
 			v-bind="responsiveProps"
 	>
@@ -97,7 +97,15 @@
 	} from 'vue'
 	import { OrigamResponsive, OrigamTransition } from '../../components'
 
-	import { useBorder, useBothColor, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import { SUPPORTS_INTERSECTION } from '../../consts'
 
@@ -111,13 +119,30 @@
 
 	import { convertToUnit, getCurrentInstance, pick } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, composables, and image load lifecycle setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IImgProps>(), {})
 
 	const emits = defineEmits(['loadstart', 'load', 'error'])
 
 	const {filterProps} = useProps<IImgProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -210,6 +235,10 @@
 		emits('load', image.value?.currentSrc || normalisedSrc.value.src)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleLoad = () => {
 		onLoad()
 	}
@@ -261,7 +290,19 @@
 
 	const isBooted = shallowRef(false)
 
-	const stop = watch(aspectRatio, (val) => {
+	// When the consumer already passes an explicit `aspect-ratio` (e.g.
+	// OrigamAvatar binds `aspectRatio: 1`), the computed starts truthy
+	// on mount. Vue's default watch semantic (fire-on-change only)
+	// missed the initial value → isBooted stayed false forever →
+	// `origam-img--booting` class kept the image hidden behind its
+	// placeholder.
+	//
+	// We can't simply pass `{ immediate: true }` because the watcher
+	// body calls `stop()` — referenced via the same `const`, which
+	// triggers a TDZ error when `immediate` fires the watcher before
+	// the assignment completes. Wrap stop() in a guard instead.
+	let stop: (() => void) | null = null
+	const markBooted = (val: number | null | undefined) => {
 		if (val) {
 			// Doesn't work with nextTick, idk why
 			requestAnimationFrame(() => {
@@ -269,17 +310,24 @@
 					isBooted.value = true
 				})
 			})
-			stop()
+			stop?.()
 		}
-	})
+	}
+	stop = watch(aspectRatio, markBooted)
+	// Cover the case where aspectRatio is ALREADY truthy on mount.
+	markBooted(aspectRatio.value)
 
 	const intersect = ref([{
 		handler: init,
 		options: props.options
 	}, null, ['once']])
 
-	// STATE
-
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Computed booleans derived from the image load state machine.
+	 ********************************************************/
 	const isLoaded = computed(() => {
 		return state.value === IMG_STATE.LOADED
 	})
@@ -287,14 +335,18 @@
 		return state.value === IMG_STATE.LOADING
 	})
 	const isError = computed(() => {
-		return state.value === IMG_STATE.ERROR && !slots.error
+		return state.value === IMG_STATE.ERROR
 	})
 	const hasContent = computed(() => {
 		return slots.default
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const imgStyles = computed(() => {
 		return [
 			{'width': convertToUnit(props.width === 'auto' ? naturalWidth.value : props.width)},
@@ -310,6 +362,7 @@
 		return [
 			'origam-img',
 			{'origam-img--booting': !isBooted.value},
+			colorClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -337,11 +390,23 @@
 			`backgroundImage: linear-gradient(${props.gradient})`
 		]
 	})
+	const {id, css, load, isLoaded: styleIsLoaded, unload} = useStyle(imgStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleIsLoaded
 	})
 </script>
 
@@ -361,7 +426,31 @@
 		}
 
 		&--rounded {
-			border-radius: var(--origam-img--rounded---border-radius);
+			border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			border-radius: var(--origam-radius---xs, 2px);
+		}
+
+		&--rounded-small {
+			border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&__picture {

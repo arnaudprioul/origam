@@ -1,5 +1,0 @@
-# Origamtextareafield
-
-## Usage
-
-    <OrigamTextareaField />

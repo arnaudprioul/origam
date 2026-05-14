@@ -3,6 +3,11 @@ import type { IGoToInstance, IGoToOptions, IGoToOptionsPatterns } from '../../in
 
 import { clamp, consoleWarn, int, mergeDeep, refElement } from '../../utils'
 
+/**
+ * Gen defaults.
+ *
+ * @returns …
+ */
 export function genDefaults (): Partial<IGoToOptions> {
     return {
         container: undefined,
@@ -28,14 +33,32 @@ export function genDefaults (): Partial<IGoToOptions> {
     }
 }
 
+/**
+ * Get container.
+ *
+ * @param el …
+ */
 export function getContainer (el?: ComponentPublicInstance | HTMLElement | string) {
     return getTarget(el) ?? (document.scrollingElement || document.body) as HTMLElement
 }
 
+/**
+ * Get target.
+ *
+ * @param el …
+ */
 export function getTarget (el: ComponentPublicInstance | HTMLElement | string | undefined) {
     return (typeof el === 'string') ? document.querySelector<HTMLElement>(el) : refElement(el)
 }
 
+/**
+ * Get location offset.
+ *
+ * @param target     …
+ * @param horizontal …
+ * @param rtl        …
+ * @returns …
+ */
 export function getLocationOffset (target: any, horizontal?: boolean, rtl?: boolean): number {
     if (typeof target === 'number') return horizontal && rtl ? -target : target
 
@@ -77,6 +100,14 @@ export function clampTarget (
     return Math.max(Math.min(value, max), min)
 }
 
+/**
+ * Scroll to.
+ *
+ * @param _target    …
+ * @param _options   …
+ * @param horizontal …
+ * @param goTo       …
+ */
 export async function scrollTo (
     _target: ComponentPublicInstance | HTMLElement | number | string,
     _options: Partial<IGoToOptions>,

@@ -1,5 +1,0 @@
-# Origamcardtext
-
-## Usage
-
-    <OrigamCardText />

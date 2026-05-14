@@ -8,41 +8,43 @@
 			@mouseenter="handleMouseEnter"
 			@mouseleave="handleMouseLeave"
 	>
-		<template
-				v-for="(item, index) in displayItems"
-				:key="index"
-		>
-			<slot
-					name="avatar"
-					v-bind="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<template
+					v-for="(item, index) in displayItems"
+					:key="index"
 			>
-				<origam-avatar
-						:id="`avatar-${index}`"
-						ref="origamAvatarRef"
-						class="origam-avatar-group__item"
-						v-bind="avatarProps(item)"
-				/>
-			</slot>
-		</template>
-
-		<template v-if="restItems.length">
-			<slot
-					name="rest"
-					v-bind="{rest: restItems, length: restItems.length}"
-			>
-				<origam-avatar
-						ref="origamAvatarRef"
-						class="origam-avatar-group__rest"
-						v-bind="avatarProps"
+				<slot
+						name="avatar"
+						v-bind="{item, index}"
 				>
-					<template #default>
-						<slot name="default">
-							+{{ restItems.length }}
-						</slot>
-					</template>
-				</origam-avatar>
-			</slot>
-		</template>
+					<origam-avatar
+							:id="`avatar-${index}`"
+							ref="origamAvatarRef"
+							class="origam-avatar-group__item"
+							v-bind="avatarProps(item)"
+					/>
+				</slot>
+			</template>
+
+			<template v-if="restItems.length">
+				<slot
+						name="rest"
+						v-bind="{rest: restItems, length: restItems.length}"
+				>
+					<origam-avatar
+							ref="origamAvatarRef"
+							class="origam-avatar-group__rest"
+							v-bind="avatarProps()"
+					>
+						<template #default>
+							<slot name="default">
+								+{{ restItems.length }}
+							</slot>
+						</template>
+					</origam-avatar>
+				</slot>
+			</template>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -51,15 +53,22 @@
 		setup
 >
 
-	import { OrigamAvatar } from "../../components"
-	import { useActive, useDensity, useHover, useMargin, usePadding, useProps, useRtl, useStyle } from "../../composables"
+	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
+	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps } from "../../interfaces"
 	import type { TOrigamAvatar } from '../../types'
 
-	import type { StyleValue, VNodeProps } from 'vue'
+	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and slot defaults propagation to
+	 * child avatars via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IAvatarGroupProps>(), {
 		items: () => [],
 		max: 5,
@@ -67,38 +76,74 @@
 		direction: DIRECTION.HORIZONTAL
 	})
 
+	// Push visual-token props down to every descendant `<origam-avatar>` as
+	// DEFAULTS — children that pass their own props still win.
+	const slotDefaults = computed(() => ({
+		'origam-avatar': {
+			density: props.density,
+			size: props.size,
+			color: props.color,
+			bgColor: props.bgColor
+		}
+	}))
+
 	defineEmits(['update:active', 'update:hover'])
 
 	const {filterProps} = useProps<IAvatarGroupProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isRtl} = useRtl()
 
-	const max = ref(props.max)
+	/*********************************************************
+	 * Group items
+	 *
+	 * @description
+	 * Computes which items to display and which overflow
+	 * into the rest (+N) chip based on the `max` prop.
+	 *
+	 * `isExpanded` is the orthogonal toggle driven by
+	 * `expandOnHover` / `expandOnClick` — when true the visible
+	 * list shows EVERY item (effectiveMax = items.length). The
+	 * earlier implementation used a `ref(props.max)` which froze
+	 * the value at mount and never re-tracked the prop — user
+	 * report: "la prop max ne fonctionne pas".
+	 ********************************************************/
+	const isExpanded = ref(false)
+	const effectiveMax = computed(() => {
+		return isExpanded.value ? props.items.length : props.max
+	})
 
 	const restItems = computed(() => {
-		if (props.items.length > max.value) {
-			return props.items.slice(max.value - 1, props.items.length)
+		if (props.items.length > effectiveMax.value) {
+			return props.items.slice(effectiveMax.value - 1, props.items.length)
 		}
 
 		return []
 	})
 	const displayItems = computed(() => {
-		if (props.items.length > max.value) {
-			return props.items.slice(0, max.value - 1)
+		if (props.items.length > effectiveMax.value) {
+			return props.items.slice(0, effectiveMax.value - 1)
 		}
 
-		if (props.items.length === max.value) {
-			return props.items.slice(0, max.value)
+		if (props.items.length === effectiveMax.value) {
+			return props.items.slice(0, effectiveMax.value)
 		}
 
 		return props.items
 	})
 
-	const {hoverClasses, isHover, onMouseleave, onMouseenter} = useHover(props)
-	const {activeClasses, isActive, onActive} = useActive(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {densityClasses} = useDensity(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover / active state with optional expand-on-hover and
+	 * expand-on-click behaviour.
+	 ********************************************************/
+	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
+	const {activeClasses, activeState, isActive, onActive} = useActive(props)
 
 	const origamAvatarRef = ref<TOrigamAvatar>()
 	const avatarProps = (item: IAvatarProps = {}) => {
@@ -108,16 +153,20 @@
 		return mergeProps(item as VNodeProps, avatarDefaultProps, {hover: isHover.value, active: isActive.value})
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleMouseEnter = () => {
 		if (props.expandOnHover) {
-			max.value = props.items.length
+			isExpanded.value = true
 		}
 
 		onMouseenter()
 	}
 	const handleMouseLeave = () => {
 		if (props.expandOnHover) {
-			max.value = props.max
+			isExpanded.value = false
 		}
 
 		onMouseleave()
@@ -125,17 +174,24 @@
 
 	const handleClick = () => {
 		if (props.expandOnClick) {
-			if (isActive.value) {
-				max.value = props.max
-			} else {
-				max.value = props.items.length
-			}
+			isExpanded.value = !isActive.value
 		}
 
 		onActive()
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes direction, RTL, hover/active, density and
+	 * spacing classes/styles onto the root element.
+	 ********************************************************/
+	const {
+		marginClasses, marginStyles,
+		paddingClasses, paddingStyles,
+	} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const {densityClasses} = useDensity(props)
 
 	const avatarGroupStyles = computed(() => {
 		return [
@@ -164,8 +220,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(avatarGroupStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -199,7 +259,7 @@
 		margin-inline-start: var(--origam-avatar-group---margin-inline-start);
 		margin-inline-end: var(--origam-avatar-group---margin-inline-end);
 
-		&___item {
+		&__item {
 			margin-block-start: var(--origam-avatar-group__item---margin-block-start);
 			margin-block-end: var(--origam-avatar-group__item---margin-block-end);
 			margin-inline-start: var(--origam-avatar-group__item---margin-inline-start);
@@ -208,104 +268,66 @@
 
 		&--expand-on-hover,
 		&--expand-on-click {
-			#{$this}___item {
-				&:not(:first-child) {
-					transition: var(--origam-avatar-group__avatar---transition);
-				}
+			#{$this}__item:not(:first-child),
+			#{$this}__rest:not(:first-child) {
+				transition-property: var(--origam-avatar-group__avatar---transition-property, margin);
+				transition-duration: var(--origam-avatar-group__avatar---transition-duration, 200ms);
+				transition-timing-function: var(--origam-avatar-group__avatar---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 		}
 
-		&--elevated {
-			box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+		&--expand-on-click {
+			cursor: pointer;
 		}
 
-		&--density-comfortable {
-			--origam-avatar-group---density: 8px;
+		&--elevated {
+			box-shadow: var(--origam-avatar-group---box-shadow-elevated, var(--origam-shadow---md));
+		}
+
+		&--density-compact {
+			--origam-avatar-group---density: -6px;
 		}
 
 		&--density-default {
 			--origam-avatar-group---density: 0px;
 		}
 
-		&--density-compact {
-			--origam-avatar-group---density: 8px;
+		&--density-comfortable {
+			--origam-avatar-group---density: 10px;
 		}
 
 		&--horizontal {
-			--origam-avatar-group---flex-direction: row;
+			flex-direction: row;
 
-			#{$this}___item {
-				&:not(:first-child) {
-					--origam-avatar-group---margin-inline-start: calc(-18px + var(--origam-avatar-group---density));
-				}
+			#{$this}__item:not(:first-child),
+			#{$this}__rest:not(:first-child) {
+				margin-inline-start: calc(-18px + var(--origam-avatar-group---density, 0px));
 			}
 
-			&#{$this}--expand-on-hover {
-				&:hover {
-					#{$this}___item {
-						--origam-avatar-group---margin-inline-start: 0;
-					}
-				}
-			}
-
-			&#{$this}--expand-on-click {
-				&#{$this}--active {
-					#{$this}___item {
-						--origam-avatar-group---margin-inline-start: 0;
-					}
-				}
+			&#{$this}--expand-on-hover:hover #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-hover:hover #{$this}__rest:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__rest:not(:first-child) {
+				margin-inline-start: 0;
 			}
 		}
 
 		&--vertical {
 			flex-direction: column;
 
-			#{$this}___item {
-				&:not(:first-child) {
-					--origam-avatar-group---margin-block-start: calc(-18px + var(--origam-avatar-group---density));
-				}
+			#{$this}__item:not(:first-child),
+			#{$this}__rest:not(:first-child) {
+				margin-block-start: calc(-18px + var(--origam-avatar-group---density, 0px));
 			}
 
-			&#{$this}--expand-on-hover {
-				&:hover {
-					#{$this}___item {
-						--origam-avatar-group---margin-block-start: 0;
-					}
-				}
-			}
-
-			&#{$this}--expand-on-click {
-				&#{$this}--active {
-					#{$this}___item {
-						--origam-avatar-group---margin-block-start: 0;
-					}
-				}
+			&#{$this}--expand-on-hover:hover #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-hover:hover #{$this}__rest:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-click#{$this}--active #{$this}__rest:not(:first-child) {
+				margin-block-start: 0;
 			}
 		}
+
 	}
 </style>
 
-<style>
-	:root {
-		--origam-avatar-group---flex-direction: row;
-		--origam-avatar-group---position: relative;
-		--origam-avatar-group---density: 0;
-		--origam-avatar-group---margin-inline-start: 0;
-		--origam-avatar-group---margin-inline-end: 0;
-		--origam-avatar-group---margin-block-start: 0;
-		--origam-avatar-group---margin-block-end: 0;
-		--origam-avatar-group---padding-block-start: 0;
-		--origam-avatar-group---padding-block-end: 0;
-		--origam-avatar-group---padding-inline-start: 0;
-		--origam-avatar-group---padding-inline-end: 0;
-
-		--origam-avatar-group__avatar---transition-duration: 0.2s;
-		--origam-avatar-group__avatar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-avatar-group__avatar---transition-property: margin;
-		--origam-avatar-group__avatar---transition: var(--origam-avatar-group__avatar---transition-property) var(--origam-avatar-group__avatar---transition-duration) var(--origam-avatar-group__avatar---transition-timing-function);
-		--origam-avatar-group__avatar---margin-inline-start: 0;
-		--origam-avatar-group__avatar---margin-inline-end: 0;
-		--origam-avatar-group__avatar---margin-block-start: 0;
-		--origam-avatar-group__avatar---margin-block-end: 0;
-	}
-</style>

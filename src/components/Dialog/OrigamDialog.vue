@@ -5,14 +5,9 @@
 			:activator-props="activatorProps"
 			:class="dialogClasses"
 			:style="dialogStyles"
-			aria-modal="true"
-			role="dialog"
 			v-bind="{...overlayProps, ...scopeId}"
 	>
-		<template
-				v-if="slots.activator"
-				#activator="{props}"
-		>
+			<template #activator="{props}">
 			<slot
 					name="activator"
 					v-bind="{props}"
@@ -26,6 +21,8 @@
 			>
 				<origam-card
 						ref="origamCardRef"
+						aria-modal="true"
+						role="dialog"
 						v-bind="cardProps"
 				>
 					<template
@@ -128,7 +125,14 @@
 >
 	import { computed, mergeProps, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
 	import { OrigamBtn, OrigamCard, OrigamIcon, OrigamOverlay, OrigamTranslateScale } from '../../components'
-	import { useProps, useScopeId, useStatus, useVModel } from '../../composables'
+	import {
+	useProps,
+	useScopeId,
+	useSize,
+	useStatus,
+	useStyle,
+	useVModel
+} from '../../composables'
 	import { IN_BROWSER } from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { MDI_ICONS } from '../../enums'
@@ -136,25 +140,64 @@
 	import type { TOrigamCard, TOrigamOverlay, TTransitionProps } from '../../types'
 	import { focusableChildren, forwardRefs } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and top-level composable bootstrapping.
+	 * openOnClick defaults to `true` here because Vue 3's Boolean prop
+	 * coercion would otherwise resolve it to `false`, breaking the
+	 * activator click chain from Dialog → Overlay → useActivator.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IDialogProps>(), {
 		retainFocus: true,
 		origin: 'center center',
 		scrollStrategy: 'block',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
-		zIndex: 2400
+		zIndex: 2400,
+		// Vue 3's Boolean prop coercion turns `undefined` into `false`,
+		// so without an explicit default here Dialog's resolved
+		// `props.openOnClick` is `false` even though OrigamOverlay's
+		// withDefaults declares `true`. The chain `Dialog → Overlay →
+		// useActivator.activatorEvents` then drops `onClick` from the
+		// activator merge, the consumer's button receives no click
+		// handler, and the dialog never opens. Anchoring the default
+		// here lines up the resolved prop with the parent's intent.
+		openOnClick: true
 	})
 
 	const emits = defineEmits(['update:modelValue', 'isRead', 'click:outside'])
 
 	const {filterProps} = useProps<IDialogProps>(props)
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {scopeId} = useScopeId()
 	const slots = useSlots()
-	const {icon, statusClasses} = useStatus(props)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 	const origamCardRef = ref<TOrigamCard>()
+
+	/*********************************************************
+	 * Focus trap
+	 *
+	 * @description
+	 * Retain keyboard focus inside the dialog while it is open.
+	 * Cycles focus between first and last focusable element when
+	 * the user tabs past either boundary.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocusin = (e: FocusEvent) => {
 		const before = e.relatedTarget as HTMLElement | null
@@ -204,12 +247,45 @@
 		}
 	})
 
+	/*********************************************************
+	 * Icon & Status
+	 *
+	 * @description
+	 * Resolves the status icon shown in the header-prepend area.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	const {icon, statusClasses} = useStatus(props)
+	const {sizeClasses} = useSize(props, 'origam-dialog')
+
+	const hasPrepend = computed(() => {
+		return !!(slots['header-prepend'] || icon.value)
+	})
+	const hasIcon = computed(() => {
+		return !!(props.icon || props.status)
+	})
+
+	/*********************************************************
+	 * Activator & Overlay
+	 *
+	 * @description
+	 * Merges ARIA props onto the activator element and forwards
+	 * filtered props to the inner overlay and card instances.
+	 ********************************************************/
 	const activatorProps = computed(() => {
 		return mergeProps({
 			'aria-haspopup': 'dialog',
 			'aria-expanded': String(isActive.value)
 		}, props.activatorProps)
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'class', 'style', 'modelValue'])
 	})
@@ -217,6 +293,12 @@
 		return origamCardRef.value?.filterProps(props)
 	})
 
+	/*********************************************************
+	 * Events
+	 *
+	 * @description
+	 * Handles close and scroll-to-bottom (isRead) interactions.
+	 ********************************************************/
 	const handleClose = () => {
 		isActive.value = false
 	}
@@ -226,15 +308,12 @@
 		}
 	}
 
-	const hasPrepend = computed(() => {
-		return !!(slots['header-prepend'] || icon.value)
-	})
-	const hasIcon = computed(() => {
-		return !!(props.icon || props.status)
-	})
-
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * dialogClasses and dialogStyles computed properties for the root element.
+	 ********************************************************/
 	const dialogStyles = computed(() => {
 		return [
 			props.style
@@ -247,14 +326,27 @@
 				'origam-dialog--fullscreen': props.fullscreen,
 				'origam-dialog--scrollable': props.scrollable
 			},
+			sizeClasses.value,
 			statusClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dialogStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps and the overlay ref to parent components.
+	 ********************************************************/
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style
@@ -268,11 +360,19 @@
 		justify-content: center;
 		margin: auto;
 
+		&--size-x-small  { --origam-dialog---width: var(--origam-dialog---width-xs, 320px); }
+		&--size-small    { --origam-dialog---width: var(--origam-dialog---width-sm, 400px); }
+		&--size-default  { --origam-dialog---width: var(--origam-dialog---width-md, 720px); }
+		&--size-large    { --origam-dialog---width: var(--origam-dialog---width-lg, 960px); }
+		&--size-x-large  { --origam-dialog---width: var(--origam-dialog---width-xl, 1080px); }
+
 		> :deep(.origam-overlay__content) {
-			max-height: calc(100% - 48px);
-			width: calc(100% - 48px);
-			max-width: calc(100% - 48px);
+			max-height: var(--origam-dialog---max-height, calc(100vh - 48px));
+			width: min(var(--origam-dialog---width, auto), calc(100vw - 48px));
+			max-width: var(--origam-dialog---max-width, calc(100vw - 48px));
 			margin: 24px;
+			border-radius: var(--origam-dialog---border-radius, 12px);
+			box-shadow: var(--origam-dialog---box-shadow);
 
 			&,
 			> form {
@@ -297,14 +397,19 @@
 		}
 
 		&--fullscreen {
+			--origam-dialog---width: 100vw;
+			--origam-dialog---max-width: 100vw;
+			--origam-dialog---max-height: 100vh;
+			--origam-dialog---border-radius: 0;
+
 			> :deep(.origam-overlay__content) {
-				border-radius: 0;
+				border-radius: var(--origam-dialog---border-radius, 0px);
 				margin: 0;
 				padding: 0;
 				width: 100%;
 				height: 100%;
-				max-width: 100%;
-				max-height: 100%;
+				max-width: var(--origam-dialog---max-width, 100%);
+				max-height: var(--origam-dialog---max-height, 100%);
 				overflow-y: auto;
 				top: 0;
 				left: 0;
@@ -315,14 +420,10 @@
 					> .origam-sheet {
 						min-height: 100%;
 						min-width: 100%;
-						border-radius: 0;
+						border-radius: var(--origam-dialog__fullscreen---border-radius, 0px);
 					}
 				}
 			}
 		}
 	}
-</style>
-
-<style>
-
 </style>

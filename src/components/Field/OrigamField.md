@@ -1,5 +1,0 @@
-# Origamfield
-
-## Usage
-
-    <OrigamField />

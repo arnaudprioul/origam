@@ -25,10 +25,20 @@ import {
     parseAnchor
 } from '../../utils'
 
+/**
+ * Static location strategy.
+ */
 export function staticLocationStrategy () {
     // TODO
 }
 
+/**
+ * Connected location strategy.
+ *
+ * @param data          …
+ * @param props         …
+ * @param contentStyles …
+ */
 export function connectedLocationStrategy (data: ILocationStrategyData, props: ILocationStrategyProps, contentStyles: Ref<Record<string, string>>) {
     const activatorFixed = Array.isArray(data.target.value) || isFixedPosition(data.target.value)
     if (activatorFixed) {
@@ -108,7 +118,13 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
         const targetBox = getTargetBox(data.target.value)
         const contentBox = getIntrinsicSize(data.contentEl.value)
         const scrollParents = getScrollParents(data.contentEl.value)
-        const viewportMargin = 12
+        // Configurable inward-shift guard. Defaults to 12px so the floating
+        // content never sits flush with a viewport edge. Components whose
+        // activator legitimately spans the full viewport (e.g. an
+        // `<origam-select>` filling a row) should pass `viewportMargin: 0`
+        // — otherwise the strategy would shift the dropdown 12px inward,
+        // breaking the visual alignment with the field's left edge.
+        const viewportMargin = (props as { viewportMargin?: number }).viewportMargin ?? 12
 
         if (!scrollParents.length) {
             scrollParents.push(document.documentElement)
@@ -344,14 +360,29 @@ export function getIntrinsicSize (el: HTMLElement) {
     return contentBox
 }
 
+/**
+ * Pixel round.
+ *
+ * @param val …
+ */
 export function pixelRound (val: number) {
     return Math.round(val * devicePixelRatio) / devicePixelRatio
 }
 
+/**
+ * Pixel ceil.
+ *
+ * @param val …
+ */
 export function pixelCeil (val: number) {
     return Math.ceil(val * devicePixelRatio) / devicePixelRatio
 }
 
+/**
+ * Is fixed position.
+ *
+ * @param el …
+ */
 export function isFixedPosition (el?: HTMLElement) {
     while (el) {
         if (window.getComputedStyle(el).position === 'fixed') {

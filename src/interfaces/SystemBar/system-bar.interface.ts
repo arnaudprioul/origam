@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDimensionProps,
@@ -9,6 +10,6 @@ import type {
     ITagProps
 } from "../../interfaces"
 
-export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps {
+export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps {
     window?: boolean
 }

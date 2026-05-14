@@ -16,16 +16,38 @@
 
 	import type { ITransitionProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITransitionProps>(), {
 		name: 'origam-transition--translate-bottom'
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
 
+	/*********************************************************
+	 * Transition
+	 *
+	 * @description
+	 * CSS-driven bottom-translate transition delegated to
+	 * useCssTransition.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {name, tag, transitionProps} = useCssTransition(props)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

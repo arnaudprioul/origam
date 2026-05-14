@@ -52,7 +52,12 @@
 		setup
 >
 	import { computed, inject, StyleValue, useSlots } from 'vue'
-	import { useBackgroundColor, useProps, useRounded } from '../../composables'
+	import {
+	useBackgroundColor,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_SLIDER_FIELD_KEY } from '../../consts'
 
@@ -62,6 +67,12 @@
 
 	import { convertToUnit, int } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, slots, and slider context injection.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldTrackProps>(), {
 		start: 0,
 		stop: 100,
@@ -91,14 +102,29 @@
 		indexFromEnd
 	} = slider
 
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Derived color, bgColor, size and tick visibility from
+	 * the parent slider context.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
+	// When `error` is on, force the `danger` intent on BOTH channels —
+	// `color` paints the FILL and the thumb (via currentColor), `bgColor`
+	// paints the rail (track background). Disabled keeps both `undefined`
+	// so SCSS can apply the muted neutral.
 	const color = computed(() => {
-		return error.value || isDisabled.value ? undefined : sliderColor.value ? sliderColor.value : props.color
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderColor.value || props.color
 	})
 	const bgColor = computed(() => {
-		return error.value || isDisabled.value ? undefined : sliderBgColor.value ? sliderBgColor.value : props.bgColor
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderBgColor.value || props.bgColor
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {
@@ -116,10 +142,35 @@
 		return props.rounded ?? sliderRounded.value
 	})
 
-	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
-	const {backgroundColorStyles: trackFillColorStyles} = useBackgroundColor(bgColor)
-	const {backgroundColorStyles} = useBackgroundColor(color)
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
+	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
+	// Strict color/bgColor channel separation — same rule as switch:
+	//   • `bgColor` paints the RAIL (the un-filled background of the
+	//     track).
+	//   • `color`   paints the FILL (the active progress portion) and
+	//     is inherited by the thumb via `currentColor` on the wrapper.
+	// Pre-fix the channels were swapped — `color` painted the rail
+	// and `bgColor` painted the fill, which violated the project's
+	// strict color contract and produced counter-intuitive visuals.
+	// Phase 3 (Vague B) — class-first companion. `*Classes` drops the
+	// global `.origam--bg-{intent}` utility on the matching DOM node;
+	// `*Styles` still ships the inline fallback for legacy raw colors.
+	const {
+		backgroundColorClasses: trackFillColorClasses,
+		backgroundColorStyles: trackFillColorStyles
+	} = useBackgroundColor(color)
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(bgColor)
+
+	/*********************************************************
+	 * Track geometry
+	 *
+	 * @description
+	 * Direction-aware start/end logical CSS properties, fill
+	 * width/height, and tick positions.
+	 ********************************************************/
 	const startDir = computed(() => `inset-${isVertical.value ? 'block' : 'inline'}-${indexFromEnd.value ? 'end' : 'start'}`)
 	const endDir = computed(() => isVertical.value ? 'height' : 'width')
 
@@ -166,8 +217,13 @@
 		]
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Classes and styles for the track root, background fill,
+	 * active fill, and ticks container.
+	 ********************************************************/
 	const sliderFieldTrackStyles = computed(() => {
 		return [
 			{
@@ -195,7 +251,8 @@
 			'origam-slider-field-track__background',
 			{
 				'origam-slider-field-track__background--opacity': !!color.value
-			}
+			},
+			backgroundColorClasses.value
 		]
 	})
 	const sliderFieldTrackFillStyles = computed(() => {
@@ -206,7 +263,8 @@
 	})
 	const sliderFieldTrackFillClasses = computed(() => {
 		return [
-			'origam-slider-field-track__fill'
+			'origam-slider-field-track__fill',
+			trackFillColorClasses.value
 		]
 	})
 	const sliderFieldTrackTicksClasses = computed(() => {
@@ -217,11 +275,22 @@
 			}
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

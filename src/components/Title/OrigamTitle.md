@@ -1,5 +1,0 @@
-# Origamtitle
-
-## Usage
-
-    <origamTitle />

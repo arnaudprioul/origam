@@ -114,25 +114,20 @@
 		setup
 >
 	import type { ComputedRef, StyleValue } from 'vue'
-	import { computed, ref, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamBtn, OrigamIcon } from '../../components'
 
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useColorEffect,
 		useDensity,
 		useDimension,
-		useElevation,
 		useHover,
 		useLocale,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStatus,
 		useStyle
 	} from '../../composables'
@@ -141,6 +136,12 @@
 
 	import type { IAlertProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and utilities for the Alert component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IAlertProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
@@ -157,19 +158,41 @@
 
 	const slots = useSlots()
 
-	const {activeClasses, isActive, onActive} = useActive(props, 'modelValue')
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {densityClasses} = useDensity(props)
-	const {borderStyles, borderClasses} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {locationStyles} = useLocation(props)
-	const {positionClasses, positionStyles} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state and color resolution for the alert.
+	 ********************************************************/
+	const {activeClasses, isActive, activeState, onActive} = useActive(props, 'modelValue')
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for the resting state only — `useStateEffect` returns `[]` for hover/
+	// active so the inline `colorStyles` keeps owning those slots.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Adjacent (prepend / append)
+	 *
+	 * @description
+	 * Resolves prepend/append icons and click handlers.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -177,6 +200,18 @@
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
+
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags that control conditional rendering of
+	 * icon, title, header and close button sections.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClose = (e: MouseEvent) => {
 		onActive()
@@ -187,10 +222,15 @@
 		return props.prominent ? 44 : 28
 	})
 
-	// SLOTS
-
 	const hasIcon = computed(() => {
-		return !!(props.icon || props.status)
+		// Pre-fix: `!!(props.icon || props.status)` returned true as soon
+		// as a `status` was set, even when the resolved `icon` was empty
+		// (`useStatus` only assigns `statusIcon` to `icon` when
+		// `statusIconPosition === 'replace'`). The header then rendered
+		// `<origam-icon :icon="undefined">` — an empty `<i.origam-icon>`
+		// placeholder squeezed in next to the title. Pin the gate to the
+		// actual resolved icon used by the template.
+		return !!icon.value
 	})
 	const hasTitle = computed(() => {
 		return !!(slots.title || props.title)
@@ -202,8 +242,17 @@
 		return slots.close || props.closable
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all layout, spacing, color, elevation and
+	 * variant classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {locationStyles} = useLocation(props)
+	const {positionClasses, positionStyles} = usePosition(props)
 	const alertStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -227,6 +276,7 @@
 			hoverClasses.value,
 			activeClasses.value,
 			statusClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -240,8 +290,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(alertStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -275,7 +329,10 @@
 		margin-inline-start: var(--origam-alert---margin-inline-start);
 		margin-inline-end: var(--origam-alert---margin-inline-end);
 
-		border-width: var(--origam-alert---border-width);
+		border-top-width: var(--origam-alert---border-top-width, var(--origam-alert---border-width, 0));
+		border-right-width: var(--origam-alert---border-right-width, var(--origam-alert---border-width, 0));
+		border-bottom-width: var(--origam-alert---border-bottom-width, var(--origam-alert---border-width, 0));
+		border-left-width: var(--origam-alert---border-left-width, var(--origam-alert---border-width, 0));
 		border-style: var(--origam-alert---border-style);
 		border-color: var(--origam-alert---border-color);
 		border-radius: var(--origam-alert---border-radius);
@@ -284,7 +341,7 @@
 		color: var(--origam-alert---color);
 
 		&--elevated {
-			box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--border {
@@ -326,11 +383,35 @@
 		}
 
 		&--rounded {
-			--origam-alert---border-radius: 4px;
+			--origam-alert---border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			--origam-alert---border-radius: var(--origam-radius---xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-alert---border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-alert---border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-alert---border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-alert---border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-alert---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
-			--origam-alert---density: 8px;
+			--origam-alert---density: -8px;
 		}
 
 		&--density-default {
@@ -342,23 +423,23 @@
 		}
 
 		&--warning {
-			--origam-alert---background-color: var(--origam-status--warning---background-color, rgb(251, 140, 0));
-			--origam-alert---color: var(--origam-status--warning---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--warning---bg, var(--origam-color__feedback--warning---bg, rgb(251, 140, 0)));
+			--origam-alert---color: var(--origam-alert--warning---fg, var(--origam-color__feedback--warning---fg, #ffffff));
 		}
 
 		&--success {
-			--origam-alert---background-color: var(--origam-status--success---background-color, rgb(76, 175, 80));
-			--origam-alert---color: var(--origam-status--success---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--success---bg, var(--origam-color__feedback--success---bg, rgb(76, 175, 80)));
+			--origam-alert---color: var(--origam-alert--success---fg, var(--origam-color__feedback--success---fg, #ffffff));
 		}
 
 		&--info {
-			--origam-alert---background-color: var(--origam-status--info---background-color, rgb(33, 150, 243));
-			--origam-alert---color: var(--origam-status--info---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--info---bg, var(--origam-color__feedback--info---bg, rgb(33, 150, 243)));
+			--origam-alert---color: var(--origam-alert--info---fg, var(--origam-color__feedback--info---fg, #ffffff));
 		}
 
 		&--error {
-			--origam-alert---background-color: var(--origam-status--error---background-color, rgb(207, 102, 121));
-			--origam-alert---color: var(--origam-status--error---color, #ffffff);
+			--origam-alert---background-color: var(--origam-alert--danger---bg, var(--origam-color__feedback--danger---bg, rgb(207, 102, 121)));
+			--origam-alert---color: var(--origam-alert--danger---fg, var(--origam-color__feedback--danger---fg, #ffffff));
 		}
 
 		&--absolute {
@@ -457,70 +538,4 @@
 		}
 	}
 
-</style>
-
-<style>
-	:root {
-		--origam-alert---border-top-width: 0;
-		--origam-alert---border-left-width: 0;
-		--origam-alert---border-bottom-width: 0;
-		--origam-alert---border-right-width: 0;
-		--origam-alert---border-width: var(--origam-alert---border-top-width) var(--origam-alert---border-left-width) var(--origam-alert---border-bottom-width) var(--origam-alert---border-right-width);
-		--origam-alert---border-color: transparent;
-		--origam-alert---border-style: solid;
-		--origam-alert---border-radius: 0px;
-		--origam-alert---color: rgba(30, 30, 30, 0.87);
-		--origam-alert---background-color: rgb(230, 230, 230);
-		--origam-alert---position: static;
-		--origam-alert---margin-inline-start: 0;
-		--origam-alert---margin-inline-end: 0;
-		--origam-alert---margin-block-start: 0;
-		--origam-alert---margin-block-end: 0;
-		--origam-alert---padding-block-start: 16px;
-		--origam-alert---padding-block-end: 16px;
-		--origam-alert---padding-inline-start: 16px;
-		--origam-alert---padding-inline-end: 16px;
-
-		--origam-alert__prepend---align-items: center;
-		--origam-alert__prepend---margin-inline-start: 0;
-		--origam-alert__prepend---margin-inline-end: 16px;
-		--origam-alert__prepend---margin-block-start: 0;
-		--origam-alert__prepend---margin-block-end: 0;
-		--origam-alert__prepend---padding-block-start: 0;
-		--origam-alert__prepend---padding-block-end: 0;
-		--origam-alert__prepend---padding-inline-start: 0;
-		--origam-alert__prepend---padding-inline-end: 0;
-
-		--origam-alert__append---align-items: center;
-		--origam-alert__append---margin-inline-start: 16px;
-		--origam-alert__append---margin-inline-end: 0;
-		--origam-alert__append---margin-block-start: 0;
-		--origam-alert__append---margin-block-end: 0;
-		--origam-alert__append---padding-block-start: 0;
-		--origam-alert__append---padding-block-end: 0;
-		--origam-alert__append---padding-inline-start: 0;
-		--origam-alert__append---padding-inline-end: 0;
-
-		--origam-alert__close---margin-inline-start: 16px;
-		--origam-alert__close---margin-inline-end: 0;
-		--origam-alert__close---margin-block-start: 0;
-		--origam-alert__close---margin-block-end: 0;
-		--origam-alert__close---padding-block-start: 0;
-		--origam-alert__close---padding-block-end: 0;
-		--origam-alert__close---padding-inline-start: 0;
-		--origam-alert__close---padding-inline-end: 0;
-
-		--origam-alert__title---align-items: center;
-		--origam-alert__title---font-size: 1.25rem;
-		--origam-alert__title---font-weight: 500;
-		--origam-alert__title---hyphens: auto;
-		--origam-alert__title---letter-spacing: 0.0125em;
-		--origam-alert__title---line-height: 1.75rem;
-		--origam-alert__title---overflow-wrap: normal;
-		--origam-alert__title---text-transform: none;
-		--origam-alert__title---word-break: normal;
-		--origam-alert__title---word-wrap: break-word;
-
-		--origam-alert__underlay---border-radius: 4px;
-	}
 </style>

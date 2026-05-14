@@ -95,11 +95,23 @@
 >
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 
-	import { useAdjacent, useDensity, useProps } from '../../composables'
+	import {
+	useAdjacent,
+	useDensity,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ICardHeaderProps } from '../../interfaces'
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and slot resolution for the card header.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICardHeaderProps>(), {tag: 'OrigamToolbar'})
 
@@ -108,7 +120,23 @@
 	const {filterProps} = useProps<ICardHeaderProps>(props)
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Adjacent (prepend / append)
+	 *
+	 * @description
+	 * Resolves prepend/append icons and click handlers.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -117,6 +145,13 @@
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags for conditional title / subtitle rendering.
+	 ********************************************************/
+
 	const hasTitle = computed(() => {
 		return slots.title || props.title != null
 	})
@@ -124,7 +159,12 @@
 		return slots.subtitle || props.subtitle != null
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes density classes and passes through host styles.
+	 ********************************************************/
 
 	const cardHeaderStyles = computed(() => {
 		return [
@@ -138,11 +178,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(cardHeaderStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -152,6 +204,43 @@
 >
 	.origam-card-header {
 		$this: &;
+
+		// CardHeader renders with `tag: 'OrigamToolbar'` so it inherits
+		// `.origam-toolbar`'s own SCSS. Two side-effects we don't want
+		// inside a Card:
+		//   1. `box-shadow: var(--origam-toolbar---box-shadow)` defaults
+		//      to `{shadow.sm}` → visually paints a SECOND elevation on
+		//      top of the parent Card's shadow ("header looks elevated
+		//      on top of the card"). Strip it so only the Card's
+		//      elevation drives the surface depth.
+		//   2. `background: var(--origam-toolbar---background)` defaults
+		//      to the toolbar's neutral surface (white/gray) → covers
+		//      the parent Card's `bgColor` so a Card with
+		//      `bgColor="primary"` paints primary on the body but the
+		//      header stays gray ("color doesn't apply to the header").
+		//      Make it transparent so the Card's intent shows through.
+		//   3. `color: var(--origam-toolbar---color)` resolves to the
+		//      toolbar's own dark-text token → overrides the inherited
+		//      `color: var(--primary-fg)` (white) that the Card pushes
+		//      via `useBothColor` auto-contrast. Result: dark text on
+		//      primary surface → unreadable. Force `color: inherit` so
+		//      the header text follows the Card's contrast pair. NB:
+		//      assigning `inherit` on the `--origam-toolbar---color`
+		//      custom property alone doesn't work — `inherit` on a
+		//      custom prop inherits the VARIABLE value (which falls
+		//      back to its `:root` default), not the parent's `color`.
+		//      We override the resolved `color` declaration directly.
+		--origam-toolbar---box-shadow: none;
+		--origam-toolbar---background: transparent;
+
+		// Compound selector to outrank the toolbar's own
+		// `.origam-toolbar[data-v-X] { color: var(--toolbar-color) }`
+		// rule (same specificity, but toolbar's scoped CSS is bundled
+		// last, so a flat `.origam-card-header { color: inherit }` was
+		// losing the cascade tiebreak).
+		&.origam-toolbar {
+			color: inherit;
+		}
 
 		align-items: var(--origam-card-header---align-items);
 		display: var(--origam-card-header---display);

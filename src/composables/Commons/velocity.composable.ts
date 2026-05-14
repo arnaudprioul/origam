@@ -5,6 +5,9 @@ import { CircularBuffer } from '../../services'
 
 import { calculateImpulseVelocity, oops } from '../../utils'
 
+/*********************************************************
+ * useVelocity
+ ********************************************************/
 export function useVelocity () {
     const touches: Record<number, CircularBuffer<[number, Touch]> | undefined> = {}
 

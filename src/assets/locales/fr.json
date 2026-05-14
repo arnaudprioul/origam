@@ -70,6 +70,13 @@
       "counter": "{0} fichier(s)",
       "counterSize": "{0} fichier(s) ({1} au total)"
     },
+    "fileField": {
+      "counter": "{0} fichier(s)",
+      "counterSize": "{0} fichier(s) ({1} au total)",
+      "dropzoneTitle": "Glissez et déposez vos fichiers ici",
+      "dropzoneSubtitle": "ou cliquez pour parcourir",
+      "browse": "Parcourir les fichiers"
+    },
     "fileUpload": {
       "title": "Drag and drop files here",
       "divider": "or",
@@ -89,7 +96,10 @@
         "currentPage": "Page actuelle, Page {0}",
         "first": "Première page",
         "last": "Dernière page"
-      }
+      },
+      "page": "Page",
+      "of": "sur",
+      "info": "Affichage de {0}-{1} sur {2}"
     },
     "stepper": {
       "next": "Suivant",
@@ -98,12 +108,20 @@
     "rating": {
       "ariaLabel": {
         "item": "Note de {0} sur {1}"
-      }
+      },
+      "clear": "Réinitialiser la note"
     },
     "loading": "Chargement...",
     "infiniteScroll": {
       "loadMore": "Charger plus",
       "empty": "Aucune donnée supplémentaire"
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire",
+      "must_match": "Les champs ne correspondent pas",
+      "max_length": "Maximum {0} caractères",
+      "must_contains": "Ce champ doit contenir : {value}",
+      "max_size_error": "Le fichier \"{0}\" dépasse la taille maximum de {1}"
     }
   }
 }

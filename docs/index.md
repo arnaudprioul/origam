@@ -1,25 +1,29 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
-  name: "Origam documentations"
-  text: "Origam is a site builder and design system developed in vuejs 3, composition api and typescript"
-  tagline: My great project tagline
+  name: Origam UI
+  text: Bibliothèque de composants Vue 3
+  tagline: Des composants élégants et performants pour vos applications
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Commencer
+      link: /guide/introduction
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Voir sur GitHub
+      link: https://github.com/votre-repo/origam-ui
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - icon: ⚡️
+    title: Rapide et léger
+    details: Optimisé pour les performances avec Vue 3 et TypeScript
+  - icon: 🎨
+    title: Personnalisable
+    details: Thème complet avec variables CSS et support du dark mode
+  - icon: 📦
+    title: TypeScript
+    details: Entièrement typé pour une meilleure expérience développeur
+  - icon: ✨
+    title: Composition API
+    details: Utilise les dernières fonctionnalités de Vue 3
 ---
-

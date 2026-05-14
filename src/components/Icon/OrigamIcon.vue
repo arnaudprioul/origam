@@ -18,19 +18,45 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
-	import { useBorder, useBothColor, useIcon, useMargin, usePadding, useProps, useSize } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useIcon,
+	useMargin,
+	usePadding,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
 
 	import type { IIconComponentProps } from '../../interfaces'
 
 	import { flattenFragments } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables, and slot icon resolution.
+	 ********************************************************/
 	const attrs = useAttrs()
 
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -46,8 +72,12 @@
 		)[0]?.children as string
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const iconStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -64,6 +94,7 @@
 			{
 				'origam-icon--clickable': !!attrs.onClick
 			},
+			colorClasses.value,
 			sizeClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -71,43 +102,59 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(iconStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
 <style
 		lang="scss"
-		scoped
 >
 	.origam-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--origam-icon---color, currentColor);
+		transition-duration: var(--origam-icon---transition-duration, 150ms);
+		transition-timing-function: var(--origam-icon---transition-timing-function, ease);
+		transition-property: color, background-color, transform;
+
+		&--clickable {
+			cursor: pointer;
+		}
+
 		&--size-x-small {
-			font-size: 1em;
+			font-size: var(--origam-icon---font-size-xs, 1em);
 		}
 
 		&--size-small {
-			font-size: 1.25em;
+			font-size: var(--origam-icon---font-size-sm, 1.25em);
 		}
 
 		&--size-default {
-			font-size: 1.5em;
+			font-size: var(--origam-icon---font-size-md, 1.5em);
 		}
 
 		&--size-large {
-			font-size: 1.75em;
+			font-size: var(--origam-icon---font-size-lg, 1.75em);
 		}
 
 		&--size-x-large {
-			font-size: 2em;
+			font-size: var(--origam-icon---font-size-xl, 2em);
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

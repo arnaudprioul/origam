@@ -1,5 +1,0 @@
-# Origamicon
-
-## Usage
-
-    <OrigamIcon />

@@ -2,6 +2,12 @@ import type { IBox } from '../../interfaces'
 
 import type { TElementPoint, TOffset, TParsedAnchor, TPoint, TViewportPoint } from '../../types'
 
+/**
+ * Element to viewport.
+ *
+ * @param point  …
+ * @param offset …
+ */
 export function elementToViewport (point: TElementPoint, offset: TOffset | IBox) {
     return {
         x: point.x + offset.x,
@@ -63,6 +69,11 @@ export function anchorToPoint (anchor: TParsedAnchor, box: IBox): TViewportPoint
     } as TElementPoint, box)
 }
 
+/**
+ * In viewport.
+ *
+ * @param element …
+ */
 export function inViewport (element: IBox | DOMRect) {
     const isInViewport = element.bottom >= 0
         && element.right >= 0
@@ -73,6 +84,12 @@ export function inViewport (element: IBox | DOMRect) {
     return isInViewport
 }
 
+/**
+ * Get center.
+ *
+ * @param element …
+ * @returns …
+ */
 export function getCenter (element: IBox | DOMRect): TPoint {
     return {
         x: element ? element.width / 2 : 0,

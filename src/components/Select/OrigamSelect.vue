@@ -70,7 +70,10 @@
 					:eager="eager"
 					:location="BLOCK.BOTTOM"
 					:max-height="310"
+					:offset="0"
 					:open-on-click="false"
+					:transition="{ component: OrigamExpandY }"
+					:viewport-margin="0"
 					activator="parent"
 					content-class="origam-select__content"
 					v-bind="{ ...menuProps }"
@@ -108,7 +111,7 @@
 										:items="displayItems"
 										renderless
 								>
-									<template #item:renderless="{item, index, itemRef}">
+									<template #item.renderless="{item, index, itemRef}">
 										<slot
 												name="item"
 												v-bind="{item, index, props: menuListItemProps(item, itemRef, index)}"
@@ -118,7 +121,7 @@
 													v-bind="menuListItemProps(item, itemRef, index)"
 											>
 												<template
-														v-if="showCheckbox || item.props.prependAvatar || item.props.prependIcon"
+														v-if="showCheckbox || item.prependAvatar || item.prependIcon"
 														#prepend="{isSelected}"
 												>
 													<origam-checkbox-btn
@@ -129,13 +132,13 @@
 													/>
 
 													<origam-avatar
-															v-if="item.props.prependAvatar"
-															:image="item.props.prependAvatar"
+															v-if="item.prependAvatar"
+															:image="item.prependAvatar"
 													/>
 
 													<origam-icon
-															v-if="item.props.prependIcon"
-															:icon="item.props.prependIcon"
+															v-if="item.prependIcon"
+															:icon="item.prependIcon"
 													/>
 												</template>
 
@@ -172,9 +175,8 @@
 					:key="index"
 			>
 				<div
-						:class="{'origam-select__selection--selected' : index === selectionIndex}"
+						:class="getSelectionClasses(index)"
 						:style="[textColorStyles]"
-						class="origam-select__selection"
 				>
 					<template v-if="hasChips">
 						<slot
@@ -255,14 +257,13 @@
 			<slot name="append"/>
 		</template>
 	</origam-text-field>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
 	import {
 		computed,
+		getCurrentInstance,
 		inject,
 		mergeProps,
 		nextTick,
@@ -278,6 +279,7 @@
 		OrigamAvatar,
 		OrigamCheckboxBtn,
 		OrigamChip,
+		OrigamExpandY,
 		OrigamIcon,
 		OrigamList,
 		OrigamListItem,
@@ -287,7 +289,16 @@
 		OrigamVirtualScroll
 	} from '../../components'
 
-	import { useFilter, useItems, useLocale, useProps, useScrolling, useTextColor, useVModel } from '../../composables'
+	import {
+	useFilter,
+	useItems,
+	useLocale,
+	useProps,
+	useScrolling,
+	useStyle,
+	useTextColor,
+	useVModel
+} from '../../composables'
 
 	import { IN_BROWSER, ORIGAM_FORM_KEY } from '../../consts'
 
@@ -315,6 +326,12 @@
 
 	import { deepEqual, forwardRefs, matchesSelector, noop, wrapInArray } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the Select component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISelectProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
@@ -331,7 +348,7 @@
 		itemChildren: 'children',
 		itemProps: 'props',
 		valueComparator: deepEqual,
-		menuIcon: MDI_ICONS.MENU_DOWN_OUTLINE,
+		menuIcon: MDI_ICONS.CHEVRON_DOWN,
 		divider: ',',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
 		filterKeys: () => ['title'],
@@ -345,6 +362,16 @@
 
 	const {filterProps} = useProps<ISelectProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Refs to sub-components for forward-prop delegation.
+	 * `vm` is the component instance — used as a fallback path
+	 * to reach the underlying `<input>` when the forwardRefs-
+	 * based proxy on `origamTextFieldRef` doesn't expose `$el`
+	 * (filtered because of its `$` prefix).
+	 ********************************************************/
 	const {t} = useLocale()
 
 	const origamTextFieldRef = ref<TOrigamTextField>()
@@ -353,11 +380,43 @@
 	const origamListRef = ref<TOrigamList>()
 	const origamChipsRef = ref<TOrigamChip>()
 
+	// Component instance — used as a fallback path to reach the
+	// underlying `<input>` (`vm.proxy.$el.querySelector('input')`) when
+	// the `forwardRefs`-based proxy on `origamTextFieldRef` doesn't
+	// expose certain props/methods (notably `$el`, which the proxy filters
+	// because of its `$` prefix).
+	const vm = getCurrentInstance()
+
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * Locale, slots, color, items, model and search bindings.
+	 ********************************************************/
 	const slots = useSlots()
 
-	const {textColorStyles} = useTextColor(toRef(props, 'color'))
+	// Phase 3 (Vague B) — class-first companion alongside inline styles.
+	// When `color` resolves to a tokenisable intent, `textColorClasses`
+	// hits `.origam--color-{intent}` on the selection chip; `textColorStyles`
+	// stays in parallel to cover legacy raw colors and to keep zero-regression
+	// during the transition (strategy "a").
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {items, transformIn, transformOut} = useItems(props as IItemProps)
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -468,6 +527,10 @@
 		onListKeydown: handleListKeydown
 	} = useScrolling(origamListRef, origamTextFieldRef)
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleSelect = (item: IInternalListItem, set: boolean | null = true) => {
 		if (item.props?.disabled) return
 
@@ -515,6 +578,37 @@
 		if (menuDisabled.value) return
 
 		menu.value = !menu.value
+
+		// Select-all the input text on every field click in autocomplete-
+		// single mode when there's a selection. The focus watcher already
+		// runs select() on the focus TRANSITION, but that fires only on
+		// the false→true edge — clicking an already-focused field, OR a
+		// click that races with the menu's focus management (focusin
+		// steal / scroll-strategy refocus), leaves the cursor at the end
+		// with the selection cleared. Wiring it here too means EVERY
+		// mousedown re-selects, so the next keystroke always replaces.
+		// We DOM-query the `<input>` instead of going through the
+		// `origamTextFieldRef` proxy — `forwardRefs` doesn't reliably
+		// expose the underlying HTMLInputElement's `select()` method.
+		// Two `nextTick`s — one for Vue to flush, one to land AFTER the
+		// menu's focusin handler has run.
+		if (props.autocomplete && !props.multiple && search.value) {
+			// `setTimeout(0)` instead of `nextTick` — the browser's
+			// click cursor-placement and the TextField's
+			// `handleFocus` chain (which calls `input.focus()` →
+			// cursor jumps to end) run AFTER mousedown's synchronous
+			// handlers AND after Vue's microtask queue. A microtask
+			// `nextTick` resolves too early (before the click cycle
+			// finishes its cursor placement) so our select() takes
+			// effect for an instant then gets clobbered. A macrotask
+			// (setTimeout) lands AFTER all that, so the selection
+			// sticks.
+			setTimeout(() => {
+				const root = vm?.proxy?.$el as HTMLElement | undefined
+				const input = root?.querySelector('input') as HTMLInputElement | null
+				input?.select()
+			}, 0)
+		}
 	}
 	const handleMousedownMenuIcon = (e: MouseEvent) => {
 		if (menuDisabled.value) return
@@ -690,8 +784,13 @@
 		e.preventDefault()
 	}
 
-	// CHIPS
-
+	/*********************************************************
+	 * Chips
+	 *
+	 * @description
+	 * Chip slot props and chip event handlers (close, keydown,
+	 * mousedown) for the multi-select chip display mode.
+	 ********************************************************/
 	const hasChips = computed(() => {
 		return props.chips || slots.chip
 	})
@@ -737,11 +836,46 @@
 
 		if (val) {
 			isSelecting.value = true
-			// @ts-expect-error TODO
-			search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
+			// Sync `search` (the input value) from the current model on focus
+			// — but ONLY in autocomplete mode, where the input is meant to
+			// be editable so the user can refine their pick. In non-
+			// autocomplete mode this writes the selected title into the
+			// `<input value>`, which then renders ALONGSIDE the
+			// `.origam-select__selection` div that ALSO carries the title
+			// → user sees "Germany Germany" in the field after a re-focus
+			// (tab-out-then-back, click-elsewhere-then-back, …). The input
+			// in non-autocomplete is effectively a screen-reader proxy
+			// (`pointer-events: none`, opacity flipped on by --active) —
+			// it must stay empty so it doesn't visually duplicate the
+			// selection.
+			if (props.autocomplete) {
+				// @ts-expect-error TODO
+				search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
+			}
 			isPristine.value = true
 
-			nextTick(() => isSelecting.value = false)
+			nextTick(() => {
+				isSelecting.value = false
+
+				// Select-all the input text in single-autocomplete mode
+				// when there IS a selection. The user expects: "click
+				// the field with `France` already picked, start typing
+				// → my keystrokes REPLACE the selection". Without the
+				// select-all the cursor lands at the end and typing
+				// appends — `France` + `S` → `FranceS` filters against
+				// nothing and looks broken.
+				// Skip in multiple mode (the input is meant to be a
+				// fresh filter input, NOT a copy of any chip).
+				// We DOM-query the input instead of going through
+				// `origamTextFieldRef.value.select()` — the
+				// `forwardRefs` proxy on TextField doesn't reliably
+				// expose the HTMLInputElement's `select()` method.
+				if (props.autocomplete && !props.multiple && search.value) {
+					const root = vm?.proxy?.$el as HTMLElement | undefined
+				const input = root?.querySelector('input') as HTMLInputElement | null
+				input?.select()
+				}
+			})
 		} else {
 			if (!props.multiple && search.value == null) model.value = []
 			else if (
@@ -792,6 +926,10 @@
 		return !props.hideNoData || displayItems.value.length || slots.prependItem || slots.appendItem || slots.noData
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
@@ -806,13 +944,24 @@
 		return menu.value ? props.closeText : props.openText
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * selectStyles and selectClasses compose the BEM block.
+	 ********************************************************/
 	const selectStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
 	})
+	const getSelectionClasses = (index: number) => {
+		return [
+			'origam-select__selection',
+			{ 'origam-select__selection--selected': index === selectionIndex.value },
+			textColorClasses.value
+		]
+	}
 	const selectClasses = computed(() => {
 		return [
 			'origam-select',
@@ -826,14 +975,26 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(selectStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps and imperative handles to parent ref
+	 * consumers, forwarded through origamTextFieldRef.
+	 ********************************************************/
 	defineExpose(forwardRefs({
 		filterProps,
 		isFocused,
 		menu,
-		handleSelect
+		handleSelect,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamTextFieldRef))
 </script>
 
@@ -939,6 +1100,7 @@
 						opacity: 1;
 						pointer-events: auto;
 						caret-color: inherit;
+						position: static;
 					}
 				}
 
@@ -980,7 +1142,7 @@
 					input {
 						left: 0;
 						right: 0;
-						padding-inline: inherit;
+						padding-inline: 0;
 						opacity: 1;
 					}
 
@@ -1001,6 +1163,8 @@
 					&.origam-field--focused {
 						#{$this}__selection {
 							opacity: 0;
+							position: absolute;
+							pointer-events: none;
 						}
 					}
 				}
@@ -1010,7 +1174,18 @@
 </style>
 
 <style>
-	:root {
+	.origam-select__content .origam-menu__content {
+		display: block;
+		width: 100%;
+		max-width: none;
+	}
 
+	.origam-select__content .origam-menu__list {
+		max-width: none;
+	}
+
+	.origam-select__content .origam-list-item {
+		--origam-list-item---min-height: 32px;
+		--origam-list-item---padding-inline-start: 32px;
 	}
 </style>

@@ -14,6 +14,8 @@ export * from './Breadcrumb'
 
 export * from './Btn'
 
+export * from './ItemGroup'
+
 export * from './Card'
 
 export * from './Carousel'
@@ -26,6 +28,8 @@ export * from './ColorPicker'
 
 export * from './ColorPickerField'
 
+export * from './ConfirmWrapper'
+
 export * from './ContextualMenu'
 
 export * from './Counter'
@@ -37,6 +41,8 @@ export * from './DataTable'
 export * from './DatePicker'
 
 export * from './DatePickerField'
+
+export * from './DefaultsProvider'
 
 export * from './Dialog'
 
@@ -53,8 +59,6 @@ export * from './FileField'
 export * from './Form'
 
 export * from './Grids'
-
-export * from './Highlight'
 
 export * from './Icon'
 
@@ -126,6 +130,8 @@ export * from './TextareaField'
 
 export * from './TextField'
 
+export * from './ThemeProvider'
+
 export * from './Title'
 
 export * from './Toolbar'
@@ -135,3 +141,13 @@ export * from './Tooltip'
 export * from './VirtualScroll'
 
 export * from './Window'
+
+export * from './Skeleton'
+
+export * from './Kbd'
+
+export * from './Stepper'
+
+export * from './Timeline'
+
+export * from './Treeview'

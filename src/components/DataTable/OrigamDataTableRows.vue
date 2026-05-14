@@ -1,15 +1,33 @@
 <template>
-	<template v-if="loading">
-		<tr
-				key="loading"
-				class="origam-data-table-rows origam-data-table-rows--loading"
-		>
-			<td :colspan="columns.length">
-				<slot name="loading">
-					{{ t(loadingText) }}
-				</slot>
-			</td>
-		</tr>
+	<template v-if="loaderConfig.isActive">
+		<template v-if="loaderConfig.kind === 'skeleton'">
+			<tr
+					v-for="rowIndex in SKELETON_ROW_COUNT"
+					:key="`skeleton-row_${rowIndex}`"
+					class="origam-data-table-rows origam-data-table-rows--skeleton"
+					aria-busy="true"
+			>
+				<td
+						v-for="col in columns"
+						:key="`skeleton-cell_${col.key}`"
+						class="origam-data-table-rows__skeleton-cell"
+				>
+					<origam-skeleton variant="text" :loading="true" />
+				</td>
+			</tr>
+		</template>
+		<template v-else>
+			<tr
+					key="loading"
+					class="origam-data-table-rows origam-data-table-rows--loading"
+			>
+				<td :colspan="columns.length">
+					<slot name="loading">
+						{{ t(loadingText) }}
+					</slot>
+				</td>
+			</tr>
+		</template>
 	</template>
 
 	<template v-else-if="!(items && items.length) && !hideNoData">
@@ -36,7 +54,6 @@
 							:key="`group-header_${item.id}`"
 							v-bind="groupHeaderSlotProps(item, index)"
 					>
-						<!-- TODO SLOT BODY-->
 					</origam-data-table-group-header-row>
 				</slot>
 			</template>
@@ -50,7 +67,6 @@
 							:item="item"
 							v-bind="{...itemSlotProps(item, index).props}"
 					>
-						<!-- TODO SLOT BODY-->
 					</origam-data-table-row>
 				</slot>
 
@@ -69,9 +85,9 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow } from '../../components'
+	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow, OrigamSkeleton } from '../../components'
 
-	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLocale, useProps, useSelection } from '../../composables'
+	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLoader, useLocale, useProps, useSelection } from '../../composables'
 
 	import type {
 		IDataTableGroup,
@@ -87,6 +103,10 @@
 
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableRowsProps>(), {
 		loadingText: 'origam.dataIterator.loadingText',
 		noDataText: 'origam.noDataText'
@@ -95,6 +115,15 @@
 	const {filterProps} = useProps<IDataTableRowsProps>(props)
 
 	const {t} = useLocale()
+
+	/** Fixed number of skeleton placeholder rows when kind='skeleton'. */
+	const SKELETON_ROW_COUNT = 5
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {loaderConfig} = useLoader(props, 'line')
 
 	const {columns} = useHeaders()
 	const {expandOnClick, toggleExpand, isExpanded} = useExpanded()
@@ -143,6 +172,16 @@
 						index,
 						item,
 						cellProps: props.cellProps,
+						// Forward `mobileBreakpoint` so each row's own
+						// `useDisplay(props)` resolves to the SAME
+						// threshold the table-level resolved. Pre-fix
+						// only `mobile: mobile.value` was passed but the
+						// row's interface declares `mobileBreakpoint`,
+						// not `mobile` — so the row fell back to the
+						// global `'lg'` (1280px), forcing mobile mode
+						// on every viewport <1280px regardless of what
+						// the consumer set on the DataTable.
+						mobileBreakpoint: props.mobileBreakpoint,
 						mobile: mobile.value
 					},
 					getPrefixedEventHandlers(attrs, ':row', () => slotPropsLocal),
@@ -157,8 +196,9 @@
 		})
 	}
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})
@@ -170,13 +210,19 @@
 >
 	.origam-data-table-rows {
 		&--no-data {
-			text-align: center;
+			text-align: var(--origam-data-table-empty---text-align, center);
+			color: var(--origam-data-table-rows--no-data---color, var(--origam-color__text---secondary));
+		}
+
+		&--loading {
+			color: var(--origam-data-table-rows--loading---color, var(--origam-color__text---secondary));
+		}
+
+		&--skeleton {
+			> .origam-data-table-rows__skeleton-cell {
+				padding: var(--origam-data-table-rows--skeleton---cell-padding, 4px 8px);
+			}
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

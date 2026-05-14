@@ -62,7 +62,12 @@
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
 	import { OrigamBtn, OrigamSpacer } from '../../components'
 
-	import { useGroup, useLocale, useProps } from '../../composables'
+	import {
+	useGroup,
+	useLocale,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
 
@@ -72,14 +77,30 @@
 
 	import type { ITouchHandlers, IWindowProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, emits, filterProps utility, and
+	 * locale helper for ARIA labels on navigation buttons.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IWindowProps>(), {
-		prevIcon: MDI_ICONS.CHEVRON_RIGHT,
-		nextIcon: MDI_ICONS.CHEVRON_LEFT,
+		// Affix icons were swapped: prev pointed right, next pointed left.
+		// Reversed so the chevrons match the scroll/navigation direction.
+		prevIcon: MDI_ICONS.CHEVRON_LEFT,
+		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		touch: undefined,
 		direction: DIRECTION.HORIZONTAL,
 		selectedClass: 'origam-window-item--active',
 		mandatory: true,
-		tag: 'div'
+		tag: 'div',
+		// Vue 3 coerces unset Boolean-union props to `false` at runtime,
+		// which made `showArrows !== false` evaluate false on every variant
+		// that didn't explicitly opt-in — the entire `__controls` block
+		// was collapsed to a `<!--v-if-->` placeholder and there was no
+		// way to navigate. Default to `true` so navigation works out of
+		// the box; consumers can still pass `:show-arrows="false"` to hide.
+		showArrows: true
 	})
 
 	defineEmits(['update:modelValue'])
@@ -88,6 +109,16 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Group & window state
+	 *
+	 * @description
+	 * useGroup manages the selected-item registry. isReversed
+	 * tracks swipe / arrow direction for choosing the correct
+	 * CSS transition class. transition, transitionCount, and
+	 * transitionHeight are provided to child WindowItems so
+	 * they can coordinate enter/leave height animations.
+	 ********************************************************/
 	const group = useGroup(props, ORIGAM_WINDOW_GROUP_KEY)
 
 	const rootRef = ref()
@@ -129,6 +160,15 @@
 		rootRef
 	})
 
+	/*********************************************************
+	 * Navigation controls
+	 *
+	 * @description
+	 * canMoveBack / canMoveForward guard continuous wrapping.
+	 * prevProps / nextProps are spread onto OrigamBtn slots.
+	 * prev() / next() set isReversed before calling group nav
+	 * so the transition class matches the movement direction.
+	 ********************************************************/
 	const canMoveBack = computed(() => props.continuous || activeIndex.value !== 0)
 	const canMoveForward = computed(() => props.continuous || activeIndex.value !== group.items.value.length - 1)
 
@@ -160,6 +200,14 @@
 		}
 	}
 
+	/*********************************************************
+	 * Touch / swipe
+	 *
+	 * @description
+	 * vTouch directive options wired to prev / next helpers.
+	 * When props.touch is false the directive is disabled;
+	 * when it is an object, caller overrides are merged in.
+	 ********************************************************/
 	const touchOptions = computed(() => {
 		if (props.touch === false) return props.touch
 
@@ -181,8 +229,13 @@
 		}
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root, container, and show-arrows-on-hover modifier
+	 * classes and styles for the window shell.
+	 ********************************************************/
 	const windowStyles = computed(() => {
 		return [
 			props.style
@@ -205,12 +258,23 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(windowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
-		group
+		group,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -221,27 +285,31 @@
 	.origam-window {
 		$this: &;
 
-		overflow: hidden;
+		overflow: var(--origam-window---overflow, hidden);
 
 		&__container {
-			display: flex;
-			flex-direction: column;
+			display: var(--origam-window__container---display, flex);
+			flex-direction: var(--origam-window__container---flex-direction, column);
 			height: inherit;
-			position: relative;
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			position: var(--origam-window__container---position, relative);
+			transition:
+				var(--origam-window---transition-duration, 0.3s)
+				var(--origam-window---transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&__controls {
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
+			box-sizing: border-box;
+			position: var(--origam-window__controls---position, absolute);
+			left: var(--origam-window__controls---position-left, 0);
+			top: var(--origam-window__controls---position-top, 0);
+			width: var(--origam-window__controls---width, 100%);
+			height: var(--origam-window__controls---height, 100%);
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding: 0 16px;
+			padding: 0 var(--origam-window__controls---padding-inline, 16px);
 			pointer-events: none;
+			color: var(--origam-window__controls---color, inherit);
 
 			> * {
 				pointer-events: auto;
@@ -252,25 +320,19 @@
 			overflow: hidden;
 
 			#{$this}__prev {
-				transform: translateX(-200%);
+				transform: var(--origam-window--show-arrows-on-hover---prev-transform, translateX(-200%));
 			}
 
 			#{$this}__next {
-				transform: translateX(200%);
+				transform: var(--origam-window--show-arrows-on-hover---next-transform, translateX(200%));
 			}
 
 			&:hover {
 				#{$this}__prev,
 				#{$this}__next {
-					transform: translateX(0);
+					transform: var(--origam-window--show-arrows-on-hover---hover-transform, translateX(0));
 				}
 			}
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

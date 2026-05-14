@@ -1,7 +1,27 @@
 import type { DirectiveBinding } from 'vue'
 
+import type { IHoverState } from '../../interfaces'
+
+/**
+ * The `hover` prop accepts three shapes:
+ *
+ *   • `undefined` / `false` → `isHover` reflects the actual mouseenter/leave
+ *     state of the element (no override). Default behaviour.
+ *
+ *   • `true` → `isHover` is FORCED to `true` regardless of pointer events.
+ *     Useful for stories, screenshot tests, or parent-controlled states.
+ *     No visual override — the state-aware styles in `useStateEffect`
+ *     fall back to the resting tokens.
+ *
+ *   • `IHoverState` (object) → `isHover` stays reactive to mouseenter/leave
+ *     (unless `enabled: true` is set inside the object, which forces it on
+ *     like the bare `true` case). The object's keys (`color`, `bgColor`,
+ *     `border`, `rounded`, `elevation`, `padding`, `margin`, `gap`) override
+ *     the resting props ONLY while the state is engaged. See
+ *     `IStateEffectConfig` for the full key set.
+ */
 export interface IHoverProps {
-    hover?: boolean
+    hover?: boolean | IHoverState
 }
 
 export interface IHoverDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {

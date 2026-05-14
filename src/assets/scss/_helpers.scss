@@ -1,0 +1,99 @@
+// origam design system — SCSS helpers
+//
+// Public mixins exposed to consumers via `@use 'origam/scss/helpers' as ds;`.
+// They emit references to the generated CSS variables (`--origam-*`) — never
+// raw hex values — so themes flip correctly at runtime via `data-theme`.
+//
+// Naming kept short (`ds-*`) to be ergonomic when sprinkled across hundreds
+// of component styles. The variables themselves stay namespaced under
+// `--origam-*` to avoid collisions with consumer apps.
+
+// ─── Intent → action color pair ────────────────────────────────────────────
+// Usage:
+//   .my-btn { @include ds-intent('primary'); }
+//   .my-btn--danger { @include ds-intent('danger', 'hover'); }
+//
+// `$state` accepts: 'default' (omit) | 'hover' | 'disabled'.
+@mixin ds-intent($intent: 'neutral', $state: 'default') {
+    @if $intent == 'neutral' {
+        background-color: var(--origam-color__action--secondary---bg);
+        color: var(--origam-color__action--secondary---fg);
+    } @else if $intent == 'success' or $intent == 'warning' or $intent == 'danger' or $intent == 'info' {
+        background-color: var(--origam-color__feedback--#{$intent}---bg);
+        color: var(--origam-color__feedback--#{$intent}---fg);
+    } @else {
+        @if $state == 'default' {
+            background-color: var(--origam-color__action--#{$intent}---bg);
+            color: var(--origam-color__action--#{$intent}---fg);
+        } @else if $state == 'hover' {
+            background-color: var(--origam-color__action--#{$intent}---bgHover);
+            color: var(--origam-color__action--#{$intent}---fg);
+        } @else if $state == 'disabled' {
+            background-color: var(--origam-color__action--#{$intent}---bgDisabled);
+            color: var(--origam-color__action--#{$intent}---fgDisabled);
+        }
+    }
+}
+
+// ─── Elevation (shadow ladder) ─────────────────────────────────────────────
+// Replaces the old JS-side `formatElevationStyle` HSL computation. The shadow
+// ladder is themed at the token level, so dark/light produce different shadows
+// without component-level branching.
+//
+// Usage:
+//   .my-card { @include ds-elevation('md'); }
+//   .my-card:hover { @include ds-elevation('lg'); }
+@mixin ds-elevation($level: 'sm') {
+    box-shadow: var(--origam-shadow---#{$level});
+}
+
+// ─── Typography presets ────────────────────────────────────────────────────
+// Bundles font-family/size/weight/line-height/letter-spacing in one call.
+// Available presets: 'body-xs', 'body-sm', 'body-md', 'body-lg', 'body-xl',
+// 'heading-xs' .. 'heading-xl' (consumer side — extend to taste).
+//
+// Usage:
+//   .my-title { @include ds-text-style('body-lg'); }
+@mixin ds-text-style($name) {
+    font-family: var(--origam-font__family---sans);
+    font-size: var(--origam-font__size---#{$name});
+    font-weight: var(--origam-font__weight---medium);
+    line-height: var(--origam-font__lineHeight---normal);
+    letter-spacing: var(--origam-font__letterSpacing---normal);
+}
+
+// ─── Spacing helper ────────────────────────────────────────────────────────
+// Just sugar to avoid `var(--origam-space-…)` repetition. Accepts the same
+// numeric scale as the spacing tokens (0,1,2,3,4,5,6,8,10,12,16,20).
+//
+// Usage:
+//   .my-stack { @include ds-space(padding-inline, 4); }
+@mixin ds-space($prop, $value) {
+    #{$prop}: var(--origam-space---#{$value});
+}
+
+// ─── Focus ring ────────────────────────────────────────────────────────────
+// Standardised keyboard-focus ring. Drop on the `&:focus-visible` selector of
+// any interactive element to harmonise the focus appearance across the DS.
+//
+// Usage:
+//   .my-btn:focus-visible { @include ds-focus-ring; }
+@mixin ds-focus-ring($offset: 1) {
+    outline: var(--origam-border__width---2) solid var(--origam-color__border---focus);
+    outline-offset: var(--origam-space---#{$offset});
+}
+
+// ─── Visually hidden (a11y) ────────────────────────────────────────────────
+// Hides content visually while keeping it accessible to screen readers.
+// Bonus utility unrelated to tokens but commonly needed.
+@mixin ds-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

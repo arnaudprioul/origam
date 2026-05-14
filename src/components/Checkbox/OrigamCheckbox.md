@@ -1,5 +1,0 @@
-# Origamcheckbox
-
-## Usage
-
-    <OrigamCheckbox />

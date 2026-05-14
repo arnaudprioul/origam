@@ -1,5 +1,0 @@
-# Origamtranslatebottom
-
-## Usage
-
-    <OrigamTranslateBottom />

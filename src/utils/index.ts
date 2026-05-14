@@ -37,8 +37,11 @@ export * from './Commons/virtual.util'
 export * from './Commons/forwardRefs.util'
 export * from './Commons/event.util'
 export * from './Commons/autocomplete.util'
+export * from './Commons/format-bytes.util'
 
 export * from './ColorPicker/color-picker.util'
+
+export * from './DataList/data-list-kv-item-value-component.util'
 
 export * from './Input/input.util'
 

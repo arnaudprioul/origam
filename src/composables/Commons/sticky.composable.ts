@@ -3,6 +3,9 @@ import { convertToUnit } from '../../utils'
 
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 
+/*********************************************************
+ * useSticky
+ ********************************************************/
 export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky) {
     const isStuck = shallowRef<boolean | 'top' | 'bottom'>(false)
     const stuckPosition = shallowRef(0)

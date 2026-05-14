@@ -33,11 +33,23 @@
 					<origam-rating-field-item
 							ref="origamRatingFieldItemRef"
 							:index="-1"
+							:length="length"
 							:show-star="false"
 							:value="0"
 							v-bind="{...itemState[0], ...eventState[0]}"
 					/>
 				</div>
+
+				<origam-btn
+						v-if="clearable && normalizedValue > 0 && !disabled && !readonly"
+						:aria-label="t('origam.rating.clear')"
+						:icon="MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+						:variant="VARIANT.TEXT"
+						class="origam-rating-field__clear"
+						data-cy="rating-field-clear"
+						size="small"
+						@click="model = 0"
+				/>
 
 				<template
 						v-for="(range, index) in ranges"
@@ -56,12 +68,14 @@
 								<origam-rating-field-item
 										:checked="isChecked(range - 0.5)"
 										:index="index * 2"
+										:length="length"
 										:value="range - 0.5"
 										v-bind="{...itemState[index * 2], ...eventState[(index * 2) + 1]}"
 								/>
 								<origam-rating-field-item
 										:checked="isChecked(range)"
 										:index="(index * 2) + 1"
+										:length="length"
 										:value="range"
 										v-bind="{...itemState[(index * 2) + 1], ...eventState[(index * 2) + 2]}"
 								/>
@@ -70,6 +84,7 @@
 								<origam-rating-field-item
 										:checked="isChecked(range)"
 										:index="index"
+										:length="length"
 										:value="range"
 										v-bind="{...itemState[index], ...eventState[index + 1]}"
 								/>
@@ -131,11 +146,16 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
+	import { OrigamBtn, OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
 
-	import { useProps, useVModel } from '../../composables'
+	import {
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
-	import { BLOCK, DENSITY, SIZES } from '../../enums'
+	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
 
 	import type { IRatingFieldProps } from '../../interfaces'
 
@@ -143,6 +163,12 @@
 
 	import { clamp, createRange, filterInputAttrs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the RatingField component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRatingFieldProps>(), {
 		length: 5,
 		modelValue: 0,
@@ -156,14 +182,38 @@
 
 	const {filterProps} = useProps<IRatingFieldProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Refs to sub-components for forward-prop delegation.
+	 ********************************************************/
 	const origamInputRef = ref<TOrigamInput>()
 	const origamRatingFieldItemRef = ref<TOrigamRatingFieldItem>()
 
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * Slots, locale, v-model binding and attrs.
+	 ********************************************************/
 	const slots = useSlots()
+	const {t} = useLocale()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Range & items
+	 *
+	 * @description
+	 * Derived ranges, increments, item name and hover state
+	 * for the rating items row.
+	 ********************************************************/
 	const normalizedValue = computed(() => {
 		return clamp(parseFloat(model.value), 0, +props.length)
 	})
@@ -215,6 +265,12 @@
 		return normalizedValue.value === value
 	}
 
+	/*********************************************************
+	 * Label position
+	 *
+	 * @description
+	 * Whether item labels appear above or below the star row.
+	 ********************************************************/
 	const hasLabels = computed(() => {
 		return !!props.itemLabels?.length || slots.itemLabel
 	})
@@ -225,14 +281,25 @@
 		return props.itemLabelPosition === BLOCK.BOTTOM
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 *
+	 * @description
+	 * Attrs split between root and control; props forwarded to
+	 * Input sub-component via filterProps.
+	 ********************************************************/
 	const [rootAttrs, _controlAttrs] = filterInputAttrs(attrs)
 
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'focused'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * ratingFieldStyles and ratingFieldClasses compose the BEM block.
+	 ********************************************************/
 	const ratingFieldStyles = computed(() => {
 		return [
 			props.style
@@ -248,11 +315,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

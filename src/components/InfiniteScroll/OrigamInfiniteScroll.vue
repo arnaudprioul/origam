@@ -120,7 +120,13 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
 	import { OrigamBtn, OrigamInfiniteScrollIntersect, OrigamProgress } from '../../components'
 
-	import { useBothColor, useDimension, useLocale, useProps } from '../../composables'
+	import {
+	useBothColor,
+	useDimension,
+	useLocale,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import {
 		DIRECTION,
@@ -134,6 +140,12 @@
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IInfiniteScrollProps>(), {
 		direction: DIRECTION.VERTICAL,
 		side: INFINITE_SCROLL_SIDE.END,
@@ -149,8 +161,18 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const rootEl = ref<HTMLDivElement>()
 	const isIntersecting = shallowRef(false)
@@ -214,6 +236,11 @@
 	})
 
 	let previousScrollSize = 0
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleIntersect = (side: TInfiniteScrollSide, _isIntersecting: boolean) => {
 		isIntersecting.value = _isIntersecting
 
@@ -262,7 +289,13 @@
 		return props.side === INFINITE_SCROLL_SIDE.START || props.side === INFINITE_SCROLL_SIDE.BOTH
 	})
 	const hasEndIntersect = computed(() => {
-		return props.side === INFINITE_SCROLL_SIDE.END || INFINITE_SCROLL_SIDE.BOTH
+		// Pre-fix: `props.side === END || INFINITE_SCROLL_SIDE.BOTH` —
+		// the second operand was a string literal (truthy), so this
+		// always returned true regardless of the `side` prop. The end
+		// sentinel rendered even when `side="start"`, the start
+		// sentinel rendered as expected, and side="both" worked by
+		// accident.
+		return props.side === INFINITE_SCROLL_SIDE.END || props.side === INFINITE_SCROLL_SIDE.BOTH
 	})
 	const isIntersectMode = computed(() => {
 		return props.mode === INFINITE_SCROLL_MODE.INTERSECT
@@ -274,8 +307,12 @@
 		return status.value === INFINITE_SCROLL_STATUS.LOADING
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const infiniteScrollStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -291,13 +328,46 @@
 				'origam-infinite-scroll--start': hasStartIntersect.value,
 				'origam-infinite-scroll--end': hasEndIntersect.value
 			},
+			colorClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-infinite-scroll {
+		overflow-y: auto;
+
+		&__side {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			gap: var(--origam-infinite-scroll__loader---gap, 12px);
+			padding-block: var(--origam-infinite-scroll__loader---padding-block, 12px);
+			padding-inline: var(--origam-infinite-scroll__loader---padding-inline, 0px);
+			font-size: var(--origam-infinite-scroll__loader---font-size, 0.875rem);
+			color: var(--origam-infinite-scroll__empty---color, var(--origam-color__text---secondary));
+		}
+	}
+</style>

@@ -4,21 +4,23 @@
 			:id="id"
 			:class="btnGroupClasses"
 	>
-		<slot name="default">
-			<template v-if="hasItems">
-				<template
-						v-for="(item, index) in items"
-						:key="index"
-				>
-					<slot
-							name="item"
-							v-bind="{item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<template v-if="hasItems">
+					<template
+							v-for="(item, index) in items"
+							:key="index"
 					>
-						<origam-btn v-bind="item"/>
-					</slot>
+						<slot
+								name="item"
+								v-bind="{item, index}"
+						>
+							<origam-btn v-bind="item"/>
+						</slot>
+					</template>
 				</template>
-			</template>
-		</slot>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -26,16 +28,11 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from '../../components'
+	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
-		useBorder,
-		useColorEffect,
 		useDensity,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -43,42 +40,74 @@
 
 	import type { IBtnGroupProps, IBtnProps } from '../../interfaces'
 
-	import { computed, ref, StyleValue, useSlots } from 'vue'
+	import { computed, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child buttons
+	 * via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
 
-	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {colorStyles, bgColor} = useColorEffect(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	// Push the visual-token props down to every descendant `<origam-btn>`
+	// as DEFAULTS — children that pass their own `density` / `color` /
+	// `bgColor` / etc. still win (that's the contract: parent provides
+	// defaults, child overrides). Children consume this map via
+	// `useDefaults(props)` inside `OrigamBtn.vue`.
+	const slotDefaults = computed(() => ({
+		'origam-btn': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			// New API: `hover` / `active` accept boolean | IHoverState |
+			// IActiveState; pass-through propagates the parent's intent
+			// override to each child OrigamBtn.
+			hover: props.hover,
+			active: props.active
+		}
+	}))
 
-	const items = computed(() => {
-		return props.items?.map((item) => {
-			return {
-				...item,
-				density: props.density ?? item.density,
-				color: props.color ?? item.color,
-				bgColor: props.bgColor ?? item.bgColor,
-				activeColor: props.activeColor ?? item.activeColor,
-				activeBgColor: props.activeBgColor ?? item.activeBgColor,
-				hoverColor: props.hoverColor ?? item.hoverColor,
-				hoverBgColor: props.hoverBgColor ?? item.hoverBgColor
-			}
-		}) as Array<IBtnProps>
-	})
+	// The `items` array path used to manually merge with `props.x ?? item.x`,
+	// which made the parent OVERRIDE the item (the inverse of the documented
+	// "parent default, item override" contract). The merge is no longer
+	// needed — `useDefaults` inside each child enforces the correct
+	// resolution order and respects per-item overrides automatically.
+	const items = computed(() => (props.items ?? []) as Array<IBtnProps>)
 
 	const slots = useSlots()
 	const hasItems = computed(() => {
 		return slots.default || !!items.value
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes border, color, elevation, rounding and spacing
+	 * classes/styles onto the group root element.
+	 ********************************************************/
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {densityClasses} = useDensity(props)
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {
+		colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props)
 	const btnGroupStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -108,8 +137,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(btnGroupStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -147,7 +180,31 @@
 		}
 
 		&--rounded {
-			--origam-btn-group---border-radius: 24px;
+			--origam-btn-group---border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			--origam-btn-group---border-radius: var(--origam-radius---xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-btn-group---border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-btn-group---border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-btn-group---border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-btn-group---border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-btn-group---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
@@ -159,7 +216,7 @@
 		}
 
 		&--density-compact {
-			--origam-btn-group---density: 8px;
+			--origam-btn-group---density: -8px;
 		}
 
 		:deep(.origam-btn) {

@@ -1,3 +1,9 @@
+/**
+ * Binary closest.
+ *
+ * @param arr …
+ * @param val …
+ */
 export function binaryClosest (arr: ArrayLike<number>, val: number) {
     let high = arr.length - 1
     let low = 0

@@ -13,25 +13,54 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { useBorder, useBothColor, useDensity, useMargin, usePadding, useProps } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 	import { DENSITY } from '../../enums'
 
 	import type { IRowProps } from '../../interfaces'
 
 	import { toKebabCase } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRowProps>(), {tag: 'div', density: DENSITY.DEFAULT})
 
 	const {filterProps} = useProps<IRowProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const rowStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -44,34 +73,45 @@
 	const rowClasses = computed(() => {
 		const classes = [
 			'origam-row',
-			{
-				[`origam-row--align-${props.align}`]: props.align,
-				[`origam-row--justify-${props.justify}`]: props.justify
-			},
+			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class
 		]
-		const propMap = {
-			align: ['alignSm', 'alignMd', 'alignLg', 'alignXl', 'alignXxl'],
-			justify: ['justifySm', 'justifyMd', 'justifyLg', 'justifyXl', 'justifyXxl']
+
+		const propFamilies = {
+			align:     ['align',   'alignSm',   'alignMd',   'alignLg',   'alignXl',   'alignXxl'],
+			justify:   ['justify', 'justifySm', 'justifyMd', 'justifyLg', 'justifyXl', 'justifyXxl'],
+			direction: ['direction']
 		}
 
-		for (const type in propMap) {
-			propMap[type as keyof typeof propMap].forEach((prop) => {
-				if (props[prop as keyof typeof props]) classes.push(`origam-row--${toKebabCase(prop)} : ${props[prop as keyof typeof props]}`)
+		for (const family in propFamilies) {
+			propFamilies[family as keyof typeof propFamilies].forEach((prop) => {
+				const value = props[prop as keyof typeof props]
+				if (value) classes.push(`origam-row--${toKebabCase(prop)}-${value}`)
 			})
 		}
 
 		return classes
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -85,6 +125,7 @@
 
 	.origam-row {
 		display: var(--origam-row---display);
+		flex-direction: var(--origam-row---flex-direction);
 		flex-wrap: var(--origam-row---flex-wrap);
 		flex: var(--origam-row---flex);
 		align-items: var(--origam-row---align-items);
@@ -106,21 +147,15 @@
 		}
 
 		&--density-default {
-			--origam-row---density: -8px;
-
-			> .origam-col,
-			> [class*=origam-col-] {
-				// padding 4px
-			}
+			--origam-row---density: 0;
 		}
 
 		&--density-compact {
-			--origam-row---density: 0;
+			--origam-row---density: -8px;
+		}
 
-			> .origam-col,
-			> [class*=origam-col-] {
-				// padding 4px
-			}
+		&--density-comfortable {
+			--origam-row---density: 8px;
 		}
 
 		&--border {
@@ -137,6 +172,12 @@
 		@each $justify, $justifyAttr in $justifies {
 			&--justify-#{$justify} {
 				--origam-row---justify-content: #{$justifyAttr};
+			}
+		}
+
+		@each $direction in (row, row-reverse, column, column-reverse) {
+			&--direction-#{$direction} {
+				--origam-row---flex-direction: #{$direction};
 			}
 		}
 
@@ -163,6 +204,7 @@
 <style>
 	:root {
 		--origam-row---display: flex;
+		--origam-row---flex-direction: row;
 		--origam-row---flex-wrap: wrap;
 		--origam-row---flex: 1 1 auto;
 
@@ -177,6 +219,8 @@
 		--origam-row---margin-block-end: -4px;
 		--origam-row---margin-inline-start: -4px;
 		--origam-row---margin-inline-end: -4px;
+
+		--origam-row---density: 0;
 
 		--origam-row---align-items: stretch;
 		--origam-row---justify-content: flex-start

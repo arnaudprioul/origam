@@ -15,6 +15,7 @@
 							<origam-img
 									key="image"
 									cover
+									eager
 									v-bind="imageProps"
 							/>
 						</slot>
@@ -52,17 +53,12 @@
 
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
+		useDefaults,
 		useDensity,
-		useElevation,
 		useHover,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSize,
-		useStatus,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -70,25 +66,51 @@
 	import { isEmpty } from "../../utils"
 
 	import type { ComputedRef, StyleValue } from 'vue'
-	import { computed, ref, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 
-	const props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props resolution with defaults inheritance from parent
+	 * groups (e.g. OrigamAvatarGroup via provideDefaults).
+	 ********************************************************/
+	const _props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-avatar': … })`
+	// injected by a parent like `OrigamAvatarGroup`. Props explicitly set by the
+	// parent template still win; the group's values are used only as defaults.
+	const props = useDefaults(_props)
 
 	defineEmits(['update:active', 'update:hover'])
 
 	const {filterProps} = useProps<IAvatarProps>(props)
 
-	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive, onActive: handleClick} = useActive(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {sizeClasses, sizeStyles} = useSize(props)
-	const {statusClasses} = useStatus(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state and color resolution for the avatar.
+	 ********************************************************/
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive: handleClick} = useActive(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Slot presence flags and image props builder.
+	 ********************************************************/
 	const slots = useSlots()
 
 	const hasImage = computed(() => {
@@ -116,7 +138,15 @@
 		return imgSrc
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all spacing, color, size, elevation and
+	 * variant classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {sizeClasses, sizeStyles} = useSize(props)
 
 	const avatarStyles = computed(() => {
 		return [
@@ -137,13 +167,13 @@
 				'origam-avatar--start': props.start,
 				'origam-avatar--end': props.end
 			},
+			colorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			sizeClasses.value,
-			statusClasses.value,
 			elevationClasses.value,
 			hoverClasses.value,
 			activeClasses.value,
@@ -153,8 +183,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(avatarStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -192,7 +226,7 @@
 		border-width: var(--origam-avatar---border-width);
 		border-radius: var(--origam-avatar---border-radius);
 
-		background: var(--origam-avatar---background);
+		background-color: var(--origam-avatar---background-color);
 		box-shadow: var(--origam-avatar---box-shadow);
 		color: var(--origam-avatar---color);
 
@@ -226,15 +260,26 @@
 		&__image {
 			width: var(--origam-avatar__image---width);
 			height: var(--origam-avatar__image---height);
+			// OrigamImg paints its <img> with `z-index: -1` (so the
+			// optional gradient overlay can sit on top of the picture).
+			// Without a contained stacking context here, the negative
+			// z-index would push the image BEHIND the Avatar's own
+			// background — the user sees only the bg color, not the
+			// photo.
+			position: relative;
+			overflow: hidden;
+			border-radius: inherit;
 
 			&:deep(.origam-img) {
 				--origam-img---height: 100%;
 				--origam-img---width: 100%;
+				--origam-img__picture---z-index: auto;
+				--origam-img__content---z-index: auto;
 			}
 		}
 
 		&--elevated {
-			--origam-avatar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-avatar---box-shadow: var(--origam-avatar---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--border {
@@ -242,10 +287,48 @@
 		}
 
 		&--rounded {
-			--origam-avatar---border-radius: 50%;
+			--origam-avatar---border-radius: var(--origam-avatar---border-radius-rounded, var(--origam-radius---sm, 4px));
 		}
 
-		&--density-comfortable {
+		&--rounded-x-small {
+			--origam-avatar---border-radius: var(--origam-radius---xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-avatar---border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-avatar---border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-avatar---border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-avatar---border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-avatar---border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-avatar---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-avatar---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-avatar---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-avatar---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
+		}
+
+		&--density-compact {
 			--origam-avatar---density: 8px;
 		}
 
@@ -253,8 +336,8 @@
 			--origam-avatar---density: 0px;
 		}
 
-		&--density-compact {
-			--origam-avatar---density: 8px;
+		&--density-comfortable {
+			--origam-avatar---density: -8px;
 		}
 
 		&--size-x-small {
@@ -288,82 +371,24 @@
 		}
 
 		&--warning {
-			--origam-avatar---background-color: var(--origam-status--warning---background-color, rgb(251, 140, 0));
-			--origam-avatar---color: var(--origam-status--warning---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--warning---background-color, var(--origam-color__feedback--warning---bg));
+			--origam-avatar---color: var(--origam-avatar--warning---color, var(--origam-color__feedback--warning---fg));
 		}
 
 		&--success {
-			--origam-avatar---background-color: var(--origam-status--success---background-color, rgb(76, 175, 80));
-			--origam-avatar---color: var(--origam-status--success---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--success---background-color, var(--origam-color__feedback--success---bg));
+			--origam-avatar---color: var(--origam-avatar--success---color, var(--origam-color__feedback--success---fg));
 		}
 
 		&--info {
-			--origam-avatar---background-color: var(--origam-status--info---background-color, rgb(33, 150, 243));
-			--origam-avatar---color: var(--origam-status--info---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--info---background-color, var(--origam-color__feedback--info---bg));
+			--origam-avatar---color: var(--origam-avatar--info---color, var(--origam-color__feedback--info---fg));
 		}
 
 		&--error {
-			--origam-avatar---background-color: var(--origam-status--error---background-color, rgb(207, 102, 121));
-			--origam-avatar---color: var(--origam-status--error---color, #ffffff);
+			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-		--origam-avatar---text-align: center;
-		--origam-avatar---font-size: 1.5rem;
-		--origam-avatar---font-weight: 400;
-		--origam-avatar---letter-spacing: 0;
-		--origam-avatar---line-height: 1;;
-		--origam-avatar---text-transform: uppercase;
-		--origam-avatar---overflow: hidden;
-		--origam-avatar---position: relative;
-		--origam-avatar---height: 40px;
-		--origam-avatar---width: 40px;
-		--origam-avatar---density: 0px;
-		--origam-avatar---transition-duration: 0.2s;
-		--origam-avatar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-avatar---transition-property: width, height, font-size;
-		--origam-avatar---transition: var(--origam-avatar---transition-property) var(--origam-avatar---transition-duration) var(--origam-avatar---transition-timing-function);
-		--origam-avatar---border-top-width: 0;
-		--origam-avatar---border-left-width: 0;
-		--origam-avatar---border-bottom-width: 0;
-		--origam-avatar---border-right-width: 0;
-		--origam-avatar---border-width: var(--origam-avatar---border-top-width) var(--origam-avatar---border-left-width) var(--origam-avatar---border-bottom-width) var(--origam-avatar---border-right-width);
-		--origam-avatar---border-color: currentColor;
-		--origam-avatar---border-style: solid;
-		--origam-avatar---border-radius: 0px;
-		--origam-avatar---box-shadow: none;
-		--origam-avatar---color: rgba(30, 30, 30, 0.87);
-		--origam-avatar---background: rgb(230, 230, 230);
-		--origam-avatar---margin-inline-start: 0;
-		--origam-avatar---margin-inline-end: 0;
-		--origam-avatar---margin-block-start: 0;
-		--origam-avatar---margin-block-end: 0;
-		--origam-avatar---padding-block-start: 0;
-		--origam-avatar---padding-block-end: 0;
-		--origam-avatar---padding-inline-start: 0;
-		--origam-avatar---padding-inline-end: 0;
-
-		--origam-avatar__wrapper---width: 100%;
-		--origam-avatar__wrapper---height: 100%;
-		--origam-avatar__wrapper---flex: none;
-		--origam-avatar__wrapper---align-items: center;
-		--origam-avatar__wrapper---display: inline-flex;
-		--origam-avatar__wrapper---justify-content: center;
-		--origam-avatar__wrapper---vertical-align: middle;
-		--origam-avatar__wrapper---margin-inline-start: 0;
-		--origam-avatar__wrapper---margin-inline-end: 0;
-		--origam-avatar__wrapper---margin-block-start: 0;
-		--origam-avatar__wrapper---margin-block-end: 0;
-		--origam-avatar__padding---margin-block-start: 0;
-		--origam-avatar__padding---margin-block-end: 0;
-		--origam-avatar__padding---margin-inline-start: 0;
-		--origam-avatar__padding---margin-inline-end: 0;
-
-		--origam-avatar__image---width: 100%;
-		--origam-avatar__image---height: 100%;
-	}
-</style>

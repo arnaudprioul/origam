@@ -1,5 +1,0 @@
-# Origamradiobtn
-
-## Usage
-
-    <OrigamRadioBtn />

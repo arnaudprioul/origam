@@ -64,18 +64,30 @@
 >
 
 	import { OrigamAvatar, OrigamIcon } from "../../components"
-	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps } from "../../composables"
+	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
 
 	import type { IDataTextProps } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTextProps>(), {})
 
 	const {filterProps} = useProps<IDataTextProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -86,23 +98,33 @@
 
 	const isHover = shallowRef(false)
 
+	// `||` (not `??`) — Vue 3 coerces unset `TColor` props to `false`,
+	// not `undefined`, so the nullish coalescing operator wouldn't fall
+	// back. Same fix as the OrigamSwitch / OrigamDataTitle equivalent.
 	const hoverColor = computed(() => {
-		return props.hoverColor ?? props.color
+		return props.hoverColor || props.color
 	})
 	const color = computed(() => {
 		return isHover.value ? hoverColor.value : props.color
 	})
 	const hoverBgColor = computed(() => {
-		return props.hoverBgColor ?? props.color
+		return props.hoverBgColor || props.color
 	})
 	const bgColor = computed(() => {
 		return isHover.value ? hoverBgColor.value : props.bgColor
 	})
 
-	const {colorStyles} = useBothColor(bgColor, color)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Color
+	 ********************************************************/
 
+	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
+
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTextStyles = computed(() => {
 		return [
 			paddingStyles.value,
@@ -114,17 +136,26 @@
 	const dataTextClasses = computed(() => {
 		return [
 			'origam-data-text',
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTextStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

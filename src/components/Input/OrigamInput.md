@@ -1,5 +1,0 @@
-# Origaminput
-
-## Usage
-
-    <OrigamInput />

@@ -1,5 +1,0 @@
-# Origamfilefield
-
-## Usage
-
-    <OrigamFileField />

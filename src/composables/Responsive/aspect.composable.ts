@@ -1,5 +1,8 @@
 import { computed } from 'vue'
 
+/*********************************************************
+ * useAspectRatio
+ ********************************************************/
 export function useAspectRatio (props: { aspectRatio?: string | number }) {
     const aspectStyles = computed(() => {
         const aspectRatio = []

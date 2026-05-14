@@ -1,5 +1,0 @@
-# Origamradiogroup
-
-## Usage
-
-    <OrigamRadioGroup />

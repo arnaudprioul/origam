@@ -35,6 +35,13 @@ import {
 } from '../../types'
 import { getLifeCycleTarget } from "../../utils"
 
+/**
+ * Convert to unit.
+ *
+ * @param str  …
+ * @param unit …
+ * @returns …
+ */
 export function convertToUnit (str: number, unit?: string): string
 export function convertToUnit (str: string | number | null | undefined, unit?: string): string | undefined
 export function convertToUnit (str: string | number | null | undefined, unit = 'px'): string | undefined {
@@ -49,6 +56,12 @@ export function convertToUnit (str: string | number | null | undefined, unit = '
     }
 }
 
+/**
+ * Ref element.
+ *
+ * @param obj …
+ * @returns …
+ */
 export function refElement (obj?: ComponentPublicInstance<any> | HTMLElement): HTMLElement | undefined {
     if (obj && '$el' in obj) {
         const el = obj.$el as HTMLElement
@@ -64,6 +77,11 @@ export function refElement (obj?: ComponentPublicInstance<any> | HTMLElement): H
     return obj as HTMLElement
 }
 
+/**
+ * To kebab case.
+ *
+ * @param str …
+ */
 export function toKebabCase (str = '') {
     if (toKebabCase.cache.has(str)) return toKebabCase.cache.get(str)!
     const kebab = str
@@ -76,6 +94,13 @@ export function toKebabCase (str = '') {
 
 toKebabCase.cache = new Map<string, string>()
 
+/**
+ * Find children with provide.
+ *
+ * @param key   …
+ * @param vnode …
+ * @returns …
+ */
 export function findChildrenWithProvide (
     key: InjectionKey<any> | symbol,
     vnode?: VNodeChild
@@ -97,6 +122,12 @@ export function findChildrenWithProvide (
     return []
 }
 
+/**
+ * Destruct computed.
+ *
+ * @param getter …
+ * @returns …
+ */
 export function destructComputed<T extends object> (getter: ComputedGetter<T & TNotAUnion<T>>): ToRefs<T>
 export function destructComputed<T extends object> (getter: ComputedGetter<T>) {
     const refs = reactive<Record<string, unknown>>({}) as T
@@ -109,22 +140,55 @@ export function destructComputed<T extends object> (getter: ComputedGetter<T>) {
     return toRefs(refs)
 }
 
+/**
+ * Pad end.
+ *
+ * @param str    …
+ * @param length …
+ * @param char   …
+ */
 export function padEnd (str: string, length: number, char = '0') {
     return str + char.repeat(Math.max(0, length - str.length))
 }
 
+/**
+ * Pad start.
+ *
+ * @param str    …
+ * @param length …
+ * @param char   …
+ */
 export function padStart (str: string, length: number, char = '0') {
     return char.repeat(Math.max(0, length - str.length)) + str
 }
 
+/**
+ * Clamp.
+ *
+ * @param value …
+ * @param min   …
+ * @param max   …
+ */
 export function clamp (value: number, min = 0, max = 1) {
     return Math.max(min, Math.min(max, value))
 }
 
+/**
+ * Int.
+ *
+ * @param value …
+ * @param radix …
+ * @returns …
+ */
 export function int (value: string | number, radix: number = 10): number {
     return parseInt(value, radix)
 }
 
+/**
+ * Get decimals.
+ *
+ * @param value …
+ */
 export function getDecimals (value: number) {
     const trimmedStr = value.toString().trim()
     return trimmedStr.includes('.')
@@ -132,10 +196,22 @@ export function getDecimals (value: number) {
         : 0
 }
 
+/**
+ * Round to.
+ *
+ * @param value  …
+ * @param places …
+ */
 export function roundTo (value: number, places = 0) {
     return Math.round(value * 10 ** places) / 10 ** places
 }
 
+/**
+ * Chunk.
+ *
+ * @param str  …
+ * @param size …
+ */
 export function chunk (str: string, size = 1) {
     const chunked: Array<string> = []
     let index = 0
@@ -146,17 +222,37 @@ export function chunk (str: string, size = 1) {
     return chunked
 }
 
+/**
+ * Has.
+ *
+ * @param obj …
+ * @param key …
+ * @returns …
+ */
 export function has<T extends string> (obj: object, key: Array<T>): obj is Record<T, unknown> {
     return key.every(k => Object.prototype.hasOwnProperty.call(obj, k))
 }
 
+/**
+ * Oops.
+ *
+ * @returns …
+ */
 export function oops (): never {
     throw new Error()
 }
 
+/**
+ * Noop.
+ */
 export function noop () {
 }
 
+/**
+ * Debounce.
+ *
+ * @param fn …
+ */
 export function debounce (fn: (...args: any[]) => void, delay: MaybeRef<number>) {
     let timeoutId = 0 as any
     const wrap = (...args: any[]) => {
@@ -170,6 +266,13 @@ export function debounce (fn: (...args: any[]) => void, delay: MaybeRef<number>)
     return wrap
 }
 
+/**
+ * Deep equal.
+ *
+ * @param a …
+ * @param b …
+ * @returns …
+ */
 export function deepEqual (a: any, b: any): boolean {
     if (a === b) return true
 
@@ -197,6 +300,14 @@ export function deepEqual (a: any, b: any): boolean {
     return props.every(p => deepEqual(a[p], b[p]))
 }
 
+/**
+ * Get property from item.
+ *
+ * @param item     …
+ * @param property …
+ * @param fallback …
+ * @returns …
+ */
 export function getPropertyFromItem (item: any, property: TSelectItemKey, fallback?: any): any {
     if (property === true) return item === undefined ? fallback : item
 
@@ -221,6 +332,14 @@ export function getPropertyFromItem (item: any, property: TSelectItemKey, fallba
     return typeof value === 'undefined' ? fallback : value
 }
 
+/**
+ * Get object value by path.
+ *
+ * @param obj      …
+ * @param path     …
+ * @param fallback …
+ * @returns …
+ */
 export function getObjectValueByPath (obj: any, path?: string | null, fallback?: any): any {
     if (obj == null || !path || typeof path !== 'string') return fallback
     if (obj[path] !== undefined) return obj[path]
@@ -231,6 +350,14 @@ export function getObjectValueByPath (obj: any, path?: string | null, fallback?:
     return getNestedValue(obj, path.split('.'), fallback)
 }
 
+/**
+ * Get nested value.
+ *
+ * @param obj      …
+ * @param path     …
+ * @param fallback …
+ * @returns …
+ */
 export function getNestedValue (obj: any, path: Array<(string | number)>, fallback?: any): any {
     const last = path.length - 1
 
@@ -248,10 +375,22 @@ export function getNestedValue (obj: any, path: Array<(string | number)>, fallba
     return obj[path[last]] === undefined ? fallback : obj[path[last]]
 }
 
+/**
+ * Keys.
+ *
+ * @param o …
+ */
 export function keys<O extends Record<string, unknown>> (o: O) {
     return Object.keys(o) as (keyof O)[]
 }
 
+/**
+ * Omit.
+ *
+ * @param obj     …
+ * @param exclude …
+ * @returns …
+ */
 export function omit<
     T extends object,
     U extends Extract<keyof T, string>
@@ -263,6 +402,13 @@ export function omit<
     return clone
 }
 
+/**
+ * Only.
+ *
+ * @param obj     …
+ * @param include …
+ * @returns …
+ */
 export function only<
     T extends object,
     U extends Extract<keyof T, string>
@@ -274,6 +420,13 @@ export function only<
     return clone
 }
 
+/**
+ * Pick.
+ *
+ * @param obj   …
+ * @param paths …
+ * @returns …
+ */
 export function pick<
     T extends object,
     U extends Extract<keyof T, string>
@@ -290,6 +443,14 @@ export function pick<
     return found
 }
 
+/**
+ * Pick with rest.
+ *
+ * @param obj     …
+ * @param paths   …
+ * @param exclude …
+ * @returns …
+ */
 export function pickWithRest<
     T extends object,
     U extends Extract<keyof T, string>,
@@ -314,6 +475,12 @@ export function pickWithRest<
     return [found, rest]
 }
 
+/**
+ * Focus child.
+ *
+ * @param el       …
+ * @param location …
+ */
 export function focusChild (el: Element, location?: TFocusLocation) {
     const focusable = focusableChildren(el)
 
@@ -334,6 +501,12 @@ export function focusChild (el: Element, location?: TFocusLocation) {
     }
 }
 
+/**
+ * Focusable children.
+ *
+ * @param el               …
+ * @param filterByTabIndex …
+ */
 export function focusableChildren (el: Element, filterByTabIndex = true) {
     const targets = ['button', '[href]', 'input:not([type="hidden"])', 'select', 'textarea', '[tabindex]']
         .map(s => `${s}${filterByTabIndex ? ':not([tabindex="-1"])' : ''}:not([disabled])`)
@@ -341,6 +514,13 @@ export function focusableChildren (el: Element, filterByTabIndex = true) {
     return [...el.querySelectorAll(targets)] as Array<HTMLElement>
 }
 
+/**
+ * Get next element.
+ *
+ * @param elements  …
+ * @param location  …
+ * @param condition …
+ */
 export function getNextElement (elements: Array<HTMLElement>, location?: 'next' | 'prev', condition?: (el: HTMLElement) => boolean) {
     let _el
     let idx = elements.indexOf(document.activeElement as HTMLElement)
@@ -352,6 +532,13 @@ export function getNextElement (elements: Array<HTMLElement>, location?: 'next' 
     return _el
 }
 
+/**
+ * Human readable file size.
+ *
+ * @param bytes …
+ * @param base  …
+ * @returns …
+ */
 export function humanReadableFileSize (bytes: number, base: 1000 | 1024 = 1000): string {
     if (bytes < base) {
         return `${bytes} B`
@@ -366,11 +553,23 @@ export function humanReadableFileSize (bytes: number, base: 1000 | 1024 = 1000):
     return `${bytes.toFixed(1)} ${prefix[unit]}B`
 }
 
+/**
+ * Has event.
+ *
+ * @param props …
+ * @param name  …
+ */
 export function hasEvent (props: Record<string, any>, name: string) {
     name = 'on' + capitalize(name)
     return !!(props[name] || props[`${name}Once`] || props[`${name}Capture`] || props[`${name}OnceCapture`] || props[`${name}CaptureOnce`])
 }
 
+/**
+ * Flatten fragments.
+ *
+ * @param nodes …
+ * @returns …
+ */
 export function flattenFragments (nodes: Array<VNode>): Array<VNode> {
     return nodes?.map((node) => {
         if (node.type === Fragment) {
@@ -381,10 +580,23 @@ export function flattenFragments (nodes: Array<VNode>): Array<VNode> {
     }).flat()
 }
 
+/**
+ * Is object.
+ *
+ * @param obj …
+ * @returns …
+ */
 export function isObject (obj: any): obj is object {
     return obj !== null && typeof obj === 'object' && !Array.isArray(obj)
 }
 
+/**
+ * Merge deep.
+ *
+ * @param source  …
+ * @param target  …
+ * @param arrayFn …
+ */
 export function mergeDeep (
     source: Record<string, unknown> = {},
     target: Record<string, unknown> = {},
@@ -423,6 +635,12 @@ export function mergeDeep (
     return out
 }
 
+/**
+ * Defer.
+ *
+ * @param timeout …
+ * @param cb      …
+ */
 export function defer (timeout: number, cb: () => void) {
     if (!IN_BROWSER || timeout === 0) {
         cb()
@@ -436,6 +654,13 @@ export function defer (timeout: number, cb: () => void) {
     return () => window.clearTimeout(timeoutId)
 }
 
+/**
+ * Matches selector.
+ *
+ * @param el       …
+ * @param selector …
+ * @returns …
+ */
 export function matchesSelector (el: Element | undefined, selector: string): boolean | null {
     const supportsSelector = IN_BROWSER &&
         typeof CSS !== 'undefined' &&
@@ -451,14 +676,30 @@ export function matchesSelector (el: Element | undefined, selector: string): boo
     }
 }
 
+/**
+ * Is on.
+ *
+ * @param key …
+ */
 export function isOn (key: string) {
     return ON_REGEX.test(key)
 }
 
+/**
+ * Event name.
+ *
+ * @param propName …
+ */
 export function eventName (propName: string) {
     return propName[2].toLowerCase() + propName.slice(3)
 }
 
+/**
+ * Wrap in array.
+ *
+ * @param v …
+ * @returns …
+ */
 export function wrapInArray<T> (
     v: T | null | undefined
 ): TWrapInArrayResult<T> {
@@ -473,6 +714,9 @@ export function wrapInArray<T> (
     return [v] as TWrapInArrayResult<T>
 }
 
+/**
+ * Template ref.
+ */
 export function templateRef () {
     const el = shallowRef<HTMLElement | ComponentPublicInstance | null>()
     const fn = (target: HTMLElement | ComponentPublicInstance | null) => {
@@ -491,6 +735,13 @@ export function templateRef () {
     return fn as TTemplateRef
 }
 
+/**
+ * Get position.
+ *
+ * @param e        …
+ * @param position …
+ * @returns …
+ */
 export function getPosition (e: MouseEvent | TouchEvent, position: TClientPosition): number {
     if ('touches' in e && e.touches.length) return e.touches[0][position]
 
@@ -499,6 +750,13 @@ export function getPosition (e: MouseEvent | TouchEvent, position: TClientPositi
     else return (e as MouseEvent)[position]
 }
 
+/**
+ * Add window listener.
+ *
+ * @param event                 …
+ * @param listener              …
+ * @param onUnmountedCleanupFns …
+ */
 export function addWindowListener (event: string, listener: EventListenerOrEventListenerObject, onUnmountedCleanupFns: any = []) {
     window.addEventListener(event, listener)
 
@@ -512,14 +770,32 @@ export function addWindowListener (event: string, listener: EventListenerOrEvent
     }
 }
 
+/**
+ * Is empty.
+ *
+ * @param val …
+ * @returns …
+ */
 export function isEmpty (val: any): boolean {
     return val === null || val === undefined || (typeof val === 'string' && val.trim() === '')
 }
 
+/**
+ * Create range.
+ *
+ * @param length …
+ * @param start  …
+ * @returns …
+ */
 export function createRange (length: number, start = 0): number[] {
     return Array.from({length}, (_v, k) => start + k)
 }
 
+/**
+ * Get event coordinates.
+ *
+ * @param e …
+ */
 export function getEventCoordinates (e: MouseEvent | TouchEvent) {
     if ('touches' in e) {
         return {clientX: e.touches[0].clientX, clientY: e.touches[0].clientY}
@@ -559,6 +835,15 @@ export function tryOnScopeDispose (fn: TFn) {
     return false
 }
 
+/**
+ * Normalize.
+ *
+ * @param number          …
+ * @param currentScaleMin …
+ * @param currentScaleMax …
+ * @param newScaleMin     …
+ * @param newScaleMax     …
+ */
 export function normalize (
     number: number,
     currentScaleMin: number,

@@ -3,19 +3,31 @@ import type { IAdjacentInnerProps, IAdjacentProps } from '../../interfaces'
 
 import { getCurrentInstance } from "../../utils"
 
-export function useAdjacent (props: IAdjacentProps, prependIcon: Ref | ComputedRef, appendIcon: Ref | ComputedRef) {
+/*********************************************************
+ * useAdjacent
+ ********************************************************/
+export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | ComputedRef, appendIcon?: Ref | ComputedRef) {
     const vm = getCurrentInstance('OrigamAdjacent')
 
     const slots = useSlots()
 
+    // The icon Refs are optional — when omitted, fall back to the
+    // matching prop. Pre-fix every consumer was forced to pass either a
+    // toRef(props,'prependIcon') OR a derived computed (e.g. status-aware
+    // icon swap), and forgetting one (as `<OrigamConfirmWrapper>` did)
+    // crashed at render with "Cannot read properties of undefined
+    // (reading 'value')". Resolving here keeps the simple
+    // `useAdjacent(props)` form valid.
     const hasPrependMedia = computed(() => {
-        return !!(props.prependAvatar || prependIcon.value)
+        const icon = prependIcon ? prependIcon.value : props.prependIcon
+        return !!(props.prependAvatar || icon)
     })
     const hasPrepend = computed(() => {
         return !!slots.prepend || hasPrependMedia.value
     })
     const hasAppendMedia = computed(() => {
-        return !!(props.appendAvatar || appendIcon.value)
+        const icon = appendIcon ? appendIcon.value : props.appendIcon
+        return !!(props.appendAvatar || icon)
     })
     const hasAppend = computed(() => {
         return !!slots.append || hasAppendMedia.value
@@ -38,6 +50,9 @@ export function useAdjacent (props: IAdjacentProps, prependIcon: Ref | ComputedR
     }
 }
 
+/*********************************************************
+ * useAdjacentInner
+ ********************************************************/
 export function useAdjacentInner (props: IAdjacentInnerProps) {
     const vm = getCurrentInstance('OrigamAdjacentInner')
 

@@ -1,6 +1,21 @@
 import type { TColor, THSLA } from "../../types"
 import { convertToUnit, HSVtoHSL, isParsableColor, normalize, parseColor, RGBtoHSV, roundTo } from "../../utils"
 
+/**
+ * @deprecated Since v0.4 — replaced by the `--origam-shadow-{xs|sm|md|lg|xl}`
+ *   design tokens generated from `tokens/primitive.json`. The new
+ *   `useElevation` composable emits `box-shadow: var(--origam-shadow-…)`
+ *   directly, which lets the theme system control shadow appearance per
+ *   light / dark / brand-x variant.
+ *
+ *   Will be removed in v3.0.0. Migrate by:
+ *     - removing any direct `formatElevationStyle(level, bgColor)` call,
+ *     - or by switching to `@include ds-elevation('md')` from the SCSS
+ *       helpers shipped in `src/assets/scss/_helpers.scss`.
+ *
+ *   Kept as-is for the duration of the migration window so consumers who
+ *   imported it directly do not break at upgrade time.
+ */
 export function formatElevationStyle (elevation: number = 0, bgColor?: TColor) {
     const blurRadius = roundTo(normalize(elevation * .04, 0, 1, 0, 16), 1);
     const offsetX = roundTo(normalize(elevation * .04, 0, 1, 0, 8), 1);

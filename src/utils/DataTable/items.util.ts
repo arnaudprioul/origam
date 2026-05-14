@@ -2,6 +2,14 @@ import type { IDataTableItem, IDataTableItemsProps, IInternalDataTableHeader } f
 
 import { getPropertyFromItem } from '../../utils'
 
+/**
+ * Transform data table items.
+ *
+ * @param props   …
+ * @param items   …
+ * @param columns …
+ * @returns …
+ */
 export function transformDataTableItems (
     props: Omit<IDataTableItemsProps, 'items'>,
     items: Array<IDataTableItem> | undefined,
@@ -10,6 +18,15 @@ export function transformDataTableItems (
     return items?.map((item, index) => transformDataTableItem(props, item, index, columns)) || []
 }
 
+/**
+ * Transform data table item.
+ *
+ * @param props   …
+ * @param item    …
+ * @param index   …
+ * @param columns …
+ * @returns …
+ */
 export function transformDataTableItem (
     props: Omit<IDataTableItemsProps, 'items'>,
     item: IDataTableItem,

@@ -1,5 +1,0 @@
-# Origamdatepickermonths
-
-## Usage
-
-    <OrigamDatePickerMonths />

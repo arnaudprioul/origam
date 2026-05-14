@@ -1,3 +1,10 @@
+/**
+ * Get slider field offset.
+ *
+ * @param e         …
+ * @param el        …
+ * @param direction …
+ */
 export function getSliderFieldOffset (e: MouseEvent | TouchEvent, el: HTMLElement, direction: string) {
     const vertical = direction === 'vertical'
     const rect = el.getBoundingClientRect()

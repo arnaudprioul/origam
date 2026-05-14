@@ -1,5 +1,8 @@
 import { getCurrentInstance } from '../../utils'
 
+/*********************************************************
+ * useScopeId
+ ********************************************************/
 export function useScopeId () {
     const vm = getCurrentInstance('useScopeId')
 

@@ -1,5 +1,0 @@
-# Origamvirtualscroll
-
-## Usage
-
-    <OrigamVirtualScroll />

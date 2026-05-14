@@ -6,6 +6,9 @@ import type { TSSROptions } from '../../types'
 
 import { getClientHeight, getClientWidth, getCurrentInstanceName, getPlatform, parseDisplayOptions } from '../../utils'
 
+/*********************************************************
+ * useDisplay
+ ********************************************************/
 export function useDisplay (
     props: IDisplayProps = {},
     name = getCurrentInstanceName()
@@ -33,6 +36,9 @@ export function useDisplay (
     return {...display, displayClasses, mobile}
 }
 
+/*********************************************************
+ * createDisplay
+ ********************************************************/
 export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): IDisplayInstance {
     const {thresholds, mobileBreakpoint} = parseDisplayOptions(options)
 

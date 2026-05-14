@@ -110,7 +110,7 @@
 		OrigamTranslatePicker
 	} from "../../components"
 
-	import { useDate, useLocale, useProps, useVModel } from "../../composables"
+	import { useDate, useLocale, useProps, useVModel , useStyle} from "../../composables"
 
 	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
 
@@ -129,6 +129,13 @@
 
 	import { computed, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, composables and top-level refs.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDatePickerProps>(), {
 		weeksInMonth: CALENDAR_STRATEGY.STATIC,
 		title: 'origam.datePicker.title',
@@ -143,6 +150,13 @@
 	const {t} = useLocale()
 
 	const adapter = useDate()
+
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Model binding, view-mode state and date internals.
+	 ********************************************************/
 
 	const model = useVModel(
 			props,
@@ -212,6 +226,13 @@
 		return props.max && adapter.isValid(date) ? date : null
 	})
 
+	/*********************************************************
+	 * Disabled controls
+	 *
+	 * @description
+	 * Computes which navigation controls should be disabled based on min/max constraints.
+	 ********************************************************/
+
 	const disabledControlers = computed(() => {
 		if (props.disabled) return {disabled: props.disabled}
 
@@ -250,6 +271,13 @@
 
 		return targets
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Navigation and view-mode click handlers.
+	 ********************************************************/
 
 	const handleClickNext = () => {
 		if (month.value < 11) {
@@ -315,12 +343,23 @@
 		isReversing.value = adapter.isBefore(before, after)
 	})
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props passed down to child picker sub-components.
+	 ********************************************************/
+
 	const origamPickerRef = ref<TOrigamPicker>()
 	const origamDatePickerControlsRef = ref<TOrigamDatePickerControls>()
 	const origamDatePickerHeaderRef = ref<TOrigamDatePickerHeader>()
 	const origamDatePickerMonthRef = ref<TOrigamDatePickerMonth>()
 	const origamDatePickerMonthsRef = ref<TOrigamDatePickerMonths>()
 	const origamDatePickerYearsRef = ref<TOrigamDatePickerYears>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const pickerProps = computed(() => {
 		return origamPickerRef.value?.filterProps(props, ['class', 'style', 'title', 'id'])
@@ -348,7 +387,12 @@
 		}
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerStyles = computed(() => {
 		return [
@@ -365,11 +409,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

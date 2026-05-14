@@ -1,5 +1,0 @@
-# Origamdatatitle
-
-## Usage
-
-    <OrigamDataTitle />

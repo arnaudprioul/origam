@@ -22,10 +22,21 @@
 		setup
 >
 	import { computed, StyleValue, useAttrs, watch } from 'vue'
-	import { useProps, useResizeObserver } from '../../composables'
+	import {
+	useProps,
+	useResizeObserver,
+	useStyle
+} from '../../composables'
 
 	import type { IVirtualScrollItemProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, filterProps utility, and raw attributes
+	 * forwarded to the non-renderless wrapper div.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollItemProps>(), {})
 
 	const emits = defineEmits(['update:height'])
@@ -34,14 +45,32 @@
 
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Resize observation
+	 *
+	 * @description
+	 * ResizeObserver on the item root element emits height
+	 * updates to the parent virtual scroll engine so it can
+	 * recalculate padding spacers and the visible window.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {resizeRef, contentRect} = useResizeObserver(undefined, 'border')
 
 	watch(() => contentRect.value?.height, (height) => {
 		if (height != null) emits('update:height', height)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles for the non-renderless
+	 * wrapper div.
+	 ********************************************************/
 	const virtualScrollItemStyles = computed(() => {
 		return [
 			props.style
@@ -53,10 +82,29 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollItemStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-virtual-scroll-item {
+	}
+</style>

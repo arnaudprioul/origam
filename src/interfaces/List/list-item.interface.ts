@@ -1,11 +1,14 @@
 import type {
+    IActiveProps,
     IAdjacentProps,
+    IBgColorProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
     IDimensionProps,
     IElevationProps,
+    IHoverProps,
     ILinkProps,
     IMarginProps,
     IPaddingProps,
@@ -16,7 +19,7 @@ import type {
 
 import type { TLines } from '../../types'
 
-export interface IListItemProps extends IBorderProps, ICommonsComponentProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ILinkProps, IColorProps, IRippleProps, IPaddingProps, IMarginProps, IAdjacentProps {
+export interface IListItemProps extends IBorderProps, ICommonsComponentProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ILinkProps, IColorProps, IBgColorProps, IRippleProps, IPaddingProps, IMarginProps, IAdjacentProps, IActiveProps, IHoverProps {
     active?: boolean
     activeClass?: string
     disabled?: boolean

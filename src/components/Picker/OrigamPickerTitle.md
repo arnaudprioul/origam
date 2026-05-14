@@ -1,5 +1,0 @@
-# Origampickertitle
-
-## Usage
-
-    <OrigamPickerTitle />

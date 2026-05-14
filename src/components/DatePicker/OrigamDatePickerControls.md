@@ -1,5 +1,0 @@
-# Origamdatepickercontrols
-
-## Usage
-
-    <OrigamDatePickerControls />

@@ -1,5 +1,0 @@
-# Origambottomnav
-
-## Usage
-
-    <OrigamBottomNav />

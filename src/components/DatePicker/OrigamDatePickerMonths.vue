@@ -22,13 +22,20 @@
 >
 	import { OrigamBtn } from "../../components"
 
-	import { useDate, useProps, useVModel } from "../../composables"
+	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
 	import type { IDatePickerMonthsProps } from "../../interfaces"
 
 	import { convertToUnit, createRange, int } from "../../utils"
 
 	import { computed, StyleValue, watchEffect } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables and model binding.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDatePickerMonthsProps>(), {})
 
@@ -37,9 +44,21 @@
 	const {filterProps} = useProps<IDatePickerMonthsProps>(props)
 
 	const adapter = useDate()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'month', adapter.getMonth(adapter.date()), (v) => {
 		return int(v || 0)
 	})
+
+	/*********************************************************
+	 * Months list
+	 *
+	 * @description
+	 * Computed month entries with disabled state and selection.
+	 ********************************************************/
 
 	const months = computed(() => {
 		let date = adapter.startOfYear(adapter.date())
@@ -69,6 +88,13 @@
 		model.value = model.value ?? adapter.getMonth(adapter.date())
 	})
 
+	/*********************************************************
+	 * Item
+	 *
+	 * @description
+	 * Button props factory and click handler for month selection.
+	 ********************************************************/
+
 	const btnProps = (month: { isDisabled: boolean, text: string, value: number }, i: number) => {
 		return {
 			active: model.value === i,
@@ -80,6 +106,11 @@
 			onClick: () => handleClick(i)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (i: number) => {
 		if (model.value === i) {
 			emits('update:month', model.value)
@@ -89,7 +120,12 @@
 		model.value = i
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerMonthsStyles = computed(() => {
 		return [
@@ -105,11 +141,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerMonthsStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

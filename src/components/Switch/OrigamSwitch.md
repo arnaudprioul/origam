@@ -1,5 +1,0 @@
-# Origamswitch
-
-## Usage
-
-    <OrigamSwitch />

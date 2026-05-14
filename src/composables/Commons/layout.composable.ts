@@ -19,6 +19,9 @@ import type { TDirectionBoth } from "../../types"
 
 import { convertToUnit, findChildrenWithProvide, generateLayers, getCurrentInstance, getUid, int } from '../../utils'
 
+/*********************************************************
+ * useLayout
+ ********************************************************/
 export function useLayout () {
     const layout = inject(ORIGAM_LAYOUT_KEY)
 
@@ -34,6 +37,9 @@ export function useLayout () {
     }
 }
 
+/*********************************************************
+ * useLayoutItem
+ ********************************************************/
 export function useLayoutItem (options: {
     id: string | undefined
     order: Ref<number>
@@ -46,8 +52,18 @@ export function useLayoutItem (options: {
 }) {
     const layout = inject(ORIGAM_LAYOUT_KEY)
 
+    // No layout provider in the tree: fall back to inert styles so the
+    // component (BottomNav, AppBar, …) still renders standalone — useful
+    // in stories, modal previews, or tests that don't bother wrapping
+    // the component in an OrigamLayout. Throwing here used to crash the
+    // entire sandbox.
     if (!layout) {
-        throw new Error('[Origam] Could not find injected layout')
+        return {
+            layoutItemStyles: computed<CSSProperties>(() => ({})),
+            layoutRect: shallowRef(undefined),
+            layoutItemScrimStyles: computed<CSSProperties>(() => ({})),
+            layoutId: 'origam-layout-orphan'
+        }
     }
 
     const id = options.id ?? `layout-item-${getUid()}`
@@ -85,6 +101,9 @@ export function useLayoutItem (options: {
     }
 }
 
+/*********************************************************
+ * useCreateLayout
+ ********************************************************/
 export function useCreateLayout (props: { id?: string, overlaps?: Array<string>, fullHeight?: boolean }) {
     const parentLayout = inject(ORIGAM_LAYOUT_KEY, null)
 
@@ -142,13 +161,32 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     })
 
     const mainStyles = computed<CSSProperties>(() => {
+        const left = convertToUnit(mainRect.value.left) ?? '0px'
+        const right = convertToUnit(mainRect.value.right) ?? '0px'
+        const top = convertToUnit(mainRect.value.top) ?? '0px'
+        const bottom = convertToUnit(mainRect.value.bottom) ?? '0px'
+        // Emit BOTH:
+        //   • the standard `left / right / top / bottom` props for
+        //     consumers that use `position: absolute` (e.g.
+        //     OrigamMain in scrollable mode, OrigamSnackbar);
+        //   • the matching CSS custom properties so that consumers
+        //     using `padding-inline-start: var(--origam-layout---
+        //     position-left)` (default OrigamMain) actually receive
+        //     the reserved-space values. Without the latter, the
+        //     drawer reserved its width via useLayoutItem but the
+        //     main content never offset → "drawer overlays main
+        //     instead of pushing it" (user report).
         return {
-            'left': convertToUnit(mainRect.value.left),
-            'right': convertToUnit(mainRect.value.right),
-            'top': convertToUnit(mainRect.value.top),
-            'bottom': convertToUnit(mainRect.value.bottom),
+            'left': left,
+            'right': right,
+            'top': top,
+            'bottom': bottom,
+            '--origam-layout---position-left': left,
+            '--origam-layout---position-right': right,
+            '--origam-layout---position-top': top,
+            '--origam-layout---position-bottom': bottom,
             ...(transitionsEnabled.value ? undefined : {transition: 'none'})
-        }
+        } as CSSProperties
     })
 
     const items = computed(() => {
@@ -225,7 +263,15 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
 
                 const item = items.value[index.value]
 
-                if (!item) throw new Error(`[Origam] Could not find layout item "${id}"`)
+                // The previous code threw when the registered item couldn't
+                // be found in `items.value` — but that crash fires every
+                // time a layout-aware component (e.g. `OrigamBottomNav`)
+                // is rendered outside a layout host, or during HMR before
+                // the parent layout's `items` computed re-runs. Both are
+                // legitimate states. Fall back to the base position styles
+                // and skip the layout-driven offsets in that case so the
+                // component still renders.
+                if (!item) return styles
 
                 const overlap = computedOverlaps.value.get(id)
 
@@ -281,11 +327,27 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     })
 
     const layoutStyles = computed(() => {
-        return {
+        const left = convertToUnit(mainRect.value.left) ?? '0px'
+        const right = convertToUnit(mainRect.value.right) ?? '0px'
+        const top = convertToUnit(mainRect.value.top) ?? '0px'
+        const bottom = convertToUnit(mainRect.value.bottom) ?? '0px'
+        // Expose the layout's reserved-space (drawer width, toolbar height,
+        // …) via CSS custom properties on the LAYOUT ROOT so every
+        // descendant inherits them (toolbar, main, footer, snackbar, …).
+        // Bracket-assignment is used for the `--*` custom properties
+        // because the surrounding object literal cast to `StyleValue`
+        // erases unknown keys at the Vue level otherwise (CSSProperties
+        // typing only allows camelCase known props).
+        const out: Record<string, unknown> = {
             'z-index': parentLayout ? rootZIndex.value : undefined,
             'position': parentLayout ? 'relative' as const : undefined,
-            'overflow': parentLayout ? 'hidden' : undefined
-        } as StyleValue
+            'overflow': parentLayout ? 'hidden' : undefined,
+        }
+        out['--origam-layout---position-left'] = left
+        out['--origam-layout---position-right'] = right
+        out['--origam-layout---position-top'] = top
+        out['--origam-layout---position-bottom'] = bottom
+        return out as StyleValue
     })
 
     return {

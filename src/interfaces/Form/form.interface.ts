@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance, ComputedRef, Raw, Ref } from 'vue'
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps, ICommonsComponentSlots } from '../../interfaces'
 import type { TValidateOn } from '../../types'
 
 export interface IFormProvide {
@@ -26,6 +26,22 @@ export interface IFormProps extends ICommonsComponentProps {
     readonly?: boolean
     modelValue?: boolean | null
     validateOn?: TValidateOn
+    rules?: Array<any>
+    errorMessages?: Array<string> | string
+    hint?: string
+    messages?: Array<string> | string
+    scrollToError?: boolean | ScrollIntoViewOptions
+}
+
+export interface IFormSlots extends ICommonsComponentSlots {
+    messages?: () => any
+    message?: () => any
+    actions?: (data: { submit: () => void, reset: () => void }) => any
+}
+
+export interface IFormEmits {
+    (e: 'submit', value: any): void
+    (e: 'reset', value: any): void
 }
 
 export interface IFormField {

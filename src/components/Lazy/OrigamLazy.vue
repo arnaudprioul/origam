@@ -23,13 +23,25 @@
 	import { computed, StyleValue } from 'vue'
 	import { OrigamFade, OrigamTransition } from '../../components'
 
-	import { useDimension, useProps, useVModel } from '../../composables'
+	import {
+	useDimension,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { vIntersect } from '../../directives'
 
 	import type { ILazyComponentProps } from '../../interfaces'
 
 	import type { TTransitionProps } from "../../types"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ILazyComponentProps>(), {
 		tag: 'div',
@@ -45,9 +57,24 @@
 
 	const {filterProps} = useProps<ILazyComponentProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Intersection
+	 *
+	 * @description
+	 * Intersection observer config and activation handler.
+	 ********************************************************/
 
 	const intersect = computed(() => {
 		return [
@@ -57,13 +84,22 @@
 		]
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleIntersect = (isIntersecting: boolean) => {
 		if (isActive.value) return
 
 		isActive.value = isIntersecting
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const lazyStyles = computed(() => {
 		return [
@@ -77,10 +113,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(lazyStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

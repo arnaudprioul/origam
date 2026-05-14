@@ -5,46 +5,48 @@
 			:class="breadcrumbClasses"
 			aria-label="Breadcrumb"
 	>
-		<slot name="default">
-			<template v-if="hasItems">
-				<ol class="origam-breadcrumb__items">
-					<template
-							v-for="(item, index) in items"
-							:key="index"
-					>
-						<li class="origam-breadcrumb__item">
-							<slot
-									:name="`item.${index}`"
-									v-bind="{item, index}"
-							>
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<template v-if="hasItems">
+					<ol class="origam-breadcrumb__items">
+						<template
+								v-for="(item, index) in items"
+								:key="index"
+						>
+							<li class="origam-breadcrumb__item">
 								<slot
-										name="item"
-										v-bind="{ item, index }"
-								>
-									<origam-breadcrumb-item v-bind="item">
-										<slot name="item.title"/>
-									</origam-breadcrumb-item>
-								</slot>
-							</slot>
-
-							<template v-if="!isLastItem(index)">
-								<slot
-										:name="`divider.${index}`"
-										v-bind="{divider}"
+										:name="`item.${index}`"
+										v-bind="{item, index}"
 								>
 									<slot
-											name="divider"
-											v-bind="{divider}"
+											name="item"
+											v-bind="{ item, index }"
 									>
-										<origam-breadcrumb-divider :divider="divider"/>
+										<origam-breadcrumb-item v-bind="item">
+											<slot name="item.title"/>
+										</origam-breadcrumb-item>
 									</slot>
 								</slot>
-							</template>
-						</li>
-					</template>
-				</ol>
-			</template>
-		</slot>
+
+								<template v-if="!isLastItem(index)">
+									<slot
+											:name="`divider.${index}`"
+											v-bind="{divider}"
+									>
+										<slot
+												name="divider"
+												v-bind="{divider}"
+										>
+											<origam-breadcrumb-divider :divider="divider"/>
+										</slot>
+									</slot>
+								</template>
+							</li>
+						</template>
+					</ol>
+				</template>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -52,17 +54,12 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem } from '../../components'
+	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem, OrigamDefaultsProvider } from '../../components'
 
 	import {
-		useBorder,
-		useColorEffect,
 		useDensity,
-		useElevation,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -74,6 +71,13 @@
 
 	import { computed, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child items via
+	 * OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBreadcrumbProps>(), {
 		divider: '/',
 		items: () => [] as Array<TBreadcrumbItem>,
@@ -83,19 +87,51 @@
 
 	const {filterProps} = useProps<IBreadcrumbProps>(props)
 
-	const {colorStyles} = useColorEffect(props)
-	const {densityClasses} = useDensity(props)
-	const {elevationStyles, elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`
+	// as DEFAULTS — items that pass their own props still win.
+	//
+	// `bgColor` is propagated alongside `color` so each item's
+	// `useStateEffect` sees the BOTH axes — without it, the
+	// `color===bgColor` auto-contrast branch never triggers on the
+	// items, so a `<OrigamBreadcrumb color="primary" bgColor="primary">`
+	// renders items with `primary-fgSubtle` (violet) ON a `primary-bg`
+	// surface — unreadable. Same goes for hover/active overrides.
+	const slotDefaults = computed(() => ({
+		'origam-breadcrumb-item': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
+			disabled: props.disabled
+		}
+	}))
 
+	/*********************************************************
+	 * Items
+	 *
+	 * @description
+	 * Normalises string/object items, marks the last item as
+	 * disabled and active, and exposes slot presence flag.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, undefined, undefined, undefined, undefined, computed(() => !!props.disabled))
+
+	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
+	// density/color fallback — no manual merge needed here.
+	// `disabled` and `isActive` are structural (not visual tokens), so
+	// they remain explicitly set on the item object.
 	const items = computed(() => {
 		return props.items.map((item, index) => {
 			return typeof item === 'string' ? {title: item, disabled: isLastItem(index)} : {
 				...item,
-				density: props.density ?? item.density,
 				disabled: isLastItem(index) || item.disabled,
 				isActive: isLastItem(index)
 			}
@@ -110,8 +146,19 @@
 		return slots.default || items.value
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all spacing, color, elevation and variant
+	 * classes/styles onto the root element.
+	 ********************************************************/
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {densityClasses} = useDensity(props)
 	const breadcrumbStyles = computed(() => {
 		return [
 			elevationStyles.value,
@@ -126,6 +173,7 @@
 	const breadcrumbClasses = computed(() => {
 		return [
 			'origam-breadcrumb',
+			colorClasses.value,
 			elevationClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
@@ -138,8 +186,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -155,6 +207,31 @@
 		scoped
 >
 	.origam-breadcrumb {
+		--origam-breadcrumb---border-top-width: 0px;
+		--origam-breadcrumb---border-left-width: 0px;
+		--origam-breadcrumb---border-bottom-width: 0px;
+		--origam-breadcrumb---border-right-width: 0px;
+		--origam-breadcrumb---border-width: var(--origam-breadcrumb---border-top-width) var(--origam-breadcrumb---border-left-width) var(--origam-breadcrumb---border-bottom-width) var(--origam-breadcrumb---border-right-width);
+		--origam-breadcrumb---border-color: currentColor;
+		--origam-breadcrumb---border-style: solid;
+		--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-token, 0px);
+		--origam-breadcrumb---density: 0px;
+		--origam-breadcrumb---box-shadow: var(--origam-shadow---none, none);
+		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color__text---primary));
+		--origam-breadcrumb---background: var(--origam-breadcrumb---background-token, transparent);
+		--origam-breadcrumb---margin-inline-start: 0px;
+		--origam-breadcrumb---margin-inline-end: 0px;
+		--origam-breadcrumb---margin-block-start: 0px;
+		--origam-breadcrumb---margin-block-end: 0px;
+		--origam-breadcrumb---padding-block-start: 8px;
+		--origam-breadcrumb---padding-block-end: 8px;
+		--origam-breadcrumb---padding-inline-start: 8px;
+		--origam-breadcrumb---padding-inline-end: 8px;
+		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
+		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		--origam-breadcrumb---transition-property: transform, color;
+		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
+
 		transition: var(--origam-breadcrumb---transition);
 
 		background: var(--origam-breadcrumb---background);
@@ -191,7 +268,7 @@
 		}
 
 		&--elevated {
-			--origam-breadcrumb---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-breadcrumb---box-shadow: var(--origam-shadow---md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
 		}
 
 		&--border {
@@ -199,11 +276,35 @@
 		}
 
 		&--rounded {
-			--origam-breadcrumb---border-radius: 4px;
+			border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			border-radius: var(--origam-radius---xs, 2px);
+		}
+
+		&--rounded-small {
+			border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
-			--origam-breadcrumb---density: 8px;
+			--origam-breadcrumb---density: -8px;
 		}
 
 		&--density-default {
@@ -213,34 +314,5 @@
 		&--density-compact {
 			--origam-breadcrumb---density: 8px;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-breadcrumb---border-top-width: 0;
-		--origam-breadcrumb---border-left-width: 0;
-		--origam-breadcrumb---border-bottom-width: 0;
-		--origam-breadcrumb---border-right-width: 0;
-		--origam-breadcrumb---border-width: var(--origam-breadcrumb---border-top-width) var(--origam-breadcrumb---border-left-width) var(--origam-breadcrumb---border-bottom-width) var(--origam-breadcrumb---border-right-width);
-		--origam-breadcrumb---border-color: currentColor;
-		--origam-breadcrumb---border-style: solid;
-		--origam-breadcrumb---border-radius: 0;
-		--origam-breadcrumb---density: 0;
-		--origam-breadcrumb---box-shadow: none;
-		--origam-breadcrumb---color: rgba(0, 0, 0, 0.87);
-		--origam-breadcrumb---background: rgb(230, 230, 230);
-		--origam-breadcrumb---margin-inline-start: 0;
-		--origam-breadcrumb---margin-inline-end: 0;
-		--origam-breadcrumb---margin-block-start: 0;
-		--origam-breadcrumb---margin-block-end: 0;
-		--origam-breadcrumb---padding-block-start: 8px;
-		--origam-breadcrumb---padding-block-end: 8px;
-		--origam-breadcrumb---padding-inline-start: 8px;
-		--origam-breadcrumb---padding-inline-end: 8px;
-		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb---transition-property: transform, color;
-		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
 	}
 </style>

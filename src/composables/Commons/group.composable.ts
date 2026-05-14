@@ -26,6 +26,9 @@ import {
     wrapInArray
 } from '../../utils'
 
+/*********************************************************
+ * useGroupItem
+ ********************************************************/
 export function useGroupItem (
     props: IGroupItemProps,
     injectKey: InjectionKey<IGroupProvide>,
@@ -92,6 +95,9 @@ export function useGroupItem (
     }
 }
 
+/*********************************************************
+ * useGroup
+ ********************************************************/
 export function useGroup (
     props: IGroupProps,
     injectKey: InjectionKey<IGroupProvide>

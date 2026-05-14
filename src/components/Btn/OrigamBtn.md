@@ -1,5 +1,0 @@
-# Origambtn
-
-## Usage
-
-    <OrigamBtn />

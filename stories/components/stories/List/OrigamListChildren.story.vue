@@ -1,0 +1,175 @@
+<template>
+	<Story
+			group="components"
+			title="List/OrigamListChildren"
+	>
+
+		<!--
+			<origam-list-children> renders a recursive items array. The
+			parent <origam-list> uses it internally to traverse nested
+			children. Probing it standalone is useful for flat tests;
+			the realistic flow drives it through the parent list.
+		-->
+
+		<!-- ── Playground ───────────────────────────────────────────────── -->
+
+		<Variant title="Playground">
+			<!-- ListChildren is driven by items from the parent list context; this variant shows the realistic integration -->
+			<origam-list :items="nestedItems" data-cy="list-children-playground"/>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — items (flat list)">
+			<origam-list data-cy="list-children-flat">
+				<origam-list-children :items="flatItems" return-object/>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Prop — items (nested groups, recursive)">
+			<origam-list data-cy="list-children-nested">
+				<origam-list-children :items="nestedItems"/>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Prop — items (via parent List)">
+			<origam-list :items="nestedItems" data-cy="list-children-embedded"/>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — children">
+			<origam-list data-cy="list-children-slot-children">
+				<origam-list-children :items="flatItems" return-object>
+					<template #children="{ item }">
+						<span>Custom child: {{ item.title }}</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-list data-cy="list-children-slot-default">
+				<origam-list-children :items="flatItems" return-object>
+					<span>Custom slot content</span>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — divider">
+			<origam-list data-cy="list-children-slot-divider">
+				<origam-list-children :items="flatItems" return-object>
+					<template #divider>
+						<hr style="border-color: var(--origam-color__border---subtle); margin: 4px 0;"/>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — group">
+			<origam-list data-cy="list-children-slot-group">
+				<origam-list-children :items="nestedItems">
+					<template #group="{ item }">
+						<span style="font-weight: 600;">{{ item.title }}</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — groupActivator">
+			<origam-list data-cy="list-children-slot-group-activator">
+				<origam-list-children :items="nestedItems">
+					<template #groupActivator="{ item }">
+						<span>Open: {{ item.title }}</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — item">
+			<origam-list data-cy="list-children-slot-item">
+				<origam-list-children :items="flatItems" return-object>
+					<template #item="{ item }">
+						<origam-list-item :title="item.title" :prepend-icon="item.prependIcon" data-cy="list-children-slot-item-row"/>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — subheader">
+			<origam-list data-cy="list-children-slot-subheader">
+				<origam-list-children :items="flatItems" return-object>
+					<template #subheader>
+						<span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; padding: 4px 16px;">Custom subheader</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — subheaderTitle">
+			<origam-list data-cy="list-children-slot-subheader-title">
+				<origam-list-children :items="flatItems" return-object>
+					<template #subheaderTitle>
+						<span>Custom subheader title</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — note (usage guidance)">
+			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
+				<p>
+					<code>&lt;origam-list-children&gt;</code> is the recursive
+					internal renderer for <code>OrigamList</code>'s items
+					tree. It rarely needs to be used standalone — passing
+					<code>items</code> directly to <code>&lt;origam-list&gt;</code>
+					yields the same render and exposes a richer prop surface.
+				</p>
+				<p>
+					Use this component when you need to render a sub-tree of
+					list items inside a custom container, while still
+					inheriting the parent list's group / select / activator
+					context.
+				</p>
+			</div>
+		</Variant>
+	</Story>
+</template>
+
+<script
+		lang="ts"
+		setup
+>
+	import { OrigamList, OrigamListChildren, OrigamListItem } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
+
+	const flatItems = [
+		{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
+		{ title: 'Starred', prependIcon: MDI_ICONS.STAR },
+		{ title: 'Sent',    prependIcon: MDI_ICONS.SEND },
+		{ title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE },
+	]
+
+	const nestedItems = [
+		{
+			title: 'Mail',
+			prependIcon: MDI_ICONS.EMAIL_OUTLINE,
+			children: [
+				{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
+				{ title: 'Sent',    prependIcon: MDI_ICONS.SEND },
+				{ title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE },
+			],
+		},
+		{
+			title: 'Calendar',
+			prependIcon: MDI_ICONS.CALENDAR,
+			children: [
+				{ title: 'Today',    prependIcon: MDI_ICONS.CALENDAR_TODAY },
+				{ title: 'Upcoming', prependIcon: MDI_ICONS.CALENDAR_CLOCK },
+			],
+		},
+		{ title: 'Settings', prependIcon: MDI_ICONS.COG_OUTLINE },
+	]
+</script>
+
+<docs lang="md" src="@docs/components/List/OrigamListChildren.md"/>

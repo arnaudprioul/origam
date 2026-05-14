@@ -4,9 +4,14 @@ import {
     BLK_THRS,
     CIELAB_FORWARD_TRANSFORM,
     CIELAB_REVERSE_TRANSFORM,
+    COLOR_ACTIVE_MIX_PCT,
     COLOR_DELTA_Y_MIN,
+    COLOR_HOVER_MIX_PCT,
+    COLOR_INTENTS,
     COLOR_MAPPERS,
+    COLOR_UTILITY_INTENTS,
     CSS_COLOR_REGEX,
+    CSS_NAMED_COLORS,
     GCO,
     LO_CLIP,
     LO_CON_FACTOR,
@@ -26,18 +31,50 @@ import {
     SRGB_REVERSE_TRANSFORM
 } from '../../consts'
 
-import type { TColorType, THex, THSLA, THSVA, TLAB, TRGBA, TXYZ } from '../../types'
+import type { TBgFgRole, TColor, TColorType, THex, THSLA, THSVA, TIntent, TLAB, TRGBA, TXYZ } from '../../types'
 
-import { chunk, clamp, consoleWarn, has, int, padEnd } from '../../utils'
+// Direct imports from sibling util files (NOT the barrel) to avoid a
+// circular `utils/index → color.util → utils/index` chain. The barrel
+// cycle worked for the pre-existing exports thanks to ES module live
+// bindings, but vitest's module loader (vite-node) returns `undefined`
+// for late-added exports under that cycle — caught when the newly-added
+// `isIntent` / `isUtilityIntent` helpers landed in this file. Sidestep
+// the cycle entirely by importing from the source files directly.
+import { chunk, clamp, has, int, padEnd } from './commons.util'
+import { consoleWarn } from './console.util'
 
+/**
+ * Recognise any string the CSS engine treats as a colour:
+ *   - hex (`#abc`, `#aabbcc`, `#aabbccdd`)
+ *   - functional notation (`rgb()`, `rgba()`, `hsl()`, `hsla()`,
+ *     `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`)
+ *   - CSS variable (`var(--…)`)
+ *   - one of the 148 named colours OR a CSS-wide keyword
+ *     (`transparent`, `currentColor`, `inherit`, …)
+ */
 export function isCssColor (color?: string | null | false): boolean {
-    return !!color && /^(#|var\(--|(rgb|hsl)a?\()/.test(color)
+    return !!color && (
+        /^(#|var\(--|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\()/i.test(color) ||
+        CSS_NAMED_COLORS.has(color.toLowerCase())
+    )
 }
 
+/**
+ * Is parsable color.
+ *
+ * @param color …
+ * @returns …
+ */
 export function isParsableColor (color: string): boolean {
     return isCssColor(color) && !/^((rgb|hsl)a?\()?var\(--/.test(color)
 }
 
+/**
+ * Parse color.
+ *
+ * @param color …
+ * @returns …
+ */
 export function parseColor (color: TColorType): TRGBA {
     if (typeof color === 'number') {
         if (isNaN(color) || color < 0 || color > 0xFFFFFF) { // int can't have opacity
@@ -90,6 +127,11 @@ export function parseColor (color: TColorType): TRGBA {
     throw new TypeError(`Invalid color: ${color == null ? color : (String(color) || (color as any).constructor.name)}\nExpected #hex, #hexa, rgb(), rgba(), hsl(), hsla(), object or number`)
 }
 
+/**
+ * Get foreground.
+ *
+ * @param color …
+ */
 export function getForeground (color: TColorType) {
     const blackContrast = Math.abs(APCAcontrast(parseColor(0), parseColor(color)))
     const whiteContrast = Math.abs(APCAcontrast(parseColor(0xffffff), parseColor(color)))
@@ -98,10 +140,22 @@ export function getForeground (color: TColorType) {
     return whiteContrast > Math.min(blackContrast, 50) ? '#fff' : '#000'
 }
 
+/**
+ * Hs lto rgb.
+ *
+ * @param hsla …
+ * @returns …
+ */
 export function HSLtoRGB (hsla: THSLA): TRGBA {
     return HSVtoRGB(HSLtoHSV(hsla))
 }
 
+/**
+ * Rg bto hsv.
+ *
+ * @param rgba …
+ * @returns …
+ */
 export function RGBtoHSV (rgba: TRGBA): THSVA {
     if (!rgba) return {h: 0, s: 1, v: 1, a: 1}
 
@@ -131,6 +185,12 @@ export function RGBtoHSV (rgba: TRGBA): THSVA {
     return {h: hsv[0], s: hsv[1], v: hsv[2], a: rgba.a}
 }
 
+/**
+ * Hs vto hsl.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoHSL (hsva: THSVA): THSLA {
     const {h, s, v, a} = hsva
 
@@ -141,6 +201,12 @@ export function HSVtoHSL (hsva: THSVA): THSLA {
     return {h, s: sprime, l, a}
 }
 
+/**
+ * Hs lto hsv.
+ *
+ * @param hsl …
+ * @returns …
+ */
 export function HSLtoHSV (hsl: THSLA): THSVA {
     const {h, s, l, a} = hsl
 
@@ -151,19 +217,42 @@ export function HSLtoHSV (hsl: THSLA): THSVA {
     return {h, s: sprime, v, a}
 }
 
+/**
+ * Rg bto css.
+ *
+ * @param options …
+ * @returns …
+ */
 export function RGBtoCSS ({r, g, b, a}: TRGBA): string {
     return a === undefined ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+/**
+ * Hs vto css.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoCSS (hsva: THSVA): string {
     return RGBtoCSS(HSVtoRGB(hsva))
 }
 
+/**
+ * To hex.
+ *
+ * @param v …
+ */
 export function toHex (v: number) {
     const h = Math.round(v).toString(16)
     return ('00'.substr(0, 2 - h.length) + h).toUpperCase()
 }
 
+/**
+ * Rg bto hex.
+ *
+ * @param options …
+ * @returns …
+ */
 export function RGBtoHex ({r, g, b, a}: TRGBA): THex {
     return `#${[
         toHex(r),
@@ -173,6 +262,12 @@ export function RGBtoHex ({r, g, b, a}: TRGBA): THex {
     ].join('')}` as THex
 }
 
+/**
+ * Hex to rgb.
+ *
+ * @param hex …
+ * @returns …
+ */
 export function HexToRGB (hex: THex): TRGBA {
     hex = parseHex(hex)
     const [r, g, b, a] = chunk(hex, 2).map((c: string) => int(c, 16))
@@ -181,15 +276,33 @@ export function HexToRGB (hex: THex): TRGBA {
     return {r, g, b, a: alpha}
 }
 
+/**
+ * Hex to hsv.
+ *
+ * @param hex …
+ * @returns …
+ */
 export function HexToHSV (hex: THex): THSVA {
     const rgb = HexToRGB(hex)
     return RGBtoHSV(rgb)
 }
 
+/**
+ * Hs vto hex.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoHex (hsva: THSVA): THex {
     return RGBtoHex(HSVtoRGB(hsva))
 }
 
+/**
+ * Hs vto rgb.
+ *
+ * @param hsva …
+ * @returns …
+ */
 export function HSVtoRGB (hsva: THSVA): TRGBA {
     const {h, s, v, a} = hsva
     const f = (n: number) => {
@@ -202,6 +315,12 @@ export function HSVtoRGB (hsva: THSVA): TRGBA {
     return {r: rgb[0], g: rgb[1], b: rgb[2], a}
 }
 
+/**
+ * Parse hex.
+ *
+ * @param hex …
+ * @returns …
+ */
 export function parseHex (hex: string): THex {
     if (hex.startsWith('#')) {
         hex = hex.slice(1)
@@ -220,6 +339,13 @@ export function parseHex (hex: string): THex {
     return hex as THex
 }
 
+/**
+ * Lighten.
+ *
+ * @param value  …
+ * @param amount …
+ * @returns …
+ */
 export function lighten (value: TRGBA, amount: number): TRGBA {
     const lab = XyztoLab(RgbtoXyz(value))
     lab[0] = lab[0] + amount * 10
@@ -227,6 +353,13 @@ export function lighten (value: TRGBA, amount: number): TRGBA {
     return XyzToRgb(LabtoXyz(lab))
 }
 
+/**
+ * Darken.
+ *
+ * @param value  …
+ * @param amount …
+ * @returns …
+ */
 export function darken (value: TRGBA, amount: number): TRGBA {
     const lab = XyztoLab(RgbtoXyz(value))
     lab[0] = lab[0] - amount * 10
@@ -234,6 +367,12 @@ export function darken (value: TRGBA, amount: number): TRGBA {
     return XyzToRgb(LabtoXyz(lab))
 }
 
+/**
+ * Get contrast.
+ *
+ * @param first  …
+ * @param second …
+ */
 export function getContrast (first: TColorType, second: TColorType) {
     const l1 = getLuma(first)
     const l2 = getLuma(second)
@@ -244,12 +383,23 @@ export function getContrast (first: TColorType, second: TColorType) {
     return (light + 0.05) / (dark + 0.05)
 }
 
+/**
+ * Get luma.
+ *
+ * @param color …
+ */
 export function getLuma (color: TColorType) {
     const rgb = parseColor(color)
 
     return RgbtoXyz(rgb)[1]
 }
 
+/**
+ * Parse gradient.
+ *
+ * @param gradient …
+ * @param colors   …
+ */
 export function parseGradient (
     gradient: string,
     colors: Record<string, Record<string, string>>
@@ -261,6 +411,13 @@ export function parseGradient (
     })
 }
 
+/**
+ * Class to hex.
+ *
+ * @param color  …
+ * @param colors …
+ * @returns …
+ */
 export function classToHex (
     color: string,
     colors: Record<string, Record<string, string>>
@@ -280,6 +437,12 @@ export function classToHex (
     return hexColor
 }
 
+/**
+ * Xyz to rgb.
+ *
+ * @param xyz …
+ * @returns …
+ */
 export function XyzToRgb (xyz: TXYZ): TRGBA {
     const rgb: number[] = Array(3)
     const transform = SRGB_FORWARD_TRANSFORM
@@ -302,6 +465,12 @@ export function XyzToRgb (xyz: TXYZ): TRGBA {
     }
 }
 
+/**
+ * Rgbto xyz.
+ *
+ * @param options …
+ * @returns …
+ */
 export function RgbtoXyz ({r, g, b}: TRGBA): TXYZ {
     const xyz: TXYZ = [0, 0, 0]
     const transform = SRGB_REVERSE_TRANSFORM
@@ -320,6 +489,12 @@ export function RgbtoXyz ({r, g, b}: TRGBA): TXYZ {
     return xyz
 }
 
+/**
+ * Xyzto lab.
+ *
+ * @param xyz …
+ * @returns …
+ */
 export function XyztoLab (xyz: TXYZ): TLAB {
     const transform = CIELAB_FORWARD_TRANSFORM
     const transformedY = transform(xyz[1])
@@ -331,6 +506,12 @@ export function XyztoLab (xyz: TXYZ): TLAB {
     ]
 }
 
+/**
+ * Labto xyz.
+ *
+ * @param lab …
+ * @returns …
+ */
 export function LabtoXyz (lab: TLAB): TXYZ {
     const transform = CIELAB_REVERSE_TRANSFORM
     const Ln = (lab[0] + 16) / 116
@@ -341,6 +522,12 @@ export function LabtoXyz (lab: TLAB): TXYZ {
     ]
 }
 
+/**
+ * Apc acontrast.
+ *
+ * @param text       …
+ * @param background …
+ */
 export function APCAcontrast (text: TRGBA, background: TRGBA) {
     // Linearize sRGB
     const Rtxt = (text.r / 255) ** MAIN_TRC
@@ -394,4 +581,163 @@ export function APCAcontrast (text: TRGBA, background: TRGBA) {
     }
 
     return outputContrast * 100
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Intent / token-cascade helpers (consumed by useColor & useColorEffect)
+// ════════════════════════════════════════════════════════════════════════════
+// Pure helpers that translate a semantic intent ('primary', 'danger', …) into
+// the right CSS token reference. Kept in this util file (NOT inline in the
+// composable) per project rule: composables hold ONLY `use*` functions.
+
+/**
+ * Type guard: is `v` a known semantic intent?
+ */
+export function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
+    return typeof v === 'string' && COLOR_INTENTS.has(v)
+}
+
+/**
+ * Type guard: is `v` an intent for which a global utility class ships
+ * (`.origam--bg-<intent>` / `.origam--color-<intent>`)? `ghost` is
+ * intentionally excluded — the design system does not ship
+ * `.origam--bg-ghost`.
+ */
+export function isUtilityIntent (v: TColor | TIntent | null | undefined): v is TIntent {
+    return typeof v === 'string' && COLOR_UTILITY_INTENTS.has(v)
+}
+
+/**
+ * Resolve the token-base prefix (BEM block + modifier, without the
+ * `--origam-color__` / `---<prop>` envelope) for a given intent.
+ * Drives every other helper below:
+ *
+ *   'neutral'  → 'action--secondary'
+ *   'primary'  → 'action--primary'
+ *   'success'  → 'feedback--success'
+ *   'danger'   → 'feedback--danger'
+ *   …
+ *
+ * Consumed as ``var(--origam-color__${base}---${slot})`` — the BEM
+ * grammar matches the rest of the token namespace (`__` between
+ * domain and block, `--` between block and modifier, `---` before the
+ * property/slot).
+ */
+export function intentTokenBase (intent: TIntent): string {
+    if (intent === 'neutral') return 'action--secondary'
+    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
+        return `feedback--${intent}`
+    }
+    // primary / secondary / ghost
+    return `action--${intent}`
+}
+
+/**
+ * Emit a state-aware bg expression for an intent:
+ *
+ *   • `default`  → `var(--…-bg)`
+ *   • `hover`    → `var(--…-bgHover, color-mix(in srgb, var(--…-bg), black 20%))`
+ *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
+ *   • `disabled` → `var(--…-bgDisabled)`
+ */
+export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
+    const base = intentTokenBase(intent)
+    const baseVar = `var(--origam-color__${base}---bg)`
+    if (role === 'default') return baseVar
+    if (role === 'disabled') return `var(--origam-color__${base}---bgDisabled)`
+    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
+    const slot = role === 'hover' ? 'bgHover' : 'bgActive'
+    return `var(--origam-color__${base}---${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
+}
+
+/**
+ * Foreground stays the same hue across hover / active by design — we
+ * darken the surface around the text, the text itself keeps the
+ * WCAG-paired contrast token.
+ */
+export function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
+    const base = intentTokenBase(intent)
+    const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
+    return `var(--origam-color__${base}---${slot})`
+}
+
+/**
+ * Build the CSS-vars override map for an intent (foreground + background)
+ * for a given interaction state.
+ */
+export function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = 'default'): Record<string, string> {
+    return {
+        'background-color': intentBgExpr(intent, role),
+        color: intentFgExpr(intent, role),
+    }
+}
+
+/**
+ * Derive a state-aware bg from a raw CSS color value (hex/rgb/etc.) via
+ * `color-mix`. Used in the legacy raw-color path so consumers passing
+ * `bgColor="#abcdef"` still get a hover/active darken (matches the
+ * intent path's behaviour, just without the token cascade).
+ */
+export function rawBgExprWithState (raw: string, role: TBgFgRole): string {
+    if (role === 'default') return raw
+    if (role === 'disabled') return raw // veil/opacity handles disabled
+    const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
+    return `color-mix(in srgb, ${raw}, black ${pct}%)`
+}
+
+/**
+ * Resolve the **foreground-only** colour for an intent — the token used
+ * when the consumer says `color="primary"` and expects the *text itself*
+ * to be primary-coloured (no surface implied).
+ *
+ * This is NOT the same as `tokenStylesForIntent(...).color`:
+ *   - That one returns the WCAG-contrasted text colour to put ON TOP of
+ *     the matching `bg` token (typically white on a dark surface).
+ *   - This helper returns the `fgSubtle` rung — a darker shade of the
+ *     intent itself, designed for "coloured text on a light surface".
+ *
+ * Falls back gracefully on intents without a `fgSubtle` rung
+ * (`secondary`, `ghost`, `neutral`).
+ */
+export function tokenForegroundForIntent (intent: TIntent): string {
+    if (intent === 'neutral' || intent === 'secondary') {
+        // No fgSubtle — `fg` is already a dark neutral text colour.
+        return 'var(--origam-color__action--secondary---fg)'
+    }
+    if (intent === 'ghost') {
+        // ghost.fg is already primary.600 — the intent's own colour.
+        return 'var(--origam-color__action--ghost---fg)'
+    }
+    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
+        return `var(--origam-color__feedback--${intent}---fgSubtle)`
+    }
+    // primary → action.primary.fgSubtle (color.primary.700)
+    return `var(--origam-color__action--${intent}---fgSubtle)`
+}
+
+// ── Legacy raw-color deprecation warning ────────────────────────────────────
+// Tracks once-per-(prop, value) so the noisy warning doesn't spam the console.
+// Module-scope state is acceptable here because the cache is purely
+// runtime book-keeping, not a re-configurable constant.
+
+const _warnedColorKeys = new Set<string>()
+
+/**
+ * Warn (once per prop / value) that the consumer passed a raw CSS color
+ * to a prop where the design system expects a `TIntent`. Raw color
+ * support is deprecated and will be removed in v3.0.0.
+ */
+export function warnLegacyColor (
+    kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor',
+    value: string,
+): void {
+    if (typeof console === 'undefined') return
+    const key = `${kind}::${value}`
+    if (_warnedColorKeys.has(key)) return
+    _warnedColorKeys.add(key)
+    console.warn(
+        `[origam] received a raw color for prop "${kind}" (value: ${value}). ` +
+        `Pass a TIntent ('primary' | 'success' | 'warning' | 'danger' | 'info' | 'secondary' | 'ghost' | 'neutral') ` +
+        `or use a :style binding for one-off custom colors. Raw color support is deprecated and will be removed in v3.0.0.`
+    )
 }

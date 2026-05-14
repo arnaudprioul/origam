@@ -1,5 +1,0 @@
-# OrigamReverseTranslatePicker
-
-## Usage
-
-    <OrigamReverseTranslatePicker />

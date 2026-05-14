@@ -1,5 +1,0 @@
-# Origamslider
-
-## Usage
-
-    <OrigamSliderField />

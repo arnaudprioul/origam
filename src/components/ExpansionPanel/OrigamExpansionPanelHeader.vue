@@ -1,7 +1,7 @@
 <template>
 	<component
 			:is="tag"
-			v-ripple="props.ripple"
+			v-ripple="ripple"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
 			:disabled="isDisabled"
@@ -51,7 +51,7 @@
       </span>
 
 			<span
-					v-if="hasAppend || !props.hideActions"
+					v-if="hasAppend || !hideActions"
 					key="append"
 					class="origam-expansion-panel-header__append"
 					@click="handleClickAppend"
@@ -73,7 +73,7 @@
 		          :icon="appendIcon"
           />
           <origam-icon
-		          v-if="!props.hideActions"
+		          v-if="!hideActions"
 		          :icon="isSelected ? collapseIcon : expandIcon"
           />
         </slot>
@@ -90,15 +90,15 @@
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 
 	import {
+		useActive,
 		useAdjacent,
-		useBorder,
 		useBothColor,
 		useDensity,
-		useMargin,
-		usePadding,
+		useHover,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
@@ -108,6 +108,12 @@
 
 	import type { IExpansionPanelHeaderProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and injection of the parent expansion panel context.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelHeaderProps>(), {
 		tag: 'button',
 		expandIcon: MDI_ICONS.CHEVRON_DOWN,
@@ -124,19 +130,16 @@
 
 	const slots = useSlots()
 
-	const {
-		hasAppend,
-		hasPrepend,
-		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend
-	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+	/*********************************************************
+	 * Group & Expand
+	 *
+	 * @description
+	 * Selection state, expand/collapse toggle, and slot props.
+	 ********************************************************/
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleExpand = () => {
 		if (!props.readonly) {
@@ -165,8 +168,51 @@
 		return slots.default || props.title
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Adjacent
+	 *
+	 * @description
+	 * Prepend/append icon slots and click handlers.
+	 ********************************************************/
 
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {
+		hasAppend,
+		hasPrepend,
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const expansionPanelHeaderStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -185,6 +231,7 @@
 				'origam-expansion-panel-header--focusable': props.focusable,
 				'origam-expansion-panel-header--static': props.static
 			},
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -193,11 +240,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelHeaderStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -208,82 +266,83 @@
 	.origam-expansion-panel-header {
 		$this: &;
 
-		outline: none;
-		border-radius: inherit;
-		font-size: 0.9375rem;
-		line-height: 1;
-		min-height: 48px;
-		width: 100%;
-		border: none;
+		outline: var(--origam-expansion-panel__header---outline, none);
+		border-radius: var(--origam-expansion-panel__header---border-radius, inherit);
+		font-size: var(--origam-expansion-panel__header---font-size, 0.9375rem);
+		line-height: var(--origam-expansion-panel__header---line-height, 1);
+		min-height: var(--origam-expansion-panel__header---min-height, 48px);
+		width: var(--origam-expansion-panel__header---width, 100%);
+		border: var(--origam-expansion-panel__header---border, none);
 
 		&__wrapper {
-			align-items: center;
+			align-items: var(--origam-expansion-panel__header__wrapper---align-items, center);
 			text-align: start;
-			display: flex;
+			display: var(--origam-expansion-panel__header__wrapper---display, flex);
 			width: 100%;
 			height: 100%;
-			padding: 16px 24px;
+			padding-block: var(--origam-expansion-panel__header__wrapper---padding-block, 16px);
+			padding-inline: var(--origam-expansion-panel__header__wrapper---padding-inline, 24px);
 			position: relative;
-			transition: 0.3s min-height cubic-bezier(0.4, 0, 0.2, 1);
-			justify-content: space-between;
+			transition: var(--origam-expansion-panel__header__wrapper---transition-duration, 0.3s) min-height var(--origam-expansion-panel__header__wrapper---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			justify-content: var(--origam-expansion-panel__header__wrapper---justify-content, space-between);
 		}
 
 		&__overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
+			position: var(--origam-expansion-panel__header__overlay---position, absolute);
+			top: var(--origam-expansion-panel__header__overlay---top, 0);
+			left: var(--origam-expansion-panel__header__overlay---left, 0);
 			width: 100%;
 			height: 100%;
 			background-color: currentColor;
-			border-radius: inherit;
-			opacity: 0;
+			border-radius: var(--origam-expansion-panel__header__overlay---border-radius, inherit);
+			opacity: var(--origam-expansion-panel__header__overlay---opacity, 0);
 		}
 
 		&__append,
 		&__prepend {
 			display: inline-flex;
-			margin-bottom: -4px;
-			margin-top: -4px;
+			margin-bottom: var(--origam-expansion-panel__header__append---margin-block, -4px);
+			margin-top: var(--origam-expansion-panel__header__append---margin-block, -4px);
 			user-select: none;
 		}
 
 		&__append {
-			margin-inline-start: auto;
+			margin-inline-start: var(--origam-expansion-panel__header__append---margin-inline-start, auto);
 		}
 
 		&__prepend {
-			margin-inline-end: 8px;
+			margin-inline-end: var(--origam-expansion-panel__header__prepend---margin-inline-end, 8px);
 		}
 
 		&:hover {
-			&__overlay {
+			.origam-expansion-panel-header__overlay {
 				opacity: calc(0.04 * 1);
 			}
 		}
 
 		&:focus-visible,
 		&:focus {
-			&__overlay {
-				opacity: calc(0.12 * 1);
+			.origam-expansion-panel-header__overlay {
+				opacity: var(--origam-expansion-panel__header---focus-overlay-opacity, calc(0.12 * 1));
 			}
 		}
 
 		&--focusable {
 			&#{$this}--active {
 
-				&__overlay {
-					opacity: calc(0.12 * 1);
+				.origam-expansion-panel-header__overlay {
+					opacity: var(--origam-expansion-panel__header---focus-overlay-opacity, calc(0.12 * 1));
 				}
 
 				&:hover {
-					&__overlay {
+					.origam-expansion-panel-header__overlay {
 						opacity: calc((0.12 + 0.04) * 1);
 					}
 				}
 
 				&:focus-visible,
 				&:focus {
-					&__overlay {
+					.origam-expansion-panel-header__overlay {
 						opacity: calc((0.12 + 0.12) * 1);
 					}
 				}
@@ -293,8 +352,3 @@
 
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

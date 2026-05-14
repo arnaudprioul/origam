@@ -29,14 +29,33 @@
 		useMargin,
 		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useRounded,
+		useStyle
+} from '../../composables'
 
 	import type { IResponsiveProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the Responsive component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IResponsiveProps>(), {})
 
 	const {filterProps} = useProps<IResponsiveProps>(props)
+
+	/*********************************************************
+	 * Decorators & layout
+	 *
+	 * @description
+	 * Aspect ratio, dimension, rounding, border, padding and
+	 * margin composables.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {aspectStyles} = useAspectRatio(props)
 	const {dimensionStyles} = useDimension(props)
@@ -46,8 +65,12 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * responsiveStyles and responsiveClasses compose the BEM block.
+	 ********************************************************/
 	const responsiveStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -75,11 +98,22 @@
 			props.contentClass
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -122,41 +156,5 @@
 				--origam-responsive__content---margin-inline-start: -100%
 			}
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-responsive---display: flex;
-		--origam-responsive---flex: 1 0 auto;
-		--origam-responsive---max-height: 100%;
-		--origam-responsive---max-width: 100%;
-		--origam-responsive---min-height: 0;
-		--origam-responsive---min-width: 0;
-		--origam-responsive---width: auto;
-		--origam-responsive---height: auto;
-		--origam-responsive---overflow: hidden;
-		--origam-responsive---position: relative;
-
-		--origam-responsive--inline---display: inline-flex;
-		--origam-responsive--inline---flex: 0 0 auto;
-
-		--origam-responsive__content---flex: 1 0 0px;
-		--origam-responsive__content---max-width: 100%;
-		--origam-responsive__content---margin-block-start: 0;
-		--origam-responsive__content---margin-block-end: 0;
-		--origam-responsive__content---margin-block: var(--origam-responsive__content---margin-block-start) var(--origam-responsive__content---margin-block-end);
-		--origam-responsive__content---margin-inline-start: 0;
-		--origam-responsive__content---margin-inline-end: 0;
-		--origam-responsive__content---margin-inline: var(--origam-responsive__content---margin-inline-start) var(--origam-responsive__content---margin-inline-end);
-		--origam-responsive__content---margin: var(--origam-responsive__content---margin-block) var(--origam-responsive__content---margin-inline);
-
-		--origam-responsive__sizer---flex: 1 0 0px;
-		--origam-responsive__sizer---transition-properties: padding-bottom;
-		--origam-responsive__sizer---transition-duration: 0.2s;
-		--origam-responsive__sizer---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-responsive__sizer---transition: var(--origam-responsive__sizer---transition-properties) var(--origam-responsive__sizer---transition-duration) var(--origam-responsive__sizer---transition-timing-function);
-		--origam-responsive__sizer---pointer-events: none;
-		--origam-responsive__sizer---padding-block-end: 0;
 	}
 </style>

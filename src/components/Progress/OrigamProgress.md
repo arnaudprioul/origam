@@ -1,5 +1,0 @@
-# Origamprogress
-
-## Usage
-
-    <OrigamProgress />

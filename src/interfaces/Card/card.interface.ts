@@ -1,6 +1,9 @@
 import type {
+    IActiveProps,
     IAdjacentProps,
     IBorderProps,
+    IBgColorProps,
+    IColorProps,
     ICommonsComponentProps,
     IDensityProps,
     IDimensionProps,
@@ -18,7 +21,19 @@ import type {
 
 import type { TCardType } from '../../types'
 
-export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps {
+// `IColorProps` exposes `color` / `bgColor` / hover / active colour
+// hooks. Pre-fix `ICardProps` did NOT extend it, so a consumer
+// `<origam-card color="primary">` was silently a no-op despite Card's
+// SCSS reading `var(--origam-card---color)` / `--background`.
+// Reported by the user in the audit pass that surfaced the Switch
+// `color` regression.
+//
+// `IActiveProps` adds `active?: boolean` / `activeClass?: string` so
+// `useActive` (wired since the hoverColor / activeColor support) can
+// vmodel the pressed state and `useColorEffect` resolves `activeColor`
+// / `activeBgColor`. The `hover` boolean already lives locally on the
+// component (legacy — used as a force-hover flag by `useHover`).
+export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps {
     disabled?: boolean
     flat?: boolean
     hover?: boolean

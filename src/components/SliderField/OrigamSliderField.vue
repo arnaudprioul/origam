@@ -36,8 +36,8 @@
 
 					<origam-slider-field-track
 							ref="origamSliderFieldTrackRef"
-							:start="0"
-							:stop="trackStop"
+							:start="isRange ? trackRangeStart : 0"
+							:stop="isRange ? trackRangeStop : trackStop"
 							class="origam-slider-field__track"
 							v-bind="{...trackProps}"
 					/>
@@ -187,7 +187,15 @@
 	import { computed, ref, StyleValue, useSlots, WritableComputedRef } from 'vue'
 	import { OrigamInput, OrigamLabel, OrigamSliderFieldThumb, OrigamSliderFieldTrack } from '../../components'
 
-	import { useFocus, useProps, useRtl, useSlider, useSteps, useVModel } from '../../composables'
+	import {
+	useFocus,
+	useProps,
+	useRtl,
+	useSlider,
+	useSteps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
@@ -197,6 +205,12 @@
 
 	import { getSliderFieldOffset, omit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and component refs.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
@@ -218,11 +232,24 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & Range
+	 *
+	 * @description
+	 * Model value management, range mode detection, and the
+	 * core useSlider composable wiring (drag, thumb refs,
+	 * start/end/move callbacks).
+	 ********************************************************/
 	const isRange = computed(() => {
 		return props.range
 	})
 
 	const steps = useSteps(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		activeThumbRef,
 		min,
@@ -284,20 +311,43 @@
 		},
 		getActiveThumb: (e: MouseEvent | TouchEvent) => {
 			if (isRange.value) {
-				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStartThumbRef.value) return
+				// Pre-fix three copy-paste typos in this branch made the
+				// STOP thumb completely unreachable in range mode:
+				//   1. `if (!start || !start)` — second clause should
+				//      check `!stop`. With STOP never validated, the
+				//      function happily proceeded with a null ref.
+				//   2. `stopOffset = …(e, START.$el, …)` — measured
+				//      the click distance to the START thumb instead
+				//      of the STOP thumb, so both offsets resolved to
+				//      the same point.
+				//   3. The ternary returned `START.$el` in BOTH
+				//      branches, so the active thumb always resolved
+				//      to START regardless of which one the user
+				//      clicked.
+				// User-reported: "je ne peux pas cliqué sur le 2eme
+				// control, je peux changé le premier mais le 2eme
+				// impossible".
+				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStopThumbRef.value) return
 
 				const startOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
-				const stopOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
+				const stopOffset  = getSliderFieldOffset(e, origamSliderFieldStopThumbRef.value.$el, props.direction)
 
 				const a = Math.abs(startOffset)
 				const b = Math.abs(stopOffset)
 
-				return (a < b || (a === b && startOffset < 0)) ? origamSliderFieldStartThumbRef.value.$el : origamSliderFieldStartThumbRef.value.$el
+				return (a < b || (a === b && startOffset < 0))
+						? origamSliderFieldStartThumbRef.value.$el
+						: origamSliderFieldStopThumbRef.value.$el
 			} else {
 				return origamSliderFieldThumbRef.value?.$el
 			}
 		}
 	})
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -314,8 +364,24 @@
 			}
 	) as WritableComputedRef<[number, number] | number> & { readonly externalValue: Array<number> | number }
 
+	/*********************************************************
+	 * Focus
+	 *
+	 * @description
+	 * Focus state and range-thumb focus routing — ensures the
+	 * correct thumb is focused when thumbs overlap at min/max.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur} = useFocus(props)
 	const {rtlClasses} = useRtl()
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocus = () => {
 		onFocus()
@@ -360,6 +426,12 @@
 		}
 	}
 
+	/*********************************************************
+	 * Track positions
+	 *
+	 * @description
+	 * Computed track fill positions for single and range mode.
+	 ********************************************************/
 	const trackStop = computed(() => {
 		if (isRange.value) return
 
@@ -384,8 +456,24 @@
 		model.value = v
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props forwarded to child Input, Thumb and Track.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
+		// Strip the entire IColorProps surface so `OrigamInput` (the
+		// row wrapper) doesn't paint the consumer's intent on its
+		// background. `color` / `bgColor` stay strictly scoped to the
+		// slider track + thumb (per the project's color contract).
+		// Same fix family as the OrigamSwitch wrapper-bg leak in 3b6ba3f.
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const thumbProps = computed(() => {
 		return omit(props.thumbProps ?? {}, ['modelValue', 'class', 'focused', 'min', 'max', 'position'])
@@ -398,8 +486,12 @@
 		return !!(props.label) || slots.label || slots.prepend
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const sliderFieldStyles = computed(() => {
 		return [
 			props.style
@@ -419,11 +511,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

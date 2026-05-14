@@ -43,13 +43,23 @@
 >
 	import { OrigamImg, OrigamWindowItem } from '../../components'
 
-	import { useProps } from '../../composables'
+	import {
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ICarouselItemProps } from '../../interfaces'
 
 	import type { TOrigamImg, TOrigamWindowItem } from "../../types"
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, child refs and delegated prop filtering.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICarouselItemProps>(), {
 		transition: undefined,
@@ -63,6 +73,10 @@
 	const origamWindowItemRef = ref<TOrigamWindowItem>()
 	const origamImgRef = ref<TOrigamImg>()
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const windowItemProps = computed(() => {
 		return origamWindowItemRef.value?.filterProps(props)
 	})
@@ -72,7 +86,12 @@
 
 	const slots = useSlots()
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const carouselItemStyles = computed(() => {
 		return [
@@ -85,11 +104,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(carouselItemStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -108,8 +139,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

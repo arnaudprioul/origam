@@ -3,6 +3,7 @@ import type {
     IAdjacentProps,
     IBorderProps,
     IChipProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -23,7 +24,7 @@ import type {
 
 import type { TIcon } from '../../types'
 
-export interface ISelectProps extends ICommonsComponentProps, IColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IItemProps, ITransitionComponentProps, IFiltersProps, ILazyProps {
+export interface ISelectProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IItemProps, ITransitionComponentProps, IFiltersProps, ILazyProps {
     chips?: boolean
     closableChips?: boolean
     hideNoData?: boolean

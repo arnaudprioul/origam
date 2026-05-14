@@ -1,4 +1,6 @@
 import type {
+    IActiveProps,
+    IBgColorProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
@@ -6,6 +8,7 @@ import type {
     IElevationProps,
     IExpansionPanelProps,
     IGroupProps,
+    IHoverProps,
     ILazyProps,
     ILoaderProps,
     IMarginProps,
@@ -16,7 +19,7 @@ import type {
 
 import type { TIcon } from '../../types'
 
-export interface IExpansionPanelsProps extends IColorProps, ITagProps, ICommonsComponentProps, IGroupProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, ILazyProps, ILoaderProps, IElevationProps {
+export interface IExpansionPanelsProps extends IColorProps, IBgColorProps, ITagProps, ICommonsComponentProps, IGroupProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, ILazyProps, ILoaderProps, IElevationProps, IActiveProps, IHoverProps {
     flat?: boolean
     items?: Array<IExpansionPanelProps>
     accordion?: boolean

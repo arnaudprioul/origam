@@ -98,7 +98,7 @@
 		OrigamPicker
 	} from "../../components"
 
-	import { useProps, useRtl, useVModel } from "../../composables"
+	import { useProps, useRtl, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_MODES_NAMES } from "../../enums"
 
@@ -118,6 +118,14 @@
 
 	import { computed, onBeforeMount, ref, StyleValue, useSlots, watch } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, model binding, color conversion and
+	 * child ref delegation.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerProps>(), {
 		canvasHeight: 150,
 		canvasWidth: '100%',
@@ -132,7 +140,15 @@
 	const slots = useSlots()
 	const {filterProps} = useProps<IColorPickerProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {rtlClasses} = useRtl()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const mode = useVModel(props, 'mode')
 	const hue = ref<number | null>(null)
@@ -176,6 +192,10 @@
 		hue.value = v.h
 	}, {immediate: true})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateColor = (hsva: THSVA) => {
 		externalChange = false
 		hue.value = hsva.h
@@ -190,6 +210,10 @@
 	const origamColorPickerPreviewRef = ref<TOrigamColorPickerPreview>()
 	const origamColorPickerEditRef = ref<TOrigamColorPickerEdit>()
 	const origamColorPickerSwatchesRef = ref<TOrigamColorPickerSwatches>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const pickerProps = computed(() => {
 		return origamPickerRef.value?.filterProps(props)
@@ -211,7 +235,13 @@
 		if (!props.modes.includes(mode.value)) mode.value = props.modes[0]
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM mode modifier class and injects the current
+	 * HSV color as a CSS custom property.
+	 ********************************************************/
 
 	const colorPickerStyles = computed(() => {
 		return [
@@ -229,11 +259,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>

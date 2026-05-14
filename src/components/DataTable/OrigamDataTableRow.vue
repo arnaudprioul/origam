@@ -84,7 +84,16 @@
 
 	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from '../../components'
 
-	import { useCell, useDisplay, useExpanded, useHeaders, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useCell,
+	useDisplay,
+	useExpanded,
+	useHeaders,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { MDI_ICONS, SIZES } from '../../enums'
 
@@ -96,11 +105,19 @@
 
 	const vm = getCurrentInstance('dataTableRow')
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableRowProps>(), {})
 
 	const emits = defineEmits(['expand', 'select'])
 
 	const {filterProps} = useProps<IDataTableRowProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {displayClasses, mobile} = useDisplay(props, 'origam-data-table-row')
 	const {isSelected, toggleSelect, someSelected, allSelected, selectAll} = useSelection()
@@ -164,6 +181,10 @@
 		return toDisplayString(slotProps(index, column).value)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleCheckBoxClick = () => {
 		withModifiers(() => toggleSelect(props.item), ['stop'])
 		emits('select')
@@ -183,8 +204,9 @@
 		]
 	}
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableRowClasses = computed(() => {
 		return [
 			'origam-data-table-row',
@@ -200,11 +222,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -215,13 +245,18 @@
 	.origam-data-table-row {
 		$this: &;
 
-		&__column-title {
-			font-weight: 500;
-			text-align: left;
+		background-color: var(--origam-data-table-row---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table-row---color, var(--origam-color__text---primary));
+		transition-property: background-color;
+		transition-duration: var(--origam-data-table-row---transition-duration, 100ms);
+		transition-timing-function: var(--origam-data-table-row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+
+		&:hover {
+			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color__surface---overlay));
 		}
 
-		&__column-value {
-			text-align: right;
+		&__column-title {
+			font-weight: var(--origam-data-table-row__column-title---font-weight, 500);
 		}
 
 		&--clickable {
@@ -229,6 +264,14 @@
 		}
 
 		&--mobile {
+			#{$this}__column-title {
+				text-align: left;
+			}
+
+			#{$this}__column-value {
+				text-align: right;
+			}
+
 			#{$this}__column {
 				height: fit-content;
 
@@ -248,7 +291,7 @@
 				column-gap: 4px;
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
-				min-height: var(--origam-data-table-row--mobile__column);
+				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table-row--mobile__column, 52px));
 
 				&:not(:last-child) {
 					border-bottom: 0;
@@ -258,8 +301,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-data-table-row--mobile__column: 52px;
-	}
-</style>

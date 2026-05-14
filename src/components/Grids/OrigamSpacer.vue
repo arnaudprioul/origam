@@ -13,16 +13,26 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import type { ISpacerProps } from "../../interfaces"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISpacerProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ISpacerProps>(props)
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const spacerStyles = computed(() => {
 		return [
 			props.style
@@ -34,11 +44,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(spacerStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

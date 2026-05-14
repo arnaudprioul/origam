@@ -1,6 +1,7 @@
 import type {
     IAlignProps,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IMarginProps,
@@ -10,7 +11,7 @@ import type {
 
 import type { TCols } from '../../types'
 
-export interface IColProps extends IColorProps, ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IAlignProps {
+export interface IColProps extends IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IAlignProps {
     cols?: TCols,
     sm?: TCols,
     md?: TCols,

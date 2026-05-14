@@ -2,6 +2,7 @@ import type {
     IActiveProps,
     IAdjacentProps,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -13,7 +14,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface IBreadcrumbItemProps extends ICommonsComponentProps, ITagProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, ILinkProps, IColorProps, IDensityProps, IAdjacentProps, IHoverProps, IActiveProps {
+export interface IBreadcrumbItemProps extends ICommonsComponentProps, ITagProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, ILinkProps, IColorProps, IBgColorProps, IDensityProps, IAdjacentProps, IHoverProps, IActiveProps {
     title: string
     disabled?: boolean
 }

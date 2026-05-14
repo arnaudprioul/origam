@@ -1,5 +1,0 @@
-# Origamwindowyreversetranslate
-
-## Usage
-
-    <OrigamWindowYReverseTranslate />

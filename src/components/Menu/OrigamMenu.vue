@@ -24,42 +24,47 @@
 		</template>
 
 		<template #default>
-			<slot name="default">
-				<origam-list class="origam-menu__list">
-					<origam-list-subheader
-							v-if="title"
-							class="origam-menu__title"
-					>{{ title }}
-					</origam-list-subheader>
-					<origam-list-group class="origam-menu__items">
-						<template
-								v-for="(item, index) in items"
-								:key="index"
-						>
-							<origam-list-item
-									v-if="!hasChilds(item)"
-									class="origam-menu__item"
-									v-bind="item"
-							/>
-							<origam-menu
-									v-else
-									:offset="[8,8]"
-									:open-on-context-menu="false"
-									open-on-click
-									v-bind="{...item, ...overlayProps}"
+			<div
+					:class="menuContentClasses"
+					:style="colorStyles"
+			>
+				<slot name="default">
+					<origam-list class="origam-menu__list">
+						<origam-list-subheader
+								v-if="title"
+								class="origam-menu__title"
+						>{{ title }}
+						</origam-list-subheader>
+						<origam-list-group class="origam-menu__items">
+							<template
+									v-for="(item, index) in items"
+									:key="index"
 							>
-								<template #activator="{props}">
-									<origam-list-item
-											:append-icon="MDI_ICONS.CHEVRON_RIGHT"
-											class="origam-menu__item"
-											v-bind="{...props, ...item}"
-									/>
-								</template>
-							</origam-menu>
-						</template>
-					</origam-list-group>
-				</origam-list>
-			</slot>
+								<origam-list-item
+										v-if="!hasChilds(item)"
+										class="origam-menu__item"
+										v-bind="item"
+								/>
+								<origam-menu
+										v-else
+										:offset="[8,8]"
+										:open-on-context-menu="false"
+										open-on-click
+										v-bind="{...item, ...overlayProps}"
+								>
+									<template #activator="{props}">
+										<origam-list-item
+												:append-icon="MDI_ICONS.CHEVRON_RIGHT"
+												class="origam-menu__item"
+												v-bind="{...props, ...item}"
+										/>
+									</template>
+								</origam-menu>
+							</template>
+						</origam-list-group>
+					</origam-list>
+				</slot>
+			</div>
 		</template>
 	</origam-overlay>
 </template>
@@ -68,7 +73,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, watch } from 'vue'
+	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
 	import {
 		OrigamList,
 		OrigamListGroup,
@@ -78,7 +83,13 @@
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useProps, useScopeId, useVModel } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { ORIGAM_MENU_KEY } from '../../consts'
 
@@ -90,6 +101,12 @@
 
 	import { focusableChildren, focusChild, forwardRefs, getNextElement, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, filterProps and core refs for the Menu component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IMenuProps>(), {
 		closeDelay: 250,
 		closeOnContentClick: true,
@@ -107,7 +124,43 @@
 
 	const {filterProps} = useProps<IMenuProps>(props)
 
+	/*********************************************************
+	 * Value & color
+	 *
+	 * @description
+	 * isActive drives the overlay open/close state via v-model.
+	 * colorStyles produces inline color/background-color from intent
+	 * props so `<origam-menu color="primary">` actually takes effect.
+	 * `useBothColor` wires those declarations onto `.origam-menu__content`
+	 * so the inline-style specificity wins over class-level CSS.
+	 ********************************************************/
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props (`color`, `bgColor`). Pre-fix the
+	// SCSS read `var(--origam-menu---background)` from tokens but the
+	// consumer-facing `<origam-menu color="primary">` was a silent
+	// no-op. Wired here so the inline declaration on the
+	// `.origam-menu__content` body wins via inline-style specificity.
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` lands the global `.origam--bg-{intent}` /
+	// `.origam--color-{intent}` utility on the menu body for tokenised
+	// intents; `colorStyles` keeps the legacy raw-color fallback.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {scopeId} = useScopeId()
 
 	const uid = getUid()
@@ -115,6 +168,14 @@
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 
+	/*********************************************************
+	 * Parent / children menu tree
+	 *
+	 * @description
+	 * Nested menus register with their parent via the ORIGAM_MENU_KEY
+	 * injection. The parent tracks how many sub-menus are open so it
+	 * knows when it is safe to close itself.
+	 ********************************************************/
 	const parent = inject(ORIGAM_MENU_KEY, null)
 	const openChildren = shallowRef(0)
 
@@ -134,6 +195,20 @@
 			}, 40)
 		}
 	})
+
+	/*********************************************************
+	 * Focus management
+	 *
+	 * @description
+	 * Trap focus inside the menu while it is open.
+	 * handleFocusIn keeps keyboard focus inside the content panel.
+	 * handleKeydown handles Tab and arrow navigation.
+	 * handleActivatorKeydown opens the menu on ArrowDown/Up.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocusIn = async (e: FocusEvent) => {
 		const before = e.relatedTarget as HTMLElement | null
@@ -206,6 +281,15 @@
 		}
 	}
 
+	/*********************************************************
+	 * Computed props forwarded to overlay
+	 *
+	 * @description
+	 * activatorProps merges ARIA attributes with consumer-provided
+	 * activatorProps and the activator keydown handler.
+	 * overlayProps filters and forwards relevant props to the inner overlay.
+	 * hasChilds detects whether a menu item should render as a sub-menu.
+	 ********************************************************/
 	const activatorProps = computed(() => {
 		return mergeProps({
 			'aria-haspopup': 'menu',
@@ -215,9 +299,11 @@
 		}, props.activatorProps)
 	})
 
-	const overlayProps = computed(() => {
-		console.log(origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu']))
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
+	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
 
@@ -225,12 +311,22 @@
 		return item?.items
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * menuStyles and menuClasses compose the BEM root classes.
+	 ********************************************************/
 	const menuStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
+	})
+	const menuContentClasses = computed(() => {
+		return [
+			'origam-menu__content',
+			colorClasses.value
+		]
 	})
 	const menuClasses = computed(() => {
 		return [
@@ -238,10 +334,23 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(menuStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({openChildren, filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards overlay ref members plus openChildren and filterProps.
+	 ********************************************************/
+	defineExpose(forwardRefs({openChildren, filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
+	}, origamOverlayRef))
 </script>
 
 <style
@@ -249,12 +358,24 @@
 		scoped
 >
 	.origam-menu {
-
+		z-index: var(--origam-menu---z-index, 1000);
+		background: transparent;
+		box-shadow: none;
 	}
-</style>
 
-<style>
-	:root {
+	.origam-menu__content {
+		background: var(--origam-menu---background, var(--origam-color__surface---raised));
+		color: var(--origam-menu---color, var(--origam-color__text---primary));
+		border-radius: var(--origam-menu---border-radius, 8px);
+		box-shadow: var(--origam-menu---box-shadow);
+		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
+		display: inline-block;
+		width: max-content;
 
+		.origam-menu__list {
+			overflow: var(--origam-menu__content---overflow, auto);
+			max-width: var(--origam-menu__content---max-width, 320px);
+			padding: var(--origam-menu__content---padding, 4px);
+		}
 	}
 </style>

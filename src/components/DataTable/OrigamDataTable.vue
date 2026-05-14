@@ -22,7 +22,7 @@
 						v-bind="slotProps"
 				/>
 
-				<template v-if="!props.hideDefaultHeader">
+				<template v-if="!hideDefaultHeader">
 					<thead key="thead">
 					<origam-data-table-headers
 							ref="origamDataTableHeadersRef"
@@ -66,7 +66,7 @@
 						v-bind="slotProps"
 				/>
 
-				<template v-if="!props.hideDefaultBody">
+				<template v-if="!hideDefaultBody">
 					<tbody>
 					<slot
 							name="prepend"
@@ -101,15 +101,12 @@
 							ref="origamDataTableFooterRef"
 							v-bind="dataTableFooterProps"
 					>
-						<!-- TODO SLOT FOOTER-->
 					</origam-data-table-footer>
 				</template>
 			</slot>
 		</template>
 	</origam-table>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -137,10 +134,11 @@
 		useOptions,
 		usePaginatedItems,
 		useProps,
-		useSortedItems
-	} from '../../composables'
+		useSortedItems,
+		useStyle
+} from '../../composables'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY, MDI_ICONS } from '../../enums'
 
 	import type {
 		IDataTableGroup,
@@ -154,12 +152,33 @@
 
 	import { computed, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableProps>(), {
 		page: 1,
 		itemsPerPage: 10,
 		tag: 'div',
 		density: DENSITY.DEFAULT,
-		hideDefaultFooter: false
+		hideDefaultFooter: false,
+		// `useDisplay` falls back to the global `mobileBreakpoint: 'lg'`
+		// (1280px) when the DataTable doesn't pin its own. That's far
+		// too aggressive — every viewport under 1280px ended up
+		// rendering each row as a stack of `[label, value]` cells (the
+		// "mobile" fallback), which the user reports as "completely
+		// bugged". Pin to `'xs'` (= 0px threshold) so the table only
+		// ever switches to mobile when the consumer explicitly opts in
+		// by passing a higher breakpoint. Aligns with Vuetify v3's
+		// `<v-data-table>` whose `mobile` is opt-in.
+		mobileBreakpoint: 'xs',
+		// Sort indicators — without defaults, `getSortIcon()` returns
+		// undefined and the `<origam-icon>` renders nothing, so users
+		// got NO visual feedback when clicking a sortable header. Match
+		// Vuetify's `v-data-table` defaults: a unicode-sort triangle
+		// (`mdi-arrow-up`) that flips to `mdi-arrow-down` for DESC.
+		sortAscIcon: MDI_ICONS.ARROW_UP,
+		sortDescIcon: MDI_ICONS.ARROW_DOWN
 	})
 
 	defineEmits(['update:modelValue', 'update:page', 'update:itemsPerPage', 'update:sortBy', 'update:options', 'update:groupBy', 'update:expanded', 'update:currentItems'])
@@ -190,6 +209,10 @@
 	})
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {items} = useDataTableItems(props, columns)
 
@@ -247,6 +270,10 @@
 		search
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const tableProps = computed(() => {
 		return origamTableRef.value?.filterProps(props)
 	})
@@ -289,8 +316,9 @@
 		return origamDataTableFooterRef.value?.filterProps(props, ['class', 'style', 'id'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableStyles = computed(() => {
 		return [
 			props.style
@@ -306,11 +334,19 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -319,67 +355,21 @@
 		scoped
 >
 	.origam-data-table {
-		width: 100%;
+		width: var(--origam-data-table---width, 100%);
+		background-color: var(--origam-data-table---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table---color, var(--origam-color__text---primary));
 
 		&__table {
 			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0
+			border-collapse: var(--origam-data-table---border-collapse, separate);
+			border-spacing: var(--origam-data-table---border-spacing, 0)
 		}
 
 		&--loading {
 			&:deep(.origam-data-table-cell) {
-				opacity: var(--origam-data-table--loading---opacity);
+				opacity: var(--origam-data-table--loading---opacity, var(--origam-data-table__loading---opacity, 0.5));
 			}
 		}
 	}
-
-	.v-data-table-group-header-row__column {
-		padding-left: calc(var(--v-data-table-group-header-row-depth) * 16px) !important
-	}
-
-	.v-data-table-footer {
-		align-items: center;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-end;
-		padding: 8px 4px
-	}
-
-	.v-data-table-footer__items-per-page {
-		align-items: center;
-		display: flex;
-		justify-content: center
-	}
-
-	.v-data-table-footer__items-per-page > span {
-		padding-inline-end: 8px
-	}
-
-	.v-data-table-footer__items-per-page > .v-select {
-		width: 90px
-	}
-
-	.v-data-table-footer__info {
-		display: flex;
-		justify-content: flex-end;
-		min-width: 116px;
-		padding: 0 16px
-	}
-
-	.v-data-table-footer__paginationz {
-		align-items: center;
-		display: flex;
-		margin-inline-start: 16px
-	}
-
-	.v-data-table-footer__page {
-		padding: 0 8px
-	}
 </style>
 
-<style>
-	:root {
-		--origam-data-table--loading---opacity: 0.5;
-	}
-</style>

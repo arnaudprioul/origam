@@ -1,5 +1,0 @@
-# Origamdatalist
-
-## Usage
-
-    <OrigamDataList />

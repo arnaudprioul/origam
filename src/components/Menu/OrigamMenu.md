@@ -1,5 +1,0 @@
-# Origammenu
-
-## Usage
-
-    <OrigamMenu />

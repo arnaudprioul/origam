@@ -1,5 +1,0 @@
-# Origamoverlayscrim
-
-## Usage
-
-    <OrigamOverlayScrim />

@@ -1,52 +1,52 @@
 <template>
-	<template v-if="loading">
+	<template v-if="mobile">
+		<slot
+				name="mobile"
+				v-bind="slotProps"
+		>
+			<origam-data-table-headers-cell-mobile
+					ref="origamDataTableHeadersCellMobileRef"
+					:class="dataTableHeadersClasses"
+					:columns="columns"
+					:style="dataTableHeadersStyles"
+					v-bind="dataTableHeadersCellMobileProps"
+			/>
+		</slot>
+	</template>
+	<template v-else>
+		<slot
+				name="default"
+				v-bind="slotProps"
+		>
+			<origam-data-table-headers-cell
+					ref="origamDataTableHeadersCellRef"
+					:class="dataTableHeadersClasses"
+					:headers="headers"
+					:style="dataTableHeadersStyles"
+					v-bind="dataTableHeadersCellProps"
+			/>
+		</slot>
+	</template>
+
+	<template v-if="loaderConfig.isActive && loaderConfig.kind !== 'skeleton'">
 		<tr class="origam-data-table-headers origam-data-table-headers--progress">
 			<th
 					:colspan="columns.length"
-					class="origam-data-table-header-cell"
+					class="origam-data-table-headers__progress-cell"
 			>
 				<slot name="loader">
 					<origam-progress
 							:color="color"
-							:type="PROGRESS_TYPE.LINEAR"
-							absolute
-							active
-							indeterminate
-							thickness="4"
+							:type="loaderConfig.kind === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR"
+							:active="true"
+							:indeterminate="loaderConfig.indeterminate"
+							:model-value="loaderConfig.modelValue"
+							thickness="2"
+							v-bind="loaderConfig.overrides"
 					/>
 				</slot>
 			</th>
 		</tr>
-	</template>
-	<template v-else>
-		<template v-if="mobile">
-			<slot
-					name="mobile"
-					v-bind="slotProps"
-			>
-				<origam-data-table-headers-cell-mobile
-						ref="origamDataTableHeadersCellMobileRef"
-						:class="dataTableHeadersClasses"
-						:columns="columns"
-						:style="dataTableHeadersStyles"
-						v-bind="dataTableHeadersCellMobileProps"
-				/>
-			</slot>
-		</template>
-		<template v-else>
-			<slot
-					name="default"
-					v-bind="slotProps"
-			>
-				<origam-data-table-headers-cell
-						ref="origamDataTableHeadersCellRef"
-						:class="dataTableHeadersClasses"
-						:headers="headers"
-						:style="dataTableHeadersStyles"
-						v-bind="dataTableHeadersCellProps"
-				/>
-			</slot>
-		</template>
 	</template>
 </template>
 
@@ -56,7 +56,16 @@
 >
 	import { OrigamDataTableHeadersCell, OrigamDataTableHeadersCellMobile, OrigamProgress } from '../../components'
 
-	import { useDisplay, useHeaders, useHeadersCell, useLoader, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useDisplay,
+	useHeaders,
+	useHeadersCell,
+	useLoader,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { PROGRESS_TYPE } from '../../enums'
 
@@ -65,6 +74,10 @@
 
 	import { computed, ref, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeadersProps>(), {})
 
 	const {filterProps} = useProps<IDataTableHeadersProps>(props)
@@ -72,10 +85,19 @@
 	const origamDataTableHeadersCellRef = ref<TOrigamDataTableHeadersCell>()
 	const origamDataTableHeadersCellMobileRef = ref<TOrigamDataTableHeadersCellMobile>()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()
 	const {columns, headers} = useHeaders()
-	const {loaderClasses} = useLoader(props)
+
+	/*********************************************************
+	 * Loader
+	 ********************************************************/
+
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 	const {getSortIcon} = useHeadersCell(props)
 
 	const {displayClasses, mobile} = useDisplay(props)
@@ -94,6 +116,10 @@
 		} satisfies IDataTableHeadersSlotProps
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const dataTableHeadersCellProps = computed(() => {
 		return origamDataTableHeadersCellRef.value?.filterProps(props)
 	})
@@ -101,8 +127,9 @@
 		return origamDataTableHeadersCellMobileRef.value?.filterProps(props)
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersClasses = computed(() => {
 		return [
 			'origam-data-table-headers',
@@ -119,11 +146,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -132,22 +167,11 @@
 		scoped
 >
 	.origam-data-table-headers {
-		&__progress {
-			> .origam-data-table-headers-cell {
-				border: none;
-				height: auto;
-				padding: 0;
-			}
-
-			&:deep(.origam-progress) {
-				position: relative;
-			}
+		&--progress > &__progress-cell {
+			border: none;
+			height: auto;
+			padding: 0;
 		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

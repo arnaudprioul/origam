@@ -51,7 +51,15 @@
 >
 	import { OrigamImg, OrigamToolbar } from '../../components'
 
-	import { useActive, useLayoutItem, useProps, useScroll, useSsrBoot, useToggleScope } from '../../composables'
+	import {
+	useActive,
+	useLayoutItem,
+	useProps,
+	useScroll,
+	useSsrBoot,
+	useStyle,
+	useToggleScope
+} from '../../composables'
 
 	import { BLOCK, DENSITY } from '../../enums'
 
@@ -63,6 +71,12 @@
 
 	import { computed, ComputedRef, ref, shallowRef, StyleValue, toRef, useSlots, watchEffect } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and slot detection for the AppBar component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IAppBarProps>(), {
 		tag: 'header',
 		density: DENSITY.DEFAULT,
@@ -75,10 +89,19 @@
 
 	const {filterProps} = useProps<IAppBarProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {ssrBootStyles} = useSsrBoot()
 	const slots = useSlots()
 
 	const origamToolbarRef = ref<TOrigamToolbar>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const toolbarProps = computed(() => {
 		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat'])
 	})
@@ -96,9 +119,19 @@
 		return slots.append
 	})
 
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
 
-	// SCROLL
+	/*********************************************************
+	 * Scroll
+	 *
+	 * @description
+	 * Scroll-behaviour driven visibility, collapse and
+	 * elevation logic for the sticky app bar.
+	 ********************************************************/
 	const scrollBehavior = computed(() => {
 		const behavior = new Set(props.scrollBehavior?.split(' ') ?? [])
 
@@ -153,17 +186,37 @@
 			scrollBehavior.value.elevate &&
 			(scrollBehavior.value.inverted ? currentScroll.value > 0 : currentScroll.value === 0)
 	))
+	// AppBar default height matches the toolbar's `--origam-toolbar---height`
+	// token (56 px). If the consumer overrides via `:height="…"` the prop
+	// wins. Without a default the layout reserved 0 px at the top → drawer /
+	// main covered the AppBar (user report: drawer overlaps the bar instead
+	// of starting BELOW it).
 	const height = computed(() => {
 		if (scrollBehavior.value.hide && scrollBehavior.value.inverted) return 0
 
-		return props.height ?? 0
+		return props.height ?? 56
 	})
 
-	// LAYOUT
-
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Registers the bar as a layout item so sibling regions
+	 * (main, nav drawer) offset correctly.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
-		order: computed(() => int(props.order as string)),
+		// `int(undefined as string)` is NaN, which silently broke the
+		// layer-chain sort in useCreateLayout (drawers ended up before
+		// the AppBar, causing the drawer to extend full-height
+		// instead of starting BELOW the bar). Fall back to 0 so AppBar
+		// reserves its top space FIRST, then drawers / side rails
+		// register after it (their own order defaults to a UID-based
+		// large number).
+		order: computed(() => {
+			const parsed = int(props.order as string)
+			return Number.isFinite(parsed) ? parsed : 0
+		}),
 		position: toRef(props, 'location'),
 		layoutSize: height,
 		elementSize: shallowRef(undefined),
@@ -171,8 +224,12 @@
 		absolute: toRef(props, 'absolute')
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes layout item styles and active modifier class.
+	 ********************************************************/
 	const appBarStyles = computed(() => {
 		return [
 			layoutItemStyles.value,
@@ -188,11 +245,44 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(appBarStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps forwarded from toolbar ref.
+	 ********************************************************/
 	defineExpose(forwardRefs({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamToolbarRef))
 
 </script>
+
+<!--
+	NB: AppBar's chrome (btn shape, transparent btn surface, prepend /
+	append gutters, title color inheritance, inline padding) now lives
+	in OrigamToolbar.vue's scoped style block — applies universally to
+	every Toolbar consumer (AppBar included, plus standalone Toolbar,
+	footer bars, etc.) so the chrome stays consistent.
+
+	If you need to tweak per-instance, the toolbar exposes:
+	    --origam-toolbar---btn-background-color
+	    --origam-toolbar---btn-background-color-hover
+	    --origam-toolbar---btn-background-color-active
+	    --origam-toolbar---btn-color
+	    --origam-toolbar---btn-border-radius      (default 8 px)
+	    --origam-toolbar---padding-inline         (default 16 px)
+	    --origam-toolbar__prepend---margin-inline-end   (default 12 px)
+	    --origam-toolbar__append---margin-inline-start  (default 12 px)
+	    --origam-toolbar__title---color           (default currentColor)
+
+	No AppBar-scoped CSS is necessary — the file no longer ships a
+	<style> block.
+-->

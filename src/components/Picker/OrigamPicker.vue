@@ -9,6 +9,7 @@
 			<template v-if="!hideHeader">
 				<div
 						key="header"
+						:class="backgroundColorClasses"
 						:style="backgroundColorStyles"
 				>
 					<template v-if="hasTitle">
@@ -49,31 +50,65 @@
 	import { computed, ref, StyleValue, toRef, useSlots } from "vue"
 	import { OrigamPickerTitle, OrigamSheet } from "../../components"
 
-	import { useBackgroundColor, useProps } from "../../composables"
+	import { useBackgroundColor, useProps , useStyle} from "../../composables"
 
 	import type { IPickerProps } from "../../interfaces"
 
 	import type { TOrigamSheet } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, slots and filterProps for the Picker component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IPickerProps>(), {})
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IPickerProps>(props)
 
-	const {backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
+	/*********************************************************
+	 * Background color & title guard
+	 *
+	 * @description
+	 * backgroundColorStyles drives the header background from bgColor.
+	 * hasTitle guards the title slot / title prop render.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 
 	const hasTitle = computed(() => {
 		return !!(props.title || slots.title)
 	})
 
+	/*********************************************************
+	 * Sheet ref
+	 *
+	 * @description
+	 * origamSheetRef allows filtering Sheet props from the Picker's
+	 * own props before passing them down.
+	 ********************************************************/
 	const origamSheetRef = ref<TOrigamSheet>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const sheetProps = computed(() => {
 		return origamSheetRef.value?.filterProps(props, ['class', 'style'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * pickerStyles and pickerClasses compose the BEM root.
+	 ********************************************************/
 	const pickerStyles = computed(() => {
 		return [
 			props.style
@@ -89,11 +124,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(pickerStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -108,8 +154,10 @@
 		grid-auto-rows: min-content;
 		grid-template-areas: "title" "header" "body";
 		overflow: hidden;
-		box-shadow: 0 0 0 0 var(--v-shadow-key-umbra-opacity, rgba(0, 0, 0, .2)), 0 0 0 0 var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, .14)), 0 0 0 0 var(--v-shadow-key-ambient-opacity, rgba(0, 0, 0, .12));
-		border-radius: 4px;
+		background-color: var(--origam-picker---background-color);
+		color: var(--origam-picker---color);
+		box-shadow: var(--origam-picker---box-shadow);
+		border-radius: var(--origam-picker---border-radius);
 
 		&--landscape {
 			grid-template-areas: "title" "header body" "header body";
@@ -139,16 +187,16 @@
 
 		&__actions {
 			grid-area: actions;
-			padding: 0 12px 12px;
+			padding: var(--origam-picker__actions---padding, 0 12px 12px);
 			display: flex;
 			align-items: center;
 			justify-content: flex-end;
 
 			:deep(.origam-btn) {
-				min-width: 48px;
+				min-width: var(--origam-picker__actions__btn---min-width, 48px);
 
 				&:not(:last-child) {
-					margin-inline-end: 8px;
+					margin-inline-end: var(--origam-picker__actions__btn---margin-inline-end, 8px);
 				}
 			}
 		}

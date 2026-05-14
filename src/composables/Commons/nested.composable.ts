@@ -193,6 +193,9 @@ export const useNested = (props: INestedProps) => {
     return nested.root
 }
 
+/*********************************************************
+ * useNestedItem
+ ********************************************************/
 export function useNestedItem (id: Ref<unknown>, isGroup: boolean) {
     const parent = inject(ORIGAM_NESTED_KEY, EMPTY_NESTED)
 
@@ -246,6 +249,9 @@ export function useNestedItem (id: Ref<unknown>, isGroup: boolean) {
     return item
 }
 
+/*********************************************************
+ * useNestedGroupActivator
+ ********************************************************/
 export function useNestedGroupActivator () {
     const parent = inject(ORIGAM_NESTED_KEY, EMPTY_NESTED)
 

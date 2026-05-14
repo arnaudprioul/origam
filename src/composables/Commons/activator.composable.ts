@@ -7,6 +7,9 @@ import type { IActivatorProps } from '../../interfaces'
 
 import { activator, getCurrentInstance, getTargetActivator, matchesSelector, refElement } from '../../utils'
 
+/*********************************************************
+ * useActivator
+ ********************************************************/
 export function useActivator (props: IActivatorProps, {isActive, isTop}: {
     isActive: Ref<boolean>,
     isTop: Ref<boolean>

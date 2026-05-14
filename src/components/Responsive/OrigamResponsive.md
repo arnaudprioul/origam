@@ -1,5 +1,0 @@
-# Origamresponsive
-
-## Usage
-
-    <OrigamResponsive />

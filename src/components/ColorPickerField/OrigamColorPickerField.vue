@@ -132,7 +132,7 @@
 >
 	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
 
-	import { useLocale, useProps, useVModel } from "../../composables"
+	import { useLocale, useProps, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
 
@@ -145,6 +145,13 @@
 	import { forwardRefs, HSVtoCSS, matchesSelector } from "../../utils"
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, composables and top-level refs.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IColorPickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
@@ -170,6 +177,13 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Model, selected value, and color-picker interactions.
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -193,6 +207,13 @@
 	const hasSelectedValue = computed(() => {
 		return selectedValue.value !== null
 	})
+
+	/*********************************************************
+	 * Menu
+	 *
+	 * @description
+	 * Menu open/close state management and disabled guard.
+	 ********************************************************/
 
 	const menuState = useVModel(props, 'menu')
 	const menu = computed<boolean>({
@@ -221,6 +242,13 @@
 			}
 		}
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Clear, mouse, blur, change and after-leave interactions.
+	 ********************************************************/
 
 	const handleClear = () => {
 		model.value = COLOR_NULL
@@ -255,12 +283,38 @@
 		}
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props passed down to inner components.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
 	const colorPickerProps = computed(() => {
-		return origamColorPickerRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue'])
+		// Strip the FIELD-specific visual props (`border`, `rounded`,
+		// `density`, `direction`, …) before forwarding to the inner
+		// `<origam-color-picker>`. Pre-fix the field's defaults
+		// (`rounded: true`, `border: true` — meant for the trigger
+		// outline) cascaded through `filterProps` to the picker, which
+		// in turn propagated to its `<origam-sheet>`. Sheet's
+		// `--rounded` modifier resolves to `2xl` (24px), 3× larger
+		// than the popup menu's 8px outer radius — leaving a visible
+		// white gap at every corner of the popup, reported by the
+		// user as "le border ne devrait pas exister et surtout s'il
+		// existe devrait prendre vraiment les bord de la popup".
+		return origamColorPickerRef.value?.filterProps(props, [
+			'class', 'id', 'style', 'modelValue',
+			'rounded', 'border', 'borderColor', 'borderStyle',
+			'density', 'direction',
+		])
 	})
 
 	const isDirty = computed(() => {
@@ -280,7 +334,12 @@
 		deep: true
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const colorPickerFieldStyles = computed(() => {
 		return [
@@ -296,13 +355,25 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerFieldStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose(forwardRefs({
 		filterProps,
 		isFocused,
-		menu
+		menu,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamTextFieldRef))
 </script>
 
@@ -313,6 +384,29 @@
 	.origam-color-picker-field {
 		:deep(.origam-field) {
 			--origam-field---padding-start: 0;
+		}
+
+		:deep(.origam-field__prepend-inner) {
+			align-self: stretch;
+			align-items: stretch;
+			padding-top: 0;
+			padding-bottom: 0;
+			padding-inline-start: 0;
+			overflow: hidden;
+
+			> .origam-sheet {
+				width: var(--origam-color-picker-field__swatch---width, 24px);
+				height: 100%;
+				min-width: var(--origam-color-picker-field__swatch---width, 24px);
+				border-radius: 0;
+				flex-shrink: 0;
+			}
+		}
+
+		:deep(.origam-color-picker-field__selection-text) {
+			font-family: var(--origam-font__family---mono);
+			font-size: 0.875em;
+			letter-spacing: 0.03em;
 		}
 	}
 </style>

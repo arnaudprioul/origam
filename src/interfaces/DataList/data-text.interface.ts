@@ -1,5 +1,6 @@
 import type {
     IAdjacentProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -7,6 +8,6 @@ import type {
     IPaddingProps
 } from "../../interfaces";
 
-export interface IDataTextProps extends ICommonsComponentProps, IAdjacentProps, IDensityProps, IMarginProps, IPaddingProps, IColorProps {
+export interface IDataTextProps extends ICommonsComponentProps, IAdjacentProps, IDensityProps, IMarginProps, IPaddingProps, IColorProps, IBgColorProps {
     text: string | number
 }

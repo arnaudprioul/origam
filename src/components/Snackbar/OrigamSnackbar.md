@@ -1,5 +1,0 @@
-# Origamsnackbar
-
-## Usage
-
-    <OrigamSnackbar />

@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -8,6 +9,6 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface ITitleProps extends ITagProps, ICommonsComponentProps, IColorProps, IDensityProps, IPaddingProps, IMarginProps, IBorderProps {
+export interface ITitleProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, IBorderProps {
     text?: string
 }

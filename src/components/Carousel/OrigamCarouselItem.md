@@ -1,5 +1,0 @@
-# Origamcarouselitem
-
-## Usage
-
-    <OrigamCarouselItem />

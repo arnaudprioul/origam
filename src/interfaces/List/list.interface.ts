@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -16,7 +17,7 @@ import type { TLines, TSelectItemKey } from '../../types'
 
 import { deepEqual } from '../../utils'
 
-export interface IListProps extends ITagProps, ICommonsComponentProps, IElevationProps, IBorderProps, IDensityProps, IRoundedProps, IDimensionProps, INestedProps, IItemProps, IColorProps, IPaddingProps, IMarginProps {
+export interface IListProps extends ITagProps, ICommonsComponentProps, IElevationProps, IBorderProps, IDensityProps, IRoundedProps, IDimensionProps, INestedProps, IItemProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps {
     activeClass?: string
     disabled?: boolean
     expandIcon?: string

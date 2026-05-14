@@ -24,7 +24,13 @@
 	import { computed, inject, nextTick, shallowRef, StyleValue } from 'vue'
 	import { OrigamTransition } from '../../components'
 
-	import { useGroupItem, useLazy, useProps, useSsrBoot } from '../../composables'
+	import {
+	useGroupItem,
+	useLazy,
+	useProps,
+	useSsrBoot,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
 
@@ -34,6 +40,14 @@
 
 	import { convertToUnit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, emits, filterProps utility, and
+	 * injection of the parent window context and group item
+	 * registration.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IWindowItemProps>(), {
 		transition: undefined,
 		reverseTransition: undefined
@@ -45,26 +59,43 @@
 
 	const window = inject(ORIGAM_WINDOW_KEY)
 	const groupItem = useGroupItem(props, ORIGAM_WINDOW_GROUP_KEY)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {isBooted} = useSsrBoot()
 
 	if (!window || !groupItem) throw new Error('[Origam] window-item must be used inside window')
 
+	/*********************************************************
+	 * Transition state
+	 *
+	 * @description
+	 * Computes the transition descriptor passed to
+	 * OrigamTransition, coordinating height animation with
+	 * the parent window via transitionCount and
+	 * transitionHeight. isShown and hasContent gate rendering
+	 * via v-show and useLazy respectively.
+	 ********************************************************/
 	const isTransitioning = shallowRef(false)
 	const hasTransition = computed(() => {
 		return isBooted.value && (window.isReversed.value ? props.reverseTransition !== false : props.transition !== false)
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleAfterTransition = () => {
 		if (!isTransitioning.value || !window) {
 			return
 		}
 
-		// Finalize transition state.
 		isTransitioning.value = false
 		if (window.transitionCount.value > 0) {
 			window.transitionCount.value -= 1
 
-			// Remove container height if we are out of transition.
 			if (window.transitionCount.value === 0) {
 				window.transitionHeight.value = undefined
 			}
@@ -76,11 +107,9 @@
 			return
 		}
 
-		// Initialize transition state here.
 		isTransitioning.value = true
 
 		if (window.transitionCount.value === 0) {
-			// Set initial height for height transition.
 			window.transitionHeight.value = convertToUnit(window.rootRef.value?.clientHeight)
 		}
 
@@ -88,7 +117,7 @@
 	}
 
 	const handleTransitionCancelled = () => {
-		handleAfterTransition() // This should have the same path as normal transition end.
+		handleAfterTransition()
 	}
 
 	const handleEnterTransition = (el: Element) => {
@@ -97,12 +126,10 @@
 		}
 
 		nextTick(() => {
-			// Do not set height if no transition or cancelled.
 			if (!hasTransition.value || !isTransitioning.value || !window) {
 				return
 			}
 
-			// Set transition target height.
 			window.transitionHeight.value = convertToUnit(el.clientHeight)
 		})
 	}
@@ -137,8 +164,14 @@
 
 	const {hasContent} = useLazy(props, groupItem.isSelected)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles for the window item
+	 * wrapper, including the active selected class from the
+	 * group item registry.
+	 ********************************************************/
 	const windowItemStyles = computed(() => {
 		return [
 			props.style
@@ -151,16 +184,32 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(windowItemStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
 <style lang="scss">
 	.origam-window-item {
+		flex: 1 1 auto;
+		min-height: 0;
+		min-width: 0;
+		width: 100%;
+
 		&--x-transition-enter-active,
 		&--x-transition-leave-active,
 		&--x-reverse-transition-enter-active,
@@ -169,7 +218,9 @@
 		&--y-transition-leave-active,
 		&--y-reverse-transition-enter-active,
 		&--y-reverse-transition-leave-active {
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			transition:
+				var(--origam-window-item---x-transition-duration, 0.3s)
+				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&--x-transition-leave-from,
@@ -183,6 +234,7 @@
 			position: absolute !important;
 			top: 0;
 			width: 100%;
+			height: 100%;
 		}
 
 		&--x-transition-enter-from {
@@ -216,11 +268,5 @@
 		&--y-reverse-transition-leave-to {
 			transform: translateY(100%);
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

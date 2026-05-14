@@ -28,12 +28,16 @@
 >
 	import { OrigamDataTableHeaderCell } from '../../components'
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import type { IDataTableHeadersCellProps } from '../../interfaces'
 	import type { TOrigamDataTableHeaderCell } from "../../types"
 
 	import { computed, ref, StyleValue } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})
 
@@ -41,14 +45,28 @@
 
 	const origamDataTableHeaderCellRef = ref<Array<TOrigamDataTableHeaderCell>>()
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const dataTableHeaderCellProps = computed(() => {
-		return origamDataTableHeaderCellRef.value?.some((headerCell) => {
-			return headerCell?.filterProps(props)
-		})
+		// Pre-fix this used `Array.prototype.some()` to "iterate" the
+		// ref collection — but `.some()` returns a BOOLEAN, not the
+		// filtered props object. Result: every per-cell `v-bind` was
+		// receiving `true`, which Vue treats as "no props bound", so
+		// `sortAscIcon` / `sortDescIcon` (and any other forwarded
+		// IHeaderCellProps) never reached the inner
+		// `<origam-data-table-header-cell>`. The sort icon then
+		// resolved through OrigamComponentIcon's fallback path with
+		// `icon: undefined`, rendering an empty `<!--v-if-->`. Take
+		// the first ref's `filterProps`: every header cell shares the
+		// same component type, so the prop schema is identical.
+		return origamDataTableHeaderCellRef.value?.[0]?.filterProps(props)
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersCellClasses = computed(() => {
 		return [
 			props.class
@@ -59,10 +77,18 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

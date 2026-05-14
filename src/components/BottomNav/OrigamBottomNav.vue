@@ -1,57 +1,57 @@
 <template>
-	<component
-			:is="tag"
-			:id="id"
-			:class="bottomNavClasses"
-			@mouseenter="handleMouseenter"
-			@mouseleave="handleMouseleave"
-	>
-		<div class="origam-bottom-nav__content">
-			<slot name="default">
-				<template
-						v-for="(item, index) in items"
-						:key="index"
-				>
-					<slot
-							:name="`item.${index}`"
-							v-bind="{props: item}"
-					>
-						<slot
-								name="item"
-								v-bind="{props: item, index}"
+	<origam-transition :transition="transition">
+		<component
+				:is="tag"
+				v-if="isActive"
+				:id="id"
+				:class="bottomNavClasses"
+				@mouseenter="handleMouseenter"
+				@mouseleave="handleMouseleave"
+		>
+			<div class="origam-bottom-nav__content">
+				<origam-defaults-provider :defaults="slotDefaults">
+					<slot name="default">
+						<template
+								v-for="(item, index) in items"
+								:key="index"
 						>
-							<origam-btn
-									ref="origamBtnRef"
-									class="origam-bottom-nav__btn"
-									v-bind="item"
-							/>
-						</slot>
+							<slot
+									:name="`item.${index}`"
+									v-bind="{props: item}"
+							>
+								<slot
+										name="item"
+										v-bind="{props: item, index}"
+								>
+									<origam-btn
+											ref="origamBtnRef"
+											class="origam-bottom-nav__btn"
+											v-bind="item"
+									/>
+								</slot>
+							</slot>
+						</template>
 					</slot>
-				</template>
-			</slot>
-		</div>
-	</component>
+				</origam-defaults-provider>
+			</div>
+		</component>
+	</origam-transition>
 </template>
 
 <script
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
 		useDensity,
-		useElevation,
 		useGroup,
 		useHover,
 		useLayoutItem,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSsrBoot,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -59,34 +59,104 @@
 	import { MODE } from "../../enums"
 
 	import type { IBottomNavProps, IBreadcrumbItemProps } from '../../interfaces'
-	import type { TOrigamBtn } from "../../types"
+	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
 	import { convertToUnit, int } from '../../utils'
 
-	import { computed, ComputedRef, Ref, StyleValue, toRef } from 'vue'
+	import { computed, ref, Ref, StyleValue, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child buttons
+	 * via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBottomNavProps>(), {
 		tag: 'nav',
 		name: 'bottom-navigation',
 		modelValue: true,
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
-		items: () => [] as Array<TOrigamBtn>
+		items: () => [] as Array<TOrigamBtn>,
+		// Default transition — slide up from the bottom of the viewport.
+		// Passed as a component descriptor (not just a name string) so the
+		// matching `<style>` block of `OrigamTranslateBottom` is guaranteed
+		// to be injected globally; a bare name like
+		// `'origam-transition--translate-bottom'` only works if the
+		// component is already mounted somewhere else (fragile).
+		transition: () => ({component: OrigamTranslateBottom}) as unknown as TTransitionProps
 	})
 
 	defineEmits(['update:modelValue', 'update:active', 'update:hover'])
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
 
-	const {borderClasses, borderStyles} = useBorder(props)
+	// Push visual-token props down to every descendant `<origam-btn>` (the
+	// bottom-nav button children) as DEFAULTS — items that pass their own
+	// props still win. `OrigamBtn` already calls `useDefaults` so this is
+	// picked up automatically.
+	const slotDefaults = computed(() => ({
+		'origam-btn': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			// New API: forward `hover` / `active` (boolean | object)
+			// to each child OrigamBtn; the legacy split `hoverColor` /
+			// `hoverBgColor` / `activeColor` / `activeBgColor` props no
+			// longer exist on the parent or the children.
+			hover: props.hover,
+			active: props.active
+		}
+	}))
+
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active, color and scroll-aware visibility state.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
-	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	const {hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// ONLY for the resting state — `useStateEffect` returns `[]` for
+	// hover/active so the inline `colorStyles` keeps owning those slots
+	// (no utility class exists for `bgHover`/`bgActive` rungs).
+
+	/*********************************************************
+	 * Color
+	 *
+	 * @description
+	 * The BottomNav is a CONTAINER — hover/active interaction
+	 * effects belong to its child buttons, not to the nav surface
+	 * itself. We deliberately feed `ref(false)` to `useStateEffect`
+	 * for both `isHover` and `isActive` so:
+	 *   • The resting bg stays on the intent's `bg` rung (same
+	 *     teinte as the child buttons in their resting state).
+	 *   • Hovering the nav doesn't darken the whole bar.
+	 *   • `isActive` from `useActive(props, 'modelValue')` means
+	 *     "the nav is currently displayed" (drives slide-in), NOT
+	 *     a pressed state — feeding it would resolve to `bgActive`
+	 *     (color-mix -30 %) and paint the resting bar darker than
+	 *     its buttons. `hoverColor` / `activeColor` props are still
+	 *     propagated to the child OrigamBtn instances via
+	 *     `slotDefaults` — that's where they take visual effect.
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))
+
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Registers as a layout item so sibling regions offset
+	 * correctly; height accounts for density.
+	 ********************************************************/
 	const {ssrBootStyles} = useSsrBoot()
 
 	const height = computed(() => {
@@ -107,30 +177,27 @@
 		absolute: toRef(props, 'absolute')
 	})
 
+	// `useDefaults` inside each `OrigamBtn` handles the visual-token fallback —
+	// no manual merge needed here. Items are spread as-is; `provideDefaults`
+	// above supplies the group-level defaults.
 	const items = computed(() => {
-		return props.items.map((item) => {
-			return {
-				...item,
-				density: props.density ?? item.density,
-				color: props.color ?? item.color,
-				bgColor: props.bgColor ?? item.bgColor,
-				hoverColor: props.hoverColor ?? item.hoverColor,
-				hoverBgColor: props.hoverBgColor ?? item.hoverBgColor,
-				activeColor: props.activeColor ?? item.activeColor,
-				activeBgColor: props.activeBgColor ?? item.activeBgColor
-			}
-		}) as Array<IBreadcrumbItemProps>
+		return props.items as Array<IBreadcrumbItemProps>
 	})
 
 	useGroup(props, ORIGAM_BTN_TOGGLE_KEY)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes slide-in transform, layout, color, rounding
+	 * and spacing classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
 	const bottomNavStyles = computed(() => {
 		return [
 			{
-				height: props.height ? convertToUnit(height.value) : undefined,
-				transform: `translateY(${convertToUnit(!isActive.value ? 100 : 0, '%')})`
+				height: props.height ? convertToUnit(height.value) : undefined
 			},
 			roundedStyles.value,
 			colorStyles.value,
@@ -152,6 +219,7 @@
 			activeClasses.value,
 			hoverClasses.value,
 			borderClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
 			roundedClasses.value,
@@ -163,8 +231,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -184,20 +256,29 @@
 
 		display: flex;
 		overflow: hidden;
+
+		box-sizing: border-box;
 		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
 
 		transition: var(--origam-bottom-bar---transition);
 
 		max-width: var(--origam-bottom-bar---max-width);
 		height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
 
-		background: var(--origam-bottom-bar---background);
+		background-color: var(--origam-bottom-bar---background);
 		box-shadow: var(--origam-bottom-bar---box-shadow);
 		color: var(--origam-bottom-bar---color);
 
 		border-color: var(--origam-bottom-bar---border-color);
 		border-style: var(--origam-bottom-bar---border-style);
-		border-width: var(--origam-bottom-bar---border-width);
+		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
+		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
+		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
+		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-bar---border-width, 0));
 		border-radius: var(--origam-bottom-bar---border-radius);
 
 		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start) - var(--origam-bottom-bar---density));
@@ -241,19 +322,47 @@
 		}
 
 		&--elevated {
-			--origam-bottom-bar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
 		}
 
 		&--border {
 			--origam-bottom-bar---border-width: thin;
+			--origam-bottom-bar---border-top-width: thin;
+			--origam-bottom-bar---border-right-width: thin;
+			--origam-bottom-bar---border-bottom-width: thin;
+			--origam-bottom-bar---border-left-width: thin;
 		}
 
 		&--rounded {
-			--origam-bottom-bar---border-radius: 4px;
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-x-small {
+			--origam-bottom-bar---border-radius: var(--origam-radius---xs, 2px);
+		}
+
+		&--rounded-small {
+			--origam-bottom-bar---border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-bottom-bar---border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-bottom-bar---border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-bottom-bar---border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
-			--origam-bottom-bar---density: 8px;
+			--origam-bottom-bar---density: -8px;
 		}
 
 		&--density-default {
@@ -265,7 +374,7 @@
 		}
 
 		&--active {
-			--origam-bottom-bar---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--active---box-shadow);
 		}
 
 		&--grow {
@@ -327,41 +436,5 @@
 				}
 			}
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-bottom-bar---border-top-width: 0;
-		--origam-bottom-bar---border-left-width: 0;
-		--origam-bottom-bar---border-bottom-width: 0;
-		--origam-bottom-bar---border-right-width: 0;
-		--origam-bottom-bar---border-width: var(--origam-bottom-bar---border-top-width) var(--origam-bottom-bar---border-left-width) var(--origam-bottom-bar---border-bottom-width) var(--origam-bottom-bar---border-right-width);
-		--origam-bottom-bar---border-color: currentColor;
-		--origam-bottom-bar---border-style: solid;
-		--origam-bottom-bar---border-radius: 0;
-		--origam-bottom-bar---density: 0;
-		--origam-bottom-bar---max-width: 100%;
-		--origam-bottom-bar---height: 48px;
-		--origam-bottom-bar---box-shadow: none;
-		--origam-bottom-bar---color: rgba(0, 0, 0, 0.87);
-		--origam-bottom-bar---background: rgb(230, 230, 230);
-		--origam-bottom-bar---margin-inline-start: 0;
-		--origam-bottom-bar---margin-inline-end: 0;
-		--origam-bottom-bar---margin-block-start: 0;
-		--origam-bottom-bar---margin-block-end: 0;
-		--origam-bottom-bar---padding-block-start: 8px;
-		--origam-bottom-bar---padding-block-end: 8px;
-		--origam-bottom-bar---padding-inline-start: 8px;
-		--origam-bottom-bar---padding-inline-end: 8px;
-		--origam-bottom-bar---transition-duration: 0.2s, 0.1s;
-		--origam-bottom-bar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-bottom-bar---transition-property: transform, color;
-		--origam-bottom-bar---transition: var(--origam-bottom-bar---transition-property) var(--origam-bottom-bar---transition-duration) var(--origam-bottom-bar---transition-timing-function);
-
-		--origam-bottom-bar__content---justify-content: center;
-		--origam-bottom-bar__content---align-items: center;
-		--origam-bottom-bar__content---flex-wrap: nowrap;
-		--origam-bottom-bar__content--transform: none;
 	}
 </style>

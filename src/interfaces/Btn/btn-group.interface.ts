@@ -1,6 +1,7 @@
 import type {
     IBorderProps,
     IBtnProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -11,7 +12,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IMarginProps, IPaddingProps {
+export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps {
     divided?: boolean
     items?: Array<IBtnProps>
 }

@@ -1,5 +1,0 @@
-# OrigamColorPickerCanvas
-
-## Usage
-
-    <OrigamColorPickerCanvas />

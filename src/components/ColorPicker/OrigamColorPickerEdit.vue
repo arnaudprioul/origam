@@ -34,7 +34,7 @@
 >
 	import { OrigamBtn } from "../../components"
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import { COLOR_NULL, COLOR_PICKER_MODES } from "../../consts"
 
@@ -43,6 +43,13 @@
 	import type { IColorPickerEditProps } from "../../interfaces"
 
 	import { computed, StyleValue } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and mode / input prop computation.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IColorPickerEditProps>(), {
 		mode: COLOR_MODES_NAMES.RGBA,
@@ -83,6 +90,10 @@
 		})
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateMode = () => {
 		const mi = enabledModes.value.findIndex((m) => {
 			return m.name === props.mode
@@ -91,7 +102,12 @@
 		emits('update:mode', enabledModes.value[(mi + 1) % enabledModes.value.length].name)
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const colorPickerEditStyles = computed(() => {
 		return [
@@ -104,11 +120,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerEditStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

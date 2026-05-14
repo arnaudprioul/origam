@@ -21,22 +21,41 @@
 				class="origam-btn__underlay"
 		/>
 
+		<!--
+			Overlay loaders (line / circular) — rendered as direct children
+			of the btn root so they can be absolutely positioned relative
+			to the btn box. Putting them INSIDE the OrigamLoader's
+			default-slot grid would make them claim a `prepend`-slot cell
+			and shove the label off-centre.
+		-->
+		<origam-progress
+				v-if="isOverlayLoading"
+				ref="origamProgressRef"
+				class="origam-btn__progress"
+				v-bind="progressProps"
+				:thickness="loaderConfig.kind === 'line' ? 3 : undefined"
+				:color="color"
+				:active="true"
+		/>
+
 		<slot name="wrapper">
 			<origam-loader
-					:loading="loading"
+					:loading="isSkeletonLoading"
 					class="origam-btn__loader"
 			>
 				<template
-						v-if="hasLoader"
+						v-if="hasLoader && isSkeletonLoading"
 						#loader
 				>
 					<slot
 							name="loader"
 							v-bind="progressProps"
 					>
-						<origam-progress-circular
-								ref="origamProgressRef"
-								v-bind="progressProps"
+						<origam-skeleton
+								variant="rectangular"
+								:width="'100%'"
+								:height="'100%'"
+								v-bind="loaderConfig.overrides"
 						/>
 					</slot>
 				</template>
@@ -113,45 +132,45 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
-	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgressCircular } from '../../components'
+	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useColorEffect,
+		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
 		useGroupItem,
 		useHover,
 		useLink,
 		useLoader,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
 		useSelectLink,
 		useSize,
+		useStateEffect,
 		useStatus,
-		useStyle
+		useStyle,
+		useVariant
 	} from '../../composables'
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
 	import { vRipple } from '../../directives'
 
-	import { DENSITY, SIZES } from '../../enums'
+	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
 	import type { IBtnProps } from '../../interfaces'
 
-	import type { TOrigamProgressCircular } from "../../types"
+	import type { TOrigamProgress } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 	const attrs = useAttrs()
 
-	const props = withDefaults(defineProps<IBtnProps>(), {
+	const _props = withDefaults(defineProps<IBtnProps>(), {
 		tag: 'button',
 		ripple: true,
 		active: undefined,
@@ -159,11 +178,20 @@
 		density: DENSITY.DEFAULT
 	})
 
+	// `useDefaults` resolves each prop against the closest
+	// `<OrigamDefaultsProvider>` (or `provideDefaults({ 'origam-btn': … })`
+	// from a parent like `OrigamBtnGroup` / `OrigamBtnToggle`). Without
+	// this hook the parent's `color` / `density` / `bgColor` settings
+	// silently dropped when buttons were passed via the default slot —
+	// only the `items` prop path was honoured (and even that flipped the
+	// override semantics: parent `??` item, instead of item-wins).
+	const props = useDefaults(_props)
+
 	defineEmits(['group:selected', 'click:append', 'click:prepend'])
 
 	const {filterProps} = useProps<IBtnProps>(props)
 
-	const origamProgressRef = ref<TOrigamProgressCircular>()
+	const origamProgressRef = ref<TOrigamProgress>()
 
 	const group = useGroupItem(props, ORIGAM_BTN_TOGGLE_KEY, false)
 	const link = useLink(props, attrs)
@@ -171,8 +199,11 @@
 
 	useSelectLink(link, group?.select)
 
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active} = useActive(props)
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive: active, activeState} = useActive(props)
 
 	const isActive = computed(() => {
 		if (active.value !== undefined) {
@@ -185,7 +216,14 @@
 
 		return group?.isSelected.value
 	})
+	/*********************************************************
+	 * Disabled
+	 ********************************************************/
 	const isDisabled = computed(() => group?.disabled.value || props.disabled)
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 	const valueAttr = computed(() => {
 		if (props.value === undefined || typeof props.value === 'symbol') return undefined
 
@@ -193,6 +231,9 @@
 				? JSON.stringify(props.value, null, 0)
 				: props.value
 	})
+	/*********************************************************
+	 * Ripple
+	 ********************************************************/
 	const isRipple = computed(() => {
 		return [
 			!isDisabled.value && props.ripple,
@@ -201,19 +242,42 @@
 		]
 	})
 
+	/*********************************************************
+	 * Composables — visual chrome (size, density, color, …)
+	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {loaderClasses} = useLoader(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive)
-	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), bgColor)
+	// Phase 3 (Vague A) — strategy (a): we destructure BOTH `colorClasses`
+	// and `colorStyles`. The classes hit the `.origam--bg-{intent}` /
+	// `.origam--color-{intent}` global utilities for the resting state;
+	// the inline styles still own hover/active/disabled (no utility class
+	// for those slots) and any non-tokenisable raw color (legacy). Keeping
+	// both in parallel guarantees zero visual regression while shrinking
+	// the inline declaration count for tokenised intents.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {
+		colorClasses, colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState, isDisabled, toRef(props, 'flat'))
+	const {variantClasses} = useVariant(props)
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -221,6 +285,9 @@
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
 
+	/*********************************************************
+	 * Click handler
+	 ********************************************************/
 	const handleClick = (e: MouseEvent) => {
 		if (
 				isDisabled.value ||
@@ -235,25 +302,73 @@
 
 		link.navigate?.(e)
 		group?.toggle()
+
+		// Note: Vue 3.5 automatically merges parent-passed `onClick`
+		// (from `v-bind`) with the template `@click` listener — the
+		// vnode receives a 2-element listener array, both fire. Don't
+		// manually invoke `attrs.onClick` here, otherwise the parent's
+		// handler runs twice and `isActive` toggles back to its
+		// previous state.
 	}
 
+	/*********************************************************
+	 * Icon & Loader
+	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!(icon.value && props.icon !== true)
 	})
 	const hasLoader = computed(() => {
-		return slots.loader || props.loading
+		return slots.loader || loaderConfig.value.isActive
 	})
+
+	// Skeleton mode REPLACES the btn content entirely — OrigamLoader's
+	// v-if removes the default slot from the DOM, so the btn collapses
+	// to the skeleton's bounds. Used as the `:loading` prop of the
+	// wrapping OrigamLoader.
+	const isSkeletonLoading = computed(() => {
+		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
+	})
+
+	// Line / circular loaders OVERLAY the regular content (so the label
+	// stays in the DOM, reserving the btn's natural width and — for
+	// linear — staying visible behind the progress strip). Driven inside
+	// the #default slot of OrigamLoader, which renders only when
+	// `:loading` is false (= non-skeleton modes).
+	const isOverlayLoading = computed(() => {
+		return loaderConfig.value.isActive && (
+			loaderConfig.value.kind === 'line' ||
+			loaderConfig.value.kind === 'circular'
+		)
+	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const progressProps = computed(() => {
+		// Exclude `size`, `type` and (critically) `tag` from filterProps.
+		// The Btn's own `tag` prop is `'button'` or `'a'` (from useLink),
+		// and without this exclusion `Object.assign` propagates it onto
+		// the spinner — which then renders as a NATIVE <button> with the
+		// user-agent default chrome (light-gray bg, 2px outset border,
+		// rounded corners). That's the "gros carré blanc" Arnaud was
+		// seeing INSIDE the loading button. Verified via Playwright DOM
+		// dump: depth 2 was a <button> with bg rgb(239,239,239) and
+		// border "2px outset rgb(0,0,0)" — straight UA defaults.
+		const cfg = loaderConfig.value
 		return Object.assign({
 					size: '23',
-					indeterminate: true
+					indeterminate: cfg.indeterminate,
+					modelValue: cfg.modelValue,
+					type: cfg.kind === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR
 				},
-				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id']))
+				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id', 'tag', 'size', 'type']),
+				cfg.overrides)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const btnStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -276,13 +391,25 @@
 				'origam-btn--active': isActive.value,
 				'origam-btn--block': props.block,
 				'origam-btn--disabled': isDisabled.value,
+				// Legacy boolean shortcut — kept in v2.x. `variantClasses`
+				// emits `origam-btn--variant-flat` when `variant="flat"`,
+				// so consumers can pick either spelling.
 				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
-				'origam-btn--loading': props.loading,
+				'origam-btn--loading': loaderConfig.value.isActive,
+				// Loader-kind discriminator so SCSS can branch per kind:
+				//   • `--loader-line`     → linear progress strip overlay,
+				//      keeps the label visible (like OrigamCard's loader).
+				//   • `--loader-circular` → centred spinner; label hidden.
+				//   • `--loader-skeleton` → full-box shimmer; label hidden,
+				//      btn keeps a min-width so it doesn't collapse.
+				[`origam-btn--loader-${loaderConfig.value.kind}`]: loaderConfig.value.isActive,
 				'origam-btn--slim': props.slim,
 				'origam-btn--stacked': props.stacked
 			},
+			variantClasses.value,
 			borderClasses.value,
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,
@@ -298,8 +425,9 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(btnStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		group,
 		filterProps,
@@ -330,16 +458,16 @@
 		text-indent: var(--origam-btn---text-indent);
 
 		transition-property: box-shadow, transform, opacity, background;
-		transition-duration: 0.28s;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: var(--origam-btn---transition-duration, 0.28s);
+		transition-timing-function: var(--origam-btn---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
-		padding: 0 16px;
+		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
-		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0)));
+		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0px)));
 		max-width: var(--origam-btn---max-width, 100%);
-		height: var(--origam-btn---height, 36px);
-		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0)));
+		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
+		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
 		max-height: var(--origam-btn---max-height, 100%);
 
 		background-color: var(--origam-btn---background-color, rgb(230, 230, 230));
@@ -353,13 +481,31 @@
 		border-width: var(--origam-btn-group---border-width);
 		border-style: var(--origam-btn-group---border-style);
 		border-color: var(--origam-btn-group---border-color);
-		border-radius: var(--origam-btn-group---border-radius, 4px);
+		border-radius: var(
+			--origam-btn---border-radius,
+			var(--origam-btn-group---border-radius, 4px)
+		);
+
+		#{$this}__loader {
+			align-items: center;
+			justify-content: center;
+			display: inline-grid;
+			grid-template-areas: "prepend content append";
+			grid-template-columns: max-content auto max-content;
+			height: 100%;
+			width: 100%;
+
+			:deep(.origam-progress--circular) {
+				width: 1.5em;
+				height: 1.5em;
+			}
+		}
 
 		&--size-x-small {
 			--origam-btn---height: 20px;
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding: 0 8px;
+			padding: 0 calc(8px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -370,7 +516,7 @@
 			--origam-btn---height: 28px;
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding: 0 12px;
+			padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -381,7 +527,7 @@
 			--origam-btn---height: 36px;
 			--origam-btn---font-size: 0.875rem;
 			--origam-btn---min-width: 64px;
-			padding: 0 16px;
+			padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -392,7 +538,7 @@
 			--origam-btn---height: 44px;
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding: 0 20px;
+			padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -403,7 +549,7 @@
 			--origam-btn---height: 52px;
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding: 0 24px;
+			padding: 0 calc(24px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;
@@ -412,14 +558,17 @@
 
 		&--density-comfortable {
 			--origam-btn---density: 8px;
+			--origam-btn---density-padding-x: 4px;
 		}
 
 		&--density-default {
 			--origam-btn---density: 0px;
+			--origam-btn---density-padding-x: 0px;
 		}
 
 		&--density-compact {
 			--origam-btn---density: -8px;
+			--origam-btn---density-padding-x: -4px;
 		}
 
 		&--border {
@@ -438,37 +587,135 @@
 		&:focus-visible,
 		&:focus {
 			> #{$this}__overlay {
-				--origam-btn__overlay---opacity: calc(0.12 * 1);
+				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
 			}
 		}
 
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				--origam-btn__overlay---opacity: calc(0.12 * 1);
+				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-active, 0.2);
 			}
 
 			&:hover,
 			&:focus-visible,
 			&:focus {
 				> #{$this}__overlay {
-					--origam-btn__overlay---opacity: calc(0.12 * 1);
+					--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-active-hover, 0.28);
 				}
 			}
 		}
 
 		&--icon {
-			--origam-btn---border-radius: 50%;
+			--origam-btn---border-radius: var(--origam-btn---border-radius-icon, 50%);
 
 			--origam-btn---min-width: 0;
-			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
-			--origam-btn---height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
+			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
+
+			#{$this}__loader {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				grid-template-areas: none;
+				grid-template-columns: none;
+			}
+
+			#{$this}__content :deep(.origam-icon) {
+				width: 1em;
+				height: 1em;
+				line-height: 1;
+				text-align: center;
+				font-size: inherit;
+			}
 		}
 
-		&--flat {
+		&--flat,
+		&--variant-flat {
 			box-shadow: none;
+		}
+
+		&--variant-text {
+			background-color: transparent !important;
+			box-shadow: none;
+		}
+
+		&--variant-elevated {
+			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
+		}
+
+		&--variant-tonal {
+			background-color: var(
+				--origam-btn---background-color-tonal,
+				var(--origam-color__surface---overlay)
+			) !important;
+			box-shadow: none;
+		}
+
+		&--variant-outlined {
+			background-color: transparent !important;
+			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
+			border-style: solid;
+			border-color: currentColor;
+			box-shadow: none;
+		}
+
+		&--variant-plain {
+			background-color: transparent !important;
+			box-shadow: none;
+			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity---70));
+
+			&:hover,
+			&:focus-visible {
+				opacity: 1;
+			}
+		}
+
+		&--variant-ghost {
+			background-color: var(
+				--origam-btn---background-color-ghost,
+				color-mix(in srgb, currentColor 12%, transparent)
+			) !important;
+			border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
+			border-style: solid;
+			border-color: var(
+				--origam-btn---border-color-ghost,
+				color-mix(in srgb, currentColor 24%, transparent)
+			);
+
+			box-shadow: var(
+				--origam-btn---box-shadow-ghost,
+				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
+				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
+				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
+			);
+
+			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
+				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
+			}
+
+			@supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
+				background-color: var(
+					--origam-btn---background-color-ghost,
+					color-mix(in srgb, currentColor 18%, transparent)
+				) !important;
+			}
+
+			&:hover,
+			&:focus-visible {
+				background-color: var(
+					--origam-btn---background-color-ghost-hover,
+					color-mix(in srgb, currentColor 18%, transparent)
+				) !important;
+				box-shadow: var(
+					--origam-btn---box-shadow-ghost-hover,
+					0 0 0 1px color-mix(in srgb, currentColor 26%, transparent),
+					0 6px 24px 0 color-mix(in srgb, currentColor 40%, transparent),
+					0 1px 0 0 color-mix(in srgb, white 45%, transparent) inset
+				);
+			}
 		}
 
 		&--block {
@@ -480,20 +727,85 @@
 
 		&--disabled {
 			pointer-events: none;
-			--origam-btn---opacity: 0.26;
+			--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
 
 			&:hover {
-				--origam-btn---opacity: 0.26;
+				--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
 			}
 		}
 
 		&--loading {
 			pointer-events: none;
+			position: relative;
+			overflow: hidden;
+		}
 
+		// Linear progress — strip overlay at the BOTTOM edge of the btn
+		// (configurable to the top via the `--linear-position-top: 0`
+		// token). Label / prepend / append stay visible — same pattern
+		// as OrigamCard's linear loader.
+		//
+		// Two non-obvious bits:
+		//  1. `:deep()` is required around `.origam-btn__progress`
+		//     because Vue 3 scoped CSS does NOT match the ROOT of a
+		//     child component (`<origam-progress>`), even when the
+		//     class is propagated through. Without `:deep()` the
+		//     selector silently no-ops.
+		//  2. `!important` is required to win against the inline
+		//     `width: 23px; height: 23px` that OrigamProgress's
+		//     `useSize(props)` injects (the btn's progressProps sets
+		//     `size: '23'` for the circular case — it leaks onto the
+		//     linear branch and would render the strip as a 23×23
+		//     square otherwise).
+		&--loader-line {
+			:deep(#{$this}__progress) {
+				position: absolute !important;
+				inset-inline: 0 !important;
+				inset-block-end: var(--origam-btn__progress---linear-position, 0) !important;
+				inset-block-start: var(--origam-btn__progress---linear-position-top, auto) !important;
+				width: 100% !important;
+				height: var(--origam-btn__progress---linear-height, 3px) !important;
+				margin: 0 !important;
+				z-index: 1;
+				pointer-events: none;
+			}
+		}
+
+		// Circular spinner — centred absolutely over the
+		// (invisible-but-still-laid-out) label. The `inset: 0` +
+		// `margin: auto` pattern centres an absolutely-positioned
+		// element when it has intrinsic width/height (the spinner is
+		// 16-23 px square from its `size` prop). Hiding the label via
+		// opacity preserves the btn's natural width.
+		&--loader-circular {
 			#{$this}__content,
 			#{$this}__prepend,
 			#{$this}__append {
 				opacity: 0;
+			}
+
+			:deep(#{$this}__progress) {
+				position: absolute !important;
+				inset: 0 !important;
+				margin: auto !important;
+				pointer-events: none;
+			}
+		}
+
+		// Skeleton — rectangular placeholder REPLACES the btn content
+		// entirely (OrigamLoader's #loader branch). The btn collapses to
+		// the skeleton's natural size unless we give it a sensible
+		// min-width / min-height.
+		&--loader-skeleton {
+			min-width: var(--origam-btn---loader-skeleton-min-width, 96px);
+			min-height: var(--origam-btn---loader-skeleton-min-height, 36px);
+
+			:deep(.origam-skeleton--rectangular) {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				border-radius: inherit;
 			}
 		}
 
@@ -536,43 +848,43 @@
 				--origam-btn---height: 56px;
 				font-size: 0.625rem;
 				min-width: 56px;
-				padding: 0 12px;
+				padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-small {
 				--origam-btn---height: 64px;
 				font-size: 0.75rem;
 				min-width: 64px;
-				padding: 0 14px;
+				padding: 0 calc(14px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-default {
 				--origam-btn---height: 72px;
 				font-size: 0.875rem;
 				min-width: 72px;
-				padding: 0 16px;
+				padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-large {
 				--origam-btn---height: 80px;
 				font-size: 1rem;
 				min-width: 80px;
-				padding: 0 18px;
+				padding: 0 calc(18px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-x-large {
 				--origam-btn---height: 88px;
 				font-size: 1.125rem;
 				min-width: 88px;
-				padding: 0 20px;
+				padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
 			}
 
-			&#{$this}--density-default {
-				height: calc(var(--origam-btn---height) + 0px);
+			&#{$this}--density-comfortable {
+				--origam-btn---density: 16px;
 			}
 
 			&#{$this}--density-compact {
-				height: calc(var(--origam-btn---height) + -24px);
+				--origam-btn---density: -24px;
 			}
 		}
 
@@ -581,26 +893,49 @@
 		}
 
 		&--rounded {
-			--origam-btn---border-radius: 24px;
+			--origam-btn---border-radius: var(--origam-btn---border-radius-rounded, var(--origam-radius---2xl, 24px));
 
 			&#{$this}--icon {
-				--origam-btn---border-radius: 4px;
+				--origam-btn---border-radius: var(--origam-btn---border-radius, 4px);
 			}
 		}
 
-		#{$this}__loader {
-			align-items: center;
-			justify-content: center;
-			display: inline-grid;
-			grid-template-areas: "prepend content append";
-			grid-template-columns: max-content auto max-content;
-			height: 100%;
-			width: 100%;
+		&--rounded-x-small {
+			--origam-btn---border-radius: var(--origam-radius---xs, 2px);
+		}
 
-			:deep(.origam-progress--circular) {
-				width: 1.5em;
-				height: 1.5em;
-			}
+		&--rounded-small {
+			--origam-btn---border-radius: var(--origam-radius---sm, 4px);
+		}
+
+		&--rounded-default {
+			--origam-btn---border-radius: var(--origam-radius---md, 8px);
+		}
+
+		&--rounded-medium {
+			--origam-btn---border-radius: var(--origam-radius---lg, 12px);
+		}
+
+		&--rounded-large {
+			--origam-btn---border-radius: var(--origam-radius---xl, 16px);
+		}
+
+		&--rounded-x-large {
+			--origam-btn---border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-btn---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-btn---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-btn---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-btn---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
 		}
 
 		&__content,
@@ -646,7 +981,7 @@
 		}
 
 		&__overlay {
-			background-color: #000;
+			background-color: var(--origam-color__overlay---scrim);
 			border-radius: inherit;
 			opacity: var(--origam-btn__overlay---opacity, 0);
 			transition: opacity 0.2s ease-in-out;
@@ -664,37 +999,11 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-btn---position: relative;
-
-		--origam-btn---density: 0;
-
-		--origam-btn---border-radius: 4px;
-		--origam-btn---border-width: 0;
-		--origam-btn---border-style: solid;
-		--origam-btn---border-color: currentColor;
-
-		--origam-btn---background-color: rgb(230, 230, 230);
-		--origam-btn---color: rgba(30, 30, 30, 0.87);
-
-		--origam-btn---width: auto;
-		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0));
-		--origam-btn---max-width: 100%;
-		--origam-btn---height: 36px;
-		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
-		--origam-btn---max-height: 100%;
-
-		--origam-btn---font-size: 0.875rem;
-		--origam-btn---font-weight: 500;
-		--origam-btn---letter-spacing: 0.0892857143em;
-		--origam-btn---line-height: 1;
-		--origam-btn---text-decoration: none;
-		--origam-btn---text-indent: 0.0892857143em;
-		--origam-btn---opacity: 1;
-
-		--origam-btn__overlay---opacity: 0;
-
+<style
+		lang="scss"
+		scoped
+>
+	.origam-btn {
 		--origam-btn__content---margin-inline-start: 0;
 		--origam-btn__content---margin-inline-end: 0;
 
@@ -703,5 +1012,8 @@
 
 		--origam-btn__prepend---margin-inline-start: calc(var(--origam-btn---height) / -9);
 		--origam-btn__prepend---margin-inline-end: calc(var(--origam-btn---height) / 4.5);
+
+		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0));
+		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
 	}
 </style>

@@ -1,5 +1,0 @@
-# OrigamHighlight
-
-## Usage
-
-    <OrigamHighlight />

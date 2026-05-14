@@ -4,6 +4,11 @@ import { AXIS } from '../../enums'
 
 import type { TAnchor, TBlock, TInline, TParsedAnchor } from '../../types'
 
+/**
+ * Parse anchor.
+ *
+ * @param anchor …
+ */
 export function parseAnchor (anchor: TAnchor) {
     const [side, initialAlign] = anchor.split(' ') as [TBlock | TInline | 'center', TBlock | TInline | 'center' | undefined]
 
@@ -16,6 +21,11 @@ export function parseAnchor (anchor: TAnchor) {
     return {side, align} as TParsedAnchor
 }
 
+/**
+ * Flip side.
+ *
+ * @param anchor …
+ */
 export function flipSide (anchor: TParsedAnchor) {
     return {
         side: {
@@ -29,6 +39,11 @@ export function flipSide (anchor: TParsedAnchor) {
     } as TParsedAnchor
 }
 
+/**
+ * Flip align.
+ *
+ * @param anchor …
+ */
 export function flipAlign (anchor: TParsedAnchor) {
     return {
         side: anchor.side,
@@ -42,6 +57,11 @@ export function flipAlign (anchor: TParsedAnchor) {
     } as TParsedAnchor
 }
 
+/**
+ * Flip corner.
+ *
+ * @param anchor …
+ */
 export function flipCorner (anchor: TParsedAnchor) {
     return {
         side: anchor.align,
@@ -49,6 +69,11 @@ export function flipCorner (anchor: TParsedAnchor) {
     } as TParsedAnchor
 }
 
+/**
+ * Get axis.
+ *
+ * @param anchor …
+ */
 export function getAxis (anchor: TParsedAnchor) {
     return BLOCK_ARRAY.includes(anchor.side as TBlock) ? AXIS.Y : AXIS.X
 }

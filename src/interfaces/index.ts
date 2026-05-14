@@ -16,6 +16,7 @@ export * from './Breadcrumb/breadcrumb-divider.interface'
 export * from './Btn/btn.interface'
 export * from './Btn/btn-group.interface'
 export * from './Btn/btn-toggle.interface'
+export * from './ItemGroup/item-group.interface'
 
 export * from './Card/card.interface'
 export * from './Card/card-header.interface'
@@ -36,6 +37,8 @@ export * from './Chip/chip-group.interface'
 
 export * from './ColorPicker/color-picker.interface'
 export * from './ColorPicker/color-picker-canvas.interface'
+
+export * from './ConfirmWrapper/confirm-wrapper.interface'
 export * from './ColorPicker/color-picker-preview.interface'
 export * from './ColorPicker/color-picker-edit.interface'
 export * from './ColorPicker/color-picker-swatches.interface'
@@ -60,6 +63,7 @@ export * from './Commons/dimension.interface'
 export * from './Commons/delay.interface'
 export * from './Commons/density.interface'
 export * from './Commons/direction.interface'
+export * from './Commons/variant.interface'
 export * from './Commons/display.interface'
 export * from './Commons/elevation.interface'
 export * from './Commons/filters.interface'
@@ -71,6 +75,7 @@ export * from './Commons/hover.interface'
 export * from './Commons/intersect.interface'
 export * from './Commons/justify.interface'
 export * from './Commons/layout.interface'
+export * from './Commons/options.interface'
 export * from './Commons/lazy.interface'
 export * from './Commons/link.interface'
 export * from './Commons/loader.interface'
@@ -87,6 +92,7 @@ export * from './Commons/router.interface'
 export * from './Commons/scroll.interface'
 export * from './Commons/size.interface'
 export * from './Commons/stack.interface'
+export * from './Commons/state-effect.interface'
 export * from './Commons/status.interface'
 export * from './Commons/sticky.interface'
 export * from './Commons/style.interface'
@@ -98,6 +104,8 @@ export * from './ContextualMenu/contextual-menu.interface'
 
 export * from './Counter/counter.interface'
 
+export * from './DataList/data-list-kv-item-value-component.interface'
+export * from './DataList/data-list-kv-item.interface'
 export * from './DataList/data-list.interface'
 export * from './DataList/data-text.interface'
 export * from './DataList/data-title.interface'
@@ -123,6 +131,8 @@ export * from './DatePicker/date-picker-years.interface'
 
 export * from './DatePickerField/date-picker-field.interface'
 
+export * from './DefaultProvider/default-provider.interface'
+
 export * from './Dialog/dialog.interface'
 export * from './Dialog/dialog-confirmation.interface'
 
@@ -138,6 +148,8 @@ export * from './ExpensionPanel/expansion-panel-content.interface'
 export * from './Field/field.interface'
 
 export * from './FileField/file-field.interface'
+export * from './FileField/file-field-dragndrop-item.interface'
+export * from './FileField/file-field-list-item.interface'
 
 export * from './Form/form.interface'
 
@@ -145,8 +157,6 @@ export * from './Grids/container.interface'
 export * from './Grids/row.interface'
 export * from './Grids/col.interface'
 export * from './Grids/spacer.interface'
-
-export * from './Highlight/highlight.interface'
 
 export * from './Icon/icon.interface'
 
@@ -183,6 +193,8 @@ export * from './Parallax/parallax.interface'
 export * from './Parallax/parallax-element.interface'
 
 export * from './PasswordField/password-field.interface'
+export * from './PasswordField/password-requirement.interface'
+export * from './PasswordField/password-strength.interface'
 
 export * from './Picker/picker.interface'
 export * from './Picker/picker-title.interface'
@@ -206,6 +218,9 @@ export * from './SelectionControl/selection-control.interface'
 export * from './SelectionControl/selection-control-group.interface'
 
 export * from './Sheet/sheet.interface'
+export * from './Sheet/sheet-emits.interface'
+export * from './Sheet/sheet-swipe-options.interface'
+export * from './Sheet/sheet-swipe-return.interface'
 
 export * from './Slide/slide-group.interface'
 
@@ -216,6 +231,7 @@ export * from './SliderField/slider-field-thumb.interface'
 export * from './Snackbar/snackbar.interface'
 
 export * from './Switch/switch.interface'
+export * from './Switch/switch-track.interface'
 
 export * from './SystemBar/system-bar.interface'
 
@@ -239,3 +255,13 @@ export * from './VirtualScroll/virtual-scroll-item.interface'
 
 export * from './Window/window.interface'
 export * from './Window/window-item.interface'
+
+export * from './Skeleton/skeleton.interface'
+
+export * from './Kbd/kbd.interface'
+
+export * from './Stepper/stepper.interface'
+
+export * from './Timeline/timeline.interface'
+
+export * from './Treeview/treeview.interface'

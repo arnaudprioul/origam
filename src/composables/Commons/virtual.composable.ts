@@ -1,12 +1,16 @@
-import { useDisplay, useResizeObserver } from '../../composables'
+import { useDisplay, useGoTo, useResizeObserver } from '../../composables'
 import { BUFFER_PX, DOWN, IN_BROWSER, UP } from '../../consts'
-import type { IVirtualProps } from '../../interfaces'
+import type { IGoToOptions, IVirtualProps } from '../../interfaces'
 import { binaryClosest, clamp, debounce, int } from '../../utils'
 
 import { computed, nextTick, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
 
+/*********************************************************
+ * useVirtual
+ ********************************************************/
 export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     const display = useDisplay()
+    const goTo = useGoTo()
 
     const itemHeight = shallowRef(0)
 
@@ -196,13 +200,41 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         paddingBottom.value = calculateOffset(items.value.length) - calculateOffset(last.value)
     }
 
-    const scrollToIndex = (index: number) => {
+    const scrollToIndex = (index: number, options: Partial<IGoToOptions> = {}) => {
         const offset = calculateOffset(index)
         if (!containerRef.value || (index && !offset)) {
+            // The list hasn't measured yet — defer the scroll to the
+            // first-render watcher above, which will retry once layout
+            // is stable.
             targetScrollIndex = index
-        } else {
-            containerRef.value.scrollTop = offset
+            return
         }
+
+        // Resolve animation options. Component-level props provide the
+        // defaults; the per-call `options` argument lets a consumer
+        // override (e.g. instant scroll for a "jump to top" button while
+        // the rest of the app keeps the smooth feel).
+        const duration = options.duration ?? props.scrollDuration ?? 300
+        const easing = options.easing ?? props.scrollEasing ?? 'easeInOutCubic'
+
+        // `duration: 0` skips the rAF loop in `useGoTo` and falls through
+        // to a plain assignment — we expose it as the "instant" escape
+        // hatch (matches the native Web API's `behavior: 'instant'`).
+        if (duration <= 0) {
+            containerRef.value.scrollTop = offset
+            return
+        }
+
+        // `useGoTo` reads the container from the options bag and writes
+        // `scrollTop` over `duration` ms using the named easing. It
+        // returns a Promise<number> resolving to the final position; we
+        // intentionally don't await it so the caller stays sync.
+        void goTo(offset, {
+            container: containerRef.value,
+            duration,
+            easing,
+            ...options
+        })
     }
 
     const computedItems = computed(() => {

@@ -1,5 +1,0 @@
-# Origambtngroup
-
-## Usage
-
-    <OrigamBtnGroup />

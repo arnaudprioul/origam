@@ -41,17 +41,15 @@
 	import { computed, toRef, useSlots } from 'vue'
 	import { OrigamTitle } from "../../components"
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
+		useHover,
 		usePosition,
 		useProps,
-		useRounded,
 		useRtl,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -59,6 +57,12 @@
 
 	import type { IToolbarProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IToolbarProps>(), {
 		tag: 'header',
 		density: DENSITY.DEFAULT,
@@ -67,20 +71,15 @@
 
 	const {filterProps} = useProps<IToolbarProps>(props)
 
-	const {rtlClasses} = useRtl()
-
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), toRef(props, 'bgColor'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {positionStyles, positionClasses} = usePosition(props)
-
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Slot helpers
+	 *
+	 * @description
+	 * Computed flags for conditional prepend / title / append
+	 * rendering in the default wrapper slot.
+	 ********************************************************/
 	const hasPrepend = computed(() => {
 		return slots.prepend
 	})
@@ -91,7 +90,43 @@
 		return slots.append
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles, plus useStyle for
+	 * injected CSS custom property sheet.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {rtlClasses} = useRtl()
+
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState, undefined, toRef(props, 'flat'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for tokenised intents on the toolbar root; `colorStyles` keeps the
+	// legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {positionStyles, positionClasses} = usePosition(props)
 
 	const barStyles = computed(() => {
 		return [
@@ -115,6 +150,7 @@
 				'origam-toolbar--floating': props.floating
 			},
 			borderClasses.value,
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,
@@ -128,8 +164,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(barStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -147,10 +187,45 @@
 	.origam-toolbar {
 		$this: &;
 
+		// ── Top-level declarations FIRST (before any nested rule) ────
+		// Modern Sass (and the future CSS spec) hoist nested rules
+		// above bare declarations; keeping the order
+		// "declarations → nested rules" prevents the `mixed-decls`
+		// deprecation warnings that were spamming `npm run story:dev`.
+
 		max-width: var(--origam-toolbar---max-width);
 		width: var(--origam-toolbar---width);
 		height: var(--origam-toolbar---height);
 		box-sizing: var(--origam-toolbar---box-sizing);
+
+		// Default inline gutter so content (prepend / title / append)
+		// never sits flush against the bar's edges — applies to every
+		// Toolbar usage (AppBar, standalone, footer, etc.). 16 px matches
+		// Material / iOS bar spec; consumer can override per-instance
+		// via the public CSS var.
+		//
+		// The toolbar ALSO respects the layout's reserved-space
+		// (`--origam-layout---position-{left,right}`) so when a permanent
+		// drawer is present, the toolbar's content area is pushed past
+		// the drawer instead of being painted over it. \`calc()\` composes
+		// the toolbar's own gutter (16 px) with whatever the layout
+		// reserved on each side (defaults to 0 when no layout item is
+		// present, so the standalone case still gets the 16 px gutter).
+		padding-inline-start: calc(
+			var(--origam-toolbar---padding-inline, 16px) +
+			var(--origam-layout---position-left, 0px)
+		);
+		padding-inline-end: calc(
+			var(--origam-toolbar---padding-inline, 16px) +
+			var(--origam-layout---position-right, 0px)
+		);
+
+		// ── Btn surface / fg base (consumed by nested btn rules below) ─
+		// Dedicated CSS vars (NOT the bar's own bg / fg) so the nested
+		// btn defaults to a transparent fill on top of the bar's
+		// surface, then derives hover / active via color-mix.
+		--btn-bg-base: var(--origam-toolbar---btn-background-color, transparent);
+		--btn-fg-base: var(--origam-toolbar---btn-color, currentColor);
 
 		overflow: var(--origam-toolbar---overflow);
 
@@ -164,20 +239,59 @@
 
 		border-color: var(--origam-toolbar---border-color);
 		border-style: var(--origam-toolbar---border-style);
-		border-width: var(--origam-toolbar---border-width);
-		border-radius: var(--origam-toolbar---border-radius);
+		border-top-width: var(--origam-toolbar---border-top-width, 0);
+		border-right-width: var(--origam-toolbar---border-right-width, 0);
+		border-bottom-width: var(--origam-toolbar---border-bottom-width, 0);
+		border-left-width: var(--origam-toolbar---border-left-width, 0);
+		border-start-start-radius: var(--origam-toolbar---border-start-start-radius, 0);
+		border-start-end-radius: var(--origam-toolbar---border-start-end-radius, 0);
+		border-end-end-radius: var(--origam-toolbar---border-end-end-radius, 0);
+		border-end-start-radius: var(--origam-toolbar---border-end-start-radius, 0);
 
 		background: var(--origam-toolbar---background);
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
 
 		&--border {
-			--origam-toolbar---border-width: thin;
-			--origam-toolbar---box-shadow: none;
+			--origam-toolbar---border-top-width: thin;
+			--origam-toolbar---border-right-width: thin;
+			--origam-toolbar---border-bottom-width: thin;
+			--origam-toolbar---border-left-width: thin;
+		}
+
+		&--border-top {
+			--origam-toolbar---border-top-width: thin;
+			--origam-toolbar---border-right-width: 0;
+			--origam-toolbar---border-bottom-width: 0;
+			--origam-toolbar---border-left-width: 0;
+		}
+
+		&--border-right {
+			--origam-toolbar---border-top-width: 0;
+			--origam-toolbar---border-right-width: thin;
+			--origam-toolbar---border-bottom-width: 0;
+			--origam-toolbar---border-left-width: 0;
+		}
+
+		&--border-bottom {
+			--origam-toolbar---border-top-width: 0;
+			--origam-toolbar---border-right-width: 0;
+			--origam-toolbar---border-bottom-width: thin;
+			--origam-toolbar---border-left-width: 0;
+		}
+
+		&--border-left {
+			--origam-toolbar---border-top-width: 0;
+			--origam-toolbar---border-right-width: 0;
+			--origam-toolbar---border-bottom-width: 0;
+			--origam-toolbar---border-left-width: thin;
 		}
 
 		&--rounded {
-			--origam-toolbar---border-radius: 4px;
+			--origam-toolbar---border-start-start-radius: 4px;
+			--origam-toolbar---border-start-end-radius: 4px;
+			--origam-toolbar---border-end-end-radius: 4px;
+			--origam-toolbar---border-end-start-radius: 4px;
 		}
 
 		&--absolute {
@@ -202,6 +316,14 @@
 			}
 		}
 
+		&--density-compact {
+			--origam-toolbar---height: var(--origam-toolbar---height-compact);
+		}
+
+		&--density-default {
+			--origam-toolbar---height: var(--origam-toolbar---height-default);
+		}
+
 		&--flat {
 			--origam-toolbar---box-shadow: none;
 		}
@@ -218,6 +340,12 @@
 			justify-content: var(--origam-toolbar__wrapper---justify-content);
 			height: var(--origam-toolbar__wrapper---height);
 			flex-wrap: var(--origam-toolbar__wrapper---flex-wrap);
+			// Gap between prepend / title / content / append flex children.
+			// User reported the prepend btn was glued to the title — the
+			// previous margin-based attempt on `__prepend` / `__append`
+			// didn't compose with the `__title { margin-inline: auto }`
+			// flex trick. `gap` on the flex wrapper is the canonical fix.
+			gap: var(--origam-toolbar__wrapper---gap, 12px);
 		}
 
 		&__content,
@@ -301,113 +429,51 @@
 				border-radius: 0;
 			}
 		}
+
+		// ── Nested-btn chrome contract (applies to every Toolbar usage) ─
+		//
+		// User reported AppBar btns rendering as gray circles when the
+		// chrome should read as a uniform bar. Every toolbar consumer
+		// (AppBar, Drawer top bar, footer, standalone, …) gets the same
+		// chrome treatment via the `--btn-bg-base` / `--btn-fg-base`
+		// declarations hoisted to the top of this block (cf. above):
+		//
+		//   normal  →  --btn-bg-base (transparent by default)
+		//   hover   →  color-mix(--btn-bg-base, black 20 %)
+		//   active  →  color-mix(--btn-bg-base, black 30 %)
+		//
+		// Shape: rounded SQUARE (8 px), overrides Btn's default
+		// `&--icon { border-radius: 50% }`.
+		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
+			--origam-btn---background-color: var(--btn-bg-base);
+			--origam-btn---color: var(--btn-fg-base);
+		}
+		:deep(.origam-btn:hover:not(.origam-btn--active)) {
+			--origam-btn---background-color: var(
+				--origam-toolbar---btn-background-color-hover,
+				color-mix(in srgb, var(--btn-bg-base), black 20%)
+			);
+		}
+		:deep(.origam-btn.origam-btn--active) {
+			--origam-btn---background-color: var(
+				--origam-toolbar---btn-background-color-active,
+				color-mix(in srgb, var(--btn-bg-base), black 30%)
+			);
+		}
+		:deep(.origam-btn) {
+			--origam-btn---border-radius: var(--origam-toolbar---btn-border-radius, 8px);
+			--origam-btn---border-radius-icon: var(--origam-toolbar---btn-border-radius, 8px);
+			border-radius: var(--origam-toolbar---btn-border-radius, 8px);
+		}
+
+		// Title color inheritance. OrigamTitle's text uses a fixed
+		// `--origam-title---color` token that does NOT inherit
+		// currentColor — so when the Toolbar is given an intent color
+		// the title stayed neutral. Repoint to currentColor so it picks
+		// up whatever the toolbar root resolved to.
+		:deep(#{$this}__title .origam-title) {
+			--origam-title---color: var(--origam-toolbar__title---color, currentColor);
+		}
 	}
 </style>
 
-<style>
-	:root {
-		--origam-toolbar---border-top-width: 0;
-		--origam-toolbar---border-left-width: 0;
-		--origam-toolbar---border-bottom-width: 0;
-		--origam-toolbar---border-right-width: 0;
-		--origam-toolbar---border-width: var(--origam-toolbar---border-top-width) var(--origam-toolbar---border-left-width) var(--origam-toolbar---border-bottom-width) var(--origam-toolbar---border-right-width);
-		--origam-toolbar---border-color: rgba(0, 0, 0, 0.87);
-		--origam-toolbar---border-style: solid;
-		--origam-toolbar---border-start-start-radius: 0;
-		--origam-toolbar---border-start-end-radius: 0;
-		--origam-toolbar---border-end-start-radius: 0;
-		--origam-toolbar---border-end-end-radius: 0;
-		--origam-toolbar---border-radius: var(--origam-toolbar---border-start-start-radius) var(--origam-toolbar---border-start-end-radius) var(--origam-toolbar---border-end-start-radius) var(--origam-toolbar---border-end-end-radius);
-
-		--origam-toolbar---max-width: 100%;
-		--origam-toolbar---width: 100%;
-		--origam-toolbar---height: 64px;
-
-		--origam-toolbar---box-sizing: border-box;
-
-		--origam-toolbar---position: relative;
-
-		--origam-toolbar---overflow: hidden;
-
-		--origam-toolbar---zIndex: 1000;
-
-		--origam-toolbar---transition-duration: 0.2s;
-		--origam-toolbar---transition-property: height, width, transform, max-width, left, right, top, bottom, box-shadow;
-		--origam-toolbar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-		--origam-toolbar---color: rgba(0, 0, 0, 0.87);
-		--origam-toolbar---box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
-		--origam-toolbar---background: rgb(255, 255, 255);
-
-		--origam-toolbar__wrapper---display: flex;
-		--origam-toolbar__wrapper---align-items: flex-start;
-		--origam-toolbar__wrapper---flex-direction: row;
-		--origam-toolbar__wrapper---justify-content: space-between;
-		--origam-toolbar__wrapper---height: 100%;
-		--origam-toolbar__wrapper---flex-wrap: wrap;
-		--origam-toolbar__wrapper---flex: 1 1 auto;
-
-		--origam-toolbar__title---align-items: center;
-		--origam-toolbar__title---align-self: stretch;
-		--origam-toolbar__title---display: flex;
-		--origam-toolbar__title---height: 100%;
-		--origam-toolbar__title---flex-grow: 0;
-		--origam-toolbar__title---flex-shrink: 0;
-		--origam-toolbar__title---flex-basis: auto;
-		--origam-toolbar__title---width: auto;
-		--origam-toolbar__title---max-width: 100%;
-		--origam-toolbar__title---min-width: 0;
-		--origam-toolbar__title---font-size: 1.25rem;
-		--origam-toolbar__title---font-weight: 400;
-		--origam-toolbar__title---letter-spacing: 0;
-		--origam-toolbar__title---line-height: 1.75rem;
-		--origam-toolbar__title---text-transform: none;
-		--origam-toolbar__title---margin-inline-start: auto;
-		--origam-toolbar__title---margin-inline-end: 10px;
-		--origam-toolbar__title---margin-inline: var(--origam-toolbar__title---margin-inline-start) var(--origam-toolbar__title---margin-inline-end);
-		--origam-toolbar__title---margin-block-start: 0;
-		--origam-toolbar__title---margin-block-end: 0;
-		--origam-toolbar__title---margin-block: var(--origam-toolbar__title---margin-inline-start) var(--origam-toolbar__title---margin-inline-end);
-		--origam-toolbar__title---padding-block-start: 0;
-		--origam-toolbar__title---padding-block-end: 0;
-		--origam-toolbar__title---padding-block: var(--origam-toolbar__title---padding-block-start) var(--origam-toolbar__title---padding-block-end);
-		--origam-toolbar__title---padding-inline-start: 0;
-		--origam-toolbar__title---padding-inline-end: 0;
-		--origam-toolbar__title---padding-inline: var(--origam-toolbar__title---padding-inline-start) var(--origam-toolbar__title---padding-inline-end);
-
-		--origam-toolbar__content---display: flex;
-		--origam-toolbar__content---align-items: center;
-		--origam-toolbar__content---position: relative;
-		--origam-toolbar__content---transition: inherit;
-		--origam-toolbar__content---height: 100%;
-		--origam-toolbar__content---flex-grow: 1;
-		--origam-toolbar__content---flex-basis: 0;
-		--origam-toolbar__content---max-width: 100%;
-
-		--origam-toolbar__append---margin-inline-start: auto;
-		--origam-toolbar__append---margin-inline-end: 10px;
-		--origam-toolbar__append---margin-inline: var(--origam-toolbar__append---margin-inline-start) var(--origam-toolbar__append---margin-inline-end);
-		--origam-toolbar__append---align-items: center;
-		--origam-toolbar__append---align-self: stretch;
-		--origam-toolbar__append---display: flex;
-		--origam-toolbar__append---height: 100%;
-		--origam-toolbar__append---flex-grow: 0;
-		--origam-toolbar__append---flex-shrink: 0;
-		--origam-toolbar__append---flex-basis: auto;
-		--origam-toolbar__append---width: auto;
-		--origam-toolbar__append---max-width: 100%;
-
-		--origam-toolbar__prepend---margin-inline-start: 10px;
-		--origam-toolbar__prepend---margin-inline-end: auto;
-		--origam-toolbar__prepend---margin-inline: var(--origam-toolbar__prepend---margin-inline-start) var(--origam-toolbar__prepend---margin-inline-end);
-		--origam-toolbar__prepend---align-items: center;
-		--origam-toolbar__prepend---align-self: stretch;
-		--origam-toolbar__prepend---display: flex;
-		--origam-toolbar__prepend---height: 100%;
-		--origam-toolbar__prepend---flex-grow: 0;
-		--origam-toolbar__prepend---flex-shrink: 0;
-		--origam-toolbar__prepend---flex-basis: auto;
-		--origam-toolbar__prepend---width: auto;
-		--origam-toolbar__prepend---max-width: 100%;
-	}
-</style>

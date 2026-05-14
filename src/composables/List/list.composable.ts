@@ -1,6 +1,9 @@
 import { ComputedRef, inject, provide, shallowRef } from 'vue'
 import { ORIGAM_LIST_KEY } from '../../consts'
 
+/*********************************************************
+ * useCreateList
+ ********************************************************/
 export function useCreateList () {
     const parent = inject(ORIGAM_LIST_KEY, {
         hasPrepend: shallowRef(false),
@@ -25,6 +28,9 @@ export function useCreateList () {
     return parent
 }
 
+/*********************************************************
+ * useList
+ ********************************************************/
 export function useList () {
     return inject(ORIGAM_LIST_KEY, null)
 }

@@ -2,6 +2,11 @@ import type { ITouchHandlers, ITouchStoredHandlers } from '../../interfaces'
 
 import type { TTouchWrapper } from '../../types'
 
+/**
+ * Handle gesture.
+ *
+ * @param wrapper …
+ */
 export function handleGesture (wrapper: TTouchWrapper) {
     const {touchstartX, touchendX, touchstartY, touchendY} = wrapper
     const dirRatio = 0.5
@@ -29,6 +34,12 @@ export function handleGesture (wrapper: TTouchWrapper) {
     }
 }
 
+/**
+ * Touchstart.
+ *
+ * @param event   …
+ * @param wrapper …
+ */
 export function touchstart (event: TouchEvent, wrapper: TTouchWrapper) {
     const touch = event.changedTouches[0]
     wrapper.touchstartX = touch.clientX
@@ -37,6 +48,12 @@ export function touchstart (event: TouchEvent, wrapper: TTouchWrapper) {
     wrapper.start?.({originalEvent: event, ...wrapper})
 }
 
+/**
+ * Touchend.
+ *
+ * @param event   …
+ * @param wrapper …
+ */
 export function touchend (event: TouchEvent, wrapper: TTouchWrapper) {
     const touch = event.changedTouches[0]
     wrapper.touchendX = touch.clientX
@@ -47,6 +64,12 @@ export function touchend (event: TouchEvent, wrapper: TTouchWrapper) {
     handleGesture(wrapper)
 }
 
+/**
+ * Touchmove.
+ *
+ * @param event   …
+ * @param wrapper …
+ */
 export function touchmove (event: TouchEvent, wrapper: TTouchWrapper) {
     const touch = event.changedTouches[0]
     wrapper.touchmoveX = touch.clientX
@@ -55,6 +78,12 @@ export function touchmove (event: TouchEvent, wrapper: TTouchWrapper) {
     wrapper.move?.({originalEvent: event, ...wrapper})
 }
 
+/**
+ * Create handlers.
+ *
+ * @param value …
+ * @returns …
+ */
 export function createHandlers (value: ITouchHandlers = {}): ITouchStoredHandlers {
     const wrapper = {
         touchstartX: 0,

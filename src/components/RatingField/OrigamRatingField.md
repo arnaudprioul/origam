@@ -1,5 +1,0 @@
-# Origamratingfield
-
-## Usage
-
-    <OrigamRatingField />

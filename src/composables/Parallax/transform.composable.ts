@@ -4,6 +4,9 @@ import type { IParallaxElementProps } from '../../interfaces'
 
 import { computed } from 'vue'
 
+/*********************************************************
+ * useParallaxTransform
+ ********************************************************/
 export function useParallaxTransform (props: IParallaxElementProps) {
     const strength = computed(() => {
         const str = props.strength ?? 10

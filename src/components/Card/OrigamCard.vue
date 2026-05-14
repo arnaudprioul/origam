@@ -1,12 +1,14 @@
 <template>
 	<component
 			:is="link.tag"
-			v-ripple="isClickable && props.ripple"
+			v-ripple="isClickable && ripple"
 			:class="cardClasses"
 			:href="link.href"
 			:style="cardStyles"
-			:tabindex="props.disabled ? -1 : undefined"
-			@click="isClickable && link.navigate"
+			:tabindex="disabled ? -1 : undefined"
+			@click="handleClick"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
     <span
 		    v-if="isClickable"
@@ -22,132 +24,139 @@
 			<template v-if="hasLoading">
 				<slot name="loader">
 					<div class="origam-card__loader">
+						<origam-skeleton
+								v-if="loaderConfig.kind === 'skeleton'"
+								variant="card"
+								:loading="true"
+								v-bind="loaderConfig.overrides"
+						/>
 						<origam-progress
-								:active="!!props.loading"
-								:color="props.color"
-								:indeterminate="typeof props.loading !== 'number'"
-								:model-value="typeof props.loading === 'number' ? props.loading : undefined"
-								:type="PROGRESS_TYPE.LINEAR"
-								class="origam-card__progress origam-card__progress--linear"
+								v-else
+								:active="true"
+								:color="color"
+								:indeterminate="loaderConfig.indeterminate"
+								:model-value="loaderConfig.modelValue"
+								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
+								:class="cardProgressClasses"
 								thickness="4"
+								v-bind="loaderConfig.overrides"
 						/>
 					</div>
 				</slot>
 			</template>
 
-			<template v-if="hasHeader">
-				<slot name="header">
-					<origam-card-header
-							key="item"
-							:append-avatar="appendAvatar"
-							:append-icon="appendIcon"
-							:density="density"
-							:prepend-avatar="prependAvatar"
-							:prepend-icon="prependIcon"
-							:subtitle="subtitle"
-							:title="title"
-							class="origam-card__header"
-							@click:prepend="handleClickPrepend"
-							@click:append="handleClickAppend"
-					>
-						<template
-								v-if="slots['header.append']"
-								#append
+			<template v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'">
+				<template v-if="hasHeader">
+					<slot name="header">
+						<origam-card-header
+								key="item"
+								:append-avatar="appendAvatar"
+								:append-icon="appendIcon"
+								:density="density"
+								:prepend-avatar="prependAvatar"
+								:prepend-icon="prependIcon"
+								:subtitle="subtitle"
+								:title="title"
+								class="origam-card__header"
+								@click:prepend="handleClickPrepend"
+								@click:append="handleClickAppend"
 						>
-							<slot name="header.append"/>
-						</template>
+							<template
+									v-if="slots['header.append']"
+									#append
+							>
+								<slot name="header.append"/>
+							</template>
 
-						<template
-								v-if="slots['header.prepend']"
-								#prepend
-						>
-							<slot name="header.prepend"/>
-						</template>
+							<template
+									v-if="slots['header.prepend']"
+									#prepend
+							>
+								<slot name="header.prepend"/>
+							</template>
 
-						<template
-								v-if="slots['header.title']"
-								#title
-						>
-							<slot name="header.title"/>
-						</template>
+							<template
+									v-if="slots['header.title']"
+									#title
+							>
+								<slot name="header.title"/>
+							</template>
 
-						<template
-								v-if="slots['header.subtitle']"
-								#subtitle
-						>
-							<slot name="header.subtitle"/>
-						</template>
+							<template
+									v-if="slots['header.subtitle']"
+									#subtitle
+							>
+								<slot name="header.subtitle"/>
+							</template>
 
-						<template
-								v-if="slots['header.content']"
-								#default
-						>
-							<slot name="header.content"/>
-						</template>
-					</origam-card-header>
-				</slot>
-			</template>
-
-			<template v-if="hasAsset">
-				<div
-						key="image"
-						class="origam-card__asset"
-				>
-					<slot name="asset">
-						<origam-img
-								key="image-img"
-								:src="props.image"
-								class="origam-card__image"
-								cover
-						/>
-					</slot>
-				</div>
-			</template>
-
-			<div class="origam-card__content">
-				<template v-if="hasText">
-					<slot name="text">
-						<origam-card-text
-								key="text"
-								:text="props.text"
-								class="origam-card__text"
-						/>
+							<template
+									v-if="slots['header.content']"
+									#default
+							>
+								<slot name="header.content"/>
+							</template>
+						</origam-card-header>
 					</slot>
 				</template>
 
-				<slot name="default"/>
-			</div>
+				<template v-if="hasAsset">
+					<div
+							key="image"
+							class="origam-card__asset"
+					>
+						<slot name="asset">
+							<origam-img
+									key="image-img"
+									:src="image"
+									class="origam-card__image"
+									cover
+							/>
+						</slot>
+					</div>
+				</template>
 
-			<template v-if="hasFooter">
-				<div class="origam-card__footer">
-					<slot name="footer"/>
+				<div class="origam-card__content">
+					<template v-if="hasText">
+						<slot name="text">
+							<origam-card-text
+									key="text"
+									:text="text"
+									class="origam-card__text"
+							/>
+						</slot>
+					</template>
+
+					<slot name="default"/>
 				</div>
+
+				<template v-if="hasFooter">
+					<div class="origam-card__footer">
+						<slot name="footer"/>
+					</div>
+				</template>
 			</template>
 		</slot>
 	</component>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
-	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress } from '../../components'
+	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
+		useActive,
 		useAdjacent,
-		useBorder,
 		useDensity,
 		useDimension,
-		useElevation,
+		useHover,
 		useLink,
 		useLoader,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { vRipple } from '../../directives'
 
@@ -157,9 +166,15 @@
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and link resolution for the Card component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
 
-	defineEmits(['click:append', 'click:prepend'])
+	defineEmits(['click:append', 'click:prepend', 'update:active', 'update:hover'])
 
 	const {filterProps} = useProps<ICardProps>(props)
 
@@ -167,16 +182,67 @@
 
 	const link = useLink(props, attrs)
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
-	const {loaderClasses} = useLoader(props)
-	const {locationStyles} = useLocation(props)
-	const {positionClasses} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {paddingStyles, paddingClasses} = usePadding(props)
+	/*********************************************************
+	 * Adjacent (prepend / append) & clickability
+	 *
+	 * @description
+	 * Resolves prepend/append icons, click handlers and the
+	 * clickable flag that enables ripple + overlay.
+	 ********************************************************/
+	// `useStateEffect` produces inline `color: …` / `background-color: …`
+	// declarations from intent props (`color`, `bgColor`) and also reacts
+	// to hover/active states by swapping in `hoverBgColor` / `hoverColor`
+	// / `activeBgColor` / `activeColor` overrides (or auto-darken via
+	// color-mix when no explicit override is provided).
+	//
+	// Pre-fix Card used `useBothColor` — the legacy composable — which
+	// is stateless: passing `<origam-card hover-color="success">` was a
+	// silent no-op because the composable never saw `isHover.value`.
+	// We now wire `useHover` + `useActive` so the resting / hover /
+	// pressed cycles cascade through the same intent system as Btn /
+	// BottomNav / Alert.
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	// Single state-aware composable for ALL 8 visual axes
+	// (color/bgColor/border/rounded/elevation/padding/margin/gap).
+	// Hover / active object overrides (e.g. `:hover="{ border: 'thick' }"`)
+	// flow through here uniformly; previously these axes were each
+	// resolved by their own per-axis composable AND missed the state
+	// swap entirely.
+	const {
+		colorClasses, colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(
+			props,
+			isHover,
+			isActive as unknown as import('vue').ComputedRef<boolean>,
+			hoverState,
+			activeState,
+			computed(() => !!props.disabled),
+			toRef(props, 'flat'),
+	)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -189,10 +255,49 @@
 		return !props.disabled && props.link && (props.link || link.isClickable.value)
 	})
 
+	// Combined click handler — drives both `isActive` (so `activeColor`
+	// / `activeBgColor` resolve via `useStateEffect`) and the link
+	// navigation when the Card is interactive (`link` prop / clickable).
+	const handleClick = (event: MouseEvent) => {
+		onActive(event)
+		if (isClickable.value && link.navigate) {
+			link.navigate(event)
+		}
+	}
+
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Controls the card loader slot and progress renderer.
+	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
 	const slots = useSlots()
 
-	// SLOTS
+	const hasLoading = computed(() => {
+		// `loaderConfig` is a `ComputedRef<IResolvedLoader>` from
+		// `useLoader`. In `<script setup>` JS the ref must be unwrapped via
+		// `.value` to read its fields — pre-fix this read `loaderConfig
+		// .isActive` (a property of the Ref object itself, always
+		// `undefined`) so `hasLoading` was permanently falsy and the
+		// `<template v-if="hasLoading">` block — including the
+		// `<origam-card__loader>` div with the linear/circular/skeleton
+		// renderer — never mounted. The Card was visually marked
+		// `origam-card--loading` (because `loaderClasses` does the
+		// auto-unwrap correctly) yet rendered no loader, breaking the
+		// "Loading shapes" e2e suite. Btn already uses the correct
+		// `loaderConfig.value.isActive` form.
+		return slots.loader || loaderConfig.value.isActive
+	})
 
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags controlling header, asset, text and
+	 * footer section rendering.
+	 ********************************************************/
 	const hasTitle = computed(() => {
 		return slots['header.title'] || props.title != null
 	})
@@ -211,22 +316,40 @@
 	const hasText = computed(() => {
 		return slots.text || props.text != null
 	})
-	const hasLoading = computed(() => {
-		return slots.loader || !!props.loading
-	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all border, color, elevation, loader and
+	 * layout classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {locationStyles} = useLocation(props)
+	const {positionClasses} = usePosition(props)
+	// border / rounded / elevation / padding / margin all come from
+	// `useStateEffect` above — state-aware versions that honour
+	// `:hover="{ … }"` / `:active="{ … }"` overrides.
 
 	const cardStyles = computed(() => {
 		return [
 			borderStyles.value,
+			colorStyles.value,
 			dimensionStyles.value,
+			elevationStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
 			marginStyles.value,
 			paddingStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const cardProgressClasses = computed(() => {
+		return [
+			'origam-card__progress',
+			`origam-card__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
 	})
 	const cardClasses = computed(() => {
 		return [
@@ -238,8 +361,11 @@
 				'origam-card--link': isClickable.value
 			},
 			borderClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
+			hoverClasses.value,
+			activeClasses.value,
 			loaderClasses.value,
 			positionClasses.value,
 			roundedClasses.value,
@@ -248,11 +374,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(cardStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -278,7 +415,7 @@
 		user-select: var(--origam-card---user-select);
 		cursor: var(--origam-card---cursor);
 
-		background: var(--origam-card---background);
+		background-color: var(--origam-card---background);
 		box-shadow: var(--origam-card---box-shadow);
 		color: var(--origam-card---color);
 
@@ -294,26 +431,37 @@
 
 		border-color: var(--origam-card---border-color);
 		border-style: var(--origam-card---border-style);
-		border-width: var(--origam-card---border-width);
-		border-radius: var(--origam-card---border-radius);
+		border-top-width: var(--origam-card---border-top-width, 0);
+		border-right-width: var(--origam-card---border-right-width, 0);
+		border-bottom-width: var(--origam-card---border-bottom-width, 0);
+		border-left-width: var(--origam-card---border-left-width, 0);
+		border-start-start-radius: var(--origam-card---border-start-start-radius, 0);
+		border-start-end-radius: var(--origam-card---border-start-end-radius, 0);
+		border-end-end-radius: var(--origam-card---border-end-end-radius, 0);
+		border-end-start-radius: var(--origam-card---border-end-start-radius, 0);
+
+		&__asset {
+			aspect-ratio: var(--origam-card__asset---aspect-ratio, 16 / 9);
+			overflow: hidden;
+		}
 
 		&__overlay {
-			background-color: var(--origam-card__overlay---background-color);
-			border-radius: var(--origam-card__overlay---border-radius);
-			opacity: var(--origam-card__overlay---opacity);
-			pointer-events: var(--origam-card__overlay---pointer-events);
-			position: var(--origam-card__overlay---position);
-			bottom: var(--origam-card__overlay---position-bottom);
-			left: var(--origam-card__overlay---position-left);
-			right: var(--origam-card__overlay---position-right);
-			top: var(--origam-card__overlay---position-top);
-			transition-property: var(--origam-card__overlay---transition-property);
-			transition-duration: var(--origam-card__overlay---transition-duration);
-			transition-timing-function: var(--origam-card__overlay---transition-timing-function);
+			background-color: var(--origam-card__overlay---background-color, var(--origam-color__overlay---scrim));
+			border-radius: var(--origam-card__overlay---border-radius, inherit);
+			opacity: var(--origam-card__overlay---opacity, var(--origam-card---overlay-opacity, 0));
+			pointer-events: var(--origam-card__overlay---pointer-events, none);
+			position: var(--origam-card__overlay---position, absolute);
+			bottom: var(--origam-card__overlay---position-bottom, var(--origam-card---overlay-position-bottom, 0));
+			left: var(--origam-card__overlay---position-left, var(--origam-card---overlay-position-left, 0));
+			right: var(--origam-card__overlay---position-right, var(--origam-card---overlay-position-right, 0));
+			top: var(--origam-card__overlay---position-top, var(--origam-card---overlay-position-top, 0));
+			transition-property: var(--origam-card__overlay---transition-property, var(--origam-card---overlay-transition-property, opacity));
+			transition-duration: var(--origam-card__overlay---transition-duration, var(--origam-card---overlay-transition-duration, 0.2s));
+			transition-timing-function: var(--origam-card__overlay---transition-timing-function, var(--origam-card---overlay-transition-timing-function, ease-in-out));
 		}
 
 		&__underlay {
-			position: var(--origam-card__underlay---position);
+			position: var(--origam-card__underlay---position, var(--origam-card---underlay-position, absolute));
 		}
 
 		> * {
@@ -321,12 +469,95 @@
 		}
 
 		&--border {
-			--origam-card---border-width: thin;
-			--origam-card---box-shadow: none;
+			--origam-card---border-top-width: thin;
+			--origam-card---border-right-width: thin;
+			--origam-card---border-bottom-width: thin;
+			--origam-card---border-left-width: thin;
+		}
+
+		&--border-top {
+			--origam-card---border-top-width: thin;
+			--origam-card---border-right-width: 0;
+			--origam-card---border-bottom-width: 0;
+			--origam-card---border-left-width: 0;
+		}
+
+		&--border-right {
+			--origam-card---border-top-width: 0;
+			--origam-card---border-right-width: thin;
+			--origam-card---border-bottom-width: 0;
+			--origam-card---border-left-width: 0;
+		}
+
+		&--border-bottom {
+			--origam-card---border-top-width: 0;
+			--origam-card---border-right-width: 0;
+			--origam-card---border-bottom-width: thin;
+			--origam-card---border-left-width: 0;
+		}
+
+		&--border-left {
+			--origam-card---border-top-width: 0;
+			--origam-card---border-right-width: 0;
+			--origam-card---border-bottom-width: 0;
+			--origam-card---border-left-width: thin;
 		}
 
 		&--rounded {
-			--origam-card---border-radius: 4px;
+			--origam-card---border-start-start-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-start-end-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-end-end-radius: var(--origam-card---border-radius-rounded, 4px);
+			--origam-card---border-end-start-radius: var(--origam-card---border-radius-rounded, 4px);
+		}
+
+		&--loading {
+			min-width: var(--origam-card---loading-min-width, 240px);
+			min-height: var(--origam-card---loading-min-height, 120px);
+		}
+
+		&__loader {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			min-height: var(--origam-card__loader---min-height, 4px);
+
+			:deep(.origam-progress--linear) {
+				position: absolute;
+				inset-inline: 0;
+				inset-block-start: 0;
+				width: 100%;
+				height: var(--origam-card__progress---linear-height, 4px);
+			}
+
+			:deep(.origam-progress--circular) {
+				margin: var(--origam-card__progress---circular-margin, 24px auto);
+			}
+
+			:deep(.origam-skeleton-wrapper--card),
+			:deep(.origam-skeleton--rectangular),
+			:deep(.origam-skeleton--text) {
+				width: 100%;
+			}
+
+			:deep(.origam-skeleton-wrapper--card) {
+				min-height: var(--origam-card__loader---min-height-skeleton, 200px);
+			}
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-card---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
 		}
 
 		&--absolute {
@@ -349,21 +580,21 @@
 		&:focus-visible,
 		&:focus {
 			> #{$this}__overlay {
-				--origam-card__overlay---opacity: calc(0.12 * 1);
+				--origam-card__overlay---opacity: var(--origam-card---overlay-opacity-hover, 0.12);
 			}
 		}
 
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				--origam-card__overlay---opacity: calc(0.12 * 1);
+				--origam-card__overlay---opacity: var(--origam-card---overlay-opacity-hover, 0.12);
 			}
 
 			&:hover,
 			&:focus-visible,
 			&:focus {
 				> #{$this}__overlay {
-					--origam-card__overlay---opacity: calc(0.12 * 1);
+					--origam-card__overlay---opacity: var(--origam-card---overlay-opacity-hover, 0.12);
 				}
 			}
 		}
@@ -373,11 +604,11 @@
 			--origam-card---user-select: none;
 
 			> * {
-				--origam-card---opacity: 0.6;
+				--origam-card---opacity: var(--origam-card---opacity-disabled, 0.6);
 			}
 		}
 
-		&--flated {
+		&--flat {
 			--origam-card---box-shadow: none;
 		}
 
@@ -389,39 +620,39 @@
 			--origam-card---cursor: pointer;
 
 			&:before {
-				border-radius: var(--origam-card__before---border-radius);
-				bottom: var(--origam-card__before---bottom);
-				content: var(--origam-card__before---content);
-				display: var(--origam-card__before---display);
-				left: var(--origam-card__before---left);
-				pointer-events: var(--origam-card__before---pointer-events);
-				position: var(--origam-card__before---position);
-				right: var(--origam-card__before---right);
-				top: var(--origam-card__before---top);
-				transition: var(--origam-card__before---transition);
-				opacity: var(--origam-card__before---opacity);
-				z-index: var(--origam-card__before---z-index);
-				box-shadow: var(--origam-card__before---box-shadow);
+				border-radius: var(--origam-card__before---border-radius, var(--origam-card---before-border-radius, inherit));
+				bottom: var(--origam-card__before---bottom, var(--origam-card---before-bottom, 0));
+				content: var(--origam-card__before---content, var(--origam-card---before-content, ""));
+				display: var(--origam-card__before---display, var(--origam-card---before-display, block));
+				left: var(--origam-card__before---left, var(--origam-card---before-left, 0));
+				pointer-events: var(--origam-card__before---pointer-events, var(--origam-card---before-pointer-events, none));
+				position: var(--origam-card__before---position, var(--origam-card---before-position, absolute));
+				right: var(--origam-card__before---right, var(--origam-card---before-right, 0));
+				top: var(--origam-card__before---top, var(--origam-card---before-top, 0));
+				transition: var(--origam-card__before---transition, var(--origam-card---before-transition, inherit));
+				opacity: var(--origam-card__before---opacity, var(--origam-card---before-opacity, 1));
+				z-index: var(--origam-card__before---z-index, var(--origam-card---before-z-index, -1));
+				box-shadow: var(--origam-card__before---box-shadow, var(--origam-card---before-box-shadow));
 			}
 
 			&:after {
-				border-radius: var(--origam-card__after---border-radius);
-				bottom: var(--origam-card__after---bottom);
-				content: var(--origam-card__after---content);
-				display: var(--origam-card__after---display);
-				left: var(--origam-card__after---left);
-				pointer-events: var(--origam-card__after---pointer-events);
-				position: var(--origam-card__after---position);
-				right: var(--origam-card__after---right);
-				top: var(--origam-card__after---top);
-				transition: var(--origam-card__after---transition);
-				z-index: var(--origam-card__after---z-index);
-				opacity: var(--origam-card__after---opacity);
-				box-shadow: var(--origam-card__after---box-shadow);
+				border-radius: var(--origam-card__after---border-radius, var(--origam-card---after-border-radius, inherit));
+				bottom: var(--origam-card__after---bottom, var(--origam-card---after-bottom, 0));
+				content: var(--origam-card__after---content, var(--origam-card---after-content, ""));
+				display: var(--origam-card__after---display, var(--origam-card---after-display, block));
+				left: var(--origam-card__after---left, var(--origam-card---after-left, 0));
+				pointer-events: var(--origam-card__after---pointer-events, var(--origam-card---after-pointer-events, none));
+				position: var(--origam-card__after---position, var(--origam-card---after-position, absolute));
+				right: var(--origam-card__after---right, var(--origam-card---after-right, 0));
+				top: var(--origam-card__after---top, var(--origam-card---after-top, 0));
+				transition: var(--origam-card__after---transition, var(--origam-card---after-transition, inherit));
+				z-index: var(--origam-card__after---z-index, var(--origam-card---after-z-index, 1));
+				opacity: var(--origam-card__after---opacity, var(--origam-card---after-opacity, 0));
+				box-shadow: var(--origam-card__after---box-shadow, var(--origam-card---after-box-shadow));
 			}
 
 			&:hover {
-				--origam-card---box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+				--origam-card---box-shadow: var(--origam-card---box-shadow-hover);
 
 				&:after {
 					--origam-card__after---opacity: 1;
@@ -435,95 +666,12 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-card---overflow: hidden;
-		--origam-card---overflow-wrap: break-word;
-		--origam-card---position: relative;
-		--origam-card---z-index: 0;
-
-		--origam-card---transition-duration: 0.28s;
-		--origam-card---transition-property: box-shadow, opacity, background;
-		--origam-card---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-		--origam-card---color: rgba(0, 0, 0, 0.87);
-		--origam-card---box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-		--origam-card---background: rgb(255, 255, 255);
-
-		--origam-card---display: block;
-
-		--origam-card---pointer-events: auto;
-		--origam-card---user-select: auto;
-		--origam-card---cursor: auto;
-
-		--origam-card---text-decoration: none;
-
-		--origam-card---border-top-width: 0;
-		--origam-card---border-left-width: 0;
-		--origam-card---border-bottom-width: 0;
-		--origam-card---border-right-width: 0;
-		--origam-card---border-width: var(--origam-card---border-top-width) var(--origam-card---border-left-width) var(--origam-card---border-bottom-width) var(--origam-card---border-right-width);
-		--origam-card---border-color: rgba(0, 0, 0, 0.87);
-		--origam-card---border-style: solid;
-		--origam-card---border-start-start-radius: 0;
-		--origam-card---border-start-end-radius: 0;
-		--origam-card---border-end-start-radius: 0;
-		--origam-card---border-end-end-radius: 0;
-		--origam-card---border-radius: var(--origam-card---border-start-start-radius) var(--origam-card---border-start-end-radius) var(--origam-card---border-end-start-radius) var(--origam-card---border-end-end-radius);
-
-		--origam-card---padding-block-start: 0;
-		--origam-card---padding-block-end: 0;
-		--origam-card---padding-inline-start: 0;
-		--origam-card---padding-inline-end: 0;
-
-		--origam-card---margin-block-start: 0;
-		--origam-card---margin-block-end: 0;
-		--origam-card---margin-inline-start: 0;
-		--origam-card---margin-inline-end: 0;
-
-		--origam-card---opacity: 1;
-
-		--origam-card__overlay---background-color: #000;
-		--origam-card__overlay---border-radius: inherit;
-		--origam-card__overlay---opacity: 0;
-		--origam-card__overlay---pointer-events: none;
-		--origam-card__overlay---position: absolute;
-		--origam-card__overlay---position-bottom: 0;
-		--origam-card__overlay---position-left: 0;
-		--origam-card__overlay---position-right: 0;
-		--origam-card__overlay---position-top: 0;
-		--origam-card__overlay---transition-property: opacity;
-		--origam-card__overlay---transition-duration: 0.2s;
-		--origam-card__overlay---transition-timing-function: ease-in-out;
-
-		--origam-card__underlay---position: absolute;
-
-		--origam-card__before---border-radius: inherit;
-		--origam-card__before---bottom: 0;
-		--origam-card__before---content: "";
-		--origam-card__before---display: block;
-		--origam-card__before---left: 0;
-		--origam-card__before---pointer-events: none;
-		--origam-card__before---position: absolute;
-		--origam-card__before---right: 0;
-		--origam-card__before---top: 0;
-		--origam-card__before---transition: inherit;
-		--origam-card__before---opacity: 1;
-		--origam-card__before---z-index: -1;
-		--origam-card__before---box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-
-		--origam-card__after---border-radius: inherit;
-		--origam-card__after---bottom: 0;
-		--origam-card__after---content: "";
-		--origam-card__after---display: block;
-		--origam-card__after---left: 0;
-		--origam-card__after---pointer-events: none;
-		--origam-card__after---position: absolute;
-		--origam-card__after---right: 0;
-		--origam-card__after---top: 0;
-		--origam-card__after---transition: inherit;
-		--origam-card__after---z-index: 1;
-		--origam-card__after---opacity: 0;
-		--origam-card__after---box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+<style
+		lang="scss"
+		scoped
+>
+	.origam-card {
+		--origam-card---border-width: var(--origam-card---border-top-width, var(--origam-card---border-top-width, 0px)) var(--origam-card---border-left-width, 0px) var(--origam-card---border-bottom-width, 0px) var(--origam-card---border-right-width, 0px);
+		--origam-card---border-radius: var(--origam-card---border-start-start-radius, 0px) var(--origam-card---border-start-end-radius, 0px) var(--origam-card---border-end-start-radius, 0px) var(--origam-card---border-end-end-radius, 0px);
 	}
 </style>

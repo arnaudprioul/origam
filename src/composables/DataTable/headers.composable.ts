@@ -14,6 +14,9 @@ import type { TDataTableCompareFunction, TFilterKeyFunctions } from '../../types
 
 import { convertToInternalHeaders, extractKeys, getHeaderDepth, parseFixedColumns, parseHeaderItems } from '../../utils'
 
+/*********************************************************
+ * createHeaders
+ ********************************************************/
 export function createHeaders (
     props: IDataTableHeaderProps,
     options?: {
@@ -85,6 +88,9 @@ export function createHeaders (
     return data
 }
 
+/*********************************************************
+ * useHeaders
+ ********************************************************/
 export function useHeaders () {
     const data = inject(ORIGAM_DATA_TABLE_HEADERS_KEY)
 
@@ -93,6 +99,9 @@ export function useHeaders () {
     return data
 }
 
+/*********************************************************
+ * useHeadersCell
+ ********************************************************/
 export function useHeadersCell (props: IHeaderCellProps) {
     const {sortBy} = useSort()
 

@@ -1,5 +1,0 @@
-# Origamcounter
-
-## Usage
-
-    <OrigamCounter />

@@ -18,8 +18,8 @@
 
 		<div
 				v-ripple="rippleProps"
+				:class="sliderFieldThumbRippleClasses"
 				:style="sliderFieldThumbRippleStyles"
-				class="origam-slider-field-thumb__ripple"
 		/>
 
 		<origam-translate-scale origin="bottom center">
@@ -30,7 +30,7 @@
 				<div class="origam-slider-field-thumb__label">
 					<slot
 							name="default"
-							v-bind="{ modelValue: props.modelValue }"
+							v-bind="{ modelValue: modelValue }"
 					>
 						<span>{{ label }}</span>
 					</slot>
@@ -47,7 +47,14 @@
 	import { computed, inject, StyleValue } from 'vue'
 	import { OrigamTranslateScale } from '../../components'
 
-	import { useBorder, useElevation, useProps, useRounded, useTextColor } from '../../composables'
+	import {
+	useBorder,
+	useElevation,
+	useProps,
+	useRounded,
+	useStyle,
+	useTextColor
+} from '../../composables'
 
 	import { ORIGAM_SLIDER_FIELD_KEY } from '../../consts'
 
@@ -59,6 +66,12 @@
 
 	import { clamp, convertToUnit, int } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and slider context injection.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldThumbProps>(), {
 		ripple: true,
 		size: 20,
@@ -93,6 +106,13 @@
 		indexFromEnd
 	} = slider
 
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Derived disabled / readonly state, resolved color,
+	 * size, and position percentage from parent slider context.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
@@ -100,7 +120,18 @@
 		return props.readonly ?? readonly.value
 	})
 	const color = computed(() => {
-		return error || isDisabled.value ? undefined : sliderColor.value ?? props.color
+		// `error` is a `Ref` from the slider injection — must unwrap
+		// with `.value`. Pre-fix the bare `error` reference was always
+		// truthy (a non-null Ref object), so `color` always resolved
+		// to `undefined`. Result: the consumer's `color="primary"`
+		// never reached the thumb's `useTextColor` and the cercle
+		// stayed at the SCSS hardcoded grey.
+		// When `error` is on, force the `danger` intent on BOTH channels
+		// (thumb cercle here, track + rail in -track). Convention shared
+		// with Input/Form/Snackbar/SelectionControl.
+		if (isDisabled.value) return undefined
+		if (error.value) return 'danger'
+		return sliderColor.value || props.color
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {
@@ -127,11 +158,33 @@
 			'circle', 'center']] : undefined
 	})
 
+	/*********************************************************
+	 * Keyboard
+	 *
+	 * @description
+	 * Keyboard navigation — arrow keys, Home/End, PageUp/Down
+	 * with shift/ctrl multipliers for fine/coarse stepping.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {elevationClasses} = useElevation(elevationProps)
 	const {borderClasses, borderStyles} = useBorder(borderProps)
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
 
-	const {textColorStyles} = useTextColor(color)
+	// Phase 3 (Vague B) — class-first companion alongside inline styles.
+	// `textColorClasses` carries the global `.origam--color-{intent}` for
+	// tokenised intents, while `textColorStyles` keeps the legacy raw-color
+	// fallback. Both are applied on the surface AND ripple layers below
+	// (the cercle + the halo inherit `currentColor`).
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {textColorClasses, textColorStyles} = useTextColor(color)
 
 	const relevantKeys = [KEYBOARD_VALUES.PAGEUP, KEYBOARD_VALUES.PAGEDOWN, KEYBOARD_VALUES.END, KEYBOARD_VALUES.HOME, KEYBOARD_VALUES.LEFT, KEYBOARD_VALUES.RIGHT, KEYBOARD_VALUES.DOWN, KEYBOARD_VALUES.UP]
 
@@ -167,6 +220,11 @@
 
 		return clamp(value, props.min, props.max)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		const newValue = parseKeydown(e, props.modelValue)
 
@@ -175,6 +233,12 @@
 		}
 	}
 
+	/*********************************************************
+	 * Label
+	 *
+	 * @description
+	 * Label visibility and formatted numeric display.
+	 ********************************************************/
 	const showLabel = computed(() => {
 		return (props.label && props.focused) || props.label === 'always'
 	})
@@ -182,8 +246,13 @@
 		return props.modelValue.toFixed(step.value ? decimals.value : 1)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Classes and styles for the thumb, its surface, and the
+	 * ripple layer.
+	 ********************************************************/
 	const sliderFieldThumbStyles = computed(() => {
 		return [
 			{
@@ -216,7 +285,14 @@
 			'origam-slider-field-thumb__surface',
 			elevationClasses.value,
 			borderClasses.value,
-			roundedClasses.value
+			roundedClasses.value,
+			textColorClasses.value
+		]
+	})
+	const sliderFieldThumbRippleClasses = computed(() => {
+		return [
+			'origam-slider-field-thumb__ripple',
+			textColorClasses.value
 		]
 	})
 	const sliderFieldThumbRippleStyles = computed(() => {
@@ -225,11 +301,22 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldThumbStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -259,9 +346,12 @@
 			cursor: pointer;
 			width: var(--origam-slider-field-thumb---size, 20);
 			height: var(--origam-slider-field-thumb---size, 20);
+			border: 1px solid var(--origam-slider-field-thumb__surface---border-color, rgba(0, 0, 0, 0.18));
 			border-radius: 50%;
 			user-select: none;
 			background-color: currentColor;
+			box-shadow: none;
+			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1), 0.2s border-color cubic-bezier(0.4, 0, 0.2, 1);
 
 			@media (forced-colors: active) {
 				background-color: highlight;

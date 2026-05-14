@@ -1,7 +1,44 @@
 {
   "name": "origam",
-  "version": "0.3.10",
+  "version": "2.2.0",
   "type": "module",
+  "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
+  "keywords": [
+    "vue",
+    "vue3",
+    "design-system",
+    "components",
+    "ui",
+    "ui-library",
+    "design-tokens",
+    "tokens-studio",
+    "style-dictionary",
+    "typescript",
+    "composition-api",
+    "scss",
+    "css-variables",
+    "theming",
+    "dark-mode",
+    "a11y"
+  ],
+  "license": "MIT",
+  "author": "Prioul Arnaud",
+  "homepage": "https://github.com/arnaudprioul/origam#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnaudprioul/origam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arnaudprioul/origam/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.vue"
+  ],
   "exports": {
     ".": {
       "scss": "./dist/src/assets/scss/main.scss",
@@ -12,6 +49,17 @@
       "scss": "./dist/src/assets/scss/main.scss",
       "style": "./dist/src/assets/css/main.css"
     },
+    "./tokens/css": "./dist/src/assets/css/tokens/primitive.css",
+    "./tokens/css/primitive": "./dist/src/assets/css/tokens/primitive.css",
+    "./tokens/css/light": "./dist/src/assets/css/tokens/light.css",
+    "./tokens/css/dark": "./dist/src/assets/css/tokens/dark.css",
+    "./tokens/css/utilities": "./dist/src/assets/css/tokens/origam-utilities.css",
+    "./tokens/scss": "./dist/src/assets/scss/tokens/_primitive.scss",
+    "./tokens/scss/primitive": "./dist/src/assets/scss/tokens/_primitive.scss",
+    "./tokens/scss/light": "./dist/src/assets/scss/tokens/_light.scss",
+    "./tokens/scss/dark": "./dist/src/assets/scss/tokens/_dark.scss",
+    "./tokens/scss/utilities": "./dist/src/assets/scss/tokens/_origam-utilities.scss",
+    "./tokens/types": "./dist/src/types/tokens.type.d.ts",
     "./origam": "./dist/src/origam.js",
     "./components": "./dist/src/components/index.js",
     "./components/*": "./dist/src/components/*/index.js",
@@ -26,7 +74,11 @@
     "./*": "./dist/src/*"
   },
   "files": [
-    "dist/"
+    "dist/src/",
+    "dist/tokens/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dev": "npm run server:dev && npm run story:dev && npm run docs:dev",
@@ -35,9 +87,12 @@
     "story:dev": "histoire dev",
     "story:build": "histoire build",
     "story:preview": "histoire preview",
-    "server:dev": "vite",
-    "server:build": "unbuild",
+    "server:dev": "npm run tokens:build && vite",
+    "server:build": "npm run tokens:build && unbuild",
     "server:preview": "vite preview",
+    "tokens:build": "node scripts/build-tokens.mjs",
+    "tokens:watch": "node scripts/build-tokens.mjs --watch",
+    "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
@@ -45,27 +100,43 @@
     "type:dev": "vue-tsc --watch --noEmit --skipLibCheck",
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "test:unit": "vitest",
-    "test:e2e": "cypress",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:cypress-legacy": "cypress",
     "test:open": "cypress open",
-    "clean": "rm -rf dist node_modules package-lock.json"
+    "clean": "rm -rf dist node_modules package-lock.json",
+    "prepublishOnly": "npm run tokens:build && npm run server:build && npm run test:unit -- --run"
   },
   "dependencies": {
-    "@mdi/font": "^7.4.47",
-    "vue": "^3.5.17",
-    "vue-i18n": "^11.1.10",
-    "vue-router": "^4.5.1"
+    "@mdi/font": "^7.4.47"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0",
+    "vue-i18n": "^11.0.0",
+    "vue-router": "^4.5.0"
+  },
+  "peerDependenciesMeta": {
+    "vue-i18n": {
+      "optional": true
+    },
+    "vue-router": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@histoire/plugin-vue": "^1.0.0-alpha.2",
+    "@histoire/plugin-vue": "^1.0.0-beta.1",
+    "@playwright/test": "^1.48.0",
+    "@tokens-studio/sd-transforms": "^1.2.9",
     "@types/jest": "^30.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/test-utils": "^2.4.6",
-    "cypress": "^14.5.2",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-vue": "^10.3.0",
     "globals": "^16.3.0",
-    "histoire": "^1.0.0-alpha.2",
+    "histoire": "^1.0.0-beta.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "markdown-it-codetabs": "^1.2.0",
@@ -73,6 +144,7 @@
     "markdown-it-footnote": "^4.0.0",
     "sass": "^1.89.2",
     "shiki": "^3.8.1",
+    "style-dictionary": "^4.4.0",
     "ts-transformer-keys": "^0.4.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.37.0",
@@ -83,6 +155,7 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitepress": "^1.6.3",
     "vitest": "^3.2.4",
+    "vue-eslint-parser": "^10.4.0",
     "vue-sfc-transformer": "^0.1.16",
     "vue-tsc": "^3.0.2"
   }

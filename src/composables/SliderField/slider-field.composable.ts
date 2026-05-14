@@ -10,6 +10,9 @@ import { clamp, createRange, getDecimals, getPosition, getSliderFieldOffset, int
 
 import { computed, provide, ref, shallowRef, toRef } from 'vue'
 
+/*********************************************************
+ * useSteps
+ ********************************************************/
 export function useSteps (props: ISliderFieldProps) {
     const min = computed(() => {
         return parseFloat(props.min ?? 0)
@@ -41,6 +44,9 @@ export function useSteps (props: ISliderFieldProps) {
     return {min, max, step, decimals, roundValue}
 }
 
+/*********************************************************
+ * useSlider
+ ********************************************************/
 export function useSlider ({
                                origamSliderFieldTrackRef,
                                origamSliderFieldThumbRef,

@@ -84,17 +84,43 @@
 	import { computed, onMounted, onScopeDispose, Ref, StyleValue, toRef } from 'vue'
 	import { OrigamVirtualScrollItem } from '../../components'
 
-	import { useDimension, useProps, useToggleScope, useVirtual } from '../../composables'
+	import {
+	useDimension,
+	useProps,
+	useStyle,
+	useToggleScope,
+	useVirtual
+} from '../../composables'
 
 	import type { IVirtualScrollProps } from '../../interfaces'
 
 	import { convertToUnit, getCurrentInstance, getScrollParent } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollProps>(), {})
 
 	const {filterProps} = useProps<IVirtualScrollProps>(props)
 
+	/*********************************************************
+	 * Virtual scroll engine
+	 *
+	 * @description
+	 * Core useVirtual composable that manages the visible item
+	 * window, padding spacers, and item resize callbacks.
+	 * In renderless mode, scroll listeners attach to the
+	 * nearest scrollable ancestor instead of an inner div.
+	 ********************************************************/
 	const vm = getCurrentInstance('OrigamVirtualScroll')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
 	const {
 		containerRef,
@@ -129,8 +155,12 @@
 		onScopeDispose(handleListeners)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles (non-renderless mode).
+	 ********************************************************/
 	const virtualScrollStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -143,11 +173,45 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		scrollToIndex,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-virtual-scroll {
+		overflow-y: auto;
+		scroll-padding: var(--origam-virtual-scroll---scroll-padding, 0px);
+
+		&__container {
+			position: relative;
+		}
+
+		&__item {
+			transition-duration: var(--origam-virtual-scroll---transition-duration, 100ms);
+			transition-timing-function: var(--origam-virtual-scroll---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+		}
+
+		&__spacer {
+			display: block;
+		}
+	}
+</style>

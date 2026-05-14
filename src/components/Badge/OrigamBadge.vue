@@ -15,19 +15,42 @@
 		        v-show="modelValue"
 		        :id="id"
 		        :aria-label="t(label, content)"
+		        :class="badgeContentClasses"
 		        aria-atomic="true"
 		        aria-live="polite"
-		        class="origam-badge__badge"
 		        role="status"
 		        v-bind="badgeAttrs"
         >
           <template v-if="!dot">
             <slot name="badge">
-              <template v-if="hasIcon">
-                <origam-icon :icon="icon"/>
+              <template v-if="hasPrependIcon">
+                <slot name="prepend">
+                  <origam-icon
+                          key="prepend-icon"
+                          class="origam-badge__prepend"
+                          :icon="prependIcon"
+                  />
+                </slot>
               </template>
-              <template v-else>
-                {{ content }}
+
+              <template v-if="hasIcon">
+                <origam-icon
+                        key="content-icon"
+                        :icon="icon"
+                />
+              </template>
+              <template v-else-if="content !== undefined && content !== null && content !== ''">
+                <span class="origam-badge__content">{{ content }}</span>
+              </template>
+
+              <template v-if="hasAppendIcon">
+                <slot name="append">
+                  <origam-icon
+                          key="append-icon"
+                          class="origam-badge__append"
+                          :icon="appendIcon"
+                  />
+                </slot>
               </template>
             </slot>
           </template>
@@ -41,18 +64,15 @@
 		lang="ts"
 		setup
 >
-	import { OrigamIcon, OrigamScaleRotate, OrigamTransition } from '../../components'
+	import { OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
 
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
-		useElevation,
 		useHover,
 		useLocale,
 		useLocation,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStatus,
 		useStyle
 	} from '../../composables'
@@ -62,13 +82,25 @@
 
 	import { omit, pick } from '../../utils'
 
-	import { computed, ComputedRef, ref, StyleValue, useAttrs } from 'vue'
+	import { computed, ComputedRef, StyleValue, useAttrs } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, locale and attributes splitting for the Badge.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBadgeProps>(), {
 		tag: 'div',
 		location: 'top right',
 		label: 'origam.badge',
-		transition: () => ({component: OrigamScaleRotate}) as unknown as TTransitionProps
+		// Default transition: fade — the canonical default for any
+		// `modelValue: boolean` show/hide component. Passed as a
+		// component descriptor (not a bare name string) so the matching
+		// `<style>` block of `OrigamFade` is guaranteed to be injected
+		// globally without depending on another OrigamFade instance
+		// being already mounted in the page.
+		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
 	const {filterProps} = useProps<IBadgeProps>(props)
@@ -76,13 +108,32 @@
 
 	const attrs = useAttrs()
 
-	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive} = useActive(props, 'modelValue')
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {icon, statusClasses} = useStatus(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state, color and location resolution.
+	 ********************************************************/
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState} = useActive(props, 'modelValue')
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	// The badge pill (`__badge` span) is the visual surface; classes go
+	// there, not on the wrapper root.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating
 				? (props.dot ? 2 : 4)
@@ -95,8 +146,20 @@
 		)
 	})
 
+	/*********************************************************
+	 * Content
+	 *
+	 * @description
+	 * Badge content capped at `max` and icon flag.
+	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!icon.value
+	})
+	const hasPrependIcon = computed(() => {
+		return !!prependIcon.value
+	})
+	const hasAppendIcon = computed(() => {
+		return !!appendIcon.value
 	})
 
 	const content = computed(() => {
@@ -130,8 +193,14 @@
 		])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all classes/styles for the root wrapper and
+	 * applies location/color styles to the badge pill via
+	 * useStyle.
+	 ********************************************************/
 	const badgeStyles = computed(() => {
 		return [
 			props.style
@@ -145,11 +214,8 @@
 				'origam-badge--floating': props.floating,
 				'origam-badge--inline': props.inline
 			},
-			elevationClasses.value,
 			activeClasses.value,
 			hoverClasses.value,
-			roundedClasses.value,
-			borderClasses.value,
 			statusClasses.value,
 			props.class
 		]
@@ -164,11 +230,25 @@
 			props.inline ? {} : locationStyles.value
 		] as StyleValue
 	})
+	const badgeContentClasses = computed(() => {
+		return [
+			'origam-badge__badge',
+			colorClasses.value,
+			roundedClasses.value,
+			borderClasses.value,
+			elevationClasses.value
+		]
+	})
 
 	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -193,6 +273,7 @@
 			align-items: center;
 			justify-content: center;
 			display: inline-flex;
+			gap: var(--origam-badge__badge---gap, 2px);
 
 			position: var(--origam-badge__badge---position);
 			pointer-events: var(--origam-badge__badge---pointer-events);
@@ -210,6 +291,7 @@
 			white-space: var(--origam-badge__badge---white-space);
 
 			height: var(--origam-badge__badge---height);
+			width: var(--origam-badge__badge---width, auto);
 			min-width: var(--origam-badge__badge---min-width);
 
 			padding-block-start: var(--origam-badge__badge---padding-block-start);
@@ -223,17 +305,67 @@
 
 			background-color: var(--origam-badge__badge---background-color);
 			color: var(--origam-badge__badge---color);
+			box-shadow: var(--origam-badge__badge---box-shadow);
 
 			:deep(.origam-icon) {
 				color: inherit;
 				font-size: 0.75rem;
-				margin: 0 -2px;
 			}
 
 			:deep(img),
 			:deep(.origam-img) {
 				height: 100%;
 				width: 100%;
+			}
+
+			&#{$this}--border {
+				--origam-badge__badge---border-width: 2px;
+			}
+
+			&#{$this}--elevated {
+				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow---md));
+			}
+
+			&#{$this}--rounded {
+				--origam-badge__badge---border-radius: var(--origam-radius---md, 8px);
+			}
+
+			&#{$this}--rounded-x-small {
+				--origam-badge__badge---border-radius: var(--origam-radius---xs, 2px);
+			}
+
+			&#{$this}--rounded-small {
+				--origam-badge__badge---border-radius: var(--origam-radius---sm, 4px);
+			}
+
+			&#{$this}--rounded-default {
+				--origam-badge__badge---border-radius: var(--origam-radius---md, 8px);
+			}
+
+			&#{$this}--rounded-medium {
+				--origam-badge__badge---border-radius: var(--origam-radius---lg, 12px);
+			}
+
+			&#{$this}--rounded-large {
+				--origam-badge__badge---border-radius: var(--origam-radius---xl, 16px);
+			}
+
+			&#{$this}--rounded-x-large {
+				--origam-badge__badge---border-radius: var(--origam-radius---2xl, 24px);
+			}
+
+			&#{$this}--rounded-shaped {
+				border-start-start-radius: var(--origam-radius---xl, 16px);
+				border-start-end-radius: 0;
+				border-end-start-radius: 0;
+				border-end-end-radius: var(--origam-radius---xl, 16px);
+			}
+
+			&#{$this}--rounded-shaped-invert {
+				border-start-start-radius: 0;
+				border-start-end-radius: var(--origam-radius---xl, 16px);
+				border-end-start-radius: var(--origam-radius---xl, 16px);
+				border-end-end-radius: 0;
 			}
 		}
 
@@ -254,27 +386,16 @@
 			margin-inline-end: var(--origam-badge__wrapper---margin-inline-end);
 		}
 
-		&--elevated {
-			#{$this}__badge {
-				--origam-badge__badge---box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-			}
-		}
-
-		&--border {
-			#{$this}__badge {
-				--origam-badge__badge---border-width: 2px;
-			}
-		}
-
 		&--dot {
 			#{$this}__badge {
 				--origam-badge__badge---border-width: 1.5px;
-				--origam-badge__badge---border-radius: 4.5px;
 				--origam-badge__badge---height: 9px;
 				--origam-badge__badge---width: 9px;
 				--origam-badge__badge---min-width: 0;
-				--origam-badge__badge---padding-block: 0;
-				--origam-badge__badge---padding-inline: 0;
+				--origam-badge__badge---padding-block-start: 0;
+				--origam-badge__badge---padding-block-end: 0;
+				--origam-badge__badge---padding-inline-start: 0;
+				--origam-badge__badge---padding-inline-end: 0;
 				--origam-badge__badge---text-indent: -9999px;
 			}
 		}
@@ -294,74 +415,24 @@
 		}
 
 		&--warning {
-			--origam-badge__badge---background-color: var(--origam-status--warning---background-color, rgb(251, 140, 0));
-			--origam-badge__badge---color: var(--origam-status--warning---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--warning---background-color, var(--origam-color__feedback--warning---bg));
+			--origam-badge__badge---color: var(--origam-badge--warning---color, var(--origam-color__feedback--warning---fg));
 		}
 
 		&--success {
-			--origam-badge__badge---background-color: var(--origam-status--success---background-color, rgb(76, 175, 80));
-			--origam-badge__badge---color: var(--origam-status--success---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--success---background-color, var(--origam-color__feedback--success---bg));
+			--origam-badge__badge---color: var(--origam-badge--success---color, var(--origam-color__feedback--success---fg));
 		}
 
 		&--info {
-			--origam-badge__badge---background-color: var(--origam-status--info---background-color, rgb(33, 150, 243));
-			--origam-badge__badge---color: var(--origam-status--info---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--info---background-color, var(--origam-color__feedback--info---bg));
+			--origam-badge__badge---color: var(--origam-badge--info---color, var(--origam-color__feedback--info---fg));
 		}
 
 		&--error {
-			--origam-badge__badge---background-color: var(--origam-status--error---background-color, rgb(207, 102, 121));
-			--origam-badge__badge---color: var(--origam-status--error---color, #ffffff);
+			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>
 
-<style>
-	:root {
-		--origam-badge__wrapper---display: flex;
-		--origam-badge__wrapper---align-items: stretch;
-		--origam-badge__wrapper---justify-content: start;
-		--origam-badge__wrapper---margin-inline-start: 0;
-		--origam-badge__wrapper---margin-inline-end: 0;
-		--origam-badge__wrapper---margin-block-start: 0;
-		--origam-badge__wrapper---margin-block-end: 0;
-		--origam-badge__wrapper---padding-block-start: 0;
-		--origam-badge__wrapper---padding-block-end: 0;
-		--origam-badge__wrapper---padding-inline-start: 0;
-		--origam-badge__wrapper---padding-inline-end: 0;
-
-		--origam-badge__badge---align-items: center;
-		--origam-badge__badge---justify-content: center;
-		--origam-badge__badge---display: inline-flex;
-		--origam-badge__badge---position: absolute;
-		--origam-badge__badge---font-size: 0.75rem;
-		--origam-badge__badge---font-weight: 500;
-		--origam-badge__badge---text-align: center;
-		--origam-badge__badge---text-indent: 0;
-		--origam-badge__badge---white-space: nowrap;
-		--origam-badge__badge---height: 1.25rem;
-		--origam-badge__badge---min-width: 20px;
-		--origam-badge__badge---pointer-events: auto;
-		--origam-badge__badge---transition-duration: 0.225s;
-		--origam-badge__badge---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-badge__badge---transition-property: all;
-		--origam-badge__badge---transition: var(--origam-badge__badge---transition-property) var(--origam-badge__badge---transition-duration) var(--origam-badge__badge---transition-timing-function);
-		--origam-badge__badge---margin-inline-start: 0;
-		--origam-badge__badge---margin-inline-end: 0;
-		--origam-badge__badge---margin-block-start: 0;
-		--origam-badge__badge---margin-block-end: 0;
-		--origam-badge__badge---padding-block-start: 4px;
-		--origam-badge__badge---padding-block-end: 4px;
-		--origam-badge__badge---padding-inline-start: 6px;
-		--origam-badge__badge---padding-inline-end: 6px;
-		--origam-badge__badge---color: rgba(30, 30, 30, 0.87);
-		--origam-badge__badge---background-color: rgb(230, 230, 230);
-		--origam-badge__badge---border-top-width: 0;
-		--origam-badge__badge---border-left-width: 0;
-		--origam-badge__badge---border-bottom-width: 0;
-		--origam-badge__badge---border-right-width: 0;
-		--origam-badge__badge---border-width: var(--origam-badge__badge---border-top-width) var(--origam-badge__badge---border-left-width) var(--origam-badge__badge---border-bottom-width) var(--origam-badge__badge---border-right-width);
-		--origam-badge__badge---border-color: currentColor;
-		--origam-badge__badge---border-style: solid;
-		--origam-badge__badge---border-radius: 10px;
-	}
-</style>

@@ -4,108 +4,110 @@
 			:class="expansionPanelsClasses"
 			:style="expansionPanelsStyles"
 	>
-		<slot name="default">
-			<template
-					v-for="(item, index) in items"
-					:key="index"
-			>
-				<slot
-						:name="`item.${index}`"
-						v-bind="{collapseIcon, expandIcon, hideActions, item, index}"
+		<origam-defaults-provider :defaults="slotDefaults">
+			<slot name="default">
+				<template
+						v-for="(item, index) in items"
+						:key="index"
 				>
 					<slot
-							name="item"
+							:name="`item.${index}`"
 							v-bind="{collapseIcon, expandIcon, hideActions, item, index}"
 					>
-						<origam-expansion-panel v-bind="{collapseIcon, expandIcon, hideActions, ...item}">
-							<template
-									v-if="slots[`header.${index}`] || slots.header"
-									#header="headerSlotProps"
-							>
-								<slot
-										:name="`header.${index}`"
-										v-bind="headerSlotProps"
+						<slot
+								name="item"
+								v-bind="{collapseIcon, expandIcon, hideActions, item, index}"
+						>
+							<origam-expansion-panel v-bind="{collapseIcon, expandIcon, hideActions, ...item}">
+								<template
+										v-if="slots[`header.${index}`] || slots.header"
+										#header="headerSlotProps"
 								>
 									<slot
-											name="header"
+											:name="`header.${index}`"
 											v-bind="headerSlotProps"
-									/>
-								</slot>
-							</template>
+									>
+										<slot
+												name="header"
+												v-bind="headerSlotProps"
+										/>
+									</slot>
+								</template>
 
-							<template
-									v-if="slots[`prepend.${index}`] || slots.prepend"
-									#prepend="prependSlotProps"
-							>
-								<slot
-										:name="`prepend.${index}`"
-										v-bind="prependSlotProps"
+								<template
+										v-if="slots[`prepend.${index}`] || slots.prepend"
+										#prepend="prependSlotProps"
 								>
 									<slot
-											name="prepend"
+											:name="`prepend.${index}`"
 											v-bind="prependSlotProps"
-									/>
-								</slot>
-							</template>
+									>
+										<slot
+												name="prepend"
+												v-bind="prependSlotProps"
+										/>
+									</slot>
+								</template>
 
-							<template
-									v-if="slots[`title.${index}`] || slots.title"
-									#title="titleSlotProps"
-							>
-								<slot
-										:name="`title.${index}`"
-										v-bind="titleSlotProps"
+								<template
+										v-if="slots[`title.${index}`] || slots.title"
+										#title="titleSlotProps"
 								>
 									<slot
-											name="title"
+											:name="`title.${index}`"
 											v-bind="titleSlotProps"
-									/>
-								</slot>
-							</template>
+									>
+										<slot
+												name="title"
+												v-bind="titleSlotProps"
+										/>
+									</slot>
+								</template>
 
-							<template
-									v-if="slots[`append.${index}`] || slots.append"
-									#append="appendSlotProps"
-							>
-								<slot
-										:name="`append.${index}`"
-										v-bind="appendSlotProps"
+								<template
+										v-if="slots[`append.${index}`] || slots.append"
+										#append="appendSlotProps"
 								>
 									<slot
-											name="append"
+											:name="`append.${index}`"
 											v-bind="appendSlotProps"
-									/>
-								</slot>
-							</template>
+									>
+										<slot
+												name="append"
+												v-bind="appendSlotProps"
+										/>
+									</slot>
+								</template>
 
-							<template
-									v-if="slots[`wrapper.${index}`] || slots.wrapper"
-									#wrapper="wrapperSlotProps"
-							>
-								<slot
-										:name="`wrapper.${index}`"
-										v-bind="wrapperSlotProps"
+								<template
+										v-if="slots[`wrapper.${index}`] || slots.wrapper"
+										#wrapper="wrapperSlotProps"
 								>
 									<slot
-											name="wrapper"
+											:name="`wrapper.${index}`"
 											v-bind="wrapperSlotProps"
-									/>
-								</slot>
-							</template>
+									>
+										<slot
+												name="wrapper"
+												v-bind="wrapperSlotProps"
+										/>
+									</slot>
+								</template>
 
-							<template
-									v-if="slots[`content.${index}`] || slots.content"
-									#default
-							>
-								<slot :name="`content.${index}`">
-									<slot name="content"/>
-								</slot>
-							</template>
-						</origam-expansion-panel>
+								<template
+										v-if="slots[`content.${index}`] || slots.content"
+										#default
+								>
+									<slot :name="`content.${index}`">
+										<slot name="content"/>
+									</slot>
+								</template>
+							</origam-expansion-panel>
+						</slot>
 					</slot>
-				</slot>
-			</template>
-		</slot>
+				</template>
+			</slot>
+		</origam-defaults-provider>
 	</component>
 </template>
 
@@ -114,24 +116,31 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamExpansionPanel } from '../../components'
+	import { OrigamDefaultsProvider, OrigamExpansionPanel } from '../../components'
 
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDensity,
-		useElevation,
 		useGroup,
-		useMargin,
-		usePadding,
+		useHover,
+		useLoader,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
 	import type { IExpansionPanelsProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, group registration, and slot defaults that cascade
+	 * visual-token props to child expansion panels.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelsProps>(), {
 		tag: 'div'
 	})
@@ -140,19 +149,55 @@
 
 	const {filterProps} = useProps<IExpansionPanelsProps>(props)
 
+	// Push visual-token props down to every descendant `<origam-expansion-panel>`
+	// as DEFAULTS — panels that pass their own props still win.
+	const slotDefaults = computed(() => ({
+		'origam-expansion-panel': {
+			density: props.density,
+			color: props.color,
+			bgColor: props.bgColor,
+			rounded: props.rounded,
+			border: props.border
+		}
+	}))
+
 	useGroup(props, ORIGAM_EXPANSION_PANEL_KEY)
 
 	const slots = useSlots()
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
+	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	/*********************************************************
+	 * Loader
+	 ********************************************************/
+
+	const {loaderClasses} = useLoader(props, 'line')
 
 	const expansionPanelsStyles = computed(() => {
 		return [
@@ -173,6 +218,8 @@
 				'origam-expansion-panels--popout': props.popout,
 				'origam-expansion-panels--inset': props.inset
 			},
+			loaderClasses.value,
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -182,11 +229,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelsStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -194,7 +252,6 @@
 		lang="scss"
 		scoped
 >
-	// TODO - Rework with css variables
 	.origam-expansion-panels {
 		$this: &;
 
@@ -278,7 +335,7 @@
 			}
 
 			:deep(.origam-expansion-panel-header__overlay) {
-				transition: 0.3s border-radius cubic-bezier(0.4, 0, 0.2, 1);
+				transition: var(--origam-expansion-panel__accordion---header-overlay-transition, 0.3s) border-radius var(--origam-expansion-panel---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 
 			> .origam-expansion-panel {
@@ -292,20 +349,20 @@
 
 		&#{$this}--popout {
 			> .origam-expansion-panel {
-				max-width: calc(100% - 32px);
+				max-width: var(--origam-expansion-panel__popout---max-width, calc(100% - 32px));
 
 				&--active {
-					max-width: calc(100% + 16px);
+					max-width: var(--origam-expansion-panel__popout---max-width-active, calc(100% + 16px));
 				}
 			}
 		}
 
 		&#{$this}--inset {
 			> .origam-expansion-panel {
-				max-width: 100%;
+				max-width: var(--origam-expansion-panel__inset---max-width, 100%);
 
 				&--active {
-					max-width: calc(100% - 32px);
+					max-width: var(--origam-expansion-panel__inset---max-width-active, calc(100% - 32px));
 				}
 			}
 		}
@@ -321,11 +378,41 @@
 				}
 			}
 		}
+
+		&--rounded {
+			--origam-expansion-panels---border-radius: var(--origam-radius---2xl, 24px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-x-small {
+			--origam-expansion-panels---border-radius: var(--origam-radius---xs, 2px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-small {
+			--origam-expansion-panels---border-radius: var(--origam-radius---sm, 4px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-default {
+			--origam-expansion-panels---border-radius: var(--origam-radius---md, 8px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-medium {
+			--origam-expansion-panels---border-radius: var(--origam-radius---lg, 12px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-large {
+			--origam-expansion-panels---border-radius: var(--origam-radius---xl, 16px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
+
+		&--rounded-x-large {
+			--origam-expansion-panels---border-radius: var(--origam-radius---2xl, 24px);
+			border-radius: var(--origam-expansion-panels---border-radius);
+		}
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

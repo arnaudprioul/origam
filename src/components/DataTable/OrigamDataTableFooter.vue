@@ -46,7 +46,7 @@
 >
 	import { OrigamPagination, OrigamRow, OrigamSelect } from "../../components"
 
-	import { useLocale, usePagination, useProps } from "../../composables"
+	import { useLocale, usePagination, useProps , useStyle} from "../../composables"
 
 	import { DENSITY } from "../../enums"
 
@@ -54,6 +54,10 @@
 	import type { TOrigamPagination } from "../../types"
 
 	import { computed, ref, StyleValue } from "vue"
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableFooterProps>(), {
 		itemsPerPageOptions: () => [
@@ -76,6 +80,10 @@
 	const {t} = useLocale()
 
 	const origamPaginationRef = ref<TOrigamPagination>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {page, pageCount, startIndex, stopIndex, itemsLength, itemsPerPage, setItemsPerPage} = usePagination()
 
@@ -108,16 +116,25 @@
 		}
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateItemsPerPage = (v: number) => {
 		setItemsPerPage(Number(v))
 	}
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const paginationProps = computed(() => {
 		return origamPaginationRef.value?.filterProps(props, ['class', 'style', 'id', 'totalVisible', 'modelValue', 'length', 'rounded', 'showFirstLastPage', 'density'])
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableFooterClasses = computed(() => {
 		return [
 			'origam-data-table-footer',
@@ -129,11 +146,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -141,5 +166,38 @@
 		lang="scss"
 		scoped
 >
+	.origam-data-table-footer {
+		align-items: var(--origam-data-table-footer---align-items, center);
+		background-color: var(--origam-data-table-footer---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table-footer---color, var(--origam-color__text---primary));
+		display: var(--origam-data-table-footer---display, flex);
+		flex-wrap: var(--origam-data-table-footer---flex-wrap, wrap);
+		justify-content: var(--origam-data-table-footer---justify-content, flex-end);
+		padding-block: var(--origam-data-table-footer---padding-block, var(--origam-space---2, 8px));
+		padding-inline: var(--origam-data-table-footer---padding-inline, var(--origam-space---1, 4px));
 
+		&__items-per-page {
+			align-items: center;
+			display: flex;
+			justify-content: center;
+			gap: var(--origam-data-table-footer__items-per-page---gap, var(--origam-space---2, 8px));
+
+			> span {
+				padding-inline-end: var(--origam-data-table-footer__items-per-page---padding-inline-end, var(--origam-space---2, 8px));
+			}
+		}
+
+		&__info {
+			display: flex;
+			justify-content: var(--origam-data-table-footer__info---justify-content, flex-end);
+			min-width: var(--origam-data-table-footer__info---min-width, 116px);
+			padding-inline: var(--origam-data-table-footer__info---padding-inline, var(--origam-space---4, 16px));
+		}
+
+		&__pagination {
+			align-items: center;
+			display: flex;
+			margin-inline-start: var(--origam-data-table-footer__pagination---margin-inline-start, var(--origam-space---4, 16px));
+		}
+	}
 </style>

@@ -1,3 +1,9 @@
+/**
+ * Format border styles var.
+ *
+ * @param values …
+ * @param type   …
+ */
 export function formatBorderStylesVar (values: Array<string>, type: string) {
     const styles = []
 

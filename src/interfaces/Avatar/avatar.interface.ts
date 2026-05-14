@@ -1,6 +1,7 @@
 import type {
     IActiveProps,
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -11,13 +12,19 @@ import type {
     IRoundedProps,
     ISizeProps,
     ISrcObject,
-    IStatusProps,
     ITagProps
 } from '../../interfaces'
 
-export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IPaddingProps, IMarginProps, IBorderProps, IStatusProps, IElevationProps, IHoverProps, IActiveProps {
+import type { TIcon } from '../../types'
+
+export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps {
     start?: boolean,
     end?: boolean,
+    /**
+     * Renders an icon inside the avatar (centered). Mutually exclusive
+     * with `image` and `text`: image wins, then icon, then text.
+     */
+    icon?: TIcon,
     image?: string | ISrcObject,
     text?: string
 }

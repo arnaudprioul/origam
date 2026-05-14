@@ -1,5 +1,15 @@
 <template>
+	<origam-skeleton
+			v-if="isSkeletonLoading"
+			variant="rectangular"
+			:rounded="true"
+			:width="'52px'"
+			:height="'32px'"
+			v-bind="loaderConfig.overrides"
+	/>
+
 	<origam-input
+			v-else
 			:id="id"
 			ref="origamInputRef"
 			v-model="model"
@@ -23,37 +33,40 @@
 					@focus="handleFocus"
 					@update:model-value="handleChange"
 			>
-				<template #default="{backgroundColorStyles, textColorStyles}">
-					<div
-							:style="[backgroundColorStyles, textColorStyles]"
-							class="origam-switch__track"
+				<template #default="{bgColor: scBgColor}">
+					<origam-switch-track
+							:bg-color="scBgColor"
+							:disabled="isDisabled"
+							:error="isValid === false"
+							:inset="inset"
+							:is-valid="isValid"
+							:model-value="model"
+							:readonly="isReadonly"
 							@click="handleTrackClick"
 					>
-						<div
+						<template
 								v-if="slots['track.true']"
-								key="prepend"
-								class="origam-switch__track-true"
+								#track.true="slotProps"
 						>
 							<slot
 									name="track.true"
-									v-bind="{model, isValid}"
+									v-bind="slotProps"
 							/>
-						</div>
+						</template>
 
-						<div
+						<template
 								v-if="slots['track.false']"
-								key="append"
-								class="origam-switch__track-false"
+								#track.false="slotProps"
 						>
 							<slot
 									name="track.false"
-									v-bind="{model, isValid}"
+									v-bind="slotProps"
 							/>
-						</div>
-					</div>
+						</template>
+					</origam-switch-track>
 				</template>
 
-				<template #input="{model, backgroundColorStyles, icon, props: selectionControlProps}">
+				<template #input="{model, icon, props: selectionControlProps}">
 					<input
 							ref="input"
 							:aria-checked="selectionControlProps.type === 'checkbox' ? model : undefined"
@@ -62,13 +75,11 @@
 							:checked="model"
 							v-bind="selectionControlProps"
 					/>
-
 					<div
-							:class="['origam-switch__thumb', { 'origam-switch__thumb--filled': !!icon || props.loading }]"
-							:style="props.inset ? undefined : backgroundColorStyles"
+							:class="getSwitchThumbClasses(icon)"
 					>
 						<origam-translate-scale>
-							<template v-if="!props.loading">
+							<template v-if="!loaderConfig.isActive">
 								<origam-icon
 										v-if="icon"
 										:icon="icon"
@@ -80,14 +91,15 @@
 								<slot name="loader">
 									<div class="origam-switch__loader">
 										<origam-progress
-												:active="!!props.loading"
-												:color="props.color"
-												:indeterminate="typeof props.loading !== 'number'"
-												:model-value="typeof props.loading === 'number' ? props.loading : undefined"
+												:active="loaderConfig.isActive"
+												:color="color"
+												:indeterminate="loaderConfig.indeterminate"
+												:model-value="loaderConfig.modelValue"
 												:size="SIZES.X_SMALL"
 												:type="PROGRESS_TYPE.CIRCULAR"
 												class="origam-switch__progress origam-switch__progress--circular"
 												thickness="2"
+												v-bind="loaderConfig.overrides"
 										/>
 									</div>
 								</slot>
@@ -98,9 +110,7 @@
 			</origam-selection-control>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -110,10 +120,20 @@
 		OrigamInput,
 		OrigamProgress,
 		OrigamSelectionControl,
+		OrigamSkeleton,
+		OrigamSwitchTrack,
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useFocus, useLoader, useProps, useVModel } from '../../composables'
+	import {
+		useFocus,
+		useHover,
+		useLoader,
+		useProps,
+		useStateEffect,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
@@ -123,6 +143,13 @@
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ISwitchProps>(), {
 		density: DENSITY.DEFAULT,
 		centerAffix: true
@@ -130,54 +157,119 @@
 
 	defineEmits(['update:modelValue', 'update:focused', 'update:indeterminate', 'click:label'])
 
+
+	const {isHover, hoverState} = useHover(props)
+	useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<ISwitchProps>(props)
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 	const origamInputRef = ref<TOrigamInput>()
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Model binding, indeterminate state and focus handling.
+	 ********************************************************/
+
 	const indeterminate = useVModel(props, 'indeterminate')
 	const model = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
 	const attrs = useAttrs()
 	const slots = useSlots()
 
-	const {loaderClasses} = useLoader(props)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
 
 	const uid = getUid()
 	const id = computed(() => {
 		return props.id || `switch-${uid}`
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Change and track-click handlers.
+	 ********************************************************/
+
 	const handleChange = () => {
 		if (indeterminate.value) {
 			indeterminate.value = false
 		}
 	}
-	const handleTrackClick = (e: Event) => {
-		e.stopPropagation()
-		e.preventDefault()
+	const handleTrackClick = (_e: MouseEvent) => {
+		// `OrigamSwitchTrack` already calls `stopPropagation` /
+		// `preventDefault` on the native event before emitting — we just
+		// need to forward the click to the hidden `<input>` so the
+		// SelectionControl picks it up and toggles `model`.
 		origamSelectionControlRef.value?.inputRef?.click()
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered attrs and props passed down to inner components.
+	 * `color` and `bgColor` are STRICTLY scoped to the SelectionControl
+	 * (track / thumb / label). Stripping them from `inputProps` prevents
+	 * `OrigamInput` (the outer row wrapper) from also applying them as
+	 * `background-color` on its root — pre-fix the consumer's
+	 * `bg-color="success"` painted the entire switch row green
+	 * (including the label area), instead of just the track.
+	 ********************************************************/
+
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'focused', 'id', 'style'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id'])
 	})
 
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Derived flags combining slot and prop loading states.
+	 ********************************************************/
+
 	const hasLoading = computed(() => {
-		return slots.loader || !!props.loading
+		return slots.loader || loaderConfig.value.isActive
 	})
 
-	// CLASS & STYLES
+	// True when the whole switch should be replaced by a skeleton placeholder.
+	const isSkeletonLoading = computed(() => {
+		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
+	})
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const switchStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
 	})
+	const getSwitchThumbClasses = (icon: unknown) => {
+		return [
+			'origam-switch__thumb',
+			{ 'origam-switch__thumb--filled': !!icon || loaderConfig.value.isActive }
+		]
+	}
 	const switchClasses = computed(() => {
 		return [
 			'origam-switch',
@@ -190,11 +282,24 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(switchStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -217,7 +322,6 @@
 			}
 		}
 
-		&__track,
 		&__thumb {
 			transition: none;
 
@@ -228,7 +332,7 @@
 		}
 
 		.origam-selection-control {
-			min-height: calc(var(--origam-input__control---height, 56px) + var(--origam-input---density, 0px));
+			min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
 			:deep(.origam-selection-control__input) {
 				border-radius: 50%;
@@ -249,23 +353,10 @@
 
 			&--error {
 				&:not(.origam-selection-control--disabled) {
-					#{$this}__track,
 					#{$this}__thumb {
 						background-color: rgba(255, 0, 0, 1);
-						color: rgba(255, 255, 255, 5);
+						color: rgba(255, 255, 255, 1);
 					}
-				}
-			}
-
-			&:not(.origam-selection-control--dirty) {
-				#{$this}__track-true {
-					opacity: 0;
-				}
-			}
-
-			&--dirty {
-				#{$this}__track-false {
-					opacity: 0;
 				}
 			}
 		}
@@ -284,32 +375,25 @@
 			}
 		}
 
-		&__track-true {
-			margin-inline-end: auto;
+		.origam-selection-control__wrapper.origam--color-primary &__thumb,
+		.origam-selection-control__wrapper.origam--color-secondary &__thumb,
+		.origam-selection-control__wrapper.origam--color-success &__thumb,
+		.origam-selection-control__wrapper.origam--color-warning &__thumb,
+		.origam-selection-control__wrapper.origam--color-danger &__thumb,
+		.origam-selection-control__wrapper.origam--color-info &__thumb,
+		.origam-selection-control__wrapper.origam--color-neutral &__thumb {
+			background-color: currentColor;
 		}
 
-		&__track-false {
-			margin-inline-start: auto;
-		}
-
-		&__track {
-			display: inline-flex;
-			align-items: center;
-			font-size: 0.5rem;
-			padding: 0 5px;
-			background-color: rgb(163, 163, 163);
-			border-radius: 9999px;
-			height: 14px;
-			opacity: 0.6;
-			min-width: 36px;
-			cursor: pointer;
-			transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+		.origam-selection-control__wrapper[style*="color:"] &__thumb {
+			background-color: currentColor;
 		}
 
 		&__thumb {
 			align-items: center;
-			background-color: rgb(71, 71, 71);
-			color: rgb(255, 255, 255);
+			background-color: var(--origam-switch__thumb---background-color, rgb(255, 255, 255));
+			color: var(--origam-switch__thumb---color, currentColor);
+			border: 1px solid var(--origam-switch__thumb---border-color, rgba(0, 0, 0, 0.18));
 			border-radius: 50%;
 			display: flex;
 			font-size: 0.75rem;
@@ -317,7 +401,7 @@
 			justify-content: center;
 			width: 20px;
 			pointer-events: none;
-			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1), 0.2s border-color cubic-bezier(0.4, 0, 0.2, 1);
 			position: relative;
 			overflow: hidden;
 
@@ -327,16 +411,6 @@
 		}
 
 		&#{$this}--inset {
-			#{$this}__track {
-				border-radius: 9999px;
-				font-size: 0.75rem;
-				height: 32px;
-				min-width: 52px;
-
-				@media (forced-colors: active) {
-					border-width: 2px;
-				}
-			}
 
 			#{$this}__thumb {
 				height: 24px;
@@ -355,7 +429,6 @@
 						transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1);
 					}
 				}
-
 
 			}
 
@@ -377,22 +450,6 @@
 			}
 		}
 
-		&:not(#{$this}--inset) {
-			#{$this}__thumb {
-				box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
-			}
-		}
-
-		&#{$this}--flat {
-			:not(#{$this}--inset) {
-				#{$this}__thumb {
-					background: rgb(var(--v-theme-surface-variant));
-					color: rgb(var(--v-theme-on-surface-variant));
-					box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-				}
-			}
-		}
-
 		&#{$this}--indeterminate {
 			:deep(.origam-selection-control__input) {
 				transform: scale(0.8);
@@ -400,7 +457,6 @@
 
 			#{$this}__thumb {
 				transform: scale(0.75);
-				box-shadow: none;
 			}
 		}
 
@@ -408,12 +464,6 @@
 			#{$this}__thumb {
 				@media (forced-colors: active) {
 					background-color: graytext;
-				}
-			}
-
-			#{$this}__track,
-			#{$this}__thumb {
-				@media (forced-colors: active) {
 					color: graytext;
 				}
 			}
@@ -450,14 +500,7 @@
 
 		&:not(.origam-input--disabled) {
 			.origam-selection-control--dirty {
-				#{$this}__track {
-					@media (forced-colors: active) {
-						background-color: highlight;
-					}
-				}
-
-				#{$this}__track,
-				#{$this}_thumb {
+				#{$this}__thumb {
 					@media (forced-colors: active) {
 						color: highlight;
 					}

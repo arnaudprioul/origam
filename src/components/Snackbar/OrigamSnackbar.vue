@@ -16,21 +16,17 @@
 	>
 		<template #default>
       <span
-		      key="underlay"
-		      class="origam-snackbar__underlay"
+	      key="underlay"
+	      class="origam-snackbar__underlay"
       />
 
 			<div
-					v-if="props.timer && !isHovering"
-					key="timer"
-					class="origam-snackbar__timer"
+					v-if="timer"
+					:key="`timer-${timerKey}`"
+					:class="snackbarTimerClasses"
+					:style="{ '--origam-snackbar__timer---duration': `${timeout}ms` }"
 			>
-				<origam-progress
-						ref="origamProgressRef"
-						:max="props.timeout"
-						:model-value="countdown.time.value"
-						:type="PROGRESS_TYPE.LINEAR"
-				/>
+				<div class="origam-snackbar__timer-bar"/>
 			</div>
 
 			<div
@@ -91,35 +87,36 @@
 		watch,
 		watchEffect
 	} from 'vue'
-	import { OrigamIcon, OrigamOverlay, OrigamProgress, OrigamSnack } from '../../components'
+	import { OrigamIcon, OrigamOverlay, OrigamSnack } from '../../components'
 
 	import {
-		useBorder,
 		useBothColor,
-		useCountdown,
-		useElevation,
 		useLayout,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
 		useScopeId,
 		useStatus,
+		useStyle,
 		useToggleScope,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { ORIGAM_LAYOUT_KEY } from '../../consts'
 
-	import { PROGRESS_TYPE, SCROLL_STRATEGIES } from '../../enums'
+	import { SCROLL_STRATEGIES } from '../../enums'
 
 	import type { ISnackbarProps } from "../../interfaces"
 
-	import type { TOrigamOverlay, TOrigamProgress, TTransitionProps } from '../../types'
+	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 
-	import { forwardRefs, refElement } from '../../utils'
+	import { forwardRefs } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISnackbarProps>(), {
 		timeout: 5000,
 		location: 'bottom',
@@ -135,25 +132,43 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & Countdown
+	 *
+	 * @description
+	 * v-model active state, countdown timer, and auto-dismiss
+	 * timeout management.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {positionClasses} = usePosition(props)
 	const {scopeId} = useScopeId()
-	const countdown = useCountdown(Number(props.timeout))
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, statusClasses} = useStatus(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
-
 	const origamOverlayRef = ref<TOrigamOverlay>()
-	const origamProgressRef = ref<TOrigamProgress>()
 	const isHovering = shallowRef(false)
 	const startY = shallowRef(0)
 	const mainStyles = ref()
 	const hasLayout = inject(ORIGAM_LAYOUT_KEY, undefined)
+
+	// Bumped each time the timer should restart (open / timeout-prop
+	// change). Drives the `:key` on the timer element so Vue re-mounts
+	// it and the CSS animation runs from the top.
+	const timerKey = shallowRef(0)
 
 	useToggleScope(() => !!hasLayout, () => {
 		const layout = useLayout()
@@ -165,22 +180,22 @@
 
 	let activeTimeout = -1
 	const startTimeout = () => {
-		countdown.reset()
 		window.clearTimeout(activeTimeout)
 		const timeout = Number(props.timeout)
 
 		if (!isActive.value || timeout === -1) return
 
-		const element = refElement(origamProgressRef.value)
-
-		countdown.start(element)
+		// Re-key the timer element so Vue re-mounts it and the CSS
+		// `transform: scaleX` animation runs from `1` (full width) to
+		// `0` (collapsed) over the requested timeout. No interval-based
+		// JS counter, no staccato updates — pure GPU-accelerated.
+		timerKey.value++
 
 		activeTimeout = window.setTimeout(() => {
 			isActive.value = false
 		}, timeout)
 	}
 	const clearTimeout = () => {
-		countdown.reset()
 		window.clearTimeout(activeTimeout)
 	}
 
@@ -190,6 +205,17 @@
 	onMounted(() => {
 		if (isActive.value) startTimeout()
 	})
+
+	/*********************************************************
+	 * Interaction
+	 *
+	 * @description
+	 * Hover pause/resume, swipe-to-dismiss touch handling.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handlePointerenter = () => {
 		isHovering.value = true
@@ -208,13 +234,40 @@
 		}
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered overlay props and merged content wrapper props
+	 * (color, rounded, border, padding, margin, hover handlers).
+	 ********************************************************/
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for tokenised intents on the snackbar wrapper; `colorStyles` keeps
+	// the legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['class', 'style', 'id', 'contentProps', 'modelValue', 'disableGlobalStack', 'noClickAnimation', 'persistent', 'scrim', 'scrollStrategy'])
 	})
 	const contentProps = computed(() => {
 		return mergeProps({
 			class: [
-				'origam-snackbar__wrapper'
+				'origam-snackbar__wrapper',
+				// Color utility class lives ONLY on the wrapper (where the
+				// `colorStyles` already paints the surface). The other
+				// composables (`rounded`/`border`/`padding`/`margin`/
+				// `elevation`) are already injected on the root via
+				// `snackbarClasses` so we don't duplicate them here.
+				colorClasses.value
 			],
 			style: [
 				colorStyles.value,
@@ -228,6 +281,12 @@
 		}, props.contentProps)
 	})
 
+	/*********************************************************
+	 * Slot helpers
+	 *
+	 * @description
+	 * Computed flags for conditional slot / icon rendering.
+	 ********************************************************/
 	const hasPrepend = computed(() => {
 		return !!(slots['prepend'] || icon.value)
 	})
@@ -236,8 +295,12 @@
 	})
 	const hasContent = slots.default || slots.text || !!(props.text) || hasPrepend.value
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element location classes and styles.
+	 ********************************************************/
 	const locationClasses = computed(() => {
 		return props.location.split(' ').reduce((acc, loc) => {
 			acc[`origam-snackbar--${loc}`] = true
@@ -250,6 +313,12 @@
 			mainStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const snackbarTimerClasses = computed(() => {
+		return [
+			'origam-snackbar__timer',
+			{ 'origam-snackbar__timer--paused': isHovering.value }
+		]
 	})
 	const snackbarClasses = computed(() => {
 		return [
@@ -271,10 +340,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(snackbarStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style
@@ -285,9 +366,9 @@
 		$this: &;
 
 		justify-content: center;
-		z-index: 10000;
-		margin: 8px;
-		margin-inline-end: calc(8px + 0px);
+		z-index: var(--origam-snackbar---z-index, var(--origam-z-index-toast, 1060));
+		margin: var(--origam-snackbar---margin, 8px);
+		margin-inline-end: calc(var(--origam-snackbar---margin, 8px) + 0px);
 		padding: var(--origam-layout---position-top) var(--origam-layout---position-right) var(--origam-layout---position-bottom) var(--origam-layout---position-left);
 
 		&:not(#{$this}--center) {
@@ -299,9 +380,9 @@
 		:deep(#{$this}__wrapper) {
 			align-items: center;
 			display: flex;
-			max-width: 672px;
-			min-height: 48px;
-			min-width: 344px;
+			max-width: var(--origam-snackbar__wrapper---max-width, 672px);
+			min-height: var(--origam-snackbar__wrapper---min-height, 48px);
+			min-width: var(--origam-snackbar__wrapper---min-width, 344px);
 			overflow: hidden;
 			padding: 0;
 		}
@@ -312,26 +393,26 @@
 
 		&__content {
 			flex-grow: 1;
-			font-size: 0.875rem;
-			font-weight: 400;
-			letter-spacing: 0.0178571429em;
-			line-height: 1.425;
+			font-size: var(--origam-snackbar__content---font-size, 0.875rem);
+			font-weight: var(--origam-snackbar__content---font-weight, 400);
+			letter-spacing: var(--origam-snackbar__content---letter-spacing, 0.0178571429em);
+			line-height: var(--origam-snackbar__content---line-height, 1.425);
 			margin-right: auto;
-			padding: 14px 16px;
+			padding: var(--origam-snackbar__content---padding-block, 14px) var(--origam-snackbar__content---padding-inline, 16px);
 			text-align: initial;
 			align-items: center;
 			display: flex;
 		}
 
 		&__prepend {
-			margin-inline-end: 12px;
+			margin-inline-end: var(--origam-snackbar__prepend---margin-inline-end, 12px);
 		}
 
 		&__actions {
 			align-items: center;
 			align-self: center;
 			display: flex;
-			margin-inline-end: 8px;
+			margin-inline-end: var(--origam-snackbar__actions---margin-inline-end, 8px);
 
 			> .origam-btn {
 				padding: 0 8px;
@@ -341,36 +422,88 @@
 
 		&__timer {
 			width: 100%;
+			height: var(--origam-snackbar__timer---height, 3px);
 			position: absolute;
 			top: 0;
+			left: 0;
+			overflow: hidden;
+			pointer-events: none;
 
-			:deep(.origam-progress-linear) {
-				transition: 0.2s linear;
+			&-bar {
+				width: 100%;
+				height: 100%;
+				background-color: var(--origam-snackbar__timer-bar---background-color, currentColor);
+				opacity: var(--origam-snackbar__timer-bar---opacity, 0.5);
+				transform-origin: left center;
+				animation: origam-snackbar__timer-shrink var(--origam-snackbar__timer---duration, 5000ms) linear forwards;
+				will-change: transform;
 			}
+
+			&--paused &-bar {
+				animation-play-state: paused;
+			}
+		}
+
+		@keyframes origam-snackbar__timer-shrink {
+			from { transform: scaleX(1); }
+			to   { transform: scaleX(0); }
 		}
 
 		&--border {
 			:deep(#{$this}__wrapper) {
-				border-width: thin;
-				border-style: solid;
-				box-shadow: none;
+				border-width: var(--origam-snackbar__wrapper---border-width, thin);
+				border-style: var(--origam-snackbar__wrapper---border-style, solid);
+			}
+		}
+
+		@each $status in (success, info, warning, danger) {
+			&--#{$status} {
+				color: var(--origam-color__feedback--#{$status}---fgSubtle);
+				background: transparent;
+
+				:deep(#{$this}__wrapper) {
+					background-color: var(--origam-color__feedback--#{$status}---bgSubtle);
+					border-color: var(--origam-color__feedback--#{$status}---border);
+					color: var(--origam-color__feedback--#{$status}---fgSubtle);
+				}
+
+				#{$this}__timer-bar {
+					background-color: var(--origam-color__feedback--#{$status}---border);
+					opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
+				}
+			}
+		}
+
+		&--error {
+			color: var(--origam-color__feedback--danger---fgSubtle);
+			background: transparent;
+
+			:deep(#{$this}__wrapper) {
+				background-color: var(--origam-color__feedback--danger---bgSubtle);
+				border-color: var(--origam-color__feedback--danger---border);
+				color: var(--origam-color__feedback--danger---fgSubtle);
+			}
+
+			#{$this}__timer-bar {
+				background-color: var(--origam-color__feedback--danger---border);
+				opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
 			}
 		}
 
 		&--rounded {
 			:deep(#{$this}__wrapper) {
-				border-radius: 4px;
+				border-radius: var(--origam-snackbar__wrapper---border-radius, 4px);
 			}
 		}
 
 		&--absolute {
 			position: absolute;
-			z-index: 1;
+			z-index: var(--origam-snackbar--absolute---z-index, var(--origam-z-index-raised, 1));
 		}
 
 		&--multi-line {
 			#{$this}__wrapper {
-				min-height: 68px;
+				min-height: var(--origam-snackbar--multi-line---wrapper-min-height, 68px);
 			}
 		}
 
@@ -380,7 +513,7 @@
 
 				#{$this}__actions {
 					align-self: flex-end;
-					margin-bottom: 8px;
+					margin-bottom: var(--origam-snackbar--vertical---actions-margin-bottom, 8px);
 				}
 			}
 		}
@@ -409,8 +542,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

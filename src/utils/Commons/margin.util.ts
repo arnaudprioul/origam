@@ -1,3 +1,8 @@
+/**
+ * Format margin styles var.
+ *
+ * @param values …
+ */
 export function formatMarginStylesVar (values: Array<string>) {
     const styles = []
 

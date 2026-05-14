@@ -1,3 +1,8 @@
+/**
+ * Format padding styles var.
+ *
+ * @param values …
+ */
 export function formatPaddingStylesVar (values: Array<string>) {
     const styles = []
 

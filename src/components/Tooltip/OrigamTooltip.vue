@@ -23,9 +23,14 @@
 		</template>
 
 		<template #default>
-			<slot name="default">
-				<span>{{ text }}</span>
-			</slot>
+			<div
+					:class="tooltipContentClasses"
+					:style="colorStyles"
+			>
+				<slot name="default">
+					<span>{{ text }}</span>
+				</slot>
+			</div>
 		</template>
 	</origam-overlay>
 </template>
@@ -34,10 +39,16 @@
 		lang="ts"
 		setup
 >
-	import { computed, mergeProps, ref, StyleValue } from 'vue'
+	import { computed, mergeProps, ref, StyleValue, toRef } from 'vue'
 	import { OrigamFade, OrigamOverlay, OrigamTranslateScale } from '../../components'
 
-	import { useProps, useScopeId, useVModel } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
@@ -46,6 +57,10 @@
 	import type { TAnchor, TOrigamOverlay } from '../../types'
 
 	import { forwardRefs, getUid } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ITooltipProps>(), {
 		closeOnBack: false,
@@ -65,6 +80,24 @@
 	defineEmits(['update:modelValue'])
 
 	const {filterProps} = useProps<ITooltipProps>(props)
+
+	// `useBothColor` produces inline `color: …` and `background-color: …`
+	// declarations from intent props. Pre-fix `ITooltipProps` did NOT
+	// extend `IColorProps`, so a consumer `<origam-tooltip
+	// color="primary">` was a silent no-op despite the SCSS reading
+	// `var(--origam-tooltip---background-color)` from the design tokens.
+	// Wired here so the inline declaration on `.origam-tooltip__content`
+	// wins via inline-style specificity.
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()
@@ -101,16 +134,27 @@
 		}, props.activatorProps)
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'class', 'style', 'modelValue', 'location', 'origin', 'transition', 'disableGlobalStack', 'absolute', 'persistent', 'id'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const tooltipStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
+	})
+	const tooltipContentClasses = computed(() => {
+		return [
+			'origam-tooltip__content',
+			colorClasses.value
+		]
 	})
 	const tooltipClasses = computed(() => {
 		return [
@@ -118,21 +162,43 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(tooltipStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
+	}, origamOverlayRef))
 </script>
 
 <style
 		lang="scss"
 		scoped
 >
+	.origam-tooltip {
+		background-color: transparent;
+		z-index: var(--origam-tooltip---z-index, 1070);
+	}
 
-</style>
-
-<style>
-	:root {
-
+	.origam-tooltip__content {
+		background-color: var(--origam-tooltip---background-color, var(--origam-color__neutral---800));
+		color: var(--origam-tooltip---color, var(--origam-color__text---inverse));
+		font-size: var(--origam-tooltip---font-size, 0.75rem);
+		font-weight: var(--origam-tooltip---font-weight, 500);
+		line-height: var(--origam-tooltip---line-height, 1.5);
+		padding-block: var(--origam-tooltip---padding-block, 4px);
+		padding-inline: var(--origam-tooltip---padding-inline, 8px);
+		border-radius: var(--origam-tooltip---border-radius, 4px);
+		max-width: var(--origam-tooltip---max-width, 300px);
+		opacity: var(--origam-tooltip---opacity, 1);
+		display: inline-block;
+		width: max-content;
 	}
 </style>

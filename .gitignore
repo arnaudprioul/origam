@@ -25,6 +25,7 @@ docs/.vitepress/cache
 .vscode
 !.vscode/extensions.json
 .idea
+.claude
 .DS_Store
 *.suo
 *.ntvs*
@@ -32,4 +33,39 @@ docs/.vitepress/cache
 *.sln
 *.sw?
 
+# Test
+tests/e2e/.report
+tests/e2e/.results
 
+# Debug files
+*.debug*
+
+
+maquettes/
+
+# TypeScript / tsc build artefacts — never track
+# These are emitted by `tsc --emitDeclarationOnly` or by the IDE's
+# Volar TS plugin. The repo authors only `.ts` / `.vue` / `.scss` in
+# `src/`; any sibling `.js` / `.d.ts` / `.vue.js` is a build artefact.
+*.tsbuildinfo
+*.vue.js
+src/**/*.js
+src/components/**/*.d.ts
+src/composables/**/*.d.ts
+src/consts/**/*.d.ts
+src/directives/**/*.d.ts
+src/enums/**/*.d.ts
+src/interfaces/**/*.d.ts
+src/layouts/**/*.d.ts
+src/types/**/*.d.ts
+src/utils/**/*.d.ts
+src/services/**/*.d.ts
+src/stores/**/*.d.ts
+src/assets/**/*.d.ts
+src/factories/**/*.d.ts
+src/icons/**/*.d.ts
+src/locales/**/*.d.ts
+src/plugins/**/*.d.ts
+vite.config.js
+vite.config.d.ts
+docs/tsconfig.tsbuildinfo

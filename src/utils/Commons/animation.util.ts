@@ -1,6 +1,12 @@
 import type { IBox } from '../../interfaces'
 import { Box } from '../../services'
 
+/**
+ * Nullify transforms.
+ *
+ * @param el …
+ * @returns …
+ */
 export function nullifyTransforms (el: HTMLElement): IBox {
     const rect = el.getBoundingClientRect()
     const style = getComputedStyle(el)
@@ -36,6 +42,13 @@ export function nullifyTransforms (el: HTMLElement): IBox {
     }
 }
 
+/**
+ * Animate.
+ *
+ * @param el        …
+ * @param keyframes …
+ * @param options   …
+ */
 export function animate (
     el: Element,
     keyframes: Array<Keyframe> | PropertyIndexedKeyframes | null,

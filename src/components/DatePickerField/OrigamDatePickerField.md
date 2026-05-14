@@ -1,5 +1,0 @@
-# Origamdatepickerfield
-
-## Usage
-
-    <OrigamDatePickerField />
