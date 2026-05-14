@@ -150,6 +150,17 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<div style="padding: 24px;">
+				<origam-checkbox-btn
+						v-model="slotDefaultModel"
+						data-cy="checkbox-btn-slot-default"
+				>
+					<span>Custom slot content</span>
+				</origam-checkbox-btn>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<div style="padding: 24px;">
 				<origam-checkbox-btn
@@ -244,6 +255,7 @@
 
 	const checkedModel           = ref(false)
 	const statesModel            = ref(false)
+	const slotDefaultModel       = ref(false)
 	const slotLabelModel         = ref(false)
 	const slotInputModel         = ref(false)
 	const emitModel              = ref(false)

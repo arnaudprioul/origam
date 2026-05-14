@@ -229,6 +229,123 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — activator">
+			<div style="padding: 16px;" data-cy="dialog-slot-activator-host">
+				<origam-dialog v-model="slotActivatorOpen" title="Activator slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open (custom activator)" data-cy="dialog-slot-activator-btn"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Custom activator slot demo.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — asset">
+			<div style="padding: 16px;" data-cy="dialog-slot-asset-host">
+				<origam-dialog v-model="slotAssetOpen" title="Asset slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-asset-activator"/>
+					</template>
+					<template #asset>
+						<origam-icon :icon="MDI_ICONS.STAR" :size="48"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Custom asset slot demo.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — content">
+			<div style="padding: 16px;" data-cy="dialog-slot-content-host">
+				<origam-dialog v-model="slotContentOpen" title="Content slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-content-activator"/>
+					</template>
+					<template #content>
+						<span>Custom slot content</span>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<div style="padding: 16px;" data-cy="dialog-slot-default-host">
+				<origam-dialog v-model="slotDefaultOpen" title="Default slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-default-activator"/>
+					</template>
+					<span>Custom slot content</span>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — footer">
+			<div style="padding: 16px;" data-cy="dialog-slot-footer-host">
+				<origam-dialog v-model="slotFooterOpen" title="Footer slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-footer-activator"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+					<template #footer>
+						<span>Custom slot content</span>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header">
+			<div style="padding: 16px;" data-cy="dialog-slot-header-host">
+				<origam-dialog v-model="slotHeaderOpen">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-activator"/>
+					</template>
+					<template #header>
+						<span>Custom slot content</span>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-append">
+			<div style="padding: 16px;" data-cy="dialog-slot-header-append-host">
+				<origam-dialog v-model="slotHeaderAppendOpen" title="Header append slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-append-activator"/>
+					</template>
+					<template #header-append>
+						<origam-icon :icon="MDI_ICONS.HEART" :size="20"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-content">
+			<div style="padding: 16px;" data-cy="dialog-slot-header-content-host">
+				<origam-dialog v-model="slotHeaderContentOpen">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-content-activator"/>
+					</template>
+					<template #header-content>
+						<span>Custom slot content</span>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — header-prepend">
 			<div style="padding: 16px;" data-cy="dialog-slot-header-prepend-host">
 				<origam-dialog v-model="slotPrependOpen" title="With prepend icon">
@@ -240,6 +357,67 @@
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Custom header-prepend slot.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-subtitle">
+			<div style="padding: 16px;" data-cy="dialog-slot-header-subtitle-host">
+				<origam-dialog v-model="slotHeaderSubtitleOpen">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-subtitle-activator"/>
+					</template>
+					<template #header-subtitle>
+						<span>Custom slot content</span>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-title">
+			<div style="padding: 16px;" data-cy="dialog-slot-header-title-host">
+				<origam-dialog v-model="slotHeaderTitleOpen">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-title-activator"/>
+					</template>
+					<template #header-title>
+						<span>Custom slot content</span>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<div style="padding: 16px;" data-cy="dialog-slot-loader-host">
+				<origam-dialog v-model="slotLoaderOpen" title="Loader slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-loader-activator"/>
+					</template>
+					<template #loader>
+						<span>Loading…</span>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Content here.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — text">
+			<div style="padding: 16px;" data-cy="dialog-slot-text-host">
+				<origam-dialog v-model="slotTextOpen" title="Text slot">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-text-activator"/>
+					</template>
+					<template #text>
+						<span>Custom slot content</span>
 					</template>
 				</origam-dialog>
 			</div>
@@ -267,6 +445,31 @@
 					</origam-dialog>
 					<span data-cy="dialog-emit-state" style="display: block; margin-top: 8px;">open={{ emitOpen }}</span>
 					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 4px; padding-left: 16px;">
+						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+					</ul>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Emit — isRead"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px;" data-cy="dialog-emit-is-read-host">
+					<origam-dialog
+							v-model="emitIsReadOpen"
+							title="isRead emit"
+							@is-read="(v: boolean) => { state.log = [`isRead → ${v}`, ...state.log].slice(0, 5) }"
+					>
+						<template #activator="{ props: a }">
+							<origam-btn v-bind="a" text="Open (watch Events tab)" data-cy="dialog-emit-is-read-activator"/>
+						</template>
+						<template #content>
+							<p style="padding: 0 16px;">Scroll or interact to trigger isRead.</p>
+						</template>
+					</origam-dialog>
+					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
 						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
 					</ul>
 				</div>
@@ -318,8 +521,21 @@
 	const scrollableOpen = ref(false)
 	const persistentOpen = ref(false)
 	const statusOpen = ref(false)
+	const slotActivatorOpen = ref(false)
+	const slotAssetOpen = ref(false)
+	const slotContentOpen = ref(false)
+	const slotDefaultOpen = ref(false)
+	const slotFooterOpen = ref(false)
+	const slotHeaderOpen = ref(false)
+	const slotHeaderAppendOpen = ref(false)
+	const slotHeaderContentOpen = ref(false)
+	const slotHeaderSubtitleOpen = ref(false)
+	const slotHeaderTitleOpen = ref(false)
+	const slotLoaderOpen = ref(false)
+	const slotTextOpen = ref(false)
 	const slotPrependOpen = ref(false)
 	const emitOpen = ref(false)
+	const emitIsReadOpen = ref(false)
 	const emitOutsideOpen = ref(false)
 	const playgroundOpen = ref(false)
 	const sizeXsOpen = ref(false)

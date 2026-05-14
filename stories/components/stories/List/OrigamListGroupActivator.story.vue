@@ -48,6 +48,20 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-list data-cy="list-group-activator-slot-default">
+				<origam-list-group>
+					<template #activator="{ props }">
+						<origam-list-group-activator v-bind="props">
+							<span>Custom slot content</span>
+						</origam-list-group-activator>
+					</template>
+					<origam-list-item title="Inbox"/>
+					<origam-list-item title="Sent"/>
+				</origam-list-group>
+			</origam-list>
+		</Variant>
+
 		<Variant title="Slot — activator (custom render via slot)">
 			<origam-list data-cy="list-group-activator-slot">
 				<origam-list-group>

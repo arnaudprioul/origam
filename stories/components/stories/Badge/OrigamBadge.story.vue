@@ -308,6 +308,17 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — append">
+			<div class="demo-host">
+				<origam-badge :model-value="true" :content="3" bg-color="primary" data-cy="badge-slot-append">
+					<origam-avatar text="AP"/>
+					<template #append>
+						<origam-icon :icon="MDI_ICONS.HEART" size="x-small"/>
+					</template>
+				</origam-badge>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — badge">
 			<div class="demo-host">
 				<origam-badge :model-value="true" bg-color="success">
@@ -315,6 +326,27 @@
 						<span style="font-weight: bold;">!</span>
 					</template>
 					<origam-avatar text="AP"/>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<div class="demo-host">
+				<origam-badge :model-value="true" :content="3" bg-color="primary" data-cy="badge-slot-default">
+					<template #default>
+						<span>Custom slot content</span>
+					</template>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<div class="demo-host">
+				<origam-badge :model-value="true" :content="3" bg-color="primary" data-cy="badge-slot-prepend">
+					<origam-avatar text="AP"/>
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.HEART" size="x-small"/>
+					</template>
 				</origam-badge>
 			</div>
 		</Variant>
@@ -343,8 +375,8 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamAvatar, OrigamBadge } from '@origam/components'
-	import { STATUS, STATUS_POSITION } from '@origam/enums'
+	import { OrigamAvatar, OrigamBadge, OrigamIcon } from '@origam/components'
+	import { MDI_ICONS, STATUS, STATUS_POSITION } from '@origam/enums'
 	import type { IBadgeProps, IColorProps, IOptions, IRoundedProps } from '@origam/interfaces'
 	import type { TAnchor, TStatus, TStatusPosition } from '@origam/types'
 

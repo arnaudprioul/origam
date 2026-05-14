@@ -162,6 +162,30 @@
 			</origam-form>
 		</Variant>
 
+		<Variant title="Slot — default">
+			<origam-form data-cy="form-slot-default">
+				<span>Custom slot content</span>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-form data-cy="form-slot-message" :error-messages="['Error message']">
+				<origam-text-field label="Field" data-cy="form-slot-message-field"/>
+				<template #message="{ message }">
+					<span>{{ message }}</span>
+				</template>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-form data-cy="form-slot-messages" :error-messages="['Error A', 'Error B']">
+				<origam-text-field label="Field" data-cy="form-slot-messages-field"/>
+				<template #messages="{ messages }">
+					<span v-for="(m, i) in messages" :key="i">{{ m }}</span>
+				</template>
+			</origam-form>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — submit">

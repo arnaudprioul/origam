@@ -113,6 +113,44 @@
 			</div>
 		</Variant>
 
+		<!-- ── Slots ───────────────────────────────────────────────── -->
+
+		<Variant title="Slot — item">
+			<div class="story-shell" data-cy="vs-slot-item">
+				<origam-virtual-scroll
+						:items="slotRows"
+						:item-height="48"
+						height="240"
+						class="story-host"
+						data-cy="vs-slot-item-host"
+				>
+					<template #item="{ item, index }">
+						<div class="story-row" :data-cy="`row-slot-${index}`">
+							<strong>{{ item.label }}</strong>
+						</div>
+					</template>
+				</origam-virtual-scroll>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — item.renderless">
+			<div class="story-shell" data-cy="vs-slot-item-renderless">
+				<origam-virtual-scroll
+						:items="slotRows"
+						:item-height="48"
+						height="240"
+						class="story-host"
+						data-cy="vs-slot-item-renderless-host"
+				>
+					<template #item.renderless="{ item, index }">
+						<div class="story-row" :data-cy="`row-renderless-${index}`">
+							{{ item.label }}
+						</div>
+					</template>
+				</origam-virtual-scroll>
+			</div>
+		</Variant>
+
 		<!-- ── Functional ───────────────────────────────────────────── -->
 
 		<Variant title="Dynamic items (append & replace)">
@@ -156,6 +194,7 @@
 
 	const rows1k = shallowRef<Array<TRow>>(makeRows(1000))
 	const rows500 = shallowRef<Array<TRow>>(makeRows(500))
+	const slotRows = shallowRef<Array<TRow>>(makeRows(50))
 	const dynamicRows = ref<Array<TRow>>(makeRows(20))
 
 	function appendRow () {

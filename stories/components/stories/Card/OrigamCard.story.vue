@@ -400,6 +400,78 @@
 			</div>
 		</Variant>
 
+		<Variant title="Slot — header.append">
+			<div style="padding: 16px;">
+				<origam-card title="Header append slot" data-cy="card-slot-header-append">
+					<template #header.append>
+						<origam-icon :icon="MDI_ICONS.DOTS_VERTICAL"/>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header.content">
+			<div style="padding: 16px;">
+				<origam-card data-cy="card-slot-header-content">
+					<template #header.content>
+						<span>Custom slot content</span>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header.prepend">
+			<div style="padding: 16px;">
+				<origam-card title="Header prepend slot" data-cy="card-slot-header-prepend">
+					<template #header.prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header.subtitle">
+			<div style="padding: 16px;">
+				<origam-card title="With subtitle slot" data-cy="card-slot-header-subtitle">
+					<template #header.subtitle>
+						<em>Custom subtitle text</em>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header.title">
+			<div style="padding: 16px;">
+				<origam-card data-cy="card-slot-header-title">
+					<template #header.title>
+						<strong>Custom title</strong>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — text">
+			<div style="padding: 16px;">
+				<origam-card title="Text slot" data-cy="card-slot-text">
+					<template #text>
+						<span>Custom slot content</span>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — wrapper">
+			<div style="padding: 16px;">
+				<origam-card data-cy="card-slot-wrapper">
+					<template #wrapper>
+						<div style="padding: 24px; border: 2px dashed var(--origam-color__border---subtle);">
+							<span>Custom slot content</span>
+						</div>
+					</template>
+				</origam-card>
+			</div>
+		</Variant>
+
 		<!-- ── Emits ────────────────────────────────────────────────── -->
 
 		<Variant
@@ -441,6 +513,28 @@
 				</div>
 			</template>
 		</Variant>
+
+		<Variant title="Emit — update:active">
+			<div style="padding: 16px;">
+				<origam-card
+						title="Active state"
+						text="Click and hold to trigger active."
+						data-cy="card-emit-active"
+						@update:active="logEvent('update:active', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:hover">
+			<div style="padding: 16px;">
+				<origam-card
+						title="Hover state"
+						text="Hover over this card."
+						data-cy="card-emit-hover"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -448,7 +542,9 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamCard } from '@origam/components'
+	import { logEvent } from 'histoire/client'
+
+	import { OrigamBtn, OrigamCard, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { ICardProps } from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'

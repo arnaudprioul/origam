@@ -107,6 +107,60 @@
 			</div>
 		</Variant>
 
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="slidegroup-slot-default">
+				<origam-slide-group :style="hostStyle" data-cy="slidegroup-slot-default-host">
+					<span>Custom slot content</span>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — next">
+			<div class="story-shell" data-cy="slidegroup-slot-next">
+				<origam-slide-group show-arrows="always" :style="hostStyle" data-cy="slidegroup-slot-next-host">
+					<template #next>
+						<button class="story-tag" data-cy="slidegroup-slot-next-btn">Next &rsaquo;</button>
+					</template>
+					<div v-for="n in 25" :key="n" class="story-tag" :data-cy="`tag-slot-next-${n}`">Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prev">
+			<div class="story-shell" data-cy="slidegroup-slot-prev">
+				<origam-slide-group show-arrows="always" :style="hostStyle" data-cy="slidegroup-slot-prev-host">
+					<template #prev>
+						<button class="story-tag" data-cy="slidegroup-slot-prev-btn">&lsaquo; Prev</button>
+					</template>
+					<div v-for="n in 25" :key="n" class="story-tag" :data-cy="`tag-slot-prev-${n}`">Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<div class="story-shell" data-cy="slidegroup-emit-update">
+				<origam-slide-group
+						v-model="emitModel"
+						:style="hostStyle"
+						data-cy="slidegroup-emit-update-host"
+						@update:modelValue="logEvent('update:modelValue', $event)"
+				>
+					<div
+							v-for="n in 10"
+							:key="n"
+							class="story-tag"
+							:data-cy="`tag-emit-${n}`"
+							style="cursor: pointer;"
+					>Tag {{ n }}</div>
+				</origam-slide-group>
+				<div data-cy="slidegroup-emit-status">modelValue = {{ emitModel }}</div>
+			</div>
+		</Variant>
+
 	</Story>
 </template>
 
@@ -114,7 +168,8 @@
 		lang="ts"
 		setup
 >
-	import { type CSSProperties } from 'vue'
+	import { type CSSProperties, ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamSlideGroup } from '@origam/components'
 	import { DIRECTION } from '@origam/enums'
@@ -135,6 +190,8 @@
 		{ label: 'mobile',               value: 'mobile' },
 		{ label: 'false (never)',        value: false },
 	]
+
+	const emitModel = ref<number | null>(null)
 
 	const hostStyle: CSSProperties = {
 		width: '100%',

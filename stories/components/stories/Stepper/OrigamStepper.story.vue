@@ -208,6 +208,25 @@
 				<HstSelect    v-model="state.size"           title="size"           :options="sizeList"/>
 			</template>
 		</Variant>
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-stepper :items="defaultItems" :model-value="1" data-cy="stepper-slot-default">
+				<span>Custom slot content</span>
+			</origam-stepper>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<origam-stepper
+					:items="defaultItems"
+					:model-value="1"
+					:clickable="true"
+					data-cy="stepper-emit-model-value"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -215,6 +234,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamStepper } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, IOptions, IStepperItem, IStepperProps } from '@origam/interfaces'

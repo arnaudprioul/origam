@@ -215,6 +215,28 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — avatar">
+			<origam-avatar text="AP" bg-color="primary">
+				<template #avatar>
+					<span>Custom slot content</span>
+				</template>
+			</origam-avatar>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-avatar text="AP" bg-color="primary">
+				<span>Custom slot content</span>
+			</origam-avatar>
+		</Variant>
+
+		<Variant title="Slot — icon">
+			<origam-avatar :icon="MDI_ICONS.ACCOUNT" bg-color="primary">
+				<template #icon>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-avatar>
+		</Variant>
+
 		<Variant title="Slot — text">
 			<origam-avatar text="AP">
 				<template #text>
@@ -224,6 +246,30 @@
 		</Variant>
 
 		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:active">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-avatar
+						tag="button"
+						text="AP"
+						bg-color="primary"
+						@update:active="logEvent('update:active', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Click — watch the Events panel.</p>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:hover">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-avatar
+						tag="button"
+						text="AP"
+						bg-color="primary"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Hover — watch the Events panel.</p>
+			</div>
+		</Variant>
 
 		<Variant title="Emit — update:active / update:hover">
 			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
@@ -246,7 +292,7 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamAvatar } from '@origam/components'
+	import { OrigamAvatar, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type {
 		IAvatarProps,

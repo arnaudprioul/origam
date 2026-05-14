@@ -93,6 +93,16 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — activator">
+			<div style="padding: 24px;" data-cy="menu-slot-activator-host">
+				<origam-menu :items="defaultItems">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Custom activator slot" color="primary" data-cy="menu-slot-activator-btn"/>
+					</template>
+				</origam-menu>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — default">
 			<div style="padding: 24px;" data-cy="menu-slot-default-host">
 				<origam-menu>
@@ -108,6 +118,19 @@
 		</Variant>
 
 		<!-- ── Emits ────────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — contextmenu">
+			<div style="padding: 24px;" data-cy="menu-emit-contextmenu-host">
+				<origam-menu
+						:items="defaultItems"
+						@contextmenu="logEvent('contextmenu', $event)"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Right-click me" data-cy="menu-emit-contextmenu-activator"/>
+					</template>
+				</origam-menu>
+			</div>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<div style="padding: 24px;" data-cy="menu-emit-host">

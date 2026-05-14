@@ -81,6 +81,21 @@
 				<HstNumber   v-model="state.index"     title="index" :min="0"/>
 			</template>
 		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click">
+			<origam-stepper data-cy="stepper-item-emit-click-parent">
+				<origam-stepper-item
+						index="0"
+						title="Clickable step"
+						subtitle="Click me"
+						:clickable="true"
+						data-cy="stepper-item-emit-click"
+						@click="logEvent('click', $event)"
+				/>
+			</origam-stepper>
+		</Variant>
 	</Story>
 </template>
 
@@ -88,6 +103,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamStepper, OrigamStepperItem } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IStepperItemProps } from '@origam/interfaces'

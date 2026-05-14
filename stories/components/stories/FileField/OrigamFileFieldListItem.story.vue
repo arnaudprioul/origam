@@ -109,6 +109,33 @@
 				/>
 			</div>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-list-item
+						:file="mockFile('custom.pdf', 'application/pdf', 102400)"
+						:index="0"
+						data-cy="list-item-slot-default"
+				>
+					<span>Custom slot content</span>
+				</origam-file-field-list-item>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:remove">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-list-item
+						:file="mockFile('removable.pdf', 'application/pdf', 65536)"
+						:index="0"
+						data-cy="list-item-emit-remove"
+						@click:remove="logEvent('click:remove', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -117,6 +144,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamFileField, OrigamFileFieldListItem } from '@origam/components'
 

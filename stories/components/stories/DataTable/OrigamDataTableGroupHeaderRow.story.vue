@@ -39,6 +39,38 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — data-table-group">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:group-by="[{ key: 'team', order: 'asc' }]"
+					data-cy="group-header-slot-data-table-group"
+			>
+				<template #data-table-group="{ item, count, props: groupProps }">
+					<td colspan="3" style="padding: 8px 12px; background: var(--origam-color__surface---overlay);">
+						<strong>{{ item.value }}</strong>
+						<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">{{ count }} row(s)</small>
+					</td>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — data-table-select">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:group-by="[{ key: 'team', order: 'asc' }]"
+					show-select
+					data-cy="group-header-slot-data-table-select"
+			>
+				<template #data-table-select="{ props: selectProps }">
+					<td style="padding: 8px 12px;">
+						<input type="checkbox" v-bind="selectProps" style="cursor: pointer;"/>
+					</td>
+				</template>
+			</origam-data-table>
+		</Variant>
+
 		<Variant title="Slot — group-header (custom group row)">
 			<!--
 				The group-header scoped slot receives group, items, isOpen

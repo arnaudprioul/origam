@@ -103,6 +103,38 @@
 				<span data-cy="scrim-emit-counter">clicks={{ clickCount }}</span>
 			</div>
 		</Variant>
+
+		<Variant title="Emit — mouseenter">
+			<div class="story-host" data-cy="scrim-emit-mouseenter-host">
+				<origam-btn
+						text="Show scrim"
+						data-cy="scrim-emit-mouseenter-toggle"
+						@click="mouseenterActive = true"
+				/>
+				<origam-overlay-scrim
+						:active="mouseenterActive"
+						data-cy="scrim-emit-mouseenter"
+						@click="mouseenterActive = false"
+						@mouseenter="logEvent('mouseenter', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — mouseleave">
+			<div class="story-host" data-cy="scrim-emit-mouseleave-host">
+				<origam-btn
+						text="Show scrim"
+						data-cy="scrim-emit-mouseleave-toggle"
+						@click="mouseleaveActive = true"
+				/>
+				<origam-overlay-scrim
+						:active="mouseleaveActive"
+						data-cy="scrim-emit-mouseleave"
+						@click="mouseleaveActive = false"
+						@mouseleave="logEvent('mouseleave', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -111,13 +143,16 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 	import { OrigamBtn, OrigamOverlayScrim } from '@origam/components'
 	import type { IOverlayScrimProps } from '@origam/interfaces'
 	import { useStoryInitState } from '@stories/composables'
 
-	const colorActive = ref(false)
-	const emitActive = ref(false)
-	const clickCount = ref(0)
+	const colorActive      = ref(false)
+	const emitActive       = ref(false)
+	const mouseenterActive = ref(false)
+	const mouseleaveActive = ref(false)
+	const clickCount       = ref(0)
 
 	const handleClick = () => {
 		clickCount.value += 1

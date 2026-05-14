@@ -229,6 +229,115 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — appendInner">
+			<origam-otp-input-field
+					:length="6"
+					label="Append inner slot"
+					data-cy="otp-slot-append-inner"
+			>
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.INFORMATION_OUTLINE"/>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-otp-input-field
+					:length="6"
+					label="Clear slot"
+					clearable
+					data-cy="otp-slot-clear"
+			>
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-otp-input-field
+					:length="4"
+					label="Default slot"
+					data-cy="otp-slot-default"
+			>
+				<span>Custom slot content</span>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-otp-input-field
+					:length="6"
+					label="Floating label slot"
+					data-cy="otp-slot-floating-label"
+			>
+				<template #floatingLabel>
+					<span style="font-style: italic;">Custom floating label</span>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-otp-input-field
+					:length="6"
+					data-cy="otp-slot-label"
+			>
+				<template #label>
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label</span>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-otp-input-field
+					:length="6"
+					loading
+					label="Loading OTP"
+					data-cy="otp-slot-loader"
+			>
+				<template #loader>
+					<span>Loading…</span>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-otp-input-field
+					:length="6"
+					label="Prefix slot"
+					data-cy="otp-slot-prefix"
+			>
+				<template #prefix>
+					<span>+</span>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-otp-input-field
+					:length="6"
+					label="Prepend inner slot"
+					data-cy="otp-slot-prepend-inner"
+			>
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.LOCK_OUTLINE"/>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-otp-input-field
+					:length="6"
+					label="Suffix slot"
+					data-cy="otp-slot-suffix"
+			>
+				<template #suffix>
+					<span>OTP</span>
+				</template>
+			</origam-otp-input-field>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
@@ -242,6 +351,26 @@
 			<div data-cy="otp-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
+		<Variant title="Emit — click:clear">
+			<origam-otp-input-field
+					v-model="emitClearModel"
+					:length="6"
+					clearable
+					label="Clearable OTP"
+					data-cy="otp-emit-click-clear"
+					@click:clear="logEvent('click:clear', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:control">
+			<origam-otp-input-field
+					:length="6"
+					label="Click control"
+					data-cy="otp-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Emit — finish">
 			<origam-otp-input-field
 					v-model="emitFinishModel"
@@ -251,6 +380,15 @@
 					@finish="logEvent('finish', $event)"
 			/>
 			<div data-cy="otp-emit-finish-status">value = {{ emitFinishModel }}</div>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-otp-input-field
+					:length="6"
+					label="Mousedown control"
+					data-cy="otp-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
 		</Variant>
 	</Story>
 </template>
@@ -262,8 +400,8 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamOtpInputField } from '@origam/components'
-	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import { OrigamIcon, OrigamOtpInputField } from '@origam/components'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IOtpInputFieldProps, IOptions } from '@origam/interfaces'
 	import type { TVariantInput } from '@origam/types'
 
@@ -281,9 +419,10 @@
 	const colorModel      = ref<string | null>(null)
 	const densityModel    = ref<string | null>(null)
 	const statesModel     = ref<string | null>(null)
-	const emitModel       = ref<string | null>(null)
-	const emitFinishModel = ref<string | null>(null)
-	const playgroundModel = ref<string | null>(null)
+	const emitModel        = ref<string | null>(null)
+	const emitClearModel   = ref<string | null>(null)
+	const emitFinishModel  = ref<string | null>(null)
+	const playgroundModel  = ref<string | null>(null)
 
 	const otpTypeList: Array<IOptions<string>> = [
 		{ label: 'text',     value: 'text'     },

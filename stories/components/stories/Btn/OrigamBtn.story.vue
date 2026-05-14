@@ -429,6 +429,14 @@
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>
+
+		<Variant title="Emit — group:selected">
+			<origam-btn
+					color="primary"
+					text="Group item"
+					@group:selected="logEvent('group:selected', $event)"
+			/>
+		</Variant>
 	</Story>
 </template>
 

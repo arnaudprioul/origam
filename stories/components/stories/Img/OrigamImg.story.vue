@@ -253,6 +253,43 @@
 				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Events fire on image load.</p>
 			</template>
 		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — error">
+			<origam-img
+					:aspect-ratio="16 / 9"
+					alt="Broken image emit"
+					eager
+					src="https://this-host-does-not-exist.invalid/broken.png"
+					style="width: 320px; background: var(--origam-color__surface---overlay, #f3f4f6);"
+					@error="logEvent('error', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — load">
+			<origam-img
+					:aspect-ratio="16 / 9"
+					alt="Load emit"
+					cover
+					eager
+					src="https://picsum.photos/seed/origam-img-emit-load/640/360"
+					style="width: 320px;"
+					@load="logEvent('load', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — loadstart">
+			<origam-img
+					:aspect-ratio="16 / 9"
+					alt="Loadstart emit"
+					cover
+					eager
+					src="https://picsum.photos/seed/origam-img-emit-loadstart/640/360"
+					style="width: 320px;"
+					@loadstart="logEvent('loadstart', $event)"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -260,6 +297,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamImg } from '@origam/components'
 	import type { IColorProps, IImgProps, IRoundedProps } from '@origam/interfaces'
 

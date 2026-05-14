@@ -81,6 +81,43 @@
 				<HstSelect v-model="state.reverseTransition" title="reverseTransition" :options="transitionList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="windowitem-slot-default">
+				<origam-window v-model="slotStep" :style="hostStyle">
+					<origam-window-item :value="1" data-cy="item-slot-default-1">
+						<template #default>
+							<span>Custom slot content</span>
+						</template>
+					</origam-window-item>
+					<origam-window-item :value="2" data-cy="item-slot-default-2">
+						<div :style="slideStyle(1)">Slide 2</div>
+					</origam-window-item>
+				</origam-window>
+				<div class="story-status">Active: <strong>{{ slotStep }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — group:selected">
+			<div class="story-shell" data-cy="windowitem-emit-selected">
+				<origam-window v-model="emitStep" show-arrows :style="hostStyle">
+					<origam-window-item
+							v-for="n in 3"
+							:key="n"
+							:value="n"
+							:data-cy="`item-emit-selected-${n}`"
+							@group:selected="logEvent('group:selected', $event)"
+					>
+						<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
+					</origam-window-item>
+				</origam-window>
+				<div class="story-status">Active: <strong>{{ emitStep }}</strong></div>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -89,14 +126,17 @@
 		setup
 >
 	import { ref, type CSSProperties } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamWindow, OrigamWindowItem } from '@origam/components'
 	import type { IOptions } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultStep = ref(1)
+	const defaultStep  = ref(1)
 	const disabledStep = ref(1)
+	const slotStep     = ref(1)
+	const emitStep     = ref(1)
 
 	const transitionList: Array<IOptions<string | boolean | undefined>> = [
 		{ label: '(default — inherit window axis)', value: undefined },

@@ -187,6 +187,37 @@
 				</ol>
 			</origam-breadcrumb>
 		</Variant>
+		<!-- ── Emits ────────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:append">
+			<origam-breadcrumb>
+				<ol class="origam-breadcrumb__items">
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item
+								title="Click the append icon"
+								:append-icon="MDI_ICONS.OPEN_IN_NEW"
+								data-cy="breadcrumb-item-emit-click-append"
+								@click:append="logEvent('click:append', $event)"
+						/>
+					</li>
+				</ol>
+			</origam-breadcrumb>
+		</Variant>
+
+		<Variant title="Emit — click:prepend">
+			<origam-breadcrumb>
+				<ol class="origam-breadcrumb__items">
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item
+								title="Click the prepend icon"
+								:prepend-icon="MDI_ICONS.HOME"
+								data-cy="breadcrumb-item-emit-click-prepend"
+								@click:prepend="logEvent('click:prepend', $event)"
+						/>
+					</li>
+				</ol>
+			</origam-breadcrumb>
+		</Variant>
 	</Story>
 </template>
 
@@ -194,6 +225,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import {
 		OrigamBreadcrumb,
 		OrigamBreadcrumbItem,

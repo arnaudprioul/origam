@@ -177,6 +177,38 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — additional">
+			<origam-carousel style="max-width: 600px" data-cy="carousel-slot-additional">
+				<origam-carousel-item v-for="(slide, i) in slides" :key="i">
+					<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+						{{ slide.label }}
+					</div>
+				</origam-carousel-item>
+				<template #additional>
+					<span>Custom slot content</span>
+				</template>
+			</origam-carousel>
+		</Variant>
+
+		<Variant title="Slot — arrows">
+			<origam-carousel style="max-width: 600px" data-cy="carousel-slot-arrows">
+				<origam-carousel-item v-for="(slide, i) in slides" :key="i">
+					<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+						{{ slide.label }}
+					</div>
+				</origam-carousel-item>
+				<template #arrows>
+					<span>Custom slot content</span>
+				</template>
+			</origam-carousel>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-carousel style="max-width: 600px" data-cy="carousel-slot-default">
+				<span>Custom slot content</span>
+			</origam-carousel>
+		</Variant>
+
 		<Variant title="Slot — item (custom delimiter)">
 			<!-- Replaces the dot-indicator with a custom numbered button per slide -->
 			<origam-carousel style="max-width: 600px" data-cy="carousel-slot-item">
@@ -192,6 +224,45 @@
 				</origam-carousel-item>
 				<template #item="{ props, index }">
 					<origam-btn v-bind="props" :text="String(index + 1)" size="x-small"/>
+				</template>
+			</origam-carousel>
+		</Variant>
+
+		<Variant title="Slot — next">
+			<origam-carousel style="max-width: 600px" show-arrows data-cy="carousel-slot-next">
+				<origam-carousel-item v-for="(slide, i) in slides" :key="i">
+					<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+						{{ slide.label }}
+					</div>
+				</origam-carousel-item>
+				<template #next>
+					<span>Custom slot content</span>
+				</template>
+			</origam-carousel>
+		</Variant>
+
+		<Variant title="Slot — prev">
+			<origam-carousel style="max-width: 600px" show-arrows data-cy="carousel-slot-prev">
+				<origam-carousel-item v-for="(slide, i) in slides" :key="i">
+					<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+						{{ slide.label }}
+					</div>
+				</origam-carousel-item>
+				<template #prev>
+					<span>Custom slot content</span>
+				</template>
+			</origam-carousel>
+		</Variant>
+
+		<Variant title="Slot — progress">
+			<origam-carousel style="max-width: 600px" progress data-cy="carousel-slot-progress">
+				<origam-carousel-item v-for="(slide, i) in slides" :key="i">
+					<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+						{{ slide.label }}
+					</div>
+				</origam-carousel-item>
+				<template #progress>
+					<span>Custom slot content</span>
 				</template>
 			</origam-carousel>
 		</Variant>

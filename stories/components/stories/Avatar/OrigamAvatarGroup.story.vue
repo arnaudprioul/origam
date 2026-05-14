@@ -128,6 +128,12 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-avatar-group :items="people" :max="4">
+				<span>Custom slot content</span>
+			</origam-avatar-group>
+		</Variant>
+
 		<Variant title="Slot — avatar">
 			<origam-avatar-group :items="people" :max="4">
 				<template #avatar="{ item, index }">
@@ -153,6 +159,30 @@
 		</Variant>
 
 		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:active">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-avatar-group
+						:items="people"
+						:max="3"
+						expand-on-click
+						@update:active="logEvent('update:active', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Click — watch the Events panel.</p>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:hover">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-avatar-group
+						:items="people"
+						:max="3"
+						expand-on-hover
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Hover — watch the Events panel.</p>
+			</div>
+		</Variant>
 
 		<Variant title="Emit — update:active / update:hover">
 			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">

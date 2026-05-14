@@ -244,6 +244,136 @@
 				<HstNumber v-model="state.zIndex" title="zIndex"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — activator">
+			<div class="story-host" data-cy="overlay-slot-activator-host">
+				<origam-overlay v-model="slotActivatorOpen">
+					<template #activator="{ props: activator }">
+						<origam-btn
+								v-bind="activator"
+								color="primary"
+								text="Custom activator slot"
+								data-cy="overlay-slot-activator-btn"
+						/>
+					</template>
+					<origam-sheet
+							rounded
+							elevation="8"
+							style="padding: 24px;"
+							data-cy="overlay-slot-activator-content"
+					>
+						<span>Custom slot content</span>
+						<origam-btn text="Close" @click="slotActivatorOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<div class="story-host" data-cy="overlay-slot-default-host">
+				<origam-overlay v-model="slotDefaultOpen">
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open default slot" data-cy="overlay-slot-default-activator"/>
+					</template>
+					<template #default>
+						<origam-sheet
+								rounded
+								elevation="8"
+								style="padding: 24px;"
+								data-cy="overlay-slot-default-content"
+						>
+							<span>Custom slot content</span>
+							<origam-btn text="Close" @click="slotDefaultOpen = false"/>
+						</origam-sheet>
+					</template>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — afterEnter">
+			<div class="story-host" data-cy="overlay-emit-after-enter-host">
+				<origam-overlay
+						v-model="emitAfterEnterOpen"
+						@afterEnter="logEvent('afterEnter', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (afterEnter)" data-cy="overlay-emit-after-enter-activator"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-after-enter-content">
+						<origam-btn text="Close" @click="emitAfterEnterOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — afterLeave">
+			<div class="story-host" data-cy="overlay-emit-after-leave-host">
+				<origam-overlay
+						v-model="emitAfterLeaveOpen"
+						@afterLeave="logEvent('afterLeave', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (afterLeave)" data-cy="overlay-emit-after-leave-activator"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-after-leave-content">
+						<origam-btn text="Close" @click="emitAfterLeaveOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — click:outside">
+			<div class="story-host" data-cy="overlay-emit-click-outside-host">
+				<origam-overlay
+						v-model="emitClickOutsideOpen"
+						@click:outside="logEvent('click:outside', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (click outside)" data-cy="overlay-emit-click-outside-activator"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-click-outside-content">
+						Click outside to trigger the emit.
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — keydown">
+			<div class="story-host" data-cy="overlay-emit-keydown-host">
+				<origam-overlay
+						v-model="emitKeydownOpen"
+						@keydown="logEvent('keydown', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (keydown)" data-cy="overlay-emit-keydown-activator"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-keydown-content">
+						Press any key inside the overlay.
+						<origam-btn text="Close" @click="emitKeydownOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<div class="story-host" data-cy="overlay-emit-update-host">
+				<origam-overlay
+						v-model="emitUpdateOpen"
+						@update:modelValue="logEvent('update:modelValue', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (update:modelValue)" data-cy="overlay-emit-update-activator"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-update-content">
+						<origam-btn text="Close" @click="emitUpdateOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -252,6 +382,8 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBtn, OrigamOverlay, OrigamSheet } from '@origam/components'
 	import type { IOverlayProps } from '@origam/interfaces'
 	import { useStoryInitState } from '@stories/composables'
@@ -262,6 +394,13 @@
 	const containedOpen = ref(false)
 	const zIndexOpen = ref(false)
 	const playgroundOpen = ref(false)
+	const slotActivatorOpen = ref(false)
+	const slotDefaultOpen = ref(false)
+	const emitAfterEnterOpen = ref(false)
+	const emitAfterLeaveOpen = ref(false)
+	const emitClickOutsideOpen = ref(false)
+	const emitKeydownOpen = ref(false)
+	const emitUpdateOpen = ref(false)
 
 	const scrimList = [
 		{ label: 'true (default)', value: true },

@@ -189,7 +189,9 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — prepend / append">
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
 			<origam-textarea-field v-model="slotOuterModel" label="With outer slots" data-cy="textarea-slot-outer">
 				<template #prepend>
 					<origam-icon :icon="MDI_ICONS.TEXT_BOX"/>
@@ -199,6 +201,139 @@
 				</template>
 			</origam-textarea-field>
 			<div data-cy="textarea-slot-outer-status">value = {{ slotOuterModel }}</div>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-textarea-field v-model="slotInnerModel" label="With inner slots" data-cy="textarea-slot-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.TEXT_BOX"/>
+				</template>
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.CLOSE"/>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-textarea-field v-model="slotClearModel" label="Clearable" clearable data-cy="textarea-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — counter">
+			<origam-textarea-field v-model="slotCounterModel" label="Custom counter" :counter="200" data-cy="textarea-slot-counter">
+				<template #counter>
+					<span>{{ slotCounterModel.length }} / 200</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-textarea-field label="Default slot" data-cy="textarea-slot-default">
+				<span>Custom slot content</span>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-textarea-field v-model="slotDetailsModel" label="Custom details" data-cy="textarea-slot-details">
+				<template #details>
+					<span style="font-size: 0.75rem;">Custom hint text</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-textarea-field v-model="slotFloatingLabelModel" data-cy="textarea-slot-floating-label">
+				<template #floatingLabel>
+					<span style="font-style: italic;">Floating label</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-textarea-field v-model="slotLabelModel" data-cy="textarea-slot-label">
+				<template #label>
+					<span style="font-style: italic;">Custom label</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-textarea-field loading label="Loading textarea" data-cy="textarea-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-textarea-field v-model="slotMessageModel" label="Single message" :error="true" :error-messages="['Error']" data-cy="textarea-slot-message">
+				<template #message="{ message }">
+					<span style="font-style: italic;">{{ message }}</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-textarea-field v-model="slotMessagesModel" label="Custom messages" :error="true" :error-messages="['Error one', 'Error two']" data-cy="textarea-slot-messages">
+				<template #messages>
+					<span style="color: var(--origam-color__action--danger---bg);">Custom error display</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-textarea-field v-model="slotPrefixModel" label="With prefix" data-cy="textarea-slot-prefix">
+				<template #prefix>
+					<span>Note:</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-textarea-field v-model="slotOuterModel" label="With outer slots" data-cy="textarea-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.TEXT_BOX"/>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-textarea-field v-model="slotInnerModel" label="With inner slots" data-cy="textarea-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.TEXT_BOX"/>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-textarea-field v-model="slotSuffixModel" label="With suffix" data-cy="textarea-slot-suffix">
+				<template #suffix>
+					<span>chars</span>
+				</template>
+			</origam-textarea-field>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:control">
+			<origam-textarea-field
+					v-model="emitControlModel"
+					label="Click the control"
+					data-cy="textarea-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-textarea-field
+					v-model="emitMousedownModel"
+					label="Mousedown on control"
+					data-cy="textarea-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
 		</Variant>
 
 		<Variant title="Emit — update:modelValue">
@@ -359,18 +494,30 @@
 		return JSON.stringify(v, null, 2)
 	}
 
-	const variantModel    = ref('')
-	const colorModel      = ref('')
-	const densityModel    = ref('')
-	const rowsModel       = ref('')
-	const noResizeModel   = ref('')
-	const counterModel    = ref('')
-	const statesModel     = ref('')
-	const slotOuterModel  = ref('')
-	const emitModel       = ref('')
-	const emitFocusModel  = ref('')
-	const emitHeightModel = ref('')
-	const playgroundModel = ref('')
+	const variantModel           = ref('')
+	const colorModel             = ref('')
+	const densityModel           = ref('')
+	const rowsModel              = ref('')
+	const noResizeModel          = ref('')
+	const counterModel           = ref('')
+	const statesModel            = ref('')
+	const slotOuterModel         = ref('')
+	const slotInnerModel         = ref('')
+	const slotClearModel         = ref('')
+	const slotCounterModel       = ref('')
+	const slotDetailsModel       = ref('')
+	const slotFloatingLabelModel = ref('')
+	const slotLabelModel         = ref('')
+	const slotMessageModel       = ref('')
+	const slotMessagesModel      = ref('')
+	const slotPrefixModel        = ref('')
+	const slotSuffixModel        = ref('')
+	const emitModel              = ref('')
+	const emitFocusModel         = ref('')
+	const emitHeightModel        = ref('')
+	const emitControlModel       = ref('')
+	const emitMousedownModel     = ref('')
+	const playgroundModel        = ref('')
 </script>
 
 <docs lang="md" src="@docs/components/TextareaField/OrigamTextareaField.md"/>

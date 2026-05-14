@@ -345,7 +345,159 @@
 			<div data-cy="password-field-minimal-status">value = {{ minimalModel ? '(set)' : '(empty)' }}</div>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-append-inner">
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-password-field label="Password" model-value="secret" clearable data-cy="passwordfield-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE"/>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — counter">
+			<origam-password-field label="Password" counter data-cy="passwordfield-slot-counter">
+				<template #counter>
+					<span>Custom counter</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-default">
+				<span>Custom slot content</span>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-details">
+				<template #details>
+					<span>Custom details</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — field">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-field">
+				<template #field>
+					<span>Custom slot content</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-floating-label">
+				<template #floatingLabel>
+					<span>Custom slot content</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — info">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-info">
+				<template #info>
+					<span>Custom slot content</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-label">
+				<template #label>
+					<span>Custom slot content</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-password-field label="Password" loading data-cy="passwordfield-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-password-field label="Password" :error-messages="['Error message']" data-cy="passwordfield-slot-message">
+				<template #message="{ message }">
+					<span>{{ message }}</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-password-field label="Password" :error-messages="['Error A', 'Error B']" data-cy="passwordfield-slot-messages">
+				<template #messages="{ messages }">
+					<span v-for="(m, i) in messages" :key="i">{{ m }}</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-prefix">
+				<template #prefix>
+					<span>Custom slot content</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-password-field label="Password" data-cy="passwordfield-slot-suffix">
+				<template #suffix>
+					<span>Custom slot content</span>
+				</template>
+			</origam-password-field>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:control">
+			<origam-password-field
+					label="Click the field"
+					data-cy="passwordfield-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-password-field
+					label="Mousedown the field"
+					data-cy="passwordfield-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<origam-password-field
@@ -376,7 +528,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamPasswordField } from '@origam/components'
+	import { OrigamIcon, OrigamPasswordField } from '@origam/components'
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IPasswordFieldProps } from '@origam/interfaces'
 	import type { TIcon, TVariantInput } from '@origam/types'

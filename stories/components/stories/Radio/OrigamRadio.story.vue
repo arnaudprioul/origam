@@ -247,6 +247,36 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — append">
+			<origam-radio v-model="slotAppendModel" value="custom" label="With append" data-cy="radio-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-radio>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-radio v-model="slotDefaultModel" value="custom" data-cy="radio-slot-default">
+				<span>Custom slot content</span>
+			</origam-radio>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-radio v-model="slotDetailsModel" value="custom" label="With details" data-cy="radio-slot-details">
+				<template #details>
+					<span style="font-size: 0.75rem;">Custom hint text</span>
+				</template>
+			</origam-radio>
+		</Variant>
+
+		<Variant title="Slot — input">
+			<origam-radio v-model="slotInputModel" value="custom" label="Custom input" data-cy="radio-slot-input">
+				<template #input>
+					<span>Custom slot content</span>
+				</template>
+			</origam-radio>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<origam-radio v-model="slotLabelModel" value="custom" data-cy="radio-slot-label">
 				<template #label>
@@ -256,7 +286,51 @@
 			<div data-cy="radio-slot-label-status">value = {{ slotLabelModel }}</div>
 		</Variant>
 
+		<Variant title="Slot — message">
+			<origam-radio v-model="slotMessageModel" value="custom" label="With message" :error="true" :error-messages="['Error']" data-cy="radio-slot-message">
+				<template #message="{ message }">
+					<span style="font-style: italic;">{{ message }}</span>
+				</template>
+			</origam-radio>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-radio v-model="slotMessagesModel" value="custom" label="With messages" :error="true" :error-messages="['Error one', 'Error two']" data-cy="radio-slot-messages">
+				<template #messages>
+					<span style="color: var(--origam-color__action--danger---bg);">Custom error display</span>
+				</template>
+			</origam-radio>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-radio v-model="slotPrependModel" value="custom" label="With prepend" data-cy="radio-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-radio>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:label">
+			<origam-radio
+					v-model="emitClickLabelModel"
+					value="x"
+					label="Click the label"
+					data-cy="radio-emit-click-label"
+					@click:label="logEvent('click:label', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:focused">
+			<origam-radio
+					v-model="emitFocusedModel"
+					value="x"
+					label="Focus me"
+					data-cy="radio-emit-focused"
+					@update:focused="logEvent('update:focused', $event)"
+			/>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<origam-radio
@@ -289,8 +363,8 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamRadio } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
+	import { OrigamIcon, OrigamRadio } from '@origam/components'
+	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IRadioProps, IRoundedProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
@@ -300,14 +374,23 @@
 		hoverList
 	} from '@stories/const'
 
-	const colorModel      = ref<string | null>(null)
-	const densityModel    = ref<string | null>(null)
-	const roundedModel    = ref<string | null>(null)
-	const statesModel     = ref<string | null>(null)
-	const slotLabelModel  = ref<string | null>(null)
-	const emitModel       = ref<string | null>(null)
-	const emitFocusModel  = ref<string | null>(null)
-	const playgroundModel = ref<string | null>(null)
+	const colorModel          = ref<string | null>(null)
+	const densityModel        = ref<string | null>(null)
+	const roundedModel        = ref<string | null>(null)
+	const statesModel         = ref<string | null>(null)
+	const slotAppendModel     = ref<string | null>(null)
+	const slotDefaultModel    = ref<string | null>(null)
+	const slotDetailsModel    = ref<string | null>(null)
+	const slotInputModel      = ref<string | null>(null)
+	const slotLabelModel      = ref<string | null>(null)
+	const slotMessageModel    = ref<string | null>(null)
+	const slotMessagesModel   = ref<string | null>(null)
+	const slotPrependModel    = ref<string | null>(null)
+	const emitClickLabelModel = ref<string | null>(null)
+	const emitFocusedModel    = ref<string | null>(null)
+	const emitModel           = ref<string | null>(null)
+	const emitFocusModel      = ref<string | null>(null)
+	const playgroundModel     = ref<string | null>(null)
 </script>
 
 <docs lang="md" src="@docs/components/Radio/OrigamRadio.md"/>

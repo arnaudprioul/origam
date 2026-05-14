@@ -109,6 +109,189 @@
 			</div>
 		</Variant>
 
+		<Variant title="Slot — activator">
+			<div style="padding: 24px;">
+				<origam-dialog-confirmation
+						v-model="slotActivatorOpen"
+						title="Confirm action?"
+						text="This will apply the change immediately."
+						data-cy="dialog-confirm-slot-activator"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open via activator slot" color="primary"/>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — asset">
+			<div style="padding: 24px;">
+				<origam-btn text="Open asset slot" @click="slotAssetOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotAssetOpen"
+						title="Upload complete"
+						data-cy="dialog-confirm-slot-asset"
+				>
+					<template #asset>
+						<div style="display: flex; justify-content: center; padding: 16px;">
+							<origam-icon :icon="MDI_ICONS.CHECK_CIRCLE" style="font-size: 48px; color: var(--origam-color__feedback--success---bg);"/>
+						</div>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — content">
+			<div style="padding: 24px;">
+				<origam-btn text="Open content slot" @click="slotContentOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotContentOpen"
+						title="Custom content"
+						data-cy="dialog-confirm-slot-content"
+				>
+					<template #content>
+						<span>Custom slot content</span>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — footer">
+			<div style="padding: 24px;">
+				<origam-btn text="Open footer slot" @click="slotFooterOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotFooterOpen"
+						title="Custom footer"
+						text="Footer is fully overridden below."
+						data-cy="dialog-confirm-slot-footer"
+				>
+					<template #footer>
+						<div style="padding: 12px 16px; display: flex; justify-content: flex-end; gap: 8px;">
+							<origam-btn text="Dismiss" @click="slotFooterOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header">
+			<div style="padding: 24px;">
+				<origam-btn text="Open header slot" @click="slotHeaderOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotHeaderOpen"
+						data-cy="dialog-confirm-slot-header"
+				>
+					<template #header>
+						<div style="padding: 16px; font-weight: 700; font-size: 1.125rem;">Custom header slot</div>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-append">
+			<div style="padding: 24px;">
+				<origam-btn text="Open header-append slot" @click="slotHeaderAppendOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotHeaderAppendOpen"
+						title="Header with append"
+						data-cy="dialog-confirm-slot-header-append"
+				>
+					<template #header-append>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-content">
+			<div style="padding: 24px;">
+				<origam-btn text="Open header-content slot" @click="slotHeaderContentOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotHeaderContentOpen"
+						data-cy="dialog-confirm-slot-header-content"
+				>
+					<template #header-content>
+						<span>Custom slot content</span>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-prepend">
+			<div style="padding: 24px;">
+				<origam-btn text="Open header-prepend slot" @click="slotHeaderPrependOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotHeaderPrependOpen"
+						title="Header with prepend"
+						data-cy="dialog-confirm-slot-header-prepend"
+				>
+					<template #header-prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-subtitle">
+			<div style="padding: 24px;">
+				<origam-btn text="Open header-subtitle slot" @click="slotHeaderSubtitleOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotHeaderSubtitleOpen"
+						title="With subtitle slot"
+						data-cy="dialog-confirm-slot-header-subtitle"
+				>
+					<template #header-subtitle>
+						<em>Custom subtitle text</em>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header-title">
+			<div style="padding: 24px;">
+				<origam-btn text="Open header-title slot" @click="slotHeaderTitleOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotHeaderTitleOpen"
+						data-cy="dialog-confirm-slot-header-title"
+				>
+					<template #header-title>
+						<strong>Custom title</strong>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<div style="padding: 24px;">
+				<origam-btn text="Open loader slot" @click="slotLoaderOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotLoaderOpen"
+						loading
+						title="Loading dialog"
+						data-cy="dialog-confirm-slot-loader"
+				>
+					<template #loader>
+						<span>Loading…</span>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — text">
+			<div style="padding: 24px;">
+				<origam-btn text="Open text slot" @click="slotTextOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="slotTextOpen"
+						title="Custom text slot"
+						data-cy="dialog-confirm-slot-text"
+				>
+					<template #text>
+						<span>Custom slot content</span>
+					</template>
+				</origam-dialog-confirmation>
+			</div>
+		</Variant>
+
 		<!-- ── Emits ────────────────────────────────────────────────── -->
 
 		<Variant
@@ -133,6 +316,32 @@
 				</div>
 			</template>
 		</Variant>
+
+		<Variant title="Emit — cancel">
+			<div style="padding: 24px;">
+				<origam-btn text="Open" @click="emitCancelOpen = true" data-cy="dialog-confirm-emit-cancel-trigger"/>
+				<origam-dialog-confirmation
+						v-model="emitCancelOpen"
+						title="Watch cancel"
+						text="Click cancel and observe the Histoire event log."
+						data-cy="dialog-confirm-emit-cancel"
+						@cancel="logEvent('cancel', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — validate">
+			<div style="padding: 24px;">
+				<origam-btn text="Open" @click="emitValidateOpen = true" data-cy="dialog-confirm-emit-validate-trigger"/>
+				<origam-dialog-confirmation
+						v-model="emitValidateOpen"
+						title="Watch validate"
+						text="Click confirm and observe the Histoire event log."
+						data-cy="dialog-confirm-emit-validate"
+						@validate="logEvent('validate', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -143,17 +352,32 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBtn, OrigamDialogConfirmation } from '@origam/components'
+	import { OrigamBtn, OrigamDialogConfirmation, OrigamIcon } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 
 	import { useStoryInitState } from '@stories/composables'
 	import { intentList } from '@stories/const'
 
-	const defaultOpen    = ref(false)
-	const mandatoryOpen  = ref(false)
-	const dangerOpen     = ref(false)
-	const slotOpen       = ref(false)
-	const emitOpen       = ref(false)
-	const playgroundOpen = ref(false)
+	const defaultOpen             = ref(false)
+	const mandatoryOpen           = ref(false)
+	const dangerOpen              = ref(false)
+	const slotOpen                = ref(false)
+	const slotActivatorOpen       = ref(false)
+	const slotAssetOpen           = ref(false)
+	const slotContentOpen         = ref(false)
+	const slotFooterOpen          = ref(false)
+	const slotHeaderOpen          = ref(false)
+	const slotHeaderAppendOpen    = ref(false)
+	const slotHeaderContentOpen   = ref(false)
+	const slotHeaderPrependOpen   = ref(false)
+	const slotHeaderSubtitleOpen  = ref(false)
+	const slotHeaderTitleOpen     = ref(false)
+	const slotLoaderOpen          = ref(false)
+	const slotTextOpen            = ref(false)
+	const emitOpen                = ref(false)
+	const emitCancelOpen          = ref(false)
+	const emitValidateOpen        = ref(false)
+	const playgroundOpen          = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Dialog/OrigamDialogConfirmation.md"/>

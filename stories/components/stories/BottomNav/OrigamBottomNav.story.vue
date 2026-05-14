@@ -329,6 +329,17 @@
 				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click a nav item to fire the event.</p>
 			</template>
 		</Variant>
+
+		<Variant title="Emit — update:hover">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav
+						:model-value="true"
+						:items="navItems"
+						data-cy="bottom-nav-emit-hover"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -336,6 +347,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
 	import { DENSITY, MDI_ICONS, MODE } from '@origam/enums'
 	import type {

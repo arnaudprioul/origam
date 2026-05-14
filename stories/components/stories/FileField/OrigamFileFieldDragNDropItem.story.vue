@@ -119,6 +119,33 @@
 				/>
 			</div>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-drag-n-drop-item
+						:file="mockFile('slot-demo.pdf', 'application/pdf', 32768)"
+						:index="0"
+						data-cy="dnd-item-slot-default"
+				>
+					<span>Custom slot content</span>
+				</origam-file-field-drag-n-drop-item>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:remove">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-drag-n-drop-item
+						:file="mockFile('removable.pdf', 'application/pdf', 32768)"
+						:index="0"
+						data-cy="dnd-item-emit-remove"
+						@click:remove="logEvent('click:remove', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -126,6 +153,7 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
 	import { OrigamFileField, OrigamFileFieldDragNDropItem } from '@origam/components'

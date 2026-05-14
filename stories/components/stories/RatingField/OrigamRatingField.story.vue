@@ -223,6 +223,36 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — append">
+			<origam-rating-field v-model="rating">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-rating-field v-model="rating">
+				<span>Custom slot content</span>
+			</origam-rating-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-rating-field v-model="rating">
+				<template #details>
+					<span>Custom details area</span>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
+		<Variant title="Slot — itemLabel">
+			<origam-rating-field v-model="rating" :item-labels="['Terrible', 'Bad', 'OK', 'Good', 'Excellent']" item-label-position="top">
+				<template #itemLabel="{ label }">
+					<strong>{{ label }}</strong>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<origam-rating-field v-model="rating">
 				<template #label>
@@ -249,7 +279,8 @@
 	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamRatingField } from '@origam/components'
+	import { OrigamIcon, OrigamRatingField } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 	import type { IColorProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'

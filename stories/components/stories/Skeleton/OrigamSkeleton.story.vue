@@ -164,6 +164,19 @@
 				<HstCheckbox v-model="state.pulse" title="pulse"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-skeleton
+					:loading="false"
+					variant="text"
+					width="200"
+					data-cy="skeleton-slot-default"
+			>
+				<span>Custom slot content</span>
+			</origam-skeleton>
+		</Variant>
 	</Story>
 </template>
 

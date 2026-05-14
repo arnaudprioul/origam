@@ -193,6 +193,48 @@
 			</origam-treeview>
 		</Variant>
 
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — select">
+			<origam-treeview
+					:items="fileTree"
+					select-mode="single"
+					selectable-nodes="leaf"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-select"
+					@select="logEvent('select', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — toggle">
+			<origam-treeview
+					:items="fileTree"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-toggle"
+					@toggle="logEvent('toggle', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:expandedValue">
+			<origam-treeview
+					:items="fileTree"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-expanded"
+					@update:expanded-value="logEvent('update:expandedValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<origam-treeview
+					:items="fileTree"
+					select-mode="multiple"
+					selectable-nodes="leaf"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-model-value"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITreeviewProps>({
@@ -232,6 +274,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamTreeview } from '@origam/components'
 	import type { IColorProps, IOptions, ITreeviewNode, ITreeviewProps } from '@origam/interfaces'
 	import type { TDensity, TSize, TTreeviewSelectMode, TTreeviewSelectableNodes } from '@origam/types'

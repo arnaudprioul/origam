@@ -40,6 +40,21 @@
 				</div>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
+					<origam-translate-bottom>
+						<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
+							<span>Custom slot content</span>
+						</div>
+					</origam-translate-bottom>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -53,8 +68,9 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDisabled = ref(false)
-	const togglePlayground = ref(false)
+	const toggleDisabled    = ref(false)
+	const togglePlayground  = ref(false)
+	const toggleSlotDefault = ref(false)
 </script>
 
 <style scoped>

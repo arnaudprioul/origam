@@ -78,6 +78,58 @@
 				/>
 			</div>
 		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:month">
+			<div style="padding: 24px;">
+				<origam-date-picker-controls
+						:active="['date']"
+						data-cy="dp-controls-emit-month"
+						@click:month="logEvent('click:month', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — click:next">
+			<div style="padding: 24px;">
+				<origam-date-picker-controls
+						:active="['date']"
+						data-cy="dp-controls-emit-next"
+						@click:next="logEvent('click:next', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — click:prev">
+			<div style="padding: 24px;">
+				<origam-date-picker-controls
+						:active="['date']"
+						data-cy="dp-controls-emit-prev"
+						@click:prev="logEvent('click:prev', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — click:text">
+			<div style="padding: 24px;">
+				<origam-date-picker-controls
+						:active="['date']"
+						data-cy="dp-controls-emit-text"
+						@click:text="logEvent('click:text', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — click:year">
+			<div style="padding: 24px;">
+				<origam-date-picker-controls
+						:active="['date']"
+						data-cy="dp-controls-emit-year"
+						@click:year="logEvent('click:year', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -86,6 +138,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamDatePicker, OrigamDatePickerControls } from '@origam/components'
 

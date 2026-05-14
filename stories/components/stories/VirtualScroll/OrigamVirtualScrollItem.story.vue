@@ -89,6 +89,44 @@
 				</origam-virtual-scroll-item>
 			</div>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="vsi-slot-default">
+				<origam-virtual-scroll-item class="story-row" data-cy="vsi-slot-default-item">
+					<span>Custom slot content</span>
+				</origam-virtual-scroll-item>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — renderless">
+			<div class="story-shell" data-cy="vsi-slot-renderless">
+				<origam-virtual-scroll-item renderless @update:height="onHeight('slot-renderless', $event)">
+					<template #renderless="{ itemRef }">
+						<article :ref="itemRef" class="story-card" data-cy="vsi-slot-renderless-host">
+							<h4>Renderless slot</h4>
+							<p>Consumer owns the host element.</p>
+						</article>
+					</template>
+				</origam-virtual-scroll-item>
+				<div class="story-status" data-cy="vsi-slot-renderless-status">Height: <strong>{{ heights['slot-renderless'] ?? 'pending' }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:height">
+			<div class="story-shell" data-cy="vsi-emit-height">
+				<origam-virtual-scroll-item
+						class="story-row"
+						data-cy="vsi-emit-height-item"
+						@update:height="logEvent('update:height', $event)"
+				>
+					<div class="story-content">Observed item — height emitted on mount/resize.</div>
+				</origam-virtual-scroll-item>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -97,6 +135,7 @@
 		setup
 >
 	import { reactive } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamVirtualScrollItem } from '@origam/components'
 

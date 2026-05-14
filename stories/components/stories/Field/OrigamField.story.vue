@@ -191,10 +191,95 @@
 			</origam-field>
 		</Variant>
 
+		<Variant title="Slot — appendInner">
+			<origam-field label="Append inner slot" data-cy="field-slot-append-inner">
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.INFORMATION_OUTLINE"/>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-field label="Clear slot" :persistent-clear="true" data-cy="field-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" value="some value" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-field label="Default slot" data-cy="field-slot-default">
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" placeholder="Custom slot content" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-field label="Floating label slot" data-cy="field-slot-floating-label">
+				<template #floatingLabel>
+					<span style="font-style: italic;">Custom floating label</span>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<origam-field data-cy="field-slot-label">
 				<template #label>
 					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label</span>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-field label="Loader slot" loading data-cy="field-slot-loader">
+				<template #loader>
+					<span>Loading…</span>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-field label="Prefix slot" prefix="$" data-cy="field-slot-prefix">
+				<template #prefix>
+					<span>$</span>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-field label="Prepend inner slot" data-cy="field-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-field label="Suffix slot" suffix="kg" data-cy="field-slot-suffix">
+				<template #suffix>
+					<span>kg</span>
 				</template>
 				<template #default="{ id, onFocus, onBlur }">
 					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>

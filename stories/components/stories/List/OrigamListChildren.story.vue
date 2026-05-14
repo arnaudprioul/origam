@@ -38,6 +38,84 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — children">
+			<origam-list data-cy="list-children-slot-children">
+				<origam-list-children :items="flatItems" return-object>
+					<template #children="{ item }">
+						<span>Custom child: {{ item.title }}</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-list data-cy="list-children-slot-default">
+				<origam-list-children :items="flatItems" return-object>
+					<span>Custom slot content</span>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — divider">
+			<origam-list data-cy="list-children-slot-divider">
+				<origam-list-children :items="flatItems" return-object>
+					<template #divider>
+						<hr style="border-color: var(--origam-color__border---subtle); margin: 4px 0;"/>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — group">
+			<origam-list data-cy="list-children-slot-group">
+				<origam-list-children :items="nestedItems">
+					<template #group="{ item }">
+						<span style="font-weight: 600;">{{ item.title }}</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — groupActivator">
+			<origam-list data-cy="list-children-slot-group-activator">
+				<origam-list-children :items="nestedItems">
+					<template #groupActivator="{ item }">
+						<span>Open: {{ item.title }}</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — item">
+			<origam-list data-cy="list-children-slot-item">
+				<origam-list-children :items="flatItems" return-object>
+					<template #item="{ item }">
+						<origam-list-item :title="item.title" :prepend-icon="item.prependIcon" data-cy="list-children-slot-item-row"/>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — subheader">
+			<origam-list data-cy="list-children-slot-subheader">
+				<origam-list-children :items="flatItems" return-object>
+					<template #subheader>
+						<span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; padding: 4px 16px;">Custom subheader</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — subheaderTitle">
+			<origam-list data-cy="list-children-slot-subheader-title">
+				<origam-list-children :items="flatItems" return-object>
+					<template #subheaderTitle>
+						<span>Custom subheader title</span>
+					</template>
+				</origam-list-children>
+			</origam-list>
+		</Variant>
+
 		<Variant title="Slot — note (usage guidance)">
 			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
 				<p>
@@ -62,7 +140,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamList, OrigamListChildren } from '@origam/components'
+	import { OrigamList, OrigamListChildren, OrigamListItem } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 
 	const flatItems = [

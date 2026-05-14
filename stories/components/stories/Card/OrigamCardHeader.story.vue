@@ -92,6 +92,92 @@
 				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header title="Header" data-cy="card-header-slot-append">
+					<template #append>
+						<origam-icon :icon="MDI_ICONS.DOTS_VERTICAL"/>
+					</template>
+				</origam-card-header>
+			</origam-card>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header data-cy="card-header-slot-default">
+					<span>Custom slot content</span>
+				</origam-card-header>
+			</origam-card>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header title="Header" data-cy="card-header-slot-prepend">
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.ACCOUNT"/>
+					</template>
+				</origam-card-header>
+			</origam-card>
+		</Variant>
+
+		<Variant title="Slot — subtitle">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header title="Header" data-cy="card-header-slot-subtitle">
+					<template #subtitle>
+						<em>Custom subtitle text</em>
+					</template>
+				</origam-card-header>
+			</origam-card>
+		</Variant>
+
+		<Variant title="Slot — title">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header data-cy="card-header-slot-title">
+					<template #title>
+						<strong>Custom title text</strong>
+					</template>
+				</origam-card-header>
+			</origam-card>
+		</Variant>
+
+		<Variant title="Slot — wrapper">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header data-cy="card-header-slot-wrapper">
+					<template #wrapper>
+						<div style="display: flex; gap: 8px; align-items: center; padding: 12px;">
+							<span>Wrapper override</span>
+						</div>
+					</template>
+				</origam-card-header>
+			</origam-card>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:append">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header
+						title="Header"
+						:append-icon="MDI_ICONS.DOTS_VERTICAL"
+						data-cy="card-header-emit-click-append"
+						@click:append="logEvent('click:append', $event)"
+				/>
+			</origam-card>
+		</Variant>
+
+		<Variant title="Emit — click:prepend">
+			<origam-card style="max-width: 400px; margin: 24px auto;">
+				<origam-card-header
+						title="Header"
+						:prepend-icon="MDI_ICONS.ACCOUNT"
+						data-cy="card-header-emit-click-prepend"
+						@click:prepend="logEvent('click:prepend', $event)"
+				/>
+			</origam-card>
+		</Variant>
 	</Story>
 </template>
 
@@ -99,7 +185,9 @@
 		lang="ts"
 		setup
 >
-	import { OrigamCard, OrigamCardHeader } from '@origam/components'
+	import { logEvent } from 'histoire/client'
+
+	import { OrigamCard, OrigamCardHeader, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { ICardHeaderProps } from '@origam/interfaces'
 

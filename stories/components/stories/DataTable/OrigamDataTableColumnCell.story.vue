@@ -24,6 +24,14 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-slot-default">
+				<template #default>
+					<span>Custom slot content</span>
+				</template>
+			</origam-data-table>
+		</Variant>
+
 		<Variant title="Slot — item.{key} (custom cell render)">
 			<!--
 				Use the item.{key} slot of the parent table to override how

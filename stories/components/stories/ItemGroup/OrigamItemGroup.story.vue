@@ -148,6 +148,28 @@
 			</div>
 		</Variant>
 
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="ig-row" data-cy="ig-slot-default">
+				<origam-item-group v-model="defaultModel">
+					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<template #default="{ isSelected, toggle }">
+							<origam-card
+									border
+									rounded="default"
+									:class="['ig-card', { 'ig-card--active': isSelected }]"
+									@click="toggle"
+							>
+								<div class="ig-card__title">{{ opt.label }}</div>
+							</origam-card>
+						</template>
+					</origam-item>
+				</origam-item-group>
+				<div class="ig-status" data-cy="ig-slot-default-status">selected = <strong>{{ defaultModel }}</strong></div>
+			</div>
+		</Variant>
+
 		<!-- ── Emits ────────────────────────────────────────────────────── -->
 
 		<Variant

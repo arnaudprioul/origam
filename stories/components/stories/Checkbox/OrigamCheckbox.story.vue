@@ -240,6 +240,12 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-default">
+				<span>Custom slot content</span>
+			</origam-checkbox>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-label">
 				<template #label>

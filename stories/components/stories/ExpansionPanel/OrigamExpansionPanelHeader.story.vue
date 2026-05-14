@@ -116,6 +116,73 @@
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-expansion-panels data-cy="expansion-panel-header-slot-append">
+				<origam-expansion-panel>
+					<origam-expansion-panel-header title="With append slot">
+						<template #append>
+							<origam-icon :icon="MDI_ICONS.HEART"/>
+						</template>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-expansion-panels data-cy="expansion-panel-header-slot-default">
+				<origam-expansion-panel>
+					<origam-expansion-panel-header>
+						<span>Custom slot content</span>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-expansion-panels data-cy="expansion-panel-header-slot-prepend">
+				<origam-expansion-panel>
+					<origam-expansion-panel-header title="With prepend slot">
+						<template #prepend>
+							<origam-icon :icon="MDI_ICONS.HEART"/>
+						</template>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:append">
+			<origam-expansion-panels data-cy="expansion-panel-header-emit-click-append">
+				<origam-expansion-panel>
+					<origam-expansion-panel-header
+							title="Click the append"
+							:append-icon="MDI_ICONS.OPEN_IN_NEW"
+							@click:append="logEvent('click:append', $event)"
+					/>
+					<origam-expansion-panel-content content="Body"/>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Emit — click:prepend">
+			<origam-expansion-panels data-cy="expansion-panel-header-emit-click-prepend">
+				<origam-expansion-panel>
+					<origam-expansion-panel-header
+							title="Click the prepend"
+							:prepend-icon="MDI_ICONS.COG_OUTLINE"
+							@click:prepend="logEvent('click:prepend', $event)"
+					/>
+					<origam-expansion-panel-content content="Body"/>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
 	</Story>
 </template>
 
@@ -123,11 +190,14 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import {
 		OrigamExpansionPanel,
 		OrigamExpansionPanelContent,
 		OrigamExpansionPanelHeader,
 		OrigamExpansionPanels,
+		OrigamIcon,
 	} from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IExpansionPanelHeaderProps } from '@origam/interfaces'

@@ -41,6 +41,21 @@
 				</div>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell">
+				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
+				<div class="story-window">
+					<origam-window-y-reverse-translate>
+						<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
+							<span>Custom slot content</span>
+						</div>
+					</origam-window-y-reverse-translate>
+				</div>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -56,6 +71,7 @@
 
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
+	const toggleSlotDefault = ref(false)
 </script>
 
 <style scoped>

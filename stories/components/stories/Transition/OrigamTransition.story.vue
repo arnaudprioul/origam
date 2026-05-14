@@ -117,6 +117,29 @@
 				</div>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<button
+						class="story-toggle"
+						data-cy="toggle-slot-default"
+						@click="toggleSlotDefault = !toggleSlotDefault"
+				>
+					Toggle
+				</button>
+				<origam-transition transition="origam-transition--fade">
+					<div
+							v-if="toggleSlotDefault"
+							class="story-target"
+							data-cy="target-slot-default"
+					>
+						<span>Custom slot content</span>
+					</div>
+				</origam-transition>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -130,10 +153,11 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
-	const toggleComponent = ref(false)
-	const toggleDisabled = ref(false)
-	const togglePlayground = ref(false)
+	const toggleDefault     = ref(false)
+	const toggleComponent   = ref(false)
+	const toggleDisabled    = ref(false)
+	const togglePlayground  = ref(false)
+	const toggleSlotDefault = ref(false)
 
 	const transitionList: Array<IOptions<string>> = [
 		{ label: 'fade',                    value: 'origam-transition--fade' },

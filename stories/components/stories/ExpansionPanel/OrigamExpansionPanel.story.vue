@@ -172,6 +172,36 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — header">
+			<origam-expansion-panels>
+				<origam-expansion-panel title="Panel" content="Content here" data-cy="ep-slot-header">
+					<template #header>
+						<span>Custom slot content</span>
+					</template>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-expansion-panels>
+				<origam-expansion-panel :loading="true" title="Loading panel" content="Content here" data-cy="ep-slot-loader">
+					<template #loader>
+						<span>Loading…</span>
+					</template>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — wrapper">
+			<origam-expansion-panels>
+				<origam-expansion-panel title="Panel" content="Content here" data-cy="ep-slot-wrapper">
+					<template #wrapper>
+						<span>Custom slot content</span>
+					</template>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
 		<Variant title="Slot — default (content)">
 			<origam-expansion-panels>
 				<origam-expansion-panel title="Panel with slot content" data-cy="ep-slot-default">

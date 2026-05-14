@@ -124,6 +124,19 @@
 			</div>
 		</Variant>
 
+		<!-- ── Slots ────────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="chip-group-slot-default-shell">
+				<origam-chip-group v-model="playgroundSelected" data-cy="chip-group-slot-default">
+					<origam-chip :value="1" link text="Alpha" data-cy="chip-group-slot-default-1"/>
+					<origam-chip :value="2" link text="Beta" data-cy="chip-group-slot-default-2"/>
+					<origam-chip :value="3" link text="Gamma" data-cy="chip-group-slot-default-3"/>
+				</origam-chip-group>
+				<span class="story-status" data-cy="chip-group-slot-default-status">selected = <strong>{{ JSON.stringify(playgroundSelected) }}</strong></span>
+			</div>
+		</Variant>
+
 		<!-- ── Emits ────────────────────────────────────────────────────── -->
 
 		<Variant

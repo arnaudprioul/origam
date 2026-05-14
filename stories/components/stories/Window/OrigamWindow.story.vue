@@ -116,6 +116,93 @@
 				<HstCheckbox v-model="state.touch"      title="touch"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — additional">
+			<div class="story-shell" data-cy="window-slot-additional">
+				<origam-window v-model="slotStep" show-arrows :style="hostStyle">
+					<origam-window-item v-for="n in 3" :key="n" :value="n">
+						<div :style="slideStyle(n)">Slide {{ n }}</div>
+					</origam-window-item>
+					<template #additional>
+						<div style="text-align: center; padding: 4px; font-size: 0.75rem; opacity: 0.7;">Additional slot content</div>
+					</template>
+				</origam-window>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — arrows">
+			<div class="story-shell" data-cy="window-slot-arrows">
+				<origam-window v-model="slotStep" show-arrows :style="hostStyle">
+					<origam-window-item v-for="n in 3" :key="n" :value="n">
+						<div :style="slideStyle(n)">Slide {{ n }}</div>
+					</origam-window-item>
+					<template #arrows>
+						<span>Custom slot content</span>
+					</template>
+				</origam-window>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="window-slot-default">
+				<origam-window v-model="slotStep" :style="hostStyle">
+					<template #default>
+						<origam-window-item :value="1">
+							<div :style="slideStyle(1)">Slide 1 (default slot)</div>
+						</origam-window-item>
+						<origam-window-item :value="2">
+							<div :style="slideStyle(2)">Slide 2 (default slot)</div>
+						</origam-window-item>
+					</template>
+				</origam-window>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — next">
+			<div class="story-shell" data-cy="window-slot-next">
+				<origam-window v-model="slotStep" show-arrows :style="hostStyle">
+					<origam-window-item v-for="n in 3" :key="n" :value="n">
+						<div :style="slideStyle(n)">Slide {{ n }}</div>
+					</origam-window-item>
+					<template #next="{ props: btnProps }">
+						<button v-bind="btnProps" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: white; border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; cursor: pointer;">Next</button>
+					</template>
+				</origam-window>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prev">
+			<div class="story-shell" data-cy="window-slot-prev">
+				<origam-window v-model="slotStep" show-arrows :style="hostStyle">
+					<origam-window-item v-for="n in 3" :key="n" :value="n">
+						<div :style="slideStyle(n)">Slide {{ n }}</div>
+					</origam-window-item>
+					<template #prev="{ props: btnProps }">
+						<button v-bind="btnProps" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: white; border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; cursor: pointer;">Prev</button>
+					</template>
+				</origam-window>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<div class="story-shell" data-cy="window-emit-update">
+				<origam-window
+						v-model="emitStep"
+						show-arrows
+						:style="hostStyle"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				>
+					<origam-window-item v-for="n in 3" :key="n" :value="n">
+						<div :style="slideStyle(n)">Slide {{ n }}</div>
+					</origam-window-item>
+				</origam-window>
+				<div class="story-status">Active: <strong>{{ emitStep }}</strong></div>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -124,6 +211,7 @@
 		setup
 >
 	import { ref, type CSSProperties } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamWindow, OrigamWindowItem } from '@origam/components'
 	import { DIRECTION } from '@origam/enums'
@@ -132,8 +220,10 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultStep = ref(1)
+	const defaultStep    = ref(1)
 	const continuousStep = ref(1)
+	const slotStep       = ref(1)
+	const emitStep       = ref(1)
 
 	const directionList: Array<IOptions<TDirection>> = [
 		{ label: 'horizontal', value: DIRECTION.HORIZONTAL },

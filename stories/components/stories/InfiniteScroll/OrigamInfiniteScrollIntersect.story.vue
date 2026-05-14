@@ -88,6 +88,30 @@
 				</p>
 			</div>
 		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — intersect">
+			<div style="padding: 24px;">
+				<origam-infinite-scroll
+						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
+						data-cy="infinite-scroll-intersect-emit"
+						@load="handleEmitLoad"
+				>
+					<div
+							v-for="(item, i) in emitItems"
+							:key="i"
+							style="padding: 8px 16px; border-bottom: 1px solid var(--origam-color__border---subtle);"
+					>
+						Item #{{ i + 1 }} — {{ item }}
+					</div>
+				</origam-infinite-scroll>
+				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+					The internal sentinel emits <code>intersect</code> when scrolled into view,
+					triggering the parent <code>load</code> event. Check the Histoire event log.
+				</p>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -96,6 +120,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamInfiniteScroll, OrigamInfiniteScrollIntersect } from '@origam/components'
 
@@ -107,6 +132,20 @@
 			for (let i = 0; i < 10; i++) {
 				nextId += 1
 				items.value.push(`appended row ${nextId}`)
+			}
+			done?.('ok')
+		}, 600)
+	}
+
+	const emitItems = ref(Array.from({ length: 20 }, (_, i) => `emit item ${i + 1}`))
+	let emitNextId = emitItems.value.length
+
+	const handleEmitLoad = ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
+		logEvent('intersect', { side: 'end' })
+		setTimeout(() => {
+			for (let i = 0; i < 10; i++) {
+				emitNextId += 1
+				emitItems.value.push(`emit row ${emitNextId}`)
 			}
 			done?.('ok')
 		}, 600)

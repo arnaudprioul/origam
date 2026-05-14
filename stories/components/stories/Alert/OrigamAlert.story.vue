@@ -179,6 +179,46 @@
 			</origam-alert>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<origam-alert text="Alert with append slot." data-cy="alert-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-alert>
+		</Variant>
+
+		<Variant title="Slot — close">
+			<origam-alert closable text="Alert with custom close slot." data-cy="alert-slot-close">
+				<template #close>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-alert>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-alert data-cy="alert-slot-default">
+				<span>Custom slot content</span>
+			</origam-alert>
+		</Variant>
+
+		<Variant title="Slot — text">
+			<origam-alert data-cy="alert-slot-text">
+				<template #text>
+					<span>Custom slot content</span>
+				</template>
+			</origam-alert>
+		</Variant>
+
+		<Variant title="Slot — wrapper">
+			<origam-alert data-cy="alert-slot-wrapper">
+				<template #wrapper>
+					<div style="padding: 16px; border: 2px dashed var(--origam-color__border---subtle);">
+						<span>Custom slot content</span>
+					</div>
+				</template>
+			</origam-alert>
+		</Variant>
+
 		<!-- ── Emits ────────────────────────────────────────────────── -->
 
 		<Variant
@@ -202,6 +242,23 @@
 					<p v-if="state.log.length === 0" class="story-status">Click the close icon.</p>
 				</div>
 			</template>
+		</Variant>
+
+		<Variant title="Emit — update:hover">
+			<origam-alert
+					text="Hover over this alert."
+					data-cy="alert-emit-hover"
+					@update:hover="logEvent('update:hover', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<origam-alert
+					closable
+					text="Dismiss this alert to fire update:modelValue."
+					data-cy="alert-emit-model-value"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
 		</Variant>
 	</Story>
 </template>

@@ -110,6 +110,38 @@
 				<origam-slider-field v-model="stateValue" label="Readonly" readonly data-cy="slider-thumb-readonly"/>
 			</div>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div style="padding: 24px; position: relative; min-height: 80px;">
+				<origam-slider-field-thumb
+						:min="0"
+						:max="100"
+						:model-value="50"
+						:position="50"
+						data-cy="slider-thumb-slot-default"
+				>
+					<span>Custom slot content</span>
+				</origam-slider-field-thumb>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-slider-field
+						v-model="emitValue"
+						label="Drag to emit"
+						data-cy="slider-thumb-emit-update"
+						@update:modelValue="logEvent('update:modelValue', $event)"
+				/>
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
+					value = {{ emitValue }}
+				</p>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -118,6 +150,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamSliderField, OrigamSliderFieldThumb } from '@origam/components'
 	import { SIZES } from '@origam/enums'
@@ -131,6 +164,7 @@
 	const sizeValue    = ref(50)
 	const labelValue   = ref(75)
 	const stateValue   = ref(30)
+	const emitValue    = ref(42)
 </script>
 
 <docs lang="md" src="@docs/components/SliderField/OrigamSliderFieldThumb.md"/>

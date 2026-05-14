@@ -63,6 +63,21 @@
 			</div>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — item">
+			<div style="padding: 24px;">
+				<origam-slider-field-track :start="0" :stop="60" data-cy="slider-track-slot-item">
+					<template #item="{ position }">
+						<span
+								style="position: absolute; width: 2px; height: 12px; background: currentColor; top: 50%; transform: translateY(-50%);"
+								:style="{ left: position + '%' }"
+						/>
+					</template>
+				</origam-slider-field-track>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISliderFieldTrackProps>({

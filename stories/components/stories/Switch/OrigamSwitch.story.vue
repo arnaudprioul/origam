@@ -186,7 +186,25 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — track.true / track.false">
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — loader">
+			<origam-switch :model-value="false" loading label="Loading switch" data-cy="switch-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-switch>
+		</Variant>
+
+		<Variant title="Slot — track.false">
+			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track-false">
+				<template #track.false>
+					<span style="font-size: 10px; color: #fff;">OFF</span>
+				</template>
+			</origam-switch>
+		</Variant>
+
+		<Variant title="Slot — track.true">
 			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track">
 				<template #track.true>
 					<span style="font-size: 10px; color: #fff;">ON</span>
@@ -196,6 +214,36 @@
 				</template>
 			</origam-switch>
 			<div data-cy="switch-slot-track-status">value = {{ slotTrackModel }}</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:label">
+			<origam-switch
+					v-model="emitClickLabelModel"
+					label="Click the label"
+					data-cy="switch-emit-click-label"
+					@click:label="logEvent('click:label', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:focused">
+			<origam-switch
+					v-model="emitFocusedModel"
+					label="Focus me"
+					data-cy="switch-emit-focused"
+					@update:focused="logEvent('update:focused', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:indeterminate">
+			<origam-switch
+					v-model="emitIndeterminateModel"
+					:indeterminate="true"
+					label="Indeterminate switch"
+					data-cy="switch-emit-indeterminate"
+					@update:indeterminate="logEvent('update:indeterminate', $event)"
+			/>
 		</Variant>
 
 		<Variant title="Emit — update:modelValue">
@@ -358,15 +406,18 @@
 		return JSON.stringify(v, null, 2)
 	}
 
-	const colorModel         = ref(false)
-	const densityModel       = ref(false)
-	const insetModel         = ref(false)
-	const indeterminateModel = ref(false)
-	const statesModel        = ref(false)
-	const slotTrackModel     = ref(false)
-	const emitModel          = ref(false)
-	const emitFocusModel     = ref(false)
-	const playgroundModel    = ref(false)
+	const colorModel              = ref(false)
+	const densityModel            = ref(false)
+	const insetModel              = ref(false)
+	const indeterminateModel      = ref(false)
+	const statesModel             = ref(false)
+	const slotTrackModel          = ref(false)
+	const emitClickLabelModel     = ref(false)
+	const emitFocusedModel        = ref(false)
+	const emitIndeterminateModel  = ref(false)
+	const emitModel               = ref(false)
+	const emitFocusModel          = ref(false)
+	const playgroundModel         = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Switch/OrigamSwitch.md"/>

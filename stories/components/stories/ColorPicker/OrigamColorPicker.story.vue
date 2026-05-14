@@ -145,6 +145,24 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color" data-cy="color-picker-slot-default">
+					<span>Custom slot content</span>
+				</origam-color-picker>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color" data-cy="color-picker-slot-header">
+					<template #header>
+						<span style="font-weight: 600; padding: 8px 16px; display: block;">Custom header</span>
+					</template>
+				</origam-color-picker>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — title">
 			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-color-picker v-model="color" data-cy="color-picker-slot-title">

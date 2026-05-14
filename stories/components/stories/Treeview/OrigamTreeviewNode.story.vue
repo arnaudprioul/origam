@@ -71,6 +71,16 @@
 				<HstNumber v-model="state.depth" title="depth (display only)" :min="0" :max="6"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — node">
+			<origam-treeview :items="nestedItems" data-cy="treeview-node-slot-node">
+				<template #node="{ item }">
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom slot content — {{ item.label }}</span>
+				</template>
+			</origam-treeview>
+		</Variant>
 	</Story>
 </template>
 

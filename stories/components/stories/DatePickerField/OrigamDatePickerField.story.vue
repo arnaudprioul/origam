@@ -190,6 +190,112 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-append-inner">
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — chip">
+			<origam-date-picker-field label="Date" multiple style="max-width: 320px" data-cy="datepickerfield-slot-chip">
+				<template #chip>
+					<origam-chip text="Demo"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-date-picker-field label="Date" clearable style="max-width: 320px" data-cy="datepickerfield-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-floating-label">
+				<template #floatingLabel>
+					<span>Custom slot content</span>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-label">
+				<template #label>
+					<span>Custom slot content</span>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-date-picker-field label="Date" loading style="max-width: 320px" data-cy="datepickerfield-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-prefix">
+				<template #prefix>
+					<span>Custom slot content</span>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — rangeSelection">
+			<origam-date-picker-field label="Date range" range style="max-width: 320px" data-cy="datepickerfield-slot-range-selection">
+				<template #rangeSelection>
+					<span>Custom slot content</span>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — selection">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-selection">
+				<template #selection>
+					<origam-chip text="Demo"/>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-date-picker-field label="Date" style="max-width: 320px" data-cy="datepickerfield-slot-suffix">
+				<template #suffix>
+					<span>Custom slot content</span>
+				</template>
+			</origam-date-picker-field>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
@@ -219,8 +325,8 @@
 	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamDatePickerField } from '@origam/components'
-	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import { OrigamChip, OrigamDatePickerField, OrigamIcon } from '@origam/components'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps } from '@origam/interfaces'
 	import type { TVariantInput } from '@origam/types'
 

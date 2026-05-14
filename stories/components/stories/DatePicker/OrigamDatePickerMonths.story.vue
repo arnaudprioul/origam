@@ -95,6 +95,40 @@
 				<HstSelect v-model="state.color" title="color" :options="intentList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — month">
+			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+				<origam-date-picker-months
+						:month="4"
+						:year="2026"
+						data-cy="dp-months-slot-month"
+				>
+					<template #month="{ month, year }">
+						<div style="text-align: center; font-weight: 600; padding: 6px; cursor: pointer;">
+							{{ new Date(year, month).toLocaleString('en', { month: 'short' }) }}
+						</div>
+					</template>
+				</origam-date-picker-months>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:month">
+			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+				<origam-date-picker-months
+						:month="emitMonth"
+						:year="2026"
+						data-cy="dp-months-emit-update"
+						@update:month="logEvent('update:month', $event); emitMonth = $event"
+				/>
+				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
+					month = {{ emitMonth }}
+				</p>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -103,6 +137,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamDatePicker, OrigamDatePickerMonths } from '@origam/components'
 
@@ -110,6 +145,7 @@
 	import { intentList } from '@stories/const'
 
 	const defaultValue = ref('2026-05-08')
+	const emitMonth = ref(4)
 </script>
 
 <docs lang="md" src="@docs/components/DatePicker/OrigamDatePickerMonths.md"/>

@@ -137,6 +137,60 @@
 			-->
 			<origam-data-list mode="kv" :items="kvMixedItems" data-cy="data-list-kv-mixed"/>
 		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-data-list :items="basicItems" data-cy="data-list-slot-default">
+				<span>Custom slot content</span>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slot — item.text">
+			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-text">
+				<template #item.text="{ item }">
+					<em>{{ item.text?.[0]?.text }}</em>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slot — item.text.append">
+			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-text-append">
+				<template #item.text.append>
+					<span>↗</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slot — item.text.prepend">
+			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-text-prepend">
+				<template #item.text.prepend>
+					<span>→</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slot — item.title.append">
+			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title-append">
+				<template #item.title.append>
+					<span>*</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slot — item.title.prepend">
+			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title-prepend">
+				<template #item.title.prepend>
+					<span>•</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slot — key">
+			<origam-data-list mode="kv" :items="kvBasicItems" data-cy="data-list-slot-key">
+				<template #key="{ key }">
+					<strong>{{ key }}</strong>
+				</template>
+			</origam-data-list>
+		</Variant>
 	</Story>
 </template><script
 		lang="ts"

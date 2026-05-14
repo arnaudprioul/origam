@@ -211,6 +211,48 @@
 				<p>Anything goes inside a sheet.</p>
 			</origam-sheet>
 		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:open">
+			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<origam-sheet
+						:swipeable="true"
+						side="bottom"
+						default-snap="peek"
+						elevation="lg"
+						style="background: var(--origam-color__surface---default);"
+						data-cy="sheet-emit-update-open"
+						@update:open="logEvent('update:open', $event)"
+				>
+					<template #default>
+						<div style="padding: 16px;">
+							<p>Drag to open/close — watch the log</p>
+						</div>
+					</template>
+				</origam-sheet>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:snap">
+			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<origam-sheet
+						:swipeable="true"
+						side="bottom"
+						default-snap="peek"
+						elevation="lg"
+						style="background: var(--origam-color__surface---default);"
+						data-cy="sheet-emit-update-snap"
+						@update:snap="logEvent('update:snap', $event)"
+				>
+					<template #default>
+						<div style="padding: 16px;">
+							<p>Drag to change snap — watch the log</p>
+						</div>
+					</template>
+				</origam-sheet>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -218,6 +260,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamSheet } from '@origam/components'
 	import type {
 		IColorProps,

@@ -63,6 +63,14 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-data-table :headers="headers" :items="items" data-cy="headers-slot-default">
+				<template #default>
+					<span>Custom slot content</span>
+				</template>
+			</origam-data-table>
+		</Variant>
+
 		<Variant title="Slot — headers (fully custom header row, hide default)">
 			<origam-data-table :headers="headers" :items="items" hide-default-header data-cy="headers-hide-default">
 				<template #headers>
@@ -72,6 +80,24 @@
 					</tr>
 				</template>
 			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-data-table :headers="headers" :items="items" loading data-cy="headers-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — mobile">
+			<div style="max-width: 360px;">
+				<origam-data-table :headers="headers" :items="items" mobile data-cy="headers-slot-mobile">
+					<template #mobile>
+						<span>Custom mobile header</span>
+					</template>
+				</origam-data-table>
+			</div>
 		</Variant>
 	</Story>
 </template>

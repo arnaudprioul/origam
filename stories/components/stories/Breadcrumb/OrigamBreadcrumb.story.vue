@@ -237,6 +237,14 @@
 				</template>
 			</origam-breadcrumb>
 		</Variant>
+
+		<Variant title="Slot — item.title">
+			<origam-breadcrumb :items="items" data-cy="breadcrumb-slot-item-title">
+				<template #item.title="{ item, index }">
+					<strong :data-cy="`breadcrumb-slot-item-title-${index}`">{{ item.title }}</strong>
+				</template>
+			</origam-breadcrumb>
+		</Variant>
 	</Story>
 </template>
 

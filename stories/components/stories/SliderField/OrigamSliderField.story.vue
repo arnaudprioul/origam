@@ -308,7 +308,120 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
+				<span>Custom slot content</span>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
+				<template #details>
+					<span>Custom details area</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
+				<template #label>
+					<span>Custom label</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume" :error-messages="['Error message']">
+				<template #message="{ message }">
+					<span>{{ message }}</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume" :error-messages="['Error one', 'Error two']">
+				<template #messages>
+					<span>Custom messages area</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — thumb.label">
+			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
+				<template #thumb.label="{ value }">
+					<span>{{ value }}%</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — thumb.labelStart">
+			<origam-slider-field v-model="rangeModel" :min="0" :max="100" label="Price range" range>
+				<template #thumb.labelStart="{ value }">
+					<span>{{ value }}</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
+		<Variant title="Slot — thumb.labelStop">
+			<origam-slider-field v-model="rangeModel" :min="0" :max="100" label="Price range" range>
+				<template #thumb.labelStop="{ value }">
+					<span>{{ value }}</span>
+				</template>
+			</origam-slider-field>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — end">
+			<origam-slider-field
+					v-model="emitModel"
+					:min="0"
+					:max="100"
+					label="Drag to end"
+					data-cy="slider-emit-end"
+					@end="logEvent('end', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — start">
+			<origam-slider-field
+					v-model="emitModel"
+					:min="0"
+					:max="100"
+					label="Drag to start"
+					data-cy="slider-emit-start"
+					@start="logEvent('start', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:focused">
+			<origam-slider-field
+					v-model="emitModel"
+					:min="0"
+					:max="100"
+					label="Focus me"
+					data-cy="slider-emit-focused"
+					@update:focused="logEvent('update:focused', $event)"
+			/>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<origam-slider-field
@@ -331,7 +444,8 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamSliderField } from '@origam/components'
+	import { OrigamIcon, OrigamSliderField } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, IOptions, ISliderFieldProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'

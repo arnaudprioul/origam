@@ -139,6 +139,26 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-default-slot-host">
+				<origam-btn text="Show" data-cy="snackbar-default-slot-trigger" @click="defaultSlotOpen = true"/>
+				<origam-snackbar v-model="defaultSlotOpen" data-cy="snackbar-default-slot">
+					<span>Custom slot content</span>
+				</origam-snackbar>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-prepend-slot-host">
+				<origam-btn text="Show with prepend" data-cy="snackbar-prepend-slot-trigger" @click="prependSlotOpen = true"/>
+				<origam-snackbar v-model="prependSlotOpen" text="With prepend icon." data-cy="snackbar-prepend-slot">
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-snackbar>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — action">
 			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-action-host">
 				<origam-btn text="Show with action" data-cy="snackbar-action-trigger" @click="actionOpen = true"/>
@@ -190,7 +210,8 @@
 	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamBtn, OrigamSnackbar } from '@origam/components'
+	import { OrigamBtn, OrigamIcon, OrigamSnackbar } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 	import type { ISnackbarProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
@@ -203,6 +224,8 @@
 	const actionOpen = ref(false)
 	const textSlotOpen = ref(false)
 	const emitOpen = ref(false)
+	const defaultSlotOpen = ref(false)
+	const prependSlotOpen = ref(false)
 	const playgroundOpen = ref(false)
 </script>
 

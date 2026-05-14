@@ -88,6 +88,30 @@
 				<HstSelect v-model="state.color" title="color" :options="intentList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — year">
+			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+				<origam-date-picker-years :year="2026" data-cy="dp-years-slot-year">
+					<template #year="{ year, isSelected }">
+						<span :style="isSelected ? 'font-weight: 700; color: var(--origam-color__action--primary---bg);' : ''">{{ year }}</span>
+					</template>
+				</origam-date-picker-years>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:year">
+			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+				<origam-date-picker-years
+						:year="2026"
+						data-cy="dp-years-emit-year"
+						@update:year="logEvent('update:year', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -96,6 +120,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamDatePicker, OrigamDatePickerYears } from '@origam/components'
 

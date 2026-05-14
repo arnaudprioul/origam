@@ -123,6 +123,26 @@
 			</dl>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<dl style="margin: 24px;">
+				<origam-data-title text="With append slot" data-cy="data-title-slot-append">
+					<template #append>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-data-title>
+			</dl>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<dl style="margin: 24px;">
+				<origam-data-title text="With prepend slot" data-cy="data-title-slot-prepend">
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-data-title>
+			</dl>
+		</Variant>
+
 		<Variant title="Slot — paired with OrigamDataText (semantic dl/dt/dd)">
 			<dl style="margin: 24px; max-width: 360px;">
 				<origam-data-title text="Email"   :prepend-icon="MDI_ICONS.EMAIL"/>
@@ -142,7 +162,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataText, OrigamDataTitle } from '@origam/components'
+	import { OrigamDataText, OrigamDataTitle, OrigamIcon } from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, IDataTitleProps, IDensityProps } from '@origam/interfaces'
 

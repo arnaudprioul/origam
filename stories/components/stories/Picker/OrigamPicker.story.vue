@@ -163,6 +163,12 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-picker title="Default slot" data-cy="picker-slot-default">
+				<span>Custom slot content</span>
+			</origam-picker>
+		</Variant>
+
 		<Variant title="Slot — actions">
 			<origam-picker title="With actions" data-cy="picker-actions">
 				<div data-cy="picker-actions-body" style="padding: 12px 16px;">Body</div>

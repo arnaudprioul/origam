@@ -141,6 +141,38 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — append">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-append">
+				<origam-confirm-wrapper
+						v-model="slotAppendValue"
+						v-model:confirm="slotAppendConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-append-input"
+				>
+					<template #append>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-details">
+				<origam-confirm-wrapper
+						v-model="slotDetailsValue"
+						v-model:confirm="slotDetailsConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-details-input"
+				>
+					<template #details>
+						<span>Custom slot content</span>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — header">
 			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-header">
 				<origam-confirm-wrapper
@@ -152,6 +184,72 @@
 				>
 					<template #header>
 						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-message">
+				<origam-confirm-wrapper
+						v-model="slotMessageValue"
+						v-model:confirm="slotMessageConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						:error-messages="['Error message']"
+						data-cy="confirm-wrapper-slot-message-input"
+				>
+					<template #message="{ message }">
+						<span>{{ message }}</span>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-messages">
+				<origam-confirm-wrapper
+						v-model="slotMessagesValue"
+						v-model:confirm="slotMessagesConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						:error-messages="['Error A', 'Error B']"
+						data-cy="confirm-wrapper-slot-messages-input"
+				>
+					<template #messages="{ messages }">
+						<span v-for="(m, i) in messages" :key="i">{{ m }}</span>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-prepend">
+				<origam-confirm-wrapper
+						v-model="slotPrependValue"
+						v-model:confirm="slotPrependConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-prepend-input"
+				>
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — title">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-title">
+				<origam-confirm-wrapper
+						v-model="slotTitleValue"
+						v-model:confirm="slotTitleConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-title-input"
+				>
+					<template #title>
+						<span>Custom slot content</span>
 					</template>
 				</origam-confirm-wrapper>
 			</div>
@@ -173,6 +271,19 @@
 		</Variant>
 
 		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:confirm">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-emit-confirm">
+				<origam-confirm-wrapper
+						v-model="emitConfirmOnlyValue"
+						v-model:confirm="emitConfirmOnlyConfirm"
+						field="text-field"
+						:defaults="{ label: 'Confirm field' }"
+						data-cy="confirm-wrapper-emit-confirm-input"
+						@update:confirm="logEvent('update:confirm', $event)"
+				/>
+			</div>
+		</Variant>
 
 		<Variant
 				title="Emit — update:modelValue & update:confirm"
@@ -204,8 +315,10 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
-	import { OrigamConfirmWrapper, OrigamTextField } from '@origam/components'
+	import { OrigamConfirmWrapper, OrigamIcon, OrigamTextField } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
 	import type { IConfirmWrapperProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
@@ -233,6 +346,27 @@
 
 	const emitValue = ref('')
 	const emitConfirm = ref('')
+
+	const emitConfirmOnlyValue = ref('')
+	const emitConfirmOnlyConfirm = ref('')
+
+	const slotAppendValue = ref('')
+	const slotAppendConfirm = ref('')
+
+	const slotDetailsValue = ref('')
+	const slotDetailsConfirm = ref('')
+
+	const slotMessageValue = ref('')
+	const slotMessageConfirm = ref('')
+
+	const slotMessagesValue = ref('')
+	const slotMessagesConfirm = ref('')
+
+	const slotPrependValue = ref('')
+	const slotPrependConfirm = ref('')
+
+	const slotTitleValue = ref('')
+	const slotTitleConfirm = ref('')
 
 	const playgroundValue = ref('')
 	const playgroundConfirm = ref('')

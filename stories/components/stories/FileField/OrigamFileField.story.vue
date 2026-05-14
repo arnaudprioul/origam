@@ -238,7 +238,252 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — append">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — chip">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Upload"
+					multiple
+					display="chips"
+					style="max-width: 400px"
+			>
+				<template #chip>
+					<origam-chip text="Demo"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — counter">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Upload"
+					multiple
+					counter
+					style="max-width: 400px"
+			>
+				<template #counter>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<span>Custom slot content</span>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #details>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
 		<Variant title="Slot — dropzone">
+			<origam-file-field
+					v-model="files"
+					label="Custom dropzone"
+					dropzone
+					style="max-width: 400px"
+			>
+				<template #dropzone>
+					<span>Drop files here</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — field">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #field>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #floatingLabel>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — item">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Upload"
+					multiple
+					style="max-width: 400px"
+			>
+				<template #item>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #label>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #loader>
+					<span>Loading…</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #message>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #messages>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #prefix>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — selection">
+			<origam-file-field
+					v-model="multiFiles"
+					label="Upload"
+					multiple
+					style="max-width: 400px"
+			>
+				<template #selection>
+					<origam-chip text="Demo"/>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+			>
+				<template #suffix>
+					<span>Custom slot content</span>
+				</template>
+			</origam-file-field>
+		</Variant>
+
+		<Variant title="Slot — dropzone (scoped)">
 			<origam-file-field
 					v-model="files"
 					label="Custom dropzone"
@@ -255,6 +500,24 @@
 		</Variant>
 
 		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:control">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-file-field
+					v-model="files"
+					label="Upload"
+					style="max-width: 400px"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<origam-file-field
@@ -295,8 +558,8 @@
 	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamBtn, OrigamFileField } from '@origam/components'
-	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import { OrigamBtn, OrigamChip, OrigamFileField, OrigamIcon } from '@origam/components'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps } from '@origam/interfaces'
 	import type { TFileFieldDisplay, TVariantInput } from '@origam/types'
 

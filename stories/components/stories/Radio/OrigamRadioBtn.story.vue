@@ -176,6 +176,29 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<div style="padding: 24px;">
+				<origam-radio-btn v-model="slotModel" value="custom" data-cy="radio-btn-slot-default">
+					<span>Custom slot content</span>
+				</origam-radio-btn>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — input">
+			<div style="padding: 24px;">
+				<origam-radio-btn v-model="slotModel" value="custom-input" label="Custom input" data-cy="radio-btn-slot-input">
+					<template #input="{ props: inputProps, icon }">
+						<div
+								v-bind="inputProps"
+								style="width: 20px; height: 20px; border: 2px solid var(--origam-color__action--primary---bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+						>
+							<origam-icon v-if="icon" :icon="icon"/>
+						</div>
+					</template>
+				</origam-radio-btn>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<div style="padding: 24px;">
 				<origam-radio-btn
@@ -194,6 +217,42 @@
 		</Variant>
 
 		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:label">
+			<div style="padding: 24px;">
+				<origam-radio-btn
+						v-model="emitModel"
+						value="emitted"
+						label="Click the label"
+						data-cy="radio-btn-emit-click-label"
+						@click:label="logEvent('click:label', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:focused">
+			<div style="padding: 24px;">
+				<origam-radio-btn
+						v-model="emitModel"
+						value="emitted"
+						label="Focus/blur to trigger"
+						data-cy="radio-btn-emit-update-focused"
+						@update:focused="logEvent('update:focused', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<div style="padding: 24px;">
+				<origam-radio-btn
+						v-model="emitModel"
+						value="emitted"
+						label="Toggle me"
+						data-cy="radio-btn-emit-update-model-value"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</div>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue & click:label">
 			<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
@@ -217,7 +276,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamRadioBtn } from '@origam/components'
+	import { OrigamIcon, OrigamRadioBtn } from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IRadioBtnProps } from '@origam/interfaces'
 

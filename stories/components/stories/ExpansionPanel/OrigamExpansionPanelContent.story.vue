@@ -115,6 +115,19 @@
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-expansion-panels data-cy="expansion-content-slot-loader">
+				<origam-expansion-panel>
+					<origam-expansion-panel-header title="Loading panel"/>
+					<origam-expansion-panel-content>
+						<template #loader>
+							<span>Loading...</span>
+						</template>
+					</origam-expansion-panel-content>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
 	</Story>
 </template>
 

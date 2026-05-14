@@ -80,6 +80,28 @@
 				/>
 			</template>
 		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:colorHsv">
+			<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+				<origam-color-picker-edit
+						:color-hsv="defaultColor"
+						data-cy="color-picker-edit-emit-color-hsv"
+						@update:color-hsv="logEvent('update:colorHsv', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:mode">
+			<div style="padding: 24px; max-width: 360px; margin: 0 auto;">
+				<origam-color-picker-edit
+						:color-hsv="defaultColor"
+						data-cy="color-picker-edit-emit-mode"
+						@update:mode="logEvent('update:mode', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -87,6 +109,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamColorPickerEdit } from '@origam/components'
 
 	import { useStoryInitState } from '@stories/composables'

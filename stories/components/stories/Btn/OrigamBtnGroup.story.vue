@@ -119,6 +119,14 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-btn-group data-cy="btn-group-slot-default">
+				<origam-btn text="One"   data-cy="btn-group-slot-default-1"/>
+				<origam-btn text="Two"   data-cy="btn-group-slot-default-2"/>
+				<origam-btn text="Three" data-cy="btn-group-slot-default-3"/>
+			</origam-btn-group>
+		</Variant>
+
 		<Variant title="Slot — item (custom render)">
 			<origam-btn-group :items="actions" data-cy="btn-group-item-slot">
 				<template #item="{ item, index }">

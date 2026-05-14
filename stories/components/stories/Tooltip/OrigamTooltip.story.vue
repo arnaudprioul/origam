@@ -116,6 +116,16 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — activator">
+			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;" data-cy="tooltip-slot-activator-host">
+				<origam-tooltip text="Tooltip text">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Custom activator" data-cy="tooltip-slot-activator-btn"/>
+					</template>
+				</origam-tooltip>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — default (rich content)">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;" data-cy="tooltip-slot-default-host">
 				<origam-tooltip location="top">

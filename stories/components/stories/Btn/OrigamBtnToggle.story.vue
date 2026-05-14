@@ -146,6 +146,48 @@
 				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="btn-toggle-slot-default">
+				<origam-btn-toggle v-model="slotDefaultValue" data-cy="bt-slot-default-host">
+					<template #default>
+						<origam-btn :value="'a'" text="Custom A" data-cy="bt-slot-default-a"/>
+						<origam-btn :value="'b'" text="Custom B" data-cy="bt-slot-default-b"/>
+					</template>
+				</origam-btn-toggle>
+				<div class="story-status">selected = <strong>{{ slotDefaultValue ?? '(empty)' }}</strong></div>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — item">
+			<div class="story-shell" data-cy="btn-toggle-slot-item">
+				<origam-btn-toggle v-model="slotItemValue" :items="['X', 'Y', 'Z']" data-cy="bt-slot-item-host">
+					<template #item="{ item }">
+						<origam-btn :value="item" :text="`[${item}]`"/>
+					</template>
+				</origam-btn-toggle>
+				<div class="story-status">selected = <strong>{{ slotItemValue ?? '(empty)' }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<div class="story-shell" data-cy="btn-toggle-emit-update">
+				<origam-btn-toggle
+						v-model="emitValue"
+						data-cy="bt-emit-host"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				>
+					<origam-btn :value="1" text="One"   data-cy="bt-emit-1"/>
+					<origam-btn :value="2" text="Two"   data-cy="bt-emit-2"/>
+					<origam-btn :value="3" text="Three" data-cy="bt-emit-3"/>
+				</origam-btn-toggle>
+				<div class="story-status">selected = <strong>{{ JSON.stringify(emitValue) }}</strong></div>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -154,6 +196,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamBtn, OrigamBtnToggle } from '@origam/components'
 	import { DENSITY } from '@origam/enums'
@@ -163,14 +206,17 @@
 	import { densityList, intentList, roundedList } from '@stories/const'
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultValue = ref<'left' | 'center' | 'right'>('center')
-	const multipleValue = ref<Array<string>>(['bold'])
-	const mandatoryValue = ref<'compact' | 'default' | 'comfortable'>('default')
-	const disabledValue = ref<'a' | 'b' | undefined>(undefined)
-	const densityValue = ref<number>(2)
-	const roundedValue = ref<'grid' | 'list'>('grid')
-	const colorValue = ref<'grid' | 'list'>('grid')
+	const defaultValue    = ref<'left' | 'center' | 'right'>('center')
+	const multipleValue   = ref<Array<string>>(['bold'])
+	const mandatoryValue  = ref<'compact' | 'default' | 'comfortable'>('default')
+	const disabledValue   = ref<'a' | 'b' | undefined>(undefined)
+	const densityValue    = ref<number>(2)
+	const roundedValue    = ref<'grid' | 'list'>('grid')
+	const colorValue      = ref<'grid' | 'list'>('grid')
 	const playgroundValue = ref<number | Array<number> | undefined>(1)
+	const slotDefaultValue = ref<string | undefined>(undefined)
+	const slotItemValue    = ref<string | undefined>(undefined)
+	const emitValue        = ref<number | undefined>(undefined)
 </script>
 
 <style scoped>

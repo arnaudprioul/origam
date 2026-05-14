@@ -259,6 +259,30 @@
 			</origam-expansion-panels>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<origam-expansion-panels :items="panelItems" data-cy="expansion-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — content">
+			<origam-expansion-panels :items="panelItems" data-cy="expansion-slot-content">
+				<template #content>
+					<span>Custom slot content</span>
+				</template>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-expansion-panels :items="panelItems" data-cy="expansion-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-expansion-panels>
+		</Variant>
+
 		<Variant title="Slot — title">
 			<origam-expansion-panels data-cy="expansion-slot-title">
 				<origam-expansion-panel data-cy="expansion-slot-title-p1">
@@ -269,6 +293,16 @@
 						<p>This is the content.</p>
 					</template>
 				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Slot — wrapper">
+			<origam-expansion-panels :items="panelItems" data-cy="expansion-slot-wrapper">
+				<template #wrapper>
+					<div style="padding: 16px; background: var(--origam-color__surface---overlay, rgba(0,0,0,0.04));">
+						<span>Custom slot content</span>
+					</div>
+				</template>
 			</origam-expansion-panels>
 		</Variant>
 
@@ -328,7 +362,8 @@
 	import {
 		OrigamExpansionPanel,
 		OrigamExpansionPanelHeader,
-		OrigamExpansionPanels
+		OrigamExpansionPanels,
+		OrigamIcon
 	} from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
 	import type {

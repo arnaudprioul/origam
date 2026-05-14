@@ -175,6 +175,96 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.ARROW_RIGHT"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-append-inner">
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-color-picker-field v-model="color" label="Colour" clearable style="max-width: 320px" data-cy="colorpickerfield-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — colorSelection">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-color-selection">
+				<template #colorSelection>
+					<span>Custom colour selection</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-floating-label">
+				<template #floatingLabel>
+					<span>Pick a colour</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-color-picker-field v-model="color" style="max-width: 320px" data-cy="colorpickerfield-slot-label">
+				<template #label>
+					<strong>Brand colour</strong>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-color-picker-field v-model="color" label="Colour" loading style="max-width: 320px" data-cy="colorpickerfield-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.PALETTE"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-prefix">
+				<template #prefix>
+					<span>#</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-suffix">
+				<template #suffix>
+					<span>px</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
@@ -204,8 +294,8 @@
 	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamColorPickerField } from '@origam/components'
-	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import { OrigamColorPickerField, OrigamIcon } from '@origam/components'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps } from '@origam/interfaces'
 	import type { TDensity, TVariantInput } from '@origam/types'
 

@@ -214,7 +214,171 @@
 			</template>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-number-field v-model="playgroundModel" label="Quantity" clearable>
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — decrement">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #decrement>
+					<origam-icon :icon="MDI_ICONS.MINUS"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<span>Custom slot content</span>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #details>
+					<span>Custom details area</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — field">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #field>
+					<span>Custom field content</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #floatingLabel>
+					<span>Floating label</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — increment">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #increment>
+					<origam-icon :icon="MDI_ICONS.PLUS"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #label>
+					<span>Custom label</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-number-field v-model="playgroundModel" label="Quantity" loading>
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-number-field v-model="playgroundModel" label="Quantity" :error-messages="['Error message']">
+				<template #message="{ message }">
+					<span>{{ message }}</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-number-field v-model="playgroundModel" label="Quantity" :error-messages="['Error one', 'Error two']">
+				<template #messages>
+					<span>Custom messages area</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-number-field v-model="playgroundModel" label="Price">
+				<template #prefix>
+					<span>€</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-number-field v-model="playgroundModel" label="Quantity">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-number-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-number-field v-model="playgroundModel" label="Weight">
+				<template #suffix>
+					<span>kg</span>
+				</template>
+			</origam-number-field>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:clear">
+			<origam-number-field
+					v-model="playgroundModel"
+					label="Clearable"
+					clearable
+					data-cy="numberfield-emit-click-clear"
+					@click:clear="logEvent('click:clear', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:control">
+			<origam-number-field
+					v-model="playgroundModel"
+					label="Click control"
+					data-cy="numberfield-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-number-field
+					v-model="playgroundModel"
+					label="Mousedown control"
+					data-cy="numberfield-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<origam-number-field
@@ -246,8 +410,8 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamNumberField } from '@origam/components'
-	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import { OrigamIcon, OrigamNumberField } from '@origam/components'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, INumberFieldProps } from '@origam/interfaces'
 	import type { TVariantInput } from '@origam/types'
 

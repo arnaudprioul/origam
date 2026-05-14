@@ -59,6 +59,23 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — append">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:items-per-page="3"
+					data-cy="footer-slot-append"
+			>
+				<template #bottom>
+					<origam-data-table-footer>
+						<template #append>
+							<span style="font-size: 0.75rem; opacity: 0.7;">Custom slot content</span>
+						</template>
+					</origam-data-table-footer>
+				</template>
+			</origam-data-table>
+		</Variant>
+
 		<Variant title="Slot — footer (custom footer, hide default)">
 			<origam-data-table
 					:headers="headers"
@@ -78,6 +95,23 @@
 				</template>
 			</origam-data-table>
 		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:items-per-page="3"
+					data-cy="footer-slot-prepend"
+			>
+				<template #bottom>
+					<origam-data-table-footer>
+						<template #prepend>
+							<span style="font-size: 0.75rem; opacity: 0.7;">Custom slot content</span>
+						</template>
+					</origam-data-table-footer>
+				</template>
+			</origam-data-table>
+		</Variant>
 	</Story>
 </template>
 
@@ -85,7 +119,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable } from '@origam/components'
+	import { OrigamDataTable, OrigamDataTableFooter } from '@origam/components'
 
 	import { useStoryInitState } from '@stories/composables'
 

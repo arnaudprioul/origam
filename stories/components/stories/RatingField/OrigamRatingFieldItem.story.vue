@@ -147,6 +147,74 @@
 				<origam-rating-field :model-value="2"   :length="5" disabled data-cy="rating-item-disabled"/>
 			</div>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — item">
+			<div style="padding: 24px;">
+				<origam-rating-field v-model="defaultValue" :length="5" data-cy="rating-item-slot-item">
+					<template #item="{ props: itemProps, isFilled }">
+						<span
+								v-bind="itemProps"
+								style="font-size: 24px; cursor: pointer;"
+						>{{ isFilled ? '★' : '☆' }}</span>
+					</template>
+				</origam-rating-field>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click">
+			<div style="padding: 24px;">
+				<origam-rating-field-item
+						:value="3"
+						:index="1"
+						name="rating"
+						label="Item"
+						:show-star="true"
+						:is-filled="true"
+						:is-hovered="false"
+						:is-hovering="false"
+						data-cy="rating-item-emit-click"
+						@click="logEvent('click', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — mouseenter">
+			<div style="padding: 24px;">
+				<origam-rating-field-item
+						:value="3"
+						:index="1"
+						name="rating"
+						label="Item"
+						:show-star="true"
+						:is-filled="true"
+						:is-hovered="false"
+						:is-hovering="false"
+						data-cy="rating-item-emit-mouseenter"
+						@mouseenter="logEvent('mouseenter', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — mouseleave">
+			<div style="padding: 24px;">
+				<origam-rating-field-item
+						:value="3"
+						:index="1"
+						name="rating"
+						label="Item"
+						:show-star="true"
+						:is-filled="true"
+						:is-hovered="false"
+						:is-hovering="false"
+						data-cy="rating-item-emit-mouseleave"
+						@mouseleave="logEvent('mouseleave', $event)"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -155,6 +223,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamRatingField, OrigamRatingFieldItem } from '@origam/components'
 	import { DENSITY, MDI_ICONS, SIZES } from '@origam/enums'

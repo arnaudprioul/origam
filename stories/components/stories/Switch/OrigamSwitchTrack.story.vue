@@ -70,6 +70,36 @@
 			</div>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────── -->
+
+		<Variant title="Slot — track.false">
+			<div style="padding: 24px;">
+				<origam-switch-track :model-value="false" data-cy="switch-track-slot-track-false">
+					<template #false><origam-icon :icon="MDI_ICONS.CLOSE"/></template>
+				</origam-switch-track>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — track.true">
+			<div style="padding: 24px;">
+				<origam-switch-track :model-value="true" data-cy="switch-track-slot-track-true">
+					<template #true><origam-icon :icon="MDI_ICONS.CHECK"/></template>
+				</origam-switch-track>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────── -->
+
+		<Variant title="Emit — click">
+			<div style="padding: 24px;">
+				<origam-switch-track
+						:model-value="false"
+						data-cy="switch-track-emit-click"
+						@click="logEvent('click', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Embedded in OrigamSwitch (real wiring)"
 				:init-state="() => useStoryInitState<{ value: boolean }>({ value: true })"
@@ -118,6 +148,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamIcon, OrigamSwitch, OrigamSwitchTrack } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IColorProps, ISwitchTrackProps } from '@origam/interfaces'

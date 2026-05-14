@@ -189,11 +189,54 @@
 			</origam-list>
 		</Variant>
 
+		<Variant title="Slot — childrenItem">
+			<origam-list :items="listItemsWithGroup" data-cy="list-slot-children-item">
+				<template #childrenItem="{ item, index }">
+					<origam-list-item
+							:title="item.title"
+							:prepend-icon="MDI_ICONS.CHEVRON_RIGHT"
+							:data-cy="`list-slot-children-item-${index}`"
+					/>
+				</template>
+			</origam-list>
+		</Variant>
+
 		<Variant title="Slot — default">
 			<origam-list data-cy="list-slot-default">
 				<origam-list-item title="Alpha"   data-cy="list-slot-alpha"/>
 				<origam-list-item title="Beta"    subtitle="With subtitle" data-cy="list-slot-beta"/>
 				<origam-list-item title="Gamma"   data-cy="list-slot-gamma"/>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — divider">
+			<origam-list :items="listItemsWithDivider" data-cy="list-slot-divider">
+				<template #divider>
+					<hr style="border-color: var(--origam-color__action--primary---bg); margin: 4px 0;"/>
+				</template>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — group">
+			<origam-list :items="listItemsWithGroup" data-cy="list-slot-group">
+				<template #group>
+					<span style="font-style: italic; opacity: 0.6;">Custom slot content</span>
+				</template>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slot — groupActivator">
+			<origam-list :items="listItemsWithGroup" data-cy="list-slot-group-activator">
+				<template #groupActivator="{ props, isOpen, events, toggleIcon }">
+					<origam-list-item
+							v-bind="props"
+							v-on="events"
+							:append-icon="toggleIcon"
+							:prepend-icon="MDI_ICONS.FOLDER"
+							title="Custom Activator"
+							data-cy="list-slot-group-activator-custom"
+					/>
+				</template>
 			</origam-list>
 		</Variant>
 
@@ -217,21 +260,6 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — groupActivator">
-			<origam-list :items="listItemsWithGroup" data-cy="list-slot-group-activator">
-				<template #groupActivator="{ props, isOpen, events, toggleIcon }">
-					<origam-list-item
-							v-bind="props"
-							v-on="events"
-							:append-icon="toggleIcon"
-							:prepend-icon="MDI_ICONS.FOLDER"
-							title="Custom Activator"
-							data-cy="list-slot-group-activator-custom"
-					/>
-				</template>
-			</origam-list>
-		</Variant>
-
 		<!-- ── Emits ────────────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:selected">
@@ -247,6 +275,14 @@
 					:items="selectableItems"
 					data-cy="list-emit-click-select"
 					@click:select="logEvent('click:select', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:open">
+			<origam-list
+					:items="listItemsWithGroup"
+					data-cy="list-emit-click-open"
+					@click:open="logEvent('click:open', $event)"
 			/>
 		</Variant>
 
@@ -334,5 +370,13 @@
 		{ type: 'item', title: 'Option one',   value: 'one'   },
 		{ type: 'item', title: 'Option two',   value: 'two'   },
 		{ type: 'item', title: 'Option three', value: 'three' },
+	]
+
+	const listItemsWithDivider = [
+		{ type: 'item',    title: 'Item Alpha' },
+		{ type: 'divider'                      },
+		{ type: 'item',    title: 'Item Beta'  },
+		{ type: 'divider'                      },
+		{ type: 'item',    title: 'Item Gamma' },
 	]
 </script>

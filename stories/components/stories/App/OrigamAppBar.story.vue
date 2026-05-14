@@ -286,6 +286,68 @@
 				</origam-app>
 			</div>
 		</Variant>
+
+		<Variant title="Slot — content">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<origam-app :full-height="false">
+					<origam-app-bar :order="0" data-cy="app-bar-slot-content">
+						<template #content>
+							<span>Custom slot content</span>
+						</template>
+					</origam-app-bar>
+					<origam-main>
+						<div style="padding: 12px;">Content slot — full bar content override.</div>
+					</origam-main>
+				</origam-app>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<origam-app :full-height="false">
+					<origam-app-bar :order="0" title="Default slot" data-cy="app-bar-slot-default">
+						<span>Custom slot content</span>
+					</origam-app-bar>
+					<origam-main>
+						<div style="padding: 12px;">Default slot — extra content injected into the bar.</div>
+					</origam-main>
+				</origam-app>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — img">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<origam-app :full-height="false">
+					<origam-app-bar :order="0" title="Image bar" data-cy="app-bar-slot-img">
+						<template #img>
+							<div style="position: absolute; inset: 0; background: linear-gradient(135deg, var(--origam-color__action--primary---bg, #1976d2) 0%, var(--origam-color__action--secondary---bg, #9c27b0) 100%);"/>
+						</template>
+					</origam-app-bar>
+					<origam-main>
+						<div style="padding: 12px;">Img slot — background image or gradient behind the bar.</div>
+					</origam-main>
+				</origam-app>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<div style="height: 140px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<origam-app :full-height="false">
+					<origam-app-bar
+							:order="0"
+							v-model="emitModelValue"
+							title="Model value"
+							data-cy="app-bar-emit-update"
+							@update:modelValue="logEvent('update:modelValue', $event)"
+					/>
+					<origam-main>
+						<div style="padding: 12px;">modelValue = {{ emitModelValue }}</div>
+					</origam-main>
+				</origam-app>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -293,6 +355,9 @@
 		lang="ts"
 		setup
 >
+	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamApp, OrigamAppBar, OrigamBtn, OrigamMain } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IAppBarProps } from '@origam/interfaces'
@@ -307,6 +372,8 @@
 		intentList,
 		roundedList
 	} from '@stories/const'
+
+	const emitModelValue = ref(true)
 </script>
 
 <docs lang="md" src="@docs/components/App/OrigamAppBar.md"/>

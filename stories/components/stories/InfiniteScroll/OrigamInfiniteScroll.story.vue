@@ -54,6 +54,52 @@
 			</origam-infinite-scroll>
 		</Variant>
 
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-infinite-scroll
+					height="200"
+					@load="handleLoadEmpty"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
+					data-cy="infinite-scroll-slot-default"
+			>
+				<div v-for="item in itemsShort" :key="item" style="padding: 12px;">
+					<span>Custom slot content</span>
+				</div>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<Variant title="Slot — error">
+			<origam-infinite-scroll
+					height="200"
+					@load="handleLoadError"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
+					data-cy="infinite-scroll-slot-error"
+			>
+				<div style="padding: 12px;">Item</div>
+				<template #error>
+					<div style="text-align: center; padding: 16px; color: var(--origam-color__action--danger---bg);">Custom slot content</div>
+				</template>
+			</origam-infinite-scroll>
+		</Variant>
+
+		<Variant title="Slot — loadMore">
+			<origam-infinite-scroll
+					height="300"
+					mode="manual"
+					@load="handleLoad"
+					style="overflow-y: auto; border: 1px solid var(--origam-color__border---default, #e0e0e0); border-radius: 4px;"
+					data-cy="infinite-scroll-slot-load-more"
+			>
+				<div v-for="item in items" :key="item" style="padding: 12px;">Item {{ item }}</div>
+				<template #loadMore="{ props }">
+					<div style="text-align: center; padding: 12px;">
+						<button v-bind="props" style="padding: 8px 16px; cursor: pointer;">Load more</button>
+					</div>
+				</template>
+			</origam-infinite-scroll>
+		</Variant>
+
 		<Variant title="Slot — loading">
 			<origam-infinite-scroll
 					height="300"
@@ -153,6 +199,7 @@
 	import { useStoryInitState } from '@stories/composables'
 
 	const items = ref(Array.from({ length: 20 }, (_, i) => i + 1))
+	const itemsShort = ref([1, 2, 3])
 
 	const handleLoad = ({ side, done }: { side: string; done: (status: string) => void }) => {
 		const currentMax = items.value[items.value.length - 1] ?? 0
@@ -171,6 +218,10 @@
 
 	const handleLoadEmpty = ({ done }: { done: (status: string) => void }) => {
 		done('empty')
+	}
+
+	const handleLoadError = ({ done }: { done: (status: string) => void }) => {
+		done('error')
 	}
 
 	const sideList = [

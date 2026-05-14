@@ -204,6 +204,53 @@
 			</origam-input>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<origam-input v-model="slotAppendModel" label="With append slot" data-cy="input-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+				<template #default="{ id, isDisabled }">
+					<input :id="id" v-model="slotAppendModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
+				</template>
+			</origam-input>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-input v-model="slotDefaultModel" label="Custom default slot" data-cy="input-slot-default">
+				<template #default="{ id, isDisabled }">
+					<input :id="id" v-model="slotDefaultModel" :disabled="isDisabled" placeholder="Custom slot content" style="border: none; outline: none; background: transparent; width: 100%;"/>
+				</template>
+			</origam-input>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-input v-model="slotDetailsModel" label="With details slot" data-cy="input-slot-details">
+				<template #details>
+					<span style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">Custom slot content</span>
+				</template>
+				<template #default="{ id, isDisabled }">
+					<input :id="id" v-model="slotDetailsModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
+				</template>
+			</origam-input>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-input
+					v-model="slotMessageModel"
+					label="With message slot"
+					:error-messages="['Validation error']"
+					error
+					data-cy="input-slot-message"
+			>
+				<template #message="{ message }">
+					<em style="color: var(--origam-color__feedback--danger---bg);">{{ message }}</em>
+				</template>
+				<template #default="{ id, isDisabled }">
+					<input :id="id" v-model="slotMessageModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
+				</template>
+			</origam-input>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
@@ -253,16 +300,20 @@
 	import { useStoryInitState } from '@stories/composables'
 	import { densityList, iconList, intentList } from '@stories/const'
 
-	const colorModel       = ref('')
-	const densityModel     = ref('')
-	const hintModel        = ref('')
-	const adjacentModel    = ref('')
-	const statesModel      = ref('')
-	const slotPrependModel = ref('')
-	const slotMsgModel     = ref('')
-	const emitModel        = ref('')
-	const emitClickModel   = ref('')
-	const playgroundModel  = ref('')
+	const colorModel        = ref('')
+	const densityModel      = ref('')
+	const hintModel         = ref('')
+	const adjacentModel     = ref('')
+	const statesModel       = ref('')
+	const slotPrependModel  = ref('')
+	const slotMsgModel      = ref('')
+	const slotAppendModel   = ref('')
+	const slotDefaultModel  = ref('')
+	const slotDetailsModel  = ref('')
+	const slotMessageModel  = ref('')
+	const emitModel         = ref('')
+	const emitClickModel    = ref('')
+	const playgroundModel   = ref('')
 </script>
 
 <docs lang="md" src="@docs/components/Input/OrigamInput.md"/>

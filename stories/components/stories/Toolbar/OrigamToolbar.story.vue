@@ -162,6 +162,12 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<origam-toolbar title="With Default Slot" data-cy="toolbar-slot-default">
+				<span>Custom slot content</span>
+			</origam-toolbar>
+		</Variant>
+
 		<Variant title="Slot — prepend">
 			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">
 				<template #prepend>

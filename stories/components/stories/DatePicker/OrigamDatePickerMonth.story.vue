@@ -81,6 +81,18 @@
 				<HstSelect v-model="state.color" title="color" :options="intentList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — days">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-date-picker v-model="slotDaysValue" data-cy="dp-month-slot-days">
+					<template #days>
+						<span>Custom slot content</span>
+					</template>
+				</origam-date-picker>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -101,6 +113,7 @@
 	const hideWeekdaysValue = ref('2026-05-08')
 	const showWeekValue     = ref('2026-05-08')
 	const colorValue        = ref('2026-05-08')
+	const slotDaysValue     = ref('2026-05-08')
 </script>
 
 <docs lang="md" src="@docs/components/DatePicker/OrigamDatePickerMonth.md"/>

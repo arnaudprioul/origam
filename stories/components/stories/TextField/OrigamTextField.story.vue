@@ -266,19 +266,9 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — prependInner / appendInner">
-			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-inner">
-				<template #prependInner>
-					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
-				</template>
-				<template #appendInner>
-					<origam-icon :icon="MDI_ICONS.CLOSE"/>
-				</template>
-			</origam-text-field>
-			<div data-cy="textfield-slot-inner-status">value = {{ slotInnerModel }}</div>
-		</Variant>
+		<!-- ── Slots ─────────────────────────────────────────────── -->
 
-		<Variant title="Slot — prepend / append">
+		<Variant title="Slot — append">
 			<origam-text-field v-model="slotOuterModel" label="With outer slots" data-cy="textfield-slot-outer">
 				<template #prepend>
 					<origam-icon :icon="MDI_ICONS.ACCOUNT"/>
@@ -290,12 +280,146 @@
 			<div data-cy="textfield-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
+		<Variant title="Slot — appendInner">
+			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.CLOSE"/>
+				</template>
+			</origam-text-field>
+			<div data-cy="textfield-slot-inner-status">value = {{ slotInnerModel }}</div>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-text-field v-model="slotClearModel" label="Clearable" clearable data-cy="textfield-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — counter">
+			<origam-text-field v-model="slotCounterModel" label="Custom counter" :counter="50" data-cy="textfield-slot-counter">
+				<template #counter>
+					<span>{{ slotCounterModel.length }} / 50</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-text-field label="Default slot" data-cy="textfield-slot-default">
+				<span>Custom slot content</span>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-text-field v-model="slotDetailsModel" label="Custom details" data-cy="textfield-slot-details">
+				<template #details>
+					<span style="font-size: 0.75rem;">Custom hint text</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — field">
+			<origam-text-field label="Field slot" data-cy="textfield-slot-field">
+				<template #field>
+					<span>Custom slot content</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-text-field v-model="slotFloatingLabelModel" data-cy="textfield-slot-floating-label">
+				<template #floatingLabel>
+					<span style="font-style: italic;">Floating label</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<origam-text-field v-model="slotLabelModel" data-cy="textfield-slot-label">
 				<template #label>
 					<span style="font-style: italic;">Custom label</span>
 				</template>
 			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-text-field loading label="Loading field" data-cy="textfield-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-text-field v-model="slotMessageModel" label="Single message" :error="true" :error-messages="['Error']" data-cy="textfield-slot-message">
+				<template #message="{ message }">
+					<span style="font-style: italic;">{{ message }}</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-text-field v-model="slotMessagesModel" label="Custom messages" :error="true" :error-messages="['Error one', 'Error two']" data-cy="textfield-slot-messages">
+				<template #messages>
+					<span style="color: var(--origam-color__action--danger---bg);">Custom error display</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-text-field v-model="slotPrefixModel" label="Price" data-cy="textfield-slot-prefix">
+				<template #prefix>
+					<span>$</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-text-field v-model="slotOuterModel" label="With outer slots" data-cy="textfield-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.ACCOUNT"/>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-text-field v-model="slotSuffixModel" label="Amount" data-cy="textfield-slot-suffix">
+				<template #suffix>
+					<span>.00</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:control">
+			<origam-text-field
+					v-model="emitControlModel"
+					label="Click the control"
+					data-cy="textfield-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-text-field
+					v-model="emitMousedownModel"
+					label="Mousedown on control"
+					data-cy="textfield-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
 		</Variant>
 
 		<Variant title="Emit — update:modelValue">
@@ -472,22 +596,32 @@
 		return JSON.stringify(v, null, 2)
 	}
 
-	const variantModel   = ref('')
-	const colorModel     = ref('')
-	const sizeModel      = ref('')
-	const inlineModel    = ref('')
-	const densityModel   = ref('')
-	const typeModel      = ref('')
-	const counterModel   = ref('')
-	const prefixModel    = ref('')
-	const statesModel    = ref('')
-	const slotInnerModel = ref('')
-	const slotOuterModel = ref('')
-	const slotLabelModel = ref('')
-	const emitModel      = ref('')
-	const emitFocusModel = ref('')
-	const emitClearModel = ref('')
-	const playgroundModel = ref('')
+	const variantModel          = ref('')
+	const colorModel            = ref('')
+	const sizeModel             = ref('')
+	const inlineModel           = ref('')
+	const densityModel          = ref('')
+	const typeModel             = ref('')
+	const counterModel          = ref('')
+	const prefixModel           = ref('')
+	const statesModel           = ref('')
+	const slotInnerModel        = ref('')
+	const slotOuterModel        = ref('')
+	const slotLabelModel        = ref('')
+	const slotClearModel        = ref('')
+	const slotCounterModel      = ref('')
+	const slotDetailsModel      = ref('')
+	const slotFloatingLabelModel = ref('')
+	const slotMessageModel      = ref('')
+	const slotMessagesModel     = ref('')
+	const slotPrefixModel       = ref('')
+	const slotSuffixModel       = ref('')
+	const emitModel             = ref('')
+	const emitFocusModel        = ref('')
+	const emitClearModel        = ref('')
+	const emitControlModel      = ref('')
+	const emitMousedownModel    = ref('')
+	const playgroundModel       = ref('')
 
 	const typeList: Array<IOptions<string>> = [
 		{ label: 'text',   value: 'text'   },

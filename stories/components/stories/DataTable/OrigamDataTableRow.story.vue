@@ -29,6 +29,22 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — item.data-table-expand">
+			<origam-data-table :headers="headers" :items="items" show-expand data-cy="row-slot-expand">
+				<template #item.data-table-expand="{ toggleExpand, isExpanded, item }">
+					<button @click="toggleExpand(item)">{{ isExpanded(item) ? 'Collapse' : 'Expand' }}</button>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — item.data-table-select">
+			<origam-data-table :headers="headers" :items="items" show-select data-cy="row-slot-select">
+				<template #item.data-table-select="{ item, isSelected, toggleSelect }">
+					<input type="checkbox" :checked="isSelected([item])" @change="toggleSelect(item)"/>
+				</template>
+			</origam-data-table>
+		</Variant>
+
 		<Variant title="Slot — item (custom row render)">
 			<!--
 				The `item` scoped slot on the parent table gives full
@@ -47,6 +63,29 @@
 				</template>
 			</origam-data-table>
 		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — expand">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					show-expand
+					data-cy="row-emit-expand"
+					@expand="logEvent('expand', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — select">
+			<origam-data-table
+					v-model="selectedKeys"
+					:headers="headers"
+					:items="items"
+					show-select
+					data-cy="row-emit-select"
+					@select="logEvent('select', $event)"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -55,6 +94,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamDataTable } from '@origam/components'
 

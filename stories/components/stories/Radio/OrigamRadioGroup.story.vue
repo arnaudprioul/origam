@@ -152,6 +152,20 @@
 
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-radio-group
+						v-model="defaultSlotModel"
+						label="Custom default slot"
+						data-cy="radio-group-slot-default"
+				>
+					<template #default>
+						<span>Custom slot content</span>
+					</template>
+				</origam-radio-group>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<div style="padding: 24px; max-width: 400px;">
 				<origam-radio-group
@@ -243,6 +257,7 @@
 	const colorModel      = ref()
 	const densityModel    = ref()
 	const hintModel       = ref()
+	const defaultSlotModel = ref()
 	const slotModel       = ref()
 	const slotItemModel   = ref()
 	const playgroundModel = ref()

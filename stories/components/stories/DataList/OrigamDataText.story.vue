@@ -128,6 +128,32 @@
 			</dl>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<dl style="margin: 24px;">
+				<origam-data-text
+						text="With append slot"
+						data-cy="data-text-slot-append"
+				>
+					<template #append>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-data-text>
+			</dl>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<dl style="margin: 24px;">
+				<origam-data-text
+						text="With prepend slot"
+						data-cy="data-text-slot-prepend"
+				>
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-data-text>
+			</dl>
+		</Variant>
+
 		<Variant title="Slot — prepend & append">
 			<dl style="margin: 24px;">
 				<origam-data-text

@@ -257,12 +257,33 @@
 			</origam-chip>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<origam-chip text="With append" data-cy="chip-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.HEART" size="x-small"/>
+				</template>
+			</origam-chip>
+		</Variant>
+
 		<Variant title="Slot — close">
 			<origam-chip closable text="Custom close" data-cy="chip-slot-close">
 				<template #close>
 					<origam-icon :icon="MDI_ICONS.CLOSE" size="x-small" data-cy="chip-close-custom"/>
 				</template>
 			</origam-chip>
+		</Variant>
+
+		<Variant title="Slot — filter">
+			<div class="story-shell">
+				<origam-chip-group v-model="filterSlotSelected" filter data-cy="chip-slot-filter-group">
+					<origam-chip :value="1" filter link text="Option A" data-cy="chip-slot-filter-a">
+						<template #filter>
+							<origam-icon :icon="MDI_ICONS.HEART" size="x-small"/>
+						</template>
+					</origam-chip>
+					<origam-chip :value="2" filter link text="Option B" data-cy="chip-slot-filter-b"/>
+				</origam-chip-group>
+			</div>
 		</Variant>
 
 		<!-- ── Emits ────────────────────────────────────────────────────── -->
@@ -286,6 +307,68 @@
 				</div>
 			</template>
 		</Variant>
+
+		<Variant title="Emit — click:append">
+			<origam-chip
+					text="Click append"
+					:append-icon="MDI_ICONS.HEART"
+					data-cy="chip-emit-click-append"
+					@click:append="logEvent('click:append', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:close">
+			<origam-chip
+					closable
+					text="Close me"
+					data-cy="chip-emit-click-close"
+					@click:close="logEvent('click:close', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:prepend">
+			<origam-chip
+					text="Click prepend"
+					:prepend-icon="MDI_ICONS.HEART"
+					data-cy="chip-emit-click-prepend"
+					@click:prepend="logEvent('click:prepend', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — group:selected">
+			<div class="story-shell">
+				<origam-chip-group data-cy="chip-emit-group-selected">
+					<origam-chip
+							:value="1"
+							link
+							text="Option A"
+							data-cy="chip-emit-selected-a"
+							@group:selected="logEvent('group:selected', $event)"
+					/>
+					<origam-chip
+							:value="2"
+							link
+							text="Option B"
+							data-cy="chip-emit-selected-b"
+							@group:selected="logEvent('group:selected', $event)"
+					/>
+				</origam-chip-group>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<div class="story-shell">
+				<origam-chip-group
+						v-model="emitModelValue"
+						data-cy="chip-emit-update-model"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				>
+					<origam-chip :value="1" link text="A" data-cy="chip-emit-model-a"/>
+					<origam-chip :value="2" link text="B" data-cy="chip-emit-model-b"/>
+				</origam-chip-group>
+				<span class="story-status" data-cy="chip-emit-model-status">selected = <strong>{{ emitModelValue }}</strong></span>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -294,6 +377,7 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamBtn, OrigamChip, OrigamChipGroup, OrigamIcon } from '@origam/components'
 	import { DENSITY, MDI_ICONS } from '@origam/enums'
@@ -315,6 +399,8 @@
 
 	const closableVisible = ref(true)
 	const filterSelected = ref<number | undefined>(undefined)
+	const filterSlotSelected = ref<number | undefined>(undefined)
+	const emitModelValue = ref<number | undefined>(undefined)
 </script>
 
 <style scoped>

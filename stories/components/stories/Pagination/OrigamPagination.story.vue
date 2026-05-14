@@ -173,6 +173,22 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — first">
+			<origam-pagination v-model="page" :length="10" show-first-last-page>
+				<template #first>
+					<span>Custom slot content</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
+		<Variant title="Slot — info">
+			<origam-pagination v-model="page" :length="10" with-info :total="200" :per-page="20">
+				<template #info>
+					<span>Custom slot content</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
 		<Variant title="Slot — item">
 			<origam-pagination v-model="page" :length="5">
 				<template #item>
@@ -181,7 +197,65 @@
 			</origam-pagination>
 		</Variant>
 
+		<Variant title="Slot — last">
+			<origam-pagination v-model="page" :length="10" show-first-last-page>
+				<template #last>
+					<span>Custom slot content</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
+		<Variant title="Slot — next">
+			<origam-pagination v-model="page" :length="10">
+				<template #next>
+					<span>Custom slot content</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
+		<Variant title="Slot — prev">
+			<origam-pagination v-model="page" :length="10">
+				<template #prev>
+					<span>Custom slot content</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
 		<!-- ── Emits ────────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — first">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					show-first-last-page
+					@first="logEvent('first', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — last">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					show-first-last-page
+					@last="logEvent('last', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — next">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					@next="logEvent('next', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — prev">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					@prev="logEvent('prev', $event)"
+			/>
+		</Variant>
 
 		<Variant title="Emit — update:modelValue">
 			<origam-pagination

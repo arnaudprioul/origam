@@ -164,6 +164,14 @@
 					data-cy="counter-overflow"
 			/>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-counter :value="42" :max="100" :active="true" data-cy="counter-slot-default">
+				<span>Custom slot content</span>
+			</origam-counter>
+		</Variant>
 	</Story>
 </template>
 

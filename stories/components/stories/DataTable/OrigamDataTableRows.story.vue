@@ -54,6 +54,61 @@
 				</template>
 			</origam-data-table>
 		</Variant>
+
+		<Variant title="Slot — expanded-row">
+			<origam-data-table :headers="headers" :items="items" show-expand data-cy="rows-slot-expanded-row">
+				<template #expanded-row="{ item }">
+					<tr>
+						<td :colspan="headers.length + 1" style="padding: 12px 16px; background: var(--origam-color__surface---overlay, rgba(0,0,0,.04));">
+							<strong>{{ item.name }}</strong> — {{ item.team }} team, {{ item.commits }} commits total.
+						</td>
+					</tr>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — group-header">
+			<origam-data-table :headers="headers" :items="items" group-by="team" data-cy="rows-slot-group-header">
+				<template #group-header="{ item, columns, toggleGroup, isGroupOpen }">
+					<tr>
+						<td :colspan="columns.length" style="padding: 8px 16px; font-weight: 600; background: var(--origam-color__surface---overlay, rgba(0,0,0,.04));">
+							{{ item.value }} ({{ item.items.length }})
+							<button style="margin-inline-start: 8px; appearance: none; border: none; background: transparent; cursor: pointer;" @click="toggleGroup(item)">
+								{{ isGroupOpen(item) ? 'Collapse' : 'Expand' }}
+							</button>
+						</td>
+					</tr>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — item">
+			<origam-data-table :headers="headers" :items="items" data-cy="rows-slot-item">
+				<template #item="{ item, columns }">
+					<tr>
+						<td
+								v-for="col in columns"
+								:key="col.key"
+								style="padding: 8px 16px; border-bottom: 1px solid var(--origam-color__border---subtle);"
+						>
+							{{ item[col.key] }}
+						</td>
+					</tr>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slot — loading">
+			<origam-data-table :headers="headers" :items="[]" loading data-cy="rows-slot-loading">
+				<template #loading>
+					<tr>
+						<td :colspan="headers.length" style="padding: 32px; text-align: center; color: var(--origam-color__text---secondary);">
+							Loading…
+						</td>
+					</tr>
+				</template>
+			</origam-data-table>
+		</Variant>
 	</Story>
 </template>
 

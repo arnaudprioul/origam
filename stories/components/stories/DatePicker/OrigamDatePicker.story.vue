@@ -101,6 +101,34 @@
 
 		<!-- ── Slots ────────────────────────────────────────────────── -->
 
+		<Variant title="Slot — default">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-date-picker v-model="date" data-cy="date-picker-slot-default">
+					<span>Custom slot content</span>
+				</origam-date-picker>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-date-picker v-model="date" data-cy="date-picker-slot-header">
+					<template #header>
+						<span style="font-weight: 600; padding: 8px 16px;">Custom header</span>
+					</template>
+				</origam-date-picker>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — title">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-date-picker v-model="date" data-cy="date-picker-slot-title">
+					<template #title>
+						<strong>Pick a date</strong>
+					</template>
+				</origam-date-picker>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — actions">
 			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-date-picker v-model="date" data-cy="date-picker-slot-actions">
@@ -159,6 +187,31 @@
 					</ul>
 					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
 						Use the arrow navigation to change month.
+					</p>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Emit — update:viewMode"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<div style="display: flex; justify-content: center;">
+						<origam-date-picker
+								v-model="date"
+								data-cy="date-picker-emit-view-mode"
+								@update:view-mode="(v: string) => {
+									state.log = [`update:viewMode → ${v}`, ...state.log].slice(0, 6)
+								}"
+						/>
+					</div>
+					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
+						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
+					</ul>
+					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
+						Click the year/month heading to toggle view mode.
 					</p>
 				</div>
 			</template>

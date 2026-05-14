@@ -354,6 +354,215 @@
 			<div data-cy="select-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
+		<Variant title="Slot — append">
+			<origam-select
+					:items="stringItems"
+					label="Append slot"
+					data-cy="select-slot-append"
+			>
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.STAR"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — appendInner">
+			<origam-select
+					:items="stringItems"
+					label="Append inner slot"
+					data-cy="select-slot-append-inner"
+			>
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.INFORMATION_OUTLINE"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — chip">
+			<origam-select
+					v-model="chipSlotModel"
+					:items="stringItems"
+					multiple
+					chips
+					label="Chip slot"
+					data-cy="select-slot-chip"
+			>
+				<template #chip="{ item }">
+					<origam-chip :text="String(item.title ?? item.value ?? item)" color="primary" data-cy="select-slot-chip-item"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-select
+					v-model="clearSlotModel"
+					:items="stringItems"
+					clearable
+					label="Clear slot"
+					data-cy="select-slot-clear"
+			>
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-select
+					:items="stringItems"
+					label="Floating label slot"
+					data-cy="select-slot-floating-label"
+			>
+				<template #floatingLabel>
+					<span style="font-style: italic;">Custom floating label</span>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — item">
+			<origam-select
+					v-model="itemSlotModel"
+					:items="stringItems"
+					label="Item slot"
+					data-cy="select-slot-item"
+			>
+				<template #item="{ item, props: itemProps }">
+					<li v-bind="itemProps" style="padding: 8px 16px; cursor: pointer; list-style: none;">
+						<origam-icon :icon="MDI_ICONS.EARTH"/>
+						{{ item.title ?? item.value ?? item }}
+					</li>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — items.append">
+			<origam-select
+					:items="stringItems"
+					label="Items append slot"
+					data-cy="select-slot-items-append"
+			>
+				<template #items.append>
+					<div style="padding: 8px 16px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+						End of list
+					</div>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — items.prepend">
+			<origam-select
+					:items="stringItems"
+					label="Items prepend slot"
+					data-cy="select-slot-items-prepend"
+			>
+				<template #items.prepend>
+					<div style="padding: 8px 16px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+						Start of list
+					</div>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-select
+					:items="stringItems"
+					data-cy="select-slot-label"
+			>
+				<template #label>
+					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label</span>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-select
+					:items="stringItems"
+					loading
+					label="Loading select"
+					data-cy="select-slot-loader"
+			>
+				<template #loader>
+					<span>Loading…</span>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — noData">
+			<origam-select
+					:items="[]"
+					label="No data slot"
+					data-cy="select-slot-no-data"
+			>
+				<template #noData>
+					<div style="padding: 16px; text-align: center; color: var(--origam-color__text---secondary);">
+						Nothing to show here
+					</div>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-select
+					:items="stringItems"
+					label="Prefix slot"
+					data-cy="select-slot-prefix"
+			>
+				<template #prefix>
+					<span>+33</span>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-select
+					:items="stringItems"
+					label="Prepend slot"
+					data-cy="select-slot-prepend"
+			>
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.EARTH"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-select
+					:items="stringItems"
+					label="Prepend inner slot"
+					data-cy="select-slot-prepend-inner"
+			>
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — selection">
+			<origam-select
+					v-model="selectionSlotModel"
+					:items="stringItems"
+					multiple
+					label="Selection slot"
+					data-cy="select-slot-selection"
+			>
+				<template #selection="{ item }">
+					<origam-chip :text="String(item.title ?? item.value ?? item)" size="small" data-cy="select-slot-selection-chip"/>
+				</template>
+			</origam-select>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-select
+					:items="stringItems"
+					label="Suffix slot"
+					data-cy="select-slot-suffix"
+			>
+				<template #suffix>
+					<span>kg</span>
+				</template>
+			</origam-select>
+		</Variant>
+
 		<!-- ── Emits ─────────────────────────────────────────────── -->
 
 		<Variant title="Emit — update:modelValue">
@@ -388,6 +597,73 @@
 			/>
 			<div data-cy="select-emit-clear-status">value = {{ emitClearModel }}</div>
 		</Variant>
+
+		<Variant title="Emit — click:append">
+			<origam-select
+					:items="stringItems"
+					:append-icon="MDI_ICONS.STAR"
+					label="Click append icon"
+					data-cy="select-emit-click-append"
+					@click:append="logEvent('click:append', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:appendInner">
+			<origam-select
+					:items="stringItems"
+					:append-inner-icon="MDI_ICONS.INFORMATION_OUTLINE"
+					label="Click append inner icon"
+					data-cy="select-emit-click-append-inner"
+					@click:appendInner="logEvent('click:appendInner', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:control">
+			<origam-select
+					:items="stringItems"
+					label="Click control"
+					data-cy="select-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:prepend">
+			<origam-select
+					:items="stringItems"
+					:prepend-icon="MDI_ICONS.EARTH"
+					label="Click prepend icon"
+					data-cy="select-emit-click-prepend"
+					@click:prepend="logEvent('click:prepend', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — click:prependInner">
+			<origam-select
+					:items="stringItems"
+					:prepend-inner-icon="MDI_ICONS.MAGNIFY"
+					label="Click prepend inner icon"
+					data-cy="select-emit-click-prepend-inner"
+					@click:prependInner="logEvent('click:prependInner', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-select
+					:items="stringItems"
+					label="Mousedown control"
+					data-cy="select-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:focused">
+			<origam-select
+					:items="stringItems"
+					label="Focus the select"
+					data-cy="select-emit-update-focused"
+					@update:focused="logEvent('update:focused', $event)"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -398,7 +674,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamIcon, OrigamSelect } from '@origam/components'
+	import { OrigamChip, OrigamIcon, OrigamSelect } from '@origam/components'
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, ISelectProps } from '@origam/interfaces'
 	import type { TLoadingValue, TVariantInput } from '@origam/types'
@@ -450,6 +726,10 @@
 	const statesModel       = ref<string | null>(null)
 	const noDataModel       = ref<string | null>(null)
 	const slotOuterModel    = ref<string | null>(null)
+	const chipSlotModel     = ref<string[]>([])
+	const clearSlotModel    = ref<string | null>(null)
+	const itemSlotModel     = ref<string | null>(null)
+	const selectionSlotModel = ref<string[]>([])
 	const emitModel         = ref<string | null>(null)
 	const emitMenuModel     = ref<string | null>(null)
 	const emitClearModel    = ref<string | null>(null)
