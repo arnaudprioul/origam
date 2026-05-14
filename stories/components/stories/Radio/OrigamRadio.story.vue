@@ -126,7 +126,12 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-							<HstSelect v-model="state.hover" title="hover" :options="hoverList"/>
+							<HstSelect
+							:model-value="state.hover"
+							:options="hoverList"
+							title="hover"
+							@update:model-value="(v) => state.hover = v && typeof v === 'object' ? { ...v } : v"
+						/>
 </template>
 		</Variant>
 
@@ -172,7 +177,12 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-							<HstSelect v-model="state.active" title="active" :options="activeList"/>
+							<HstSelect
+							:model-value="state.active"
+							:options="activeList"
+							title="active"
+							@update:model-value="(v) => state.active = v && typeof v === 'object' ? { ...v } : v"
+						/>
 </template>
 		</Variant>
 
