@@ -35,7 +35,7 @@ test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary int
         }
     }
     if (!btn) {
-        // eslint-disable-next-line no-console
+         
         console.log('No btn found in any variant — skipping')
         return
     }
@@ -56,9 +56,9 @@ test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary int
     const active = await btn.evaluate((el: HTMLElement) => getComputedStyle(el).backgroundColor)
     await page.mouse.up()
 
-    // eslint-disable-next-line no-console
+     
     console.log('=== btn bg progression ===')
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify({ rest, hovered, active }, null, 2))
 
     await btn.screenshot({ path: '/tmp/btn-progression.png' })

@@ -35,9 +35,9 @@ test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', asy
                 overlayStroke:  overlay  ? getComputedStyle(overlay).stroke  : null,
             }
         })
-        // eslint-disable-next-line no-console
+         
         console.log(`\n=== ${dataCy} ===`)
-        // eslint-disable-next-line no-console
+         
         console.log(JSON.stringify(report, null, 2))
     }
 })

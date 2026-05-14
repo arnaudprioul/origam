@@ -31,9 +31,9 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
                 btnAttrs: btnAllAttrs,
             }
         })
-        // eslint-disable-next-line no-console
+         
         console.log(`\n=== size="${size}" ===`)
-        // eslint-disable-next-line no-console
+         
         console.log(JSON.stringify(report, null, 2))
     }
 
@@ -65,8 +65,8 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
             pageBtnShape: shape(pageBtn),
         }
     })
-    // eslint-disable-next-line no-console
+     
     console.log(`\n=== withInfo ===`)
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(info, null, 2))
 })

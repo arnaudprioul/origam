@@ -16,11 +16,11 @@ test('DEBUG itemgroup — multiple/tiles take 1/4 of available width', async ({ 
 
     // Find the grid container (the inline-styled grid wrapper around origam-item)
     const tiles = await sandbox.locator('.demo-tile').all()
-    // eslint-disable-next-line no-console
+     
     console.log(`tiles count: ${tiles.length}`)
 
     if (tiles.length === 0) {
-        // eslint-disable-next-line no-console
+         
         console.log('NO TILES FOUND — variant did not load')
         return
     }
@@ -42,7 +42,7 @@ test('DEBUG itemgroup — multiple/tiles take 1/4 of available width', async ({ 
         })
     })
 
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(measurements, null, 2))
 
     await sandbox.locator('.demo-tile').first().screenshot({ path: '/tmp/tile-first.png' })

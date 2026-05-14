@@ -25,23 +25,32 @@ function mountWith (initial: IRoundedProps['rounded']) {
 }
 
 describe('useRounded — classes-first', () => {
+    // Utility variants emit BOTH the `.origam--rounded-*` class AND an
+    // inline `border-radius: var(--origam-radius---*)` declaration.
+    // The class is the semantic carrier; the inline style is a
+    // specificity escape hatch so `useStyle` can win against scoped
+    // component-local rules (spec 1,0,0 via `#id` selector vs 0,2,0
+    // for the scoped `border-radius` rules). See composable comments.
     it.each(['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full'])(
-        'modern utility variant "%s" → emits .origam--rounded-{value} class only',
+        'modern utility variant "%s" → emits both .origam--rounded-{value} class and inline border-radius style',
         (value) => {
             const { api } = mountWith(value)
             expect(api().roundedClasses.value).toContain(`origam--rounded-${value}`)
-            expect(api().roundedStyles.value).toEqual([])
+            expect(api().roundedStyles.value.some(d => d.includes(`var(--origam-radius---${value})`))).toBe(true)
         }
     )
 
-    it('legacy enum "small" → component-local class kept, no utility companion', () => {
+    // Legacy enum (`'small'|'large'|…`) still emits its component-local
+    // class AND the matching primitive radius token as inline style.
+    it('legacy enum "small" → component-local class + primitive radius inline style', () => {
         const { api } = mountWith('small')
         const cls = api().roundedClasses.value
         // Component-local class (kept for backward compat).
         expect(cls.some(c => /--rounded-small$/.test(c))).toBe(true)
         // No utility class — the legacy enum is not part of Phase 1 manifest.
         expect(cls.some(c => /^origam--rounded-/.test(c))).toBe(false)
-        expect(api().roundedStyles.value).toEqual([])
+        // Inline-style companion: `var(--origam-radius---sm, 4px)`.
+        expect(api().roundedStyles.value.some(d => d.includes('var(--origam-radius---sm'))).toBe(true)
     })
 
     it('boolean true → legacy --rounded class AND companion utility "md"', () => {

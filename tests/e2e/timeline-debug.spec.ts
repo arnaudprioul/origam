@@ -41,9 +41,9 @@ test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }
                 titleComputed: title ? getComputedStyle(title).fontSize : null,
             }
         })
-        // eslint-disable-next-line no-console
+         
         console.log(`\n=== size="${size}" ===`)
-        // eslint-disable-next-line no-console
+         
         console.log(JSON.stringify(report, null, 2))
     }
 
@@ -73,8 +73,8 @@ test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }
             lastConnectorDisplay: lastConnector ? getComputedStyle(lastConnector).display : null,
         }
     })
-    // eslint-disable-next-line no-console
+     
     console.log(`\n=== orientation="horizontal" ===`)
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(h, null, 2))
 })

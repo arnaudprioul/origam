@@ -53,9 +53,9 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
         }
     })
 
-    // eslint-disable-next-line no-console
+     
     console.log('=== pagination active vs inactive ===')
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(sample, null, 2))
 
     await sandbox.locator('.origam-pagination').first().screenshot({ path: '/tmp/pagination-active.png' })
@@ -92,7 +92,7 @@ test('DEBUG pagination — colored mode active stays primary fill', async ({ pag
     if (!exists) {
         // No colored variant available in the story — that's fine,
         // just log it so the user sees we tried.
-        // eslint-disable-next-line no-console
+         
         console.log('(no --colored variant exposed in story — skipping colored mode assertion)')
         return
     }
@@ -102,7 +102,7 @@ test('DEBUG pagination — colored mode active stays primary fill', async ({ pag
         const cs = getComputedStyle(active)
         return { bg: cs.backgroundColor, color: cs.color }
     })
-    // eslint-disable-next-line no-console
+     
     console.log('=== colored mode active ===', JSON.stringify(sample))
     expect(sample?.bg).toBe('rgb(124, 58, 237)') // primary violet
 })

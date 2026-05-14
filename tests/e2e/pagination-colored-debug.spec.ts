@@ -22,14 +22,14 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     const allRoots = await sandbox.locator('.origam-pagination').all()
     const coloredRoots = await sandbox.locator('.origam-pagination--colored').all()
-    // eslint-disable-next-line no-console
+     
     console.log(`found ${allRoots.length} pagination roots total, ${coloredRoots.length} colored`)
     // Look at the FIRST pagination root (whether colored or not) — that's
     // the Playground which init-state seeds with color: 'primary'.
     const playground = allRoots[0]
     if (playground) {
         const isColored = await playground.evaluate((el) => el.classList.contains('origam-pagination--colored'))
-        // eslint-disable-next-line no-console
+         
         console.log(`playground (root #0) has --colored class: ${isColored}`)
         await playground.screenshot({ path: '/tmp/pagination-playground.png' })
     }
@@ -38,7 +38,7 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
     }
 
     if (coloredRoots.length === 0) {
-        // eslint-disable-next-line no-console
+         
         console.log('No colored variant exposed — skipping')
         return
     }
@@ -64,7 +64,7 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
         samples.push(sample)
     }
 
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(samples, null, 2))
 
     await coloredRoots[0].screenshot({ path: '/tmp/pagination-colored.png' })
@@ -80,7 +80,7 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
         if (m) {
             const [r, g, b] = m[1].split(',').map((s) => parseInt(s.trim(), 10))
             const avg = (r + g + b) / 3
-            // eslint-disable-next-line no-console
+             
             console.log(`inactive fg avg = ${avg}`)
             expect(avg).toBeGreaterThan(200)
         }

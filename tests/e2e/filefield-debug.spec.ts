@@ -14,7 +14,7 @@ test('DEBUG filefield — locate the label border bug', async ({ page }) => {
 
     // First file-field on the default variant
     const fields = await sandbox.locator('.origam-file-field').all()
-    // eslint-disable-next-line no-console
+     
     console.log(`total .origam-file-field elements: ${fields.length}`)
 
     if (fields.length === 0) return
@@ -61,12 +61,12 @@ test('DEBUG filefield — locate the label border bug', async ({ page }) => {
         }
     })
 
-    // eslint-disable-next-line no-console
+     
     console.log('\n=== first file-field ===')
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(info, null, 2))
 
     await fields[0].screenshot({ path: '/tmp/filefield-default.png' })
-    // eslint-disable-next-line no-console
+     
     console.log('screenshot: /tmp/filefield-default.png')
 })

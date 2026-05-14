@@ -282,7 +282,7 @@ function valueToCssString(
     return String(value)
   }
   if (resolvedType === 'BOOLEAN') {
-    return Boolean(value) ? 'true' : 'false'
+    return value ? 'true' : 'false'
   }
 
   return String(value)

@@ -19,7 +19,7 @@ test('DEBUG appbar — btn shape: square + transparent at rest', async ({ page }
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     const bar = sandbox.locator('.origam-app-bar').first()
     if (await bar.count().catch(() => 0) === 0) {
-        // eslint-disable-next-line no-console
+         
         console.log('No app-bar found, skipping.')
         return
     }
@@ -43,7 +43,7 @@ test('DEBUG appbar — btn shape: square + transparent at rest', async ({ page }
             parentClasses: btn.parentElement?.className,
         }
     })
-    // eslint-disable-next-line no-console
+     
     console.log('app-bar btn:', JSON.stringify(sample, null, 2))
 
     await bar.screenshot({ path: '/tmp/appbar-default.png' })

@@ -5,7 +5,28 @@ import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 
 export default typescriptEslint.config(
-	{ ignores: ['*.d.ts', '**/coverage', '**/dist', '**/.history', '**/node_modules', '**/stories'] },
+	{
+		ignores: [
+			'*.d.ts',
+			'**/coverage',
+			'**/dist',
+			'**/.history',
+			'**/node_modules',
+			'**/stories',
+			// VitePress generates JS cache files under docs/.vitepress/cache/deps
+			// that re-emit deprecated rule names (`es5/no-es6-methods`,
+			// `@typescript-eslint/no-explicit-any` as ESLint v8 rule strings).
+			// They are pre-built deps — never linted source. Ignore the whole
+			// cache tree.
+			'docs/.vitepress/cache/**',
+			'docs/.vitepress/dist/**',
+			// The Figma plugin ships its own TSX/JSX UI that requires a
+			// separate parser config (it's NOT part of the published origam
+			// library and has its own lifecycle). Excluded from the lib
+			// lint to keep `package origam` cleanly typed.
+			'figma-plugin/**',
+		],
+	},
 	{
 		extends: [
 			eslint.configs.recommended,
