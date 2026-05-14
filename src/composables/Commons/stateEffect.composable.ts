@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 
 import { useBorder } from './border.composable'
@@ -242,15 +242,19 @@ export function useStateEffect (
         elevation as Ref<number | string | undefined>,
         flat as Ref<boolean>,
     )
-    const { paddingClasses, paddingStyles }     = usePadding({
-        // `usePadding` expects an IPaddingProps; we wrap the effective
-        // scalar (directional padding axes aren't surfaced through
-        // hover/active overrides — keep it simple).
-        padding: padding.value
-    } as IPaddingProps)
-    const { marginClasses, marginStyles }       = useMargin({
-        margin: margin.value
-    } as IMarginProps)
+    // `usePadding` / `useMargin` consume an `IPaddingProps` / `IMarginProps`
+    // and read `props.padding` / `props.margin` inside `computed`s. If we
+    // pass a plain literal (`{ padding: padding.value }`), Vue captures
+    // the value once at call time and downstream computeds never re-run
+    // when `padding` changes — which is exactly what happens on
+    // hover/active swaps. Wrap with a `reactive` getter so the read goes
+    // through the ref every time, preserving the dependency chain.
+    const { paddingClasses, paddingStyles }     = usePadding(
+        reactive({ get padding () { return padding.value } }) as IPaddingProps,
+    )
+    const { marginClasses, marginStyles }       = useMargin(
+        reactive({ get margin () { return margin.value } }) as IMarginProps,
+    )
 
     // Gap support: there's no `useGap` composable today. Emit an inline
     // style when the override is present (and a runtime gap class if we
