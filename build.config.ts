@@ -7,14 +7,20 @@ export default defineBuildConfig({
         {
             builder: 'mkdist',
             input: './src',
-            pattern: ['**/*.vue'],
+            pattern: ['**/*.vue', '!**/*.story.vue'],
             loaders: ['vue']
         },
         {
             builder: 'mkdist',
             input: './src',
             format: 'cjs',
-            pattern: ['**/*.ts', '!**/*.story.ts'],
+            pattern: [
+                '**/*.ts',
+                '!**/*.story.ts',
+                '!**/*.spec.ts',
+                '!**/__tests__/**',
+                '!**/*.cy.ts'
+            ],
             loaders: ['js'],
             ext: 'cjs'
         },
@@ -22,7 +28,13 @@ export default defineBuildConfig({
             builder: 'mkdist',
             input: './src',
             format: 'esm',
-            pattern: ['**/*.ts', '!**/*.story.ts'],
+            pattern: [
+                '**/*.ts',
+                '!**/*.story.ts',
+                '!**/*.spec.ts',
+                '!**/__tests__/**',
+                '!**/*.cy.ts'
+            ],
             loaders: ['js'],
             ext: 'js'
         }
@@ -43,5 +55,5 @@ export default defineBuildConfig({
         }
     },
 
-    externals: ['vue']
+    externals: ['vue', 'vue-i18n', 'vue-router', '@mdi/font']
 })
