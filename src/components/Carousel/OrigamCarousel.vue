@@ -263,7 +263,7 @@
 			position: var(--origam-carousel__controls---position, absolute);
 			width: var(--origam-carousel__controls---width, 100%);
 			z-index: var(--origam-carousel__controls---z-index, 1);
-			background-color: var(--origam-carousel__controls---background-color, transparent);
+			background-color: var(--origam-carousel__controls---background-color, rgba(0, 0, 0, 0.4));
 
 			> .origam-item-group {
 				flex: 0 1 auto;
