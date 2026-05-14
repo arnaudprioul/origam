@@ -9,7 +9,7 @@
     "transition-easing":       { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
 
     "controls": {
-      "background-color":      { "$type": "color",      "$value": "transparent" },
+      "background-color":      { "$type": "color",      "$value": "rgba(0, 0, 0, 0.4)" },
       "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
       "height":                { "$type": "dimension",  "$value": "50px" },
       "width":                 { "$type": "dimension",  "$value": "100%" },
