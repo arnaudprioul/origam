@@ -11,6 +11,21 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.2.1] — 2026-05-14
+
+### Fixed
+
+- Expose `./package.json` explicitly in the `exports` map. The catch-all
+  `"./*": "./dist/src/*"` previously intercepted `import 'origam/package.json'`
+  and re-routed it to a non-existent file inside `dist/`. Standard
+  consumer pattern (reading the version from the package metadata) was
+  broken — fixed by adding `"./package.json": "./package.json"` ahead
+  of the catch-all so it matches first.
+- 2.2.0 was tagged but never published to npm. 2.2.1 is the first
+  version that lands on the registry.
+
+---
+
 ## [2.2.0] — 2026-05-14
 
 > **The "ready for npm" release.** Package metadata, peer dependencies,
