@@ -346,9 +346,16 @@
 		&__progress {
 			margin: var(--origam-carousel__progress---margin, 0);
 			position: var(--origam-carousel__progress---position, absolute);
-			bottom: var(--origam-carousel__progress---position-bottom, 0);
+			// Defaults to TOP so the progress bar isn't hidden behind the
+			// 50 px-tall `__controls` strip at the bottom. Both edges are
+			// still overridable via the CSS variable triplet below — set
+			// `--origam-carousel__progress---position-top: auto` and a
+			// `--…position-bottom` value to put it at the bottom instead.
+			top: var(--origam-carousel__progress---position-top, 0);
+			bottom: var(--origam-carousel__progress---position-bottom, auto);
 			left: var(--origam-carousel__progress---position-left, 0);
 			right: var(--origam-carousel__progress---position-right, 0);
+			z-index: var(--origam-carousel__progress---z-index, 2);
 		}
 
 		&--hide-delimiter-background {
