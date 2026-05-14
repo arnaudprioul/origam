@@ -117,7 +117,7 @@
 							:model-value="state.hover"
 							:options="hoverList"
 							title="hover"
-							@update:model-value="(v) => state.hover = v && typeof v === 'object' ? { ...v } : v"
+							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.hover || typeof state.hover !== 'object') state.hover = {}; const t = state.hover; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.hover = v } }"
 						/>
 </template>
 		</Variant>
@@ -142,7 +142,7 @@
 							:model-value="state.active"
 							:options="activeList"
 							title="active"
-							@update:model-value="(v) => state.active = v && typeof v === 'object' ? { ...v } : v"
+							@update:model-value="(v) => { if (v && typeof v === 'object') { if (!state.active || typeof state.active !== 'object') state.active = {}; const t = state.active; for (const k of Object.keys(t)) delete t[k]; Object.assign(t, v) } else { state.active = v } }"
 						/>
 </template>
 		</Variant>
