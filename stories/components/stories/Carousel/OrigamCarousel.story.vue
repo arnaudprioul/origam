@@ -94,17 +94,15 @@
 					hideDelimiters?: boolean
 					hideDelimiterBackground?: boolean
 					progress?: boolean
-					cycle?: boolean
-					interval?: number
-				}>({ hideDelimiters: false, hideDelimiterBackground: false, progress: true, cycle: true, interval: 3000 })"
+				}>({ hideDelimiters: false, hideDelimiterBackground: false, progress: true })"
 		>
 			<template #default="{ state }">
 				<origam-carousel
 						:hide-delimiters="state.hideDelimiters"
 						:hide-delimiter-background="state.hideDelimiterBackground"
 						:progress="state.progress"
-						:cycle="state.cycle"
-						:interval="state.interval"
+						:cycle="true"
+						:interval="3000"
 						style="max-width: 600px"
 						data-cy="carousel-delimiters"
 				>
@@ -124,8 +122,6 @@
 				<HstCheckbox v-model="state.hideDelimiters"           title="hideDelimiters"/>
 				<HstCheckbox v-model="state.hideDelimiterBackground"  title="hideDelimiterBackground"/>
 				<HstCheckbox v-model="state.progress"                 title="progress"/>
-				<HstCheckbox v-model="state.cycle"                    title="cycle (drives progress)"/>
-				<HstNumber   v-model="state.interval"                 title="interval (ms)" :min="500" :max="10000"/>
 			</template>
 		</Variant>
 

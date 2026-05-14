@@ -44,10 +44,10 @@
 				<template v-if="progress">
 					<slot
 							name="progress"
-							v-bind="{percent: (group.getItemIndex(model.value) + 1) / group.items.value.length * 100}"
+							v-bind="{percent: progressPercent}"
 					>
 						<origam-progress-linear
-								:model-value="(group.getItemIndex(model.value) + 1) / group.items.value.length * 100"
+								:model-value="progressPercent"
 								class="origam-carousel__progress"
 						/>
 					</slot>
@@ -106,7 +106,7 @@
 
 	import { convertToUnit } from '../../utils'
 
-	import { computed, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -138,10 +138,48 @@
 
 	let slideTimeout = -1
 
+	// Real-time progress driven by the cycle timer: starts at 0 the moment
+	// the timer is (re)armed, climbs to 100 over `interval` ms via rAF,
+	// resets on every slide change or timer restart. This is what users
+	// expect when they enable `progress: true` alongside `cycle: true` —
+	// not the previous "current-slide / total-slides" step bar.
+	const progressPercent = ref(0)
+	let progressRaf = -1
+	let progressStart = 0
+
+	const stopProgress = () => {
+		if (progressRaf !== -1) {
+			window.cancelAnimationFrame(progressRaf)
+			progressRaf = -1
+		}
+	}
+
+	const startProgress = () => {
+		stopProgress()
+		if (!props.cycle || !props.progress) {
+			progressPercent.value = 0
+			return
+		}
+		const interval = +props.interval > 0 ? +props.interval : 6000
+		progressStart = performance.now()
+		progressPercent.value = 0
+		const tick = () => {
+			const elapsed = performance.now() - progressStart
+			progressPercent.value = Math.min(100, (elapsed / interval) * 100)
+			if (progressPercent.value < 100 && props.cycle && props.progress) {
+				progressRaf = window.requestAnimationFrame(tick)
+			} else {
+				progressRaf = -1
+			}
+		}
+		progressRaf = window.requestAnimationFrame(tick)
+	}
+
 	const startTimeout = () => {
 		if (!props.cycle || !origamWindowRef.value) return
 
 		slideTimeout = window.setTimeout(origamWindowRef.value.group.next, +props.interval > 0 ? +props.interval : 6000)
+		startProgress()
 	}
 
 	const restartTimeout = () => {
@@ -153,10 +191,22 @@
 	watch(() => props.interval, restartTimeout)
 	watch(() => props.cycle, (val) => {
 		if (val) restartTimeout()
-		else window.clearTimeout(slideTimeout)
+		else {
+			window.clearTimeout(slideTimeout)
+			stopProgress()
+			progressPercent.value = 0
+		}
+	})
+	watch(() => props.progress, (val) => {
+		if (val && props.cycle) startProgress()
+		else stopProgress()
 	})
 
 	onMounted(startTimeout)
+	onBeforeUnmount(() => {
+		window.clearTimeout(slideTimeout)
+		stopProgress()
+	})
 
 	/*********************************************************
 	 * Forwarded props
