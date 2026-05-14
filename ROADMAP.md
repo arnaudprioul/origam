@@ -252,13 +252,26 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 - `useTransition` retravaillé : tokens + `document.startViewTransition` si
   `css.value.viewTransitions === true`.
 
-### Composants manquants critiques **(L)**
-- **Tabs / TabPanel** (présent via ItemGroup mais pas exposé sémantiquement)
-- **Accordion** (variante typée FAQ, différent d'ExpansionPanel)
-- **Combobox / Autocomplete** (Select existe, pas de combobox)
-- **CommandPalette** (⌘K) — pattern attendu en 2026
-- **Toast / NotificationCenter** (Snackbar = ponctuel, pas de stack)
-- **Empty state / placeholder**
+### Nouveaux composants & enrichissements **(L à XL)**
+
+Choix arrêté avec le maintainer :
+
+| Composant | Décision | Effort | Note |
+|---|---|---|---|
+| **Tabs / TabPanel** | ✅ retenu | M | Présent via `ItemGroup` mais pas exposé sémantiquement. À encapsuler en composant à part avec ARIA `role="tablist"` / `role="tab"` / `role="tabpanel"`. |
+| **Combobox / Autocomplete** | ❌ rejeté | — | `OrigamSelect` couvre déjà ce besoin. |
+| **CommandPalette (⌘K)** | ✅ retenu | L | Pattern type Linear / Vercel. Refs : <https://cmdk.paco.me/>, linear.app, vercel.com. Fuzzy search + raccourcis clavier + focus trap. **Réutilise `OrigamKbd` en interne** pour afficher les raccourcis à côté de chaque action. Registre extensible via `useCommand({ id, label, kbd, action })`. |
+| **Toast stacked** | ✅ retenu | M | Notre Toast = `OrigamSnackbar` (ponctuel, 1 à la fois). Ajouter un `OrigamSnackbarStack` qui empile plusieurs notifications, gestion priorité + auto-dismiss + actions. |
+| **Bracket (arbre de compétition)** | ✅ retenu | L | **Nouveau** — composant `OrigamBracket` pour afficher un arbre de tournoi e-sport / sportif (single elimination, double elimination, round-robin). Connectors SVG entre les nodes. Données via prop `rounds: IBracketRound[]`. |
+
+### Enrichissements de composants existants **(M à L)**
+
+| Composant | Action | Effort | Note |
+|---|---|---|---|
+| **OrigamParallax** | Étendre l'API | M | Aujourd'hui basique. Ajouter : multi-layer parallax (props `layers: IParallaxLayer[]` avec speeds différents), direction (horizontal / vertical / diagonal), easing curves customisables, événements (`@enter`, `@leave`, `@scroll-progress`), respect `prefers-reduced-motion`. |
+| **OrigamCode** | Syntax highlighting + format | M | Aujourd'hui = bloc texte brut. Intégrer `shiki` (déjà en devDep) pour highlight côté build (zero runtime cost) ou côté client si dynamique. Auto-format selon lang (`prettier` standalone optionnel via prop). Support des langs : `vue`, `ts`, `js`, `scss`, `json`, `bash`, `html`. Numérotation de lignes, copy button, line highlighting. |
+| **OrigamTextarea — RichText** | Nouveau mode | XL | **Maison, pas de library.** Mode `rich` qui transforme le textarea en éditeur léger. Spec minimale : **bold / italic / underline / lien / liste / heading / code inline**. Architecture `contenteditable` + parsing toolbar custom. Output `v-model` = HTML sanitizé ou Markdown (option). PAS de TipTap / ProseMirror / Quill — full ownership. |
+| **OrigamTextField — Mask** | Nouvelle prop | M | Ajouter prop `mask` (string ou objet) avec validation + autoformat. Patterns supportés : `phone:fr`, `phone:us`, `iban`, `siret`, `creditcard`, `date:iso`, `date:fr`, `time`, `postcode:fr`, ou pattern custom à la imask.js (`(##) ###-####`). Validation reactive, `@valid` event, `:error` côté UI. **Sans dépendance externe** (regexp + state machine maison). |
 
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /

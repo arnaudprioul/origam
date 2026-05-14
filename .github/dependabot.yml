@@ -1,0 +1,93 @@
+version: 2
+updates:
+  # npm — weekly, grouped to keep PR noise down.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 10
+    target-branch: develop
+    versioning-strategy: increase-if-necessary
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      vue:
+        patterns:
+          - "vue"
+          - "vue-*"
+          - "@vue/*"
+          - "@vitejs/plugin-vue"
+          - "vue-tsc"
+          - "vue-eslint-parser"
+          - "vue-sfc-transformer"
+      vite-and-test:
+        patterns:
+          - "vite"
+          - "vite-*"
+          - "vitest"
+          - "@vitest/*"
+          - "vitepress"
+          - "@playwright/test"
+          - "playwright"
+          - "cypress"
+      lint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "typescript-eslint"
+          - "@typescript-eslint/*"
+          - "prettier"
+      tokens:
+        patterns:
+          - "style-dictionary"
+          - "@tokens-studio/*"
+      types:
+        patterns:
+          - "typescript"
+          - "@types/*"
+      dev-deps:
+        dependency-type: development
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "vue*"
+          - "@vue/*"
+          - "vite*"
+          - "vitest*"
+          - "@vitest/*"
+          - "vitepress"
+          - "@playwright/*"
+          - "playwright"
+          - "cypress"
+          - "eslint*"
+          - "@typescript-eslint/*"
+          - "typescript-eslint"
+          - "prettier"
+          - "style-dictionary"
+          - "@tokens-studio/*"
+          - "typescript"
+          - "@types/*"
+
+  # GitHub Actions — weekly.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 5
+    target-branch: develop
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore
+      include: scope

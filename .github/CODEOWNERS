@@ -1,0 +1,15 @@
+# Default — every change requires review from the project maintainer.
+*                       @arnaudprioul
+
+# CI / Docker / release infrastructure
+/.github/               @arnaudprioul
+/docker/                @arnaudprioul
+
+# Design tokens (machine-generated; review extra carefully)
+/tokens/                @arnaudprioul
+/scripts/build-tokens.mjs @arnaudprioul
+
+# Public API surface
+/src/origam.ts          @arnaudprioul
+/src/components/        @arnaudprioul
+/src/composables/       @arnaudprioul
