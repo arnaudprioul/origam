@@ -1,12 +1,11 @@
 <template>
 	<div :class="itemClasses" :style="itemStyles" role="listitem">
-		<!-- Track column: dot + connector -->
 		<div class="origam-timeline-item__track" aria-hidden="true">
 			<div class="origam-timeline-item__dot" :style="dotStyles">
 				<slot name="dot">
 					<origam-icon
-						v-if="props.icon"
-						:icon="props.icon"
+						v-if="icon"
+						:icon="icon"
 						:size="10"
 					/>
 				</slot>
@@ -18,18 +17,17 @@
 			/>
 		</div>
 
-		<!-- Content column -->
 		<div class="origam-timeline-item__content">
 			<slot name="default">
 				<div class="origam-timeline-item__header">
 					<span
-						v-if="props.title"
+						v-if="title"
 						class="origam-timeline-item__title"
-					>{{ props.title }}</span>
+					>{{ title }}</span>
 					<span
-						v-if="props.subtitle"
+						v-if="subtitle"
 						class="origam-timeline-item__subtitle"
-					>{{ props.subtitle }}</span>
+					>{{ subtitle }}</span>
 				</div>
 				<div
 					v-if="$slots.body || description"
@@ -47,28 +45,48 @@
 	import type { StyleValue } from 'vue'
 
 	import { OrigamIcon } from '../../components'
-	import { useDensity, useProps, useSize } from '../../composables'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
 	import type { ITimelineItemProps } from '../../interfaces'
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITimelineItemProps & { description?: string }>(), {
 		side: 'start',
+		orientation: 'vertical',
 		isLast: false,
 		truncateLine: false,
-		index: 0
+		index: 0,
+		description: undefined
 	})
 
 	// Inject parent context if nested in OrigamTimeline
 	const timelineCtx = inject(TIMELINE_CONTEXT_KEY, null)
 
 	const { filterProps } = useProps<ITimelineItemProps>(props)
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
 	const effectiveSide = computed(() => {
 		if (timelineCtx?.side) return timelineCtx.side
 		return props.side
+	})
+
+	const effectiveOrientation = computed(() => {
+		if (timelineCtx?.orientation) return timelineCtx.orientation
+		return props.orientation ?? 'vertical'
 	})
 
 	const effectiveTruncateLine = computed(() => {
@@ -94,29 +112,36 @@
 		}
 	})
 
-	const connectorStyles = computed(() => ({
-		'background-color': 'var(--origam-timeline---connector-color, var(--origam-color-border-subtle))',
-		'width': 'var(--origam-timeline---connector-thickness, var(--origam-border-width-thin, 1px))'
-	}))
+	const connectorStyles = computed(() => {
+		// In horizontal layout the connector is a horizontal bar — its
+		// "thickness" becomes the height, and the width fills the
+		// available space. In vertical layout (legacy default) it's a
+		// thin vertical bar.
+		const isH = effectiveOrientation.value === 'horizontal'
+		return {
+			'background-color': 'var(--origam-timeline---connector-color, var(--origam-color__border---subtle))',
+			[isH ? 'height' : 'width']: 'var(--origam-timeline---connector-thickness, var(--origam-border__width---thin, 1px))'
+		}
+	})
 
 	function intentToBgToken(intent: string): string {
 		if (intent === 'primary' || intent === 'secondary' || intent === 'ghost' || intent === 'neutral') {
-			return `var(--origam-color-action-${intent}-bg, var(--origam-color-action-primary-bg))`
+			return `var(--origam-color__action--${intent}---bg, var(--origam-color__action--primary---bg))`
 		}
 		if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-			return `var(--origam-color-feedback-${intent}-bg)`
+			return `var(--origam-color__feedback--${intent}---bg)`
 		}
-		return 'var(--origam-color-action-primary-bg)'
+		return 'var(--origam-color__action--primary---bg)'
 	}
 
 	function intentToFgToken(intent: string): string {
 		if (intent === 'primary' || intent === 'secondary' || intent === 'ghost' || intent === 'neutral') {
-			return `var(--origam-color-action-${intent}-fg, var(--origam-color-action-primary-fg))`
+			return `var(--origam-color__action--${intent}---fg, var(--origam-color__action--primary---fg))`
 		}
 		if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-			return `var(--origam-color-feedback-${intent}-fg)`
+			return `var(--origam-color__feedback--${intent}---fg)`
 		}
-		return 'var(--origam-color-action-primary-fg)'
+		return 'var(--origam-color__action--primary---fg)'
 	}
 
 	const contentSide = computed(() => {
@@ -127,8 +152,13 @@
 		return side
 	})
 
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
+
 	const itemClasses = computed(() => [
 		'origam-timeline-item',
+		`origam-timeline-item--orientation-${effectiveOrientation.value}`,
 		{
 			'origam-timeline-item--side-start': effectiveSide.value === 'start' || contentSide.value === 'start',
 			'origam-timeline-item--side-end': effectiveSide.value === 'end' || contentSide.value === 'end',
@@ -144,19 +174,30 @@
 	const itemStyles = computed(() => [
 		props.style
 	] as StyleValue)
+	const {id, css, load, isLoaded, unload} = useStyle(itemStyles)
 
-	// EXPOSE
-	defineExpose({ filterProps })
+
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
+	defineExpose({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 </script>
 
 <style lang="scss" scoped>
 	.origam-timeline-item {
+		$this: &;
+
 		display: flex;
 		flex-direction: row;
 		gap: var(--origam-timeline---gap, 14px);
 		position: relative;
 
-		// Default: track on left, content on right
 		&__track {
 			display: flex;
 			flex-direction: column;
@@ -170,14 +211,14 @@
 			width: var(--origam-timeline---dot-size, 12px);
 			height: var(--origam-timeline---dot-size, 12px);
 			border-radius: 50%;
-			background-color: var(--origam-timeline-item---dot-bg, var(--origam-timeline---dot-bg, var(--origam-color-action-primary-bg)));
-			color: var(--origam-timeline-item---dot-color, var(--origam-timeline---dot-color, var(--origam-color-action-primary-fg)));
-			border: var(--origam-timeline---dot-border-width, 2px) solid var(--origam-timeline---dot-border-color, var(--origam-color-surface-default));
+			background-color: var(--origam-timeline-item---dot-bg, var(--origam-timeline---dot-bg, var(--origam-color__action--primary---bg)));
+			color: var(--origam-timeline-item---dot-color, var(--origam-timeline---dot-color, var(--origam-color__action--primary---fg)));
+			border: var(--origam-timeline---dot-border-width, 2px) solid var(--origam-timeline---dot-border-color, var(--origam-color__surface---default));
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			box-shadow: 0 0 0 1px var(--origam-color-border-default, var(--origam-color-border-subtle));
+			box-shadow: 0 0 0 1px var(--origam-color__border---default, var(--origam-color__border---subtle));
 			z-index: 1;
 			position: relative;
 		}
@@ -186,7 +227,7 @@
 			flex: 1;
 			min-height: 16px;
 			width: var(--origam-timeline---connector-thickness, 1px);
-			background-color: var(--origam-timeline---connector-color, var(--origam-color-border-subtle));
+			background-color: var(--origam-timeline---connector-color, var(--origam-color__border---subtle));
 			margin-top: 4px;
 			display: block;
 		}
@@ -197,6 +238,60 @@
 			padding-top: 0;
 		}
 
+		// ── Horizontal orientation ────────────────────────────────────
+		// Each item becomes a column (dot on top + content below). The
+		// connector runs horizontally to the next dot. `scroll-snap-align`
+		// pins each dot to the start of the scroll viewport so the user
+		// can navigate point-to-point.
+		&--orientation-horizontal {
+			flex-direction: column;
+			gap: var(--origam-timeline---gap, 14px);
+			flex-shrink: 0;
+			min-width: var(--origam-timeline-item---min-width, 160px);
+			max-width: var(--origam-timeline-item---max-width, 240px);
+			scroll-snap-align: start;
+			scroll-snap-stop: always;
+
+			#{$this}__track {
+				flex-direction: row;
+				align-items: center;
+				width: 100%;
+				height: var(--origam-timeline---track-width, 24px);
+			}
+
+			#{$this}__connector {
+				flex: 1;
+				min-height: 0;
+				min-width: 16px;
+				width: auto;
+				height: var(--origam-timeline---connector-thickness, 1px);
+				margin-top: 0;
+				margin-left: 4px;
+			}
+
+			#{$this}__content {
+				flex: none;
+				padding-bottom: 0;
+				padding-top: 0;
+				text-align: start;
+			}
+
+			#{$this}__header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 2px;
+			}
+
+			&#{$this}--last {
+				min-width: var(--origam-timeline---dot-size, 12px);
+				flex-shrink: 1;
+
+				#{$this}__connector {
+					display: none;
+				}
+			}
+		}
+
 		&__header {
 			display: flex;
 			align-items: baseline;
@@ -205,27 +300,26 @@
 		}
 
 		&__title {
-			font-size: var(--origam-timeline---title-font-size, var(--origam-font-size-md, 0.875rem));
-			font-weight: var(--origam-timeline---title-font-weight, var(--origam-font-weight-semibold, 600));
-			font-family: var(--origam-font-family-mono, monospace);
-			color: var(--origam-timeline---color, var(--origam-color-text-primary));
+			font-size: var(--origam-timeline---title-font-size, var(--origam-font__size---md, 0.875rem));
+			font-weight: var(--origam-timeline---title-font-weight, var(--origam-font__weight---semibold, 600));
+			font-family: var(--origam-font__family---mono, monospace);
+			color: var(--origam-timeline---color, var(--origam-color__text---primary));
 			line-height: 1.4;
 		}
 
 		&__subtitle {
-			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font-size-sm, 0.75rem));
-			color: var(--origam-timeline---subtitle-color, var(--origam-color-text-secondary));
+			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font__size---sm, 0.75rem));
+			color: var(--origam-timeline---subtitle-color, var(--origam-color__text---secondary));
 			line-height: 1.4;
 		}
 
 		&__body {
-			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font-size-sm, 0.75rem));
-			color: var(--origam-timeline---subtitle-color, var(--origam-color-text-secondary));
+			font-size: var(--origam-timeline---subtitle-font-size, var(--origam-font__size---sm, 0.75rem));
+			color: var(--origam-timeline---subtitle-color, var(--origam-color__text---secondary));
 			margin-top: 4px;
 			line-height: 1.5;
 		}
 
-		// When content is on the "end" side (right-to-left track layout)
 		&--content-end {
 			flex-direction: row-reverse;
 
@@ -238,7 +332,6 @@
 			}
 		}
 
-		// Last item doesn't need extra bottom padding
 		&--last {
 			.origam-timeline-item__content {
 				padding-bottom: 0;

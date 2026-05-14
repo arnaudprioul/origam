@@ -114,25 +114,20 @@
 		setup
 >
 	import type { ComputedRef, StyleValue } from 'vue'
-	import { computed, ref, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamBtn, OrigamIcon } from '../../components'
 
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useColorEffect,
 		useDensity,
 		useDimension,
-		useElevation,
 		useHover,
 		useLocale,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStatus,
 		useStyle
 	} from '../../composables'
@@ -141,6 +136,12 @@
 
 	import type { IAlertProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and utilities for the Alert component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IAlertProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
@@ -157,19 +158,41 @@
 
 	const slots = useSlots()
 
-	const {activeClasses, isActive, onActive} = useActive(props, 'modelValue')
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {densityClasses} = useDensity(props)
-	const {borderStyles, borderClasses} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {locationStyles} = useLocation(props)
-	const {positionClasses, positionStyles} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state and color resolution for the alert.
+	 ********************************************************/
+	const {activeClasses, isActive, activeState, onActive} = useActive(props, 'modelValue')
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for the resting state only — `useStateEffect` returns `[]` for hover/
+	// active so the inline `colorStyles` keeps owning those slots.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Adjacent (prepend / append)
+	 *
+	 * @description
+	 * Resolves prepend/append icons and click handlers.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -177,6 +200,18 @@
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
+
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags that control conditional rendering of
+	 * icon, title, header and close button sections.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClose = (e: MouseEvent) => {
 		onActive()
@@ -186,8 +221,6 @@
 	const size = computed(() => {
 		return props.prominent ? 44 : 28
 	})
-
-	// SLOTS
 
 	const hasIcon = computed(() => {
 		// Pre-fix: `!!(props.icon || props.status)` returned true as soon
@@ -209,8 +242,17 @@
 		return slots.close || props.closable
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all layout, spacing, color, elevation and
+	 * variant classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {locationStyles} = useLocation(props)
+	const {positionClasses, positionStyles} = usePosition(props)
 	const alertStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -234,6 +276,7 @@
 			hoverClasses.value,
 			activeClasses.value,
 			statusClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -247,8 +290,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(alertStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -282,14 +329,6 @@
 		margin-inline-start: var(--origam-alert---margin-inline-start);
 		margin-inline-end: var(--origam-alert---margin-inline-end);
 
-		// Use the directional border tokens declared in the JSON
-		// (border-{top,right,bottom,left}-width). The omnibus
-		// `--origam-alert---border-width` is consumed by ad-hoc
-		// inline overrides only — falling back to it lets a consumer
-		// set a single var to drive all four sides.
-		// Pre-fix the SCSS read the undefined omnibus var directly,
-		// which CSS resolves to `initial` (`medium`, ~3px) — alerts
-		// shipped with a 3px solid border on every render.
 		border-top-width: var(--origam-alert---border-top-width, var(--origam-alert---border-width, 0));
 		border-right-width: var(--origam-alert---border-right-width, var(--origam-alert---border-width, 0));
 		border-bottom-width: var(--origam-alert---border-bottom-width, var(--origam-alert---border-width, 0));
@@ -302,7 +341,7 @@
 		color: var(--origam-alert---color);
 
 		&--elevated {
-			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow-md));
+			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--border {
@@ -343,42 +382,34 @@
 			}
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
-		// Each rung binds `--origam-alert---border-radius` to a
-		// primitive `--origam-radius-*` token.
 		&--rounded {
-			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-alert---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-alert---border-radius: var(--origam-radius-xs, 2px);
+			--origam-alert---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-alert---border-radius: var(--origam-radius-sm, 4px);
+			--origam-alert---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-alert---border-radius: var(--origam-radius-md, 8px);
+			--origam-alert---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-alert---border-radius: var(--origam-radius-lg, 12px);
+			--origam-alert---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-alert---border-radius: var(--origam-radius-xl, 16px);
+			--origam-alert---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-alert---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-alert---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
-		// Density formula on the alert is `padding - density`, so:
-		//   • comfortable → density must be NEGATIVE so `padding − (−8)` grows
-		//   • compact     → density must be POSITIVE so `padding − 8` shrinks
-		// Pre-fix both rungs were +8, making `comfortable` indistinguishable
-		// from `compact` (both shrunk the padding).
 		&--density-comfortable {
 			--origam-alert---density: -8px;
 		}
@@ -392,23 +423,23 @@
 		}
 
 		&--warning {
-			--origam-alert---background-color: var(--origam-alert--warning---bg, var(--origam-color-feedback-warning-bg, rgb(251, 140, 0)));
-			--origam-alert---color: var(--origam-alert--warning---fg, var(--origam-color-feedback-warning-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--warning---bg, var(--origam-color__feedback--warning---bg, rgb(251, 140, 0)));
+			--origam-alert---color: var(--origam-alert--warning---fg, var(--origam-color__feedback--warning---fg, #ffffff));
 		}
 
 		&--success {
-			--origam-alert---background-color: var(--origam-alert--success---bg, var(--origam-color-feedback-success-bg, rgb(76, 175, 80)));
-			--origam-alert---color: var(--origam-alert--success---fg, var(--origam-color-feedback-success-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--success---bg, var(--origam-color__feedback--success---bg, rgb(76, 175, 80)));
+			--origam-alert---color: var(--origam-alert--success---fg, var(--origam-color__feedback--success---fg, #ffffff));
 		}
 
 		&--info {
-			--origam-alert---background-color: var(--origam-alert--info---bg, var(--origam-color-feedback-info-bg, rgb(33, 150, 243)));
-			--origam-alert---color: var(--origam-alert--info---fg, var(--origam-color-feedback-info-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--info---bg, var(--origam-color__feedback--info---bg, rgb(33, 150, 243)));
+			--origam-alert---color: var(--origam-alert--info---fg, var(--origam-color__feedback--info---fg, #ffffff));
 		}
 
 		&--error {
-			--origam-alert---background-color: var(--origam-alert--danger---bg, var(--origam-color-feedback-danger-bg, rgb(207, 102, 121)));
-			--origam-alert---color: var(--origam-alert--danger---fg, var(--origam-color-feedback-danger-fg, #ffffff));
+			--origam-alert---background-color: var(--origam-alert--danger---bg, var(--origam-color__feedback--danger---bg, rgb(207, 102, 121)));
+			--origam-alert---color: var(--origam-alert--danger---fg, var(--origam-color__feedback--danger---fg, #ffffff));
 		}
 
 		&--absolute {
@@ -508,4 +539,3 @@
 	}
 
 </style>
-

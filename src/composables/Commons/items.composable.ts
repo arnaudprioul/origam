@@ -3,6 +3,9 @@ import type { IInternalListItem, IItemProps } from '../../interfaces'
 
 import { deepEqual, transformListItem, transformListItems } from '../../utils'
 
+/*********************************************************
+ * useItems
+ ********************************************************/
 export function useItems (props: IItemProps & { itemType?: string }) {
     const items = computed(() => {
         if (props.items) {

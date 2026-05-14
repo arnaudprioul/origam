@@ -13,7 +13,10 @@
 
     "max-width":     { "$type": "other",      "$value": "100%" },
     "width":         { "$type": "other",      "$value": "100%" },
-    "height":        { "$type": "dimension",  "$value": "{space.16}" },
+    "height":        { "$type": "dimension",  "$value": "{space.14}" },
+    "height-compact":  { "$type": "dimension",  "$value": "{space.10}" },
+    "height-default":  { "$type": "dimension",  "$value": "{space.14}" },
+    "height-prominent":{ "$type": "dimension",  "$value": "{space.20}" },
 
     "box-sizing":    { "$type": "other",      "$value": "border-box" },
     "overflow":      { "$type": "other",      "$value": "hidden" },

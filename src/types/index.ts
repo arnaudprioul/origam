@@ -175,6 +175,7 @@ export * from './Parallax/parallax.type'
 export * from './Parallax/parallax-element.type'
 
 export * from './PasswordField/password-field.type'
+export * from './PasswordField/password-strength.type'
 
 export * from './Picker/picker.type'
 export * from './Picker/picker-title.type'
@@ -198,6 +199,7 @@ export * from './SelectionControl/selection-control.type'
 export * from './SelectionControl/selection-control-group.type'
 
 export * from './Sheet/sheet.type'
+export * from './Sheet/sheet-snap-point.type'
 
 export * from './Slide/slide-group.type'
 
@@ -208,6 +210,7 @@ export * from './SliderField/slider-field-thumb.type'
 export * from './Snackbar/snackbar.type'
 
 export * from './Switch/switch.type'
+export * from './Switch/switch-track.type'
 
 export * from './Table/table.type'
 

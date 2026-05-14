@@ -1,12 +1,14 @@
 <template>
 	<component
 			:is="link.tag"
-			v-ripple="isClickable && props.ripple"
+			v-ripple="isClickable && ripple"
 			:class="cardClasses"
 			:href="link.href"
 			:style="cardStyles"
-			:tabindex="props.disabled ? -1 : undefined"
-			@click="isClickable && link.navigate"
+			:tabindex="disabled ? -1 : undefined"
+			@click="handleClick"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
     <span
 		    v-if="isClickable"
@@ -31,11 +33,11 @@
 						<origam-progress
 								v-else
 								:active="true"
-								:color="props.color"
+								:color="color"
 								:indeterminate="loaderConfig.indeterminate"
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-								:class="['origam-card__progress', `origam-card__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+								:class="cardProgressClasses"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>
@@ -105,7 +107,7 @@
 						<slot name="asset">
 							<origam-img
 									key="image-img"
-									:src="props.image"
+									:src="image"
 									class="origam-card__image"
 									cover
 							/>
@@ -118,7 +120,7 @@
 						<slot name="text">
 							<origam-card-text
 									key="text"
-									:text="props.text"
+									:text="text"
 									class="origam-card__text"
 							/>
 						</slot>
@@ -135,30 +137,26 @@
 			</template>
 		</slot>
 	</component>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
 	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
+		useActive,
 		useAdjacent,
-		useBorder,
-		useBothColor,
 		useDensity,
 		useDimension,
-		useElevation,
+		useHover,
 		useLink,
 		useLoader,
 		useLocation,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { vRipple } from '../../directives'
 
@@ -168,9 +166,15 @@
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and link resolution for the Card component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
 
-	defineEmits(['click:append', 'click:prepend'])
+	defineEmits(['click:append', 'click:prepend', 'update:active', 'update:hover'])
 
 	const {filterProps} = useProps<ICardProps>(props)
 
@@ -178,25 +182,67 @@
 
 	const link = useLink(props, attrs)
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	// `useBothColor` produces inline `color: …` and `background-color: …`
-	// declarations from intent props (`color`, `bgColor`). Pre-fix
-	// `ICardProps` did NOT extend `IColorProps` and the SCSS read
-	// `var(--origam-card---color)` / `--background` from tokens only —
-	// the consumer-facing `<origam-card color="primary">` was a silent
-	// no-op. Wiring `useBothColor` here makes the consumer's intent
-	// land on the root element via inline-style specificity, overriding
-	// the token defaults exactly like every other coloured component.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
-	const {locationStyles} = useLocation(props)
-	const {positionClasses} = usePosition(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {paddingStyles, paddingClasses} = usePadding(props)
+	/*********************************************************
+	 * Adjacent (prepend / append) & clickability
+	 *
+	 * @description
+	 * Resolves prepend/append icons, click handlers and the
+	 * clickable flag that enables ripple + overlay.
+	 ********************************************************/
+	// `useStateEffect` produces inline `color: …` / `background-color: …`
+	// declarations from intent props (`color`, `bgColor`) and also reacts
+	// to hover/active states by swapping in `hoverBgColor` / `hoverColor`
+	// / `activeBgColor` / `activeColor` overrides (or auto-darken via
+	// color-mix when no explicit override is provided).
+	//
+	// Pre-fix Card used `useBothColor` — the legacy composable — which
+	// is stateless: passing `<origam-card hover-color="success">` was a
+	// silent no-op because the composable never saw `isHover.value`.
+	// We now wire `useHover` + `useActive` so the resting / hover /
+	// pressed cycles cascade through the same intent system as Btn /
+	// BottomNav / Alert.
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	// Single state-aware composable for ALL 8 visual axes
+	// (color/bgColor/border/rounded/elevation/padding/margin/gap).
+	// Hover / active object overrides (e.g. `:hover="{ border: 'thick' }"`)
+	// flow through here uniformly; previously these axes were each
+	// resolved by their own per-axis composable AND missed the state
+	// swap entirely.
+	const {
+		colorClasses, colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(
+			props,
+			isHover,
+			isActive as unknown as import('vue').ComputedRef<boolean>,
+			hoverState,
+			activeState,
+			computed(() => !!props.disabled),
+			toRef(props, 'flat'),
+	)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -209,10 +255,49 @@
 		return !props.disabled && props.link && (props.link || link.isClickable.value)
 	})
 
+	// Combined click handler — drives both `isActive` (so `activeColor`
+	// / `activeBgColor` resolve via `useStateEffect`) and the link
+	// navigation when the Card is interactive (`link` prop / clickable).
+	const handleClick = (event: MouseEvent) => {
+		onActive(event)
+		if (isClickable.value && link.navigate) {
+			link.navigate(event)
+		}
+	}
+
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Controls the card loader slot and progress renderer.
+	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
 	const slots = useSlots()
 
-	// SLOTS
+	const hasLoading = computed(() => {
+		// `loaderConfig` is a `ComputedRef<IResolvedLoader>` from
+		// `useLoader`. In `<script setup>` JS the ref must be unwrapped via
+		// `.value` to read its fields — pre-fix this read `loaderConfig
+		// .isActive` (a property of the Ref object itself, always
+		// `undefined`) so `hasLoading` was permanently falsy and the
+		// `<template v-if="hasLoading">` block — including the
+		// `<origam-card__loader>` div with the linear/circular/skeleton
+		// renderer — never mounted. The Card was visually marked
+		// `origam-card--loading` (because `loaderClasses` does the
+		// auto-unwrap correctly) yet rendered no loader, breaking the
+		// "Loading shapes" e2e suite. Btn already uses the correct
+		// `loaderConfig.value.isActive` form.
+		return slots.loader || loaderConfig.value.isActive
+	})
 
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags controlling header, asset, text and
+	 * footer section rendering.
+	 ********************************************************/
 	const hasTitle = computed(() => {
 		return slots['header.title'] || props.title != null
 	})
@@ -231,23 +316,40 @@
 	const hasText = computed(() => {
 		return slots.text || props.text != null
 	})
-	const hasLoading = computed(() => {
-		return slots.loader || loaderConfig.isActive
-	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all border, color, elevation, loader and
+	 * layout classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {locationStyles} = useLocation(props)
+	const {positionClasses} = usePosition(props)
+	// border / rounded / elevation / padding / margin all come from
+	// `useStateEffect` above — state-aware versions that honour
+	// `:hover="{ … }"` / `:active="{ … }"` overrides.
 
 	const cardStyles = computed(() => {
 		return [
 			borderStyles.value,
 			colorStyles.value,
 			dimensionStyles.value,
+			elevationStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
 			marginStyles.value,
 			paddingStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const cardProgressClasses = computed(() => {
+		return [
+			'origam-card__progress',
+			`origam-card__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
 	})
 	const cardClasses = computed(() => {
 		return [
@@ -259,8 +361,11 @@
 				'origam-card--link': isClickable.value
 			},
 			borderClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
+			hoverClasses.value,
+			activeClasses.value,
 			loaderClasses.value,
 			positionClasses.value,
 			roundedClasses.value,
@@ -269,11 +374,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(cardStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -299,7 +415,7 @@
 		user-select: var(--origam-card---user-select);
 		cursor: var(--origam-card---cursor);
 
-		background: var(--origam-card---background);
+		background-color: var(--origam-card---background);
 		box-shadow: var(--origam-card---box-shadow);
 		color: var(--origam-card---color);
 
@@ -313,14 +429,6 @@
 		margin-inline-start: var(--origam-card---margin-inline-start);
 		margin-inline-end: var(--origam-card---margin-inline-end);
 
-		// Borders — per-side / per-corner reads matching the tokens that
-		// `tokens/component/card.json` actually emits. Pre-fix the SCSS
-		// read the singular shorthand `--origam-card---border-width` and
-		// `--origam-card---border-radius` — neither variable is emitted
-		// by Style Dictionary, so `var()` resolved to its CSS initial
-		// (`medium` ≈ 3 px) and combined with `border-style: solid`
-		// produced an unwanted 3 px black frame on every card. Same
-		// family of bug as the Toolbar fix in 0b24362.
 		border-color: var(--origam-card---border-color);
 		border-style: var(--origam-card---border-style);
 		border-top-width: var(--origam-card---border-top-width, 0);
@@ -332,23 +440,13 @@
 		border-end-end-radius: var(--origam-card---border-end-end-radius, 0);
 		border-end-start-radius: var(--origam-card---border-end-start-radius, 0);
 
-		// Asset wrapper — pre-fix had NO height/aspect constraint. If
-		// the underlying `<origam-img>` was still loading (or the
-		// network blocked the asset), the picture's intrinsic
-		// `aspect-ratio: 0` made the wrapper claim unbounded vertical
-		// space, blowing up the card to ~500 px tall on a 340 px wide
-		// card. Default to `16/9` so the asset area is always bounded
-		// and matches the proportions Vuetify uses on `<v-card image>`.
-		// Consumers needing a different ratio override either via the
-		// `#asset` slot (full control) or by setting
-		// `--origam-card__asset---aspect-ratio` on the card.
 		&__asset {
 			aspect-ratio: var(--origam-card__asset---aspect-ratio, 16 / 9);
 			overflow: hidden;
 		}
 
 		&__overlay {
-			background-color: var(--origam-card__overlay---background-color, var(--origam-color-overlay-scrim));
+			background-color: var(--origam-card__overlay---background-color, var(--origam-color__overlay---scrim));
 			border-radius: var(--origam-card__overlay---border-radius, inherit);
 			opacity: var(--origam-card__overlay---opacity, var(--origam-card---overlay-opacity, 0));
 			pointer-events: var(--origam-card__overlay---pointer-events, none);
@@ -370,21 +468,13 @@
 			opacity: var(--origam-card---opacity);
 		}
 
-		// `border={true}` — opt-in border on all four sides (Vuetify
-		// parity). The base rule reads per-side widths now, so this
-		// modifier needs to set each side explicitly.
 		&--border {
 			--origam-card---border-top-width: thin;
 			--origam-card---border-right-width: thin;
 			--origam-card---border-bottom-width: thin;
 			--origam-card---border-left-width: thin;
-			--origam-card---box-shadow: none;
 		}
 
-		// Directional rungs — `useBorder` emits BOTH `--border` and
-		// `--border-{dir}` for direction values, so these rules need to
-		// reset the OTHER three sides back to 0 (same pattern as
-		// OrigamToolbar's directional border rules in 0b24362).
 		&--border-top {
 			--origam-card---border-top-width: thin;
 			--origam-card---border-right-width: 0;
@@ -418,6 +508,56 @@
 			--origam-card---border-start-end-radius: var(--origam-card---border-radius-rounded, 4px);
 			--origam-card---border-end-end-radius: var(--origam-card---border-radius-rounded, 4px);
 			--origam-card---border-end-start-radius: var(--origam-card---border-radius-rounded, 4px);
+		}
+
+		&--loading {
+			min-width: var(--origam-card---loading-min-width, 240px);
+			min-height: var(--origam-card---loading-min-height, 120px);
+		}
+
+		&__loader {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			min-height: var(--origam-card__loader---min-height, 4px);
+
+			:deep(.origam-progress--linear) {
+				position: absolute;
+				inset-inline: 0;
+				inset-block-start: 0;
+				width: 100%;
+				height: var(--origam-card__progress---linear-height, 4px);
+			}
+
+			:deep(.origam-progress--circular) {
+				margin: var(--origam-card__progress---circular-margin, 24px auto);
+			}
+
+			:deep(.origam-skeleton-wrapper--card),
+			:deep(.origam-skeleton--rectangular),
+			:deep(.origam-skeleton--text) {
+				width: 100%;
+			}
+
+			:deep(.origam-skeleton-wrapper--card) {
+				min-height: var(--origam-card__loader---min-height-skeleton, 200px);
+			}
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-card---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-card---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
 		}
 
 		&--absolute {
@@ -468,7 +608,7 @@
 			}
 		}
 
-		&--flated {
+		&--flat {
 			--origam-card---box-shadow: none;
 		}
 
@@ -526,24 +666,11 @@
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	The component now consumes the generated tokens from
-	`src/assets/css/tokens/{primitive,light,dark}.css` (loaded once via the
-	consumer's `import 'origam/styles'` or `import 'origam/tokens/css/light'`).
-
-	Calc-based fallbacks (border-width compound, border-radius compound)
-	live in the `<style scoped>` block below as defaults on the element itself,
-	so a consumer who hasn't loaded the token CSS still sees a working card.
--->
 <style
 		lang="scss"
 		scoped
 >
 	.origam-card {
-		// Calc-based vars that compose multiple token-driven sub-values —
-		// cannot be represented as a single token because their resolved value
-		// depends on which individual side-tokens are set at the instance level.
 		--origam-card---border-width: var(--origam-card---border-top-width, var(--origam-card---border-top-width, 0px)) var(--origam-card---border-left-width, 0px) var(--origam-card---border-bottom-width, 0px) var(--origam-card---border-right-width, 0px);
 		--origam-card---border-radius: var(--origam-card---border-start-start-radius, 0px) var(--origam-card---border-start-end-radius, 0px) var(--origam-card---border-end-start-radius, 0px) var(--origam-card---border-end-end-radius, 0px);
 	}

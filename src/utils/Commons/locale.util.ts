@@ -26,6 +26,12 @@ function callI18nT (
     return fn(key, list)
 }
 
+/**
+ * Create vue i 18 n adapter.
+ *
+ * @param options …
+ * @returns …
+ */
 export function createVueI18nAdapter ({i18n, useI18n}: ILocaleI18n): ILocaleInstance {
     const current = i18n.global.locale
     const fallback = i18n.global.fallbackLocale as Ref<string>
@@ -42,6 +48,11 @@ export function createVueI18nAdapter ({i18n, useI18n}: ILocaleI18n): ILocaleInst
     }
 }
 
+/**
+ * Create provide function.
+ *
+ * @param data …
+ */
 export function createProvideFunction (data: {
     current: Ref<string>
     fallback: Ref<string>
@@ -78,6 +89,14 @@ export function createProvideFunction (data: {
     }
 }
 
+/**
+ * Use provided.
+ *
+ * @param props    …
+ * @param prop     …
+ * @param provided …
+ * @returns …
+ */
 export function useProvided<T> (props: any, prop: string, provided: Ref<T>): Ref<T> {
     const internal = useVModel(props, prop)
 

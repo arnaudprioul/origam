@@ -1,4 +1,5 @@
 import type {
+    IBgColorProps,
     IColorProps,
     IIntersectionObserverInit,
     ILazyProps,
@@ -8,7 +9,7 @@ import type {
 
 import type { TCrossOrigin, TReferrerPolicy } from '../../types'
 
-export interface IImgProps extends IColorProps, IResponsiveProps, ITransitionComponentProps, ILazyProps {
+export interface IImgProps extends IColorProps, IBgColorProps, IResponsiveProps, ITransitionComponentProps, ILazyProps {
     alt?: string
     cover?: boolean,
     draggable?: boolean

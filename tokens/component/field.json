@@ -1,6 +1,6 @@
 {
   "field": {
-    "_comment": "OrigamField component tokens — Lot 3.2A. Form input field with variants (outlined, underlined, solo, solo-filled, solo-inverted). BEM children: overlay, loader, field, prepend-inner, append-inner, clearable, label, prefix, suffix, outline, input.",
+    "_comment": "OrigamField component tokens — Lot 3.2A. Form input field with variants (outlined, underlined, solo, filled, plain). BEM children: overlay, loader, field, prepend-inner, append-inner, clearable, label, prefix, suffix, outline, input.",
 
     "padding-start":          { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-start padding of the field root (overridden by --prepended / --prefixed modifiers)" },
     "padding-end":            { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-end padding of the field root (overridden by --appended / --suffixed modifiers)" },
@@ -30,7 +30,7 @@
     },
 
     "variant-solo": {
-      "_comment": "Tokens for &-solo and &-solo-filled variants.",
+      "_comment": "Tokens for the &-solo variant.",
       "box-shadow":           { "$type": "shadow",       "$value": "{shadow.sm}",                  "$description": "Elevation shadow on solo variants" }
     },
 
@@ -48,9 +48,13 @@
     },
 
     "input": {
-      "_comment": "BEM child: .origam-field__input — the actual input/textarea wrapper.",
-      "padding-top":          { "$type": "dimension",    "$value": "{space.3}",                    "$description": "Block-start inner padding (12px) — symmetric with `padding-bottom` so the input text reads as VERTICALLY CENTERED inside the 56px control. Pre-fix the top was 24px and bottom 6px (asymmetric) so the text sat closer to the bottom edge — `--variant-outlined` made the floating label notch swap from bottom-anchored to centered, which user described as 'fais bizarre'." },
-      "padding-bottom":       { "$type": "dimension",    "$value": "{space.3}",                    "$description": "Block-end inner padding (12px) — same value as `padding-top` for vertical centering." },
+      "_comment": "BEM child: .origam-field__input — the actual input/textarea wrapper. Phase 1 PDF alignment: per-size `padding-block-XX` tokens keep the input text vertically centered for each height in the sm/md/lg/xl scale (28/36/44/52). Default control is now 36px (md), down from Material's 56px.",
+      "padding-block-sm":     { "$type": "dimension",    "$value": "2px",                          "$description": "Per-size block padding for size=small (control 28px). 28 - 24 (line-height) = 4 / 2 = 2px." },
+      "padding-block-md":     { "$type": "dimension",    "$value": "6px",                          "$description": "Per-size block padding for size=default (control 36px). 36 - 24 = 12 / 2 = 6px." },
+      "padding-block-lg":     { "$type": "dimension",    "$value": "10px",                         "$description": "Per-size block padding for size=large (control 44px). 44 - 24 = 20 / 2 = 10px." },
+      "padding-block-xl":     { "$type": "dimension",    "$value": "14px",                         "$description": "Per-size block padding for size=x-large (control 52px). 52 - 24 = 28 / 2 = 14px." },
+      "padding-top":          { "$type": "dimension",    "$value": "{field.input.padding-block-md}", "$description": "Block-start inner padding — defaults to padding-block-md (6px) so the input text is vertically centered in the default 36px control." },
+      "padding-bottom":       { "$type": "dimension",    "$value": "{field.input.padding-block-md}", "$description": "Block-end inner padding — same value as `padding-top` for vertical centering." },
       "padding-start":        { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-start padding inside the input wrapper" },
       "padding-end":          { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-end padding inside the input wrapper" },
       "opacity":              { "$type": "number",       "$value": 0.7,                            "$description": "Default opacity for the input wrapper (transitions to 1 on active)" }

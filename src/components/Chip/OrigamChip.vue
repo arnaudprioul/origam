@@ -3,8 +3,8 @@
 			:is="link.tag"
 			v-ripple="rippleProps"
 			:class="chipClasses"
-			:disabled="props.disabled"
-			:draggable="props.draggable"
+			:disabled="disabled"
+			:draggable="draggable"
 			:href="link.href"
 			:style="chipStyles"
 			:tabindex="isClickable ? 0 : undefined"
@@ -125,21 +125,19 @@
 
 	import {
 		useAdjacent,
-		useBorder,
 		useBothColor,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useGroupItem,
+		useHover,
 		useLink,
 		useLocale,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSize,
+		useStateEffect,
+		useStyle,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts'
 
@@ -150,6 +148,14 @@
 	import type { IChipProps } from '../../interfaces'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, defaults propagation, group item and link
+	 * bindings for the chip.
+	 ********************************************************/
 
 	const _props = withDefaults(defineProps<IChipProps>(), {
 		tag: 'span',
@@ -181,18 +187,41 @@
 	const attrs = useAttrs()
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginStyles, marginClasses} = useMargin(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const isActive = useVModel(props, 'modelValue')
 	const group = useGroupItem(props, ORIGAM_CHIP_GROUP_KEY, false)
 	const link = useLink(props, attrs)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -233,6 +262,10 @@
 		group?.toggle()
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClickClose = (e: MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
@@ -251,6 +284,13 @@
 		}
 	}
 
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Computed flags for conditional close / filter rendering.
+	 ********************************************************/
+
 	const hasClose = computed(() => {
 		return slots.close || props.closable
 	})
@@ -258,7 +298,12 @@
 		return (slots.filter || props.filter) && group
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes size, rounded, border, spacing and color styles.
+	 ********************************************************/
 
 	const chipStyles = computed(() => {
 		return [
@@ -281,6 +326,7 @@
 				'origam-chip--filter': hasFilter.value,
 				'origam-chip--pill': props.pill
 			},
+			colorClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
 			densityClasses.value,
@@ -291,11 +337,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(chipStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -345,15 +403,6 @@
 			max-height: var(--origam-chip__close---max-height, 18px);
 			max-width: var(--origam-chip__close---max-width, 18px);
 			user-select: var(--origam-chip__close---user-select, none);
-
-			// Breathing room between the chip body and the close button.
-			// Pre-fix the close icon was flush with the content (0px gap)
-			// while the chip's right padding was 12px — the asymmetry read
-			// as "the close has no room", per user feedback. The negative
-			// `margin-inline-end` pulls the icon slightly past the chip's
-			// inline padding to compensate for the close-circle glyph's
-			// own internal whitespace, keeping the visual right edge of
-			// the icon aligned with where a textual right edge would land.
 			margin-inline-start: var(--origam-chip__close---margin-inline-start, 6px);
 			margin-inline-end: var(--origam-chip__close---margin-inline-end, -4px);
 
@@ -395,14 +444,6 @@
 			border-radius: var(--origam-chip---border-radius-label, 4px);
 		}
 
-		// Size scale — heights / font-sizes / paddings mirror Vuetify's
-		// `v-chip` for visual parity (the previous version only set
-		// font-size + padding, leaving `height` undeclared so the chip
-		// collapsed to its text content's line-box height ~18px). Each
-		// rung now also pins `font-size` (instead of relying on a
-		// CSS-var indirection that was never read by the base rule)
-		// and `line-height: 1` so vertical centring with the prepend /
-		// append icons stays clean.
 		&--size-x-small {
 			font-size: var(--origam-chip---font-size-xs, 0.625rem);
 			line-height: 1;
@@ -483,34 +524,46 @@
 			position: var(--origam-chip__underlay---position, absolute);
 		}
 
-		// Rounded variants — overrides the default 9999px pill.
-		// boolean --rounded falls back to radius.sm (4px, a tight chip corner).
 		&--rounded {
-			--origam-chip---border-radius: var(--origam-radius-sm, 4px);
+			--origam-chip---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-x-small {
-			--origam-chip---border-radius: var(--origam-radius-xs, 2px);
+			--origam-chip---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-chip---border-radius: var(--origam-radius-sm, 4px);
+			--origam-chip---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-chip---border-radius: var(--origam-radius-md, 8px);
+			--origam-chip---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-chip---border-radius: var(--origam-radius-lg, 12px);
+			--origam-chip---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-chip---border-radius: var(--origam-radius-xl, 16px);
+			--origam-chip---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-chip---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-chip---border-radius: var(--origam-radius---2xl, 24px);
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-chip---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-chip---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-chip---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-chip---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
 		}
 
 		&--border {
@@ -528,24 +581,11 @@
 	}
 </style>
 
-<!--
-	Lot migration — `<style>:root{}` block removed.
-	The component now consumes the generated tokens from
-	`tokens/component/chip.json` (loaded once via the
-	consumer's token CSS pipeline).
-
-	Hardcoded values (border-radius, font-sizes, paddings, opacities,
-	transitions) are replaced by CSS vars with safe fallbacks.
-	Calc-based values that depend on the runtime (density modifier) remain
-	as local custom property assignments in the scoped block above.
--->
 <style
 		lang="scss"
 		scoped
 >
 	.origam-chip {
-		// Calc-based density defaults — cannot live in the token JSON because
-		// they reference the resolved density value at the component-instance level.
 		--origam-chip---density: 0px;
 	}
 </style>

@@ -4,17 +4,14 @@
 		title="Timeline/OrigamTimeline"
 	>
 
-		<!-- ════════════ DEFAULT — 4 release entries (matches maquette) ════════════ -->
 		<Variant title="Default">
 			<origam-timeline :items="releaseEntries" data-cy="timeline-default"/>
 		</Variant>
 
-		<!-- ════════════ WITH ICONS ════════════ -->
 		<Variant title="With icons">
 			<origam-timeline :items="iconEntries" data-cy="timeline-icons"/>
 		</Variant>
 
-		<!-- ════════════ SIDES ════════════ -->
 		<Variant title="Sides">
 			<div style="display: flex; gap: 32px; flex-wrap: wrap;">
 				<div>
@@ -44,12 +41,10 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ INTENT MIX ════════════ -->
 		<Variant title="Intent mix">
 			<origam-timeline :items="intentEntries" data-cy="timeline-intent"/>
 		</Variant>
 
-		<!-- ════════════ COLOR ════════════ -->
 		<Variant
 			title="Color"
 			:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
@@ -68,7 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE / DENSITY ════════════ -->
 		<Variant
 			title="Size / Density"
 			:init-state="() => useStoryInitState<ISizeProps & IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -87,7 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT — default (custom content) ════════════ -->
 		<Variant title="Slot — default (custom content)">
 			<origam-timeline data-cy="timeline-slot-default">
 				<origam-timeline-item
@@ -116,7 +109,7 @@
 					data-cy="timeline-slot-item-1"
 				>
 					<template #default>
-						<p style="margin: 0; font-size: 0.75rem; color: var(--origam-color-text-secondary)">
+						<p style="margin: 0; font-size: 0.75rem; color: var(--origam-color__text---secondary)">
 							Release candidate — API surface frozen.
 						</p>
 					</template>
@@ -124,7 +117,6 @@
 			</origam-timeline>
 		</Variant>
 
-		<!-- ════════════ TRUNCATE LINE ════════════ -->
 		<Variant
 			title="Truncate line"
 			:init-state="() => useStoryInitState<{ truncateLine: boolean }>({ truncateLine: true })"
@@ -141,10 +133,34 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<Variant title="Orientation — horizontal (scroll-snap slider)">
+			<div style="max-width: 560px;">
+				<origam-timeline
+					orientation="horizontal"
+					:items="releaseEntries"
+					data-cy="timeline-horizontal"
+				/>
+				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+					Swipe / drag horizontally to navigate point-to-point. Each dot snaps to the start of the viewport.
+				</p>
+			</div>
+		</Variant>
+
+		<Variant title="Orientation — horizontal with icons">
+			<div style="max-width: 560px;">
+				<origam-timeline
+					orientation="horizontal"
+					:items="iconEntries"
+					color="primary"
+					data-cy="timeline-horizontal-icons"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 			title="Playground"
 			:init-state="() => useStoryInitState<ITimelineProps>({
+				orientation: 'vertical',
 				side: 'start',
 				truncateLine: false,
 				color: undefined,
@@ -153,13 +169,19 @@
 			})"
 		>
 			<template #default="{ state }">
-				<origam-timeline
-					v-bind="state"
-					:items="releaseEntries"
-					data-cy="timeline-playground"
-				/>
+				<div :style="state.orientation === 'horizontal' ? { maxWidth: '560px' } : {}">
+					<origam-timeline
+						v-bind="state"
+						:items="releaseEntries"
+						data-cy="timeline-playground"
+					/>
+				</div>
 			</template>
 			<template #controls="{ state }">
+				<HstSelect   v-model="state.orientation"  title="orientation"  :options="[
+					{ label: 'vertical',   value: 'vertical' },
+					{ label: 'horizontal', value: 'horizontal' },
+				]"/>
 				<HstSelect   v-model="state.side"         title="side"         :options="sideList"/>
 				<HstCheckbox v-model="state.truncateLine" title="truncateLine"/>
 				<HstSelect   v-model="state.color"        title="color"        :options="intentList"/>

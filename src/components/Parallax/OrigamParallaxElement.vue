@@ -13,7 +13,16 @@
 		setup
 >
 	import { computed, inject, StyleValue } from 'vue'
-	import { useBorder, useElevation, useMargin, usePadding, useParallaxTransform, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useElevation,
+	useMargin,
+	usePadding,
+	useParallaxTransform,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_PARALLAX_KEY } from '../../consts'
 
@@ -23,6 +32,12 @@
 
 	import { cyclicMovement, elementMovement } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the ParallaxElement component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IParallaxElementProps>(), {
 		tag: 'div',
 		type: PARALLAX_ELEMENT_TYPE.TRANSLATE,
@@ -36,14 +51,35 @@
 
 	const {filterProps} = useProps<IParallaxElementProps>(props)
 
+	/*********************************************************
+	 * Decorators
+	 *
+	 * @description
+	 * Border, rounded, elevation, padding and margin composables mirror
+	 * the IParallaxElementProps interface extensions.
+	 ********************************************************/
 	// Chrome composables — mirror the IParallaxElementProps interface
 	// (IBorderProps / IPaddingProps / IMarginProps / IRoundedProps / IElevationProps).
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
+	/*********************************************************
+	 * Parallax inject & transform
+	 *
+	 * @description
+	 * parallax is the context provided by the parent OrigamParallax.
+	 * transformStyles / strength come from useParallaxTransform.
+	 * transform, transitionDuration, transitionTimingFunction and
+	 * transformParameters compose the final CSS transform style.
+	 ********************************************************/
 	const parallax = inject(ORIGAM_PARALLAX_KEY)
 
 	if (!parallax) throw new Error('[Origam] parallax-element needs to be placed inside parallax')
@@ -150,8 +186,12 @@
 		}
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * parallaxElementStyles / parallaxElementClasses compose the BEM root.
+	 ********************************************************/
 	const parallaxElementStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -176,10 +216,21 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(parallaxElementStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

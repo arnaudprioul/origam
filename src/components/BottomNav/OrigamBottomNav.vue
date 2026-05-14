@@ -1,59 +1,57 @@
 <template>
-	<component
-			:is="tag"
-			:id="id"
-			:class="bottomNavClasses"
-			@mouseenter="handleMouseenter"
-			@mouseleave="handleMouseleave"
-	>
-		<div class="origam-bottom-nav__content">
-			<origam-defaults-provider :defaults="slotDefaults">
-				<slot name="default">
-					<template
-							v-for="(item, index) in items"
-							:key="index"
-					>
-						<slot
-								:name="`item.${index}`"
-								v-bind="{props: item}"
+	<origam-transition :transition="transition">
+		<component
+				:is="tag"
+				v-if="isActive"
+				:id="id"
+				:class="bottomNavClasses"
+				@mouseenter="handleMouseenter"
+				@mouseleave="handleMouseleave"
+		>
+			<div class="origam-bottom-nav__content">
+				<origam-defaults-provider :defaults="slotDefaults">
+					<slot name="default">
+						<template
+								v-for="(item, index) in items"
+								:key="index"
 						>
 							<slot
-									name="item"
-									v-bind="{props: item, index}"
+									:name="`item.${index}`"
+									v-bind="{props: item}"
 							>
-								<origam-btn
-										ref="origamBtnRef"
-										class="origam-bottom-nav__btn"
-										v-bind="item"
-								/>
+								<slot
+										name="item"
+										v-bind="{props: item, index}"
+								>
+									<origam-btn
+											ref="origamBtnRef"
+											class="origam-bottom-nav__btn"
+											v-bind="item"
+									/>
+								</slot>
 							</slot>
-						</slot>
-					</template>
-				</slot>
-			</origam-defaults-provider>
-		</div>
-	</component>
+						</template>
+					</slot>
+				</origam-defaults-provider>
+			</div>
+		</component>
+	</origam-transition>
 </template>
 
 <script
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamDefaultsProvider } from "../../components"
+	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
 		useDensity,
-		useElevation,
 		useGroup,
 		useHover,
 		useLayoutItem,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSsrBoot,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -61,19 +59,33 @@
 	import { MODE } from "../../enums"
 
 	import type { IBottomNavProps, IBreadcrumbItemProps } from '../../interfaces'
-	import type { TOrigamBtn } from "../../types"
+	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
 	import { convertToUnit, int } from '../../utils'
 
-	import { computed, ComputedRef, Ref, StyleValue, toRef } from 'vue'
+	import { computed, ref, Ref, StyleValue, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and slot defaults propagation to child buttons
+	 * via OrigamDefaultsProvider.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBottomNavProps>(), {
 		tag: 'nav',
 		name: 'bottom-navigation',
 		modelValue: true,
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
-		items: () => [] as Array<TOrigamBtn>
+		items: () => [] as Array<TOrigamBtn>,
+		// Default transition — slide up from the bottom of the viewport.
+		// Passed as a component descriptor (not just a name string) so the
+		// matching `<style>` block of `OrigamTranslateBottom` is guaranteed
+		// to be injected globally; a bare name like
+		// `'origam-transition--translate-bottom'` only works if the
+		// component is already mounted somewhere else (fragile).
+		transition: () => ({component: OrigamTranslateBottom}) as unknown as TTransitionProps
 	})
 
 	defineEmits(['update:modelValue', 'update:active', 'update:hover'])
@@ -89,22 +101,62 @@
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor,
-			hoverColor: props.hoverColor,
-			hoverBgColor: props.hoverBgColor,
-			activeColor: props.activeColor,
-			activeBgColor: props.activeBgColor
+			// New API: forward `hover` / `active` (boolean | object)
+			// to each child OrigamBtn; the legacy split `hoverColor` /
+			// `hoverBgColor` / `activeColor` / `activeBgColor` props no
+			// longer exist on the parent or the children.
+			hover: props.hover,
+			active: props.active
 		}
 	}))
 
-	const {borderClasses, borderStyles} = useBorder(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active, color and scroll-aware visibility state.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 	const {isActive, activeClasses} = useActive(props, 'modelValue')
-	const {isHover, hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	const {hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// ONLY for the resting state — `useStateEffect` returns `[]` for
+	// hover/active so the inline `colorStyles` keeps owning those slots
+	// (no utility class exists for `bgHover`/`bgActive` rungs).
+
+	/*********************************************************
+	 * Color
+	 *
+	 * @description
+	 * The BottomNav is a CONTAINER — hover/active interaction
+	 * effects belong to its child buttons, not to the nav surface
+	 * itself. We deliberately feed `ref(false)` to `useStateEffect`
+	 * for both `isHover` and `isActive` so:
+	 *   • The resting bg stays on the intent's `bg` rung (same
+	 *     teinte as the child buttons in their resting state).
+	 *   • Hovering the nav doesn't darken the whole bar.
+	 *   • `isActive` from `useActive(props, 'modelValue')` means
+	 *     "the nav is currently displayed" (drives slide-in), NOT
+	 *     a pressed state — feeding it would resolve to `bgActive`
+	 *     (color-mix -30 %) and paint the resting bar darker than
+	 *     its buttons. `hoverColor` / `activeColor` props are still
+	 *     propagated to the child OrigamBtn instances via
+	 *     `slotDefaults` — that's where they take visual effect.
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))
+
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Registers as a layout item so sibling regions offset
+	 * correctly; height accounts for density.
+	 ********************************************************/
 	const {ssrBootStyles} = useSsrBoot()
 
 	const height = computed(() => {
@@ -134,13 +186,18 @@
 
 	useGroup(props, ORIGAM_BTN_TOGGLE_KEY)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes slide-in transform, layout, color, rounding
+	 * and spacing classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
 	const bottomNavStyles = computed(() => {
 		return [
 			{
-				height: props.height ? convertToUnit(height.value) : undefined,
-				transform: `translateY(${convertToUnit(!isActive.value ? 100 : 0, '%')})`
+				height: props.height ? convertToUnit(height.value) : undefined
 			},
 			roundedStyles.value,
 			colorStyles.value,
@@ -162,6 +219,7 @@
 			activeClasses.value,
 			hoverClasses.value,
 			borderClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
 			roundedClasses.value,
@@ -173,8 +231,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -195,20 +257,6 @@
 		display: flex;
 		overflow: hidden;
 
-		// Default standalone positioning — pin to the bottom edge of the
-		// nearest positioned ancestor and stretch full width. Inside an
-		// `<origam-layout>` host, `useLayoutItem` overrides every one of
-		// these (left/right/bottom/width/transform) via inline styles, so
-		// the layout-driven slide-in animation still wins. Pre-fix the
-		// SCSS only declared `position: absolute` — when the component
-		// rendered standalone (story, modal preview, isolated test) it
-		// collapsed to its content width because no inline width was
-		// injected.
-		// `box-sizing: border-box` is required: with `width: 100%` and
-		// the default `content-box`, the inline padding tokens added
-		// ~22px of overflow on top of the parent's width, so the nav
-		// rendered slightly wider than its host. Same fix pattern as
-		// the OrigamWindow `__controls` overflow.
 		box-sizing: border-box;
 		position: absolute;
 		left: 0;
@@ -221,22 +269,12 @@
 		max-width: var(--origam-bottom-bar---max-width);
 		height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
 
-		background: var(--origam-bottom-bar---background);
+		background-color: var(--origam-bottom-bar---background);
 		box-shadow: var(--origam-bottom-bar---box-shadow);
 		color: var(--origam-bottom-bar---color);
 
 		border-color: var(--origam-bottom-bar---border-color);
 		border-style: var(--origam-bottom-bar---border-style);
-		// Use the directional border tokens declared in
-		// `tokens/component/bottom-nav.json` (border-top/left/bottom/right-width).
-		// The omnibus `--origam-bottom-bar---border-width` is set by the
-		// `&--border` modifier and acts as the override for all four
-		// sides; without that modifier the default fallback is 0 so
-		// the nav ships borderless.
-		// Pre-fix the SCSS read the undefined omnibus var directly,
-		// which CSS resolves to the property's `initial` value
-		// (`medium`, ~3px) — i.e. a 3px border was painted on every
-		// nav even when `border` was not set.
 		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
 		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
 		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
@@ -288,10 +326,6 @@
 		}
 
 		&--border {
-			// Set the four directional tokens so the modifier wins over
-			// the per-side defaults (which are explicitly 0). Keeping
-			// the omnibus var in sync lets ad-hoc consumers who set it
-			// directly via inline style still get a uniform border.
 			--origam-bottom-bar---border-width: thin;
 			--origam-bottom-bar---border-top-width: thin;
 			--origam-bottom-bar---border-right-width: thin;
@@ -299,36 +333,34 @@
 			--origam-bottom-bar---border-left-width: thin;
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
-			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-bottom-bar---border-radius: var(--origam-radius-xs, 2px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-bottom-bar---border-radius: var(--origam-radius-sm, 4px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-bottom-bar---border-radius: var(--origam-radius-md, 8px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-bottom-bar---border-radius: var(--origam-radius-lg, 12px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-bottom-bar---border-radius: var(--origam-radius-xl, 16px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-bottom-bar---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
-		// Density formula `padding/height - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
 			--origam-bottom-bar---density: -8px;
 		}
@@ -406,6 +438,3 @@
 		}
 	}
 </style>
-
-
-

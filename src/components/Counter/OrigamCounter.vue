@@ -11,7 +11,7 @@
 		>
 			<slot
 					name="default"
-					v-bind="{ counter, max: props.max, value: props.value}"
+					v-bind="{ counter, max: max, value: value}"
 			>
 				{{ counter }}
 			</slot>
@@ -25,12 +25,16 @@
 >
 	import { OrigamSlideY, OrigamTransition } from "../../components"
 
-	import { useBothColor, useProps, useSsrBoot } from "../../composables"
+	import { useBothColor, useProps, useSsrBoot , useStyle} from "../../composables"
 
 	import type { ICounterProps } from "../../interfaces"
 	import type { TTransitionProps } from "../../types"
 
 	import { computed, StyleValue, toRef } from "vue"
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICounterProps>(), {
 		value: 0,
@@ -45,7 +49,12 @@
 	// IColorProps but the component never consumed it — `<origam-counter
 	// color="primary">` was a silent no-op despite the type system
 	// promising otherwise. Audit-fix.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {isBooted} = useSsrBoot()
 
@@ -53,8 +62,9 @@
 		return props.max ? `${props.value} / ${props.max}` : String(props.value)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const counterStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -67,14 +77,23 @@
 			{
 				'origam-counter--error': props.max && !props.disabled && parseFloat(props.value) > parseFloat(props.max)
 			},
+			colorClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(counterStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -89,7 +108,4 @@
 		transition-duration: 150ms;
 	}
 </style>
-
-<!-- Lot 6 — empty `<style>:root{}` removed; tokens come from
-     `tokens/component/counter.json` via the generated CSS. -->
 

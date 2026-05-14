@@ -3,24 +3,57 @@
 			group="components"
 			title="VirtualScroll/OrigamVirtualScrollItem"
 	>
-
-		<!-- ════════════ DEFAULT (renders + emits update:height) ════════════ -->
-		<Variant title="Default">
-			<div class="story-shell" data-cy="vsi-default">
+		<!--
+			Playground — first by convention.
+			OrigamVirtualScrollItem is a measurement sentinel: it observes
+			the content-box height of whatever it renders and emits
+			`update:height` to the parent VirtualScroll. The Playground
+			shows the live height readout.
+		-->
+		<Variant title="Playground">
+			<div class="story-shell" data-cy="vsi-playground">
 				<origam-virtual-scroll-item
 						class="story-row"
-						data-cy="vsi-default-host"
-						@update:height="onHeight('default', $event)"
+						data-cy="vsi-playground-host"
+						@update:height="onHeight('playground', $event)"
 				>
 					<div class="story-content">Single item — content-box height is observed</div>
 				</origam-virtual-scroll-item>
-				<div class="story-status" data-cy="vsi-default-status">Last height: <strong>{{ heights.default ?? 'pending' }}</strong></div>
+				<div class="story-status" data-cy="vsi-playground-status">
+					Last height: <strong>{{ heights.playground ?? 'pending' }}</strong>
+				</div>
 			</div>
 		</Variant>
 
-		<!-- ════════════ DYNAMIC HEIGHT (resize → emits update:height) ════════════ -->
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="Dynamic height"
+				title="Prop — renderless (consumer owns host element)"
+		>
+			<div class="story-shell" data-cy="vsi-renderless">
+				<origam-virtual-scroll-item
+						renderless
+						@update:height="onHeight('renderless', $event)"
+				>
+					<template #renderless="{ itemRef }">
+						<article
+								:ref="itemRef"
+								class="story-card"
+								data-cy="vsi-renderless-host"
+						>
+							<h4>Renderless</h4>
+							<p>The host element is owned by the consumer; the item still emits <code>update:height</code>.</p>
+						</article>
+					</template>
+				</origam-virtual-scroll-item>
+				<div class="story-status" data-cy="vsi-renderless-status">Last height: <strong>{{ heights.renderless ?? 'pending' }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Functional ───────────────────────────────────────────── -->
+
+		<Variant
+				title="Dynamic height (content grows)"
 				:init-state="() => useStoryInitState<{ rows: number }>({ rows: 1 })"
 		>
 			<template #default="{ state }">
@@ -44,30 +77,7 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ RENDERLESS (consumer owns the wrapper) ════════════ -->
-		<Variant title="Renderless">
-			<div class="story-shell" data-cy="vsi-renderless">
-				<origam-virtual-scroll-item
-						renderless
-						@update:height="onHeight('renderless', $event)"
-				>
-					<template #renderless="{ itemRef }">
-						<article
-								:ref="itemRef"
-								class="story-card"
-								data-cy="vsi-renderless-host"
-						>
-							<h4>Renderless</h4>
-							<p>The host element is owned by the consumer; the item still emits <code>update:height</code>.</p>
-						</article>
-					</template>
-				</origam-virtual-scroll-item>
-				<div class="story-status" data-cy="vsi-renderless-status">Last height: <strong>{{ heights.renderless ?? 'pending' }}</strong></div>
-			</div>
-		</Variant>
-
-		<!-- ════════════ INSIDE A LIST (rendered N times) ════════════ -->
-		<Variant title="Inside a list">
+		<Variant title="Inside a list (6 items)">
 			<div class="story-shell" data-cy="vsi-list">
 				<origam-virtual-scroll-item
 						v-for="n in 6"
@@ -79,6 +89,44 @@
 				</origam-virtual-scroll-item>
 			</div>
 		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="vsi-slot-default">
+				<origam-virtual-scroll-item class="story-row" data-cy="vsi-slot-default-item">
+					<span>Custom slot content</span>
+				</origam-virtual-scroll-item>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — renderless">
+			<div class="story-shell" data-cy="vsi-slot-renderless">
+				<origam-virtual-scroll-item renderless @update:height="onHeight('slot-renderless', $event)">
+					<template #renderless="{ itemRef }">
+						<article :ref="itemRef" class="story-card" data-cy="vsi-slot-renderless-host">
+							<h4>Renderless slot</h4>
+							<p>Consumer owns the host element.</p>
+						</article>
+					</template>
+				</origam-virtual-scroll-item>
+				<div class="story-status" data-cy="vsi-slot-renderless-status">Height: <strong>{{ heights['slot-renderless'] ?? 'pending' }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:height">
+			<div class="story-shell" data-cy="vsi-emit-height">
+				<origam-virtual-scroll-item
+						class="story-row"
+						data-cy="vsi-emit-height-item"
+						@update:height="logEvent('update:height', $event)"
+				>
+					<div class="story-content">Observed item — height emitted on mount/resize.</div>
+				</origam-virtual-scroll-item>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -87,13 +135,14 @@
 		setup
 >
 	import { reactive } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamVirtualScrollItem } from '@origam/components'
 
 	import { useStoryInitState } from '@stories/composables'
 
 	const heights = reactive<Record<string, number | undefined>>({
-		default:    undefined,
+		playground: undefined,
 		dynamic:    undefined,
 		renderless: undefined,
 	})
@@ -106,22 +155,22 @@
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; max-width: 480px; }
 	.story-row {
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		border-radius: 6px;
 		padding: 12px 16px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.03));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.03));
 	}
 	.story-content { font: 0.95rem/1.4 system-ui, sans-serif; }
 	.story-line { margin: 0 0 6px; font: 0.875rem/1.4 system-ui, sans-serif; }
 	.story-card {
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		border-radius: 8px;
 		padding: 16px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.03));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.03));
 	}
 	.story-card h4 { margin: 0 0 8px; font: 600 1rem/1.2 system-ui, sans-serif; }
 	.story-card p  { margin: 0; font: 0.875rem/1.4 system-ui, sans-serif; }
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 </style>
 
 <docs lang="md" src="@docs/components/VirtualScroll/OrigamVirtualScrollItem.md"/>

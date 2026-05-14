@@ -22,7 +22,7 @@
 						v-bind="slotProps"
 				/>
 
-				<template v-if="!props.hideDefaultHeader">
+				<template v-if="!hideDefaultHeader">
 					<thead key="thead">
 					<origam-data-table-headers
 							ref="origamDataTableHeadersRef"
@@ -66,7 +66,7 @@
 						v-bind="slotProps"
 				/>
 
-				<template v-if="!props.hideDefaultBody">
+				<template v-if="!hideDefaultBody">
 					<tbody>
 					<slot
 							name="prepend"
@@ -101,15 +101,12 @@
 							ref="origamDataTableFooterRef"
 							v-bind="dataTableFooterProps"
 					>
-						<!-- TODO SLOT FOOTER-->
 					</origam-data-table-footer>
 				</template>
 			</slot>
 		</template>
 	</origam-table>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -137,8 +134,9 @@
 		useOptions,
 		usePaginatedItems,
 		useProps,
-		useSortedItems
-	} from '../../composables'
+		useSortedItems,
+		useStyle
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
@@ -153,6 +151,10 @@
 	import type { TOrigamDataTableFooter, TOrigamDataTableHeaders, TOrigamDataTableRows, TOrigamTable } from "../../types"
 
 	import { computed, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableProps>(), {
 		page: 1,
@@ -207,6 +209,10 @@
 	})
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {items} = useDataTableItems(props, columns)
 
@@ -264,6 +270,10 @@
 		search
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const tableProps = computed(() => {
 		return origamTableRef.value?.filterProps(props)
 	})
@@ -306,8 +316,9 @@
 		return origamDataTableFooterRef.value?.filterProps(props, ['class', 'style', 'id'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableStyles = computed(() => {
 		return [
 			props.style
@@ -323,11 +334,19 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -337,8 +356,8 @@
 >
 	.origam-data-table {
 		width: var(--origam-data-table---width, 100%);
-		background-color: var(--origam-data-table---background-color, var(--origam-color-surface-default));
-		color: var(--origam-data-table---color, var(--origam-color-text-primary));
+		background-color: var(--origam-data-table---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table---color, var(--origam-color__text---primary));
 
 		&__table {
 			width: 100%;

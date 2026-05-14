@@ -10,6 +10,9 @@ import { deepEqual, wrapInArray } from '../../utils'
 
 import { computed, inject, provide, Ref } from 'vue'
 
+/*********************************************************
+ * provideSelection
+ ********************************************************/
 export function provideSelection (
     props: IDataTableSelectProps,
     {allItems, currentPage}: {
@@ -103,6 +106,9 @@ export function provideSelection (
     return data
 }
 
+/*********************************************************
+ * useSelection
+ ********************************************************/
 export function useSelection () {
     const data = inject(ORIGAM_DATA_TABLE_SELECT_KEY)
 

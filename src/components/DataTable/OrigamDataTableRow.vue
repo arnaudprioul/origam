@@ -84,7 +84,16 @@
 
 	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from '../../components'
 
-	import { useCell, useDisplay, useExpanded, useHeaders, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useCell,
+	useDisplay,
+	useExpanded,
+	useHeaders,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { MDI_ICONS, SIZES } from '../../enums'
 
@@ -96,11 +105,19 @@
 
 	const vm = getCurrentInstance('dataTableRow')
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableRowProps>(), {})
 
 	const emits = defineEmits(['expand', 'select'])
 
 	const {filterProps} = useProps<IDataTableRowProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {displayClasses, mobile} = useDisplay(props, 'origam-data-table-row')
 	const {isSelected, toggleSelect, someSelected, allSelected, selectAll} = useSelection()
@@ -164,6 +181,10 @@
 		return toDisplayString(slotProps(index, column).value)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleCheckBoxClick = () => {
 		withModifiers(() => toggleSelect(props.item), ['stop'])
 		emits('select')
@@ -183,8 +204,9 @@
 		]
 	}
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableRowClasses = computed(() => {
 		return [
 			'origam-data-table-row',
@@ -200,11 +222,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -215,30 +245,19 @@
 	.origam-data-table-row {
 		$this: &;
 
-		background-color: var(--origam-data-table-row---background-color, var(--origam-color-surface-default));
-		color: var(--origam-data-table-row---color, var(--origam-color-text-primary));
+		background-color: var(--origam-data-table-row---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table-row---color, var(--origam-color__text---primary));
 		transition-property: background-color;
 		transition-duration: var(--origam-data-table-row---transition-duration, 100ms);
 		transition-timing-function: var(--origam-data-table-row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
 		&:hover {
-			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color-surface-overlay));
+			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color__surface---overlay));
 		}
 
 		&__column-title {
 			font-weight: var(--origam-data-table-row__column-title---font-weight, 500);
 		}
-
-		// `__column-value` previously declared `text-align: right` at
-		// root level, which forced every body cell to right-align even
-		// when the parent `<origam-data-table-cell>` resolved
-		// `--align-start` (the default). The header cell, which doesn't
-		// wrap its content in `__column-value`, kept `text-align: start`
-		// — so the user reported "header alignment differs from body".
-		// The right-alignment is only meaningful in MOBILE mode where
-		// the row turns into a `[title, value]` 2-column grid; in
-		// desktop mode the wrapper div should let its parent decide.
-		// Scoped accordingly inside `&--mobile { … }` below.
 
 		&--clickable {
 			cursor: pointer

@@ -6,6 +6,9 @@ import { int } from "../../utils"
 
 import { computed, useSlots } from 'vue'
 
+/*********************************************************
+ * useProgress
+ ********************************************************/
 export function useProgress (props: IProgressTypeProps) {
     const progress = useVModel(props, 'modelValue')
     const slots = useSlots()

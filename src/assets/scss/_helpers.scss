@@ -16,21 +16,21 @@
 // `$state` accepts: 'default' (omit) | 'hover' | 'disabled'.
 @mixin ds-intent($intent: 'neutral', $state: 'default') {
     @if $intent == 'neutral' {
-        background-color: var(--origam-color-action-secondary-bg);
-        color: var(--origam-color-action-secondary-fg);
+        background-color: var(--origam-color__action--secondary---bg);
+        color: var(--origam-color__action--secondary---fg);
     } @else if $intent == 'success' or $intent == 'warning' or $intent == 'danger' or $intent == 'info' {
-        background-color: var(--origam-color-feedback-#{$intent}-bg);
-        color: var(--origam-color-feedback-#{$intent}-fg);
+        background-color: var(--origam-color__feedback--#{$intent}---bg);
+        color: var(--origam-color__feedback--#{$intent}---fg);
     } @else {
         @if $state == 'default' {
-            background-color: var(--origam-color-action-#{$intent}-bg);
-            color: var(--origam-color-action-#{$intent}-fg);
+            background-color: var(--origam-color__action--#{$intent}---bg);
+            color: var(--origam-color__action--#{$intent}---fg);
         } @else if $state == 'hover' {
-            background-color: var(--origam-color-action-#{$intent}-bgHover);
-            color: var(--origam-color-action-#{$intent}-fg);
+            background-color: var(--origam-color__action--#{$intent}---bgHover);
+            color: var(--origam-color__action--#{$intent}---fg);
         } @else if $state == 'disabled' {
-            background-color: var(--origam-color-action-#{$intent}-bgDisabled);
-            color: var(--origam-color-action-#{$intent}-fgDisabled);
+            background-color: var(--origam-color__action--#{$intent}---bgDisabled);
+            color: var(--origam-color__action--#{$intent}---fgDisabled);
         }
     }
 }
@@ -44,7 +44,7 @@
 //   .my-card { @include ds-elevation('md'); }
 //   .my-card:hover { @include ds-elevation('lg'); }
 @mixin ds-elevation($level: 'sm') {
-    box-shadow: var(--origam-shadow-#{$level});
+    box-shadow: var(--origam-shadow---#{$level});
 }
 
 // ─── Typography presets ────────────────────────────────────────────────────
@@ -55,11 +55,11 @@
 // Usage:
 //   .my-title { @include ds-text-style('body-lg'); }
 @mixin ds-text-style($name) {
-    font-family: var(--origam-font-family-sans);
-    font-size: var(--origam-font-size-#{$name});
-    font-weight: var(--origam-font-weight-medium);
-    line-height: var(--origam-font-lineHeight-normal);
-    letter-spacing: var(--origam-font-letterSpacing-normal);
+    font-family: var(--origam-font__family---sans);
+    font-size: var(--origam-font__size---#{$name});
+    font-weight: var(--origam-font__weight---medium);
+    line-height: var(--origam-font__lineHeight---normal);
+    letter-spacing: var(--origam-font__letterSpacing---normal);
 }
 
 // ─── Spacing helper ────────────────────────────────────────────────────────
@@ -69,7 +69,7 @@
 // Usage:
 //   .my-stack { @include ds-space(padding-inline, 4); }
 @mixin ds-space($prop, $value) {
-    #{$prop}: var(--origam-space-#{$value});
+    #{$prop}: var(--origam-space---#{$value});
 }
 
 // ─── Focus ring ────────────────────────────────────────────────────────────
@@ -79,8 +79,8 @@
 // Usage:
 //   .my-btn:focus-visible { @include ds-focus-ring; }
 @mixin ds-focus-ring($offset: 1) {
-    outline: var(--origam-border-width-2) solid var(--origam-color-border-focus);
-    outline-offset: var(--origam-space-#{$offset});
+    outline: var(--origam-border__width---2) solid var(--origam-color__border---focus);
+    outline-offset: var(--origam-space---#{$offset});
 }
 
 // ─── Visually hidden (a11y) ────────────────────────────────────────────────

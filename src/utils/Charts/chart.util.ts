@@ -48,12 +48,26 @@ export function checkCollinear (p0: IPoint, p1: IPoint, p2: IPoint): boolean {
     return int(p0.x + p2.x) === int(2 * p1.x) && int(p0.y + p2.y) === int(2 * p1.y)
 }
 
+/**
+ * Get distance.
+ *
+ * @param p1 …
+ * @param p2 …
+ * @returns …
+ */
 export function getDistance (p1: IPoint, p2: IPoint): number {
     return Math.sqrt(
         Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
     )
 }
 
+/**
+ * Move to.
+ *
+ * @param to     …
+ * @param from   …
+ * @param radius …
+ */
 export function moveTo (to: IPoint, from: IPoint, radius: number) {
     const vector = {x: to.x - from.x, y: to.y - from.y}
     const length = Math.sqrt((vector.x * vector.x) + (vector.y * vector.y))

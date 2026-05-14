@@ -3,56 +3,10 @@
 			group="components"
 			title="Grids/OrigamContainer"
 	>
-
-		<!-- ════════════ MODIFIERS (fluid / fullscreen) ════════════ -->
-		<Variant
-				title="Modifiers"
-				:init-state="() => useStoryInitState<{
-					fluid?: boolean
-					fullscreen?: boolean
-				}>({})"
-		>
-			<template #default="{ state }">
-				<origam-container v-bind="state" style="background: var(--origam-color-surface-overlay, #ececec);">
-					<div class="demo-cell">container content</div>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.fluid"      title="fluid"/>
-				<HstCheckbox v-model="state.fullscreen" title="fullscreen"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ TAG ════════════ -->
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-container :tag="state.tag">
-					<div class="demo-cell">tag={{ state.tag }}</div>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ SLOT: default ════════════ -->
-		<Variant title="Slot — default">
-			<origam-container>
-				<origam-row>
-					<origam-col cols="6">
-						<div class="demo-cell">A</div>
-					</origam-col>
-					<origam-col cols="6">
-						<div class="demo-cell">B</div>
-					</origam-col>
-				</origam-row>
-			</origam-container>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IContainerProps knob via the sidebar controls.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IContainerProps>({
@@ -71,6 +25,55 @@
 				<HstCheckbox v-model="state.fullscreen" title="fullscreen"/>
 				<HstSelect   v-model="state.tag"        title="tag"      :options="tagList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — fluid & fullscreen"
+				:init-state="() => useStoryInitState<{
+					fluid?: boolean
+					fullscreen?: boolean
+				}>({})"
+		>
+			<template #default="{ state }">
+				<origam-container v-bind="state" style="background: var(--origam-color__surface---overlay, #ececec);">
+					<div class="demo-cell">container content</div>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.fluid"      title="fluid"/>
+				<HstCheckbox v-model="state.fullscreen" title="fullscreen"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-container :tag="state.tag">
+					<div class="demo-cell">tag={{ state.tag }}</div>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-container>
+				<origam-row>
+					<origam-col cols="6">
+						<div class="demo-cell">A</div>
+					</origam-col>
+					<origam-col cols="6">
+						<div class="demo-cell">B</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
 		</Variant>
 	</Story>
 </template>

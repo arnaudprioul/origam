@@ -17,22 +17,22 @@
 		lang="ts"
 		setup
 >
-	/**
-	 * Generic, renderless selection group — origam's equivalent of
-	 * Vuetify's `<v-item-group>`. The component imposes no visual; it
-	 * only manages the v-model selection (single / multiple / mandatory)
-	 * and exposes per-item selection state through the matching
-	 * `<OrigamItem>` slot scope. Use it to build "card-as-radio",
-	 * "tile-as-checkbox", or any custom selectable surface.
-	 */
-	import { computed, StyleValue, useSlots } from 'vue'
+	import { computed, StyleValue } from 'vue'
 
 	import { OrigamDefaultsProvider } from '../../components'
-	import { useGroup, useProps } from '../../composables'
+	import {
+	useGroup,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
 
 	import type { IItemGroupProps } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IItemGroupProps>(), {
 		tag: 'div',
@@ -42,6 +42,10 @@
 	defineEmits(['update:modelValue'])
 
 	const {filterProps} = useProps<IItemGroupProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_ITEM_GROUP_KEY)
 
@@ -61,10 +65,10 @@
 		selected
 	}))
 
-	const slots = useSlots()
 
-	// CLASS
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const itemGroupClasses = computed(() => {
 		return [
 			'origam-item-group',
@@ -76,13 +80,21 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(itemGroupStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		next,
 		prev,
-		select
+		select,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

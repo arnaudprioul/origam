@@ -25,11 +25,11 @@
 						:id="id"
 						ref="origamFieldRef"
 						:active="isActive || isDirty"
-						:dirty="isDirty || props.dirty"
+						:dirty="isDirty || dirty"
 						:disabled="isDisabled"
 						:error="isValid === false"
 						:focused="isFocused"
-						:role="props.role"
+						:role="role"
 						v-bind="{...fieldProps}"
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
@@ -84,13 +84,13 @@
 							<input
 									ref="inputRef"
 									v-intersect="intersect"
-									:autofocus="props.autofocus"
+									:autofocus="autofocus"
 									:disabled="isDisabled"
-									:name="props.name"
-									:placeholder="props.placeholder"
+									:name="name"
+									:placeholder="placeholder"
 									:readonly="isReadonly"
 									:size="1"
-									:type="props.type"
+									:type="type"
 									:value="model"
 									v-bind="{ ...fieldSlotProps, ...inputAttrs }"
 									@blur="handleBlur"
@@ -140,8 +140,8 @@
 					v-bind="detailsSlotProps"
 			>
 				<origam-counter
-						:active="props.persistentCounter || isFocused"
-						:disabled="props.disabled"
+						:active="persistentCounter || isFocused"
+						:disabled="disabled"
 						:max="max"
 						:value="counterValue"
 				>
@@ -178,16 +178,23 @@
 			/>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
 	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import { useAdjacent, useAdjacentInner, useDefaults, useFocus, useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useAdjacent,
+	useAdjacentInner,
+	useDefaults,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts'
 
@@ -200,6 +207,13 @@
 	import type { TOrigamField, TOrigamInput } from "../../types"
 
 	import { filterInputAttrs, forwardRefs } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and composables.
+	 ********************************************************/
 
 	const _props = withDefaults(defineProps<ITextFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
@@ -220,16 +234,37 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * Counter
+	 *
+	 * @description
+	 * Counter value and max calculation for character counting.
+	 ********************************************************/
 
 	const counterValue = computed(() => {
 		if (typeof props.counterValue === 'function') {
@@ -252,6 +287,13 @@
 		return props.counter
 	})
 
+	/*********************************************************
+	 * Intersection
+	 *
+	 * @description
+	 * Autofocus via IntersectionObserver on first paint.
+	 ********************************************************/
+
 	const intersect = computed(() => {
 		return [{
 			handler: handleIntersect
@@ -263,6 +305,13 @@
 		(entries[0].target as HTMLInputElement)?.focus?.()
 	}
 
+	/*********************************************************
+	 * Refs & active state
+	 *
+	 * @description
+	 * Template refs for input, field and outer input container.
+	 ********************************************************/
+
 	const origamInputRef = ref<TOrigamInput>()
 	const origamFieldRef = ref<TOrigamField>()
 	const inputRef = ref<HTMLInputElement>()
@@ -270,6 +319,13 @@
 	const isActive = computed(() => {
 		return ACTIVE_TEXT_FIELD_TYPE.includes(props.type) || props.persistentPlaceholder || isFocused.value || props.active
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Focus, control click/mousedown, clear and input handlers.
+	 ********************************************************/
 
 	const handleFocus = () => {
 		nextTick(() => {
@@ -321,6 +377,13 @@
 		}
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered attrs and props passed down to inner components.
+	 ********************************************************/
+
 	const hasCounter = computed(() => {
 		return slots.counter || (props.counter !== false && props.counter != null)
 	})
@@ -340,6 +403,11 @@
 	})
 
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
 	})
@@ -347,7 +415,12 @@
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const textFieldStyles = computed(() => {
 		return [
@@ -362,8 +435,20 @@
 	})
 
 	const {filterProps} = useProps<ITextFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(textFieldStyles)
 
-	defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
+
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
+
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamInputRef, origamFieldRef, inputRef))
 </script>
 
 <style

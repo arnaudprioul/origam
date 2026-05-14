@@ -28,9 +28,19 @@
 	import { OrigamTreeviewNode } from '../../components'
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
-	import { useColorEffect, useDensity, useProps, useSize } from '../../composables'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStateEffect,
+	useStyle
+} from '../../composables'
 
 	import type { ITreeviewProps } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ITreeviewProps & { ariaLabel?: string }>(), {
 		selectMode: 'none',
@@ -38,7 +48,8 @@
 		showLines: true,
 		expandOnClick: false,
 		density: DENSITY.DEFAULT,
-		size: SIZES.DEFAULT
+		size: SIZES.DEFAULT,
+		ariaLabel: undefined
 	})
 
 	const emit = defineEmits<{
@@ -140,6 +151,11 @@
 	})
 
 	// Keyboard navigation: collect all currently visible rows and move focus
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		const tree = e.currentTarget as HTMLElement
 		const rows = Array.from(
@@ -157,9 +173,15 @@
 		}
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
-	const { colorStyles } = useColorEffect(props)
+	const { colorClasses, colorStyles } = useStateEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
@@ -168,20 +190,28 @@
 	})
 
 	const treeviewClasses = computed(() => [
-		'origam-treeview',
+		'origam-treeview', colorClasses.value, hoverState, activeState,
 		densityClasses.value,
 		sizeClasses.value,
 		props.class
 	])
+	const {id, css, load, isLoaded, unload} = useStyle(treeviewStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		isExpanded,
 		isSelected,
 		toggleExpanded,
-		toggleSelected
+		toggleSelected,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -190,8 +220,8 @@
 		scoped
 >
 	.origam-treeview {
-		background-color: var(--origam-treeview---background-color, var(--origam-color-surface-default));
-		color: var(--origam-treeview---color, var(--origam-color-text-primary));
+		background-color: var(--origam-treeview---background-color, var(--origam-color__surface---default));
+		color: var(--origam-treeview---color, var(--origam-color__text---primary));
 		padding-block: var(--origam-treeview---padding-block, 4px);
 		padding-inline: var(--origam-treeview---padding-inline, 8px);
 		outline: none;
@@ -202,13 +232,12 @@
 			outline: none;
 		}
 
-		// Size variants
 		&--size-x-small {
-			--origam-treeview---label-font-size: var(--origam-font-size-xs, 0.625rem);
+			--origam-treeview---label-font-size: var(--origam-font__size---xs, 0.625rem);
 		}
 
 		&--size-small {
-			--origam-treeview---label-font-size: var(--origam-font-size-sm, 0.75rem);
+			--origam-treeview---label-font-size: var(--origam-font__size---sm, 0.75rem);
 		}
 
 		&--size-large {
@@ -219,7 +248,6 @@
 			--origam-treeview---row-height: 48px;
 		}
 
-		// Density variants
 		&--density-compact {
 			--origam-treeview---row-height: 24px;
 			--origam-treeview---padding-block: 2px;

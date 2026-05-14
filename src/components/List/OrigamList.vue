@@ -102,8 +102,9 @@
 		useNested,
 		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useRounded,
+		useStyle
+} from '../../composables'
 
 	import { DENSITY, KEYBOARD_VALUES, LINES, OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums'
 
@@ -112,6 +113,10 @@
 	import type { TFocusLocation } from '../../types'
 
 	import { deepEqual, focusChild } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListProps>(), {
 		tag: 'div',
@@ -142,8 +147,18 @@
 		}
 	}))
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {items} = useItems(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses} = useElevation(props)
@@ -167,6 +182,10 @@
 	const tabIndex = computed(() => {
 		return (props.disabled || isFocused.value) ? -1 : 0
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocus = (e: FocusEvent) => {
 		if (!isFocused.value && !(e.relatedTarget && contentRef.value?.contains(e.relatedTarget as Node))) {
@@ -205,8 +224,9 @@
 		}
 	}
 
-	// SLOTS
-
+	/*********************************************************
+	 * Slots
+	 ********************************************************/
 	const hasChildrenItem = computed(() => {
 		return slots.childrenItem
 	})
@@ -226,8 +246,9 @@
 		return slots.item
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const listStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -247,6 +268,7 @@
 				'origam-list--nav': props.nav,
 				'origam-list--slim': props.slim
 			},
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -257,16 +279,24 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(listStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		open,
 		select,
 		focus,
 		children,
 		parents,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -275,8 +305,6 @@
 		scoped
 >
 	.origam-list {
-		// Defaults are now provided by the generated :root block from tokens/component/list.json.
-		// Fallback values reference semantic tokens via CSS variable chain.
 		padding-block-start: var(--origam-list---padding-block-start, 8px);
 		padding-block-end: var(--origam-list---padding-block-end, 8px);
 		padding-inline-start: var(--origam-list---padding-inline-start, 0);
@@ -286,14 +314,14 @@
 		overflow: var(--origam-list---overflow, auto);
 		outline: var(--origam-list---outline, none);
 
-		border-color: var(--origam-list---border-color, var(--origam-color-text-primary));
+		border-color: var(--origam-list---border-color, var(--origam-color__text---primary));
 		border-style: var(--origam-list---border-style, solid);
 		border-width: var(--origam-list---border-width, 0);
 		border-radius: var(--origam-list---border-radius, 0px);
 
-		background: var(--origam-list---background, var(--origam-color-surface-default));
-		box-shadow: var(--origam-list---box-shadow, var(--origam-shadow-none));
-		color: var(--origam-list---color, var(--origam-color-text-primary));
+		background: var(--origam-list---background, var(--origam-color__surface---default));
+		box-shadow: var(--origam-list---box-shadow, var(--origam-shadow---none));
+		color: var(--origam-list---color, var(--origam-color__text---primary));
 
 		pointer-events: var(--origam-list---pointer-events, auto);
 		user-select: var(--origam-list---user-select, auto);
@@ -314,33 +342,32 @@
 			--origam-list---indent-padding: var(--origam-list---indent-padding-nav, -8px);
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
 		&--rounded {
-			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-list---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-list---border-radius: var(--origam-radius-xs, 2px);
+			--origam-list---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-list---border-radius: var(--origam-radius-sm, 4px);
+			--origam-list---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-list---border-radius: var(--origam-radius-md, 8px);
+			--origam-list---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-list---border-radius: var(--origam-radius-lg, 12px);
+			--origam-list---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-list---border-radius: var(--origam-radius-xl, 16px);
+			--origam-list---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-list---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-list---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--subheader {
@@ -360,7 +387,7 @@
 		}
 
 		&__overlay {
-			background-color: var(--origam-list__overlay---background-color, var(--origam-color-overlay-scrim));
+			background-color: var(--origam-list__overlay---background-color, var(--origam-color__overlay---scrim));
 			border-radius: var(--origam-list__overlay---border-radius, inherit);
 			opacity: var(--origam-list__overlay---opacity, 0);
 			pointer-events: var(--origam-list__overlay---pointer-events, none);

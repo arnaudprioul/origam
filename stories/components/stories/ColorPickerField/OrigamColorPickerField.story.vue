@@ -3,27 +3,49 @@
 			group="components"
 			title="ColorPickerField/OrigamColorPickerField"
 	>
-
-		<!-- ════════════ BASIC ════════════ -->
+		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
-				title="Basic"
-				:init-state="() => useStoryInitState<{ label?: string }>({ label: 'Brand colour' })"
+				title="Playground"
+				:init-state="() => useStoryInitState<{
+					label?: string
+					closeOnSelect?: boolean
+					disabled?: boolean
+					readonly?: boolean
+					variant?: TVariantInput
+					density?: TDensity
+					color?: string
+				}>({
+					label: 'Brand colour',
+					closeOnSelect: false,
+					disabled: false,
+					readonly: false,
+					variant: undefined,
+					density: undefined,
+					color: undefined,
+				})"
 		>
 			<template #default="{ state }">
 				<origam-color-picker-field
 						v-model="color"
-						:label="state.label"
+						v-bind="state"
 						style="max-width: 320px"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstText v-model="state.label" title="label"/>
+				<HstText     v-model="state.label"         title="label"/>
+				<HstSelect   v-model="state.color"         title="color"   :options="intentList"/>
+				<HstSelect   v-model="state.variant"       title="variant" :options="variantInputList"/>
+				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
+				<HstCheckbox v-model="state.closeOnSelect" title="closeOnSelect"/>
+				<HstCheckbox v-model="state.disabled"      title="disabled"/>
+				<HstCheckbox v-model="state.readonly"      title="readonly"/>
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
+		<!-- ── Props ─────────────────────────────────────────────── -->
+
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -40,16 +62,61 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
-		<!-- ════════════ VARIANT (TVariantInput) ════════════ -->
 		<Variant
-				title="Variant"
+				title="Prop — hover"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
+					<origam-color-picker-field v-model="ifaceColor" v-bind="state" label="Field colour (interactive)" data-cy="colorpickerfield-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-color-picker-field color="primary" label='color="primary" only' data-cy="colorpickerfield-color-fixture-color-only"/>
+						<origam-color-picker-field bg-color="success" label='bg-color="success" only' data-cy="colorpickerfield-color-fixture-bg-only"/>
+						<origam-color-picker-field color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="colorpickerfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hHover"
+							:options="hoverList"
+							title="hover"
+							@update:model-value="(v) => state._hHover = v"
+						/>
+</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
+					<origam-color-picker-field v-model="ifaceColor" v-bind="state" label="Field colour (interactive)" data-cy="colorpickerfield-color"/>
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-color-picker-field color="primary" label='color="primary" only' data-cy="colorpickerfield-color-fixture-color-only"/>
+						<origam-color-picker-field bg-color="success" label='bg-color="success" only' data-cy="colorpickerfield-color-fixture-bg-only"/>
+						<origam-color-picker-field color="warning" bg-color="primary" label='color="warning" + bg-color="primary"' data-cy="colorpickerfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hActive"
+							:options="activeList"
+							title="active"
+							@update:model-value="(v) => state._hActive = v"
+						/>
+</template>
+		</Variant>
+
+		<Variant
+				title="Prop — variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
 		>
 			<template #default="{ state }">
@@ -60,9 +127,8 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
 		<Variant
-				title="Density"
+				title="Prop — density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
 		>
 			<template #default="{ state }">
@@ -73,9 +139,8 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ CLOSE ON SELECT ════════════ -->
 		<Variant
-				title="Close on select"
+				title="Prop — closeOnSelect"
 				:init-state="() => useStoryInitState<{ closeOnSelect?: boolean }>({ closeOnSelect: true })"
 		>
 			<template #default="{ state }">
@@ -91,9 +156,8 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
-				title="States"
+				title="Prop — disabled & readonly"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; readonly?: boolean }>({ disabled: false, readonly: false })"
 		>
 			<template #default="{ state }">
@@ -111,20 +175,98 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: colorSelection ════════════ -->
-		<Variant title="Slot — colorSelection">
-			<origam-color-picker-field
-					v-model="color"
-					label="Custom value display"
-					style="max-width: 320px"
-			>
-				<template #colorSelection>
-					<span style="font-style: italic;">{{ color ?? 'none' }}</span>
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — append">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-append">
+				<template #append>
+					<origam-icon :icon="MDI_ICONS.ARROW_RIGHT"/>
 				</template>
 			</origam-color-picker-field>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
+		<Variant title="Slot — appendInner">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-append-inner">
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-color-picker-field v-model="color" label="Colour" clearable style="max-width: 320px" data-cy="colorpickerfield-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — colorSelection">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-color-selection">
+				<template #colorSelection>
+					<span>Custom colour selection</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-floating-label">
+				<template #floatingLabel>
+					<span>Pick a colour</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — label">
+			<origam-color-picker-field v-model="color" style="max-width: 320px" data-cy="colorpickerfield-slot-label">
+				<template #label>
+					<strong>Brand colour</strong>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — loader">
+			<origam-color-picker-field v-model="color" label="Colour" loading style="max-width: 320px" data-cy="colorpickerfield-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.PALETTE"/>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-prefix">
+				<template #prefix>
+					<span>#</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-color-picker-field v-model="color" label="Colour" style="max-width: 320px" data-cy="colorpickerfield-slot-suffix">
+				<template #suffix>
+					<span>px</span>
+				</template>
+			</origam-color-picker-field>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
 		<Variant title="Emit — update:modelValue">
 			<origam-color-picker-field
 					v-model="color"
@@ -134,7 +276,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:menu ════════════ -->
 		<Variant title="Emit — update:menu">
 			<origam-color-picker-field
 					v-model="color"
@@ -142,36 +283,6 @@
 					style="max-width: 320px"
 					@update:menu="logEvent('update:menu', $event)"
 			/>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<{
-					label?: string
-					closeOnSelect?: boolean
-					disabled?: boolean
-					readonly?: boolean
-				}>({
-					label: 'Brand colour',
-					closeOnSelect: false,
-					disabled: false,
-					readonly: false
-				})"
-		>
-			<template #default="{ state }">
-				<origam-color-picker-field
-						v-model="color"
-						v-bind="state"
-						style="max-width: 320px"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"         title="label"/>
-				<HstCheckbox v-model="state.closeOnSelect" title="closeOnSelect"/>
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.readonly"      title="readonly"/>
-			</template>
 		</Variant>
 	</Story>
 </template>
@@ -183,16 +294,20 @@
 	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamColorPickerField } from '@origam/components'
-	import { DENSITY, VARIANT_INPUT } from '@origam/enums'
+	import { OrigamColorPickerField, OrigamIcon } from '@origam/components'
+	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps } from '@origam/interfaces'
-	import type { TVariantInput } from '@origam/types'
+	import type { TDensity, TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantInputList } from '@stories/const'
+	import {
+		activeList,
+		densityList, intentList, variantInputList,
+		hoverList
+	} from '@stories/const'
 
-	const color = ref(null)
-	const ifaceColor = ref(null)
+	const color       = ref(null)
+	const ifaceColor  = ref(null)
 	const variantColor = ref(null)
 	const densityColor = ref(null)
 </script>

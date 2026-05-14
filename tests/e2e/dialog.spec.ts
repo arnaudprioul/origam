@@ -110,4 +110,58 @@ test.describe('OrigamDialog', () => {
 		const activator = sandbox.locator('[data-cy="dialog-playground-activator"]')
 		await expect(activator).toBeVisible({ timeout: 5000 })
 	})
+
+	// ════════════ SIZE VARIANTS ════════════
+
+	const SIZE_CASES = [
+		{ label: 'xs · 320', cy: 'dialog-size-xs', expectedWidth: 320 },
+		{ label: 'sm · 400', cy: 'dialog-size-sm', expectedWidth: 400 },
+		{ label: 'md · 720', cy: 'dialog-size-md', expectedWidth: 720 },
+		{ label: 'lg · 960', cy: 'dialog-size-lg', expectedWidth: 960 },
+		{ label: 'xl · 1080', cy: 'dialog-size-xl', expectedWidth: 1080 },
+	] as const
+
+	for (const { label, cy, expectedWidth } of SIZE_CASES) {
+		test(`Sizes — ${label} — dialog content width equals ${expectedWidth}px`, async ({ page }) => {
+			// The Histoire shell renders the story inside a constrained
+			// __sandbox iframe (~720 px regardless of outer Playwright
+			// viewport). Inside that iframe `100vw` resolves to the
+			// iframe's own width, so the dialog's
+			// `width: min(var(--origam-dialog---width), calc(100vw - 48px))`
+			// safety clamp truncates md/lg/xl (720/960/1080) down to the
+			// iframe width — a Histoire artifact, not a production bug.
+			//
+			// Workaround: load the Histoire shell once to discover the
+			// __sandbox URL for the Sizes variant, then page.goto() that
+			// URL directly so the sandbox occupies the full Playwright
+			// viewport (1600 × 900). The clamp now resolves against the
+			// real viewport and the dialog renders at its intended size.
+			await page.setViewportSize({ width: 1600, height: 900 })
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Sizes', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandboxSrc = await page.locator('iframe[src*="__sandbox"]').getAttribute('src')
+			expect(sandboxSrc).not.toBeNull()
+			await page.goto(sandboxSrc!)
+			await page.waitForLoadState('networkidle')
+
+			const activator = page.locator(`[data-cy="${cy}-activator"]`)
+			await expect(activator).toBeVisible({ timeout: 5000 })
+
+			await activator.click()
+			await page.waitForTimeout(500)
+
+			// The overlay content wrapper receives the computed width
+			const contentEl = page.locator('.origam-overlay__content').first()
+			await expect(contentEl).toBeVisible({ timeout: 5000 })
+
+			const box = await contentEl.boundingBox()
+			expect(box).not.toBeNull()
+			// Allow ±2px for sub-pixel rendering differences
+			expect(Math.round(box!.width)).toBeGreaterThanOrEqual(expectedWidth - 2)
+			expect(Math.round(box!.width)).toBeLessThanOrEqual(expectedWidth + 2)
+		})
+	}
 })

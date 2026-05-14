@@ -34,7 +34,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, StyleValue, toRef } from 'vue'
 	import { OrigamSlideY, OrigamTransition } from '../../components'
 
 	import {
@@ -46,16 +46,23 @@
 		useProps,
 		useRounded,
 		useSsrBoot,
+		useStyle,
 		useTextColor
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
-	import type { IMessagesEmits, IMessagesProps, IMessagesSlots } from '../../interfaces'
+	import type { IMessagesProps, IMessagesSlots } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
 
 	import { toKebabCase, wrapInArray } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and filterProps for the Messages component.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IMessagesProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
@@ -63,20 +70,39 @@
 	})
 	const props = useDefaults(_props)
 
-	const emits = defineEmits<IMessagesEmits>()
-
 	defineSlots<IMessagesSlots>()
-	const slots = useSlots()
-
-	const attrs = useAttrs()
 
 	const {filterProps} = useProps<IMessagesProps>(props)
 
+	/*********************************************************
+	 * Value
+	 *
+	 * @description
+	 * Normalises the `messages` prop into a flat array.
+	 ********************************************************/
 	const messages = computed(() => {
 		return wrapInArray(props.messages)
 	})
 
-	const {textColorStyles} = useTextColor(toRef(props, 'color'))
+	/*********************************************************
+	 * Decorators & boot guard
+	 *
+	 * @description
+	 * Color, rounded, border, padding, margin composables.
+	 * isBooted gates the transition so messages don't animate on SSR.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -85,8 +111,12 @@
 
 	const {isBooted} = useSsrBoot()
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * messagesStyles and messagesClasses compose BEM root class/style.
+	 ********************************************************/
 	const messagesStyles = computed(() => {
 		return [
 			roundedStyles.value,
@@ -100,6 +130,7 @@
 	const messagesClasses = computed(() => {
 		return [
 			'origam-messages',
+			textColorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
@@ -108,11 +139,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(messagesStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

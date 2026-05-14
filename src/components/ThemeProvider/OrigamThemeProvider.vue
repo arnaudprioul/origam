@@ -1,7 +1,7 @@
 <template>
 	<component
 			:is="tag"
-			:class="['origam-theme-provider', $attrs.class]"
+			:class="themeProviderClasses"
 			:data-theme="dataTheme"
 	>
 		<slot/>
@@ -12,7 +12,7 @@
 		lang="ts"
 		setup
 >
-	import { computed } from 'vue'
+	import { computed, useAttrs } from 'vue'
 	import type { TTheme } from '../../types'
 
 	defineOptions({ inheritAttrs: false })
@@ -33,12 +33,21 @@
 		tag?: string
 	}
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<Props>(), {
 		theme: 'auto',
 		tag: 'div'
 	})
 
+	const attrs = useAttrs()
+
 	const dataTheme = computed(() => (props.theme === 'auto' ? undefined : props.theme))
+	const themeProviderClasses = computed(() => {
+		return ['origam-theme-provider', attrs.class]
+	})
 </script>
 
 <style
@@ -46,9 +55,6 @@
 		scoped
 >
 	.origam-theme-provider {
-		// Wrapper is style-transparent by default. Consumers add layout/spacing
-		// via class/style props if needed. The whole point is to scope the
-		// `data-theme` attribute, not to introduce visual chrome.
 		display: contents;
 	}
 </style>

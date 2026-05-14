@@ -21,6 +21,4 @@ export const variantInputList: Array<IOptions<TVariantInput>> = [
     { label: 'Plain', value: VARIANT_INPUT.PLAIN },
     { label: 'Underlined', value: VARIANT_INPUT.UNDERLINED },
     { label: 'Solo', value: VARIANT_INPUT.SOLO },
-    { label: 'Solo Filled', value: VARIANT_INPUT.SOLO_FILLED },
-    { label: 'Solo Inverted', value: VARIANT_INPUT.SOLO_INVERTED },
 ]

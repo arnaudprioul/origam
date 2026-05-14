@@ -38,7 +38,7 @@
 >
 	import { OrigamIcon } from "../../components"
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import { MDI_ICONS } from "../../enums"
 
@@ -48,6 +48,13 @@
 	import { convertToUnit, deepEqual, getContrast, parseColor, RGBtoCSS, RGBtoHSV } from "../../utils"
 
 	import { computed, StyleValue } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and swatch color conversion helpers.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IColorPickerSwatchesProps>(), {
 		maxHeight: 150
@@ -67,6 +74,10 @@
 		return RGBtoCSS(rgba(color))
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateColor = (color: TRGBA) => {
 		const colorUpdate = hsva(color)
 
@@ -75,7 +86,12 @@
 		}
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and injects maxHeight style.
+	 ********************************************************/
 
 	const colorPickerSwatchesStyles = computed(() => {
 		return [
@@ -91,11 +107,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerSwatchesStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

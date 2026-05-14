@@ -7,12 +7,6 @@
 	>
 		<div class="origam-field__overlay"/>
 
-		<!--
-			Skeleton kind: render OUTSIDE `.origam-field__loader` (which is the
-			thin 2px-tall progress bar at the bottom edge — would clip the
-			skeleton). The skeleton fills the field's content box and replaces
-			the input/label/icons rendering below.
-		-->
 		<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
 			<origam-skeleton
 					class="origam-field__skeleton"
@@ -27,11 +21,11 @@
 				<div class="origam-field__loader">
 					<origam-progress
 							:active="true"
-							:color="props.color"
+							:color="color"
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-							:class="['origam-field__progress', `origam-field__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+							:class="fieldProgressClasses"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -48,16 +42,16 @@
 			>
 				<slot name="prependInner">
 					<origam-avatar
-							v-if="props.prependInnerAvatar"
+							v-if="prependInnerAvatar"
 							key="prepend-avatar"
-							:density="props.density"
-							:image="props.prependInnerAvatar"
+							:density="density"
+							:image="prependInnerAvatar"
 					/>
 					<origam-icon
-							v-if="props.prependInnerIcon"
+							v-if="prependInnerIcon"
 							key="prepend-icon"
-							:density="props.density"
-							:icon="props.prependInnerIcon"
+							:density="density"
+							:icon="prependInnerIcon"
 					/>
 				</slot>
 			</div>
@@ -111,13 +105,13 @@
 					key="clear"
 			>
 				<div
-						v-show="props.dirty"
+						v-show="dirty"
 						class="origam-field__clearable"
 						@mousedown="handleMousedownClear"
 				>
 					<slot name="clear">
 						<origam-icon
-								:icon="props.clearIcon"
+								:icon="clearIcon"
 								@blur="handleBlur"
 								@focus="handleFocus"
 								@keydown="handleKeydownClear"
@@ -134,16 +128,16 @@
 			>
 				<slot name="appendInner">
 					<origam-avatar
-							v-if="props.appendInnerAvatar"
+							v-if="appendInnerAvatar"
 							key="append-avatar"
-							:density="props.density"
-							:image="props.appendInnerAvatar"
+							:density="density"
+							:image="appendInnerAvatar"
 					/>
 					<origam-icon
-							v-if="props.appendInnerIcon"
+							v-if="appendInnerIcon"
 							key="append-icon"
-							:density="props.density"
-							:icon="props.appendInnerIcon"
+							:density="density"
+							:icon="appendInnerIcon"
 					/>
 				</slot>
 			</div>
@@ -169,9 +163,7 @@
 		</template>
 
 	</div>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -184,14 +176,15 @@
 		useBothColor,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useFocus,
 		useLoader,
 		useProps,
-		useRounded,
 		useRtl,
+		useSize,
+		useStateEffect,
+		useStyle,
 		useVariant
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 
@@ -200,6 +193,10 @@
 	import type { TOrigamLabel } from "../../types"
 
 	import { animate, convertToUnit, getUid, nullifyTransforms } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const _props = withDefaults(defineProps<IFieldProps>(), {
 		variant: VARIANT_INPUT.OUTLINED,
@@ -222,6 +219,11 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		hasAppendInner,
 		onClickAppendInner: handleClickAppendInner,
@@ -247,6 +249,11 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: MouseEvent) => {
 		if (e.target !== document.activeElement) {
 			e.preventDefault()
@@ -299,6 +306,11 @@
 	const hasLabel = computed(() => {
 		return !props.singleLine && !!(props.label || slots.label)
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const labelProps = computed(() => {
 		const defaultLabelProps = origamLabelRef.value?.filterProps(props, ['text', 'class', 'style'])
 
@@ -306,7 +318,18 @@
 			class: ['origam-field__label'],
 			for: id.value,
 			text: props.label,
-			...defaultLabelProps
+			...defaultLabelProps,
+			// The field's `border` / `rounded` visual props belong to
+			// the FIELD outline (the input box). Forwarding them onto
+			// the `<origam-label>` would draw a chip-like border + 8px
+			// radius around the label text — which is what user
+			// reported on OrigamFileField (the default `border: true,
+			// rounded: true` defaults of FileField were bleeding into
+			// the "Document" label). Reset them to `false` here so the
+			// label always renders as plain text regardless of what the
+			// surrounding field declares.
+			border: false,
+			rounded: false,
 		}
 	})
 
@@ -330,7 +353,16 @@
 			text: props.label,
 			floating: true,
 			ref: 'origamFloatingLabelRef',
-			...defaultFloatingLabelProps
+			...defaultFloatingLabelProps,
+			// Same reason as `labelProps` above — the field's `border` /
+			// `rounded` defaults belong to the field outline, NOT to the
+			// floating label that animates above/inside the input on focus.
+			// Without this override the floating "Document" label inherits
+			// `--border-thin` + `--rounded-md` from the field's defaults
+			// and renders as a chip-bordered pill, which the user reported
+			// as still wrong after fixing the static label.
+			border: false,
+			rounded: false,
 		}
 	})
 
@@ -366,7 +398,7 @@
 	 * isActive is a ref that holds a boolean value indicating whether the field is active.
 	 ********************************************************/
 	const {focusClasses, isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
-	const {isActive: active, onActive: handleActive} = useActive(props)
+	const {isActive: active, activeState, onActive: handleActive} = useActive(props)
 
 	const isActive = computed(() => {
 		return props.dirty || active.value || hasPrefix.value || hasSuffix.value
@@ -433,12 +465,25 @@
 		return isActive.value && isFocused.value && props.activeBgColor ? props.activeBgColor : props.bgColor
 	})
 
-	const {colorStyles} = useBothColor(bgColor, color)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
+	// Field re-defines its own `isActive` computed above (line 405) combining
+	// `active` from useActive + `dirty` + `hasPrefix` + `hasSuffix` — pass
+	// the computed one so the state-aware rounded / elevation cycle through
+	// any `:active="{ rounded: 'lg', elevation: 'md' }"` override.
+	const {
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+	} = useStateEffect(props, undefined, isActive, undefined, activeState)
 	const {rtlClasses} = useRtl()
 	const {variantClasses} = useVariant(props)
+	const {sizeClasses} = useSize(props, 'origam-field')
 
 	const fieldStyles = computed(() => {
 		return [
@@ -447,6 +492,12 @@
 			elevationStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const fieldProgressClasses = computed(() => {
+		return [
+			'origam-field__progress',
+			`origam-field__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
 	})
 	const fieldClasses = computed(() => {
 		return [
@@ -460,6 +511,7 @@
 				'origam-field--error': props.error,
 				'origam-field--flat': props.flat,
 				'origam-field--has-background': !!props.bgColor,
+				'origam-field--inline': props.inline,
 				'origam-field--persistent-clear': props.persistentClear,
 				'origam-field--prepended': hasPrependInner.value,
 				'origam-field--reverse': props.reverse,
@@ -469,12 +521,14 @@
 				'origam-text-field--suffixed': props.suffix
 			},
 			loaderClasses.value,
+			colorClasses.value,
 			rtlClasses.value,
 			densityClasses.value,
 			focusClasses.value,
 			variantClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
+			sizeClasses.value,
 			props.class
 		]
 	})
@@ -483,13 +537,20 @@
 	 * Expose
 	 *
 	 * @description
-	 * Exposes functions and components to the world.
-	 *    filterProps is a function that filters out props that are not defined in the `IFieldProps` interface.
+	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IFieldProps>(props)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(fieldStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -500,9 +561,6 @@
 	.origam-field {
 		$this: &;
 
-		// Direct declarations FIRST (Sass 2.0 mixed-decls compliance —
-		// declarations after nested rules will change semantics in a
-		// future Sass major). All `&__*` sub-rules go below.
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";
 		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;
@@ -516,21 +574,14 @@
 		position: relative;
 		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 
-		// Skeleton-mode replacement element. Sized to fill the field's
-		// content box so consumer code switching `loading` between values
-		// keeps a stable visual footprint.
 		&__skeleton {
 			width: 100%;
-			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 56px));
+			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 36px));
 			border-radius: var(--origam-field---rounded);
 			grid-column: 1 / -1;
 			grid-row: 1;
 		}
 
-		// Loader bar (line / circular kinds) — absolutely positioned at
-		// the bottom edge of the field. Pre-fix this rule was missing,
-		// so the wrapper rendered with `display: block` + 0 height and
-		// the inner `<origam-progress>` was clipped to invisibility.
 		&__loader {
 			position: absolute;
 			bottom: 0;
@@ -554,14 +605,8 @@
 			flex-wrap: wrap;
 			letter-spacing: 0.009375em;
 			opacity: 0.7;
-			// `box-sizing: border-box` so the inline padding tokens
-			// (24px-top + 6px-bottom by default) are INCLUDED in the
-			// 56px min-height target. Pre-fix the default `content-box`
-			// stacked padding ON TOP of the height — every text field
-			// rendered at 86px (56 + 24 + 6) instead of the 56px Material
-			// baseline. User-reported.
 			box-sizing: border-box;
-			min-height: max(calc(var(--origam-input__control---height, 56px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
+			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
 			padding-inline: var(--origam-field__input---padding-start) var(--origam-field__input---padding-end);
 			padding-top: var(--origam-field__input---padding-top);
@@ -620,7 +665,7 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			min-height: max(56px, 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
+			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
 		}
@@ -811,18 +856,18 @@
 
 		&--error {
 			&:not(#{$this}--disabled) {
-				--origam-field---border-color: var(--origam-field--error---border-color, var(--origam-color-feedback-danger-border));
+				--origam-field---border-color: var(--origam-field--error---border-color, var(--origam-color__feedback--danger---border));
 
 				#{$this}__append-inner,
 				#{$this}__clearable,
 				#{$this}__prepend-inner {
 					> .origam-icon {
-						color: var(--origam-field--error---color, var(--origam-color-feedback-danger-fgSubtle));
+						color: var(--origam-field--error---color, var(--origam-color__feedback--danger---fgSubtle));
 					}
 				}
 
 				#{$this}__label {
-					color: var(--origam-field--error---color, var(--origam-color-feedback-danger-fgSubtle));
+					color: var(--origam-field--error---color, var(--origam-color__feedback--danger---fgSubtle));
 				}
 			}
 		}
@@ -847,33 +892,47 @@
 			}
 		}
 
-		&--variant {
-			&-solo,
-			&-solo-filled,
-			&-solo-inverted {
-				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow-sm)));
+		&--inline {
+			background-color: transparent;
+			padding-inline: var(--origam-field--inline---padding-inline, 4px);
+			border-radius: 0;
+
+			#{$this}__outlines {
+				display: none;
 			}
 
-			&-solo,
-			&-solo-filled {
+			#{$this}__label {
+				opacity: 0;
+				pointer-events: none;
+			}
+
+			:deep(.origam-field__input) {
+				padding-top: 0;
+				padding-bottom: 0;
+				padding-inline: 0;
+				min-height: unset;
+			}
+
+			box-shadow: none;
+
+			@media (hover: hover) {
+				&:hover:not(#{$this}--focused):not(#{$this}--disabled) {
+					box-shadow: 0 1px 0 0 var(--origam-color__border---subtle, currentColor);
+				}
+			}
+
+			&#{$this}--focused {
+				box-shadow: 0 1px 0 0 var(--origam-color__border---focus, var(--origam-color__action--primary---bg, currentColor));
+			}
+		}
+
+		&--variant {
+			&-solo {
+				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
 				border-color: transparent;
 				--origam-field__input---padding-top: 20px;
 			}
 
-			&-solo-inverted {
-				&#{$this}--focused {
-					background: var(--origam-field---background-color);
-				}
-			}
-
-			&-solo-filled {
-				background: var(--origam-field---background-color);
-			}
-
-			// ── filled ──────────────────────────────────────────────────────
-			// Solid background + bottom border only; no visible outer outline.
-			// The background token defaults to a light surface overlay so the
-			// field reads as "filled" on any theme background.
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
 				border-radius: var(--origam-field---rounded) var(--origam-field---rounded) 0 0;
@@ -898,16 +957,12 @@
 				&#{$this}--error:not(#{$this}--disabled) {
 					#{$this}__outlines {
 						#{$this}__outline {
-							border-bottom-color: var(--origam-field---border-color, var(--origam-color-feedback-danger-border));
+							border-bottom-color: var(--origam-field---border-color, var(--origam-color__feedback--danger---border));
 						}
 					}
 				}
 			}
 
-			// ── plain ────────────────────────────────────────────────────────
-			// No chrome at all: transparent background, no border, no outline.
-			// Useful for inline / dense contexts where the surrounding layout
-			// provides enough visual affordance.
 			&-plain {
 				background: transparent;
 				--origam-field---border-width: 0px;
@@ -1006,6 +1061,44 @@
 					--origam-field---border-opacity: 1;
 				}
 			}
+		}
+
+		&--size-small {
+			--origam-input__control---height: var(--origam-input__control---height-sm, 28px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-sm, 2px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-sm, 2px);
+		}
+
+		&--size-default {
+			--origam-input__control---height: var(--origam-input__control---height-md, 36px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-md, 6px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md, 6px);
+		}
+
+		&--size-large {
+			--origam-input__control---height: var(--origam-input__control---height-lg, 44px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-lg, 10px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-lg, 10px);
+		}
+
+		&--size-x-large {
+			--origam-input__control---height: var(--origam-input__control---height-xl, 52px);
+			--origam-field__input---padding-top:    var(--origam-field__input---padding-block-xl, 14px);
+			--origam-field__input---padding-bottom: var(--origam-field__input---padding-block-xl, 14px);
+		}
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-field---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-field---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-field---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-field---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
 		}
 
 		@media (hover: hover) {

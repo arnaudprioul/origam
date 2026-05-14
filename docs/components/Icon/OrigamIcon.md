@@ -181,7 +181,7 @@ type TIcon =
   `<html data-theme="dark">` re-resolves the cascading text colour and the
   icon follows. No Vue re-render required.
 - For an explicit theme-driven colour override, use the matching token
-  directly: `:style="{'--origam-icon---color': 'var(--origam-color-feedback-danger-fg)'}"`
+  directly: `:style="{'--origam-icon---color': 'var(--origam-color__feedback--danger---fg)'}"`
 
 ## Related
 

@@ -94,7 +94,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, StyleValue, toRef, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 	import { OrigamMessages } from '../../components/Messages'
 
@@ -106,8 +106,10 @@
 		useDimension,
 		useProps,
 		useRtl,
+		useSize,
+		useStyle,
 		useValidation
-	} from '../../composables'
+} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
@@ -115,6 +117,12 @@
 
 	import { getUid, wrapInArray } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, and identity setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
@@ -122,12 +130,11 @@
 	})
 	const props = useDefaults(_props)
 
-	const emits = defineEmits<IInputEmits>()
+	defineEmits<IInputEmits>()
 
 	defineSlots<IInputSlots>()
 	const slots = useSlots()
 
-	const attrs = useAttrs()
 
 	const uid = getUid()
 	const id = computed(() => {
@@ -136,6 +143,10 @@
 	const messagesId = computed(() => {
 		return `${id.value}-messages`
 	})
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		errorMessages,
@@ -150,6 +161,10 @@
 		validate,
 		validationClasses
 	} = useValidation(props, 'origam-input', id)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		hasPrepend,
@@ -194,12 +209,27 @@
 		)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	// Phase 3 (Vague A) — class-first companion alongside inline styles.
+	// When `color`/`bgColor` resolve to a tokenisable intent, `colorClasses`
+	// hits `.origam--bg-{intent}` / `.origam--color-{intent}` and
+	// `colorStyles` returns `[]` (no visible inline). For raw / legacy
+	// hex, `colorClasses=[]` and `colorStyles` keeps the inline fallback.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 	const {rtlClasses} = useRtl()
+	const {sizeClasses} = useSize(props, 'origam-input')
 
 	const inputStyles = computed(() => {
 		return [
@@ -216,7 +246,9 @@
 				'origam-input--center-affix': props.centerAffix,
 				'origam-input--hide-spin-buttons': props.hideSpinButtons
 			},
+			colorClasses.value,
 			densityClasses.value,
+			sizeClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
 			props.class
@@ -227,22 +259,26 @@
 			'origam-input__control'
 		]
 	})
-	// `inputControlStyles` was referenced in the template (`<div
-	// :style="inputControlStyles">`) but never declared in the script,
-	// so every render emitted:
-	//   [Vue warn]: Property "inputControlStyles" was accessed during
-	//   render but is not defined on instance.
-	// Wired as an empty StyleValue array — keeps the template binding
-	// valid and gives consumers a future hook (override via inline
-	// `style` would slot in here).
 	const inputControlStyles = computed<StyleValue>(() => [])
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	const {filterProps} = useProps<IInputProps>(props)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(inputStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -260,7 +296,6 @@
 		line-height: var(--origam-input---line-height, 1.5);
 
 		--origam-input---padding-top: 16px;
-		--origam-input__control---height: 56px;
 
 		&__details {
 			align-items: flex-end;
@@ -314,6 +349,30 @@
 
 		&--density-compact {
 			--origam-input---density: -8px;
+		}
+
+		&--size-small {
+			--origam-input__control---height:        var(--origam-input__control---height-sm, 28px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-sm, 2px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-sm, 2px);
+		}
+
+		&--size-default {
+			--origam-input__control---height:        var(--origam-input__control---height-md, 36px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-md, 6px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-md, 6px);
+		}
+
+		&--size-large {
+			--origam-input__control---height:        var(--origam-input__control---height-lg, 44px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-lg, 10px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-lg, 10px);
+		}
+
+		&--size-x-large {
+			--origam-input__control---height:        var(--origam-input__control---height-xl, 52px);
+			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-xl, 14px);
+			--origam-field__input---padding-bottom:  var(--origam-field__input---padding-block-xl, 14px);
 		}
 
 		&--vertical {
@@ -373,7 +432,7 @@
 			&:not(#{$this}--disabled) {
 				#{$this}__details {
 					> .origam-messages {
-						color: var(--origam-input---error-color, var(--origam-color-feedback-danger-fg-subtle));
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
 					}
 				}
 
@@ -381,7 +440,7 @@
 				#{$this}__prepend,
 				#{$this}__append {
 					> .origam-icon {
-						color: var(--origam-input---error-color, var(--origam-color-feedback-danger-fg-subtle));
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
 					}
 				}
 			}

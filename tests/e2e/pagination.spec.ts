@@ -162,4 +162,154 @@ test.describe('OrigamPagination', () => {
         await expect(sandbox.locator('.origam-pagination__prev').first()).toBeAttached({ timeout: 5000 })
         await expect(sandbox.locator('.origam-pagination__next').first()).toBeAttached({ timeout: 5000 })
     })
+
+    // ════ P3·G — Color (default vs primary) ════
+    //
+    // The PDF asks: the DEFAULT pagination look should be subtle
+    // (text-only, transparent surface); the "stylé" filled look kicks
+    // in only when the consumer explicitly passes color="primary".
+    // We assert the difference at the computed-style level — the
+    // resting page button's background-color must be transparent in
+    // the default fixture and non-transparent in the primary fixture.
+
+    test('Color — default fixture has transparent page-button background', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Color — default vs primary', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-default-look"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+
+        // Pick a NON-active page item button so we read the resting
+        // surface, not the active overlay.
+        const restingBtn = root.locator('.origam-pagination__item:not(.origam-pagination__item--is-active) .origam-btn').first()
+        await expect(restingBtn).toBeVisible({ timeout: 5000 })
+
+        const bg = await restingBtn.evaluate((el) => getComputedStyle(el).backgroundColor)
+        // Accept any of the canonical "transparent" forms a browser
+        // may return: rgba(0,0,0,0), transparent, or rgb(*, *, *) with
+        // alpha == 0 in the fourth slot.
+        expect(bg).toMatch(/rgba?\(0,\s*0,\s*0,\s*0\)|transparent/)
+    })
+
+    test('Color — primary fixture has non-transparent page-button background', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Color — default vs primary', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-primary-look"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+
+        const restingBtn = root.locator('.origam-pagination__item:not(.origam-pagination__item--is-active) .origam-btn').first()
+        await expect(restingBtn).toBeVisible({ timeout: 5000 })
+
+        const bg = await restingBtn.evaluate((el) => getComputedStyle(el).backgroundColor)
+        // Must NOT be the transparent fallback. Anything else (any
+        // RGB(A) with non-zero alpha) means the btn's intent fill
+        // shone through, which is the desired "stylé" PDF look.
+        expect(bg).not.toMatch(/^rgba?\(0,\s*0,\s*0,\s*0\)$|^transparent$/)
+    })
+
+    test('Color — primary fixture root carries the --colored modifier class', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Color — default vs primary', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-primary-look"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+        await expect(root).toHaveClass(/origam-pagination--colored/)
+    })
+
+    test('Color — default fixture root does NOT carry the --colored modifier class', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Color — default vs primary', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-default-look"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+        const cls = await root.getAttribute('class')
+        expect(cls ?? '').not.toMatch(/origam-pagination--colored/)
+    })
+
+    // ════ P3·G — Compact (no number buttons) ════
+
+    test('Compact variant — no page-number buttons rendered', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Compact', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-compact"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+
+        // Compact mode swaps the page-number list for a single input
+        // between prev/next; assert no .origam-pagination__item is
+        // attached and the input IS attached.
+        await expect(root.locator('.origam-pagination__item')).toHaveCount(0, { timeout: 5000 })
+        await expect(root.locator('[data-cy="pagination-compact-input"]')).toBeVisible({ timeout: 5000 })
+    })
+
+    // ════ P3·G — With info ════
+
+    test('With info — info label matches the "Showing N-M of T" pattern', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('With info', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-with-info"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+
+        const info = root.locator('[data-cy="pagination-info"]')
+        await expect(info).toBeVisible({ timeout: 5000 })
+
+        const text = (await info.textContent() ?? '').trim()
+        expect(text).toMatch(/Showing\s+\d+-\d+\s+of\s+\d+/)
+    })
+
+    test('With info — info label updates when the page changes', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('With info', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-with-info"]')
+        const info = root.locator('[data-cy="pagination-info"]')
+        await expect(info).toBeVisible({ timeout: 5000 })
+
+        const initial = (await info.textContent() ?? '').trim()
+
+        // Click the "next" chevron (icon-only btn at the end of the list).
+        const nextBtn = root.locator('.origam-pagination__next .origam-btn').first()
+        await expect(nextBtn).toBeVisible({ timeout: 5000 })
+        await nextBtn.click()
+        await page.waitForTimeout(200)
+
+        const after = (await info.textContent() ?? '').trim()
+        expect(after).not.toEqual(initial)
+        expect(after).toMatch(/Showing\s+\d+-\d+\s+of\s+\d+/)
+    })
+
+    test('With info — root carries the --with-info modifier class', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('With info', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="pagination-with-info"]')
+        await expect(root).toBeVisible({ timeout: 5000 })
+        await expect(root).toHaveClass(/origam-pagination--with-info/)
+    })
 })

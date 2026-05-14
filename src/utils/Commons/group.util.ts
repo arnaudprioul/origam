@@ -3,6 +3,12 @@ import type { IGroupItem } from '../../interfaces'
 
 import { deepEqual } from '../../utils'
 
+/**
+ * Get item index.
+ *
+ * @param items …
+ * @param value …
+ */
 export function getItemIndex (items: UnwrapRef<Array<IGroupItem>>, value: unknown) {
     const ids = getIds(items, [value])
 
@@ -11,6 +17,12 @@ export function getItemIndex (items: UnwrapRef<Array<IGroupItem>>, value: unknow
     return items.findIndex(item => item.id === ids[0])
 }
 
+/**
+ * Get ids.
+ *
+ * @param items      …
+ * @param modelValue …
+ */
 export function getIds (items: UnwrapRef<Array<IGroupItem>>, modelValue: Array<any>) {
     const ids: Array<number> = []
 
@@ -28,6 +40,12 @@ export function getIds (items: UnwrapRef<Array<IGroupItem>>, modelValue: Array<a
     return ids
 }
 
+/**
+ * Get values.
+ *
+ * @param items …
+ * @param ids   …
+ */
 export function getValues (items: UnwrapRef<Array<IGroupItem>>, ids: Array<any>) {
     const values: Array<unknown> = []
 

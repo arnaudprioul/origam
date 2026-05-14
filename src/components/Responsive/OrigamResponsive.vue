@@ -29,14 +29,33 @@
 		useMargin,
 		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useRounded,
+		useStyle
+} from '../../composables'
 
 	import type { IResponsiveProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the Responsive component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IResponsiveProps>(), {})
 
 	const {filterProps} = useProps<IResponsiveProps>(props)
+
+	/*********************************************************
+	 * Decorators & layout
+	 *
+	 * @description
+	 * Aspect ratio, dimension, rounding, border, padding and
+	 * margin composables.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {aspectStyles} = useAspectRatio(props)
 	const {dimensionStyles} = useDimension(props)
@@ -46,8 +65,12 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * responsiveStyles and responsiveClasses compose the BEM block.
+	 ********************************************************/
 	const responsiveStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -75,11 +98,22 @@
 			props.contentClass
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -124,8 +158,3 @@
 		}
 	}
 </style>
-
-<!-- Lot 6 — `<style>:root{}` block removed; tokens now live in
-     `tokens/component/responsive.json` (aspect-ratio + layout) and
-     are emitted as theme-aware CSS variables by the build pipeline. -->
-

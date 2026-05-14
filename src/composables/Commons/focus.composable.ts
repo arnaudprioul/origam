@@ -4,6 +4,9 @@ import type { IFocusProps } from '../../interfaces'
 
 import { getCurrentInstanceName } from '../../utils'
 
+/*********************************************************
+ * useFocus
+ ********************************************************/
 export function useFocus (props: IFocusProps, name = getCurrentInstanceName()) {
     const isFocused = useVModel(props, 'focused')
     const focusClasses = computed(() => {

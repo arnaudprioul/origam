@@ -24,22 +24,9 @@
 		</template>
 
 		<template #default>
-			<!--
-				Wrap slot content in a `.origam-menu__content` BEM child so
-				the visual surface (background, border-radius, box-shadow,
-				max-height, …) lives on the popup BODY, not on the overlay
-				ROOT. Pre-fix the visual rules were attached to
-				`.origam-menu` which is bound on the overlay root — same
-				element the overlay scoped SCSS positions
-				`position: absolute; inset: 0`. The result was a white
-				rectangle (with menu's box-shadow) covering the entire
-				teleport target whenever the menu opened, masking
-				everything below. Same family of bug as the Tooltip
-				wrapper-bg fix.
-			-->
 			<div
+					:class="menuContentClasses"
 					:style="colorStyles"
-					class="origam-menu__content"
 			>
 				<slot name="default">
 					<origam-list class="origam-menu__list">
@@ -96,7 +83,13 @@
 		OrigamTranslateScale
 	} from '../../components'
 
-	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { ORIGAM_MENU_KEY } from '../../consts'
 
@@ -108,6 +101,12 @@
 
 	import { focusableChildren, focusChild, forwardRefs, getNextElement, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, filterProps and core refs for the Menu component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IMenuProps>(), {
 		closeDelay: 250,
 		closeOnContentClick: true,
@@ -125,15 +124,43 @@
 
 	const {filterProps} = useProps<IMenuProps>(props)
 
+	/*********************************************************
+	 * Value & color
+	 *
+	 * @description
+	 * isActive drives the overlay open/close state via v-model.
+	 * colorStyles produces inline color/background-color from intent
+	 * props so `<origam-menu color="primary">` actually takes effect.
+	 * `useBothColor` wires those declarations onto `.origam-menu__content`
+	 * so the inline-style specificity wins over class-level CSS.
+	 ********************************************************/
 	// `useBothColor` produces inline `color: …` and `background-color: …`
 	// declarations from intent props (`color`, `bgColor`). Pre-fix the
 	// SCSS read `var(--origam-menu---background)` from tokens but the
 	// consumer-facing `<origam-menu color="primary">` was a silent
 	// no-op. Wired here so the inline declaration on the
 	// `.origam-menu__content` body wins via inline-style specificity.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` lands the global `.origam--bg-{intent}` /
+	// `.origam--color-{intent}` utility on the menu body for tokenised
+	// intents; `colorStyles` keeps the legacy raw-color fallback.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {scopeId} = useScopeId()
 
 	const uid = getUid()
@@ -141,6 +168,14 @@
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 
+	/*********************************************************
+	 * Parent / children menu tree
+	 *
+	 * @description
+	 * Nested menus register with their parent via the ORIGAM_MENU_KEY
+	 * injection. The parent tracks how many sub-menus are open so it
+	 * knows when it is safe to close itself.
+	 ********************************************************/
 	const parent = inject(ORIGAM_MENU_KEY, null)
 	const openChildren = shallowRef(0)
 
@@ -160,6 +195,20 @@
 			}, 40)
 		}
 	})
+
+	/*********************************************************
+	 * Focus management
+	 *
+	 * @description
+	 * Trap focus inside the menu while it is open.
+	 * handleFocusIn keeps keyboard focus inside the content panel.
+	 * handleKeydown handles Tab and arrow navigation.
+	 * handleActivatorKeydown opens the menu on ArrowDown/Up.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocusIn = async (e: FocusEvent) => {
 		const before = e.relatedTarget as HTMLElement | null
@@ -232,6 +281,15 @@
 		}
 	}
 
+	/*********************************************************
+	 * Computed props forwarded to overlay
+	 *
+	 * @description
+	 * activatorProps merges ARIA attributes with consumer-provided
+	 * activatorProps and the activator keydown handler.
+	 * overlayProps filters and forwards relevant props to the inner overlay.
+	 * hasChilds detects whether a menu item should render as a sub-menu.
+	 ********************************************************/
 	const activatorProps = computed(() => {
 		return mergeProps({
 			'aria-haspopup': 'menu',
@@ -241,6 +299,10 @@
 		}, props.activatorProps)
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
@@ -249,12 +311,22 @@
 		return item?.items
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * menuStyles and menuClasses compose the BEM root classes.
+	 ********************************************************/
 	const menuStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
+	})
+	const menuContentClasses = computed(() => {
+		return [
+			'origam-menu__content',
+			colorClasses.value
+		]
 	})
 	const menuClasses = computed(() => {
 		return [
@@ -262,21 +334,29 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(menuStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({openChildren, filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards overlay ref members plus openChildren and filterProps.
+	 ********************************************************/
+	defineExpose(forwardRefs({openChildren, filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
+	}, origamOverlayRef))
 </script>
 
 <style
 		lang="scss"
 		scoped
 >
-	// `.origam-menu` is bound on the OVERLAY ROOT — the overlay scoped
-	// SCSS positions that root `position: absolute; inset: 0` so it
-	// spans its teleport target. Keep the root transparent and apply
-	// the visual surface (background, shadow, radius, …) on the
-	// `__content` BEM child below.
 	.origam-menu {
 		z-index: var(--origam-menu---z-index, 1000);
 		background: transparent;
@@ -284,13 +364,11 @@
 	}
 
 	.origam-menu__content {
-		background: var(--origam-menu---background, var(--origam-color-surface-raised));
-		color: var(--origam-menu---color, var(--origam-color-text-primary));
+		background: var(--origam-menu---background, var(--origam-color__surface---raised));
+		color: var(--origam-menu---color, var(--origam-color__text---primary));
 		border-radius: var(--origam-menu---border-radius, 8px);
 		box-shadow: var(--origam-menu---box-shadow);
 		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
-		// Size to content rather than inheriting the overlay flex layout
-		// — without these, the popup body grew to fill its parent.
 		display: inline-block;
 		width: max-content;
 

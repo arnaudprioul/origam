@@ -11,5 +11,7 @@ export enum ROUNDED {
     DEFAULT = 'default',
     MEDIUM = 'medium',
     LARGE = 'large',
-    X_LARGE = 'x-large'
+    X_LARGE = 'x-large',
+    SHAPED = 'shaped',
+    SHAPED_INVERT = 'shaped-invert'
 }

@@ -2,6 +2,11 @@ import type { IParallaxElementCicle, IParallaxElementMovement } from '../../inte
 
 import type { TPoint } from '../../types'
 
+/**
+ * Element movement.
+ *
+ * @param action …
+ */
 export function elementMovement (action: IParallaxElementMovement) {
     const {y, x, target, strength = 10, event = null, minX, minY, maxX, maxY} = action
 
@@ -30,6 +35,12 @@ export function elementMovement (action: IParallaxElementMovement) {
     }
 }
 
+/**
+ * Cyclic movement.
+ *
+ * @param cycleData …
+ * @returns …
+ */
 export function cyclicMovement (cycleData: IParallaxElementCicle): TPoint {
     const {referencePosition, shape, event, cycles, strength} = cycleData
 

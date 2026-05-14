@@ -31,7 +31,7 @@
 					<div class="origam-data-table-header-cell__content">
 						<span>{{ column.title }}</span>
 
-						<template v-if="column.sortable && !props.disableSort">
+						<template v-if="column.sortable && !disableSort">
 							<origam-icon
 									key="icon"
 									:class="{'origam-data-table-header-cell__sort-icon--active': isSorted(column)}"
@@ -40,7 +40,7 @@
 							/>
 						</template>
 
-						<template v-if="props.multiSort && isSorted(column)">
+						<template v-if="multiSort && isSorted(column)">
 							<div
 									key="badge"
 									:style="colorStyles"
@@ -54,15 +54,21 @@
 			</slot>
 		</template>
 	</origam-data-table-column-cell>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
 	import { OrigamCheckboxBtn, OrigamDataTableColumnCell, OrigamIcon } from '../../components'
 
-	import { useBothColor, useCell, useHeadersCell, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useBothColor,
+	useCell,
+	useHeadersCell,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import type { IDataTableHeaderCellProps, IDataTableSortItem, IInternalDataTableHeader } from '../../interfaces'
 
@@ -70,15 +76,29 @@
 
 	import { computed, CSSProperties, mergeProps, toRef } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeaderCellProps>(), {})
 
 	const {filterProps} = useProps<IDataTableHeaderCellProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()
 	const {getSortIcon} = useHeadersCell(props)
 	const {getPadding} = useCell()
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const headerProps = mergeProps(props.headerProps ?? {})
 
@@ -101,6 +121,10 @@
 		return props.column.key === name
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = () => {
 		if (props.column.sortable) {
 			toggleSort(props.column)
@@ -120,8 +144,9 @@
 		}
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeaderCellClasses = computed(() => {
 		return [
 			'origam-data-table-header-cell',
@@ -130,6 +155,7 @@
 				'origam-data-table-header-cell--sorted': isSorted(props.column),
 				'origam-data-table-header-cell--fixed': props.column.fixed
 			},
+			colorClasses.value,
 			props.class
 		]
 	})
@@ -152,11 +178,19 @@
 			props.style
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeaderCellStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -168,22 +202,14 @@
 		$this: &;
 
 		align-items: center;
-		// Pre-fix this used `--origam-color-text-inverse` which evaluates
-		// to WHITE on the light theme — but the header background
-		// (`surface-raised`) is `rgb(245, 245, 245)` (near-white). White
-		// text on near-white background = invisible. The header content
-		// (title + sort icon + badge) needs to inherit the body text
-		// color — i.e. the SAME contrast role as a regular cell — so
-		// the sort triangle is actually readable. Switched to
-		// `--origam-color-text-primary` everywhere this default applies.
-		color: var(--origam-data-table-header-cell---color, var(--origam-color-text-primary));
+		color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 
 		&__sort-icon {
 			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, 0);
-			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color-text-primary));
+			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color__text---primary));
 
 			&--active {
-				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color-text-primary));
+				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color__text---primary));
 			}
 		}
 
@@ -198,27 +224,15 @@
 			justify-content: center;
 			align-items: center;
 			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, 0.875rem);
-			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space-1, 4px));
-			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius-full, 9999px));
-			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color-border-default));
-			// Same fix as `__sort-icon`: the badge counter (multiSort
-			// position indicator) was rendering white-on-light too.
-			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color-text-primary));
+			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space---1, 4px));
+			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius---full, 9999px));
+			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color__border---default));
+			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color__text---primary));
 			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, 20px);
 			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, 20px);
 			width: var(--origam-data-table-header-cell__sort-badge---width, 20px);
 			height: var(--origam-data-table-header-cell__sort-badge---height, 20px)
 		}
-
-		// `span { padding-left: 5px }` was used pre-fix to space the
-		// header title from the sort icon. Side-effect: every header
-		// title was shifted 5px to the right of its cell's content
-		// area, while body cells weren't — so headers looked indented
-		// vs body values (clearly visible at <https://> screenshots).
-		// The intent is now expressed via `gap` on `__content` (which
-		// only adds space *between* siblings, not before the first
-		// child), so a header without an icon stays flush with the
-		// body column below it.
 
 		&#{$this}--sortable {
 			cursor: var(--origam-data-table-sortable---cursor, pointer);
@@ -241,10 +255,8 @@
 		}
 
 		&:deep(.origam-data-table-cell) {
-			background: var(--origam-data-table-header-cell---background, var(--origam-color-surface-raised));
-			// Match the header text/icon color fix above — text-inverse
-			// resolves to white on a light surface-raised background.
-			color: var(--origam-data-table-header-cell---color, var(--origam-color-text-primary));
+			background: var(--origam-data-table-header-cell---background, var(--origam-color__surface---raised));
+			color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 		}
 	}
 </style>

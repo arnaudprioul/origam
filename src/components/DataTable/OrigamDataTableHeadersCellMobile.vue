@@ -190,13 +190,24 @@
 >
 	import { OrigamChip, OrigamDataTableColumnCell, OrigamSelect } from '../../components'
 
-	import { useHeadersCell, useLocale, useProps, useSelection, useSort } from '../../composables'
+	import {
+	useHeadersCell,
+	useLocale,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
 	import type { IDataTableHeadersCellMobileProps, IInternalListItem } from '../../interfaces'
 
 	import { computed, mergeProps, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeadersCellMobileProps>(), {})
 
@@ -207,6 +218,10 @@
 	const {t} = useLocale()
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {toggleSort, sortBy, isSorted} = useSort()
 	const {someSelected, allSelected, selectAll} = useSelection()
@@ -232,6 +247,10 @@
 		return allSelected.value ? MDI_ICONS.CHECKBOX_MARKED_OUTLINE : someSelected.value ? MDI_ICONS.MINUS_BOX : MDI_ICONS.CHECKBOX_BLANK_OUTLINE
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClear = (e: MouseEvent) => {
 		sortBy.value = []
 		emits('click:clear', e)
@@ -251,8 +270,9 @@
 		e.stopPropagation()
 	}
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersCellClasses = computed(() => {
 		return [
 			props.class
@@ -263,10 +283,18 @@
 			props.style
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

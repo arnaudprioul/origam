@@ -224,11 +224,11 @@ test.describe('OrigamAvatar', () => {
 
         // Read the resolved CSS variable for the success status. The class
         // `origam-avatar--success` redirects --origam-avatar---background-color
-        // to --origam-color-feedback-success-bg.
+        // to --origam-color__feedback--success---bg.
         const successBg = await avatar.evaluate((el) => {
             el.classList.add('origam-avatar--success')
             return getComputedStyle(el).getPropertyValue('--origam-avatar--success---background-color').trim()
-                || getComputedStyle(el).getPropertyValue('--origam-color-feedback-success-bg').trim()
+                || getComputedStyle(el).getPropertyValue('--origam-color__feedback--success---bg').trim()
         })
         expect(successBg.length).toBeGreaterThan(0)
     })
@@ -525,7 +525,7 @@ test.describe('OrigamBadge', () => {
         // and resolves through a token.
         const bgVar = await badge.evaluate((el) => {
             return getComputedStyle(el).getPropertyValue('--origam-badge--success---background-color').trim()
-                || getComputedStyle(el).getPropertyValue('--origam-color-feedback-success-bg').trim()
+                || getComputedStyle(el).getPropertyValue('--origam-color__feedback--success---bg').trim()
         })
         expect(bgVar.length).toBeGreaterThan(0)
     })

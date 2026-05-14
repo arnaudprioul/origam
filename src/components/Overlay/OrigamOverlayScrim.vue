@@ -18,10 +18,20 @@
 >
 	import { computed, StyleValue } from 'vue'
 	import { OrigamFade, OrigamTransition } from '../../components'
-	import { useBackgroundColor, useProps } from '../../composables'
+	import {
+	useBackgroundColor,
+	useProps,
+	useStyle
+} from '../../composables'
 	import type { IOverlayScrimProps } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the OverlayScrim component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IOverlayScrimProps>(), {
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
@@ -30,10 +40,30 @@
 
 	const {filterProps} = useProps<IOverlayScrimProps>(props)
 
-	const {backgroundColorStyles} = useBackgroundColor(computed(() => {
+	/*********************************************************
+	 * Background color
+	 *
+	 * @description
+	 * When `scrim` is a color string, backgroundColorStyles injects
+	 * an inline background-color declaration.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(computed(() => {
 		return typeof props.scrim === 'string' ? props.scrim : null
 	}))
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Forwarded click, mouseenter and mouseleave events so the parent
+	 * overlay can hook into scrim interactions.
+	 ********************************************************/
 	const handleClick = (e: Event) => {
 		emits('click', e)
 	}
@@ -44,8 +74,12 @@
 		emits('mouseleave', e)
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * scrimStyles and scrimClasses compose the BEM element.
+	 ********************************************************/
 	const scrimStyles = computed(() => {
 		return [
 			backgroundColorStyles.value,
@@ -55,14 +89,26 @@
 	const scrimClasses = computed(() => {
 		return [
 			'origam-scrim',
+			backgroundColorClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(scrimStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -71,7 +117,7 @@
 		scoped
 >
 	.origam-scrim {
-		background-color: var(--origam-overlay-scrim---background-color, var(--origam-color-overlay-scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
+		background-color: var(--origam-overlay-scrim---background-color, var(--origam-color__overlay---scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
 		pointer-events: var(--origam-overlay-scrim---pointer-events, auto);
 		border-radius: inherit;
 		inset: 0;

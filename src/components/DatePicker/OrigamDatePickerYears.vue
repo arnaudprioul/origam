@@ -21,12 +21,19 @@
 		setup
 >
 	import { OrigamBtn } from "../../components"
-	import { useDate, useProps, useVModel } from "../../composables"
+	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
 	import type { IDatePickerYearsProps } from "../../interfaces"
 	import { convertToUnit, createRange, int, templateRef } from "../../utils"
 
 	import { computed, nextTick, onMounted, StyleValue, watchEffect } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables and model binding.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDatePickerYearsProps>(), {})
 
@@ -35,9 +42,21 @@
 	const {filterProps} = useProps<IDatePickerYearsProps>(props)
 
 	const adapter = useDate()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'year', adapter.getYear(adapter.date()), (v) => {
 		return int(v || 0)
 	})
+
+	/*********************************************************
+	 * Years list
+	 *
+	 * @description
+	 * Computed year entries clamped between min and max bounds.
+	 ********************************************************/
 
 	const years = computed(() => {
 		const year = adapter.getYear(adapter.date())
@@ -72,6 +91,13 @@
 		model.value = model.value ?? adapter.getYear(adapter.date())
 	})
 
+	/*********************************************************
+	 * Item
+	 *
+	 * @description
+	 * Button props factory, click handler and scroll-into-view on mount.
+	 ********************************************************/
+
 	const yearRef = templateRef()
 
 	const btnProps = (year: { text: string, value: number }) => {
@@ -85,6 +111,11 @@
 			onClick: () => handleClick(year.value)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (year: number) => {
 		if (model.value === year) {
 			emits('update:year', model.value)
@@ -99,7 +130,12 @@
 		yearRef.el?.scrollIntoView({block: 'center'})
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerYearsStyles = computed(() => {
 		return [
@@ -115,11 +151,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerYearsStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

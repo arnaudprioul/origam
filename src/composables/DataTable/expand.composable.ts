@@ -5,6 +5,9 @@ import { ORIGAM_DATA_TABLE_EXPAND_KEY } from '../../consts'
 
 import type { IDataTableExpandProps, IDataTableItem, IDataTableProvideExpanded } from '../../interfaces'
 
+/*********************************************************
+ * provideExpanded
+ ********************************************************/
 export function provideExpanded (props: IDataTableExpandProps): IDataTableProvideExpanded {
     const expandOnClick = toRef(props, 'expandOnClick')
     const expanded = useVModel(props, 'expanded', props.expanded, v => {
@@ -38,6 +41,9 @@ export function provideExpanded (props: IDataTableExpandProps): IDataTableProvid
     return data
 }
 
+/*********************************************************
+ * useExpanded
+ ********************************************************/
 export function useExpanded () {
     const data = inject(ORIGAM_DATA_TABLE_EXPAND_KEY)
 

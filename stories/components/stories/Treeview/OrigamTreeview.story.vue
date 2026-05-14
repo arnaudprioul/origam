@@ -3,7 +3,6 @@
 			group="components"
 			title="Treeview/OrigamTreeview"
 	>
-		<!-- ════════════ DEFAULT ════════════ -->
 		<Variant title="Default">
 			<origam-treeview
 					:items="fileTree"
@@ -11,7 +10,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SELECTION — SINGLE ════════════ -->
 		<Variant
 				title="Selection single"
 				:init-state="() => useStoryInitState<{ selected: string }>({ selected: '' })"
@@ -26,14 +24,13 @@
 							:expanded-value="defaultExpanded"
 							data-cy="treeview-single"
 					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 						Selected: {{ state.selected || '(none)' }}
 					</p>
 				</div>
 			</template>
 		</Variant>
 
-		<!-- ════════════ SELECTION — MULTIPLE ════════════ -->
 		<Variant
 				title="Selection multiple"
 				:init-state="() => useStoryInitState<{ selected: string[] }>({ selected: [] })"
@@ -48,14 +45,13 @@
 							:expanded-value="defaultExpanded"
 							data-cy="treeview-multiple"
 					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color-text-secondary);">
+					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">
 						Selected: {{ state.selected.length > 0 ? state.selected.join(', ') : '(none)' }}
 					</p>
 				</div>
 			</template>
 		</Variant>
 
-		<!-- ════════════ EXPAND ON CLICK ════════════ -->
 		<Variant title="Expand on click">
 			<origam-treeview
 					:items="fileTree"
@@ -64,7 +60,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ SHOW LINES ════════════ -->
 		<Variant title="Show lines">
 			<origam-treeview
 					:items="fileTree"
@@ -74,7 +69,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ NO LINES ════════════ -->
 		<Variant title="No lines">
 			<origam-treeview
 					:items="fileTree"
@@ -84,7 +78,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ DISABLED NODES ════════════ -->
 		<Variant title="Disabled nodes">
 			<origam-treeview
 					:items="treeWithDisabled"
@@ -95,9 +88,8 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ COLOR / INTENT ════════════ -->
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -105,10 +97,6 @@
 						:items="fileTree"
 						:color="state.color"
 						:bg-color="state.bgColor"
-						:active-color="state.activeColor"
-						:active-bg-color="state.activeBgColor"
-						:hover-color="state.hoverColor"
-						:hover-bg-color="state.hoverBgColor"
 						:expanded-value="defaultExpanded"
 						data-cy="treeview-color"
 				/>
@@ -116,14 +104,55 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
 			</template>
 		</Variant>
 
-		<!-- ════════════ SIZE / DENSITY ════════════ -->
+		<Variant
+				title="Prop — hover"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-treeview
+						:items="fileTree"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:expanded-value="defaultExpanded"
+						data-cy="treeview-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hHover"
+							:options="hoverList"
+							title="hover"
+							@update:model-value="(v) => state._hHover = v"
+						/>
+</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-treeview
+						:items="fileTree"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:expanded-value="defaultExpanded"
+						data-cy="treeview-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hActive"
+							:options="activeList"
+							title="active"
+							@update:model-value="(v) => state._hActive = v"
+						/>
+</template>
+		</Variant>
+
 		<Variant
 				title="Size / Density"
 				:init-state="() => useStoryInitState<{ size: TSize; density: TDensity }>({ size: 'default', density: 'default' })"
@@ -143,7 +172,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT — custom node rendering ════════════ -->
 		<Variant title="Slot node">
 			<origam-treeview
 					:items="fileTree"
@@ -155,7 +183,7 @@
 							:style="{
 								paddingInlineStart: `${(depth ?? 0) * 8}px`,
 								fontSize: '0.7rem',
-								color: isSelected ? 'var(--origam-color-action-primary-bg)' : 'var(--origam-color-text-secondary)',
+								color: isSelected ? 'var(--origam-color__action--primary---bg)' : 'var(--origam-color__text---secondary)',
 								fontStyle: 'italic'
 							}"
 					>
@@ -165,7 +193,48 @@
 			</origam-treeview>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — select">
+			<origam-treeview
+					:items="fileTree"
+					select-mode="single"
+					selectable-nodes="leaf"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-select"
+					@select="logEvent('select', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — toggle">
+			<origam-treeview
+					:items="fileTree"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-toggle"
+					@toggle="logEvent('toggle', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:expandedValue">
+			<origam-treeview
+					:items="fileTree"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-expanded"
+					@update:expanded-value="logEvent('update:expandedValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<origam-treeview
+					:items="fileTree"
+					select-mode="multiple"
+					selectable-nodes="leaf"
+					:expanded-value="defaultExpanded"
+					data-cy="treeview-emit-model-value"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITreeviewProps>({
@@ -182,7 +251,7 @@
 			<template #default="{ state }">
 				<origam-treeview
 						v-bind="state"
-						:items="fileTree"
+						:active="state._hActive" :hover="state._hHover" :items="fileTree"
 						:expanded-value="defaultExpanded"
 						data-cy="treeview-playground"
 				/>
@@ -205,12 +274,18 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamTreeview } from '@origam/components'
 	import type { IColorProps, IOptions, ITreeviewNode, ITreeviewProps } from '@origam/interfaces'
 	import type { TDensity, TSize, TTreeviewSelectMode, TTreeviewSelectableNodes } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, sizeList } from '@stories/const'
+	import {
+		activeList,
+		densityList, intentList, sizeList,
+		hoverList
+	} from '@stories/const'
 
 	// Select mode options
 	const selectModeList: Array<IOptions<TTreeviewSelectMode>> = [

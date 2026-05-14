@@ -5,6 +5,9 @@ import { binaryClosest, clamp, debounce, int } from '../../utils'
 
 import { computed, nextTick, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
 
+/*********************************************************
+ * useVirtual
+ ********************************************************/
 export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     const display = useDisplay()
     const goTo = useGoTo()

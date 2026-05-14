@@ -3,7 +3,6 @@
 			:class="nodeWrapperClasses"
 			role="none"
 	>
-		<!-- Row -->
 		<div
 				:class="rowClasses"
 				:style="rowStyles"
@@ -17,7 +16,6 @@
 				@click="handleRowClick"
 				@keydown="handleKeydown"
 		>
-			<!-- Indent guides -->
 			<template v-if="depth > 0 && treeview?.showLines.value">
 				<span
 						v-for="level in depth"
@@ -27,7 +25,6 @@
 				/>
 			</template>
 
-			<!-- Chevron or spacer -->
 			<span
 					:class="chevronClasses"
 					aria-hidden="true"
@@ -38,7 +35,6 @@
 				</template>
 			</span>
 
-			<!-- Icon -->
 			<span
 					v-if="node.icon || hasChildren"
 					class="origam-treeview-node__icon"
@@ -51,17 +47,14 @@
 				<template v-else>📄</template>
 			</span>
 
-			<!-- Label -->
 			<span class="origam-treeview-node__label">{{ node.label }}</span>
 
-			<!-- Size -->
 			<span
 					v-if="node.size"
 					class="origam-treeview-node__size"
 			>{{ node.size }}</span>
 		</div>
 
-		<!-- Slot override for custom node rendering -->
 		<slot
 				name="node"
 				:node="node"
@@ -70,7 +63,6 @@
 				:is-selected="isNodeSelected"
 		/>
 
-		<!-- Recursive children — only mounted when expanded (v-if removes from DOM) -->
 		<div
 				v-if="isNodeExpanded && hasChildren"
 				class="origam-treeview-node__children"
@@ -105,11 +97,18 @@
 	import { computed, inject, useSlots } from 'vue'
 
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
-	import { useProps } from '../../composables'
+	import {
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ITreeviewNodeProps } from '../../interfaces'
 
 	defineOptions({ name: 'OrigamTreeviewNode' })
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ITreeviewNodeProps>(), {
 		depth: 0
@@ -141,6 +140,10 @@
 
 	const isNodeExpanded = computed(() => treeview?.isExpanded(props.node.id) ?? false)
 	const isNodeSelected = computed(() => treeview?.isSelected(props.node.id) ?? false)
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleChevronClick = () => {
 		if (!hasChildren.value || props.node.disabled) return
@@ -199,8 +202,9 @@
 		}
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const nodeWrapperClasses = computed(() => [
 		'origam-treeview-node',
 		{
@@ -234,13 +238,21 @@
 			paddingInlineStart: `calc(var(--origam-treeview---indent-size, 16px) * ${d} + var(--origam-treeview---row-padding-inline, 8px))`
 		}
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		isNodeExpanded,
-		isNodeSelected
+		isNodeSelected,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -258,7 +270,7 @@
 			gap: 6px;
 			min-height: var(--origam-treeview---row-height, 32px);
 			padding-inline-end: var(--origam-treeview---row-padding-inline, 8px);
-			border-radius: var(--origam-radius-sm, 4px);
+			border-radius: var(--origam-radius---sm, 4px);
 			cursor: pointer;
 			outline: none;
 			transition: background-color 150ms ease;
@@ -267,30 +279,30 @@
 			width: 100%;
 
 			&:hover:not(.origam-treeview-node__row--disabled) {
-				background-color: var(--origam-treeview---row-bg-hover, var(--origam-color-surface-overlay));
+				background-color: var(--origam-treeview---row-bg-hover, var(--origam-color__surface---overlay));
 			}
 
 			&:focus-visible {
-				outline: 2px solid var(--origam-color-border-focus);
+				outline: 2px solid var(--origam-color__border---focus);
 				outline-offset: -2px;
 			}
 
 			&--selected {
-				background-color: var(--origam-treeview---row-bg-selected, var(--origam-color-action-primary-bgSubtle));
-				color: var(--origam-treeview---row-color-selected, var(--origam-color-action-primary-fgSubtle));
+				background-color: var(--origam-treeview---row-bg-selected, var(--origam-color__action--primary---bgSubtle));
+				color: var(--origam-treeview---row-color-selected, var(--origam-color__action--primary---fgSubtle));
 
 				.origam-treeview-node__label {
-					color: var(--origam-treeview---row-color-selected, var(--origam-color-action-primary-fgSubtle));
+					color: var(--origam-treeview---row-color-selected, var(--origam-color__action--primary---fgSubtle));
 				}
 			}
 
 			&--disabled {
-				color: var(--origam-treeview---row-color-disabled, var(--origam-color-text-disabled));
+				color: var(--origam-treeview---row-color-disabled, var(--origam-color__text---disabled));
 				cursor: not-allowed;
 				pointer-events: none;
 
 				.origam-treeview-node__label {
-					color: var(--origam-treeview---row-color-disabled, var(--origam-color-text-disabled));
+					color: var(--origam-treeview---row-color-disabled, var(--origam-color__text---disabled));
 				}
 			}
 		}
@@ -300,9 +312,8 @@
 			flex-shrink: 0;
 			width: 1px;
 			align-self: stretch;
-			background-color: var(--origam-treeview---guide-color, var(--origam-color-border-subtle));
+			background-color: var(--origam-treeview---guide-color, var(--origam-color__border---subtle));
 			width: var(--origam-treeview---guide-thickness, 1px);
-			// Each guide spacer takes one indent-size slot
 			margin-inline-end: calc(var(--origam-treeview---indent-size, 16px) - var(--origam-treeview---guide-thickness, 1px));
 		}
 
@@ -313,7 +324,7 @@
 			flex-shrink: 0;
 			width: var(--origam-treeview---chevron-size, 16px);
 			height: var(--origam-treeview---chevron-size, 16px);
-			color: var(--origam-treeview---chevron-color, var(--origam-color-text-secondary));
+			color: var(--origam-treeview---chevron-color, var(--origam-color__text---secondary));
 			font-size: 14px;
 			line-height: 1;
 			transform: rotate(0deg);
@@ -333,7 +344,7 @@
 			align-items: center;
 			flex-shrink: 0;
 			font-size: var(--origam-treeview---icon-size, 16px);
-			color: var(--origam-treeview---icon-color, var(--origam-color-text-primary));
+			color: var(--origam-treeview---icon-color, var(--origam-color__text---primary));
 		}
 
 		&__label {
@@ -342,13 +353,13 @@
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			font-size: var(--origam-treeview---label-font-size, 0.75rem);
-			color: var(--origam-treeview---label-color, var(--origam-color-text-primary));
+			color: var(--origam-treeview---label-color, var(--origam-color__text---primary));
 		}
 
 		&__size {
 			flex-shrink: 0;
 			font-size: var(--origam-treeview---size-font-size, 0.625rem);
-			color: var(--origam-treeview---size-color, var(--origam-color-text-secondary));
+			color: var(--origam-treeview---size-color, var(--origam-color__text---secondary));
 		}
 
 		&__children {

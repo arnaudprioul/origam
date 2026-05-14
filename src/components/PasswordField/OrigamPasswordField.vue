@@ -25,11 +25,11 @@
 						:id="id"
 						ref="origamFieldRef"
 						:active="isActive || isDirty"
-						:dirty="isDirty || props.dirty"
+						:dirty="isDirty || dirty"
 						:disabled="isDisabled"
 						:error="isValid === false"
 						:focused="isFocused"
-						:role="props.role"
+						:role="role"
 						v-bind="{...fieldProps}"
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
@@ -78,6 +78,7 @@
 								data-no-activator=""
 						>
 							<origam-menu
+									v-if="!minimal"
 									ref="origamMenuRef"
 									:model-value="showRequirements"
 									persistent
@@ -124,10 +125,10 @@
 							<input
 									ref="inputRef"
 									v-intersect="intersect"
-									:autofocus="props.autofocus"
+									:autofocus="autofocus"
 									:disabled="isDisabled"
-									:name="props.name"
-									:placeholder="props.placeholder"
+									:name="name"
+									:placeholder="placeholder"
 									:readonly="isReadonly"
 									:size="1"
 									:type="currentType"
@@ -147,7 +148,10 @@
 						<slot name="suffix"/>
 					</template>
 
-					<template #appendInner>
+					<template
+							v-if="!minimal"
+							#appendInner
+					>
 						<div
 								class="origam-password-field__toggle-icon"
 								@mousedown="handleToggleShow"
@@ -179,7 +183,7 @@
 		</template>
 
 		<template
-				v-if="hasDetails"
+				v-if="hasDetails || hasInlineFooter"
 				#details="detailsSlotProps"
 		>
 			<slot
@@ -187,8 +191,9 @@
 					v-bind="detailsSlotProps"
 			>
 				<origam-counter
-						:active="props.persistentCounter || isFocused"
-						:disabled="props.disabled"
+						v-if="hasCounter"
+						:active="persistentCounter || isFocused"
+						:disabled="disabled"
 						:max="max"
 						:value="counterValue"
 				>
@@ -202,6 +207,69 @@
 						/>
 					</template>
 				</origam-counter>
+
+				<div
+						v-if="hasInlineFooter && !minimal"
+						class="origam-password-field__inline-footer"
+				>
+					<div
+							v-if="strengthBar"
+							class="origam-password-field__strength"
+							:data-strength-level="strength.level"
+							:data-strength-score="strength.score"
+					>
+						<span
+								v-for="i in 4"
+								:key="i"
+								class="origam-password-field__strength-segment"
+								:class="[
+										`origam-password-field__strength-segment--${i <= strength.score ? strength.level : 'empty'}`
+									]"
+						/>
+					</div>
+
+					<template v-if="hasInlineRequirements">
+						<ul
+								v-if="requirementsLayout !== 'tiles'"
+								class="origam-password-field__requirements origam-password-field__requirements--list"
+						>
+							<li
+									v-for="rule in inlineRequirements"
+									:key="rule.id"
+									:class="[
+											'origam-password-field__requirement',
+											isRuleSatisfied(rule) ? 'origam-password-field__requirement--satisfied' : 'origam-password-field__requirement--pending'
+										]"
+									:data-requirement-id="rule.id"
+									:data-satisfied="isRuleSatisfied(rule) ? 'true' : 'false'"
+							>
+								<origam-icon
+										class="origam-password-field__requirement-icon"
+										:icon="isRuleSatisfied(rule) ? MDI_ICONS.CHECK_CIRCLE_OUTLINE : MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+								/>
+								<span class="origam-password-field__requirement-label">{{ rule.label }}</span>
+							</li>
+						</ul>
+						<div
+								v-else
+								class="origam-password-field__requirements origam-password-field__requirements--tiles"
+						>
+							<origam-chip
+									v-for="rule in inlineRequirements"
+									:key="rule.id"
+									class="origam-password-field__requirement-chip"
+									:class="[
+											isRuleSatisfied(rule) ? 'origam-password-field__requirement-chip--satisfied' : 'origam-password-field__requirement-chip--pending'
+										]"
+									:bg-color="isRuleSatisfied(rule) ? 'success' : undefined"
+									:prepend-icon="isRuleSatisfied(rule) ? MDI_ICONS.CHECK_CIRCLE_OUTLINE : MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+									:text="rule.label"
+									:data-requirement-id="rule.id"
+									:data-satisfied="isRuleSatisfied(rule) ? 'true' : 'false'"
+							/>
+						</div>
+					</template>
+				</div>
 			</slot>
 		</template>
 
@@ -225,15 +293,14 @@
 			/>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots } from 'vue'
+	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
 
 	import {
+		OrigamChip,
 		OrigamCol,
 		OrigamCounter,
 		OrigamField,
@@ -245,15 +312,18 @@
 	} from '../../components'
 
 	import {
+		computeStrength,
 		useAdjacent,
 		useAdjacentInner,
 		useDefaults,
 		useFocus,
 		useLocale,
 		useProps,
+		useStyle,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 	import {
+		DEFAULT_PASSWORD_REQUIREMENTS,
 		REQUIREMENT_MIN_LENGTH,
 		REQUIREMENT_NUMBER,
 		REQUIREMENT_SPECIAL,
@@ -262,7 +332,12 @@
 	} from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
-	import type { IPasswordFieldEmits, IPasswordFieldProps, IPasswordFieldSlots } from '../../interfaces'
+	import type {
+		IPasswordFieldEmits,
+		IPasswordFieldProps,
+		IPasswordFieldSlots,
+		IPasswordRequirement
+	} from '../../interfaces'
 	import type { TOrigamField, TOrigamInput, TOrigamMenu } from '../../types'
 	import { filterInputAttrs, forwardRefs } from '../../utils'
 
@@ -308,15 +383,29 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 
 	/*********************************************************
 	 * Adjacent (outer + inner)
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend
@@ -443,13 +532,84 @@
 		return localeInfos
 	})
 	const showRequirements = computed(() => {
-		if (!props.requirements) return false
+		// The legacy popup-menu mode only fires when `requirements` is the
+		// boolean `true`. The new inline checklist (driven by `rules` /
+		// `requirementsLayout`) lives in the `#details` slot — it is
+		// orthogonal to this menu and never opens it.
+		if (props.requirements !== true) return false
+		if (props.minimal) return false
 
 		return isFocused.value || props.persistentRequirements
 	})
 
 	const isChecked = (key: string) => {
 		return infos.value[key]?.reg.test(model.value)
+	}
+
+	/*********************************************************
+	 * Strength bar (display mode 1 / 6 — also used in "Combined")
+	 *
+	 * `strength` recomputes on every keystroke. The 4-segment bar in
+	 * the template uses `strength.score` to fill segments and
+	 * `strength.level` to pick the colour token. We also emit
+	 * `update:strength` so consumers can v-model it for analytics or
+	 * cross-field validation (e.g. "block submit when level=weak").
+	 ********************************************************/
+	const strength = computed(() => computeStrength(model.value as string))
+
+	watch(() => strength.value.level, (level) => {
+		emits('update:strength', level)
+	}, {immediate: false})
+
+	/*********************************************************
+	 * Inline requirements (display modes 2/3/6)
+	 *
+	 * `requirementRules` (preferred) drives the checklist. When the
+	 * caller only passes `requirements: true` without an array, we
+	 * fall back to the default rule set so the component is still
+	 * usable out-of-the-box.
+	 *
+	 * `requirementsLayout` decides between `<ul>` (default `list`)
+	 * and `<OrigamChip>` flex-wrap (`tiles`).
+	 ********************************************************/
+	const inlineRequirements = computed<IPasswordRequirement[]>(() => {
+		if (Array.isArray(props.requirementRules) && props.requirementRules.length > 0) {
+			return props.requirementRules
+		}
+
+		// Fallback: when consumer enables the checklist via `requirements: true`
+		// without supplying explicit rules, ship the default 4-rule set.
+		if (props.requirements === true) {
+			return DEFAULT_PASSWORD_REQUIREMENTS
+		}
+
+		return []
+	})
+
+	const hasInlineRequirements = computed(() => {
+		// The new checklist is opt-in: render only when the caller
+		// supplied `requirementRules` (any layout) OR when they passed
+		// `requirementsLayout` explicitly together with `requirements:true`
+		// (signalling they want the inline UI rather than the legacy popup).
+		if (props.minimal) return false
+		if (Array.isArray(props.requirementRules) && props.requirementRules.length > 0) return true
+		return props.requirements === true && props.requirementsLayout != null
+	})
+
+	const hasInlineFooter = computed(() => {
+		if (props.minimal) return false
+		return !!props.strengthBar || hasInlineRequirements.value
+	})
+
+	const isRuleSatisfied = (rule: IPasswordRequirement): boolean => {
+		const v = (model.value ?? '').toString()
+		try {
+			return !!rule.test(v)
+		} catch {
+			// A misbehaving consumer-supplied predicate must not crash
+			// the field. Treat thrown predicates as "not satisfied".
+			return false
+		}
 	}
 
 	/*********************************************************
@@ -526,8 +686,16 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<IPasswordFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(passwordFieldStyles)
 
-	defineExpose(forwardRefs({filterProps}))
+
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}))
 </script>
 
 <style
@@ -597,6 +765,76 @@
 			font-weight: var(--origam-password-field__icon---font-weight, bold);
 		}
 
+		&__inline-footer {
+			display: flex;
+			flex-direction: column;
+			gap: var(--origam-password-field__requirements---gap, 4px);
+			margin-block-start: var(--origam-password-field__strength---margin-block-start, 8px);
+			width: 100%;
+		}
+
+		&__strength {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: var(--origam-password-field__strength---gap, 4px);
+			margin-block-start: var(--origam-password-field__strength---margin-block-start, 8px);
+			width: 100%;
+		}
+
+		&__strength-segment {
+			height: var(--origam-password-field__strength---height, 4px);
+			border-radius: var(--origam-password-field__strength---border-radius, 9999px);
+			background-color: var(--origam-password-field__strength---bg-empty, #fafafa);
+			transition: background-color 0.18s ease-out;
+
+			&--empty  { background-color: var(--origam-password-field__strength---bg-empty,  #fafafa); }
+			&--weak   { background-color: var(--origam-password-field__strength---bg-weak,   #ef4444); }
+			&--fair   { background-color: var(--origam-password-field__strength---bg-fair,   #fb8c00); }
+			&--good   { background-color: var(--origam-password-field__strength---bg-good,   #2196f3); }
+			&--strong { background-color: var(--origam-password-field__strength---bg-strong, #4caf50); }
+		}
+
+		&__requirements {
+			margin: 0;
+			padding: 0;
+			font-size: var(--origam-password-field__requirements---font-size, 0.75rem);
+			margin-block-start: var(--origam-password-field__requirements---margin-block-start, 8px);
+
+			&--list {
+				list-style: none;
+				display: flex;
+				flex-direction: column;
+				gap: var(--origam-password-field__requirements---gap, 4px);
+			}
+
+			&--tiles {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--origam-password-field__requirements---gap, 4px);
+			}
+		}
+
+		&__requirement {
+			display: flex;
+			align-items: center;
+			gap: var(--origam-password-field__requirements---gap, 4px);
+			color: var(--origam-password-field__requirements---color-pending, #525252);
+			transition: color 0.18s ease-out;
+
+			&--satisfied {
+				color: var(--origam-password-field__requirements---color-satisfied, #4caf50);
+			}
+		}
+
+		&__requirement-icon {
+			font-size: var(--origam-password-field__requirements---icon-size, 0.875rem);
+			flex-shrink: 0;
+		}
+
+		&__requirement-label {
+			line-height: 1.2;
+		}
+
 		:deep(.origam-field) {
 			&.origam-field--no-label,
 			&.origam-field--active {
@@ -613,11 +851,3 @@
 	}
 </style>
 
-<!--
-	Lot 3.0/3.1 port — the entire OrigamPasswordField has been ported
-	with the namespace adapted (`Origam*` → `Origam*`, classes/CSS vars
-	mirrored, `origam.validation.must_contains`). The bg-color="rgba(230,230,230, 0.50)"
-	hardcoded on each requirement Sheet was dropped — the Sheet's
-	`color` prop already drives the theme-aware tint via the design
-	tokens, no inline RGBA needed.
--->

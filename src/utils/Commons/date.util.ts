@@ -7,6 +7,12 @@ import type { TCustomDateFormat } from "../../types"
 
 import { createRange, padStart } from "../../utils"
 
+/**
+ * Create instance.
+ *
+ * @param options …
+ * @param locale  …
+ */
 export function createInstance (options: IDateOptions, locale: ILocaleInstance) {
     const instance = reactive(
         typeof options.adapter === 'function'
@@ -25,6 +31,12 @@ export function createInstance (options: IDateOptions, locale: ILocaleInstance) 
     return instance
 }
 
+/**
+ * Date.
+ *
+ * @param value …
+ * @returns …
+ */
 export function date (value?: any): Date | null {
     if (value == null) return new Date()
 
@@ -45,6 +57,12 @@ export function date (value?: any): Date | null {
     return null
 }
 
+/**
+ * Parse local date.
+ *
+ * @param value …
+ * @returns …
+ */
 export function parseLocalDate (value: string): Date {
     const parts = value.split('-').map(Number)
 
@@ -52,6 +70,12 @@ export function parseLocalDate (value: string): Date {
     return new Date(parts[0], parts[1] - 1, parts[2])
 }
 
+/**
+ * To iso.
+ *
+ * @param adapter …
+ * @param value   …
+ */
 export function toISO (adapter: IDateAdapter<any>, value: Date) {
     const date = adapter.toJsDate(value)
     const year = date.getFullYear()
@@ -61,12 +85,23 @@ export function toISO (adapter: IDateAdapter<any>, value: Date) {
     return `${year}-${month}-${day}`
 }
 
+/**
+ * Parse iso.
+ *
+ * @param value …
+ */
 export function parseISO (value: string) {
     const [year, month, day] = value.split('-').map(Number)
 
     return new Date(year, month - 1, day)
 }
 
+/**
+ * Add minutes.
+ *
+ * @param date   …
+ * @param amount …
+ */
 export function addMinutes (date: Date, amount: number) {
     const d = new Date(date)
 
@@ -75,6 +110,12 @@ export function addMinutes (date: Date, amount: number) {
     return d
 }
 
+/**
+ * Add hours.
+ *
+ * @param date   …
+ * @param amount …
+ */
 export function addHours (date: Date, amount: number) {
     const d = new Date(date)
 
@@ -83,6 +124,12 @@ export function addHours (date: Date, amount: number) {
     return d
 }
 
+/**
+ * Add days.
+ *
+ * @param date   …
+ * @param amount …
+ */
 export function addDays (date: Date, amount: number) {
     const d = new Date(date)
 
@@ -91,6 +138,12 @@ export function addDays (date: Date, amount: number) {
     return d
 }
 
+/**
+ * Add weeks.
+ *
+ * @param date   …
+ * @param amount …
+ */
 export function addWeeks (date: Date, amount: number) {
     const d = new Date(date)
 
@@ -99,6 +152,12 @@ export function addWeeks (date: Date, amount: number) {
     return d
 }
 
+/**
+ * Add months.
+ *
+ * @param date   …
+ * @param amount …
+ */
 export function addMonths (date: Date, amount: number) {
     const d = new Date(date)
 
@@ -108,83 +167,189 @@ export function addMonths (date: Date, amount: number) {
     return d
 }
 
+/**
+ * Get year.
+ *
+ * @param date …
+ */
 export function getYear (date: Date) {
     return date.getFullYear()
 }
 
+/**
+ * Get month.
+ *
+ * @param date …
+ */
 export function getMonth (date: Date) {
     return date.getMonth()
 }
 
+/**
+ * Get date.
+ *
+ * @param date …
+ */
 export function getDate (date: Date) {
     return date.getDate()
 }
 
+/**
+ * Get next month.
+ *
+ * @param date …
+ */
 export function getNextMonth (date: Date) {
     return new Date(date.getFullYear(), date.getMonth() + 1, 1)
 }
 
+/**
+ * Get previous month.
+ *
+ * @param date …
+ */
 export function getPreviousMonth (date: Date) {
     return new Date(date.getFullYear(), date.getMonth() - 1, 1)
 }
 
+/**
+ * Get hours.
+ *
+ * @param date …
+ */
 export function getHours (date: Date) {
     return date.getHours()
 }
 
+/**
+ * Get minutes.
+ *
+ * @param date …
+ */
 export function getMinutes (date: Date) {
     return date.getMinutes()
 }
 
+/**
+ * Start of year.
+ *
+ * @param date …
+ */
 export function startOfYear (date: Date) {
     return new Date(date.getFullYear(), 0, 1)
 }
 
+/**
+ * End of year.
+ *
+ * @param date …
+ */
 export function endOfYear (date: Date) {
     return new Date(date.getFullYear(), 11, 31)
 }
 
+/**
+ * Is within range.
+ *
+ * @param date  …
+ * @param range …
+ */
 export function isWithinRange (date: Date, range: [Date, Date]) {
     return isAfter(date, range[0]) && isBefore(date, range[1])
 }
 
+/**
+ * Is valid.
+ *
+ * @param date …
+ */
 export function isValid (date: any) {
     const d = new Date(date)
 
     return d instanceof Date && !isNaN(d.getTime())
 }
 
+/**
+ * Is after.
+ *
+ * @param date      …
+ * @param comparing …
+ */
 export function isAfter (date: Date, comparing: Date) {
     return date.getTime() > comparing.getTime()
 }
 
+/**
+ * Is after day.
+ *
+ * @param date      …
+ * @param comparing …
+ * @returns …
+ */
 export function isAfterDay (date: Date, comparing: Date): boolean {
     return isAfter(startOfDay(date), startOfDay(comparing))
 }
 
+/**
+ * Is before.
+ *
+ * @param date      …
+ * @param comparing …
+ */
 export function isBefore (date: Date, comparing: Date) {
     return date.getTime() < comparing.getTime()
 }
 
+/**
+ * Is equal.
+ *
+ * @param date      …
+ * @param comparing …
+ */
 export function isEqual (date: Date, comparing: Date) {
     return date.getTime() === comparing.getTime()
 }
 
+/**
+ * Is same day.
+ *
+ * @param date      …
+ * @param comparing …
+ */
 export function isSameDay (date: Date, comparing: Date) {
     return date.getDate() === comparing.getDate() &&
         date.getMonth() === comparing.getMonth() &&
         date.getFullYear() === comparing.getFullYear()
 }
 
+/**
+ * Is same month.
+ *
+ * @param date      …
+ * @param comparing …
+ */
 export function isSameMonth (date: Date, comparing: Date) {
     return date.getMonth() === comparing.getMonth() &&
         date.getFullYear() === comparing.getFullYear()
 }
 
+/**
+ * Is same year.
+ *
+ * @param date      …
+ * @param comparing …
+ */
 export function isSameYear (date: Date, comparing: Date) {
     return date.getFullYear() === comparing.getFullYear()
 }
 
+/**
+ * Get diff.
+ *
+ * @param date      …
+ * @param comparing …
+ * @param unit      …
+ */
 export function getDiff (date: Date, comparing: Date | string, unit?: string) {
     const d = new Date(date)
     const c = new Date(comparing)
@@ -222,6 +387,12 @@ export function getDiff (date: Date, comparing: Date | string, unit?: string) {
     return result
 }
 
+/**
+ * Set hours.
+ *
+ * @param date  …
+ * @param count …
+ */
 export function setHours (date: Date, count: number) {
     const d = new Date(date)
 
@@ -230,6 +401,12 @@ export function setHours (date: Date, count: number) {
     return d
 }
 
+/**
+ * Set minutes.
+ *
+ * @param date  …
+ * @param count …
+ */
 export function setMinutes (date: Date, count: number) {
     const d = new Date(date)
 
@@ -238,6 +415,12 @@ export function setMinutes (date: Date, count: number) {
     return d
 }
 
+/**
+ * Set month.
+ *
+ * @param date  …
+ * @param count …
+ */
 export function setMonth (date: Date, count: number) {
     const d = new Date(date)
 
@@ -246,6 +429,12 @@ export function setMonth (date: Date, count: number) {
     return d
 }
 
+/**
+ * Set date.
+ *
+ * @param date …
+ * @param day  …
+ */
 export function setDate (date: Date, day: number) {
     const d = new Date(date)
 
@@ -254,6 +443,12 @@ export function setDate (date: Date, day: number) {
     return d
 }
 
+/**
+ * Set year.
+ *
+ * @param date …
+ * @param year …
+ */
 export function setYear (date: Date, year: number) {
     const d = new Date(date)
 
@@ -262,14 +457,31 @@ export function setYear (date: Date, year: number) {
     return d
 }
 
+/**
+ * Start of day.
+ *
+ * @param date …
+ */
 export function startOfDay (date: Date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0)
 }
 
+/**
+ * End of day.
+ *
+ * @param date …
+ */
 export function endOfDay (date: Date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)
 }
 
+/**
+ * Get week array.
+ *
+ * @param date           …
+ * @param locale         …
+ * @param firstDayOfWeek …
+ */
 export function getWeekArray (date: Date, locale: string, firstDayOfWeek?: number) {
     const weeks = []
     let currentWeek = []
@@ -311,6 +523,13 @@ export function getWeekArray (date: Date, locale: string, firstDayOfWeek?: numbe
     return weeks
 }
 
+/**
+ * Start of week.
+ *
+ * @param date           …
+ * @param locale         …
+ * @param firstDayOfWeek …
+ */
 export function startOfWeek (date: Date, locale: string, firstDayOfWeek?: number) {
     const day = firstDayOfWeek ?? FIRST_DAY[locale.slice(-2).toUpperCase()] ?? 0
     const d = new Date(date)
@@ -322,6 +541,12 @@ export function startOfWeek (date: Date, locale: string, firstDayOfWeek?: number
     return d
 }
 
+/**
+ * End of week.
+ *
+ * @param date   …
+ * @param locale …
+ */
 export function endOfWeek (date: Date, locale: string) {
     const d = new Date(date)
     const lastDay = ((FIRST_DAY[locale.slice(-2).toUpperCase()] ?? 0) + 6) % 7
@@ -333,14 +558,33 @@ export function endOfWeek (date: Date, locale: string) {
     return d
 }
 
+/**
+ * Start of month.
+ *
+ * @param date …
+ */
 export function startOfMonth (date: Date) {
     return new Date(date.getFullYear(), date.getMonth(), 1)
 }
 
+/**
+ * End of month.
+ *
+ * @param date …
+ */
 export function endOfMonth (date: Date) {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
+/**
+ * Format date.
+ *
+ * @param value        …
+ * @param formatString …
+ * @param locale       …
+ * @param formats      …
+ * @returns …
+ */
 export function formatDate (
     value: Date,
     formatString: string,
@@ -498,6 +742,12 @@ export function formatDate (
     return new Intl.DateTimeFormat(locale, options).format(newDate)
 }
 
+/**
+ * Get weekdays.
+ *
+ * @param locale         …
+ * @param firstDayOfWeek …
+ */
 export function getWeekdays (locale: string, firstDayOfWeek?: number) {
     const daysFromSunday = firstDayOfWeek ?? FIRST_DAY[locale.slice(-2).toUpperCase()] ?? 0
 
@@ -511,6 +761,12 @@ export function getWeekdays (locale: string, firstDayOfWeek?: number) {
         })
 }
 
+/**
+ * Get week.
+ *
+ * @param adapter …
+ * @param value   …
+ */
 export function getWeek (adapter: DateAdapter, value: any) {
     const date = adapter.toJsDate(value)
     let year = date.getFullYear()

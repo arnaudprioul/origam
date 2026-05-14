@@ -37,6 +37,7 @@ export interface INumberFieldProps extends ICommonsComponentProps, IColorProps, 
     holdRepeat?: number
     split?: boolean
     hideControls?: boolean
+    compact?: boolean
 }
 
 export interface INumberFieldEmits extends IFieldEmits, IInputEmits {

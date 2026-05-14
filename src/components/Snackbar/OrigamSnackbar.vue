@@ -16,31 +16,15 @@
 	>
 		<template #default>
       <span
-		      key="underlay"
-		      class="origam-snackbar__underlay"
+	      key="underlay"
+	      class="origam-snackbar__underlay"
       />
 
-			<!--
-				CSS-only timer bar — pre-fix the timer drove an
-				`<origam-progress>` linear bar via `useCountdown`'s
-				`setInterval` (200 ms cadence), so the bar shrunk in
-				visible discrete steps ("par accout c'est moche").
-				Replaced by a single CSS scaleX transform animated over
-				the full timeout duration via a custom property — gives
-				a fluid 60 fps GPU-accelerated shrink.
-
-				Re-keying on `(isActive, timerKey)` so the animation
-				restarts cleanly when the snackbar reopens or the
-				consumer mutates the timeout / hover-pauses (the
-				existing JS `pauseTimeout` / `resumeTimeout` flow toggles
-				the `--paused` class which holds the animation via
-				`animation-play-state: paused`).
-			-->
 			<div
-					v-if="props.timer"
+					v-if="timer"
 					:key="`timer-${timerKey}`"
-					:class="['origam-snackbar__timer', { 'origam-snackbar__timer--paused': isHovering }]"
-					:style="{ '--origam-snackbar__timer---duration': `${props.timeout}ms` }"
+					:class="snackbarTimerClasses"
+					:style="{ '--origam-snackbar__timer---duration': `${timeout}ms` }"
 			>
 				<div class="origam-snackbar__timer-bar"/>
 			</div>
@@ -106,20 +90,16 @@
 	import { OrigamIcon, OrigamOverlay, OrigamSnack } from '../../components'
 
 	import {
-		useBorder,
 		useBothColor,
-		useElevation,
 		useLayout,
-		useMargin,
-		usePadding,
 		usePosition,
 		useProps,
-		useRounded,
 		useScopeId,
 		useStatus,
+		useStyle,
 		useToggleScope,
 		useVModel
-	} from '../../composables'
+} from '../../composables'
 
 	import { ORIGAM_LAYOUT_KEY } from '../../consts'
 
@@ -131,6 +111,12 @@
 
 	import { forwardRefs } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISnackbarProps>(), {
 		timeout: 5000,
 		location: 'bottom',
@@ -146,17 +132,32 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & Countdown
+	 *
+	 * @description
+	 * v-model active state, countdown timer, and auto-dismiss
+	 * timeout management.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const isActive = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {positionClasses} = usePosition(props)
 	const {scopeId} = useScopeId()
-	const {icon, statusClasses} = useStatus(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {elevationClasses} = useElevation(props)
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	const {icon, statusClasses} = useStatus(props)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 	const isHovering = shallowRef(false)
@@ -205,6 +206,17 @@
 		if (isActive.value) startTimeout()
 	})
 
+	/*********************************************************
+	 * Interaction
+	 *
+	 * @description
+	 * Hover pause/resume, swipe-to-dismiss touch handling.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handlePointerenter = () => {
 		isHovering.value = true
 		clearTimeout()
@@ -222,13 +234,40 @@
 		}
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered overlay props and merged content wrapper props
+	 * (color, rounded, border, padding, margin, hover handlers).
+	 ********************************************************/
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for tokenised intents on the snackbar wrapper; `colorStyles` keeps
+	// the legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['class', 'style', 'id', 'contentProps', 'modelValue', 'disableGlobalStack', 'noClickAnimation', 'persistent', 'scrim', 'scrollStrategy'])
 	})
 	const contentProps = computed(() => {
 		return mergeProps({
 			class: [
-				'origam-snackbar__wrapper'
+				'origam-snackbar__wrapper',
+				// Color utility class lives ONLY on the wrapper (where the
+				// `colorStyles` already paints the surface). The other
+				// composables (`rounded`/`border`/`padding`/`margin`/
+				// `elevation`) are already injected on the root via
+				// `snackbarClasses` so we don't duplicate them here.
+				colorClasses.value
 			],
 			style: [
 				colorStyles.value,
@@ -242,6 +281,12 @@
 		}, props.contentProps)
 	})
 
+	/*********************************************************
+	 * Slot helpers
+	 *
+	 * @description
+	 * Computed flags for conditional slot / icon rendering.
+	 ********************************************************/
 	const hasPrepend = computed(() => {
 		return !!(slots['prepend'] || icon.value)
 	})
@@ -250,8 +295,12 @@
 	})
 	const hasContent = slots.default || slots.text || !!(props.text) || hasPrepend.value
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element location classes and styles.
+	 ********************************************************/
 	const locationClasses = computed(() => {
 		return props.location.split(' ').reduce((acc, loc) => {
 			acc[`origam-snackbar--${loc}`] = true
@@ -264,6 +313,12 @@
 			mainStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const snackbarTimerClasses = computed(() => {
+		return [
+			'origam-snackbar__timer',
+			{ 'origam-snackbar__timer--paused': isHovering.value }
+		]
 	})
 	const snackbarClasses = computed(() => {
 		return [
@@ -285,10 +340,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(snackbarStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamOverlayRef))
 </script>
 
 <style
@@ -353,13 +420,6 @@
 			}
 		}
 
-		// Timer bar — CSS-only fluid shrink. The wrapping `__timer` div
-		// is positioned absolute at the top of the snackbar; the inner
-		// `__timer-bar` shrinks from `scaleX(1)` to `scaleX(0)` over
-		// `--origam-snackbar__timer---duration` (passed inline by the
-		// JS, reflects the `timeout` prop). `transform-origin: left`
-		// gives the natural left-to-right collapse. Pause-on-hover via
-		// the `--paused` class flipping `animation-play-state`.
 		&__timer {
 			width: 100%;
 			height: var(--origam-snackbar__timer---height, 3px);
@@ -393,54 +453,39 @@
 			:deep(#{$this}__wrapper) {
 				border-width: var(--origam-snackbar__wrapper---border-width, thin);
 				border-style: var(--origam-snackbar__wrapper---border-style, solid);
-				box-shadow: none;
 			}
 		}
 
-		// Status modifiers — emitted by `useStatus` as
-		// `origam-snackbar--success | --info | --warning | --danger | --error`.
-		// Each picks the matching feedback intent rungs from the design
-		// tokens:
-		//   • bgSubtle (light tinted background)
-		//   • fgSubtle (strong foreground for "coloured text on light surface")
-		//   • border   (saturated outline)
-		// The wrapper inherits the colour scheme; the timer-bar picks
-		// up `currentColor` automatically via its inline default. The
-		// snackbar root carries the colours so both `__wrapper` (where
-		// the border lives) and `__content` (where the text lives)
-		// inherit correctly.
 		@each $status in (success, info, warning, danger) {
 			&--#{$status} {
-				color: var(--origam-color-feedback-#{$status}-fgSubtle);
+				color: var(--origam-color__feedback--#{$status}---fgSubtle);
 				background: transparent;
 
 				:deep(#{$this}__wrapper) {
-					background-color: var(--origam-color-feedback-#{$status}-bgSubtle);
-					border-color: var(--origam-color-feedback-#{$status}-border);
-					color: var(--origam-color-feedback-#{$status}-fgSubtle);
+					background-color: var(--origam-color__feedback--#{$status}---bgSubtle);
+					border-color: var(--origam-color__feedback--#{$status}---border);
+					color: var(--origam-color__feedback--#{$status}---fgSubtle);
 				}
 
 				#{$this}__timer-bar {
-					background-color: var(--origam-color-feedback-#{$status}-border);
+					background-color: var(--origam-color__feedback--#{$status}---border);
 					opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
 				}
 			}
 		}
 
-		// `error` is an alias for `danger` (status enum exposes both —
-		// the SCSS treats them as the same feedback rung).
 		&--error {
-			color: var(--origam-color-feedback-danger-fgSubtle);
+			color: var(--origam-color__feedback--danger---fgSubtle);
 			background: transparent;
 
 			:deep(#{$this}__wrapper) {
-				background-color: var(--origam-color-feedback-danger-bgSubtle);
-				border-color: var(--origam-color-feedback-danger-border);
-				color: var(--origam-color-feedback-danger-fgSubtle);
+				background-color: var(--origam-color__feedback--danger---bgSubtle);
+				border-color: var(--origam-color__feedback--danger---border);
+				color: var(--origam-color__feedback--danger---fgSubtle);
 			}
 
 			#{$this}__timer-bar {
-				background-color: var(--origam-color-feedback-danger-border);
+				background-color: var(--origam-color__feedback--danger---border);
 				opacity: var(--origam-snackbar__timer-bar---opacity-status, 0.7);
 			}
 		}

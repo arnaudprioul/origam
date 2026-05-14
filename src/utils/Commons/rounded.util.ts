@@ -1,3 +1,8 @@
+/**
+ * Format rounded styles var.
+ *
+ * @param values …
+ */
 export function formatRoundedStylesVar (values: Array<string>) {
     const styles = []
 

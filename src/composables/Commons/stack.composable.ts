@@ -6,6 +6,9 @@ import { getCurrentInstance } from '../../utils'
 
 import { computed, inject, onScopeDispose, provide, reactive, readonly, Ref, shallowRef, toRaw, watchEffect } from 'vue'
 
+/*********************************************************
+ * useStack
+ ********************************************************/
 export function useStack (
     isActive: Readonly<Ref<boolean>>,
     zIndex: Readonly<Ref<string | number>>,

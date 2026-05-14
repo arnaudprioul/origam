@@ -3,184 +3,10 @@
 			group="components"
 			title="Toolbar/OrigamToolbar"
 	>
-
-		<!-- ════════════ BASIC ════════════ -->
-		<Variant title="Basic">
-			<origam-toolbar title="My Application" data-cy="toolbar-basic"/>
-		</Variant>
-
-		<!-- ════════════ COLOR ════════════ -->
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-toolbar
-						v-bind="state"
-						title="Colored Toolbar"
-						data-cy="toolbar-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ ELEVATION ════════════ -->
-		<Variant
-				title="Elevation"
-				:init-state="() => useStoryInitState<{ elevation?: number, flat?: boolean }>({})"
-		>
-			<template #default="{ state }">
-				<origam-toolbar
-						:elevation="state.elevation"
-						:flat="state.flat"
-						title="Elevation Toolbar"
-						data-cy="toolbar-elevation"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstCheckbox v-model="state.flat"      title="flat"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ ROUNDED ════════════ -->
-		<Variant
-				title="Rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-toolbar
-						:rounded="state.rounded"
-						title="Rounded Toolbar"
-						data-cy="toolbar-rounded"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ DENSITY ════════════ -->
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-toolbar
-						:density="state.density"
-						title="Density Toolbar"
-						data-cy="toolbar-density"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ MODIFIERS ════════════ -->
-		<Variant
-				title="Modifiers"
-				:init-state="() => useStoryInitState<{
-					collapse?: boolean
-					flat?: boolean
-					floating?: boolean
-				}>({})"
-		>
-			<template #default="{ state }">
-				<origam-toolbar
-						v-bind="state"
-						title="Toolbar Modifiers"
-						data-cy="toolbar-modifiers"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.collapse"  title="collapse"/>
-				<HstCheckbox v-model="state.flat"      title="flat"/>
-				<HstCheckbox v-model="state.floating"  title="floating"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ BORDER (IBorderProps) ════════════ -->
 		<!--
-			ONE variant per interface. Interactive control + hardcoded
-			showcase fixtures for the e2e suite (`data-cy="toolbar-border-{rung}"`).
+			Playground — first variant by convention. Surfaces every
+			IToolbarProps knob via the sidebar controls.
 		-->
-		<Variant
-				title="Border"
-				:init-state="() => useStoryInitState<{ border?: boolean | 'top' | 'right' | 'bottom' | 'left' }>({ border: true })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
-					<origam-toolbar :border="state.border" title="Border Toolbar (interactive)" data-cy="toolbar-border"/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
-						<origam-toolbar title="border={false} (default)"           data-cy="toolbar-border-default"/>
-						<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
-						<origam-toolbar title='border="top"'    border="top"       data-cy="toolbar-border-top"/>
-						<origam-toolbar title='border="right"'  border="right"     data-cy="toolbar-border-right"/>
-						<origam-toolbar title='border="bottom"' border="bottom"    data-cy="toolbar-border-bottom"/>
-						<origam-toolbar title='border="left"'   border="left"      data-cy="toolbar-border-left"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.border"
-						title="border"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'true (all sides)', value: true },
-							{ label: 'top', value: 'top' },
-							{ label: 'right', value: 'right' },
-							{ label: 'bottom', value: 'bottom' },
-							{ label: 'left', value: 'left' }
-						]"
-				/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ SLOT: prepend ════════════ -->
-		<Variant title="Slot — prepend">
-			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">
-				<template #prepend>
-					<origam-btn :icon="MDI_ICONS.MENU" aria-label="Navigation menu"/>
-				</template>
-			</origam-toolbar>
-		</Variant>
-
-		<!-- ════════════ SLOT: append ════════════ -->
-		<Variant title="Slot — append">
-			<origam-toolbar title="With Append" data-cy="toolbar-slot-append">
-				<template #append>
-					<origam-btn :icon="MDI_ICONS.ACCOUNT" aria-label="Account"/>
-					<origam-btn :icon="MDI_ICONS.DOTS_VERTICAL" aria-label="More"/>
-				</template>
-			</origam-toolbar>
-		</Variant>
-
-		<!-- ════════════ SLOT: content ════════════ -->
-		<Variant title="Slot — content">
-			<origam-toolbar title="With Content" data-cy="toolbar-slot-content">
-				<template #content>
-					<span style="flex: 1;"/>
-					<origam-btn text="Action" color="primary"/>
-				</template>
-			</origam-toolbar>
-		</Variant>
-
-		<!-- ════════════ SLOT: title ════════════ -->
-		<Variant title="Slot — title">
-			<origam-toolbar data-cy="toolbar-slot-title">
-				<template #title>
-					<span style="font-style: italic; font-weight: 600;">Custom title</span>
-				</template>
-			</origam-toolbar>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IToolbarProps>({
@@ -207,6 +33,173 @@
 				<HstCheckbox v-model="state.collapse"  title="collapse"/>
 				<HstCheckbox v-model="state.floating"  title="floating"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IColorProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar
+						v-bind="state"
+						title="Colored Toolbar"
+						data-cy="toolbar-color"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — elevation"
+				:init-state="() => useStoryInitState<{ elevation?: string; flat?: boolean }>({})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar
+						:elevation="state.elevation"
+						:flat="state.flat"
+						title="Elevation Toolbar"
+						data-cy="toolbar-elevation"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<HstCheckbox v-model="state.flat"      title="flat"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<IRoundedProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar
+						:rounded="state.rounded"
+						title="Rounded Toolbar"
+						data-cy="toolbar-rounded"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<IDensityProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar
+						:density="state.density"
+						title="Density Toolbar"
+						data-cy="toolbar-density"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — collapse, flat & floating"
+				:init-state="() => useStoryInitState<{
+					collapse?: boolean
+					flat?: boolean
+					floating?: boolean
+				}>({})"
+		>
+			<template #default="{ state }">
+				<origam-toolbar
+						v-bind="state"
+						title="Toolbar Modifiers"
+						data-cy="toolbar-modifiers"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.collapse"  title="collapse"/>
+				<HstCheckbox v-model="state.flat"      title="flat"/>
+				<HstCheckbox v-model="state.floating"  title="floating"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — border"
+				:init-state="() => useStoryInitState<{ border?: boolean | string }>({ border: true })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
+					<origam-toolbar :border="state.border" title="Border Toolbar (interactive)" data-cy="toolbar-border"/>
+
+					<div style="border-top: 1px dashed var(--origam-color__border---default, #ccc); padding-top: 16px; display: flex; flex-direction: column; gap: 16px;">
+						<origam-toolbar title="border={false} (default)"           data-cy="toolbar-border-default"/>
+						<origam-toolbar title="border={true}"  :border="true"      data-cy="toolbar-border-true"/>
+						<origam-toolbar title='border="top"'    border="top"       data-cy="toolbar-border-top"/>
+						<origam-toolbar title='border="right"'  border="right"     data-cy="toolbar-border-right"/>
+						<origam-toolbar title='border="bottom"' border="bottom"    data-cy="toolbar-border-bottom"/>
+						<origam-toolbar title='border="left"'   border="left"      data-cy="toolbar-border-left"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.border"
+						title="border"
+						:options="[
+							{ label: '(none)', value: undefined },
+							{ label: 'true (all sides)', value: true },
+							{ label: 'top', value: 'top' },
+							{ label: 'right', value: 'right' },
+							{ label: 'bottom', value: 'bottom' },
+							{ label: 'left', value: 'left' }
+						]"
+				/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-toolbar title="With Default Slot" data-cy="toolbar-slot-default">
+				<span>Custom slot content</span>
+			</origam-toolbar>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">
+				<template #prepend>
+					<origam-btn :icon="MDI_ICONS.MENU" aria-label="Navigation menu"/>
+				</template>
+			</origam-toolbar>
+		</Variant>
+
+		<Variant title="Slot — append">
+			<origam-toolbar title="With Append" data-cy="toolbar-slot-append">
+				<template #append>
+					<origam-btn :icon="MDI_ICONS.ACCOUNT" aria-label="Account"/>
+					<origam-btn :icon="MDI_ICONS.DOTS_VERTICAL" aria-label="More"/>
+				</template>
+			</origam-toolbar>
+		</Variant>
+
+		<Variant title="Slot — content">
+			<origam-toolbar title="With Content" data-cy="toolbar-slot-content">
+				<template #content>
+					<span style="flex: 1;"/>
+					<origam-btn text="Action" color="primary"/>
+				</template>
+			</origam-toolbar>
+		</Variant>
+
+		<Variant title="Slot — title">
+			<origam-toolbar data-cy="toolbar-slot-title">
+				<template #title>
+					<span style="font-style: italic; font-weight: 600;">Custom title</span>
+				</template>
+			</origam-toolbar>
 		</Variant>
 	</Story>
 </template>

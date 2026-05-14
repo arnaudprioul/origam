@@ -3,89 +3,10 @@
 			group="components"
 			title="Transition/OrigamTransition"
 	>
-
 		<!--
-			OrigamTransition — top-level dispatcher. Wraps either Vue's native
-			<Transition> or any registered origam-* transition leaf and forwards
-			its TransitionProps. Stories below use a toggle button (`show`) to
-			drive each variant: Playwright can navigate, click, and assert that
-			the slot enters/leaves with the expected `*-enter-active` /
-			`*-leave-active` classes.
+			Playground — first by convention. OrigamTransition is a dispatcher
+			that accepts either a CSS class name string or a component object.
 		-->
-
-		<!-- ════════════ DEFAULT (string-name dispatch → fade) ════════════ -->
-		<Variant title="Default — string name">
-			<template #default>
-				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-					<button
-							class="story-toggle"
-							data-cy="toggle-default"
-							@click="toggleDefault = !toggleDefault"
-					>
-						Toggle (default)
-					</button>
-					<origam-transition transition="origam-transition--fade">
-						<div
-								v-if="toggleDefault"
-								class="story-target"
-								data-cy="target-default"
-						>
-							Default content
-						</div>
-					</origam-transition>
-				</div>
-			</template>
-		</Variant>
-
-		<!-- ════════════ COMPONENT DISPATCH (TTransitionProps) ════════════ -->
-		<Variant title="Component dispatch">
-			<template #default>
-				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-					<button
-							class="story-toggle"
-							data-cy="toggle-component"
-							@click="toggleComponent = !toggleComponent"
-					>
-						Toggle (component)
-					</button>
-					<origam-transition :transition="{ component: OrigamScaleRotate }">
-						<div
-								v-if="toggleComponent"
-								class="story-target"
-								data-cy="target-component"
-						>
-							Component-driven
-						</div>
-					</origam-transition>
-				</div>
-			</template>
-		</Variant>
-
-		<!-- ════════════ DISABLED ════════════ -->
-		<Variant title="Disabled">
-			<template #default>
-				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-					<button
-							class="story-toggle"
-							data-cy="toggle-disabled"
-							@click="toggleDisabled = !toggleDisabled"
-					>
-						Toggle (disabled)
-					</button>
-					<origam-transition transition="origam-transition--fade" disabled>
-						<div
-								v-if="toggleDisabled"
-								class="story-target"
-								data-cy="target-disabled"
-						>
-							No animation
-						</div>
-					</origam-transition>
-				</div>
-			</template>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; transition?: string }>({
@@ -125,6 +46,100 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — transition (string name)">
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+					<button
+							class="story-toggle"
+							data-cy="toggle-default"
+							@click="toggleDefault = !toggleDefault"
+					>
+						Toggle
+					</button>
+					<origam-transition transition="origam-transition--fade">
+						<div
+								v-if="toggleDefault"
+								class="story-target"
+								data-cy="target-default"
+						>
+							Fade transition via CSS class name
+						</div>
+					</origam-transition>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — transition (component object)">
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+					<button
+							class="story-toggle"
+							data-cy="toggle-component"
+							@click="toggleComponent = !toggleComponent"
+					>
+						Toggle
+					</button>
+					<origam-transition :transition="{ component: OrigamScaleRotate }">
+						<div
+								v-if="toggleComponent"
+								class="story-target"
+								data-cy="target-component"
+						>
+							Component-driven transition
+						</div>
+					</origam-transition>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+					<button
+							class="story-toggle"
+							data-cy="toggle-disabled"
+							@click="toggleDisabled = !toggleDisabled"
+					>
+						Toggle
+					</button>
+					<origam-transition transition="origam-transition--fade" disabled>
+						<div
+								v-if="toggleDisabled"
+								class="story-target"
+								data-cy="target-disabled"
+						>
+							No animation — instant show/hide
+						</div>
+					</origam-transition>
+				</div>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<button
+						class="story-toggle"
+						data-cy="toggle-slot-default"
+						@click="toggleSlotDefault = !toggleSlotDefault"
+				>
+					Toggle
+				</button>
+				<origam-transition transition="origam-transition--fade">
+					<div
+							v-if="toggleSlotDefault"
+							class="story-target"
+							data-cy="target-slot-default"
+					>
+						<span>Custom slot content</span>
+					</div>
+				</origam-transition>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -138,10 +153,11 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
-	const toggleComponent = ref(false)
-	const toggleDisabled = ref(false)
-	const togglePlayground = ref(false)
+	const toggleDefault     = ref(false)
+	const toggleComponent   = ref(false)
+	const toggleDisabled    = ref(false)
+	const togglePlayground  = ref(false)
+	const toggleSlotDefault = ref(false)
 
 	const transitionList: Array<IOptions<string>> = [
 		{ label: 'fade',                    value: 'origam-transition--fade' },
@@ -169,8 +185,8 @@
 	.story-target {
 		padding: 12px 16px;
 		border-radius: 6px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06));
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 	}
 </style>
 

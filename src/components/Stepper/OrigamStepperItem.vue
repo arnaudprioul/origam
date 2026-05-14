@@ -8,7 +8,6 @@
 			:disabled="isClickable && resolvedStatus === 'active' ? true : undefined"
 			@click="handleClick"
 	>
-		<!-- Indicator (number / icon / checkmark / error) -->
 		<span
 				:class="indicatorClasses"
 				aria-hidden="true"
@@ -27,7 +26,6 @@
 			</template>
 		</span>
 
-		<!-- Label area -->
 		<span class="origam-stepper-item__label">
 			<span
 					v-if="title"
@@ -53,6 +51,10 @@
 	import { useProps } from '../../composables'
 
 	import type { IStepperItemProps } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IStepperItemProps>(), {
 		index: 0
@@ -90,6 +92,10 @@
 		return 'pending'
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = () => {
 		if (!isClickable.value) return
 		emit('click', props.index ?? 0)
@@ -98,8 +104,9 @@
 		}
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const orientation = computed(() => stepper?.orientation.value ?? 'horizontal')
 
 	const itemClasses = computed(() => [
@@ -117,8 +124,9 @@
 		`origam-stepper-item__indicator--${resolvedStatus.value}`
 	])
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		resolvedStatus
@@ -155,9 +163,9 @@
 			}
 
 			&:focus-visible {
-				outline: 2px solid var(--origam-stepper---indicator-active-bg, var(--origam-color-action-primary-bg));
+				outline: 2px solid var(--origam-stepper---indicator-active-bg, var(--origam-color__action--primary---bg));
 				outline-offset: 2px;
-				border-radius: var(--origam-radius-full, 9999px);
+				border-radius: var(--origam-radius---full, 9999px);
 			}
 		}
 
@@ -167,14 +175,14 @@
 			justify-content: center;
 			width: var(--origam-stepper---indicator-size, 32px);
 			height: var(--origam-stepper---indicator-size, 32px);
-			border-radius: var(--origam-radius-full, 9999px);
+			border-radius: var(--origam-radius---full, 9999px);
 			font-size: var(--origam-stepper---indicator-font-size, 0.75rem);
 			font-weight: var(--origam-stepper---indicator-font-weight, 500);
 			flex-shrink: 0;
 			transition: background-color 0.2s ease, color 0.2s ease;
 
-			background-color: var(--origam-stepper---indicator-bg, var(--origam-color-surface-overlay));
-			color: var(--origam-stepper---indicator-color, var(--origam-color-text-secondary));
+			background-color: var(--origam-stepper---indicator-bg, var(--origam-color__surface---overlay));
+			color: var(--origam-stepper---indicator-color, var(--origam-color__text---secondary));
 			border: var(--origam-stepper---indicator-border-width, 2px) solid currentColor;
 
 			:deep(.origam-icon) {
@@ -182,22 +190,30 @@
 				line-height: 1;
 			}
 
-			&--active {
-				background-color: var(--origam-stepper---indicator-active-bg, var(--origam-color-action-primary-bg));
-				color: var(--origam-stepper---indicator-active-color, var(--origam-color-action-primary-fg));
-				border-color: var(--origam-stepper---indicator-active-bg, var(--origam-color-action-primary-bg));
-			}
-
+			&--active,
 			&--done {
-				background-color: var(--origam-stepper---indicator-done-bg, var(--origam-color-action-primary-bg));
-				color: var(--origam-stepper---indicator-done-color, var(--origam-color-action-primary-fg));
-				border-color: var(--origam-stepper---indicator-done-bg, var(--origam-color-action-primary-bg));
+				color: var(
+					--origam-stepper---color,
+					var(--origam-color__action--primary---bg)
+				);
+				border-color: var(
+					--origam-stepper---color,
+					var(--origam-color__action--primary---bg)
+				);
+				background-color: var(
+					--origam-stepper---background-color,
+					color-mix(
+						in srgb,
+						var(--origam-stepper---color, var(--origam-color__action--primary---bg)) 16%,
+						transparent
+					)
+				);
 			}
 
 			&--error {
-				background-color: var(--origam-stepper---indicator-error-bg, var(--origam-color-feedback-danger-bg));
-				color: var(--origam-stepper---indicator-error-color, var(--origam-color-feedback-danger-fg));
-				border-color: var(--origam-stepper---indicator-error-bg, var(--origam-color-feedback-danger-bg));
+				background-color: var(--origam-stepper---indicator-error-bg, var(--origam-color__feedback--danger---bg));
+				color: var(--origam-stepper---indicator-error-color, var(--origam-color__feedback--danger---fg));
+				border-color: var(--origam-stepper---indicator-error-bg, var(--origam-color__feedback--danger---bg));
 			}
 		}
 
@@ -209,8 +225,6 @@
 			min-width: 0;
 		}
 
-		// Vertical orientation: items flex row (indicator left, label right)
-		// and labels align to start.
 		&--vertical {
 			flex-direction: row;
 			align-items: flex-start;
@@ -225,7 +239,7 @@
 		&__title {
 			font-size: var(--origam-stepper---title-font-size, 0.875rem);
 			font-weight: var(--origam-stepper---title-font-weight, 500);
-			color: var(--origam-stepper---title-color, var(--origam-color-text-primary));
+			color: var(--origam-stepper---title-color, var(--origam-color__text---primary));
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -234,7 +248,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-stepper---subtitle-font-size, 0.75rem);
-			color: var(--origam-stepper---subtitle-color, var(--origam-color-text-secondary));
+			color: var(--origam-stepper---subtitle-color, var(--origam-color__text---secondary));
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;

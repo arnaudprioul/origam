@@ -12,13 +12,26 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useAttrs } from 'vue'
-	import { useBothColor, useMargin, useProps } from '../../composables'
+	import {
+	useBothColor,
+	useMargin,
+	useProps,
+	useStyle
+} from '../../composables'
 	import { DIRECTION } from '../../enums'
 
 	import type { IDividerProps } from '../../interfaces'
 
 	import { convertToUnit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and attrs setup. Orientation and role are derived from
+	 * the HTML `role` attribute so screen readers can override the
+	 * separator semantics when needed.
+	 ********************************************************/
 	const attrs = useAttrs()
 
 	const props = withDefaults(defineProps<IDividerProps>(), {
@@ -27,6 +40,12 @@
 
 	const {filterProps} = useProps<IDividerProps>(props)
 
+	/*********************************************************
+	 * Accessibility
+	 *
+	 * @description
+	 * Computes aria-orientation and role for the <hr> element.
+	 ********************************************************/
 	const dividerOrientation = computed(() => {
 		return !attrs.role || attrs.role === 'separator'
 				? props.direction
@@ -36,10 +55,26 @@
 		return `${attrs.role || 'separator'}`
 	})
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {marginClasses, marginStyles} = useMargin(props)
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * dividerClasses and dividerStyles computed properties.
+	 * Length and thickness are forwarded as CSS custom properties.
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {marginClasses, marginStyles} = useMargin(props)
 
 	const dividerClasses = computed(() => {
 		return [
@@ -48,6 +83,7 @@
 			{
 				'origam-divider--inset': props.inset
 			},
+			colorClasses.value,
 			marginClasses.value,
 			props.class
 		]
@@ -69,11 +105,22 @@
 
 		return styles as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dividerStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -91,8 +138,6 @@
 		transition: inherit;
 		border-style: solid;
 
-		// Per-side longhands so the inline `--origam-divider---border-{top|right}-width`
-		// vars set by the script (length/thickness) actually take effect.
 		border-top-width: var(--origam-divider---border-top-width, thin);
 		border-right-width: 0;
 		border-bottom-width: 0;
@@ -114,8 +159,6 @@
 			width: 0px;
 		}
 
-		// Inset — indents the divider from both ends by 16px so it doesn't
-		// extend to the full container edge (useful inside lists/cards).
 		&--inset {
 			margin-inline-start: var(--origam-divider--inset---margin-inline-start, 16px);
 			max-width: calc(100% - var(--origam-divider--inset---margin-inline-start, 16px));

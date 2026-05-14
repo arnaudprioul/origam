@@ -3,79 +3,8 @@
 			group="components"
 			title="Slide/OrigamSlideGroup"
 	>
+		<!-- ── Playground ───────────────────────────────────────────────── -->
 
-		<!-- ════════════ DEFAULT (horizontal scroller) ════════════ -->
-		<Variant title="Default">
-			<div class="story-shell" data-cy="slidegroup-default">
-				<origam-slide-group :style="hostStyle" data-cy="slidegroup-default-host">
-					<div
-							v-for="n in 25"
-							:key="n"
-							class="story-tag"
-							:data-cy="`tag-default-${n}`"
-					>Tag {{ n }}</div>
-				</origam-slide-group>
-			</div>
-		</Variant>
-
-		<!-- ════════════ DIRECTION (horizontal vs vertical) ════════════ -->
-		<Variant
-				title="Direction"
-				:init-state="() => useStoryInitState<{ direction: TDirection }>({ direction: DIRECTION.HORIZONTAL })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="slidegroup-direction">
-					<origam-slide-group
-							:direction="state.direction"
-							:style="state.direction === DIRECTION.VERTICAL ? hostStyleVertical : hostStyle"
-							data-cy="slidegroup-direction-host"
-					>
-						<div
-								v-for="n in 25"
-								:key="n"
-								class="story-tag"
-								:data-cy="`tag-direction-${n}`"
-						>Tag {{ n }}</div>
-					</origam-slide-group>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ SHOW ARROWS (always / never / overflow) ════════════ -->
-		<Variant
-				title="Show arrows"
-				:init-state="() => useStoryInitState<{ showArrows: boolean | string }>({ showArrows: 'always' })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="slidegroup-show-arrows">
-					<origam-slide-group :show-arrows="state.showArrows" :style="hostStyle" data-cy="slidegroup-arrows-host">
-						<div
-								v-for="n in 25"
-								:key="n"
-								class="story-tag"
-								:data-cy="`tag-arrows-${n}`"
-						>Tag {{ n }}</div>
-					</origam-slide-group>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.showArrows" title="showArrows" :options="showArrowsList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ NO OVERFLOW (small content, arrows hidden) ════════════ -->
-		<Variant title="No overflow">
-			<div class="story-shell" data-cy="slidegroup-no-overflow">
-				<origam-slide-group :style="hostStyle" data-cy="slidegroup-no-overflow-host">
-					<div v-for="n in 3" :key="n" class="story-tag" :data-cy="`tag-no-overflow-${n}`">Tag {{ n }}</div>
-				</origam-slide-group>
-			</div>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ direction: TDirection, showArrows: boolean | string, centerActive: boolean }>({
@@ -108,6 +37,130 @@
 				<HstCheckbox v-model="state.centerActive" title="centerActive"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — default (horizontal overflow)">
+			<div class="story-shell" data-cy="slidegroup-default">
+				<origam-slide-group :style="hostStyle" data-cy="slidegroup-default-host">
+					<div
+							v-for="n in 25"
+							:key="n"
+							class="story-tag"
+							:data-cy="`tag-default-${n}`"
+					>Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — direction"
+				:init-state="() => useStoryInitState<{ direction: TDirection }>({ direction: DIRECTION.HORIZONTAL })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="slidegroup-direction">
+					<origam-slide-group
+							:direction="state.direction"
+							:style="state.direction === DIRECTION.VERTICAL ? hostStyleVertical : hostStyle"
+							data-cy="slidegroup-direction-host"
+					>
+						<div
+								v-for="n in 25"
+								:key="n"
+								class="story-tag"
+								:data-cy="`tag-direction-${n}`"
+						>Tag {{ n }}</div>
+					</origam-slide-group>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — showArrows"
+				:init-state="() => useStoryInitState<{ showArrows: boolean | string }>({ showArrows: 'always' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="slidegroup-show-arrows">
+					<origam-slide-group :show-arrows="state.showArrows" :style="hostStyle" data-cy="slidegroup-arrows-host">
+						<div
+								v-for="n in 25"
+								:key="n"
+								class="story-tag"
+								:data-cy="`tag-arrows-${n}`"
+						>Tag {{ n }}</div>
+					</origam-slide-group>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.showArrows" title="showArrows" :options="showArrowsList"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — no overflow (few items)">
+			<div class="story-shell" data-cy="slidegroup-no-overflow">
+				<origam-slide-group :style="hostStyle" data-cy="slidegroup-no-overflow-host">
+					<div v-for="n in 3" :key="n" class="story-tag" :data-cy="`tag-no-overflow-${n}`">Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="slidegroup-slot-default">
+				<origam-slide-group :style="hostStyle" data-cy="slidegroup-slot-default-host">
+					<span>Custom slot content</span>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — next">
+			<div class="story-shell" data-cy="slidegroup-slot-next">
+				<origam-slide-group show-arrows="always" :style="hostStyle" data-cy="slidegroup-slot-next-host">
+					<template #next>
+						<button class="story-tag" data-cy="slidegroup-slot-next-btn">Next &rsaquo;</button>
+					</template>
+					<div v-for="n in 25" :key="n" class="story-tag" :data-cy="`tag-slot-next-${n}`">Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prev">
+			<div class="story-shell" data-cy="slidegroup-slot-prev">
+				<origam-slide-group show-arrows="always" :style="hostStyle" data-cy="slidegroup-slot-prev-host">
+					<template #prev>
+						<button class="story-tag" data-cy="slidegroup-slot-prev-btn">&lsaquo; Prev</button>
+					</template>
+					<div v-for="n in 25" :key="n" class="story-tag" :data-cy="`tag-slot-prev-${n}`">Tag {{ n }}</div>
+				</origam-slide-group>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — update:modelValue">
+			<div class="story-shell" data-cy="slidegroup-emit-update">
+				<origam-slide-group
+						v-model="emitModel"
+						:style="hostStyle"
+						data-cy="slidegroup-emit-update-host"
+						@update:modelValue="logEvent('update:modelValue', $event)"
+				>
+					<div
+							v-for="n in 10"
+							:key="n"
+							class="story-tag"
+							:data-cy="`tag-emit-${n}`"
+							style="cursor: pointer;"
+					>Tag {{ n }}</div>
+				</origam-slide-group>
+				<div data-cy="slidegroup-emit-status">modelValue = {{ emitModel }}</div>
+			</div>
+		</Variant>
+
 	</Story>
 </template>
 
@@ -115,7 +168,8 @@
 		lang="ts"
 		setup
 >
-	import { type CSSProperties } from 'vue'
+	import { type CSSProperties, ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamSlideGroup } from '@origam/components'
 	import { DIRECTION } from '@origam/enums'
@@ -137,10 +191,12 @@
 		{ label: 'false (never)',        value: false },
 	]
 
+	const emitModel = ref<number | null>(null)
+
 	const hostStyle: CSSProperties = {
 		width: '100%',
 		maxWidth: '480px',
-		border: '1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12))',
+		border: '1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))',
 		borderRadius: '6px',
 		padding: '8px',
 	}
@@ -158,8 +214,8 @@
 		padding: 8px 14px;
 		margin: 0 6px;
 		border-radius: 999px;
-		background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06));
-		border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12));
+		background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06));
+		border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12));
 		font: 0.875rem/1 system-ui, sans-serif;
 		white-space: nowrap;
 	}

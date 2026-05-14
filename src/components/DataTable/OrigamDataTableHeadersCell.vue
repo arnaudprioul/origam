@@ -28,18 +28,26 @@
 >
 	import { OrigamDataTableHeaderCell } from '../../components'
 
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 
 	import type { IDataTableHeadersCellProps } from '../../interfaces'
 	import type { TOrigamDataTableHeaderCell } from "../../types"
 
 	import { computed, ref, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})
 
 	const {filterProps} = useProps<IDataTableHeadersCellProps>(props)
 
 	const origamDataTableHeaderCellRef = ref<Array<TOrigamDataTableHeaderCell>>()
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const dataTableHeaderCellProps = computed(() => {
 		// Pre-fix this used `Array.prototype.some()` to "iterate" the
@@ -56,8 +64,9 @@
 		return origamDataTableHeaderCellRef.value?.[0]?.filterProps(props)
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableHeadersCellClasses = computed(() => {
 		return [
 			props.class
@@ -68,10 +77,18 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

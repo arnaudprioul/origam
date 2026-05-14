@@ -38,11 +38,6 @@ function applyToDocument (theme: TTheme) {
     }
 }
 
-function resolveAuto (): TThemeResolved {
-    if (typeof window === 'undefined') return 'light'
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
 /**
  * `useTheme()` returns a shared, reactive theme handle.
  *
@@ -56,6 +51,10 @@ function resolveAuto (): TThemeResolved {
  * The composable does NOT auto-mount a media-query listener at import time
  * (SSR safety). It does so on `onMounted` and cleans up on `onUnmounted`.
  */
+
+/*********************************************************
+ * useTheme
+ ********************************************************/
 export function useTheme () {
     if (_theme === null) {
         _theme = ref<TTheme>(readPersisted())
@@ -113,6 +112,10 @@ export function useTheme () {
  * Internal helper for SSR / no-flash plugins: apply a theme to the document
  * synchronously (called BEFORE first render). Bypasses Vue reactivity.
  */
+
+/*********************************************************
+ * applyThemeSync
+ ********************************************************/
 export function applyThemeSync (theme: TTheme) {
     applyToDocument(theme)
 }
@@ -121,6 +124,10 @@ export function applyThemeSync (theme: TTheme) {
  * Internal helper for SSR / no-flash plugins: read the persisted theme from
  * localStorage without instantiating the composable.
  */
+
+/*********************************************************
+ * readPersistedTheme
+ ********************************************************/
 export function readPersistedTheme (): TTheme {
     return readPersisted()
 }

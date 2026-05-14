@@ -4,7 +4,6 @@
 			title="Window/OrigamWindowItem"
 	>
 
-		<!-- ════════════ DEFAULT (selected via parent) ════════════ -->
 		<Variant title="Default">
 			<div class="story-shell" data-cy="windowitem-default">
 				<origam-window v-model="defaultStep" :style="hostStyle">
@@ -22,7 +21,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ DISABLED (item is skipped by group) ════════════ -->
 		<Variant title="Disabled">
 			<div class="story-shell" data-cy="windowitem-disabled">
 				<origam-window v-model="disabledStep" :style="hostStyle">
@@ -40,7 +38,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ TRANSITION (false / custom name) ════════════ -->
 		<Variant
 				title="Transition"
 				:init-state="() => useStoryInitState<{ transition: string | boolean | undefined, step: number }>({ transition: undefined, step: 1 })"
@@ -59,7 +56,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ step: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ step: 1, transition: undefined, reverseTransition: undefined })"
@@ -85,6 +81,43 @@
 				<HstSelect v-model="state.reverseTransition" title="reverseTransition" :options="transitionList"/>
 			</template>
 		</Variant>
+
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell" data-cy="windowitem-slot-default">
+				<origam-window v-model="slotStep" :style="hostStyle">
+					<origam-window-item :value="1" data-cy="item-slot-default-1">
+						<template #default>
+							<span>Custom slot content</span>
+						</template>
+					</origam-window-item>
+					<origam-window-item :value="2" data-cy="item-slot-default-2">
+						<div :style="slideStyle(1)">Slide 2</div>
+					</origam-window-item>
+				</origam-window>
+				<div class="story-status">Active: <strong>{{ slotStep }}</strong></div>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — group:selected">
+			<div class="story-shell" data-cy="windowitem-emit-selected">
+				<origam-window v-model="emitStep" show-arrows :style="hostStyle">
+					<origam-window-item
+							v-for="n in 3"
+							:key="n"
+							:value="n"
+							:data-cy="`item-emit-selected-${n}`"
+							@group:selected="logEvent('group:selected', $event)"
+					>
+						<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
+					</origam-window-item>
+				</origam-window>
+				<div class="story-status">Active: <strong>{{ emitStep }}</strong></div>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -93,14 +126,17 @@
 		setup
 >
 	import { ref, type CSSProperties } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamWindow, OrigamWindowItem } from '@origam/components'
 	import type { IOptions } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultStep = ref(1)
+	const defaultStep  = ref(1)
 	const disabledStep = ref(1)
+	const slotStep     = ref(1)
+	const emitStep     = ref(1)
 
 	const transitionList: Array<IOptions<string | boolean | undefined>> = [
 		{ label: '(default — inherit window axis)', value: undefined },
@@ -112,9 +148,9 @@
 	const hostStyle: CSSProperties = {
 		width: '100%',
 		height: '180px',
-		border: '1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12))',
+		border: '1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))',
 		borderRadius: '6px',
-		backgroundColor: 'var(--origam-color-surface-default, rgba(0, 0, 0, 0.03))',
+		backgroundColor: 'var(--origam-color__surface---default, rgba(0, 0, 0, 0.03))',
 	}
 
 	const palette = ['#5B8DEF', '#22C55E', '#F59E0B', '#EF4444']
@@ -135,7 +171,7 @@
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; }
-	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color-text-secondary, rgba(0, 0, 0, 0.66)); }
+	.story-status { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66)); }
 </style>
 
 <docs lang="md" src="@docs/components/Window/OrigamWindowItem.md"/>

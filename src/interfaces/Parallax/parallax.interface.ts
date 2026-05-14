@@ -2,6 +2,7 @@ import type {
     IAudioProps,
     IBorderProps,
     IBox,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDimensionProps,
@@ -21,7 +22,7 @@ import type { Ref } from 'vue'
 // `--color` from the design tokens (added in 2931d43); declaring the
 // props here lets the consumer override them per-instance via inline
 // styles, matching every other coloured component.
-export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IAudioProps {
+export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IAudioProps {
     /**
      * @deprecated Use `duration` instead. `animationDuration` is kept as a
      * silent alias for backwards-compat and will be removed in v3.0.0.

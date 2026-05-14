@@ -12,7 +12,7 @@
 		>
 			<circle
 					:r="MAGIC_RADIUS"
-					:class="['origam-progress__underlay', backgroundColorClasses]"
+					:class="progressUnderlayClasses"
 					:stroke-dasharray="CIRCUMFERENCE"
 					:stroke-width="strokeWidth"
 					:style="backgroundStyles"
@@ -24,7 +24,7 @@
 
 			<circle
 					:r="MAGIC_RADIUS"
-					:class="['origam-progress__overlay', loaderColorClasses]"
+					:class="progressOverlayClasses"
 					:stroke-dasharray="CIRCUMFERENCE"
 					:stroke-dashoffset="strokeDashOffset"
 					:stroke-width="strokeWidth"
@@ -58,8 +58,9 @@
 		useProps,
 		useResizeObserver,
 		useSize,
+		useStyle,
 		useTextColor
-	} from '../../composables'
+} from '../../composables'
 
 	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts'
 
@@ -69,10 +70,16 @@
 
 	import { SIZES } from '../../enums'
 
-	// Default size to `SIZES.DEFAULT` so the SCSS rule
-	// `.origam-progress--circular.origam-progress--size-default { width: 32px; height: 32px }`
-	// pins a width/height — without this the SVG (position: absolute) collapses
-	// to 0×0 and the component renders invisible.
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filterProps for the ProgressCircular component.
+	 * Default size to `SIZES.DEFAULT` so the SCSS rule
+	 * `.origam-progress--circular.origam-progress--size-default`
+	 * pins width/height — without this the SVG (position: absolute)
+	 * collapses to 0×0 and the component renders invisible.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressCircularProps>(), {
 		tag: 'div',
 		modelValue: 0,
@@ -83,21 +90,50 @@
 
 	const {filterProps} = useProps<IProgressCircularProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Root element ref for resize / intersection observers.
+	 ********************************************************/
+	const root = ref<HTMLElement>()
+
+	/*********************************************************
+	 * Decorators & size
+	 *
+	 * @description
+	 * Progress composable, resize / intersection observers, size
+	 * and color utilities.
+	 * Pass an explicit name so `useSize` emits
+	 * `origam-progress--size-{size}`, matching the SCSS rule
+	 * `.origam-progress--circular.origam-progress--size-x` —
+	 * otherwise the class would be `origam-progress-circular--size-x`
+	 * and the pinned width/height would never apply (0×0 SVG).
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {progressClasses, progressStyles, normalizedValue, thickness, hasContent} = useProgress(props)
 	const {resizeRef, contentRect} = useResizeObserver()
 	const {intersectionRef} = useIntersectionObserver()
-	// Pass an explicit name so `useSize` emits `origam-progress--size-{size}`,
-	// matching the SCSS rule `.origam-progress--circular.origam-progress--size-x` —
-	// otherwise the class would be `origam-progress-circular--size-x` and the
-	// pinned width/height would never apply (resulting in a 0×0 SVG).
 	const {sizeStyles, sizeClasses} = useSize(props, 'origam-progress')
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 
-	const root = ref<HTMLElement>()
-
+	/*********************************************************
+	 * SVG geometry
+	 *
+	 * @description
+	 * Derived dimensions for the circular SVG track.
+	 ********************************************************/
 	const size = computed(() => {
-		// Get size from element if size prop value is small, large etc
 		if (sizeStyles.value.length) {
 			return Number(props.size)
 		}
@@ -126,13 +162,30 @@
 		resizeRef.value = root.value
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * progressCircularStyles and progressCircularClasses compose
+	 * the BEM block.
+	 ********************************************************/
 	const progressCircularStyles = computed(() => {
 		return [
 			progressStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const progressUnderlayClasses = computed(() => {
+		return [
+			'origam-progress__underlay',
+			backgroundColorClasses.value
+		]
+	})
+	const progressOverlayClasses = computed(() => {
+		return [
+			'origam-progress__overlay',
+			loaderColorClasses.value
+		]
 	})
 	const progressCircularClasses = computed(() => {
 		return [
@@ -155,11 +208,22 @@
 			loaderColorStyles.value
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(progressCircularStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -167,7 +231,6 @@
 		lang="scss"
 		scoped
 >
-	// TODO - use css variables
 	.origam-progress {
 		$this: &;
 
@@ -197,7 +260,7 @@
 			}
 
 			#{$this}__underlay {
-				color: var(--origam-progress-circular__underlay---color, var(--origam-color-surface-disabled));
+				color: var(--origam-progress-circular__underlay---color, var(--origam-color__surface---disabled));
 				stroke: currentColor;
 				opacity: var(--origam-progress-circular__underlay---opacity, 0.5);
 				z-index: 1;

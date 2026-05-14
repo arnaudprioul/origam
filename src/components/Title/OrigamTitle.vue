@@ -18,15 +18,40 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { useBorder, useBothColor, useDensity, useMargin, usePadding, useProps } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { ITitleProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITitleProps>(), {tag: 'h1'})
 
 	const {filterProps} = useProps<ITitleProps>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const slots = useSlots()
 	const {borderClasses, borderStyles} = useBorder(props)
@@ -37,8 +62,12 @@
 		return slots.default || props.text
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const titleStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -51,6 +80,7 @@
 	const titleClasses = computed(() => {
 		return [
 			'origam-title',
+			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -58,11 +88,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(titleStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -79,13 +120,6 @@
 		margin-block-start: var(--origam-title---margin-block-start);
 		margin-block-end:   var(--origam-title---margin-block-end);
 
-		// Density rungs — map the browser-native h1..h6 font-size scale to
-		// the `font-size-xs .. font-size-3xl` tokens. Each rung maps one
-		// heading level so the visual hierarchy stays intact across densities.
-		//
-		//   compact      → tag-based sizes stepped down one notch (xs/sm/md/lg/xl/2xl/3xl)
-		//   default      → token defaults applied per heading level
-		//   comfortable  → tag-based sizes stepped up one notch
 		&--density-compact {
 			font-size: var(--origam-title---font-size-xs);
 		}

@@ -40,17 +40,6 @@
 					/>
 				</div>
 
-				<!--
-					Clear button — visible only when `clearable` is on
-					AND there's a value to clear. Pre-fix the only way
-					to reset the rating was to click the SAME star a
-					second time (a hidden Vuetify-style affordance) —
-					user reported "clearable sur ratingField ne sert a
-					rien" because nothing in the UI hinted at it. Now
-					exposed as an explicit icon button next to the row
-					so the affordance is discoverable. The "click same
-					star to clear" path still works for power users.
-				-->
 				<origam-btn
 						v-if="clearable && normalizedValue > 0 && !disabled && !readonly"
 						:aria-label="t('origam.rating.clear')"
@@ -159,7 +148,12 @@
 	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamBtn, OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
 
-	import { useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
 
@@ -169,6 +163,12 @@
 
 	import { clamp, createRange, filterInputAttrs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the RatingField component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRatingFieldProps>(), {
 		length: 5,
 		modelValue: 0,
@@ -182,15 +182,38 @@
 
 	const {filterProps} = useProps<IRatingFieldProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Refs to sub-components for forward-prop delegation.
+	 ********************************************************/
 	const origamInputRef = ref<TOrigamInput>()
 	const origamRatingFieldItemRef = ref<TOrigamRatingFieldItem>()
 
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * Slots, locale, v-model binding and attrs.
+	 ********************************************************/
 	const slots = useSlots()
 	const {t} = useLocale()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
 	const attrs = useAttrs()
 
+	/*********************************************************
+	 * Range & items
+	 *
+	 * @description
+	 * Derived ranges, increments, item name and hover state
+	 * for the rating items row.
+	 ********************************************************/
 	const normalizedValue = computed(() => {
 		return clamp(parseFloat(model.value), 0, +props.length)
 	})
@@ -242,6 +265,12 @@
 		return normalizedValue.value === value
 	}
 
+	/*********************************************************
+	 * Label position
+	 *
+	 * @description
+	 * Whether item labels appear above or below the star row.
+	 ********************************************************/
 	const hasLabels = computed(() => {
 		return !!props.itemLabels?.length || slots.itemLabel
 	})
@@ -252,14 +281,25 @@
 		return props.itemLabelPosition === BLOCK.BOTTOM
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 *
+	 * @description
+	 * Attrs split between root and control; props forwarded to
+	 * Input sub-component via filterProps.
+	 ********************************************************/
 	const [rootAttrs, _controlAttrs] = filterInputAttrs(attrs)
 
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'focused'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * ratingFieldStyles and ratingFieldClasses compose the BEM block.
+	 ********************************************************/
 	const ratingFieldStyles = computed(() => {
 		return [
 			props.style
@@ -275,11 +315,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

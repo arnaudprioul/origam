@@ -111,12 +111,6 @@
 										:items="displayItems"
 										renderless
 								>
-									<!-- Slot name MUST be `item.renderless` (with a dot) —
-									     OrigamVirtualScroll declares `<slot name="item.renderless">`
-									     and `<slot name="item.renderless.${index}">`. The previous
-									     `#item:renderless` (colon) parsed as a different slot name
-									     and never matched, so the v-for produced zero items in the
-									     dropdown — the menu opened but the list was empty. -->
 									<template #item.renderless="{item, index, itemRef}">
 										<slot
 												name="item"
@@ -127,7 +121,7 @@
 													v-bind="menuListItemProps(item, itemRef, index)"
 											>
 												<template
-														v-if="showCheckbox || item.props.prependAvatar || item.props.prependIcon"
+														v-if="showCheckbox || item.prependAvatar || item.prependIcon"
 														#prepend="{isSelected}"
 												>
 													<origam-checkbox-btn
@@ -138,13 +132,13 @@
 													/>
 
 													<origam-avatar
-															v-if="item.props.prependAvatar"
-															:image="item.props.prependAvatar"
+															v-if="item.prependAvatar"
+															:image="item.prependAvatar"
 													/>
 
 													<origam-icon
-															v-if="item.props.prependIcon"
-															:icon="item.props.prependIcon"
+															v-if="item.prependIcon"
+															:icon="item.prependIcon"
 													/>
 												</template>
 
@@ -181,9 +175,8 @@
 					:key="index"
 			>
 				<div
-						:class="{'origam-select__selection--selected' : index === selectionIndex}"
+						:class="getSelectionClasses(index)"
 						:style="[textColorStyles]"
-						class="origam-select__selection"
 				>
 					<template v-if="hasChips">
 						<slot
@@ -264,9 +257,7 @@
 			<slot name="append"/>
 		</template>
 	</origam-text-field>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -298,7 +289,16 @@
 		OrigamVirtualScroll
 	} from '../../components'
 
-	import { useFilter, useItems, useLocale, useProps, useScrolling, useTextColor, useVModel } from '../../composables'
+	import {
+	useFilter,
+	useItems,
+	useLocale,
+	useProps,
+	useScrolling,
+	useStyle,
+	useTextColor,
+	useVModel
+} from '../../composables'
 
 	import { IN_BROWSER, ORIGAM_FORM_KEY } from '../../consts'
 
@@ -326,6 +326,12 @@
 
 	import { deepEqual, forwardRefs, matchesSelector, noop, wrapInArray } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the Select component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISelectProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
@@ -356,6 +362,16 @@
 
 	const {filterProps} = useProps<ISelectProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Refs to sub-components for forward-prop delegation.
+	 * `vm` is the component instance — used as a fallback path
+	 * to reach the underlying `<input>` when the forwardRefs-
+	 * based proxy on `origamTextFieldRef` doesn't expose `$el`
+	 * (filtered because of its `$` prefix).
+	 ********************************************************/
 	const {t} = useLocale()
 
 	const origamTextFieldRef = ref<TOrigamTextField>()
@@ -371,11 +387,36 @@
 	// because of its `$` prefix).
 	const vm = getCurrentInstance()
 
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * Locale, slots, color, items, model and search bindings.
+	 ********************************************************/
 	const slots = useSlots()
 
-	const {textColorStyles} = useTextColor(toRef(props, 'color'))
+	// Phase 3 (Vague B) — class-first companion alongside inline styles.
+	// When `color` resolves to a tokenisable intent, `textColorClasses`
+	// hits `.origam--color-{intent}` on the selection chip; `textColorStyles`
+	// stays in parallel to cover legacy raw colors and to keep zero-regression
+	// during the transition (strategy "a").
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {items, transformIn, transformOut} = useItems(props as IItemProps)
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -485,6 +526,10 @@
 		onListScroll: handleListScroll,
 		onListKeydown: handleListKeydown
 	} = useScrolling(origamListRef, origamTextFieldRef)
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleSelect = (item: IInternalListItem, set: boolean | null = true) => {
 		if (item.props?.disabled) return
@@ -739,8 +784,13 @@
 		e.preventDefault()
 	}
 
-	// CHIPS
-
+	/*********************************************************
+	 * Chips
+	 *
+	 * @description
+	 * Chip slot props and chip event handlers (close, keydown,
+	 * mousedown) for the multi-select chip display mode.
+	 ********************************************************/
 	const hasChips = computed(() => {
 		return props.chips || slots.chip
 	})
@@ -876,6 +926,10 @@
 		return !props.hideNoData || displayItems.value.length || slots.prependItem || slots.appendItem || slots.noData
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
@@ -890,13 +944,24 @@
 		return menu.value ? props.closeText : props.openText
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * selectStyles and selectClasses compose the BEM block.
+	 ********************************************************/
 	const selectStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
 	})
+	const getSelectionClasses = (index: number) => {
+		return [
+			'origam-select__selection',
+			{ 'origam-select__selection--selected': index === selectionIndex.value },
+			textColorClasses.value
+		]
+	}
 	const selectClasses = computed(() => {
 		return [
 			'origam-select',
@@ -910,14 +975,26 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(selectStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps and imperative handles to parent ref
+	 * consumers, forwarded through origamTextFieldRef.
+	 ********************************************************/
 	defineExpose(forwardRefs({
 		filterProps,
 		isFocused,
 		menu,
-		handleSelect
+		handleSelect,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	}, origamTextFieldRef))
 </script>
 
@@ -1023,18 +1100,6 @@
 						opacity: 1;
 						pointer-events: auto;
 						caret-color: inherit;
-						// The base Select rule pins the input to
-						// `position: absolute` so it sits as an invisible
-						// a11y proxy. Autocomplete needs it BACK in the
-						// flex flow — otherwise the typed text starts at
-						// the wrapper's BORDER (left=16) but the picked
-						// text (which uses the static-position branch
-						// when a sibling selection chip exists) sits
-						// inside the wrapper's padding (left=32). User
-						// reported the 16px jump between typing and
-						// picked states. Forcing `static` keeps the
-						// input in flow at all times → typed text and
-						// picked text both land at left=32.
 						position: static;
 					}
 				}
@@ -1075,15 +1140,6 @@
 			&#{$this}--single {
 				:deep(.origam-field) {
 					input {
-						// Pre-fix `padding-inline: inherit` cascaded the
-						// parent `.origam-field__input`'s 16px padding
-						// onto the input ON TOP of the field's own 16px
-						// outer padding AND the wrapper's 16px inner
-						// padding. Net offset before the typed text was
-						// 48px (16 + 16 + 16) — the field looked
-						// half-empty on the left after picking. Drop it;
-						// the wrapper's padding already provides the
-						// text indent.
 						left: 0;
 						right: 0;
 						padding-inline: 0;
@@ -1106,13 +1162,6 @@
 
 					&.origam-field--focused {
 						#{$this}__selection {
-							// Hide AND collapse — pre-fix the selection div
-							// only got `opacity: 0`, leaving its 66px-wide
-							// flex item still in the row. The `<input>` was
-							// pushed past the invisible chip, so the typed
-							// text appeared mid-field instead of flush with
-							// the inline padding ("Search & select" looked
-							// half-empty on the left).
 							opacity: 0;
 							position: absolute;
 							pointer-events: none;
@@ -1124,26 +1173,6 @@
 	}
 </style>
 
-<!--
-	GLOBAL rules for the teleported dropdown.
-	`<origam-menu>` mounts its content into the overlay container at the
-	end of `<body>` (Teleport), so the component-scoped `[data-v-…]`
-	attribute selectors don't reach it. We therefore expose a stable
-	hook via `content-class="origam-select__content"` and write the
-	rules in a NON-scoped block.
-
-	What we override:
-	  • Default `.origam-menu__content` is `display: inline-block` +
-	    `width: max-content`, so it shrinks to its content. For a
-	    `<select>`-like UX the dropdown body must be at least as wide
-	    as the activator. The connected location strategy already sets
-	    `min-width` on `.origam-overlay__content` to the activator's
-	    width — we force the inner visual surface to FILL the overlay
-	    so its bg / border-radius / shadow span the full width.
-	  • Drop the 320px `max-width` cap inherited from the base menu
-	    on `.origam-menu__list` so each item can extend to the full
-	    dropdown width.
--->
 <style>
 	.origam-select__content .origam-menu__content {
 		display: block;
@@ -1155,29 +1184,6 @@
 		max-width: none;
 	}
 
-	/*
-	 * Dropdown items spec — tighten the list-item baseline for the
-	 * `<select>` use-case. The default `OrigamListItem` ships with the
-	 * Material 2 list-item height (40 + 8 + 8 = 56px), which is right
-	 * for a sidebar / nav list but reads as far too sparse inside a
-	 * dropdown — five items take ~280px of vertical real-estate and
-	 * the eye has to travel between widely-spaced lines. Material 3 and
-	 * `v-select` both use 48px for menu items; we mirror that by pinning
-	 * `min-height: 32px` and trimming the block padding from 8px to 8px
-	 * (kept) — net result is 48px tall items that feel dense without
-	 * cramping the touch target.
-	 *
-	 * Inline padding bumped from 16px to 32px so the item TEXT lines up
-	 * with the field's text position (chip 16px + wrapper 16px = 32px).
-	 * Pre-fix the dropdown items started at 16px while the picked text
-	 * inside the field landed at 32px → a 16px horizontal jump every
-	 * time a user picked an item. Reported by the user when comparing
-	 * the open-dropdown screenshot to the picked-state screenshot.
-	 *
-	 * The hover/active overlay still spans the full row (it sits on the
-	 * item itself, not on its padding box) — only the title text is
-	 * inset, which matches the v-select / Material 3 visual.
-	 */
 	.origam-select__content .origam-list-item {
 		--origam-list-item---min-height: 32px;
 		--origam-list-item---padding-inline-start: 32px;

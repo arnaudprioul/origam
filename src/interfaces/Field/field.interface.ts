@@ -4,6 +4,7 @@ import type {
     IAdjacentInnerEmits,
     IAdjacentInnerProps,
     IAdjacentInnerSlots,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
@@ -14,15 +15,26 @@ import type {
     ILabelProps,
     ILoaderProps,
     IRoundedProps,
+    ISizeProps,
     IVariantProps
 } from '../../interfaces'
 
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps {
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean
-    error?: boolean
+    /**
+     * Error state for the field.
+     *   - `boolean` — paints the `--error` modifier (rules-driven flow).
+     *   - `string`  — paints the modifier AND becomes the inline error
+     *     message rendered by consumers that opt-in (e.g. FileField's
+     *     dropzone). For consumers that don't read the string, the
+     *     truthy semantics still apply.
+     *   - `false` / omitted — no error.
+     */
+    error?: string | boolean
     flat?: boolean
+    inline?: boolean
     label?: string
     prefix?: string
     suffix?: string

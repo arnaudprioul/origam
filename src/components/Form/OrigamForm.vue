@@ -56,15 +56,28 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots } from 'vue'
+	import { computed, nextTick, ref, StyleValue, useSlots } from 'vue'
 	import { OrigamMessages } from '../../components'
 
-	import { useDefaults, useForm, useMessage, useProps, useValidation } from '../../composables'
+	import {
+	useDefaults,
+	useForm,
+	useMessage,
+	useProps,
+	useStyle,
+	useValidation
+} from '../../composables'
 
 	import type { IFormEmits, IFormProps, IFormSlots, ISubmitEventPromise } from '../../interfaces'
 
 	import { forwardRefs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, and composable setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IFormProps>(), {})
 	const props = useDefaults(_props)
 
@@ -73,7 +86,6 @@
 	defineSlots<IFormSlots>()
 	const slots = useSlots()
 
-	const attrs = useAttrs()
 
 	const {filterProps} = useProps<IFormProps>(props)
 
@@ -94,6 +106,11 @@
 	 * du formulaire, et s'enregistre auprès d'un éventuel
 	 * formulaire parent (nested forms).
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		errorMessages,
 		isValid: formIsValid,
@@ -134,6 +151,10 @@
 		el.scrollIntoView(scrollOptions)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleReset = (e: Event) => {
 		e.preventDefault()
 		form.reset()
@@ -172,8 +193,12 @@
 		e.preventDefault()
 	}
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const formStyles = computed(() => {
 		return [
 			props.style
@@ -186,8 +211,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(formStyles)
 
-	defineExpose(forwardRefs({ filterProps, ...form, errorMessages, formIsValid, scrollToFirstError }, formRef))
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps and form helpers to parent components.
+	 ********************************************************/
+	defineExpose(forwardRefs({ filterProps, ...form, errorMessages, formIsValid, scrollToFirstError,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, formRef))
 </script>
 
 <style
@@ -225,14 +264,14 @@
 			#{$this}__details {
 				> .origam-messages {
 					opacity: var(--origam-form--error---icon-opacity, 1);
-					color: var(--origam-form--error---messages-color, var(--origam-color-feedback-danger-fgSubtle));
+					color: var(--origam-form--error---messages-color, var(--origam-color__feedback--danger---fgSubtle));
 				}
 			}
 
 			#{$this}__details {
 				> .origam-icon {
 					opacity: var(--origam-form--error---icon-opacity, 1);
-					color: var(--origam-form--error---icon-color, var(--origam-color-feedback-danger-fgSubtle));
+					color: var(--origam-form--error---icon-color, var(--origam-color__feedback--danger---fgSubtle));
 				}
 			}
 		}

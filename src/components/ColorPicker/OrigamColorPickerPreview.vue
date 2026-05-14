@@ -66,7 +66,7 @@
 >
 	import { OrigamBtn, OrigamSliderField } from "../../components"
 
-	import { useProps, useVModel } from "../../composables"
+	import { useProps, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_NULL, SUPPORTS_EYE_DROPPER } from "../../consts"
 
@@ -78,6 +78,14 @@
 
 	import { computed, onUnmounted, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, eye-dropper support and hue / alpha
+	 * update handlers.
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IColorPickerPreviewProps>(), {})
 
 	const emits = defineEmits(['update:colorHsv'])
@@ -85,6 +93,10 @@
 	const {filterProps} = useProps<IColorPickerPreviewProps>(props)
 
 	const abortController = new AbortController()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const colorHsv = useVModel(props, 'colorHsv', COLOR_NULL)
 
@@ -102,6 +114,10 @@
 		}
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleUpdateColorHue = (h: number) => {
 		colorHsv.value!.h = h
 		emits('update:colorHsv', {...colorHsv.value, h})
@@ -115,7 +131,12 @@
 		abortController.abort()
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM modifier classes and passes through host styles.
+	 ********************************************************/
 
 	const colorPickerPreviewStyles = computed(() => {
 		return [
@@ -131,11 +152,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerPreviewStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>

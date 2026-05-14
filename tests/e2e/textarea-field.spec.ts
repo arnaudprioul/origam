@@ -42,11 +42,17 @@ test.describe('OrigamTextareaField', () => {
     test('Counter — counter element visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Counter', { exact: true }).first().click()
+        // Pick the variant link instead of `getByText` — the latter also
+        // matches the "Counter" component button in the sidebar nav.
+        await page.getByRole('link', { name: 'Counter', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="textarea-counter"]')).toBeVisible({ timeout: 5000 })
+        // OrigamCounter is `v-show="active"` and active = persistentCounter
+        // || isFocused. Focus the textarea so the counter actually mounts
+        // visibly instead of relying on the browser auto-focusing.
+        await sandbox.locator('[data-cy="textarea-counter"] textarea').first().click()
         await expect(sandbox.locator('.origam-counter').first()).toBeVisible({ timeout: 3000 })
     })
 

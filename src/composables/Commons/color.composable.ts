@@ -1,111 +1,77 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, isRef, ref } from 'vue'
-import type { IColorProps } from "../../interfaces"
-import type { TColor, TIntent } from '../../types'
-import { getForeground, isCssColor, isParsableColor, parseColor } from '../../utils'
+import type { IBgColorProps, IColorProps } from "../../interfaces"
+import type { TBgFgRole, TColor } from '../../types'
+// Explicit `.ts` extension: a stale sibling `color.util.js` lingers in
+// the source tree (legacy build artefact) and the module resolver picks
+// it up first when no extension is given — that older file lacks the
+// recently-added intent helpers, so they resolve to `undefined` at
+// runtime. Forcing `.ts` here pins the import to the canonical source.
+// The 295 orphan `.js` files across `src/` should be cleaned up in a
+// dedicated pass.
+import {
+    getForeground,
+    isCssColor,
+    isIntent,
+    isParsableColor,
+    isUtilityIntent,
+    parseColor,
+    rawBgExprWithState,
+    tokenForegroundForIntent,
+    tokenStylesForIntent,
+    warnLegacyColor,
+} from '../../utils/Commons/color.util.ts'
 
 // ────────────────────────────────────────────────────────────────────────────
-// Intent detection (Lot 1)
+// Composable rule: ONLY `use*` functions live in this file.
+// Helper functions (isIntent, isUtilityIntent, intentBgExpr, …) and the
+// legacy-warning module state live in `src/utils/Commons/color.util.ts`.
+// Constants live in `src/consts/Commons/color.const.ts`. Types live in
+// `src/types/Commons/color.type.ts`.
+//
+// `useColorEffect` accepts both raw CSS colors (legacy) and semantic
+// intents. When an intent is provided, we emit references to design
+// tokens so the theme switches automatically (light/dark/brand-x).
+// When a raw color is provided, we keep the legacy JS-side behaviour
+// and warn once per key — hex/rgb support will be removed in v3.0.0.
+//
+// Cross-component derivation rule (per user spec):
+//
+//     normal  →  bgColor
+//     hover   →  bgColor + 20 % darker   (designer token, color-mix fallback)
+//     active  →  bgColor + 30 % darker   (designer token, color-mix fallback)
+//
+// Implementation strategy: cascading CSS var:
+//
+//     var(--bgHover, color-mix(in srgb, bg, black 20%))
 // ────────────────────────────────────────────────────────────────────────────
-// `useColorEffect` accepts both raw CSS colors (legacy) and semantic intents.
-// When an intent is provided, we emit references to design tokens so the
-// theme switches automatically (light/dark/brand-x). When a raw color is
-// provided, we keep the legacy JS-side behaviour and warn once per key —
-// hex/rgb support will be removed in v3.0.0.
 
-const INTENTS: ReadonlySet<string> = new Set([
-    'neutral', 'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info'
-])
-
-const _warnedKeys = new Set<string>()
-function warnLegacyColor (kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor', value: string) {
-    if (typeof console === 'undefined') return
-    const key = `${kind}::${value}`
-    if (_warnedKeys.has(key)) return
-    _warnedKeys.add(key)
-    // eslint-disable-next-line no-console
-    console.warn(
-        `[origam] useColorEffect received a raw color for prop "${kind}" (value: ${value}). ` +
-        `Pass a TIntent ('primary' | 'success' | 'warning' | 'danger' | 'info' | 'secondary' | 'ghost' | 'neutral') ` +
-        `or use a :style binding for one-off custom colors. Raw color support is deprecated and will be removed in v3.0.0.`
-    )
-}
-
-function isIntent (v: TColor | TIntent | null | undefined): v is TIntent {
-    return typeof v === 'string' && INTENTS.has(v)
-}
-
-/**
- * Build the CSS-vars override map for an intent (foreground + background).
- *
- * `bgKey` controls which `action.{intent}.bgXxx` slot is read (`bg`,
- * `bgHover`, `bgDisabled`). `feedbackBg` is `bg` or `bgSubtle`.
- */
-function tokenStylesForIntent (intent: TIntent, role: 'default' | 'hover' | 'disabled' = 'default'): Record<string, string> {
-    const styles: Record<string, string> = {}
-    if (intent === 'neutral') {
-        styles['background-color'] = `var(--origam-color-action-secondary-${bgSlot(role)})`
-        styles.color = `var(--origam-color-action-secondary-${fgSlot(role)})`
-        return styles
-    }
-    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        styles['background-color'] = `var(--origam-color-feedback-${intent}-bg)`
-        styles.color = `var(--origam-color-feedback-${intent}-fg)`
-        return styles
-    }
-    // primary / secondary / ghost
-    styles['background-color'] = `var(--origam-color-action-${intent}-${bgSlot(role)})`
-    styles.color = `var(--origam-color-action-${intent}-${fgSlot(role)})`
-    return styles
-}
-
-function bgSlot (role: 'default' | 'hover' | 'disabled'): string {
-    if (role === 'hover') return 'bgHover'
-    if (role === 'disabled') return 'bgDisabled'
-    return 'bg'
-}
-
-function fgSlot (role: 'default' | 'hover' | 'disabled'): string {
-    if (role === 'disabled') return 'fgDisabled'
-    return 'fg'
-}
-
-/**
- * Resolve the **foreground-only** colour for an intent — the token used
- * when the consumer says `color="primary"` and expects the *text itself*
- * to be primary-coloured (no surface implied).
- *
- * This is NOT the same as `tokenStylesForIntent(...).color`:
- *   - That one returns the WCAG-contrasted text colour to put ON TOP of
- *     the matching `bg` token (typically white on a dark surface).
- *   - This helper returns the `fgSubtle` rung — a darker shade of the
- *     intent itself, designed for "coloured text on a light surface".
- *
- * Falls back gracefully on intents without a `fgSubtle` rung
- * (`secondary`, `ghost`, `neutral`).
- */
-function tokenForegroundForIntent (intent: TIntent): string {
-    if (intent === 'neutral' || intent === 'secondary') {
-        // No fgSubtle — `fg` is already a dark neutral text colour.
-        return 'var(--origam-color-action-secondary-fg)'
-    }
-    if (intent === 'ghost') {
-        // ghost.fg is already primary.600 — the intent's own colour.
-        return 'var(--origam-color-action-ghost-fg)'
-    }
-    if (intent === 'success' || intent === 'warning' || intent === 'danger' || intent === 'info') {
-        return `var(--origam-color-feedback-${intent}-fgSubtle)`
-    }
-    // primary → action.primary.fgSubtle (color.primary.700)
-    return `var(--origam-color-action-${intent}-fgSubtle)`
-}
 
 // ────────────────────────────────────────────────────────────────────────────
 // Legacy `useColor` API (kept for backward compat — used by ~49 components)
 // ────────────────────────────────────────────────────────────────────────────
 
+/*********************************************************
+ * useColor
+ ********************************************************/
 export function useColor (colors: ComputedRef<{ background?: TColor, text?: TColor }>) {
+    // Classes-first companion: when bg/text values resolve to a utility
+    // intent, expose the matching `.origam--bg-*` / `.origam--color-*`
+    // class so consumers can opt into the global utility layer in their
+    // `:class` binding. The matching `*Styles` stays populated during
+    // the Phase 2 → Phase 3 transition to guarantee zero visual
+    // regression for components that haven't migrated yet.
+    const colorClasses = computed<string[]>(() => {
+        const classes: string[] = []
+        if (colors.value.background && isUtilityIntent(colors.value.background)) {
+            classes.push(`origam--bg-${colors.value.background}`)
+        }
+        if (colors.value.text && isUtilityIntent(colors.value.text)) {
+            classes.push(`origam--color-${colors.value.text}`)
+        }
+        return classes
+    })
+
     const colorStyles = computed(() => {
         const styles: string[] = []
 
@@ -115,7 +81,9 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         let bgIntentFg: string | null = null
         let bgDecl: string | null = null
 
-        // ─── Background resolution ───────────────────────────────────────
+        /*********************************************************
+         * Background resolution
+         ********************************************************/
         if (colors.value.background) {
             if (isIntent(colors.value.background)) {
                 const m = tokenStylesForIntent(colors.value.background, 'default')
@@ -128,7 +96,9 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
             }
         }
 
-        // ─── Foreground resolution ───────────────────────────────────────
+        /*********************************************************
+         * Foreground resolution
+         ********************************************************/
         // `color` is foreground-only by design: setting `color="primary"`
         // changes the text colour, NOT the surface. The text resolves to
         // the intent's *own* colour (via `fgSubtle` — designed for coloured
@@ -140,7 +110,24 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         let fgDecl: string | null = null
         if (colors.value.text) {
             if (isIntent(colors.value.text)) {
-                fgDecl = `color: ${tokenForegroundForIntent(colors.value.text)}`
+                // ── Color-clash auto-contrast (cross-component rule) ────
+                // When `text` and `background` resolve to the SAME intent
+                // (e.g. `color="primary" bgColor="primary"`), painting the
+                // fg with `tokenForegroundForIntent` returns a same-hue
+                // shade (primary.fgSubtle = primary.700) — that's hue-on-
+                // hue, unreadable. Swap to the bg's paired contrast token
+                // (white on a saturated brand surface, dark on a soft
+                // surface) so the text is always legible without forcing
+                // the consumer to spell out both values.
+                if (
+                    bgIntentFg &&
+                    isIntent(colors.value.background) &&
+                    colors.value.text === colors.value.background
+                ) {
+                    fgDecl = `color: ${bgIntentFg}`
+                } else {
+                    fgDecl = `color: ${tokenForegroundForIntent(colors.value.text)}`
+                }
             } else if (isCssColor(colors.value.text)) {
                 fgDecl = `color: ${colors.value.text}`
             }
@@ -166,9 +153,12 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         return styles
     })
 
-    return {colorStyles}
+    return {colorClasses, colorStyles}
 }
 
+/*********************************************************
+ * useBothColor
+ ********************************************************/
 export function useBothColor<T extends Record<K, TColor>, K extends string> (bgColorProps: T | Ref<TColor> | ComputedRef<TColor>, colorProps: T | Ref<TColor> | ComputedRef<TColor>, name?: K) {
     const bothColors = computed(() => {
         return {
@@ -180,6 +170,9 @@ export function useBothColor<T extends Record<K, TColor>, K extends string> (bgC
     return useColor(bothColors)
 }
 
+/*********************************************************
+ * useTextColor
+ ********************************************************/
 export function useTextColor<T extends Record<K, TColor>, K extends string> (
     props: T | Ref<TColor>,
     name?: K
@@ -188,11 +181,14 @@ export function useTextColor<T extends Record<K, TColor>, K extends string> (
         text: isRef(props) ? props.value : (name ? props[name] : null)
     }))
 
-    const {colorStyles: textColorStyles} = useColor(colors)
+    const {colorClasses: textColorClasses, colorStyles: textColorStyles} = useColor(colors)
 
-    return {textColorStyles}
+    return {textColorClasses, textColorStyles}
 }
 
+/*********************************************************
+ * useBackgroundColor
+ ********************************************************/
 export function useBackgroundColor<T extends Record<K, TColor>, K extends string> (
     props: T | Ref<TColor>,
     name?: K
@@ -201,9 +197,9 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
         background: isRef(props) ? props.value : (name ? props[name] : null)
     }))
 
-    const {colorStyles: backgroundColorStyles} = useColor(colors)
+    const {colorClasses: backgroundColorClasses, colorStyles: backgroundColorStyles} = useColor(colors)
 
-    return {backgroundColorStyles}
+    return {backgroundColorClasses, backgroundColorStyles}
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -214,7 +210,7 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
 // existing callers (OrigamBtn, etc.) keep working without changes.
 //
 // `colorStyles` is an array of CSS declarations like `'background-color: …'`,
-// either pointing to a token (`var(--origam-color-action-primary-bg)`) when
+// either pointing to a token (`var(--origam-color__action--primary---bg)`) when
 // `props.color` is an intent, or to a raw value when it's a hex/rgb (legacy).
 //
 // State resolution:
@@ -223,8 +219,11 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
 //   - When in hover state with no `hoverColor` override, intent values use
 //     the `bgHover`/`fgHover` slot of the same intent's action set.
 
+/*********************************************************
+ * useColorEffect
+ ********************************************************/
 export function useColorEffect (
-    props: IColorProps,
+    props: IColorProps & IBgColorProps,
     isHover: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isActive: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isDisabled: Ref<boolean> | ComputedRef<boolean> = ref(false)
@@ -238,6 +237,37 @@ export function useColorEffect (
     const hoverBgColor = computed(() => props.hoverBgColor ? props.hoverBgColor : props.bgColor)
     const bgColor = computed(() => {
         return isHover.value ? hoverBgColor.value : isActive.value ? activeBgColor.value : props.bgColor
+    })
+
+    // Utility classes for the resting state ONLY. When the component is
+    // in hover / active state, slot resolution kicks the bg/fg to their
+    // `bgHover` / `fgHover` token rungs — there is no matching utility
+    // class for those slots, so we emit nothing and let the inline
+    // styles win. Same goes for legacy raw colors (hex/rgb).
+    const colorClasses = computed<string[]>(() => {
+        // Bypass the utility layer in hover/active/disabled because the
+        // resolved token is not the resting `--origam-color__action--*---bg`
+        // referenced by the utility class.
+        if (isHover.value || isActive.value || isDisabled.value) return []
+
+        const classes: string[] = []
+        const bgVal = bgColor.value
+        const fgVal = color.value
+
+        if (bgVal && isUtilityIntent(bgVal)) {
+            classes.push(`origam--bg-${bgVal}`)
+        }
+        if (fgVal && isUtilityIntent(fgVal)) {
+            classes.push(`origam--color-${fgVal}`)
+        } else if (!fgVal && bgVal && isUtilityIntent(bgVal)) {
+            // Auto-contrast: a bg-only intent pairs the matching fg
+            // token. We don't emit a `.origam--color-*` class here
+            // because the utility uses the intent's `*-fg` token while
+            // the inline style emits the WCAG-paired surface foreground
+            // (handled below). The component's SCSS picks up the
+            // inline style during the transition.
+        }
+        return classes
     })
 
     const colorStyles = computed<string[]>(() => {
@@ -267,14 +297,45 @@ export function useColorEffect (
         // We still read `isDisabled.value` to keep the param wired —
         // in case a future iteration wants per-intent disabled tokens.
         void isDisabled.value
-        const bgRole: 'default' | 'hover' =
-            isHover.value && !props.hoverBgColor ? 'hover' :
-            isActive.value && !props.activeBgColor ? 'hover' :
+        // ── State role per axis ──────────────────────────────────────────
+        // hover and active resolve to DIFFERENT roles so the cross-
+        // component spec ("hover -20 %, active -30 %") holds. The
+        // previous code collapsed isActive into the 'hover' slot, which
+        // was wrong: the two states landed on the same darkening rung
+        // (designer-tuned bgHover) and were visually indistinguishable.
+        //
+        // Per-axis selection is preserved: an explicit hover/activeBgColor
+        // takes precedence over the role bump for THAT axis only.
+        //
+        // Same-intent rule (user spec): when the consumer passes the
+        // SAME intent on hoverBgColor / activeBgColor as on the resting
+        // bgColor (e.g. `bgColor="primary" hoverBgColor="primary"`),
+        // we treat it AS IF the override was absent — i.e. we still
+        // bump to the matching `bgHover` / `bgActive` rung so the user
+        // gets the canonical -20 % / -30 % darken instead of "nothing
+        // happens on hover because the override resolves to the same
+        // resting token". Mirror logic applies to `color` / `hoverColor`
+        // / `activeColor` for the foreground axis.
+        const sameIntentBg = (a: TColor | undefined | null, b: TColor | undefined | null) => {
+            return !!a && !!b && a === b && isIntent(a)
+        }
+        const sameIntentFg = (a: TColor | undefined | null, b: TColor | undefined | null) => {
+            return !!a && !!b && a === b && isIntent(a)
+        }
+
+        const bgRole: TBgFgRole =
+            isHover.value && (!props.hoverBgColor || sameIntentBg(props.hoverBgColor, props.bgColor)) ? 'hover' :
+            isActive.value && (!props.activeBgColor || sameIntentBg(props.activeBgColor, props.bgColor)) ? 'active' :
             'default'
-        const fgRole: 'default' | 'hover' =
-            isHover.value && !props.hoverColor ? 'hover' :
-            isActive.value && !props.activeColor ? 'hover' :
+        // `fgRole` is intentionally kept in the closure for API symmetry
+        // — future intents may differentiate fg slots per state. Today
+        // every fg token lives on the same `fg` rung regardless of state
+        // (per intentFgExpr), so we reference but don't consume it.
+        const _fgRole: TBgFgRole =
+            isHover.value && (!props.hoverColor || sameIntentFg(props.hoverColor, props.color)) ? 'hover' :
+            isActive.value && (!props.activeColor || sameIntentFg(props.activeColor, props.color)) ? 'active' :
             'default'
+        void _fgRole
 
         let bgDecl: string | null = null
         let fgDecl: string | null = null
@@ -283,19 +344,32 @@ export function useColorEffect (
         // contrast inside the design-system without `getForeground`).
         let bgIntentFg: string | null = null
 
-        // ─── Background resolution ───────────────────────────────────────
+        /*********************************************************
+         * Background resolution
+         ********************************************************/
         if (bgColor.value && isIntent(bgColor.value)) {
             const m = tokenStylesForIntent(bgColor.value, bgRole)
             bgDecl = `background-color: ${m['background-color']}`
-            bgIntentFg = m.color
+            // The intent's contrast fg is fixed across roles — pull from
+            // the default slot regardless of bgRole so hover/active text
+            // never darkens with the bg.
+            bgIntentFg = tokenStylesForIntent(bgColor.value, 'default').color
         } else if (bgColor.value === 'transparent') {
-            bgDecl = `background-color: ${bgColor.value}`
+            // Default mode (transparent base): math derivation gives a
+            // subtle gray on hover, a stronger gray on active — matches
+            // the pagination-style "neutral progression" expectation.
+            bgDecl = `background-color: ${rawBgExprWithState('transparent', bgRole)}`
         } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
             warnLegacyColor('bgColor', bgColor.value)
-            bgDecl = `background-color: ${bgColor.value}`
+            // Raw color path: apply the same -20 % / -30 % derivation
+            // for hover / active. Default mode keeps the raw value
+            // untouched (no transformation at rest).
+            bgDecl = `background-color: ${rawBgExprWithState(bgColor.value, bgRole)}`
         }
 
-        // ─── Foreground resolution ───────────────────────────────────────
+        /*********************************************************
+         * Foreground resolution
+         ********************************************************/
         // Universal design-system contract (matches `useColor`):
         //   • `color` is FOREGROUND-ONLY — it never paints the surface.
         //   • `bgColor` owns the surface; if the consumer wants both
@@ -309,11 +383,30 @@ export function useColorEffect (
         // auto-contrasts the text to the intent's fg pair below) or set
         // both explicitly.
         if (color.value && isIntent(color.value)) {
-            // `tokenForegroundForIntent` returns the intent's *foreground*
-            // token (e.g. `var(--origam-color-action-primary-fgSubtle)`),
-            // designed to be legible on a neutral surface — exactly the
-            // semantics consumers want from `color` alone.
-            fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
+            // ── Color-clash auto-contrast (cross-component rule) ────────
+            // When the consumer passes the SAME intent on both axes
+            // (e.g. `color="primary" bgColor="primary"`), painting the
+            // fg with `tokenForegroundForIntent` returns the intent's
+            // own hue (fgSubtle = primary.700) ON TOP of the bg's intent
+            // surface — hue-on-hue, unreadable ("violet on violet"). Swap
+            // to the bg's paired contrast token instead (white on a
+            // saturated brand surface, dark on a soft surface) so the
+            // text is always legible without forcing the consumer to
+            // spell out both values explicitly.
+            if (
+                bgIntentFg &&
+                bgColor.value &&
+                isIntent(bgColor.value) &&
+                color.value === bgColor.value
+            ) {
+                fgDecl = `color: ${bgIntentFg}`
+            } else {
+                // `tokenForegroundForIntent` returns the intent's *foreground*
+                // token (e.g. `var(--origam-color__action--primary---fgSubtle)`),
+                // designed to be legible on a neutral surface — exactly the
+                // semantics consumers want from `color` alone.
+                fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
+            }
         } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
             if (color.value !== 'transparent') warnLegacyColor('color', color.value)
             fgDecl = `color: ${color.value}`
@@ -340,5 +433,5 @@ export function useColorEffect (
         return styles
     })
 
-    return {colorStyles, color, bgColor}
+    return {colorClasses, colorStyles, color, bgColor}
 }

@@ -3,98 +3,9 @@
 			group="components"
 			title="Icon/OrigamIcon"
 	>
-
-		<!-- ════════════ SIZE ════════════ -->
-		<Variant
-				title="Size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-icon
-						:size="state.size"
-						:icon="MDI_ICONS.HOME"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ COLOR / INTENT ════════════ -->
-		<Variant
-				title="Color (intent)"
-				:init-state="() => useStoryInitState<IColorProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-icon
-						v-bind="state"
-						:icon="MDI_ICONS.HEART"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ TAG (polymorphism) ════════════ -->
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-icon
-						:tag="state.tag"
-						:icon="MDI_ICONS.STAR"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ CLICK (button mode) ════════════ -->
-		<Variant title="Emit — click (button mode)">
-			<origam-icon
-					:icon="MDI_ICONS.CLOSE"
-					aria-label="Close"
-					@click="logEvent('click', $event)"
-			/>
-		</Variant>
-
-		<!-- ════════════ SLOT: default (string override) ════════════ -->
-		<Variant title="Slot — default (ligature string)">
-			<origam-icon>mdi-heart</origam-icon>
-		</Variant>
-
-		<!-- ════════════ DISPATCHER: SVG path ════════════ -->
-		<Variant title="Dispatch — SVG path">
-			<origam-icon :icon="SVG_PATH_HEART"/>
-		</Variant>
-
-		<!-- ════════════ ALL SIZES side by side ════════════ -->
-		<Variant title="All sizes — side by side">
-			<div style="display:flex;gap:16px;align-items:center;">
-				<origam-icon :icon="MDI_ICONS.HOME" size="x-small"/>
-				<origam-icon :icon="MDI_ICONS.HOME" size="small"/>
-				<origam-icon :icon="MDI_ICONS.HOME" size="default"/>
-				<origam-icon :icon="MDI_ICONS.HOME" size="large"/>
-				<origam-icon :icon="MDI_ICONS.HOME" size="x-large"/>
-			</div>
-		</Variant>
-
-		<!-- ════════════ ALL INTENTS side by side ════════════ -->
-		<Variant title="All intents — side by side">
-			<div style="display:flex;gap:16px;align-items:center;">
-				<origam-icon :icon="MDI_ICONS.HEART" color="primary"/>
-				<origam-icon :icon="MDI_ICONS.HEART" color="success"/>
-				<origam-icon :icon="MDI_ICONS.HEART" color="danger"/>
-				<origam-icon :icon="MDI_ICONS.HEART" color="warning"/>
-				<origam-icon :icon="MDI_ICONS.HEART" color="info"/>
-			</div>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!--
+			Playground — first by convention. Exposes every IIconComponentProps knob.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
@@ -117,6 +28,95 @@
 				<HstSelect v-model="state.tag"     title="tag"     :options="tagList"/>
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-icon :size="state.size" :icon="MDI_ICONS.HOME"/>
+				</div>
+				<div style="display: flex; gap: 16px; align-items: center; margin-top: 16px;">
+					<origam-icon :icon="MDI_ICONS.HOME" size="x-small"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="small"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="default"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="large"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="x-large"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<IColorProps>({})"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+					<origam-icon v-bind="state" :icon="MDI_ICONS.HEART"/>
+					<origam-icon :icon="MDI_ICONS.HEART" color="primary"/>
+					<origam-icon :icon="MDI_ICONS.HEART" color="success"/>
+					<origam-icon :icon="MDI_ICONS.HEART" color="danger"/>
+					<origam-icon :icon="MDI_ICONS.HEART" color="warning"/>
+					<origam-icon :icon="MDI_ICONS.HEART" color="info"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-icon
+						:tag="state.tag"
+						:icon="MDI_ICONS.STAR"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- Dispatch variants — demonstrate the three icon type paths -->
+
+		<Variant title="Prop — icon (SVG path dispatch)">
+			<div style="display: flex; gap: 16px; align-items: center;">
+				<origam-icon :icon="SVG_PATH_HEART"/>
+				<span style="font: 0.8rem system-ui;">SVG path string → OrigamSvgIcon engine</span>
+			</div>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default (ligature string)">
+			<div style="display: flex; gap: 16px; align-items: center;">
+				<origam-icon>mdi-heart</origam-icon>
+				<span style="font: 0.8rem system-ui;">String child → OrigamLigatureIcon engine</span>
+			</div>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click (button mode)">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+				<origam-icon
+						:icon="MDI_ICONS.CLOSE"
+						aria-label="Close"
+						@click="logEvent('click', $event)"
+				/>
+				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Click the icon — watch the Events panel.</p>
+			</div>
 		</Variant>
 	</Story>
 </template>

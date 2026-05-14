@@ -74,11 +74,18 @@
 >
 	import { OrigamAvatar, OrigamIcon, OrigamTransition } from "../../components"
 
-	import { useAdjacent, useDensity, useProps } from "../../composables"
+	import { useAdjacent, useDensity, useProps , useStyle} from "../../composables"
 
 	import type { IDatePickerHeaderProps } from "../../interfaces"
 
 	import { computed, StyleValue, toRef, useSlots } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and composables.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDatePickerHeaderProps>(), {})
 
@@ -88,7 +95,15 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -97,15 +112,31 @@
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
+	/*********************************************************
+	 * Content
+	 *
+	 * @description
+	 * Derived content visibility and click forwarding.
+	 ********************************************************/
+
 	const hasContent = computed(() => {
 		return !!(slots.default || props.header)
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClick = () => {
 		emits('click')
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const datePickerHeaderStyles = computed(() => {
 		return [
@@ -119,11 +150,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerHeaderStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

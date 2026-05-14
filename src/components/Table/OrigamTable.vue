@@ -3,6 +3,8 @@
 			:is="tag"
 			:class="tableClasses"
 			:style="tableStyles"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<slot name="top"/>
 
@@ -27,20 +29,24 @@
 >
 	import { computed, StyleValue, useSlots } from 'vue'
 	import {
-		useBorder,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
+		useHover,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
 	import type { ITableProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITableProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT
@@ -50,15 +56,27 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element and wrapper classes / styles.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {roundedStyles, roundedClasses} = useRounded(props)
-	const {elevationClasses} = useElevation(props)
-	const {paddingStyles, paddingClasses} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-
-	// CLASS & STYLES
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState)
 
 	const tableStyles = computed(() => {
 		return [
@@ -79,6 +97,7 @@
 				'origam-table--has-bottom': slots.bottom
 			},
 			densityClasses.value,
+			hoverClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
@@ -99,11 +118,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(tableStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -112,8 +142,8 @@
 		scoped
 >
 	.origam-table {
-		background-color: var(--origam-table---background-color, var(--origam-color-surface-default));
-		color: var(--origam-table---color, var(--origam-color-text-primary));
+		background-color: var(--origam-table---background-color, var(--origam-color__surface---default));
+		color: var(--origam-table---color, var(--origam-color__text---primary));
 		font-size: var(--origam-table---font-size, 0.875rem);
 		border-radius: var(--origam-table---border-radius, 0);
 		overflow: hidden;
@@ -127,34 +157,26 @@
 			}
 
 			:deep(th) {
-				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
-				color: var(--origam-table__header-cell---color, var(--origam-color-text-primary));
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color__surface---overlay));
+				color: var(--origam-table__header-cell---color, var(--origam-color__text---primary));
 				font-weight: var(--origam-table__header-cell---font-weight, 600);
 				padding-block: var(--origam-table__header-cell---padding-block, 12px);
 				padding-inline: var(--origam-table__header-cell---padding-inline, 16px);
-				border-bottom: var(--origam-table__header-cell---border-bottom-width, 2px) solid var(--origam-table__header-cell---border-bottom-color, var(--origam-color-border-default));
+				border-bottom: var(--origam-table__header-cell---border-bottom-width, 2px) solid var(--origam-table__header-cell---border-bottom-color, var(--origam-color__border---default));
 				text-align: start;
 			}
 
 			:deep(td) {
 				padding-block: var(--origam-table__cell---padding-block, 12px);
 				padding-inline: var(--origam-table__cell---padding-inline, 16px);
-				border-bottom: var(--origam-table__cell---border-width, 1px) solid var(--origam-table__cell---border-color, var(--origam-color-border-subtle));
+				border-bottom: var(--origam-table__cell---border-width, 1px) solid var(--origam-table__cell---border-color, var(--origam-color__border---subtle));
 			}
 
 			:deep(tr:hover td) {
-				background-color: var(--origam-table__row---hover-background-color, var(--origam-color-surface-sunken));
+				background-color: var(--origam-table__row---hover-background-color, var(--origam-color__surface---sunken));
 			}
 		}
 
-		// Density rungs — override the cell-padding tokens so the table
-		// breathes (`comfortable`) or tightens (`compact`). The header-cell
-		// and body-cell are tracked separately so the header can stay
-		// slightly chunkier than rows.
-		//
-		//   compact     → 6px block / 8px inline
-		//   default     → 12px / 16px (token defaults)
-		//   comfortable → 18px / 24px
 		&--density-compact {
 			--origam-table__header-cell---padding-block: 6px;
 			--origam-table__header-cell---padding-inline: 8px;
@@ -176,39 +198,34 @@
 			--origam-table__cell---padding-inline: 24px;
 		}
 
-		// Rounded variant — applies a border-radius token so the table corners
-		// are rounded. The overflow: hidden on the parent clips the cell backgrounds.
 		&--rounded {
 			--origam-table---border-radius: var(--origam-table--rounded---border-radius, 4px);
 		}
 
 		&--rounded-x-small {
-			--origam-table---border-radius: var(--origam-radius-xs, 2px);
+			--origam-table---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-table---border-radius: var(--origam-radius-sm, 4px);
+			--origam-table---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-table---border-radius: var(--origam-radius-md, 8px);
+			--origam-table---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-table---border-radius: var(--origam-radius-lg, 12px);
+			--origam-table---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-table---border-radius: var(--origam-radius-xl, 16px);
+			--origam-table---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-table---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-table---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
-		// Fixed header — the thead stays in place while the tbody scrolls.
-		// The wrapper must be given an explicit max-height for overflow to
-		// actually kick in (consumers set this via the dimension props).
 		&--fixed-header {
 			.origam-table__wrapper {
 				overflow-y: auto;
@@ -218,11 +235,10 @@
 				position: sticky;
 				top: 0;
 				z-index: 1;
-				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color__surface---overlay));
 			}
 		}
 
-		// Fixed footer — the tfoot stays in place while the tbody scrolls.
 		&--fixed-footer {
 			.origam-table__wrapper {
 				overflow-y: auto;
@@ -233,7 +249,7 @@
 				position: sticky;
 				bottom: 0;
 				z-index: 1;
-				background-color: var(--origam-table__header-cell---background-color, var(--origam-color-surface-overlay));
+				background-color: var(--origam-table__header-cell---background-color, var(--origam-color__surface---overlay));
 			}
 		}
 	}

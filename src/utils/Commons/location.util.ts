@@ -25,10 +25,20 @@ import {
     parseAnchor
 } from '../../utils'
 
+/**
+ * Static location strategy.
+ */
 export function staticLocationStrategy () {
     // TODO
 }
 
+/**
+ * Connected location strategy.
+ *
+ * @param data          …
+ * @param props         …
+ * @param contentStyles …
+ */
 export function connectedLocationStrategy (data: ILocationStrategyData, props: ILocationStrategyProps, contentStyles: Ref<Record<string, string>>) {
     const activatorFixed = Array.isArray(data.target.value) || isFixedPosition(data.target.value)
     if (activatorFixed) {
@@ -350,14 +360,29 @@ export function getIntrinsicSize (el: HTMLElement) {
     return contentBox
 }
 
+/**
+ * Pixel round.
+ *
+ * @param val …
+ */
 export function pixelRound (val: number) {
     return Math.round(val * devicePixelRatio) / devicePixelRatio
 }
 
+/**
+ * Pixel ceil.
+ *
+ * @param val …
+ */
 export function pixelCeil (val: number) {
     return Math.ceil(val * devicePixelRatio) / devicePixelRatio
 }
 
+/**
+ * Is fixed position.
+ *
+ * @param el …
+ */
 export function isFixedPosition (el?: HTMLElement) {
     while (el) {
         if (window.getComputedStyle(el).position === 'fixed') {

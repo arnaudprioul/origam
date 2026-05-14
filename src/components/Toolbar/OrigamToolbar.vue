@@ -41,17 +41,15 @@
 	import { computed, toRef, useSlots } from 'vue'
 	import { OrigamTitle } from "../../components"
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDensity,
 		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
+		useHover,
 		usePosition,
 		useProps,
-		useRounded,
 		useRtl,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -59,6 +57,12 @@
 
 	import type { IToolbarProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, filterProps utility, and slot ref.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IToolbarProps>(), {
 		tag: 'header',
 		density: DENSITY.DEFAULT,
@@ -67,20 +71,15 @@
 
 	const {filterProps} = useProps<IToolbarProps>(props)
 
-	const {rtlClasses} = useRtl()
-
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {elevationClasses, elevationStyles} = useElevation(props, toRef(props, 'flat'), toRef(props, 'bgColor'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {dimensionStyles} = useDimension(props)
-	const {positionStyles, positionClasses} = usePosition(props)
-
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Slot helpers
+	 *
+	 * @description
+	 * Computed flags for conditional prepend / title / append
+	 * rendering in the default wrapper slot.
+	 ********************************************************/
 	const hasPrepend = computed(() => {
 		return slots.prepend
 	})
@@ -91,7 +90,43 @@
 		return slots.append
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles, plus useStyle for
+	 * injected CSS custom property sheet.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {rtlClasses} = useRtl()
+
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState, undefined, toRef(props, 'flat'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
+	// for tokenised intents on the toolbar root; `colorStyles` keeps the
+	// legacy raw-color fallback in parallel.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
+	const {positionStyles, positionClasses} = usePosition(props)
 
 	const barStyles = computed(() => {
 		return [
@@ -115,6 +150,7 @@
 				'origam-toolbar--floating': props.floating
 			},
 			borderClasses.value,
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,
@@ -128,8 +164,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(barStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -147,10 +187,45 @@
 	.origam-toolbar {
 		$this: &;
 
+		// ── Top-level declarations FIRST (before any nested rule) ────
+		// Modern Sass (and the future CSS spec) hoist nested rules
+		// above bare declarations; keeping the order
+		// "declarations → nested rules" prevents the `mixed-decls`
+		// deprecation warnings that were spamming `npm run story:dev`.
+
 		max-width: var(--origam-toolbar---max-width);
 		width: var(--origam-toolbar---width);
 		height: var(--origam-toolbar---height);
 		box-sizing: var(--origam-toolbar---box-sizing);
+
+		// Default inline gutter so content (prepend / title / append)
+		// never sits flush against the bar's edges — applies to every
+		// Toolbar usage (AppBar, standalone, footer, etc.). 16 px matches
+		// Material / iOS bar spec; consumer can override per-instance
+		// via the public CSS var.
+		//
+		// The toolbar ALSO respects the layout's reserved-space
+		// (`--origam-layout---position-{left,right}`) so when a permanent
+		// drawer is present, the toolbar's content area is pushed past
+		// the drawer instead of being painted over it. \`calc()\` composes
+		// the toolbar's own gutter (16 px) with whatever the layout
+		// reserved on each side (defaults to 0 when no layout item is
+		// present, so the standalone case still gets the 16 px gutter).
+		padding-inline-start: calc(
+			var(--origam-toolbar---padding-inline, 16px) +
+			var(--origam-layout---position-left, 0px)
+		);
+		padding-inline-end: calc(
+			var(--origam-toolbar---padding-inline, 16px) +
+			var(--origam-layout---position-right, 0px)
+		);
+
+		// ── Btn surface / fg base (consumed by nested btn rules below) ─
+		// Dedicated CSS vars (NOT the bar's own bg / fg) so the nested
+		// btn defaults to a transparent fill on top of the bar's
+		// surface, then derives hover / active via color-mix.
+		--btn-bg-base: var(--origam-toolbar---btn-background-color, transparent);
+		--btn-fg-base: var(--origam-toolbar---btn-color, currentColor);
 
 		overflow: var(--origam-toolbar---overflow);
 
@@ -162,16 +237,6 @@
 		transition-property: var(--origam-toolbar---transition-property);
 		transition-timing-function: var(--origam-toolbar---transition-timing-function);
 
-		// Borders — read PER-SIDE / PER-CORNER variables matching the
-		// tokens emitted by `tokens/component/toolbar.json`. Pre-fix the
-		// SCSS read the singular shorthand `--origam-toolbar---border-width`
-		// and `--origam-toolbar---border-radius` which the token build
-		// never emits, so the `var()` resolved to its CSS initial value
-		// (`medium` ≈ 3 px) and combined with `border-style: solid` from
-		// the tokens produced an unwanted ~3 px black frame on every
-		// toolbar — even with `border={false}`. Defaulting to `0` here
-		// makes the toolbar borderless out of the box (Vuetify-equivalent
-		// baseline) and lets the `&--border*` modifiers below opt in.
 		border-color: var(--origam-toolbar---border-color);
 		border-style: var(--origam-toolbar---border-style);
 		border-top-width: var(--origam-toolbar---border-top-width, 0);
@@ -187,20 +252,13 @@
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
 
-		// `border={true}` — opt-in border on all four sides, replaces the
-		// elevation shadow with a flat outline (Vuetify parity).
 		&--border {
 			--origam-toolbar---border-top-width: thin;
 			--origam-toolbar---border-right-width: thin;
 			--origam-toolbar---border-bottom-width: thin;
 			--origam-toolbar---border-left-width: thin;
-			--origam-toolbar---box-shadow: none;
 		}
 
-		// `border="top|right|bottom|left"` — single-side variants override
-		// the all-sides rule above (CSS source order). `useBorder` emits
-		// BOTH `--border` and `--border-{dir}` for direction values, so
-		// these rules need to reset the OTHER three sides back to 0.
 		&--border-top {
 			--origam-toolbar---border-top-width: thin;
 			--origam-toolbar---border-right-width: 0;
@@ -258,6 +316,14 @@
 			}
 		}
 
+		&--density-compact {
+			--origam-toolbar---height: var(--origam-toolbar---height-compact);
+		}
+
+		&--density-default {
+			--origam-toolbar---height: var(--origam-toolbar---height-default);
+		}
+
 		&--flat {
 			--origam-toolbar---box-shadow: none;
 		}
@@ -274,6 +340,12 @@
 			justify-content: var(--origam-toolbar__wrapper---justify-content);
 			height: var(--origam-toolbar__wrapper---height);
 			flex-wrap: var(--origam-toolbar__wrapper---flex-wrap);
+			// Gap between prepend / title / content / append flex children.
+			// User reported the prepend btn was glued to the title — the
+			// previous margin-based attempt on `__prepend` / `__append`
+			// didn't compose with the `__title { margin-inline: auto }`
+			// flex trick. `gap` on the flex wrapper is the canonical fix.
+			gap: var(--origam-toolbar__wrapper---gap, 12px);
 		}
 
 		&__content,
@@ -357,8 +429,51 @@
 				border-radius: 0;
 			}
 		}
+
+		// ── Nested-btn chrome contract (applies to every Toolbar usage) ─
+		//
+		// User reported AppBar btns rendering as gray circles when the
+		// chrome should read as a uniform bar. Every toolbar consumer
+		// (AppBar, Drawer top bar, footer, standalone, …) gets the same
+		// chrome treatment via the `--btn-bg-base` / `--btn-fg-base`
+		// declarations hoisted to the top of this block (cf. above):
+		//
+		//   normal  →  --btn-bg-base (transparent by default)
+		//   hover   →  color-mix(--btn-bg-base, black 20 %)
+		//   active  →  color-mix(--btn-bg-base, black 30 %)
+		//
+		// Shape: rounded SQUARE (8 px), overrides Btn's default
+		// `&--icon { border-radius: 50% }`.
+		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
+			--origam-btn---background-color: var(--btn-bg-base);
+			--origam-btn---color: var(--btn-fg-base);
+		}
+		:deep(.origam-btn:hover:not(.origam-btn--active)) {
+			--origam-btn---background-color: var(
+				--origam-toolbar---btn-background-color-hover,
+				color-mix(in srgb, var(--btn-bg-base), black 20%)
+			);
+		}
+		:deep(.origam-btn.origam-btn--active) {
+			--origam-btn---background-color: var(
+				--origam-toolbar---btn-background-color-active,
+				color-mix(in srgb, var(--btn-bg-base), black 30%)
+			);
+		}
+		:deep(.origam-btn) {
+			--origam-btn---border-radius: var(--origam-toolbar---btn-border-radius, 8px);
+			--origam-btn---border-radius-icon: var(--origam-toolbar---btn-border-radius, 8px);
+			border-radius: var(--origam-toolbar---btn-border-radius, 8px);
+		}
+
+		// Title color inheritance. OrigamTitle's text uses a fixed
+		// `--origam-title---color` token that does NOT inherit
+		// currentColor — so when the Toolbar is given an intent color
+		// the title stayed neutral. Repoint to currentColor so it picks
+		// up whatever the toolbar root resolved to.
+		:deep(#{$this}__title .origam-title) {
+			--origam-title---color: var(--origam-toolbar__title---color, currentColor);
+		}
 	}
 </style>
-
-
 

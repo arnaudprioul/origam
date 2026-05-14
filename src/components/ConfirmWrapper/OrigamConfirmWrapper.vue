@@ -16,14 +16,14 @@
         >
           <slot name="prepend">
             <origam-avatar
-		            v-if="props.prependAvatar"
+		            v-if="prependAvatar"
 		            key="prepend-avatar"
-		            :image="props.prependAvatar"
+		            :image="prependAvatar"
             />
             <origam-icon
-		            v-if="props.prependIcon"
+		            v-if="prependIcon"
 		            key="prepend-icon"
-		            :icon="props.prependIcon"
+		            :icon="prependIcon"
             />
           </slot>
         </span>
@@ -52,14 +52,14 @@
 				>
           <slot name="append">
             <origam-avatar
-		            v-if="props.appendAvatar"
+		            v-if="appendAvatar"
 		            key="append-avatar"
-		            :image="props.appendAvatar"
+		            :image="appendAvatar"
             />
             <origam-icon
-		            v-if="props.appendIcon"
+		            v-if="appendIcon"
 		            key="append-icon"
-		            :icon="props.appendIcon"
+		            :icon="appendIcon"
             />
           </slot>
         </span>
@@ -71,18 +71,18 @@
 				<div class="origam-confirm-wrapper__field">
 					<slot name="default">
 						<component
-								v-if="resolvedField"
 								:is="resolvedField"
+								v-if="resolvedField"
 								v-model="model"
-								v-bind="props.defaults"
+								v-bind="defaults"
 						/>
 					</slot>
 				</div>
 				<div class="origam-confirm-wrapper__confirm">
 					<slot name="confirm">
 						<component
-								v-if="resolvedField"
 								:is="resolvedField"
+								v-if="resolvedField"
 								v-model="confirmModel"
 								v-bind="{...resolvedConfirmDefaults, label: resolvedConfirmLabel}"
 						/>
@@ -138,7 +138,14 @@
 		OrigamMessages
 	} from '../../components'
 
-	import { useAdjacent, useDefaults, useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useAdjacent,
+	useDefaults,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 	import { DENSITY, DIRECTION } from '../../enums'
 	import type { IConfirmWrapperEmits, IConfirmWrapperProps, IConfirmWrapperSlots } from '../../interfaces'
 	import type { TOrigamLabel } from '../../types'
@@ -165,12 +172,16 @@
 	})
 	const props = useDefaults(_props)
 
-	const emits = defineEmits<IConfirmWrapperEmits>()
+	defineEmits<IConfirmWrapperEmits>()
 
 	defineSlots<IConfirmWrapperSlots>()
 	const slots = useSlots()
 
 	const {t} = useLocale()
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
 	const confirmModel = useVModel(props, 'confirm')
@@ -181,6 +192,15 @@
 	 * Prepend / append slot machinery shared with all input-style
 	 * components — drives the icon/avatar render in the header.
 	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		hasPrepend,
 		hasAppend,
@@ -199,6 +219,11 @@
 	const hasHeader = computed(() => {
 		return hasPrepend.value || hasAppend.value || hasTitle.value || slots.header
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const labelProps = computed(() => {
 		return origamLabelRef.value?.filterProps(props, ['class', 'style', 'id', 'tag'])
 	})
@@ -403,8 +428,17 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<IConfirmWrapperProps>(props)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(confirmWrapperStyles)
 
-	defineExpose(forwardRefs({filterProps, validate, reset, resetValidation}))
+
+	defineExpose(forwardRefs({filterProps, validate, reset, resetValidation,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
+	}))
 </script>
 
 <style
@@ -557,9 +591,3 @@
 		}
 	}
 </style>
-
-<!--
-	The `<style>:root{}` block from origam has been removed during the
-	port — defaults now flow from `tokens/component/confirm-wrapper.json`
-	through the generated `--origam-confirm-wrapper---*` CSS vars.
--->

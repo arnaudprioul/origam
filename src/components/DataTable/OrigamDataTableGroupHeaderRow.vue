@@ -53,16 +53,24 @@
 >
 	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from "../../components"
 
-	import { useGroupBy, useHeaders, useProps, useSelection } from "../../composables"
+	import { useGroupBy, useHeaders, useProps, useSelection , useStyle} from "../../composables"
 	import { MDI_ICONS } from "../../enums"
 
 	import type { IDataTableGroupHeaderRowProps } from "../../interfaces"
 
 	import { computed, StyleValue } from "vue"
 
+	/*********************************************************
+	 * Global
+	 ********************************************************/
+
 	const props = withDefaults(defineProps<IDataTableGroupHeaderRowProps>(), {})
 
 	const {filterProps} = useProps<IDataTableGroupHeaderRowProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {isGroupOpen, toggleGroup, extractRows} = useGroupBy()
 	const {isSelected, isSomeSelected, select} = useSelection()
@@ -74,6 +82,10 @@
 	const groupIcon = computed(() => {
 		return isGroupOpen(props.item) ? MDI_ICONS.CHEVRON_DOWN : MDI_ICONS.CHEVRON_RIGHT
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleClick = () => toggleGroup(props.item)
 
@@ -106,8 +118,9 @@
 		}
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTableGroupHeaderRowClasses = computed(() => {
 		return [
 			'origam-data-table-group-header-row',
@@ -122,11 +135,19 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableGroupHeaderRowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -135,8 +156,8 @@
 		scoped
 >
 	.origam-data-table-group-header-row {
-		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-color-surface-overlay));
-		color: var(--origam-data-table-group-header-row---color, var(--origam-color-text-primary));
+		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-color__surface---overlay));
+		color: var(--origam-data-table-group-header-row---color, var(--origam-color__text---primary));
 		font-weight: var(--origam-data-table-group-header-row---font-weight, 500);
 
 		&__column {

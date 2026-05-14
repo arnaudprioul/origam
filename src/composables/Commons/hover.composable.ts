@@ -1,34 +1,72 @@
 import { computed, ref, watch } from "vue"
-import type { IHoverProps } from "../../interfaces"
+import type { ComputedRef } from "vue"
+
+import type { IHoverProps, IHoverState } from "../../interfaces"
 
 import { getCurrentInstanceName } from "../../utils"
 
 /**
- * Track whether the host element is being hovered.
+ * Track whether the host element is being hovered AND expose any
+ * style override the consumer attached to the `hover` prop.
  *
- * Two modes:
- *  - **uncontrolled (default — `props.hover` undefined)**: the returned
- *    `isHover` ref reflects the actual mouseenter/mouseleave state of the
- *    host. This is what enables `useColorEffect` to swap `hoverColor` /
- *    `hoverBgColor` automatically when the consumer passes one without
- *    opting into anything else.
- *  - **controlled (`props.hover === true`)**: `isHover` is locked to
- *    `true`. Useful for stories, tests, or a parent component that wants
- *    to force the hover state programmatically.
+ * `props.hover` accepts three shapes (mirrors `IHoverProps`):
  *
- * The `hoverClasses` ref is kept in sync with `isHover` so the historical
- * `${name}--hovered` class still lights up under the same conditions.
+ *   • `undefined` / `false` →
+ *       isHover    : reflects mouseenter/leave (default behaviour)
+ *       hoverState : undefined (no style override — `useStateEffect`
+ *                    falls back to resting tokens / auto-darkening)
  *
- * Historical note: an earlier version of this composable required
- * `props.hover === true` as an *opt-in gate* before mouseenter/mouseleave
- * would have any effect. That meant every consumer of `hoverColor` /
- * `hoverBgColor` had to also pass `hover` — which nobody did, so the props
- * were silently dead. The current contract treats `props.hover` strictly
- * as an override.
+ *   • `true` →
+ *       isHover    : FORCED to `true` regardless of pointer events
+ *                    (stories, tests, parent-controlled state)
+ *       hoverState : undefined
+ *
+ *   • `IHoverState` object (e.g. `{ bgColor: 'success', border: 'thick' }`) →
+ *       isHover    : reactive to mouseenter/leave (UNLESS `enabled: true`
+ *                    is set inside the object, which forces it on like
+ *                    the bare `true` case)
+ *       hoverState : the object itself — consumed by `useStateEffect`
+ *                    to swap effective values per axis.
+ *
+ * `hoverClasses` stays in sync with `isHover` (`${name}--hovered`).
+ *
+ * Historical note: an earlier version required `props.hover === true`
+ * as an opt-in gate before mouseenter/mouseleave would have any
+ * effect. That meant every consumer of `hoverColor` / `hoverBgColor`
+ * had to also pass `hover` — which nobody did, so the props were
+ * silently dead. The current contract treats `props.hover` strictly
+ * as a forcing / config override.
  */
+
+/*********************************************************
+ * useHover
+ ********************************************************/
 export function useHover (props: IHoverProps, name = getCurrentInstanceName()) {
     const isHovered = ref(false)
-    const forced = ref<boolean>(props.hover === true)
+
+    /**
+     * `true` when the state should be locked on regardless of pointer
+     * events. Two paths set this:
+     *   • bare `hover === true`
+     *   • `hover === { enabled: true, … }`
+     */
+    const forced = computed<boolean>(() => {
+        const h = props.hover
+        if (h === true) return true
+        if (h && typeof h === 'object') return h.enabled === true
+        return false
+    })
+
+    /**
+     * The configuration object the consumer attached, or `undefined`.
+     * Exposed as a `ComputedRef<IHoverState | undefined>` so
+     * `useStateEffect` can read it reactively.
+     */
+    const hoverState: ComputedRef<IHoverState | undefined> = computed(() => {
+        const h = props.hover
+        if (h && typeof h === 'object') return h
+        return undefined
+    })
 
     const isHover = computed(() => forced.value || isHovered.value)
 
@@ -49,13 +87,18 @@ export function useHover (props: IHoverProps, name = getCurrentInstanceName()) {
         isHovered.value = false
     }
 
-    // Keep `forced` in sync if the consumer toggles `props.hover` later.
-    watch(() => props.hover, (next) => {
-        forced.value = next === true
+    // Re-evaluate `forced` if `props.hover` changes shape later (e.g.
+    // parent toggles a controlled prop). `forced` is itself a computed
+    // so it tracks `props.hover` automatically — this watch only stays
+    // for backward compat in case a consumer expected the old eager
+    // re-set behaviour; remove later if no test relies on it.
+    watch(() => props.hover, () => {
+        // no-op — computed already reactive.
     })
 
     return {
         isHover,
+        hoverState,
         hoverClasses,
         onMouseenter,
         onMouseleave

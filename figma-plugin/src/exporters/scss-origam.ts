@@ -3,27 +3,39 @@
  *
  * Walks all local Figma Variable collections + modes, resolves every variable
  * to the canonical Origam CSS variable name (mirroring the
- * `origam/name/css` transform in `scripts/tokens.config.mjs`), and emits a
+ * `origam/name/css` transform in `scripts/build-tokens.mjs`), and emits a
  * single `_origam.semantic.scss` file with theme-scoped blocks.
  *
  * Output shape (mirrors the SD-generated `_light.scss` + `_dark.scss`):
  *
  *   :root,
  *   [data-theme="light"] {
- *     --origam-color-surface-default: #ffffff;
+ *     --origam-color__surface---default: #ffffff;
  *     --origam-btn---bg: #ffffff;
  *     --origam-btn--primary---bg: #7c3aed;
  *   }
  *
  *   [data-theme="dark"] {
- *     --origam-color-surface-default: #0a0a0a;
+ *     --origam-color__surface---default: #0a0a0a;
  *   }
  *
- * Naming convention — exactly the one resolved by `origam/name/css`:
- *   primitive.color.neutral.0      → --origam-color-neutral-0
- *   semantic.color.surface.default → --origam-color-surface-default
- *   component.btn.bg               → --origam-btn---bg            (triple-tiret)
- *   component.btn.success.bg       → --origam-btn--success---bg   (double + triple)
+ * Naming convention — exactly the BEM-style grammar resolved by
+ * `origam/name/css`:
+ *
+ *   primitive (length 2): `--origam-[domain]---[rank]`
+ *   primitive (length 3): `--origam-[domain]__[scale]---[rank]`
+ *   semantic  (length 3): `--origam-[domain]__[block]---[property]`
+ *   semantic  (length 4): `--origam-[domain]__[block]--[modifier]---[property]`
+ *   component:            `--origam-[block]---[prop]`
+ *                         `--origam-[block]--[state]---[prop]`
+ *                         `--origam-[block]__[child]---[prop]`
+ *
+ *   primitive.color.neutral.0      → --origam-color__neutral---0
+ *   primitive.space.4              → --origam-space---4
+ *   semantic.color.surface.default → --origam-color__surface---default
+ *   semantic.color.action.primary.bg → --origam-color__action--primary---bg
+ *   component.btn.bg               → --origam-btn---bg
+ *   component.btn.success.bg       → --origam-btn--success---bg
  *
  * Aliases (a Variable bound to another Variable) are FLATTENED to their
  * concrete value — SCSS doesn't natively support `var()` references at output
@@ -82,11 +94,26 @@ const DIMENSION_SCOPES: ReadonlySet<VariableScope> = new Set<VariableScope>([
  * Build the CSS variable name (without leading `--`) for a Figma variable,
  * given its collection name and its full hierarchical name.
  *
- * Reproduces the `origam/name/css` transform exactly:
- *   - component.{block}.{intentOrState}.{prop} → `origam-{block}--{intentOrState}---{prop}`
+ * Reproduces the `origam/name/css` transform exactly — BEM-style grammar
+ * everywhere:
+ *   - primitive (length 2): `origam-{domain}---{rank}`
+ *   - primitive (length 3): `origam-{domain}__{scale}---{rank}`
+ *   - semantic  (length 3): `origam-{domain}__{block}---{property}`
+ *   - semantic  (length 4): `origam-{domain}__{block}--{modifier}---{property}`
+ *   - component.{block}.{intentOrState}.{prop} → `origam-{block}--{state}---{prop}`
  *   - component.{block}.{prop}                 → `origam-{block}---{prop}`
- *   - primitive.* / semantic.*                 → `origam-{rest joined by '-'}`
  */
+
+/** Mirror of the build-tokens.mjs primitive/semantic name builder. */
+function buildBemName(path: string[]): string {
+  if (path.length === 2) return `origam-${path[0]}---${path[1]}`
+  if (path.length === 3) return `origam-${path[0]}__${path[1]}---${path[2]}`
+  if (path.length === 4) return `origam-${path[0]}__${path[1]}--${path[2]}---${path[3]}`
+  // Fallback for unexpected depth — single-dash join surfaces a name pattern
+  // collision early instead of silent emission.
+  return `origam-${path.join('-')}`
+}
+
 function toCssVariableName(collectionName: string, variableName: string): string | null {
   const collLower = collectionName.toLowerCase()
   const segments = variableName
@@ -101,18 +128,18 @@ function toCssVariableName(collectionName: string, variableName: string): string
   // "Component/Btn") OR one flat collection — the `resolveTokenSet` logic
   // mirrors `tokens-studio.ts::resolveTokenSet` for consistency.
 
-  // 1. Primitive collection → `origam-{segments joined by '-'}`
+  // 1. Primitive collection
   if (collLower.startsWith('primitive') || segments[0] === 'primitive') {
     const path = segments[0] === 'primitive' ? segments.slice(1) : segments
     if (path.length === 0) return null
-    return `origam-${path.join('-')}`
+    return buildBemName(path)
   }
 
-  // 2. Semantic collection → `origam-{segments joined by '-'}`
+  // 2. Semantic collection
   if (collLower.startsWith('semantic') || segments[0] === 'semantic') {
     const path = segments[0] === 'semantic' ? segments.slice(1) : segments
     if (path.length === 0) return null
-    return `origam-${path.join('-')}`
+    return buildBemName(path)
   }
 
   // 3. Component collection — needs the BEM-like double/triple tiret.
@@ -255,7 +282,7 @@ function valueToCssString(
     return String(value)
   }
   if (resolvedType === 'BOOLEAN') {
-    return Boolean(value) ? 'true' : 'false'
+    return value ? 'true' : 'false'
   }
 
   return String(value)

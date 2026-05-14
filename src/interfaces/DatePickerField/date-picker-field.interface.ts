@@ -3,6 +3,7 @@ import type {
     IAdjacentProps,
     IBorderProps,
     IChipProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -17,7 +18,7 @@ import type {
     ITransitionComponentProps
 } from "../../interfaces"
 
-export interface IDatePickerFieldProps extends ICommonsComponentProps, IColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, ITransitionComponentProps {
+export interface IDatePickerFieldProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, ITransitionComponentProps {
     menu?: boolean,
     menuProps?: IMenuProps,
     range?: boolean

@@ -19,6 +19,12 @@
 
 	import { animate, getChildren, getDimensions } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITranslateScaleProps>(), {
 		name: 'origam-transition--transform-scale',
 		mode: TRANSITION_MODE.IN_OUT
@@ -26,9 +32,22 @@
 
 	const {filterProps} = useProps<ITranslateScaleProps>(props)
 
+	/*********************************************************
+	 * TranslateScale transition hooks
+	 *
+	 * @description
+	 * JS-driven WAAPI animation — when a `target` element is
+	 * provided, the entering/leaving element scales and
+	 * translates to/from the target's bounding rect. Without
+	 * a target, the CSS fallback class runs a simpler scale.
+	 ********************************************************/
 	const hasTarget = computed(() => {
 		return !!props.target
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleBeforeEnter = (el: Element) => {
 		(el as HTMLElement).style.pointerEvents = 'none'
@@ -109,8 +128,12 @@
 		return {}
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

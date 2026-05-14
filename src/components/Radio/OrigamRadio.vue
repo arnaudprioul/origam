@@ -106,7 +106,14 @@
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 	import { OrigamInput, OrigamRadioBtn } from '../../components'
 
-	import { useFocus, useProps, useVModel } from '../../composables'
+	import {
+		useFocus,
+		useHover,
+		useProps,
+		useStateEffect,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -116,16 +123,43 @@
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and filterProps for the Radio component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IRadioProps>(), {
 		density: DENSITY.DEFAULT
 	})
 
 	const emits = defineEmits(['update:modelValue', 'update:focused', 'click:label'])
 
+
+	const {isHover, hoverState} = useHover(props)
+	useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<IRadioProps>(props)
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * Refs to the inner Input and RadioBtn sub-components for
+	 * forward-prop delegation.
+	 ********************************************************/
 	const origamInputRef = ref<TOrigamInput>()
 	const origamRadioBtnRef = ref<TOrigamRadioBtn>()
+
+	/*********************************************************
+	 * Value & focus
+	 *
+	 * @description
+	 * v-model binding, focus state, attrs, slots, uid and id.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
@@ -135,10 +169,23 @@
 	const uid = getUid()
 	const id = computed(() => props.id || `radio-${uid}`)
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Label click forwarded through the component tree.
+	 ********************************************************/
 	const handleClickLabel = (e: Event) => {
 		emits('click:label', e)
 	}
 
+	/*********************************************************
+	 * Forwarded props
+	 *
+	 * @description
+	 * Attrs split between root and control; props forwarded
+	 * to Input and RadioBtn sub-components via filterProps.
+	 ********************************************************/
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
 
 	const inputProps = computed(() => {
@@ -148,8 +195,12 @@
 		return origamRadioBtnRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'disabled', 'readonly', 'error'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * radioStyles and radioClasses compose the BEM block.
+	 ********************************************************/
 	const radioStyles = computed(() => {
 		return [
 			props.style
@@ -161,11 +212,23 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(radioStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 

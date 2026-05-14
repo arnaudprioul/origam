@@ -18,8 +18,8 @@
 
 		<div
 				v-ripple="rippleProps"
+				:class="sliderFieldThumbRippleClasses"
 				:style="sliderFieldThumbRippleStyles"
-				class="origam-slider-field-thumb__ripple"
 		/>
 
 		<origam-translate-scale origin="bottom center">
@@ -30,7 +30,7 @@
 				<div class="origam-slider-field-thumb__label">
 					<slot
 							name="default"
-							v-bind="{ modelValue: props.modelValue }"
+							v-bind="{ modelValue: modelValue }"
 					>
 						<span>{{ label }}</span>
 					</slot>
@@ -47,7 +47,14 @@
 	import { computed, inject, StyleValue } from 'vue'
 	import { OrigamTranslateScale } from '../../components'
 
-	import { useBorder, useElevation, useProps, useRounded, useTextColor } from '../../composables'
+	import {
+	useBorder,
+	useElevation,
+	useProps,
+	useRounded,
+	useStyle,
+	useTextColor
+} from '../../composables'
 
 	import { ORIGAM_SLIDER_FIELD_KEY } from '../../consts'
 
@@ -59,6 +66,12 @@
 
 	import { clamp, convertToUnit, int } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and slider context injection.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldThumbProps>(), {
 		ripple: true,
 		size: 20,
@@ -93,6 +106,13 @@
 		indexFromEnd
 	} = slider
 
+	/*********************************************************
+	 * State
+	 *
+	 * @description
+	 * Derived disabled / readonly state, resolved color,
+	 * size, and position percentage from parent slider context.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return props.disabled ?? disabled.value
 	})
@@ -138,11 +158,33 @@
 			'circle', 'center']] : undefined
 	})
 
+	/*********************************************************
+	 * Keyboard
+	 *
+	 * @description
+	 * Keyboard navigation — arrow keys, Home/End, PageUp/Down
+	 * with shift/ctrl multipliers for fine/coarse stepping.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {elevationClasses} = useElevation(elevationProps)
 	const {borderClasses, borderStyles} = useBorder(borderProps)
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
 
-	const {textColorStyles} = useTextColor(color)
+	// Phase 3 (Vague B) — class-first companion alongside inline styles.
+	// `textColorClasses` carries the global `.origam--color-{intent}` for
+	// tokenised intents, while `textColorStyles` keeps the legacy raw-color
+	// fallback. Both are applied on the surface AND ripple layers below
+	// (the cercle + the halo inherit `currentColor`).
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {textColorClasses, textColorStyles} = useTextColor(color)
 
 	const relevantKeys = [KEYBOARD_VALUES.PAGEUP, KEYBOARD_VALUES.PAGEDOWN, KEYBOARD_VALUES.END, KEYBOARD_VALUES.HOME, KEYBOARD_VALUES.LEFT, KEYBOARD_VALUES.RIGHT, KEYBOARD_VALUES.DOWN, KEYBOARD_VALUES.UP]
 
@@ -178,6 +220,11 @@
 
 		return clamp(value, props.min, props.max)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		const newValue = parseKeydown(e, props.modelValue)
 
@@ -186,6 +233,12 @@
 		}
 	}
 
+	/*********************************************************
+	 * Label
+	 *
+	 * @description
+	 * Label visibility and formatted numeric display.
+	 ********************************************************/
 	const showLabel = computed(() => {
 		return (props.label && props.focused) || props.label === 'always'
 	})
@@ -193,8 +246,13 @@
 		return props.modelValue.toFixed(step.value ? decimals.value : 1)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Classes and styles for the thumb, its surface, and the
+	 * ripple layer.
+	 ********************************************************/
 	const sliderFieldThumbStyles = computed(() => {
 		return [
 			{
@@ -227,7 +285,14 @@
 			'origam-slider-field-thumb__surface',
 			elevationClasses.value,
 			borderClasses.value,
-			roundedClasses.value
+			roundedClasses.value,
+			textColorClasses.value
+		]
+	})
+	const sliderFieldThumbRippleClasses = computed(() => {
+		return [
+			'origam-slider-field-thumb__ripple',
+			textColorClasses.value
 		]
 	})
 	const sliderFieldThumbRippleStyles = computed(() => {
@@ -236,11 +301,22 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldThumbStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

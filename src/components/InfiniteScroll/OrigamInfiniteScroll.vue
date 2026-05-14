@@ -120,7 +120,13 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
 	import { OrigamBtn, OrigamInfiniteScrollIntersect, OrigamProgress } from '../../components'
 
-	import { useBothColor, useDimension, useLocale, useProps } from '../../composables'
+	import {
+	useBothColor,
+	useDimension,
+	useLocale,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import {
 		DIRECTION,
@@ -134,6 +140,12 @@
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IInfiniteScrollProps>(), {
 		direction: DIRECTION.VERTICAL,
 		side: INFINITE_SCROLL_SIDE.END,
@@ -149,8 +161,18 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const rootEl = ref<HTMLDivElement>()
 	const isIntersecting = shallowRef(false)
@@ -214,6 +236,11 @@
 	})
 
 	let previousScrollSize = 0
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleIntersect = (side: TInfiniteScrollSide, _isIntersecting: boolean) => {
 		isIntersecting.value = _isIntersecting
 
@@ -280,8 +307,12 @@
 		return status.value === INFINITE_SCROLL_STATUS.LOADING
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const infiniteScrollStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -297,14 +328,26 @@
 				'origam-infinite-scroll--start': hasStartIntersect.value,
 				'origam-infinite-scroll--end': hasEndIntersect.value
 			},
+			colorClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -324,7 +367,7 @@
 			padding-block: var(--origam-infinite-scroll__loader---padding-block, 12px);
 			padding-inline: var(--origam-infinite-scroll__loader---padding-inline, 0px);
 			font-size: var(--origam-infinite-scroll__loader---font-size, 0.875rem);
-			color: var(--origam-infinite-scroll__empty---color, var(--origam-color-text-secondary));
+			color: var(--origam-infinite-scroll__empty---color, var(--origam-color__text---secondary));
 		}
 	}
 </style>

@@ -4,6 +4,12 @@ import { convertToUnit, requestNewFrame } from '../../utils'
 
 import { EffectScope, onScopeDispose } from 'vue'
 
+/**
+ * Get scroll parent.
+ *
+ * @param el            …
+ * @param includeHidden …
+ */
 export function getScrollParent (el?: HTMLElement, includeHidden = false) {
     while (el) {
         if (includeHidden ? isPotentiallyScrollable(el) : hasScrollbar(el)) return el
@@ -13,6 +19,12 @@ export function getScrollParent (el?: HTMLElement, includeHidden = false) {
     return document.scrollingElement as HTMLElement
 }
 
+/**
+ * Get scroll parents.
+ *
+ * @param el     …
+ * @param stopAt …
+ */
 export function getScrollParents (el?: Element | null, stopAt?: Element | null) {
     const elements: Array<HTMLElement> = []
 
@@ -27,6 +39,11 @@ export function getScrollParents (el?: Element | null, stopAt?: Element | null) 
     return elements
 }
 
+/**
+ * Has scrollbar.
+ *
+ * @param el …
+ */
 export function hasScrollbar (el?: Element | null) {
     if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
 
@@ -34,6 +51,11 @@ export function hasScrollbar (el?: Element | null) {
     return style.overflowY === 'scroll' || (style.overflowY === 'auto' && el.scrollHeight > el.clientHeight)
 }
 
+/**
+ * Is potentially scrollable.
+ *
+ * @param el …
+ */
 export function isPotentiallyScrollable (el?: Element | null) {
     if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
 
@@ -41,6 +63,11 @@ export function isPotentiallyScrollable (el?: Element | null) {
     return ['scroll', 'auto'].includes(style.overflowY)
 }
 
+/**
+ * Close scroll strategy.
+ *
+ * @param data …
+ */
 export function closeScrollStrategy (data: IScrollStrategyData) {
     const onScroll = () => {
         data.isActive.value = false
@@ -49,6 +76,12 @@ export function closeScrollStrategy (data: IScrollStrategyData) {
     bindScroll(data.targetEl.value ?? data.contentEl.value, onScroll)
 }
 
+/**
+ * Block scroll strategy.
+ *
+ * @param data  …
+ * @param props …
+ */
 export function blockScrollStrategy (data: IScrollStrategyData, props: IScrollStrategyProps) {
     const offsetParent = data.root.value?.offsetParent
     const scrollElements = [...new Set([
@@ -97,6 +130,13 @@ export function blockScrollStrategy (data: IScrollStrategyData, props: IScrollSt
     })
 }
 
+/**
+ * Reposition scroll strategy.
+ *
+ * @param data   …
+ * @param _props …
+ * @param scope  …
+ */
 export function repositionScrollStrategy (data: IScrollStrategyData, _props: IScrollStrategyProps, scope: EffectScope) {
     let slow = false
     let raf = -1
@@ -143,6 +183,12 @@ export function repositionScrollStrategy (data: IScrollStrategyData, _props: ISc
     })
 }
 
+/**
+ * Bind scroll.
+ *
+ * @param el       …
+ * @param onScroll …
+ */
 export function bindScroll (el: HTMLElement | undefined, onScroll: (e: Event) => void) {
     const scrollElements = [document, ...getScrollParents(el)]
 

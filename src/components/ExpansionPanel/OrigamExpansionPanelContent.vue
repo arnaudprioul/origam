@@ -22,7 +22,7 @@
 								:indeterminate="loaderConfig.indeterminate"
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-								:class="['origam-expansion-panel-content__progress', `origam-expansion-panel-content__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+								:class="expansionPanelContentProgressClasses"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>
@@ -63,8 +63,9 @@
 		useMargin,
 		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useRounded,
+		useStyle
+} from '../../composables'
 
 	import { PROGRESS_TYPE } from '../../enums'
 
@@ -72,6 +73,12 @@
 
 	import type { IExpansionPanelContentProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and injection of the parent expansion panel context.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelContentProps>(), {
 		tag: 'div'
 	})
@@ -82,15 +89,18 @@
 
 	if (!expansionPanel) throw new Error('[Origam] expansion-panel-content needs to be placed inside expansion-panel')
 
-	const {hasContent, onAfterLeave: handleAfterLeave} = useLazy(props, expansionPanel.isSelected)
+	/*********************************************************
+	 * Lazy & Selection
+	 *
+	 * @description
+	 * Deferred content rendering tied to the panel's selection state.
+	 ********************************************************/
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {hasContent, onAfterLeave: handleAfterLeave} = useLazy(props, expansionPanel.isSelected)
 
 	const isSelected = computed(() => {
 		return expansionPanel.isSelected.value
@@ -99,7 +109,32 @@
 		return typeof props.content !== 'string'
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Line/circular/skeleton loading state for the content area.
+	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {densityClasses} = useDensity(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	const expansionPanelContentStyles = computed(() => {
 		return [
@@ -111,10 +146,17 @@
 			props.style
 		] as StyleValue
 	})
+	const expansionPanelContentProgressClasses = computed(() => {
+		return [
+			'origam-expansion-panel-content__progress',
+			`origam-expansion-panel-content__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
+	})
 	const expansionPanelContentClasses = computed(() => {
 		return [
 			'origam-expansion-panel-content',
 			loaderClasses.value,
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -123,11 +165,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelContentStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -135,7 +188,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json content section.
 	.origam-expansion-panel-content {
 		display: var(--origam-expansion-panel__content---display, flex);
 

@@ -61,7 +61,12 @@
 >
 	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
 
-	import { useFocus, useProps, useVModel } from '../../composables'
+	import {
+		useFocus,
+		useProps,
+		useStyle,
+		useVModel
+} from '../../composables'
 
 	import { DENSITY } from '../../enums'
 
@@ -72,6 +77,13 @@
 	import { filterInputAttrs, getUid } from '../../utils'
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, model binding and focus tracking.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICheckboxProps>(), {
 		density: DENSITY.DEFAULT
@@ -86,6 +98,10 @@
 	const origamInputRef = ref<TOrigamInput>()
 	const origamCheckboxBtnRef = ref<TOrigamCheckboxBtn>()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
 	const attrs = useAttrs()
@@ -96,11 +112,19 @@
 		return props.id || `checkbox-${uid}`
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 
 	const [rootAttrs, controlAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
@@ -109,7 +133,12 @@
 		return origamCheckboxBtnRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'disabled', 'readonly', 'error'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const checkboxStyles = computed(() => {
 		return [
@@ -122,11 +151,24 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(checkboxStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 

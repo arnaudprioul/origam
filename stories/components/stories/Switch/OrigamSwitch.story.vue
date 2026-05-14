@@ -4,23 +4,8 @@
 			title="Switch/OrigamSwitch"
 	>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn pattern) so the consumer
-			can explore them as one cohesive concept.
-			Strict channel separation:
-			  • `color`   → label foreground + thumb (cercle)
-			  • `bgColor` → track (box derrière le cercle)
-			  • hover/active variants modify the matching channel on
-			    the matching interaction state.
-			The hardcoded fixtures below the interactive switch let the
-			e2e suite assert no cross-pollution at runtime via stable
-			`data-cy="switch-color-fixture-{n}"` selectors.
-		-->
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -49,14 +34,83 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Prop — hover"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-switch
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored switch (interactive)"
+							data-cy="switch-color"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-switch :model-value="true" color="primary"
+						               label='color="primary" only'
+						               data-cy="switch-color-fixture-color-only"/>
+						<origam-switch :model-value="true" bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="switch-color-fixture-bg-only"/>
+						<origam-switch :model-value="true" color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="switch-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hHover"
+							:options="hoverList"
+							title="hover"
+							@update:model-value="(v) => state._hHover = v"
+						/>
+</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-switch
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored switch (interactive)"
+							data-cy="switch-color"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-switch :model-value="true" color="primary"
+						               label='color="primary" only'
+						               data-cy="switch-color-fixture-color-only"/>
+						<origam-switch :model-value="true" bg-color="success"
+						               label='bg-color="success" only'
+						               data-cy="switch-color-fixture-bg-only"/>
+						<origam-switch :model-value="true" color="warning" bg-color="primary"
+						               label='color="warning" + bg-color="primary"'
+						               data-cy="switch-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hActive"
+							:options="activeList"
+							title="active"
+							@update:model-value="(v) => state._hActive = v"
+						/>
+</template>
+		</Variant>
+
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -75,7 +129,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INSET / FLAT ════════════ -->
 		<Variant
 				title="Inset & flat"
 				:init-state="() => useStoryInitState<{ inset: boolean, flat: boolean }>({ inset: false, flat: false })"
@@ -96,7 +149,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ INDETERMINATE ════════════ -->
 		<Variant
 				title="Indeterminate"
 				:init-state="() => useStoryInitState<{ indeterminate: boolean }>({ indeterminate: true })"
@@ -114,7 +166,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
@@ -135,8 +186,25 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: track.true / track.false ════════════ -->
-		<Variant title="Slot — track.true / track.false">
+		<!-- ── Slots ─────────────────────────────────────────────── -->
+
+		<Variant title="Slot — loader">
+			<origam-switch :model-value="false" loading label="Loading switch" data-cy="switch-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-switch>
+		</Variant>
+
+		<Variant title="Slot — track.false">
+			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track-false">
+				<template #track.false>
+					<span style="font-size: 10px; color: #fff;">OFF</span>
+				</template>
+			</origam-switch>
+		</Variant>
+
+		<Variant title="Slot — track.true">
 			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track">
 				<template #track.true>
 					<span style="font-size: 10px; color: #fff;">ON</span>
@@ -148,7 +216,36 @@
 			<div data-cy="switch-slot-track-status">value = {{ slotTrackModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:label">
+			<origam-switch
+					v-model="emitClickLabelModel"
+					label="Click the label"
+					data-cy="switch-emit-click-label"
+					@click:label="logEvent('click:label', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:focused">
+			<origam-switch
+					v-model="emitFocusedModel"
+					label="Focus me"
+					data-cy="switch-emit-focused"
+					@update:focused="logEvent('update:focused', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — update:indeterminate">
+			<origam-switch
+					v-model="emitIndeterminateModel"
+					:indeterminate="true"
+					label="Indeterminate switch"
+					data-cy="switch-emit-indeterminate"
+					@update:indeterminate="logEvent('update:indeterminate', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Emit — update:modelValue">
 			<origam-switch
 					v-model="emitModel"
@@ -159,7 +256,6 @@
 			<div data-cy="switch-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-switch
 					v-model="emitFocusModel"
@@ -170,7 +266,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -189,7 +284,7 @@
 							label="Demo switch"
 							data-cy="switch-loading-interactive"
 					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSwitchLoading(state) }}</pre>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSwitchLoading(state) }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -210,11 +305,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
-		<!--
-			Switch defaultKind = 'circular'. All fixtures use :model-value="false"
-			+ disabled so this is a pure visual demo — no interaction side-effects.
-		-->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
 				<div style="display: flex; align-items: center; gap: 12px;">
@@ -240,7 +330,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ISwitchProps>({
@@ -289,7 +378,11 @@
 	import type { TLoadingValue } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList } from '@stories/const'
+	import {
+		activeList,
+		densityList, intentList,
+		hoverList
+	} from '@stories/const'
 
 	interface ILoadingState {
 		enabled: boolean
@@ -313,15 +406,18 @@
 		return JSON.stringify(v, null, 2)
 	}
 
-	const colorModel         = ref(false)
-	const densityModel       = ref(false)
-	const insetModel         = ref(false)
-	const indeterminateModel = ref(false)
-	const statesModel        = ref(false)
-	const slotTrackModel     = ref(false)
-	const emitModel          = ref(false)
-	const emitFocusModel     = ref(false)
-	const playgroundModel    = ref(false)
+	const colorModel              = ref(false)
+	const densityModel            = ref(false)
+	const insetModel              = ref(false)
+	const indeterminateModel      = ref(false)
+	const statesModel             = ref(false)
+	const slotTrackModel          = ref(false)
+	const emitClickLabelModel     = ref(false)
+	const emitFocusedModel        = ref(false)
+	const emitIndeterminateModel  = ref(false)
+	const emitModel               = ref(false)
+	const emitFocusModel          = ref(false)
+	const playgroundModel         = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Switch/OrigamSwitch.md"/>

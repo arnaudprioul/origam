@@ -34,22 +34,6 @@
 						@touchstartPassive="handleSliderTouchstart"
 				>
 
-					<!--
-						Track fill bounds:
-						  • single mode  → fill from `0` to `trackStop`
-						    (0% to current value, the active progress).
-						  • range mode  → fill from `trackRangeStart`
-						    to `trackRangeStop` (between the two thumbs,
-						    the selected range).
-						Pre-fix `:start="0"` was hardcoded — in range
-						mode `trackStop` returned `undefined` and the
-						track's `stop` prop fell back to its default
-						`100`, so the fill covered the WHOLE track,
-						painting both inside and outside the range with
-						the same `color` and erasing the visual
-						distinction. User-reported: "elles sont toute
-						en color".
-					-->
 					<origam-slider-field-track
 							ref="origamSliderFieldTrackRef"
 							:start="isRange ? trackRangeStart : 0"
@@ -203,7 +187,15 @@
 	import { computed, ref, StyleValue, useSlots, WritableComputedRef } from 'vue'
 	import { OrigamInput, OrigamLabel, OrigamSliderFieldThumb, OrigamSliderFieldTrack } from '../../components'
 
-	import { useFocus, useProps, useRtl, useSlider, useSteps, useVModel } from '../../composables'
+	import {
+	useFocus,
+	useProps,
+	useRtl,
+	useSlider,
+	useSteps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
@@ -213,6 +205,12 @@
 
 	import { getSliderFieldOffset, omit } from '../../utils'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and component refs.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
@@ -234,11 +232,24 @@
 
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Value & Range
+	 *
+	 * @description
+	 * Model value management, range mode detection, and the
+	 * core useSlider composable wiring (drag, thumb refs,
+	 * start/end/move callbacks).
+	 ********************************************************/
 	const isRange = computed(() => {
 		return props.range
 	})
 
 	const steps = useSteps(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		activeThumbRef,
 		min,
@@ -332,6 +343,11 @@
 			}
 		}
 	})
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(
 			props,
 			'modelValue',
@@ -348,8 +364,24 @@
 			}
 	) as WritableComputedRef<[number, number] | number> & { readonly externalValue: Array<number> | number }
 
+	/*********************************************************
+	 * Focus
+	 *
+	 * @description
+	 * Focus state and range-thumb focus routing — ensures the
+	 * correct thumb is focused when thumbs overlap at min/max.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur} = useFocus(props)
 	const {rtlClasses} = useRtl()
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleFocus = () => {
 		onFocus()
@@ -394,6 +426,12 @@
 		}
 	}
 
+	/*********************************************************
+	 * Track positions
+	 *
+	 * @description
+	 * Computed track fill positions for single and range mode.
+	 ********************************************************/
 	const trackStop = computed(() => {
 		if (isRange.value) return
 
@@ -418,6 +456,17 @@
 		model.value = v
 	}
 
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props forwarded to child Input, Thumb and Track.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		// Strip the entire IColorProps surface so `OrigamInput` (the
 		// row wrapper) doesn't paint the consumer's intent on its
@@ -437,8 +486,12 @@
 		return !!(props.label) || slots.label || slots.prepend
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const sliderFieldStyles = computed(() => {
 		return [
 			props.style
@@ -458,11 +511,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

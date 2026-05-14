@@ -1,5 +1,6 @@
 import type { ComputedRef } from 'vue'
-import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
+import type { IBgColorProps,
+    IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
 import type { TIcon } from '../../types'
 import type { TTreeviewSelectMode, TTreeviewSelectableNodes } from '../../types'
 
@@ -13,7 +14,7 @@ export interface ITreeviewNode {
     expandable?: boolean
 }
 
-export interface ITreeviewProps extends ICommonsComponentProps, IColorProps, ISizeProps, IDensityProps {
+export interface ITreeviewProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IDensityProps {
     items: ITreeviewNode[]
     modelValue?: string[] | string
     expandedValue?: string[]

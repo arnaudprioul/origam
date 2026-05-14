@@ -4,7 +4,6 @@
 			title="TextField/OrigamTextField"
 	>
 
-		<!-- ════════════ VARIANT ════════════ -->
 		<Variant
 				title="Variant"
 				:init-state="() => useStoryInitState<{ variant?: TVariantInput }>({ variant: VARIANT_INPUT.OUTLINED })"
@@ -23,20 +22,8 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COLOR (IColorProps) ════════════ -->
-		<!--
-			ONE variant per interface — `IColorProps` covers `color`,
-			`bgColor`, plus the `hover*` / `active*` state variants. All
-			six fields surface together (Btn / Switch / SliderField /
-			Select / RatingField / Radio / PasswordField pattern).
-			Channel mapping (TextField family):
-			  • `color`   → label + outline / underline accent
-			  • `bgColor` → field surface
-			  • hover/active modify the matching channel on the matching
-			    state.
-		-->
 		<Variant
-				title="Color"
+				title="Prop — color & bgColor"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
@@ -69,14 +56,119 @@
 			<template #controls="{ state }">
 				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
 				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstSelect v-model="state.hoverColor"    title="hoverColor"    :options="intentList"/>
-				<HstSelect v-model="state.hoverBgColor"  title="hoverBgColor"  :options="intentList"/>
-				<HstSelect v-model="state.activeColor"   title="activeColor"   :options="intentList"/>
-				<HstSelect v-model="state.activeBgColor" title="activeBgColor" :options="intentList"/>
 			</template>
 		</Variant>
 
-		<!-- ════════════ DENSITY ════════════ -->
+		<Variant
+				title="Prop — hover"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-text-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored field (interactive)"
+							data-cy="textfield-color"
+					/>
+					<div data-cy="textfield-color-status">value = {{ colorModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-text-field :model-value="'Sample text'"
+						                   color="primary"
+						                   label='color="primary" only'
+						                   data-cy="textfield-color-fixture-color-only"/>
+						<origam-text-field :model-value="'Sample text'"
+						                   bg-color="success"
+						                   label='bg-color="success" only'
+						                   data-cy="textfield-color-fixture-bg-only"/>
+						<origam-text-field :model-value="'Sample text'"
+						                   color="warning" bg-color="primary"
+						                   label='color="warning" + bg-color="primary"'
+						                   data-cy="textfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hHover"
+							:options="hoverList"
+							title="hover"
+							@update:model-value="(v) => state._hHover = v"
+						/>
+</template>
+		</Variant>
+
+		<Variant
+				title="Prop — active"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-text-field
+							v-model="colorModel"
+							v-bind="state"
+							label="Colored field (interactive)"
+							data-cy="textfield-color"
+					/>
+					<div data-cy="textfield-color-status">value = {{ colorModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase fixtures — channel separation:</small>
+						<origam-text-field :model-value="'Sample text'"
+						                   color="primary"
+						                   label='color="primary" only'
+						                   data-cy="textfield-color-fixture-color-only"/>
+						<origam-text-field :model-value="'Sample text'"
+						                   bg-color="success"
+						                   label='bg-color="success" only'
+						                   data-cy="textfield-color-fixture-bg-only"/>
+						<origam-text-field :model-value="'Sample text'"
+						                   color="warning" bg-color="primary"
+						                   label='color="warning" + bg-color="primary"'
+						                   data-cy="textfield-color-fixture-combo"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+							<HstSelect
+							:model-value="state._hActive"
+							:options="activeList"
+							title="active"
+							@update:model-value="(v) => state._hActive = v"
+						/>
+</template>
+		</Variant>
+
+		<Variant
+				title="Size"
+				:init-state="() => useStoryInitState<{ size: TSize }>({ size: SIZES.DEFAULT })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-text-field
+							v-model="sizeModel"
+							:size="state.size"
+							label="Size field (interactive)"
+							data-cy="textfield-size"
+					/>
+					<div data-cy="textfield-size-status">size = {{ state.size }} · value = {{ sizeModel }}</div>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+						<small>Showcase — Sizes side by side (PDF heights: 28 / 36 / 44 / 52 px)</small>
+						<origam-text-field size="small"   label='size="small" — 28px'   data-cy="textfield-size-fixture-sm"/>
+						<origam-text-field size="default" label='size="default" — 36px' data-cy="textfield-size-fixture-md"/>
+						<origam-text-field size="large"   label='size="large" — 44px'   data-cy="textfield-size-fixture-lg"/>
+						<origam-text-field size="x-large" label='size="x-large" — 52px' data-cy="textfield-size-fixture-xl"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+			</template>
+		</Variant>
+
 		<Variant
 				title="Density"
 				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
@@ -95,7 +187,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ TYPE ════════════ -->
 		<Variant
 				title="Type"
 				:init-state="() => useStoryInitState<{ type: string }>({ type: 'text' })"
@@ -114,7 +205,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ COUNTER ════════════ -->
 		<Variant
 				title="Counter"
 				:init-state="() => useStoryInitState<{ counter: number | boolean }>({ counter: 100 })"
@@ -133,7 +223,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ PREFIX / SUFFIX ════════════ -->
 		<Variant
 				title="Prefix & suffix"
 				:init-state="() => useStoryInitState<{ prefix: string, suffix: string }>({ prefix: '$', suffix: '.00' })"
@@ -154,7 +243,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ STATES ════════════ -->
 		<Variant
 				title="States"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
@@ -178,21 +266,9 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ SLOT: prependInner / appendInner ════════════ -->
-		<Variant title="Slot — prependInner / appendInner">
-			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-inner">
-				<template #prependInner>
-					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
-				</template>
-				<template #appendInner>
-					<origam-icon :icon="MDI_ICONS.CLOSE"/>
-				</template>
-			</origam-text-field>
-			<div data-cy="textfield-slot-inner-status">value = {{ slotInnerModel }}</div>
-		</Variant>
+		<!-- ── Slots ─────────────────────────────────────────────── -->
 
-		<!-- ════════════ SLOT: prepend / append ════════════ -->
-		<Variant title="Slot — prepend / append">
+		<Variant title="Slot — append">
 			<origam-text-field v-model="slotOuterModel" label="With outer slots" data-cy="textfield-slot-outer">
 				<template #prepend>
 					<origam-icon :icon="MDI_ICONS.ACCOUNT"/>
@@ -204,7 +280,64 @@
 			<div data-cy="textfield-slot-outer-status">value = {{ slotOuterModel }}</div>
 		</Variant>
 
-		<!-- ════════════ SLOT: label ════════════ -->
+		<Variant title="Slot — appendInner">
+			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+				<template #appendInner>
+					<origam-icon :icon="MDI_ICONS.CLOSE"/>
+				</template>
+			</origam-text-field>
+			<div data-cy="textfield-slot-inner-status">value = {{ slotInnerModel }}</div>
+		</Variant>
+
+		<Variant title="Slot — clear">
+			<origam-text-field v-model="slotClearModel" label="Clearable" clearable data-cy="textfield-slot-clear">
+				<template #clear>
+					<origam-icon :icon="MDI_ICONS.CLOSE_CIRCLE"/>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — counter">
+			<origam-text-field v-model="slotCounterModel" label="Custom counter" :counter="50" data-cy="textfield-slot-counter">
+				<template #counter>
+					<span>{{ slotCounterModel.length }} / 50</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-text-field label="Default slot" data-cy="textfield-slot-default">
+				<span>Custom slot content</span>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — details">
+			<origam-text-field v-model="slotDetailsModel" label="Custom details" data-cy="textfield-slot-details">
+				<template #details>
+					<span style="font-size: 0.75rem;">Custom hint text</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — field">
+			<origam-text-field label="Field slot" data-cy="textfield-slot-field">
+				<template #field>
+					<span>Custom slot content</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — floatingLabel">
+			<origam-text-field v-model="slotFloatingLabelModel" data-cy="textfield-slot-floating-label">
+				<template #floatingLabel>
+					<span style="font-style: italic;">Floating label</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
 		<Variant title="Slot — label">
 			<origam-text-field v-model="slotLabelModel" data-cy="textfield-slot-label">
 				<template #label>
@@ -213,7 +346,82 @@
 			</origam-text-field>
 		</Variant>
 
-		<!-- ════════════ EMIT: update:modelValue ════════════ -->
+		<Variant title="Slot — loader">
+			<origam-text-field loading label="Loading field" data-cy="textfield-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — message">
+			<origam-text-field v-model="slotMessageModel" label="Single message" :error="true" :error-messages="['Error']" data-cy="textfield-slot-message">
+				<template #message="{ message }">
+					<span style="font-style: italic;">{{ message }}</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — messages">
+			<origam-text-field v-model="slotMessagesModel" label="Custom messages" :error="true" :error-messages="['Error one', 'Error two']" data-cy="textfield-slot-messages">
+				<template #messages>
+					<span style="color: var(--origam-color__action--danger---bg);">Custom error display</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — prefix">
+			<origam-text-field v-model="slotPrefixModel" label="Price" data-cy="textfield-slot-prefix">
+				<template #prefix>
+					<span>$</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — prepend">
+			<origam-text-field v-model="slotOuterModel" label="With outer slots" data-cy="textfield-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.ACCOUNT"/>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — prependInner">
+			<origam-text-field v-model="slotInnerModel" label="With inner slots" data-cy="textfield-slot-prepend-inner">
+				<template #prependInner>
+					<origam-icon :icon="MDI_ICONS.MAGNIFY"/>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<Variant title="Slot — suffix">
+			<origam-text-field v-model="slotSuffixModel" label="Amount" data-cy="textfield-slot-suffix">
+				<template #suffix>
+					<span>.00</span>
+				</template>
+			</origam-text-field>
+		</Variant>
+
+		<!-- ── Emits ─────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click:control">
+			<origam-text-field
+					v-model="emitControlModel"
+					label="Click the control"
+					data-cy="textfield-emit-click-control"
+					@click:control="logEvent('click:control', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Emit — mousedown:control">
+			<origam-text-field
+					v-model="emitMousedownModel"
+					label="Mousedown on control"
+					data-cy="textfield-emit-mousedown-control"
+					@mousedown:control="logEvent('mousedown:control', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Emit — update:modelValue">
 			<origam-text-field
 					v-model="emitModel"
@@ -224,7 +432,6 @@
 			<div data-cy="textfield-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<!-- ════════════ EMIT: focus / blur ════════════ -->
 		<Variant title="Emit — focus / blur">
 			<origam-text-field
 					v-model="emitFocusModel"
@@ -235,7 +442,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ EMIT: click:clear ════════════ -->
 		<Variant title="Emit — click:clear">
 			<origam-text-field
 					v-model="emitClearModel"
@@ -246,7 +452,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════ LOADING — interactive ════════════ -->
 		<Variant
 				title="Loading — interactive"
 				:init-state="() => useStoryInitState({
@@ -263,7 +468,7 @@
 							label="Demo field"
 							data-cy="textfield-loading-interactive"
 					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color-surface-overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeTextFieldLoading(state) }}</pre>
+					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeTextFieldLoading(state) }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -284,7 +489,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ LOADING SHAPES ════════════ -->
 		<Variant title="Loading shapes">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
 				<origam-text-field label="loading={true}" loading data-cy="text-field-loading-bool"/>
@@ -295,7 +499,21 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<Variant title="Inline">
+			<div style="display: flex; align-items: baseline; gap: 8px; padding: 16px; font-size: 16px;">
+				<span>Origam</span>
+				<span aria-hidden="true">·</span>
+				<origam-text-field
+						v-model="inlineModel"
+						:inline="true"
+						placeholder="Your value"
+						data-cy="textfield-inline"
+						aria-label="Inline editable value"
+				/>
+			</div>
+			<div data-cy="textfield-inline-status">value = {{ inlineModel }}</div>
+		</Variant>
+
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITextFieldProps>({
@@ -345,12 +563,16 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamTextField } from '@origam/components'
-	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
+	import { DENSITY, MDI_ICONS, SIZES, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IOptions, ITextFieldProps } from '@origam/interfaces'
-	import type { TLoadingValue, TVariantInput } from '@origam/types'
+	import type { TLoadingValue, TSize, TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantInputList } from '@stories/const'
+	import {
+		activeList,
+		densityList, intentList, sizeList, variantInputList,
+		hoverList
+	} from '@stories/const'
 
 	interface ILoadingState {
 		enabled: boolean
@@ -374,20 +596,32 @@
 		return JSON.stringify(v, null, 2)
 	}
 
-	const variantModel   = ref('')
-	const colorModel     = ref('')
-	const densityModel   = ref('')
-	const typeModel      = ref('')
-	const counterModel   = ref('')
-	const prefixModel    = ref('')
-	const statesModel    = ref('')
-	const slotInnerModel = ref('')
-	const slotOuterModel = ref('')
-	const slotLabelModel = ref('')
-	const emitModel      = ref('')
-	const emitFocusModel = ref('')
-	const emitClearModel = ref('')
-	const playgroundModel = ref('')
+	const variantModel          = ref('')
+	const colorModel            = ref('')
+	const sizeModel             = ref('')
+	const inlineModel           = ref('')
+	const densityModel          = ref('')
+	const typeModel             = ref('')
+	const counterModel          = ref('')
+	const prefixModel           = ref('')
+	const statesModel           = ref('')
+	const slotInnerModel        = ref('')
+	const slotOuterModel        = ref('')
+	const slotLabelModel        = ref('')
+	const slotClearModel        = ref('')
+	const slotCounterModel      = ref('')
+	const slotDetailsModel      = ref('')
+	const slotFloatingLabelModel = ref('')
+	const slotMessageModel      = ref('')
+	const slotMessagesModel     = ref('')
+	const slotPrefixModel       = ref('')
+	const slotSuffixModel       = ref('')
+	const emitModel             = ref('')
+	const emitFocusModel        = ref('')
+	const emitClearModel        = ref('')
+	const emitControlModel      = ref('')
+	const emitMousedownModel    = ref('')
+	const playgroundModel       = ref('')
 
 	const typeList: Array<IOptions<string>> = [
 		{ label: 'text',   value: 'text'   },

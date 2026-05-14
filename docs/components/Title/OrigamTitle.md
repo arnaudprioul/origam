@@ -44,7 +44,7 @@ component CSS variable on a `:style` binding instead:
 ```vue
 <template>
     <OrigamTitle text="Heading" :style="{
-        '--origam-title---color': 'var(--origam-color-text-primary)'
+        '--origam-title---color': 'var(--origam-color__text---primary)'
     }" />
 </template>
 ```

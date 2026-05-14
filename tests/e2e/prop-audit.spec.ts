@@ -439,19 +439,19 @@ test.describe('OrigamSheet — elevation', () => {
         const sheet = sandbox.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 8000 })
 
-        // elevation = 0: useElevation resolves to --origam-shadow-none (0-opacity)
+        // elevation = 0: useElevation resolves to --origam-shadow---none (0-opacity)
         await sheet.evaluate(node => {
-            node.style.boxShadow = 'var(--origam-shadow-none, none)'
+            node.style.boxShadow = 'var(--origam-shadow---none, none)'
         })
         await page.waitForTimeout(60)
         const shadow0 = await sheet.evaluate(node => getComputedStyle(node).boxShadow)
-        // --origam-shadow-none should be 'none' or 0-opacity
+        // --origam-shadow---none should be 'none' or 0-opacity
         const noShadow = shadow0 === 'none' || shadow0.includes('rgba(0, 0, 0, 0)')
         expect(noShadow, `elevation-0 produced non-zero shadow: "${shadow0}"`).toBe(true)
 
-        // elevation = 4: useElevation resolves to --origam-shadow-md (real shadow)
+        // elevation = 4: useElevation resolves to --origam-shadow---md (real shadow)
         await sheet.evaluate(node => {
-            node.style.boxShadow = 'var(--origam-shadow-md)'
+            node.style.boxShadow = 'var(--origam-shadow---md)'
         })
         await page.waitForTimeout(60)
         const shadowMd = await sheet.evaluate(node => getComputedStyle(node).boxShadow)

@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     ICommonsComponentSlots,
@@ -9,7 +10,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface ILabelProps extends ICommonsComponentProps, IMarginProps, IPaddingProps, IBorderProps, IRoundedProps, IColorProps, ITagProps {
+export interface ILabelProps extends ICommonsComponentProps, IMarginProps, IPaddingProps, IBorderProps, IRoundedProps, IColorProps, IBgColorProps, ITagProps {
     text?: string
     floating?: boolean
     required?: boolean

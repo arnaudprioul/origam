@@ -20,6 +20,9 @@ import {
     watchEffect
 } from 'vue'
 
+/*********************************************************
+ * useScroll
+ ********************************************************/
 export function useScroll (
     props: IScrollProps,
     args: IScrollArguments = {}
@@ -96,6 +99,9 @@ export function useScroll (
     }
 }
 
+/*********************************************************
+ * useScrollStrategies
+ ********************************************************/
 export function useScrollStrategies (
     props: IScrollStrategyProps,
     data: IScrollStrategyData
@@ -127,6 +133,9 @@ export function useScrollStrategies (
     })
 }
 
+/*********************************************************
+ * useScrolling
+ ********************************************************/
 export function useScrolling (listRef: Ref<TOrigamList | undefined>, textFieldRef: Ref<TOrigamTextField | undefined>) {
     const isScrolling = shallowRef(false)
     let scrollTimeout: number

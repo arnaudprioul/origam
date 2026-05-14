@@ -4,6 +4,12 @@ import type { IDataTableHeader, IInternalDataTableHeader } from '../../interface
 
 import { consoleError } from '../../utils'
 
+/**
+ * Extract keys.
+ *
+ * @param headers …
+ * @param keys    …
+ */
 export function extractKeys (headers: Array<IDataTableHeader>, keys = new Set<string>()) {
     for (const item of headers) {
         if (item.key) keys.add(item.key)
@@ -16,6 +22,11 @@ export function extractKeys (headers: Array<IDataTableHeader>, keys = new Set<st
     return keys
 }
 
+/**
+ * Get data table headers default item.
+ *
+ * @param item …
+ */
 export function getDataTableHeadersDefaultItem (item: IDataTableHeader) {
     if (!item.key) return undefined
     if (item.key === 'data-table-group') return DEFAULT_HEADER
@@ -23,6 +34,11 @@ export function getDataTableHeadersDefaultItem (item: IDataTableHeader) {
     return undefined
 }
 
+/**
+ * Convert to internal headers.
+ *
+ * @param items …
+ */
 export function convertToInternalHeaders (items: Array<IDataTableHeader>) {
     const internalHeaders: Array<IInternalDataTableHeader> = []
     for (const item of items) {
@@ -43,6 +59,11 @@ export function convertToInternalHeaders (items: Array<IDataTableHeader>) {
     return internalHeaders
 }
 
+/**
+ * Parse fixed columns.
+ *
+ * @param items …
+ */
 export function parseFixedColumns (items: Array<IInternalDataTableHeader>) {
     let seenFixed = false
 
@@ -104,6 +125,12 @@ export function parseFixedColumns (items: Array<IInternalDataTableHeader>) {
     }
 }
 
+/**
+ * Parse header items.
+ *
+ * @param items    …
+ * @param maxDepth …
+ */
 export function parseHeaderItems (items: Array<IInternalDataTableHeader>, maxDepth: number) {
     const headers: Array<Array<IInternalDataTableHeader>> = []
     let currentDepth = 0
@@ -145,12 +172,25 @@ export function parseHeaderItems (items: Array<IInternalDataTableHeader>, maxDep
     return {columns, headers}
 }
 
+/**
+ * Get header depth.
+ *
+ * @param item  …
+ * @param depth …
+ * @returns …
+ */
 export function getHeaderDepth (item: IInternalDataTableHeader, depth = 0): number {
     if (!item.children) return depth
 
     return Math.max(depth, ...item.children.map(child => getHeaderDepth(child, depth + 1)))
 }
 
+/**
+ * Extract leaves.
+ *
+ * @param item    …
+ * @param columns …
+ */
 export function extractLeaves (item: IInternalDataTableHeader, columns: Array<IInternalDataTableHeader> = []) {
     if (!item.children) {
         columns.push(item)
@@ -163,6 +203,11 @@ export function extractLeaves (item: IInternalDataTableHeader, columns: Array<II
     return columns
 }
 
+/**
+ * Priority queue.
+ *
+ * @param arr …
+ */
 export function priorityQueue<T> (arr: T[] = []) {
     const queue: { element: T, priority: number }[] = arr.map(element => ({element, priority: 0}))
 

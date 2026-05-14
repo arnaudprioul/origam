@@ -5,7 +5,7 @@
 			:style="mainStyles"
 	>
 		<div
-				:class="{'origam-main__scroller': props.scrollable}"
+				:class="{'origam-main__scroller': scrollable}"
 				class="origam-main__wrapper"
 		>
 			<slot name="default"/>
@@ -18,13 +18,40 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useBorder, useLayout, useMargin, usePadding, useProps, useRounded, useSsrBoot } from '../../composables'
+	import {
+	useBorder,
+	useLayout,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useSsrBoot,
+	useStyle
+} from '../../composables'
 
 	import type { IMainProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props / filterProps for the component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IMainProps>(), {tag: 'main'})
 
 	const {filterProps} = useProps<IMainProps>(props)
+
+	/*********************************************************
+	 * Layout & decorators
+	 *
+	 * @description
+	 * Layout position offsets, SSR boot guard, rounded, border,
+	 * padding and margin composables.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {mainStyles: mainLayoutStyles} = useLayout()
 	const {ssrBootStyles} = useSsrBoot()
@@ -33,8 +60,13 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * mainStyles aggregates layout, ssr-boot and decorator styles.
+	 * mainClasses emits BEM modifiers.
+	 ********************************************************/
 	const mainStyles = computed(() => {
 		return [
 			mainLayoutStyles.value,
@@ -59,11 +91,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(mainStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes filterProps to parent ref consumers.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -71,15 +114,6 @@
 		lang="scss"
 		scoped
 >
-	// Pre-fix every `var(--origam-main--{prop})` read used DOUBLE-dash
-	// while the token build emits TRIPLE-dash (`--origam-main---{prop}`,
-	// matching the project's component block/property convention). All
-	// 11 reads resolved to nothing, so the main element used CSS browser
-	// defaults instead of the design tokens (`flex: 1 0 auto`,
-	// `max-width: 100%`, transitions, etc.). Same family of bug as the
-	// OrigamDrawer fix in 0b7ea51 — confirmed by token-grep:
-	//   tokens emit: 13× `--origam-main---*` triple-dash
-	//   SCSS read:   11× `--origam-main--*`  double-dash (resolved → ∅)
 	.origam-main {
 		$this: &;
 
@@ -118,4 +152,3 @@
 		}
 	}
 </style>
-

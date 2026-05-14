@@ -10,16 +10,6 @@
 			target="cursor"
 			v-bind="menuProps"
 	>
-		<!--
-			Forward every consumer slot to the underlying `<origam-menu>`.
-			Pre-fix the wrapper was self-closing, so a consumer that wrote
-			`<origam-contextual-menu><template #default>…</template></…>`
-			had its content silently dropped — `OrigamMenu`'s default slot
-			fell back to its own `<origam-list>` rendering of `:items`. Same
-			for `#activator`, which the consumer might use to scope the
-			right-click trigger to a specific zone instead of the whole
-			body (the `activator="cursor"` default resolves to `<body>`).
-		-->
 		<template
 				v-for="(_, name) in $slots"
 				#[name]="slotProps"
@@ -37,13 +27,20 @@
 		setup
 >
 	import { OrigamMenu, OrigamTranslateScale } from "../../components"
-	import { useProps, useVModel } from "../../composables"
+	import { useProps, useVModel , useStyle} from "../../composables"
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from "../../enums"
 	import type { IContextualMenuProps } from "../../interfaces"
 	import type { TOrigamMenu, TTransitionProps } from "../../types"
 	import { forwardRefs } from "../../utils"
 
 	import { computed, ref, StyleValue } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, composables and top-level refs.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IContextualMenuProps>(), {
 		target: 'cursor',
@@ -63,14 +60,35 @@
 
 	const {filterProps} = useProps<IContextualMenuProps>(props)
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const modelValue = useVModel(props, 'modelValue', false)
 
 	const origamMenuRef = ref<TOrigamMenu>()
+
+	/*********************************************************
+	 * Props forwarding
+	 *
+	 * @description
+	 * Filtered props passed down to the inner menu component.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const menuProps = computed(() => {
 		return origamMenuRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue', 'activator', 'target', 'openOnClick', 'openOnContextualMenu'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and inline styles.
+	 ********************************************************/
 
 	const contextualMenuStyles = computed(() => {
 		return [
@@ -83,10 +101,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(contextualMenuStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({filterProps}, origamMenuRef))
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent components.
+	 ********************************************************/
+
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamMenuRef))
 
 </script>
 

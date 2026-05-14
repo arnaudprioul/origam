@@ -1,5 +1,43 @@
 <template>
+	<template v-if="compact">
+		<div
+				:class="compactClasses"
+				:style="numberFieldStyles"
+				role="group"
+				:aria-label="label"
+		>
+			<origam-btn
+					:icon="MDI_ICONS.MINUS"
+					:disabled="!canDecrease"
+					size="small"
+					data-cy="numberfield-compact-decrement"
+					aria-label="Decrement"
+					@click="handleCompactDecrement"
+			/>
+			<input
+					v-model="compactInputText"
+					type="text"
+					inputmode="numeric"
+					class="origam-number-field__compact-input"
+					:aria-label="label"
+					data-cy="numberfield-compact-input"
+					@blur="handleBlur"
+					@focus="handleFocus"
+					@beforeinput="handleBeforeInput"
+					@keydown="handleKeydown"
+			/>
+			<origam-btn
+					:icon="MDI_ICONS.PLUS"
+					:disabled="!canIncrease"
+					size="small"
+					data-cy="numberfield-compact-increment"
+					aria-label="Increment"
+					@click="handleCompactIncrement"
+			/>
+		</div>
+	</template>
 	<origam-text-field
+			v-else
 			ref="origamTextFieldRef"
 			v-model:model-value="inputText"
 			:class="numberFieldClasses"
@@ -217,7 +255,7 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 	import { OrigamBtn, OrigamDivider, OrigamTextField } from "../../components"
 
-	import { useAdjacentInner, useFocus, useHold, useProps, useVModel } from "../../composables"
+	import { useAdjacentInner, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
@@ -227,6 +265,12 @@
 
 	import { clamp, forwardRefs } from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and filterProps for the NumberField component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<INumberFieldProps>(), {
 		modelValue: null,
 		min: Number.MIN_SAFE_INTEGER,
@@ -241,6 +285,7 @@
 		rounded: true,
 		centerAffix: true,
 		split: false,
+		compact: false,
 		type: TEXT_FIELD_TYPE.NUMBER
 	})
 
@@ -254,31 +299,60 @@
 
 	const origamTextFieldRef = ref<TOrigamTextField>()
 
-	// Pre-fix this called `useForm(omit(props, ['modelValue']))`. That
-	// was wrong on two counts:
-	//   1. `useForm` is the FORM-CREATOR composable — meant for
-	//      `<OrigamForm>`, not for an individual field. Calling it
-	//      inside NumberField mounted a nested `provide(ORIGAM_FORM_KEY)`
-	//      scope, breaking the parent form's child registration.
-	//   2. `useForm` internally calls `useVModel(props, 'modelValue')`
-	//      and writes BOOLEAN values into it (`true` when all children
-	//      pass validation, `false` when any fail). Because `useVModel`
-	//      grabs the current instance via `getCurrentInstance()`, the
-	//      emit landed on the NumberField itself — silently overwriting
-	//      `update:modelValue` with `true` / `false`. Consumer's
-	//      `v-model="numberRef"` then received a boolean instead of a
-	//      number.
-	// `controlsDisabled` only needs `props.disabled` / `props.readonly`
-	// — the field's parent form is consulted via `useValidation`
-	// downstream (in `OrigamInput`).
+	/*********************************************************
+	 * Disabled / readonly guard
+	 *
+	 * @description
+	 * Pre-fix this called `useForm(omit(props, ['modelValue']))`. That
+	 * was wrong on two counts:
+	 *   1. `useForm` is the FORM-CREATOR composable — meant for
+	 *      `<OrigamForm>`, not for an individual field. Calling it
+	 *      inside NumberField mounted a nested `provide(ORIGAM_FORM_KEY)`
+	 *      scope, breaking the parent form's child registration.
+	 *   2. `useForm` internally calls `useVModel(props, 'modelValue')`
+	 *      and writes BOOLEAN values into it (`true` when all children
+	 *      pass validation, `false` when any fail). Because `useVModel`
+	 *      grabs the current instance via `getCurrentInstance()`, the
+	 *      emit landed on the NumberField itself — silently overwriting
+	 *      `update:modelValue` with `true` / `false`. Consumer's
+	 *      `v-model="numberRef"` then received a boolean instead of a
+	 *      number.
+	 * `controlsDisabled` only needs `props.disabled` / `props.readonly`
+	 * — the field's parent form is consulted via `useValidation`
+	 * downstream (in `OrigamInput`).
+	 ********************************************************/
 	const controlsDisabled = computed(() => !!(props.disabled || props.readonly))
+
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * model is the clamped numeric v-model.
+	 * inputText is a writable computed that mediates between the raw
+	 * string the user types and the clamped numeric model.
+	 * _inputText is the internal mutable string buffer.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue', null,
 			val => val ?? null,
 			val => val == null
 					? val ?? null
 					: clamp(Number(val), props.min, props.max))
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur} = useFocus(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
@@ -328,6 +402,15 @@
 		}
 	})
 
+	/*********************************************************
+	 * Increment / decrement guards
+	 *
+	 * @description
+	 * canIncrease / canDecrease gate the step buttons.
+	 * toggleUpDown performs the actual increment or decrement.
+	 * inferPrecision derives the required decimal precision from the
+	 * current value and step.
+	 ********************************************************/
 	const canIncrease = computed(() => {
 		if (controlsDisabled.value) return false
 		return (model.value ?? 0) as number + props.step <= props.max
@@ -377,8 +460,22 @@
 		}
 	}
 
+	/*********************************************************
+	 * Hold (long-press repeat)
+	 *
+	 * @description
+	 * useHold fires toggleUpDown repeatedly while the user holds
+	 * a step button, respecting holdDelay and holdRepeat props.
+	 ********************************************************/
 	const {holdStart, holdStop} = useHold({toggleUpDown}, props.holdRepeat, props.holdDelay)
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * Input, keydown, pointer and mouse handlers for the field
+	 * and step buttons.
+	 ********************************************************/
 	const handleBeforeInput = (e: InputEvent) => {
 		if (!e.data) return
 
@@ -526,6 +623,19 @@
 		clampModel()
 	}
 
+	/*********************************************************
+	 * Forwarded props & slot guards
+	 *
+	 * @description
+	 * textFieldProps filters and forwards relevant props to the inner
+	 * OrigamTextField instance.
+	 * hasAppendInner guards the appendInner slot template.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const textFieldProps = computed(() => {
 		return origamTextFieldRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'validationValue'])
 	})
@@ -534,8 +644,13 @@
 		return slots.appendInner || !props.hideControls
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * numberFieldClasses / numberFieldStyles compose the BEM root.
+	 * compactClasses applies the compact mode modifier.
+	 ********************************************************/
 	const numberFieldClasses = computed(() => {
 		return [
 			'origam-number-field',
@@ -555,7 +670,49 @@
 		] as StyleValue
 	})
 
-	defineExpose(forwardRefs({filterProps}, origamTextFieldRef))
+	const compactClasses = computed(() => {
+		return [
+			'origam-number-field',
+			'origam-number-field--compact',
+			props.class
+		]
+	})
+
+	const compactInputText = computed<string>({
+		get: () => model.value != null ? String(model.value) : '',
+		set (val: string) {
+			if (val === '') {
+				model.value = null
+			} else if (!isNaN(Number(val))) {
+				const clamped = clamp(Number(val), props.min, props.max)
+				model.value = clamped
+			}
+		}
+	})
+
+	const handleCompactIncrement = () => {
+		toggleUpDown(true)
+	}
+
+	const handleCompactDecrement = () => {
+		toggleUpDown(false)
+	}
+	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles)
+
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards TextField ref members plus filterProps.
+	 ********************************************************/
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamTextFieldRef))
 
 </script>
 
@@ -602,7 +759,6 @@
 			height: 100%;
 
 			.origam-btn {
-				/* --origam-number-field__control---background-color: transparent (fallback) */
 				background-color: var(--origam-number-field__control---background-color, transparent);
 				border-radius: var(--origam-number-field__control---border-radius, 0);
 			}
@@ -634,6 +790,25 @@
 			:deep(.origam-field__input) {
 				width: 0;
 				padding-inline: 0;
+			}
+		}
+
+		&--compact {
+			display: inline-flex;
+			align-items: center;
+			gap: var(--origam-number-field--compact---gap, 8px);
+
+			.origam-number-field__compact-input {
+				width: var(--origam-number-field--compact__input---width, 3em);
+				text-align: center;
+				font-variant-numeric: tabular-nums;
+				border: 0;
+				background: transparent;
+				padding: 0;
+				color: inherit;
+				font-size: inherit;
+				font-family: inherit;
+				outline: none;
 			}
 		}
 	}

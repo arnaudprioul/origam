@@ -34,6 +34,19 @@ function isOrigamRung (value: unknown): value is string {
     return typeof value === 'string' && ORIGAM_SHADOW_RUNGS.has(value)
 }
 
+/**
+ * Subset of shadow rungs for which a global utility class exists in
+ * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
+ * `2xl` and `3xl` are not yet emitted as utilities — they fall back
+ * to the inline style path.
+ */
+const UTILITY_SHADOW_RUNGS: ReadonlySet<string> = new Set([
+    'none', 'xs', 'sm', 'md', 'lg', 'xl'
+])
+function isUtilityRung (value: unknown): value is string {
+    return typeof value === 'string' && UTILITY_SHADOW_RUNGS.has(value)
+}
+
 const _bgWarned = new WeakSet<object>()
 function warnBgColorUsage (bgColor: TColor) {
     if (typeof console === 'undefined' || !bgColor) return
@@ -41,7 +54,6 @@ function warnBgColorUsage (bgColor: TColor) {
     const sentinel = { _: 'origam-elevation-bg-warn' } as const
     if (_bgWarned.has(sentinel)) return
     _bgWarned.add(sentinel)
-    // eslint-disable-next-line no-console
     console.warn(
         '[origam] useElevation: the `bgColor` parameter is deprecated and ignored. ' +
         'Shadows now resolve from the design tokens (`--origam-shadow-*`) and switch with the active theme. ' +
@@ -58,6 +70,10 @@ function warnBgColorUsage (bgColor: TColor) {
  *   - `elevationStyles` is still a string array — emits a single `box-shadow:`
  *     declaration that references the appropriate `--origam-shadow-*` token.
  */
+
+/*********************************************************
+ * useElevation
+ ********************************************************/
 export function useElevation (
     props: IElevationProps | Ref<number | string | undefined>,
     flat: Ref<boolean> = ref(false),
@@ -77,6 +93,29 @@ export function useElevation (
 
         classes.push(`${name}--elevated`)
 
+        // Classes-first companion: when `elevation` resolves to a
+        // utility-backed rung (Phase 1 manifest), emit the matching
+        // global utility class so consumers can opt into the global
+        // shadow layer. `2xl` / `3xl` and Material 0..24 numbers fall
+        // through to the inline-style path below.
+        if (isUtilityRung(elevation)) {
+            classes.push(`origam--shadow-${elevation}`)
+        } else if (!isOrigamRung(elevation)) {
+            // Material 0..24 number (string or number) — bridge to the
+            // utility ladder via the same token mapping as the inline
+            // style path. We deliberately skip this branch for origam
+            // rungs not in the utility set (`2xl`, `3xl`) so authors who
+            // pass `elevation="2xl"` get the inline-style path instead
+            // of a wrong utility class via `parseInt('2xl') === 2`.
+            const numeric = typeof elevation === 'string' ? parseInt(elevation, 10) : elevation
+            if (typeof numeric === 'number' && !Number.isNaN(numeric)) {
+                const tokenName = elevationToToken(numeric)
+                if (UTILITY_SHADOW_RUNGS.has(tokenName)) {
+                    classes.push(`origam--shadow-${tokenName}`)
+                }
+            }
+        }
+
         return classes
     })
 
@@ -87,11 +126,11 @@ export function useElevation (
         if (elevation == null || flat.value) return styles
 
         // Origam-native rung shortcut — e.g. `elevation="md"` lands
-        // straight on `var(--origam-shadow-md)` without going through
+        // straight on `var(--origam-shadow---md)` without going through
         // the Material 0..24 → token mapping. Authors get an explicit
         // intent ("medium shadow") rather than an opaque number.
         if (isOrigamRung(elevation)) {
-            styles.push(`box-shadow: var(--origam-shadow-${elevation})`)
+            styles.push(`box-shadow: var(--origam-shadow---${elevation})`)
             return styles
         }
 
@@ -99,7 +138,7 @@ export function useElevation (
         if (Number.isNaN(numeric as number)) return styles
 
         const tokenName = elevationToToken(numeric as number)
-        styles.push(`box-shadow: var(--origam-shadow-${tokenName})`)
+        styles.push(`box-shadow: var(--origam-shadow---${tokenName})`)
 
         return styles
     })

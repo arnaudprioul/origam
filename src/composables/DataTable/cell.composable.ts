@@ -1,5 +1,8 @@
 import type { IInternalDataTableHeader } from "../../interfaces"
 
+/*********************************************************
+ * useCell
+ ********************************************************/
 export function useCell () {
     const getPadding = (column: IInternalDataTableHeader) => {
         if (column.key === 'data-table-select' || column.key === 'data-table-expand') {

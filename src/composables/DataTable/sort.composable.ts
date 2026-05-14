@@ -15,6 +15,9 @@ import { sortItems } from '../../utils'
 
 import { computed, inject, provide, Ref, toRef } from 'vue'
 
+/*********************************************************
+ * createSort
+ ********************************************************/
 export function createSort (props: IDataTableSortProps) {
     const sortBy = useVModel(props, 'sortBy', [])
     const mustSort = toRef(props, 'mustSort')
@@ -23,6 +26,9 @@ export function createSort (props: IDataTableSortProps) {
     return {sortBy, mustSort, multiSort}
 }
 
+/*********************************************************
+ * provideSort
+ ********************************************************/
 export function provideSort (options: {
     sortBy: Ref<Array<IDataTableSortItem>>
     mustSort: Ref<boolean>
@@ -65,6 +71,9 @@ export function provideSort (options: {
     return data
 }
 
+/*********************************************************
+ * useSort
+ ********************************************************/
 export function useSort () {
     const data = inject(ORIGAM_DATA_TABLE_SORT_KEY)
 
@@ -73,6 +82,9 @@ export function useSort () {
     return data
 }
 
+/*********************************************************
+ * useSortedItems
+ ********************************************************/
 export function useSortedItems<T extends IInternalItem> (
     props: {
         customKeySort: TDataTableCompareFunction | undefined

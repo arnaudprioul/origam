@@ -1,12 +1,10 @@
 <template>
-	<!-- When not loading, render the slot content instead -->
-	<template v-if="!props.loading">
+	<template v-if="!loading">
 		<slot/>
 	</template>
 
-	<!-- list-item: circular avatar + 2 text lines -->
 	<div
-			v-else-if="props.variant === 'list-item'"
+			v-else-if="variant === 'list-item'"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
@@ -14,31 +12,29 @@
 			role="status"
 	>
 		<div
-				:class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--circular']"
+				:class="skeletonCircularClasses"
 				:style="circularStyle"
 		/>
 		<div class="origam-skeleton__lines">
-			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
-			<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+			<div :class="skeletonTextClasses"/>
+			<div :class="skeletonTextClasses"/>
 		</div>
 	</div>
 
-	<!-- card: image rectangle + 3 text lines -->
 	<div
-			v-else-if="props.variant === 'card'"
+			v-else-if="variant === 'card'"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
 			aria-label="Loading"
 			role="status"
 	>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--rectangular']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
-		<div :class="['origam-skeleton', { 'origam-skeleton--pulse': props.pulse }, 'origam-skeleton--text']"/>
+		<div :class="skeletonRectangularClasses"/>
+		<div :class="skeletonTextClasses"/>
+		<div :class="skeletonTextClasses"/>
+		<div :class="skeletonTextClasses"/>
 	</div>
 
-	<!-- default: single skeleton block -->
 	<div
 			v-else
 			:class="skeletonClasses"
@@ -47,17 +43,25 @@
 			aria-label="Loading"
 			role="status"
 	/>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
-	import { useBothColor, useProps, useRounded, useSize } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useRounded,
+	useSize,
+	useStyle
+} from '../../composables'
 	import type { ISkeletonProps } from '../../interfaces'
 	import { convertToUnit } from '../../utils'
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ISkeletonProps>(), {
 		variant: 'rectangular',
@@ -66,9 +70,19 @@
 	})
 
 	const {filterProps} = useProps<ISkeletonProps>(props)
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	// ── Resolve width / height to CSS strings ──────────────────────────────
 	const resolvedWidth = computed(() => {
@@ -95,6 +109,25 @@
 	}))
 
 	// ── Composite-variant container ────────────────────────────────────────
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
+
+	const skeletonCircularClasses = computed(() => [
+		'origam-skeleton',
+		{ 'origam-skeleton--pulse': props.pulse },
+		'origam-skeleton--circular'
+	])
+	const skeletonTextClasses = computed(() => [
+		'origam-skeleton',
+		{ 'origam-skeleton--pulse': props.pulse },
+		'origam-skeleton--text'
+	])
+	const skeletonRectangularClasses = computed(() => [
+		'origam-skeleton',
+		{ 'origam-skeleton--pulse': props.pulse },
+		'origam-skeleton--rectangular'
+	])
 	const skeletonContainerClasses = computed(() => [
 		'origam-skeleton-wrapper',
 		`origam-skeleton-wrapper--${props.variant}`,
@@ -110,6 +143,7 @@
 		'origam-skeleton',
 		`origam-skeleton--${props.variant}`,
 		{'origam-skeleton--pulse': props.pulse},
+		colorClasses.value,
 		roundedClasses.value,
 		sizeClasses.value,
 		props.class
@@ -123,11 +157,19 @@
 
 		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -135,10 +177,14 @@
 		lang="scss"
 		scoped
 >
-	@keyframes origam-skeleton-pulse {
-		0%   { opacity: var(--origam-skeleton---opacity-min, 0.4) }
-		50%  { opacity: var(--origam-skeleton---opacity-max, 0.8) }
-		100% { opacity: var(--origam-skeleton---opacity-min, 0.4) }
+	@keyframes origam-skeleton-wave {
+		0%   { background-position: -200% 0 }
+		100% { background-position: 200% 0 }
+	}
+
+	@keyframes origam-skeleton-spin {
+		from { transform: rotate(0deg) }
+		to   { transform: rotate(360deg) }
 	}
 
 	.origam-skeleton {
@@ -147,10 +193,6 @@
 		border-radius: var(--origam-skeleton---border-radius);
 		width: 100%;
 		height: var(--origam-skeleton---text-height);
-
-		&--pulse {
-			animation: origam-skeleton-pulse var(--origam-skeleton---animation-duration, 1500ms) ease-in-out infinite;
-		}
 
 		&--text {
 			height: var(--origam-skeleton---text-height);
@@ -164,14 +206,42 @@
 
 		&--circular {
 			border-radius: var(--origam-skeleton---border-radius-circular, 50%);
-			// width & height are set via inline style for circular
 			flex-shrink: 0;
 		}
 
 		&--card,
 		&--list-item {
-			// composite variants — rendered by wrapper, not this class
 			display: none;
+		}
+
+		&--text.origam-skeleton--pulse,
+		&--rectangular.origam-skeleton--pulse {
+			background-image: linear-gradient(
+				90deg,
+				transparent 0%,
+				var(
+					--origam-skeleton---wave-color,
+					color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)
+				) 50%,
+				transparent 100%
+			);
+			background-repeat: no-repeat;
+			background-size: 200% 100%;
+			animation: origam-skeleton-wave var(--origam-skeleton---animation-duration, 1500ms) linear infinite;
+		}
+
+		&--circular.origam-skeleton--pulse {
+			background:
+				conic-gradient(
+					from 0deg,
+					transparent 0deg,
+					var(
+						--origam-skeleton---wave-color,
+						color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)
+					) 90deg,
+					var(--origam-skeleton---background-color) 270deg
+				);
+			animation: origam-skeleton-spin var(--origam-skeleton---animation-duration, 1500ms) linear infinite;
 		}
 	}
 

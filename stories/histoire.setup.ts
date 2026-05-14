@@ -4,13 +4,20 @@ import { createOrigam } from '@origam/origam'
 import OrigamStoryLayout from '@stories/components/wrapper/OrigamStoryLayout.vue'
 
 // Design-system tokens must be loaded before any component renders —
-// otherwise `var(--origam-color-action-*-bg)` and friends resolve to
+// otherwise `var(--origam-color__action--*---bg)` and friends resolve to
 // `undefined` and inline color styles silently no-op. The order matches
 // `src/assets/scss/main.scss`: primitives first (raw values), then the
 // theme overrides (light by default, dark via `[data-theme="dark"]`).
 import '@origam/assets/css/tokens/primitive.css'
 import '@origam/assets/css/tokens/light.css'
 import '@origam/assets/css/tokens/dark.css'
+
+// Global utility classes (`.origam--bg-primary`, `.origam--shadow-md`, …).
+// Loaded AFTER tokens so the `var(--origam-…)` references resolve, and
+// BEFORE component <style scoped> blocks (Vite injects scoped CSS after the
+// imports above, so source order keeps component selectors winning the
+// specificity tie at 0,1,0).
+import '@origam/assets/css/tokens/origam-utilities.css'
 
 // Material Design Icons font — every component that renders an icon
 // (OrigamIcon, OrigamListGroup activator's expand chevron, OrigamBtn
@@ -33,20 +40,41 @@ import '@mdi/font/css/materialdesignicons.css'
 if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', 'light')
 
-    // Force the sandbox iframe to fit the available viewport instead
-    // of locking to its responsive preset (default 1024×768 in Histoire,
-    // which forces a horizontal scroll on smaller screens). We inject
-    // a `<style>` tag into the SHELL window (`window.top`) — that's
-    // where the iframe element lives. Idempotent on re-runs.
+    // Force the sandbox iframe to fluidly fill its pane in both
+    // directions. Histoire's responsive-preview component wraps the
+    // iframe in `.htw-overflow-hidden` whose width is driven by an
+    // inline responsive preset (default 720px). When the user drags
+    // the sandbox/panel sash, the OUTER pane resizes but the INNER
+    // preview wrapper stays at the preset → the iframe inside
+    // appears stuck. We target that wrapper directly with
+    // `width: 100% !important` so the iframe always follows the
+    // pane. The trade-off is that Histoire's responsive-preset
+    // picker (320 / 768 / 1024 px) becomes a no-op visually — the
+    // project never uses it, so that's acceptable.
+    //
+    // The `iframe[src*="__sandbox"]` block stays because it removes
+    // the small horizontal scroll bar that appears at the bottom of
+    // the preview on certain Vite HMR rehydrations (the iframe
+    // briefly reverts to its 720x720 attribute values before its
+    // inner contents recompute). Idempotent on re-runs.
     try {
         const top = window.top
         if (top && top !== window && top.document && !top.document.getElementById('origam-iframe-fit')) {
             const s = top.document.createElement('style')
             s.id = 'origam-iframe-fit'
             s.textContent = `
-                iframe[src*="__sandbox"] {
-                    max-width: 100% !important;
+                .histoire-story-responsive-preview,
+                .histoire-story-responsive-preview > div,
+                .histoire-story-responsive-preview > div > div {
+                    width: 100% !important;
                     height: 100% !important;
+                    max-width: 100% !important;
+                    max-height: 100% !important;
+                }
+                iframe[src*="__sandbox"] {
+                    width: 100% !important;
+                    height: 100% !important;
+                    max-width: 100% !important;
                     max-height: 100% !important;
                 }
             `

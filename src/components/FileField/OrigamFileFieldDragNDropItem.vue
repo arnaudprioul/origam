@@ -5,31 +5,31 @@
   >
     <slot>
       <origam-icon
-          :icon="props.fileIcon"
+          :icon="fileIcon"
           class="origam-file-field-dragndrop-item__icon"
       />
       <div class="origam-file-field-dragndrop-item__content">
         <div class="origam-file-field-dragndrop-item__name">
-          {{ props.file.name }}
+          {{ file.name }}
         </div>
         <div class="origam-file-field-dragndrop-item__meta">
-          {{ humanReadableFileSize(props.file.size, base) }}
+          {{ humanReadableFileSize(file.size, base) }}
         </div>
         <origam-progress
             v-if="hasProgress"
             class="origam-file-field-dragndrop-item__progress"
-            :model-value="props.progress"
-            :color="props.color"
+            :model-value="progress"
+            :color="color"
             height="4"
             rounded
         />
       </div>
       <div class="origam-file-field-dragndrop-item__actions">
         <origam-btn
-            :icon="props.removeIcon"
+            :icon="removeIcon"
             flat
             size="small"
-            :disabled="props.disabled || props.readonly"
+            :disabled="disabled || readonly"
             @click.stop.prevent="handleRemove"
         />
       </div>
@@ -44,7 +44,11 @@
   import { computed, StyleValue } from 'vue'
 
   import { OrigamBtn, OrigamIcon, OrigamProgress } from '../../components'
-  import { useDefaults, useProps } from '../../composables'
+  import {
+	useDefaults,
+	useProps,
+	useStyle
+} from '../../composables'
   import { MDI_ICONS } from '../../enums'
   import type { IFileFieldDragNDropItemEmits, IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots } from '../../interfaces'
   import { humanReadableFileSize } from '../../utils'
@@ -75,6 +79,11 @@
    * @description
    * Handlers for remove actions.
    ********************************************************/
+
+  /*********************************************************
+   * Event handlers
+   ********************************************************/
+
   const handleRemove = () => {
     emits('click:remove', { file: props.file, index: props.index })
   }
@@ -119,8 +128,16 @@
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldDragNDropItemProps` interface.
    ********************************************************/
   const { filterProps } = useProps<IFileFieldDragNDropItemProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(dragNDropItemStyles)
 
-  defineExpose({ filterProps })
+
+  defineExpose({ filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 </script>
 
 <style
@@ -135,7 +152,7 @@
     z-index: 2;
 
     &__icon {
-      color: var(--origam-file-field-dragndrop-item__icon---color, var(--origam-color-text-secondary));
+      color: var(--origam-file-field-dragndrop-item__icon---color, var(--origam-color__text---secondary));
       flex-shrink: 0;
     }
 
@@ -156,7 +173,7 @@
     }
 
     &__meta {
-      color: var(--origam-file-field-dragndrop-item__meta---color, var(--origam-color-text-secondary));
+      color: var(--origam-file-field-dragndrop-item__meta---color, var(--origam-color__text---secondary));
       font-size: var(--origam-file-field-dragndrop-item__meta---font-size, 0.75rem);
     }
 

@@ -6,6 +6,9 @@ import type { IGoToInstance, IGoToOptions, ILocaleInstance, IRtlInstance } from 
 
 import { genDefaults, mergeDeep, scrollTo } from "../../utils"
 
+/*********************************************************
+ * createGoTo
+ ********************************************************/
 export function createGoTo (
     options: IGoToOptions | undefined,
     locale: ILocaleInstance & IRtlInstance
@@ -16,6 +19,9 @@ export function createGoTo (
     }
 }
 
+/*********************************************************
+ * useGoTo
+ ********************************************************/
 export function useGoTo (_options: Partial<IGoToOptions> = {}) {
     const goToInstance = inject(ORIGAM_GO_TO_KEY)
 

@@ -20,7 +20,7 @@
 >
 	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
 
-	import { useGroup, useProps } from "../../composables"
+	import { useGroup, useProps , useStyle} from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 
@@ -31,6 +31,14 @@
 	import type { TOrigamSlideGroup } from "../../types"
 
 	import { computed, ref, StyleValue } from "vue";
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, group selection and defaults propagation
+	 * to child chips.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IChipGroupProps>(), {
 		direction: DIRECTION.HORIZONTAL,
@@ -44,6 +52,10 @@
 	const {filterProps} = useProps<IChipGroupProps>(props)
 
 	const origamSlideGroupRef = ref<TOrigamSlideGroup>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_CHIP_GROUP_KEY)
 
@@ -61,11 +73,20 @@
 		}
 	}))
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const slideGroupProps = computed(() => {
 		return origamSlideGroupRef.value?.filterProps(props)
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM modifier classes and passes through host styles.
+	 ********************************************************/
 
 	const chipGroupStyles = computed(() => {
 		return [
@@ -81,10 +102,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(chipGroupStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

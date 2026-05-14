@@ -49,20 +49,23 @@
 	import { OrigamDefaultsProvider, OrigamExpandY, OrigamListGroupActivator, OrigamListItem, OrigamTransition } from '../../components'
 
 	import {
-		useBorder,
 		useBothColor,
+		useHover,
 		useList,
-		useMargin,
 		useNestedItem,
-		usePadding,
 		useProps,
-		useRounded,
-		useSsrBoot
-	} from '../../composables'
+		useSsrBoot,
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { MDI_ICONS } from "../../enums"
 
 	import type { IListActivatorProps, IListGroupProps } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListGroupProps>(), {
 		tag: 'div',
@@ -72,6 +75,14 @@
 
 	const emits = defineEmits(['click:activator'])
 
+
+	const {isHover, hoverState} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<IListGroupProps>(props)
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
@@ -83,12 +94,12 @@
 		}
 	}))
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {isOpen, open, id: _id} = useNestedItem(toRef(props, 'value'), true)
 	const id = computed(() => `origam-list-group--id-${String(_id.value)}`)
 	const list = useList()
@@ -116,14 +127,19 @@
 		return props.appendIcon || toggleIcon.value
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: Event) => {
 		emits('click:activator', {open: !isOpen.value, event: e})
 
 		open(!isOpen.value, e)
 	}
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const listGroupStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -143,6 +159,7 @@
 				'origam-list-group--fluid': props.fluid,
 				'origam-list-group--open': isOpen.value
 			},
+			colorClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -150,12 +167,21 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listGroupStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		isOpen,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -163,7 +189,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults are now provided by the generated :root block from tokens/component/list.json.
 	.origam-list-group {
 		$this: &;
 

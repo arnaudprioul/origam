@@ -3,6 +3,9 @@ import { consoleWarn } from '../../utils'
 
 import { computed, Ref } from 'vue'
 
+/*********************************************************
+ * useTeleport
+ ********************************************************/
 export function useTeleport (target: Ref<boolean | string | Element>) {
     const teleportTarget = computed(() => {
         const _target = target.value

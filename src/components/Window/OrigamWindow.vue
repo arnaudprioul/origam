@@ -62,7 +62,12 @@
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
 	import { OrigamBtn, OrigamSpacer } from '../../components'
 
-	import { useGroup, useLocale, useProps } from '../../composables'
+	import {
+	useGroup,
+	useLocale,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
 
@@ -72,6 +77,13 @@
 
 	import type { ITouchHandlers, IWindowProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults, emits, filterProps utility, and
+	 * locale helper for ARIA labels on navigation buttons.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IWindowProps>(), {
 		// Affix icons were swapped: prev pointed right, next pointed left.
 		// Reversed so the chevrons match the scroll/navigation direction.
@@ -97,6 +109,16 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Group & window state
+	 *
+	 * @description
+	 * useGroup manages the selected-item registry. isReversed
+	 * tracks swipe / arrow direction for choosing the correct
+	 * CSS transition class. transition, transitionCount, and
+	 * transitionHeight are provided to child WindowItems so
+	 * they can coordinate enter/leave height animations.
+	 ********************************************************/
 	const group = useGroup(props, ORIGAM_WINDOW_GROUP_KEY)
 
 	const rootRef = ref()
@@ -138,6 +160,15 @@
 		rootRef
 	})
 
+	/*********************************************************
+	 * Navigation controls
+	 *
+	 * @description
+	 * canMoveBack / canMoveForward guard continuous wrapping.
+	 * prevProps / nextProps are spread onto OrigamBtn slots.
+	 * prev() / next() set isReversed before calling group nav
+	 * so the transition class matches the movement direction.
+	 ********************************************************/
 	const canMoveBack = computed(() => props.continuous || activeIndex.value !== 0)
 	const canMoveForward = computed(() => props.continuous || activeIndex.value !== group.items.value.length - 1)
 
@@ -169,6 +200,14 @@
 		}
 	}
 
+	/*********************************************************
+	 * Touch / swipe
+	 *
+	 * @description
+	 * vTouch directive options wired to prev / next helpers.
+	 * When props.touch is false the directive is disabled;
+	 * when it is an object, caller overrides are merged in.
+	 ********************************************************/
 	const touchOptions = computed(() => {
 		if (props.touch === false) return props.touch
 
@@ -190,8 +229,13 @@
 		}
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root, container, and show-arrows-on-hover modifier
+	 * classes and styles for the window shell.
+	 ********************************************************/
 	const windowStyles = computed(() => {
 		return [
 			props.style
@@ -214,12 +258,23 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(windowStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
-		group
+		group,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -243,13 +298,6 @@
 		}
 
 		&__controls {
-			// `box-sizing: border-box` MUST stay — without it, `width: 100%`
-			// + `padding: 0 16px` resolves to `100% + 32px` (content-box
-			// default), which makes the affix container 32px wider than
-			// the window host. The prev arrow ends up nudged 2px out of
-			// the host's left edge and the next arrow gets clipped by the
-			// host's `overflow: hidden`. Pin the box model so 100% really
-			// means 100% of the host.
 			box-sizing: border-box;
 			position: var(--origam-window__controls---position, absolute);
 			left: var(--origam-window__controls---position-left, 0);

@@ -9,7 +9,7 @@
     "transition-easing":       { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
 
     "controls": {
-      "background-color":      { "$type": "color",      "$value": "transparent" },
+      "background-color":      { "$type": "color",      "$value": "rgba(0, 0, 0, 0.4)" },
       "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
       "height":                { "$type": "dimension",  "$value": "50px" },
       "width":                 { "$type": "dimension",  "$value": "100%" },
@@ -34,9 +34,11 @@
 
     "progress": {
       "position":              { "$type": "other",      "$value": "absolute" },
-      "position-bottom":       { "$type": "dimension",  "$value": "{space.0}" },
+      "position-top":          { "$type": "dimension",  "$value": "{space.0}" },
+      "position-bottom":       { "$type": "other",      "$value": "auto" },
       "position-left":         { "$type": "dimension",  "$value": "{space.0}" },
       "position-right":        { "$type": "dimension",  "$value": "{space.0}" },
+      "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" },
       "margin":                { "$type": "dimension",  "$value": "{space.0}" }
     },
 

@@ -1,6 +1,12 @@
 import type { TStrategySelect } from '../../types'
 import { toRaw } from 'vue'
 
+/**
+ * Independent select strategy.
+ *
+ * @param mandatory …
+ * @returns …
+ */
 export function independentSelectStrategy (mandatory?: boolean): TStrategySelect {
     const strategy: TStrategySelect = {
         select: ({id, value, selected}) => {
@@ -46,6 +52,12 @@ export function independentSelectStrategy (mandatory?: boolean): TStrategySelect
     return strategy
 }
 
+/**
+ * Independent single select strategy.
+ *
+ * @param mandatory …
+ * @returns …
+ */
 export function independentSingleSelectStrategy (mandatory?: boolean): TStrategySelect {
     const parentStrategy = independentSelectStrategy(mandatory)
 
@@ -72,6 +84,12 @@ export function independentSingleSelectStrategy (mandatory?: boolean): TStrategy
     return strategy
 }
 
+/**
+ * Leaf select strategy.
+ *
+ * @param mandatory …
+ * @returns …
+ */
 export function leafSelectStrategy (mandatory?: boolean): TStrategySelect {
     const parentStrategy = independentSelectStrategy(mandatory)
 
@@ -89,6 +107,12 @@ export function leafSelectStrategy (mandatory?: boolean): TStrategySelect {
     return strategy
 }
 
+/**
+ * Leaf single select strategy.
+ *
+ * @param mandatory …
+ * @returns …
+ */
 export function leafSingleSelectStrategy (mandatory?: boolean): TStrategySelect {
     const parentStrategy = independentSingleSelectStrategy(mandatory)
 
@@ -106,6 +130,12 @@ export function leafSingleSelectStrategy (mandatory?: boolean): TStrategySelect 
     return strategy
 }
 
+/**
+ * Classic select strategy.
+ *
+ * @param mandatory …
+ * @returns …
+ */
 export function classicSelectStrategy (mandatory?: boolean): TStrategySelect {
     const strategy: TStrategySelect = {
         select: ({id, value, selected, children, parents}) => {

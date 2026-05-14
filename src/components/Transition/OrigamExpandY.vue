@@ -24,6 +24,12 @@
 
 	import type { IHTMLExpandElement, ITransitionProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITransitionProps>(), {
 		name: 'origam-transition--expand-y',
 		mode: TRANSITION_MODE.IN_OUT
@@ -31,6 +37,14 @@
 
 	const {filterProps} = useProps<ITransitionProps>(props)
 
+	/*********************************************************
+	 * Expand-Y transition hooks
+	 *
+	 * @description
+	 * JS-driven height expand/collapse — stashes the element's
+	 * initial height style, forces a reflow, and animates to/
+	 * from 0 using the element's offset height.
+	 ********************************************************/
 	const expandedParentClass = ''
 	const sizeProperty = 'height' as const
 	const offsetProperty = camelize(`offset-${sizeProperty}`) as 'offsetHeight'
@@ -50,6 +64,10 @@
 		}
 		resetStyles(el)
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleBeforeEnter = (el: Element) => {
 		const element = el as IHTMLExpandElement
@@ -119,8 +137,13 @@
 
 		onAfterLeave(element)
 	}
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
 		filterProps
 	})

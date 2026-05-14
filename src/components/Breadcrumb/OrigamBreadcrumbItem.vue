@@ -70,16 +70,12 @@
 	import {
 		useActive,
 		useAdjacent,
-		useBorder,
-		useColorEffect,
 		useDefaults,
 		useDensity,
 		useHover,
 		useLink,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -89,6 +85,13 @@
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props resolved against the closest OrigamBreadcrumb
+	 * defaults provider.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
 
 	// Resolve props against the closest `provideDefaults({ 'origam-breadcrumb-item': … })`
@@ -103,19 +106,41 @@
 
 	const link = useLink(props, attrs)
 
-	const {isHover, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active, activeClasses} = useActive(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state and color resolution.
+	 ********************************************************/
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive: active, activeState, activeClasses} = useActive(props)
 
 	const isActive = computed(() => {
 		return active.value || link.isActive?.value
 	})
 
-	const {colorStyles} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, computed(() => !!props.disabled))
-	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState, computed(() => !!props.disabled))
+
+	/*********************************************************
+	 * Adjacent (prepend / append)
+	 *
+	 * @description
+	 * Resolves prepend/append icons and click handlers.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {
 		hasAppend,
@@ -124,8 +149,13 @@
 		onClickAppend: handleClickAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all spacing, color and variant classes/styles.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
 	const breadcrumbItemStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -144,6 +174,7 @@
 				'origam-breadcrumb-item--disabled': props.disabled
 			},
 			activeClasses.value,
+			colorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
@@ -155,8 +186,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbItemStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -172,8 +207,6 @@
 		scoped
 >
 	.origam-breadcrumb-item {
-		// Default values for CSS custom properties — moved from :root {} global block
-		// (no hex were present; values are semantic references or keyword values)
 		--origam-breadcrumb-item---text-decoration: none;
 		--origam-breadcrumb-item---border-top-width: 0px;
 		--origam-breadcrumb-item---border-left-width: 0px;
@@ -184,8 +217,7 @@
 		--origam-breadcrumb-item---border-style: solid;
 		--origam-breadcrumb-item---border-radius: 0px;
 		--origam-breadcrumb-item---density: 0px;
-		--origam-breadcrumb-item---box-shadow: var(--origam-shadow-none, none);
-		// color: inherit → token breadcrumb.item.color → {color.text.primary} with inherit fallback preserved
+		--origam-breadcrumb-item---box-shadow: var(--origam-shadow---none, none);
 		--origam-breadcrumb-item---color: var(--origam-breadcrumb-item---color-token, inherit);
 		--origam-breadcrumb-item---opacity: 1;
 		--origam-breadcrumb-item---background: transparent;
@@ -231,7 +263,6 @@
 		margin-inline-end: var(--origam-breadcrumb-item---margin-inline-end);
 
 		&--disabled {
-			// Token breadcrumb.item.opacity-disabled → {opacity.50} = 0.5
 			--origam-breadcrumb-item---opacity: var(--origam-breadcrumb-item---opacity-disabled, 0.5);
 			pointer-events: none;
 		}
@@ -240,7 +271,6 @@
 
 		}
 
-		// Density formula `padding - density` → comfortable=−8 (grows), compact=+8 (shrinks).
 		&--density-comfortable {
 			--origam-breadcrumb-item---density: -8px;
 		}

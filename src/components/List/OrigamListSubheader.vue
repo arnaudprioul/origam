@@ -23,15 +23,32 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { useBorder, useBothColor, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import type { IListSubheader } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListSubheader>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IListSubheader>(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -42,8 +59,9 @@
 		return slots.default || props.title
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const listSubheaderStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -61,6 +79,7 @@
 				'origam-list-subheader--inset': props.inset,
 				'origam-list-subheader--sticky': props.sticky
 			},
+			colorClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -68,11 +87,19 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(listSubheaderStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -80,12 +107,10 @@
 		lang="scss"
 		scoped
 >
-	// Bug fix (port Origam): replaced Vuetify vars `--v-theme-on-surface` / `--v-medium-emphasis-opacity`
-	// with Origam semantic tokens. Defaults now provided by tokens/component/list.json subheader section.
 	.origam-list-subheader {
 		align-items: center;
 		background: inherit;
-		color: var(--origam-list-subheader---color, var(--origam-color-text-secondary));
+		color: var(--origam-list-subheader---color, var(--origam-color__text---secondary));
 		display: flex;
 		font-size: var(--origam-list-subheader---font-size, 0.875rem);
 		font-weight: var(--origam-list-subheader---font-weight, 400);

@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IGroupProps,
@@ -10,7 +11,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface IChipGroupProps extends ICommonsComponentProps, ITagProps, IGroupProps, IColorProps, IMarginProps, IPaddingProps, IBorderProps, IRoundedProps, ISlideGroupProps {
+export interface IChipGroupProps extends ICommonsComponentProps, ITagProps, IGroupProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IBorderProps, IRoundedProps, ISlideGroupProps {
     column?: boolean
     filter?: boolean
     valueComparator?: (a: any, b: any) => boolean

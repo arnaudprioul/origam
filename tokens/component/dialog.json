@@ -8,6 +8,12 @@
     "z-index":            { "$type": "number",    "$value": "{zIndex.modal}" },
     "box-shadow":         { "$type": "shadow",    "$value": "{shadow.xl}" },
 
+    "width-xs":           { "$type": "dimension", "$value": "320px" },
+    "width-sm":           { "$type": "dimension", "$value": "400px" },
+    "width-md":           { "$type": "dimension", "$value": "720px" },
+    "width-lg":           { "$type": "dimension", "$value": "960px" },
+    "width-xl":           { "$type": "dimension", "$value": "1080px" },
+
     "transition-duration":        { "$type": "duration",    "$value": "{motion.duration.medium}" },
     "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" },
 

@@ -33,7 +33,11 @@
 >
 	import { OrigamBtnGroup } from '../../components'
 
-	import { useGroup, useProps } from '../../composables'
+	import {
+	useGroup,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
@@ -45,11 +49,21 @@
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits and group selection state for the toggle.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBtnToggleProps>(), {tag: 'div', items: () => [], density: DENSITY.DEFAULT})
 
 	defineEmits(['update:modelValue'])
 
 	const {filterProps} = useProps<IBtnToggleProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {isSelected, next, prev, select, selected} = useGroup(props, ORIGAM_BTN_TOGGLE_KEY)
 
@@ -57,12 +71,20 @@
 
 	const origamBtnGroupRef = ref<TOrigamBtnGroup>()
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const btnGroupProps = computed(() => {
 		return origamBtnGroupRef.value?.filterProps(props)
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Thin wrapper — adds only the toggle BEM modifier class.
+	 ********************************************************/
 	const btnToggleStyles = computed(() => {
 		return [
 			props.style
@@ -74,14 +96,25 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(btnToggleStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: group navigation + filterProps.
+	 ********************************************************/
 	defineExpose({
 		next,
 		prev,
 		select,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

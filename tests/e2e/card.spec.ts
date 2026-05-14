@@ -93,6 +93,12 @@ test.describe('OrigamCard', () => {
 			await expect(card).toBeVisible({ timeout: 5000 })
 			const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor)
 			expect(bg, `card-color-${intent}`).toBe(expected)
+			// Phase 3 Vague A — class-first companion: utility class
+			// `.origam--bg-{intent}` must land on the card root for
+			// tokenised intents.
+			await expect(card, `card-color-${intent} utility class`).toHaveClass(
+				new RegExp(`origam--bg-${intent}`)
+			)
 		}
 	})
 
@@ -268,7 +274,7 @@ test.describe('OrigamCard', () => {
 			const card = sandbox.locator('[data-cy="card-loading-bool"]')
 			await expect(card).toBeVisible({ timeout: 5000 })
 			// Card defaultKind = 'line' → linear progress bar mounted
-			await expect(card.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+			await expect(card.locator('.origam-card__progress--linear')).toBeAttached({ timeout: 5000 })
 		})
 
 		test('loading=42 → determinate linear progress mounted', async ({ page }) => {
@@ -281,7 +287,7 @@ test.describe('OrigamCard', () => {
 			const card = sandbox.locator('[data-cy="card-loading-number"]')
 			await expect(card).toBeVisible({ timeout: 5000 })
 			// Number input → defaultKind line, determinate
-			await expect(card.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+			await expect(card.locator('.origam-card__progress--linear')).toBeAttached({ timeout: 5000 })
 		})
 
 		test('loading={ type: "line" } → explicit linear renderer mounted', async ({ page }) => {
@@ -293,7 +299,7 @@ test.describe('OrigamCard', () => {
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const card = sandbox.locator('[data-cy="card-loading-line"]')
 			await expect(card).toBeVisible({ timeout: 5000 })
-			await expect(card.locator('.origam-progress--linear')).toBeAttached({ timeout: 5000 })
+			await expect(card.locator('.origam-card__progress--linear')).toBeAttached({ timeout: 5000 })
 		})
 
 		test('loading={ type: "circular", size: 16 } → circular progress overrides line default', async ({ page }) => {
@@ -306,7 +312,7 @@ test.describe('OrigamCard', () => {
 			const card = sandbox.locator('[data-cy="card-loading-circular-override"]')
 			await expect(card).toBeVisible({ timeout: 5000 })
 			// Explicit type='circular' wins over Card's line default
-			await expect(card.locator('.origam-progress--circular')).toBeAttached({ timeout: 5000 })
+			await expect(card.locator('.origam-card__progress--circular')).toBeAttached({ timeout: 5000 })
 		})
 
 		test('loading={ type: "skeleton" } → skeleton mounted, header/asset/footer absent', async ({ page }) => {
@@ -317,13 +323,75 @@ test.describe('OrigamCard', () => {
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const card = sandbox.locator('[data-cy="card-loading-skeleton"]')
-			await expect(card).toBeVisible({ timeout: 5000 })
-			// Skeleton renderer is mounted
-			await expect(card.locator('.origam-skeleton')).toBeAttached({ timeout: 5000 })
+			// Use `toBeAttached` rather than `toBeVisible`: in
+			// skeleton-only mode the second `<template v-if=…>` is false
+			// so header/asset/body/footer are unmounted, and the card has
+			// no intrinsic content driving its width — `getBoundingClientRect`
+			// reports `width: 0` (still `display: block`, still mounted),
+			// which Playwright treats as "hidden". The structural checks
+			// below are what actually matter for this contract.
+			await expect(card).toBeAttached({ timeout: 5000 })
+			// Skeleton renderer is mounted (variant=card emits a wrapper
+			// + 4 inner blocks, so use `.first()` to satisfy strict mode).
+			await expect(card.locator('.origam-skeleton').first()).toBeAttached({ timeout: 5000 })
 			// Header, asset and footer must NOT be rendered
 			// (OrigamCard wraps them in v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'")
 			await expect(card.locator('.origam-card__header')).not.toBeAttached({ timeout: 5000 })
 			await expect(card.locator('.origam-card__asset')).not.toBeAttached({ timeout: 5000 })
+		})
+	})
+
+	test.describe('Rounded — shaped / shaped-invert corner asymmetry', () => {
+		test('shaped — TL and BR are rounded, TR and BL are 0', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Rounded', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-rounded-shaped"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+
+			const radii = await card.evaluate(el => {
+				const cs = getComputedStyle(el as HTMLElement)
+				return {
+					tl: cs.borderTopLeftRadius,
+					tr: cs.borderTopRightRadius,
+					br: cs.borderBottomRightRadius,
+					bl: cs.borderBottomLeftRadius
+				}
+			})
+			expect(radii.tl, 'top-left should be rounded').not.toBe('0px')
+			expect(radii.br, 'bottom-right should be rounded').not.toBe('0px')
+			expect(radii.tr, 'top-right should be 0').toBe('0px')
+			expect(radii.bl, 'bottom-left should be 0').toBe('0px')
+			expect(radii.tl).toBe(radii.br)
+		})
+
+		test('shaped-invert — TR and BL are rounded, TL and BR are 0', async ({ page }) => {
+			await page.goto(STORY_PATH)
+			await page.waitForLoadState('networkidle')
+			await page.getByText('Rounded', { exact: true }).first().click()
+			await page.waitForTimeout(800)
+
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const card = sandbox.locator('[data-cy="card-rounded-shaped-invert"]')
+			await expect(card).toBeVisible({ timeout: 5000 })
+
+			const radii = await card.evaluate(el => {
+				const cs = getComputedStyle(el as HTMLElement)
+				return {
+					tl: cs.borderTopLeftRadius,
+					tr: cs.borderTopRightRadius,
+					br: cs.borderBottomRightRadius,
+					bl: cs.borderBottomLeftRadius
+				}
+			})
+			expect(radii.tr, 'top-right should be rounded').not.toBe('0px')
+			expect(radii.bl, 'bottom-left should be rounded').not.toBe('0px')
+			expect(radii.tl, 'top-left should be 0').toBe('0px')
+			expect(radii.br, 'bottom-right should be 0').toBe('0px')
+			expect(radii.tr).toBe(radii.bl)
 		})
 	})
 

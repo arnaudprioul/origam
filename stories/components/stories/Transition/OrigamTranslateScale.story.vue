@@ -3,35 +3,6 @@
 			group="components"
 			title="Transition/OrigamTranslateScale"
 	>
-
-		<!--
-			TranslateScale is special: when a `target` is supplied, the
-			transition switches to a JS-driven animate() path (no CSS classes).
-			The CSS-only path stays the assertion subject for runtime tests.
-		-->
-
-		<Variant title="Default (CSS-only path)">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-default" @click="toggleDefault = !toggleDefault">Toggle</button>
-					<origam-translate-scale>
-						<div v-if="toggleDefault" class="story-target" data-cy="target-default">Translate + scale</div>
-					</origam-translate-scale>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<origam-translate-scale disabled>
-						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation</div>
-					</origam-translate-scale>
-				</div>
-			</template>
-		</Variant>
-
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<{ name?: string; disabled?: boolean }>({
@@ -52,6 +23,32 @@
 				<HstCheckbox v-model="state.disabled" title="disabled"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
+					<origam-translate-scale disabled>
+						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
+					</origam-translate-scale>
+				</div>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell">
+				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
+				<origam-translate-scale>
+					<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
+						<span>Custom slot content</span>
+					</div>
+				</origam-translate-scale>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -64,15 +61,15 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
+	const toggleSlotDefault = ref(false)
 </script>
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
 	.story-toggle { appearance: none; border: 1px solid currentColor; background: transparent; color: inherit; padding: 6px 14px; border-radius: 6px; cursor: pointer; font: inherit; }
-	.story-target { padding: 12px 16px; border-radius: 6px; background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06)); border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12)); }
+	.story-target { padding: 12px 16px; border-radius: 6px; background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06)); border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)); }
 </style>
 
 <docs lang="md" src="@docs/components/Transition/OrigamTranslateScale.md"/>

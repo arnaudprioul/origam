@@ -15,6 +15,7 @@
 							<origam-img
 									key="image"
 									cover
+									eager
 									v-bind="imageProps"
 							/>
 						</slot>
@@ -52,18 +53,12 @@
 
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useHover,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded,
 		useSize,
-		useStatus,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -71,8 +66,15 @@
 	import { isEmpty } from "../../utils"
 
 	import type { ComputedRef, StyleValue } from 'vue'
-	import { computed, ref, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props resolution with defaults inheritance from parent
+	 * groups (e.g. OrigamAvatarGroup via provideDefaults).
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
 
 	// Resolve props against the closest `provideDefaults({ 'origam-avatar': … })`
@@ -84,17 +86,31 @@
 
 	const {filterProps} = useProps<IAvatarProps>(props)
 
-	const {densityClasses} = useDensity(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive, onActive: handleClick} = useActive(props)
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {sizeClasses, sizeStyles} = useSize(props)
-	const {statusClasses} = useStatus(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state and color resolution for the avatar.
+	 ********************************************************/
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive: handleClick} = useActive(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Slot presence flags and image props builder.
+	 ********************************************************/
 	const slots = useSlots()
 
 	const hasImage = computed(() => {
@@ -122,7 +138,15 @@
 		return imgSrc
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all spacing, color, size, elevation and
+	 * variant classes/styles onto the root element.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+	const {sizeClasses, sizeStyles} = useSize(props)
 
 	const avatarStyles = computed(() => {
 		return [
@@ -143,13 +167,13 @@
 				'origam-avatar--start': props.start,
 				'origam-avatar--end': props.end
 			},
+			colorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			sizeClasses.value,
-			statusClasses.value,
 			elevationClasses.value,
 			hoverClasses.value,
 			activeClasses.value,
@@ -159,8 +183,12 @@
 
 	const {id, css, load, isLoaded, unload} = useStyle(avatarStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -198,12 +226,6 @@
 		border-width: var(--origam-avatar---border-width);
 		border-radius: var(--origam-avatar---border-radius);
 
-		// Token name is `--origam-avatar---background-color` (with the
-		// `-color` suffix, matching the rest of the avatar palette
-		// `--avatar--{status}---background-color`). Reading the wrong
-		// var (`--origam-avatar---background`, no suffix) made the
-		// default neutral surface tint never apply, so an avatar with
-		// no image and no status rendered as a transparent block.
 		background-color: var(--origam-avatar---background-color);
 		box-shadow: var(--origam-avatar---box-shadow);
 		color: var(--origam-avatar---color);
@@ -238,65 +260,74 @@
 		&__image {
 			width: var(--origam-avatar__image---width);
 			height: var(--origam-avatar__image---height);
+			// OrigamImg paints its <img> with `z-index: -1` (so the
+			// optional gradient overlay can sit on top of the picture).
+			// Without a contained stacking context here, the negative
+			// z-index would push the image BEHIND the Avatar's own
+			// background — the user sees only the bg color, not the
+			// photo.
+			position: relative;
+			overflow: hidden;
+			border-radius: inherit;
 
 			&:deep(.origam-img) {
 				--origam-img---height: 100%;
 				--origam-img---width: 100%;
+				--origam-img__picture---z-index: auto;
+				--origam-img__content---z-index: auto;
 			}
 		}
 
 		&--elevated {
-			--origam-avatar---box-shadow: var(--origam-avatar---box-shadow-elevated, var(--origam-shadow-md));
+			--origam-avatar---box-shadow: var(--origam-avatar---box-shadow-elevated, var(--origam-shadow---md));
 		}
 
 		&--border {
 			--origam-avatar---border-width: thin;
 		}
 
-		// Rounded variants — the avatar default is `border-radius: 9999px`
-		// (full circle), so `rounded` must explicitly OVERRIDE that to a
-		// smaller radius for the override to be visible. The previous
-		// rule set `50%` which is identical to a circle on a square box —
-		// no visible change. Mirror the Btn pattern: boolean `rounded`
-		// uses the dedicated `--…--border-radius-rounded` token (4px),
-		// and the named variants (x-small … x-large) bind to the
-		// primitive `--origam-radius-*` ladder.
 		&--rounded {
-			--origam-avatar---border-radius: var(--origam-avatar---border-radius-rounded, var(--origam-radius-sm, 4px));
+			--origam-avatar---border-radius: var(--origam-avatar---border-radius-rounded, var(--origam-radius---sm, 4px));
 		}
 
 		&--rounded-x-small {
-			--origam-avatar---border-radius: var(--origam-radius-xs, 2px);
+			--origam-avatar---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-avatar---border-radius: var(--origam-radius-sm, 4px);
+			--origam-avatar---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-avatar---border-radius: var(--origam-radius-md, 8px);
+			--origam-avatar---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-avatar---border-radius: var(--origam-radius-lg, 12px);
+			--origam-avatar---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-avatar---border-radius: var(--origam-radius-xl, 16px);
+			--origam-avatar---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-avatar---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-avatar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
-		// Density rungs — the avatar size is `calc(height - density)`, so
-		// a POSITIVE density value SHRINKS the avatar and a NEGATIVE one
-		// grows it.
-		//   compact      = +8  → height − 8 = smaller avatar
-		//   default      =  0  → unchanged
-		//   comfortable  = −8  → height − (−8) = +8 = larger avatar
-		// `compact` and `comfortable` used to share `+8px` — both rungs
-		// shrunk the avatar, comfortable was a no-op label.
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-avatar---border-radius-rounded, 16px);
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-avatar---border-radius-rounded, 16px);
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-avatar---border-radius-rounded, 16px);
+			border-end-start-radius: var(--origam-avatar---border-radius-rounded, 16px);
+			border-end-end-radius: 0;
+		}
+
 		&--density-compact {
 			--origam-avatar---density: 8px;
 		}
@@ -340,31 +371,24 @@
 		}
 
 		&--warning {
-			--origam-avatar---background-color: var(--origam-avatar--warning---background-color, var(--origam-color-feedback-warning-bg));
-			--origam-avatar---color: var(--origam-avatar--warning---color, var(--origam-color-feedback-warning-fg));
+			--origam-avatar---background-color: var(--origam-avatar--warning---background-color, var(--origam-color__feedback--warning---bg));
+			--origam-avatar---color: var(--origam-avatar--warning---color, var(--origam-color__feedback--warning---fg));
 		}
 
 		&--success {
-			--origam-avatar---background-color: var(--origam-avatar--success---background-color, var(--origam-color-feedback-success-bg));
-			--origam-avatar---color: var(--origam-avatar--success---color, var(--origam-color-feedback-success-fg));
+			--origam-avatar---background-color: var(--origam-avatar--success---background-color, var(--origam-color__feedback--success---bg));
+			--origam-avatar---color: var(--origam-avatar--success---color, var(--origam-color__feedback--success---fg));
 		}
 
 		&--info {
-			--origam-avatar---background-color: var(--origam-avatar--info---background-color, var(--origam-color-feedback-info-bg));
-			--origam-avatar---color: var(--origam-avatar--info---color, var(--origam-color-feedback-info-fg));
+			--origam-avatar---background-color: var(--origam-avatar--info---background-color, var(--origam-color__feedback--info---bg));
+			--origam-avatar---color: var(--origam-avatar--info---color, var(--origam-color__feedback--info---fg));
 		}
 
 		&--error {
-			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color-feedback-danger-bg));
-			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color-feedback-danger-fg));
+			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	`--origam-avatar---*`, `--origam-avatar__wrapper---*`, and
-	`--origam-avatar__image---*` are now supplied by the generated tokens
-	(`tokens/component/avatar.json` → `src/assets/css/tokens/light.css`).
-	The legacy `--origam-status--*` namespace has been retired.
--->

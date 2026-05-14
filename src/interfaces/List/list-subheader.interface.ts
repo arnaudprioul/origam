@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IMarginProps,
@@ -8,7 +9,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
+export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
     inset?: boolean,
     sticky?: boolean,
     title?: string,

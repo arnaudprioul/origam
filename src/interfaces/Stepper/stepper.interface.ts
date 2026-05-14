@@ -1,5 +1,6 @@
 import type { ComputedRef, Ref } from 'vue'
-import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
+import type { IBgColorProps,
+    IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
 import type { TIcon } from '../../types'
 import type { TStepperItemStatus, TStepperOrientation } from '../../types'
 
@@ -10,7 +11,7 @@ export interface IStepperItem {
     status?: TStepperItemStatus
 }
 
-export interface IStepperProps extends ICommonsComponentProps, IColorProps, ISizeProps, IDensityProps {
+export interface IStepperProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IDensityProps {
     items?: IStepperItem[]
     modelValue?: number
     orientation?: 'horizontal' | 'vertical'

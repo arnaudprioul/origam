@@ -41,15 +41,14 @@
 					</template>
 				</div>
 
-				<template v-if="props.progress">
+				<template v-if="progress">
 					<slot
 							name="progress"
-							v-bind="{percent: (group.getItemIndex(model.value) + 1) / group.items.value.length * 100}"
+							v-bind="{percent: progressPercent}"
 					>
-						<origam-progress-linear
-								:model-value="(group.getItemIndex(model.value) + 1) / group.items.value.length * 100"
-								class="origam-carousel__progress"
-						/>
+						<div class="origam-carousel__progress">
+							<origam-progress-linear :model-value="progressPercent"/>
+						</div>
 					</slot>
 				</template>
 			</slot>
@@ -85,15 +84,18 @@
 			/>
 		</template>
 	</origam-window>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
 	import { OrigamBtn, OrigamProgressLinear, OrigamWindow } from '../../components'
 
-	import { useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
 
@@ -103,7 +105,14 @@
 
 	import { convertToUnit } from '../../utils'
 
-	import { computed, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, model binding and slide-cycle timer.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICarouselProps>(), {
 		delimiterIcon: MDI_ICONS.CIRCLE,
@@ -119,15 +128,57 @@
 	const {filterProps} = useProps<ICarouselProps>(props)
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 	const origamWindowRef = ref<TOrigamWindow>()
 
 	let slideTimeout = -1
 
+	// Real-time progress driven by the cycle timer: starts at 0 the moment
+	// the timer is (re)armed, climbs to 100 over `interval` ms via rAF,
+	// resets on every slide change or timer restart. This is what users
+	// expect when they enable `progress: true` alongside `cycle: true` —
+	// not the previous "current-slide / total-slides" step bar.
+	const progressPercent = ref(0)
+	let progressRaf = -1
+	let progressStart = 0
+
+	const stopProgress = () => {
+		if (progressRaf !== -1) {
+			window.cancelAnimationFrame(progressRaf)
+			progressRaf = -1
+		}
+	}
+
+	const startProgress = () => {
+		stopProgress()
+		if (!props.cycle || !props.progress) {
+			progressPercent.value = 0
+			return
+		}
+		const interval = +props.interval > 0 ? +props.interval : 6000
+		progressStart = performance.now()
+		progressPercent.value = 0
+		const tick = () => {
+			const elapsed = performance.now() - progressStart
+			progressPercent.value = Math.min(100, (elapsed / interval) * 100)
+			if (progressPercent.value < 100 && props.cycle && props.progress) {
+				progressRaf = window.requestAnimationFrame(tick)
+			} else {
+				progressRaf = -1
+			}
+		}
+		progressRaf = window.requestAnimationFrame(tick)
+	}
+
 	const startTimeout = () => {
 		if (!props.cycle || !origamWindowRef.value) return
 
 		slideTimeout = window.setTimeout(origamWindowRef.value.group.next, +props.interval > 0 ? +props.interval : 6000)
+		startProgress()
 	}
 
 	const restartTimeout = () => {
@@ -139,10 +190,26 @@
 	watch(() => props.interval, restartTimeout)
 	watch(() => props.cycle, (val) => {
 		if (val) restartTimeout()
-		else window.clearTimeout(slideTimeout)
+		else {
+			window.clearTimeout(slideTimeout)
+			stopProgress()
+			progressPercent.value = 0
+		}
+	})
+	watch(() => props.progress, (val) => {
+		if (val && props.cycle) startProgress()
+		else stopProgress()
 	})
 
 	onMounted(startTimeout)
+	onBeforeUnmount(() => {
+		window.clearTimeout(slideTimeout)
+		stopProgress()
+	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const windowProps = computed(() => {
 		return origamWindowRef.value?.filterProps(props, ['modelValue'])
@@ -171,7 +238,12 @@
 
 	const slots = useSlots()
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM modifier classes and height/position styles.
+	 ********************************************************/
 
 	const carouselStyles = computed(() => {
 		return [
@@ -198,11 +270,23 @@
 			props.style
 		] as StyleValue
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(carouselStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>
@@ -228,7 +312,7 @@
 			position: var(--origam-carousel__controls---position, absolute);
 			width: var(--origam-carousel__controls---width, 100%);
 			z-index: var(--origam-carousel__controls---z-index, 1);
-			background-color: var(--origam-carousel__controls---background-color, transparent);
+			background-color: var(--origam-carousel__controls---background-color, rgba(0, 0, 0, 0.4));
 
 			> .origam-item-group {
 				flex: 0 1 auto;
@@ -261,9 +345,16 @@
 		&__progress {
 			margin: var(--origam-carousel__progress---margin, 0);
 			position: var(--origam-carousel__progress---position, absolute);
-			bottom: var(--origam-carousel__progress---position-bottom, 0);
+			// Defaults to TOP so the progress bar isn't hidden behind the
+			// 50 px-tall `__controls` strip at the bottom. Both edges are
+			// still overridable via the CSS variable triplet below — set
+			// `--origam-carousel__progress---position-top: auto` and a
+			// `--…position-bottom` value to put it at the bottom instead.
+			top: var(--origam-carousel__progress---position-top, 0);
+			bottom: var(--origam-carousel__progress---position-bottom, auto);
 			left: var(--origam-carousel__progress---position-left, 0);
 			right: var(--origam-carousel__progress---position-right, 0);
+			z-index: var(--origam-carousel__progress---z-index, 2);
 		}
 
 		&--hide-delimiter-background {

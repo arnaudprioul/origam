@@ -3,135 +3,10 @@
 			group="components"
 			title="Parallax/OrigamParallax"
 	>
-
-		<!-- ════════════ EVENT — MOVE (mouse) ════════════ -->
-		<Variant title="Event — Move">
-			<origam-parallax :event="PARALLAX_EVENT.MOVE" :style="hostStyle">
-				<origam-parallax-element :strength="20">
-					<div :style="layerStyle">Move your cursor ↔</div>
-				</origam-parallax-element>
-			</origam-parallax>
-		</Variant>
-
-		<!-- ════════════ EVENT — SCROLL (window) ════════════ -->
-		<Variant title="Event — Scroll">
-			<origam-parallax :event="PARALLAX_EVENT.SCROLL" :style="hostStyle">
-				<origam-parallax-element :strength="20">
-					<div :style="layerStyle">Scroll the page ↕</div>
-				</origam-parallax-element>
-			</origam-parallax>
-			<div :style="scrollFiller"></div>
-		</Variant>
-
-		<!-- ════════════ EVENT — ORIENTATION (device) ════════════ -->
-		<Variant title="Event — Orientation">
-			<origam-parallax :event="PARALLAX_EVENT.ORIENTATION" :style="hostStyle">
-				<origam-parallax-element :strength="20">
-					<div :style="layerStyle">Tilt your device 📱</div>
-				</origam-parallax-element>
-			</origam-parallax>
-		</Variant>
-
-		<!-- ════════════ EVENT (interactive picker — runtime swap) ════════════ -->
-		<Variant
-				title="Event (picker)"
-				:init-state="() => useStoryInitState<{ event?: TParallaxEvent }>({ event: PARALLAX_EVENT.MOVE })"
-		>
-			<template #default="{ state }">
-				<origam-parallax :event="state.event" :style="hostStyle">
-					<origam-parallax-element :strength="20">
-						<div :style="layerStyle">{{ state.event === PARALLAX_EVENT.SCROLL ? 'Scroll the page ↕' : state.event === PARALLAX_EVENT.ORIENTATION ? 'Tilt your device 📱' : 'Move your cursor ↔' }}</div>
-					</origam-parallax-element>
-				</origam-parallax>
-				<div :style="scrollFiller"></div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.event" title="event" :options="parallaxEventList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ ACTIVE (kill-switch) ════════════ -->
-		<Variant
-				title="Active"
-				:init-state="() => useStoryInitState<{ active?: boolean }>({ active: true })"
-		>
-			<template #default="{ state }">
-				<origam-parallax :active="state.active" :style="hostStyle">
-					<origam-parallax-element :strength="30">
-						<div :style="layerStyle">{{ state.active ? 'Reactive' : 'Frozen' }}</div>
-					</origam-parallax-element>
-				</origam-parallax>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active" title="active"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ TIMING (duration / easing) ════════════ -->
-		<Variant
-				title="Timing"
-				:init-state="() => useStoryInitState<{ duration?: number, easing?: string }>({ duration: 1000, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' })"
-		>
-			<template #default="{ state }">
-				<origam-parallax v-bind="state" :style="hostStyle">
-					<origam-parallax-element :strength="30">
-						<div :style="layerStyle">Layer</div>
-					</origam-parallax-element>
-				</origam-parallax>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.duration" title="duration (ms)"/>
-				<HstText   v-model="state.easing"   title="easing (CSS timing-function)"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ PERSPECTIVE ════════════ -->
-		<Variant
-				title="Perspective"
-				:init-state="() => useStoryInitState<{ perspective?: number }>({ perspective: 1000 })"
-		>
-			<template #default="{ state }">
-				<origam-parallax :perspective="state.perspective" :style="hostStyle">
-					<origam-parallax-element :strength="40" type="depth">
-						<div :style="layerStyle">perspective={{ state.perspective }}px</div>
-					</origam-parallax-element>
-				</origam-parallax>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.perspective" title="perspective (px)"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ TAG ════════════ -->
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-parallax :tag="state.tag" :style="hostStyleShort">
-					<origam-parallax-element :strength="20">
-						<div :style="layerStyle">tag={{ state.tag }}</div>
-					</origam-parallax-element>
-				</origam-parallax>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ SLOT: default ════════════ -->
-		<Variant title="Slot — default">
-			<origam-parallax :style="hostStyle">
-				<origam-parallax-element :strength="15" type="translate">
-					<div :style="{ ...layerStyle, fontSize: '0.875rem', opacity: 0.85 }">Background layer</div>
-				</origam-parallax-element>
-				<origam-parallax-element :strength="40" type="translate">
-					<div :style="layerStyle">Foreground layer</div>
-				</origam-parallax-element>
-			</origam-parallax>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
+		<!--
+			Playground — first variant by convention. Surfaces every
+			IParallaxProps knob via the sidebar controls.
+		-->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<IParallaxProps>({
@@ -159,6 +34,111 @@
 				<HstText     v-model="state.easing"      title="easing"/>
 				<HstNumber   v-model="state.perspective" title="perspective (px)"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — event (move)">
+			<origam-parallax :event="PARALLAX_EVENT.MOVE" :style="hostStyle">
+				<origam-parallax-element :strength="20">
+					<div :style="layerStyle">Move your cursor</div>
+				</origam-parallax-element>
+			</origam-parallax>
+		</Variant>
+
+		<Variant title="Prop — event (scroll)">
+			<origam-parallax :event="PARALLAX_EVENT.SCROLL" :style="hostStyle">
+				<origam-parallax-element :strength="20">
+					<div :style="layerStyle">Scroll the page</div>
+				</origam-parallax-element>
+			</origam-parallax>
+			<div :style="scrollFiller"></div>
+		</Variant>
+
+		<Variant title="Prop — event (orientation)">
+			<origam-parallax :event="PARALLAX_EVENT.ORIENTATION" :style="hostStyle">
+				<origam-parallax-element :strength="20">
+					<div :style="layerStyle">Tilt your device</div>
+				</origam-parallax-element>
+			</origam-parallax>
+		</Variant>
+
+		<Variant
+				title="Prop — active"
+				:init-state="() => useStoryInitState<{ active?: boolean }>({ active: true })"
+		>
+			<template #default="{ state }">
+				<origam-parallax :active="state.active" :style="hostStyle">
+					<origam-parallax-element :strength="30">
+						<div :style="layerStyle">{{ state.active ? 'Reactive' : 'Frozen' }}</div>
+					</origam-parallax-element>
+				</origam-parallax>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.active" title="active"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — duration & easing"
+				:init-state="() => useStoryInitState<{ duration?: number, easing?: string }>({ duration: 1000, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' })"
+		>
+			<template #default="{ state }">
+				<origam-parallax v-bind="state" :style="hostStyle">
+					<origam-parallax-element :strength="30">
+						<div :style="layerStyle">Layer</div>
+					</origam-parallax-element>
+				</origam-parallax>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber v-model="state.duration" title="duration (ms)"/>
+				<HstText   v-model="state.easing"   title="easing (CSS timing-function)"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — perspective"
+				:init-state="() => useStoryInitState<{ perspective?: number }>({ perspective: 1000 })"
+		>
+			<template #default="{ state }">
+				<origam-parallax :perspective="state.perspective" :style="hostStyle">
+					<origam-parallax-element :strength="40" type="depth">
+						<div :style="layerStyle">perspective={{ state.perspective }}px</div>
+					</origam-parallax-element>
+				</origam-parallax>
+			</template>
+			<template #controls="{ state }">
+				<HstNumber v-model="state.perspective" title="perspective (px)"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-parallax :tag="state.tag" :style="hostStyleShort">
+					<origam-parallax-element :strength="20">
+						<div :style="layerStyle">tag={{ state.tag }}</div>
+					</origam-parallax-element>
+				</origam-parallax>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default (layered elements)">
+			<origam-parallax :style="hostStyle">
+				<origam-parallax-element :strength="15" type="translate">
+					<div :style="{ ...layerStyle, fontSize: '0.875rem', opacity: 0.85 }">Background layer</div>
+				</origam-parallax-element>
+				<origam-parallax-element :strength="40" type="translate">
+					<div :style="layerStyle">Foreground layer</div>
+				</origam-parallax-element>
+			</origam-parallax>
 		</Variant>
 	</Story>
 </template>
@@ -191,14 +171,6 @@
 		{ label: 'Orientation (device-orientation only)', value: PARALLAX_EVENT.ORIENTATION },
 	]
 
-	/**
-	 * Host style — kept inline (no class wrappers) so we don't introduce
-	 * any extra layout context that would interfere with the parallax
-	 * `getTargetBox` / `inViewport` measurement at mount time.
-	 *
-	 * Real photograph as backdrop (Picsum + seed = reproducible) so the
-	 * layer translation is visible against a non-flat surface.
-	 */
 	const hostStyle: CSSProperties = {
 		width: '100%',
 		height: '320px',
@@ -224,12 +196,6 @@
 		textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)',
 	}
 
-	/**
-	 * Filler block placed AFTER the parallax host on Variants where
-	 * `event="scroll"` is meaningful. Provides extra page height so the
-	 * window scroll listener has somewhere to scroll to without altering
-	 * the layout context of the parallax host itself.
-	 */
 	const scrollFiller: CSSProperties = {
 		height: '80vh',
 	}

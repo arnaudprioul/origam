@@ -10,7 +10,6 @@
 						v-for="(item, index) in items"
 						:key="index"
 				>
-					<!-- Connector BEFORE item (not before first) -->
 					<template v-if="showConnectors && index > 0">
 						<span
 								:class="connectorClasses(index)"
@@ -40,7 +39,7 @@
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
 	import {
-		useColorEffect,
+		useStateEffect,
 		useDensity,
 		useProps,
 		useSize,
@@ -49,6 +48,10 @@
 
 	import type { IStepperProps } from '../../interfaces'
 	import type { TStepperItemStatus } from '../../types'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IStepperProps>(), {
 		orientation: 'horizontal',
@@ -82,6 +85,10 @@
 		color: computed(() => props.color)
 	})
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleItemClick = (index: number) => {
 		if (!props.clickable) return
 		internalModel.value = index
@@ -107,22 +114,27 @@
 		`origam-stepper__connector--${connectorStatus(index)}`
 	]
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
-	const { colorStyles } = useColorEffect(props)
+	const { colorClasses, colorStyles } = useStateEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
 
 	const stepperStyles = computed(() => {
 		return [
-			colorStyles.value,
-			props.style
+			colorStyles.value, props.style
 		] as StyleValue
 	})
 
 	const stepperClasses = computed(() => [
-		'origam-stepper',
-		`origam-stepper--${props.orientation ?? 'horizontal'}`,
+		'origam-stepper', `origam-stepper--${props.orientation ?? 'horizontal'}`, hoverState, activeState,
+		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,
 		props.class
@@ -130,8 +142,9 @@
 
 	const { id, css, load, isLoaded, unload } = useStyle(stepperStyles)
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -153,18 +166,16 @@
 		gap: 0;
 		padding-block: var(--origam-stepper---padding-block, 8px);
 		padding-inline: var(--origam-stepper---padding-inline, 8px);
-		background-color: var(--origam-stepper---background-color, var(--origam-color-surface-default));
-		color: var(--origam-stepper---color, var(--origam-color-text-primary));
 		width: 100%;
 		box-sizing: border-box;
 
-		// Vertical orientation
 		&--vertical {
 			flex-direction: column;
 
 			.origam-stepper__connector {
 				width: var(--origam-stepper---connector-thickness, 2px);
 				height: var(--origam-stepper---gap, 16px);
+				min-width: 0;
 				min-height: 16px;
 				margin-inline-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
 				margin-block: 4px;
@@ -172,27 +183,24 @@
 			}
 		}
 
-		// Connector line between steps
 		&__connector {
 			flex: 1;
 			height: var(--origam-stepper---connector-thickness, 2px);
 			min-width: 16px;
 			margin-inline: 4px;
-			// Align connector to the center of the indicator: indicator-size / 2 from the top of the item.
-			// Items themselves are top-aligned (align-items: flex-start on parent), so we use
-			// margin-block-start to push the connector down to visually center it with the circle.
 			margin-block-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
 			align-self: flex-start;
-			background-color: var(--origam-stepper---connector-color, var(--origam-color-border-subtle));
-			border-radius: var(--origam-radius-full, 9999px);
+			background-color: var(--origam-stepper---connector-color, var(--origam-color__border---subtle));
+			border-radius: var(--origam-radius---full, 9999px);
 			transition: background-color 0.2s ease;
 
-			// When the connector is "done" (preceding step has been completed)
 			&--done {
-				background-color: var(--origam-stepper---connector-color-done, var(--origam-color-action-primary-bg));
+				background-color: var(
+					--origam-stepper---connector-color-done,
+					var(--origam-stepper---color, var(--origam-color__action--primary---bg))
+				);
 			}
 
-			// Vertical connector — override width/height
 			.origam-stepper--vertical & {
 				flex: 0 0 auto;
 				margin-block-start: 0;
@@ -200,7 +208,6 @@
 			}
 		}
 
-		// Density variants
 		&--density-comfortable {
 			padding-block: 12px;
 			padding-inline: 12px;
@@ -214,6 +221,41 @@
 		&--density-compact {
 			padding-block: 4px;
 			padding-inline: 4px;
+		}
+
+		&--size-x-small {
+			--origam-stepper---indicator-size: 24px;
+			--origam-stepper---indicator-font-size: 0.625rem;
+			--origam-stepper---title-font-size: 0.75rem;
+			--origam-stepper---subtitle-font-size: 0.625rem;
+		}
+
+		&--size-small {
+			--origam-stepper---indicator-size: 28px;
+			--origam-stepper---indicator-font-size: 0.6875rem;
+			--origam-stepper---title-font-size: 0.8125rem;
+			--origam-stepper---subtitle-font-size: 0.6875rem;
+		}
+
+		&--size-default {
+			--origam-stepper---indicator-size: 32px;
+			--origam-stepper---indicator-font-size: 0.75rem;
+			--origam-stepper---title-font-size: 0.875rem;
+			--origam-stepper---subtitle-font-size: 0.75rem;
+		}
+
+		&--size-large {
+			--origam-stepper---indicator-size: 40px;
+			--origam-stepper---indicator-font-size: 0.875rem;
+			--origam-stepper---title-font-size: 1rem;
+			--origam-stepper---subtitle-font-size: 0.8125rem;
+		}
+
+		&--size-x-large {
+			--origam-stepper---indicator-size: 48px;
+			--origam-stepper---indicator-font-size: 1rem;
+			--origam-stepper---title-font-size: 1.125rem;
+			--origam-stepper---subtitle-font-size: 0.875rem;
 		}
 	}
 </style>

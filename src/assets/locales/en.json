@@ -98,7 +98,10 @@
         "last": "Last page"
       },
       "page": "Page",
-      "of": "of"
+      "of": "of",
+      "info": "Showing {0}-{1} of {2}",
+      "next": "Next",
+      "previous": "Prev"
     },
     "stepper": {
       "next": "Next",

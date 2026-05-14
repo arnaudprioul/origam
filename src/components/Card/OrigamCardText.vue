@@ -14,16 +14,28 @@
 		lang="ts"
 		setup
 >
-	import { useProps } from "../../composables"
+	import { useProps , useStyle} from "../../composables"
 	import type { ICardTextProps } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and filter for the card text body area.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICardTextProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ICardTextProps>(props)
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const cardTextStyles = computed(() => {
 		return [
@@ -36,11 +48,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(cardTextStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

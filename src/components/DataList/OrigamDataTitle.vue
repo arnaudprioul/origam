@@ -67,18 +67,30 @@
 >
 
 	import { OrigamAvatar, OrigamIcon } from "../../components"
-	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps } from "../../composables"
+	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
 
 	import type { IDataTitleProps } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTitleProps>(), {})
 
 	const {filterProps} = useProps<IDataTitleProps>(props)
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {densityClasses} = useDensity(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -106,10 +118,17 @@
 		return isHover.value ? hoverBgColor.value : props.bgColor
 	})
 
-	const {colorStyles} = useBothColor(bgColor, color)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Color
+	 ********************************************************/
 
+	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
+
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const dataTitleStyles = computed(() => {
 		return [
 			paddingStyles.value,
@@ -121,17 +140,26 @@
 	const dataTitleClasses = computed(() => {
 		return [
 			'origam-data-title',
+			colorClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(dataTitleStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

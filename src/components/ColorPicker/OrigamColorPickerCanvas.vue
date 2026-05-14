@@ -25,13 +25,20 @@
 		lang="ts"
 		setup
 >
-	import { useProps, useResizeObserver } from "../../composables"
+	import { useProps, useResizeObserver , useStyle} from "../../composables"
 
 	import type { IColorPickerCanvasProps } from "../../interfaces"
 
 	import { clamp, convertToUnit, getEventCoordinates, int } from "../../utils"
 
 	import { computed, onMounted, ref, shallowRef, StyleValue, watch } from "vue"
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, canvas rendering and pointer interaction.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IColorPickerCanvasProps>(), {
 		height: 150,
@@ -44,6 +51,10 @@
 
 	const isInteracting = shallowRef(false)
 	const canvasRef = ref<HTMLCanvasElement | null>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {resizeRef} = useResizeObserver((entries: ResizeObserverEntry[]) => {
 		if (!resizeRef.value?.offsetParent) return
@@ -139,6 +150,10 @@
 		ctx.fillRect(0, 0, canvas.width, canvas.height)
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleMouseDown = (e: MouseEvent | TouchEvent) => {
 		if (e.type === 'mousedown') {
 			// Prevent text selection while dragging
@@ -209,7 +224,12 @@
 		} : {x: 0, y: 0}
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const colorPickerCanvasStyles = computed(() => {
 		return [
@@ -222,11 +242,23 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerCanvasStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 
 </script>

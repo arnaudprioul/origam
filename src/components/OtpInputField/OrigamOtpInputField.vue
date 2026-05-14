@@ -113,7 +113,7 @@
 				<template #loader>
 					<slot name="loader">
 						<origam-progress
-								:color="typeof props.loading === 'boolean' ? undefined : loading"
+								:color="typeof loading === 'boolean' ? undefined : loading"
 								:size="24"
 								:type="PROGRESS_TYPE.CIRCULAR"
 								indeterminate
@@ -126,9 +126,7 @@
 			<slot name="default"/>
 		</div>
 	</div>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -136,7 +134,7 @@
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
 	import { OrigamField, OrigamOverlay, OrigamProgress } from "../../components"
 
-	import { useDimension, useFocus, useLocale, useProps, useVModel } from "../../composables"
+	import { useDimension, useFocus, useLocale, useProps, useVModel , useStyle} from "../../composables"
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 
@@ -146,6 +144,12 @@
 
 	import { filterInputAttrs, focusChild, forwardRefs } from "../../utils"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots and filterProps for the OtpInputField component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IOtpInputFieldProps>(), {
 		type: OTP_INPUT_FIELD_TYPE.NUMBER,
 		length: 6
@@ -161,8 +165,37 @@
 	const attrs = useAttrs()
 	const slots = useSlots()
 
+	/*********************************************************
+	 * Dimension & focus
+	 *
+	 * @description
+	 * dimensionStyles drives width/height CSS vars from props.
+	 * isFocused tracks whether any cell has focus.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus: focus, onBlur: blur} = useFocus(props)
+
+	/*********************************************************
+	 * Value & model
+	 *
+	 * @description
+	 * model is a char-array split from the string v-model value.
+	 * length / fields drive the rendered cell count.
+	 ********************************************************/
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const model = useVModel(
 			props,
@@ -179,6 +212,16 @@
 		return Array(length.value).fill(0)
 	})
 
+	/*********************************************************
+	 * DOM refs
+	 *
+	 * @description
+	 * focusIndex tracks which cell currently has focus (-1 = none).
+	 * contentRef is the scrollable wrapper used by focusChild.
+	 * inputRef holds native <input> references, one per cell.
+	 * origamFieldRef holds OrigamField component references.
+	 * current is the currently focused native input.
+	 ********************************************************/
 	const focusIndex = ref(-1)
 
 	const contentRef = ref<HTMLElement>()
@@ -195,6 +238,15 @@
 		return origamFieldRef.value?.[index]?.filterProps(props, ['class', 'style', 'id', 'label'])
 	}
 
+	/*********************************************************
+	 * Event handlers
+	 *
+	 * @description
+	 * handleInput, handleKeydown, handlePaste manage OTP cell navigation.
+	 * handleFocus / handleBlur track focusIndex and isFocused state.
+	 * reset is exposed for external programmatic clearing.
+	 * isInvalidValue guards non-numeric characters in number mode.
+	 ********************************************************/
 	const handleInput = () => {
 		if (!current.value) return
 
@@ -279,18 +331,6 @@
 		model.value = []
 	}
 
-	const handleClear = (e: MouseEvent) => {
-		e.stopPropagation()
-
-		model.value = []
-
-		nextTick(() => {
-			inputRef.value?.[0]?.focus()
-		})
-
-		emits('click:clear', e)
-	}
-
 	const handleFocus = (_e: FocusEvent, index: number) => {
 		if (!isFocused.value) focus()
 
@@ -319,8 +359,12 @@
 		})
 	})
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * otpInputFieldStyles and otpInputFieldClasses compose the BEM root.
+	 ********************************************************/
 	const otpInputFieldStyles = computed(() => {
 		return [
 			props.style
@@ -335,15 +379,27 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(otpInputFieldStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Exposes blur, focus, reset, isFocused and filterProps to
+	 * parent ref consumers.
+	 ********************************************************/
 	defineExpose(forwardRefs({
 		blur: () => {
 			inputRef.value?.some(input => {
 				input.blur()
-				return true
-			})
+				return true,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
 		},
 		focus: () => {
 			inputRef.value?.[0]?.focus()
@@ -365,10 +421,8 @@
 		align-items: center;
 		display: flex;
 		justify-content: center;
-		/* --origam-otp-input-field---padding-block: 0.5rem (fallback) */
 		padding: var(--origam-otp-input-field---padding-block, .5rem) 0;
 		position: relative;
-		/* --origam-otp-input-field---border-radius: 4px (fallback) */
 		border-radius: var(--origam-otp-input-field---border-radius, 4px);
 
 		.origam-field {
@@ -378,21 +432,16 @@
 		}
 
 		&__divider {
-			/* --origam-otp-input-field__divider---margin-inline: 8px (fallback) */
 			margin: 0 var(--origam-otp-input-field__divider---margin-inline, 8px);
 		}
 
 		&__content {
 			align-items: center;
 			display: flex;
-			/* --origam-otp-input-field---gap: 0.5rem (fallback) */
 			gap: var(--origam-otp-input-field---gap, .5rem);
-			/* --origam-otp-input-field__content---height: 64px (fallback) */
 			height: var(--origam-otp-input-field__content---height, 64px);
-			/* --origam-otp-input-field__content---padding: 0.5rem (fallback) */
 			padding: var(--origam-otp-input-field__content---padding, .5rem);
 			justify-content: center;
-			/* --origam-otp-input-field__content---max-width: 320px (fallback) */
 			max-width: var(--origam-otp-input-field__content---max-width, 320px);
 			position: relative;
 			border-radius: inherit;
@@ -400,19 +449,11 @@
 
 		&__field {
 			color: var(--origam-otp-input-field__cell---color, inherit);
-			/* --origam-otp-input-field__cell---font-size: 1.25rem (fallback) */
 			font-size: var(--origam-otp-input-field__cell---font-size, 1.25rem);
 			height: 100%;
-			/* --origam-otp-input-field__cell---outline: none (fallback) */
 			outline: var(--origam-otp-input-field__cell---outline, none);
-			/* --origam-otp-input-field__cell---text-align: center (fallback) */
 			text-align: var(--origam-otp-input-field__cell---text-align, center);
 			width: 100%;
-			// User report: "il y a toujours un border tout autour".
-			// The native `<input>` ships a 2px UA border that stacked on
-			// top of the design's `.origam-field__outline-*` rectangle —
-			// each cell read as a double-bordered chip. Reset the UA
-			// border so only the field outline remains.
 			border: var(--origam-otp-input-field__cell---border, none);
 			background: var(--origam-otp-input-field__cell---background, transparent);
 
@@ -441,11 +482,9 @@
 
 		&--divided {
 			#{$this}__content {
-				/* --origam-otp-input-field__content---max-width-divided: 360px (fallback) */
 				max-width: var(--origam-otp-input-field__content---max-width-divided, 360px);
 			}
 		}
 	}
 
 </style>
-

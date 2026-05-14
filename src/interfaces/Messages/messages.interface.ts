@@ -16,9 +16,6 @@ export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITran
     messages?: Array<string> | string
 }
 
-export interface IMessagesEmits {
-}
-
 export interface IMessagesSlots {
     default?: (data: { message: string }) => any
 }

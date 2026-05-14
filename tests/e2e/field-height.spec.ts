@@ -11,19 +11,19 @@ const open = async (page: Page, slug: string, variant: string) => {
 
 /**
  * Pre-fix `.origam-field__input` defaulted to `box-sizing: content-box`
- * so the inline padding (24px top + 6px bottom) stacked ON TOP of the
- * 56px min-height target, producing 86px-tall fields. Switching to
- * `border-box` brings the rendered height back to the Material 56px
- * baseline.
+ * so the inline padding stacked ON TOP of the min-height target.
+ * Switching to `border-box` keeps the rendered height aligned with the
+ * design-token-driven scale (P1·B: xs=28 / sm=36 / md=44 / lg=52, default
+ * is `md`-equivalent = 36 px, down from the legacy Material 56 baseline).
  */
 
-test('OrigamTextField — field renders at 56px (not 86px)', async ({ page }) => {
+test('OrigamTextField — field renders at 36px default (P1·B size scale)', async ({ page }) => {
     await open(page, 'stories-components-stories-textfield-origamtextfield-story-vue', 'Variant')
     const sandbox = sandboxOf(page)
     const field = sandbox.locator('.origam-field').first()
     await expect(field).toBeVisible({ timeout: 8000 })
     const h = await field.evaluate(el => Math.round(el.getBoundingClientRect().height))
-    expect(h).toBe(56)
+    expect(h).toBe(36)
 
     const inputBoxSizing = await sandbox.locator('.origam-field__input').first().evaluate(el => getComputedStyle(el).boxSizing)
     expect(inputBoxSizing).toBe('border-box')

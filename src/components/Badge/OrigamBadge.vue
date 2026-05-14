@@ -15,19 +15,42 @@
 		        v-show="modelValue"
 		        :id="id"
 		        :aria-label="t(label, content)"
+		        :class="badgeContentClasses"
 		        aria-atomic="true"
 		        aria-live="polite"
-		        class="origam-badge__badge"
 		        role="status"
 		        v-bind="badgeAttrs"
         >
           <template v-if="!dot">
             <slot name="badge">
-              <template v-if="hasIcon">
-                <origam-icon :icon="icon"/>
+              <template v-if="hasPrependIcon">
+                <slot name="prepend">
+                  <origam-icon
+                          key="prepend-icon"
+                          class="origam-badge__prepend"
+                          :icon="prependIcon"
+                  />
+                </slot>
               </template>
-              <template v-else>
-                {{ content }}
+
+              <template v-if="hasIcon">
+                <origam-icon
+                        key="content-icon"
+                        :icon="icon"
+                />
+              </template>
+              <template v-else-if="content !== undefined && content !== null && content !== ''">
+                <span class="origam-badge__content">{{ content }}</span>
+              </template>
+
+              <template v-if="hasAppendIcon">
+                <slot name="append">
+                  <origam-icon
+                          key="append-icon"
+                          class="origam-badge__append"
+                          :icon="appendIcon"
+                  />
+                </slot>
               </template>
             </slot>
           </template>
@@ -41,18 +64,15 @@
 		lang="ts"
 		setup
 >
-	import { OrigamIcon, OrigamScaleRotate, OrigamTransition } from '../../components'
+	import { OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
 
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
-		useElevation,
 		useHover,
 		useLocale,
 		useLocation,
 		useProps,
-		useRounded,
+		useStateEffect,
 		useStatus,
 		useStyle
 	} from '../../composables'
@@ -62,13 +82,25 @@
 
 	import { omit, pick } from '../../utils'
 
-	import { computed, ComputedRef, ref, StyleValue, useAttrs } from 'vue'
+	import { computed, ComputedRef, StyleValue, useAttrs } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, locale and attributes splitting for the Badge.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IBadgeProps>(), {
 		tag: 'div',
 		location: 'top right',
 		label: 'origam.badge',
-		transition: () => ({component: OrigamScaleRotate}) as unknown as TTransitionProps
+		// Default transition: fade — the canonical default for any
+		// `modelValue: boolean` show/hide component. Passed as a
+		// component descriptor (not a bare name string) so the matching
+		// `<style>` block of `OrigamFade` is guaranteed to be injected
+		// globally without depending on another OrigamFade instance
+		// being already mounted in the page.
+		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
 	const {filterProps} = useProps<IBadgeProps>(props)
@@ -76,13 +108,32 @@
 
 	const attrs = useAttrs()
 
-	const {hoverClasses, isHover, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive} = useActive(props, 'modelValue')
-	const {colorStyles, bgColor} = useColorEffect(props, isHover, isActive as unknown as ComputedRef<boolean>)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {elevationClasses, elevationStyles} = useElevation(props, ref(false), bgColor)
-	const {icon, statusClasses} = useStatus(props)
+	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover, active state, color and location resolution.
+	 ********************************************************/
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState} = useActive(props, 'modelValue')
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	// The badge pill (`__badge` span) is the visual surface; classes go
+	// there, not on the wrapper root.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating
 				? (props.dot ? 2 : 4)
@@ -95,8 +146,20 @@
 		)
 	})
 
+	/*********************************************************
+	 * Content
+	 *
+	 * @description
+	 * Badge content capped at `max` and icon flag.
+	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!icon.value
+	})
+	const hasPrependIcon = computed(() => {
+		return !!prependIcon.value
+	})
+	const hasAppendIcon = computed(() => {
+		return !!appendIcon.value
 	})
 
 	const content = computed(() => {
@@ -130,8 +193,14 @@
 		])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes all classes/styles for the root wrapper and
+	 * applies location/color styles to the badge pill via
+	 * useStyle.
+	 ********************************************************/
 	const badgeStyles = computed(() => {
 		return [
 			props.style
@@ -145,11 +214,8 @@
 				'origam-badge--floating': props.floating,
 				'origam-badge--inline': props.inline
 			},
-			elevationClasses.value,
 			activeClasses.value,
 			hoverClasses.value,
-			roundedClasses.value,
-			borderClasses.value,
 			statusClasses.value,
 			props.class
 		]
@@ -164,11 +230,25 @@
 			props.inline ? {} : locationStyles.value
 		] as StyleValue
 	})
+	const badgeContentClasses = computed(() => {
+		return [
+			'origam-badge__badge',
+			colorClasses.value,
+			roundedClasses.value,
+			borderClasses.value,
+			elevationClasses.value
+		]
+	})
 
 	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps, style utilities.
+	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -193,6 +273,7 @@
 			align-items: center;
 			justify-content: center;
 			display: inline-flex;
+			gap: var(--origam-badge__badge---gap, 2px);
 
 			position: var(--origam-badge__badge---position);
 			pointer-events: var(--origam-badge__badge---pointer-events);
@@ -224,17 +305,67 @@
 
 			background-color: var(--origam-badge__badge---background-color);
 			color: var(--origam-badge__badge---color);
+			box-shadow: var(--origam-badge__badge---box-shadow);
 
 			:deep(.origam-icon) {
 				color: inherit;
 				font-size: 0.75rem;
-				margin: 0 -2px;
 			}
 
 			:deep(img),
 			:deep(.origam-img) {
 				height: 100%;
 				width: 100%;
+			}
+
+			&#{$this}--border {
+				--origam-badge__badge---border-width: 2px;
+			}
+
+			&#{$this}--elevated {
+				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow---md));
+			}
+
+			&#{$this}--rounded {
+				--origam-badge__badge---border-radius: var(--origam-radius---md, 8px);
+			}
+
+			&#{$this}--rounded-x-small {
+				--origam-badge__badge---border-radius: var(--origam-radius---xs, 2px);
+			}
+
+			&#{$this}--rounded-small {
+				--origam-badge__badge---border-radius: var(--origam-radius---sm, 4px);
+			}
+
+			&#{$this}--rounded-default {
+				--origam-badge__badge---border-radius: var(--origam-radius---md, 8px);
+			}
+
+			&#{$this}--rounded-medium {
+				--origam-badge__badge---border-radius: var(--origam-radius---lg, 12px);
+			}
+
+			&#{$this}--rounded-large {
+				--origam-badge__badge---border-radius: var(--origam-radius---xl, 16px);
+			}
+
+			&#{$this}--rounded-x-large {
+				--origam-badge__badge---border-radius: var(--origam-radius---2xl, 24px);
+			}
+
+			&#{$this}--rounded-shaped {
+				border-start-start-radius: var(--origam-radius---xl, 16px);
+				border-start-end-radius: 0;
+				border-end-start-radius: 0;
+				border-end-end-radius: var(--origam-radius---xl, 16px);
+			}
+
+			&#{$this}--rounded-shaped-invert {
+				border-start-start-radius: 0;
+				border-start-end-radius: var(--origam-radius---xl, 16px);
+				border-end-start-radius: var(--origam-radius---xl, 16px);
+				border-end-end-radius: 0;
 			}
 		}
 
@@ -255,29 +386,12 @@
 			margin-inline-end: var(--origam-badge__wrapper---margin-inline-end);
 		}
 
-		&--elevated {
-			#{$this}__badge {
-				--origam-badge__badge---box-shadow: var(--origam-badge__badge---box-shadow-elevated, var(--origam-shadow-md));
-			}
-		}
-
-		&--border {
-			#{$this}__badge {
-				--origam-badge__badge---border-width: 2px;
-			}
-		}
-
 		&--dot {
 			#{$this}__badge {
 				--origam-badge__badge---border-width: 1.5px;
-				--origam-badge__badge---border-radius: 4.5px;
 				--origam-badge__badge---height: 9px;
 				--origam-badge__badge---width: 9px;
 				--origam-badge__badge---min-width: 0;
-				// The base SCSS consumes the four padding LONGHANDS (block-start,
-				// block-end, inline-start, inline-end), not the shorthands.
-				// Setting `--padding-block: 0` here was a no-op — kept as legacy
-				// alias but the longhands below are what actually zeros padding.
 				--origam-badge__badge---padding-block-start: 0;
 				--origam-badge__badge---padding-block-end: 0;
 				--origam-badge__badge---padding-inline-start: 0;
@@ -301,32 +415,24 @@
 		}
 
 		&--warning {
-			--origam-badge__badge---background-color: var(--origam-badge--warning---background-color, var(--origam-color-feedback-warning-bg));
-			--origam-badge__badge---color: var(--origam-badge--warning---color, var(--origam-color-feedback-warning-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--warning---background-color, var(--origam-color__feedback--warning---bg));
+			--origam-badge__badge---color: var(--origam-badge--warning---color, var(--origam-color__feedback--warning---fg));
 		}
 
 		&--success {
-			--origam-badge__badge---background-color: var(--origam-badge--success---background-color, var(--origam-color-feedback-success-bg));
-			--origam-badge__badge---color: var(--origam-badge--success---color, var(--origam-color-feedback-success-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--success---background-color, var(--origam-color__feedback--success---bg));
+			--origam-badge__badge---color: var(--origam-badge--success---color, var(--origam-color__feedback--success---fg));
 		}
 
 		&--info {
-			--origam-badge__badge---background-color: var(--origam-badge--info---background-color, var(--origam-color-feedback-info-bg));
-			--origam-badge__badge---color: var(--origam-badge--info---color, var(--origam-color-feedback-info-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--info---background-color, var(--origam-color__feedback--info---bg));
+			--origam-badge__badge---color: var(--origam-badge--info---color, var(--origam-color__feedback--info---fg));
 		}
 
 		&--error {
-			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color-feedback-danger-bg));
-			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color-feedback-danger-fg));
+			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>
 
-<!--
-	Lot 1.5 migration — `<style>:root{}` block removed.
-	`--origam-badge__wrapper---*` and `--origam-badge__badge---*` are now
-	supplied by the generated tokens (loaded via `import 'origam/styles'`
-	or `import 'origam/tokens/css/light'`).
-	The legacy `--origam-status--*` namespace has been retired in favour
-	of the semantic feedback tokens (`--origam-color-feedback-{intent}-*`).
--->

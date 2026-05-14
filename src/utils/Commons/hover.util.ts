@@ -6,6 +6,14 @@ import type { THoverEvent } from '../../types'
 
 import { isObject, isTouchEvent } from '../../utils'
 
+/**
+ * Update hover.
+ *
+ * @param el         …
+ * @param binding    …
+ * @param wasEnabled …
+ * @param name       …
+ */
 export function updateHover (el: IHoverHtmlElement, binding: IHoverDirectiveBinding, wasEnabled: boolean, name: string) {
     const {value, modifiers} = binding
     const enabled = isHoverEnabled(value)
@@ -41,10 +49,21 @@ export function updateHover (el: IHoverHtmlElement, binding: IHoverDirectiveBind
     }
 }
 
+/**
+ * Is hover enabled.
+ *
+ * @param value …
+ * @returns …
+ */
 export function isHoverEnabled (value: any): value is true {
     return typeof value === 'undefined' || !!value
 }
 
+/**
+ * Hover show.
+ *
+ * @param e …
+ */
 export function hoverShow (e: THoverEvent) {
     const value: IHoverOptions = {class: ''}
     const element = e.currentTarget as IHoverHtmlElement | undefined
@@ -72,10 +91,20 @@ export function hoverShow (e: THoverEvent) {
     HOVER.show(e, element, value)
 }
 
+/**
+ * Hover stop.
+ *
+ * @param e …
+ */
 export function hoverStop (e: THoverEvent) {
     e[ORIGAM_HOVER_STOP_KEY] = true
 }
 
+/**
+ * Hover hide.
+ *
+ * @param e …
+ */
 export function hoverHide (e: Event) {
     const value: IHoverOptions = {class: ''}
     const element = e.currentTarget as IHoverHtmlElement | null
@@ -89,6 +118,11 @@ export function hoverHide (e: Event) {
     HOVER.hide(element, value)
 }
 
+/**
+ * Hover remove listeners.
+ *
+ * @param el …
+ */
 export function hoverRemoveListeners (el: IHoverHtmlElement) {
     el.removeEventListener('mouseenter', hoverShow)
     el.removeEventListener('mouseleave', hoverHide)

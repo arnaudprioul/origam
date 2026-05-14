@@ -13,9 +13,17 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useNestedGroupActivator, useProps } from '../../composables'
+	import {
+	useNestedGroupActivator,
+	useProps,
+	useStyle
+} from '../../composables'
 
 	import type { IListActivatorProps } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListActivatorProps>(), {tag: 'div'})
 
@@ -23,8 +31,9 @@
 
 	useNestedGroupActivator()
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const activatorStyles = computed(() => {
 		return [
 			props.style
@@ -36,10 +45,18 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(activatorStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

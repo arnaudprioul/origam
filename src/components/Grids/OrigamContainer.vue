@@ -12,23 +12,44 @@
 		lang="ts"
 		setup
 >
-	import { useBorder, useMargin, usePadding, useProps, useRtl } from '../../composables'
+	import {
+	useBorder,
+	useMargin,
+	usePadding,
+	useProps,
+	useRtl,
+	useStyle
+} from '../../composables'
 
 	import type { IContainerProps } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and composable setup.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IContainerProps>(), {tag: 'div', fluid: false})
 
 	const {filterProps} = useProps<IContainerProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {rtlClasses} = useRtl()
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 	const containerStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -51,11 +72,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(containerStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 

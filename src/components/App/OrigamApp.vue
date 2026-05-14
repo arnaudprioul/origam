@@ -17,7 +17,7 @@
 >
 	import { OrigamLayout } from '../../components'
 
-	import { useProps, useRtl } from "../../composables"
+	import { useProps, useRtl , useStyle} from "../../composables"
 
 	import type { ILayoutProps } from '../../interfaces'
 
@@ -25,16 +25,30 @@
 
 	import { computed, ref, StyleValue } from 'vue'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and utility hooks for the App root component.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ILayoutProps>(), {fullHeight: true})
 
 	const {filterProps} = useProps<ILayoutProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {rtlClasses} = useRtl()
 
 	const origamAppRef = ref<TOrigamApp>()
 
-	// CLASSES & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes RTL and consumer classes onto the root layout.
+	 ********************************************************/
 	const appStyles = computed(() => {
 		return [props.style] as StyleValue
 	})
@@ -45,10 +59,21 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(appStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

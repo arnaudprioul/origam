@@ -23,23 +23,9 @@
 		</template>
 
 		<template #default>
-			<!--
-				Wrap the slot content in a dedicated `.origam-tooltip__content`
-				BEM child. Pre-fix the visual styling (dark background,
-				padding, max-width, …) was attached to `.origam-tooltip`
-				which is bound on the OVERLAY ROOT — the same element that
-				the scoped SCSS positions `position: absolute; inset: 0`
-				to fill its parent. So the dark background painted the
-				entire sandbox iframe even before the popup was activated,
-				while the genuinely-hidden popup body sat inside
-				`.origam-overlay__content` (correctly toggled by
-				`v-show="isActive"`). Moving the visual surface onto a
-				child element keeps the wrapper transparent and lets the
-				popup body get the styling it deserves.
-			-->
 			<div
+					:class="tooltipContentClasses"
 					:style="colorStyles"
-					class="origam-tooltip__content"
 			>
 				<slot name="default">
 					<span>{{ text }}</span>
@@ -56,7 +42,13 @@
 	import { computed, mergeProps, ref, StyleValue, toRef } from 'vue'
 	import { OrigamFade, OrigamOverlay, OrigamTranslateScale } from '../../components'
 
-	import { useBothColor, useProps, useScopeId, useVModel } from '../../composables'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
@@ -65,6 +57,10 @@
 	import type { TAnchor, TOrigamOverlay } from '../../types'
 
 	import { forwardRefs, getUid } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ITooltipProps>(), {
 		closeOnBack: false,
@@ -92,7 +88,16 @@
 	// `var(--origam-tooltip---background-color)` from the design tokens.
 	// Wired here so the inline declaration on `.origam-tooltip__content`
 	// wins via inline-style specificity.
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague C) — class-first companion alongside inline styles.
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Value
+	 ********************************************************/
 
 	const isActive = useVModel(props, 'modelValue')
 	const {scopeId} = useScopeId()
@@ -129,16 +134,27 @@
 		}, props.activatorProps)
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const overlayProps = computed(() => {
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'class', 'style', 'modelValue', 'location', 'origin', 'transition', 'disableGlobalStack', 'absolute', 'persistent', 'id'])
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const tooltipStyles = computed(() => {
 		return [
 			props.style
 		] as StyleValue
+	})
+	const tooltipContentClasses = computed(() => {
+		return [
+			'origam-tooltip__content',
+			colorClasses.value
+		]
 	})
 	const tooltipClasses = computed(() => {
 		return [
@@ -146,33 +162,34 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(tooltipStyles)
 
-	// EXPOSE
 
-	defineExpose(forwardRefs({filterProps}, origamOverlayRef))
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
+	}, origamOverlayRef))
 </script>
 
 <style
 		lang="scss"
 		scoped
 >
-	// IMPORTANT — `.origam-tooltip` is bound on the OVERLAY ROOT (see
-	// `<origam-overlay :class="tooltipClasses">` in the template). The
-	// overlay scoped SCSS positions that root `position: absolute;
-	// inset: 0` so it spans its teleport target. Putting visual styling
-	// (background, padding, font, …) on this selector therefore paints
-	// the full overlay area, not the popup. Keep the root transparent
-	// and apply every visual rule to the `__content` child below.
 	.origam-tooltip {
 		background-color: transparent;
-		// `z-index` is meaningful here — it's the stacking-context
-		// hint for the overlay root, not the popup body.
 		z-index: var(--origam-tooltip---z-index, 1070);
 	}
 
 	.origam-tooltip__content {
-		background-color: var(--origam-tooltip---background-color, var(--origam-color-neutral-800));
-		color: var(--origam-tooltip---color, var(--origam-color-text-inverse));
+		background-color: var(--origam-tooltip---background-color, var(--origam-color__neutral---800));
+		color: var(--origam-tooltip---color, var(--origam-color__text---inverse));
 		font-size: var(--origam-tooltip---font-size, 0.75rem);
 		font-weight: var(--origam-tooltip---font-weight, 500);
 		line-height: var(--origam-tooltip---line-height, 1.5);
@@ -181,10 +198,6 @@
 		border-radius: var(--origam-tooltip---border-radius, 4px);
 		max-width: var(--origam-tooltip---max-width, 300px);
 		opacity: var(--origam-tooltip---opacity, 1);
-		// Ensure the popup body sizes to its content rather than
-		// inheriting its parent overlay's dimensions. Without this, the
-		// flex layout from `.origam-overlay` propagated into the
-		// content and the popup grew to fill the available space.
 		display: inline-block;
 		width: max-content;
 	}

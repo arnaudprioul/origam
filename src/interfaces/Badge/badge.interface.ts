@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IElevationProps,
@@ -11,7 +12,7 @@ import type {
     ITransitionComponentProps
 } from '../../interfaces'
 
-export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, ILocationProps, IRoundedProps, ITransitionComponentProps, IStatusProps, IHoverProps, IElevationProps {
+export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, ILocationProps, IRoundedProps, ITransitionComponentProps, IStatusProps, IHoverProps, IElevationProps {
     content?: number | string
     dot?: boolean
     floating?: boolean

@@ -238,7 +238,7 @@ The full list lives in
 - ✅ Full keyboard support (Enter, Space).
 - ✅ `aria-disabled` mirrors the `disabled` prop.
 - ✅ `aria-busy` set while `loading` is true.
-- ✅ Focus ring uses `--origam-color-border-focus` (theme-aware).
+- ✅ Focus ring uses `--origam-color__border---focus` (theme-aware).
 - ✅ Icon-only mode requires an `aria-label`; the component falls
   back to `aria-label` from the `icon` prop's name when none is set.
 

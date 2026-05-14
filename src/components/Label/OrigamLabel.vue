@@ -1,9 +1,9 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="labelClasses"
 			:style="labelStyles"
-			:id="id"
 			:name="name"
 			@click="handleClick"
 	>
@@ -18,9 +18,22 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { useBorder, useBothColor, useDefaults, useMargin, usePadding, useProps, useRounded } from '../../composables'
+	import {
+	useBorder,
+	useBothColor,
+	useDefaults,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
 	import type { ILabelEmits, ILabelProps, ILabelSlots } from '../../interfaces'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const _props = withDefaults(defineProps<ILabelProps>(), {
 		tag: 'label'
@@ -31,17 +44,32 @@
 
 	defineSlots<ILabelSlots>()
 
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
 	}
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
 
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const labelStyles = computed(() => {
 		return [
@@ -59,6 +87,7 @@
 			{
 				'origam-label--floating': props.floating
 			},
+			colorClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -67,12 +96,20 @@
 		]
 	})
 
-	// EXPOSE
-
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	const {filterProps} = useProps<ILabelProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(labelStyles)
+
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -90,14 +127,10 @@
 		transition-duration:        var(--origam-label---transition-duration);
 		transition-timing-function: var(--origam-label---transition-easing);
 
-		// Required indicator — the <sup>*</sup> child element.
 		sup {
 			color: var(--origam-label---required-indicator-color);
 		}
 
-		// Floating state — the cloned label used in the notch animation.
-		// Visibility is driven by the label token; the float animation itself
-		// is done by OrigamField's JS. The rule here makes the token consumable.
 		&--floating {
 			font-size:  var(--origam-label__floating---font-size);
 			visibility: var(--origam-label__floating---visibility);

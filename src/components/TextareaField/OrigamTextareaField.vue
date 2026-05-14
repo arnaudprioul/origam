@@ -157,8 +157,8 @@
 					v-bind="detailsSlotProps"
 			>
 				<origam-counter
-						:active="props.persistentCounter || isFocused"
-						:disabled="props.disabled"
+						:active="persistentCounter || isFocused"
+						:disabled="disabled"
 						:max="max"
 						:value="counterValue"
 				>
@@ -195,9 +195,7 @@
 			/>
 		</template>
 	</origam-input>
-</template>
-
-<script
+</template><script
 		lang="ts"
 		setup
 >
@@ -216,7 +214,17 @@
 	} from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import { useAdjacent, useAdjacentInner, useDefaults, useDragResizer, useFocus, useLocale, useProps, useVModel } from '../../composables'
+	import {
+	useAdjacent,
+	useAdjacentInner,
+	useDefaults,
+	useDragResizer,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { vIntersect } from '../../directives'
 
@@ -227,6 +235,10 @@
 	import type { TOrigamField, TOrigamInput } from '../../types'
 
 	import { clamp, convertToUnit, filterInputAttrs, forwardRefs } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const _props = withDefaults(defineProps<ITextareaFieldProps>(), {
 		density: DENSITY.DEFAULT,
@@ -245,6 +257,10 @@
 
 	const {t} = useLocale()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const model = useVModel(props, 'modelValue')
 
 	/*********************************************************
@@ -253,10 +269,20 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		onClickAppendInner: handleClickAppendInner,
 		onClickPrependInner: handleClickPrependInner
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend
@@ -273,6 +299,10 @@
 			handler: handleIntersect
 		}, null, ['once']]
 	})
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleIntersect = (isIntersecting: boolean, entries: IntersectionObserverEntry[]) => {
 		if (!props.autofocus || !isIntersecting) return
@@ -297,6 +327,11 @@
 	 * @description
 	 *
 	 ********************************************************/
+
+	/*********************************************************
+	 * Effect
+	 ********************************************************/
+
 	const {isFocused, onFocus, onBlur: handleBlur} = useFocus(props)
 	const isActive = computed(() => {
 		return props.persistentPlaceholder || isFocused.value || props.active
@@ -523,6 +558,11 @@
 	 *
 	 ********************************************************/
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
 	})
@@ -571,8 +611,16 @@
 	 *    filterProps is a function that filters out props that are not defined in the `ITextareaFieldProps` interface.
 	 ********************************************************/
 	const {filterProps} = useProps<ITextareaFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(textareaFieldStyles)
 
-	defineExpose(forwardRefs({filterProps}, origamFieldRef, origamInputRef, textareaRef))
+
+	defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamFieldRef, origamInputRef, textareaRef))
 </script>
 
 <style
@@ -639,7 +687,7 @@
 			position: absolute;
 			bottom: 0;
 			left: calc(0px - var(--origam-field---padding-start));
-			border: 1px solid var(--origam-textarea-field__grip---border-color, var(--origam-color-border-subtle));
+			border: 1px solid var(--origam-textarea-field__grip---border-color, var(--origam-color__border---subtle));
 			border-top-width: 0;
 			cursor: ns-resize;
 			height: var(--origam-textarea-field__grip---height, 9px);

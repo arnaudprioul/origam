@@ -21,9 +21,8 @@
           name="field"
           v-bind="{id, isDisabled, isDirty, isValid, isReadonly}"
       >
-        <!-- DRAG & DROP MODE -->
         <div
-            v-if="props.dragndrop"
+            v-if="isDropzoneMode"
             class="origam-file-field__dragndrop"
         >
           <label
@@ -34,8 +33,7 @@
               @dragleave.prevent="handleDragLeave"
               @drop.prevent="handleDrop"
           >
-            <!-- Single file mode: show uploaded file inside the dropzone -->
-            <template v-if="!props.multiple && hasFiles">
+            <template v-if="!multiple && hasFiles">
               <slot
                   name="item"
                   v-bind="{
@@ -50,27 +48,26 @@
                     :file="model[0]"
                     :index="0"
                     :progress="getProgress(0)"
-                    :file-icon="props.fileIcon"
-                    :download-icon="props.downloadIcon"
-                    :remove-icon="props.removeIcon"
-                    :downloadable="props.downloadable"
+                    :file-icon="fileIcon"
+                    :download-icon="downloadIcon"
+                    :remove-icon="removeIcon"
+                    :downloadable="downloadable"
                     :disabled="isDisabled"
                     :readonly="isReadonly"
-                    :color="props.color"
-                    :show-size="props.showSize"
+                    :color="color"
+                    :show-size="showSize"
                     @click:remove="handleRemove(0)"
                     @click:download="handleDownload(0, model[0])"
                 />
               </slot>
             </template>
-            <!-- Default: show dropzone content -->
             <template v-else>
               <slot
                   name="dropzone"
                   v-bind="{ isDragging, browse: handleBrowseClick }"
               >
                 <origam-icon
-                    :icon="props.dragndropIcon"
+                    :icon="dragndropIcon"
                     class="origam-file-field__dropzone-icon"
                 />
                 <div class="origam-file-field__dropzone-title">
@@ -79,14 +76,22 @@
                 <div class="origam-file-field__dropzone-subtitle">
                   {{ dropzoneSubtitleText }}
                 </div>
+                <div
+                    v-if="isErrored && errorMessage"
+                    class="origam-file-field__dropzone-error"
+                    role="alert"
+                    data-cy="file-field-dropzone-error-message"
+                >
+                  {{ errorMessage }}
+                </div>
               </slot>
             </template>
             <input
                 :id="id"
                 ref="inputRef"
                 :disabled="isDisabled"
-                :multiple="props.multiple"
-                :name="props.name"
+                :multiple="multiple"
+                :name="name"
                 :readonly="isReadonly"
                 class="origam-file-field__dropzone-input"
                 type="file"
@@ -98,42 +103,41 @@
           </label>
 
           <ul
-              v-if="props.multiple && hasFiles"
+              v-if="multiple && hasFiles"
               class="origam-file-field__list"
               role="list"
           >
-            <slot
-                v-for="(file, index) in model"
-                :key="`${file.name}-${index}`"
-                name="item"
-                v-bind="{
-                  file,
-                  index,
-                  progress: getProgress(index),
-                  remove: () => handleRemove(index),
-                  download: () => handleDownload(index, file),
-                }"
-            >
-              <origam-file-field-list-item
-                  :file="file"
-                  :index="index"
-                  :progress="getProgress(index)"
-                  :file-icon="props.fileIcon"
-                  :download-icon="props.downloadIcon"
-                  :remove-icon="props.removeIcon"
-                  :downloadable="props.downloadable"
-                  :disabled="isDisabled"
-                  :readonly="isReadonly"
-                  :color="props.color"
-                  :show-size="props.showSize"
-                  @click:remove="handleRemove(index)"
-                  @click:download="handleDownload(index, file)"
-              />
-            </slot>
+            <template v-for="(item, idx) in fileList" :key="idx">
+              <slot
+                  name="item"
+                  v-bind="{
+                    file: item,
+                    index: idx,
+                    progress: getProgress(idx),
+                    remove: () => handleRemove(idx),
+                    download: () => handleDownload(idx, item),
+                  }"
+              >
+                <origam-file-field-list-item
+                    :file="item"
+                    :index="idx"
+                    :progress="getProgress(idx)"
+                    :file-icon="fileIcon"
+                    :download-icon="downloadIcon"
+                    :remove-icon="removeIcon"
+                    :downloadable="downloadable"
+                    :disabled="isDisabled"
+                    :readonly="isReadonly"
+                    :color="color"
+                    :show-size="showSize"
+                    @click:remove="handleRemove(idx)"
+                    @click:download="handleDownload(idx, item)"
+                />
+              </slot>
+            </template>
           </ul>
         </div>
 
-        <!-- DEFAULT FIELD MODE -->
         <div
             v-else
             class="origam-file-field__field"
@@ -142,9 +146,9 @@
               :id="id"
               ref="origamFieldRef"
               :active="isActive || isDirty"
-              :dirty="isDirty || props.dirty"
+              :dirty="isDirty || dirty"
               :disabled="isDisabled"
-              :error="!isValid"
+              :error="!isValid || isErrored"
               :focused="isFocused"
               v-bind="{ ...fieldProps }"
               @click="handleControlClick"
@@ -200,9 +204,9 @@
                 <input
                     ref="inputRef"
                     :disabled="isDisabled"
-                    :multiple="props.multiple"
-                    :name="props.name"
-                    :placeholder="props.placeholder"
+                    :multiple="multiple"
+                    :name="name"
+                    :placeholder="placeholder"
                     :readonly="isReadonly"
                     :size="1"
                     type="file"
@@ -215,7 +219,7 @@
 
                 <template v-if="hasFiles">
                   <div class="origam-file-field__selections">
-                    <template v-if="props.multiple && hasChips">
+                    <template v-if="multiple && hasChips">
                       <template
                           v-for="(filename, index) in fileNames"
                           :key="index"
@@ -248,6 +252,13 @@
                           {{ selectionText }}
                         </slot>
                       </span>
+                      <origam-counter
+                          v-if="hasInlineCounter"
+                          class="origam-file-field__inline-counter"
+                          data-cy="file-field-inline-counter"
+                          :active="true"
+                          :value="inlineCounterValue"
+                      />
                     </template>
                   </div>
                 </template>
@@ -277,33 +288,33 @@
           </origam-field>
 
           <ul
-              v-if="props.multiple && hasFiles && !hasChips"
+              v-if="multiple && hasFiles && !hasChips && displayMode === 'list'"
               class="origam-file-field__list"
               role="list"
           >
-            <slot
-                v-for="(file, index) in model"
-                :key="`${file.name}-${index}`"
-                name="item"
-                v-bind="{
-                  file,
-                  index,
-                  progress: getProgress(index),
-                  remove: () => handleRemove(index),
-                  download: () => handleDownload(index, file),
-                }"
-            >
-              <origam-file-field-list-item
-                  :file="file"
-                  :index="index"
-                  :file-icon="props.fileIcon"
-                  :remove-icon="props.removeIcon"
-                  :disabled="isDisabled"
-                  :readonly="isReadonly"
-                  :show-size="props.showSize"
-                  @click:remove="handleRemove(index)"
-              />
-            </slot>
+            <template v-for="(item, idx) in fileList" :key="idx">
+              <slot
+                  name="item"
+                  v-bind="{
+                    file: item,
+                    index: idx,
+                    progress: getProgress(idx),
+                    remove: () => handleRemove(idx),
+                    download: () => handleDownload(idx, item),
+                  }"
+              >
+                <origam-file-field-list-item
+                    :file="item"
+                    :index="idx"
+                    :file-icon="fileIcon"
+                    :remove-icon="removeIcon"
+                    :disabled="isDisabled"
+                    :readonly="isReadonly"
+                    :show-size="showSize"
+                    @click:remove="handleRemove(idx)"
+                />
+              </slot>
+            </template>
           </ul>
         </div>
       </slot>
@@ -325,8 +336,8 @@
           v-bind="detailsSlotProps"
       >
         <origam-counter
-            :active="props.persistentCounter || isFocused"
-            :disabled="props.disabled"
+            :active="persistentCounter || isFocused"
+            :disabled="disabled"
             :value="counterValue"
         >
           <template
@@ -362,9 +373,7 @@
       />
     </template>
   </origam-input>
-</template>
-
-<script
+</template><script
     lang="ts"
     setup
 >
@@ -373,7 +382,18 @@
   import { OrigamChip, OrigamCounter, OrigamField, OrigamIcon, OrigamInput } from '../../components'
   import OrigamFileFieldDragNDropItem from './OrigamFileFieldDragNDropItem.vue'
   import OrigamFileFieldListItem from './OrigamFileFieldListItem.vue'
-  import { useAdjacent, useAdjacentInner, useBothColor, useDefaults, useDensity, useFocus, useLocale, useProps, useVModel } from '../../composables'
+  import {
+	useAdjacent,
+	useAdjacentInner,
+	useBothColor,
+	useDefaults,
+	useDensity,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
   import { DENSITY, MDI_ICONS } from '../../enums'
   import type { IFileFieldEmits, IFileFieldProps, IFileFieldSlots } from '../../interfaces'
   import type { TOrigamField, TOrigamInput } from '../../types'
@@ -402,6 +422,7 @@
     border: true,
     rounded: true,
     divider: ',',
+    display: 'list',
     counterSizeString: 'origam.fileField.counterSize',
     counterString: 'origam.fileField.counter',
     dropzoneTitle: 'origam.fileField.dropzoneTitle',
@@ -411,6 +432,43 @@
   })
   const props = useDefaults(_props)
 
+  /*********************************************************
+   * PDF P3 — display + dropzone aliasing + error
+   *
+   * @description
+   *  - `dropzone` is the new public alias for the legacy `dragndrop`
+   *    prop; both feed the same internal flag so existing consumers
+   *    aren't broken.
+   *  - `display` selects the multi-file rendering strategy: 'list',
+   *    'chips', or 'counter'. Backward-compat: if the legacy `chips`
+   *    boolean is set it forces 'chips' regardless of `display`.
+   *  - `error` accepts `boolean | string`. The boolean value is forwarded
+   *    to `<OrigamField error>`; the string (when present) is rendered as
+   *    the dropzone error message and exposed via `errorMessage`.
+   ********************************************************/
+  const isDropzoneMode = computed(() => Boolean(props.dropzone || props.dragndrop))
+  const displayMode = computed(() => {
+    if (props.chips) return 'chips'
+    return props.display ?? 'list'
+  })
+  const isErrored = computed(() => Boolean(props.error))
+  const errorMessage = computed(() => typeof props.error === 'string' ? props.error : '')
+  // Concrete array of files used by the v-for sites below. Going
+  // through a dedicated computed (rather than reading `model.value`
+  // directly in the template) sidesteps a Vue compiler quirk where
+  // re-binding `<v-for="(file, index) in model">` failed to invalidate
+  // when the model was updated via the synthetic `change` event the
+  // tests dispatch. The variable name `(item, idx)` is also used in
+  // the templates for the same reason — `(file, …)` collided with the
+  // implicit `file` reactive ref in the slot scope.
+  const fileList = computed(() => {
+    const mv = props.modelValue as unknown
+    if (Array.isArray(mv)) return mv as Array<File>
+    if (mv instanceof File) return [mv]
+    const m = model.value
+    return Array.isArray(m) ? (m as Array<File>) : []
+  })
+
   const emits = defineEmits<IFileFieldEmits>()
 
   defineSlots<IFileFieldSlots>()
@@ -419,6 +477,10 @@
   const attrs = useAttrs()
 
   const { t } = useLocale()
+
+  /*********************************************************
+   * Value
+   ********************************************************/
 
   const model = useVModel(
       props,
@@ -434,6 +496,15 @@
    * @description
    * Handles click events for prepend/append and inner icons.
    ********************************************************/
+
+  /*********************************************************
+   * Icon
+   ********************************************************/
+
+  /*********************************************************
+   * Composables
+   ********************************************************/
+
   const {
     onClickPrepend,
     onClickAppend: handleClickAppend
@@ -459,11 +530,20 @@
    * @description
    * Focus management, control clicks, clear, and input change handlers.
    ********************************************************/
+
+  /*********************************************************
+   * Effect
+   ********************************************************/
+
   const { isFocused, onFocus, onBlur: handleBlur } = useFocus(props)
 
   const isActive = computed(() => {
     return isFocused.value || props.active
   })
+
+  /*********************************************************
+   * Event handlers
+   ********************************************************/
 
   const handleFocus = () => {
     nextTick(() => {
@@ -676,7 +756,13 @@
     return slots.details || hasCounter.value
   })
   const hasChips = computed(() => {
-    return props.chips || slots.chip
+    return displayMode.value === 'chips' || slots.chip
+  })
+  const hasInlineCounter = computed(() => {
+    return displayMode.value === 'counter' && hasFiles.value && props.multiple
+  })
+  const inlineCounterValue = computed(() => {
+    return model.value?.length ?? 0
   })
   const chipProps = computed(() => {
     return {
@@ -708,6 +794,11 @@
    * Filtered props for the underlying origam-input and origam-field components.
    ********************************************************/
   const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+
+  /*********************************************************
+   * Forwarded props
+   ********************************************************/
+
   const inputProps = computed(() => {
     return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
   })
@@ -737,7 +828,16 @@
       props.class
     ]
   })
-  const { colorStyles: dropzoneColorStyles } = useBothColor(
+  // Phase 3 (Vague B) — class-first companion alongside inline styles.
+  // `dropzoneColorClasses` carries `.origam--bg-{intent}` /
+  // `.origam--color-{intent}` for tokenised intents on the dropzone;
+  // `dropzoneColorStyles` keeps the legacy fallback for raw colors.
+
+  /*********************************************************
+   * Color
+   ********************************************************/
+
+  const { colorClasses: dropzoneColorClasses, colorStyles: dropzoneColorStyles } = useBothColor(
       toRef(props, 'bgColor'),
       toRef(props, 'color'),
   )
@@ -749,8 +849,10 @@
         'origam-file-field__dropzone--dragging': isDragging.value,
         'origam-file-field__dropzone--disabled': props.disabled,
         'origam-file-field__dropzone--readonly': props.readonly,
-        'origam-file-field__dropzone--has-file': !props.multiple && hasFiles.value
+        'origam-file-field__dropzone--has-file': !props.multiple && hasFiles.value,
+        'origam-file-field__dropzone--error': isErrored.value
       },
+      dropzoneColorClasses.value,
       dropzoneDensityClasses.value
     ]
   })
@@ -763,8 +865,16 @@
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldProps` interface.
    ********************************************************/
   const { filterProps } = useProps<IFileFieldProps>(props)
+	const {id, css, load, isLoaded, unload} = useStyle(fileFieldStyles)
 
-  defineExpose(forwardRefs({filterProps}, origamInputRef, origamFieldRef, inputRef))
+
+  defineExpose(forwardRefs({filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	}, origamInputRef, origamFieldRef, inputRef))
 </script>
 
 <style
@@ -823,6 +933,11 @@
       white-space: nowrap;
     }
 
+    &__inline-counter {
+      flex-shrink: 0;
+      margin-inline-start: var(--origam-file-field---inline-counter-margin, 8px);
+    }
+
     &--dragndrop {
       :deep(.origam-input__control) {
         display: block;
@@ -839,7 +954,7 @@
     &__dropzone {
       align-items: center;
       background-color: var(--origam-file-field__dropzone---background-color, transparent);
-      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color-border-default));
+      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color__border---default));
       border-radius: var(--origam-file-field__dropzone---border-radius, 8px);
       color: var(--origam-file-field__dropzone---color, inherit);
       cursor: var(--origam-file-field__dropzone---cursor, pointer);
@@ -854,12 +969,27 @@
       transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;
 
       &:hover {
-        border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color-border-strong));
+        border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color__border---strong));
       }
 
       &--dragging {
-        background-color: var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color-feedback-info-bg-subtle));
-        border-color: var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color-feedback-info-bg));
+        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color__feedback--info---bg-subtle)));
+        border-color: var(--origam-file-field__dropzone---border-color-dragging, var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color__feedback--info---bg)));
+      }
+
+      &--error {
+        border-color: var(--origam-file-field__dropzone--error---border-color, var(--origam-file-field__dropzone---border-color-error, var(--origam-color__feedback--danger---bg)));
+
+        .origam-file-field__dropzone-icon,
+        .origam-file-field__dropzone-title {
+          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
+        }
+      }
+
+      &-error {
+        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
+        font-size: var(--origam-file-field__dropzone---subtitle-font-size, 0.75rem);
+        margin-top: var(--origam-file-field__dropzone---gap-deck, 8px);
       }
 
       &--has-file {

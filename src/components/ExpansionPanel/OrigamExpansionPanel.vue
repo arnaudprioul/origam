@@ -18,7 +18,7 @@
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
-							:class="['origam-expansion-panel__progress', `origam-expansion-panel__progress--${loaderConfig.kind === 'line' ? 'linear' : loaderConfig.kind}`]"
+							:class="expansionPanelProgressClasses"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -102,21 +102,20 @@
 		setup
 >
 	import { computed, provide, ref, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress, OrigamSkeleton } from '../../components'
+	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress } from '../../components'
 
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDefaults,
 		useDensity,
-		useElevation,
 		useGroupItem,
+		useHover,
 		useLoader,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
@@ -126,6 +125,13 @@
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props resolved through the parent OrigamExpansionPanels defaults
+	 * provider, group registration, and composable setup.
+	 ********************************************************/
 	const _props = withDefaults(defineProps<IExpansionPanelProps>(), {
 		tag: 'div'
 	})
@@ -144,15 +150,13 @@
 	const groupItem = useGroupItem(props, ORIGAM_EXPANSION_PANEL_KEY)
 	const slots = useSlots()
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
-
+	/*********************************************************
+	 * Group
+	 *
+	 * @description
+	 * Tracks selection state, position relative to selected siblings,
+	 * and provides the group context to child header/content.
+	 ********************************************************/
 	const isDisabled = computed(() => {
 		return groupItem?.disabled.value || props.disabled
 	})
@@ -190,15 +194,34 @@
 		provide(ORIGAM_EXPANSION_PANEL_KEY, groupItem)
 	}
 
+	/*********************************************************
+	 * Loader
+	 *
+	 * @description
+	 * Controls the line/circular/skeleton loader at the panel top.
+	 ********************************************************/
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+
 	const hasLoading = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
 	})
+
+	/*********************************************************
+	 * Slots
+	 *
+	 * @description
+	 * Determines which structural sections to render.
+	 ********************************************************/
 	const hasContent = computed(() => {
 		return slots.content || !!props.content
 	})
 	const hasHeader = computed(() => {
 		return slots.header || slots.title || slots.prepend || slots.append || !!props.title
 	})
+
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
 
 	const expansionPanelHeaderProps = computed(() => {
 		return origamExpansionPanelHeaderRef.value?.filterProps(props, ['class', 'id', 'style', 'tag'])
@@ -207,8 +230,34 @@
 		return origamExpansionPanelContentRef.value?.filterProps(props, ['class', 'id', 'style', 'tag'])
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const expansionPanelStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -218,6 +267,12 @@
 			marginStyles.value,
 			props.style
 		] as StyleValue
+	})
+	const expansionPanelProgressClasses = computed(() => {
+		return [
+			'origam-expansion-panel__progress',
+			`origam-expansion-panel__progress--${loaderConfig.value.kind === 'line' ? 'linear' : loaderConfig.value.kind}`
+		]
 	})
 	const expansionPanelClasses = computed(() => {
 		return [
@@ -229,6 +284,7 @@
 				'origam-expansion-panel--disabled': isDisabled.value
 			},
 			loaderClasses.value,
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -238,11 +294,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -250,8 +317,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json.
-	// Bug fix (port Origam): hex values and Vuetify shadow vars replaced with Origam tokens.
 	.origam-expansion-panel {
 		flex: var(--origam-expansion-panel---flex, 1 0 100%);
 		max-width: var(--origam-expansion-panel---max-width, 100%);
@@ -265,7 +330,7 @@
 			&:after {
 				border-top-style: solid;
 				border-top-width: thin;
-				border-top-color: var(--origam-expansion-panel---divider-color, var(--origam-color-border-subtle));
+				border-top-color: var(--origam-expansion-panel---divider-color, var(--origam-color__border---subtle));
 				opacity: var(--origam-expansion-panel---divider-opacity, 0.12);
 				content: "";
 				left: 0;
@@ -278,7 +343,7 @@
 
 		&--disabled {
 			:deep(.origam-expansion-panel-header) {
-				color: var(--origam-expansion-panel---disabled-color, var(--origam-color-text-disabled));
+				color: var(--origam-expansion-panel---disabled-color, var(--origam-color__text---disabled));
 				pointer-events: var(--origam-expansion-panel---disabled-pointer-events, none);
 
 				.origam-expansion-panel-header__overlay {
@@ -313,7 +378,7 @@
 			left: var(--origam-expansion-panel__shadow---left, 0);
 			width: var(--origam-expansion-panel__shadow---width, 100%);
 			height: var(--origam-expansion-panel__shadow---height, 100%);
-			box-shadow: var(--origam-expansion-panel__shadow---box-shadow, var(--origam-shadow-sm));
+			box-shadow: var(--origam-expansion-panel__shadow---box-shadow, var(--origam-shadow---sm));
 			border-radius: var(--origam-expansion-panel__shadow---border-radius, inherit);
 			z-index: var(--origam-expansion-panel__shadow---z-index, -1);
 		}

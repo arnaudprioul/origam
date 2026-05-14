@@ -1,4 +1,5 @@
 import type {
+    IActiveProps,
     IBorderProps,
     ICheckboxBtnProps,
     IColorProps,
@@ -7,6 +8,7 @@ import type {
     IDensityProps,
     IElevationProps,
     IFocusEmits,
+    IHoverProps,
     IInputProps,
     IMarginProps,
     IPaddingProps,
@@ -15,7 +17,7 @@ import type {
 } from '../../interfaces'
 import type { TColor, TIcon } from '../../types'
 
-export interface ICheckboxProps extends ICommonsComponentProps, IInputProps, ICheckboxBtnProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBorderProps, IElevationProps {
+export interface ICheckboxProps extends ICommonsComponentProps, IInputProps, ICheckboxBtnProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBorderProps, IElevationProps, IActiveProps, IHoverProps {
 
 }
 

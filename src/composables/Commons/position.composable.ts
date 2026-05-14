@@ -3,6 +3,9 @@ import type { IPositionProps } from '../../interfaces'
 import { getCurrentInstanceName } from '../../utils'
 import { computed } from 'vue'
 
+/*********************************************************
+ * usePosition
+ ********************************************************/
 export function usePosition (props: IPositionProps, name = getCurrentInstanceName()) {
     const positionClasses = computed(() => {
         return props.position ? `${name}--${props.position}` : undefined

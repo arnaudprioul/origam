@@ -2,6 +2,9 @@ import type { IDataTableSortItem } from '../../interfaces'
 import { deepEqual, getCurrentInstance } from '../../utils'
 import { computed, Ref, watch } from 'vue'
 
+/*********************************************************
+ * useOptions
+ ********************************************************/
 export function useOptions ({
                                 page,
                                 itemsPerPage,

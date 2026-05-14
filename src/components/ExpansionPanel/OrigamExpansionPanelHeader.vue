@@ -1,7 +1,7 @@
 <template>
 	<component
 			:is="tag"
-			v-ripple="props.ripple"
+			v-ripple="ripple"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
 			:disabled="isDisabled"
@@ -51,7 +51,7 @@
       </span>
 
 			<span
-					v-if="hasAppend || !props.hideActions"
+					v-if="hasAppend || !hideActions"
 					key="append"
 					class="origam-expansion-panel-header__append"
 					@click="handleClickAppend"
@@ -73,7 +73,7 @@
 		          :icon="appendIcon"
           />
           <origam-icon
-		          v-if="!props.hideActions"
+		          v-if="!hideActions"
 		          :icon="isSelected ? collapseIcon : expandIcon"
           />
         </slot>
@@ -90,15 +90,15 @@
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 
 	import {
+		useActive,
 		useAdjacent,
-		useBorder,
 		useBothColor,
 		useDensity,
-		useMargin,
-		usePadding,
+		useHover,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
@@ -108,6 +108,12 @@
 
 	import type { IExpansionPanelHeaderProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and injection of the parent expansion panel context.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelHeaderProps>(), {
 		tag: 'button',
 		expandIcon: MDI_ICONS.CHEVRON_DOWN,
@@ -124,19 +130,16 @@
 
 	const slots = useSlots()
 
-	const {
-		hasAppend,
-		hasPrepend,
-		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend
-	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+	/*********************************************************
+	 * Group & Expand
+	 *
+	 * @description
+	 * Selection state, expand/collapse toggle, and slot props.
+	 ********************************************************/
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleExpand = () => {
 		if (!props.readonly) {
@@ -165,8 +168,51 @@
 		return slots.default || props.title
 	})
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Adjacent
+	 *
+	 * @description
+	 * Prepend/append icon slots and click handlers.
+	 ********************************************************/
 
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {
+		hasAppend,
+		hasPrepend,
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const expansionPanelHeaderStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -185,6 +231,7 @@
 				'origam-expansion-panel-header--focusable': props.focusable,
 				'origam-expansion-panel-header--static': props.static
 			},
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -193,11 +240,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelHeaderStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -205,7 +263,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json header section.
 	.origam-expansion-panel-header {
 		$this: &;
 

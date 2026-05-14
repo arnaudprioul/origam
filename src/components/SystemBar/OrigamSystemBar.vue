@@ -22,22 +22,47 @@
 		useProps,
 		useRounded,
 		useSsrBoot
-	} from "../../composables"
+	, useStyle} from "../../composables"
 
 	import type { ISystemBarProps } from "../../interfaces"
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props with defaults and filterProps utility.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ISystemBarProps>(), {
 		tag: 'div'
 	})
 
 	const {filterProps} = useProps<ISystemBarProps>(props)
 
+	/*********************************************************
+	 * Layout
+	 *
+	 * @description
+	 * Layout item registration — positions the system bar at
+	 * the top of the layout with a height derived from the
+	 * `window` prop (32px) or default (24px).
+	 ********************************************************/
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {dimensionStyles} = useDimension(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedStyles, roundedClasses} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
 
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const {ssrBootStyles} = useSsrBoot()
 	const height = computed(() => props.height ?? (props.window ? 32 : 24))
@@ -51,8 +76,12 @@
 		absolute: toRef(props, 'absolute')
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Root element classes and styles.
+	 ********************************************************/
 	const systemBarStyles = computed(() => {
 		return [
 			borderStyles.value,
@@ -70,17 +99,29 @@
 			{
 				'origam-system-bar--window': props.window
 			},
+			colorClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(systemBarStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface exposed to parent refs.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -100,8 +141,8 @@
 		position: var(--origam-system-bar---position, relative);
 		text-align: var(--origam-system-bar---text-align, end);
 		width: var(--origam-system-bar---width, 100%);
-		background: var(--origam-system-bar---background, var(--origam-color-neutral-700, #404040));
-		color: var(--origam-system-bar---color, var(--origam-color-text-inverse, #FFFFFF));
+		background: var(--origam-system-bar---background, var(--origam-color__neutral---700, #404040));
+		color: var(--origam-system-bar---color, var(--origam-color__text---inverse, #FFFFFF));
 		font-size: var(--origam-system-bar---font-size, .75rem);
 		font-weight: var(--origam-system-bar---font-weight, 400);
 		letter-spacing: var(--origam-system-bar---letter-spacing, .0333333333em);
@@ -120,35 +161,32 @@
 			position: fixed;
 		}
 
-		// Rounded variants — mirrors OrigamBtn / OrigamSheet pattern.
-		// The root SCSS now reads `--origam-system-bar---border-radius`
-		// so modifier rules only need to set the var.
 		&--rounded {
-			border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			border-radius: var(--origam-radius-xs, 2px);
+			border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			border-radius: var(--origam-radius-sm, 4px);
+			border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			border-radius: var(--origam-radius-md, 8px);
+			border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			border-radius: var(--origam-radius-lg, 12px);
+			border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			border-radius: var(--origam-radius-xl, 16px);
+			border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			border-radius: var(--origam-radius-2xl, 24px);
+			border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--window {

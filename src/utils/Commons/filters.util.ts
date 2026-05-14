@@ -4,12 +4,25 @@ import type { TFilterFunction, TFilterKeyFunctions, TFilterKeys, TFilterMatch, T
 
 import { getPropertyFromItem, wrapInArray } from '../../utils'
 
+/**
+ * Default filter.
+ *
+ * @param value …
+ * @param query …
+ */
 export function defaultFilter (value: string | number, query: string | number) {
     if (value == null || query == null) return -1
 
     return value.toString().toLocaleLowerCase().indexOf(query.toString().toLocaleLowerCase())
 }
 
+/**
+ * Filter items.
+ *
+ * @param items   …
+ * @param query   …
+ * @param options …
+ */
 export function filterItems (
     items: readonly (readonly [item: IInternalItem, transformed: Record<string, unknown>])[] | readonly IInternalItem[],
     query: string,

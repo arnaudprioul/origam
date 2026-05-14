@@ -44,7 +44,11 @@
 >
 	import { OrigamSelectionControl } from '../../components'
 
-	import { useProps, useVModel } from '../../composables'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
@@ -53,6 +57,13 @@
 	import type { TOrigamSelectionControl } from "../../types"
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, emits, slots, indeterminate and model binding.
+	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICheckboxBtnProps>(), {
 		density: DENSITY.DEFAULT,
@@ -69,10 +80,18 @@
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 
+	/*********************************************************
+	 * Value
+	 ********************************************************/
+
 	const indeterminate = useVModel(props, 'indeterminate')
 	const model = useVModel(props, 'modelValue')
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
 
 	const handleChange = () => {
 		if (indeterminate.value) {
@@ -94,11 +113,20 @@
 				: props.trueIcon
 	})
 
+	/*********************************************************
+	 * Forwarded props
+	 ********************************************************/
+
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'falseIcon', 'trueIcon', 'type', 'class', 'style'])
 	})
 
-	// CLASS & STYLES
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes BEM classes and passes through host styles.
+	 ********************************************************/
 
 	const checkboxBtnStyles = computed(() => {
 		return [
@@ -111,10 +139,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(checkboxBtnStyles)
 
-	// EXPOSE
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
 
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>

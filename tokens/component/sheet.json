@@ -46,6 +46,24 @@
 
     "rounded": {
       "border-radius":      { "$type": "dimension",  "$value": "{radius.sm}" }
+    },
+
+    "swipeable": {
+      "border-radius":      { "$type": "dimension",  "$value": "{radius.2xl}" }
+    },
+
+    "bottom": {
+      "snap-peek":          { "$type": "dimension",  "$value": "120px" },
+      "snap-half":          { "$type": "dimension",  "$value": "50vh" },
+      "snap-full":          { "$type": "dimension",  "$value": "90vh" }
+    },
+
+    "handle": {
+      "width":              { "$type": "dimension",  "$value": "32px" },
+      "height":             { "$type": "dimension",  "$value": "4px" },
+      "color":              { "$type": "color",      "$value": "{color.border.subtle}" },
+      "border-radius":      { "$type": "dimension",  "$value": "{radius.full}" },
+      "margin-block":       { "$type": "dimension",  "$value": "{space.2}" }
     }
   }
 }

@@ -2,10 +2,21 @@ import type { ComponentInternalInstance } from 'vue'
 import { getCurrentInstance as _getCurrentInstance } from 'vue'
 import { toKebabCase } from '../../utils'
 
+/**
+ * Get life cycle target.
+ *
+ * @param target …
+ */
 export function getLifeCycleTarget (target?: any) {
     return target || _getCurrentInstance()
 }
 
+/**
+ * Get current instance.
+ *
+ * @param name    …
+ * @param message …
+ */
 export function getCurrentInstance (name: string, message?: string) {
     const vm = _getCurrentInstance()
 
@@ -16,6 +27,11 @@ export function getCurrentInstance (name: string, message?: string) {
     return vm
 }
 
+/**
+ * Get current instance name.
+ *
+ * @param name …
+ */
 export function getCurrentInstanceName (name = 'composable') {
     const vm = getCurrentInstance(name).type
 
@@ -25,6 +41,9 @@ export function getCurrentInstanceName (name = 'composable') {
 let _uid = 0
 let _map = new WeakMap<ComponentInternalInstance, number>()
 
+/**
+ * Get uid.
+ */
 export function getUid () {
     const vm = getCurrentInstance('getUid')
 

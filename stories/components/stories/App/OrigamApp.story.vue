@@ -3,27 +3,59 @@
 			group="components"
 			title="App/OrigamApp"
 	>
-
-		<!-- ════════════ DEFAULT ════════════ -->
-		<Variant title="Default">
-			<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-default">
-				<origam-app data-cy="app-default-inner">
-					<origam-toolbar title="My Application" data-cy="app-default-toolbar"/>
-					<origam-main style="padding: 16px;" data-cy="app-default-main">
-						<p>Main content area</p>
-					</origam-main>
-				</origam-app>
-			</div>
+		<!--
+			Playground — first variant by convention. Surfaces every
+			ILayoutProps knob via the sidebar controls.
+		-->
+		<Variant
+				title="Playground"
+				:init-state="() => useStoryInitState<ILayoutProps>({
+					fullHeight: false
+				})"
+		>
+			<template #default="{ state }">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-playground-host">
+					<origam-app v-bind="state" data-cy="app-playground">
+						<origam-toolbar title="Playground App" data-cy="app-playground-toolbar"/>
+						<origam-main data-cy="app-playground-main">
+							<div style="padding: 12px;">Playground content</div>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.fullHeight" title="fullHeight"/>
+			</template>
 		</Variant>
 
-		<!-- ════════════ WITH DRAWER ════════════ -->
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
 		<Variant
-				title="With Drawer"
+				title="Prop — fullHeight"
+				:init-state="() => useStoryInitState<{ fullHeight: boolean }>({ fullHeight: false })"
+		>
+			<template #default="{ state }">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-fullheight-host">
+					<origam-app :full-height="state.fullHeight" data-cy="app-fullheight">
+						<origam-toolbar title="Full height" data-cy="app-fullheight-toolbar"/>
+						<origam-main data-cy="app-fullheight-main">
+							<div style="padding: 12px;">fullHeight={{ state.fullHeight }}</div>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.fullHeight" title="fullHeight"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — drawer (with Drawer child)"
 				:init-state="() => useStoryInitState<{ drawerOpen: boolean }>({ drawerOpen: true })"
 		>
 			<template #default="{ state }">
-				<div style="height: 360px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-drawer-host">
-					<origam-app data-cy="app-drawer">
+				<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-drawer-host">
+					<origam-app :full-height="false" data-cy="app-drawer">
 						<origam-toolbar title="With Drawer" data-cy="app-drawer-toolbar">
 							<template #prepend>
 								<origam-btn
@@ -37,8 +69,8 @@
 						<origam-drawer v-model="state.drawerOpen" permanent data-cy="app-drawer-nav">
 							<div style="padding: 16px;">Navigation</div>
 						</origam-drawer>
-						<origam-main style="padding: 16px;" data-cy="app-drawer-main">
-							<p>Main content</p>
+						<origam-main data-cy="app-drawer-main">
+							<div style="padding: 12px;">Main content</div>
 						</origam-main>
 					</origam-app>
 				</div>
@@ -48,58 +80,17 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════ FULL HEIGHT ════════════ -->
-		<Variant
-				title="Full height"
-				:init-state="() => useStoryInitState<{ fullHeight: boolean }>({ fullHeight: true })"
-		>
-			<template #default="{ state }">
-				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-fullheight-host">
-					<origam-app :full-height="state.fullHeight" data-cy="app-fullheight">
-						<origam-toolbar title="Full height" data-cy="app-fullheight-toolbar"/>
-						<origam-main style="padding: 16px;" data-cy="app-fullheight-main">
-							<p>fullHeight={{ state.fullHeight }}</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.fullHeight" title="fullHeight"/>
-			</template>
-		</Variant>
+		<!-- ── Slots ────────────────────────────────────────────────── -->
 
-		<!-- ════════════ SLOT: default ════════════ -->
 		<Variant title="Slot — default">
-			<div style="height: 280px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-slot-default-host">
-				<origam-app data-cy="app-slot-default">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="app-slot-default-host">
+				<origam-app :full-height="false" data-cy="app-slot-default">
 					<origam-toolbar title="Slot app" data-cy="app-slot-default-toolbar"/>
-					<origam-main style="padding: 16px;" data-cy="app-slot-default-main">
-						<p>Content from the <strong>default slot</strong>.</p>
+					<origam-main data-cy="app-slot-default-main">
+						<div style="padding: 12px;">Content from the <strong>default slot</strong>.</div>
 					</origam-main>
 				</origam-app>
 			</div>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
-		<Variant
-				title="Playground"
-				:init-state="() => useStoryInitState<ILayoutProps>({
-					fullHeight: true
-				})"
-		>
-			<template #default="{ state }">
-				<div style="height: 320px; border: 1px solid var(--origam-color-border-subtle, #ccc);" data-cy="app-playground-host">
-					<origam-app v-bind="state" data-cy="app-playground">
-						<origam-toolbar title="Playground App" data-cy="app-playground-toolbar"/>
-						<origam-main style="padding: 16px;" data-cy="app-playground-main">
-							<p>Playground content</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.fullHeight" title="fullHeight"/>
-			</template>
 		</Variant>
 	</Story>
 </template>

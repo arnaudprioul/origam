@@ -3,69 +3,9 @@
 			group="components"
 			title="Label/OrigamLabel"
 	>
-
-		<!-- ════════════ COLOR ════════════ -->
 		<!--
-			`colorList` mixes intents and every CSS-color format the prop
-			accepts. Label has no intent → SCSS mapping wired, so the
-			intent values resolve as raw CSS strings via `useColor`.
+			Playground — first by convention. Exposes every ILabelProps knob.
 		-->
-		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-label v-bind="state" text="OrigamLabel"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ STATES (required / floating) ════════════ -->
-		<Variant
-				title="States"
-				:init-state="() => useStoryInitState<{ required?: boolean, floating?: boolean }>({})"
-		>
-			<template #default="{ state }">
-				<origam-label v-bind="state" text="OrigamLabel"/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.required" title="required"/>
-				<HstCheckbox v-model="state.floating" title="floating"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ TAG (polymorphism) ════════════ -->
-		<Variant
-				title="Tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'label' })"
-		>
-			<template #default="{ state }">
-				<origam-label :tag="state.tag" text="OrigamLabel"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="labelTagList"/>
-			</template>
-		</Variant>
-
-		<!-- ════════════ SLOT: default ════════════ -->
-		<Variant title="Slot — default">
-			<origam-label>
-				Email <em style="opacity: .6;">(optional)</em>
-			</origam-label>
-		</Variant>
-
-		<!-- ════════════ EMIT: @click ════════════ -->
-		<Variant title="Emit — click">
-			<origam-label
-					text="Click me"
-					@click="logEvent('click', $event)"
-			/>
-		</Variant>
-
-		<!-- ════════════ PLAYGROUND ════════════ -->
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ILabelProps>({
@@ -88,6 +28,63 @@
 				<HstSelect   v-model="state.color"    title="color"    :options="colorList"/>
 				<HstSelect   v-model="state.bgColor"  title="bgColor"  :options="colorList"/>
 			</template>
+		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — color"
+				:init-state="() => useStoryInitState<IColorProps>({})"
+		>
+			<template #default="{ state }">
+				<origam-label v-bind="state" text="OrigamLabel"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.color"   title="color"   :options="colorList"/>
+				<HstSelect v-model="state.bgColor" title="bgColor" :options="colorList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — required & floating"
+				:init-state="() => useStoryInitState<{ required?: boolean, floating?: boolean }>({})"
+		>
+			<template #default="{ state }">
+				<origam-label v-bind="state" text="OrigamLabel"/>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.required" title="required"/>
+				<HstCheckbox v-model="state.floating" title="floating"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'label' })"
+		>
+			<template #default="{ state }">
+				<origam-label :tag="state.tag" text="OrigamLabel"/>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.tag" title="tag" :options="labelTagList"/>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<origam-label>
+				Email <em style="opacity: .6;">(optional)</em>
+			</origam-label>
+		</Variant>
+
+		<!-- ── Emits ────────────────────────────────────────────────── -->
+
+		<Variant title="Emit — click">
+			<origam-label
+					text="Click me"
+					@click="logEvent('click', $event)"
+			/>
 		</Variant>
 	</Story>
 </template>

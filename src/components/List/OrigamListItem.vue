@@ -117,19 +117,17 @@
 	import {
 		useAdjacent,
 		useBackgroundColor,
-		useBorder,
 		useDefaults,
 		useDensity,
 		useDimension,
-		useElevation,
+		useHover,
 		useLink,
 		useList,
-		useMargin,
 		useNestedItem,
-		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { vRipple } from '../../directives'
 
@@ -140,6 +138,10 @@
 	import type { TListItemSlot } from '../../types'
 
 	const attrs = useAttrs()
+
+	/*********************************************************
+	 * Global
+	 ********************************************************/
 
 	const _props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
 
@@ -154,6 +156,11 @@
 	const slots = useSlots()
 	const link = useLink(props, attrs)
 	const id = computed(() => props.value === undefined ? link.href.value : props.value)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
 	const {
 		select,
 		isSelected,
@@ -164,14 +171,22 @@
 		openOnSelect
 	} = useNestedItem(id, false)
 	const list = useList()
-	const {backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses} = useElevation(props)
-	const {roundedClasses, roundedStyles} = useRounded({rounded: props.rounded || props.nav})
+	/*********************************************************
+	 * Icon
+	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -230,8 +245,9 @@
 		setActiveLink()
 	})
 
-	// EVENTS
-
+	/*********************************************************
+	 * Events
+	 ********************************************************/
 	const click = (e: MouseEvent) => {
 		emits('click', e)
 
@@ -243,6 +259,11 @@
 			select(!isSelected.value, e)
 		}
 	}
+
+	/*********************************************************
+	 * Event handlers
+	 ********************************************************/
+
 	const handleClick = (e: MouseEvent) => {
 		click(e)
 	}
@@ -253,8 +274,9 @@
 		}
 	}
 
-	// SLOTS
-
+	/*********************************************************
+	 * Slots
+	 ********************************************************/
 	const slotProps = computed(() => {
 		return ({
 			isActive: isActive.value,
@@ -279,8 +301,9 @@
 		}
 	})
 
-	// CLASS & STYLES
-
+	/*********************************************************
+	 * Class & Style
+	 ********************************************************/
 	const listItemStyles = computed(() => {
 		return [
 			dimensionStyles.value,
@@ -305,6 +328,7 @@
 				'origam-list-item--slim': props.slim,
 				[`${props.activeClass}`]: props.activeClass && isActive.value
 			},
+			backgroundColorClasses.value,
 			borderClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
@@ -315,15 +339,24 @@
 			props.class
 		]
 	})
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listItemStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 ********************************************************/
 	defineExpose({
 		isGroupActivator,
 		isSelected,
 		list,
 		select,
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded,
+		styleId
 	})
 </script>
 
@@ -331,8 +364,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults are now provided by the generated :root block from tokens/component/list.json.
-	// Fallback values reference semantic tokens via CSS variable chain.
 	.origam-list-item {
 		$this: &;
 
@@ -360,14 +391,13 @@
 		margin-inline-start: var(--origam-list-item---margin-inline-start, 0);
 		margin-inline-end: var(--origam-list-item---margin-inline-end, 0);
 
-		border-color: var(--origam-list-item---border-color, var(--origam-color-text-primary));
+		border-color: var(--origam-list-item---border-color, var(--origam-color__text---primary));
 		border-style: var(--origam-list-item---border-style, solid);
 		border-width: var(--origam-list-item---border-width, 0);
 		border-radius: var(--origam-list-item---border-radius, 0px);
 
 		&--border {
 			--origam-list-item---border-width: thin;
-			--origam-list-item---box-shadow: none;
 		}
 
 		&--rounded {
@@ -444,27 +474,6 @@
 			}
 		}
 
-		// Material-like state layer (the `__overlay` BEM child).
-		//
-		// Pre-fix the rule below was a 3×3 cross of selectors —
-		//
-		//   &, &--active, [aria-haspopup=menu][aria-expanded=true] {
-		//       &, &:hover, &:focus-visible { > __overlay { opacity: 0.12 } }
-		//   }
-		//
-		// — and the OUTER `&` (= every `.origam-list-item`) AND the INNER
-		// `&` (= every state) both matched unconditionally. Result: every
-		// item carried the same 0.12 overlay opacity at rest AS at hover,
-		// so hover produced zero visual change. Reported by the user.
-		//
-		// Tiered to a Material state-layer ramp:
-		//   • Resting clickable item     → 0    (overlay invisible)
-		//   • Hover / focus-visible      → 0.08 (faint surface)
-		//   • Active / selected          → 0.12 (persistent)
-		//   • Active + hover/focus       → 0.16 (intensified)
-		//
-		// Hover/focus opacity is gated on `--link` (= `isClickable`) so
-		// non-clickable items don't suddenly grow a hover surface.
 		&--link {
 			&:hover,
 			&:focus-visible {
@@ -489,13 +498,6 @@
 		}
 
 		&__overlay {
-			// `currentColor` so the state layer always provides contrast
-			// against the surface — dark text → dark overlay on a light
-			// menu, light text → light overlay on a dark menu. Pre-fix
-			// the overlay defaulted to `--origam-color-overlay-scrim`,
-			// which is `#ffffff` in the light theme; a white overlay on
-			// the white menu surface produced ZERO visible hover even
-			// once the opacity tier was correct.
 			background-color: var(--origam-list-item__overlay---background-color, currentColor);
 			border-radius: var(--origam-list-item__overlay---border-radius, inherit);
 			opacity: var(--origam-list-item__overlay---opacity, 0);

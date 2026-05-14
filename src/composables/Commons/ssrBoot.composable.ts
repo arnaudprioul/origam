@@ -2,6 +2,10 @@
 import { computed, onMounted, readonly, shallowRef } from 'vue'
 
 // Composables
+
+/*********************************************************
+ * useSsrBoot
+ ********************************************************/
 export function useSsrBoot () {
     const isBooted = shallowRef(false)
 

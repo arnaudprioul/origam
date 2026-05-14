@@ -3,43 +3,6 @@
 			group="components"
 			title="Transition/OrigamSnack"
 	>
-
-		<Variant title="Default">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-default" @click="toggleDefault = !toggleDefault">Toggle</button>
-					<origam-snack>
-						<div v-if="toggleDefault" class="story-target" data-cy="target-default">Snack — pop in</div>
-					</origam-snack>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Disabled">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<origam-snack disabled>
-						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation</div>
-					</origam-snack>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Group">
-			<template #default>
-				<div class="story-shell">
-					<div style="display: flex; gap: 8px;">
-						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
-						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
-					</div>
-					<origam-snack group>
-						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Snack {{ item }}</div>
-					</origam-snack>
-				</div>
-			</template>
-		</Variant>
-
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITransitionProps>({
@@ -65,6 +28,46 @@
 				<HstCheckbox v-model="state.group"    title="group"/>
 			</template>
 		</Variant>
+
+		<!-- ── Props ────────────────────────────────────────────────── -->
+
+		<Variant title="Prop — disabled (animation off)">
+			<template #default>
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
+					<origam-snack disabled>
+						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
+					</origam-snack>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — group (transition-group)">
+			<template #default>
+				<div class="story-shell">
+					<div style="display: flex; gap: 8px;">
+						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
+						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
+					</div>
+					<origam-snack group>
+						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Snack {{ item }}</div>
+					</origam-snack>
+				</div>
+			</template>
+		</Variant>
+
+		<!-- ── Slots ────────────────────────────────────────────────── -->
+
+		<Variant title="Slot — default">
+			<div class="story-shell">
+				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
+				<origam-snack>
+					<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
+						<span>Custom slot content</span>
+					</div>
+				</origam-snack>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -78,16 +81,16 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDefault = ref(false)
 	const toggleDisabled = ref(false)
 	const togglePlayground = ref(false)
+	const toggleSlotDefault = ref(false)
 	const groupItems = ref([1])
 </script>
 
 <style scoped>
 	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
 	.story-toggle { appearance: none; border: 1px solid currentColor; background: transparent; color: inherit; padding: 6px 14px; border-radius: 6px; cursor: pointer; font: inherit; }
-	.story-target { padding: 12px 16px; border-radius: 6px; background: var(--origam-color-surface-default, rgba(0, 0, 0, 0.06)); border: 1px solid var(--origam-color-border-subtle, rgba(0, 0, 0, 0.12)); }
+	.story-target { padding: 12px 16px; border-radius: 6px; background: var(--origam-color__surface---default, rgba(0, 0, 0, 0.06)); border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)); }
 </style>
 
 <docs lang="md" src="@docs/components/Transition/OrigamSnack.md"/>

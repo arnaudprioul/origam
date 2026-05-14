@@ -119,22 +119,28 @@
 	import { OrigamDefaultsProvider, OrigamExpansionPanel } from '../../components'
 
 	import {
-		useBorder,
+		useActive,
 		useBothColor,
 		useDensity,
-		useElevation,
 		useGroup,
+		useHover,
 		useLoader,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded
-	} from '../../composables'
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
 	import type { IExpansionPanelsProps } from '../../interfaces'
 
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props, group registration, and slot defaults that cascade
+	 * visual-token props to child expansion panels.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelsProps>(), {
 		tag: 'div'
 	})
@@ -159,16 +165,39 @@
 
 	const slots = useSlots()
 
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {densityClasses} = useDensity(props)
-	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
-	const {colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {loaderClasses} = useLoader(props, 'line')
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composable-driven class and style composition.
+	 ********************************************************/
 
-	// CLASSES & STYLES
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	const {densityClasses} = useDensity(props)
+
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
+	const {
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props, isHover, isActive, hoverState, activeState)
+	const {elevationClasses} = useElevation(props, toRef(props, 'flat'))
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	/*********************************************************
+	 * Loader
+	 ********************************************************/
+
+	const {loaderClasses} = useLoader(props, 'line')
 
 	const expansionPanelsStyles = computed(() => {
 		return [
@@ -190,6 +219,7 @@
 				'origam-expansion-panels--inset': props.inset
 			},
 			loaderClasses.value,
+			colorClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -199,11 +229,22 @@
 			props.class
 		]
 	})
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelsStyles)
 
-	// EXPOSE
 
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Forwards filterProps to parent components.
+	 ********************************************************/
 	defineExpose({
-		filterProps
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
 	})
 </script>
 
@@ -211,7 +252,6 @@
 		lang="scss"
 		scoped
 >
-	// Defaults provided by tokens/component/expansion-panel.json.
 	.origam-expansion-panels {
 		$this: &;
 
@@ -339,41 +379,38 @@
 			}
 		}
 
-		// Rounded variants — propagated via CSS var to child expansion-panels.
-		// The root sets --origam-expansion-panels---border-radius and child
-		// panels inherit via border-radius: var(...) on their own root.
 		&--rounded {
-			--origam-expansion-panels---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---2xl, 24px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 
 		&--rounded-x-small {
-			--origam-expansion-panels---border-radius: var(--origam-radius-xs, 2px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---xs, 2px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 
 		&--rounded-small {
-			--origam-expansion-panels---border-radius: var(--origam-radius-sm, 4px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---sm, 4px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 
 		&--rounded-default {
-			--origam-expansion-panels---border-radius: var(--origam-radius-md, 8px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---md, 8px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 
 		&--rounded-medium {
-			--origam-expansion-panels---border-radius: var(--origam-radius-lg, 12px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---lg, 12px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 
 		&--rounded-large {
-			--origam-expansion-panels---border-radius: var(--origam-radius-xl, 16px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---xl, 16px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 
 		&--rounded-x-large {
-			--origam-expansion-panels---border-radius: var(--origam-radius-2xl, 24px);
+			--origam-expansion-panels---border-radius: var(--origam-radius---2xl, 24px);
 			border-radius: var(--origam-expansion-panels---border-radius);
 		}
 	}
