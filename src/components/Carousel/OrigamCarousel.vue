@@ -46,10 +46,9 @@
 							name="progress"
 							v-bind="{percent: progressPercent}"
 					>
-						<origam-progress-linear
-								:model-value="progressPercent"
-								class="origam-carousel__progress"
-						/>
+						<div class="origam-carousel__progress">
+							<origam-progress-linear :model-value="progressPercent"/>
+						</div>
 					</slot>
 				</template>
 			</slot>

@@ -1828,9 +1828,11 @@
   --origam-carousel__delimiters---gap: 8px;
   --origam-carousel__delimiters---padding: 8px;
   --origam-carousel__progress---position: absolute;
-  --origam-carousel__progress---position-bottom: 0px;
+  --origam-carousel__progress---position-top: 0px;
+  --origam-carousel__progress---position-bottom: auto;
   --origam-carousel__progress---position-left: 0px;
   --origam-carousel__progress---position-right: 0px;
+  --origam-carousel__progress---z-index: 1;
   --origam-carousel__progress---margin: 0px;
   --origam-carousel---hide-delimiter-background-controls-background: rgba(0, 0, 0, 0);
   --origam-carousel---vertical-delimiters-controls-width: 50px;
@@ -4226,9 +4228,11 @@
     --origam-carousel__delimiters---gap: 8px;
     --origam-carousel__delimiters---padding: 8px;
     --origam-carousel__progress---position: absolute;
-    --origam-carousel__progress---position-bottom: 0px;
+    --origam-carousel__progress---position-top: 0px;
+    --origam-carousel__progress---position-bottom: auto;
     --origam-carousel__progress---position-left: 0px;
     --origam-carousel__progress---position-right: 0px;
+    --origam-carousel__progress---z-index: 1;
     --origam-carousel__progress---margin: 0px;
     --origam-carousel---hide-delimiter-background-controls-background: rgba(0, 0, 0, 0);
     --origam-carousel---vertical-delimiters-controls-width: 50px;

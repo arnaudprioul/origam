@@ -496,6 +496,8 @@ export type TTokenName =
   | '--origam-carousel__progress---position-bottom'
   | '--origam-carousel__progress---position-left'
   | '--origam-carousel__progress---position-right'
+  | '--origam-carousel__progress---position-top'
+  | '--origam-carousel__progress---z-index'
   | '--origam-checkbox---flex'
   | '--origam-checkbox---min-height'
   | '--origam-checkbox---transition-duration'

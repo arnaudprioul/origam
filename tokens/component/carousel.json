@@ -34,9 +34,11 @@
 
     "progress": {
       "position":              { "$type": "other",      "$value": "absolute" },
-      "position-bottom":       { "$type": "dimension",  "$value": "{space.0}" },
+      "position-top":          { "$type": "dimension",  "$value": "{space.0}" },
+      "position-bottom":       { "$type": "other",      "$value": "auto" },
       "position-left":         { "$type": "dimension",  "$value": "{space.0}" },
       "position-right":        { "$type": "dimension",  "$value": "{space.0}" },
+      "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" },
       "margin":                { "$type": "dimension",  "$value": "{space.0}" }
     },
 
