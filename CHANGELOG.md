@@ -11,6 +11,85 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.2.0] — 2026-05-14
+
+> **The "ready for npm" release.** Package metadata, peer dependencies,
+> tree-shaking signals and a real README are all in. Tarball preview
+> shrunk from 5.6 MB to **867.9 kB** (2 343 files, zero suspect entry).
+> No public API change vs 2.1.0 — every consumer upgrade is a
+> drop-in.
+
+### Added — stories, slots, emits coverage
+
+- 525+ missing `Slot` / `Emit` Variants across 113 component stories
+  (`feat(stories)`). Every documented slot now has a dedicated Variant
+  with a custom-content example, and every emit a Variant that logs
+  to a live counter.
+- `OrigamSwitchTrack` extracted as a standalone primitive (track-only)
+  so consumers can build switch-like compounds without rewriting the
+  thumb logic.
+- Tooling: `useStateEffect` now reacts to every per-axis composable
+  (`useHover` / `useActive` / `useFocus`) in a single call — collapses
+  the 14 components that historically wired them axis by axis.
+
+### Fixed
+
+- `useStyle` now instrumented across the 124 components that
+  previously inlined `*Styles` arrays — single source of truth for the
+  inline-style escape hatch.
+- Carousel — `progress` prop renders a real-time progress bar wired to
+  the cycle timer (was rendering a static "step / total" bar).
+- Carousel — `hideDelimiterBackground` finally has a background to
+  hide (default `__controls` bg = `rgba(0, 0, 0, 0.4)`).
+- Histoire sandbox/panel sash now resizes the iframe in **both
+  directions** (was capped at the 720 px responsive-preset width when
+  dragging right).
+- `useRounded` — utility variants (`xs|sm|md|lg|xl|none|full`) now
+  emit BOTH the `.origam--rounded-*` class AND an inline
+  `border-radius` declaration as a specificity escape hatch (Strategy
+  A documented in `CLAUDE.md`).
+- 130 unused-vars cleared from `src/`, 39 ESLint warnings fixed.
+
+### Changed — package for npm
+
+- `peerDependencies` introduced: `vue ^3.5`, `vue-i18n ^11`,
+  `vue-router ^4.5` (last two `optional` via `peerDependenciesMeta`).
+  They are no longer auto-installed as `dependencies` — consumers
+  bring their own versions.
+- `sideEffects: ["**/*.css", "**/*.scss", "**/*.vue"]` for downstream
+  tree-shaking.
+- `engines.node: ">=22"` (matches `.nvmrc`).
+- `prepublishOnly` script chains `tokens:build` → `server:build` →
+  unit tests. Every `npm publish` rebuilds from scratch with green
+  tests.
+- `files` whitelist tightened to `dist/src/`, `dist/tokens/`, LICENSE,
+  README, CHANGELOG. The Histoire bundle (`dist/stories/`, ~13 MB) is
+  no longer shipped to consumers.
+- `build.config.ts` `externals` extended to `['vue', 'vue-i18n',
+  'vue-router', '@mdi/font']` so peer deps don't get re-bundled.
+- mkdist exclusion patterns expanded: `.spec.ts`, `__tests__/**`,
+  `.cy.ts`, `.story.vue` are stripped from `dist/`.
+- ESLint config ignores `docs/.vitepress/cache/**` and
+  `figma-plugin/**` (these aren't part of the published library).
+
+### Documentation
+
+- Full `README.md` written from scratch (253 lines) — install,
+  peer deps, plugin registration, theming (`data-theme` +
+  `useTheme()` + `<OrigamThemeProvider>`), token tiers, component
+  families, composable table, CSS-first principle.
+
+### Internal
+
+- ESLint rule `no-restricted-imports` blocks `@origam` /
+  `@stories` / `@docs` / `@cypress` aliases inside `src/` — once
+  published, those aliases can't be resolved by consumers.
+- 124 components instrumented with `useStyle` following the
+  canonical pattern.
+- `.tsbuildinfo` and other transient artefacts removed from the tree.
+
+---
+
 ## [2.1.0] — 2026-05-07
 
 > **The classes-first release.** The 13 transversal composables
