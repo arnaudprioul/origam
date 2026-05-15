@@ -30,6 +30,8 @@ export * from './ColorPicker'
 
 export * from './ColorPickerField'
 
+export * from './CommandPalette'
+
 export * from './ConfirmWrapper'
 
 export * from './ContextualMenu'

@@ -241,6 +241,9 @@ export * from './Snackbar/snackbar.interface'
 export * from './SnackbarStack/snackbar-stack.interface'
 export * from './SnackbarStack/snackbar-stack-item.interface'
 
+export * from './CommandPalette/command.interface'
+export * from './CommandPalette/command-palette.interface'
+
 export * from './Switch/switch.interface'
 export * from './Switch/switch-track.interface'
 

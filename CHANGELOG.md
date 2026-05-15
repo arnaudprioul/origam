@@ -15,6 +15,28 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamCommandPalette` — ⌘K command launcher. Built on a teleported
+  dialog with focus trap + focus restoration. Custom subsequence-based
+  fuzzy-match algorithm (no external dep) ranks results by
+  consecutive-run + label-prefix + first-position bonuses. Composable
+  `useCommand` exposes a process-wide command registry — entries
+  registered inside a Vue effect scope auto-unregister on dispose.
+  Reuses `OrigamKbd` for inline shortcut display. Hotkey listener
+  built on `useHotkey` (default `⌘+K` on macOS, `Ctrl+K` on
+  Windows / Linux, configurable per combination or disabled with
+  `:hotkey="null"`). ARIA combobox pattern (`role="combobox"` on the
+  input, `role="listbox"` on the result list, `role="option"` per
+  item, `aria-activedescendant` tracking the keyboard cursor) +
+  `role="dialog"` + `aria-modal="true"` on the surface. Tokens exposed
+  under `tokens/component/command-palette.json`
+  (`--origam-command-palette---*`,
+  `--origam-command-palette__input---*`,
+  `--origam-command-palette__item---*`,
+  `--origam-command-palette__group-title---*`,
+  `--origam-command-palette__empty---*`,
+  `--origam-command-palette__footer---*`,
+  `--origam-command-palette--backdrop---*`).
+
 - `OrigamBracket` — e-sport tournament tree. Supports single-elimination,
   double-elimination and round-robin variants. SVG connectors
   auto-computed from `nextMatchId` (with positional fallback). Slots for
