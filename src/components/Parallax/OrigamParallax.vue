@@ -35,17 +35,20 @@
 		useElevation,
 		useMargin,
 		usePadding,
+		useParallaxRuntime,
 		useProps,
 		useRounded,
 		useStyle,
 		useThrottleFn
-} from '../../composables'
+	} from '../../composables'
 
-	import { ORIGAM_PARALLAX_KEY } from '../../consts'
+	import { ORIGAM_PARALLAX_KEY, ORIGAM_PARALLAX_LAYER_KEY } from '../../consts'
 
-	import { PARALLAX_EVENT } from '../../enums'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums'
 
 	import type { IBox, IParallaxProps } from '../../interfaces'
+
+	import type { TParallaxDirection, TParallaxEasing } from '../../types'
 
 	import { getCenter, getTargetBox, inViewport } from '../../utils'
 
@@ -53,44 +56,40 @@
 	 * Global
 	 *
 	 * @description
-	 * Props and filterProps for the Parallax component.
+	 * Props and filterProps for the Parallax component. Defaults preserve
+	 * the v2.x single-layer / mouse-driven behaviour. Multi-layer support
+	 * activates as soon as at least one <OrigamParallaxLayer> is mounted
+	 * inside the slot (the legacy <OrigamParallaxElement> path keeps
+	 * working in parallel — the two are independent injection contexts).
 	 ********************************************************/
 	const props = withDefaults(defineProps<IParallaxProps>(), {
 		duration: 1000,
-		easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+		easing: PARALLAX_EASING.LINEAR,
 		perspective: 1000,
 		tag: 'div',
 		event: PARALLAX_EVENT.MOVE,
-		active: true
+		active: true,
+		direction: PARALLAX_DIRECTION.VERTICAL,
+		speed: 0.5,
+		disabled: false,
+		threshold: 0
 	})
+
+	const emit = defineEmits<{
+		(e: 'enter'): void
+		(e: 'leave'): void
+		(e: 'scroll-progress', progress: number): void
+	}>()
 
 	const {filterProps} = useProps<IParallaxProps>(props)
 
 	/*********************************************************
-	 * Decorators & display
-	 *
-	 * @description
-	 * Audio, display, color, border, rounded, elevation, padding and
-	 * margin composables. Pre-fix `IParallaxProps` did not extend
-	 * `IColorProps` — the SCSS read `var(--origam-parallax---background-color)`
-	 * from tokens but the consumer's intent had no override path.
-	 ********************************************************/
-
-	/*********************************************************
-	 * Composables
+	 * Composables (chrome)
 	 ********************************************************/
 
 	const {audioRef, audioData, onStop: handleStop} = useAudio(props)
 	const {platform} = useDisplay()
 	const {dimensionStyles} = useDimension(props)
-	// Pre-fix `IParallaxProps` did not extend `IColorProps` — the SCSS
-	// read `var(--origam-parallax---background-color)` from tokens but
-	// the consumer's intent had no override path.
-	// Phase 3 (Vague D) — class-first companion alongside inline styles.
-
-	/*********************************************************
-	 * Color
-	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderStyles, borderClasses} = useBorder(props)
@@ -100,37 +99,18 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 
 	/*********************************************************
-	 * State
-	 *
-	 * @description
-	 * root is the DOM ref for the parallax container.
-	 * isMoving / leftOnce track mouse in/out state.
-	 * shape caches the bounding rect.
-	 * movement holds the current normalised x/y offset.
-	 * data holds the raw mouse event coordinates.
+	 * State (legacy mouse / scroll / orientation path)
 	 ********************************************************/
 	const root = ref<HTMLElement>()
 
 	const isMoving = ref(false)
 	const leftOnce = ref(false)
 	const shape = ref<IBox | DOMRect | null>(null)
-	const movement = ref({
-		x: 0,
-		y: 0
-	})
+	const movement = ref({ x: 0, y: 0 })
 	const data = ref()
 
-	/*********************************************************
-	 * Event calculations
-	 *
-	 * @description
-	 * isTouch detects touch / device orientation mode.
-	 * eventActions maps each event type to its action function and condition.
-	 * eventMap resolves the actual window event name for each mode.
-	 ********************************************************/
-	const isTouch = computed(() => {
-		return platform.value.touch
-	})
+	const isTouch = computed(() => platform.value.touch)
+
 	const eventActions = computed(() => {
 		return {
 			move: {
@@ -150,6 +130,7 @@
 			}
 		}
 	})
+
 	const eventMap = computed<{ move: any, scroll: any, orientation: any }>(() => {
 		return {
 			orientation: 'deviceorientation',
@@ -161,70 +142,37 @@
 	const mouseMovement = ({target, event}: { target: IBox | DOMRect, event: MouseEvent }) => {
 		const x = event.clientX
 		const y = event.clientY
-
 		const relativeX = x - target.left
 		const relativeY = y - target.top
-
 		const center = getCenter(target)
-
-		const mouseMovementX = relativeX / center.x
-		const mouseMovementY = relativeY / center.y
-
 		return {
-			x: mouseMovementX,
-			y: mouseMovementY,
+			x: relativeX / center.x,
+			y: relativeY / center.y,
 			target
 		}
 	}
 	const scrollMovement = ({target}: { target: IBox | DOMRect }) => {
 		const x = window.scrollX
 		const y = window.scrollY
-
 		const relativeX = x - target.left
 		const relativeY = y - target.top
-
 		const center = getCenter(target)
-
-		const mouseMovementX = relativeX / center.x
-		const mouseMovementY = relativeY / center.y
-
 		return {
-			x: mouseMovementX,
-			y: mouseMovementY,
+			x: relativeX / center.x,
+			y: relativeY / center.y,
 			target
 		}
 	}
 	const orientationElement = ({event, target}: { target: IBox | DOMRect, event: DeviceOrientationEvent }) => {
 		const x = event.gamma ?? 1 / 45
 		const y = event.beta ?? 1 / 90
-
 		return {x, y, target}
 	}
-
-	/*********************************************************
-	 * Movement handler & window events
-	 *
-	 * @description
-	 * handleMovement is throttled to avoid excessive recomputations.
-	 * addEvents / removeEvents are parametrised on `event` so we
-	 * detach the OLD listener and attach the NEW one when the consumer
-	 * flips the `event` prop at runtime. The previous implementation
-	 * only ever read `props.event` via the closure, so `removeEvents()`
-	 * would try to remove a listener that was never installed — leaving
-	 * the old listener attached and the new one missing. Result:
-	 * switching `event="move"` → `event="scroll"` at runtime silently
-	 * kept the page on `move` mode.
-	 ********************************************************/
-
-	/*********************************************************
-	 * Event handlers
-	 ********************************************************/
 
 	const handleMovement = useThrottleFn((event: MouseEvent & DeviceOrientationEvent) => {
 		if (!props.active && !root.value) return
 
 		if (!isMoving.value && !leftOnce.value) {
-			// fixes the specific case when mouseenter didn't trigger on page refresh
 			handleMovementStart()
 		}
 
@@ -234,20 +182,11 @@
 		const action = eventActions.value[props.event].action
 
 		if (isInViewport && condition) {
-			movement.value = action({
-				target: shape.value,
-				event
-			})
+			movement.value = action({ target: shape.value, event })
 			data.value = {x: event.clientX, y: event.clientY}
 		}
 	}, 100)
-	// Parametrised on `event` so we can detach the OLD listener and attach
-	// the NEW one when the consumer flips the `event` prop at runtime.
-	// The previous implementation only ever read `props.event` via the
-	// closure, so `removeEvents()` would try to remove a listener that
-	// was never installed — leaving the old listener attached and the
-	// new one missing. Result: switching `event="move"` → `event="scroll"`
-	// at runtime silently kept the page on `move` mode.
+
 	const addEvents = (event: typeof props.event = props.event) => {
 		if (eventMap.value[event]) {
 			window.addEventListener(eventMap.value[event], handleMovement, true)
@@ -261,53 +200,27 @@
 
 	const handleMovementStart = () => {
 		if (!props.active) return
-
 		isMoving.value = true
 	}
 	const handleMovementStop = () => {
 		if (!props.active) return
-
-		// fixes the specific case when mouseenter didn't trigger on page refresh
 		leftOnce.value = true
 		isMoving.value = false
 	}
 
-	onMounted(() => {
-		addEvents()
-	})
+	onMounted(() => addEvents())
+	onBeforeUnmount(() => removeEvents())
 
-	onBeforeUnmount(() => {
-		removeEvents()
-	})
-
-	// Re-attach the right window listener when the consumer flips `event`
-	// at runtime (e.g. via the Histoire HstSelect control). Without this
-	// watcher, `event="move"` → `event="scroll"` left the old (no-op for
-	// move) state in place and never registered the scroll listener.
 	watch(() => props.event, (newEvent, oldEvent) => {
 		if (newEvent === oldEvent) return
 		removeEvents(oldEvent)
 		addEvents(newEvent)
-		// Reset internal movement state so the previous mode's last
-		// frame doesn't ghost into the new mode.
 		isMoving.value = false
 		movement.value = { x: 0, y: 0 }
 	})
 
 	/*********************************************************
-	 * Provide to child elements
-	 *
-	 * @description
-	 * `toRef(props, 'key')` (2-arg form) returns a *reactive* ref tracking
-	 * the prop. The previous code used `toRef(value)` (1-arg) which froze
-	 * every ref to its initial value — provided `isMoving` was stuck on
-	 * `false`, so `<OrigamParallaxElement>` always saw a zero movement
-	 * and never translated. Same bug for `event`/`duration`/`easing`.
-	 * `animationDuration` is an alias for `duration` (kept for backwards compat).
-	 * When both are set, `animationDuration` wins so existing consumers that
-	 * used the old prop name are not silently ignored. A one-shot
-	 * `console.warn` flags the deprecated prop so consumers migrate to
-	 * `duration` before the v3.0.0 removal.
+	 * Provide — legacy <OrigamParallaxElement> context.
 	 ********************************************************/
 	let _animationDurationWarned = false
 	const resolvedDuration = computed(() => {
@@ -328,17 +241,50 @@
 		isMoving: computed(() => isMoving.value || props.event === PARALLAX_EVENT.SCROLL) as unknown as Ref<boolean>,
 		movement,
 		duration: resolvedDuration,
-		easing: toRef(props, 'easing'),
+		easing: toRef(props, 'easing') as unknown as Ref<string>,
 		shape
 	})
 
 	/*********************************************************
-	 * Class & Style
+	 * Multi-layer runtime — drives <OrigamParallaxLayer> children.
 	 *
-	 * @description
-	 * parallaxStyles and parallaxClasses compose the BEM root element.
-	 * `perspective` is forwarded as a component-scoped CSS variable so
-	 * the SCSS owns the actual `perspective:` declaration.
+	 * Distinct from the legacy provide above so we don't couple the two
+	 * APIs. Layers register themselves at mount and unregister on unmount;
+	 * the runtime owns scroll / mouse listeners + the rAF loop.
+	 ********************************************************/
+	const {
+		progress,
+		mouseRatio,
+		cssScrollDriven,
+		reducedMotion,
+		register,
+		unregister
+	} = useParallaxRuntime({
+		target: root,
+		direction: toRef(props, 'direction') as Ref<TParallaxDirection>,
+		easing: toRef(props, 'easing') as Ref<TParallaxEasing | string>,
+		threshold: toRef(props, 'threshold') as Ref<number>,
+		disabled: toRef(props, 'disabled') as Ref<boolean>,
+		speed: toRef(props, 'speed') as Ref<number>,
+		onEnter: () => emit('enter'),
+		onLeave: () => emit('leave'),
+		onProgress: (p) => emit('scroll-progress', p)
+	})
+
+	provide(ORIGAM_PARALLAX_LAYER_KEY, {
+		direction: toRef(props, 'direction') as Ref<TParallaxDirection>,
+		easing: toRef(props, 'easing') as Ref<TParallaxEasing | string>,
+		disabled: toRef(props, 'disabled') as Ref<boolean>,
+		progress,
+		mouseRatio,
+		cssScrollDriven,
+		reducedMotion,
+		register,
+		unregister
+	})
+
+	/*********************************************************
+	 * Class & Style
 	 ********************************************************/
 	const parallaxStyles = computed(() => {
 		return [
@@ -348,20 +294,22 @@
 			roundedStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
-			// Forward `perspective` as a component-scoped CSS variable so
-			// the SCSS owns the actual `perspective:` declaration. Lets the
-			// design-token layer override the default per-theme without
-			// touching the JS, and keeps the Style-Dictionary chromique
-			// pattern consistent across components.
 			{
 				'--origam-parallax---perspective': `${props.perspective}px`
 			},
 			props.style
 		] as StyleValue
 	})
+
 	const parallaxClasses = computed(() => {
 		return [
 			'origam-parallax',
+			{
+				'origam-parallax--disabled': props.disabled,
+				'origam-parallax--reduced-motion': reducedMotion.value,
+				'origam-parallax--css-driven': cssScrollDriven.value,
+				[`origam-parallax--${props.direction}`]: !!props.direction
+			},
 			colorClasses.value,
 			borderClasses.value,
 			roundedClasses.value,
@@ -373,20 +321,16 @@
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(parallaxStyles)
 
-
-	/*********************************************************
-	 * Expose
-	 *
-	 * @description
-	 * Exposes filterProps to parent ref consumers.
-	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
 		id,
 		load,
 		unload,
-		isLoaded
+		isLoaded,
+		progress,
+		cssScrollDriven,
+		reducedMotion
 	})
 </script>
 
@@ -409,5 +353,13 @@
 
 		background-color: var(--origam-parallax---background-color, transparent);
 		color: var(--origam-parallax---color, inherit);
+	}
+
+	.origam-parallax--disabled,
+	.origam-parallax--reduced-motion {
+		:deep(.origam-parallax__layer) {
+			animation: none !important;
+			transition: none !important;
+		}
 	}
 </style>

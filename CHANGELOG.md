@@ -13,6 +13,29 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed
+
+- `OrigamParallax` — major enrichment. Multi-layer support via new
+  `OrigamParallaxLayer` subcomponent (`speed`, `offsetX`, `offsetY`,
+  `zIndex` props; layers register themselves into the host runtime and
+  receive direct DOM mutations of `transform` outside Vue reactivity).
+  Host gains `direction` (`'vertical' | 'horizontal' | 'both'`),
+  `easing` (`'linear' | 'ease-out' | 'spring'`, in addition to the
+  legacy raw CSS timing-function string), `disabled`, `speed`,
+  `threshold` props. New emits: `@enter`, `@leave`,
+  `@scroll-progress(0→1)` driven by `IntersectionObserver` +
+  `requestAnimationFrame`. `prefers-reduced-motion: reduce` is honoured
+  natively — layers stay at `translate3d(offsetX, offsetY, 0)` and the
+  rAF loop short-circuits. CSS-first scroll-driven animations
+  (`animation-timeline: view()`) when `view-timeline` is supported
+  (Chrome 115+, Edge 115+) AND `easing === 'linear'`; JS fallback
+  otherwise. Spring easing implemented as a damped lerp in the JS path.
+  Existing single-layer / `<OrigamParallaxElement>` API preserved (the
+  two layer kinds use independent injection contexts and can coexist
+  inside the same host). New tokens: `parallax.transition-duration-spring`,
+  `parallax.transition-easing-default` / `-spring`,
+  `parallax.layer.will-change` / `.transform-origin`.
+
 ### Added
 
 - `OrigamCommandPalette` — ⌘K command launcher. Built on a teleported
