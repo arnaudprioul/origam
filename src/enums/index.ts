@@ -59,3 +59,5 @@ export * from './Parallax/parallax-element.enum'
 export * from './DataTable/data-table.enum'
 
 export * from './DatePicker/date-picker.enum'
+
+export * from './Tabs/tab-variant.enum'

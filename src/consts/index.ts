@@ -60,3 +60,5 @@ export * from './Timeline/timeline.const'
 export * from './Stepper/stepper.const'
 
 export * from './Treeview/treeview.const'
+
+export * from './Tabs/tabs.const'

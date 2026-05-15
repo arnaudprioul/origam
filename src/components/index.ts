@@ -126,6 +126,8 @@ export * from './SystemBar'
 
 export * from './Table'
 
+export * from './Tabs'
+
 export * from './TextareaField'
 
 export * from './TextField'

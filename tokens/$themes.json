@@ -94,7 +94,8 @@
       "component/kbd": "enabled",
       "component/stepper": "enabled",
       "component/timeline": "enabled",
-      "component/treeview": "enabled"
+      "component/treeview": "enabled",
+      "component/tabs": "enabled"
     }
   },
   {
@@ -192,7 +193,8 @@
       "component/kbd": "enabled",
       "component/stepper": "enabled",
       "component/timeline": "enabled",
-      "component/treeview": "enabled"
+      "component/treeview": "enabled",
+      "component/tabs": "enabled"
     }
   }
 ]

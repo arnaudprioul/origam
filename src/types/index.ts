@@ -242,6 +242,12 @@ export * from './Transition/window-y-translate.type'
 export * from './VirtualScroll/virtual-scroll.type'
 export * from './VirtualScroll/virtual-scroll-item.type'
 
+export * from './Tabs/tab-variant.type'
+export * from './Tabs/tabs.type'
+export * from './Tabs/tab.type'
+export * from './Tabs/tab-panels.type'
+export * from './Tabs/tab-panel.type'
+
 export * from './Window/window.type'
 export * from './Theme/theme.type'
 
