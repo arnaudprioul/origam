@@ -292,3 +292,5 @@ export * from './Timeline/timeline.interface'
 export * from './Treeview/treeview.interface'
 
 export * from './Mask/mask-options.interface'
+
+export * from './Nuxt/nuxt-module.interface'

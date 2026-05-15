@@ -18,6 +18,7 @@ export default defineBuildConfig({
                 '**/*.ts',
                 '!**/*.story.ts',
                 '!**/*.spec.ts',
+                '!**/*.d.ts',
                 '!**/__tests__/**',
                 '!**/*.cy.ts'
             ],
@@ -32,6 +33,7 @@ export default defineBuildConfig({
                 '**/*.ts',
                 '!**/*.story.ts',
                 '!**/*.spec.ts',
+                '!**/*.d.ts',
                 '!**/__tests__/**',
                 '!**/*.cy.ts'
             ],
@@ -52,8 +54,12 @@ export default defineBuildConfig({
     hooks: {
         'build:done': () => {
             fs.cpSync('./src/assets', './dist/src/assets', {recursive: true})
+            if (fs.existsSync('./src/nuxt/module.d.ts')) {
+                fs.mkdirSync('./dist/src/nuxt', {recursive: true})
+                fs.cpSync('./src/nuxt/module.d.ts', './dist/src/nuxt/module.d.ts')
+            }
         }
     },
 
-    externals: ['vue', 'vue-i18n', 'vue-router', '@mdi/font']
+    externals: ['vue', 'vue-i18n', 'vue-router', '@mdi/font', '@nuxt/kit', '#app', 'nuxt', 'nuxt/app']
 })
