@@ -70,3 +70,5 @@ export * from './Treeview/treeview.const'
 export * from './Tabs/tabs.const'
 
 export * from './Mask/built-in-patterns.const'
+
+export * from './Theme/theme.const'

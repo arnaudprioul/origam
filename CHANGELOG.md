@@ -13,6 +13,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added
+
+- `origam/nuxt` sub-export — official Nuxt 3 / Nuxt 4 module. Auto-imports
+  components and composables. SSR-safe theme resolution via cookie +
+  `Sec-CH-Prefers-Color-Scheme` header (no FOUC, no hydration mismatch).
+  Auto-injects token CSS files (primitive + selected themes + utilities).
+  Configurable via `origam: {}` in `nuxt.config.ts`. Resolves through
+  `modules: ['origam/nuxt']`. New `IOrigamNuxtModuleOptions` and
+  `IOrigamNuxtRuntimeConfig` interfaces; new theme constants
+  (`ORIGAM_THEME_AUTO`, `ORIGAM_THEME_LIGHT`, `ORIGAM_THEME_DARK`,
+  `ORIGAM_THEME_ATTR`, `ORIGAM_THEME_STORAGE_KEY`). Reference
+  documentation at `docs/integrations/nuxt.md`.
+
 ### Changed
 
 - `OrigamTextField` — new `mask` prop with built-in patterns
