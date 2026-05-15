@@ -56,6 +56,41 @@ Before claiming a fix:
 When in doubt, **stop and ask** rather than claim correctness. A wrong
 "it's fixed" wastes the user's testing cycle and erodes trust.
 
+## ⛔ `withDefaults()` — inline literals only (mandatory)
+
+Vue 3 SFC compiler statically analyses `withDefaults(defineProps<T>(), {…})`
+at compile time to extract the runtime props options descriptor. Values
+on the right side of each key **must be inline literals** (strings,
+numbers, booleans, `() => ({})` for objects). Property accesses on
+imported `as const` objects are NOT statically resolvable — the compiler
+emits a descriptor with `undefined` defaults and the props object itself
+becomes undefined at any reactive access.
+
+```ts
+// ❌ Broken — compiler can't resolve XXX_DEFAULTS.tag statically
+const props = withDefaults(defineProps<IXxxProps>(), {
+    tag: XXX_DEFAULTS.tag,
+    variant: XXX_DEFAULTS.variant
+})
+
+// ✅ Working — literal values inlined
+const props = withDefaults(defineProps<IXxxProps>(), {
+    tag: 'div',
+    variant: 'default'
+})
+```
+
+The shared `XXX_DEFAULTS` constant stays exported (for story-side
+iteration and consumer reference) but is **never** referenced inside
+`withDefaults`. The crash propagates through the import graph and
+breaks unrelated specs — failures look like
+`TypeError: Cannot read properties of undefined (reading '<key>')`
+sourced at the component file, even though the crashing spec doesn't
+import the component directly.
+
+This rule applies to **every** component using `withDefaults`. Audit
+your delivery once before commit.
+
 ## Tech stack (snapshot)
 
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.
