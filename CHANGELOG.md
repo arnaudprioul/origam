@@ -182,6 +182,46 @@ This project follows [Semantic Versioning](https://semver.org).
   exposed under `tokens/component/tabs.json` (item color, indicator
   color, panel padding, transition duration).
 
+- `OrigamClientOnly` — SSR helper component that renders its default
+  slot only after `onMounted`. Optional `#fallback` slot (or
+  `placeholder-tag` / `placeholder-class` props) reserves layout space
+  during SSR to avoid CLS. Use to wrap fragments whose markup truly must
+  differ between server and client (audio, deviceorientation,
+  IntersectionObserver-driven features, …) without triggering hydration
+  mismatches.
+
+- `useCssSupportClient(feature, { defaultValue })` — hydration-safe
+  feature-gate helper. Returns a `Ref<boolean>` that starts at
+  `defaultValue` (default `false`) on both SSR and first client render,
+  then flips to the real `CSS.supports()` result inside `onMounted`.
+  Use to gate **markup** branches (template `v-if`) when the regular
+  `useCssSupport().css.value.X` would produce a hydration mismatch
+  (class-only branches keep using the existing API — Vue 3 reconciles
+  class diffs fine).
+
+### Fixed
+
+- SSR safety — comprehensive audit of all composables and components
+  that previously could crash on server render (`window is not defined`,
+  `document is not defined`). `useCssSupport` already returned all-false
+  flags during SSR; the rest of the surface (`useTheme`, `useCommand`,
+  `useSnackbarStack`, `useCode`, `useMask`, `useTouch`, `useHotkey`,
+  `useSticky`, `useSheetSwipe`, `useScroll`, `useParallax`, `useStyleTag`,
+  `useTeleport`, `useLocationStrategies`, `useScrollStrategies`,
+  `useDisplay`) was confirmed safe via the audit and patched where a
+  composable's public method or a `computed` could be evaluated during
+  SSR. Specifically: `useAspectRatio` no longer dereferences
+  `window.innerWidth/Height` when no explicit `aspectRatio` prop is
+  given; `useVirtual`'s `viewportHeight` computed guards
+  `document.documentElement`; `useSnackbarStack.dismiss()` guards
+  `window.clearTimeout`. Overlay components (Dialog, Drawer, Menu,
+  Tooltip, Snackbar, ContextualMenu, SnackbarStack, CommandPalette)
+  confirmed SSR-safe via `<Teleport>` (Vue defers the mount until the
+  client). New guide `docs/guide/ssr.md`. New `src/__tests__/ssr-smoke.spec.ts`
+  exercises every refactored composable in a simulated SSR environment
+  (window/document/CSS stripped) **and** through `@vue/server-renderer`'s
+  real `renderToString()`.
+
 ---
 
 ## [2.2.1] — 2026-05-14

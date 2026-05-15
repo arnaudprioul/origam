@@ -38,6 +38,10 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     })
 
     const viewportHeight = computed(() => {
+        // SSR-safe: `document` is undefined server-side; the container
+        // ref is also unset until mount, so we always take the non-DOM
+        // branch during SSR — no crash, no hydration mismatch.
+        if (!IN_BROWSER) return int(props.height!) || 0
         return containerRef.value === document.documentElement
             ? display.height.value
             : contentRect.value?.height || int(props.height!) || 0

@@ -48,7 +48,9 @@ const clearTimer = (state: ISnackbarStackState, itemId: string): void => {
     const handle = state.timers.get(itemId)
 
     if (handle !== undefined) {
-        window.clearTimeout(handle)
+        // SSR-safe — `dismiss` is part of the public API and a consumer
+        // could plausibly invoke it from a setup() block (no DOM).
+        if (typeof window !== 'undefined') window.clearTimeout(handle)
         state.timers.delete(itemId)
     }
 }

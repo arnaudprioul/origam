@@ -26,6 +26,8 @@ export * from './Checkbox'
 
 export * from './Chip'
 
+export * from './ClientOnly'
+
 export * from './Code'
 
 export * from './ColorPicker'
