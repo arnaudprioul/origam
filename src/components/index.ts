@@ -70,6 +70,8 @@ export * from './Grids'
 
 export * from './Grid'
 
+export * from './Masonry'
+
 export * from './Icon'
 
 export * from './Img'
