@@ -15,6 +15,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamMasonry` — Pinterest-style masonry layout. CSS-first via
+  `grid-template-rows: masonry` when supported (detected via
+  `useCssSupport` — new `masonry` feature flag in the registry). JS
+  fallback bucket-fill algorithm with `ResizeObserver` (no external
+  dep). Responsive columns via container-query breakpoints
+  (`columnBreakpoints`). Optional `transform` transition on item
+  reposition (`animated`, default `true`). Vertical alignment via
+  `align: 'top' | 'center'` (JS path only). New `useMasonry`
+  composable exporting `pickColumnsForWidth` and `bucketFill` pure
+  helpers; new `tokens/component/masonry.json`
+  (`animation-duration`, `animation-easing`).
 - `OrigamGrid` + `OrigamGridItem` — declarative CSS Grid wrapper. Props
   for `columns` / `rows` / `areas` / `gap` (token or raw CSS) /
   `autoFlow` / `align*` / `justify*` and the matching item-level

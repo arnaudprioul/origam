@@ -65,7 +65,8 @@ const FEATURE_QUERIES = {
     backdropFilter:       'backdrop-filter: blur(1px)',
     fieldSizing:          'field-sizing: content',
     textWrapBalance:      'text-wrap: balance',
-    contentVisibility:    'content-visibility: auto'
+    contentVisibility:    'content-visibility: auto',
+    masonry:              'grid-template-rows: masonry'
 } as const satisfies Record<string, string>
 
 export type TCssFeatureName = keyof typeof FEATURE_QUERIES
