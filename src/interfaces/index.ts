@@ -9,6 +9,14 @@ export * from './Badge/badge.interface'
 
 export * from './BottomNav/bottom-nav.interface'
 
+export * from './Bracket/bracket.interface'
+export * from './Bracket/bracket-competitor.interface'
+export * from './Bracket/bracket-match.interface'
+export * from './Bracket/bracket-round.interface'
+export * from './Bracket/bracket-match-component.interface'
+export * from './Bracket/bracket-competitor-component.interface'
+export * from './Bracket/bracket-round-component.interface'
+
 export * from './Breadcrumb/breadcrumb.interface'
 export * from './Breadcrumb/breadcrumb-item.interface'
 export * from './Breadcrumb/breadcrumb-divider.interface'

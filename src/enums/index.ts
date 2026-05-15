@@ -47,6 +47,9 @@ export * from './Grids/col.enum'
 
 export * from './Transition/transition.enum'
 
+export * from './Bracket/bracket-variant.enum'
+export * from './Bracket/bracket-match-status.enum'
+
 export * from './Card/card.enum'
 
 export * from './InfiniteScroll/infinite-scroll.enum'

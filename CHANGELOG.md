@@ -15,6 +15,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamBracket` — e-sport tournament tree. Supports single-elimination,
+  double-elimination and round-robin variants. SVG connectors
+  auto-computed from `nextMatchId` (with positional fallback). Slots for
+  custom match / competitor / round-title / connector rendering. ARIA
+  `role="region"` with per-round `role="group"` + `aria-labelledby`
+  pointing at title headings. Tokens exposed under
+  `tokens/component/bracket.json` (`--origam-bracket---*`,
+  `--origam-bracket-match---*`, `--origam-bracket-competitor---*`,
+  `--origam-bracket-connector---*`, `--origam-bracket-round-robin---*`).
+
 - `OrigamSnackbarStack` — multi-toast notification system. Reuses
   `OrigamSnackbar` styling vocabulary for rendering. Composable
   `useSnackbarStack({ id })` exposes `notify` / `dismiss` /

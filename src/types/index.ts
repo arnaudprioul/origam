@@ -9,6 +9,11 @@ export * from './Badge/badge.type'
 
 export * from './BottomNav/bottom-nav.type'
 
+export * from './Bracket/bracket-variant.type'
+export * from './Bracket/bracket-direction.type'
+export * from './Bracket/bracket-match-status.type'
+export * from './Bracket/bracket-round-side.type'
+
 export * from './Breadcrumb/breadcrumb.type'
 export * from './Breadcrumb/breadcrumb-divider.type'
 export * from './Breadcrumb/breadcrumb-item.type'
