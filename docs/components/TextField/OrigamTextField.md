@@ -137,6 +137,108 @@ const rules = [(v: string) => !!v || 'Field is required']
 | `click:append` | `MouseEvent` | Outer append clicked |
 | `click:prependInner` | `MouseEvent` | Inner prepend clicked |
 | `click:appendInner` | `MouseEvent` | Inner append clicked |
+| `valid` | `boolean` | (mask) Emitted on every input/paste when a mask is active — reports current validity |
+| `complete` | `{ complete: boolean, unmasked: string }` | (mask) Emitted when every consumer slot of the mask is filled |
+
+## Masks (autoformat + validation)
+
+The `mask` prop turns a plain TextField into an autoformatting + validating
+input — without bringing in `imask.js` / `cleave.js` / `vue-the-mask`. The
+in-house engine ships built-in presets (`phone:fr`, `creditcard`, `iban`,
+`date:iso`, …) and accepts arbitrary patterns.
+
+When a mask is active:
+
+- `v-model` exposes the **unmasked** value (no separators).
+- The DOM input displays the **masked** (formatted) value.
+- `@valid` / `@complete` reflect live validation state.
+- `aria-invalid` toggles automatically; the field surfaces an `error`
+  state via the validation rule pipeline.
+
+### Quick start
+
+```vue
+<origam-text-field
+    v-model="phone"
+    mask="phone:fr"
+    label="Mobile number"
+/>
+<!-- Typing "0612345678" displays "06 12 34 56 78"
+     phone === "0612345678" -->
+```
+
+### Pattern syntax
+
+| Token | Accepts |
+|-------|---------|
+| `#`   | A digit `[0-9]` |
+| `A`   | A letter `[a-zA-Z]` |
+| `*`   | Any character |
+| any other char | Literal — emitted verbatim, does not consume input |
+
+Custom example: `mask="(##) ###-####"` — three consumer slots (2/3/4 digits)
+with `(` `)` `-` and spaces as literals.
+
+### Built-in patterns
+
+| Key | Pattern | Validator |
+|-----|---------|-----------|
+| `phone:fr` | `## ## ## ## ##` | — |
+| `phone:us` | `(###) ###-####` | — |
+| `phone:international` | `+## ## ## ## ## ##` | — |
+| `iban` | `**** **** **** **** **** **** ****  **` | `iban` (mod-97) |
+| `siret` | `### ### ### #####` | — |
+| `creditcard` | `#### #### #### ####` | `luhn` |
+| `date:iso` | `####-##-##` | `date:iso` (real-date) |
+| `date:fr`  | `##/##/####` | `date:fr` |
+| `date:us`  | `##/##/####` | `date:us` |
+| `time` | `##:##` | — |
+| `time:12h` | `##:## AA` | — |
+| `postcode:fr` | `#####` | — |
+| `postcode:us` | `#####` | — |
+
+### Custom pattern + custom validator
+
+```vue
+<origam-text-field
+    v-model="ref"
+    :mask="{
+        pattern: 'AA-##-####',
+        required: true,
+        validator: (v) => v.startsWith('FR')
+    }"
+    label="Internal reference"
+/>
+```
+
+### Validators
+
+| Name | Algorithm |
+|------|-----------|
+| `luhn` | Standard Luhn checksum (credit cards, IMEI) |
+| `iban` | ISO 13616 — rearrange + mod 97 == 1 |
+| `date:iso` | `YYYYMMDD` → real Gregorian date |
+| `date:fr`  | `DDMMYYYY` → real Gregorian date |
+| `date:us`  | `MMDDYYYY` → real Gregorian date |
+| `(v) => boolean` | Any user-supplied function on the unmasked value |
+
+### Migration from imask.js / cleave.js
+
+| imask.js                   | origam                       |
+|----------------------------|------------------------------|
+| `mask: '(000) 000-0000'`   | `mask="(###) ###-####"`     |
+| `mask: '0000 0000 0000 0000'` | `mask="creditcard"` (with Luhn) |
+| `IMask.MaskedRange`         | not supported — write a `validator` fn |
+| `lazy: false`               | default. There is no eager "show all literals when empty" mode. |
+
+### Accessibility
+
+- The input keeps its native `<input type="text">` (or `tel` for
+  phone-shaped patterns — better mobile keyboard).
+- `aria-invalid` reflects mask validity on touched fields.
+- Error messages flow through OrigamField's `aria-describedby` chain.
+- The mask never blocks accessible inputs — invalid keystrokes are
+  silently dropped, not announced.
 
 ## Design tokens
 

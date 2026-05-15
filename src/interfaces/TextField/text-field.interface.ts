@@ -15,7 +15,7 @@ import type {
     IRoundedProps
 } from '../../interfaces'
 
-import type { TTextFieldType } from '../../types'
+import type { TMask, TTextFieldType } from '../../types'
 
 export interface ITextFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps {
     autofocus?: boolean
@@ -27,6 +27,13 @@ export interface ITextFieldProps extends ICommonsComponentProps, IColorProps, ID
     role?: string
     type?: TTextFieldType
     modelModifiers?: string | boolean
+    /**
+     * Mask spec — built-in preset key (`'phone:fr'`, …), a
+     * raw pattern (`'(##) ###-####'`) or a full options object.
+     * When set, `v-model` exposes the UNMASKED value; the DOM
+     * input displays the formatted (masked) string.
+     */
+    mask?: TMask
 }
 
 /**
@@ -36,6 +43,16 @@ export interface ITextFieldProps extends ICommonsComponentProps, IColorProps, ID
 export interface ITextFieldEmits extends IFieldEmits, IInputEmits {
     (e: 'click:control', value: MouseEvent): void
     (e: 'mousedown:control', value: MouseEvent): void
+    /**
+     * Emitted on every input/paste when a mask is active.
+     * Carries the current validity status (pattern + validator).
+     */
+    (e: 'valid', value: boolean): void
+    /**
+     * Emitted when every consumer slot of the mask has been
+     * filled. The unmasked value is provided for convenience.
+     */
+    (e: 'complete', value: { complete: boolean, unmasked: string }): void
 }
 
 /**

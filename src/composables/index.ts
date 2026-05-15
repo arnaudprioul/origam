@@ -88,3 +88,5 @@ export * from './Theme/theme.composable'
 export * from './Textarea/textarea-rich.composable'
 
 export * from './CssSupport/cssSupport.composable'
+
+export * from './Mask/mask.composable'

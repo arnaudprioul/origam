@@ -90,12 +90,14 @@
 									:placeholder="placeholder"
 									:readonly="isReadonly"
 									:size="1"
-									:type="type"
-									:value="model"
+									:type="resolvedInputType"
+									:value="displayValue"
+									:aria-invalid="ariaInvalid"
 									v-bind="{ ...fieldSlotProps, ...inputAttrs }"
 									@blur="handleBlur"
 									@focus="handleFocus"
 									@input="handleInput"
+									@paste="handlePaste"
 							>
 						</div>
 					</template>
@@ -182,7 +184,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots } from 'vue'
+	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots, watch } from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
 	import {
@@ -191,6 +193,7 @@
 	useDefaults,
 	useFocus,
 	useLocale,
+	useMask,
 	useProps,
 	useStyle,
 	useVModel
@@ -206,7 +209,7 @@
 
 	import type { TOrigamField, TOrigamInput } from "../../types"
 
-	import { filterInputAttrs, forwardRefs } from '../../utils'
+	import { applyMask, filterInputAttrs, forwardRefs, resolveMaskConfig } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -362,8 +365,87 @@
 			emits('click:clear', e)
 		})
 	}
+	/*********************************************************
+	 * Mask
+	 *
+	 * @description
+	 * Optional autoformat + validation layer driven by the
+	 * `mask` prop. When active:
+	 *   - `model` (v-model) stores the UNMASKED value.
+	 *   - the DOM input displays the MASKED value.
+	 *   - `@valid` / `@complete` reflect the live state.
+	 ********************************************************/
+
+	const maskConfig = computed(() => resolveMaskConfig(props.mask ?? null))
+	const hasMask = computed(() => maskConfig.value !== null)
+
+	// Pipe the v-model through the mask engine. The composable
+	// reformats whenever `model` mutates externally.
+	const {
+		masked: maskedValue,
+		unmasked: unmaskedValue,
+		isValid: maskIsValid,
+		complete: maskComplete
+	} = useMask(model, toRef(props, 'mask'))
+
+	const displayValue = computed(() => {
+		return hasMask.value ? maskedValue.value : (model.value ?? '')
+	})
+
+	const ariaInvalid = computed<boolean | undefined>(() => {
+		if (!hasMask.value) return undefined
+		// Only flag invalidity once the user has touched the
+		// field — pristine state stays neutral.
+		if (!isFocused.value && !model.value) return undefined
+		return !maskIsValid.value
+	})
+
+	const resolvedInputType = computed(() => {
+		if (!hasMask.value) return props.type
+		const pattern = maskConfig.value?.pattern ?? ''
+		// Heuristic: phone-shaped patterns benefit from
+		// `tel` for mobile keyboard hints, the rest stay
+		// `text` to keep punctuation reachable.
+		if (typeof props.mask === 'string' && props.mask.startsWith('phone')) {
+			return 'tel'
+		}
+		// Pure-digit patterns get `tel` too — same UX win
+		// (numeric keypad on mobile).
+		if (pattern && /^[#\s+()\-./]+$/.test(pattern)) {
+			return 'tel'
+		}
+		return props.type
+	})
+
+	// External @valid / @complete emissions.
+	watch(maskIsValid, (v) => {
+		if (hasMask.value) emits('valid', v)
+	}, {immediate: false})
+
+	watch(maskComplete, (c) => {
+		if (hasMask.value) emits('complete', {complete: c, unmasked: unmaskedValue.value})
+	}, {immediate: false})
+
 	const handleInput = (e: Event) => {
 		const el = e.target as HTMLInputElement
+
+		if (hasMask.value) {
+			// Run the raw DOM string through the engine; the
+			// composable picks up the new `model` and updates
+			// `masked` / `isValid` reactively.
+			const cfg = maskConfig.value
+			const tokens = cfg?.pattern ?? ''
+			const r = applyMask(el.value, tokens)
+			model.value = r.unmasked
+			nextTick(() => {
+				// Keep DOM in sync with the formatted value
+				// (some chars may have been silently dropped).
+				if (el.value !== r.masked) el.value = r.masked
+				const pos = r.masked.length
+				try { el.setSelectionRange(pos, pos) } catch (err) { void err }
+			})
+			return
+		}
 
 		model.value = el.value
 
@@ -375,6 +457,20 @@
 				el.selectionEnd = caretPosition[1]
 			})
 		}
+	}
+
+	const handlePaste = (e: ClipboardEvent) => {
+		if (!hasMask.value) return
+		const text = e.clipboardData?.getData('text') ?? ''
+		if (!text) return
+		e.preventDefault()
+		const cfg = maskConfig.value
+		if (!cfg) return
+		// Append clipboard text to current unmasked, then
+		// re-run the engine for "append on paste" UX.
+		const merged = (unmaskedValue.value ?? '') + text
+		const r = applyMask(merged, cfg.pattern)
+		model.value = r.unmasked
 	}
 
 	/*********************************************************
@@ -397,6 +493,17 @@
 		if (props.counter && typeof props.counter === 'number') {
 			const limit = props.counter
 			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', [limit]))
+		}
+
+		if (hasMask.value) {
+			// Mask-driven rule: relies on the live `maskIsValid`
+			// computed so OrigamField/OrigamInput surface the
+			// `error` state without the consumer having to wire
+			// `:error` manually.
+			base.push(() => {
+				if (!model.value) return true
+				return maskIsValid.value || t('origam.validation.invalid_format', 'Invalid format')
+			})
 		}
 
 		return base

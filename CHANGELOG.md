@@ -15,6 +15,25 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Changed
 
+- `OrigamTextField` — new `mask` prop with built-in patterns
+  (`phone:fr`, `phone:us`, `phone:international`, `iban`, `siret`,
+  `creditcard`, `date:iso`, `date:fr`, `date:us`, `time`, `time:12h`,
+  `postcode:fr`, `postcode:us`) plus a custom pattern syntax
+  (`#` = digit, `A` = letter, `*` = any, anything else is a literal).
+  In-house mask engine — zero external dependency (no `imask.js` /
+  `cleave.js` / `vue-the-mask`). Reactive validation pipeline with
+  built-in `luhn` (credit card), `iban` (mod-97) and date parsers
+  (`date:iso` / `date:fr` / `date:us`); custom validators accepted as
+  `(unmasked) => boolean`. New emits `@valid(boolean)` and
+  `@complete({ complete, unmasked })` fire on every value change. The
+  v-model exposes the **unmasked** value while the DOM input displays
+  the formatted (masked) one — paste handling strips literals and
+  reformats, `aria-invalid` toggles on touched fields, and the engine
+  auto-promotes phone-shaped patterns to `type="tel"` for mobile
+  keyboard hints. New `useMask` composable, `applyMask` / `unmaskValue`
+  / `resolveMaskConfig` / `validatePattern` utils, new `IMaskOptions`
+  interface and `TMask` / `TBuiltInPattern` / `TPatternValidator`
+  types.
 - `OrigamTextareaField` — new `mode="rich"` enabling a lightweight
   HTML / Markdown editor based on `contenteditable`. Built in-house
   with zero external dependencies (no TipTap, ProseMirror, Quill).

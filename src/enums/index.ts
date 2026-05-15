@@ -74,3 +74,5 @@ export * from './DataTable/data-table.enum'
 export * from './DatePicker/date-picker.enum'
 
 export * from './Tabs/tab-variant.enum'
+
+export * from './Mask/mask.enum'
