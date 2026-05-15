@@ -290,3 +290,5 @@ export * from './Stepper/stepper.interface'
 export * from './Timeline/timeline.interface'
 
 export * from './Treeview/treeview.interface'
+
+export * from './Mask/mask-options.interface'

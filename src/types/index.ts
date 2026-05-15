@@ -284,6 +284,10 @@ export * from './Timeline/timeline.type'
 
 export * from './Treeview/treeview.type'
 
+export * from './Mask/built-in-pattern.type'
+export * from './Mask/pattern-validator.type'
+export * from './Mask/mask.type'
+
 
 
 
