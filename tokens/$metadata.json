@@ -67,6 +67,7 @@
     "component/picker",
     "component/date-picker",
     "component/date-picker-field",
+    "component/code",
     "component/color-picker",
     "component/color-picker-field",
     "component/select",

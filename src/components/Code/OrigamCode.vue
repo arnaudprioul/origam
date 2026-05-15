@@ -1,0 +1,507 @@
+<template>
+	<component
+			:is="tag"
+			:class="codeClasses"
+			:style="codeStyles"
+			role="region"
+			:aria-label="ariaRegionLabel"
+	>
+		<div v-if="showHeader" class="origam-code__header">
+			<slot
+					name="header"
+					:filename="filename"
+					:lang-name="lang"
+					:copy="handleCopy"
+					:copied="isCopied"
+			>
+				<span v-if="filename" class="origam-code__filename" data-cy="origam-code-filename">{{ filename }}</span>
+				<span v-else class="origam-code__lang-badge" data-cy="origam-code-lang">{{ lang }}</span>
+				<button
+						v-if="copyable"
+						type="button"
+						class="origam-code__copy origam-code__copy--header"
+						:aria-label="copyAriaLabel"
+						aria-live="polite"
+						data-cy="origam-code-copy"
+						@click="handleCopy"
+				>
+					<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
+				</button>
+			</slot>
+		</div>
+
+		<button
+				v-if="copyable && !showHeader"
+				type="button"
+				class="origam-code__copy origam-code__copy--floating"
+				:aria-label="copyAriaLabel"
+				aria-live="polite"
+				data-cy="origam-code-copy"
+				@click="handleCopy"
+		>
+			<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
+		</button>
+
+		<div class="origam-code__scroller" :style="scrollerStyles">
+			<pre class="origam-code__pre" :class="preClasses"><code
+					ref="codeRef"
+					class="origam-code__code"
+					:data-lang="lang"
+			></code></pre>
+		</div>
+
+		<div v-if="$slots.footer" class="origam-code__footer">
+			<slot name="footer"/>
+		</div>
+
+		<slot/>
+	</component>
+</template>
+
+<script
+		lang="ts"
+		setup
+>
+	import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+
+	import {
+		useBorder,
+		useCode,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded,
+		useTheme
+	} from '../../composables'
+
+	import { CODE_DEFAULTS } from '../../consts'
+	import { CODE_LANG, CODE_THEME } from '../../enums'
+
+	import type { ICodeProps } from '../../interfaces'
+
+	import { parseHighlightLines } from '../../utils'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props + defaults for `<OrigamCode>`. The component is a thin wrapper
+	 * around shiki: it owns the DOM (header / copy button / line gutter /
+	 * scroller) while the highlighted HTML is produced by the `useCode`
+	 * singleton and injected via `innerHTML` on a `<code>` ref. We do NOT
+	 * use `v-html` because we need to post-process shiki's output to add
+	 * row-level classes for line-numbers + highlight-lines.
+	 ********************************************************/
+	const props = withDefaults(defineProps<ICodeProps>(), {
+		tag: 'div',
+		lang: CODE_LANG.PLAINTEXT,
+		theme: CODE_THEME.AUTO,
+		lineNumbers: false,
+		copyable: true,
+		wrap: false,
+		format: false,
+		code: undefined,
+		highlightLines: null,
+		maxHeight: null,
+		filename: undefined
+	})
+
+	const emit = defineEmits<{
+		(e: 'copy', code: string): void
+	}>()
+
+	const slots = useSlots()
+
+	/*********************************************************
+	 * Composables (chrome)
+	 ********************************************************/
+	const { borderClasses, borderStyles } = useBorder(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { elevationClasses } = useElevation(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { resolved: resolvedTheme } = useTheme()
+	const { highlight } = useCode()
+
+	/*********************************************************
+	 * Source extraction — prop wins over slot, slot used as fallback.
+	 *
+	 * The slot path is what authors usually want for multi-line snippets
+	 * that read better in the template. We re-extract every time the
+	 * default slot changes (rare, but possible with v-if), so the
+	 * computed depends on `slots.default?.()` length.
+	 ********************************************************/
+	function extractSlotText (): string {
+		const nodes = slots.default?.()
+		if (!nodes || nodes.length === 0) return ''
+		const parts: string[] = []
+		const visit = (vnode: unknown) => {
+			if (vnode == null) return
+			if (typeof vnode === 'string') { parts.push(vnode); return }
+			if (typeof vnode === 'number' || typeof vnode === 'boolean') { parts.push(String(vnode)); return }
+			if (Array.isArray(vnode)) { vnode.forEach(visit); return }
+			const obj = vnode as { children?: unknown }
+			if (obj && 'children' in obj) visit(obj.children)
+		}
+		visit(nodes)
+		return parts.join('')
+	}
+
+	const sourceCode = computed(() => {
+		if (typeof props.code === 'string') return props.code
+		const fromSlot = extractSlotText()
+		return fromSlot.replace(/^\n+/, '').replace(/\n+$/, '')
+	})
+
+	/*********************************************************
+	 * Format — currently a no-op past whitespace normalisation.
+	 *
+	 * Prettier weighs ~600 KB and we don't want to bundle it at runtime
+	 * for a niche convenience. When `format` is true we collapse Windows
+	 * line endings + strip trailing whitespace, which is enough for the
+	 * 90 % of cases where the input came from a copy-paste.
+	 ********************************************************/
+	let _formatWarned = false
+	const formattedCode = computed(() => {
+		const raw = sourceCode.value
+		if (!props.format) return raw
+		if (!_formatWarned) {
+			_formatWarned = true
+			console.warn(
+				'[origam] OrigamCode: the `format` prop is a stub in v2.x. ' +
+				'Prettier is intentionally not bundled at runtime; the current ' +
+				'implementation normalises whitespace only. Full formatting is planned for v3.'
+			)
+		}
+		return raw.replace(/\r\n/g, '\n').split('\n').map((l) => l.replace(/[ \t]+$/, '')).join('\n')
+	})
+
+	/*********************************************************
+	 * Highlight pipeline.
+	 *
+	 * We track:
+	 *   - `renderedHtml`: shiki's raw `<pre class="shiki"><code>...</code></pre>`
+	 *   - `themeName`: 'light' | 'dark' resolved from props + document theme
+	 *
+	 * The watcher re-runs on source / lang / theme changes. We swallow
+	 * stale promise results so a fast lang-switch doesn't paint the wrong
+	 * tokens.
+	 ********************************************************/
+	const codeRef = ref<HTMLElement | null>(null)
+	const isHighlighting = ref(false)
+	let _renderToken = 0
+
+	const themeName = computed<'light' | 'dark'>(() => {
+		if (props.theme === CODE_THEME.LIGHT) return 'light'
+		if (props.theme === CODE_THEME.DARK) return 'dark'
+		return resolvedTheme.value === 'dark' ? 'dark' : 'light'
+	})
+
+	const highlightedLines = computed<Set<number>>(() => {
+		const arr = parseHighlightLines(props.highlightLines)
+		return new Set(arr)
+	})
+
+	async function rebuild () {
+		const token = ++_renderToken
+		isHighlighting.value = true
+		try {
+			const html = await highlight(formattedCode.value, props.lang, themeName.value)
+			if (token !== _renderToken) return
+			paintIntoDom(html)
+		} finally {
+			if (token === _renderToken) isHighlighting.value = false
+		}
+	}
+
+	/**
+	 * Post-process shiki's HTML to expose per-row hooks for line numbers +
+	 * line-highlighting. shiki emits `<pre class="shiki ...">\n<code>\n<span class="line">…</span>\n…</code>\n</pre>`.
+	 * We extract only the inner `<code>...</code>` and wrap each `.line`
+	 * span with a `.origam-code__row` element that carries our data-* hooks.
+	 */
+	function paintIntoDom (rawHtml: string) {
+		const target = codeRef.value
+		if (!target) return
+
+		// Strip outer <pre>... </pre> — we already render our own.
+		const innerMatch = rawHtml.match(/<code[^>]*>([\s\S]*?)<\/code>/)
+		const inner = innerMatch ? innerMatch[1] : rawHtml
+
+		// Split on line spans. shiki emits `<span class="line">…</span>\n`
+		// per logical line; the regex preserves the order and lets us wrap
+		// each one with our own row container.
+		const lines = inner.split(/\n/).filter((l, idx, arr) => !(idx === arr.length - 1 && l.trim() === ''))
+		const highlightSet = highlightedLines.value
+		const rows = lines.map((line, i) => {
+			const lineNo = i + 1
+			const isHl = highlightSet.has(lineNo) ? ' origam-code__row--highlighted' : ''
+			return `<span class="origam-code__row${isHl}" data-line="${lineNo}">${line || '&nbsp;'}</span>`
+		}).join('\n')
+
+		// Background colour comes from the shiki `<pre style="background:#..">`
+		// attribute on the original output. We don't honour it here because
+		// the surface is themed by origam tokens — keeping the surface in
+		// sync with the host page beats matching the shiki theme background.
+		target.innerHTML = rows
+	}
+
+	watch(
+		[formattedCode, () => props.lang, themeName],
+		() => { void rebuild() },
+		{ immediate: false }
+	)
+
+	// Highlight-lines is purely a class swap on already-rendered rows — no
+	// shiki re-render needed.
+	watch(highlightedLines, () => {
+		const target = codeRef.value
+		if (!target) return
+		target.querySelectorAll<HTMLElement>('.origam-code__row').forEach((row) => {
+			const lineNo = Number(row.dataset.line)
+			row.classList.toggle('origam-code__row--highlighted', highlightedLines.value.has(lineNo))
+		})
+	})
+
+	onMounted(() => { void rebuild() })
+
+	/*********************************************************
+	 * Copy-to-clipboard with feedback.
+	 ********************************************************/
+	const isCopied = ref(false)
+	let _copyTimeout: ReturnType<typeof setTimeout> | null = null
+
+	async function writeToClipboard (text: string): Promise<boolean> {
+		if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+			try { await navigator.clipboard.writeText(text); return true } catch { /* fallthrough */ }
+		}
+		// Legacy fallback — execCommand is deprecated but still the only
+		// option in pre-permissions Safari and some embedded WebViews.
+		try {
+			const textarea = document.createElement('textarea')
+			textarea.value = text
+			textarea.setAttribute('readonly', '')
+			textarea.style.position = 'fixed'
+			textarea.style.opacity = '0'
+			document.body.appendChild(textarea)
+			textarea.select()
+			const ok = document.execCommand('copy')
+			document.body.removeChild(textarea)
+			return ok
+		} catch {
+			return false
+		}
+	}
+
+	async function handleCopy () {
+		const text = formattedCode.value
+		const ok = await writeToClipboard(text)
+		if (!ok) return
+		emit('copy', text)
+		isCopied.value = true
+		if (_copyTimeout) clearTimeout(_copyTimeout)
+		_copyTimeout = setTimeout(() => { isCopied.value = false }, CODE_DEFAULTS.copyFeedbackDurationMs)
+	}
+
+	onBeforeUnmount(() => {
+		if (_copyTimeout) clearTimeout(_copyTimeout)
+	})
+
+	/*********************************************************
+	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
+	 ********************************************************/
+	const copyButtonLabel = computed(() => isCopied.value ? 'Copied!' : 'Copy')
+	const copyAriaLabel = computed(() => isCopied.value ? 'Code copied to clipboard' : 'Copy code to clipboard')
+	const ariaRegionLabel = computed(() => props.filename ? `Code block: ${props.filename}` : `Code block (${props.lang})`)
+
+	/*********************************************************
+	 * Class & Style.
+	 ********************************************************/
+	const showHeader = computed(() => !!props.filename || !!slots.header)
+
+	const codeClasses = computed(() => [
+		'origam-code',
+		`origam-code--theme-${themeName.value}`,
+		`origam-code--lang-${props.lang}`,
+		{
+			'origam-code--line-numbers': props.lineNumbers,
+			'origam-code--wrap': props.wrap,
+			'origam-code--has-header': showHeader.value,
+			'origam-code--copyable': props.copyable,
+			'origam-code--max-height': props.maxHeight != null
+		},
+		borderClasses.value,
+		roundedClasses.value,
+		elevationClasses.value,
+		paddingClasses.value,
+		marginClasses.value
+	])
+
+	const codeStyles = computed(() => [
+		borderStyles.value,
+		roundedStyles.value,
+		paddingStyles.value,
+		marginStyles.value,
+		{}
+	])
+
+	const preClasses = computed(() => ({
+		'origam-code__pre--line-numbers': props.lineNumbers,
+		'origam-code__pre--wrap': props.wrap
+	}))
+
+	const scrollerStyles = computed(() => {
+		if (props.maxHeight == null) return {}
+		const value = typeof props.maxHeight === 'number' ? `${props.maxHeight}px` : props.maxHeight
+		return { '--origam-code---max-height': value, maxHeight: value }
+	})
+
+	defineExpose({ rebuild, isCopied, codeRef })
+</script>
+
+<style lang="scss">
+	.origam-code {
+		position: relative;
+		display: block;
+		background-color: var(--origam-code---background-color);
+		color: var(--origam-code---color);
+		border: var(--origam-code---border-width) solid var(--origam-code---border-color);
+		border-radius: var(--origam-code---border-radius);
+		padding: var(--origam-code---padding-block) var(--origam-code---padding-inline);
+		font-family: var(--origam-code---font-family);
+		font-size: var(--origam-code---font-size);
+		line-height: var(--origam-code---line-height);
+		overflow: hidden;
+	}
+
+	.origam-code__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--origam-code__header---gap);
+		padding: var(--origam-code__header---padding-block) var(--origam-code__header---padding-inline);
+		background-color: var(--origam-code__header---background-color);
+		color: var(--origam-code__header---color);
+		border-bottom: var(--origam-code---border-width) solid var(--origam-code---border-color);
+		margin: calc(-1 * var(--origam-code---padding-block)) calc(-1 * var(--origam-code---padding-inline));
+		margin-bottom: var(--origam-code---padding-block);
+	}
+
+	.origam-code__filename {
+		font-weight: var(--origam-code__filename---font-weight);
+		font-size: var(--origam-code__filename---font-size);
+		color: var(--origam-code__filename---color);
+	}
+
+	.origam-code__lang-badge {
+		font-size: var(--origam-code__filename---font-size);
+		color: var(--origam-code__filename---color);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.origam-code__copy {
+		all: unset;
+		box-sizing: border-box;
+		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--origam-code__copy---gap);
+		padding: var(--origam-code__copy---padding-block) var(--origam-code__copy---padding-inline);
+		border-radius: var(--origam-code__copy---border-radius);
+		font-size: var(--origam-code__copy---font-size);
+		color: var(--origam-code__copy---color);
+		background-color: var(--origam-code__copy---background-color);
+		transition: color 120ms ease, background-color 120ms ease;
+	}
+
+	.origam-code__copy:hover {
+		color: var(--origam-code__copy---color-hover);
+		background-color: var(--origam-code__copy---background-color-hover);
+	}
+
+	.origam-code__copy--floating {
+		position: absolute;
+		top: var(--origam-code__copy---offset);
+		right: var(--origam-code__copy---offset);
+		z-index: 1;
+	}
+
+	.origam-code__scroller {
+		overflow: auto;
+	}
+
+	.origam-code--max-height .origam-code__scroller {
+		max-height: var(--origam-code---max-height);
+	}
+
+	.origam-code__pre {
+		margin: 0;
+		padding: 0;
+		background: transparent;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: inherit;
+		counter-reset: line;
+	}
+
+	.origam-code__code {
+		display: block;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: inherit;
+	}
+
+	.origam-code__row {
+		display: block;
+		padding-inline: var(--origam-code__row---padding-inline);
+		white-space: pre;
+		min-height: var(--origam-code---line-height);
+	}
+
+	.origam-code--wrap .origam-code__row {
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.origam-code--line-numbers .origam-code__row {
+		counter-increment: line;
+		position: relative;
+		padding-inline-start: var(--origam-code__line-number---width);
+	}
+
+	.origam-code--line-numbers .origam-code__row::before {
+		content: counter(line);
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: var(--origam-code__line-number---width);
+		padding-right: var(--origam-code__line-number---padding-right);
+		text-align: right;
+		color: var(--origam-code__line-number---color);
+		user-select: none;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.origam-code__row--highlighted {
+		background-color: var(--origam-code__line-highlight---background-color);
+		box-shadow: inset 3px 0 0 var(--origam-code__line-highlight---accent-color);
+	}
+
+	.origam-code__footer {
+		padding: var(--origam-code__header---padding-block) var(--origam-code__header---padding-inline);
+		border-top: var(--origam-code---border-width) solid var(--origam-code---border-color);
+		margin: var(--origam-code---padding-block) calc(-1 * var(--origam-code---padding-inline)) calc(-1 * var(--origam-code---padding-block));
+		color: var(--origam-code__header---color);
+	}
+
+	.origam-code__scroller::-webkit-scrollbar {
+		height: 8px;
+		width: 8px;
+	}
+
+	.origam-code__scroller::-webkit-scrollbar-thumb {
+		background-color: var(--origam-code__scrollbar---color);
+		border-radius: 4px;
+	}
+</style>

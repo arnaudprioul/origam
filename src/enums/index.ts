@@ -4,6 +4,9 @@ export * from './Img/img.enum'
 
 export * from './Charts/chart.enum'
 
+export * from './Code/code-lang.enum'
+export * from './Code/code-theme.enum'
+
 export * from './ColorPicker/color-picker.enum'
 
 export * from './Commons/commons.enum'

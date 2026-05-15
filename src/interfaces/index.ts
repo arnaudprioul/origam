@@ -43,6 +43,8 @@ export * from './Checkbox/checkbox-btn.interface'
 export * from './Chip/chip.interface'
 export * from './Chip/chip-group.interface'
 
+export * from './Code/code.interface'
+
 export * from './ColorPicker/color-picker.interface'
 export * from './ColorPicker/color-picker-canvas.interface'
 

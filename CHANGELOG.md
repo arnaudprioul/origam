@@ -15,6 +15,30 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Changed
 
+- `OrigamCode` — major enrichment via shiki integration. Syntax
+  highlighting for 13 languages (vue, ts, js, tsx, jsx, scss, css, json,
+  bash, html, xml, yaml, md) plus `plaintext`. New props: `lineNumbers`,
+  `highlightLines` (accepts both `number[]` and the range syntax
+  `'2,5-7'`), `copyable`, `maxHeight`, `theme` (`'auto' | 'light' | 'dark'`),
+  `wrap`, `filename`. Copy button with `navigator.clipboard` and an
+  `execCommand('copy')` fallback for legacy WebViews. Lazy-init shiki
+  highlighter cached as a module-level singleton across instances; an
+  LRU (max 64 entries) caches highlighted HTML by `(code, lang, theme)`
+  so re-renders never re-tokenise. Theme defaults to `auto` and tracks
+  the host `<html data-theme>` attribute. New `useCode` composable
+  exposing `{ highlight, prime, isReady, resetCacheForTesting }`. New
+  utility `parseHighlightLines()` shared with stories/tests. Pure-CSS
+  line-numbers gutter (CSS counter, no JS layout) and line-highlight
+  swap (class toggle on already-rendered rows, no re-tokenisation).
+  ARIA: `role="region"` on the surface, `aria-live="polite"` on the
+  copy feedback, hidden line numbers. `shiki` (`^3.8.1`) promoted from
+  `devDependencies` to `dependencies` (it's a runtime dep now); the
+  bundle adds ~3 MB to installed `node_modules` for the curated subset.
+  New tokens under `component/code` (35 vars: surface, header, filename,
+  copy button, line-number gutter, line-highlight, scrollbar). The v2.x
+  plain-text `<pre>` API is fully backward-compatible — passing just
+  `code` and `lang` keeps the previous behaviour.
+
 - `OrigamParallax` — major enrichment. Multi-layer support via new
   `OrigamParallaxLayer` subcomponent (`speed`, `offsetX`, `offsetY`,
   `zIndex` props; layers register themselves into the host runtime and
