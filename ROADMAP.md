@@ -1,0 +1,343 @@
+# ROADMAP — origam Design System
+
+> Référentiel : `origam@2.2.1` (npm, premier release public).
+> Stack : Vue 3.5 + TypeScript, distribution ESM via `unbuild`,
+> tokens DTCG (Tokens Studio + Style Dictionary v4),
+> 78 familles de composants, 13+ composables transversaux.
+>
+> Cette roadmap mélange deux volets :
+> - **Stratégie & adoption** — positionnement, cibles, marketing, KPI, risques.
+> - **Technique** — outillage, tests, v3.0, infrastructure.
+>
+> Tout est négociable. Reprends ce qui te parle, supprime ce qui ne te parle pas.
+
+---
+
+## Où on en est (post-2.2.1)
+
+- ✅ Sortie publique sur npm, tarball 869 kB, 0 vuln critique.
+- ✅ Pre-delivery automatisé via `prepublishOnly` (tokens + build + 220 TU).
+- ✅ README correct, CHANGELOG à jour.
+- ❌ Pas de doc en ligne. Pas de stories déployées. Pas de communauté.
+- ❌ CI = Qodana scan + tokens-sync seulement. Pas de pipeline lint/test/build/publi.
+- ❌ Coverage Playwright partielle (~100 specs pour 161 stories).
+- ❌ Pas de bundle-size monitoring. Pas d'audit a11y systématique.
+
+---
+
+# Partie 1 — Stratégie & Adoption
+
+## 1.1 — Positionnement & différenciation
+
+### Tableau comparatif Vue 3 DS
+
+| Critère | **origam** | Vuetify 3 | PrimeVue | Naive UI | shadcn-vue | Radix Vue |
+|---|---|---|---|---|---|---|
+| Composants | ~80 familles | ~90 | ~100 | ~80 | ~50 | ~30 (primitifs) |
+| Tokens Studio natif | ✅ DTCG | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Multi-thème runtime | ✅ `data-theme` | Partiel (Material You) | ✅ | Partiel | ❌ | ❌ |
+| CSS-first + fallback JS | ✅ `useCssSupport` | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Tree-shaking propre | ✅ `sideEffects` | Partiel | ✅ | ✅ | ✅ | ✅ |
+| Communauté | ❌ (v0) | Très large | Large | Moyenne | Croissante | Petite |
+| Doc en ligne | ❌ pas encore | ✅ | ✅ | ✅ | ✅ | Partielle |
+| ARIA / a11y | Partiel | Partiel | Bon | Moyen | Bon | Excellent |
+| Figma sync natif | ✅ Tokens Studio | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+### 3 USP concrets
+
+1. **Pipeline Figma → code natif via Tokens Studio.** Seul DS Vue 3 à consommer
+   du DTCG directement (Style Dictionary v4 en build step). Une équipe qui
+   gère son DS dans Figma synchronise couleurs / espacements / radii sans
+   mapping manuel. Aucun concurrent ne propose ça out-of-the-box.
+2. **CSS-first avec fallback JS documenté.** `useCssSupport()` centralise la
+   feature-detection (container queries, `:has()`, `subgrid`, `color-mix`,
+   `view-transition`). Choix d'architecture délibéré, rare dans l'écosystème,
+   auditable dans le code.
+3. **Thème multi-marque sans rebuild.** `<html data-theme="brand-x">` +
+   `<OrigamThemeProvider>` permet plusieurs marques sur la même page. Vuetify
+   et PrimeVue offrent le dark mode, pas le multi-tenant en runtime.
+
+### Ce qu'il ne faut pas survendre
+
+- L'a11y n'est pas encore le point fort — Radix Vue est supérieur.
+- Pas d'écosystème encore — ne pas prétendre à une communauté.
+- Stories Histoire pas déployées en ligne — ne pas renvoyer vers du vide.
+
+### Elevator pitch (1 ligne)
+
+> **origam** — the Vue 3 design system for teams who design in Figma Tokens
+> Studio and ship in TypeScript: 80+ components, multi-brand theming at
+> runtime, CSS-first with zero config.
+
+## 1.2 — Cibles & cas d'usage
+
+### Public early-adopter
+
+- **A — Équipes design-driven avec Tokens Studio.** Agence / studio 3–15 pers,
+  stack Vue 3 + Nuxt. Sentent la valeur dès le premier `tokens:build`.
+- **B — Apps internes multi-tenant.** Backoffice, portails clients, SaaS
+  white-label. Le multi-thème runtime est leur killer feature.
+- **C — Solo devs qui fuient Vuetify.** Vuetify impose Material et pèse lourd.
+  origam est plus léger (869 kB tarball), visuellement agnostique.
+
+### À exclure (savoir dire non)
+
+- Projets qui veulent une réponse StackOverflow immédiate → PrimeVue / Vuetify.
+- Équipes sans compétences CSS / tokens → shadcn-vue.
+- Apps RGAA / WCAG AA strict certifiables → tant que les tests ARIA ne sont
+  pas systématiques, ne pas se positionner sur ce marché.
+- Vue 2 / Nuxt 2 → pas de compat descendante.
+
+## 1.3 — Adoption — phases temporelles
+
+### Q3 2026 (0–3 mois) — Visibilité initiale
+
+| Action | Priorité | Effort |
+|---|---|---|
+| Déployer VitePress sur Vercel (`origam.dev`) | P0 | S |
+| Déployer Histoire (sous-domaine `stories.origam.dev`) | P0 | S |
+| Badge "downloads/week" npm sur le README | P1 | XS |
+| Post de lancement dev.to ("Building a CSS-first Vue 3 DS with Tokens Studio") | P1 | M |
+| Soumission à Vue.js Newsletter (15 000+ abonnés) | P1 | XS |
+| Show HN "origam — Vue 3 DS with Tokens Studio DTCG pipeline" | P1 | S |
+| Fil Mastodon / X avec `#VueJS #DesignSystem` | P2 | XS |
+| Template starter "Nuxt 4 + origam" sur GitHub | P1 | M |
+
+### Q4 2026 / Q1 2027 (3–6 mois) — Construction communauté
+
+- Ouvrir **GitHub Discussions** (pas de Discord avant 50 utilisateurs actifs —
+  Discord vide est pire que rien).
+- **Changelog newsletter mensuel** via Buttondown.email (gratuit ≤ 1 000
+  abonnés, format texte). Un mail par mois : ce qui a changé / ce qui arrive /
+  composant à la une.
+- `CONTRIBUTING.md` : setup local en 5 commandes, conventions de nommage,
+  process PR, templates d'issue.
+- `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1).
+- Template starter "Vite + origam" (SPA pure).
+- **Première démo prod publique** — petite app (dashboard ou formulaire
+  multi-étapes) hébergée, pour prouver que ça marche hors stories.
+
+### H1 2027+ (>6 mois) — Durabilité
+
+- **Open Collective / GitHub Sponsors** si > 500 downloads/sem. Pas avant.
+- **Conférences** — talk "CSS-first design systems with Tokens Studio" pour
+  VueJS Paris ou VueConf US. Angle différenciant indépendant de la taille
+  communauté.
+- **Recrutement co-maintainer** via Discussions + réseau Vue. Bus factor = 1
+  est le risque existentiel.
+- Page "**who uses origam**" alimentée par formulaire Google Form.
+- **Audit a11y tiers** (Deque axe) sur les 20 composants les plus utilisés.
+
+## 1.4 — KPI à suivre
+
+| KPI | Source | Fréquence | Seuil alerte |
+|---|---|---|---|
+| Downloads npm hebdo | npmjs.com/package/origam | Hebdo | < 10/sem = stagnation |
+| Étoiles GitHub (delta mensuel) | GitHub API | Mensuel | < 5/mois après 6 mois |
+| Ratio issues fermées / totales (30j roll) | GitHub Issues | Mensuel | < 50 % = backlog gonfle |
+| Contributors externes | GitHub Insights | Par release | 0 après 6 mois = guide à revoir |
+| Abonnés newsletter | Buttondown dashboard | Mensuel | < 20 après 3 mois |
+| Mentions qualifiées (X / Mastodon / Reddit) | Alerts F5bot, Google Alerts | Hebdo | 0/mois après Q3 = lancement raté |
+| Time-to-first-PR externe | GitHub | One-shot | > 120 j = barrière trop haute |
+
+## 1.5 — Risques & mitigations
+
+### R1 — Concurrence Vuetify 3 / PrimeVue (proba élevée, impact élevé)
+
+Ne pas se battre sur la volumétrie. Niche : **Tokens Studio + multi-brand**.
+Un article ciblé ("Why we moved from Vuetify to origam for our white-label
+platform") vaut 10 tweets génériques.
+
+### R2 — Bus factor 1 (proba certaine, impact critique)
+
+Documenter l'architecture (CLAUDE.md couvre déjà bien). Chercher un
+co-maintainer dès 20 stars. Ouvrir des "good first issue" labelisées dès Q3.
+Publier un "maintenance status" honnête dans le README.
+
+### R3 — Breaking change v3.0 perd les early adopters (proba certaine, impact moyen-élevé)
+
+Annoncer dès maintenant la v3.0 dans la doc avec timeline indicative.
+Publier `docs/migration/v2-to-v3.md` AVANT de tagger v3.0. Fournir un codemod
+`origam-migrate` si la migration est mécanique.
+
+### R4 — Doc insuffisante bloque l'adoption (proba certaine, impact élevé)
+
+Déploiement VitePress + Histoire = P0 absolu avant tout effort marketing.
+Chaque composant : props listées, exemple minimal, screenshots 3 thèmes.
+
+### R5 — Pas de track record prod (proba certaine, impact moyen)
+
+Construire et publier une app de démo réelle (pas Storybook — vraie app avec
+routes, formulaires, navigation, dark mode). Documenter chaque projet (perso
+ou pro) où origam est utilisée — un seul suffit à casser le "zéro référence".
+
+---
+
+# Partie 2 — Technique
+
+## 2.1 — Court terme (Q3 2026)
+
+### CI/CD GitHub Actions complète **(L)**
+- Workflow `ci.yml` (lint + `tokens:lint` + `test:unit` + `test:e2e` +
+  `server:build`) sur PR/push, matrice Node 22 / 24.
+- Workflow `release.yml` (déclenché sur tag `v*` → `npm publish --provenance`
+  + GitHub Release auto depuis CHANGELOG).
+- Bloque toute confiance dans les releases suivantes.
+
+### Déploiement Histoire + VitePress **(M)**
+- `pages.yml` build + déploiement GitHub Pages (`/`=VitePress,
+  `/story/`=Histoire). Ou Vercel pour preview-deploy sur chaque PR.
+- Bloque l'adoption externe.
+
+### Coverage Playwright complète — test-as-you-build retro **(XL)**
+- ~60 composants sans garde-fou e2e (violation explicite CLAUDE.md).
+  Consolidation des `*-debug.spec.ts` en suite systématique.
+- Cible : 100 % composants publics, un spec par composant avec Variants +
+  props exercées.
+- Bloque la confiance pour v3 (Strategy B impossible à valider sans baseline).
+
+### Audit & consolidation de la suite TU **(M)**
+- Convention `tests/unit/{Domain}/{name}.spec.ts` (actuellement éparpillés
+  dans `src/**/__tests__/`). Mock `CSS.supports`, jsdom.
+- Cible : 70 % branches sur `src/composables/Commons/`.
+
+### Audit a11y des overlays **(M)**
+- Dialog / Menu / ContextualMenu / Tooltip / Drawer / Sheet / Snackbar →
+  focus trap, restitution du focus, `aria-modal`, `Esc`.
+- `@axe-core/playwright` intégré dans `test:e2e`. Doc d'accessibilité par
+  composant.
+
+### Bundle-size monitoring **(S)**
+- `size-limit` + `@size-limit/preset-big-lib` sur chaque sous-export.
+- `size-limit-action` commente automatiquement les PR.
+- Le bond 5.6 MB → 869 kB en 2.2.0 doit rester un acquis.
+
+### API audit pré-v3 **(L)**
+- Tableau exhaustif des deprecations dans `docs/migration/v2-to-v3.md`.
+- Compléter les `@deprecated` manquants (notamment `color="#hex"`).
+- Codemod `origam-codemod` (jscodeshift) pour les renames mécaniques.
+
+### Renovate / Dependabot **(S)**
+- `renovate.json` avec policies `groupSlug` (vue-*, vitest+vite, eslint).
+- Auto-merge des patch devDeps. PR hebdo groupée pour les minor.
+- Surveille `histoire@1.0.0-beta.1` pour la sortie de la stable.
+
+## 2.2 — Moyen terme (Q4 2026 / Q1 2027)
+
+### v3.0.0 — Strategy B applied **(XL)**
+- Retire les `*Styles` returns quand la valeur est tokenisée. Classes
+  utilitaires deviennent la seule API.
+- Refacto des 13 composables transversaux. CHANGELOG BREAKING détaillé.
+  Codemod fourni.
+- Gain : ~2× moins de calcul reactif, hydratation plus légère.
+
+### Module Nuxt officiel **(L)**
+- `@origam/nuxt` : auto-import composants + composables, plugin theme
+  SSR-safe (cookie + `prefers-color-scheme` côté Node), injection auto des
+  feuilles `tokens/css/{theme}.css`, option `themes: [...]`.
+- Cible adoption A + B.
+
+### Sécurisation SSR de `useCssSupport` **(M)**
+- Pendant SSR tous les flags sont `false` → hydration mismatch potentiel.
+- Wrapper `<ClientOnly>` automatique OU helper `useCssSupportClient()` avec
+  suspense. Test Playwright `--no-js` pour le fallback serveur.
+
+### Multi-thème avancé (a11y media queries) **(M)**
+- Tokens semantic `motion.duration.*` (auto `0ms` si `prefers-reduced-motion`),
+  `color.contrast.*` (auto ramp high-contrast).
+- Génération CSS via `@media (prefers-*) { :root {…} }`.
+
+### Animation system unifié **(M)**
+- `tokens/semantic/motion.json` (durations, easings, named transitions).
+- `useTransition` retravaillé : tokens + `document.startViewTransition` si
+  `css.value.viewTransitions === true`.
+
+### Nouveaux composants & enrichissements **(L à XL)**
+
+Choix arrêté avec le maintainer :
+
+| Composant | Décision | Effort | Note |
+|---|---|---|---|
+| **Tabs / TabPanel** | ✅ retenu | M | Présent via `ItemGroup` mais pas exposé sémantiquement. À encapsuler en composant à part avec ARIA `role="tablist"` / `role="tab"` / `role="tabpanel"`. |
+| **Combobox / Autocomplete** | ❌ rejeté | — | `OrigamSelect` couvre déjà ce besoin. |
+| **CommandPalette (⌘K)** | ✅ retenu | L | Pattern type Linear / Vercel. Refs : <https://cmdk.paco.me/>, linear.app, vercel.com. Fuzzy search + raccourcis clavier + focus trap. **Réutilise `OrigamKbd` en interne** pour afficher les raccourcis à côté de chaque action. Registre extensible via `useCommand({ id, label, kbd, action })`. |
+| **Toast stacked** | ✅ retenu | M | Notre Toast = `OrigamSnackbar` (ponctuel, 1 à la fois). Ajouter un `OrigamSnackbarStack` qui empile plusieurs notifications, gestion priorité + auto-dismiss + actions. |
+| **Bracket (arbre de compétition)** | ✅ retenu | L | **Nouveau** — composant `OrigamBracket` pour afficher un arbre de tournoi e-sport / sportif (single elimination, double elimination, round-robin). Connectors SVG entre les nodes. Données via prop `rounds: IBracketRound[]`. |
+
+### Enrichissements de composants existants **(M à L)**
+
+| Composant | Action | Effort | Note |
+|---|---|---|---|
+| **OrigamParallax** | Étendre l'API | M | Aujourd'hui basique. Ajouter : multi-layer parallax (props `layers: IParallaxLayer[]` avec speeds différents), direction (horizontal / vertical / diagonal), easing curves customisables, événements (`@enter`, `@leave`, `@scroll-progress`), respect `prefers-reduced-motion`. |
+| **OrigamCode** | Syntax highlighting + format | M | Aujourd'hui = bloc texte brut. Intégrer `shiki` (déjà en devDep) pour highlight côté build (zero runtime cost) ou côté client si dynamique. Auto-format selon lang (`prettier` standalone optionnel via prop). Support des langs : `vue`, `ts`, `js`, `scss`, `json`, `bash`, `html`. Numérotation de lignes, copy button, line highlighting. |
+| **OrigamTextarea — RichText** | Nouveau mode | XL | **Maison, pas de library.** Mode `rich` qui transforme le textarea en éditeur léger. Spec minimale : **bold / italic / underline / lien / liste / heading / code inline**. Architecture `contenteditable` + parsing toolbar custom. Output `v-model` = HTML sanitizé ou Markdown (option). PAS de TipTap / ProseMirror / Quill — full ownership. |
+| **OrigamTextField — Mask** | Nouvelle prop | M | Ajouter prop `mask` (string ou objet) avec validation + autoformat. Patterns supportés : `phone:fr`, `phone:us`, `iban`, `siret`, `creditcard`, `date:iso`, `date:fr`, `time`, `postcode:fr`, ou pattern custom à la imask.js (`(##) ###-####`). Validation reactive, `@valid` event, `:error` côté UI. **Sans dépendance externe** (regexp + state machine maison). |
+
+### Visual regression testing **(M)**
+- Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
+  Lost-Pixel. Baseline sur main, diff bloquant sur PR.
+- Strategy B touche le rendu de TOUS les composants — sans VRT, c'est des
+  journées de test manuel.
+
+## 2.3 — Long terme (>6 mois)
+
+### v4.0 — Vue Vapor mode **(XL, exploratoire)**
+- Vapor (compilation no-virtual-DOM) → -40 % overhead runtime.
+- POC sur 5 composants pivots (Btn, Input, Card, Menu, Dialog), benchmarks,
+  décision conditionnée à la stabilité Vapor (annoncé Vue 3.7+).
+
+### Export Web Components **(L)**
+- Vue 3.5 a `defineCustomElement` mature. Sous-export `origam/elements` (CE),
+  build séparé via unbuild, démo cross-framework.
+- Élargit la cible à React / Svelte / Angular / legacy.
+
+### Theme Builder UI **(XL)**
+- App standalone (`apps/theme-builder/`) consommant origam elle-même : édition
+  tokens primitive → preview composants en temps réel, export
+  `tokens/semantic/brand-{name}.json`.
+
+### Server Components Vue **(M, dépend du compiler Vue)**
+- Aligner sur React Server Components quand l'écosystème Vue rattrapera.
+
+### Génération AI-assistée (Figma → code) **(L, R&D)**
+- `figma-plugin/` existe — le rendre bidirectionnel (Figma → composants
+  origam) capte la valeur du DS pour les nouveaux composants.
+
+### Maintenance & EOL **(continu)**
+- Politique LTS sur la branche `v2.x` pendant 6 mois après la sortie de v3.0
+  (sécurité + bugfix critiques seulement). Formalisée dans `SECURITY.md`.
+
+## 2.4 — Hygiène continue
+
+Industrialiser à chaque sprint, indépendamment des phases.
+
+- **Dépendances** — Renovate hebdo, `npm audit --omit=dev` zéro `high`/`critical` au merge.
+- **Doc** — un composant sans `{Component}.md` ne passe pas la review.
+  Audit trimestriel des liens VitePress.
+- **Performance** — `size-limit` bloque les PR qui dépassent le budget,
+  profiling `vue-devtools` performance tab sur les composants modifiés.
+- **Refacto opportuniste** — règle "boy-scout" : toute PR qui touche un
+  composant avec anciens patterns (`*Styles` inline, hex hardcodés, strings
+  hardcodées) migre avant merge.
+- **Code-quality gate** — Qodana (déjà actif) + ESLint strict + `vue-tsc
+  --noEmit` dans la CI. Pas de `any`, pas de `@ts-ignore` sans commentaire
+  `// reason: …`.
+- **CHANGELOG** — tenu à jour à chaque PR (Keep a Changelog), pas seulement à
+  la release. Facilite la `release.yml`.
+- **Test-as-you-build** — règle CLAUDE.md non négociable. Check CI qui
+  compare `tests/e2e/*.spec.ts` au listing `src/components/index.ts`.
+- **Sécurité** — `gitleaks` dans la CI sur chaque PR. `/security-review` sur
+  toute modif `src/server/`, `src/services/` ou config build.
+
+---
+
+## Annexe — Priorités P0 immédiates (cette semaine)
+
+Si tu ne fais qu'une seule chose dans les 7 prochains jours :
+
+1. **CI GitHub Actions** (`ci.yml` + `release.yml`) — sans elle, la prochaine
+   release reproduit la galère v2.2.0 / 2.2.1 manuelle.
+2. **Déploiement VitePress + Histoire** — sans doc en ligne, le marketing
+   ultérieur tombe à plat.
+
+Le reste peut attendre. Ces deux items débloquent tout le reste.

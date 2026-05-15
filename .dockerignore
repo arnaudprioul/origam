@@ -1,0 +1,54 @@
+# Node / build artefacts
+node_modules
+dist
+dist-ssr
+docs/.vitepress/dist
+docs/.vitepress/cache
+coverage
+
+# VCS / IDE / agent metadata
+.git
+.gitignore
+.github
+.idea
+.vscode
+.claude
+.husky
+
+# Local env
+.env
+.env.*
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Tests output
+tests/e2e/.results
+tests/e2e/.report
+cypress/screenshots
+cypress/videos
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker / CI scaffolding (avoid recursive copies)
+docker
+.dockerignore
+Dockerfile*
+
+# Long-form docs not needed in the image
+ROADMAP.md
+CLAUDE.md
+CLAUDE_CODE_BRIEF.md
+CHANGELOG.md
+
+# Misc build artefacts tracked by .gitignore as well
+*.tsbuildinfo
+maquettes
+figma-plugin

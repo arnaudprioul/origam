@@ -1,0 +1,104 @@
+name: Release
+
+# Triggered when a release tag is pushed. The tag must match the version
+# in package.json — the workflow asserts it before publishing.
+# Accepts both `v2.3.0` (standard) and bare `2.3.0` (origam's historical
+# convention coming from `git flow release finish`).
+on:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-*"
+
+# `id-token: write` is required for npm provenance (sigstore).
+# `contents: write` is required to create the GitHub Release.
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HUSKY: 0
+  CI: true
+
+jobs:
+  publish:
+    name: Build, test & publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+          always-auth: true
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Assert tag matches package.json version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(node -p "require('./package.json').version")
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::Tag ($tag) does not match package.json version ($pkg)"
+            exit 1
+          fi
+          echo "version=$pkg" >> "$GITHUB_ENV"
+
+      - name: Build tokens
+        run: npm run tokens:build
+
+      - name: Build library
+        run: npm run server:build
+
+      - name: Unit tests
+        run: npm run test:unit -- --run
+
+      - name: Publish to npm (with provenance)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
+
+      - name: Extract release notes from CHANGELOG.md
+        id: notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          notes_file="$(mktemp)"
+          # Capture lines between the first `## ` heading that contains the
+          # version and the next `## ` heading. Handles both `## [2.2.1]`
+          # and `## v2.2.1` styles.
+          awk -v ver="$version" '
+            BEGIN { capture = 0 }
+            /^## /{
+              if (capture) exit
+              if (index($0, ver) > 0) { capture = 1; next }
+            }
+            capture { print }
+          ' CHANGELOG.md > "$notes_file" || true
+          if [ ! -s "$notes_file" ]; then
+            echo "Release v$version — see CHANGELOG.md for details." > "$notes_file"
+          fi
+          {
+            echo "body<<__NOTES_EOF__"
+            cat "$notes_file"
+            echo "__NOTES_EOF__"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.notes.outputs.body }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
