@@ -252,26 +252,60 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 - `useTransition` retravaillé : tokens + `document.startViewTransition` si
   `css.value.viewTransitions === true`.
 
-### Nouveaux composants & enrichissements **(L à XL)**
+### Waves livrées ✅
 
-Choix arrêté avec le maintainer :
+**Wave 1 — Nouveaux composants** (livrée — develop)
 
-| Composant | Décision | Effort | Note |
+| Composant | Status | Note |
+|---|---|---|
+| **Tabs / Tab / TabPanel / TabPanels** | ✅ livré | Réutilise `useGroup`. 3 variants (default/pills/underline), 2 orientations, ARIA WAI-ARIA APG, lazy panel mount. |
+| **Combobox / Autocomplete** | ❌ rejeté | `OrigamSelect` couvre déjà. |
+| **CommandPalette (⌘K)** | ✅ livré | Fuzzy match maison (zero dep), useCommand singleton registry, useHotkey cross-platform, réutilise `OrigamKbd`. |
+| **SnackbarStack (Toast stacked)** | ✅ livré | 8 locations, max stack FIFO, useSnackbarStack({id}) singleton multi-stack, role=status/alert per intent. |
+| **Bracket (arbre de tournoi)** | ✅ livré | 3 variants (single-elim, double-elim, round-robin), SVG connectors via nextMatchId, slots match/competitor/round-title. |
+
+**Wave 2 — Enrichissements** (livrée — develop)
+
+| Composant | Action | Status |
+|---|---|---|
+| **OrigamParallax + Layer** | Multi-layer + direction + easing + emits + CSS-first scroll-driven anim | ✅ livré |
+| **OrigamCode** | Shiki syntax highlight (14 langs, 2 thèmes, lazy import) + line numbers + highlightLines + copy + filename | ✅ livré |
+| **OrigamTextareaField — mode rich** | Editor in-house contenteditable + sanitizer + html-to-markdown, 9 toolbar commands | ✅ livré |
+| **OrigamTextField — mask** | Engine maison + 13 built-in patterns + Luhn + IBAN mod-97 + dates calendar-check | ✅ livré |
+
+**Wave 3 — Infra** (livrée — develop)
+
+| Item | Status |
+|---|---|
+| Module Nuxt officiel (sub-export `origam/nuxt`) | ✅ livré |
+| SSR safety audit + `useCssSupportClient` + `OrigamClientOnly` | ✅ livré |
+
+### Wave 4 — Nouveaux composants (à venir, à priorier)
+
+Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité business.
+
+| # | Composant | Effort | Note |
 |---|---|---|---|
-| **Tabs / TabPanel** | ✅ retenu | M | Présent via `ItemGroup` mais pas exposé sémantiquement. À encapsuler en composant à part avec ARIA `role="tablist"` / `role="tab"` / `role="tabpanel"`. |
-| **Combobox / Autocomplete** | ❌ rejeté | — | `OrigamSelect` couvre déjà ce besoin. |
-| **CommandPalette (⌘K)** | ✅ retenu | L | Pattern type Linear / Vercel. Refs : <https://cmdk.paco.me/>, linear.app, vercel.com. Fuzzy search + raccourcis clavier + focus trap. **Réutilise `OrigamKbd` en interne** pour afficher les raccourcis à côté de chaque action. Registre extensible via `useCommand({ id, label, kbd, action })`. |
-| **Toast stacked** | ✅ retenu | M | Notre Toast = `OrigamSnackbar` (ponctuel, 1 à la fois). Ajouter un `OrigamSnackbarStack` qui empile plusieurs notifications, gestion priorité + auto-dismiss + actions. |
-| **Bracket (arbre de compétition)** | ✅ retenu | L | **Nouveau** — composant `OrigamBracket` pour afficher un arbre de tournoi e-sport / sportif (single elimination, double elimination, round-robin). Connectors SVG entre les nodes. Données via prop `rounds: IBracketRound[]`. |
+| 1 | **OrigamGrid** | S | Composant déclaratif CSS Grid (`columns`, `rows`, `areas`, `gap`, `auto-flow`). Compat OK partout (CSS Grid stable depuis 2017). Pas de `subgrid` fallback — feature détectée via `useCssSupport`. |
+| 2 | **OrigamMasonry** | M | CSS-first via `grid-template-rows: masonry` (Firefox sous flag, Chrome 134+ via opt-in). JS fallback : algo bucket-fill + ResizeObserver (style à la imagesloaded + masonry.js maison). |
+| 3 | **OrigamBlockquote** | S | Typographie : citation + auteur + source + variants (default/elegant/quoted/minimal). Tokens dédiés. |
+| 4 | **OrigamEmptyState** | S | Placeholder pour absence de données. Slot illustration + title + description + actions. 5 presets visuels (no-data, no-results, error, offline, locked). |
+| 5 | **OrigamClipboard** | S | Mini-action wrapper (`<OrigamClipboard :value="..." />` autour d'un bouton/icône). Émit `@copy` + feedback "Copied!" 2s. Sans dépendance (navigator.clipboard + fallback execCommand). |
+| 6 | **OrigamInlineEdit** | M | Pattern edit-in-place. Click sur label → input apparaît avec valeur préremplie, Enter valide, Esc annule. v-model + validators. Slots `#display` et `#edit` customisables. ARIA `aria-live`. |
+| 7 | **OrigamNumberFormat** | S | Formatage i18n via `Intl.NumberFormat`. Props : `value`, `format` (`'currency'\|'percent'\|'unit'\|'decimal'\|'compact'`), `locale`, `currency`, `unit`, `notation` (`'compact'` → 1M / 1B), `maximumFractionDigits`, etc. Affichage pur (pas d'input). |
+| 8 | **OrigamQRCode** | M | Rendu SVG natif. Algo encode QR maison (basé sur la spec ISO/IEC 18004) OU mini-port de `qrcode-svg` (~3 kB). Props : `value`, `size`, `errorCorrectionLevel` (L/M/Q/H), `foreground`, `background`, `logo` (overlay au centre). |
+| 9 | **OrigamWatermark** | S | Overlay diagonal en répétition. Props : `text`, `image?`, `opacity`, `angle`, `gap`, `font-size`. Rendu CSS via `background-image: linear-gradient` + texte SVG OU canvas data-URI. Anti-tamper optionnel via MutationObserver (re-injection si supprimé du DOM). |
+| 10 | **OrigamVideo** | M | Player vidéo léger maison. Wrap `<video>` natif + UI custom (play/pause, scrubber, volume, fullscreen, PIP, captions, quality switch optionnel via HLS.js peerDep). Props : `src`, `poster`, `autoplay`, `controls` (custom/native/none), `tracks` (captions). Respect `prefers-reduced-motion` pour autoplay. |
+| 11 | **OrigamSound** | M | Player audio analogue (wrap `<audio>` + UI custom). Props : `src`, `cover`, `metadata` (artist/title/album), waveform optionnel (Web Audio API + analyser). Media Session API pour controls lock-screen. |
+| 12 | **OrigamCalendar** | XL | Calendar complet : vues mois/semaine/jour/agenda, navigation, events (start/end/color/category), range select, drag-to-create, recurring events (RRULE). 100% maison (pas de FullCalendar). Composable `useCalendar` pour la logique. Tokens dédiés pour grille + cellules + events. |
+| 13 | **OrigamChart** | XL | Charts custom inspirés Highcharts mais plus simples. SVG natif. Types : line / area / bar / column / pie / donut / scatter / radar. Animation entrée. Tooltip natif (réutilise `OrigamTooltip`). Légende (réutilise `OrigamChip`). Responsive via `viewBox`. Pas de dep externe (pas de d3, pas de chart.js). |
 
-### Enrichissements de composants existants **(M à L)**
+### Enrichissements transversaux color/bgColor (Wave 4)
 
-| Composant | Action | Effort | Note |
+| # | Item | Effort | Note |
 |---|---|---|---|
-| **OrigamParallax** | Étendre l'API | M | Aujourd'hui basique. Ajouter : multi-layer parallax (props `layers: IParallaxLayer[]` avec speeds différents), direction (horizontal / vertical / diagonal), easing curves customisables, événements (`@enter`, `@leave`, `@scroll-progress`), respect `prefers-reduced-motion`. |
-| **OrigamCode** | Syntax highlighting + format | M | Aujourd'hui = bloc texte brut. Intégrer `shiki` (déjà en devDep) pour highlight côté build (zero runtime cost) ou côté client si dynamique. Auto-format selon lang (`prettier` standalone optionnel via prop). Support des langs : `vue`, `ts`, `js`, `scss`, `json`, `bash`, `html`. Numérotation de lignes, copy button, line highlighting. |
-| **OrigamTextarea — RichText** | Nouveau mode | XL | **Maison, pas de library.** Mode `rich` qui transforme le textarea en éditeur léger. Spec minimale : **bold / italic / underline / lien / liste / heading / code inline**. Architecture `contenteditable` + parsing toolbar custom. Output `v-model` = HTML sanitizé ou Markdown (option). PAS de TipTap / ProseMirror / Quill — full ownership. |
-| **OrigamTextField — Mask** | Nouvelle prop | M | Ajouter prop `mask` (string ou objet) avec validation + autoformat. Patterns supportés : `phone:fr`, `phone:us`, `iban`, `siret`, `creditcard`, `date:iso`, `date:fr`, `time`, `postcode:fr`, ou pattern custom à la imask.js (`(##) ###-####`). Validation reactive, `@valid` event, `:error` côté UI. **Sans dépendance externe** (regexp + state machine maison). |
+| A | **Gradient support** | M | Étendre `useColor` / `useBackgroundColor` pour accepter `color="gradient(...)"` ou `color={ from: 'primary', to: 'success', direction: 135 }`. Generate `background: linear-gradient(135deg, var(--from), var(--to))`. Compatible avec les tokens (intents) ET les valeurs custom (hex). |
+| B | **Text-mask (transparent reveal)** | M | Mode `mask="text"` qui pose `background-clip: text` + `color: transparent` sur le texte, avec un background animé derrière (gradient + animation, ou image, ou video selon prop). Useful pour les headlines marketing. |
 
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
@@ -331,7 +365,19 @@ Industrialiser à chaque sprint, indépendamment des phases.
 
 ---
 
-## Annexe — Priorités P0 immédiates (cette semaine)
+## Annexe — État actuel post-publication
+
+Releases livrées :
+- `2.2.1` sur npm — premier publish public (publié)
+- `develop` (HEAD) — +10 features mergées via git flow depuis 2.2.1 :
+  - W1 : Tabs, SnackbarStack, Bracket, CommandPalette
+  - W2 : Parallax enrichi, Code (shiki), Textarea richtext, TextField mask
+  - W3 : Module Nuxt officiel, SSR safety audit
+- 378 TU verts (+158 vs 2.2.1), 0 dette lint.
+
+Prochain bump version : `2.3.0` minor (toutes les additions sont rétrocompat).
+
+## Annexe — Priorités P0 immédiates
 
 Si tu ne fais qu'une seule chose dans les 7 prochains jours :
 
