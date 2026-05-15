@@ -13,6 +13,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+_(empty — next features will land here.)_
+
+---
+
+## [2.3.0] — 2026-05-15
+
+> **The features release.** Four new components, four major
+> enrichments, an official Nuxt module, and a comprehensive SSR
+> safety audit. All additions are backward-compatible — drop-in
+> upgrade from 2.2.x. 378 unit tests (+158 vs 2.2.1), 0 lint errors.
+
 ### Added
 
 - `origam/nuxt` sub-export — official Nuxt 3 / Nuxt 4 module. Auto-imports
