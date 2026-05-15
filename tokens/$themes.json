@@ -69,6 +69,7 @@
       "component/picker": "enabled",
       "component/date-picker": "enabled",
       "component/date-picker-field": "enabled",
+      "component/code": "enabled",
       "component/color-picker": "enabled",
       "component/color-picker-field": "enabled",
       "component/select": "enabled",
@@ -94,7 +95,10 @@
       "component/kbd": "enabled",
       "component/stepper": "enabled",
       "component/timeline": "enabled",
-      "component/treeview": "enabled"
+      "component/treeview": "enabled",
+      "component/tabs": "enabled",
+      "component/snackbar-stack": "enabled",
+      "component/command-palette": "enabled"
     }
   },
   {
@@ -167,6 +171,7 @@
       "component/picker": "enabled",
       "component/date-picker": "enabled",
       "component/date-picker-field": "enabled",
+      "component/code": "enabled",
       "component/color-picker": "enabled",
       "component/color-picker-field": "enabled",
       "component/select": "enabled",
@@ -192,7 +197,10 @@
       "component/kbd": "enabled",
       "component/stepper": "enabled",
       "component/timeline": "enabled",
-      "component/treeview": "enabled"
+      "component/treeview": "enabled",
+      "component/tabs": "enabled",
+      "component/snackbar-stack": "enabled",
+      "component/command-palette": "enabled"
     }
   }
 ]

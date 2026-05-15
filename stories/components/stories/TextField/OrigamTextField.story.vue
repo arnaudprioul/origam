@@ -514,6 +514,100 @@
 			<div data-cy="textfield-inline-status">value = {{ inlineModel }}</div>
 		</Variant>
 
+		<!-- ── Mask ──────────────────────────────────────────────── -->
+
+		<Variant
+				title="Prop — mask (built-in patterns)"
+				:init-state="() => useStoryInitState<{ pattern: string }>({ pattern: 'phone:fr' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-text-field
+							v-model="maskBuiltinModel"
+							:mask="state.pattern"
+							label="Type a value"
+							data-cy="textfield-mask-builtin"
+							@valid="onMaskValid"
+							@complete="onMaskComplete"
+					/>
+					<div data-cy="textfield-mask-builtin-status">
+						unmasked = {{ maskBuiltinModel }} · valid = {{ maskBuiltinValid }} · complete = {{ maskBuiltinComplete }}
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.pattern" title="pattern" :options="maskBuiltinList"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — mask (custom pattern)"
+				:init-state="() => useStoryInitState<{ pattern: string }>({ pattern: '(##) ###-####' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-text-field
+							v-model="maskCustomModel"
+							:mask="state.pattern"
+							label="Custom pattern"
+							data-cy="textfield-mask-custom"
+					/>
+					<div data-cy="textfield-mask-custom-status">
+						unmasked = {{ maskCustomModel }}
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText v-model="state.pattern" title="pattern (# digit · A letter · * any · rest = literal)"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — mask (credit card with Luhn)">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-text-field
+						v-model="maskCreditModel"
+						mask="creditcard"
+						label="Card number"
+						data-cy="textfield-mask-creditcard"
+				/>
+				<div data-cy="textfield-mask-creditcard-status">
+					unmasked = {{ maskCreditModel }}
+				</div>
+				<small>Try 4111 1111 1111 1111 (valid Visa). Anything random will fail Luhn.</small>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — mask (IBAN)">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-text-field
+						v-model="maskIbanModel"
+						mask="iban"
+						label="IBAN"
+						data-cy="textfield-mask-iban"
+				/>
+				<div data-cy="textfield-mask-iban-status">
+					unmasked = {{ maskIbanModel }}
+				</div>
+				<small>Try GB82WEST12345698765432 (valid). The check is real mod-97.</small>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — valid / complete">
+			<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+				<origam-text-field
+						v-model="maskEmitModel"
+						mask="phone:fr"
+						label="French mobile"
+						data-cy="textfield-mask-emit"
+						@valid="onMaskEmitValid"
+						@complete="onMaskEmitComplete"
+				/>
+				<div data-cy="textfield-mask-emit-status">
+					valid-emits = {{ maskEmitValidCount }} · complete-emits = {{ maskEmitCompleteCount }}
+				</div>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Playground"
 				:init-state="() => useStoryInitState<ITextFieldProps>({
@@ -622,6 +716,49 @@
 	const emitControlModel      = ref('')
 	const emitMousedownModel    = ref('')
 	const playgroundModel       = ref('')
+
+	const maskBuiltinModel      = ref('')
+	const maskBuiltinValid      = ref(true)
+	const maskBuiltinComplete   = ref(false)
+	const maskCustomModel       = ref('')
+	const maskCreditModel       = ref('')
+	const maskIbanModel         = ref('')
+	const maskEmitModel         = ref('')
+	const maskEmitValidCount    = ref(0)
+	const maskEmitCompleteCount = ref(0)
+
+	const onMaskValid = (v: boolean): void => {
+		maskBuiltinValid.value = v
+		logEvent('valid', v)
+	}
+	const onMaskComplete = (payload: { complete: boolean, unmasked: string }): void => {
+		maskBuiltinComplete.value = payload.complete
+		logEvent('complete', payload)
+	}
+	const onMaskEmitValid = (v: boolean): void => {
+		maskEmitValidCount.value++
+		logEvent('valid', v)
+	}
+	const onMaskEmitComplete = (payload: { complete: boolean, unmasked: string }): void => {
+		maskEmitCompleteCount.value++
+		logEvent('complete', payload)
+	}
+
+	const maskBuiltinList: Array<IOptions<string>> = [
+		{ label: 'phone:fr',             value: 'phone:fr'             },
+		{ label: 'phone:us',             value: 'phone:us'             },
+		{ label: 'phone:international',  value: 'phone:international'  },
+		{ label: 'iban',                 value: 'iban'                 },
+		{ label: 'siret',                value: 'siret'                },
+		{ label: 'creditcard',           value: 'creditcard'           },
+		{ label: 'date:iso',             value: 'date:iso'             },
+		{ label: 'date:fr',              value: 'date:fr'              },
+		{ label: 'date:us',              value: 'date:us'              },
+		{ label: 'time',                 value: 'time'                 },
+		{ label: 'time:12h',             value: 'time:12h'             },
+		{ label: 'postcode:fr',          value: 'postcode:fr'          },
+		{ label: 'postcode:us',          value: 'postcode:us'          },
+	]
 
 	const typeList: Array<IOptions<string>> = [
 		{ label: 'text',   value: 'text'   },

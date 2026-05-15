@@ -9,6 +9,14 @@ export * from './Badge/badge.interface'
 
 export * from './BottomNav/bottom-nav.interface'
 
+export * from './Bracket/bracket.interface'
+export * from './Bracket/bracket-competitor.interface'
+export * from './Bracket/bracket-match.interface'
+export * from './Bracket/bracket-round.interface'
+export * from './Bracket/bracket-match-component.interface'
+export * from './Bracket/bracket-competitor-component.interface'
+export * from './Bracket/bracket-round-component.interface'
+
 export * from './Breadcrumb/breadcrumb.interface'
 export * from './Breadcrumb/breadcrumb-item.interface'
 export * from './Breadcrumb/breadcrumb-divider.interface'
@@ -34,6 +42,8 @@ export * from './Checkbox/checkbox-btn.interface'
 
 export * from './Chip/chip.interface'
 export * from './Chip/chip-group.interface'
+
+export * from './Code/code.interface'
 
 export * from './ColorPicker/color-picker.interface'
 export * from './ColorPicker/color-picker-canvas.interface'
@@ -191,6 +201,7 @@ export * from './Pagination/pagination.interface'
 
 export * from './Parallax/parallax.interface'
 export * from './Parallax/parallax-element.interface'
+export * from './Parallax/parallax-layer.interface'
 
 export * from './PasswordField/password-field.interface'
 export * from './PasswordField/password-requirement.interface'
@@ -230,6 +241,12 @@ export * from './SliderField/slider-field-thumb.interface'
 
 export * from './Snackbar/snackbar.interface'
 
+export * from './SnackbarStack/snackbar-stack.interface'
+export * from './SnackbarStack/snackbar-stack-item.interface'
+
+export * from './CommandPalette/command.interface'
+export * from './CommandPalette/command-palette.interface'
+
 export * from './Switch/switch.interface'
 export * from './Switch/switch-track.interface'
 
@@ -237,7 +254,15 @@ export * from './SystemBar/system-bar.interface'
 
 export * from './Table/table.interface'
 
+export * from './Tabs/tabs.interface'
+export * from './Tabs/tab.interface'
+export * from './Tabs/tab-panels.interface'
+export * from './Tabs/tab-panel.interface'
+
 export * from './TextareaField/textarea-field.interface'
+
+export * from './Textarea/textarea-rich.interface'
+export * from './Textarea/textarea-toolbar.interface'
 
 export * from './TextField/text-field.interface'
 
@@ -265,3 +290,7 @@ export * from './Stepper/stepper.interface'
 export * from './Timeline/timeline.interface'
 
 export * from './Treeview/treeview.interface'
+
+export * from './Mask/mask-options.interface'
+
+export * from './Nuxt/nuxt-module.interface'

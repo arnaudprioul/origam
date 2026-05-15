@@ -4,6 +4,9 @@ export * from './Img/img.enum'
 
 export * from './Charts/chart.enum'
 
+export * from './Code/code-lang.enum'
+export * from './Code/code-theme.enum'
+
 export * from './ColorPicker/color-picker.enum'
 
 export * from './Commons/commons.enum'
@@ -47,15 +50,29 @@ export * from './Grids/col.enum'
 
 export * from './Transition/transition.enum'
 
+export * from './Bracket/bracket-variant.enum'
+export * from './Bracket/bracket-match-status.enum'
+
 export * from './Card/card.enum'
 
 export * from './InfiniteScroll/infinite-scroll.enum'
 
 export * from './TextField/text-field.enum'
 
+export * from './Textarea/textarea-mode.enum'
+export * from './Textarea/textarea-output.enum'
+export * from './Textarea/textarea-toolbar-command.enum'
+export * from './Textarea/textarea-toolbar-position.enum'
+
 export * from './Parallax/parallax.enum'
 export * from './Parallax/parallax-element.enum'
+export * from './Parallax/parallax-direction.enum'
+export * from './Parallax/parallax-easing.enum'
 
 export * from './DataTable/data-table.enum'
 
 export * from './DatePicker/date-picker.enum'
+
+export * from './Tabs/tab-variant.enum'
+
+export * from './Mask/mask.enum'

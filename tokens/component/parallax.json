@@ -3,6 +3,9 @@
     "aspect-ratio":          { "$type": "other",       "$value": "16 / 9" },
     "transition-duration":   { "$type": "duration",    "$value": "{motion.duration.slow}" },
     "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+    "transition-duration-spring": { "$type": "duration", "$value": "{motion.duration.xslow}" },
+    "transition-easing-default": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+    "transition-easing-spring":  { "$type": "cubicBezier", "$value": "cubic-bezier(0.16, 1, 0.3, 1)" },
     "perspective":           { "$type": "other",       "$value": "1000px" },
     "transform-origin":      { "$type": "other",       "$value": "center center" },
     "translate-multiplier":  { "$type": "number",      "$value": 0.5 },
@@ -11,6 +14,11 @@
 
     "element": {
       "transition-duration":  { "$type": "duration",   "$value": "{motion.duration.medium}" }
+    },
+
+    "layer": {
+      "will-change":          { "$type": "other",      "$value": "transform" },
+      "transform-origin":     { "$type": "other",      "$value": "center center" }
     }
   }
 }

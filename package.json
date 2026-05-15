@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -62,6 +62,12 @@
     "./tokens/scss/utilities": "./dist/src/assets/scss/tokens/_origam-utilities.scss",
     "./tokens/types": "./dist/src/types/tokens.type.d.ts",
     "./origam": "./dist/src/origam.js",
+    "./nuxt": {
+      "types": "./dist/src/nuxt/module.d.ts",
+      "import": "./dist/src/nuxt/module.js",
+      "require": "./dist/src/nuxt/module.cjs",
+      "default": "./dist/src/nuxt/module.js"
+    },
     "./components": "./dist/src/components/index.js",
     "./components/*": "./dist/src/components/*/index.js",
     "./composables": "./dist/src/composables/index.js",
@@ -111,7 +117,8 @@
     "prepublishOnly": "npm run tokens:build && npm run server:build && npm run test:unit -- --run"
   },
   "dependencies": {
-    "@mdi/font": "^7.4.47"
+    "@mdi/font": "^7.4.47",
+    "shiki": "^3.8.1"
   },
   "peerDependencies": {
     "vue": "^3.5.0",
@@ -128,6 +135,7 @@
   },
   "devDependencies": {
     "@histoire/plugin-vue": "^1.0.0-beta.1",
+    "@nuxt/kit": "^4.4.5",
     "@playwright/test": "^1.48.0",
     "@tokens-studio/sd-transforms": "^1.2.9",
     "@types/jest": "^30.0.0",
@@ -144,7 +152,6 @@
     "markdown-it-deflist": "^3.0.0",
     "markdown-it-footnote": "^4.0.0",
     "sass": "^1.89.2",
-    "shiki": "^3.8.1",
     "style-dictionary": "^4.4.0",
     "ts-transformer-keys": "^0.4.4",
     "typescript": "^5.8.3",

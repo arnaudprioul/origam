@@ -61,3 +61,14 @@ export * from './DataTable/sort.util'
 export * from './DataTable/group.util'
 
 export * from './Charts/chart.util'
+
+export * from './CommandPalette/fuzzy-match.util'
+
+export * from './Code/parse-highlight-lines.util'
+
+export * from './Textarea/sanitize-html.util'
+export * from './Textarea/html-to-markdown.util'
+
+export * from './Mask/apply-mask.util'
+export * from './Mask/resolve-mask-config.util'
+export * from './Mask/validate-pattern.util'

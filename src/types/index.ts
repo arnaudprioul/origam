@@ -9,6 +9,11 @@ export * from './Badge/badge.type'
 
 export * from './BottomNav/bottom-nav.type'
 
+export * from './Bracket/bracket-variant.type'
+export * from './Bracket/bracket-direction.type'
+export * from './Bracket/bracket-match-status.type'
+export * from './Bracket/bracket-round-side.type'
+
 export * from './Breadcrumb/breadcrumb.type'
 export * from './Breadcrumb/breadcrumb-divider.type'
 export * from './Breadcrumb/breadcrumb-item.type'
@@ -31,6 +36,9 @@ export * from './Checkbox/checkbox-btn.type'
 
 export * from './Chip/chip.type'
 export * from './Chip/chip-group.type'
+
+export * from './Code/code-lang.type'
+export * from './Code/code-theme.type'
 
 export * from './ColorPicker/color-picker.type'
 export * from './ColorPicker/color-picker-canvas.type'
@@ -173,6 +181,8 @@ export * from './Pagination/pagination.type'
 
 export * from './Parallax/parallax.type'
 export * from './Parallax/parallax-element.type'
+export * from './Parallax/parallax-direction.type'
+export * from './Parallax/parallax-easing.type'
 
 export * from './PasswordField/password-field.type'
 export * from './PasswordField/password-strength.type'
@@ -209,12 +219,23 @@ export * from './SliderField/slider-field-thumb.type'
 
 export * from './Snackbar/snackbar.type'
 
+export * from './SnackbarStack/snackbar-stack.type'
+export * from './SnackbarStack/snackbar-stack-location.type'
+export * from './SnackbarStack/snackbar-stack-direction.type'
+
+export * from './CommandPalette/command-palette-hotkey.type'
+
 export * from './Switch/switch.type'
 export * from './Switch/switch-track.type'
 
 export * from './Table/table.type'
 
 export * from './TextareaField/textarea-field.type'
+
+export * from './Textarea/textarea-mode.type'
+export * from './Textarea/textarea-output.type'
+export * from './Textarea/textarea-toolbar-command.type'
+export * from './Textarea/textarea-toolbar-position.type'
 
 export * from './TextField/text-field.type'
 
@@ -242,6 +263,12 @@ export * from './Transition/window-y-translate.type'
 export * from './VirtualScroll/virtual-scroll.type'
 export * from './VirtualScroll/virtual-scroll-item.type'
 
+export * from './Tabs/tab-variant.type'
+export * from './Tabs/tabs.type'
+export * from './Tabs/tab.type'
+export * from './Tabs/tab-panels.type'
+export * from './Tabs/tab-panel.type'
+
 export * from './Window/window.type'
 export * from './Theme/theme.type'
 
@@ -256,6 +283,10 @@ export * from './Stepper/stepper.type'
 export * from './Timeline/timeline.type'
 
 export * from './Treeview/treeview.type'
+
+export * from './Mask/built-in-pattern.type'
+export * from './Mask/pattern-validator.type'
+export * from './Mask/mask.type'
 
 
 

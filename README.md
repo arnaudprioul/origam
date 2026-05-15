@@ -212,6 +212,28 @@ so the matrix stays auditable.
 
 ---
 
+## Nuxt integration
+
+origam ships an official Nuxt 3 / Nuxt 4 module as a sub-export — no
+separate package to install. Add `'origam/nuxt'` to your `modules` and
+get auto-imports for every component and composable, SSR-safe theme
+resolution (cookie + `Sec-CH-Prefers-Color-Scheme` — no FOUC, no
+hydration mismatch) and the right token stylesheets injected in order.
+
+```ts
+export default defineNuxtConfig({
+    modules: ['origam/nuxt'],
+    origam: {
+        themes: ['light', 'dark'],
+        defaultTheme: 'auto'
+    }
+})
+```
+
+Full reference: [`docs/integrations/nuxt.md`](./docs/integrations/nuxt.md).
+
+---
+
 ## Browser support
 
 | Browser         | Minimum    |

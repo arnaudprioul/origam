@@ -450,6 +450,135 @@
 				<HstCheckbox v-model="state.error"     title="error"/>
 			</template>
 		</Variant>
+
+		<Variant
+				title="Mode — rich (HTML output)"
+				:init-state="() => useStoryInitState<{ disabled?: boolean, readonly?: boolean }>({ disabled: false, readonly: false })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-textarea-field
+							v-model="richHtmlModel"
+							mode="rich"
+							output="html"
+							label="Rich editor (HTML)"
+							placeholder="Start typing — try Cmd+B, Cmd+I, Cmd+U…"
+							:disabled="state.disabled"
+							:readonly="state.readonly"
+							data-cy="textarea-rich-html"
+					/>
+					<pre data-cy="textarea-rich-html-output" style="font-size: 12px; padding: 8px; background: #f5f5f5; border-radius: 4px; white-space: pre-wrap;">{{ richHtmlModel || '(empty)' }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<HstCheckbox v-model="state.readonly" title="readonly"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Mode — rich (Markdown output)"
+		>
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-textarea-field
+							v-model="richMarkdownModel"
+							mode="rich"
+							output="markdown"
+							label="Rich editor (Markdown)"
+							placeholder="Bold / italic / links convert to Markdown on emit"
+							data-cy="textarea-rich-markdown"
+					/>
+					<pre data-cy="textarea-rich-markdown-output" style="font-size: 12px; padding: 8px; background: #f5f5f5; border-radius: 4px; white-space: pre-wrap;">{{ richMarkdownModel || '(empty)' }}</pre>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — toolbar (filtered)"
+		>
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-textarea-field
+							v-model="richToolbarFilteredModel"
+							mode="rich"
+							:toolbar="['bold', 'italic', 'link']"
+							label="Filtered toolbar"
+							placeholder="Only bold / italic / link are exposed"
+							data-cy="textarea-rich-toolbar-filtered"
+					/>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — toolbarPosition"
+				:init-state="() => useStoryInitState<{ toolbarPosition: 'top' | 'bottom' | 'floating' }>({ toolbarPosition: 'top' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-textarea-field
+							v-model="richToolbarPositionModel"
+							mode="rich"
+							:toolbar-position="state.toolbarPosition"
+							label="Toolbar position"
+							data-cy="textarea-rich-toolbar-position"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.toolbarPosition"
+						title="toolbarPosition"
+						:options="[
+							{ label: 'top', value: 'top' },
+							{ label: 'bottom', value: 'bottom' },
+							{ label: 'floating', value: 'floating' }
+						]"
+				/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Slot — toolbar"
+		>
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-textarea-field
+							v-model="richSlotToolbarModel"
+							mode="rich"
+							label="Custom toolbar slot"
+							data-cy="textarea-rich-slot-toolbar"
+					>
+						<template #toolbar="{ format, isFormat }">
+							<div role="toolbar" aria-label="Custom toolbar" style="display: flex; gap: 8px; padding: 8px;" data-cy="textarea-rich-slot-toolbar-custom">
+								<button type="button" :aria-pressed="isFormat('bold') ? 'true' : 'false'" data-cy="textarea-rich-slot-toolbar-bold" @click="format('bold')">B</button>
+								<button type="button" :aria-pressed="isFormat('italic') ? 'true' : 'false'" data-cy="textarea-rich-slot-toolbar-italic" @click="format('italic')">I</button>
+								<button type="button" :aria-pressed="isFormat('list-bullet') ? 'true' : 'false'" data-cy="textarea-rich-slot-toolbar-list" @click="format('list-bullet')">UL</button>
+							</div>
+						</template>
+					</origam-textarea-field>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Emit — format"
+		>
+			<template #default>
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-textarea-field
+							v-model="richEmitFormatModel"
+							mode="rich"
+							label="Emit format counter"
+							data-cy="textarea-rich-emit-format"
+							@format="handleRichFormatEmit"
+					/>
+					<div data-cy="textarea-rich-emit-format-count">format() invocations: {{ richEmitFormatCount }}</div>
+					<div data-cy="textarea-rich-emit-format-last">last command: {{ richEmitFormatLast || '(none)' }}</div>
+				</div>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -518,6 +647,21 @@
 	const emitControlModel       = ref('')
 	const emitMousedownModel     = ref('')
 	const playgroundModel        = ref('')
+
+	const richHtmlModel              = ref('<p>Hello <strong>world</strong></p>')
+	const richMarkdownModel          = ref('')
+	const richToolbarFilteredModel   = ref('')
+	const richToolbarPositionModel   = ref('<p>Try switching the toolbar position.</p>')
+	const richSlotToolbarModel       = ref('')
+	const richEmitFormatModel        = ref('')
+	const richEmitFormatCount        = ref(0)
+	const richEmitFormatLast         = ref<string>('')
+
+	const handleRichFormatEmit = (command: string) => {
+		richEmitFormatCount.value++
+		richEmitFormatLast.value = command
+		logEvent('format', { command })
+	}
 </script>
 
 <docs lang="md" src="@docs/components/TextareaField/OrigamTextareaField.md"/>

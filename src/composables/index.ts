@@ -64,8 +64,12 @@ export * from './Transition/transition.composable'
 export * from './Form/form.composable'
 export * from './Sheet/sheetSwipe.composable'
 export * from './Snackbar/snackbar.composable'
+export * from './SnackbarStack/snackbar-stack.composable'
+export * from './CommandPalette/command.composable'
+export * from './Code/code.composable'
 export * from './SliderField/slider-field.composable'
 export * from './Parallax/transform.composable'
+export * from './Parallax/parallax.composable'
 export * from './DataTable/group.composable'
 export * from './DataTable/sort.composable'
 export * from './DataTable/pagination.composable'
@@ -81,4 +85,8 @@ export * from './PasswordField/passwordStrength.composable'
 
 export * from './Theme/theme.composable'
 
+export * from './Textarea/textarea-rich.composable'
+
 export * from './CssSupport/cssSupport.composable'
+
+export * from './Mask/mask.composable'

@@ -11,6 +11,230 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [Unreleased]
+
+_(empty — next features will land here.)_
+
+---
+
+## [2.3.0] — 2026-05-15
+
+> **The features release.** Four new components, four major
+> enrichments, an official Nuxt module, and a comprehensive SSR
+> safety audit. All additions are backward-compatible — drop-in
+> upgrade from 2.2.x. 378 unit tests (+158 vs 2.2.1), 0 lint errors.
+
+### Added
+
+- `origam/nuxt` sub-export — official Nuxt 3 / Nuxt 4 module. Auto-imports
+  components and composables. SSR-safe theme resolution via cookie +
+  `Sec-CH-Prefers-Color-Scheme` header (no FOUC, no hydration mismatch).
+  Auto-injects token CSS files (primitive + selected themes + utilities).
+  Configurable via `origam: {}` in `nuxt.config.ts`. Resolves through
+  `modules: ['origam/nuxt']`. New `IOrigamNuxtModuleOptions` and
+  `IOrigamNuxtRuntimeConfig` interfaces; new theme constants
+  (`ORIGAM_THEME_AUTO`, `ORIGAM_THEME_LIGHT`, `ORIGAM_THEME_DARK`,
+  `ORIGAM_THEME_ATTR`, `ORIGAM_THEME_STORAGE_KEY`). Reference
+  documentation at `docs/integrations/nuxt.md`.
+
+### Changed
+
+- `OrigamTextField` — new `mask` prop with built-in patterns
+  (`phone:fr`, `phone:us`, `phone:international`, `iban`, `siret`,
+  `creditcard`, `date:iso`, `date:fr`, `date:us`, `time`, `time:12h`,
+  `postcode:fr`, `postcode:us`) plus a custom pattern syntax
+  (`#` = digit, `A` = letter, `*` = any, anything else is a literal).
+  In-house mask engine — zero external dependency (no `imask.js` /
+  `cleave.js` / `vue-the-mask`). Reactive validation pipeline with
+  built-in `luhn` (credit card), `iban` (mod-97) and date parsers
+  (`date:iso` / `date:fr` / `date:us`); custom validators accepted as
+  `(unmasked) => boolean`. New emits `@valid(boolean)` and
+  `@complete({ complete, unmasked })` fire on every value change. The
+  v-model exposes the **unmasked** value while the DOM input displays
+  the formatted (masked) one — paste handling strips literals and
+  reformats, `aria-invalid` toggles on touched fields, and the engine
+  auto-promotes phone-shaped patterns to `type="tel"` for mobile
+  keyboard hints. New `useMask` composable, `applyMask` / `unmaskValue`
+  / `resolveMaskConfig` / `validatePattern` utils, new `IMaskOptions`
+  interface and `TMask` / `TBuiltInPattern` / `TPatternValidator`
+  types.
+- `OrigamTextareaField` — new `mode="rich"` enabling a lightweight
+  HTML / Markdown editor based on `contenteditable`. Built in-house
+  with zero external dependencies (no TipTap, ProseMirror, Quill).
+  9 toolbar commands (`bold`, `italic`, `underline`, `link`,
+  `list-bullet`, `list-ordered`, `heading`, `code-inline`,
+  `clear-format`), customisable via the new `toolbar` prop (or
+  `toolbar: false` to hide). Keyboard shortcuts (Cmd/Ctrl+B/I/U/K/E
+  and Cmd/Ctrl+Shift+7/8 for the two list modes). New `output` prop
+  switches the v-model serialisation between `'html'` (sanitised) and
+  `'markdown'` (CommonMark-flavoured subset). New `toolbarPosition`
+  prop (`'top' | 'bottom' | 'floating'`). New `format` emit fired on
+  every toolbar click or keyboard shortcut with the command id (and
+  the URL for link insertion). New slots `#toolbar` and
+  `#toolbar-item` allow replacing the default UI entirely. Internal
+  sub-component `OrigamRichToolbar.vue` + composable
+  `useTextareaRich` own the contenteditable contract. In-house HTML
+  sanitiser with allowlist on tags (`p`, `br`, `strong`, `b`, `em`,
+  `i`, `u`, `a`, `ul`, `ol`, `li`, `h1`, `h2`, `h3`, `code`),
+  attributes (`href` restricted to `http:` / `https:` / `mailto:` /
+  `tel:` plus relative URLs; `class` restricted to the
+  `origam-rich--*` prefix), and stripping every `on*` event handler
+  before per-tag filtering. External links are auto-hardened with
+  `rel="noopener noreferrer nofollow" target="_blank"`. ARIA:
+  `role="toolbar" + aria-label` on the toolbar, real `<button>` per
+  command with `aria-label` + `aria-pressed`, the editing surface
+  carries `role="textbox" + aria-multiline="true"`. New tokens under
+  `component/textarea-field/rich-*` (toolbar surface, button states,
+  content padding, inline-code colors, link color, heading sizes).
+  The plain-mode (`mode="plain"`, default) API is fully
+  backward-compatible — passing nothing keeps the previous
+  `<textarea>` behaviour.
+
+- `OrigamCode` — major enrichment via shiki integration. Syntax
+  highlighting for 13 languages (vue, ts, js, tsx, jsx, scss, css, json,
+  bash, html, xml, yaml, md) plus `plaintext`. New props: `lineNumbers`,
+  `highlightLines` (accepts both `number[]` and the range syntax
+  `'2,5-7'`), `copyable`, `maxHeight`, `theme` (`'auto' | 'light' | 'dark'`),
+  `wrap`, `filename`. Copy button with `navigator.clipboard` and an
+  `execCommand('copy')` fallback for legacy WebViews. Lazy-init shiki
+  highlighter cached as a module-level singleton across instances; an
+  LRU (max 64 entries) caches highlighted HTML by `(code, lang, theme)`
+  so re-renders never re-tokenise. Theme defaults to `auto` and tracks
+  the host `<html data-theme>` attribute. New `useCode` composable
+  exposing `{ highlight, prime, isReady, resetCacheForTesting }`. New
+  utility `parseHighlightLines()` shared with stories/tests. Pure-CSS
+  line-numbers gutter (CSS counter, no JS layout) and line-highlight
+  swap (class toggle on already-rendered rows, no re-tokenisation).
+  ARIA: `role="region"` on the surface, `aria-live="polite"` on the
+  copy feedback, hidden line numbers. `shiki` (`^3.8.1`) promoted from
+  `devDependencies` to `dependencies` (it's a runtime dep now); the
+  bundle adds ~3 MB to installed `node_modules` for the curated subset.
+  New tokens under `component/code` (35 vars: surface, header, filename,
+  copy button, line-number gutter, line-highlight, scrollbar). The v2.x
+  plain-text `<pre>` API is fully backward-compatible — passing just
+  `code` and `lang` keeps the previous behaviour.
+
+- `OrigamParallax` — major enrichment. Multi-layer support via new
+  `OrigamParallaxLayer` subcomponent (`speed`, `offsetX`, `offsetY`,
+  `zIndex` props; layers register themselves into the host runtime and
+  receive direct DOM mutations of `transform` outside Vue reactivity).
+  Host gains `direction` (`'vertical' | 'horizontal' | 'both'`),
+  `easing` (`'linear' | 'ease-out' | 'spring'`, in addition to the
+  legacy raw CSS timing-function string), `disabled`, `speed`,
+  `threshold` props. New emits: `@enter`, `@leave`,
+  `@scroll-progress(0→1)` driven by `IntersectionObserver` +
+  `requestAnimationFrame`. `prefers-reduced-motion: reduce` is honoured
+  natively — layers stay at `translate3d(offsetX, offsetY, 0)` and the
+  rAF loop short-circuits. CSS-first scroll-driven animations
+  (`animation-timeline: view()`) when `view-timeline` is supported
+  (Chrome 115+, Edge 115+) AND `easing === 'linear'`; JS fallback
+  otherwise. Spring easing implemented as a damped lerp in the JS path.
+  Existing single-layer / `<OrigamParallaxElement>` API preserved (the
+  two layer kinds use independent injection contexts and can coexist
+  inside the same host). New tokens: `parallax.transition-duration-spring`,
+  `parallax.transition-easing-default` / `-spring`,
+  `parallax.layer.will-change` / `.transform-origin`.
+
+### Added
+
+- `OrigamCommandPalette` — ⌘K command launcher. Built on a teleported
+  dialog with focus trap + focus restoration. Custom subsequence-based
+  fuzzy-match algorithm (no external dep) ranks results by
+  consecutive-run + label-prefix + first-position bonuses. Composable
+  `useCommand` exposes a process-wide command registry — entries
+  registered inside a Vue effect scope auto-unregister on dispose.
+  Reuses `OrigamKbd` for inline shortcut display. Hotkey listener
+  built on `useHotkey` (default `⌘+K` on macOS, `Ctrl+K` on
+  Windows / Linux, configurable per combination or disabled with
+  `:hotkey="null"`). ARIA combobox pattern (`role="combobox"` on the
+  input, `role="listbox"` on the result list, `role="option"` per
+  item, `aria-activedescendant` tracking the keyboard cursor) +
+  `role="dialog"` + `aria-modal="true"` on the surface. Tokens exposed
+  under `tokens/component/command-palette.json`
+  (`--origam-command-palette---*`,
+  `--origam-command-palette__input---*`,
+  `--origam-command-palette__item---*`,
+  `--origam-command-palette__group-title---*`,
+  `--origam-command-palette__empty---*`,
+  `--origam-command-palette__footer---*`,
+  `--origam-command-palette--backdrop---*`).
+
+- `OrigamBracket` — e-sport tournament tree. Supports single-elimination,
+  double-elimination and round-robin variants. SVG connectors
+  auto-computed from `nextMatchId` (with positional fallback). Slots for
+  custom match / competitor / round-title / connector rendering. ARIA
+  `role="region"` with per-round `role="group"` + `aria-labelledby`
+  pointing at title headings. Tokens exposed under
+  `tokens/component/bracket.json` (`--origam-bracket---*`,
+  `--origam-bracket-match---*`, `--origam-bracket-competitor---*`,
+  `--origam-bracket-connector---*`, `--origam-bracket-round-robin---*`).
+
+- `OrigamSnackbarStack` — multi-toast notification system. Reuses
+  `OrigamSnackbar` styling vocabulary for rendering. Composable
+  `useSnackbarStack({ id })` exposes `notify` / `dismiss` /
+  `dismissAll`. 8 anchor locations, max stack size with FIFO eviction,
+  per-item auto-dismiss (or `0` for sticky), action buttons with
+  optional `keepOpen`, ARIA `role="region"` on the stack root +
+  `role="status"` / `"alert"` per intent on each item with matching
+  `aria-live`. Slide-in / slide-out transitions degrade to a fade under
+  `prefers-reduced-motion`. Tokens exposed under
+  `tokens/component/snackbar-stack.json`
+  (`--origam-snackbar-stack---*`, `--origam-snackbar-stack__item---*`).
+
+- `OrigamTabs` / `OrigamTab` / `OrigamTabPanels` / `OrigamTabPanel` —
+  full tab system with horizontal / vertical orientation, three visual
+  variants (`default` / `pills` / `underline`), ARIA `role="tablist"` +
+  `role="tab"` + `role="tabpanel"` wiring, full keyboard navigation
+  (`←`/`→`/`↑`/`↓`/`Home`/`End`/`Enter`/`Space`), lazy or eager panel
+  mounting, optional touch-swipeable panels. Reuses the shared
+  `useGroup` orchestration so the selection state, mandatory behaviour
+  and disabled-tab semantics align with the rest of the system
+  (`OrigamBtnToggle`, `OrigamCarousel`, `OrigamBottomNav`). Tokens
+  exposed under `tokens/component/tabs.json` (item color, indicator
+  color, panel padding, transition duration).
+
+- `OrigamClientOnly` — SSR helper component that renders its default
+  slot only after `onMounted`. Optional `#fallback` slot (or
+  `placeholder-tag` / `placeholder-class` props) reserves layout space
+  during SSR to avoid CLS. Use to wrap fragments whose markup truly must
+  differ between server and client (audio, deviceorientation,
+  IntersectionObserver-driven features, …) without triggering hydration
+  mismatches.
+
+- `useCssSupportClient(feature, { defaultValue })` — hydration-safe
+  feature-gate helper. Returns a `Ref<boolean>` that starts at
+  `defaultValue` (default `false`) on both SSR and first client render,
+  then flips to the real `CSS.supports()` result inside `onMounted`.
+  Use to gate **markup** branches (template `v-if`) when the regular
+  `useCssSupport().css.value.X` would produce a hydration mismatch
+  (class-only branches keep using the existing API — Vue 3 reconciles
+  class diffs fine).
+
+### Fixed
+
+- SSR safety — comprehensive audit of all composables and components
+  that previously could crash on server render (`window is not defined`,
+  `document is not defined`). `useCssSupport` already returned all-false
+  flags during SSR; the rest of the surface (`useTheme`, `useCommand`,
+  `useSnackbarStack`, `useCode`, `useMask`, `useTouch`, `useHotkey`,
+  `useSticky`, `useSheetSwipe`, `useScroll`, `useParallax`, `useStyleTag`,
+  `useTeleport`, `useLocationStrategies`, `useScrollStrategies`,
+  `useDisplay`) was confirmed safe via the audit and patched where a
+  composable's public method or a `computed` could be evaluated during
+  SSR. Specifically: `useAspectRatio` no longer dereferences
+  `window.innerWidth/Height` when no explicit `aspectRatio` prop is
+  given; `useVirtual`'s `viewportHeight` computed guards
+  `document.documentElement`; `useSnackbarStack.dismiss()` guards
+  `window.clearTimeout`. Overlay components (Dialog, Drawer, Menu,
+  Tooltip, Snackbar, ContextualMenu, SnackbarStack, CommandPalette)
+  confirmed SSR-safe via `<Teleport>` (Vue defers the mount until the
+  client). New guide `docs/guide/ssr.md`. New `src/__tests__/ssr-smoke.spec.ts`
+  exercises every refactored composable in a simulated SSR environment
+  (window/document/CSS stripped) **and** through `@vue/server-renderer`'s
+  real `renderToString()`.
+
+---
+
 ## [2.2.1] — 2026-05-14
 
 ### Fixed
