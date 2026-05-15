@@ -59,6 +59,11 @@ export * from './InfiniteScroll/infinite-scroll.enum'
 
 export * from './TextField/text-field.enum'
 
+export * from './Textarea/textarea-mode.enum'
+export * from './Textarea/textarea-output.enum'
+export * from './Textarea/textarea-toolbar-command.enum'
+export * from './Textarea/textarea-toolbar-position.enum'
+
 export * from './Parallax/parallax.enum'
 export * from './Parallax/parallax-element.enum'
 export * from './Parallax/parallax-direction.enum'

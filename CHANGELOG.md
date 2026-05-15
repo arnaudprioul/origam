@@ -15,6 +15,38 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Changed
 
+- `OrigamTextareaField` — new `mode="rich"` enabling a lightweight
+  HTML / Markdown editor based on `contenteditable`. Built in-house
+  with zero external dependencies (no TipTap, ProseMirror, Quill).
+  9 toolbar commands (`bold`, `italic`, `underline`, `link`,
+  `list-bullet`, `list-ordered`, `heading`, `code-inline`,
+  `clear-format`), customisable via the new `toolbar` prop (or
+  `toolbar: false` to hide). Keyboard shortcuts (Cmd/Ctrl+B/I/U/K/E
+  and Cmd/Ctrl+Shift+7/8 for the two list modes). New `output` prop
+  switches the v-model serialisation between `'html'` (sanitised) and
+  `'markdown'` (CommonMark-flavoured subset). New `toolbarPosition`
+  prop (`'top' | 'bottom' | 'floating'`). New `format` emit fired on
+  every toolbar click or keyboard shortcut with the command id (and
+  the URL for link insertion). New slots `#toolbar` and
+  `#toolbar-item` allow replacing the default UI entirely. Internal
+  sub-component `OrigamRichToolbar.vue` + composable
+  `useTextareaRich` own the contenteditable contract. In-house HTML
+  sanitiser with allowlist on tags (`p`, `br`, `strong`, `b`, `em`,
+  `i`, `u`, `a`, `ul`, `ol`, `li`, `h1`, `h2`, `h3`, `code`),
+  attributes (`href` restricted to `http:` / `https:` / `mailto:` /
+  `tel:` plus relative URLs; `class` restricted to the
+  `origam-rich--*` prefix), and stripping every `on*` event handler
+  before per-tag filtering. External links are auto-hardened with
+  `rel="noopener noreferrer nofollow" target="_blank"`. ARIA:
+  `role="toolbar" + aria-label` on the toolbar, real `<button>` per
+  command with `aria-label` + `aria-pressed`, the editing surface
+  carries `role="textbox" + aria-multiline="true"`. New tokens under
+  `component/textarea-field/rich-*` (toolbar surface, button states,
+  content padding, inline-code colors, link color, heading sizes).
+  The plain-mode (`mode="plain"`, default) API is fully
+  backward-compatible — passing nothing keeps the previous
+  `<textarea>` behaviour.
+
 - `OrigamCode` — major enrichment via shiki integration. Syntax
   highlighting for 13 languages (vue, ts, js, tsx, jsx, scss, css, json,
   bash, html, xml, yaml, md) plus `plaintext`. New props: `lineNumbers`,
