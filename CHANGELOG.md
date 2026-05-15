@@ -15,6 +15,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamClipboard` + `useClipboard` composable — copy-to-clipboard
+  helper. Wraps any trigger with `navigator.clipboard.writeText` +
+  `execCommand` fallback. Scoped `#default` slot exposes
+  `{ copy, copied, error }`. Auto-resetting feedback state after
+  configurable duration. ARIA `aria-live="polite"` on the feedback
+  overlay. SSR-safe (guards on `typeof navigator` /
+  `typeof document`). New `tokens/component/clipboard.json` (feedback
+  pill color, background, padding, border-radius, transition
+  duration).
 - `OrigamEmptyState` — placeholder for absent data. 5 visual presets
   (`no-data` / `no-results` / `error` / `offline` / `locked`) with
   auto icon + intent mapping via `EMPTY_STATE_PRESET_CONFIG`. Slots

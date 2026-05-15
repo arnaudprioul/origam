@@ -30,6 +30,8 @@ export * from './Chip'
 
 export * from './ClientOnly'
 
+export * from './Clipboard'
+
 export * from './Code'
 
 export * from './ColorPicker'
