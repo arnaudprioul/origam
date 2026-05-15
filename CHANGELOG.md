@@ -15,6 +15,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamSnackbarStack` — multi-toast notification system. Reuses
+  `OrigamSnackbar` styling vocabulary for rendering. Composable
+  `useSnackbarStack({ id })` exposes `notify` / `dismiss` /
+  `dismissAll`. 8 anchor locations, max stack size with FIFO eviction,
+  per-item auto-dismiss (or `0` for sticky), action buttons with
+  optional `keepOpen`, ARIA `role="region"` on the stack root +
+  `role="status"` / `"alert"` per intent on each item with matching
+  `aria-live`. Slide-in / slide-out transitions degrade to a fade under
+  `prefers-reduced-motion`. Tokens exposed under
+  `tokens/component/snackbar-stack.json`
+  (`--origam-snackbar-stack---*`, `--origam-snackbar-stack__item---*`).
+
 - `OrigamTabs` / `OrigamTab` / `OrigamTabPanels` / `OrigamTabPanel` —
   full tab system with horizontal / vertical orientation, three visual
   variants (`default` / `pills` / `underline`), ARIA `role="tablist"` +

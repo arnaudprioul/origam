@@ -209,6 +209,10 @@ export * from './SliderField/slider-field-thumb.type'
 
 export * from './Snackbar/snackbar.type'
 
+export * from './SnackbarStack/snackbar-stack.type'
+export * from './SnackbarStack/snackbar-stack-location.type'
+export * from './SnackbarStack/snackbar-stack-direction.type'
+
 export * from './Switch/switch.type'
 export * from './Switch/switch-track.type'
 

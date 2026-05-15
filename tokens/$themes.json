@@ -95,7 +95,8 @@
       "component/stepper": "enabled",
       "component/timeline": "enabled",
       "component/treeview": "enabled",
-      "component/tabs": "enabled"
+      "component/tabs": "enabled",
+      "component/snackbar-stack": "enabled"
     }
   },
   {
@@ -194,7 +195,8 @@
       "component/stepper": "enabled",
       "component/timeline": "enabled",
       "component/treeview": "enabled",
-      "component/tabs": "enabled"
+      "component/tabs": "enabled",
+      "component/snackbar-stack": "enabled"
     }
   }
 ]

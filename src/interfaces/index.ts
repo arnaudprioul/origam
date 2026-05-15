@@ -230,6 +230,9 @@ export * from './SliderField/slider-field-thumb.interface'
 
 export * from './Snackbar/snackbar.interface'
 
+export * from './SnackbarStack/snackbar-stack.interface'
+export * from './SnackbarStack/snackbar-stack-item.interface'
+
 export * from './Switch/switch.interface'
 export * from './Switch/switch-track.interface'
 
