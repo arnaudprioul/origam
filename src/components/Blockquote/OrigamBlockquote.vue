@@ -59,7 +59,7 @@
 		useSlots
 } from 'vue'
 
-	import { BLOCKQUOTE_DEFAULTS, QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
+	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
 	import type { IBlockquoteProps } from '../../interfaces'
 

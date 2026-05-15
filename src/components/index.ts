@@ -60,6 +60,8 @@ export * from './Divider'
 
 export * from './Drawer'
 
+export * from './EmptyState'
+
 export * from './ExpansionPanel'
 
 export * from './Field'

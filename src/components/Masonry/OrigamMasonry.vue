@@ -42,7 +42,7 @@
 
 	import { useCssSupport, useMasonry } from '../../composables'
 
-	import { GRID_GAP_SIZE_VAR, MASONRY_DEFAULTS } from '../../consts'
+	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
 	import type { IMasonryProps } from '../../interfaces'
 

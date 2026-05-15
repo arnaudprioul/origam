@@ -15,6 +15,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamEmptyState` — placeholder for absent data. 5 visual presets
+  (`no-data` / `no-results` / `error` / `offline` / `locked`) with
+  auto icon + intent mapping via `EMPTY_STATE_PRESET_CONFIG`. Slots
+  for `icon` / `title` / `description` / `actions` / `default` (full
+  layout override). Three sizes (`sm` / `md` / `lg`) and two
+  alignments (`center` / `left`). ARIA `role="status"` +
+  `aria-live="polite"` for dynamic empty transitions. New
+  `tokens/component/empty-state.json` (per-size padding / gap /
+  font-size, per-preset intent color).
 - `OrigamBlockquote` — typography component for long citations. 5
   variants (default / elegant / quoted / minimal / pull). Author +
   source + cite attribute support. Locale-aware decorative quote

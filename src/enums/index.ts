@@ -79,3 +79,5 @@ export * from './DatePicker/date-picker.enum'
 export * from './Tabs/tab-variant.enum'
 
 export * from './Mask/mask.enum'
+
+export * from './EmptyState/empty-state-preset.enum'
