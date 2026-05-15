@@ -2369,6 +2369,11 @@
   --origam-grids__col---padding-block-end: 8px;
   --origam-grids__spacer---flex-grow: 1;
   --origam-grids__spacer---min-size: 0px;
+  --origam-grid---gap-xs: 4px;
+  --origam-grid---gap-sm: 8px;
+  --origam-grid---gap-md: 16px;
+  --origam-grid---gap-lg: 24px;
+  --origam-grid---gap-xl: 32px;
   --origam-skeleton---background-color: #f5f5f5;
   --origam-skeleton---border-radius: 4px;
   --origam-skeleton---border-radius-circular: 9999px;

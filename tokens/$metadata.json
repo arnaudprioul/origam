@@ -87,6 +87,7 @@
     "component/slide",
     "component/transition",
     "component/grids",
+    "component/grid",
     "component/defaults-provider",
     "component/theme-provider",
     "component/skeleton",
