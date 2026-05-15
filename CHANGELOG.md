@@ -13,7 +13,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
-_(empty — next features will land here.)_
+### Added
+
+- `OrigamGrid` + `OrigamGridItem` — declarative CSS Grid wrapper. Props
+  for `columns` / `rows` / `areas` / `gap` (token or raw CSS) /
+  `autoFlow` / `align*` / `justify*` and the matching item-level
+  `column` / `row` / `area` / `*Self` shorthands. `GridItem` accepts
+  both object syntax (`{ start: 1, end: 5 }`, `{ start: 1, span: 4 }`)
+  and raw CSS strings (`'1 / 5'`, `'span 2'`) for fine-grained column /
+  row span control. New tokens `--origam-grid---gap-{xs,sm,md,lg,xl}`
+  resolved against `space.*` primitives. CSS Grid is stable since 2017
+  — no fallback needed.
 
 ---
 

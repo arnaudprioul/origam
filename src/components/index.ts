@@ -68,6 +68,8 @@ export * from './Form'
 
 export * from './Grids'
 
+export * from './Grid'
+
 export * from './Icon'
 
 export * from './Img'

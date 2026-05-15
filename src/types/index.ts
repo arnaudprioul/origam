@@ -136,6 +136,9 @@ export * from './Grids/container.type'
 export * from './Grids/row.type'
 export * from './Grids/spacer.type'
 
+export * from './Grid/grid-flow.type'
+export * from './Grid/grid-align.type'
+
 export * from './Icon/class-icon.type'
 export * from './Icon/component-icon.type'
 export * from './Icon/icon.type'
