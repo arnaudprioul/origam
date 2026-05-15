@@ -10,6 +10,8 @@ export * from './Badge'
 
 export * from './BottomNav'
 
+export * from './Bracket'
+
 export * from './Breadcrumb'
 
 export * from './Btn'
