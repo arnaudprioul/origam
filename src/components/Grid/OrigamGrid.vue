@@ -14,7 +14,7 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import { GRID_DEFAULTS, GRID_GAP_SIZE_VAR } from '../../consts'
+	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
 	import type { IGridProps } from '../../interfaces'
 

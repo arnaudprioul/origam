@@ -152,6 +152,8 @@ export * from './Divider/divider.interface'
 
 export * from './Drawer/drawer.interface'
 
+export * from './EmptyState/empty-state.interface'
+
 export * from './ExpensionPanel/expansion-panels.interface'
 export * from './ExpensionPanel/expansion-panel.interface'
 export * from './ExpensionPanel/expansion-panel-header.interface'

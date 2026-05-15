@@ -124,6 +124,10 @@ export * from './Divider/divider.type'
 
 export * from './Drawer/drawer.type'
 
+export * from './EmptyState/empty-state-preset.type'
+export * from './EmptyState/empty-state-size.type'
+export * from './EmptyState/empty-state-align.type'
+
 export * from './ExpansionPanel/expansion-panel.type'
 export * from './ExpansionPanel/expansion-panel-content.type'
 export * from './ExpansionPanel/expansion-panel-header.type'
