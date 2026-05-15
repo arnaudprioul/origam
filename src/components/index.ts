@@ -120,6 +120,8 @@ export * from './SliderField'
 
 export * from './Snackbar'
 
+export * from './SnackbarStack'
+
 export * from './Switch'
 
 export * from './SystemBar'
