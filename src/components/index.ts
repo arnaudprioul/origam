@@ -8,6 +8,8 @@ export * from './Avatar'
 
 export * from './Badge'
 
+export * from './Blockquote'
+
 export * from './BottomNav'
 
 export * from './Bracket'
