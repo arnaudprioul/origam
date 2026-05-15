@@ -96,7 +96,8 @@
       "component/timeline": "enabled",
       "component/treeview": "enabled",
       "component/tabs": "enabled",
-      "component/snackbar-stack": "enabled"
+      "component/snackbar-stack": "enabled",
+      "component/command-palette": "enabled"
     }
   },
   {
@@ -196,7 +197,8 @@
       "component/timeline": "enabled",
       "component/treeview": "enabled",
       "component/tabs": "enabled",
-      "component/snackbar-stack": "enabled"
+      "component/snackbar-stack": "enabled",
+      "component/command-palette": "enabled"
     }
   }
 ]

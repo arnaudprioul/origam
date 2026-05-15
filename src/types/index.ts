@@ -218,6 +218,8 @@ export * from './SnackbarStack/snackbar-stack.type'
 export * from './SnackbarStack/snackbar-stack-location.type'
 export * from './SnackbarStack/snackbar-stack-direction.type'
 
+export * from './CommandPalette/command-palette-hotkey.type'
+
 export * from './Switch/switch.type'
 export * from './Switch/switch-track.type'
 
