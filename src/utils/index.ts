@@ -65,3 +65,6 @@ export * from './Charts/chart.util'
 export * from './CommandPalette/fuzzy-match.util'
 
 export * from './Code/parse-highlight-lines.util'
+
+export * from './Textarea/sanitize-html.util'
+export * from './Textarea/html-to-markdown.util'

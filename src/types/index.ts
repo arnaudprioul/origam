@@ -232,6 +232,11 @@ export * from './Table/table.type'
 
 export * from './TextareaField/textarea-field.type'
 
+export * from './Textarea/textarea-mode.type'
+export * from './Textarea/textarea-output.type'
+export * from './Textarea/textarea-toolbar-command.type'
+export * from './Textarea/textarea-toolbar-position.type'
+
 export * from './TextField/text-field.type'
 
 export * from './Title/title.type'

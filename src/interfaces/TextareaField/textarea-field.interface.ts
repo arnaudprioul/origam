@@ -13,8 +13,16 @@ import type {
     IInputSlots,
     IMarginProps,
     IPaddingProps,
-    IRoundedProps
+    IRoundedProps,
+    ITextareaToolbarSlotProps
 } from '../../interfaces'
+
+import type {
+    TTextareaMode,
+    TTextareaOutput,
+    TTextareaToolbarCommand,
+    TTextareaToolbarPosition
+} from '../../types'
 
 export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps {
     autoGrow?: boolean
@@ -31,6 +39,26 @@ export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps
     maxRows?: number | string
     suffix?: string
     modelModifiers?: string | boolean
+    /**
+     * Render mode. `'plain'` (default) keeps the legacy `<textarea>` element.
+     * `'rich'` swaps it for a `contenteditable` surface + rich toolbar.
+     */
+    mode?: TTextareaMode
+    /**
+     * When `mode="rich"`, format of the value emitted via `update:modelValue`.
+     * `'html'` (default) emits sanitised HTML, `'markdown'` emits a
+     * conservative CommonMark subset.
+     */
+    output?: TTextareaOutput
+    /**
+     * Ordered list of toolbar commands to display in rich mode. Pass
+     * `false` to hide the toolbar entirely.
+     */
+    toolbar?: ReadonlyArray<TTextareaToolbarCommand> | false
+    /**
+     * Position of the toolbar relative to the editing surface in rich mode.
+     */
+    toolbarPosition?: TTextareaToolbarPosition
 }
 
 /**
@@ -41,6 +69,12 @@ export interface ITextareaFieldEmits extends IFieldEmits, IInputEmits {
     (e: 'update:height', height: number): void
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void
+    /**
+     * Emitted when a rich-text toolbar command is applied — either via a
+     * toolbar click or a keyboard shortcut. `value` carries the URL for
+     * link insertion; undefined otherwise.
+     */
+    (e: 'format', command: TTextareaToolbarCommand, value?: string): void
 }
 
 /**
@@ -50,4 +84,14 @@ export interface ITextareaFieldEmits extends IFieldEmits, IInputEmits {
 export interface ITextareaFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
     counter?: (data: { counter: string, max?: string | number, value: string | number }) => any
     field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    /** Replace the rich-text toolbar entirely (rich mode only). */
+    toolbar?: (data: ITextareaToolbarSlotProps) => any
+    /** Replace a single toolbar button (rich mode only). */
+    'toolbar-item'?: (data: {
+        command: TTextareaToolbarCommand
+        label: string
+        icon: string
+        isActive: boolean
+        onClick: () => void
+    }) => any
 }

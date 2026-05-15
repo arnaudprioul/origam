@@ -79,7 +79,56 @@
 								name="default"
 								v-bind="{ref, ...fieldSlotProps}"
 						/>
+						<template v-if="isRichMode">
+							<slot
+									v-if="toolbarPosition !== TEXTAREA_TOOLBAR_POSITION.BOTTOM"
+									name="toolbar"
+									v-bind="toolbarSlotPayload"
+							>
+								<origam-rich-toolbar
+										v-if="hasToolbar"
+										:items="resolvedToolbar"
+										:active="richActive"
+										:position="toolbarPosition"
+										:disabled="isDisabled"
+										@format="handleRichFormat"
+								/>
+							</slot>
+							<div
+									ref="richHostRef"
+									class="origam-textarea-field__rich"
+									role="textbox"
+									aria-multiline="true"
+									:aria-disabled="isDisabled || undefined"
+									:aria-readonly="isReadonly || undefined"
+									:aria-label="placeholder || undefined"
+									:contenteditable="(!isDisabled && !isReadonly) ? 'true' : 'false'"
+									:data-empty="!hasRichContent"
+									:data-placeholder="placeholder || ''"
+									data-cy="origam-textarea-rich-host"
+									@input="handleRichInput"
+									@keydown="handleRichKeydown"
+									@paste="handleRichPaste"
+									@focus="handleFocus"
+									@blur="handleBlur"
+							/>
+							<slot
+									v-if="toolbarPosition === TEXTAREA_TOOLBAR_POSITION.BOTTOM"
+									name="toolbar"
+									v-bind="toolbarSlotPayload"
+							>
+								<origam-rich-toolbar
+										v-if="hasToolbar"
+										:items="resolvedToolbar"
+										:active="richActive"
+										:position="toolbarPosition"
+										:disabled="isDisabled"
+										@format="handleRichFormat"
+								/>
+							</slot>
+						</template>
 						<textarea
+								v-else
 								ref="textareaRef"
 								v-intersect="intersect"
 								:autofocus="autofocus"
@@ -96,7 +145,7 @@
 						/>
 					</div>
 					<div
-							v-if="!autoGrow && !noResize"
+							v-if="!autoGrow && !noResize && !isRichMode"
 							ref="verticalDragger"
 							class="origam-textarea-field__grip"
 					>
@@ -214,6 +263,8 @@
 	} from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
+	import OrigamRichToolbar from './OrigamRichToolbar.vue'
+
 	import {
 	useAdjacent,
 	useAdjacentInner,
@@ -223,18 +274,32 @@
 	useLocale,
 	useProps,
 	useStyle,
+	useTextareaRich,
 	useVModel
 } from '../../composables'
 
+	import { DEFAULT_TOOLBAR } from '../../consts'
+
 	import { vIntersect } from '../../directives'
 
-	import { AXIS, DENSITY, MDI_ICONS } from '../../enums'
+	import {
+		AXIS,
+		DENSITY,
+		MDI_ICONS,
+		TEXTAREA_MODE,
+		TEXTAREA_OUTPUT,
+		TEXTAREA_TOOLBAR_POSITION
+	} from '../../enums'
 
 	import type { ITextareaFieldEmits, ITextareaFieldProps, ITextareaFieldSlots } from '../../interfaces'
 
-	import type { TOrigamField, TOrigamInput } from '../../types'
+	import type {
+		TOrigamField,
+		TOrigamInput,
+		TTextareaToolbarCommand
+	} from '../../types'
 
-	import { clamp, convertToUnit, filterInputAttrs, forwardRefs } from '../../utils'
+	import { clamp, convertToUnit, filterInputAttrs, forwardRefs, htmlToMarkdown, sanitizeHtml } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -244,7 +309,11 @@
 		density: DENSITY.DEFAULT,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		rounded: true,
-		rows: 3
+		rows: 3,
+		mode: TEXTAREA_MODE.PLAIN,
+		output: TEXTAREA_OUTPUT.HTML,
+		toolbar: () => DEFAULT_TOOLBAR as ReadonlyArray<TTextareaToolbarCommand>,
+		toolbarPosition: TEXTAREA_TOOLBAR_POSITION.TOP
 	})
 	const props = useDefaults(_props)
 
@@ -262,6 +331,94 @@
 	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Rich-text mode
+	 *
+	 * @description
+	 * When mode === 'rich' we swap the <textarea> for a contenteditable
+	 * surface. The useTextareaRich composable owns the formatting
+	 * commands, active-state detection and HTML sanitisation; the host
+	 * component just glues it to the existing Field shell and translates
+	 * the sanitised HTML to Markdown when `output === 'markdown'`.
+	 ********************************************************/
+
+	const isRichMode = computed(() => props.mode === TEXTAREA_MODE.RICH)
+	const hasToolbar = computed(() => props.toolbar !== false && resolvedToolbar.value.length > 0)
+	const resolvedToolbar = computed<ReadonlyArray<TTextareaToolbarCommand>>(() => {
+		if (props.toolbar === false) return []
+		return Array.isArray(props.toolbar) ? (props.toolbar as ReadonlyArray<TTextareaToolbarCommand>) : DEFAULT_TOOLBAR
+	})
+
+	let isApplyingExternal = false
+
+	const richInitialHtml = computed(() => {
+		if (!isRichMode.value) return ''
+		const v = (model.value ?? '').toString()
+		// Markdown round-trip isn't symmetrical here — we expect HTML on
+		// input even in markdown-output mode. The host is responsible for
+		// pre-loading content as HTML.
+		return sanitizeHtml(v)
+	})
+
+	const rich = useTextareaRich({
+		disabled: () => !!attrs.disabled || !!props.readonly,
+		value: () => richInitialHtml.value,
+		onUpdate: (html: string) => {
+			if (isApplyingExternal) return
+			const next = props.output === TEXTAREA_OUTPUT.MARKDOWN ? htmlToMarkdown(html) : html
+			if (model.value !== next) model.value = next
+		},
+		onFormat: (command, value) => {
+			emits('format', command, value)
+		}
+	})
+
+	const richHostRef = rich.hostRef
+	const richActive = rich.active
+	const handleRichInput = rich.onInput
+	const handleRichKeydown = rich.onKeydown
+	const handleRichPaste = rich.onPaste
+
+	const handleRichFormat = (command: TTextareaToolbarCommand, value?: string) => {
+		rich.format(command, value)
+	}
+
+	const hasRichContent = computed(() => {
+		const v = (model.value ?? '').toString().trim()
+		return v !== ''
+	})
+
+	const toolbarSlotPayload = computed(() => ({
+		format: rich.format,
+		isFormat: rich.isFormatActive,
+		items: resolvedToolbar.value,
+		active: richActive
+	}))
+
+	// Keep the contenteditable host in sync when the v-model changes
+	// from the outside (e.g. parent resets the value). We only push
+	// changes when the model actually diverges from the host innerHTML
+	// to avoid clobbering the caret on every keystroke.
+	watch(() => model.value, (next) => {
+		if (!isRichMode.value || !richHostRef.value) return
+		if (props.output === TEXTAREA_OUTPUT.MARKDOWN) {
+			// Cannot meaningfully sync markdown back into the host —
+			// only re-seed if the host is currently empty.
+			if (!richHostRef.value.innerHTML) {
+				isApplyingExternal = true
+				rich.setValue(sanitizeHtml((next ?? '').toString()))
+				isApplyingExternal = false
+			}
+			return
+		}
+		const cleaned = sanitizeHtml((next ?? '').toString())
+		if (richHostRef.value.innerHTML !== cleaned) {
+			isApplyingExternal = true
+			rich.setValue(cleaned)
+			isApplyingExternal = false
+		}
+	})
 
 	/*********************************************************
 	 * Adjacent inner
@@ -447,7 +604,7 @@
 	const controlHeight = shallowRef(0)
 
 	const calculateInputHeight = () => {
-		if (!props.autoGrow) return
+		if (!props.autoGrow || isRichMode.value) return
 
 		nextTick(() => {
 			if (!textareaRef.value) return
@@ -701,6 +858,71 @@
 			&:hover {
 				color: currentColor;
 				background-color: color-mix(in srgb, currentColor 30%, transparent)
+			}
+		}
+
+		&__rich {
+			flex: 1 1 auto;
+			width: 100%;
+			min-height: var(--origam-textarea-field__rich-content---min-height);
+			padding: var(--origam-textarea-field__rich-content---padding);
+			outline: none;
+			line-height: var(--origam-textarea-field__rich-content---line-height);
+			color: inherit;
+			white-space: pre-wrap;
+			word-break: break-word;
+			overflow-wrap: anywhere;
+
+			&[data-empty="true"]::before {
+				content: attr(data-placeholder);
+				color: var(--origam-textarea-field__rich-content---placeholder-color);
+				pointer-events: none;
+			}
+
+			:deep(p) {
+				margin: 0 0 var(--origam-textarea-field__rich-content---paragraph-gap);
+			}
+
+			:deep(p:last-child) {
+				margin-bottom: 0;
+			}
+
+			:deep(a) {
+				color: var(--origam-textarea-field__rich-link---color);
+				text-decoration: var(--origam-textarea-field__rich-link---text-decoration);
+			}
+
+			:deep(code) {
+				background-color: var(--origam-textarea-field__rich-code-inline---bg-color);
+				color: var(--origam-textarea-field__rich-code-inline---color);
+				padding: 0.1em 0.35em;
+				border-radius: 3px;
+				font-family: var(--origam-font---code, ui-monospace, SFMono-Regular, monospace);
+				font-size: 0.92em;
+			}
+
+			:deep(ul),
+			:deep(ol) {
+				margin: 0 0 var(--origam-textarea-field__rich-content---paragraph-gap);
+				padding-inline-start: var(--origam-textarea-field__rich-list---padding-inline-start);
+			}
+
+			:deep(h1) {
+				font-size: var(--origam-textarea-field__rich-heading---font-size-h1);
+				font-weight: 700;
+				margin: 0 0 var(--origam-textarea-field__rich-content---paragraph-gap);
+			}
+
+			:deep(h2) {
+				font-size: var(--origam-textarea-field__rich-heading---font-size-h2);
+				font-weight: 700;
+				margin: 0 0 var(--origam-textarea-field__rich-content---paragraph-gap);
+			}
+
+			:deep(h3) {
+				font-size: var(--origam-textarea-field__rich-heading---font-size-h3);
+				font-weight: 600;
+				margin: 0 0 var(--origam-textarea-field__rich-content---paragraph-gap);
 			}
 		}
 	}
