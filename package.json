@@ -111,7 +111,8 @@
     "prepublishOnly": "npm run tokens:build && npm run server:build && npm run test:unit -- --run"
   },
   "dependencies": {
-    "@mdi/font": "^7.4.47"
+    "@mdi/font": "^7.4.47",
+    "shiki": "^3.8.1"
   },
   "peerDependencies": {
     "vue": "^3.5.0",
@@ -144,7 +145,6 @@
     "markdown-it-deflist": "^3.0.0",
     "markdown-it-footnote": "^4.0.0",
     "sass": "^1.89.2",
-    "shiki": "^3.8.1",
     "style-dictionary": "^4.4.0",
     "ts-transformer-keys": "^0.4.4",
     "typescript": "^5.8.3",

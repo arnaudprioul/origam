@@ -37,6 +37,9 @@ export * from './Checkbox/checkbox-btn.type'
 export * from './Chip/chip.type'
 export * from './Chip/chip-group.type'
 
+export * from './Code/code-lang.type'
+export * from './Code/code-theme.type'
+
 export * from './ColorPicker/color-picker.type'
 export * from './ColorPicker/color-picker-canvas.type'
 export * from './ColorPicker/color-picker-preview.type'

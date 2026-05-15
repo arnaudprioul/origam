@@ -63,3 +63,5 @@ export * from './DataTable/group.util'
 export * from './Charts/chart.util'
 
 export * from './CommandPalette/fuzzy-match.util'
+
+export * from './Code/parse-highlight-lines.util'
