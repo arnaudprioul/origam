@@ -237,6 +237,11 @@ export * from './SystemBar/system-bar.interface'
 
 export * from './Table/table.interface'
 
+export * from './Tabs/tabs.interface'
+export * from './Tabs/tab.interface'
+export * from './Tabs/tab-panels.interface'
+export * from './Tabs/tab-panel.interface'
+
 export * from './TextareaField/textarea-field.interface'
 
 export * from './TextField/text-field.interface'

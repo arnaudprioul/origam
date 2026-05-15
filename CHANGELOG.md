@@ -11,6 +11,24 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- `OrigamTabs` / `OrigamTab` / `OrigamTabPanels` / `OrigamTabPanel` —
+  full tab system with horizontal / vertical orientation, three visual
+  variants (`default` / `pills` / `underline`), ARIA `role="tablist"` +
+  `role="tab"` + `role="tabpanel"` wiring, full keyboard navigation
+  (`←`/`→`/`↑`/`↓`/`Home`/`End`/`Enter`/`Space`), lazy or eager panel
+  mounting, optional touch-swipeable panels. Reuses the shared
+  `useGroup` orchestration so the selection state, mandatory behaviour
+  and disabled-tab semantics align with the rest of the system
+  (`OrigamBtnToggle`, `OrigamCarousel`, `OrigamBottomNav`). Tokens
+  exposed under `tokens/component/tabs.json` (item color, indicator
+  color, panel padding, transition duration).
+
+---
+
 ## [2.2.1] — 2026-05-14
 
 ### Fixed
