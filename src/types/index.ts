@@ -7,6 +7,10 @@ export * from './Avatar/avatar.type'
 
 export * from './Badge/badge.type'
 
+export * from './Blockquote/blockquote-variant.type'
+export * from './Blockquote/blockquote-lang.type'
+export * from './Blockquote/blockquote-align.type'
+
 export * from './BottomNav/bottom-nav.type'
 
 export * from './Bracket/bracket-variant.type'

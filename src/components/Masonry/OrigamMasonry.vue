@@ -59,11 +59,11 @@
 	 * consumer.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IMasonryProps>(), {
-		tag: MASONRY_DEFAULTS.tag,
-		columns: MASONRY_DEFAULTS.columns,
-		gap: MASONRY_DEFAULTS.gap,
-		animated: MASONRY_DEFAULTS.animated,
-		align: MASONRY_DEFAULTS.align,
+		tag: 'div',
+		columns: 3,
+		gap: 'md',
+		animated: true,
+		align: 'top',
 		columnBreakpoints: undefined
 	})
 

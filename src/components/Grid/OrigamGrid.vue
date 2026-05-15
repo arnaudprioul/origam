@@ -32,14 +32,14 @@
 	 * Chrome 57) so we lean on the platform.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IGridProps>(), {
-		tag: GRID_DEFAULTS.tag,
-		columns: GRID_DEFAULTS.columns,
-		rows: GRID_DEFAULTS.rows,
-		gap: GRID_DEFAULTS.gap,
-		autoFlow: GRID_DEFAULTS.autoFlow,
-		alignItems: GRID_DEFAULTS.alignItems,
-		justifyItems: GRID_DEFAULTS.justifyItems,
-		inline: GRID_DEFAULTS.inline,
+		tag: 'div',
+		columns: 'auto',
+		rows: 'auto',
+		gap: 'md',
+		autoFlow: 'row',
+		alignItems: 'stretch',
+		justifyItems: 'stretch',
+		inline: false,
 		columnGap: undefined,
 		rowGap: undefined,
 		alignContent: undefined,

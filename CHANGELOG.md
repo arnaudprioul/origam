@@ -15,6 +15,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamBlockquote` — typography component for long citations. 5
+  variants (default / elegant / quoted / minimal / pull). Author +
+  source + cite attribute support. Locale-aware decorative quote
+  marks (fr / en / es / de). Slots for custom author / source
+  rendering. ARIA via native blockquote semantics.
 - `OrigamMasonry` — Pinterest-style masonry layout. CSS-first via
   `grid-template-rows: masonry` when supported (detected via
   `useCssSupport` — new `masonry` feature flag in the registry). JS

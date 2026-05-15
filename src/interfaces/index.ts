@@ -7,6 +7,8 @@ export * from './Avatar/avatar-group.interface'
 
 export * from './Badge/badge.interface'
 
+export * from './Blockquote/blockquote.interface'
+
 export * from './BottomNav/bottom-nav.interface'
 
 export * from './Bracket/bracket.interface'

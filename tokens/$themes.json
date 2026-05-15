@@ -99,7 +99,8 @@
       "component/treeview": "enabled",
       "component/tabs": "enabled",
       "component/snackbar-stack": "enabled",
-      "component/command-palette": "enabled"
+      "component/command-palette": "enabled",
+      "component/blockquote": "enabled"
     }
   },
   {
@@ -202,7 +203,8 @@
       "component/treeview": "enabled",
       "component/tabs": "enabled",
       "component/snackbar-stack": "enabled",
-      "component/command-palette": "enabled"
+      "component/command-palette": "enabled",
+      "component/blockquote": "enabled"
     }
   }
 ]

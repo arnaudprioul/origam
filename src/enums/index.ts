@@ -50,6 +50,9 @@ export * from './Grids/col.enum'
 
 export * from './Transition/transition.enum'
 
+export * from './Blockquote/blockquote-variant.enum'
+export * from './Blockquote/blockquote-lang.enum'
+
 export * from './Bracket/bracket-variant.enum'
 export * from './Bracket/bracket-match-status.enum'
 
