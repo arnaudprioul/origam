@@ -178,6 +178,8 @@ export * from './Pagination/pagination.type'
 
 export * from './Parallax/parallax.type'
 export * from './Parallax/parallax-element.type'
+export * from './Parallax/parallax-direction.type'
+export * from './Parallax/parallax-easing.type'
 
 export * from './PasswordField/password-field.type'
 export * from './PasswordField/password-strength.type'

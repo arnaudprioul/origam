@@ -58,6 +58,8 @@ export * from './TextField/text-field.enum'
 
 export * from './Parallax/parallax.enum'
 export * from './Parallax/parallax-element.enum'
+export * from './Parallax/parallax-direction.enum'
+export * from './Parallax/parallax-easing.enum'
 
 export * from './DataTable/data-table.enum'
 
