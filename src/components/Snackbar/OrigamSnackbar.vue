@@ -95,6 +95,7 @@
 		usePosition,
 		useProps,
 		useScopeId,
+		useStateEffect,
 		useStatus,
 		useStyle,
 		useToggleScope,
@@ -251,6 +252,15 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	const {
+		roundedClasses, roundedStyles,
+		borderClasses, borderStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+		elevationClasses
+	} = useStateEffect(props)
+
 	/*********************************************************
 	 * Forwarded props
 	 ********************************************************/
