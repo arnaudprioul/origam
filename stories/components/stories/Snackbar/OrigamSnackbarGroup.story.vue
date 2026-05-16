@@ -1,7 +1,7 @@
 <template>
 	<Story
 			group="components"
-			title="SnackbarGroup/OrigamSnackbarGroup"
+			title="Snackbar/OrigamSnackbarGroup"
 	>
 		<Variant
 				title="Playground"
@@ -301,4 +301,4 @@
 	}
 </style>
 
-<docs lang="md" src="@docs/components/SnackbarGroup/OrigamSnackbarGroup.md"/>
+<docs lang="md" src="@docs/components/Snackbar/OrigamSnackbarGroup.md"/>

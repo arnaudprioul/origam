@@ -100,3 +100,6 @@ export * from './QRCode/qrcode.composable'
 export * from './Watermark/watermark.composable'
 
 export * from './Video/video-player.composable'
+
+export * from './Sound/audio-player.composable'
+export * from './Sound/waveform.composable'

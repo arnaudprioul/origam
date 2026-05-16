@@ -181,3 +181,5 @@ export * from './QRCode'
 export * from './Watermark'
 
 export * from './Video'
+
+export * from './Sound'

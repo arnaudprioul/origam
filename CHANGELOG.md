@@ -15,6 +15,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamSound` + `useAudioPlayer` + `useWaveform` composables —
+  in-house audio player. Wraps native `<audio>` with custom UI
+  (play/pause, scrubber, volume, optional waveform via
+  `OfflineAudioContext`). Media Session API integration for
+  lock-screen controls + metadata (title/artist/album/artwork).
+  Cover image. 3 controls modes (custom/native/none). Respects
+  `prefers-reduced-motion`. Zero external dep — no wavesurfer.js /
+  howler. ARIA: dynamic aria-labels, `role="slider"` on scrubber,
+  `role="img"` on waveform canvas. SSR-safe (Web Audio guarded).
+  New `tokens/component/sound.json` (background, cover, metadata,
+  controls, btn, time, scrubber, volume, waveform groups; aligned
+  with light/dark themes).
 - `OrigamVideo` + `useVideoPlayer` composable — in-house video player.
   Wraps native `<video>` with custom UI (play/pause, scrubber, volume,
   fullscreen, PIP, captions). 3 controls modes (custom/native/none).

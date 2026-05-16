@@ -319,3 +319,6 @@ export * from './Watermark/watermark.interface'
 
 export * from './Video/video.interface'
 export * from './Video/video-track.interface'
+
+export * from './Sound/sound.interface'
+export * from './Sound/sound-metadata.interface'
