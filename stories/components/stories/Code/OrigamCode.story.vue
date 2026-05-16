@@ -12,7 +12,6 @@
 					highlightLines: '2',
 					copyable: true,
 					maxHeight: null,
-					theme: CODE_THEME.AUTO,
 					wrap: false,
 					format: false,
 					filename: 'App.ts'
@@ -23,7 +22,6 @@
 			</template>
 			<template #controls="{ state }">
 				<HstSelect   v-model="state.lang"           title="lang"           :options="codeLangList"/>
-				<HstSelect   v-model="state.theme"          title="theme"          :options="codeThemeList"/>
 				<HstText     v-model="state.highlightLines" title="highlight-lines (e.g. '2,5-7')"/>
 				<HstText     v-model="state.filename"       title="filename"/>
 				<HstNumber   v-model="state.maxHeight"      title="max-height (px, blank = none)"/>
@@ -49,19 +47,6 @@
 
 		<Variant title="Prop — highlightLines (2,5-7)">
 			<origam-code :lang="CODE_LANG.TS" :code="tenLineSnippet" line-numbers highlight-lines="2,5-7"/>
-		</Variant>
-
-		<Variant title="Prop — theme (light vs dark)">
-			<div :style="stackStyle">
-				<div>
-					<h4 :style="langTitleStyle">theme = light</h4>
-					<origam-code :lang="CODE_LANG.TS" :code="shortSnippet" :theme="CODE_THEME.LIGHT" filename="light.ts"/>
-				</div>
-				<div>
-					<h4 :style="langTitleStyle">theme = dark</h4>
-					<origam-code :lang="CODE_LANG.TS" :code="shortSnippet" :theme="CODE_THEME.DARK" filename="dark.ts"/>
-				</div>
-			</div>
 		</Variant>
 
 		<Variant title="Prop — filename (header visible)">
@@ -113,6 +98,10 @@
 		<Variant title="Prop — tag=div (back-compat)">
 			<origam-code tag="div" :lang="CODE_LANG.TS" :code="shortSnippet" filename="div-compat.ts" line-numbers/>
 		</Variant>
+
+		<Variant title="Syntax — CSS variables theming">
+			<origam-code :lang="CODE_LANG.TS" :code="shortSnippet" line-numbers filename="theme-tokens.ts"/>
+		</Variant>
 	</Story>
 </template>
 
@@ -123,9 +112,9 @@
 	import { reactive, ref, type CSSProperties } from 'vue'
 
 	import { OrigamCode } from '@origam/components'
-	import { CODE_LANG, CODE_THEME } from '@origam/enums'
+	import { CODE_LANG } from '@origam/enums'
 	import type { ICodeProps, IOptions } from '@origam/interfaces'
-	import type { TCodeLang, TCodeTheme } from '@origam/types'
+	import type { TCodeLang } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -147,12 +136,6 @@
 		{ label: 'xml', value: CODE_LANG.XML },
 		{ label: 'yaml', value: CODE_LANG.YAML },
 		{ label: 'md', value: CODE_LANG.MD }
-	]
-
-	const codeThemeList: Array<IOptions<TCodeTheme>> = [
-		{ label: 'auto (follow document)', value: CODE_THEME.AUTO },
-		{ label: 'light', value: CODE_THEME.LIGHT },
-		{ label: 'dark', value: CODE_THEME.DARK }
 	]
 
 	/*********************************************************

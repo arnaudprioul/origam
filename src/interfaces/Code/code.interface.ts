@@ -8,7 +8,7 @@ import type {
     ITagProps
 } from '../index'
 
-import type { TCodeLang, TCodeTheme } from '../../types'
+import type { TCodeLang } from '../../types'
 
 /**
  * Props for `<OrigamCode>` — a shiki-powered code block with line numbers,
@@ -56,11 +56,6 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      */
     maxHeight?: number | string | null
     /**
-     * Theme override. `'auto'` (default) follows the document theme,
-     * `'light'` / `'dark'` force a specific shiki theme.
-     */
-    theme?: TCodeTheme
-    /**
      * Auto-format the code before highlighting. Reserved for v3 — prettier
      * is intentionally NOT bundled at runtime to keep the tarball small.
      * Currently a no-op; passing `true` warns once in dev and pre-formats
@@ -92,7 +87,7 @@ export interface IUseCodeReturn {
      * underlying shiki highlighter has loaded the requested language /
      * theme (lazy; ~200 ms cold, instant on subsequent calls).
      */
-    highlight (code: string, lang: TCodeLang, themeName: 'light' | 'dark'): Promise<string>
+    highlight (code: string, lang: TCodeLang): Promise<string>
     /**
      * Force the highlighter to load. Useful for stories / tests that want
      * to warm the cache before mounting consumers.

@@ -39,6 +39,7 @@
     "component/file-field-list-item",
     "component/password-field",
     "component/input",
+    "component/inline-edit",
     "component/text-field",
     "component/textarea-field",
     "component/overlay",
@@ -96,8 +97,9 @@
     "component/timeline",
     "component/treeview",
     "component/tabs",
-    "component/snackbar-stack",
-    "component/command-palette"
+    "component/snackbar-group",
+    "component/command-palette",
+    "component/video"
   ],
   "_note": "FUTURE: add semantic/brand-a.json and semantic/brand-b.json here between semantic/dark and component/* to enable brand theming. Each brand file overrides only the semantic tokens it needs (and optionally a primitive-override file for a different brand color ramp)."
 }

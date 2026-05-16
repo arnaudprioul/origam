@@ -256,10 +256,10 @@ export * from './SliderField/slider-field-thumb.interface'
 
 export * from './Snackbar/snackbar.interface'
 
-export * from './SnackbarItem/snackbar-item.interface'
+export * from './Snackbar/snackbar-item.interface'
 
-export * from './SnackbarStack/snackbar-stack.interface'
-export * from './SnackbarStack/snackbar-stack-item.interface'
+export * from './Snackbar/snackbar-group.interface'
+export * from './Snackbar/snackbar-group-item.interface'
 
 export * from './CommandPalette/command.interface'
 export * from './CommandPalette/command-palette.interface'
@@ -316,3 +316,6 @@ export * from './QRCode/qrcode.interface'
 export * from './QRCode/qrcode-logo.interface'
 
 export * from './Watermark/watermark.interface'
+
+export * from './Video/video.interface'
+export * from './Video/video-track.interface'

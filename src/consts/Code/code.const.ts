@@ -1,4 +1,4 @@
-import { CODE_LANG, CODE_THEME } from '../../enums'
+import { CODE_LANG } from '../../enums'
 
 /**
  * Languages bundled with the default shiki highlighter. Keep this list and
@@ -23,17 +23,6 @@ export const SUPPORTED_LANGS: ReadonlyArray<CODE_LANG> = Object.freeze([
 ])
 
 /**
- * shiki theme names loaded by the singleton highlighter. We ship the
- * `github-light` / `github-dark` pair which match the origam token palette
- * out of the box (neutral grays, blue keywords, red strings). The
- * component's `theme` prop maps `CODE_THEME.LIGHT`/`DARK`/`AUTO` to these.
- */
-export const CODE_SHIKI_THEMES = Object.freeze({
-    light: 'github-light',
-    dark: 'github-dark'
-} as const)
-
-/**
  * Maximum entries kept by the per-singleton LRU cache. 64 is large enough
  * for a page that renders dozens of small snippets, small enough that the
  * memory footprint stays under ~1 MB of pre-rendered HTML.
@@ -46,7 +35,6 @@ export const CODE_CACHE_MAX_ENTRIES = 64
  */
 export const CODE_DEFAULTS = Object.freeze({
     lang: CODE_LANG.PLAINTEXT,
-    theme: CODE_THEME.AUTO,
     lineNumbers: false,
     copyable: true,
     wrap: false,

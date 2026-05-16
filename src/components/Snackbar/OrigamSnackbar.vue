@@ -92,7 +92,7 @@
     watchEffect
   } from 'vue'
   import { OrigamOverlay, OrigamSnack } from '../../components'
-  import OrigamSnackbarItem from '../SnackbarItem/OrigamSnackbarItem.vue'
+  import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
   import {
     useBothColor,

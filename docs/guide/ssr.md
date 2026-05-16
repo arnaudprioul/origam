@@ -27,14 +27,14 @@ when the default behaviour is not enough.
 | `useTheme` | Returns the persisted theme via cookie/localStorage. Media-query listener attaches on `onMounted`. |
 | `useCssSupport` | All flags `false` (matches the legacy / unsupported branch). |
 | `useDisplay` | Falls back to `getClientWidth`/`Height` with optional `ssr` opts. |
-| `useSnackbarStack`, `useCommand`, `useCode`, `useMask` | Pure JS — no DOM access at setup. Singletons lazy-init in handlers / `onMounted`. |
+| `useSnackbarGroup`, `useCommand`, `useCode`, `useMask` | Pure JS — no DOM access at setup. Singletons lazy-init in handlers / `onMounted`. |
 | `useTouch`, `useHotkey`, `useSticky`, `useSheetSwipe`, `useScroll`, `useParallax` | All DOM listeners bound in `onMounted`. |
 | `useTeleport`, `useLocationStrategies`, `useScrollStrategies`, `useStyleTag` | Guarded by `IN_BROWSER`. |
 | `sanitizeHtml`, `htmlToMarkdown` (utils) | Return input untouched if `DOMParser` is missing. |
 
 Overlay components (`OrigamDialog`, `OrigamDrawer`, `OrigamMenu`,
 `OrigamTooltip`, `OrigamSnackbar`, `OrigamContextualMenu`,
-`OrigamSnackbarStack`, `OrigamCommandPalette`) all render an SSR-safe
+`OrigamSnackbarGroup`, `OrigamCommandPalette`) all render an SSR-safe
 shell — Vue's `<Teleport>` is deferred until the client.
 
 ## When you need `<OrigamClientOnly>`

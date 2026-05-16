@@ -2,8 +2,7 @@
 
 `<OrigamCode>` renders a block of source code with shiki-powered syntax
 highlighting, optional line numbers, line highlighting, a copy button and
-theme awareness. It is the canonical replacement for the v2.x plain-text
-`<pre>` wrapper.
+automatic theme integration with the origam design system.
 
 ## Quick start
 
@@ -44,7 +43,6 @@ theme awareness. It is the canonical replacement for the v2.x plain-text
 | `highlightLines` | `number[] \| string \| null` | `null` | Lines to highlight. Accepts an array (`[2, 5]`) or a range string (`'2,5-7'`). |
 | `copyable` | `boolean` | `true` | Show the copy-to-clipboard button (top-right or in the header when `filename` is set). |
 | `maxHeight` | `number \| string \| null` | `null` | Cap the rendered height and enable vertical scroll past it. |
-| `theme` | `'auto' \| 'light' \| 'dark'` | `'auto'` | shiki theme to apply. `auto` follows the document `data-theme`. |
 | `format` | `boolean` | `false` | **Stub in v2.x.** Currently normalises whitespace only. Prettier is intentionally not bundled at runtime (size cost). |
 | `wrap` | `boolean` | `false` | Wrap long lines instead of scrolling horizontally. |
 | `filename` | `string` | `undefined` | Display a header bar with the filename. The copy button moves into the header when this is set. |
@@ -83,27 +81,55 @@ composable for the loaded subset.
 
 ## Theme integration
 
-`theme="auto"` (default) follows the page's `<html data-theme="...">`
-attribute. Switching the document theme at runtime triggers a re-render
-of every visible `<OrigamCode>` with the matching shiki theme. The
-`light` / `dark` values force a specific theme regardless of the page.
+The component follows `<html data-theme="…">` automatically via the origam
+design system CSS variables — no `theme` prop is needed or available.
 
-The component surface uses origam tokens
-(`--origam-code---background-color`, `--origam-code---border-color`, …)
-so it always blends with the host page even when the shiki theme would
-emit a different background colour.
+shiki uses its built-in `css-variables` theme, which emits spans with
+`style="color: var(--shiki-token-keyword)"` rather than hardcoded hex
+colours. The component SCSS maps each `--shiki-*` variable to an origam
+design token:
+
+| shiki CSS var | origam token | Scope |
+|---|---|---|
+| `--shiki-foreground` | `--origam-code__syntax---foreground` | Default text |
+| `--shiki-token-keyword` | `--origam-code__syntax---keyword` | Keywords (`if`, `const`, …) |
+| `--shiki-token-string` | `--origam-code__syntax---string` | String literals |
+| `--shiki-token-string-expression` | `--origam-code__syntax---string-expression` | Template literals |
+| `--shiki-token-function` | `--origam-code__syntax---function` | Function names |
+| `--shiki-token-parameter` | `--origam-code__syntax---parameter` | Parameters |
+| `--shiki-token-constant` | `--origam-code__syntax---constant` | Constants |
+| `--shiki-token-comment` | `--origam-code__syntax---comment` | Comments |
+| `--shiki-token-punctuation` | `--origam-code__syntax---punctuation` | Punctuation |
+| `--shiki-token-link` | `--origam-code__syntax---link` | Links (Markdown) |
+| `--shiki-token-inserted` | `--origam-code__syntax---inserted` | Diff insertions |
+
+Switching `<html data-theme="dark">` automatically updates all syntax
+colours via CSS cascade — no JavaScript re-render is triggered.
+
+### Customising syntax colours
+
+Override any `--shiki-*` variable on the component's root element or any
+ancestor to change specific token colours for a subtree:
+
+```css
+.my-scope .origam-code {
+    --shiki-token-keyword: var(--my-brand-red);
+}
+```
 
 ## Performance
 
 - **Lazy highlighter**: shiki is dynamic-imported on the first mount,
   not at app boot. The first `<OrigamCode>` pays a ~200 ms cold load;
   subsequent ones reuse the singleton.
-- **LRU cache**: highlighted HTML is cached by `(code, lang, theme)` up
-  to 64 entries. Re-renders, hover effects and re-mounts never re-tokenise.
+- **LRU cache**: highlighted HTML is cached by `(code, lang)` up to 64
+  entries. Re-renders, hover effects and re-mounts never re-tokenise.
+  Theme switches are free — the CSS cascade handles colour changes with
+  no JS involved.
 - **Tarball impact**: shiki sits in `dependencies` and adds ~3 MB to the
-  installed `node_modules` (curated to 14 langs + 2 themes — far below
-  the ~30 MB of the full default bundle). The actual JS shipped to the
-  browser is split per chunk via dynamic import.
+  installed `node_modules` (curated to 14 langs + 1 built-in theme — far
+  below the ~30 MB of the full default bundle). The actual JS shipped to
+  the browser is split per chunk via dynamic import.
 
 ## Accessibility
 

@@ -1,7 +1,7 @@
 import type { IUseCodeReturn } from '../../interfaces'
 import type { TCodeLang } from '../../types'
 
-import { CODE_CACHE_MAX_ENTRIES, CODE_SHIKI_THEMES, SUPPORTED_LANGS } from '../../consts'
+import { CODE_CACHE_MAX_ENTRIES, SUPPORTED_LANGS } from '../../consts'
 import { CODE_LANG } from '../../enums'
 
 /**
@@ -11,27 +11,44 @@ import { CODE_LANG } from '../../enums'
  * is bundled). We therefore:
  *   1. Lazy-import the module on the first `highlight()` call so the cost
  *      is paid only when a `<OrigamCode>` actually mounts.
- *   2. Restrict the loaded langs / themes to the curated origam subset
- *      (see `SUPPORTED_LANGS` + `CODE_SHIKI_THEMES`).
+ *   2. Restrict the loaded langs to the curated origam subset
+ *      (see `SUPPORTED_LANGS`). Two themes (light + dark) are embedded so
+ *      shiki can emit dual-colour CSS vars and the rendered HTML works
+ *      across both light and dark surfaces without re-tokenising.
  *   3. Cache the per-call HTML result in a tiny LRU keyed by
- *      `(code, lang, theme)` so re-renders / re-hovers never re-tokenise.
+ *      `(code, lang)` so re-renders / re-hovers never re-tokenise.
  *
  * The singleton is module-scoped — every `useCode()` consumer in the app
  * shares the same highlighter promise. `resetCacheForTesting()` is the
  * only test-only escape hatch.
+ *
+ * Theme integration (shiki v1+):
+ * We call `codeToHtml(code, { themes: { light, dark }, defaultColor: false })`.
+ * shiki then emits, on every token span:
+ *     `style="--shiki-light:#xxx;--shiki-dark:#yyy"`
+ * with NO inline `color:` declaration. The component SCSS consumes the
+ * matching variable based on `<html data-theme="…">`, so theme switching
+ * is a pure CSS cascade (no JS re-render).
  */
 
 type ShikiHighlighter = {
-    codeToHtml: (code: string, opts: { lang: string, theme: string }) => string
+    codeToHtml: (code: string, opts: {
+        lang: string
+        themes?: { light: string, dark: string }
+        defaultColor?: false | string
+    }) => string
 }
+
+const LIGHT_THEME = 'github-light'
+const DARK_THEME = 'github-dark'
 
 let _highlighterPromise: Promise<ShikiHighlighter> | null = null
 let _highlighterReady = false
 const _cache = new Map<string, string>()
 let _unsupportedLangWarned = new Set<string>()
 
-function makeCacheKey (code: string, lang: string, theme: string): string {
-    return `${theme}::${lang}::${code}`
+function makeCacheKey (code: string, lang: string): string {
+    return `${lang}::${code}`
 }
 
 function lruGet (key: string): string | undefined {
@@ -58,12 +75,12 @@ async function loadHighlighter (): Promise<ShikiHighlighter> {
     if (_highlighterPromise) return _highlighterPromise
 
     _highlighterPromise = (async () => {
-        // Dynamic import keeps shiki out of the initial bundle. The
-        // `createHighlighter` factory takes the curated langs + themes
-        // list so we only pay for what we ship.
+        // Dynamic import keeps shiki out of the initial bundle. We embed
+        // BOTH a light and a dark theme so the dual-colour CSS-var output
+        // works without re-tokenising on theme switch.
         const shiki = await import('shiki')
         const highlighter = await shiki.createHighlighter({
-            themes: [CODE_SHIKI_THEMES.light, CODE_SHIKI_THEMES.dark],
+            themes: [LIGHT_THEME, DARK_THEME],
             langs: [...SUPPORTED_LANGS]
         })
         _highlighterReady = true
@@ -77,7 +94,7 @@ function resolveLang (lang: TCodeLang): string {
     if ((SUPPORTED_LANGS as ReadonlyArray<string>).includes(lang)) return lang
     if (!_unsupportedLangWarned.has(lang)) {
         _unsupportedLangWarned.add(lang)
-         
+
         console.warn(
             `[origam] OrigamCode: lang="${lang}" is not in the bundled grammar set. ` +
             `Falling back to "${CODE_LANG.PLAINTEXT}". ` +
@@ -93,25 +110,28 @@ function resolveLang (lang: TCodeLang): string {
 export function useCode (): IUseCodeReturn {
     async function highlight (
         code: string,
-        lang: TCodeLang,
-        themeName: 'light' | 'dark'
+        lang: TCodeLang
     ): Promise<string> {
         const resolvedLang = resolveLang(lang)
-        const shikiTheme = themeName === 'dark' ? CODE_SHIKI_THEMES.dark : CODE_SHIKI_THEMES.light
-        const key = makeCacheKey(code, resolvedLang, shikiTheme)
+        const key = makeCacheKey(code, resolvedLang)
         const cached = lruGet(key)
         if (cached !== undefined) return cached
 
         const highlighter = await loadHighlighter()
+        const opts = {
+            lang: resolvedLang,
+            themes: { light: LIGHT_THEME, dark: DARK_THEME },
+            defaultColor: false as const
+        }
         let html: string
         try {
-            html = highlighter.codeToHtml(code, { lang: resolvedLang, theme: shikiTheme })
+            html = highlighter.codeToHtml(code, opts)
         } catch (err) {
             // shiki throws on truly malformed input. Degrade gracefully to
             // an escaped plaintext `<pre>` so the consumer never breaks.
-             
+
             console.warn('[origam] OrigamCode: shiki failed to tokenise, falling back to plaintext.', err)
-            html = highlighter.codeToHtml(code, { lang: CODE_LANG.PLAINTEXT, theme: shikiTheme })
+            html = highlighter.codeToHtml(code, { ...opts, lang: CODE_LANG.PLAINTEXT })
         }
         lruSet(key, html)
         return html

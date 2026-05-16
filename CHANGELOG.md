@@ -15,6 +15,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamVideo` + `useVideoPlayer` composable — in-house video player.
+  Wraps native `<video>` with custom UI (play/pause, scrubber, volume,
+  fullscreen, PIP, captions). 3 controls modes (custom/native/none).
+  Captions/subtitles via WebVTT tracks with language switcher. Aspect-
+  ratio prop preset (`16/9`, `4/3`, `1/1`, `21/9`, `9/16`, raw values).
+  Respects `prefers-reduced-motion` (auto-disables autoplay + console
+  warn). Zero external dep — no plyr / video.js / hls.js (HLS/DASH
+  stays peer dep optional if needed later). ARIA: dynamic aria-labels
+  on controls, `role="slider"` on scrubber, `role="status"` on
+  loading, `role="alert"` on error. SSR-friendly (composable defers
+  every DOM access to `onMounted`). New `tokens/component/video.json`
+  (background, controls, btn, time, scrubber, volume, loading, error
+  groups; aligned with light/dark themes).
 - `OrigamWatermark` + `useWatermark` composable — diagonal repeating
   overlay for confidential previews / draft markers / sensitive
   screenshots. SVG data-URL pattern (no canvas, no images required

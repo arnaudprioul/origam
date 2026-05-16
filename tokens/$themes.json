@@ -41,6 +41,7 @@
       "component/file-field-list-item": "enabled",
       "component/password-field": "enabled",
       "component/input": "enabled",
+      "component/inline-edit": "enabled",
       "component/text-field": "enabled",
       "component/textarea-field": "enabled",
       "component/overlay": "enabled",
@@ -98,9 +99,10 @@
       "component/timeline": "enabled",
       "component/treeview": "enabled",
       "component/tabs": "enabled",
-      "component/snackbar-stack": "enabled",
+      "component/snackbar-group": "enabled",
       "component/command-palette": "enabled",
-      "component/blockquote": "enabled"
+      "component/blockquote": "enabled",
+      "component/video": "enabled"
     }
   },
   {
@@ -145,6 +147,7 @@
       "component/file-field-list-item": "enabled",
       "component/password-field": "enabled",
       "component/input": "enabled",
+      "component/inline-edit": "enabled",
       "component/text-field": "enabled",
       "component/textarea-field": "enabled",
       "component/overlay": "enabled",
@@ -202,9 +205,10 @@
       "component/timeline": "enabled",
       "component/treeview": "enabled",
       "component/tabs": "enabled",
-      "component/snackbar-stack": "enabled",
+      "component/snackbar-group": "enabled",
       "component/command-palette": "enabled",
-      "component/blockquote": "enabled"
+      "component/blockquote": "enabled",
+      "component/video": "enabled"
     }
   }
 ]
