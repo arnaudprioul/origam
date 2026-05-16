@@ -314,3 +314,5 @@ export * from './Nuxt/nuxt-module.interface'
 
 export * from './QRCode/qrcode.interface'
 export * from './QRCode/qrcode-logo.interface'
+
+export * from './Watermark/watermark.interface'

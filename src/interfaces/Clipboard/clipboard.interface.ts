@@ -3,17 +3,18 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-import type { CLIPBOARD_FEEDBACK_MODE } from '../../enums'
-
 /**
  * Props for `<OrigamClipboard>` — copy-to-clipboard wrapper.
  *
  * The component is intentionally chrome-less: it owns the copy
- * pipeline (`navigator.clipboard.writeText` + `execCommand` fallback),
- * the auto-resetting `copied` flag and the optional ARIA-live feedback
- * overlay, but it does NOT impose any visual on the trigger. Consumers
- * either pass a `#default` scoped slot (full control) or rely on the
- * built-in icon button rendered when no slot is provided.
+ * pipeline (`navigator.clipboard.writeText` + `execCommand` fallback)
+ * and the auto-resetting `copied` flag, but it does NOT impose any
+ * visual on the trigger. The built-in trigger (rendered when no slot
+ * is provided) is a single button whose label flips to `feedbackText`
+ * while `copied` is true — that's the only feedback surface the
+ * component owns. Consumers needing a different feedback shape (toast,
+ * inline pill, animation, …) pass a `#default` scoped slot exposing
+ * `{ copy, copied, error }` and render whatever they want.
  */
 export interface IClipboardProps extends ICommonsComponentProps, ITagProps {
     /**
@@ -44,31 +45,6 @@ export interface IClipboardProps extends ICommonsComponentProps, ITagProps {
      * codebase.
      */
     successText?: string
-    /**
-     * Controls how copy-success feedback is rendered.
-     *
-     * - `'button'` (default) — the built-in trigger flips its label to
-     *   `feedbackText` while `copied` is true. No extra pill is shown.
-     * - `'pill'` — an ARIA-live `role="status"` pill appears next to
-     *   the trigger. The built-in trigger label does NOT flip.
-     * - `'both'` — both the label-flip and the ARIA-live pill are active.
-     * - `'none'` — no visual feedback. The `@copy` emit still fires.
-     *
-     * @default 'button'
-     */
-    feedbackMode?: CLIPBOARD_FEEDBACK_MODE | `${CLIPBOARD_FEEDBACK_MODE}`
-    /**
-     * @deprecated Since v2.2 — use `feedbackMode="pill"` instead.
-     *
-     * When `true`, equivalent to `feedbackMode="pill"` (renders the
-     * ARIA-live pill while suppressing the button label-flip). A one-shot
-     * `console.warn` is emitted when this prop is detected.
-     *
-     * This prop will be removed in v3.0.
-     *
-     * @default undefined
-     */
-    showFeedback?: boolean
     /**
      * Disables the copy action. The default trigger becomes
      * non-interactive (`disabled` attribute) and `copy()` becomes a
