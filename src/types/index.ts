@@ -162,6 +162,8 @@ export * from './InfiniteScroll/infinite-scroll-intersect.type'
 
 export * from './InlineEdit/inline-edit-input-type.type'
 
+export * from './NumberFormat/number-format-format.type'
+
 export * from './Input/input.type'
 
 export * from './Label/label.type'

@@ -15,6 +15,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamNumberFormat` + `useNumberFormat` composable — i18n number
+  formatting via `Intl.NumberFormat` (no external dep). 7 formats
+  (`decimal` / `currency` / `percent` / `unit` / `compact` /
+  `scientific` / `engineering`), full locale support with auto
+  resolution chain (`<html lang>` → `navigator.language` → `'en-US'`),
+  currency / unit / sign / notation controls. LRU-cached `Intl`
+  instances (16-entry capacity, keyed on serialised options). Scoped
+  `#default` slot exposes `{ formatted, parts, value }` for custom
+  rendering (e.g. highlight currency symbol). ARIA `aria-label`
+  expansion for compact notation (`1.2M` visible → `"1.2 million"` for
+  screen readers).
 - `OrigamInlineEdit` + `useInlineEdit` composable — edit-in-place
   pattern. Click the display affordance → an input appears prefilled
   with the current value → `Enter` confirms / `Escape` cancels. v-model

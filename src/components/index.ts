@@ -86,6 +86,8 @@ export * from './InfiniteScroll'
 
 export * from './InlineEdit'
 
+export * from './NumberFormat'
+
 export * from './Input'
 
 export * from './Label'
