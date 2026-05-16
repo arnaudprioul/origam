@@ -8,12 +8,12 @@ import {
 } from 'vue'
 
 import type {
-    IQRCodeLogo,
-    IUseQRCodeOptions
+    IQrCodeLogo,
+    IUseQrCodeOptions
 } from '../../interfaces'
 
 import type {
-    TQRCodeErrorCorrectionLevel
+    TQrCodeErrorCorrectionLevel
 } from '../../types'
 
 /**
@@ -21,13 +21,13 @@ import type {
  * between matrix density and damage tolerance for clean digital /
  * print mediums without a logo overlay.
  */
-const QRCODE_DEFAULT_ECC: TQRCodeErrorCorrectionLevel = 'M'
+const QR_CODE_DEFAULT_ECC: TQrCodeErrorCorrectionLevel = 'M'
 
 /**
  * ISO/IEC 18004-recommended quiet zone (in modules) surrounding the
  * QR matrix. Smaller values significantly hurt scanner reliability.
  */
-const QRCODE_DEFAULT_MARGIN = 4
+const QR_CODE_DEFAULT_MARGIN = 4
 
 /**
  * Maximum sensible overlay size. Above ~30% even `errorCorrectionLevel
@@ -35,13 +35,13 @@ const QRCODE_DEFAULT_MARGIN = 4
  * fail. We warn (instead of clamping) so the consumer keeps control
  * over the artistic decision.
  */
-const QRCODE_OVERLAY_MAX_RATIO = 0.3
+const QR_CODE_OVERLAY_MAX_RATIO = 0.3
 
 /**
  * Default logo overlay sizing — 20% of the QR width, 6 px of padding.
  */
-const QRCODE_DEFAULT_LOGO_SIZE = 0.2
-const QRCODE_DEFAULT_LOGO_PADDING = 6
+const QR_CODE_DEFAULT_LOGO_SIZE = 0.2
+const QR_CODE_DEFAULT_LOGO_PADDING = 6
 
 /**
  * Module-level LRU keyed on the serialised payload + options.
@@ -51,16 +51,16 @@ const QRCODE_DEFAULT_LOGO_PADDING = 6
  * realistic storybook (one or two values × four ECC levels × small
  * tweaks).
  */
-const QRCODE_LRU_CAPACITY = 16
+const QR_CODE_LRU_CAPACITY = 16
 const matrixCache = new Map<string, boolean[][]>()
 
 interface IInternalOptions {
-    errorCorrectionLevel: TQRCodeErrorCorrectionLevel
+    errorCorrectionLevel: TQrCodeErrorCorrectionLevel
     foreground: string
     background: string
     margin: number
     cornerRadius: number
-    logo?: IQRCodeLogo
+    logo?: IQrCodeLogo
 }
 
 /**
@@ -68,9 +68,9 @@ interface IInternalOptions {
  * payload + ECC level. The matrix is a square `N×N` boolean grid
  * where `true === dark module`.
  *
- * @internal exposed for tests via the public `useQRCode` only.
+ * @internal exposed for tests via the public `useQrCode` only.
  */
-function buildMatrix (value: string, ecc: TQRCodeErrorCorrectionLevel): boolean[][] {
+function buildMatrix (value: string, ecc: TQrCodeErrorCorrectionLevel): boolean[][] {
     const cacheKey = `${ecc}::${value}`
 
     const hit = matrixCache.get(cacheKey)
@@ -103,7 +103,7 @@ function buildMatrix (value: string, ecc: TQRCodeErrorCorrectionLevel): boolean[
     }
 
     matrixCache.set(cacheKey, matrix)
-    if (matrixCache.size > QRCODE_LRU_CAPACITY) {
+    if (matrixCache.size > QR_CODE_LRU_CAPACITY) {
         const oldest = matrixCache.keys().next().value
         if (oldest !== undefined) {
             matrixCache.delete(oldest)
@@ -168,8 +168,8 @@ function buildSvg (
 
     let logoMarkup = ''
     if (options.logo && options.logo.src) {
-        const ratio = options.logo.size ?? QRCODE_DEFAULT_LOGO_SIZE
-        const padding = options.logo.padding ?? QRCODE_DEFAULT_LOGO_PADDING
+        const ratio = options.logo.size ?? QR_CODE_DEFAULT_LOGO_SIZE
+        const padding = options.logo.padding ?? QR_CODE_DEFAULT_LOGO_PADDING
         const logoBg = options.logo.background ?? (bg && bg !== 'transparent' ? bg : '#ffffff')
 
         const logoBoxSize = count * ratio
@@ -186,7 +186,7 @@ function buildSvg (
          *
          * For consumers who need an exact pixel padding, the
          * `<image>` slot in the component template provides a runtime
-         * escape hatch — see `IQRCodeSlots.center`.
+         * escape hatch — see `IQrCodeSlots.center`.
          */
         const paddingUnits = padding / 16
         const bdX = logoX - paddingUnits
@@ -204,7 +204,7 @@ function buildSvg (
  * Test helper — clears the module-level matrix LRU. Exposed for the
  * unit-test suite and not advertised publicly.
  */
-export function __clearQRCodeCache (): void {
+export function __clearQrCodeCache (): void {
     matrixCache.clear()
 }
 
@@ -220,16 +220,16 @@ export function __clearQRCodeCache (): void {
  * @example
  * ```ts
  * const value = ref('https://origam.dev')
- * const { svg, modules, size } = useQRCode(value, {
+ * const { svg, modules, size } = useQrCode(value, {
  *     errorCorrectionLevel: 'M',
  *     foreground: '#000',
  *     background: '#fff'
  * })
  * ```
  */
-export function useQRCode (
+export function useQrCode (
     value: MaybeRefOrGetter<string>,
-    options: MaybeRefOrGetter<IUseQRCodeOptions> = {}
+    options: MaybeRefOrGetter<IUseQrCodeOptions> = {}
 ): {
     svg: ComputedRef<string>
     modules: ComputedRef<boolean[][]>
@@ -242,21 +242,21 @@ export function useQRCode (
 
     const normalisedOptions: ComputedRef<IInternalOptions> = computed(() => {
         const raw = isRef(options) || typeof options === 'function' ? toValue(options) : options
-        const opts = (raw ?? {}) as IUseQRCodeOptions
+        const opts = (raw ?? {}) as IUseQrCodeOptions
 
-        const ratio = opts.logo?.size ?? QRCODE_DEFAULT_LOGO_SIZE
-        if (opts.logo?.src && ratio > QRCODE_OVERLAY_MAX_RATIO && typeof console !== 'undefined') {
+        const ratio = opts.logo?.size ?? QR_CODE_DEFAULT_LOGO_SIZE
+        if (opts.logo?.src && ratio > QR_CODE_OVERLAY_MAX_RATIO && typeof console !== 'undefined') {
             console.warn(
-                `[origam] useQRCode: logo size ${ratio} exceeds the recommended max (${QRCODE_OVERLAY_MAX_RATIO}). ` +
+                `[origam] useQrCode: logo size ${ratio} exceeds the recommended max (${QR_CODE_OVERLAY_MAX_RATIO}). ` +
                 'Scanners may fail to decode the matrix; consider increasing error-correction to "H" or shrinking the logo.'
             )
         }
 
         return {
-            errorCorrectionLevel: opts.errorCorrectionLevel ?? QRCODE_DEFAULT_ECC,
+            errorCorrectionLevel: opts.errorCorrectionLevel ?? QR_CODE_DEFAULT_ECC,
             foreground: opts.foreground ?? 'currentColor',
             background: opts.background ?? 'transparent',
-            margin: typeof opts.margin === 'number' ? opts.margin : QRCODE_DEFAULT_MARGIN,
+            margin: typeof opts.margin === 'number' ? opts.margin : QR_CODE_DEFAULT_MARGIN,
             cornerRadius: typeof opts.cornerRadius === 'number' ? opts.cornerRadius : 0,
             logo: opts.logo
         }

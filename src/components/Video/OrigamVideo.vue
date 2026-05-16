@@ -59,18 +59,15 @@
 						:src="poster"
 						alt=""
 				/>
-				<button
-						type="button"
+				<origam-btn
+						:icon="ICONS.PLAY"
 						class="origam-video__poster-btn"
 						aria-label="Play"
 						data-cy="origam-video-poster-btn"
+						size="large"
+						variant="elevated"
 						@click.stop="methods.play()"
-				>
-					<origam-icon
-							:icon="ICONS.PLAY"
-							aria-hidden="true"
-					/>
-				</button>
+				/>
 			</slot>
 		</div>
 
@@ -118,107 +115,88 @@
 					name="controls"
 					v-bind="slotBindings"
 			>
-				<button
-						type="button"
+				<origam-btn
+						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
 						class="origam-video__btn"
 						:aria-label="state.playing.value ? 'Pause' : 'Play'"
 						data-cy="origam-video-play"
+						size="small"
+						variant="text"
 						@click="togglePlay"
-				>
-					<origam-icon
-							:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
-							aria-hidden="true"
-					/>
-				</button>
+				/>
 
 				<span
 						class="origam-video__time"
 						data-cy="origam-video-time"
 				>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
 
-				<input
+				<origam-slider-field
 						class="origam-video__scrubber"
-						type="range"
-						min="0"
+						:min="0"
 						:max="scrubberMax"
 						:step="0.1"
-						:value="state.currentTime.value"
-						role="slider"
+						:model-value="state.currentTime.value"
 						aria-label="Seek"
-						:aria-valuemin="0"
-						:aria-valuemax="scrubberMax"
-						:aria-valuenow="state.currentTime.value"
-						:aria-valuetext="formattedCurrentTime"
+						hide-details
 						data-cy="origam-video-scrubber"
-						@input="onScrubberInput"
+						@update:model-value="onScrubberInput"
 				/>
 
-				<button
-						type="button"
+				<origam-btn
+						:icon="volumeIcon"
 						class="origam-video__btn"
 						:aria-label="state.muted.value ? 'Unmute' : 'Mute'"
 						data-cy="origam-video-mute"
+						size="small"
+						variant="text"
 						@click="methods.toggleMute()"
-				>
-					<origam-icon
-							:icon="volumeIcon"
-							aria-hidden="true"
-					/>
-				</button>
-
-				<input
-						class="origam-video__volume"
-						type="range"
-						min="0"
-						max="1"
-						step="0.05"
-						:value="state.muted.value ? 0 : state.volume.value"
-						aria-label="Volume"
-						data-cy="origam-video-volume"
-						@input="onVolumeInput"
 				/>
 
-				<button
+				<origam-slider-field
+						class="origam-video__volume"
+						:min="0"
+						:max="1"
+						:step="0.05"
+						:model-value="state.muted.value ? 0 : state.volume.value"
+						aria-label="Volume"
+						hide-details
+						data-cy="origam-video-volume"
+						@update:model-value="onVolumeInput"
+				/>
+
+				<origam-btn
 						v-if="hasCaptions"
-						type="button"
+						:icon="ICONS.CAPTIONS"
 						class="origam-video__btn"
 						:class="{ 'origam-video__btn--active': captionsEnabled }"
 						:aria-label="captionsEnabled ? 'Disable captions' : 'Enable captions'"
 						data-cy="origam-video-captions"
+						size="small"
+						variant="text"
+						:color="captionsEnabled ? 'primary' : undefined"
 						@click="toggleCaptions"
-				>
-					<origam-icon
-							:icon="ICONS.CAPTIONS"
-							aria-hidden="true"
-					/>
-				</button>
+				/>
 
-				<button
+				<origam-btn
 						v-if="pipSupported"
-						type="button"
+						:icon="ICONS.PIP"
 						class="origam-video__btn"
 						:aria-label="state.pip.value ? 'Exit picture in picture' : 'Enter picture in picture'"
 						data-cy="origam-video-pip"
+						size="small"
+						variant="text"
 						@click="togglePipBtn"
-				>
-					<origam-icon
-							:icon="ICONS.PIP"
-							aria-hidden="true"
-					/>
-				</button>
+				/>
 
-				<button
-						type="button"
+				<origam-btn
+						:icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN"
 						class="origam-video__btn"
 						:aria-label="state.fullscreen.value ? 'Exit fullscreen' : 'Enter fullscreen'"
 						data-cy="origam-video-fullscreen"
+						size="small"
+						variant="text"
 						@click="toggleFullscreenBtn"
-				>
-					<origam-icon
-							:icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN"
-							aria-hidden="true"
-					/>
-				</button>
+				/>
 			</slot>
 		</div>
 	</div>
@@ -235,7 +213,9 @@
 		watch
 	} from 'vue'
 
+	import { OrigamBtn } from '../Btn'
 	import { OrigamIcon } from '../Icon'
+	import { OrigamSliderField } from '../SliderField'
 
 	import { shouldSuppressAutoplay, useVideoPlayer } from '../../composables'
 
@@ -393,14 +373,14 @@
 		await methods.togglePip()
 	}
 
-	function onScrubberInput (event: Event): void {
-		const input = event.target as HTMLInputElement
-		methods.seek(Number(input.value))
+	function onScrubberInput (value: number | string | Array<number | string>): void {
+		const v = Array.isArray(value) ? value[0] : value
+		methods.seek(Number(v))
 	}
 
-	function onVolumeInput (event: Event): void {
-		const input = event.target as HTMLInputElement
-		methods.setVolume(Number(input.value))
+	function onVolumeInput (value: number | string | Array<number | string>): void {
+		const v = Array.isArray(value) ? value[0] : value
+		methods.setVolume(Number(v))
 	}
 
 	/*********************************************************

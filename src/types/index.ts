@@ -304,11 +304,14 @@ export * from './Mask/built-in-pattern.type'
 export * from './Mask/pattern-validator.type'
 export * from './Mask/mask.type'
 
-export * from './QRCode/qrcode-error-correction.type'
+export * from './QrCode/qr-code-error-correction.type'
 
 export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
 
 export * from './Sound/sound-controls.type'
+
+export * from './Calendar/calendar-view.type'
+export * from './Calendar/calendar-time-format.type'
 
 

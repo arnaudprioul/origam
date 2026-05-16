@@ -176,10 +176,12 @@ export * from './Timeline'
 
 export * from './Treeview'
 
-export * from './QRCode'
+export * from './QrCode'
 
 export * from './Watermark'
 
 export * from './Video'
 
 export * from './Sound'
+
+export * from './Calendar'

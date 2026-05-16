@@ -271,8 +271,12 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const BIG_BUCK_BUNNY = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-	const BUNNY_POSTER = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg'
+	// Hosted by the Blender Foundation (original creators of Big Buck Bunny).
+	// The previous Google Cloud Storage URLs (`commondatastorage.googleapis.com/gtv-videos-bucket/...`)
+	// started returning HTTP 403 — the bucket's public ACL was revoked,
+	// triggering MEDIA_ELEMENT_ERROR: Format error in the browser.
+	const BIG_BUCK_BUNNY = 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4'
+	const BUNNY_POSTER = 'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg'
 
 	const VTT_EN = 'data:text/vtt;base64,V0VCVlRUCgowMDowMDowMC4wMDAgLS0+IDAwOjAwOjA0LjAwMApUaGUgYmlnIGJ1Y2sgYnVubnkgcHJlcGFyZXMgZm9yIGl0cyBlbmVtaWVzLgoKMDA6MDA6MDQuMDAwIC0tPiAwMDowMDowOC4wMDAKRW5nbGlzaCBjYXB0aW9uIHRyYWNrLgo='
 	const VTT_FR = 'data:text/vtt;base64,V0VCVlRUCgowMDowMDowMC4wMDAgLS0+IDAwOjAwOjA0LjAwMApMZSBncm9zIGxhcGluIHByw6lwYXJlIGRlcyBwacOoZ2VzLgoKMDA6MDA6MDQuMDAwIC0tPiAwMDowMDowOC4wMDAKUGlzdGUgZGUgc291cy10aXRyZXMgZnJhbsOnYWlzZS4K'

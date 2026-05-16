@@ -1,5 +1,5 @@
 /**
- * Optional logo overlay rendered at the centre of an OrigamQRCode.
+ * Optional logo overlay rendered at the centre of an OrigamQrCode.
  *
  * The overlay is painted **on top** of the QR matrix — any module
  * underneath becomes unreadable. Error-correction takes care of the
@@ -10,11 +10,11 @@
  *   - Q  →  ≤20% of QR width.
  *   - H  →  ≤25–30% of QR width.
  *
- * `<OrigamQRCode>` does **not** enforce these caps — the consumer
+ * `<OrigamQrCode>` does **not** enforce these caps — the consumer
  * decides what's acceptable. We warn (`console.warn`) when `size` is
  * configured above 0.3 because no error-correction level survives that.
  */
-export interface IQRCodeLogo {
+export interface IQrCodeLogo {
     /**
      * Logo source. Any URL accepted by `<image href>` works — SVG, PNG,
      * data-URI, …. The SVG fragment loads the asset asynchronously; if
