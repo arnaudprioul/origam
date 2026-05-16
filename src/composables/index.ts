@@ -2,7 +2,7 @@ export * from './Commons/active.composable'
 export * from './Commons/border.composable'
 export * from './Commons/color.composable'
 export * from './Commons/defaults.composable'
-export * from './Commons/calendar.composable'
+export * from './Commons/date-picker-calendar.composable'
 export * from './Commons/date.composable'
 export * from './Commons/density.composable'
 export * from './Commons/dimension.composable'
@@ -95,7 +95,7 @@ export * from './CssSupport/cssSupport.composable'
 
 export * from './Mask/mask.composable'
 
-export * from './QRCode/qrcode.composable'
+export * from './QrCode/qr-code.composable'
 
 export * from './Watermark/watermark.composable'
 
@@ -103,3 +103,5 @@ export * from './Video/video-player.composable'
 
 export * from './Sound/audio-player.composable'
 export * from './Sound/waveform.composable'
+
+export * from './Calendar/calendar.composable'

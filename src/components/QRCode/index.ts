@@ -1,1 +1,1 @@
-export { default as OrigamQRCode } from './OrigamQRCode.vue'
+export { default as OrigamQrCode } from './OrigamQrCode.vue'

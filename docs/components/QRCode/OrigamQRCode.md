@@ -1,7 +1,7 @@
-# OrigamQRCode
+# OrigamQrCode
 
 Native SVG QR-code renderer powered by
-[`qrcode-generator`](https://www.npmjs.com/package/qrcode-generator)
+[`qrcode-generator`](https://www.npmjs.com/package/qr-code-generator)
 (~5 kB minified, pure JavaScript, no canvas dependency). Produces a
 scalable, themeable matrix that inherits the parent's `color` by
 default — drop it into any layout, swap the surrounding theme, the
@@ -11,20 +11,20 @@ QR re-paints with the right foreground without a re-encode.
 
 ```vue
 <template>
-    <origam-qrcode
+    <origam-qr-code
         value="https://origam.dev"
         :size="240"
         error-correction-level="M"
     />
 
-    <origam-qrcode
+    <origam-qr-code
         value="WIFI:T:WPA;S:origam-guest;P:welcome2026;;"
         :size="200"
         error-correction-level="Q"
     />
 
-    <origam-qrcode
-        value="https://origam.dev/qrcode-with-logo"
+    <origam-qr-code
+        value="https://origam.dev/qr-code-with-logo"
         error-correction-level="H"
         :logo="{ src: '/logo.svg', size: 0.2 }"
         :size="240"
@@ -42,7 +42,7 @@ QR re-paints with the right foreground without a re-encode.
 | `foreground`           | `string`                      | `'currentColor'` | Module fill colour. Defaults to inherit so theme switches work out-of-the-box.                 |
 | `background`           | `string`                      | `'transparent'`  | Matrix + quiet-zone fill. `'transparent'` keeps the parent surface visible.                    |
 | `margin`               | `number`                      | `4`              | Quiet-zone width (in modules). ISO/IEC 18004 recommends ≥4.                                    |
-| `logo`                 | `IQRCodeLogo`                 | —                | Optional centred overlay — see [Logo overlay](#logo-overlay).                                  |
+| `logo`                 | `IQrCodeLogo`                 | —                | Optional centred overlay — see [Logo overlay](#logo-overlay).                                  |
 | `cornerRadius`         | `number`                      | `0`              | Per-module corner radius in module units (`0.5` = circles).                                    |
 | `ariaLabel`            | `string`                      | —                | Accessible label. Defaults to `"QR code for {value}"`.                                         |
 | `tag`                  | `string`                      | `'div'`          | Wrapper element.                                                                               |
@@ -66,7 +66,7 @@ from `L` to `H` on a long URL can push the matrix from a 25×25 to a
 ## Logo overlay
 
 ```vue
-<origam-qrcode
+<origam-qr-code
     value="https://origam.dev"
     error-correction-level="H"
     :logo="{
@@ -132,16 +132,16 @@ mismatch.
 The component does not expose slots in v2.3. The roadmap for a
 `#center` scoped slot (custom logo / icon at the centre, with the
 reserved-square size passed to the consumer) is tracked in the
-composable's TypeScript signature — `useQRCode` already exposes
+composable's TypeScript signature — `useQrCode` already exposes
 `modules` and `size`, so anyone who needs a fully custom render can
 drop down to the composable and paint their own SVG.
 
-## Composable — `useQRCode`
+## Composable — `useQrCode`
 
 ```ts
-import { useQRCode } from '@origam/composables'
+import { useQrCode } from '@origam/composables'
 
-const { svg, modules, size } = useQRCode(valueRef, {
+const { svg, modules, size } = useQrCode(valueRef, {
     errorCorrectionLevel: 'H',
     foreground: '#000',
     background: '#fff'

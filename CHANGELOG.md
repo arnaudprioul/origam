@@ -15,6 +15,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamCalendar` + `useCalendar` — full calendar component. 4 views
+  (month/week/day/agenda), navigation, events with
+  start/end/color/category, range select with drag-to-create, recurring
+  events (RRULE subset: `FREQ=DAILY|WEEKLY|MONTHLY` + `INTERVAL` +
+  `COUNT` + `UNTIL` + `BYDAY`). Built-in toolbar with view switcher.
+  Locale-aware via `Intl.DateTimeFormat`. Custom slots for header,
+  event card, day cell, empty state. Zero external dep — no FullCalendar
+  / Vue-Cal / event-source. Pure date helpers in
+  `src/utils/Calendar/`. ARIA `application/gridcell/toolbar` pattern +
+  keyboard navigation (arrow keys, Page Up / Page Down). SSR-safe (no
+  `window` / `document` at setup).
 - `OrigamSound` + `useAudioPlayer` + `useWaveform` composables —
   in-house audio player. Wraps native `<audio>` with custom UI
   (play/pause, scrubber, volume, optional waveform via

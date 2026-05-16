@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 /**
- * OrigamQRCode — runtime probes for the SVG renderer, the matrix
+ * OrigamQrCode — runtime probes for the SVG renderer, the matrix
  * regeneration under prop changes (errorCorrectionLevel, value,
  * cornerRadius, foreground, logo overlay) and the ARIA contract.
  *
@@ -21,7 +21,7 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamQRCode — Playground (smoke)', () => {
+test.describe('OrigamQrCode — Playground (smoke)', () => {
     test('mounts and renders an inline <svg>', async ({ page }) => {
         await openVariant(page, 'Playground')
         const sandbox = sandboxOf(page)
@@ -56,11 +56,11 @@ test.describe('OrigamQRCode — Playground (smoke)', () => {
         await openVariant(page, 'Playground')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="qrcode-playground-host"]').first()
-        await expect(host).toHaveClass(/origam-qrcode--ecc-m/)
+        await expect(host).toHaveClass(/origam-qr-code--ecc-m/)
     })
 })
 
-test.describe('OrigamQRCode — Prop value (parallel)', () => {
+test.describe('OrigamQrCode — Prop value (parallel)', () => {
     test('renders a distinct matrix per payload class', async ({ page }) => {
         await openVariant(page, 'Prop — value (URL / vCard / WiFi / raw)')
         const sandbox = sandboxOf(page)
@@ -88,7 +88,7 @@ test.describe('OrigamQRCode — Prop value (parallel)', () => {
     })
 })
 
-test.describe('OrigamQRCode — Prop errorCorrectionLevel', () => {
+test.describe('OrigamQrCode — Prop errorCorrectionLevel', () => {
     test('higher ECC grows the matrix viewBox for the same payload', async ({ page }) => {
         await openVariant(page, 'Prop — errorCorrectionLevel (L / M / Q / H)')
         const sandbox = sandboxOf(page)
@@ -116,14 +116,14 @@ test.describe('OrigamQRCode — Prop errorCorrectionLevel', () => {
         await openVariant(page, 'Prop — errorCorrectionLevel (L / M / Q / H)')
         const sandbox = sandboxOf(page)
 
-        await expect(sandbox.locator('[data-cy="qrcode-ecc-L"]').first()).toHaveClass(/origam-qrcode--ecc-l/)
-        await expect(sandbox.locator('[data-cy="qrcode-ecc-M"]').first()).toHaveClass(/origam-qrcode--ecc-m/)
-        await expect(sandbox.locator('[data-cy="qrcode-ecc-Q"]').first()).toHaveClass(/origam-qrcode--ecc-q/)
-        await expect(sandbox.locator('[data-cy="qrcode-ecc-H"]').first()).toHaveClass(/origam-qrcode--ecc-h/)
+        await expect(sandbox.locator('[data-cy="qrcode-ecc-L"]').first()).toHaveClass(/origam-qr-code--ecc-l/)
+        await expect(sandbox.locator('[data-cy="qrcode-ecc-M"]').first()).toHaveClass(/origam-qr-code--ecc-m/)
+        await expect(sandbox.locator('[data-cy="qrcode-ecc-Q"]').first()).toHaveClass(/origam-qr-code--ecc-q/)
+        await expect(sandbox.locator('[data-cy="qrcode-ecc-H"]').first()).toHaveClass(/origam-qr-code--ecc-h/)
     })
 })
 
-test.describe('OrigamQRCode — Prop cornerRadius', () => {
+test.describe('OrigamQrCode — Prop cornerRadius', () => {
     test('cornerRadius=0 omits rx/ry attributes', async ({ page }) => {
         await openVariant(page, 'Prop — cornerRadius (0 / 0.25 / 0.5)')
         const sandbox = sandboxOf(page)
@@ -144,7 +144,7 @@ test.describe('OrigamQRCode — Prop cornerRadius', () => {
     })
 })
 
-test.describe('OrigamQRCode — Prop logo', () => {
+test.describe('OrigamQrCode — Prop logo', () => {
     test('renders an <image> element when a logo is configured', async ({ page }) => {
         await openVariant(page, 'Prop — logo overlay (size 0.15 / 0.2 / 0.25)')
         const sandbox = sandboxOf(page)
@@ -172,7 +172,7 @@ test.describe('OrigamQRCode — Prop logo', () => {
     })
 })
 
-test.describe('OrigamQRCode — Prop foreground / background', () => {
+test.describe('OrigamQrCode — Prop foreground / background', () => {
     test('foreground colour propagates to the module <rect> fill', async ({ page }) => {
         await openVariant(page, 'Prop — foreground / background (theming)')
         const sandbox = sandboxOf(page)

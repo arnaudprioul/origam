@@ -97,7 +97,7 @@
 >
 	import { OrigamBtn, OrigamReverseTranslatePicker, OrigamTransition, OrigamTranslatePicker } from "../../components"
 
-	import { useCalendar, useDate, useProps , useStyle} from "../../composables"
+	import { useDatePickerCalendar, useDate, useProps , useStyle} from "../../composables"
 
 	import { CALENDAR_STRATEGY, DENSITY } from "../../enums"
 
@@ -131,7 +131,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {daysInMonth, model, weekNumbers} = useCalendar(props)
+	const {daysInMonth, model, weekNumbers} = useDatePickerCalendar(props)
 	const adapter = useDate()
 
 	/*********************************************************

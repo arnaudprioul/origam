@@ -5,9 +5,9 @@ import { DateAdapter } from "../../services"
 import { getWeek, wrapInArray } from "../../utils"
 
 /*********************************************************
- * useCalendar
+ * useDatePickerCalendar
  ********************************************************/
-export function useCalendar (props: ICalendarProps) {
+export function useDatePickerCalendar (props: ICalendarProps) {
     const adapter = useDate()
     const model = useVModel(
         props,

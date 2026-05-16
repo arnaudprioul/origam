@@ -312,8 +312,8 @@ export * from './Mask/mask-options.interface'
 
 export * from './Nuxt/nuxt-module.interface'
 
-export * from './QRCode/qrcode.interface'
-export * from './QRCode/qrcode-logo.interface'
+export * from './QrCode/qr-code.interface'
+export * from './QrCode/qr-code-logo.interface'
 
 export * from './Watermark/watermark.interface'
 
@@ -322,3 +322,6 @@ export * from './Video/video-track.interface'
 
 export * from './Sound/sound.interface'
 export * from './Sound/sound-metadata.interface'
+
+export * from './Calendar/event.interface'
+export * from './Calendar/calendar.interface'

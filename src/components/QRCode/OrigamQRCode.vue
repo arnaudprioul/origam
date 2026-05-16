@@ -2,12 +2,12 @@
 	<component
 			:is="tag"
 			ref="rootEl"
-			class="origam-qrcode"
+			class="origam-qr-code"
 			:class="rootClasses"
 			:style="rootStyles"
 			role="img"
 			:aria-label="resolvedAriaLabel"
-			data-cy="origam-qrcode"
+			data-cy="origam-qr-code"
 	/>
 </template>
 
@@ -22,28 +22,28 @@
 		watchEffect
 	} from 'vue'
 
-	import { useQRCode } from '../../composables'
+	import { useQrCode } from '../../composables'
 
 	import type {
-		IQRCodeProps
+		IQrCodeProps
 	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
-	 * Props + defaults for `<OrigamQRCode>`. The component is a pure
+	 * Props + defaults for `<OrigamQrCode>`. The component is a pure
 	 * SVG renderer — it does NOT own state, NO event, NO input. The
-	 * rendered output is the raw SVG string built by the `useQRCode`
+	 * rendered output is the raw SVG string built by the `useQrCode`
 	 * composable, mounted via `innerHTML` on the root ref (mirrors
 	 * the `<OrigamCode>` pattern — bypasses the v-html lint warning
 	 * while keeping the SVG sanitised at the composable layer).
 	 *
-	 * Defaults are inlined here (not pulled from a QRCODE_DEFAULTS
+	 * Defaults are inlined here (not pulled from a QR_CODE_DEFAULTS
 	 * const) because the Vue SFC compiler analyses `withDefaults`
 	 * statically and only resolves literals — cf. CLAUDE.md rule.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IQRCodeProps>(), {
+	const props = withDefaults(defineProps<IQrCodeProps>(), {
 		tag: 'div',
 		size: 240,
 		errorCorrectionLevel: 'M',
@@ -68,7 +68,7 @@
 		logo: props.logo
 	}))
 
-	const { svg } = useQRCode(() => props.value, resolvedOptions)
+	const { svg } = useQrCode(() => props.value, resolvedOptions)
 
 	/*********************************************************
 	 * SVG injection — innerHTML mirrors the `<OrigamCode>` approach
@@ -108,7 +108,7 @@
 	 * Class & Style
 	 ********************************************************/
 	const rootClasses = computed(() => [
-		`origam-qrcode--ecc-${props.errorCorrectionLevel.toLowerCase()}`,
+		`origam-qr-code--ecc-${props.errorCorrectionLevel.toLowerCase()}`,
 		props.class
 	])
 
@@ -133,11 +133,11 @@
 		lang="scss"
 		scoped
 >
-	.origam-qrcode {
+	.origam-qr-code {
 		display: inline-block;
 		line-height: 0;
-		color: var(--origam-qrcode---foreground);
-		background-color: var(--origam-qrcode---background-color);
+		color: var(--origam-qr-code---foreground);
+		background-color: var(--origam-qr-code---background-color);
 
 		:deep(svg) {
 			display: block;
