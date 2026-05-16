@@ -82,42 +82,42 @@
 
 								<button
 										v-for="entry in group.items"
-										:id="optionDomId(entry.command.id)"
-										:key="entry.command.id"
-										:aria-disabled="entry.command.disabled ? 'true' : 'false'"
-										:aria-selected="entry.command.id === activeCommandId ? 'true' : 'false'"
-										:class="itemClasses(entry.command)"
-										:disabled="entry.command.disabled"
+										:id="optionDomId(entry.item.id)"
+										:key="entry.item.id"
+										:aria-disabled="entry.item.disabled ? 'true' : 'false'"
+										:aria-selected="entry.item.id === activeCommandId ? 'true' : 'false'"
+										:class="itemClasses(entry.item)"
+										:disabled="entry.item.disabled"
 										role="option"
 										tabindex="-1"
 										type="button"
-										@click="handleItemClick(entry.command)"
-										@mousemove="handleItemHover(entry.command)"
+										@click="handleItemClick(entry.item)"
+										@mousemove="handleItemHover(entry.item)"
 								>
 									<slot
 											name="item"
-											v-bind="{ command: entry.command, isActive: entry.command.id === activeCommandId }"
+											v-bind="{ command: entry.item, isActive: entry.item.id === activeCommandId }"
 									>
 										<origam-icon
-												v-if="entry.command.icon"
-												:icon="entry.command.icon"
+												v-if="entry.item.icon"
+												:icon="entry.item.icon"
 												:size="18"
 												class="origam-command-palette__item-icon"
 										/>
 
 										<span class="origam-command-palette__item-text">
-											<span class="origam-command-palette__item-label">{{ entry.command.label }}</span>
+											<span class="origam-command-palette__item-label">{{ entry.item.label }}</span>
 											<span
-													v-if="entry.command.description"
+													v-if="entry.item.description"
 													class="origam-command-palette__item-description"
 											>
-												{{ entry.command.description }}
+												{{ entry.item.description }}
 											</span>
 										</span>
 
 										<origam-kbd
-												v-if="entry.command.kbd && entry.command.kbd.length > 0"
-												:combination="[...entry.command.kbd]"
+												v-if="entry.item.kbd && entry.item.kbd.length > 0"
+												:combination="[...entry.item.kbd]"
 												class="origam-command-palette__item-kbd"
 												variant="outlined"
 										/>

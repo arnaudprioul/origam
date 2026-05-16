@@ -305,6 +305,8 @@ export * from './Mask/built-in-pattern.type'
 export * from './Mask/pattern-validator.type'
 export * from './Mask/mask.type'
 
+export * from './QRCode/qrcode-error-correction.type'
+
 
 
 

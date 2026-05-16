@@ -141,6 +141,74 @@
 			</div>
 		</Variant>
 
+		<Variant title="Variant — quoted">
+			<div
+					class="story-shell"
+					data-cy="blockquote-quoted-showcase"
+			>
+				<p class="hint">
+					The `quoted` variant renders a single oversized opening glyph as
+					a background watermark (position: absolute, z-index: 0) behind
+					the body text. The closing glyph is not rendered.
+				</p>
+
+				<div class="story-col">
+					<strong>default color (primary accent)</strong>
+					<origam-blockquote
+							variant="quoted"
+							lang="en"
+							author="Linus Torvalds"
+							source="LKML, 2003"
+							data-cy="blockquote-quoted-default"
+					>
+						Talk is cheap. Show me the code.
+					</origam-blockquote>
+				</div>
+
+				<div class="story-col">
+					<strong>color = primary</strong>
+					<origam-blockquote
+							variant="quoted"
+							lang="en"
+							color="primary"
+							author="Steve Jobs"
+							source="Stanford Commencement, 2005"
+							data-cy="blockquote-quoted-primary"
+					>
+						Stay hungry. Stay foolish.
+					</origam-blockquote>
+				</div>
+
+				<div class="story-col">
+					<strong>color = success</strong>
+					<origam-blockquote
+							variant="quoted"
+							lang="fr"
+							color="success"
+							author="René Descartes"
+							source="Discours de la méthode, 1637"
+							data-cy="blockquote-quoted-success"
+					>
+						Je pense, donc je suis.
+					</origam-blockquote>
+				</div>
+
+				<div class="story-col">
+					<strong>color = danger</strong>
+					<origam-blockquote
+							variant="quoted"
+							lang="de"
+							color="danger"
+							author="Friedrich Nietzsche"
+							source="Götzen-Dämmerung, 1888"
+							data-cy="blockquote-quoted-danger"
+					>
+						Was uns nicht umbringt, macht uns stärker.
+					</origam-blockquote>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — author">
 			<div
 					class="story-shell"

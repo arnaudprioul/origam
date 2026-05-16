@@ -331,6 +331,20 @@
 
 	const isHorizontal = computed<boolean>(() => props.direction === DIRECTION.HORIZONTAL)
 
+	/*********************************************************
+	 * Round thickness — direction-aware
+	 *
+	 * @description
+	 * In horizontal mode each round is a column of width `matchWidth`
+	 * (~240 px). In vertical mode each round is a row whose thickness
+	 * controls how compact the bracket is vertically AND where the SVG
+	 * connectors anchor. Using `matchWidth` (240) leaves a lot of empty
+	 * space below every match card; using a tighter value keeps the
+	 * connectors aligned with the cards while shrinking the layout.
+	 ********************************************************/
+	const verticalRoundThickness = 120
+	const roundThickness = computed<number>(() => isHorizontal.value ? matchWidth : verticalRoundThickness)
+
 	const showConnectors = computed<boolean>(() => {
 		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) return false
 
@@ -354,7 +368,7 @@
 	const totalWidth = computed<number>(() => {
 		const n = displayRounds.value.length
 
-		return n * matchWidth + (n - 1) * roundGap
+		return n * roundThickness.value + (n - 1) * roundGap
 	})
 
 	const connectorViewBox = computed<string>(() => {
@@ -382,7 +396,8 @@
 	}
 
 	const matchXCenter = (roundIndex: number): number => {
-		return roundIndex * (matchWidth + roundGap) + matchWidth / 2
+		const t = roundThickness.value
+		return roundIndex * (t + roundGap) + t / 2
 	}
 
 	const connectorPaths = computed<TConnectorPath[]>(() => {
@@ -414,8 +429,8 @@
 
 				const fromXCenter = matchXCenter(r)
 				const toXCenter = matchXCenter(r + 1)
-				const fromX = fromXCenter + matchWidth / 2
-				const toX = toXCenter - matchWidth / 2
+				const fromX = fromXCenter + roundThickness.value / 2
+				const toX = toXCenter - roundThickness.value / 2
 				const fromY = matchYCenter(r, i, round.matches.length)
 				const toY = matchYCenter(r + 1, nextIndex, nextRound.matches.length)
 				const midX = (fromX + toX) / 2
@@ -453,7 +468,7 @@
 
 		return {
 			minWidth: `${totalHeight.value}px`,
-			height: `${matchWidth}px`,
+			height: `${verticalRoundThickness}px`,
 			flex: '0 0 auto'
 		}
 	}

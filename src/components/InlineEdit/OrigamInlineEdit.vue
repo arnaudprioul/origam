@@ -31,6 +31,26 @@
 					{{ isEmpty ? resolvedPlaceholder : displayValue }}
 				</button>
 			</slot>
+
+			<div
+					v-if="showActions"
+					class="origam-inline-edit__actions"
+					data-cy="origam-inline-edit-actions-display"
+			>
+				<button
+						type="button"
+						class="origam-inline-edit__action-btn origam-inline-edit__action-btn--edit"
+						:disabled="disabled"
+						:aria-label="editActionLabel"
+						:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.EDIT}`"
+						@click="handleEnterEdit"
+				>
+					<span
+							class="origam-inline-edit__action-icon"
+							aria-hidden="true"
+					>&#9998;</span>
+				</button>
+			</div>
 		</template>
 
 		<template v-else>
@@ -43,51 +63,130 @@
 					:error="error"
 					:is-pending="isPending"
 			>
-				<div
-						class="origam-inline-edit__editor"
-						:class="{ 'origam-inline-edit__editor--has-error': error !== null }"
-						data-cy="origam-inline-edit-editor"
+				<origam-textarea-field
+						v-if="multiline"
+						ref="inputRef"
+						:model-value="draft"
+						:placeholder="resolvedPlaceholder"
+						:disabled="disabled || isPending"
+						:aria-invalid="error !== null"
+						:aria-describedby="error !== null ? errorId : undefined"
+						class="origam-inline-edit__field"
+						data-cy="origam-inline-edit-input"
+						@update:model-value="handleInput"
+						@keydown="handleKeyDown"
+						@blur="handleBlur"
 				>
-					<textarea
-							v-if="multiline"
-							ref="inputRef"
-							class="origam-inline-edit__input origam-inline-edit__input--multiline"
-							:value="draft"
-							:placeholder="resolvedPlaceholder"
-							:disabled="disabled || isPending"
-							:aria-invalid="error !== null"
-							:aria-describedby="error !== null ? errorId : undefined"
-							data-cy="origam-inline-edit-input"
-							@input="handleInput"
-							@keydown="handleKeyDown"
-							@blur="handleBlur"
-					/>
-					<input
-							v-else
-							ref="inputRef"
-							class="origam-inline-edit__input"
-							:type="inputType"
-							:value="draft"
-							:placeholder="resolvedPlaceholder"
-							:disabled="disabled || isPending"
-							:aria-invalid="error !== null"
-							:aria-describedby="error !== null ? errorId : undefined"
-							data-cy="origam-inline-edit-input"
-							@input="handleInput"
-							@keydown="handleKeyDown"
-							@blur="handleBlur"
+					<template
+							v-if="showActions"
+							#appendInner
 					>
-					<span
-							v-if="error !== null"
-							:id="errorId"
-							class="origam-inline-edit__error"
-							role="alert"
-							data-cy="origam-inline-edit-error"
-					>{{ error }}</span>
-				</div>
+						<slot
+								name="actions"
+								:confirm="handleConfirm"
+								:cancel="handleCancel"
+								:is-pending="isPending"
+						>
+							<button
+									type="button"
+									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--confirm"
+									:disabled="disabled || isPending"
+									:aria-label="confirmActionLabel"
+									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CONFIRM}`"
+									@mousedown.prevent
+									@click="handleConfirm"
+							>
+								<span
+										class="origam-inline-edit__action-icon"
+										aria-hidden="true"
+								>&#10003;</span>
+							</button>
+							<button
+									type="button"
+									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--cancel"
+									:disabled="disabled"
+									:aria-label="cancelActionLabel"
+									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CANCEL}`"
+									@mousedown.prevent
+									@click="handleCancel"
+							>
+								<span
+										class="origam-inline-edit__action-icon"
+										aria-hidden="true"
+								>&#10005;</span>
+							</button>
+						</slot>
+					</template>
+				</origam-textarea-field>
+
+				<origam-text-field
+						v-else
+						ref="inputRef"
+						:model-value="draft"
+						:type="inputType"
+						:placeholder="resolvedPlaceholder"
+						:disabled="disabled || isPending"
+						:aria-invalid="error !== null"
+						:aria-describedby="error !== null ? errorId : undefined"
+						class="origam-inline-edit__field"
+						data-cy="origam-inline-edit-input"
+						@update:model-value="handleInput"
+						@keydown="handleKeyDown"
+						@blur="handleBlur"
+				>
+					<template
+							v-if="showActions"
+							#appendInner
+					>
+						<slot
+								name="actions"
+								:confirm="handleConfirm"
+								:cancel="handleCancel"
+								:is-pending="isPending"
+						>
+							<button
+									type="button"
+									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--confirm"
+									:disabled="disabled || isPending"
+									:aria-label="confirmActionLabel"
+									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CONFIRM}`"
+									@mousedown.prevent
+									@click="handleConfirm"
+							>
+								<span
+										class="origam-inline-edit__action-icon"
+										aria-hidden="true"
+								>&#10003;</span>
+							</button>
+							<button
+									type="button"
+									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--cancel"
+									:disabled="disabled"
+									:aria-label="cancelActionLabel"
+									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CANCEL}`"
+									@mousedown.prevent
+									@click="handleCancel"
+							>
+								<span
+										class="origam-inline-edit__action-icon"
+										aria-hidden="true"
+								>&#10005;</span>
+							</button>
+						</slot>
+					</template>
+				</origam-text-field>
+
+				<span
+						v-if="error !== null"
+						:id="errorId"
+						class="origam-inline-edit__error"
+						role="alert"
+						data-cy="origam-inline-edit-error"
+				>{{ error }}</span>
 			</slot>
 
 			<slot
+					v-if="!showActions"
 					name="actions"
 					:confirm="handleConfirm"
 					:cancel="handleCancel"
@@ -105,12 +204,17 @@
 		computed,
 		nextTick,
 		ref,
+		type ComponentPublicInstance,
 		type StyleValue,
 		useId,
 		watch
 	} from 'vue'
 
+	import { OrigamTextField, OrigamTextareaField } from '../../components'
+
 	import { useInlineEdit } from '../../composables'
+
+	import { INLINE_EDIT_ACTION } from '../../enums'
 
 	import type {
 		IInlineEditEmits,
@@ -139,7 +243,8 @@
 		multiline: false,
 		trim: true,
 		inputType: 'text',
-		loadingOnConfirm: false
+		loadingOnConfirm: false,
+		showActions: false
 	})
 
 	const emit = defineEmits<IInlineEditEmits>()
@@ -184,8 +289,11 @@
 
 	/*********************************************************
 	 * Refs / IDs
+	 * inputRef points to OrigamTextField or OrigamTextareaField.
+	 * Both expose .focus() and .select() via forwardRefs() proxying
+	 * through their internal HTMLInputElement / HTMLTextAreaElement.
 	 ********************************************************/
-	const inputRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
+	const inputRef = ref<ComponentPublicInstance & { focus?: () => void; select?: () => void } | null>(null)
 	const errorId = `origam-inline-edit-error-${useId()}`
 
 	/*********************************************************
@@ -206,6 +314,10 @@
 		return `Edit ${label}`
 	})
 
+	const editActionLabel = computed<string>(() => `Edit ${displayValue.value || resolvedPlaceholder.value}`)
+	const confirmActionLabel = 'Confirm'
+	const cancelActionLabel = 'Cancel'
+
 	/*********************************************************
 	 * Edit / confirm / cancel handlers — own the SFC-level emits.
 	 ********************************************************/
@@ -225,10 +337,11 @@
 
 	/*********************************************************
 	 * Input / keyboard glue
+	 * handleInput now receives the new string value directly from
+	 * OrigamTextField / OrigamTextareaField's @update:model-value emit.
 	 ********************************************************/
-	const handleInput = (event: Event): void => {
-		const target = event.target as HTMLInputElement | HTMLTextAreaElement
-		setValue(target.value)
+	const handleInput = (value: string | null): void => {
+		setValue(value ?? '')
 	}
 
 	const handleKeyDown = (event: KeyboardEvent): void => {
@@ -263,6 +376,10 @@
 	 * Focus management — auto-focus on transition into edit mode and
 	 * (optionally) select the text so the user can type a replacement
 	 * immediately.
+	 *
+	 * inputRef now points to OrigamTextField / OrigamTextareaField.
+	 * Both proxy .focus() and .select() via forwardRefs() through
+	 * their internal HTMLInputElement / HTMLTextAreaElement.
 	 ********************************************************/
 	watch(isEditing, async (next: boolean): Promise<void> => {
 		if (!next) return
@@ -270,7 +387,7 @@
 		await nextTick()
 		const el = inputRef.value
 		if (!el) return
-		el.focus()
+		if (typeof el.focus === 'function') el.focus()
 		if (props.selectOnFocus && typeof el.select === 'function') {
 			el.select()
 		}
@@ -286,7 +403,8 @@
 			'origam-inline-edit--pending': isPending.value,
 			'origam-inline-edit--loading-on-confirm': props.loadingOnConfirm && isPending.value,
 			'origam-inline-edit--multiline': props.multiline,
-			'origam-inline-edit--has-error': error.value !== null
+			'origam-inline-edit--has-error': error.value !== null,
+			'origam-inline-edit--show-actions': props.showActions
 		},
 		props.class
 	])
@@ -314,8 +432,9 @@
 	.origam-inline-edit {
 		position: relative;
 		display: inline-flex;
-		flex-direction: column;
-		gap: var(--origam-inline-edit__editor---gap, 4px);
+		flex-direction: row;
+		align-items: flex-start;
+		gap: var(--origam-inline-edit---actions-gap, var(--origam-inline-edit__actions---gap, 4px));
 		max-width: 100%;
 		transition: opacity var(--origam-inline-edit---transition-duration, 160ms) ease;
 	}
@@ -364,50 +483,82 @@
 		cursor: not-allowed;
 	}
 
-	.origam-inline-edit__editor {
-		display: inline-flex;
-		flex-direction: column;
-		gap: var(--origam-inline-edit__editor---gap, 4px);
-	}
-
-	.origam-inline-edit__input {
-		box-sizing: border-box;
-		width: 100%;
-		min-width: var(--origam-inline-edit__input---min-width, 120px);
-		padding: var(--origam-inline-edit__editor---padding-block, 4px)
-		         var(--origam-inline-edit__editor---padding-inline, 8px);
-		border: 1px solid var(--origam-inline-edit__editor---border-color, var(--origam-color__border---subtle));
-		border-radius: var(--origam-inline-edit__editor---border-radius, 4px);
-		background-color: var(--origam-inline-edit__editor---bg-color);
-		color: var(--origam-color__text---primary);
-		font: inherit;
-		outline: none;
-		transition: border-color var(--origam-inline-edit---transition-duration, 160ms) ease,
-		            box-shadow var(--origam-inline-edit---transition-duration, 160ms) ease;
-	}
-
-	.origam-inline-edit__input:focus {
-		border-color: var(--origam-inline-edit__editor---focus-border-color, var(--origam-color__action--primary---bg));
-		box-shadow: 0 0 0 2px var(--origam-inline-edit__editor---focus-ring-color, transparent);
-	}
-
-	.origam-inline-edit__input--multiline {
-		min-height: var(--origam-inline-edit__input---multiline-min-height, 64px);
-		resize: vertical;
-		font-family: inherit;
-	}
-
-	.origam-inline-edit__editor--has-error .origam-inline-edit__input {
-		border-color: var(--origam-inline-edit__error---color);
-	}
-
-	.origam-inline-edit__editor--has-error .origam-inline-edit__input:focus {
-		box-shadow: 0 0 0 2px var(--origam-inline-edit__error---ring-color, transparent);
+	.origam-inline-edit__field {
+		flex: 1;
+		min-width: var(--origam-inline-edit__field---min-width, 180px);
 	}
 
 	.origam-inline-edit__error {
 		font-size: var(--origam-inline-edit__error---font-size, 0.75rem);
 		color: var(--origam-inline-edit__error---color);
 		line-height: 1.3;
+	}
+
+	.origam-inline-edit__actions {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: var(--origam-inline-edit__actions---gap, 2px);
+	}
+
+	.origam-inline-edit__action-btn {
+		all: unset;
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--origam-inline-edit__action-btn---size, 28px);
+		height: var(--origam-inline-edit__action-btn---size, 28px);
+		border-radius: var(--origam-inline-edit__action-btn---border-radius, 4px);
+		cursor: pointer;
+		font-size: var(--origam-inline-edit__action-btn---font-size, 0.875rem);
+		font-weight: 600;
+		transition: background-color var(--origam-inline-edit---transition-duration, 160ms) ease,
+		            color var(--origam-inline-edit---transition-duration, 160ms) ease,
+		            opacity var(--origam-inline-edit---transition-duration, 160ms) ease;
+	}
+
+	.origam-inline-edit__action-btn:focus-visible {
+		outline: 2px solid var(--origam-color__action--primary---bg);
+		outline-offset: 2px;
+	}
+
+	.origam-inline-edit__action-btn:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	.origam-inline-edit__action-btn--edit {
+		color: var(--origam-color__text---secondary, #555);
+	}
+
+	.origam-inline-edit__action-btn--edit:hover:not(:disabled) {
+		background-color: var(--origam-color__surface---raised, #f5f5f5);
+		color: var(--origam-color__text---primary);
+	}
+
+	.origam-inline-edit__action-btn--confirm {
+		background-color: var(--origam-color__feedback--success---bgSubtle, #e6f6ec);
+		color: var(--origam-color__feedback--success---fgSubtle, #16a34a);
+	}
+
+	.origam-inline-edit__action-btn--confirm:hover:not(:disabled) {
+		background-color: var(--origam-color__feedback--success---bg, #16a34a);
+		color: var(--origam-color__feedback--success---fg, #fff);
+	}
+
+	.origam-inline-edit__action-btn--cancel {
+		background-color: var(--origam-color__feedback--danger---bgSubtle, #fee);
+		color: var(--origam-color__feedback--danger---fgSubtle, #b00);
+	}
+
+	.origam-inline-edit__action-btn--cancel:hover:not(:disabled) {
+		background-color: var(--origam-color__feedback--danger---bg, #dc2626);
+		color: var(--origam-color__feedback--danger---fg, #fff);
+	}
+
+	.origam-inline-edit__action-icon {
+		line-height: 1;
 	}
 </style>

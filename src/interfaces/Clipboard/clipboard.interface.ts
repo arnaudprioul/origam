@@ -3,6 +3,8 @@ import type {
     ITagProps
 } from '../../interfaces'
 
+import type { CLIPBOARD_FEEDBACK_MODE } from '../../enums'
+
 /**
  * Props for `<OrigamClipboard>` — copy-to-clipboard wrapper.
  *
@@ -43,12 +45,28 @@ export interface IClipboardProps extends ICommonsComponentProps, ITagProps {
      */
     successText?: string
     /**
-     * Render the auto feedback overlay (a small "Copied!" pill
-     * positioned over the trigger) in addition to whatever the slot
-     * shows via the `copied` scoped binding. Useful when the consumer
-     * slot has no built-in feedback affordance.
+     * Controls how copy-success feedback is rendered.
      *
-     * @default false
+     * - `'button'` (default) — the built-in trigger flips its label to
+     *   `feedbackText` while `copied` is true. No extra pill is shown.
+     * - `'pill'` — an ARIA-live `role="status"` pill appears next to
+     *   the trigger. The built-in trigger label does NOT flip.
+     * - `'both'` — both the label-flip and the ARIA-live pill are active.
+     * - `'none'` — no visual feedback. The `@copy` emit still fires.
+     *
+     * @default 'button'
+     */
+    feedbackMode?: CLIPBOARD_FEEDBACK_MODE | `${CLIPBOARD_FEEDBACK_MODE}`
+    /**
+     * @deprecated Since v2.2 — use `feedbackMode="pill"` instead.
+     *
+     * When `true`, equivalent to `feedbackMode="pill"` (renders the
+     * ARIA-live pill while suppressing the button label-flip). A one-shot
+     * `console.warn` is emitted when this prop is detected.
+     *
+     * This prop will be removed in v3.0.
+     *
+     * @default undefined
      */
     showFeedback?: boolean
     /**

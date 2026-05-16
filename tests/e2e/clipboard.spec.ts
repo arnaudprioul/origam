@@ -82,6 +82,96 @@ test.describe('OrigamClipboard — Playground (smoke + ARIA + default trigger)',
     })
 })
 
+test.describe('OrigamClipboard — feedbackMode: button (default)', () => {
+    test('label span appears after copy, pill absent', async ({ page }) => {
+        await openVariant(page, 'feedbackMode — button (default)')
+        await stubClipboard(page)
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="clipboard-mode-button-host"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        // Before copy — no label span
+        await expect(host.locator('.origam-clipboard__default-label')).toHaveCount(0)
+
+        const trigger = host.locator('[data-cy="clipboard-default-trigger"]').first()
+        await trigger.click()
+        await page.waitForTimeout(150)
+
+        // After copy — label present, pill absent
+        await expect(host.locator('.origam-clipboard__default-label')).toBeVisible()
+        await expect(host.locator('[data-cy="origam-clipboard-feedback"]')).toHaveCount(0)
+
+        const labelText = await host.locator('.origam-clipboard__default-label').textContent()
+        expect(labelText?.trim()).toBe('Copied!')
+    })
+})
+
+test.describe('OrigamClipboard — feedbackMode: pill', () => {
+    test('pill appears after copy with aria-live, label span absent', async ({ page }) => {
+        await openVariant(page, 'feedbackMode — pill')
+        await stubClipboard(page)
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="clipboard-mode-pill-host"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        // Before copy — pill absent
+        await expect(host.locator('[data-cy="origam-clipboard-feedback"]')).toHaveCount(0)
+
+        const trigger = host.locator('[data-cy="clipboard-default-trigger"]').first()
+        await trigger.click()
+        await page.waitForTimeout(150)
+
+        // After copy — pill present, label span absent
+        const pill = host.locator('[data-cy="origam-clipboard-feedback"]').first()
+        await expect(pill).toBeVisible()
+        await expect(pill).toHaveAttribute('aria-live', 'polite')
+        await expect(pill).toHaveAttribute('role', 'status')
+        await expect(host.locator('.origam-clipboard__default-label')).toHaveCount(0)
+    })
+})
+
+test.describe('OrigamClipboard — feedbackMode: both', () => {
+    test('both label span and pill appear after copy', async ({ page }) => {
+        await openVariant(page, 'feedbackMode — both')
+        await stubClipboard(page)
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="clipboard-mode-both-host"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const trigger = host.locator('[data-cy="clipboard-default-trigger"]').first()
+        await trigger.click()
+        await page.waitForTimeout(150)
+
+        await expect(host.locator('.origam-clipboard__default-label')).toBeVisible()
+        await expect(host.locator('[data-cy="origam-clipboard-feedback"]')).toBeVisible()
+    })
+})
+
+test.describe('OrigamClipboard — feedbackMode: none', () => {
+    test('neither label span nor pill appear after copy, @copy counter increments', async ({ page }) => {
+        await openVariant(page, 'feedbackMode — none')
+        await stubClipboard(page)
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="clipboard-mode-none-host"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const trigger = host.locator('[data-cy="clipboard-default-trigger"]').first()
+        await trigger.click()
+        await page.waitForTimeout(150)
+
+        await expect(host.locator('.origam-clipboard__default-label')).toHaveCount(0)
+        await expect(host.locator('[data-cy="origam-clipboard-feedback"]')).toHaveCount(0)
+
+        // @copy still fires — counter reflects it
+        const counter = sandbox.locator('[data-cy="clipboard-mode-none-counter"]').first()
+        await expect(counter).toHaveText('1')
+    })
+})
+
 test.describe('OrigamClipboard — Default trigger (no slot)', () => {
     test('renders the content-copy icon when no slot is provided', async ({ page }) => {
         await openVariant(page, 'Default — no slot (auto-rendered icon button)')
@@ -150,7 +240,7 @@ test.describe('OrigamClipboard — Slot default (scoped)', () => {
 })
 
 test.describe('OrigamClipboard — Slot feedback + ARIA-live', () => {
-    test('showFeedback + custom #feedback slot renders the pill with aria-live=polite', async ({ page }) => {
+    test('feedbackMode="pill" + custom #feedback slot renders the pill with aria-live=polite', async ({ page }) => {
         await openVariant(page, 'Slot — feedback (custom pill)')
         await stubClipboard(page)
         const sandbox = sandboxOf(page)

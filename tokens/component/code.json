@@ -40,8 +40,9 @@
 
     "line-number": {
       "color":              { "$type": "color",      "$value": "{color.text.disabled}" },
-      "width":              { "$type": "dimension",  "$value": "3rem" },
-      "padding-right":      { "$type": "dimension",  "$value": "{space.3}" }
+      "width":              { "$type": "dimension",  "$value": "3.5rem" },
+      "padding-right":      { "$type": "dimension",  "$value": "{space.5}" },
+      "gap":                { "$type": "dimension",  "$value": "{space.4}" }
     },
 
     "line-highlight": {

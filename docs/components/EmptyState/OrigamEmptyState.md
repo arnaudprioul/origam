@@ -112,6 +112,6 @@ top of the `error` preset).
 
 ## Related
 
-- [`OrigamAlert`](../Alert/OrigamAlert.md) — surface a warning /
+- `OrigamAlert` — surface a warning /
   feedback message inline alongside existing data. Use Alert for
   "something is happening", EmptyState for "there is nothing to show".

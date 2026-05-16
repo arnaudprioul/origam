@@ -3,16 +3,14 @@
 			:is="tag"
 			:class="codeClasses"
 			:style="codeStyles"
-			role="region"
-			:aria-label="ariaRegionLabel"
 	>
-		<div v-if="showHeader" class="origam-code__header">
+		<component :is="headerTag" v-if="showHeader" class="origam-code__header">
 			<slot
 					name="header"
 					:filename="filename"
 					:lang-name="lang"
 					:copy="handleCopy"
-					:copied="isCopied"
+					:copied="copied"
 			>
 				<span v-if="filename" class="origam-code__filename" data-cy="origam-code-filename">{{ filename }}</span>
 				<span v-else class="origam-code__lang-badge" data-cy="origam-code-lang">{{ lang }}</span>
@@ -28,7 +26,7 @@
 					<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
 				</button>
 			</slot>
-		</div>
+		</component>
 
 		<button
 				v-if="copyable && !showHeader"
@@ -50,9 +48,9 @@
 			></code></pre>
 		</div>
 
-		<div v-if="$slots.footer" class="origam-code__footer">
+		<footer v-if="$slots.footer" class="origam-code__footer">
 			<slot name="footer"/>
-		</div>
+		</footer>
 
 		<slot/>
 	</component>
@@ -62,10 +60,11 @@
 		lang="ts"
 		setup
 >
-	import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+	import { computed, onMounted, ref, useSlots, watch } from 'vue'
 
 	import {
 		useBorder,
+		useClipboard,
 		useCode,
 		useElevation,
 		useMargin,
@@ -93,7 +92,7 @@
 	 * row-level classes for line-numbers + highlight-lines.
 	 ********************************************************/
 	const props = withDefaults(defineProps<ICodeProps>(), {
-		tag: 'div',
+		tag: 'figure',
 		lang: CODE_LANG.PLAINTEXT,
 		theme: CODE_THEME.AUTO,
 		lineNumbers: false,
@@ -268,56 +267,31 @@
 	/*********************************************************
 	 * Copy-to-clipboard with feedback.
 	 ********************************************************/
-	const isCopied = ref(false)
-	let _copyTimeout: ReturnType<typeof setTimeout> | null = null
-
-	async function writeToClipboard (text: string): Promise<boolean> {
-		if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-			try { await navigator.clipboard.writeText(text); return true } catch { /* fallthrough */ }
-		}
-		// Legacy fallback — execCommand is deprecated but still the only
-		// option in pre-permissions Safari and some embedded WebViews.
-		try {
-			const textarea = document.createElement('textarea')
-			textarea.value = text
-			textarea.setAttribute('readonly', '')
-			textarea.style.position = 'fixed'
-			textarea.style.opacity = '0'
-			document.body.appendChild(textarea)
-			textarea.select()
-			const ok = document.execCommand('copy')
-			document.body.removeChild(textarea)
-			return ok
-		} catch {
-			return false
-		}
-	}
+	const { copy, copied } = useClipboard({ feedbackDuration: CODE_DEFAULTS.copyFeedbackDurationMs })
 
 	async function handleCopy () {
 		const text = formattedCode.value
-		const ok = await writeToClipboard(text)
-		if (!ok) return
-		emit('copy', text)
-		isCopied.value = true
-		if (_copyTimeout) clearTimeout(_copyTimeout)
-		_copyTimeout = setTimeout(() => { isCopied.value = false }, CODE_DEFAULTS.copyFeedbackDurationMs)
+		if (await copy(text)) emit('copy', text)
 	}
-
-	onBeforeUnmount(() => {
-		if (_copyTimeout) clearTimeout(_copyTimeout)
-	})
 
 	/*********************************************************
 	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
 	 ********************************************************/
-	const copyButtonLabel = computed(() => isCopied.value ? 'Copied!' : 'Copy')
-	const copyAriaLabel = computed(() => isCopied.value ? 'Code copied to clipboard' : 'Copy code to clipboard')
-	const ariaRegionLabel = computed(() => props.filename ? `Code block: ${props.filename}` : `Code block (${props.lang})`)
+	const copyButtonLabel = computed(() => copied.value ? 'Copied!' : 'Copy')
+	const copyAriaLabel = computed(() => copied.value ? 'Code copied to clipboard' : 'Copy code to clipboard')
 
 	/*********************************************************
 	 * Class & Style.
 	 ********************************************************/
 	const showHeader = computed(() => !!props.filename || !!slots.header)
+
+	/**
+	 * `<figcaption>` is only valid as a child of `<figure>` (W3C HTML5 Living
+	 * Standard). When the consumer overrides `tag` to something other than
+	 * `'figure'` (back-compat usage with `tag="div"`) we fall back to a
+	 * plain `<div>` for the header so the rendered markup stays W3C-correct.
+	 */
+	const headerTag = computed(() => props.tag === 'figure' ? 'figcaption' : 'div')
 
 	const codeClasses = computed(() => [
 		'origam-code',
@@ -356,7 +330,7 @@
 		return { '--origam-code---max-height': value, maxHeight: value }
 	})
 
-	defineExpose({ rebuild, isCopied, codeRef })
+	defineExpose({ rebuild, copied, codeRef })
 </script>
 
 <style lang="scss">
@@ -467,7 +441,7 @@
 	.origam-code--line-numbers .origam-code__row {
 		counter-increment: line;
 		position: relative;
-		padding-inline-start: var(--origam-code__line-number---width);
+		padding-inline-start: var(--origam-code---line-number-width);
 	}
 
 	.origam-code--line-numbers .origam-code__row::before {
@@ -475,10 +449,11 @@
 		position: absolute;
 		left: 0;
 		top: 0;
-		width: var(--origam-code__line-number---width);
-		padding-right: var(--origam-code__line-number---padding-right);
+		box-sizing: border-box;
+		width: var(--origam-code---line-number-width);
+		padding-right: var(--origam-code---line-number-padding-right);
 		text-align: right;
-		color: var(--origam-code__line-number---color);
+		color: var(--origam-code---line-number-color);
 		user-select: none;
 		font-variant-numeric: tabular-nums;
 	}

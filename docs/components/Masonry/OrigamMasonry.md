@@ -102,6 +102,6 @@ listitem semantic.
 
 ## Related
 
-- [`OrigamGrid`](../Grid/OrigamGrid.md) — fixed-row CSS Grid wrapper.
+- `OrigamGrid` — fixed-row CSS Grid wrapper.
   Use it when the layout is rectangular (every cell occupies one
   predictable area).

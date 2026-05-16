@@ -19,6 +19,9 @@ import { expect, test, type Page } from '@playwright/test'
  *   - ARIA: confirms `role="region"` + `role="status" / "alert"`
  *     and the appropriate `aria-live` per intent.
  *
+ * Items are now rendered by `<OrigamSnackbarItem>` — selectors use
+ * `.origam-snackbar-item` and `.origam-snackbar-item--intent-*`.
+ *
  * Histoire iframes render the sandbox under `iframe[src*="__sandbox"]`,
  * same convention as every other origam spec. The stack is teleported
  * to `document.body` so we search the whole page (not just the host
@@ -51,7 +54,7 @@ test.describe('OrigamSnackbarStack — Playground', () => {
         await trigger.click()
         await page.waitForTimeout(300)
 
-        const items = sandbox.locator('.origam-snackbar-stack__item')
+        const items = sandbox.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(3, { timeout: 5000 })
 
         const dismissAll = sandbox.locator('[data-cy="snackbar-stack-playground-dismiss-all"]').first()
@@ -59,6 +62,23 @@ test.describe('OrigamSnackbarStack — Playground', () => {
         await page.waitForTimeout(400)
 
         await expect(items).toHaveCount(0)
+    })
+
+    test('stack renders OrigamSnackbarItem components (not duplicated markup)', async ({ page }) => {
+        await openVariant(page, 'Playground')
+        const sandbox = sandboxOf(page)
+
+        const trigger = sandbox.locator('[data-cy="snackbar-stack-playground-trigger"]').first()
+        await expect(trigger).toBeVisible({ timeout: 8000 })
+        await trigger.click()
+        await page.waitForTimeout(300)
+
+        // Verify items use OrigamSnackbarItem classes (not old stack item classes)
+        const item = sandbox.locator('.origam-snackbar-item').first()
+        await expect(item).toBeVisible({ timeout: 5000 })
+
+        // OrigamSnackbarItem structure: content div with prepend + text
+        await expect(item.locator('.origam-snackbar-item__content')).toBeVisible()
     })
 })
 
@@ -80,8 +100,8 @@ test.describe('OrigamSnackbarStack — Prop: location', () => {
             const host = sandbox.locator(`.origam-snackbar-stack--${loc}`).first()
             await expect(host).toBeVisible({ timeout: 5000 })
 
-            // At least one item should live in the matching host.
-            const items = host.locator('.origam-snackbar-stack__item')
+            // At least one OrigamSnackbarItem should live in the matching host.
+            const items = host.locator('.origam-snackbar-item')
             await expect(items.first()).toBeVisible({ timeout: 5000 })
         }
     })
@@ -98,7 +118,7 @@ test.describe('OrigamSnackbarStack — Prop: max', () => {
         await page.waitForTimeout(500)
 
         const host = sandbox.locator('[data-cy="snackbar-stack-max-host"]').first()
-        const items = host.locator('.origam-snackbar-stack__item')
+        const items = host.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(5, { timeout: 5000 })
     })
 })
@@ -115,7 +135,7 @@ test.describe('OrigamSnackbarStack — Prop: intent', () => {
 
             const intentItem = sandbox
                 .locator('[data-cy="snackbar-stack-intent-host"]')
-                .locator(`.origam-snackbar-stack__item--intent-${intent}`)
+                .locator(`.origam-snackbar-item--intent-${intent}`)
                 .first()
 
             await expect(intentItem).toBeVisible({ timeout: 4000 })
@@ -129,7 +149,7 @@ test.describe('OrigamSnackbarStack — Prop: intent', () => {
         await sandbox.locator('[data-cy="snackbar-stack-intent-danger"]').first().click()
         await page.waitForTimeout(200)
 
-        const item = sandbox.locator('.origam-snackbar-stack__item--intent-danger').first()
+        const item = sandbox.locator('.origam-snackbar-item--intent-danger').first()
         await expect(item).toHaveAttribute('role', 'alert')
         await expect(item).toHaveAttribute('aria-live', 'assertive')
     })
@@ -147,14 +167,14 @@ test.describe('OrigamSnackbarStack — Emits + dismiss + actions', () => {
 
         const host = sandbox.locator('[data-cy="snackbar-stack-emit-host"]').first()
         const dismissBtn = host
-            .locator('.origam-snackbar-stack__item-dismiss')
+            .locator('.origam-snackbar-item__dismiss')
             .first()
         await expect(dismissBtn).toBeVisible({ timeout: 4000 })
 
         await dismissBtn.click()
         await page.waitForTimeout(400)
 
-        const items = host.locator('.origam-snackbar-stack__item')
+        const items = host.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(0, { timeout: 5000 })
 
         const counter = sandbox.locator('[data-cy="snackbar-stack-emit-counter"]').first()
@@ -170,7 +190,8 @@ test.describe('OrigamSnackbarStack — Emits + dismiss + actions', () => {
         await page.waitForTimeout(200)
 
         const action = sandbox
-            .locator('[data-cy^="origam-snackbar-stack-action-"]')
+            .locator('[data-cy^="origam-snackbar-stack-item-"]')
+            .locator('.origam-snackbar-item__action')
             .first()
         await expect(action).toBeVisible({ timeout: 4000 })
         await action.click()
@@ -193,7 +214,7 @@ test.describe('OrigamSnackbarStack — Auto-dismiss timing', () => {
         await page.waitForTimeout(6_000)
 
         const host = sandbox.locator('[data-cy="snackbar-stack-max-host"]').first()
-        const items = host.locator('.origam-snackbar-stack__item')
+        const items = host.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(5)
     })
 
@@ -207,11 +228,11 @@ test.describe('OrigamSnackbarStack — Auto-dismiss timing', () => {
         await page.waitForTimeout(1_000)
 
         const host = sandbox.locator('[data-cy="snackbar-stack-intent-host"]').first()
-        const item = host.locator('.origam-snackbar-stack__item--intent-success').first()
+        const item = host.locator('.origam-snackbar-item--intent-success').first()
         await expect(item).toBeVisible()
 
         await page.waitForTimeout(4_000)
-        await expect(host.locator('.origam-snackbar-stack__item--intent-success')).toHaveCount(0, { timeout: 5000 })
+        await expect(host.locator('.origam-snackbar-item--intent-success')).toHaveCount(0, { timeout: 5000 })
     })
 })
 
@@ -233,7 +254,7 @@ test.describe('OrigamSnackbarStack — ARIA region', () => {
         await sandbox.locator('[data-cy="snackbar-stack-intent-success"]').first().click()
         await page.waitForTimeout(200)
 
-        const item = sandbox.locator('.origam-snackbar-stack__item--intent-success').first()
+        const item = sandbox.locator('.origam-snackbar-item--intent-success').first()
         await expect(item).toHaveAttribute('role', 'status')
         await expect(item).toHaveAttribute('aria-live', 'polite')
     })

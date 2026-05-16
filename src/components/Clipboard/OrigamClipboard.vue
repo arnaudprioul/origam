@@ -26,14 +26,14 @@
 						aria-hidden="true"
 				/>
 				<span
-						v-if="copied"
+						v-if="showButtonLabel"
 						class="origam-clipboard__default-label"
 				>{{ resolvedFeedbackText }}</span>
 			</button>
 		</slot>
 
 		<span
-				v-if="showFeedback && copied"
+				v-if="showPill && copied"
 				class="origam-clipboard__feedback"
 				role="status"
 				aria-live="polite"
@@ -62,7 +62,7 @@
 
 	import { useClipboard } from '../../composables'
 
-	import { MDI_ICONS } from '../../enums'
+	import { CLIPBOARD_FEEDBACK_MODE, MDI_ICONS } from '../../enums'
 
 	import type {
 		IClipboardEmits,
@@ -87,11 +87,36 @@
 		feedbackDuration: 2000,
 		feedbackText: 'Copied!',
 		successText: undefined,
-		showFeedback: false,
+		feedbackMode: 'button',
+		showFeedback: undefined,
 		disabled: false
 	})
 
 	const emit = defineEmits<IClipboardEmits>()
+
+	/*********************************************************
+	 * Deprecation shim — showFeedback → feedbackMode
+	 *
+	 * One-shot warn per component instance to preserve the console
+	 * contract without spamming on every render cycle.
+	 ********************************************************/
+	let _deprecationWarned = false
+
+	const resolvedFeedbackMode = computed((): CLIPBOARD_FEEDBACK_MODE => {
+		if (props.showFeedback !== undefined) {
+			if (!_deprecationWarned) {
+				_deprecationWarned = true
+				console.warn(
+					'[OrigamClipboard] The `showFeedback` prop is deprecated since v2.2 and will be removed in v3.0. ' +
+					'Use `feedbackMode="pill"` instead of `:show-feedback="true"`.'
+				)
+			}
+			return props.showFeedback
+				? CLIPBOARD_FEEDBACK_MODE.PILL
+				: CLIPBOARD_FEEDBACK_MODE.NONE
+		}
+		return (props.feedbackMode as CLIPBOARD_FEEDBACK_MODE) ?? CLIPBOARD_FEEDBACK_MODE.BUTTON
+	})
 
 	/*********************************************************
 	 * Composable — owns the copy pipeline + auto-resetting flag.
@@ -99,6 +124,22 @@
 	const { copy, copied, error } = useClipboard({
 		feedbackDuration: props.feedbackDuration
 	})
+
+	/*********************************************************
+	 * Derived visibility flags from feedbackMode.
+	 ********************************************************/
+	const showButtonLabel = computed(
+		() => copied.value && (
+			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.BUTTON ||
+			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.BOTH
+		)
+	)
+
+	const showPill = computed(
+		() =>
+			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.PILL ||
+			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.BOTH
+	)
 
 	/*********************************************************
 	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
@@ -134,7 +175,7 @@
 		{
 			'origam-clipboard--copied': copied.value,
 			'origam-clipboard--disabled': props.disabled,
-			'origam-clipboard--with-feedback': props.showFeedback
+			'origam-clipboard--with-feedback': showPill.value
 		},
 		props.class
 	])
