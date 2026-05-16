@@ -84,6 +84,8 @@ export * from './Img'
 
 export * from './InfiniteScroll'
 
+export * from './InlineEdit'
+
 export * from './Input'
 
 export * from './Label'
