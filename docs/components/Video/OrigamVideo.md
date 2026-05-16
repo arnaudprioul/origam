@@ -91,7 +91,7 @@ peer extension attaches to it.
 Tracks are declared via the `tracks` prop and rendered as native
 `<track>` children of the `<video>`. The WebVTT format is required:
 
-```vtt
+```text
 WEBVTT
 
 00:00:00.000 --> 00:00:04.000

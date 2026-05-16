@@ -309,4 +309,6 @@ export * from './QRCode/qrcode-error-correction.type'
 export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
 
+export * from './Sound/sound-controls.type'
+
 
