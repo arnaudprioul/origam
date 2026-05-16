@@ -185,6 +185,8 @@ export * from './Img/img.interface'
 
 export * from './InfiniteScroll/infinite-scroll.interface'
 
+export * from './InlineEdit/inline-edit.interface'
+
 export * from './Input/input.interface'
 
 export * from './Label/label.interface'

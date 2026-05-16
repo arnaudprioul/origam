@@ -160,6 +160,8 @@ export * from './Img/img.type'
 export * from './InfiniteScroll/infinite-scroll.type'
 export * from './InfiniteScroll/infinite-scroll-intersect.type'
 
+export * from './InlineEdit/inline-edit-input-type.type'
+
 export * from './Input/input.type'
 
 export * from './Label/label.type'

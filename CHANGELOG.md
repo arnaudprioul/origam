@@ -15,6 +15,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamInlineEdit` + `useInlineEdit` composable — edit-in-place
+  pattern. Click the display affordance → an input appears prefilled
+  with the current value → `Enter` confirms / `Escape` cancels. v-model
+  binds to the value, sync or async `validate` callback returns
+  `true | string | Promise<true | string>` and keeps the editor open
+  on error (`role="alert"` for screen readers). Multiline mode renders
+  a `<textarea>` (Cmd/Ctrl+Enter to confirm). Custom slots for
+  `#display` / `#edit` / `#actions`. Loading state during async
+  validation via `aria-busy` + optional CSS hook. New
+  `tokens/component/inline-edit.json` (display + editor + error
+  padding / border / color / focus ring). ARIA `aria-label` on the
+  display button, `aria-invalid` + `aria-describedby` on the input.
 - `OrigamClipboard` + `useClipboard` composable — copy-to-clipboard
   helper. Wraps any trigger with `navigator.clipboard.writeText` +
   `execCommand` fallback. Scoped `#default` slot exposes
