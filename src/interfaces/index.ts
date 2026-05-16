@@ -187,6 +187,8 @@ export * from './InfiniteScroll/infinite-scroll.interface'
 
 export * from './InlineEdit/inline-edit.interface'
 
+export * from './NumberFormat/number-format.interface'
+
 export * from './Input/input.interface'
 
 export * from './Label/label.interface'
