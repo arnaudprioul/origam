@@ -69,12 +69,11 @@
 		useElevation,
 		useMargin,
 		usePadding,
-		useRounded,
-		useTheme
+		useRounded
 	} from '../../composables'
 
 	import { CODE_DEFAULTS } from '../../consts'
-	import { CODE_LANG, CODE_THEME } from '../../enums'
+	import { CODE_LANG } from '../../enums'
 
 	import type { ICodeProps } from '../../interfaces'
 
@@ -90,11 +89,17 @@
 	 * singleton and injected via `innerHTML` on a `<code>` ref. We do NOT
 	 * use `v-html` because we need to post-process shiki's output to add
 	 * row-level classes for line-numbers + highlight-lines.
+	 *
+	 * Theme integration:
+	 * shiki uses the `css-variables` built-in theme which emits spans with
+	 * `style="color: var(--shiki-token-keyword)"` etc. The SCSS block below
+	 * maps every `--shiki-*` variable to an origam design token so colours
+	 * follow `<html data-theme="…">` automatically — no JS re-render on
+	 * theme switch.
 	 ********************************************************/
 	const props = withDefaults(defineProps<ICodeProps>(), {
 		tag: 'figure',
 		lang: CODE_LANG.PLAINTEXT,
-		theme: CODE_THEME.AUTO,
 		lineNumbers: false,
 		copyable: true,
 		wrap: false,
@@ -119,7 +124,6 @@
 	const { elevationClasses } = useElevation(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { marginClasses, marginStyles } = useMargin(props)
-	const { resolved: resolvedTheme } = useTheme()
 	const { highlight } = useCode()
 
 	/*********************************************************
@@ -180,21 +184,17 @@
 	 *
 	 * We track:
 	 *   - `renderedHtml`: shiki's raw `<pre class="shiki"><code>...</code></pre>`
-	 *   - `themeName`: 'light' | 'dark' resolved from props + document theme
 	 *
-	 * The watcher re-runs on source / lang / theme changes. We swallow
-	 * stale promise results so a fast lang-switch doesn't paint the wrong
-	 * tokens.
+	 * The watcher re-runs on source / lang changes. We swallow stale promise
+	 * results so a fast lang-switch doesn't paint the wrong tokens.
+	 *
+	 * Theme changes are handled entirely by CSS: shiki emits
+	 * `style="color: var(--shiki-token-keyword)"` spans and the SCSS
+	 * block maps `--shiki-*` to origam tokens that change with data-theme.
 	 ********************************************************/
 	const codeRef = ref<HTMLElement | null>(null)
 	const isHighlighting = ref(false)
 	let _renderToken = 0
-
-	const themeName = computed<'light' | 'dark'>(() => {
-		if (props.theme === CODE_THEME.LIGHT) return 'light'
-		if (props.theme === CODE_THEME.DARK) return 'dark'
-		return resolvedTheme.value === 'dark' ? 'dark' : 'light'
-	})
 
 	const highlightedLines = computed<Set<number>>(() => {
 		const arr = parseHighlightLines(props.highlightLines)
@@ -205,7 +205,7 @@
 		const token = ++_renderToken
 		isHighlighting.value = true
 		try {
-			const html = await highlight(formattedCode.value, props.lang, themeName.value)
+			const html = await highlight(formattedCode.value, props.lang)
 			if (token !== _renderToken) return
 			paintIntoDom(html)
 		} finally {
@@ -238,15 +238,14 @@
 			return `<span class="origam-code__row${isHl}" data-line="${lineNo}">${line || '&nbsp;'}</span>`
 		}).join('\n')
 
-		// Background colour comes from the shiki `<pre style="background:#..">`
-		// attribute on the original output. We don't honour it here because
-		// the surface is themed by origam tokens — keeping the surface in
-		// sync with the host page beats matching the shiki theme background.
+		// Background colour comes from origam tokens via SCSS — we ignore
+		// any background colour shiki would emit because our surface is
+		// always themed by the design system tokens.
 		target.innerHTML = rows
 	}
 
 	watch(
-		[formattedCode, () => props.lang, themeName],
+		[formattedCode, () => props.lang],
 		() => { void rebuild() },
 		{ immediate: false }
 	)
@@ -295,7 +294,6 @@
 
 	const codeClasses = computed(() => [
 		'origam-code',
-		`origam-code--theme-${themeName.value}`,
 		`origam-code--lang-${props.lang}`,
 		{
 			'origam-code--line-numbers': props.lineNumbers,
@@ -346,7 +344,9 @@
 		font-size: var(--origam-code---font-size);
 		line-height: var(--origam-code---line-height);
 		overflow: hidden;
+
 	}
+
 
 	.origam-code__header {
 		display: flex;
@@ -478,5 +478,43 @@
 	.origam-code__scroller::-webkit-scrollbar-thumb {
 		background-color: var(--origam-code__scrollbar---color);
 		border-radius: 4px;
+	}
+</style>
+
+<style lang="scss">
+	/* Dual-theme shiki — UNSCOPED on purpose. shiki injects token spans
+	 * via v-html, so they don't carry the parent SFC's data-v scoping
+	 * attribute. A scoped selector (even :deep) doesn't reliably match
+	 * the deeply-nested untagged spans. An unscoped block keeps the
+	 * selector simple and reliable. We scope by the dedicated
+	 * `.origam-code__code` class instead — collisions are impossible.
+	 *
+	 * shiki output per token: `<span style="--shiki-light:#X;--shiki-dark:#Y">`.
+	 * We resolve --shiki-light by default, --shiki-dark under data-theme="dark"
+	 * (or prefers-color-scheme: dark when no data-theme is set). */
+	.origam-code__code span {
+		color: var(--shiki-light);
+	}
+
+	.origam-code .shiki {
+		background-color: var(--shiki-light-bg, transparent);
+	}
+
+	html[data-theme="dark"] .origam-code__code span {
+		color: var(--shiki-dark);
+	}
+
+	html[data-theme="dark"] .origam-code .shiki {
+		background-color: var(--shiki-dark-bg, transparent);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		html:not([data-theme="light"]) .origam-code__code span {
+			color: var(--shiki-dark);
+		}
+
+		html:not([data-theme="light"]) .origam-code .shiki {
+			background-color: var(--shiki-dark-bg, transparent);
+		}
 	}
 </style>

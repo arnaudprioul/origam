@@ -5,7 +5,7 @@ import { expect, test, type Page } from '@playwright/test'
  * component renders correctly for every exposed prop / slot / emit.
  *
  * This component is the shared visual layer consumed by both
- * `OrigamSnackbar` and `OrigamSnackbarStack`. Tests here ensure:
+ * `OrigamSnackbar` and `OrigamSnackbarGroup`. Tests here ensure:
  *   - Intent theming: correct modifier class per intent.
  *   - ARIA contract: role="status|alert" + aria-live="polite|assertive".
  *   - Dismiss button: visible by default, hidden when dismissible=false,

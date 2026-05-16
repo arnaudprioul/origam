@@ -5,7 +5,7 @@ const STORY_PATH = '/story/stories-components-stories-code-origamcode-story-vue'
 /**
  * Probe spec for OrigamCode runtime behaviour. Covers the shiki
  * highlight pipeline (per-lang tokens), line-numbers gutter, line
- * highlight class swap, copy-to-clipboard wiring and forced theme.
+ * highlight class swap, copy-to-clipboard wiring and CSS-variable theming.
  *
  * Each test navigates to a dedicated `<Variant>` and asserts on the
  * sandbox iframe — never on the Histoire chrome — so the locators stay
@@ -28,11 +28,8 @@ test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
         await gotoVariant(page, 'Prop — tag=figure (default, semantic)')
         const sandbox = sandboxOf(page)
 
-        // Root element must be <figure>
         const figure = sandbox.locator('figure.origam-code').first()
         await expect(figure).toBeVisible({ timeout: 5000 })
-
-        // ARIA role: <figure> exposes the implicit "figure" landmark
         await expect(figure).toHaveJSProperty('tagName', 'FIGURE')
     })
 
@@ -44,7 +41,6 @@ test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
         await expect(figcaption).toBeVisible({ timeout: 5000 })
         await expect(figcaption).toHaveJSProperty('tagName', 'FIGCAPTION')
 
-        // filename should appear inside the figcaption
         await expect(figcaption.locator('[data-cy="origam-code-filename"]')).toHaveText('figure-default.ts')
     })
 
@@ -60,30 +56,22 @@ test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
         await gotoVariant(page, 'Prop — tag=div (back-compat)')
         const sandbox = sandboxOf(page)
 
-        // Root must be <div> not <figure>
         const divRoot = sandbox.locator('div.origam-code').first()
         await expect(divRoot).toBeVisible({ timeout: 5000 })
         await expect(divRoot).toHaveJSProperty('tagName', 'DIV')
 
-        // Header must be <div> (not <figcaption> — invalid outside <figure>)
         const headerDiv = sandbox.locator('div.origam-code div.origam-code__header').first()
         await expect(headerDiv).toBeVisible({ timeout: 5000 })
         await expect(headerDiv).toHaveJSProperty('tagName', 'DIV')
 
-        // No stray <figcaption> inside a <div> root
         const strayFigcaption = sandbox.locator('div.origam-code figcaption')
         await expect(strayFigcaption).toHaveCount(0)
     })
 
     test('footer slot renders as <footer> element', async ({ page }) => {
-        // The footer is conditionally rendered via $slots.footer. We test it
-        // through the Playground variant which does not include a footer slot,
-        // so we verify the element is absent. The tag correctness is validated
-        // by a unit-level snapshot — Playwright cannot inject slots at runtime.
         await gotoVariant(page, 'Prop — tag=figure (default, semantic)')
         const sandbox = sandboxOf(page)
 
-        // In this variant, no footer slot is passed → the <footer> must not exist.
         const footer = sandbox.locator('figure.origam-code footer')
         await expect(footer).toHaveCount(0)
     })
@@ -91,17 +79,81 @@ test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
 
 test.describe('OrigamCode — runtime', () => {
 
-    test('renders shiki-tokenised TS — DOM contains styled <span>s', async ({ page }) => {
+    test('renders shiki-tokenised TS — DOM contains styled <span>s with CSS variable references', async ({ page }) => {
         await gotoVariant(page, 'Playground')
         const sandbox = sandboxOf(page)
         const code = sandbox.locator('.origam-code__code').first()
 
         await expect(code).toBeVisible({ timeout: 5000 })
-        // shiki emits inline styled spans for each token (`style="color:..."`).
-        // We assert that AT LEAST one such styled span exists, which is the
-        // smoke-test that highlighting actually ran.
-        const styledTokenCount = await code.locator('span[style*="color"]').count()
-        expect(styledTokenCount).toBeGreaterThan(0)
+
+        // shiki css-variables theme emits spans with style="color: var(--shiki-token-*)"
+        // We assert that at least one such span exists (smoke-test that highlighting ran)
+        // and that NO hardcoded hex colour is baked into a style attribute.
+        const styledSpanCount = await code.locator('span[style*="color"]').count()
+        expect(styledSpanCount).toBeGreaterThan(0)
+
+        // Verify spans use CSS variables, not hardcoded hex colours.
+        // A hardcoded colour would look like style="color:#D73A49" or style="color:rgb(…)".
+        // A CSS-variable colour looks like style="color:var(--shiki-token-keyword)".
+        const hasHardcodedHex = await code.evaluate((el) => {
+            const spans = Array.from(el.querySelectorAll('span[style*="color"]'))
+            return spans.some((span) => {
+                const style = (span as HTMLElement).style.color
+                // Hardcoded = starts with # or rgb( — CSS var = contains "var("
+                return style.startsWith('#') || style.startsWith('rgb(') || style.startsWith('rgba(')
+            })
+        })
+        expect(hasHardcodedHex).toBe(false)
+    })
+
+    test('syntax tokens use CSS variables from origam design tokens', async ({ page }) => {
+        await gotoVariant(page, 'Syntax — CSS variables theming')
+        const sandbox = sandboxOf(page)
+        const host = sandbox.locator('.origam-code').first()
+
+        await expect(host).toBeVisible({ timeout: 5000 })
+        await page.waitForTimeout(400)
+
+        // The .origam-code root must expose --shiki-token-keyword mapped to our token.
+        // getPropertyValue returns the raw value of the custom property.
+        const shikiKeywordVar = await host.evaluate((el) => {
+            return window.getComputedStyle(el).getPropertyValue('--shiki-token-keyword').trim()
+        })
+        // The CSS var must be non-empty (the SCSS mapping is wired).
+        expect(shikiKeywordVar).not.toBe('')
+        // It must reference a CSS variable (not be a hardcoded colour).
+        expect(shikiKeywordVar).toContain('var(')
+    })
+
+    test('theme switch updates syntax colours via CSS cascade (no JS re-render)', async ({ page }) => {
+        await gotoVariant(page, 'Syntax — CSS variables theming')
+        const sandbox = sandboxOf(page)
+        const host = sandbox.locator('.origam-code').first()
+
+        await expect(host).toBeVisible({ timeout: 5000 })
+        await page.waitForTimeout(400)
+
+        // Capture --shiki-token-keyword resolved value under light theme.
+        const lightKeywordColor = await sandbox.locator('html').evaluate((html, selector) => {
+            html.setAttribute('data-theme', 'light')
+            const el = html.querySelector(selector) as HTMLElement | null
+            if (!el) return null
+            return window.getComputedStyle(el).getPropertyValue('--origam-code__syntax---keyword').trim()
+        }, '.origam-code')
+
+        // Switch to dark theme and capture again.
+        const darkKeywordColor = await sandbox.locator('html').evaluate((html, selector) => {
+            html.setAttribute('data-theme', 'dark')
+            const el = html.querySelector(selector) as HTMLElement | null
+            if (!el) return null
+            return window.getComputedStyle(el).getPropertyValue('--origam-code__syntax---keyword').trim()
+        }, '.origam-code')
+
+        // The two computed values should differ between light and dark themes,
+        // confirming the token resolution follows data-theme without any JS re-render.
+        expect(lightKeywordColor).not.toBe('')
+        expect(darkKeywordColor).not.toBe('')
+        expect(lightKeywordColor).not.toBe(darkKeywordColor)
     })
 
     test('switching lang re-tokenises the DOM (different markup vs plaintext)', async ({ page }) => {
@@ -115,9 +167,6 @@ test.describe('OrigamCode — runtime', () => {
         const count = await codes.count()
         expect(count).toBeGreaterThan(1)
 
-        // Each lang produces a distinct first-token markup. We don't lock
-        // to a specific colour (shiki theme can drift) — we just check
-        // that two distinct lang panels produce two distinct innerHTMLs.
         const html0 = await codes.nth(0).innerHTML()
         const html1 = await codes.nth(1).innerHTML()
         expect(html0).not.toBe(html1)
@@ -134,7 +183,6 @@ test.describe('OrigamCode — runtime', () => {
         const rowCount = await rows.count()
         expect(rowCount).toBeGreaterThanOrEqual(3)
 
-        // Each row exposes `data-line="N"` for the CSS counter, in order.
         const lineNumbers = await rows.evaluateAll((els) => els.map((el) => el.getAttribute('data-line')))
         expect(lineNumbers.slice(0, 3)).toEqual(['1', '2', '3'])
     })
@@ -146,12 +194,6 @@ test.describe('OrigamCode — runtime', () => {
 
         await expect(host.locator('.origam-code__row').first()).toBeVisible({ timeout: 5000 })
 
-        // For each row, assert that the ::before pseudo-element (gutter number)
-        // does not overlap the first text character of the row content.
-        // We measure this by checking that padding-inline-start resolves to a
-        // non-zero value (meaning the CSS variable --origam-code---line-number-width
-        // is correctly applied) and that the computed left padding pushes the
-        // content clear of the absolute-positioned ::before.
         const result = await host.locator('.origam-code__row').first().evaluate((row) => {
             const computed = window.getComputedStyle(row)
             const paddingStart = parseFloat(computed.paddingInlineStart)
@@ -160,16 +202,12 @@ test.describe('OrigamCode — runtime', () => {
             return {
                 paddingStart,
                 gutterWidth,
-                // position must be relative so that the absolute ::before anchors correctly
                 position: computed.position
             }
         })
 
-        // padding-inline-start must be > 0 (the CSS variable resolved to 3rem)
         expect(result.paddingStart).toBeGreaterThan(0)
-        // The ::before width must match padding-inline-start (both = gutter width)
         expect(result.gutterWidth).toBeCloseTo(result.paddingStart, 0)
-        // The row must be position: relative so ::before anchors to it
         expect(result.position).toBe('relative')
     })
 
@@ -181,13 +219,8 @@ test.describe('OrigamCode — runtime', () => {
 
         await expect(rows.first()).toBeVisible({ timeout: 5000 })
 
-        // For every row, the ::before top is 0 relative to the row, meaning
-        // line N of the gutter aligns with line N of the code. We verify by
-        // asserting that all rows have the same height (uniform line-height)
-        // and that consecutive rows are vertically contiguous (no gap/overlap).
         const tops = await rows.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top))
 
-        // Must have strictly increasing tops (no two rows share the same vertical pos)
         for (let i = 1; i < tops.length; i++) {
             expect(tops[i]).toBeGreaterThan(tops[i - 1])
         }
@@ -214,9 +247,6 @@ test.describe('OrigamCode — runtime', () => {
 
         await expect(copyBtn).toBeVisible({ timeout: 5000 })
 
-        // Stub `navigator.clipboard.writeText` so we don't depend on the
-        // OS clipboard permission dialog. We record the call so we can
-        // assert on it AND let the component think the write succeeded.
         await sandbox.locator('body').evaluate(() => {
             (window as unknown as { __clip: string[] }).__clip = []
             const orig = navigator.clipboard?.writeText?.bind(navigator.clipboard)
@@ -238,26 +268,7 @@ test.describe('OrigamCode — runtime', () => {
         expect(clipCalls.length).toBe(1)
         expect(clipCalls[0]).toContain('const count = ref(0)')
 
-        // The aria-label flips to the "copied" variant while the timer runs.
         await expect(copyBtn).toHaveAttribute('aria-label', /copied/i)
-    })
-
-    test('theme=dark forces the dark surface even when document theme is light', async ({ page }) => {
-        await gotoVariant(page, 'Prop — theme (light vs dark)')
-        const sandbox = sandboxOf(page)
-
-        const lightHost = sandbox.locator('.origam-code--theme-light').first()
-        const darkHost = sandbox.locator('.origam-code--theme-dark').first()
-        await expect(lightHost).toBeVisible({ timeout: 5000 })
-        await expect(darkHost).toBeVisible({ timeout: 5000 })
-
-        const lightBg = await lightHost.evaluate((el) => getComputedStyle(el).backgroundColor)
-        const darkBg = await darkHost.evaluate((el) => getComputedStyle(el).backgroundColor)
-        // Both surfaces resolve to a real colour and they differ — the
-        // theme branch wired through.
-        expect(lightBg).not.toBe('')
-        expect(darkBg).not.toBe('')
-        expect(lightBg).not.toBe(darkBg)
     })
 
     test('filename prop renders a header bar with the filename', async ({ page }) => {

@@ -42,7 +42,6 @@ export * from './Chip/chip.type'
 export * from './Chip/chip-group.type'
 
 export * from './Code/code-lang.type'
-export * from './Code/code-theme.type'
 
 export * from './ColorPicker/color-picker.type'
 export * from './ColorPicker/color-picker-canvas.type'
@@ -236,9 +235,9 @@ export * from './SliderField/slider-field-thumb.type'
 
 export * from './Snackbar/snackbar.type'
 
-export * from './SnackbarStack/snackbar-stack.type'
-export * from './SnackbarStack/snackbar-stack-location.type'
-export * from './SnackbarStack/snackbar-stack-direction.type'
+export * from './Snackbar/snackbar-group.type'
+export * from './Snackbar/snackbar-group-location.type'
+export * from './Snackbar/snackbar-group-direction.type'
 
 export * from './CommandPalette/command-palette-hotkey.type'
 
@@ -307,6 +306,7 @@ export * from './Mask/mask.type'
 
 export * from './QRCode/qrcode-error-correction.type'
 
-
+export * from './Video/video-controls.type'
+export * from './Video/video-track-kind.type'
 
 

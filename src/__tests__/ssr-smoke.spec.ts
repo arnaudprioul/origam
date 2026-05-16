@@ -15,7 +15,7 @@ import {
     useCssSupportClient
 } from '../composables/CssSupport/cssSupport.composable'
 
-import { useSnackbarStack, resetSnackbarStackForTesting } from '../composables/SnackbarStack/snackbar-stack.composable'
+import { useSnackbarGroup, resetSnackbarGroupForTesting } from '../composables/Snackbar/snackbar-group.composable'
 import { useMask } from '../composables/Mask/mask.composable'
 import { useCode } from '../composables/Code/code.composable'
 import { applyThemeSync, readPersistedTheme } from '../composables/Theme/theme.composable'
@@ -105,9 +105,9 @@ describe('SSR safety — module-level import does not touch DOM', () => {
         ;(globalThis as any).DOMParser = savedDOMParser
     })
 
-    it('useSnackbarStack dismiss() does not crash without window.clearTimeout', () => {
-        resetSnackbarStackForTesting()
-        const { notify, dismiss } = useSnackbarStack({ id: 'ssr-smoke' })
+    it('useSnackbarGroup dismiss() does not crash without window.clearTimeout', () => {
+        resetSnackbarGroupForTesting()
+        const { notify, dismiss } = useSnackbarGroup({ id: 'ssr-smoke' })
 
         enterSSRMode()
         const id = notify({ text: 'hello' })

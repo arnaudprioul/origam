@@ -467,12 +467,19 @@
 	}
 
 	.custom-match {
+		/* Match the constant matchHeight (72px) used internally by the
+		 * bracket to place SVG connectors. Story-level workaround until
+		 * the bracket switches to measured connector positions. */
+		min-height: 72px;
+		width: 100%;
+		box-sizing: border-box;
 		padding: 12px;
 		border: 1px dashed var(--origam-color__action--primary---bg, #1976d2);
 		border-radius: 6px;
 		font: 0.875rem/1.4 system-ui, sans-serif;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: 6px;
 		background: var(--origam-color__surface---default, #fff);
 	}

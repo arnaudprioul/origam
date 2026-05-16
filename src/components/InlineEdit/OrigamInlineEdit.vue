@@ -37,19 +37,16 @@
 					class="origam-inline-edit__actions"
 					data-cy="origam-inline-edit-actions-display"
 			>
-				<button
-						type="button"
+				<origam-btn
+						:icon="MDI_ICONS.PENCIL_OUTLINE"
 						class="origam-inline-edit__action-btn origam-inline-edit__action-btn--edit"
 						:disabled="disabled"
 						:aria-label="editActionLabel"
 						:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.EDIT}`"
+						size="x-small"
+						variant="text"
 						@click="handleEnterEdit"
-				>
-					<span
-							class="origam-inline-edit__action-icon"
-							aria-hidden="true"
-					>&#9998;</span>
-				</button>
+				/>
 			</div>
 		</template>
 
@@ -73,6 +70,7 @@
 						:aria-describedby="error !== null ? errorId : undefined"
 						class="origam-inline-edit__field"
 						data-cy="origam-inline-edit-input"
+            hide-details
 						@update:model-value="handleInput"
 						@keydown="handleKeyDown"
 						@blur="handleBlur"
@@ -87,34 +85,30 @@
 								:cancel="handleCancel"
 								:is-pending="isPending"
 						>
-							<button
-									type="button"
+							<origam-btn
+									:icon="MDI_ICONS.CHECK"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--confirm"
 									:disabled="disabled || isPending"
 									:aria-label="confirmActionLabel"
 									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CONFIRM}`"
+									size="x-small"
+									variant="text"
+									color="success"
 									@mousedown.prevent
 									@click="handleConfirm"
-							>
-								<span
-										class="origam-inline-edit__action-icon"
-										aria-hidden="true"
-								>&#10003;</span>
-							</button>
-							<button
-									type="button"
+							/>
+							<origam-btn
+									:icon="MDI_ICONS.CLOSE"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--cancel"
 									:disabled="disabled"
 									:aria-label="cancelActionLabel"
 									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CANCEL}`"
+									size="x-small"
+									variant="text"
+									color="danger"
 									@mousedown.prevent
 									@click="handleCancel"
-							>
-								<span
-										class="origam-inline-edit__action-icon"
-										aria-hidden="true"
-								>&#10005;</span>
-							</button>
+							/>
 						</slot>
 					</template>
 				</origam-textarea-field>
@@ -130,6 +124,7 @@
 						:aria-describedby="error !== null ? errorId : undefined"
 						class="origam-inline-edit__field"
 						data-cy="origam-inline-edit-input"
+						hide-details
 						@update:model-value="handleInput"
 						@keydown="handleKeyDown"
 						@blur="handleBlur"
@@ -144,34 +139,30 @@
 								:cancel="handleCancel"
 								:is-pending="isPending"
 						>
-							<button
-									type="button"
+							<origam-btn
+									:icon="MDI_ICONS.CHECK"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--confirm"
 									:disabled="disabled || isPending"
 									:aria-label="confirmActionLabel"
 									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CONFIRM}`"
+									size="x-small"
+									variant="text"
+									color="success"
 									@mousedown.prevent
 									@click="handleConfirm"
-							>
-								<span
-										class="origam-inline-edit__action-icon"
-										aria-hidden="true"
-								>&#10003;</span>
-							</button>
-							<button
-									type="button"
+							/>
+							<origam-btn
+									:icon="MDI_ICONS.CLOSE"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--cancel"
 									:disabled="disabled"
 									:aria-label="cancelActionLabel"
 									:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.CANCEL}`"
+									size="x-small"
+									variant="text"
+									color="danger"
 									@mousedown.prevent
 									@click="handleCancel"
-							>
-								<span
-										class="origam-inline-edit__action-icon"
-										aria-hidden="true"
-								>&#10005;</span>
-							</button>
+							/>
 						</slot>
 					</template>
 				</origam-text-field>
@@ -210,11 +201,11 @@
 		watch
 	} from 'vue'
 
-	import { OrigamTextField, OrigamTextareaField } from '../../components'
+	import { OrigamBtn, OrigamTextField, OrigamTextareaField } from '../../components'
 
 	import { useInlineEdit } from '../../composables'
 
-	import { INLINE_EDIT_ACTION } from '../../enums'
+	import { INLINE_EDIT_ACTION, MDI_ICONS } from '../../enums'
 
 	import type {
 		IInlineEditEmits,
@@ -489,9 +480,23 @@
 	}
 
 	.origam-inline-edit__error {
+		position: absolute;
+		top: calc(100% + 4px);
+		left: 0;
+		right: 0;
+		z-index: 2;
+		padding: var(--origam-inline-edit__error---padding-block, 4px)
+		         var(--origam-inline-edit__error---padding-inline, 8px);
+		border-radius: var(--origam-inline-edit__error---border-radius, 4px);
+		background-color: var(
+			--origam-inline-edit__error---background-color,
+			color-mix(in srgb, var(--origam-color__feedback--danger---bg-subtle, #ffe5e7) 75%, transparent)
+		);
+		color: var(--origam-inline-edit__error---color, var(--origam-color__feedback--danger---fgSubtle, #b91c1c));
 		font-size: var(--origam-inline-edit__error---font-size, 0.75rem);
-		color: var(--origam-inline-edit__error---color);
+		font-weight: var(--origam-inline-edit__error---font-weight, 500);
 		line-height: 1.3;
+		pointer-events: none;
 	}
 
 	.origam-inline-edit__actions {

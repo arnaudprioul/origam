@@ -301,95 +301,63 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — showActions (default false, keyboard only)">
+		<Variant title="Prop — showActions">
 			<div
 					class="story-shell"
-					data-cy="inline-edit-show-actions-false"
+					data-cy="inline-edit-show-actions"
 			>
 				<p class="hint">
-					Default behaviour: no action buttons. Use keyboard shortcuts to
-					interact — click to edit, Enter to confirm, Escape to cancel.
+					`showActions` toggles the Edit (display mode) and Confirm /
+					Cancel (edit mode) action buttons. Keyboard shortcuts work in
+					parallel regardless of the flag.
 				</p>
-				<origam-inline-edit
-						v-model="showActionsFalseValue"
-						:show-actions="false"
-						:confirm-on-blur="false"
-						placeholder="Click to edit"
-						data-cy="inline-edit-show-actions-false-host"
-				/>
-				<output
-						class="story-state"
-						data-cy="inline-edit-show-actions-false-state"
-				>{{ showActionsFalseValue }}</output>
-			</div>
-		</Variant>
 
-		<Variant title="Prop — showActions=true">
-			<div
-					class="story-shell"
-					data-cy="inline-edit-show-actions-true"
-			>
-				<p class="hint">
-					With `showActions=true`: an Edit button (&#9998;) is shown in display
-					mode. In edit mode, Confirm (&#10003;) and Cancel (&#10005;) buttons
-					appear inside the field's `appendInner` slot. Keyboard shortcuts still
-					work in parallel.
-				</p>
-				<origam-inline-edit
-						v-model="showActionsTrueValue"
-						:show-actions="true"
-						:confirm-on-blur="false"
-						placeholder="Click to edit"
-						data-cy="inline-edit-show-actions-true-host"
-				/>
-				<output
-						class="story-state"
-						data-cy="inline-edit-show-actions-true-state"
-				>{{ showActionsTrueValue }}</output>
-			</div>
-		</Variant>
+				<div class="story-row">
+					<div class="story-col">
+						<strong>showActions=false (keyboard only)</strong>
+						<origam-inline-edit
+								v-model="showActionsFalseValue"
+								:show-actions="false"
+								:confirm-on-blur="false"
+								placeholder="Click to edit"
+								data-cy="inline-edit-show-actions-false-host"
+						/>
+					</div>
 
-		<Variant title="Prop — showActions=true + multiline">
-			<div
-					class="story-shell"
-					data-cy="inline-edit-show-actions-multiline"
-			>
-				<p class="hint">
-					With `showActions=true` and `multiline=true`: Confirm and Cancel
-					buttons appear inside the textarea field's `appendInner` slot. Use
-					Cmd/Ctrl+Enter to confirm, Escape to cancel via keyboard.
-				</p>
-				<origam-inline-edit
-						v-model="showActionsMultilineValue"
-						:show-actions="true"
-						:multiline="true"
-						:confirm-on-blur="false"
-						placeholder="Click to edit"
-						data-cy="inline-edit-show-actions-multiline-host"
-				/>
-				<output
-						class="story-state"
-						data-cy="inline-edit-show-actions-multiline-state"
-				>{{ showActionsMultilineValue }}</output>
-			</div>
-		</Variant>
+					<div class="story-col">
+						<strong>showActions=true</strong>
+						<origam-inline-edit
+								v-model="showActionsTrueValue"
+								:show-actions="true"
+								:confirm-on-blur="false"
+								placeholder="Click to edit"
+								data-cy="inline-edit-show-actions-true-host"
+						/>
+					</div>
 
-		<Variant title="Prop — showActions=true + disabled">
-			<div
-					class="story-shell"
-					data-cy="inline-edit-show-actions-disabled"
-			>
-				<p class="hint">
-					When `disabled=true`, all action buttons are disabled alongside
-					the display affordance — none of them can be clicked.
-				</p>
-				<origam-inline-edit
-						v-model="showActionsDisabledValue"
-						:show-actions="true"
-						:disabled="true"
-						placeholder="No editing"
-						data-cy="inline-edit-show-actions-disabled-host"
-				/>
+					<div class="story-col">
+						<strong>showActions=true + multiline</strong>
+						<origam-inline-edit
+								v-model="showActionsMultilineValue"
+								:show-actions="true"
+								:multiline="true"
+								:confirm-on-blur="false"
+								placeholder="Click to edit"
+								data-cy="inline-edit-show-actions-multiline-host"
+						/>
+					</div>
+
+					<div class="story-col">
+						<strong>showActions=true + disabled</strong>
+						<origam-inline-edit
+								v-model="showActionsDisabledValue"
+								:show-actions="true"
+								:disabled="true"
+								placeholder="No editing"
+								data-cy="inline-edit-show-actions-disabled-host"
+						/>
+					</div>
+				</div>
 			</div>
 		</Variant>
 
@@ -485,6 +453,29 @@
 		gap: 16px;
 		padding: 16px;
 		max-width: 540px;
+	}
+
+	.story-shell[data-cy="inline-edit-show-actions"] {
+		max-width: 100%;
+	}
+
+	.story-row {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 24px;
+		align-items: start;
+	}
+
+	.story-col {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		min-height: 96px;
+	}
+
+	.story-col strong {
+		font: 600 0.75rem/1.2 system-ui, sans-serif;
+		color: var(--origam-color__text---secondary, #555);
 	}
 
 	.hint {
