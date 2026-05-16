@@ -26,26 +26,12 @@
 						aria-hidden="true"
 				/>
 				<span
-						v-if="showButtonLabel"
+						v-if="copied"
 						class="origam-clipboard__default-label"
+						aria-live="polite"
 				>{{ resolvedFeedbackText }}</span>
 			</button>
 		</slot>
-
-		<span
-				v-if="showPill && copied"
-				class="origam-clipboard__feedback"
-				role="status"
-				aria-live="polite"
-				data-cy="origam-clipboard-feedback"
-		>
-			<slot
-					name="feedback"
-					:copied="copied"
-			>
-				{{ resolvedFeedbackText }}
-			</slot>
-		</span>
 	</component>
 </template>
 
@@ -62,7 +48,7 @@
 
 	import { useClipboard } from '../../composables'
 
-	import { CLIPBOARD_FEEDBACK_MODE, MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums'
 
 	import type {
 		IClipboardEmits,
@@ -74,9 +60,11 @@
 	 *
 	 * @description
 	 * Props + defaults for `<OrigamClipboard>`. The component is a thin
-	 * wrapper around `useClipboard`: it owns the optional ARIA-live
-	 * feedback overlay and the auto-rendered default trigger, but
-	 * delegates all copy logic + auto-reset timing to the composable.
+	 * wrapper around `useClipboard`: it auto-renders a default trigger
+	 * button whose label flips to the feedback text while `copied` is
+	 * true. Consumers needing a different feedback surface (toast, pill,
+	 * inline status, …) replace the default with a custom `#default`
+	 * scoped slot — the slot exposes `{ copy, copied, error }`.
 	 *
 	 * Defaults are inlined here (not pulled from a CLIPBOARD_DEFAULTS
 	 * const) because the Vue SFC compiler analyses `withDefaults`
@@ -87,36 +75,10 @@
 		feedbackDuration: 2000,
 		feedbackText: 'Copied!',
 		successText: undefined,
-		feedbackMode: 'button',
-		showFeedback: undefined,
 		disabled: false
 	})
 
 	const emit = defineEmits<IClipboardEmits>()
-
-	/*********************************************************
-	 * Deprecation shim — showFeedback → feedbackMode
-	 *
-	 * One-shot warn per component instance to preserve the console
-	 * contract without spamming on every render cycle.
-	 ********************************************************/
-	let _deprecationWarned = false
-
-	const resolvedFeedbackMode = computed((): CLIPBOARD_FEEDBACK_MODE => {
-		if (props.showFeedback !== undefined) {
-			if (!_deprecationWarned) {
-				_deprecationWarned = true
-				console.warn(
-					'[OrigamClipboard] The `showFeedback` prop is deprecated since v2.2 and will be removed in v3.0. ' +
-					'Use `feedbackMode="pill"` instead of `:show-feedback="true"`.'
-				)
-			}
-			return props.showFeedback
-				? CLIPBOARD_FEEDBACK_MODE.PILL
-				: CLIPBOARD_FEEDBACK_MODE.NONE
-		}
-		return (props.feedbackMode as CLIPBOARD_FEEDBACK_MODE) ?? CLIPBOARD_FEEDBACK_MODE.BUTTON
-	})
 
 	/*********************************************************
 	 * Composable — owns the copy pipeline + auto-resetting flag.
@@ -124,22 +86,6 @@
 	const { copy, copied, error } = useClipboard({
 		feedbackDuration: props.feedbackDuration
 	})
-
-	/*********************************************************
-	 * Derived visibility flags from feedbackMode.
-	 ********************************************************/
-	const showButtonLabel = computed(
-		() => copied.value && (
-			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.BUTTON ||
-			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.BOTH
-		)
-	)
-
-	const showPill = computed(
-		() =>
-			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.PILL ||
-			resolvedFeedbackMode.value === CLIPBOARD_FEEDBACK_MODE.BOTH
-	)
 
 	/*********************************************************
 	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
@@ -174,8 +120,7 @@
 	const rootClasses = computed(() => [
 		{
 			'origam-clipboard--copied': copied.value,
-			'origam-clipboard--disabled': props.disabled,
-			'origam-clipboard--with-feedback': showPill.value
+			'origam-clipboard--disabled': props.disabled
 		},
 		props.class
 	])
@@ -253,22 +198,4 @@
 		font: inherit;
 	}
 
-	.origam-clipboard__feedback {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--origam-clipboard__feedback---gap, 4px);
-		padding: var(--origam-clipboard__feedback---padding-block, 4px)
-		         var(--origam-clipboard__feedback---padding-inline, 8px);
-		border-radius: var(--origam-clipboard__feedback---border-radius, 4px);
-		font-size: var(--origam-clipboard__feedback---font-size, 0.75rem);
-		font-weight: var(--origam-clipboard__feedback---font-weight, 500);
-		color: var(--origam-clipboard__feedback---color);
-		background-color: var(--origam-clipboard__feedback---bg-color);
-		transition: opacity var(--origam-clipboard__feedback---transition-duration, 160ms) ease;
-		pointer-events: none;
-	}
-
-	.origam-clipboard--with-feedback .origam-clipboard__feedback {
-		margin-inline-start: var(--origam-clipboard__feedback---offset, 8px);
-	}
 </style>

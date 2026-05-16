@@ -82,6 +82,4 @@ export * from './Mask/mask.enum'
 
 export * from './EmptyState/empty-state-preset.enum'
 
-export * from './Clipboard/clipboard-feedback-mode.enum'
-
 export * from './InlineEdit/inline-edit-action.enum'

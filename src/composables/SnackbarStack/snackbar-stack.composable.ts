@@ -1,4 +1,4 @@
-import { computed, readonly, ref, type Ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 
 import { SNACKBAR_STACK_DEFAULT_DURATION, SNACKBAR_STACK_DEFAULT_ID } from '../../consts'
 
@@ -150,8 +150,16 @@ export function useSnackbarStack (options: IUseSnackbarStackOptions = {}): IUseS
         ids.forEach(dismiss)
     }
 
+    // NOTE: we return the raw ref (not `readonly()`-wrapped) to avoid a
+    // Histoire bug where its `applyState` deep-watcher does
+    // `Object.assign(target.items, state.items)` on a readonly proxy and
+    // throws "'set' on proxy: trap returned falsish for property 'items'".
+    // The read-only contract is enforced at the TS level via the
+    // `ReadonlyArray<…>` return type — consumers shouldn't mutate items
+    // directly; the official mutators are `notify` / `dismiss` /
+    // `dismissAll`.
     return {
-        items: readonly(state.items) as Readonly<Ref<ReadonlyArray<ISnackbarStackItem>>>,
+        items: state.items as Ref<ReadonlyArray<ISnackbarStackItem>>,
         notify,
         dismiss,
         dismissAll

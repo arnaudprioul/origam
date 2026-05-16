@@ -15,6 +15,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamWatermark` + `useWatermark` composable — diagonal repeating
+  overlay for confidential previews / draft markers / sensitive
+  screenshots. SVG data-URL pattern (no canvas, no images required
+  for text mode). Configurable text or image, opacity, angle, gap,
+  font. Anti-tamper option via MutationObserver (dissuasive, not a
+  security feature). `pointer-events: none` so the wrapped content
+  stays interactive. New `tokens/component/watermark.json`
+  (color, opacity presets low/medium/high, gap presets
+  tight/medium/loose, font-size presets sm/md/lg, z-index).
+  `aria-hidden="true"` on the overlay so screen readers ignore the
+  watermark. SSR-safe (pure-string SVG construction). Programmatic
+  `install(target?)` / `uninstall()` helpers exposed by the
+  composable for non-component use cases.
 - `OrigamQRCode` + `useQRCode` composable — SVG QR code rendering.
   Powered by `qrcode-generator` (~5 kB, pure JS, no canvas dep). 4
   error correction levels (L/M/Q/H). Optional logo overlay
