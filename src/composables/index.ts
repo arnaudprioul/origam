@@ -94,3 +94,5 @@ export * from './Textarea/textarea-rich.composable'
 export * from './CssSupport/cssSupport.composable'
 
 export * from './Mask/mask.composable'
+
+export * from './QRCode/qrcode.composable'

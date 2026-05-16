@@ -2041,8 +2041,9 @@
   --origam-code__copy---gap: 4px;
   --origam-code__copy---offset: 8px;
   --origam-code---line-number-color: #525252;
-  --origam-code---line-number-width: 3rem;
-  --origam-code---line-number-padding-right: 12px;
+  --origam-code---line-number-width: 3.5rem;
+  --origam-code---line-number-padding-right: 20px;
+  --origam-code---line-number-gap: 16px;
   --origam-code---line-highlight-background-color: #171717;
   --origam-code---line-highlight-accent-color: #fbbf24;
   --origam-code__row---padding-inline: 0;
@@ -2582,6 +2583,11 @@
   --origam-blockquote---quote-mark-color: #8b5cf6;
   --origam-blockquote---quote-mark-opacity: 0.25;
   --origam-blockquote---quote-mark-line-height: 1;
+  --origam-blockquote__quoted---glyph-size: 8rem;
+  --origam-blockquote__quoted---glyph-opacity: 0.08;
+  --origam-blockquote__quoted---glyph-offset-top: -0.1em;
+  --origam-blockquote__quoted---glyph-offset-left: -0.05em;
+  --origam-blockquote__quoted---glyph-padding-extra: 1rem;
   --origam-blockquote__elegant---font-family: Georgia, 'Times New Roman', serif;
   --origam-blockquote__elegant---font-size: 1.125rem;
   --origam-blockquote__elegant---font-style: italic;
@@ -4641,8 +4647,9 @@
     --origam-code__copy---gap: 4px;
     --origam-code__copy---offset: 8px;
     --origam-code---line-number-color: #525252;
-    --origam-code---line-number-width: 3rem;
-    --origam-code---line-number-padding-right: 12px;
+    --origam-code---line-number-width: 3.5rem;
+    --origam-code---line-number-padding-right: 20px;
+    --origam-code---line-number-gap: 16px;
     --origam-code---line-highlight-background-color: #171717;
     --origam-code---line-highlight-accent-color: #fbbf24;
     --origam-code__row---padding-inline: 0;
@@ -5182,6 +5189,11 @@
     --origam-blockquote---quote-mark-color: #8b5cf6;
     --origam-blockquote---quote-mark-opacity: 0.25;
     --origam-blockquote---quote-mark-line-height: 1;
+    --origam-blockquote__quoted---glyph-size: 8rem;
+    --origam-blockquote__quoted---glyph-opacity: 0.08;
+    --origam-blockquote__quoted---glyph-offset-top: -0.1em;
+    --origam-blockquote__quoted---glyph-offset-left: -0.05em;
+    --origam-blockquote__quoted---glyph-padding-extra: 1rem;
     --origam-blockquote__elegant---font-family: Georgia, 'Times New Roman', serif;
     --origam-blockquote__elegant---font-size: 1.125rem;
     --origam-blockquote__elegant---font-style: italic;

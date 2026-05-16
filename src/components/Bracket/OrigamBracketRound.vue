@@ -156,8 +156,10 @@
 			flex-direction: column;
 
 			.origam-bracket-round__matches {
+				flex: 0 0 auto;
 				flex-direction: row;
 				justify-content: space-around;
+				align-items: flex-start;
 			}
 		}
 	}

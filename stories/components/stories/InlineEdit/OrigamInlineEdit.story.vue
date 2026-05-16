@@ -17,7 +17,8 @@
 					multiline: false,
 					trim: true,
 					inputType: 'text',
-					loadingOnConfirm: false
+					loadingOnConfirm: false,
+					showActions: false
 				})"
 		>
 			<template #default="{ state }">
@@ -38,6 +39,7 @@
 							:trim="state.trim"
 							:input-type="state.inputType"
 							:loading-on-confirm="state.loadingOnConfirm"
+							:show-actions="state.showActions"
 							data-cy="inline-edit-playground-host"
 					/>
 					<output
@@ -91,6 +93,10 @@
 				<HstCheckbox
 						v-model="state.loadingOnConfirm"
 						title="loadingOnConfirm"
+				/>
+				<HstCheckbox
+						v-model="state.showActions"
+						title="showActions"
 				/>
 			</template>
 		</Variant>
@@ -158,7 +164,7 @@
 					data-cy="inline-edit-multiline"
 			>
 				<p class="hint">
-					Multiline mode renders a `<textarea>`. Cmd/Ctrl+Enter
+					Multiline mode renders a `&lt;textarea&gt;`. Cmd/Ctrl+Enter
 					confirms, Enter inserts a newline.
 				</p>
 				<origam-inline-edit
@@ -260,11 +266,14 @@
 					data-cy="inline-edit-slot-actions"
 			>
 				<p class="hint">
-					The `#actions` slot lets you render explicit
-					confirm/cancel buttons next to the input.
+					The `#actions` slot lets you render custom confirm/cancel
+					buttons. When `showActions=true` the slot renders inside the
+					field's `appendInner`. This variant uses `showActions=true` with
+					a custom slot override.
 				</p>
 				<origam-inline-edit
 						v-model="actionsValue"
+						:show-actions="true"
 						:confirm-on-blur="false"
 						placeholder="Click to edit"
 						data-cy="inline-edit-slot-actions-host"
@@ -289,6 +298,98 @@
 						</div>
 					</template>
 				</origam-inline-edit>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showActions (default false, keyboard only)">
+			<div
+					class="story-shell"
+					data-cy="inline-edit-show-actions-false"
+			>
+				<p class="hint">
+					Default behaviour: no action buttons. Use keyboard shortcuts to
+					interact — click to edit, Enter to confirm, Escape to cancel.
+				</p>
+				<origam-inline-edit
+						v-model="showActionsFalseValue"
+						:show-actions="false"
+						:confirm-on-blur="false"
+						placeholder="Click to edit"
+						data-cy="inline-edit-show-actions-false-host"
+				/>
+				<output
+						class="story-state"
+						data-cy="inline-edit-show-actions-false-state"
+				>{{ showActionsFalseValue }}</output>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showActions=true">
+			<div
+					class="story-shell"
+					data-cy="inline-edit-show-actions-true"
+			>
+				<p class="hint">
+					With `showActions=true`: an Edit button (&#9998;) is shown in display
+					mode. In edit mode, Confirm (&#10003;) and Cancel (&#10005;) buttons
+					appear inside the field's `appendInner` slot. Keyboard shortcuts still
+					work in parallel.
+				</p>
+				<origam-inline-edit
+						v-model="showActionsTrueValue"
+						:show-actions="true"
+						:confirm-on-blur="false"
+						placeholder="Click to edit"
+						data-cy="inline-edit-show-actions-true-host"
+				/>
+				<output
+						class="story-state"
+						data-cy="inline-edit-show-actions-true-state"
+				>{{ showActionsTrueValue }}</output>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showActions=true + multiline">
+			<div
+					class="story-shell"
+					data-cy="inline-edit-show-actions-multiline"
+			>
+				<p class="hint">
+					With `showActions=true` and `multiline=true`: Confirm and Cancel
+					buttons appear inside the textarea field's `appendInner` slot. Use
+					Cmd/Ctrl+Enter to confirm, Escape to cancel via keyboard.
+				</p>
+				<origam-inline-edit
+						v-model="showActionsMultilineValue"
+						:show-actions="true"
+						:multiline="true"
+						:confirm-on-blur="false"
+						placeholder="Click to edit"
+						data-cy="inline-edit-show-actions-multiline-host"
+				/>
+				<output
+						class="story-state"
+						data-cy="inline-edit-show-actions-multiline-state"
+				>{{ showActionsMultilineValue }}</output>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showActions=true + disabled">
+			<div
+					class="story-shell"
+					data-cy="inline-edit-show-actions-disabled"
+			>
+				<p class="hint">
+					When `disabled=true`, all action buttons are disabled alongside
+					the display affordance — none of them can be clicked.
+				</p>
+				<origam-inline-edit
+						v-model="showActionsDisabledValue"
+						:show-actions="true"
+						:disabled="true"
+						placeholder="No editing"
+						data-cy="inline-edit-show-actions-disabled-host"
+				/>
 			</div>
 		</Variant>
 
@@ -340,6 +441,11 @@
 	import type { IInlineEditProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
+
+	const showActionsFalseValue = ref('Keyboard only')
+	const showActionsTrueValue = ref('With action buttons')
+	const showActionsMultilineValue = ref('Multiline with action buttons')
+	const showActionsDisabledValue = ref('Not editable')
 
 	const minLengthTitle = ref('Hello')
 	const emailValue = ref('user@example.com')

@@ -132,6 +132,23 @@ export interface IInlineEditProps extends ICommonsComponentProps, ITagProps {
      * @default false
      */
     loadingOnConfirm?: boolean
+    /**
+     * Render built-in action buttons (Edit / Confirm / Cancel) next to
+     * the component.
+     *
+     * When `false` (default), only keyboard shortcuts are available:
+     * Enter to confirm, Escape to cancel, click on the display to edit.
+     *
+     * When `true`, three icon buttons are rendered:
+     * - **Edit** — visible in display mode, enters edit mode on click.
+     * - **Confirm** — visible in edit mode, commits the draft on click.
+     * - **Cancel** — visible in edit mode, discards the draft on click.
+     *
+     * The `disabled` prop also disables all three buttons.
+     *
+     * @default false
+     */
+    showActions?: boolean
 }
 
 /**

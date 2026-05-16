@@ -15,6 +15,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamQRCode` + `useQRCode` composable — SVG QR code rendering.
+  Powered by `qrcode-generator` (~5 kB, pure JS, no canvas dep). 4
+  error correction levels (L/M/Q/H). Optional logo overlay
+  (auto-padded white background, ~20 % max recommended size).
+  Rounded modules option. SSR-safe (pure JS encoding). ARIA
+  `role="img"` + `aria-label` (defaults to `"QR code for {value}"`,
+  overridable via prop). Module-level LRU cache (16 entries, keyed on
+  value + ECC) so re-renders with the same payload reuse the matrix.
 - `OrigamNumberFormat` + `useNumberFormat` composable — i18n number
   formatting via `Intl.NumberFormat` (no external dep). 7 formats
   (`decimal` / `currency` / `percent` / `unit` / `compact` /

@@ -256,6 +256,8 @@ export * from './SliderField/slider-field-thumb.interface'
 
 export * from './Snackbar/snackbar.interface'
 
+export * from './SnackbarItem/snackbar-item.interface'
+
 export * from './SnackbarStack/snackbar-stack.interface'
 export * from './SnackbarStack/snackbar-stack-item.interface'
 
@@ -309,3 +311,6 @@ export * from './Treeview/treeview.interface'
 export * from './Mask/mask-options.interface'
 
 export * from './Nuxt/nuxt-module.interface'
+
+export * from './QRCode/qrcode.interface'
+export * from './QRCode/qrcode-logo.interface'

@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
+import { onBeforeUnmount, ref, watch, type Ref } from 'vue'
 
 import type { TMasonryAlign, TMasonryColumnBreakpoints } from '../../types'
 
@@ -267,22 +267,45 @@ export function useMasonry (options: IUseMasonryOptions) {
         layout.value = bucketFill(heights, width, options.gapRef.value, cols, align)
     }
 
-    onMounted(() => {
-        const container = containerRef.value
-        if (!container) return
+    // Watch containerRef instead of relying on onMounted: the composable's
+    // onMounted fires BEFORE the component's own onMounted, so containerRef
+    // is still null at that point (the component assigns it in its own
+    // onMounted). By watching the ref we install the observers as soon as
+    // the component sets containerRef.value = rootEl, regardless of the
+    // hook execution order.
+    watch(
+        containerRef,
+        (container, previous) => {
+            // Tear down observers for the previous element (if any).
+            if (previous) {
+                containerObserver?.unobserve(previous)
+            }
 
-        containerObserver = createResizeObserver(relayout)
-        itemObserver = createResizeObserver(relayout)
+            if (!container) return
 
-        if (containerObserver) containerObserver.observe(container)
-        if (itemObserver) {
-            for (const el of items.values()) itemObserver.observe(el)
-        }
+            // Lazily create observers on first non-null container.
+            if (!containerObserver) {
+                containerObserver = createResizeObserver(relayout)
+            }
+            if (!itemObserver) {
+                itemObserver = createResizeObserver(relayout)
+            }
 
-        // First-paint measurement. Wait one frame so the children have
-        // had time to lay out (especially images / web fonts).
-        requestAnimationFrame(relayout)
-    })
+            if (containerObserver) containerObserver.observe(container)
+            if (itemObserver) {
+                for (const el of items.values()) itemObserver.observe(el)
+            }
+
+            // First-paint measurement. Wait one frame so the children have
+            // had time to lay out (especially images / web fonts).
+            if (typeof window !== 'undefined') {
+                window.requestAnimationFrame(relayout)
+            } else {
+                relayout()
+            }
+        },
+        { immediate: false }
+    )
 
     onBeforeUnmount(() => {
         containerObserver?.disconnect()

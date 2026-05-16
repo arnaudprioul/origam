@@ -7,19 +7,13 @@
 	>
 		<span
 				v-if="showQuoteMark"
-				class="origam-blockquote__mark origam-blockquote__mark--open"
+				class="origam-blockquote__mark origam-blockquote__mark--bg"
 				aria-hidden="true"
 		>{{ openMark }}</span>
 
 		<div class="origam-blockquote__body">
 			<slot/>
 		</div>
-
-		<span
-				v-if="showQuoteMark"
-				class="origam-blockquote__mark origam-blockquote__mark--close"
-				aria-hidden="true"
-		>{{ closeMark }}</span>
 
 		<footer
 				v-if="hasAttribution"
@@ -240,22 +234,20 @@
 	}
 
 	.origam-blockquote__mark {
-		font-size: var(--origam-blockquote---quote-mark-font-size, 2.25rem);
-		color: var(--origam-blockquote---resolved-quote-mark-color);
-		opacity: var(--origam-blockquote---quote-mark-opacity, 0.25);
-		line-height: var(--origam-blockquote---quote-mark-line-height, 1);
 		font-family: serif;
 		user-select: none;
-		display: inline-block;
-		vertical-align: -0.3em;
+		color: var(--origam-blockquote---resolved-quote-mark-color);
 	}
 
-	.origam-blockquote__mark--open {
-		margin-right: 0.15em;
-	}
-
-	.origam-blockquote__mark--close {
-		margin-left: 0.15em;
+	.origam-blockquote__mark--bg {
+		position: absolute;
+		top: var(--origam-blockquote--quoted---glyph-offset-top, -0.1em);
+		left: var(--origam-blockquote--quoted---glyph-offset-left, -0.05em);
+		z-index: 0;
+		font-size: var(--origam-blockquote--quoted---glyph-size, 8rem);
+		line-height: 1;
+		opacity: var(--origam-blockquote--quoted---glyph-opacity, 0.08);
+		pointer-events: none;
 	}
 
 	.origam-blockquote--align-left {
@@ -284,7 +276,17 @@
 	}
 
 	.origam-blockquote--variant-quoted {
-		padding-inline: calc(var(--origam-blockquote---resolved-padding-inline) + 0.5em);
+		padding-top: calc(var(--origam-blockquote---resolved-padding-block) + var(--origam-blockquote--quoted---glyph-padding-extra, 1rem));
+
+		.origam-blockquote__body {
+			position: relative;
+			z-index: 1;
+		}
+
+		.origam-blockquote__attribution {
+			position: relative;
+			z-index: 1;
+		}
 	}
 
 	.origam-blockquote--variant-minimal {

@@ -176,13 +176,26 @@
 	 ********************************************************/
 	const childrenVNodes = computed(() => {
 		const raw = slots.default?.() ?? []
-		return raw.filter(vnode => {
-			// `Comment` (-1) + whitespace `Text` (3) nodes carry no
-			// visible content — skip them so they don't take a column slot.
-			if (typeof vnode.type === 'symbol') return false
-			if (typeof vnode.children === 'string' && vnode.children.trim() === '') return false
-			return true
-		})
+		const out: any[] = []
+		const visit = (nodes: any[]): void => {
+			for (const node of nodes) {
+				// Fragment vnodes (e.g. produced by `v-for` inside the slot)
+				// have a `Symbol` `type` AND an `Array` `children` payload.
+				// We unwrap them recursively so the masonry layout sees the
+				// actual leaf elements rather than discarding the fragment.
+				if (typeof node.type === 'symbol' && Array.isArray(node.children)) {
+					visit(node.children)
+					continue
+				}
+				// Comment / whitespace text nodes carry no visible content —
+				// drop them so they don't claim a column slot.
+				if (typeof node.type === 'symbol') continue
+				if (typeof node.children === 'string' && node.children.trim() === '') continue
+				out.push(node)
+			}
+		}
+		visit(raw)
+		return out
 	})
 
 	/*********************************************************

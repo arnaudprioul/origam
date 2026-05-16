@@ -105,6 +105,14 @@
 			<origam-code :lang="CODE_LANG.TS" :code="shortSnippet" @copy="copyEvents++"/>
 			<p style="margin-top: 1rem; font-size: 0.875rem; color: #666;">Copy events: <strong>{{ copyEvents }}</strong></p>
 		</Variant>
+
+		<Variant title="Prop — tag=figure (default, semantic)">
+			<origam-code tag="figure" :lang="CODE_LANG.TS" :code="shortSnippet" filename="figure-default.ts" line-numbers/>
+		</Variant>
+
+		<Variant title="Prop — tag=div (back-compat)">
+			<origam-code tag="div" :lang="CODE_LANG.TS" :code="shortSnippet" filename="div-compat.ts" line-numbers/>
+		</Variant>
 	</Story>
 </template>
 

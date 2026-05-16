@@ -19,8 +19,9 @@ modal form would feel heavy.
 When no `#display` slot is provided, the component renders a
 button-styled span carrying the current value (or the placeholder
 when the value is empty). When no `#edit` slot is provided, it
-renders a native `<input>` (or `<textarea>` when `multiline` is
-true).
+renders an `<OrigamTextField>` (or `<OrigamTextareaField>` when
+`multiline` is true). When `showActions=true`, the Confirm and Cancel
+buttons are placed inside the field via its `appendInner` slot.
 
 ## Quick start
 
@@ -58,6 +59,7 @@ true).
 | `trim`             | `boolean`                                   | `true`            | Strip surrounding whitespace before validate + emit.           |
 | `inputType`        | `'text' \| 'number' \| 'email' \| 'tel'`    | `'text'`          | Native HTML input type in single-line mode.                    |
 | `loadingOnConfirm` | `boolean`                                   | `false`           | Adds a CSS hook (`.origam-inline-edit--loading-on-confirm`) while a Promise validator is in flight. `aria-busy` is set regardless. |
+| `showActions`      | `boolean`                                   | `false`           | Render built-in Edit / Confirm / Cancel buttons. See "Action buttons" section below. |
 | `tag`              | `string`                                    | `'span'`          | Root element tag.                                              |
 
 ## Emits
@@ -106,10 +108,97 @@ the slot is a complete take-over.
 
 ### `#actions` — `{ confirm, cancel, isPending }`
 
-Render visible confirm / cancel buttons next to the input. The slot
-is rendered AFTER the editor — it does not replace the input. Use
-`@mousedown.prevent` on the buttons if `confirmOnBlur` is true and
-you want the buttons to swallow the blur.
+Render custom confirm / cancel buttons. When `showActions=true`, the
+slot content is placed inside the field's `appendInner` slot (after
+the text area). When `showActions=false`, the slot is not rendered
+unless you provide it explicitly — in which case it renders as a
+sibling of the field. Use `@mousedown.prevent` on the buttons when
+`confirmOnBlur=true` to prevent the input blur from triggering an
+unwanted commit before the click fires.
+
+## Action buttons
+
+By default, `OrigamInlineEdit` is keyboard-driven: click the display to
+enter edit mode, press `Enter` to confirm, `Escape` to cancel. This is
+intentional for power users and data-dense UIs.
+
+For mouse-first or touch-first contexts, pass `showActions` to render
+three built-in icon buttons:
+
+```vue
+<origam-inline-edit
+    v-model="title"
+    :show-actions="true"
+    :confirm-on-blur="false"
+    placeholder="Click to edit"
+/>
+```
+
+### Behaviour with `showActions=true`
+
+| Mode | Buttons visible | Button hidden |
+|---|---|---|
+| Display | Edit (&#9998;) next to the display label | Confirm, Cancel |
+| Edit | Confirm (&#10003;), Cancel (&#10005;) **inside the field** | Edit |
+
+- Clicking **Edit** is equivalent to clicking the display affordance.
+- Clicking **Confirm** is equivalent to pressing `Enter`.
+- Clicking **Cancel** is equivalent to pressing `Escape`.
+- Keyboard shortcuts (`Enter` / `Escape`) continue to work in parallel — `showActions` is purely additive.
+- When `disabled` is `true`, all three buttons are also disabled.
+
+### DOM structure in edit mode
+
+When `showActions=true`, the Confirm and Cancel buttons are rendered
+**inside the field** via the `appendInner` slot of `OrigamTextField`
+(or `OrigamTextareaField` in multiline mode). They are **not** siblings
+of the field element. This guarantees visual alignment and prevents
+layout overflow issues when the component is used in constrained containers.
+
+```html
+<!-- single-line (showActions=true, isEditing=true) -->
+<span class="origam-inline-edit origam-inline-edit--editing origam-inline-edit--show-actions">
+  <div class="origam-text-field origam-inline-edit__field" data-cy="origam-inline-edit-input">
+    <!-- OrigamTextField internals -->
+    <div class="origam-field__append-inner">
+      <button data-cy="origam-inline-edit-action-confirm">&#10003;</button>
+      <button data-cy="origam-inline-edit-action-cancel">&#10005;</button>
+    </div>
+  </div>
+</span>
+```
+
+### Combining `showActions` and `confirmOnBlur`
+
+When rendering explicit action buttons, you typically want to disable
+`confirmOnBlur` so that clicking a button does not first trigger a blur
+commit on the input:
+
+```vue
+<origam-inline-edit
+    v-model="label"
+    :show-actions="true"
+    :confirm-on-blur="false"
+/>
+```
+
+The built-in buttons use `@mousedown.prevent` internally to avoid
+stealing focus from the input before the click handler runs.
+
+### Using the `#actions` slot instead
+
+If you need a fully custom button layout, use the `#actions` slot — it
+takes precedence over the built-in buttons even when `showActions` is
+`true`. The slot is only rendered while in edit mode:
+
+```vue
+<origam-inline-edit v-model="label" :confirm-on-blur="false">
+    <template #actions="{ confirm, cancel, isPending }">
+        <button :disabled="isPending" @mousedown.prevent @click="confirm()">Save</button>
+        <button @mousedown.prevent @click="cancel()">Discard</button>
+    </template>
+</origam-inline-edit>
+```
 
 ## Validation patterns
 
@@ -204,8 +293,11 @@ flight, the late resolution is ignored — no double-commit, no race.
 
 ## Related
 
-- [`OrigamTextField`](../TextField/OrigamTextField.md) — the
-  full-fledged form field. Use it when you need labels, prepend /
-  append slots, prefixes, validation rules from a Form, …
-- [`OrigamClipboard`](../Clipboard/OrigamClipboard.md) — same
-  "lightweight affordance" philosophy applied to copy-to-clipboard.
+- `OrigamTextField` — the full-fledged single-line form field. Use it
+  when you need labels, prepend / append slots, prefixes, validation
+  rules from a Form, … `OrigamInlineEdit` uses it internally in
+  single-line edit mode.
+- `OrigamTextareaField` — multi-line variant. Used internally by
+  `OrigamInlineEdit` in `multiline=true` edit mode.
+- `OrigamClipboard` — same "lightweight affordance" philosophy
+  applied to copy-to-clipboard.

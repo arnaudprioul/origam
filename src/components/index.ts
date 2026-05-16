@@ -142,6 +142,8 @@ export * from './SliderField'
 
 export * from './Snackbar'
 
+export * from './SnackbarItem'
+
 export * from './SnackbarStack'
 
 export * from './Switch'
@@ -177,3 +179,5 @@ export * from './Stepper'
 export * from './Timeline'
 
 export * from './Treeview'
+
+export * from './QRCode'

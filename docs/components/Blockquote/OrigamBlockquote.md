@@ -47,7 +47,7 @@ of the rendered element (visible to assistive tech, not painted).
 |-----------|------------------------------------------------------------------------------------------------------------------------------------|
 | `default` | Left accent bar, comfortable padding. Neutral rhythm, fits most prose contexts.                                                    |
 | `elegant` | Serif italic with extra breathing room. Editorial long-form content (essays, articles, hero quotes inside marketing pages).       |
-| `quoted`  | Large decorative open/close marks rendered around the body. Locale-aware glyphs — see [I18n quotes](#i18n-quotes).                |
+| `quoted`  | Single oversized opening glyph rendered as a background watermark (absolute, behind the text). Locale-aware glyph — see [I18n quotes](#i18n-quotes). |
 | `minimal` | Bare italic with a small inline indent. Inline citations inside technical documentation where the visual should stay quiet.        |
 | `pull`    | Pull quote — large body type, top + bottom rules, centred by default. Use sparingly (one per article maximum).                    |
 
@@ -57,19 +57,27 @@ can theme any of them via `tokens/component/blockquote.json`.
 
 ## I18n quotes
 
-The `quoted` variant pulls its decorative open / close glyphs from
-`QUOTE_MARKS_BY_LANG`:
+The `quoted` variant renders only the **opening glyph** as a large
+background watermark — the closing glyph is not rendered. The opening
+glyph is pulled from `QUOTE_MARKS_BY_LANG` using the `lang` prop:
 
-| `lang` | Open | Close | Notes                                                                                            |
-|--------|------|-------|--------------------------------------------------------------------------------------------------|
-| `fr`   | `«`  | `»`   | French guillemets — non-breaking space inside the pair handled by the const.                     |
-| `en`   | `“`  | `”`   | Curly double quotes (Smart Quotes).                                                              |
-| `es`   | `«`  | `»`   | Spanish angular quotes. Kept distinct from `fr` so future locale-specific tweaks branch cleanly. |
-| `de`   | `„`  | `“`   | German low-9 / high-6 pair.                                                                      |
-| `auto` | —    | —     | Reads `document.documentElement.lang` at mount; falls back to `'en'`.                            |
+| `lang` | Open glyph | Notes                                                                                            |
+|--------|-----------|--------------------------------------------------------------------------------------------------|
+| `fr`   | `«`       | French guillemet (left).                                                                         |
+| `en`   | `”`       | Curly left double quote (Smart Quote).                                                           |
+| `es`   | `«`       | Spanish angular quote. Kept distinct from `fr` so future locale-specific tweaks branch cleanly. |
+| `de`   | `„`       | German low-9 opening quote.                                                                      |
+| `auto` | —         | Reads `document.documentElement.lang` at mount; falls back to `'en'`.                           |
+
+The glyph is positioned `absolute` in the top-left corner of the blockquote
+(which is `position: relative`), behind the body text (`z-index: 0` vs
+`z-index: 1` for content). Its size is controlled by the token
+`--origam-blockquote--quoted---glyph-size` (default `8rem`) and its
+opacity by `--origam-blockquote--quoted---glyph-opacity` (default `0.08`).
+Both can be overridden via CSS custom properties.
 
 The `auto` resolution runs in `onMounted` to stay SSR-safe. The SSR
-output emits the `'en'` pair by default; the client swaps after
+output emits the `'en'` glyph by default; the client swaps after
 hydration if the document declares a different language. The glyph
 swap is visually unobtrusive — no layout shift.
 
@@ -134,6 +142,6 @@ swap is visually unobtrusive — no layout shift.
 
 ## Related
 
-- [`OrigamCode`](../Code/OrigamCode.md) — typography component for code
+- `OrigamCode` — typography component for code
   blocks. Use `OrigamCode` for code, `OrigamBlockquote` for prose
   citations.
