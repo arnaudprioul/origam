@@ -325,3 +325,7 @@ export * from './Sound/sound-metadata.interface'
 
 export * from './Calendar/event.interface'
 export * from './Calendar/calendar.interface'
+
+export * from './Chart/chart-series.interface'
+export * from './Chart/chart-point.interface'
+export * from './Chart/chart.interface'

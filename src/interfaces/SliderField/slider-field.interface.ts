@@ -49,6 +49,15 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
     showTicks?: TAlways
     ticks?: Array<number> | string
     tickSize?: TSize | number
+    /**
+     * Compact "inset" style — the draggable thumb sits **inside** the
+     * track (smaller, no overflow). Mirrors `OrigamSwitch`'s `inset`
+     * flag. Useful in tight contexts like a volume tooltip or a compact
+     * form row.
+     *
+     * @default false
+     */
+    inset?: boolean
 }
 
 export interface ISliderFieldProvide {

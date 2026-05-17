@@ -211,13 +211,21 @@
 	 * @description
 	 * Props, emits, slots and component refs.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ISliderFieldProps>(), {
+	// NOTE: `inset` is intersected INLINE on the defineProps type so the
+	// Vue SFC compiler always picks it up from this file, even if the
+	// shared ISliderFieldProps interface was hot-reloaded after first
+	// compile (a Vite / vue-plugin caching edge case bit us before).
+	// The canonical typing lives in ISliderFieldProps; this is just a
+	// belt-and-braces re-declaration so the runtime props descriptor
+	// is always in sync.
+	const props = withDefaults(defineProps<ISliderFieldProps & { inset?: boolean }>(), {
 		min: 0,
 		max: 100,
 		modelValue: 0,
 		step: 0,
 		direction: DIRECTION.HORIZONTAL,
-		density: DENSITY.DEFAULT
+		density: DENSITY.DEFAULT,
+		inset: false
 	})
 
 	const emits = defineEmits(['update:focused', 'update:modelValue', 'start', 'end'])
@@ -505,7 +513,8 @@
 				'origam-slider-field--focused': isFocused.value,
 				'origam-slider-field--pressed': mousePressed.value,
 				'origam-slider-field--disabled': props.disabled,
-				'origam-slider-field--range': isRange.value
+				'origam-slider-field--range': isRange.value,
+				'origam-slider-field--inset': props.inset
 			},
 			rtlClasses.value,
 			props.class
@@ -743,6 +752,55 @@
 			:deep(.origam-slider-field-track) {
 				.origam-slider-field-track__tick {
 					opacity: 1;
+				}
+			}
+		}
+
+		/* --inset — compact style: thumb stays INSIDE the track instead
+		 * of overflowing it. Track is thicker, thumb smaller and tucked
+		 * inside. Mirrors OrigamSwitch's `inset` flag. Works in both
+		 * horizontal and vertical orientations. */
+		&--inset {
+			:deep(.origam-slider-field__thumb) {
+				width: 10px;
+				height: 10px;
+			}
+
+			:deep(.origam-slider-field-track) {
+				background: transparent;
+				border-radius: 999px;
+			}
+
+			:deep(.origam-slider-field-track__background) {
+				border-radius: 999px;
+			}
+
+			:deep(.origam-slider-field-track__fill) {
+				border-radius: 999px;
+			}
+
+			&.origam-input--horizontal {
+				:deep(.origam-input__control) {
+					min-height: 16px;
+				}
+
+				:deep(.origam-slider-field-track),
+				:deep(.origam-slider-field-track__background),
+				:deep(.origam-slider-field-track__fill) {
+					height: 14px;
+				}
+			}
+
+			&.origam-input--vertical {
+				:deep(.origam-input__control) {
+					min-height: 0;
+					min-width: 16px;
+				}
+
+				:deep(.origam-slider-field-track),
+				:deep(.origam-slider-field-track__background),
+				:deep(.origam-slider-field-track__fill) {
+					width: 14px;
 				}
 			}
 		}

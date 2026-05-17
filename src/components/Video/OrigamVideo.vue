@@ -1,10 +1,13 @@
 <template>
-	<div
+	<origam-responsive
 			class="origam-video"
 			:class="rootClasses"
 			:style="rootStyles"
+			:aspect-ratio="effectiveAspectRatio"
+			content-class="origam-video__inner"
 			data-cy="origam-video"
 	>
+		<template #additional>
 		<video
 				ref="videoRef"
 				class="origam-video__el"
@@ -142,27 +145,38 @@
 						@update:model-value="onScrubberInput"
 				/>
 
-				<origam-btn
-						:icon="volumeIcon"
-						class="origam-video__btn"
-						:aria-label="state.muted.value ? 'Unmute' : 'Mute'"
-						data-cy="origam-video-mute"
-						size="small"
-						variant="text"
-						@click="methods.toggleMute()"
-				/>
-
-				<origam-slider-field
-						class="origam-video__volume"
-						:min="0"
-						:max="1"
-						:step="0.05"
-						:model-value="state.muted.value ? 0 : state.volume.value"
-						aria-label="Volume"
-						hide-details
-						data-cy="origam-video-volume"
-						@update:model-value="onVolumeInput"
-				/>
+				<origam-tooltip
+						:open-on-hover="true"
+						:open-on-click="false"
+						location="top"
+						content-class="origam-video__volume-tooltip"
+				>
+					<template #activator="{ props: activatorProps }">
+						<origam-btn
+								v-bind="activatorProps"
+								:icon="volumeIcon"
+								class="origam-video__btn"
+								:aria-label="state.muted.value ? 'Unmute' : 'Mute'"
+								data-cy="origam-video-mute"
+								size="small"
+								variant="text"
+								@click="methods.toggleMute()"
+						/>
+					</template>
+					<origam-slider-field
+							class="origam-video__volume"
+							direction="vertical"
+							inset
+							:min="0"
+							:max="1"
+							:step="0.05"
+							:model-value="state.muted.value ? 0 : state.volume.value"
+							aria-label="Volume"
+							hide-details
+							data-cy="origam-video-volume"
+							@update:model-value="onVolumeInput"
+					/>
+				</origam-tooltip>
 
 				<origam-btn
 						v-if="hasCaptions"
@@ -199,7 +213,8 @@
 				/>
 			</slot>
 		</div>
-	</div>
+		</template>
+	</origam-responsive>
 </template>
 
 <script
@@ -215,7 +230,9 @@
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamIcon } from '../Icon'
+	import { OrigamResponsive } from '../Responsive'
 	import { OrigamSliderField } from '../SliderField'
+	import { OrigamTooltip } from '../Tooltip'
 
 	import { shouldSuppressAutoplay, useVideoPlayer } from '../../composables'
 
@@ -341,9 +358,30 @@
 		emit('volumechange', state.volume.value)
 	}
 
-	function onLoadedMetadata () {
+	const naturalWidth = ref<number | null>(null)
+	const naturalHeight = ref<number | null>(null)
+
+	function onLoadedMetadata (event: Event) {
+		const v = event.target as HTMLVideoElement
+		if (v.videoWidth && v.videoHeight) {
+			naturalWidth.value = v.videoWidth
+			naturalHeight.value = v.videoHeight
+		}
 		emit('loadedmetadata', { duration: state.duration.value })
 	}
+
+	// Effective aspect-ratio fed to OrigamResponsive. Priority:
+	//   1. Explicit `aspectRatio` prop (string '16/9' or number).
+	//   2. Natural dimensions from <video> metadata once loaded.
+	//   3. Fallback to 16/9 so the placeholder area has a sensible
+	//      shape before the video metadata arrives.
+	const effectiveAspectRatio = computed<string | number>(() => {
+		if (props.aspectRatio) return props.aspectRatio
+		if (naturalWidth.value && naturalHeight.value) {
+			return naturalWidth.value / naturalHeight.value
+		}
+		return '16/9'
+	})
 
 	function onErrorEvent () {
 		if (state.error.value) emit('error', state.error.value)
@@ -522,12 +560,9 @@
 		props.class
 	])
 
-	const rootStyles = computed<StyleValue>(() => [
-		{
-			aspectRatio: props.aspectRatio
-		},
-		props.style
-	] as StyleValue)
+	// aspect-ratio is now handled by `<origam-responsive :aspect-ratio>`.
+	// rootStyles only carries the user-provided style pass-through.
+	const rootStyles = computed<StyleValue>(() => [props.style] as StyleValue)
 
 	/*********************************************************
 	 * Expose
@@ -553,6 +588,8 @@
 	}
 
 	.origam-video__el {
+		position: absolute;
+		inset: 0;
 		display: block;
 		width: 100%;
 		height: 100%;
@@ -651,6 +688,35 @@
 		padding: var(--origam-video__controls---padding, 8px 12px);
 		background: var(--origam-video__controls---background-color, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent));
 		color: var(--origam-video__controls---color, #ffffff);
+	}
+
+	/* Scrubber takes all remaining horizontal space; siblings (time
+	 * label, action buttons, volume tooltip trigger) keep their natural
+	 * size and align with the scrubber on the same baseline. */
+	.origam-video__scrubber {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	/* Volume slider rendered INSIDE the tooltip — compact vertical bar.
+	 * OrigamSliderField needs an explicit height + flex parent to switch
+	 * to vertical layout (cf. the SliderField story "Prop — direction").
+	 * The tooltip is sized tight around the slim track so it doesn't
+	 * dwarf the player. */
+	:deep(.origam-video__volume-tooltip) {
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		width: var(--origam-video__volume-tooltip---width, 32px);
+		height: var(--origam-video__volume-tooltip---height, 120px);
+		padding: var(--origam-video__volume-tooltip---padding, 6px 4px);
+	}
+
+	:deep(.origam-video__volume) {
+		flex: 1;
+		min-width: 0;
+		width: 100%;
+		height: 100%;
 	}
 
 	.origam-video__btn {

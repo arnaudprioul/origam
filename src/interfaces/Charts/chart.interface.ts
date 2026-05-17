@@ -9,7 +9,7 @@ import type {
 
 import type { TChartItem, TChartType, TDirectionBoth } from "../../types"
 
-export interface IChartProps extends ICommonsComponentProps, IChartLineProps, IChartBarProps {
+export interface ILegacyChartProps extends ICommonsComponentProps, IChartLineProps, IChartBarProps {
     type?: TChartType
 }
 
