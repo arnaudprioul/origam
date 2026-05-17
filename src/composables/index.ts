@@ -105,3 +105,5 @@ export * from './Sound/audio-player.composable'
 export * from './Sound/waveform.composable'
 
 export * from './Calendar/calendar.composable'
+
+export * from './Chart/chart.composable'

@@ -15,6 +15,22 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamChart` + `useChart` — in-house chart component. 8 types
+  (`line` / `area` / `bar` / `column` / `pie` / `donut` / `scatter` /
+  `radar`). Pure SVG rendering (no canvas, no `d3`, no `chart.js`,
+  no `echarts`). Tooltip rendered inline (positioned via mouse move),
+  legend as a `<ul role="list">` with click-to-toggle series
+  visibility. Animated entrance with `prefers-reduced-motion` respect.
+  Custom slots for `tooltip` / `legend-item` / `title` / `empty`.
+  ARIA `role="img"` with `<title>` + `<desc>` for screen readers,
+  every data point is `tabindex="0"` + `role="button"` with a
+  descriptive `aria-label`. Pure-function SVG path utilities
+  (`linePath`, `smoothPath`, `areaPath`, `arcPath`, `polygonPath`,
+  `polarToCartesian`, `pathLength`) — SSR-safe. Scales / ticks /
+  paths produced by the `useChart` composable; reusable on its own
+  outside the component template. New `tokens/component/chart.json`
+  (title, subtitle, axis, grid, tooltip, legend, point, bar, pie,
+  radar, animation groups).
 - `OrigamCalendar` + `useCalendar` — full calendar component. 4 views
   (month/week/day/agenda), navigation, events with
   start/end/color/category, range select with drag-to-create, recurring

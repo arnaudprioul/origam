@@ -314,4 +314,7 @@ export * from './Sound/sound-controls.type'
 export * from './Calendar/calendar-view.type'
 export * from './Calendar/calendar-time-format.type'
 
+export * from './Chart/chart-legend-position.type'
+export * from './Chart/chart-smoothing.type'
+
 

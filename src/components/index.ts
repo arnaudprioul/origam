@@ -185,3 +185,5 @@ export * from './Video'
 export * from './Sound'
 
 export * from './Calendar'
+
+export * from './Chart'
