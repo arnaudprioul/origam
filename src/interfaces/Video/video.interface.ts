@@ -177,6 +177,60 @@ export interface IVideoProps extends ICommonsComponentProps {
      * @default false
      */
     disablePictureInPicture?: boolean
+    /**
+     * Seconds skipped by the ±skip buttons and by the double-tap
+     * gesture on touch devices. Pass `0` to hide the skip buttons.
+     *
+     * @default 30
+     */
+    skipSeconds?: number
+    /**
+     * Show the centered ±skip buttons + play/pause overlay on hover
+     * (and always while paused). When `false`, only the bottom
+     * toolbar handles play/pause.
+     *
+     * @default true
+     */
+    showCenterControls?: boolean
+    /**
+     * Available playback rates exposed via the config menu.
+     *
+     * @default [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+     */
+    playbackRates?: ReadonlyArray<number>
+    /**
+     * Initial playback rate. The runtime value is exposed via the
+     * `update:playbackRate` emit and the `playbackRate` scoped-slot
+     * binding.
+     *
+     * @default 1
+     */
+    playbackRate?: number
+    /**
+     * Layout mode for the bottom toolbar :
+     *   - `true` — controls overlaid on the video bottom edge,
+     *     auto-hide while playing once the cursor leaves.
+     *   - `false` — controls always painted, no auto-hide.
+     *
+     * @default true
+     */
+    inset?: boolean
+    /**
+     * Enable the cast / AirPlay button (Remote Playback API). The
+     * button only renders when the browser exposes the API AND at
+     * least one cast-capable device is detected. No 3rd-party plugin.
+     *
+     * @default true
+     */
+    allowRemotePlayback?: boolean
+    /**
+     * Enable double-tap gestures on touch devices: tap-tap on the
+     * left half = skip backward by `skipSeconds`, on the right half =
+     * skip forward.
+     *
+     * @default true
+     */
+    doubleTapToSkip?: boolean
 }
 
 /**
@@ -196,6 +250,13 @@ export interface IVideoEmits {
     (e: 'exitpip'): void
     (e: 'loadedmetadata', payload: { duration: number }): void
     (e: 'error', err: MediaError | Error): void
+    /** Skip event — positive seconds = forward, negative = backward.
+     *  Fired by the centered skip buttons and by the double-tap gesture. */
+    (e: 'skip', seconds: number): void
+    /** Two-way binding for the playback rate. The component DOES NOT
+     *  set this in response to the consumer's prop changes — only when
+     *  the user picks a rate from the config menu. */
+    (e: 'update:playbackRate', rate: number): void
 }
 
 /**
@@ -237,6 +298,12 @@ export interface IVideoPlayerState {
     ready: Ref<boolean>
     loading: Ref<boolean>
     error: Ref<MediaError | Error | null>
+    /** Current playback rate. `1` = normal speed. */
+    playbackRate: Ref<number>
+    /** True when at least one Remote Playback device is reachable. */
+    remoteAvailable: Ref<boolean>
+    /** Connection state of the Remote Playback session. */
+    remoteState: Ref<'disconnected' | 'connecting' | 'connected'>
 }
 
 /**
@@ -252,4 +319,13 @@ export interface IVideoPlayerMethods {
     togglePip: () => Promise<void>
     /** Force a reload of the underlying `<video>` element. */
     load: () => void
+    /** Jump backward by `seconds`, clamped to [0, duration]. */
+    skipBackward: (seconds: number) => void
+    /** Jump forward by `seconds`, clamped to [0, duration]. */
+    skipForward: (seconds: number) => void
+    /** Set the playback rate, clamped to [0.25, 4]. */
+    setPlaybackRate: (rate: number) => void
+    /** Open the native cast / AirPlay device picker. No-op when the
+     *  Remote Playback API is unavailable. */
+    requestRemotePlayback: () => Promise<void>
 }

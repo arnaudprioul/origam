@@ -92,6 +92,12 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
     const ready: Ref<boolean> = ref(false)
     const loading: Ref<boolean> = ref(false)
     const error: Ref<MediaError | Error | null> = ref(null)
+    /** Current playback rate. 1 = normal speed. */
+    const playbackRate: Ref<number> = ref(1)
+    /** Remote Playback availability + connection state. Backed by the
+     *  browser's `HTMLMediaElement.remote` (RemotePlayback API). */
+    const remoteAvailable: Ref<boolean> = ref(false)
+    const remoteState: Ref<'disconnected' | 'connecting' | 'connected'> = ref('disconnected')
 
     /*********************************************************
      * Imperative methods — every method either short-circuits when no
@@ -187,6 +193,52 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
         videoRef.value?.load()
     }
 
+    /** Jump backward by `seconds`, clamped to [0, duration]. */
+    const skipBackward = (seconds: number): void => {
+        const el = videoRef.value
+        if (!el) return
+        seek(el.currentTime - seconds)
+    }
+
+    /** Jump forward by `seconds`, clamped to [0, duration]. */
+    const skipForward = (seconds: number): void => {
+        const el = videoRef.value
+        if (!el) return
+        seek(el.currentTime + seconds)
+    }
+
+    /** Change the playback rate. Clamped to a sensible range so the
+     *  consumer doesn't shoot themselves in the foot (negative rates
+     *  reverse-play in some engines but are unsupported across the
+     *  board; rates > 4 are typically inaudible). */
+    const setPlaybackRate = (rate: number): void => {
+        const el = videoRef.value
+        if (!el) return
+        const clamped = Math.max(0.25, Math.min(4, rate))
+        el.playbackRate = clamped
+        // Sync state immediately (the native `ratechange` event fires
+        // asynchronously and we want consumers to see the new value on
+        // the next tick).
+        playbackRate.value = clamped
+    }
+
+    /** Open the native cast/AirPlay picker via the Remote Playback API.
+     *  Resolves silently if the API is missing or the user cancels. */
+    const requestRemotePlayback = async (): Promise<void> => {
+        const el = videoRef.value as unknown as { remote?: { prompt?: () => Promise<void> } }
+        if (!el?.remote?.prompt) return
+        try {
+            await el.remote.prompt()
+        } catch (err) {
+            // User dismissed the picker, or no devices found — neither
+            // is an error worth surfacing in `error.value` (that ref is
+            // reserved for media failures).
+            if (err instanceof Error && err.name !== 'NotAllowedError' && err.name !== 'NotFoundError') {
+                error.value = err
+            }
+        }
+    }
+
     /*********************************************************
      * Listener bindings — installed in onMounted because we need the
      * element to exist, and the consumer might mount the `<video>`
@@ -254,6 +306,19 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
     const onFullscreenChange = () => {
         fullscreen.value = Boolean(document.fullscreenElement)
     }
+    const onRateChange = () => {
+        const el = videoRef.value
+        if (!el) return
+        playbackRate.value = el.playbackRate
+    }
+    // Remote Playback API — `connect` / `disconnect` / `connecting`
+    // mirror the standard `RemotePlayback` events. `availability` is
+    // tracked via `watchAvailability` so the consumer can hide the
+    // cast button when no devices are reachable.
+    let _remoteAvailabilityCallbackId: number | null = null
+    const onRemoteConnecting = () => { remoteState.value = 'connecting' }
+    const onRemoteConnect = () => { remoteState.value = 'connected' }
+    const onRemoteDisconnect = () => { remoteState.value = 'disconnected' }
 
     const bind = (el: HTMLVideoElement): void => {
         el.addEventListener('play', onPlay)
@@ -269,6 +334,27 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
         el.addEventListener('error', onError)
         el.addEventListener('enterpictureinpicture', onEnterPip as EventListener)
         el.addEventListener('leavepictureinpicture', onLeavePip as EventListener)
+        el.addEventListener('ratechange', onRateChange)
+
+        // Remote Playback API — observe device availability + connection
+        // state. Both are optional features; we feature-detect and
+        // silently skip if absent (Firefox desktop, e.g.).
+        const remote = (el as unknown as { remote?: {
+            state?: 'disconnected' | 'connecting' | 'connected'
+            watchAvailability?: (cb: (available: boolean) => void) => Promise<number>
+            addEventListener?: (type: string, listener: EventListener) => void
+        } }).remote
+        if (remote) {
+            if (remote.state) remoteState.value = remote.state
+            remote.addEventListener?.('connecting', onRemoteConnecting)
+            remote.addEventListener?.('connect', onRemoteConnect)
+            remote.addEventListener?.('disconnect', onRemoteDisconnect)
+            if (typeof remote.watchAvailability === 'function') {
+                remote.watchAvailability((available) => { remoteAvailable.value = available })
+                    .then((id) => { _remoteAvailabilityCallbackId = id })
+                    .catch(() => { /* not supported on this device, leave false */ })
+            }
+        }
 
         // Hydrate the initial state from whatever the element already
         // has — typical reason: SSR rendered the `<video>` with src and
@@ -310,6 +396,21 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
         el.removeEventListener('error', onError)
         el.removeEventListener('enterpictureinpicture', onEnterPip as EventListener)
         el.removeEventListener('leavepictureinpicture', onLeavePip as EventListener)
+        el.removeEventListener('ratechange', onRateChange)
+
+        const remote = (el as unknown as { remote?: {
+            removeEventListener?: (type: string, listener: EventListener) => void
+            cancelWatchAvailability?: (id: number) => Promise<void>
+        } }).remote
+        if (remote) {
+            remote.removeEventListener?.('connecting', onRemoteConnecting)
+            remote.removeEventListener?.('connect', onRemoteConnect)
+            remote.removeEventListener?.('disconnect', onRemoteDisconnect)
+            if (_remoteAvailabilityCallbackId != null && typeof remote.cancelWatchAvailability === 'function') {
+                remote.cancelWatchAvailability(_remoteAvailabilityCallbackId).catch(() => {})
+                _remoteAvailabilityCallbackId = null
+            }
+        }
     }
 
     onMounted(() => {
@@ -342,7 +443,10 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
             pip,
             ready,
             loading,
-            error
+            error,
+            playbackRate,
+            remoteAvailable,
+            remoteState
         },
         methods: {
             play,
@@ -352,7 +456,11 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
             toggleMute,
             toggleFullscreen,
             togglePip,
-            load
+            load,
+            skipBackward,
+            skipForward,
+            setPlaybackRate,
+            requestRemotePlayback
         }
     }
 }

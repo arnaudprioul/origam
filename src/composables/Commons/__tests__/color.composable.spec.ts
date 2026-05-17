@@ -239,3 +239,58 @@ describe('useColorEffect — hover / active darken derivation', () => {
         expect(bg).toBe('background-color: color-mix(in srgb, transparent, black 20%)')
     })
 })
+
+describe('useColor — gradient support', () => {
+    it('raw CSS gradient on bgColor → emits background-image, no utility class', () => {
+        const colors = computed(() => ({ background: 'linear-gradient(135deg, #ff0080, #7928ca)' }))
+        const { colorClasses, colorStyles } = useColor(colors)
+        expect(colorClasses.value).toEqual([])
+        const bg = colorStyles.value.find((s) => s.startsWith('background-image:'))
+        expect(bg).toBe('background-image: linear-gradient(135deg, #ff0080, #7928ca)')
+        // No raw `background-color:` declaration leaks.
+        expect(colorStyles.value.find((s) => s.startsWith('background-color:'))).toBeUndefined()
+    })
+
+    it('IGradient object with intents on bgColor → resolves to intent CSS vars', () => {
+        const colors = computed(() => ({ background: { from: 'primary', to: 'success' } as any }))
+        const { colorStyles } = useColor(colors)
+        const bg = colorStyles.value.find((s) => s.startsWith('background-image:'))
+        expect(bg).toContain('var(--origam-color__action--primary---bg)')
+        expect(bg).toContain('var(--origam-color__feedback--success---bg)')
+    })
+
+    it('preset name (`gradient-sunset`) on bgColor → resolves to gradient CSS var', () => {
+        const colors = computed(() => ({ background: 'gradient-sunset' }))
+        const { colorStyles } = useColor(colors)
+        const bg = colorStyles.value.find((s) => s.startsWith('background-image:'))
+        expect(bg).toBe('background-image: var(--origam-gradient---sunset)')
+    })
+
+    it('gradient on text (color) → emits background-clip: text triad', () => {
+        const colors = computed(() => ({ text: 'linear-gradient(135deg, #ff0080, #7928ca)' }))
+        const { colorStyles } = useColor(colors)
+        expect(colorStyles.value).toContain('color: transparent')
+        expect(colorStyles.value).toContain('background-clip: text')
+        expect(colorStyles.value).toContain('-webkit-background-clip: text')
+        const bg = colorStyles.value.find((s) => s.startsWith('background-image:'))
+        expect(bg).toBeDefined()
+    })
+
+    it('useColorEffect with gradient on bgColor → background-image, hover state ignored', () => {
+        const props = { bgColor: 'linear-gradient(135deg, #ff0080, #7928ca)' } as any
+        const { colorStyles } = useColorEffect(props, ref(true), ref(false), ref(false))
+        const bg = colorStyles.value.find((s) => s.startsWith('background-image:'))
+        expect(bg).toBe('background-image: linear-gradient(135deg, #ff0080, #7928ca)')
+        // No darken color-mix applied.
+        expect(colorStyles.value.find((s) => s.includes('color-mix'))).toBeUndefined()
+    })
+
+    it('useColorEffect with text gradient + bg intent → text gradient wins on background-image', () => {
+        const props = { bgColor: 'primary', color: { from: 'warning', to: 'danger' } } as any
+        const { colorStyles } = useColorEffect(props, ref(false), ref(false), ref(false))
+        const bgImage = colorStyles.value.find((s) => s.startsWith('background-image:'))
+        expect(bgImage).toContain('var(--origam-color__feedback--warning---bg)')
+        expect(colorStyles.value).toContain('color: transparent')
+        expect(colorStyles.value).toContain('background-clip: text')
+    })
+})

@@ -1,6 +1,7 @@
 export * from './Commons/anchor.util'
 export * from './Commons/border.util'
 export * from './Commons/color.util'
+export * from './Commons/gradient.util'
 export * from './Commons/commons.util'
 export * from './Commons/console.util'
 export * from './Commons/date.util'

@@ -4,6 +4,8 @@
     "primitive",
     "semantic/light",
     "semantic/dark",
+    "semantic/gradient-light",
+    "semantic/gradient-dark",
     "component/btn",
     "component/btn-group",
     "component/card",

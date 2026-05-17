@@ -51,6 +51,11 @@
   --origam-color__feedback--info---fgSubtle: #60a5fa;
   --origam-color__feedback--info---border: #2196f3;
   --origam-color__overlay---scrim: #000000;
+  --origam-gradient---sunset: linear-gradient(135deg, #b55149, #9d6f4a);
+  --origam-gradient---ocean: linear-gradient(135deg, #134a59, #2f7e90);
+  --origam-gradient---forest: linear-gradient(135deg, #0a2b34, #3a6047);
+  --origam-gradient---fire: linear-gradient(135deg, #8c1a0b, #8a6210);
+  --origam-gradient---midnight: linear-gradient(135deg, #0d0d0e, #1f2022);
   --origam-btn---background-color: #262626;
   --origam-btn---color: #f5f5f5;
   --origam-btn---background-color-hover: #404040;
@@ -2729,6 +2734,11 @@
     --origam-color__feedback--info---fgSubtle: #60a5fa;
     --origam-color__feedback--info---border: #2196f3;
     --origam-color__overlay---scrim: #000000;
+    --origam-gradient---sunset: linear-gradient(135deg, #b55149, #9d6f4a);
+    --origam-gradient---ocean: linear-gradient(135deg, #134a59, #2f7e90);
+    --origam-gradient---forest: linear-gradient(135deg, #0a2b34, #3a6047);
+    --origam-gradient---fire: linear-gradient(135deg, #8c1a0b, #8a6210);
+    --origam-gradient---midnight: linear-gradient(135deg, #0d0d0e, #1f2022);
     --origam-btn---background-color: #262626;
     --origam-btn---color: #f5f5f5;
     --origam-btn---background-color-hover: #404040;

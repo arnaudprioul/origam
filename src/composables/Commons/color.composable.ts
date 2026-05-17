@@ -1,7 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, isRef, ref } from 'vue'
 import type { IBgColorProps, IColorProps } from "../../interfaces"
-import type { TBgFgRole, TColor } from '../../types'
+import type { TBgFgRole, TColor, TIntent } from '../../types'
 // Explicit `.ts` extension: a stale sibling `color.util.js` lingers in
 // the source tree (legacy build artefact) and the module resolver picks
 // it up first when no extension is given — that older file lacks the
@@ -21,6 +21,7 @@ import {
     tokenStylesForIntent,
     warnLegacyColor,
 } from '../../utils/Commons/color.util.ts'
+import { isGradient, resolveGradient } from '../../utils/Commons/gradient.util.ts'
 
 // ────────────────────────────────────────────────────────────────────────────
 // Composable rule: ONLY `use*` functions live in this file.
@@ -63,11 +64,22 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
     // regression for components that haven't migrated yet.
     const colorClasses = computed<string[]>(() => {
         const classes: string[] = []
-        if (colors.value.background && isUtilityIntent(colors.value.background)) {
-            classes.push(`origam--bg-${colors.value.background}`)
+        // Gradients live exclusively on the inline-style channel — no
+        // utility class matches a gradient definition, and the resolved
+        // value carries its own intent token references already.
+        if (
+            colors.value.background &&
+            !isGradient(colors.value.background) &&
+            isUtilityIntent(colors.value.background as string)
+        ) {
+            classes.push(`origam--bg-${colors.value.background as string}`)
         }
-        if (colors.value.text && isUtilityIntent(colors.value.text)) {
-            classes.push(`origam--color-${colors.value.text}`)
+        if (
+            colors.value.text &&
+            !isGradient(colors.value.text) &&
+            isUtilityIntent(colors.value.text as string)
+        ) {
+            classes.push(`origam--color-${colors.value.text as string}`)
         }
         return classes
     })
@@ -80,18 +92,34 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         // colour without forcing the consumer to specify both.
         let bgIntentFg: string | null = null
         let bgDecl: string | null = null
+        // Tracks whether the background channel resolved to a gradient —
+        // foreground auto-contrast skips when a gradient owns the surface
+        // (we can't WCAG-pair against a multi-stop fill).
+        let bgIsGradient = false
 
         /*********************************************************
          * Background resolution
          ********************************************************/
         if (colors.value.background) {
-            if (isIntent(colors.value.background)) {
-                const m = tokenStylesForIntent(colors.value.background, 'default')
+            // Gradient detection runs FIRST. A value like
+            // `linear-gradient(...)` would otherwise fail `isIntent` and
+            // tumble down into `isCssColor` which (deliberately) returns
+            // false → the consumer's gradient would silently vanish.
+            if (isGradient(colors.value.background)) {
+                const grad = resolveGradient(colors.value.background)
+                if (grad) {
+                    // Transparent base + `background-image` lets multiple
+                    // gradients stack with shorthand declarations later.
+                    bgDecl = `background-image: ${grad}`
+                    bgIsGradient = true
+                }
+            } else if (isIntent(colors.value.background as string)) {
+                const m = tokenStylesForIntent(colors.value.background as string, 'default')
                 bgDecl = `background-color: ${m['background-color']}`
                 bgIntentFg = m.color
             } else if (colors.value.background === 'transparent') {
-                bgDecl = `background-color: ${colors.value.background}`
-            } else if (isCssColor(colors.value.background)) {
+                bgDecl = `background-color: ${colors.value.background as string}`
+            } else if (typeof colors.value.background === 'string' && isCssColor(colors.value.background)) {
                 bgDecl = `background-color: ${colors.value.background}`
             }
         }
@@ -109,7 +137,23 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
         // legacy composable — that's where the bg auto-pair-on-fg lives.
         let fgDecl: string | null = null
         if (colors.value.text) {
-            if (isIntent(colors.value.text)) {
+            if (isGradient(colors.value.text)) {
+                // Foreground gradient → `background-clip: text` triad:
+                //   1. paint the gradient on the element's background-image
+                //   2. clip the painted area to the rendered glyphs
+                //   3. hide the original text colour so the gradient shows
+                // We push three declarations at the END (after the bg
+                // path) so a co-located `bgColor` still owns the actual
+                // surface — the text gradient is layered on top via
+                // `background-clip: text` and only paints the glyphs.
+                const grad = resolveGradient(colors.value.text)
+                if (grad) {
+                    fgDecl = 'color: transparent'
+                    styles.push(`background-image: ${grad}`)
+                    styles.push('background-clip: text')
+                    styles.push('-webkit-background-clip: text')
+                }
+            } else if (isIntent(colors.value.text as string)) {
                 // ── Color-clash auto-contrast (cross-component rule) ────
                 // When `text` and `background` resolve to the SAME intent
                 // (e.g. `color="primary" bgColor="primary"`), painting the
@@ -121,22 +165,22 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
                 // the consumer to spell out both values.
                 if (
                     bgIntentFg &&
-                    isIntent(colors.value.background) &&
+                    isIntent(colors.value.background as string) &&
                     colors.value.text === colors.value.background
                 ) {
                     fgDecl = `color: ${bgIntentFg}`
                 } else {
-                    fgDecl = `color: ${tokenForegroundForIntent(colors.value.text)}`
+                    fgDecl = `color: ${tokenForegroundForIntent(colors.value.text as TIntent)}`
                 }
-            } else if (isCssColor(colors.value.text)) {
+            } else if (typeof colors.value.text === 'string' && isCssColor(colors.value.text)) {
                 fgDecl = `color: ${colors.value.text}`
             }
-        } else if (bgIntentFg) {
+        } else if (bgIntentFg && !bgIsGradient) {
             // bg was an intent and consumer didn't provide an explicit text
             // colour → pair the intent's matching fg token (theme-aware
             // auto-contrast, no `getForeground` heuristic needed).
             fgDecl = `color: ${bgIntentFg}`
-        } else if (bgDecl && colors.value.background && typeof colors.value.background === 'string'
+        } else if (bgDecl && !bgIsGradient && colors.value.background && typeof colors.value.background === 'string'
                    && colors.value.background !== 'transparent'
                    && isParsableColor(colors.value.background)) {
             // Legacy auto-contrast for raw CSS colors (WCAG-aware
@@ -343,17 +387,34 @@ export function useColorEffect (
         // remember it so a missing `color` falls back to that pair (auto-
         // contrast inside the design-system without `getForeground`).
         let bgIntentFg: string | null = null
+        let bgIsGradient = false
+        // Set to true when the FOREGROUND resolves to a gradient — we
+        // then need to emit `background-clip: text` / `-webkit-…` at the
+        // end (after `bgDecl` so the gradient lives on background-image).
+        let clipText = false
 
         /*********************************************************
          * Background resolution
          ********************************************************/
-        if (bgColor.value && isIntent(bgColor.value)) {
-            const m = tokenStylesForIntent(bgColor.value, bgRole)
+        if (bgColor.value && isGradient(bgColor.value)) {
+            // Gradients ignore the hover/active darken cascade — applying
+            // `color-mix` per stop would explode the declaration size and
+            // change the artistic intent. Hover/active are visually
+            // expressed via the parent component's opacity / transform
+            // overlay rather than a token swap. (Same contract as the
+            // disabled state: veil/opacity overlay on the resting fill.)
+            const grad = resolveGradient(bgColor.value)
+            if (grad) {
+                bgDecl = `background-image: ${grad}`
+                bgIsGradient = true
+            }
+        } else if (bgColor.value && isIntent(bgColor.value as string)) {
+            const m = tokenStylesForIntent(bgColor.value as string, bgRole)
             bgDecl = `background-color: ${m['background-color']}`
             // The intent's contrast fg is fixed across roles — pull from
             // the default slot regardless of bgRole so hover/active text
             // never darkens with the bg.
-            bgIntentFg = tokenStylesForIntent(bgColor.value, 'default').color
+            bgIntentFg = tokenStylesForIntent(bgColor.value as string, 'default').color
         } else if (bgColor.value === 'transparent') {
             // Default mode (transparent base): math derivation gives a
             // subtle gray on hover, a stronger gray on active — matches
@@ -382,7 +443,22 @@ export function useColorEffect (
         // For "filled primary button" use `bgColor="primary"` (which
         // auto-contrasts the text to the intent's fg pair below) or set
         // both explicitly.
-        if (color.value && isIntent(color.value)) {
+        if (color.value && isGradient(color.value)) {
+            // Foreground gradient → `background-clip: text` triad. When
+            // the surface (bgColor) is ALSO a gradient, both occupy the
+            // same `background-image` channel — the consumer should pick
+            // one. We honour the FOREGROUND in that case (the text glyphs
+            // win over the empty surface area). The bg/fg gradient
+            // collision is documented in the gradient guide.
+            const grad = resolveGradient(color.value)
+            if (grad) {
+                fgDecl = 'color: transparent'
+                // Hijack background-image for the text gradient: any bg
+                // gradient set on bgColor is replaced (foreground wins).
+                bgDecl = `background-image: ${grad}`
+                clipText = true
+            }
+        } else if (color.value && isIntent(color.value as string)) {
             // ── Color-clash auto-contrast (cross-component rule) ────────
             // When the consumer passes the SAME intent on both axes
             // (e.g. `color="primary" bgColor="primary"`), painting the
@@ -396,7 +472,7 @@ export function useColorEffect (
             if (
                 bgIntentFg &&
                 bgColor.value &&
-                isIntent(bgColor.value) &&
+                isIntent(bgColor.value as string) &&
                 color.value === bgColor.value
             ) {
                 fgDecl = `color: ${bgIntentFg}`
@@ -405,18 +481,18 @@ export function useColorEffect (
                 // token (e.g. `var(--origam-color__action--primary---fgSubtle)`),
                 // designed to be legible on a neutral surface — exactly the
                 // semantics consumers want from `color` alone.
-                fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
+                fgDecl = `color: ${tokenForegroundForIntent(color.value as TIntent)}`
             }
         } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
             if (color.value !== 'transparent') warnLegacyColor('color', color.value)
             fgDecl = `color: ${color.value}`
-        } else if (!color.value && bgIntentFg) {
+        } else if (!color.value && bgIntentFg && !bgIsGradient) {
             // Auto-contrast (token path): bg comes from an intent, no
             // explicit color → pair the intent's matching `fg` token so
             // the text is always legible without the consumer specifying
             // both. Reads the same hover/disabled slot via `bgRole`.
             fgDecl = `color: ${bgIntentFg}`
-        } else if (!color.value && bgColor.value && typeof bgColor.value === 'string'
+        } else if (!color.value && !bgIsGradient && bgColor.value && typeof bgColor.value === 'string'
                    && bgColor.value !== 'transparent' && isParsableColor(bgColor.value)) {
             // Auto-contrast (legacy raw CSS): WCAG-aware foreground from
             // the existing `getForeground` helper. Skipped for translucent
@@ -430,6 +506,10 @@ export function useColorEffect (
         const styles: string[] = []
         if (bgDecl) styles.push(bgDecl)
         if (fgDecl) styles.push(fgDecl)
+        if (clipText) {
+            styles.push('background-clip: text')
+            styles.push('-webkit-background-clip: text')
+        }
         return styles
     })
 
