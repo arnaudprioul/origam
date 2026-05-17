@@ -15,6 +15,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- Gradient support for `color` / `bgColor` / `textColor` props across
+  the DS. Three input formats: raw CSS gradient string
+  (`color="linear-gradient(...)"`), structured `IGradient` object
+  (`{ from, to, via?, direction?, type? }` or `{ stops: [...] }`), and
+  preset names (`color="gradient-sunset"` resolves to
+  `var(--origam-gradient---sunset)`). 5 built-in semantic presets
+  (`sunset`, `ocean`, `forest`, `fire`, `midnight`) with light + dark
+  variants. Text gradient via `background-clip: text` when applied to
+  `color` (not `bgColor`). 100 % backward compatible.
 - `OrigamChart` + `useChart` — in-house chart component. 8 types
   (`line` / `area` / `bar` / `column` / `pie` / `donut` / `scatter` /
   `radar`). Pure SVG rendering (no canvas, no `d3`, no `chart.js`,

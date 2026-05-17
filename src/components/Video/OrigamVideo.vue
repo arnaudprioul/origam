@@ -6,6 +6,8 @@
 			:aspect-ratio="effectiveAspectRatio"
 			content-class="origam-video__inner"
 			data-cy="origam-video"
+			@mouseenter="onPlayerMouseEnter"
+			@mouseleave="onPlayerMouseLeave"
 	>
 		<template #additional>
 		<video
@@ -31,6 +33,7 @@
 				@error="onErrorEvent"
 				@enterpictureinpicture="emit('enterpip')"
 				@leavepictureinpicture="emit('exitpip')"
+				@pointerup="onVideoTap"
 		>
 			<source
 					v-for="source in resolvedSources"
@@ -48,6 +51,48 @@
 					:default="track.default || undefined"
 			/>
 		</video>
+
+		<div
+				v-if="showCenterOverlay && !showPosterOverlay && controls === 'custom'"
+				class="origam-video__center"
+				:class="{ 'origam-video__center--visible': showCenterOverlay }"
+				data-cy="origam-video-center"
+		>
+			<slot
+					name="centerControls"
+					v-bind="slotBindings"
+			>
+				<origam-btn
+						v-if="skipSeconds > 0"
+						:icon="ICONS.REWIND"
+						class="origam-video__center-btn origam-video__center-btn--skip-back"
+						:aria-label="`Rewind ${skipSeconds} seconds`"
+						data-cy="origam-video-skip-back"
+						size="large"
+						variant="text"
+						@click="onSkipBack"
+				/>
+				<origam-btn
+						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
+						class="origam-video__center-btn origam-video__center-btn--play"
+						:aria-label="state.playing.value ? 'Pause' : 'Play'"
+						data-cy="origam-video-center-play"
+						size="x-large"
+						variant="elevated"
+						@click="togglePlay"
+				/>
+				<origam-btn
+						v-if="skipSeconds > 0"
+						:icon="ICONS.FAST_FORWARD"
+						class="origam-video__center-btn origam-video__center-btn--skip-forward"
+						:aria-label="`Forward ${skipSeconds} seconds`"
+						data-cy="origam-video-skip-forward"
+						size="large"
+						variant="text"
+						@click="onSkipForward"
+				/>
+			</slot>
+		</div>
 
 		<div
 				v-if="showPosterOverlay"
@@ -112,6 +157,10 @@
 		<div
 				v-if="controls === 'custom'"
 				class="origam-video__controls"
+				:class="{
+					'origam-video__controls--inset': inset,
+					'origam-video__controls--visible': controlsVisible
+				}"
 				data-cy="origam-video-controls"
 		>
 			<slot
@@ -133,21 +182,27 @@
 						data-cy="origam-video-time"
 				>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
 
-				<origam-slider-field
+				<input
 						class="origam-video__scrubber"
-						:min="0"
+						type="range"
+						min="0"
 						:max="scrubberMax"
 						:step="0.1"
-						:model-value="state.currentTime.value"
+						:value="state.currentTime.value"
 						aria-label="Seek"
-						hide-details
+						:aria-valuemin="0"
+						:aria-valuemax="scrubberMax"
+						:aria-valuenow="state.currentTime.value"
+						:aria-valuetext="formattedCurrentTime"
 						data-cy="origam-video-scrubber"
-						@update:model-value="onScrubberInput"
+						@input="onScrubberInput($event)"
 				/>
 
 				<origam-tooltip
 						:open-on-hover="true"
 						:open-on-click="false"
+						:close-delay="300"
+						:open-delay="80"
 						location="top"
 						content-class="origam-video__volume-tooltip"
 				>
@@ -163,19 +218,19 @@
 								@click="methods.toggleMute()"
 						/>
 					</template>
-					<origam-slider-field
-							class="origam-video__volume"
-							direction="vertical"
-							inset
-							:min="0"
-							:max="1"
-							:step="0.05"
-							:model-value="state.muted.value ? 0 : state.volume.value"
-							aria-label="Volume"
-							hide-details
-							data-cy="origam-video-volume"
-							@update:model-value="onVolumeInput"
-					/>
+					<div class="origam-video__volume-wrapper">
+						<input
+								class="origam-video__volume"
+								type="range"
+								min="0"
+								max="1"
+								step="0.05"
+								:value="state.muted.value ? 0 : state.volume.value"
+								aria-label="Volume"
+								data-cy="origam-video-volume"
+								@input="onVolumeInput($event)"
+						/>
+					</div>
 				</origam-tooltip>
 
 				<origam-btn
@@ -203,6 +258,66 @@
 				/>
 
 				<origam-btn
+						v-if="allowRemotePlayback && state.remoteAvailable.value"
+						:icon="ICONS.CAST"
+						class="origam-video__btn"
+						:aria-label="state.remoteState.value === 'connected' ? 'Stop casting' : 'Cast to device'"
+						data-cy="origam-video-cast"
+						size="small"
+						variant="text"
+						:color="state.remoteState.value === 'connected' ? 'primary' : undefined"
+						@click="onCastClick"
+				/>
+
+				<origam-tooltip
+						v-if="hasConfigContent"
+						v-model="configMenuOpen"
+						:open-on-hover="false"
+						:open-on-click="true"
+						:close-on-content-click="false"
+						location="top"
+						content-class="origam-video__config-menu"
+				>
+					<template #activator="{ props: activatorProps }">
+						<origam-btn
+								v-bind="activatorProps"
+								:icon="ICONS.COG"
+								class="origam-video__btn"
+								:class="{ 'origam-video__btn--active': configMenuOpen }"
+								aria-label="Settings"
+								data-cy="origam-video-config"
+								size="small"
+								variant="text"
+						/>
+					</template>
+					<div class="origam-video__config" data-cy="origam-video-config-menu">
+						<slot
+								name="config"
+								v-bind="{
+									...slotBindings,
+									setPlaybackRate: onPlaybackRateClick,
+									closeMenu: () => { configMenuOpen = false }
+								}"
+						>
+							<div class="origam-video__config-section">
+								<div class="origam-video__config-section-title">Playback speed</div>
+								<button
+										v-for="rate in playbackRates"
+										:key="rate"
+										type="button"
+										class="origam-video__config-item"
+										:class="{ 'origam-video__config-item--active': Math.abs(state.playbackRate.value - rate) < 0.01 }"
+										:data-cy="`origam-video-config-rate-${rate}`"
+										@click="onPlaybackRateClick(rate)"
+								>
+									{{ rate === 1 ? 'Normal' : `${rate}×` }}
+								</button>
+							</div>
+						</slot>
+					</div>
+				</origam-tooltip>
+
+				<origam-btn
 						:icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN"
 						class="origam-video__btn"
 						:aria-label="state.fullscreen.value ? 'Exit fullscreen' : 'Enter fullscreen'"
@@ -225,13 +340,13 @@
 		computed,
 		ref,
 		type StyleValue,
+		useSlots,
 		watch
 	} from 'vue'
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamIcon } from '../Icon'
 	import { OrigamResponsive } from '../Responsive'
-	import { OrigamSliderField } from '../SliderField'
 	import { OrigamTooltip } from '../Tooltip'
 
 	import { shouldSuppressAutoplay, useVideoPlayer } from '../../composables'
@@ -264,7 +379,18 @@
 	 * const) because the Vue SFC compiler analyses `withDefaults`
 	 * statically and only resolves literals — cf. CLAUDE.md rule.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IVideoProps>(), {
+	const props = withDefaults(defineProps<IVideoProps & {
+		// Belt-and-braces inline re-declaration (cf. ISliderField inset
+		// note): forces the Vue SFC compiler to resolve these in the
+		// runtime props descriptor even when HMR caches the interface.
+		skipSeconds?: number
+		showCenterControls?: boolean
+		playbackRates?: ReadonlyArray<number>
+		playbackRate?: number
+		inset?: boolean
+		allowRemotePlayback?: boolean
+		doubleTapToSkip?: boolean
+	}>(), {
 		poster: undefined,
 		tracks: () => [],
 		autoplay: false,
@@ -275,7 +401,14 @@
 		preload: 'metadata',
 		aspectRatio: '16/9',
 		crossorigin: undefined,
-		disablePictureInPicture: false
+		disablePictureInPicture: false,
+		skipSeconds: 30,
+		showCenterControls: true,
+		playbackRates: () => [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+		playbackRate: 1,
+		inset: true,
+		allowRemotePlayback: true,
+		doubleTapToSkip: true
 	})
 
 	const emit = defineEmits<IVideoEmits>()
@@ -295,7 +428,11 @@
 		VOLUME_HIGH: MDI_ICONS.VOLUME_HIGH,
 		VOLUME_MEDIUM: MDI_ICONS.VOLUME_MEDIUM,
 		VOLUME_LOW: MDI_ICONS.VOLUME_LOW,
-		VOLUME_OFF: MDI_ICONS.VOLUME_OFF
+		VOLUME_OFF: MDI_ICONS.VOLUME_OFF,
+		REWIND: MDI_ICONS.REWIND,
+		FAST_FORWARD: MDI_ICONS.FAST_FORWARD,
+		COG: MDI_ICONS.COG,
+		CAST: MDI_ICONS.CAST
 	}
 
 	/*********************************************************
@@ -388,6 +525,110 @@
 	}
 
 	/*********************************************************
+	 * Hover / auto-hide state — `inset` controls auto-fade once the
+	 * cursor leaves the player (except while paused, where the
+	 * toolbar stays visible). `hovered` also gates the center-control
+	 * overlay (play / ±skip buttons floating over the video).
+	 ********************************************************/
+	const hovered = ref<boolean>(false)
+	const onPlayerMouseEnter = (): void => { hovered.value = true }
+	const onPlayerMouseLeave = (): void => { hovered.value = false }
+
+	const showCenterOverlay = computed<boolean>(() => {
+		if (!props.showCenterControls) return false
+		// Visible on hover OR while paused (matches the YouTube-style UX).
+		return hovered.value || state.paused.value
+	})
+
+	const controlsVisible = computed<boolean>(() => {
+		// In `inset` mode the bottom toolbar auto-hides while the
+		// video plays and the cursor sits outside the player. In the
+		// non-inset (always-on) mode, the toolbar always paints.
+		if (!props.inset) return true
+		if (state.paused.value) return true
+		return hovered.value
+	})
+
+	/*********************************************************
+	 * Skip handlers — wrap the composable skip methods so we also
+	 * emit a `skip` event (positive seconds = forward, negative =
+	 * backward). The default skip seconds come from the prop.
+	 ********************************************************/
+	const skipBy = (seconds: number): void => {
+		if (seconds > 0) methods.skipForward(seconds)
+		else if (seconds < 0) methods.skipBackward(Math.abs(seconds))
+		emit('skip', seconds)
+	}
+	const onSkipBack = (): void => skipBy(-Math.abs(props.skipSeconds || 0))
+	const onSkipForward = (): void => skipBy(Math.abs(props.skipSeconds || 0))
+
+	/*********************************************************
+	 * Double-tap to skip (touch). Detects two taps within 300ms on
+	 * the same half (left = backward, right = forward) of the video
+	 * surface. Single taps are NOT consumed here — they continue
+	 * propagating to the center play/pause overlay button.
+	 ********************************************************/
+	const _lastTap = ref<{ time: number, side: 'left' | 'right' } | null>(null)
+	const onVideoTap = (event: PointerEvent): void => {
+		if (!props.doubleTapToSkip) return
+		// Only handle synthesized touch taps — ignore mouse events so
+		// desktop users don't accidentally skip when double-clicking.
+		if (event.pointerType !== 'touch') return
+		const target = event.currentTarget as HTMLElement
+		const rect = target.getBoundingClientRect()
+		const side: 'left' | 'right' = event.clientX - rect.left < rect.width / 2 ? 'left' : 'right'
+		const now = Date.now()
+		const last = _lastTap.value
+		if (last && now - last.time < 300 && last.side === side) {
+			if (side === 'left') onSkipBack()
+			else onSkipForward()
+			_lastTap.value = null
+			event.preventDefault()
+		} else {
+			_lastTap.value = { time: now, side }
+		}
+	}
+
+	/*********************************************************
+	 * Config menu — only renders the cog button when the user passed
+	 * either a `#config` slot or a non-empty `configItems` array (the
+	 * built-in playback-rate menu always counts as content, so the
+	 * cog shows up by default).
+	 ********************************************************/
+	const configMenuOpen = ref<boolean>(false)
+	const slots = useSlots()
+	const hasConfigContent = computed<boolean>(() => {
+		// Built-in: playback rates list. Externally: a custom slot.
+		return Boolean(slots.config) || (props.playbackRates?.length ?? 0) > 1
+	})
+
+	const onPlaybackRateClick = (rate: number): void => {
+		methods.setPlaybackRate(rate)
+		emit('update:playbackRate', rate)
+		configMenuOpen.value = false
+	}
+
+	/*********************************************************
+	 * Cast / Remote Playback handler — opens the native device picker
+	 * via the Remote Playback API. The button only renders when
+	 * `allowRemotePlayback` is true AND at least one device is
+	 * available (see `state.remoteAvailable`).
+	 ********************************************************/
+	async function onCastClick (): Promise<void> {
+		await methods.requestRemotePlayback()
+	}
+
+	/*********************************************************
+	 * Apply initial playback rate (prop) once metadata is ready.
+	 * Subsequent prop changes are honoured via the watcher below.
+	 ********************************************************/
+	watch(() => props.playbackRate, (rate) => {
+		if (typeof rate === 'number' && Number.isFinite(rate) && rate > 0) {
+			methods.setPlaybackRate(rate)
+		}
+	}, { immediate: true })
+
+	/*********************************************************
 	 * Toolbar handlers — wrap the composable methods so we can also
 	 * surface the user gesture as the matching emit event (parents
 	 * who want to log a play/pause click track these directly).
@@ -411,14 +652,14 @@
 		await methods.togglePip()
 	}
 
-	function onScrubberInput (value: number | string | Array<number | string>): void {
-		const v = Array.isArray(value) ? value[0] : value
-		methods.seek(Number(v))
+	function onScrubberInput (event: Event): void {
+		const input = event.target as HTMLInputElement
+		methods.seek(Number(input.value))
 	}
 
-	function onVolumeInput (value: number | string | Array<number | string>): void {
-		const v = Array.isArray(value) ? value[0] : value
-		methods.setVolume(Number(v))
+	function onVolumeInput (event: Event): void {
+		const input = event.target as HTMLInputElement
+		methods.setVolume(Number(input.value))
 	}
 
 	/*********************************************************
@@ -539,6 +780,9 @@
 		pip: state.pip.value,
 		loading: state.loading.value,
 		error: state.error.value,
+		playbackRate: state.playbackRate.value,
+		remoteAvailable: state.remoteAvailable.value,
+		remoteState: state.remoteState.value,
 		methods
 	}))
 
@@ -688,35 +932,204 @@
 		padding: var(--origam-video__controls---padding, 8px 12px);
 		background: var(--origam-video__controls---background-color, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent));
 		color: var(--origam-video__controls---color, #ffffff);
+		transition: opacity 180ms ease, transform 220ms ease;
 	}
 
-	/* Scrubber takes all remaining horizontal space; siblings (time
-	 * label, action buttons, volume tooltip trigger) keep their natural
-	 * size and align with the scrubber on the same baseline. */
+	/* In inset mode, controls auto-fade unless `--visible` is added (on
+	 * hover or while paused). The non-inset mode skips the fade.       */
+	.origam-video__controls--inset {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.origam-video__controls--inset.origam-video__controls--visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* Center controls overlay — skip back / play / skip forward.
+	 * Fades in on hover OR when paused. Pointer-events guarded so the
+	 * pointer can still reach the underlying <video> for double-tap. */
+	.origam-video__center {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 48px;
+		z-index: 2;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 180ms ease;
+	}
+
+	.origam-video__center--visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.origam-video__center-btn {
+		color: #ffffff !important;
+	}
+
+	.origam-video__center-btn--play {
+		background: rgba(0, 0, 0, 0.55) !important;
+		backdrop-filter: blur(4px);
+		border-radius: 50%;
+	}
+
+	/* Config menu (cog) — vertical list of options. Styled to sit
+	 * comfortably above the cog button via the OrigamTooltip overlay. */
+	:deep(.origam-video__config-menu) {
+		padding: 6px 0;
+		min-width: 160px;
+	}
+
+	.origam-video__config-section {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.origam-video__config-section-title {
+		padding: 4px 12px 8px;
+		font-size: 0.7rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: rgba(255, 255, 255, 0.65);
+	}
+
+	.origam-video__config-item {
+		all: unset;
+		display: flex;
+		align-items: center;
+		padding: 6px 12px;
+		font-size: 0.875rem;
+		color: #ffffff;
+		cursor: pointer;
+		transition: background-color 120ms ease;
+	}
+
+	.origam-video__config-item:hover,
+	.origam-video__config-item:focus-visible {
+		background-color: rgba(255, 255, 255, 0.12);
+	}
+
+	.origam-video__config-item--active {
+		font-weight: 600;
+		color: var(--origam-color__action--primary---bg, #60a5fa);
+	}
+
+	/* Scrubber — native <input type="range"> styled to match the player
+	 * controls. Takes all remaining horizontal space; height matches
+	 * the rest of the controls bar so the thumb sits on the same
+	 * vertical centerline as the action buttons. */
 	.origam-video__scrubber {
 		flex: 1 1 auto;
 		min-width: 0;
+		appearance: none;
+		-webkit-appearance: none;
+		height: 4px;
+		margin: 0;
+		padding: 0;
+		background: rgba(255, 255, 255, 0.3);
+		border-radius: 2px;
+		cursor: pointer;
+		outline: none;
 	}
 
-	/* Volume slider rendered INSIDE the tooltip — compact vertical bar.
-	 * OrigamSliderField needs an explicit height + flex parent to switch
-	 * to vertical layout (cf. the SliderField story "Prop — direction").
-	 * The tooltip is sized tight around the slim track so it doesn't
-	 * dwarf the player. */
+	.origam-video__scrubber::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 12px;
+		height: 12px;
+		border: none;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
+		transition: transform 120ms ease;
+	}
+
+	.origam-video__scrubber::-moz-range-thumb {
+		width: 12px;
+		height: 12px;
+		border: none;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
+		transition: transform 120ms ease;
+	}
+
+	.origam-video__scrubber:hover::-webkit-slider-thumb,
+	.origam-video__scrubber:focus-visible::-webkit-slider-thumb {
+		transform: scale(1.25);
+	}
+
+	.origam-video__scrubber:hover::-moz-range-thumb,
+	.origam-video__scrubber:focus-visible::-moz-range-thumb {
+		transform: scale(1.25);
+	}
+
+	/* Volume slider — native <input type="range"> rendered horizontally
+	 * but visually rotated 90° anticlockwise via `transform: rotate`.
+	 * `transform` only affects PAINT, not layout, so we need a wrapper
+	 * div with the final vertical dimensions to constrain the tooltip's
+	 * bounding box. The slider sits inside, absolutely centered, with
+	 * its un-rotated 100×4 dims that the rotation spins into 4×100 vis.
+	 *
+	 * (writing-mode: vertical-lr was the alternative but had unreliable
+	 *  thumb/track rendering across engines — transform is the dependable
+	 *  pattern used by HTML5 video players in the wild.) */
 	:deep(.origam-video__volume-tooltip) {
 		display: flex;
-		align-items: stretch;
+		align-items: center;
 		justify-content: center;
-		width: var(--origam-video__volume-tooltip---width, 32px);
-		height: var(--origam-video__volume-tooltip---height, 120px);
-		padding: var(--origam-video__volume-tooltip---padding, 6px 4px);
+		padding: 0;
 	}
 
-	:deep(.origam-video__volume) {
-		flex: 1;
-		min-width: 0;
-		width: 100%;
-		height: 100%;
+	.origam-video__volume-wrapper {
+		width: 28px;
+		height: 110px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+	}
+
+	.origam-video__volume {
+		appearance: none;
+		-webkit-appearance: none;
+		width: 100px;
+		height: 4px;
+		margin: 0;
+		padding: 0;
+		background: rgba(255, 255, 255, 0.3);
+		border-radius: 2px;
+		cursor: pointer;
+		outline: none;
+		transform: rotate(-90deg);
+		transform-origin: center;
+		flex: 0 0 auto;
+	}
+
+	.origam-video__volume::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 12px;
+		height: 12px;
+		border: none;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
+	}
+
+	.origam-video__volume::-moz-range-thumb {
+		width: 12px;
+		height: 12px;
+		border: none;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
 	}
 
 	.origam-video__btn {
