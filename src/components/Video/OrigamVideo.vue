@@ -727,13 +727,37 @@
 		}, 700)
 	}
 
+	/*********************************************************
+	 * Single-tap deferred toggle. YouTube-style: a click on the
+	 * video surface toggles play / pause, but if a second tap lands
+	 * within 300 ms on the SAME side, that gesture turns into a
+	 * skip and the deferred toggle is cancelled. Net effect:
+	 *   - single click     → toggle (after a ~280 ms delay)
+	 *   - double click     → skip on same side (no toggle)
+	 *                      OR toggle on different side (cancels pending)
+	 ********************************************************/
+	let _pendingTogglePlayTimeout = -1
+	function schedulePendingTogglePlay (): void {
+		clearPendingTogglePlay()
+		_pendingTogglePlayTimeout = window.setTimeout(() => {
+			togglePlay()
+			_pendingTogglePlayTimeout = -1
+		}, 280)
+	}
+	function clearPendingTogglePlay (): void {
+		if (_pendingTogglePlayTimeout !== -1) {
+			window.clearTimeout(_pendingTogglePlayTimeout)
+			_pendingTogglePlayTimeout = -1
+		}
+	}
+
 	onBeforeUnmount(() => {
 		if (_skipFeedbackTimeout !== -1) window.clearTimeout(_skipFeedbackTimeout)
 		if (_statePulseTimeout !== -1) window.clearTimeout(_statePulseTimeout)
+		clearPendingTogglePlay()
 	})
 
 	const onVideoTap = (event: PointerEvent): void => {
-		if (!props.doubleTapToSkip) return
 		// Skip keyboard / synthetic events without coordinates.
 		if (event.clientX == null) return
 
@@ -751,14 +775,23 @@
 		const side: 'left' | 'right' = event.clientX - rect.left < rect.width / 2 ? 'left' : 'right'
 		const now = Date.now()
 		const last = _lastTap.value
-		if (last && now - last.time < 300 && last.side === side) {
+		if (props.doubleTapToSkip && last && now - last.time < 300 && last.side === side) {
+			// Second tap of a same-side pair → skip, suppress the pending
+			// togglePlay that was queued by the first tap.
+			clearPendingTogglePlay()
 			if (side === 'left') onSkipBack()
 			else onSkipForward()
 			triggerSkipFeedback(side)
 			_lastTap.value = null
 			event.preventDefault()
 		} else {
+			// First tap (or a second tap that doesn't qualify as a
+			// same-side skip pair): record for a potential pairing and
+			// schedule a deferred togglePlay. If a second tap comes in
+			// soon enough on the same side, the pending toggle is
+			// cancelled and a skip happens instead.
 			_lastTap.value = { time: now, side }
+			schedulePendingTogglePlay()
 		}
 	}
 

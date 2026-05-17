@@ -32,36 +32,103 @@ peer extension attaches to it.
 
 ## Props
 
+### Source & playback
+
+| Prop                       | Type                                                                       | Default      | Notes                                                                                                  |
+|----------------------------|----------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------------------------------------|
+| `src`                      | `string \| Array<{ src, type?, quality?, label? }>`                        | —            | Single URL or multi-source list. When ≥ 2 sources expose a `quality` field, the quality switcher renders in the cog menu. Required. |
+| `poster`                   | `string`                                                                   | —            | Image rendered before playback starts.                                                                 |
+| `tracks`                   | `Array<IVideoTrack>`                                                       | `[]`         | Captions / subtitles / chapter tracks.                                                                 |
+| `autoplay`                 | `boolean`                                                                  | `false`      | Suppressed when `prefers-reduced-motion: reduce`.                                                      |
+| `muted`                    | `boolean`                                                                  | `false`      | Forced to `true` when `autoplay` is enabled (browser policy).                                          |
+| `loop`                     | `boolean`                                                                  | `false`      | Restart at `0` on `ended`.                                                                             |
+| `playsInline`              | `boolean`                                                                  | `true`       | Required for in-page playback on iOS.                                                                  |
+| `preload`                  | `'none' \| 'metadata' \| 'auto'`                                           | `'metadata'` | Buffering hint passed to the native `preload` attribute.                                               |
+| `crossorigin`              | `'anonymous' \| 'use-credentials'`                                         | —            | Mirrors the native `crossorigin` attribute.                                                            |
+| `playbackRates`            | `ReadonlyArray<number>`                                                    | `[0.25, …, 2]` | Available speeds in the cog menu drill-down.                                                         |
+| `playbackRate`             | `number`                                                                   | `1`          | Initial playback speed; two-way bind via `update:playbackRate`.                                        |
+
+### Layout & chrome
+
 | Prop                       | Type                                          | Default      | Notes                                                                  |
 |----------------------------|-----------------------------------------------|--------------|------------------------------------------------------------------------|
-| `src`                      | `string \| Array<{ src, type? }>`             | —            | Single URL or multi-source list. Required.                             |
-| `poster`                   | `string`                                      | —            | Image rendered before playback starts.                                 |
-| `tracks`                   | `Array<IVideoTrack>`                          | `[]`         | Captions / subtitles / chapter tracks.                                 |
-| `autoplay`                 | `boolean`                                     | `false`      | Suppressed when `prefers-reduced-motion: reduce`.                      |
-| `muted`                    | `boolean`                                     | `false`      | Forced to `true` when `autoplay` is enabled (browser policy).          |
-| `loop`                     | `boolean`                                     | `false`      | Restart at `0` on `ended`.                                             |
-| `controls`                 | `'custom' \| 'native' \| 'none'`              | `'custom'`   | Toolbar rendering strategy.                                            |
-| `playsInline`              | `boolean`                                     | `true`       | Required for in-page playback on iOS.                                  |
-| `preload`                  | `'none' \| 'metadata' \| 'auto'`              | `'metadata'` | Buffering hint passed to the native `preload` attribute.               |
+| `controls`                 | `'custom' \| 'native' \| 'none'`              | `'custom'`   | Toolbar rendering strategy. `custom` = YouTube-style two-row chrome.   |
 | `aspectRatio`              | `string`                                      | `'16/9'`     | CSS `aspect-ratio` value — `'16/9'`, `'4/3'`, raw `'2 / 1'`, …         |
-| `crossorigin`              | `'anonymous' \| 'use-credentials'`            | —            | Mirrors the native `crossorigin` attribute.                            |
-| `disablePictureInPicture`  | `boolean`                                     | `false`      | Disables the PIP button and the matching shortcut.                     |
+| `inset`                    | `boolean`                                     | `true`       | Auto-hide toolbar while playing once the cursor leaves the player.     |
+| `skipSeconds`              | `number`                                      | `30`         | Seconds the double-tap skip jumps; also the value shown in the ripple. |
+
+### Interactions
+
+| Prop                       | Type                                          | Default      | Notes                                                                                                  |
+|----------------------------|-----------------------------------------------|--------------|--------------------------------------------------------------------------------------------------------|
+| `doubleTapToSkip`          | `boolean`                                     | `true`       | Two clicks within 300 ms on the same side trigger a `skipSeconds` jump. When off, every tap is a plain toggle. |
+| `disablePictureInPicture`  | `boolean`                                     | `false`      | Disables the PIP button and the matching shortcut.                                                     |
+| `allowRemotePlayback`      | `boolean`                                     | `true`       | Show the cast / AirPlay button when the browser exposes the Remote Playback API.                       |
+
+### Download
+
+| Prop                       | Type                                          | Default      | Notes                                                                                                  |
+|----------------------------|-----------------------------------------------|--------------|--------------------------------------------------------------------------------------------------------|
+| `downloadable`             | `boolean`                                     | `false`      | Adds a "Download" row to the cog menu; triggers a native browser download via a hidden `<a download>`. |
+| `downloadFilename`         | `string`                                      | —            | Overrides the basename derived from the URL. Useful for signed S3 URLs.                                |
 
 ## Emits
 
-| Event              | Payload                  | Notes                                                |
-|--------------------|--------------------------|------------------------------------------------------|
-| `play`             | —                        | Fired on the native `play` event.                    |
-| `pause`            | —                        | Fired on the native `pause` event.                   |
-| `ended`            | —                        | Fired on the native `ended` event.                   |
-| `timeupdate`       | `currentTime: number`    | Approximately every 250ms during playback.           |
-| `volumechange`     | `volume: number`         | Fires for both volume slides and mute toggles.       |
-| `enterfullscreen`  | —                        | Fired after the wrapper enters fullscreen.           |
-| `exitfullscreen`   | —                        | Fired after the wrapper leaves fullscreen.           |
-| `enterpip`         | —                        | Fired on `enterpictureinpicture`.                    |
-| `exitpip`          | —                        | Fired on `leavepictureinpicture`.                    |
-| `loadedmetadata`   | `{ duration: number }`   | Fired once metadata is ready.                        |
-| `error`            | `MediaError \| Error`    | Surfaces the native `videoEl.error` payload.         |
+| Event                | Payload                  | Notes                                                                                              |
+|----------------------|--------------------------|----------------------------------------------------------------------------------------------------|
+| `play`               | —                        | Fired on the native `play` event.                                                                  |
+| `pause`              | —                        | Fired on the native `pause` event.                                                                 |
+| `ended`              | —                        | Fired on the native `ended` event.                                                                 |
+| `timeupdate`         | `currentTime: number`    | Approximately every 250ms during playback.                                                         |
+| `volumechange`       | `volume: number`         | Fires for both volume slides and mute toggles.                                                     |
+| `enterfullscreen`    | —                        | Fired after the wrapper enters fullscreen.                                                         |
+| `exitfullscreen`     | —                        | Fired after the wrapper leaves fullscreen.                                                         |
+| `enterpip`           | —                        | Fired on `enterpictureinpicture`.                                                                  |
+| `exitpip`            | —                        | Fired on `leavepictureinpicture`.                                                                  |
+| `loadedmetadata`     | `{ duration: number }`   | Fired once metadata is ready.                                                                      |
+| `error`              | `MediaError \| Error`    | Surfaces the native `videoEl.error` payload.                                                       |
+| `skip`               | `seconds: number`        | Positive = forward, negative = backward. Fired by the double-tap gesture.                          |
+| `update:playbackRate`| `rate: number`           | Two-way bind for the playback rate. Only emitted on user-driven changes from the cog menu.         |
+| `quality-change`     | `quality: string`        | Fired when the viewer picks a new quality. Persist in `localStorage` if you want it to stick.      |
+| `download`           | `url: string`            | Fired when the "Download" row is clicked. Payload is the URL of the file being downloaded.         |
+
+## Click & double-click — YouTube parity
+
+- **Single click on the video surface** → toggles play/pause after a 280 ms deferral. The delay lets the second click of a potential double-tap arrive in time to cancel the toggle.
+- **Double click on the SAME side within 300 ms** (when `doubleTapToSkip` is on) → cancels the pending toggle and skips by `skipSeconds`. A YouTube-style half-disk ripple appears on the corresponding side with the chevrons + `{N} seconds` label.
+- **Double click on DIFFERENT sides** → falls through; the first tap's pending toggle eventually fires.
+
+A 600 ms **state pulse** (purely cosmetic, `pointer-events: none`) flashes the play or pause icon at the centre of the video whenever the state toggles, matching YouTube's visual confirmation.
+
+## Quality switcher
+
+```vue
+<origam-video
+    :src="[
+        { src: '/movie-1080.mp4', type: 'video/mp4', quality: '1080p' },
+        { src: '/movie-720.mp4',  type: 'video/mp4', quality: '720p'  },
+        { src: '/movie-480.mp4',  type: 'video/mp4', quality: '480p'  }
+    ]"
+    @quality-change="(q) => localStorage.setItem('preferredQuality', q)"
+/>
+```
+
+When ≥ 2 sources expose distinct `quality` values, the cog menu shows a "Quality" drill-down. Selecting a quality captures the `currentTime` + paused state, swaps `video.src`, then restores playback position once `loadedmetadata` re-fires. Sources without a `quality` field are kept as codec siblings of every quality (useful for `mp4 + webm` pairs under each resolution).
+
+## Download
+
+```vue
+<origam-video :src="videoUrl" :downloadable="true" />
+
+<!-- Custom filename (e.g. signed S3 URL with opaque basename) -->
+<origam-video
+    :src="signedS3Url"
+    :downloadable="true"
+    download-filename="my-presentation-2026.mp4"
+/>
+```
+
+Adds a "Download" row to the cog menu. Clicking it triggers the browser's native download dialog via a hidden `<a download>` element — no XHR, no server call. Emits `@download(url)` so consumers can log analytics.
 
 ## Slots
 
