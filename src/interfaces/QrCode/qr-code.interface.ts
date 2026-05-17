@@ -5,12 +5,14 @@ import type {
     ICommonsComponentProps,
     IMarginProps,
     IPaddingProps,
-    IQrCodeLogo,
     IRoundedProps,
+    ISizeProps,
+    ISrcObject,
     ITagProps
 } from '../../interfaces'
 
 import type {
+    TIcon,
     TQrCodeErrorCorrectionLevel
 } from '../../types'
 
@@ -23,31 +25,36 @@ import type {
  * is touched.
  *
  * DS transverse props:
- * - `color` (from `IColorProps`) — dark module fill; maps to the
+ * - `color` (`IColorProps`) — dark module fill. Maps to the
  *   composable `foreground` channel. Defaults to `'currentColor'`.
- * - `bgColor` (from `IBgColorProps`) — quiet-zone background; maps to
+ * - `bgColor` (`IBgColorProps`) — quiet-zone background. Maps to
  *   the composable `background` channel. Defaults to `'transparent'`.
- * - `rounded` (from `IRoundedProps`) — CSS border-radius on the
- *   component wrapper (distinct from the per-module `cornerRadius`).
- * - `border` / `margin` / `padding` (from `IBorderProps` /
- *   `IMarginProps` / `IPaddingProps`) — standard spacing tokens on
- *   the wrapper element.
+ * - `size` (`ISizeProps`) — wrapper sizing. Accepts the canonical
+ *   `TSize` rungs (`'x-small'` … `'x-large'`) or a raw number /
+ *   pixel value. Drives both the CSS dimensions and the SVG
+ *   `viewBox`-relative scaling.
+ * - `rounded` (`IRoundedProps`) — per-module corner radius. Mapped
+ *   internally to the SVG `rx` / `ry` attributes on each module
+ *   rect. Accepts a named rung (default, small, large, …) or a raw
+ *   number in module units (0 → square, 0.5 → circle).
+ * - `border` / `margin` / `padding` (`IBorderProps` / `IMarginProps`
+ *   / `IPaddingProps`) — standard spacing tokens on the wrapper.
  */
-export interface IQrCodeProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps {
+export interface IQrCodeProps
+    extends ICommonsComponentProps,
+        ITagProps,
+        IColorProps,
+        IBgColorProps,
+        IRoundedProps,
+        ISizeProps,
+        IBorderProps,
+        IMarginProps,
+        IPaddingProps {
     /**
      * Text or URL encoded into the QR matrix. UTF-8 is supported via
      * the underlying `qrcode-generator` Byte mode.
      */
     value: string
-    /**
-     * Rendered size — number (pixels) or any CSS dimension string
-     * (`'240px'`, `'14rem'`, `'min(80vw, 320px)'`, …). The wrapper
-     * applies `width: <size>; height: <size>` so the SVG scales via
-     * `preserveAspectRatio="xMidYMid meet"`.
-     *
-     * @default 240
-     */
-    size?: number | string
     /**
      * Reed-Solomon redundancy level. Higher levels reserve more matrix
      * cells for correction codewords (and therefore tolerate more
@@ -62,33 +69,29 @@ export interface IQrCodeProps extends ICommonsComponentProps, ITagProps, IColorP
      * matrix. The ISO spec mandates ≥4 — anything smaller risks
      * scanner failures, anything larger is purely aesthetic.
      *
-     * Renamed from `margin` (which is now the DS `IMarginProps.margin`
-     * wrapper-spacing prop) to avoid naming collision.
-     *
      * @default 4
      */
     quietZone?: number
     /**
-     * Optional centred logo overlay. The logo paints **on top** of the
-     * matrix, so picking a high error-correction level (`Q` or `H`) is
-     * mandatory if the overlay obscures more than ~10% of the surface.
+     * Optional centred icon overlay — rendered via `<OrigamIcon>` on
+     * top of the matrix. Mutually exclusive with `image`; when both
+     * are set, `image` wins (raster / vector asset is more specific).
      *
-     * When the `#center` slot is provided, `logo` is ignored — the
-     * slot takes precedence.
+     * The overlay paints on top of the QR — pick a high
+     * `errorCorrectionLevel` (`Q` or `H`) when the icon covers more
+     * than ~10 % of the surface.
      */
-    logo?: IQrCodeLogo
+    icon?: TIcon
     /**
-     * Per-module corner radius (in module units — `0` keeps strict
-     * squares, `0.5` paints circles). Useful for soft / branded
-     * variants; some scanners are less tolerant of rounded finder
-     * patterns, so test before shipping.
+     * Optional centred image overlay. Accepts a raw URL (string) or
+     * the standard `ISrcObject` shape (src / srcset / lazySrc /
+     * aspectRatio / alt).
      *
-     * Distinct from the wrapper `rounded` prop (which applies
-     * `border-radius` to the host element via `IRoundedProps`).
-     *
-     * @default 0
+     * Rendered as an inline SVG `<image>` element so the asset stays
+     * vector-friendly and SSR-safe. Same caveat as `icon` — high ECC
+     * recommended when the overlay is large.
      */
-    cornerRadius?: number
+    image?: string | ISrcObject
     /**
      * Accessible label used as `aria-label`. When omitted, the
      * component falls back to `"QR code for {value}"`.
@@ -97,37 +100,49 @@ export interface IQrCodeProps extends ICommonsComponentProps, ITagProps, IColorP
 }
 
 /**
- * Options accepted by `useQrCode`. Mirrors the public props of
- * `<OrigamQrCode>` minus the wiring concerns (`tag`, `class`, `style`,
- * `ariaLabel`) and the DS transverse spacing/color interfaces.
- *
- * The composable still speaks `foreground` / `background` / `margin`
- * internally — `<OrigamQrCode>` is responsible for mapping the public
- * `color` / `bgColor` / `quietZone` props down to these keys.
+ * Options accepted by `useQrCode`. Lower-level than `IQrCodeProps`:
+ * the composable does not speak the canonical DS contracts. It only
+ * owns the raw SVG string — the wrapper component is responsible for
+ * mapping `color` / `bgColor` / `size` / `rounded` down to the
+ * primitive `foreground` / `background` / `cornerRadius` keys here.
  */
 export interface IUseQrCodeOptions {
-    /** Same semantics as the internal SVG foreground fill. */
-    foreground?: string
-    /** Same semantics as the internal SVG background fill. */
-    background?: string
-    /** Same semantics as `IQrCodeProps.quietZone`. */
-    margin?: number
-    /** Same semantics as `IQrCodeProps.errorCorrectionLevel`. */
+    /** Reed-Solomon level — same semantics as `IQrCodeProps`. */
     errorCorrectionLevel?: TQrCodeErrorCorrectionLevel
-    /** Same semantics as `IQrCodeProps.cornerRadius`. */
+    /** Raw CSS colour painted on dark modules. */
+    foreground?: string
+    /** Raw CSS colour painted behind the matrix (quiet zone). */
+    background?: string
+    /** Quiet-zone padding in module units. */
+    margin?: number
+    /**
+     * Per-module corner radius in module units (0 → square,
+     * 0.5 → circle). The component layer derives this from the
+     * public `rounded` prop.
+     */
     cornerRadius?: number
-    /** Same semantics as `IQrCodeProps.logo`. */
-    logo?: IQrCodeLogo
+    /**
+     * Optional logo overlay rendered inside the SVG via `<image>`.
+     * Public consumers should use the `image` prop on
+     * `<OrigamQrCode>`; this lower-level shape stays here for direct
+     * `useQrCode` consumers.
+     */
+    logo?: {
+        src: string
+        size?: number
+        padding?: number
+        background?: string
+    }
 }
 
 /**
  * Slot signatures for `<OrigamQrCode>`.
  *
- * - `center` — replaces the default logo overlay. Receives the
- *   resolved size of the central reserved square (in matrix module
- *   units) so the consumer can paint a custom SVG / icon without
- *   re-deriving the geometry. When this slot is provided the `logo`
- *   prop is ignored.
+ * - `center` — replaces the default `icon` / `image` overlay.
+ *   Receives the resolved size of the central reserved square (in
+ *   matrix module units) so the consumer can paint a custom SVG /
+ *   icon without re-deriving the geometry. When this slot is
+ *   provided, both `icon` and `image` props are ignored.
  */
 export interface IQrCodeSlots {
     center?: (bindings: { size: number }) => any
