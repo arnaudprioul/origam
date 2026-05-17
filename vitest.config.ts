@@ -13,7 +13,12 @@ export default defineConfig({
         // are Playwright suites that import `@playwright/test` — Vitest
         // chokes on `test.describe` from Playwright's runtime. Keep the
         // e2e tree out of the unit-test surface.
-        exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**'],
+        // `.claude/worktrees/**` holds throwaway git worktrees spawned by
+        // parallel Claude agents — Vitest must NOT collect specs there
+        // (each worktree carries its own checked-out copy of the suite,
+        // multiplying the run by N and surfacing unrelated branch
+        // failures as collateral noise).
+        exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**', '.claude/**'],
         globals: true,
         environment: 'jsdom'
     }
