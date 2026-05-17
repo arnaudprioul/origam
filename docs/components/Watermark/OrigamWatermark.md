@@ -62,6 +62,12 @@ DOM.
 | `class`         | `string \| array \| object`   | —                |                                                                                    |
 | `style`         | `string \| array \| object`   | —                |                                                                                    |
 
+## Slots
+
+| Slot      | Notes                                                                          |
+|-----------|--------------------------------------------------------------------------------|
+| `default` | The content to overlay the watermark on top of. The slot renders underneath the diagonal pattern and keeps every interaction reachable thanks to `pointer-events: none` on the overlay layer. |
+
 ## Anti-tamper — what it does, what it does NOT
 
 When `antiTamper` is `true`, the component installs a

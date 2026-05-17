@@ -153,7 +153,15 @@ cal.eventsOnDay(date)            // IEvent[]
 cal.positionEvent(event, dayStart, pxPerMin)  // { top, height }
 ```
 
-## Custom slots
+## Slots
+
+| Slot         | Scoped bindings                                                            | Notes                                                       |
+|--------------|----------------------------------------------------------------------------|-------------------------------------------------------------|
+| `header`     | `{ title, view, currentDate, navigate, setView }`                          | Replace the built-in toolbar (title + nav + view switcher). |
+| `event`      | `{ event, view, isPast, isToday }`                                         | Replace the event card body. Rendered for every visible event in month/week/day/agenda views. |
+| `day`        | `{ date, events, isToday, isPast, isOutside, isWeekend }`                  | Replace a month-view day cell content (the date label + events chips). |
+| `dayHeader`  | `{ date }`                                                                 | Replace a day header (week / day views).                    |
+| `empty`      | `{ view }`                                                                 | Rendered when the agenda view has no events in range.       |
 
 ```vue
 <origam-calendar :events="events">
