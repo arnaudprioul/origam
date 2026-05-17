@@ -176,7 +176,9 @@
 				<p class="hint">
 					Three controls modes: a custom in-house toolbar, the browser's native
 					bar, or no UI at all (consumer drives playback through the `#controls`
-					slot or programmatically).
+					slot or programmatically). Hover the mute icon on the `custom` toolbar
+					to reveal the new vertical `OrigamMediaScrubber` volume slider (drag up
+					to un-mute, down to 0 to mute).
 				</p>
 				<div class="story-grid">
 					<div class="story-col">
