@@ -52,56 +52,21 @@
 			/>
 		</video>
 
-		<div
-				v-if="showCenterOverlay && !showPosterOverlay && controls === 'custom'"
-				class="origam-video__center"
-				:class="{ 'origam-video__center--visible': showCenterOverlay }"
-				data-cy="origam-video-center"
-				@pointerup="onVideoTap"
-		>
-			<slot
-					name="centerControls"
-					v-bind="slotBindings"
+		<transition name="origam-video-state-pulse">
+			<div
+					v-if="statePulse"
+					:key="statePulse.id"
+					class="origam-video__state-pulse"
+					aria-hidden="true"
+					data-cy="origam-video-state-pulse"
 			>
-				<button
-						v-if="skipSeconds > 0"
-						class="origam-video__center-btn origam-video__center-btn--skip-back origam-video__skip-icon"
-						:aria-label="t('origam.video.rewind', skipSeconds)"
-						data-cy="origam-video-skip-back"
-						type="button"
-						@click="onSkipBack"
-				>
-					<origam-icon
-							:icon="ICONS.ROTATE_LEFT"
-							aria-hidden="true"
-					/>
-					<span class="origam-video__skip-seconds" aria-hidden="true">{{ skipSeconds }}</span>
-				</button>
-				<origam-btn
-						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
-						class="origam-video__center-btn origam-video__center-btn--play"
-						:aria-label="t(state.playing.value ? 'origam.video.pause' : 'origam.video.play')"
-						data-cy="origam-video-center-play"
-						size="x-large"
-						variant="elevated"
-						@click="togglePlay"
+				<origam-icon
+						:icon="statePulse.kind === 'play' ? ICONS.PLAY : ICONS.PAUSE"
+						class="origam-video__state-pulse-icon"
+						aria-hidden="true"
 				/>
-				<button
-						v-if="skipSeconds > 0"
-						class="origam-video__center-btn origam-video__center-btn--skip-forward origam-video__skip-icon"
-						:aria-label="t('origam.video.forward', skipSeconds)"
-						data-cy="origam-video-skip-forward"
-						type="button"
-						@click="onSkipForward"
-				>
-					<origam-icon
-							:icon="ICONS.ROTATE_RIGHT"
-							aria-hidden="true"
-					/>
-					<span class="origam-video__skip-seconds" aria-hidden="true">{{ skipSeconds }}</span>
-				</button>
-			</slot>
-		</div>
+			</div>
+		</transition>
 
 		<transition name="origam-video-skip-ripple">
 			<div
@@ -637,12 +602,6 @@
 	const onPlayerMouseEnter = (): void => { hovered.value = true }
 	const onPlayerMouseLeave = (): void => { hovered.value = false }
 
-	const showCenterOverlay = computed<boolean>(() => {
-		if (!props.showCenterControls) return false
-		// Visible on hover OR while paused (matches the YouTube-style UX).
-		return hovered.value || state.paused.value
-	})
-
 	const controlsVisible = computed<boolean>(() => {
 		// In `inset` mode the bottom toolbar auto-hides while the
 		// video plays and the cursor sits outside the player. In the
@@ -683,6 +642,22 @@
 	const skipFeedback = ref<{ side: 'left' | 'right', seconds: number, id: number } | null>(null)
 	let _skipFeedbackTimeout = -1
 
+	/*********************************************************
+	 * Center state pulse — purely cosmetic flash at the centre of the
+	 * video when play/pause toggles (YouTube pattern). pointer-events:
+	 * none, never absorbs clicks. Disappears after 600 ms.
+	 ********************************************************/
+	const statePulse = ref<{ kind: 'play' | 'pause', id: number } | null>(null)
+	let _statePulseTimeout = -1
+	function triggerStatePulse (kind: 'play' | 'pause'): void {
+		statePulse.value = { kind, id: Date.now() }
+		if (_statePulseTimeout !== -1) window.clearTimeout(_statePulseTimeout)
+		_statePulseTimeout = window.setTimeout(() => {
+			statePulse.value = null
+			_statePulseTimeout = -1
+		}, 600)
+	}
+
 	const triggerSkipFeedback = (side: 'left' | 'right'): void => {
 		skipFeedback.value = { side, seconds: props.skipSeconds, id: Date.now() }
 		if (_skipFeedbackTimeout !== -1) window.clearTimeout(_skipFeedbackTimeout)
@@ -694,6 +669,7 @@
 
 	onBeforeUnmount(() => {
 		if (_skipFeedbackTimeout !== -1) window.clearTimeout(_skipFeedbackTimeout)
+		if (_statePulseTimeout !== -1) window.clearTimeout(_statePulseTimeout)
 	})
 
 	const onVideoTap = (event: PointerEvent): void => {
@@ -784,8 +760,13 @@
 	 * who want to log a play/pause click track these directly).
 	 ********************************************************/
 	function togglePlay (): void {
-		if (state.playing.value) methods.pause()
-		else methods.play()
+		if (state.playing.value) {
+			methods.pause()
+			triggerStatePulse('pause')
+		} else {
+			methods.play()
+			triggerStatePulse('play')
+		}
 	}
 
 	async function toggleFullscreenBtn (): Promise<void> {
@@ -1253,81 +1234,59 @@
 		pointer-events: auto;
 	}
 
-	/* Center controls overlay — skip back / play / skip forward.
-	 * Fades in on hover OR when paused. Pointer-events guarded so the
-	 * pointer can still reach the underlying <video> for double-tap. */
-	.origam-video__center {
-		position: absolute;
-		inset: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 48px;
-		z-index: 2;
-		opacity: 0;
-		pointer-events: none;
-		transition: opacity 180ms ease;
-	}
-
-	.origam-video__center--visible {
-		opacity: 1;
-		pointer-events: auto;
-	}
-
-	.origam-video__center-btn {
-		color: #ffffff !important;
-	}
-
-	.origam-video__center-btn--play {
-		background: rgba(0, 0, 0, 0.55) !important;
-		backdrop-filter: blur(4px);
-		border-radius: 50%;
-	}
-
-	.origam-video__skip-icon {
-		position: relative;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 56px;
-		height: 56px;
-		background: rgba(0, 0, 0, 0.55);
-		backdrop-filter: blur(4px);
-		border: none;
-		border-radius: 50%;
-		color: #ffffff;
-		cursor: pointer;
-		transition: background 180ms ease, transform 180ms ease;
-		padding: 0;
-	}
-
-	.origam-video__skip-icon:hover,
-	.origam-video__skip-icon:focus-visible {
-		background: rgba(0, 0, 0, 0.75);
-		transform: scale(1.05);
-	}
-
-	.origam-video__skip-icon:focus-visible {
-		outline: 2px solid #ffffff;
-		outline-offset: 2px;
-	}
-
-	.origam-video__skip-icon .origam-icon {
-		font-size: 36px;
-		line-height: 1;
-	}
-
-	.origam-video__skip-seconds {
+	/* State pulse — YouTube-style brief icon flash at the centre of
+	 * the video when play/pause toggles. PURELY cosmetic, never
+	 * absorbs clicks (pointer-events: none) so the underlying video
+	 * surface stays interactive. Fades in + scales up over ~600 ms
+	 * then disappears. */
+	.origam-video__state-pulse {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		font-size: 11px;
-		font-weight: 700;
-		font-family: var(--origam-font---family, system-ui, sans-serif);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		background: rgba(0, 0, 0, 0.55);
 		color: #ffffff;
 		pointer-events: none;
-		user-select: none;
+		z-index: 2;
+	}
+
+	.origam-video__state-pulse-icon {
+		font-size: 40px;
+		line-height: 1;
+	}
+
+	.origam-video-state-pulse-enter-active {
+		transition: opacity 180ms ease, transform 480ms cubic-bezier(0.2, 0.6, 0.2, 1);
+	}
+	.origam-video-state-pulse-leave-active {
+		transition: opacity 280ms ease, transform 480ms cubic-bezier(0.2, 0.6, 0.2, 1);
+	}
+	.origam-video-state-pulse-enter-from {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0.6);
+	}
+	.origam-video-state-pulse-leave-to {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(1.5);
+	}
+	.origam-video-state-pulse-enter-to,
+	.origam-video-state-pulse-leave-from {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.origam-video-state-pulse-enter-active,
+		.origam-video-state-pulse-leave-active {
+			transition: opacity 100ms ease;
+			transform: translate(-50%, -50%);
+		}
 	}
 
 	.origam-video__skip-ripple {
