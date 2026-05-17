@@ -95,7 +95,7 @@
 								aria-hidden="true"
 						/>
 					</div>
-					<span class="origam-video__skip-ripple-label">{{ t('origam.video.seconds', skipFeedback.seconds) }}</span>
+					<span class="origam-video__skip-ripple-label">{{ t('origam.media.seconds', skipFeedback.seconds) }}</span>
 				</div>
 			</div>
 		</transition>
@@ -116,7 +116,7 @@
 				<origam-btn
 						:icon="ICONS.PLAY"
 						class="origam-video__poster-btn"
-						:aria-label="t('origam.video.play')"
+						:aria-label="t('origam.media.play')"
 						data-cy="origam-video-poster-btn"
 						size="large"
 						variant="elevated"
@@ -276,7 +276,8 @@
 	 ********************************************************/
 	/*********************************************************
 	 * i18n — every user-facing label and aria string passes through
-	 * `t()`. Keys live under `origam.video.*` in locales/{en,fr}.json.
+	 * `t()`. Media-shared keys live under `origam.media.*`, video-only
+	 * ones (fullscreen, pip, captions) under `origam.video.*`.
 	 ********************************************************/
 	const { t } = useLocale()
 

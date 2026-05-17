@@ -1,7 +1,7 @@
 import type {
     ICommonsComponentProps,
-    IVideoPlayerMethods,
-    IVideoPlayerState
+    IMediaPlayerMethods,
+    IMediaPlayerState
 } from '../../interfaces'
 
 import type { TQualityOption } from '../../types'
@@ -24,19 +24,26 @@ import type { TQualityOption } from '../../types'
 export interface IMediaControllerProps extends ICommonsComponentProps {
     /**
      * Reactive media state, exactly as returned by
-     * `useVideoPlayer().state`. The Controller binds the toolbar
-     * to every field via plain `state.X.value` accesses inside the
-     * `<script setup>`. Required.
+     * `useMediaPlayer().state` (or any of its specialisations:
+     * `useVideoPlayer`, `useAudioPlayer`). The Controller binds the
+     * toolbar to every field via plain `state.X.value` accesses
+     * inside the `<script setup>`. Required.
+     *
+     * Typed against the media-agnostic baseline so video and audio
+     * consumers feed the same shell — `IVideoPlayerState` is a
+     * structural superset (`fullscreen`, `pip` are read by the
+     * parent, never by the Controller).
      */
-    state: IVideoPlayerState
+    state: IMediaPlayerState
     /**
      * Imperative methods, exactly as returned by
-     * `useVideoPlayer().methods`. The Controller calls
-     * `methods.toggle*` / `methods.set*` / `methods.seek` directly
-     * from its event handlers — there are no emits for these
-     * (the consumer doesn't need to know about them). Required.
+     * `useMediaPlayer().methods` (or any specialisation). The
+     * Controller calls `methods.toggle*` / `methods.set*` /
+     * `methods.seek` directly from its event handlers — there are
+     * no emits for these (the consumer doesn't need to know about
+     * them). Required.
      */
-    methods: IVideoPlayerMethods
+    methods: IMediaPlayerMethods
     /**
      * YouTube-style overlay mode: when `true`, the shell sits on top
      * of the media surface with a dark gradient and auto-hides when

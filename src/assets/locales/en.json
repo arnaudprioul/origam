@@ -125,7 +125,7 @@
       "must_contains": "This field must contain: {value}",
       "max_size_error": "File \"{0}\" exceeds maximum size of {1}"
     },
-    "video": {
+    "media": {
       "play": "Play",
       "pause": "Pause",
       "mute": "Mute",
@@ -137,18 +137,20 @@
       "seconds": "{0} seconds",
       "quality": "Quality",
       "download": "Download",
-      "enterFullscreen": "Enter fullscreen",
-      "exitFullscreen": "Exit fullscreen",
-      "enterPip": "Enter picture in picture",
-      "exitPip": "Exit picture in picture",
-      "enableCaptions": "Enable captions",
-      "disableCaptions": "Disable captions",
       "castToDevice": "Cast to device",
       "stopCasting": "Stop casting",
       "settings": "Settings",
       "back": "Back",
       "playbackSpeed": "Playback speed",
       "normalSpeed": "Normal"
+    },
+    "video": {
+      "enterFullscreen": "Enter fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "enterPip": "Enter picture in picture",
+      "exitPip": "Exit picture in picture",
+      "enableCaptions": "Enable captions",
+      "disableCaptions": "Disable captions"
     }
   }
 }

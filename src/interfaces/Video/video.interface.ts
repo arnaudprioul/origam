@@ -2,6 +2,10 @@ import type { Ref } from 'vue'
 
 import type {
     ICommonsComponentProps,
+    IMediaPlayerEmits,
+    IMediaPlayerMethods,
+    IMediaPlayerState,
+    IUseMediaPlayerOptions,
     IVideoSource,
     IVideoTrack
 } from '../../interfaces'
@@ -258,25 +262,14 @@ export interface IVideoProps extends ICommonsComponentProps {
  * DOM events one-to-one so consumers can move between the wrapper and
  * a vanilla `<video>` without re-wiring listeners.
  */
-export interface IVideoEmits {
-    (e: 'play'): void
-    (e: 'pause'): void
-    (e: 'ended'): void
-    (e: 'timeupdate', currentTime: number): void
-    (e: 'volumechange', volume: number): void
+export interface IVideoEmits extends IMediaPlayerEmits {
     (e: 'enterfullscreen'): void
     (e: 'exitfullscreen'): void
     (e: 'enterpip'): void
     (e: 'exitpip'): void
-    (e: 'loadedmetadata', payload: { duration: number }): void
-    (e: 'error', err: MediaError | Error): void
     /** Skip event — positive seconds = forward, negative = backward.
      *  Fired by the centered skip buttons and by the double-tap gesture. */
     (e: 'skip', seconds: number): void
-    /** Two-way binding for the playback rate. The component DOES NOT
-     *  set this in response to the consumer's prop changes — only when
-     *  the user picks a rate from the config menu. */
-    (e: 'update:playbackRate', rate: number): void
     /** Fired when the viewer picks a different quality from the
      *  settings menu. Payload is the new `quality` identifier (e.g.
      *  "1080p"). Consumers can persist this in localStorage to remember
@@ -294,16 +287,11 @@ export interface IVideoEmits {
  * (no wrapper concerns like `class`, `aspectRatio`, …) plus a
  * `videoRef` getter so the composable can be wired from outside an
  * `<OrigamVideo>` host.
+ *
+ * Extends the media-agnostic `IUseMediaPlayerOptions` shape — the
+ * video composable composes the media base internally.
  */
-export interface IUseVideoPlayerOptions {
-    /** Same semantics as `IVideoProps.autoplay`. */
-    autoplay?: boolean
-    /** Same semantics as `IVideoProps.muted`. */
-    muted?: boolean
-    /** Same semantics as `IVideoProps.loop`. */
-    loop?: boolean
-    /** Same semantics as `IVideoProps.preload`. */
-    preload?: 'none' | 'metadata' | 'auto'
+export interface IUseVideoPlayerOptions extends Omit<IUseMediaPlayerOptions, 'mediaRef'> {
     /**
      * Resolves to the `HTMLVideoElement` to drive. When omitted, the
      * composable creates an empty ref and expects the consumer to
@@ -313,49 +301,33 @@ export interface IUseVideoPlayerOptions {
 }
 
 /**
- * Reactive state surface returned by `useVideoPlayer`.
+ * Reactive state surface returned by `useVideoPlayer`. Extends the
+ * media-shared baseline with video-specific fields (`fullscreen`,
+ * `pip`).
  */
-export interface IVideoPlayerState {
-    playing: Ref<boolean>
-    paused: Ref<boolean>
-    currentTime: Ref<number>
-    duration: Ref<number>
-    buffered: Ref<number>
-    volume: Ref<number>
-    muted: Ref<boolean>
+export interface IVideoPlayerState extends IMediaPlayerState {
+    /** True when the element (or wrapper) is in fullscreen. */
     fullscreen: Ref<boolean>
+    /** True when the video is in picture-in-picture. */
     pip: Ref<boolean>
-    ready: Ref<boolean>
-    loading: Ref<boolean>
-    error: Ref<MediaError | Error | null>
-    /** Current playback rate. `1` = normal speed. */
-    playbackRate: Ref<number>
-    /** True when at least one Remote Playback device is reachable. */
-    remoteAvailable: Ref<boolean>
-    /** Connection state of the Remote Playback session. */
-    remoteState: Ref<'disconnected' | 'connecting' | 'connected'>
 }
 
 /**
- * Imperative methods returned by `useVideoPlayer`.
+ * Imperative methods returned by `useVideoPlayer`. Extends the
+ * media-shared baseline with video-specific commands
+ * (`toggleFullscreen`, `togglePip`, …).
  */
-export interface IVideoPlayerMethods {
-    play: () => Promise<void>
-    pause: () => void
-    seek: (seconds: number) => void
-    setVolume: (value: number) => void
-    toggleMute: () => void
+export interface IVideoPlayerMethods extends IMediaPlayerMethods {
+    /** Enter fullscreen (or noop if already in). */
+    enterFullscreen: () => Promise<void>
+    /** Exit fullscreen (or noop if not in). */
+    exitFullscreen: () => Promise<void>
+    /** Convenience: enter or exit based on current state. */
     toggleFullscreen: () => Promise<void>
+    /** Enter picture-in-picture (or noop if unsupported). */
+    requestPip: () => Promise<void>
+    /** Exit picture-in-picture (or noop if not in). */
+    exitPip: () => Promise<void>
+    /** Convenience: enter or exit PIP based on current state. */
     togglePip: () => Promise<void>
-    /** Force a reload of the underlying `<video>` element. */
-    load: () => void
-    /** Jump backward by `seconds`, clamped to [0, duration]. */
-    skipBackward: (seconds: number) => void
-    /** Jump forward by `seconds`, clamped to [0, duration]. */
-    skipForward: (seconds: number) => void
-    /** Set the playback rate, clamped to [0.25, 4]. */
-    setPlaybackRate: (rate: number) => void
-    /** Open the native cast / AirPlay device picker. No-op when the
-     *  Remote Playback API is unavailable. */
-    requestRemotePlayback: () => Promise<void>
 }

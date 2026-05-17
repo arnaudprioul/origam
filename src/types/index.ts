@@ -316,6 +316,8 @@ export * from './QrCode/qr-code-error-correction.type'
 export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
 
+export * from './Audio/audio-controls.type'
+
 export * from './Sound/sound-controls.type'
 
 export * from './Calendar/calendar-view.type'

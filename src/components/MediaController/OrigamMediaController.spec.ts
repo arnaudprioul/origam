@@ -23,19 +23,19 @@ import type { IVideoPlayerMethods, IVideoPlayerState } from '../../interfaces'
 // Inline label map keeps the spec hermetic — we don't load the full
 // Origam i18n plugin in the unit-test environment.
 const LABELS: Record<string, string> = {
-    'origam.video.play': 'Play',
-    'origam.video.pause': 'Pause',
-    'origam.video.mute': 'Mute',
-    'origam.video.unmute': 'Unmute',
-    'origam.video.volume': 'Volume',
-    'origam.video.seek': 'Seek',
-    'origam.video.settings': 'Settings',
-    'origam.video.playbackSpeed': 'Playback speed',
-    'origam.video.normalSpeed': 'Normal',
-    'origam.video.quality': 'Quality',
-    'origam.video.download': 'Download',
-    'origam.video.castToDevice': 'Cast to device',
-    'origam.video.stopCasting': 'Stop casting'
+    'origam.media.play': 'Play',
+    'origam.media.pause': 'Pause',
+    'origam.media.mute': 'Mute',
+    'origam.media.unmute': 'Unmute',
+    'origam.media.volume': 'Volume',
+    'origam.media.seek': 'Seek',
+    'origam.media.settings': 'Settings',
+    'origam.media.playbackSpeed': 'Playback speed',
+    'origam.media.normalSpeed': 'Normal',
+    'origam.media.quality': 'Quality',
+    'origam.media.download': 'Download',
+    'origam.media.castToDevice': 'Cast to device',
+    'origam.media.stopCasting': 'Stop casting'
 }
 
 const stubLocale = (): any => ({
