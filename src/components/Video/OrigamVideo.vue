@@ -111,12 +111,25 @@
 					aria-hidden="true"
 					data-cy="origam-video-skip-ripple"
 			>
-				<div class="origam-video__skip-ripple-icon origam-video__skip-icon">
-					<origam-icon
-							:icon="skipFeedback.side === 'left' ? ICONS.ROTATE_LEFT : ICONS.ROTATE_RIGHT"
-							aria-hidden="true"
-					/>
-					<span class="origam-video__skip-seconds" aria-hidden="true">{{ skipFeedback.seconds }}</span>
+				<div class="origam-video__skip-ripple-content">
+					<div class="origam-video__skip-chevrons">
+						<origam-icon
+								:icon="skipFeedback.side === 'left' ? ICONS.CHEVRON_LEFT : ICONS.CHEVRON_RIGHT"
+								class="origam-video__skip-chevron origam-video__skip-chevron--1"
+								aria-hidden="true"
+						/>
+						<origam-icon
+								:icon="skipFeedback.side === 'left' ? ICONS.CHEVRON_LEFT : ICONS.CHEVRON_RIGHT"
+								class="origam-video__skip-chevron origam-video__skip-chevron--2"
+								aria-hidden="true"
+						/>
+						<origam-icon
+								:icon="skipFeedback.side === 'left' ? ICONS.CHEVRON_LEFT : ICONS.CHEVRON_RIGHT"
+								class="origam-video__skip-chevron origam-video__skip-chevron--3"
+								aria-hidden="true"
+						/>
+					</div>
+					<span class="origam-video__skip-ripple-label">{{ t('origam.video.seconds', skipFeedback.seconds) }}</span>
 				</div>
 			</div>
 		</transition>
@@ -491,6 +504,8 @@
 		FAST_FORWARD: MDI_ICONS.FAST_FORWARD,
 		ROTATE_LEFT: MDI_ICONS.ROTATE_LEFT,
 		ROTATE_RIGHT: MDI_ICONS.ROTATE_RIGHT,
+		CHEVRON_LEFT: MDI_ICONS.CHEVRON_LEFT,
+		CHEVRON_RIGHT: MDI_ICONS.CHEVRON_RIGHT,
 		COG: MDI_ICONS.COG,
 		CAST: MDI_ICONS.CAST
 	}
@@ -1125,56 +1140,104 @@
 		position: absolute;
 		top: 0;
 		bottom: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 50%;
+		width: 45%;
 		z-index: 3;
 		pointer-events: none;
-		background: radial-gradient(
-				circle at center,
-				rgba(255, 255, 255, 0.18) 0%,
-				rgba(255, 255, 255, 0) 70%
-		);
+		background: rgba(0, 0, 0, 0.42);
+		display: flex;
+		align-items: center;
 	}
 
 	.origam-video__skip-ripple--left {
 		left: 0;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		justify-content: flex-end;
+		padding-right: 12%;
 	}
 
 	.origam-video__skip-ripple--right {
 		right: 0;
+		border-top-left-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+		justify-content: flex-start;
+		padding-left: 12%;
 	}
 
-	.origam-video__skip-ripple-icon {
-		width: 80px;
-		height: 80px;
-		background: rgba(0, 0, 0, 0.65);
+	.origam-video__skip-ripple-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		color: #ffffff;
 	}
 
-	.origam-video__skip-ripple-icon .origam-icon {
-		font-size: 52px;
+	.origam-video__skip-chevrons {
+		display: inline-flex;
+		align-items: center;
+		gap: 0;
+		font-size: 36px;
+		line-height: 1;
 	}
 
-	.origam-video__skip-ripple-icon .origam-video__skip-seconds {
-		font-size: 14px;
+	.origam-video__skip-chevron {
+		display: inline-block;
+		line-height: 1;
+		opacity: 0.4;
+		margin: 0 -14px;
+		animation: origam-video-chevron-pulse 900ms ease-in-out infinite;
 	}
 
-	.origam-video-skip-ripple-enter-active,
+	.origam-video__skip-chevron .origam-icon {
+		font-size: 36px;
+		line-height: 1;
+	}
+
+	.origam-video__skip-chevron--1 { animation-delay: 0ms; }
+	.origam-video__skip-chevron--2 { animation-delay: 150ms; }
+	.origam-video__skip-chevron--3 { animation-delay: 300ms; }
+
+	@keyframes origam-video-chevron-pulse {
+		0%, 100% { opacity: 0.4; }
+		50%      { opacity: 1; }
+	}
+
+	.origam-video__skip-ripple-label {
+		font-size: 13px;
+		font-weight: 600;
+		font-family: var(--origam-font---family, system-ui, sans-serif);
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		user-select: none;
+	}
+
+	.origam-video-skip-ripple-enter-active {
+		transition: opacity 200ms ease, transform 200ms ease;
+	}
+
 	.origam-video-skip-ripple-leave-active {
-		transition: opacity 220ms ease, transform 220ms ease;
+		transition: opacity 320ms ease, transform 320ms ease;
 	}
 
 	.origam-video-skip-ripple-enter-from,
 	.origam-video-skip-ripple-leave-to {
 		opacity: 0;
-		transform: scale(0.85);
+	}
+
+	.origam-video__skip-ripple--right.origam-video-skip-ripple-enter-from,
+	.origam-video__skip-ripple--right.origam-video-skip-ripple-leave-to {
+		transform: translateX(8%);
+	}
+
+	.origam-video__skip-ripple--left.origam-video-skip-ripple-enter-from,
+	.origam-video__skip-ripple--left.origam-video-skip-ripple-leave-to {
+		transform: translateX(-8%);
 	}
 
 	.origam-video-skip-ripple-enter-to,
 	.origam-video-skip-ripple-leave-from {
 		opacity: 1;
-		transform: scale(1);
+		transform: translateX(0);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -1183,6 +1246,10 @@
 		.origam-video-skip-ripple-enter-active,
 		.origam-video-skip-ripple-leave-active {
 			transition: none;
+		}
+		.origam-video__skip-chevron {
+			animation: none;
+			opacity: 0.85;
 		}
 	}
 

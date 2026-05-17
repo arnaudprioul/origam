@@ -134,6 +134,7 @@
       "seek": "Seek",
       "rewind": "Rewind {0} seconds",
       "forward": "Forward {0} seconds",
+      "seconds": "{0} seconds",
       "enterFullscreen": "Enter fullscreen",
       "exitFullscreen": "Exit fullscreen",
       "enterPip": "Enter picture in picture",
