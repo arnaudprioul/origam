@@ -174,47 +174,22 @@
 					v-bind="slotBindings"
 			>
 				<div class="origam-video__progress-row">
-					<div
-							ref="scrubberRef"
-							class="origam-video__scrubber"
-							:class="{ 'origam-video__scrubber--scrubbing': isScrubbing }"
-							role="slider"
-							tabindex="0"
+					<origam-media-scrubber
+							:model-value="state.currentTime.value"
+							:max="scrubberMax"
+							:step="0.1"
+							:buffered="state.buffered.value"
+							orientation="horizontal"
+							show-thumb-on-hover-only
+							show-hover-tooltip
+							:format-hover-tooltip="formatScrubberTime"
 							:aria-label="t('origam.video.seek')"
-							:aria-valuemin="0"
-							:aria-valuemax="scrubberMax"
-							:aria-valuenow="state.currentTime.value"
-							:aria-valuetext="formattedCurrentTime"
+							:aria-value-text="formattedCurrentTime"
+							class="origam-video__scrubber"
 							data-cy="origam-video-scrubber"
-							@pointerdown="onScrubberPointerDown"
-							@pointermove="onScrubberPointerMove"
-							@pointerleave="onScrubberPointerLeave"
-							@keydown="onScrubberKeyDown"
-					>
-						<div class="origam-video__scrubber-track">
-							<div
-									class="origam-video__scrubber-buffer"
-									:style="{ width: bufferedPct + '%' }"
-									aria-hidden="true"
-							/>
-							<div
-									class="origam-video__scrubber-progress"
-									:style="{ width: progressPct + '%' }"
-									aria-hidden="true"
-							/>
-							<div
-									v-if="hoverPct !== null"
-									class="origam-video__scrubber-hover-time"
-									:style="{ left: hoverPct + '%' }"
-									aria-hidden="true"
-							>{{ hoverTimeFormatted }}</div>
-							<div
-									class="origam-video__scrubber-thumb"
-									:style="{ left: progressPct + '%' }"
-									aria-hidden="true"
-							/>
-						</div>
-					</div>
+							@update:model-value="onScrubberSeek"
+							@change="onScrubberCommit"
+					/>
 				</div>
 
 				<div class="origam-video__buttons-row">
@@ -1073,95 +1048,25 @@
 	})
 
 	/*********************************************************
-	 * Custom YouTube-style scrubber
-	 *
-	 * `<input type="range">` doesn't expose enough customisation
-	 * for the YouTube vocabulary (thin → thick-on-hover track,
-	 * separate buffer indicator showing the downloaded portion,
-	 * hover time tooltip). Custom DOM + pointer-events handlers
-	 * cover all of it without touching accessibility — the root
-	 * keeps `role="slider"` + `aria-value*` attributes.
+	 * currentTime scrubber handlers — delegate drag / keyboard
+	 * pipeline entirely to `<OrigamMediaScrubber>`. The component
+	 * emits `update:modelValue` on every drag frame (live preview)
+	 * and `change` once on pointer-up (commit). We call `seek` on
+	 * both so the video always tracks the thumb position in real
+	 * time — throttling is not needed because `seek` is idempotent
+	 * and the native <video> ignores redundant seeks to the same
+	 * position automatically.
 	 ********************************************************/
-	const scrubberRef = ref<HTMLElement | null>(null)
-	const isScrubbing = ref<boolean>(false)
-	const hoverPct = ref<number | null>(null)
-
-	const progressPct = computed(() => {
-		const max = scrubberMax.value
-		if (max <= 0) return 0
-		return Math.min(100, Math.max(0, (state.currentTime.value / max) * 100))
-	})
-
-	const bufferedPct = computed(() => {
-		const max = scrubberMax.value
-		if (max <= 0) return 0
-		return Math.min(100, Math.max(0, (state.buffered.value / max) * 100))
-	})
-
-	const hoverTimeFormatted = computed(() => {
-		if (hoverPct.value === null) return ''
-		return formatTime((hoverPct.value / 100) * scrubberMax.value)
-	})
-
-	function pctFromPointer (event: PointerEvent): number {
-		const el = scrubberRef.value
-		if (!el) return 0
-		const rect = el.getBoundingClientRect()
-		const x = Math.min(rect.right, Math.max(rect.left, event.clientX))
-		return ((x - rect.left) / rect.width) * 100
+	function onScrubberSeek (value: number): void {
+		methods.seek(value)
 	}
 
-	function onScrubberPointerDown (event: PointerEvent): void {
-		const el = scrubberRef.value
-		if (!el) return
-		isScrubbing.value = true
-		el.setPointerCapture(event.pointerId)
-		const pct = pctFromPointer(event)
-		methods.seek((pct / 100) * scrubberMax.value)
-
-		const onMove = (e: PointerEvent) => {
-			if (!isScrubbing.value) return
-			const next = pctFromPointer(e)
-			hoverPct.value = next
-			methods.seek((next / 100) * scrubberMax.value)
-		}
-		const onUp = () => {
-			isScrubbing.value = false
-			el.removeEventListener('pointermove', onMove)
-			el.removeEventListener('pointerup', onUp)
-			el.removeEventListener('pointercancel', onUp)
-		}
-		el.addEventListener('pointermove', onMove)
-		el.addEventListener('pointerup', onUp)
-		el.addEventListener('pointercancel', onUp)
+	function onScrubberCommit (value: number): void {
+		methods.seek(value)
 	}
 
-	function onScrubberPointerMove (event: PointerEvent): void {
-		hoverPct.value = pctFromPointer(event)
-	}
-
-	function onScrubberPointerLeave (): void {
-		if (isScrubbing.value) return
-		hoverPct.value = null
-	}
-
-	function onScrubberKeyDown (event: KeyboardEvent): void {
-		const max = scrubberMax.value
-		if (max <= 0) return
-		const step = event.shiftKey ? 10 : 5
-		if (event.key === 'ArrowLeft') {
-			methods.seek(Math.max(0, state.currentTime.value - step))
-			event.preventDefault()
-		} else if (event.key === 'ArrowRight') {
-			methods.seek(Math.min(max, state.currentTime.value + step))
-			event.preventDefault()
-		} else if (event.key === 'Home') {
-			methods.seek(0)
-			event.preventDefault()
-		} else if (event.key === 'End') {
-			methods.seek(max)
-			event.preventDefault()
-		}
+	function formatScrubberTime (seconds: number): string {
+		return formatTime(seconds)
 	}
 
 	const volumeIcon = computed(() => {
@@ -1655,102 +1560,19 @@
 		color: var(--origam-color__action--primary---bg, #60a5fa);
 	}
 
-	/* Scrubber — YouTube-style custom DOM. Thin (3px) track at rest
-	 * that grows to 5px on hover. Three stacked layers (buffer +
-	 * played + thumb) anchored on a single track row. Hover tooltip
-	 * shows the timestamp at the cursor position. */
+	/* The `.origam-video__scrubber` class is kept as a layout hook
+	 * (width + block context) — the visual rendering is now owned
+	 * by <OrigamMediaScrubber>. Use :deep() below only when a
+	 * height or colour override that the scrubber's own tokens
+	 * cannot address is truly needed. */
 	.origam-video__scrubber {
-		width: 100%;
-		min-width: 0;
-		position: relative;
-		height: 14px;
-		display: flex;
-		align-items: center;
-		cursor: pointer;
-		touch-action: none;
-		outline: none;
-		--origam-video__scrubber---primary: var(
+		--origam-media-scrubber---color: var(
 			--origam-video__scrubber---color,
 			var(--origam-color__action--primary---bg, #ef4444)
 		);
-	}
-
-	.origam-video__scrubber-track {
-		position: relative;
+		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.3);
+		--origam-media-scrubber---buffer-background-color: rgba(255, 255, 255, 0.4);
 		width: 100%;
-		height: 3px;
-		background: rgba(255, 255, 255, 0.3);
-		border-radius: 2px;
-		transition: height 140ms ease;
-	}
-
-	.origam-video__scrubber:hover .origam-video__scrubber-track,
-	.origam-video__scrubber:focus-visible .origam-video__scrubber-track,
-	.origam-video__scrubber--scrubbing .origam-video__scrubber-track {
-		height: 5px;
-	}
-
-	.origam-video__scrubber-buffer,
-	.origam-video__scrubber-progress {
-		position: absolute;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		border-radius: 2px;
-		pointer-events: none;
-	}
-
-	.origam-video__scrubber-buffer {
-		background: rgba(255, 255, 255, 0.4);
-		z-index: 1;
-	}
-
-	.origam-video__scrubber-progress {
-		background: var(--origam-video__scrubber---primary);
-		z-index: 2;
-	}
-
-	.origam-video__scrubber-thumb {
-		position: absolute;
-		top: 50%;
-		width: 13px;
-		height: 13px;
-		border-radius: 50%;
-		background: var(--origam-video__scrubber---primary);
-		transform: translate(-50%, -50%) scale(0);
-		transition: transform 140ms ease;
-		pointer-events: none;
-		z-index: 3;
-		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
-	}
-
-	.origam-video__scrubber:hover .origam-video__scrubber-thumb,
-	.origam-video__scrubber:focus-visible .origam-video__scrubber-thumb,
-	.origam-video__scrubber--scrubbing .origam-video__scrubber-thumb {
-		transform: translate(-50%, -50%) scale(1);
-	}
-
-	.origam-video__scrubber-hover-time {
-		position: absolute;
-		bottom: calc(100% + 8px);
-		transform: translateX(-50%);
-		padding: 3px 6px;
-		background: rgba(0, 0, 0, 0.85);
-		color: #ffffff;
-		font-size: 11px;
-		font-weight: 600;
-		font-family: var(--origam-font---family, system-ui, sans-serif);
-		border-radius: 3px;
-		white-space: nowrap;
-		pointer-events: none;
-		z-index: 4;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.origam-video__scrubber-track,
-		.origam-video__scrubber-thumb {
-			transition: none;
-		}
 	}
 
 	:deep(.origam-video__volume-tooltip) {
