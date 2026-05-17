@@ -229,33 +229,42 @@
 							<origam-icon :icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY" aria-hidden="true" />
 						</button>
 
-						<div
-								class="origam-video__volume-cluster"
-								:class="{ 'origam-video__volume-cluster--hover': volumeClusterHover }"
-								@mouseenter="volumeClusterHover = true"
-								@mouseleave="volumeClusterHover = false"
+						<origam-tooltip
+								:open-delay="80"
+								:close-delay="300"
+								location="top"
+								content-class="origam-video__volume-tooltip"
 						>
-							<button
-									type="button"
-									class="origam-video__btn"
-									:aria-label="t(state.muted.value ? 'origam.video.unmute' : 'origam.video.mute')"
-									data-cy="origam-video-mute"
-									@click="methods.toggleMute()"
+							<template #activator="{ props: activatorProps }">
+								<button
+										v-bind="activatorProps"
+										type="button"
+										class="origam-video__btn"
+										:aria-label="t(state.muted.value ? 'origam.video.unmute' : 'origam.video.mute')"
+										data-cy="origam-video-mute"
+										@click="methods.toggleMute()"
+								>
+									<origam-icon :icon="volumeIcon" aria-hidden="true" />
+								</button>
+							</template>
+							<div
+									class="origam-video__volume-wrapper"
+									data-cy="origam-video-volume-wrapper"
 							>
-								<origam-icon :icon="volumeIcon" aria-hidden="true" />
-							</button>
-							<input
-									class="origam-video__volume-slider"
-									type="range"
-									min="0"
-									max="1"
-									step="0.05"
-									:value="state.muted.value ? 0 : state.volume.value"
-									:aria-label="t('origam.video.volume')"
-									data-cy="origam-video-volume"
-									@input="onVolumeInput($event)"
-							/>
-						</div>
+								<origam-media-scrubber
+										class="origam-video__volume-scrubber"
+										orientation="vertical"
+										:model-value="resolvedVolume"
+										:max="1"
+										:step="0.05"
+										:aria-label="t('origam.video.volume')"
+										:aria-value-text="formattedVolume"
+										:format-hover-tooltip="formatVolumeTooltip"
+										data-cy="origam-video-volume"
+										@update:model-value="onVolumeChangeFromScrubber"
+								/>
+							</div>
+						</origam-tooltip>
 
 						<span class="origam-video__time" data-cy="origam-video-time">
 							<span class="origam-video__time-current">{{ formattedCurrentTime }}</span>
@@ -451,6 +460,7 @@
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamIcon } from '../Icon'
+	import { OrigamMediaScrubber } from '../MediaScrubber'
 	import { OrigamResponsive } from '../Responsive'
 	import { OrigamTooltip } from '../Tooltip'
 
@@ -968,6 +978,35 @@
 	}
 
 	/*********************************************************
+	 * Volume — exposed via a vertical `<OrigamMediaScrubber>` housed in
+	 * a hover tooltip on top of the mute button. `resolvedVolume`
+	 * collapses the "muted" axis: when muted=true the slider sits at
+	 * the bottom (0) and the user can drag up to un-mute in a single
+	 * gesture (matches YouTube). `onVolumeChangeFromScrubber` un-mutes
+	 * on any positive value AND mutes on a precise 0.
+	 ********************************************************/
+	const resolvedVolume = computed(() => state.muted.value ? 0 : state.volume.value)
+
+	const formattedVolume = computed(() => {
+		const pct = Math.round(resolvedVolume.value * 100)
+		return `${pct} %`
+	})
+
+	function formatVolumeTooltip (value: number): string {
+		return `${Math.round(value * 100)} %`
+	}
+
+	function onVolumeChangeFromScrubber (value: number): void {
+		// Dragging the slider to a positive value implicitly un-mutes;
+		// dragging to exactly 0 mutes. Mirrors the YouTube UX and avoids
+		// requiring a second click on the mute button after the user has
+		// already silenced the player from the scrubber.
+		if (value > 0 && state.muted.value) methods.toggleMute()
+		else if (value === 0 && !state.muted.value) methods.toggleMute()
+		methods.setVolume(value)
+	}
+
+	/*********************************************************
 	 * Captions — track the active text track index and allow toggling
 	 * the whole subtitle UI off. We treat any non-disabled track as
 	 * "captions on"; toggling off sets every track to `disabled`.
@@ -1046,7 +1085,6 @@
 	const scrubberRef = ref<HTMLElement | null>(null)
 	const isScrubbing = ref<boolean>(false)
 	const hoverPct = ref<number | null>(null)
-	const volumeClusterHover = ref<boolean>(false)
 
 	const progressPct = computed(() => {
 		const max = scrubberMax.value
@@ -1352,54 +1390,6 @@
 		gap: 2px;
 	}
 
-	.origam-video__volume-cluster {
-		display: flex;
-		align-items: center;
-		overflow: hidden;
-	}
-
-	.origam-video__volume-slider {
-		appearance: none;
-		-webkit-appearance: none;
-		width: 0;
-		height: 3px;
-		margin: 0 0 0 0;
-		padding: 0;
-		background: rgba(255, 255, 255, 0.3);
-		border-radius: 2px;
-		cursor: pointer;
-		outline: none;
-		opacity: 0;
-		transition: width 180ms ease, opacity 180ms ease, margin 180ms ease;
-		accent-color: #ffffff;
-	}
-
-	.origam-video__volume-cluster--hover .origam-video__volume-slider,
-	.origam-video__volume-cluster:focus-within .origam-video__volume-slider {
-		width: 72px;
-		opacity: 1;
-		margin: 0 8px 0 0;
-	}
-
-	.origam-video__volume-slider::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 12px;
-		height: 12px;
-		border: none;
-		border-radius: 50%;
-		background: #ffffff;
-		cursor: pointer;
-	}
-
-	.origam-video__volume-slider::-moz-range-thumb {
-		width: 12px;
-		height: 12px;
-		border: none;
-		border-radius: 50%;
-		background: #ffffff;
-		cursor: pointer;
-	}
 
 	/* In inset mode, controls auto-fade unless `--visible` is added (on
 	 * hover or while paused). The non-inset mode skips the fade.       */
@@ -1763,66 +1753,24 @@
 		}
 	}
 
-	/* Volume slider — native <input type="range"> rendered horizontally
-	 * but visually rotated 90° anticlockwise via `transform: rotate`.
-	 * `transform` only affects PAINT, not layout, so we need a wrapper
-	 * div with the final vertical dimensions to constrain the tooltip's
-	 * bounding box. The slider sits inside, absolutely centered, with
-	 * its un-rotated 100×4 dims that the rotation spins into 4×100 vis.
-	 *
-	 * (writing-mode: vertical-lr was the alternative but had unreliable
-	 *  thumb/track rendering across engines — transform is the dependable
-	 *  pattern used by HTML5 video players in the wild.) */
 	:deep(.origam-video__volume-tooltip) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0;
+		padding: 8px 6px;
 	}
 
 	.origam-video__volume-wrapper {
-		width: 28px;
-		height: 110px;
+		width: 32px;
+		height: 120px;
 		display: flex;
-		align-items: center;
+		align-items: stretch;
 		justify-content: center;
-		overflow: hidden;
 	}
 
-	.origam-video__volume {
-		appearance: none;
-		-webkit-appearance: none;
-		width: 100px;
-		height: 4px;
-		margin: 0;
-		padding: 0;
-		background: rgba(255, 255, 255, 0.3);
-		border-radius: 2px;
-		cursor: pointer;
-		outline: none;
-		transform: rotate(-90deg);
-		transform-origin: center;
-		flex: 0 0 auto;
-	}
-
-	.origam-video__volume::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 12px;
-		height: 12px;
-		border: none;
-		border-radius: 50%;
-		background: #ffffff;
-		cursor: pointer;
-	}
-
-	.origam-video__volume::-moz-range-thumb {
-		width: 12px;
-		height: 12px;
-		border: none;
-		border-radius: 50%;
-		background: #ffffff;
-		cursor: pointer;
+	.origam-video__volume-scrubber {
+		--origam-media-scrubber---color: #ffffff;
+		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.3);
 	}
 
 	.origam-video__btn {
