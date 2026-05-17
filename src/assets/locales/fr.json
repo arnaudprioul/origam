@@ -122,6 +122,28 @@
       "max_length": "Maximum {0} caractères",
       "must_contains": "Ce champ doit contenir : {value}",
       "max_size_error": "Le fichier \"{0}\" dépasse la taille maximum de {1}"
+    },
+    "video": {
+      "play": "Lecture",
+      "pause": "Pause",
+      "mute": "Couper le son",
+      "unmute": "Activer le son",
+      "volume": "Volume",
+      "seek": "Recherche",
+      "rewind": "Reculer de {0} secondes",
+      "forward": "Avancer de {0} secondes",
+      "enterFullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran",
+      "enterPip": "Activer image dans l'image",
+      "exitPip": "Désactiver image dans l'image",
+      "enableCaptions": "Activer les sous-titres",
+      "disableCaptions": "Désactiver les sous-titres",
+      "castToDevice": "Diffuser sur un appareil",
+      "stopCasting": "Arrêter la diffusion",
+      "settings": "Paramètres",
+      "back": "Retour",
+      "playbackSpeed": "Vitesse de lecture",
+      "normalSpeed": "Normale"
     }
   }
 }

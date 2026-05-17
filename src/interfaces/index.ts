@@ -284,6 +284,8 @@ export * from './Textarea/textarea-toolbar.interface'
 
 export * from './TextField/text-field.interface'
 
+export * from './TextMask/text-mask.interface'
+
 export * from './Title/title.interface'
 
 export * from './Toolbar/toolbar.interface'
