@@ -8,7 +8,6 @@
 			data-cy="origam-video"
 			@mouseenter="onPlayerMouseEnter"
 			@mouseleave="onPlayerMouseLeave"
-			@pointerup="onVideoTap"
 	>
 		<template #additional>
 		<video
@@ -34,6 +33,7 @@
 				@error="onErrorEvent"
 				@enterpictureinpicture="emit('enterpip')"
 				@leavepictureinpicture="emit('exitpip')"
+				@pointerup="onVideoTap"
 		>
 			<source
 					v-for="source in resolvedSources"
@@ -57,6 +57,7 @@
 				class="origam-video__center"
 				:class="{ 'origam-video__center--visible': showCenterOverlay }"
 				data-cy="origam-video-center"
+				@pointerup="onVideoTap"
 		>
 			<slot
 					name="centerControls"
@@ -699,25 +700,17 @@
 		// Skip keyboard / synthetic events without coordinates.
 		if (event.clientX == null) return
 
-		// Ignore taps that originate from interactive controls (buttons,
-		// scrubber, menu cog, volume slider, etc.). Only the bare video
-		// surface should trigger the double-tap skip — otherwise the
-		// wrapper handler shadows every click on the controls bar.
+		// Ignore taps on the inline center skip buttons — they have
+		// their own @click handlers and should not also count as a
+		// surface tap.
 		const eventTarget = event.target as HTMLElement | null
-		if (eventTarget && (
-			eventTarget.closest('.origam-video__controls') ||
-			eventTarget.closest('.origam-video__center-btn') ||
-			eventTarget.closest('button') ||
-			eventTarget.closest('input') ||
-			eventTarget.closest('[role="slider"]') ||
-			eventTarget.closest('[role="menu"]') ||
-			eventTarget.closest('[role="menuitem"]')
-		)) {
-			return
-		}
+		if (eventTarget?.closest('.origam-video__center-btn')) return
 
-		const target = event.currentTarget as HTMLElement
-		const rect = target.getBoundingClientRect()
+		// Compute the side based on the VIDEO element bounding box,
+		// not the current target (which may be the center overlay).
+		const videoEl = videoRef.value
+		if (!videoEl) return
+		const rect = videoEl.getBoundingClientRect()
 		const side: 'left' | 'right' = event.clientX - rect.left < rect.width / 2 ? 'left' : 'right'
 		const now = Date.now()
 		const last = _lastTap.value
