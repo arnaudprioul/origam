@@ -148,6 +148,8 @@ export * from './Grid/grid-align.type'
 
 export * from './Masonry/masonry-align.type'
 
+export * from './MediaScrubber/media-scrubber-orientation.type'
+
 export * from './Icon/class-icon.type'
 export * from './Icon/component-icon.type'
 export * from './Icon/icon.type'
