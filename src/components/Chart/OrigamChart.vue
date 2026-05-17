@@ -461,8 +461,8 @@
 	})
 
 	const bodyClasses = computed(() => ({
-		'origam-chart__body--has-legend-right': props.showLegend && props.legendPosition === 'right',
-		'origam-chart__body--has-legend-left': props.showLegend && props.legendPosition === 'left'
+		'origam-chart__body--with-side-legend': props.showLegend
+			&& (props.legendPosition === 'left' || props.legendPosition === 'right')
 	}))
 
 	const legendClasses = computed(() => ({
@@ -669,22 +669,55 @@
 
 <style scoped>
 	.origam-chart {
-		display: flex;
-		flex-direction: column;
+		display: grid;
 		gap: var(--origam-chart---gap, 12px);
 		padding: var(--origam-chart---padding, 12px);
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
 		box-sizing: border-box;
+		grid-template-rows: auto 1fr auto;
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			"header"
+			"body"
+			"legend";
 	}
 
-	.origam-chart--legend-right,
+	.origam-chart--legend-top {
+		grid-template-areas:
+			"header"
+			"legend"
+			"body";
+		grid-template-rows: auto auto 1fr;
+	}
+
+	.origam-chart--legend-bottom {
+		grid-template-areas:
+			"header"
+			"body"
+			"legend";
+		grid-template-rows: auto 1fr auto;
+	}
+
 	.origam-chart--legend-left {
-		flex-direction: column;
+		grid-template-columns: auto minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+		grid-template-areas:
+			"header header"
+			"legend body";
+	}
+
+	.origam-chart--legend-right {
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-rows: auto minmax(0, 1fr);
+		grid-template-areas:
+			"header header"
+			"body legend";
 	}
 
 	.origam-chart__header {
+		grid-area: header;
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
@@ -702,19 +735,15 @@
 	}
 
 	.origam-chart__body {
+		grid-area: body;
 		position: relative;
-		flex: 1 1 auto;
 		display: flex;
 		min-height: 0;
 		min-width: 0;
 	}
 
-	.origam-chart__body--has-legend-right {
-		flex-direction: row;
-	}
-
-	.origam-chart__body--has-legend-left {
-		flex-direction: row-reverse;
+	.origam-chart__body--with-side-legend {
+		min-width: var(--origam-chart__body---min-width, 200px);
 	}
 
 	.origam-chart__svg {
@@ -863,12 +892,14 @@
 	}
 
 	.origam-chart__legend {
+		grid-area: legend;
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--origam-chart__legend---gap, 12px);
+		align-content: center;
 	}
 
 	.origam-chart__legend--top,
@@ -880,6 +911,17 @@
 	.origam-chart__legend--left,
 	.origam-chart__legend--right {
 		flex-direction: column;
+		justify-content: center;
+		flex-wrap: nowrap;
+		align-self: stretch;
+	}
+
+	.origam-chart__legend--left {
+		padding-right: var(--origam-chart__legend---side-gap, 8px);
+	}
+
+	.origam-chart__legend--right {
+		padding-left: var(--origam-chart__legend---side-gap, 8px);
 	}
 
 	.origam-chart__legend-item {
