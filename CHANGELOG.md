@@ -15,6 +15,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
+- `OrigamTextMask` — text reveals an animated background via
+  `background-clip: text`. Accepts gradient (raw / `IGradient` /
+  preset name) or image / video URL as `background`. 4 animation
+  types (`pan` / `rotate` / `pulse` / `zoom`) with respect to
+  `prefers-reduced-motion`. Default slot supports rich markup
+  (multi-line headlines, nested elements). Zero JS animation
+  (pure CSS keyframes). SSR-safe. Baseline 2024 browser support
+  documented.
 - Gradient support for `color` / `bgColor` / `textColor` props across
   the DS. Three input formats: raw CSS gradient string
   (`color="linear-gradient(...)"`), structured `IGradient` object

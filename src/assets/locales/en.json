@@ -124,6 +124,28 @@
       "max_length": "Maximum {0} characters",
       "must_contains": "This field must contain: {value}",
       "max_size_error": "File \"{0}\" exceeds maximum size of {1}"
+    },
+    "video": {
+      "play": "Play",
+      "pause": "Pause",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "volume": "Volume",
+      "seek": "Seek",
+      "rewind": "Rewind {0} seconds",
+      "forward": "Forward {0} seconds",
+      "enterFullscreen": "Enter fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "enterPip": "Enter picture in picture",
+      "exitPip": "Exit picture in picture",
+      "enableCaptions": "Enable captions",
+      "disableCaptions": "Disable captions",
+      "castToDevice": "Cast to device",
+      "stopCasting": "Stop casting",
+      "settings": "Settings",
+      "back": "Back",
+      "playbackSpeed": "Playback speed",
+      "normalSpeed": "Normal"
     }
   }
 }

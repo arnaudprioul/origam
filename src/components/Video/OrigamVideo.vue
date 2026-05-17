@@ -66,7 +66,7 @@
 						v-if="skipSeconds > 0"
 						:icon="ICONS.REWIND"
 						class="origam-video__center-btn origam-video__center-btn--skip-back"
-						:aria-label="`Rewind ${skipSeconds} seconds`"
+						:aria-label="t('$origam.video.rewind', skipSeconds)"
 						data-cy="origam-video-skip-back"
 						size="large"
 						variant="text"
@@ -75,7 +75,7 @@
 				<origam-btn
 						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
 						class="origam-video__center-btn origam-video__center-btn--play"
-						:aria-label="state.playing.value ? 'Pause' : 'Play'"
+						:aria-label="t(state.playing.value ? '$origam.video.pause' : '$origam.video.play')"
 						data-cy="origam-video-center-play"
 						size="x-large"
 						variant="elevated"
@@ -85,7 +85,7 @@
 						v-if="skipSeconds > 0"
 						:icon="ICONS.FAST_FORWARD"
 						class="origam-video__center-btn origam-video__center-btn--skip-forward"
-						:aria-label="`Forward ${skipSeconds} seconds`"
+						:aria-label="t('$origam.video.forward', skipSeconds)"
 						data-cy="origam-video-skip-forward"
 						size="large"
 						variant="text"
@@ -110,7 +110,7 @@
 				<origam-btn
 						:icon="ICONS.PLAY"
 						class="origam-video__poster-btn"
-						aria-label="Play"
+						:aria-label="t('$origam.video.play')"
 						data-cy="origam-video-poster-btn"
 						size="large"
 						variant="elevated"
@@ -123,7 +123,7 @@
 				v-if="state.loading.value && !state.error.value"
 				class="origam-video__loading"
 				role="status"
-				aria-label="Loading"
+				:aria-label="t('$origam.loading')"
 				data-cy="origam-video-loading"
 		>
 			<slot name="loading">
@@ -170,7 +170,7 @@
 				<origam-btn
 						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
 						class="origam-video__btn"
-						:aria-label="state.playing.value ? 'Pause' : 'Play'"
+						:aria-label="t(state.playing.value ? '$origam.video.pause' : '$origam.video.play')"
 						data-cy="origam-video-play"
 						size="small"
 						variant="text"
@@ -189,7 +189,7 @@
 						:max="scrubberMax"
 						:step="0.1"
 						:value="state.currentTime.value"
-						aria-label="Seek"
+						:aria-label="t('$origam.video.seek')"
 						:aria-valuemin="0"
 						:aria-valuemax="scrubberMax"
 						:aria-valuenow="state.currentTime.value"
@@ -211,7 +211,7 @@
 								v-bind="activatorProps"
 								:icon="volumeIcon"
 								class="origam-video__btn"
-								:aria-label="state.muted.value ? 'Unmute' : 'Mute'"
+								:aria-label="t(state.muted.value ? '$origam.video.unmute' : '$origam.video.mute')"
 								data-cy="origam-video-mute"
 								size="small"
 								variant="text"
@@ -226,7 +226,7 @@
 								max="1"
 								step="0.05"
 								:value="state.muted.value ? 0 : state.volume.value"
-								aria-label="Volume"
+								:aria-label="t('$origam.video.volume')"
 								data-cy="origam-video-volume"
 								@input="onVolumeInput($event)"
 						/>
@@ -238,7 +238,7 @@
 						:icon="ICONS.CAPTIONS"
 						class="origam-video__btn"
 						:class="{ 'origam-video__btn--active': captionsEnabled }"
-						:aria-label="captionsEnabled ? 'Disable captions' : 'Enable captions'"
+						:aria-label="t(captionsEnabled ? '$origam.video.disableCaptions' : '$origam.video.enableCaptions')"
 						data-cy="origam-video-captions"
 						size="small"
 						variant="text"
@@ -250,7 +250,7 @@
 						v-if="pipSupported"
 						:icon="ICONS.PIP"
 						class="origam-video__btn"
-						:aria-label="state.pip.value ? 'Exit picture in picture' : 'Enter picture in picture'"
+						:aria-label="t(state.pip.value ? '$origam.video.exitPip' : '$origam.video.enterPip')"
 						data-cy="origam-video-pip"
 						size="small"
 						variant="text"
@@ -261,7 +261,7 @@
 						v-if="allowRemotePlayback && state.remoteAvailable.value"
 						:icon="ICONS.CAST"
 						class="origam-video__btn"
-						:aria-label="state.remoteState.value === 'connected' ? 'Stop casting' : 'Cast to device'"
+						:aria-label="t(state.remoteState.value === 'connected' ? '$origam.video.stopCasting' : '$origam.video.castToDevice')"
 						data-cy="origam-video-cast"
 						size="small"
 						variant="text"
@@ -284,7 +284,7 @@
 								:icon="ICONS.COG"
 								class="origam-video__btn"
 								:class="{ 'origam-video__btn--active': configMenuOpen }"
-								aria-label="Settings"
+								:aria-label="t('$origam.video.settings')"
 								data-cy="origam-video-config"
 								size="small"
 								variant="text"
@@ -299,8 +299,32 @@
 									closeMenu: () => { configMenuOpen = false }
 								}"
 						>
-							<div class="origam-video__config-section">
-								<div class="origam-video__config-section-title">Playback speed</div>
+							<!-- Main level — rows that drill into a submenu. -->
+							<template v-if="configSection === 'main'">
+								<button
+										v-if="(playbackRates?.length ?? 0) > 1"
+										type="button"
+										class="origam-video__config-row"
+										data-cy="origam-video-config-open-speed"
+										@click="configSection = 'speed'"
+								>
+									<span class="origam-video__config-row-label">{{ t('$origam.video.playbackSpeed') }}</span>
+									<span class="origam-video__config-row-value">{{ formattedPlaybackRate }}</span>
+									<span class="origam-video__config-row-arrow" aria-hidden="true">›</span>
+								</button>
+							</template>
+
+							<!-- Playback speed submenu. -->
+							<template v-else-if="configSection === 'speed'">
+								<button
+										type="button"
+										class="origam-video__config-row origam-video__config-row--back"
+										data-cy="origam-video-config-back"
+										@click="configSection = 'main'"
+								>
+									<span class="origam-video__config-row-arrow origam-video__config-row-arrow--back" aria-hidden="true">‹</span>
+									<span class="origam-video__config-row-label">{{ t('$origam.video.playbackSpeed') }}</span>
+								</button>
 								<button
 										v-for="rate in playbackRates"
 										:key="rate"
@@ -310,9 +334,9 @@
 										:data-cy="`origam-video-config-rate-${rate}`"
 										@click="onPlaybackRateClick(rate)"
 								>
-									{{ rate === 1 ? 'Normal' : `${rate}×` }}
+									{{ rate === 1 ? t('$origam.video.normalSpeed') : `${rate}×` }}
 								</button>
-							</div>
+							</template>
 						</slot>
 					</div>
 				</origam-tooltip>
@@ -320,7 +344,7 @@
 				<origam-btn
 						:icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN"
 						class="origam-video__btn"
-						:aria-label="state.fullscreen.value ? 'Exit fullscreen' : 'Enter fullscreen'"
+						:aria-label="t(state.fullscreen.value ? '$origam.video.exitFullscreen' : '$origam.video.enterFullscreen')"
 						data-cy="origam-video-fullscreen"
 						size="small"
 						variant="text"
@@ -349,7 +373,7 @@
 	import { OrigamResponsive } from '../Responsive'
 	import { OrigamTooltip } from '../Tooltip'
 
-	import { shouldSuppressAutoplay, useVideoPlayer } from '../../composables'
+	import { shouldSuppressAutoplay, useLocale, useVideoPlayer } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -379,6 +403,12 @@
 	 * const) because the Vue SFC compiler analyses `withDefaults`
 	 * statically and only resolves literals — cf. CLAUDE.md rule.
 	 ********************************************************/
+	/*********************************************************
+	 * i18n — every user-facing label and aria string passes through
+	 * `t()`. Keys live under `$origam.video.*` in locales/{en,fr}.json.
+	 ********************************************************/
+	const { t } = useLocale()
+
 	const props = withDefaults(defineProps<IVideoProps & {
 		// Belt-and-braces inline re-declaration (cf. ISliderField inset
 		// note): forces the Vue SFC compiler to resolve these in the
@@ -596,10 +626,23 @@
 	 * cog shows up by default).
 	 ********************************************************/
 	const configMenuOpen = ref<boolean>(false)
+	const configSection = ref<'main' | 'speed'>('main')
 	const slots = useSlots()
 	const hasConfigContent = computed<boolean>(() => {
 		// Built-in: playback rates list. Externally: a custom slot.
 		return Boolean(slots.config) || (props.playbackRates?.length ?? 0) > 1
+	})
+
+	// Always reset the drill-down to `main` when the menu closes — the
+	// user expects to land on the top level on next open (YouTube UX).
+	watch(configMenuOpen, (open) => {
+		if (!open) configSection.value = 'main'
+	})
+
+	const formattedPlaybackRate = computed<string>(() => {
+		const r = state.playbackRate.value
+		if (Math.abs(r - 1) < 0.01) return t('$origam.video.normalSpeed')
+		return `${r}×`
 	})
 
 	const onPlaybackRateClick = (rate: number): void => {

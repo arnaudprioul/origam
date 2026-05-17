@@ -255,6 +255,9 @@ export * from './Textarea/textarea-toolbar-position.type'
 
 export * from './TextField/text-field.type'
 
+export * from './TextMask/text-mask.type'
+export * from './TextMask/text-mask-animation.type'
+
 export * from './Title/title.type'
 
 export * from './Toolbar/toolbar.type'

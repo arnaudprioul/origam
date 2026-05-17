@@ -154,6 +154,8 @@ export * from './TextareaField'
 
 export * from './TextField'
 
+export * from './TextMask'
+
 export * from './ThemeProvider'
 
 export * from './Title'
