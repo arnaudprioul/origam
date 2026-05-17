@@ -4,7 +4,7 @@
 			title="Calendar/OrigamCalendar"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<Record<string, unknown>>({
 					view: 'month',
 					firstDayOfWeek: 1,
@@ -306,6 +306,30 @@
 					</div>
 				</dl>
 			</div>
+		</Variant>
+
+		<Variant
+				title="Emit — navigate / view-change / update:*"
+				:init-state="() => useStoryInitState({ view: 'month', currentDate: new Date().toISOString(), navCount: 0, viewChangeCount: 0 })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="cal-emit-navigation">
+					<origam-calendar
+							v-model:view="state.view"
+							v-model:current-date="state.currentDate"
+							:events="[]"
+							@navigate="state.navCount++"
+							@view-change="state.viewChangeCount++"
+							data-cy="cal-emit-navigation-player"
+					/>
+					<dl class="story-counters">
+						<div><dt>view (v-model)</dt><dd data-cy="cal-emit-view">{{ state.view }}</dd></div>
+						<div><dt>currentDate (v-model)</dt><dd data-cy="cal-emit-current-date">{{ new Date(state.currentDate).toISOString().slice(0, 10) }}</dd></div>
+						<div><dt>@navigate fires</dt><dd data-cy="cal-emit-nav-count">{{ state.navCount }}</dd></div>
+						<div><dt>@view-change fires</dt><dd data-cy="cal-emit-view-change-count">{{ state.viewChangeCount }}</dd></div>
+					</dl>
+				</div>
+			</template>
 		</Variant>
 	</Story>
 </template>

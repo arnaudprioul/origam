@@ -4,7 +4,7 @@
 			title="Sound/OrigamSound"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISoundProps>({
 					src: SAMPLE_MP3,
 					cover: SAMPLE_COVER,
@@ -305,6 +305,56 @@
 					</div>
 				</dl>
 			</div>
+		</Variant>
+
+		<Variant
+				title="Emit — play / pause / ended (counters)"
+				:init-state="() => useStoryInitState({ plays: 0, pauses: 0, ends: 0 })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="sound-emit-lifecycle">
+					<origam-sound
+							:src="SAMPLE_MP3"
+							:cover="SAMPLE_COVER"
+							:metadata="DEFAULT_METADATA"
+							class="story-sound"
+							data-cy="sound-emit-lifecycle-player"
+							@play="state.plays++"
+							@pause="state.pauses++"
+							@ended="state.ends++"
+					/>
+					<dl class="story-counters" data-cy="sound-emit-lifecycle-log">
+						<div><dt>@play</dt><dd data-cy="sound-emit-plays">{{ state.plays }}</dd></div>
+						<div><dt>@pause</dt><dd data-cy="sound-emit-pauses">{{ state.pauses }}</dd></div>
+						<div><dt>@ended</dt><dd data-cy="sound-emit-ends">{{ state.ends }}</dd></div>
+					</dl>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Emit — timeupdate / volumechange / loadedmetadata"
+				:init-state="() => useStoryInitState({ t: 0, v: 0, d: 0 })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell" data-cy="sound-emit-progress">
+					<origam-sound
+							:src="SAMPLE_MP3"
+							:cover="SAMPLE_COVER"
+							:metadata="DEFAULT_METADATA"
+							class="story-sound"
+							data-cy="sound-emit-progress-player"
+							@timeupdate="(ct) => state.t = Math.round(ct * 10) / 10"
+							@volumechange="(vol) => state.v = Math.round(vol * 100) / 100"
+							@loadedmetadata="({ duration }) => state.d = Math.round(duration * 10) / 10"
+					/>
+					<dl class="story-counters" data-cy="sound-emit-progress-log">
+						<div><dt>currentTime (s)</dt><dd data-cy="sound-emit-time">{{ state.t }}</dd></div>
+						<div><dt>volume</dt><dd data-cy="sound-emit-volume">{{ state.v }}</dd></div>
+						<div><dt>duration (s)</dt><dd data-cy="sound-emit-duration">{{ state.d }}</dd></div>
+					</dl>
+				</div>
+			</template>
 		</Variant>
 	</Story>
 </template>

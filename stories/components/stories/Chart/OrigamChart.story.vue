@@ -4,7 +4,7 @@
 			title="Chart/OrigamChart"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<Record<string, unknown>>({
 					type: 'line',
 					height: 360,
@@ -391,7 +391,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click + legend-click">
+		<Variant title="Emit — point-click / legend-click / series-toggle">
 			<div
 					class="story-shell"
 					data-cy="chart-emits"
