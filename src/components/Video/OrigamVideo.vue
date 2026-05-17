@@ -160,262 +160,69 @@
 			</slot>
 		</div>
 
-		<div
+		<slot
 				v-if="controls === 'custom'"
-				class="origam-video__controls"
-				:class="{
-					'origam-video__controls--inset': inset,
-					'origam-video__controls--visible': controlsVisible
-				}"
-				data-cy="origam-video-controls"
+				name="controls"
+				v-bind="slotBindings"
 		>
-			<slot
-					name="controls"
-					v-bind="slotBindings"
+			<origam-media-controller
+					:state="state"
+					:methods="methods"
+					:inset="inset"
+					:visible="controlsVisible"
+					:playback-rates="playbackRates"
+					:allow-remote-playback="allowRemotePlayback"
+					:downloadable="downloadable"
+					:download-url="downloadUrl"
+					:quality-options="qualityOptions"
+					:current-quality="currentQuality"
+					data-cy="origam-video-controls"
+					@quality-change="onQualityClick"
+					@download="onDownloadClick"
 			>
-				<div class="origam-video__progress-row">
-					<origam-media-scrubber
-							:model-value="state.currentTime.value"
-							:max="scrubberMax"
-							:step="0.1"
-							:buffered="state.buffered.value"
-							orientation="horizontal"
-							show-thumb-on-hover-only
-							show-hover-tooltip
-							:format-hover-tooltip="formatScrubberTime"
-							:aria-label="t('origam.video.seek')"
-							:aria-value-text="formattedCurrentTime"
-							class="origam-video__scrubber"
-							data-cy="origam-video-scrubber"
-							@update:model-value="onScrubberSeek"
-							@change="onScrubberCommit"
-					/>
-				</div>
-
-				<div class="origam-video__buttons-row">
-					<div class="origam-video__buttons-left">
-						<button
-								type="button"
-								class="origam-video__btn"
-								:aria-label="t(state.playing.value ? 'origam.video.pause' : 'origam.video.play')"
-								data-cy="origam-video-play"
-								@click="togglePlay"
-						>
-							<origam-icon :icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY" aria-hidden="true" />
-						</button>
-
-						<origam-tooltip
-								:open-delay="80"
-								:close-delay="300"
-								location="top"
-								content-class="origam-video__volume-tooltip"
-						>
-							<template #activator="{ props: activatorProps }">
-								<button
-										v-bind="activatorProps"
-										type="button"
-										class="origam-video__btn"
-										:aria-label="t(state.muted.value ? 'origam.video.unmute' : 'origam.video.mute')"
-										data-cy="origam-video-mute"
-										@click="methods.toggleMute()"
-								>
-									<origam-icon :icon="volumeIcon" aria-hidden="true" />
-								</button>
-							</template>
-							<div
-									class="origam-video__volume-wrapper"
-									data-cy="origam-video-volume-wrapper"
-							>
-								<origam-media-scrubber
-										class="origam-video__volume-scrubber"
-										orientation="vertical"
-										:model-value="resolvedVolume"
-										:max="1"
-										:step="0.05"
-										:aria-label="t('origam.video.volume')"
-										:aria-value-text="formattedVolume"
-										:format-hover-tooltip="formatVolumeTooltip"
-										data-cy="origam-video-volume"
-										@update:model-value="onVolumeChangeFromScrubber"
-								/>
-							</div>
-						</origam-tooltip>
-
-						<span class="origam-video__time" data-cy="origam-video-time">
-							<span class="origam-video__time-current">{{ formattedCurrentTime }}</span>
-							<span class="origam-video__time-sep">/</span>
-							<span class="origam-video__time-total">{{ formattedDuration }}</span>
-						</span>
-					</div>
-
-					<div class="origam-video__buttons-right">
-						<button
-								v-if="hasCaptions"
-								type="button"
-								class="origam-video__btn"
-								:class="{ 'origam-video__btn--active': captionsEnabled }"
-								:aria-label="t(captionsEnabled ? 'origam.video.disableCaptions' : 'origam.video.enableCaptions')"
-								data-cy="origam-video-captions"
-								@click="toggleCaptions"
-						>
-							<origam-icon :icon="ICONS.CAPTIONS" aria-hidden="true" />
-						</button>
-
-						<button
-								v-if="allowRemotePlayback && state.remoteAvailable.value"
-								type="button"
-								class="origam-video__btn"
-								:class="{ 'origam-video__btn--active': state.remoteState.value === 'connected' }"
-								:aria-label="t(state.remoteState.value === 'connected' ? 'origam.video.stopCasting' : 'origam.video.castToDevice')"
-								data-cy="origam-video-cast"
-								@click="onCastClick"
-						>
-							<origam-icon :icon="ICONS.CAST" aria-hidden="true" />
-						</button>
-
-						<origam-tooltip
-								v-if="hasConfigContent"
-								v-model="configMenuOpen"
-								:open-on-hover="false"
-								:open-on-click="true"
-								:close-on-content-click="false"
-								location="top"
-								content-class="origam-video__config-menu"
-						>
-							<template #activator="{ props: activatorProps }">
-								<button
-										v-bind="activatorProps"
-										type="button"
-										class="origam-video__btn"
-										:class="{ 'origam-video__btn--active': configMenuOpen }"
-										:aria-label="t('origam.video.settings')"
-										data-cy="origam-video-config"
-								>
-									<origam-icon :icon="ICONS.COG" aria-hidden="true" />
-								</button>
-							</template>
-					<div class="origam-video__config" data-cy="origam-video-config-menu">
-						<slot
-								name="config"
-								v-bind="{
-									...slotBindings,
-									setPlaybackRate: onPlaybackRateClick,
-									closeMenu: () => { configMenuOpen = false }
-								}"
-						>
-							<!-- Main level — rows that drill into a submenu. -->
-							<template v-if="configSection === 'main'">
-								<button
-										v-if="hasQualityOptions"
-										type="button"
-										class="origam-video__config-row"
-										data-cy="origam-video-config-open-quality"
-										@click="configSection = 'quality'"
-								>
-									<span class="origam-video__config-row-label">{{ t('origam.video.quality') }}</span>
-									<span class="origam-video__config-row-value">{{ formattedQuality }}</span>
-									<span class="origam-video__config-row-arrow" aria-hidden="true">›</span>
-								</button>
-								<button
-										v-if="(playbackRates?.length ?? 0) > 1"
-										type="button"
-										class="origam-video__config-row"
-										data-cy="origam-video-config-open-speed"
-										@click="configSection = 'speed'"
-								>
-									<span class="origam-video__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
-									<span class="origam-video__config-row-value">{{ formattedPlaybackRate }}</span>
-									<span class="origam-video__config-row-arrow" aria-hidden="true">›</span>
-								</button>
-								<button
-										v-if="downloadable && downloadUrl"
-										type="button"
-										class="origam-video__config-row origam-video__config-row--action"
-										data-cy="origam-video-config-download"
-										@click="onDownloadClick"
-								>
-									<span class="origam-video__config-row-icon" aria-hidden="true">
-										<origam-icon :icon="ICONS.DOWNLOAD" />
-									</span>
-									<span class="origam-video__config-row-label">{{ t('origam.video.download') }}</span>
-								</button>
-							</template>
-
-							<!-- Playback speed submenu. -->
-							<template v-else-if="configSection === 'speed'">
-								<button
-										type="button"
-										class="origam-video__config-row origam-video__config-row--back"
-										data-cy="origam-video-config-back"
-										@click="configSection = 'main'"
-								>
-									<span class="origam-video__config-row-arrow origam-video__config-row-arrow--back" aria-hidden="true">‹</span>
-									<span class="origam-video__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
-								</button>
-								<button
-										v-for="rate in playbackRates"
-										:key="rate"
-										type="button"
-										class="origam-video__config-item"
-										:class="{ 'origam-video__config-item--active': Math.abs(state.playbackRate.value - rate) < 0.01 }"
-										:data-cy="`origam-video-config-rate-${rate}`"
-										@click="onPlaybackRateClick(rate)"
-								>
-									{{ rate === 1 ? t('origam.video.normalSpeed') : `${rate}×` }}
-								</button>
-							</template>
-
-							<!-- Quality submenu. -->
-							<template v-else-if="configSection === 'quality'">
-								<button
-										type="button"
-										class="origam-video__config-row origam-video__config-row--back"
-										data-cy="origam-video-config-back"
-										@click="configSection = 'main'"
-								>
-									<span class="origam-video__config-row-arrow origam-video__config-row-arrow--back" aria-hidden="true">‹</span>
-									<span class="origam-video__config-row-label">{{ t('origam.video.quality') }}</span>
-								</button>
-								<button
-										v-for="q in qualityOptions"
-										:key="q.quality"
-										type="button"
-										class="origam-video__config-item"
-										:class="{ 'origam-video__config-item--active': currentQuality === q.quality }"
-										:data-cy="`origam-video-config-quality-${q.quality}`"
-										@click="onQualityClick(q.quality)"
-								>
-									{{ q.label }}
-								</button>
-							</template>
-						</slot>
-					</div>
-					</origam-tooltip>
-
+				<template #extraControlsRight>
+					<button
+							v-if="hasCaptions"
+							type="button"
+							class="origam-video__btn"
+							:class="{ 'origam-video__btn--active': captionsEnabled }"
+							:aria-label="t(captionsLabelKey)"
+							data-cy="origam-video-captions"
+							@click="toggleCaptions"
+					>
+						<origam-icon
+								:icon="ICONS.CAPTIONS"
+								aria-hidden="true"
+						/>
+					</button>
 					<button
 							v-if="pipSupported"
 							type="button"
 							class="origam-video__btn"
-							:aria-label="t(state.pip.value ? 'origam.video.exitPip' : 'origam.video.enterPip')"
+							:aria-label="t(pipLabelKey)"
 							data-cy="origam-video-pip"
 							@click="togglePipBtn"
 					>
-						<origam-icon :icon="ICONS.PIP" aria-hidden="true" />
+						<origam-icon
+								:icon="ICONS.PIP"
+								aria-hidden="true"
+						/>
 					</button>
-
 					<button
 							type="button"
 							class="origam-video__btn"
-							:aria-label="t(state.fullscreen.value ? 'origam.video.exitFullscreen' : 'origam.video.enterFullscreen')"
+							:aria-label="t(fullscreenLabelKey)"
 							data-cy="origam-video-fullscreen"
 							@click="toggleFullscreenBtn"
 					>
-						<origam-icon :icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN" aria-hidden="true" />
+						<origam-icon
+								:icon="fullscreenIcon"
+								aria-hidden="true"
+						/>
 					</button>
-					</div>
-				</div>
-			</slot>
-		</div>
+				</template>
+			</origam-media-controller>
+		</slot>
 		</template>
 	</origam-responsive>
 </template>
@@ -429,15 +236,13 @@
 		onBeforeUnmount,
 		ref,
 		type StyleValue,
-		useSlots,
 		watch
 	} from 'vue'
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamIcon } from '../Icon'
-	import { OrigamMediaScrubber } from '../MediaScrubber'
+	import { OrigamMediaController } from '../MediaController'
 	import { OrigamResponsive } from '../Responsive'
-	import { OrigamTooltip } from '../Tooltip'
 
 	import { shouldSuppressAutoplay, useLocale, useVideoPlayer } from '../../composables'
 
@@ -523,19 +328,8 @@
 		PIP: MDI_ICONS.PICTURE_IN_PICTURE_BOTTOM_RIGHT,
 		FULLSCREEN: MDI_ICONS.FULLSCREEN,
 		FULLSCREEN_EXIT: MDI_ICONS.FULLSCREEN_EXIT,
-		VOLUME_HIGH: MDI_ICONS.VOLUME_HIGH,
-		VOLUME_MEDIUM: MDI_ICONS.VOLUME_MEDIUM,
-		VOLUME_LOW: MDI_ICONS.VOLUME_LOW,
-		VOLUME_OFF: MDI_ICONS.VOLUME_OFF,
-		REWIND: MDI_ICONS.REWIND,
-		FAST_FORWARD: MDI_ICONS.FAST_FORWARD,
-		ROTATE_LEFT: MDI_ICONS.ROTATE_LEFT,
-		ROTATE_RIGHT: MDI_ICONS.ROTATE_RIGHT,
 		CHEVRON_LEFT: MDI_ICONS.CHEVRON_LEFT,
-		CHEVRON_RIGHT: MDI_ICONS.CHEVRON_RIGHT,
-		DOWNLOAD: MDI_ICONS.DOWNLOAD,
-		COG: MDI_ICONS.COG,
-		CAST: MDI_ICONS.CAST
+		CHEVRON_RIGHT: MDI_ICONS.CHEVRON_RIGHT
 	}
 
 	/*********************************************************
@@ -781,20 +575,14 @@
 	}
 
 	/*********************************************************
-	 * Config menu — only renders the cog button when the user passed
-	 * either a `#config` slot or a non-empty `configItems` array (the
-	 * built-in playback-rate menu always counts as content, so the
-	 * cog shows up by default).
-	 ********************************************************/
-	const configMenuOpen = ref<boolean>(false)
-	const configSection = ref<'main' | 'speed' | 'quality'>('main')
-	const slots = useSlots()
-
-	/*********************************************************
 	 * Quality switcher — derived from the unique `quality` values
 	 * exposed by the source array. Only renders when ≥ 2 distinct
 	 * qualities exist. The component otherwise plays whatever the
 	 * browser picked first (typical mp4 + webm dual-source case).
+	 *
+	 * The Controller shell handles the menu UI; OrigamVideo keeps the
+	 * derivation + the `<source>` swap because both depend on the
+	 * `props.src` shape which is video-specific.
 	 ********************************************************/
 	const qualityOptions = computed<Array<{ quality: string, label: string, src: string, type?: string }>>(() => {
 		const sources = Array.isArray(props.src) ? props.src : []
@@ -838,7 +626,6 @@
 		video.addEventListener('loadedmetadata', onReady)
 		video.src = target.src
 		video.load()
-		configMenuOpen.value = false
 	}
 
 	function onDownloadClick (): void {
@@ -851,7 +638,6 @@
 		a.click()
 		document.body.removeChild(a)
 		emit('download', url)
-		configMenuOpen.value = false
 	}
 
 	const downloadUrl = computed<string | null>(() => {
@@ -866,48 +652,6 @@
 		return sources[0]?.src ?? null
 	})
 
-	const hasConfigContent = computed<boolean>(() => {
-		// Built-in: playback rates + quality + download. Externally: custom slot.
-		return Boolean(slots.config)
-			|| (props.playbackRates?.length ?? 0) > 1
-			|| hasQualityOptions.value
-			|| props.downloadable
-	})
-
-	// Always reset the drill-down to `main` when the menu closes — the
-	// user expects to land on the top level on next open (YouTube UX).
-	watch(configMenuOpen, (open) => {
-		if (!open) configSection.value = 'main'
-	})
-
-	const formattedPlaybackRate = computed<string>(() => {
-		const r = state.playbackRate.value
-		if (Math.abs(r - 1) < 0.01) return t('origam.video.normalSpeed')
-		return `${r}×`
-	})
-
-	const formattedQuality = computed<string>(() => {
-		if (!currentQuality.value) return ''
-		const match = qualityOptions.value.find((q) => q.quality === currentQuality.value)
-		return match?.label ?? currentQuality.value
-	})
-
-	const onPlaybackRateClick = (rate: number): void => {
-		methods.setPlaybackRate(rate)
-		emit('update:playbackRate', rate)
-		configMenuOpen.value = false
-	}
-
-	/*********************************************************
-	 * Cast / Remote Playback handler — opens the native device picker
-	 * via the Remote Playback API. The button only renders when
-	 * `allowRemotePlayback` is true AND at least one device is
-	 * available (see `state.remoteAvailable`).
-	 ********************************************************/
-	async function onCastClick (): Promise<void> {
-		await methods.requestRemotePlayback()
-	}
-
 	/*********************************************************
 	 * Apply initial playback rate (prop) once metadata is ready.
 	 * Subsequent prop changes are honoured via the watcher below.
@@ -917,6 +661,15 @@
 			methods.setPlaybackRate(rate)
 		}
 	}, { immediate: true })
+
+	/*********************************************************
+	 * Forward playback-rate changes initiated by the Controller's
+	 * config menu via the public `update:playbackRate` emit so the
+	 * v-model contract on the wrapper stays intact.
+	 ********************************************************/
+	watch(() => state.playbackRate.value, (rate) => {
+		emit('update:playbackRate', rate)
+	})
 
 	/*********************************************************
 	 * Toolbar handlers — wrap the composable methods so we can also
@@ -945,40 +698,6 @@
 
 	async function togglePipBtn (): Promise<void> {
 		await methods.togglePip()
-	}
-
-	function onVolumeInput (event: Event): void {
-		const input = event.target as HTMLInputElement
-		methods.setVolume(Number(input.value))
-	}
-
-	/*********************************************************
-	 * Volume — exposed via a vertical `<OrigamMediaScrubber>` housed in
-	 * a hover tooltip on top of the mute button. `resolvedVolume`
-	 * collapses the "muted" axis: when muted=true the slider sits at
-	 * the bottom (0) and the user can drag up to un-mute in a single
-	 * gesture (matches YouTube). `onVolumeChangeFromScrubber` un-mutes
-	 * on any positive value AND mutes on a precise 0.
-	 ********************************************************/
-	const resolvedVolume = computed(() => state.muted.value ? 0 : state.volume.value)
-
-	const formattedVolume = computed(() => {
-		const pct = Math.round(resolvedVolume.value * 100)
-		return `${pct} %`
-	})
-
-	function formatVolumeTooltip (value: number): string {
-		return `${Math.round(value * 100)} %`
-	}
-
-	function onVolumeChangeFromScrubber (value: number): void {
-		// Dragging the slider to a positive value implicitly un-mutes;
-		// dragging to exactly 0 mutes. Mirrors the YouTube UX and avoids
-		// requiring a second click on the mute button after the user has
-		// already silenced the player from the scrubber.
-		if (value > 0 && state.muted.value) methods.toggleMute()
-		else if (value === 0 && !state.muted.value) methods.toggleMute()
-		methods.setVolume(value)
 	}
 
 	/*********************************************************
@@ -1036,46 +755,10 @@
 	})
 
 	/*********************************************************
-	 * Derived display values — formatted time, volume icon, scrubber
-	 * max. Kept as computeds so the template stays free of inline
-	 * logic (cf. CLAUDE.md "no logic in templates" rule).
+	 * Poster + error overlay visibility. The Controller owns time /
+	 * volume / scrubber formatting; OrigamVideo only computes what
+	 * the overlays need.
 	 ********************************************************/
-	const formattedCurrentTime = computed(() => formatTime(state.currentTime.value))
-	const formattedDuration = computed(() => formatTime(state.duration.value))
-
-	const scrubberMax = computed(() => {
-		return Number.isFinite(state.duration.value) ? state.duration.value : 0
-	})
-
-	/*********************************************************
-	 * currentTime scrubber handlers — delegate drag / keyboard
-	 * pipeline entirely to `<OrigamMediaScrubber>`. The component
-	 * emits `update:modelValue` on every drag frame (live preview)
-	 * and `change` once on pointer-up (commit). We call `seek` on
-	 * both so the video always tracks the thumb position in real
-	 * time — throttling is not needed because `seek` is idempotent
-	 * and the native <video> ignores redundant seeks to the same
-	 * position automatically.
-	 ********************************************************/
-	function onScrubberSeek (value: number): void {
-		methods.seek(value)
-	}
-
-	function onScrubberCommit (value: number): void {
-		methods.seek(value)
-	}
-
-	function formatScrubberTime (seconds: number): string {
-		return formatTime(seconds)
-	}
-
-	const volumeIcon = computed(() => {
-		if (state.muted.value || state.volume.value === 0) return ICONS.VOLUME_OFF
-		if (state.volume.value < 0.34) return ICONS.VOLUME_LOW
-		if (state.volume.value < 0.67) return ICONS.VOLUME_MEDIUM
-		return ICONS.VOLUME_HIGH
-	})
-
 	const showPosterOverlay = computed(() => {
 		return Boolean(props.poster) &&
 			state.paused.value &&
@@ -1091,20 +774,26 @@
 	})
 
 	/*********************************************************
-	 * Format helper — mm:ss for short videos, hh:mm:ss for long ones.
-	 * Returns an em dash placeholder while metadata is still loading
-	 * (duration is NaN) so the toolbar doesn't flash "NaN:NaN".
+	 * Aria-label keys for the buttons injected into the
+	 * `#extraControlsRight` slot of the Controller. Computed so the
+	 * template stays free of inline ternaries (cf. CLAUDE.md "no
+	 * logic in templates").
 	 ********************************************************/
-	function formatTime (seconds: number): string {
-		if (!Number.isFinite(seconds) || seconds < 0) return '--:--'
-		const total = Math.floor(seconds)
-		const h = Math.floor(total / 3600)
-		const m = Math.floor((total % 3600) / 60)
-		const s = total % 60
-		const pad = (value: number) => value.toString().padStart(2, '0')
-		if (h > 0) return `${h}:${pad(m)}:${pad(s)}`
-		return `${pad(m)}:${pad(s)}`
-	}
+	const captionsLabelKey = computed<string>(() => {
+		return captionsEnabled.value ? 'origam.video.disableCaptions' : 'origam.video.enableCaptions'
+	})
+
+	const pipLabelKey = computed<string>(() => {
+		return state.pip.value ? 'origam.video.exitPip' : 'origam.video.enterPip'
+	})
+
+	const fullscreenLabelKey = computed<string>(() => {
+		return state.fullscreen.value ? 'origam.video.exitFullscreen' : 'origam.video.enterFullscreen'
+	})
+
+	const fullscreenIcon = computed<string>(() => {
+		return state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN
+	})
 
 	/*********************************************************
 	 * Slot bindings — single source of truth for the `#controls` slot.
@@ -1260,52 +949,6 @@
 
 	.origam-video__error-icon {
 		font-size: var(--origam-video--error---icon-font-size, 32px);
-	}
-
-	.origam-video__controls {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-		padding: 0 0 6px;
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
-		color: #ffffff;
-		transition: opacity 180ms ease, transform 220ms ease;
-	}
-
-	.origam-video__progress-row {
-		padding: 0 12px;
-	}
-
-	.origam-video__buttons-row {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0 8px;
-		min-height: 36px;
-	}
-
-	.origam-video__buttons-left,
-	.origam-video__buttons-right {
-		display: flex;
-		align-items: center;
-		gap: 2px;
-	}
-
-
-	/* In inset mode, controls auto-fade unless `--visible` is added (on
-	 * hover or while paused). The non-inset mode skips the fade.       */
-	.origam-video__controls--inset {
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	.origam-video__controls--inset.origam-video__controls--visible {
-		opacity: 1;
-		pointer-events: auto;
 	}
 
 	/* State pulse — YouTube-style brief icon flash at the centre of
@@ -1478,123 +1121,6 @@
 		}
 	}
 
-	/* Config menu (cog) — compact YouTube-style drill-down :
-	 * Level 1 lists category rows ("Playback speed → 1×"). Tapping a
-	 * row swaps the body for the matching submenu (with a back row at
-	 * the top). Width stays tight so the menu never dwarfs the player. */
-	:deep(.origam-video__config-menu) {
-		padding: 4px 0;
-		min-width: 168px;
-		max-width: 220px;
-	}
-
-	.origam-video__config {
-		display: flex;
-		flex-direction: column;
-		font-size: 0.75rem;
-		line-height: 1.2;
-	}
-
-	/* Drill-down row used on the main level + the back row of a
-	 * submenu. Compact height, label + value/arrow ends. */
-	.origam-video__config-row {
-		all: unset;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		padding: 6px 10px;
-		color: #ffffff;
-		cursor: pointer;
-		transition: background-color 120ms ease;
-	}
-
-	.origam-video__config-row:hover,
-	.origam-video__config-row:focus-visible {
-		background-color: rgba(255, 255, 255, 0.12);
-	}
-
-	.origam-video__config-row-label {
-		flex: 1 1 auto;
-		min-width: 0;
-	}
-
-	.origam-video__config-row-value {
-		color: rgba(255, 255, 255, 0.7);
-	}
-
-	.origam-video__config-row-arrow {
-		color: rgba(255, 255, 255, 0.55);
-		font-size: 1rem;
-		line-height: 1;
-	}
-
-	.origam-video__config-row--back {
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-		margin-bottom: 2px;
-		color: rgba(255, 255, 255, 0.85);
-	}
-
-	.origam-video__config-row-arrow--back {
-		font-size: 1.1rem;
-	}
-
-	/* Leaf option (e.g. one playback rate). Same compact size as the
-	 * rows, with an active state for the currently-selected value. */
-	.origam-video__config-item {
-		all: unset;
-		display: flex;
-		align-items: center;
-		padding: 5px 12px;
-		color: #ffffff;
-		cursor: pointer;
-		transition: background-color 120ms ease;
-	}
-
-	.origam-video__config-item:hover,
-	.origam-video__config-item:focus-visible {
-		background-color: rgba(255, 255, 255, 0.12);
-	}
-
-	.origam-video__config-item--active {
-		font-weight: 600;
-		color: var(--origam-color__action--primary---bg, #60a5fa);
-	}
-
-	/* The `.origam-video__scrubber` class is kept as a layout hook
-	 * (width + block context) — the visual rendering is now owned
-	 * by <OrigamMediaScrubber>. Use :deep() below only when a
-	 * height or colour override that the scrubber's own tokens
-	 * cannot address is truly needed. */
-	.origam-video__scrubber {
-		--origam-media-scrubber---color: var(
-			--origam-video__scrubber---color,
-			var(--origam-color__action--primary---bg, #ef4444)
-		);
-		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.3);
-		--origam-media-scrubber---buffer-background-color: rgba(255, 255, 255, 0.4);
-		width: 100%;
-	}
-
-	:deep(.origam-video__volume-tooltip) {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 8px 6px;
-	}
-
-	.origam-video__volume-wrapper {
-		width: 32px;
-		height: 120px;
-		display: flex;
-		align-items: stretch;
-		justify-content: center;
-	}
-
-	.origam-video__volume-scrubber {
-		--origam-media-scrubber---color: #ffffff;
-		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.3);
-	}
-
 	.origam-video__btn {
 		all: unset;
 		box-sizing: border-box;
@@ -1622,6 +1148,7 @@
 
 	.origam-video__btn--active {
 		opacity: 1;
+		position: relative;
 	}
 
 	.origam-video__btn--active::after {
@@ -1639,32 +1166,10 @@
 		line-height: 1;
 	}
 
-	.origam-video__time {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		padding: 0 6px;
-		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-		font-size: 12px;
-		font-variant-numeric: tabular-nums;
-		color: #ffffff;
-		white-space: nowrap;
-		user-select: none;
-	}
-
-	.origam-video__time-sep {
-		opacity: 0.6;
-	}
-
-	.origam-video__time-total {
-		opacity: 0.7;
-	}
-
 	.origam-video--fullscreen {
 		border-radius: 0;
 	}
 
-	.origam-video--error .origam-video__controls,
 	.origam-video--error .origam-video__poster {
 		display: none;
 	}

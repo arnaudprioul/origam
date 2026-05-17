@@ -185,6 +185,11 @@
 					`&lt;OrigamMediaScrubber&gt;` implementation — same drag logic, keyboard
 					contract and ARIA.
 				</p>
+				<p class="hint">
+					The custom controls bar is now provided by `&lt;OrigamMediaController&gt;`,
+					a reusable shell. The captions / PiP / fullscreen buttons are injected
+					by `&lt;OrigamVideo&gt;` via the `#extraControlsRight` slot.
+				</p>
 				<div class="story-grid">
 					<div class="story-col">
 						<strong>controls = 'custom'</strong>
