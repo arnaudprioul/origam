@@ -133,6 +133,8 @@
       "rewind": "Reculer de {0} secondes",
       "forward": "Avancer de {0} secondes",
       "seconds": "{0} secondes",
+      "quality": "Qualité",
+      "download": "Télécharger",
       "enterFullscreen": "Plein écran",
       "exitFullscreen": "Quitter le plein écran",
       "enterPip": "Activer image dans l'image",

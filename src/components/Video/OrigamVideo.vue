@@ -322,6 +322,17 @@
 							<!-- Main level — rows that drill into a submenu. -->
 							<template v-if="configSection === 'main'">
 								<button
+										v-if="hasQualityOptions"
+										type="button"
+										class="origam-video__config-row"
+										data-cy="origam-video-config-open-quality"
+										@click="configSection = 'quality'"
+								>
+									<span class="origam-video__config-row-label">{{ t('origam.video.quality') }}</span>
+									<span class="origam-video__config-row-value">{{ formattedQuality }}</span>
+									<span class="origam-video__config-row-arrow" aria-hidden="true">›</span>
+								</button>
+								<button
 										v-if="(playbackRates?.length ?? 0) > 1"
 										type="button"
 										class="origam-video__config-row"
@@ -331,6 +342,18 @@
 									<span class="origam-video__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
 									<span class="origam-video__config-row-value">{{ formattedPlaybackRate }}</span>
 									<span class="origam-video__config-row-arrow" aria-hidden="true">›</span>
+								</button>
+								<button
+										v-if="downloadable && downloadUrl"
+										type="button"
+										class="origam-video__config-row origam-video__config-row--action"
+										data-cy="origam-video-config-download"
+										@click="onDownloadClick"
+								>
+									<span class="origam-video__config-row-icon" aria-hidden="true">
+										<origam-icon :icon="ICONS.DOWNLOAD" />
+									</span>
+									<span class="origam-video__config-row-label">{{ t('origam.video.download') }}</span>
 								</button>
 							</template>
 
@@ -355,6 +378,30 @@
 										@click="onPlaybackRateClick(rate)"
 								>
 									{{ rate === 1 ? t('origam.video.normalSpeed') : `${rate}×` }}
+								</button>
+							</template>
+
+							<!-- Quality submenu. -->
+							<template v-else-if="configSection === 'quality'">
+								<button
+										type="button"
+										class="origam-video__config-row origam-video__config-row--back"
+										data-cy="origam-video-config-back"
+										@click="configSection = 'main'"
+								>
+									<span class="origam-video__config-row-arrow origam-video__config-row-arrow--back" aria-hidden="true">‹</span>
+									<span class="origam-video__config-row-label">{{ t('origam.video.quality') }}</span>
+								</button>
+								<button
+										v-for="q in qualityOptions"
+										:key="q.quality"
+										type="button"
+										class="origam-video__config-item"
+										:class="{ 'origam-video__config-item--active': currentQuality === q.quality }"
+										:data-cy="`origam-video-config-quality-${q.quality}`"
+										@click="onQualityClick(q.quality)"
+								>
+									{{ q.label }}
 								</button>
 							</template>
 						</slot>
@@ -472,7 +519,9 @@
 		playbackRate: 1,
 		inset: true,
 		allowRemotePlayback: true,
-		doubleTapToSkip: true
+		doubleTapToSkip: true,
+		downloadable: false,
+		downloadFilename: undefined
 	})
 
 	const emit = defineEmits<IVideoEmits>()
@@ -499,6 +548,7 @@
 		ROTATE_RIGHT: MDI_ICONS.ROTATE_RIGHT,
 		CHEVRON_LEFT: MDI_ICONS.CHEVRON_LEFT,
 		CHEVRON_RIGHT: MDI_ICONS.CHEVRON_RIGHT,
+		DOWNLOAD: MDI_ICONS.DOWNLOAD,
 		COG: MDI_ICONS.COG,
 		CAST: MDI_ICONS.CAST
 	}
@@ -536,7 +586,17 @@
 	})
 
 	const resolvedSources = computed<Array<IVideoSource>>(() => {
-		return Array.isArray(props.src) ? props.src : []
+		const sources = Array.isArray(props.src) ? props.src : []
+		// When quality variants are declared, only render the active
+		// quality's <source> tags (plus any without a quality field,
+		// which are treated as codec siblings of every quality). The
+		// quality switcher then `video.load()`-swaps the underlying URL
+		// directly via `video.src`, so this list only matters for the
+		// initial mount.
+		if (currentQuality.value && hasQualityOptions.value) {
+			return sources.filter((s) => !s.quality || s.quality === currentQuality.value)
+		}
+		return sources
 	})
 
 	/*********************************************************
@@ -709,11 +769,91 @@
 	 * cog shows up by default).
 	 ********************************************************/
 	const configMenuOpen = ref<boolean>(false)
-	const configSection = ref<'main' | 'speed'>('main')
+	const configSection = ref<'main' | 'speed' | 'quality'>('main')
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Quality switcher — derived from the unique `quality` values
+	 * exposed by the source array. Only renders when ≥ 2 distinct
+	 * qualities exist. The component otherwise plays whatever the
+	 * browser picked first (typical mp4 + webm dual-source case).
+	 ********************************************************/
+	const qualityOptions = computed<Array<{ quality: string, label: string, src: string, type?: string }>>(() => {
+		const sources = Array.isArray(props.src) ? props.src : []
+		const seen = new Set<string>()
+		const out: Array<{ quality: string, label: string, src: string, type?: string }> = []
+		for (const s of sources) {
+			if (!s?.quality || seen.has(s.quality)) continue
+			seen.add(s.quality)
+			out.push({ quality: s.quality, label: s.label ?? s.quality, src: s.src, type: s.type })
+		}
+		return out
+	})
+
+	const hasQualityOptions = computed<boolean>(() => qualityOptions.value.length >= 2)
+	const currentQuality = ref<string | null>(null)
+
+	// Initialise the active quality from the first source that has one
+	// once the props settle.
+	const initQuality = () => {
+		if (currentQuality.value !== null) return
+		if (!hasQualityOptions.value) return
+		currentQuality.value = qualityOptions.value[0].quality
+	}
+	initQuality()
+
+	function onQualityClick (quality: string): void {
+		const target = qualityOptions.value.find((q) => q.quality === quality)
+		if (!target || !videoRef.value) return
+		const video = videoRef.value
+		const wasPaused = video.paused
+		const at = video.currentTime
+		currentQuality.value = quality
+		emit('quality-change', quality)
+		// Swap source in place, then resume position + play state once
+		// the new track has its metadata ready.
+		const onReady = () => {
+			try { video.currentTime = at } catch { /* range error → noop */ }
+			if (!wasPaused) video.play().catch(() => { /* autoplay blocked, ignore */ })
+			video.removeEventListener('loadedmetadata', onReady)
+		}
+		video.addEventListener('loadedmetadata', onReady)
+		video.src = target.src
+		video.load()
+		configMenuOpen.value = false
+	}
+
+	function onDownloadClick (): void {
+		const url = downloadUrl.value
+		if (!url) return
+		const a = document.createElement('a')
+		a.href = url
+		a.download = props.downloadFilename || url.split('/').pop()?.split('?')[0] || 'video'
+		document.body.appendChild(a)
+		a.click()
+		document.body.removeChild(a)
+		emit('download', url)
+		configMenuOpen.value = false
+	}
+
+	const downloadUrl = computed<string | null>(() => {
+		if (typeof props.src === 'string') return props.src || null
+		// Multi-source array: prefer the active quality, fall back to first.
+		const sources = props.src as Array<IVideoSource>
+		if (!sources.length) return null
+		if (currentQuality.value) {
+			const match = sources.find((s) => s.quality === currentQuality.value)
+			if (match) return match.src
+		}
+		return sources[0]?.src ?? null
+	})
+
 	const hasConfigContent = computed<boolean>(() => {
-		// Built-in: playback rates list. Externally: a custom slot.
-		return Boolean(slots.config) || (props.playbackRates?.length ?? 0) > 1
+		// Built-in: playback rates + quality + download. Externally: custom slot.
+		return Boolean(slots.config)
+			|| (props.playbackRates?.length ?? 0) > 1
+			|| hasQualityOptions.value
+			|| props.downloadable
 	})
 
 	// Always reset the drill-down to `main` when the menu closes — the
@@ -726,6 +866,12 @@
 		const r = state.playbackRate.value
 		if (Math.abs(r - 1) < 0.01) return t('origam.video.normalSpeed')
 		return `${r}×`
+	})
+
+	const formattedQuality = computed<string>(() => {
+		if (!currentQuality.value) return ''
+		const match = qualityOptions.value.find((q) => q.quality === currentQuality.value)
+		return match?.label ?? currentQuality.value
 	})
 
 	const onPlaybackRateClick = (rate: number): void => {
