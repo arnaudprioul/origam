@@ -4,7 +4,7 @@
 			title="Transition/OrigamTranslateScale"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ name?: string; disabled?: boolean }>({
 					name: 'origam-transition--transform-scale',
 					disabled: false

@@ -8,7 +8,7 @@
 			ICardHeaderProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ICardHeaderProps>({
 					title: 'Card Title',
 					subtitle: 'Card Subtitle',

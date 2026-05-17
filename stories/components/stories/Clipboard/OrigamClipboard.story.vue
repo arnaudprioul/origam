@@ -4,7 +4,7 @@
 			title="Clipboard/OrigamClipboard"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IClipboardProps>({
 					value: 'arnaud@example.com',
 					feedbackDuration: 2000,

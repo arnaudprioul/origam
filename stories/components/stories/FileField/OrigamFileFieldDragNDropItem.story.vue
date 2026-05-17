@@ -12,7 +12,7 @@
 
 		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					progress: number,
 					disabled: boolean,

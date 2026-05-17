@@ -8,7 +8,7 @@
 			Toggle the button to see the animation in action.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--fade',
 					disabled: false,

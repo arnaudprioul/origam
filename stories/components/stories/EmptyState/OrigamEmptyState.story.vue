@@ -4,7 +4,7 @@
 			title="EmptyState/OrigamEmptyState"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IEmptyStateProps>({
 					preset: 'no-data',
 					title: 'No items yet',

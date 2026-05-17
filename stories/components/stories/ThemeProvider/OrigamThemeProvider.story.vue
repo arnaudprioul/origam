@@ -8,7 +8,7 @@
 			OrigamThemeProvider knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ theme?: string; tag?: string }>({ theme: 'light', tag: 'div' })"
 		>
 			<template #default="{ state }">

@@ -8,7 +8,7 @@
 			ICardTextProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ICardTextProps>({
 					text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
 					border: false,

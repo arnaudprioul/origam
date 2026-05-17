@@ -8,7 +8,7 @@
 			ISheetProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISheetProps>({
 					color: undefined,
 					bgColor: undefined,

@@ -9,7 +9,7 @@
 			standalone.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ color: string; min: string; max: string }>({
 					color: 'primary',
 					min: '2026-01-01',

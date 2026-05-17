@@ -8,7 +8,7 @@
 			ICardProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ICardProps>({
 					title: 'Card title',
 					subtitle: 'Subtitle',

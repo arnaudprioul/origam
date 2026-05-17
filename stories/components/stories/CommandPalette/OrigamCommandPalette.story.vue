@@ -4,7 +4,7 @@
 			title="CommandPalette/OrigamCommandPalette"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					open: boolean
 					placeholder: string

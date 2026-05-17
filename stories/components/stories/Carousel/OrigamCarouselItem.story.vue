@@ -6,7 +6,7 @@
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ alt: string; disabled?: boolean; transition: string | boolean | undefined }>({
 					alt: 'Playground slide',
 					disabled: false,

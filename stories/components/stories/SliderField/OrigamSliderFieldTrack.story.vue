@@ -79,7 +79,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISliderFieldTrackProps>({
 					start: 25,
 					stop: 75,

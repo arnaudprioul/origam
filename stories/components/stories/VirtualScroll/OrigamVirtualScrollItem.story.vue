@@ -10,7 +10,7 @@
 			`update:height` to the parent VirtualScroll. The Playground
 			shows the live height readout.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<div class="story-shell" data-cy="vsi-playground">
 				<origam-virtual-scroll-item
 						class="story-row"

@@ -8,7 +8,7 @@
 			IDialogProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IDialogProps>({
 					title: 'Dialog',
 					fullscreen: false,

@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IProgressLinearProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IProgressLinearProps>({
 					modelValue: 42,
 					bufferValue: 70,

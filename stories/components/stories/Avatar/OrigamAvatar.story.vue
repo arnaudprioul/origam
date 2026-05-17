@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IAvatarProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IAvatarProps>({
 					text: 'AP',
 					size: 'default',

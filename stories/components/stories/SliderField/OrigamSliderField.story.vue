@@ -5,7 +5,7 @@
 	>
 		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISliderFieldProps>({
 					label: 'Slider',
 					color: 'primary',

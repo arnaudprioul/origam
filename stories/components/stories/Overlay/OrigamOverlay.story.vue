@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IOverlayProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IOverlayProps>({
 					modelValue: false,
 					scrim: true,

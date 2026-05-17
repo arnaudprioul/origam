@@ -13,7 +13,7 @@
 		-->
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISliderFieldThumbProps>({
 					min: 0,
 					max: 100,

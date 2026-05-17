@@ -8,7 +8,7 @@
 			via sidebar controls so the consumer can explore the full API.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IAlertProps>({
 					text: 'Alert message.',
 					title: '',

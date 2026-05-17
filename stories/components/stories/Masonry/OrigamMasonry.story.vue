@@ -4,7 +4,7 @@
 			title="Masonry/OrigamMasonry"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IMasonryProps>({
 					columns: 3,
 					gap: 'md',

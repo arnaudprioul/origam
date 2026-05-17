@@ -8,7 +8,7 @@
 			controls so the consumer can exercise the full API in one place.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					hideCanvas?: boolean
 					hideSliders?: boolean

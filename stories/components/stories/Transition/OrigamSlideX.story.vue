@@ -4,7 +4,7 @@
 			title="Transition/OrigamSlideX"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--slide-x',
 					disabled: false,

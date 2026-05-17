@@ -8,7 +8,7 @@
 			SVG from a path string, array of paths, or opacity tuples.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
 					size: undefined,
 					tag: undefined,

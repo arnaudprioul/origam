@@ -8,7 +8,7 @@
 			IParallaxElementProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IParallaxElementProps>({
 					tag: 'div',
 					type: PARALLAX_ELEMENT_TYPE.TRANSLATE,

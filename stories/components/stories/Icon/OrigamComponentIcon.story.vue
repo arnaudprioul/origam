@@ -8,7 +8,7 @@
 			a Vue component passed as the `icon` prop.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
 					size: undefined,
 					tag: undefined,

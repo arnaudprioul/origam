@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IKbdProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IKbdProps>({
 					text: '⌘',
 					variant: 'outlined',

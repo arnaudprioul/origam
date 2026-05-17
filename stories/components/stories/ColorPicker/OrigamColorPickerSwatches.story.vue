@@ -8,7 +8,7 @@
 			preset colour swatches for quick selection.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					disabled?: boolean
 				}>({ disabled: false })"

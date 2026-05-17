@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IIconComponentProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
 					icon: MDI_ICONS.HOME,
 					size: undefined,

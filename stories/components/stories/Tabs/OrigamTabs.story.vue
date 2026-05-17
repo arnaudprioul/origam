@@ -4,7 +4,7 @@
 			title="Tabs/OrigamTabs"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITabsProps>({
 					variant: TAB_VARIANT.DEFAULT,
 					direction: DIRECTION.HORIZONTAL,

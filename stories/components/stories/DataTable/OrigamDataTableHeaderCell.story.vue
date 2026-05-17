@@ -8,7 +8,7 @@
 			via the parent table. OrigamDataTableHeaderCell is internal;
 			customise via the `header.{key}` slot.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="header-cell-default"/>
 		</Variant>
 

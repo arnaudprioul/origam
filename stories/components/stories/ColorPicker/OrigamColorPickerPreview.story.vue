@@ -8,7 +8,7 @@
 			and alpha slider tracks for colour preview.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					disabled?: boolean
 					hideAlpha?: boolean

@@ -8,7 +8,7 @@
 			layout). OrigamDataTableHeadersCellMobile is internal and
 			activated automatically when the parent uses `mobile` mode.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<div style="max-width: 360px; padding: 16px;">
 				<origam-data-table :headers="headers" :items="items" mobile data-cy="mobile-cell-default"/>
 			</div>

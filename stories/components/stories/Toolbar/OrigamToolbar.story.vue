@@ -8,7 +8,7 @@
 			IToolbarProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IToolbarProps>({
 					title: 'My App',
 					elevation: undefined,

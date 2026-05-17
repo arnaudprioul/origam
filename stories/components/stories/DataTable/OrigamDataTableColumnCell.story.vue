@@ -8,7 +8,7 @@
 			parent table. OrigamDataTableColumnCell is internal; use the
 			parent table slots to customise cells.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-default"/>
 		</Variant>
 

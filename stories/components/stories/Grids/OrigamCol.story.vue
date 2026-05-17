@@ -8,7 +8,7 @@
 			IColProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IColProps>({
 					cols: '6',
 					md: '4',

@@ -8,7 +8,7 @@
 			table with sortable columns and multiSort toggle.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ multiSort: boolean; showSelect: boolean }>({ multiSort: false, showSelect: false })"
 		>
 			<template #default="{ state }">

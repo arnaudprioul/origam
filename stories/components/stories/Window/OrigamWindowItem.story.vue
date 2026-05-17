@@ -57,7 +57,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ step: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ step: 1, transition: undefined, reverseTransition: undefined })"
 		>
 			<template #default="{ state }">

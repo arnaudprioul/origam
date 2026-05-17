@@ -8,7 +8,7 @@
 			<origam-expansion-panel>. Playground — first variant.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IExpansionPanelHeaderProps>({
 					title: 'Section heading',
 					hideActions: false,

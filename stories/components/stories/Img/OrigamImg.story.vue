@@ -8,7 +8,7 @@
 			IImgProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IImgProps & { width?: string }>({
 					src: 'https://picsum.photos/seed/origam-img-playground/640/360',
 					alt: 'Playground',

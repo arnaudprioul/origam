@@ -4,7 +4,7 @@
 			title="Transition/OrigamTranslateBottom"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--translate-bottom',
 					disabled: false,

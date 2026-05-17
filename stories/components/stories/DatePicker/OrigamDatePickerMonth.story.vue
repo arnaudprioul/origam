@@ -8,7 +8,7 @@
 			picker; individual props demonstrated below.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ color: string; showWeek: boolean; hideWeekdays: boolean }>({
 					color: 'primary',
 					showWeek: false,

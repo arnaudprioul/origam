@@ -158,7 +158,7 @@
 		</Variant>
 
 		<Variant
-			title="Playground"
+			title="Default"
 			:init-state="() => useStoryInitState<ITimelineProps>({
 				orientation: 'vertical',
 				side: 'start',

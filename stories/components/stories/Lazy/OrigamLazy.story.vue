@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every prop knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					height?: number
 					tag?: string

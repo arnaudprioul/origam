@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IResponsiveProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IResponsiveProps>({
 					aspectRatio: '16/9',
 					inline: false,

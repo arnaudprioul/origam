@@ -8,7 +8,7 @@
 			knobs via the sidebar.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IDataTextProps>({
 					text: 'arnaud@example.com',
 					prependIcon: undefined,

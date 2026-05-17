@@ -8,7 +8,7 @@
 			IAppBarProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IAppBarProps>({
 					title: 'My Application',
 					collapse: false,

@@ -8,7 +8,7 @@
 			sidebar controls so the consumer can exercise the full API.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IDensityProps & IAdjacentProps & IBorderProps & IRoundedProps>({
 					density: undefined,
 					prependIcon: undefined,

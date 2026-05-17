@@ -4,7 +4,7 @@
 			title="Transition/OrigamScaleRotate"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--scale-rotate',
 					disabled: false,

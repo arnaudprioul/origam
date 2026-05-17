@@ -8,7 +8,7 @@
 			sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					multiple?: boolean
 					range?: boolean

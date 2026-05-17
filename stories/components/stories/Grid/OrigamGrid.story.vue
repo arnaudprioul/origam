@@ -4,7 +4,7 @@
 			title="Grid/OrigamGrid"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IGridProps>({
 					columns: 4,
 					rows: 'auto',

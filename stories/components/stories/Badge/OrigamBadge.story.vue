@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IBadgeProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IBadgeProps>({
 					modelValue: true,
 					content: 3,

@@ -414,7 +414,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITextareaFieldProps>({
 					label: 'Message',
 					color: 'primary',

@@ -51,7 +51,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IStepperItemProps>({
 					title: 'Step',
 					subtitle: 'Subtitle',

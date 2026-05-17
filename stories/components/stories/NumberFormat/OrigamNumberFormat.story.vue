@@ -4,7 +4,7 @@
 			title="NumberFormat/OrigamNumberFormat"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<INumberFormatProps>({
 					value: 1234567.89,
 					format: 'currency',

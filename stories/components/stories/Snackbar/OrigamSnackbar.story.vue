@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every ISnackbarProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISnackbarProps>({
 					text: 'Snackbar message',
 					timeout: 5000,

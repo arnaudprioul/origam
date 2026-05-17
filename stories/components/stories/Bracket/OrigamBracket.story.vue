@@ -4,7 +4,7 @@
 			title="Bracket/OrigamBracket"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IBracketProps>({
 					rounds: SINGLE_ELIM_8,
 					variant: BRACKET_VARIANT.SINGLE_ELIMINATION,

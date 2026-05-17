@@ -8,7 +8,7 @@
 			IBottomNavProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IBottomNavProps>({
 					density: DENSITY.DEFAULT,
 					color: undefined,

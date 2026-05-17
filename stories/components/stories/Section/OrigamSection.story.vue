@@ -9,7 +9,7 @@
 			composition, and section-level tokens are planned but not yet
 			implemented. Controls will be wired once the API is finalised.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<origam-section>
 				<div class="demo-content">Playground — stub</div>
 			</origam-section>

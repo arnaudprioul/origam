@@ -145,7 +145,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITimelineItemProps>({
 					title: 'Step',
 					subtitle: 'Subtitle',

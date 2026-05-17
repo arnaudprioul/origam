@@ -4,7 +4,7 @@
 			title="Blockquote/OrigamBlockquote"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IBlockquoteProps>({
 					variant: 'default',
 					author: 'Linus Torvalds',

@@ -8,7 +8,7 @@
 			that accepts either a CSS class name string or a component object.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ disabled?: boolean; transition?: string }>({
 					disabled: false,
 					transition: 'origam-transition--fade'

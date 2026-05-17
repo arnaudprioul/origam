@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every ITitleProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITitleProps>({
 					tag: 'h1',
 					text: 'OrigamTitle',

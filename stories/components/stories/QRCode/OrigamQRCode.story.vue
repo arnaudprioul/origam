@@ -4,7 +4,7 @@
 			title="QrCode/OrigamQrCode"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IQrCodeProps>({
 					value: 'https://origam.dev',
 					size: 240,
