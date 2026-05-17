@@ -180,6 +180,10 @@ export * from './Grid/grid-item.interface'
 
 export * from './Masonry/masonry.interface'
 
+export * from './Media/media-player.interface'
+
+export * from './Audio/audio-player.interface'
+
 export * from './MediaController/media-controller.interface'
 
 export * from './MediaScrubber/media-scrubber.interface'
