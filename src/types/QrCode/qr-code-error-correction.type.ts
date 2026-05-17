@@ -19,4 +19,4 @@
  * for ≥20%. Below `Q`, the redundancy budget is too thin for any
  * meaningful overlay.
  */
-export type TQRCodeErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'
+export type TQrCodeErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'

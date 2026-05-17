@@ -1,11 +1,11 @@
 <template>
 	<Story
 			group="components"
-			title="QRCode/OrigamQRCode"
+			title="QRCode/OrigamQrCode"
 	>
 		<Variant
 				title="Playground"
-				:init-state="() => useStoryInitState<IQRCodeProps>({
+				:init-state="() => useStoryInitState<IQrCodeProps>({
 					value: 'https://origam.dev',
 					size: 240,
 					errorCorrectionLevel: 'M',
@@ -20,7 +20,7 @@
 						class="story-shell"
 						data-cy="qrcode-playground"
 				>
-					<origam-qrcode
+					<origam-qr-code
 							v-bind="state"
 							data-cy="qrcode-playground-host"
 					/>
@@ -75,7 +75,7 @@
 						class="story-col"
 				>
 					<strong>{{ entry.label }}</strong>
-					<origam-qrcode
+					<origam-qr-code
 							:value="entry.value"
 							:size="160"
 							foreground="#111111"
@@ -102,7 +102,7 @@
 						class="story-col"
 				>
 					<strong>level = {{ level }}</strong>
-					<origam-qrcode
+					<origam-qr-code
 							value="https://origam.dev/design-system"
 							:error-correction-level="level"
 							:size="160"
@@ -130,7 +130,7 @@
 						class="story-col"
 				>
 					<strong>cornerRadius = {{ radius }}</strong>
-					<origam-qrcode
+					<origam-qr-code
 							value="https://origam.dev"
 							:corner-radius="radius"
 							:size="160"
@@ -159,7 +159,7 @@
 						class="story-col"
 				>
 					<strong>size = {{ entry.size }}</strong>
-					<origam-qrcode
+					<origam-qr-code
 							value="https://origam.dev/qrcode-with-logo"
 							error-correction-level="H"
 							:logo="{ src: LOGO_SRC, size: entry.size }"
@@ -189,7 +189,7 @@
 						:style="theme.surfaceStyle"
 				>
 					<strong>{{ theme.label }}</strong>
-					<origam-qrcode
+					<origam-qr-code
 							value="https://origam.dev"
 							:foreground="theme.foreground"
 							:background="theme.background"
@@ -206,11 +206,11 @@
 		lang="ts"
 		setup
 >
-	import { OrigamQRCode } from '@origam/components'
+	import { OrigamQrCode } from '@origam/components'
 
-	import type { IQRCodeProps } from '@origam/interfaces'
+	import type { IQrCodeProps } from '@origam/interfaces'
 
-	import type { TQRCodeErrorCorrectionLevel } from '@origam/types'
+	import type { TQrCodeErrorCorrectionLevel } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -221,10 +221,10 @@
 
 	const LOGO_SRC = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23111827"/><text x="12" y="16" text-anchor="middle" fill="%23ffffff" font-size="10" font-family="Helvetica" font-weight="700">O</text></svg>'
 
-	const eccLevels: TQRCodeErrorCorrectionLevel[] = ['L', 'M', 'Q', 'H']
+	const eccLevels: TQrCodeErrorCorrectionLevel[] = ['L', 'M', 'Q', 'H']
 	const cornerRadii = [0, 0.25, 0.5]
 
-	const eccOptions: Array<IOption<TQRCodeErrorCorrectionLevel>> = eccLevels.map(v => ({ label: v, value: v }))
+	const eccOptions: Array<IOption<TQrCodeErrorCorrectionLevel>> = eccLevels.map(v => ({ label: v, value: v }))
 
 	const valueSamples = [
 		{ label: 'url', value: 'https://origam.dev' },
@@ -296,4 +296,4 @@
 	}
 </style>
 
-<docs lang="md" src="@docs/component./QrCode/OrigamQRCode.md"/>
+<docs lang="md" src="@docs/component./QrCode/OrigamQrCode.md"/>

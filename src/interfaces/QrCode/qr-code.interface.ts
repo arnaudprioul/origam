@@ -1,22 +1,22 @@
 import type {
     ICommonsComponentProps,
-    IQRCodeLogo,
+    IQrCodeLogo,
     ITagProps
 } from '../../interfaces'
 
 import type {
-    TQRCodeErrorCorrectionLevel
+    TQrCodeErrorCorrectionLevel
 } from '../../types'
 
 /**
- * Props for `<OrigamQRCode>` — SVG QR code renderer.
+ * Props for `<OrigamQrCode>` — SVG QR code renderer.
  *
  * The component owns no state: every prop change rebuilds the
  * underlying matrix through `qrcode-generator` and re-emits the SVG.
  * The renderer is SSR-safe — no `window` / `document` / `canvas` API
  * is touched.
  */
-export interface IQRCodeProps extends ICommonsComponentProps, ITagProps {
+export interface IQrCodeProps extends ICommonsComponentProps, ITagProps {
     /**
      * Text or URL encoded into the QR matrix. UTF-8 is supported via
      * the underlying `qrcode-generator` Byte mode.
@@ -34,12 +34,12 @@ export interface IQRCodeProps extends ICommonsComponentProps, ITagProps {
     /**
      * Reed-Solomon redundancy level. Higher levels reserve more matrix
      * cells for correction codewords (and therefore tolerate more
-     * damage / overlay). See `TQRCodeErrorCorrectionLevel` for the
+     * damage / overlay). See `TQrCodeErrorCorrectionLevel` for the
      * tradeoff matrix.
      *
      * @default 'M'
      */
-    errorCorrectionLevel?: TQRCodeErrorCorrectionLevel
+    errorCorrectionLevel?: TQrCodeErrorCorrectionLevel
     /**
      * Colour painted on dark modules. Any CSS colour value — including
      * `'currentColor'` to inherit from the parent text colour, which
@@ -68,7 +68,7 @@ export interface IQRCodeProps extends ICommonsComponentProps, ITagProps {
      * matrix, so picking a high error-correction level (`Q` or `H`) is
      * mandatory if the overlay obscures more than ~10% of the surface.
      */
-    logo?: IQRCodeLogo
+    logo?: IQrCodeLogo
     /**
      * Per-module corner radius (in module units — `0` keeps strict
      * squares, `0.5` paints circles). Useful for soft / branded
@@ -86,33 +86,33 @@ export interface IQRCodeProps extends ICommonsComponentProps, ITagProps {
 }
 
 /**
- * Options accepted by `useQRCode`. Mirrors the public props of
- * `<OrigamQRCode>` minus the wiring concerns (`tag`, `class`, `style`,
+ * Options accepted by `useQrCode`. Mirrors the public props of
+ * `<OrigamQrCode>` minus the wiring concerns (`tag`, `class`, `style`,
  * `ariaLabel`).
  */
-export interface IUseQRCodeOptions {
-    /** Same semantics as `IQRCodeProps.errorCorrectionLevel`. */
-    errorCorrectionLevel?: TQRCodeErrorCorrectionLevel
-    /** Same semantics as `IQRCodeProps.foreground`. */
+export interface IUseQrCodeOptions {
+    /** Same semantics as `IQrCodeProps.errorCorrectionLevel`. */
+    errorCorrectionLevel?: TQrCodeErrorCorrectionLevel
+    /** Same semantics as `IQrCodeProps.foreground`. */
     foreground?: string
-    /** Same semantics as `IQRCodeProps.background`. */
+    /** Same semantics as `IQrCodeProps.background`. */
     background?: string
-    /** Same semantics as `IQRCodeProps.margin`. */
+    /** Same semantics as `IQrCodeProps.margin`. */
     margin?: number
-    /** Same semantics as `IQRCodeProps.cornerRadius`. */
+    /** Same semantics as `IQrCodeProps.cornerRadius`. */
     cornerRadius?: number
-    /** Same semantics as `IQRCodeProps.logo`. */
-    logo?: IQRCodeLogo
+    /** Same semantics as `IQrCodeProps.logo`. */
+    logo?: IQrCodeLogo
 }
 
 /**
- * Slot signatures for `<OrigamQRCode>`.
+ * Slot signatures for `<OrigamQrCode>`.
  *
  * - `center` — replaces the default logo overlay. Receives the
  *   resolved size of the central reserved square (in matrix module
  *   units) so the consumer can paint a custom SVG / icon without
  *   re-deriving the geometry.
  */
-export interface IQRCodeSlots {
+export interface IQrCodeSlots {
     center?: (bindings: { size: number }) => any
 }
