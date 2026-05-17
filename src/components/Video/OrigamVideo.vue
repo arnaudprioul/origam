@@ -8,6 +8,7 @@
 			data-cy="origam-video"
 			@mouseenter="onPlayerMouseEnter"
 			@mouseleave="onPlayerMouseLeave"
+			@pointerup="onVideoTap"
 	>
 		<template #additional>
 		<video
@@ -33,7 +34,6 @@
 				@error="onErrorEvent"
 				@enterpictureinpicture="emit('enterpip')"
 				@leavepictureinpicture="emit('exitpip')"
-				@pointerup="onVideoTap"
 		>
 			<source
 					v-for="source in resolvedSources"
@@ -62,37 +62,64 @@
 					name="centerControls"
 					v-bind="slotBindings"
 			>
-				<origam-btn
+				<button
 						v-if="skipSeconds > 0"
-						:icon="ICONS.REWIND"
-						class="origam-video__center-btn origam-video__center-btn--skip-back"
-						:aria-label="t('$origam.video.rewind', skipSeconds)"
+						class="origam-video__center-btn origam-video__center-btn--skip-back origam-video__skip-icon"
+						:aria-label="t('origam.video.rewind', skipSeconds)"
 						data-cy="origam-video-skip-back"
-						size="large"
-						variant="text"
+						type="button"
 						@click="onSkipBack"
-				/>
+				>
+					<origam-icon
+							:icon="ICONS.ROTATE_LEFT"
+							aria-hidden="true"
+					/>
+					<span class="origam-video__skip-seconds" aria-hidden="true">{{ skipSeconds }}</span>
+				</button>
 				<origam-btn
 						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
 						class="origam-video__center-btn origam-video__center-btn--play"
-						:aria-label="t(state.playing.value ? '$origam.video.pause' : '$origam.video.play')"
+						:aria-label="t(state.playing.value ? 'origam.video.pause' : 'origam.video.play')"
 						data-cy="origam-video-center-play"
 						size="x-large"
 						variant="elevated"
 						@click="togglePlay"
 				/>
-				<origam-btn
+				<button
 						v-if="skipSeconds > 0"
-						:icon="ICONS.FAST_FORWARD"
-						class="origam-video__center-btn origam-video__center-btn--skip-forward"
-						:aria-label="t('$origam.video.forward', skipSeconds)"
+						class="origam-video__center-btn origam-video__center-btn--skip-forward origam-video__skip-icon"
+						:aria-label="t('origam.video.forward', skipSeconds)"
 						data-cy="origam-video-skip-forward"
-						size="large"
-						variant="text"
+						type="button"
 						@click="onSkipForward"
-				/>
+				>
+					<origam-icon
+							:icon="ICONS.ROTATE_RIGHT"
+							aria-hidden="true"
+					/>
+					<span class="origam-video__skip-seconds" aria-hidden="true">{{ skipSeconds }}</span>
+				</button>
 			</slot>
 		</div>
+
+		<transition name="origam-video-skip-ripple">
+			<div
+					v-if="skipFeedback"
+					:key="skipFeedback.id"
+					class="origam-video__skip-ripple"
+					:class="`origam-video__skip-ripple--${skipFeedback.side}`"
+					aria-hidden="true"
+					data-cy="origam-video-skip-ripple"
+			>
+				<div class="origam-video__skip-ripple-icon origam-video__skip-icon">
+					<origam-icon
+							:icon="skipFeedback.side === 'left' ? ICONS.ROTATE_LEFT : ICONS.ROTATE_RIGHT"
+							aria-hidden="true"
+					/>
+					<span class="origam-video__skip-seconds" aria-hidden="true">{{ skipFeedback.seconds }}</span>
+				</div>
+			</div>
+		</transition>
 
 		<div
 				v-if="showPosterOverlay"
@@ -110,7 +137,7 @@
 				<origam-btn
 						:icon="ICONS.PLAY"
 						class="origam-video__poster-btn"
-						:aria-label="t('$origam.video.play')"
+						:aria-label="t('origam.video.play')"
 						data-cy="origam-video-poster-btn"
 						size="large"
 						variant="elevated"
@@ -123,7 +150,7 @@
 				v-if="state.loading.value && !state.error.value"
 				class="origam-video__loading"
 				role="status"
-				:aria-label="t('$origam.loading')"
+				:aria-label="t('origam.loading')"
 				data-cy="origam-video-loading"
 		>
 			<slot name="loading">
@@ -170,7 +197,7 @@
 				<origam-btn
 						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
 						class="origam-video__btn"
-						:aria-label="t(state.playing.value ? '$origam.video.pause' : '$origam.video.play')"
+						:aria-label="t(state.playing.value ? 'origam.video.pause' : 'origam.video.play')"
 						data-cy="origam-video-play"
 						size="small"
 						variant="text"
@@ -189,7 +216,7 @@
 						:max="scrubberMax"
 						:step="0.1"
 						:value="state.currentTime.value"
-						:aria-label="t('$origam.video.seek')"
+						:aria-label="t('origam.video.seek')"
 						:aria-valuemin="0"
 						:aria-valuemax="scrubberMax"
 						:aria-valuenow="state.currentTime.value"
@@ -211,7 +238,7 @@
 								v-bind="activatorProps"
 								:icon="volumeIcon"
 								class="origam-video__btn"
-								:aria-label="t(state.muted.value ? '$origam.video.unmute' : '$origam.video.mute')"
+								:aria-label="t(state.muted.value ? 'origam.video.unmute' : 'origam.video.mute')"
 								data-cy="origam-video-mute"
 								size="small"
 								variant="text"
@@ -226,7 +253,7 @@
 								max="1"
 								step="0.05"
 								:value="state.muted.value ? 0 : state.volume.value"
-								:aria-label="t('$origam.video.volume')"
+								:aria-label="t('origam.video.volume')"
 								data-cy="origam-video-volume"
 								@input="onVolumeInput($event)"
 						/>
@@ -238,7 +265,7 @@
 						:icon="ICONS.CAPTIONS"
 						class="origam-video__btn"
 						:class="{ 'origam-video__btn--active': captionsEnabled }"
-						:aria-label="t(captionsEnabled ? '$origam.video.disableCaptions' : '$origam.video.enableCaptions')"
+						:aria-label="t(captionsEnabled ? 'origam.video.disableCaptions' : 'origam.video.enableCaptions')"
 						data-cy="origam-video-captions"
 						size="small"
 						variant="text"
@@ -250,7 +277,7 @@
 						v-if="pipSupported"
 						:icon="ICONS.PIP"
 						class="origam-video__btn"
-						:aria-label="t(state.pip.value ? '$origam.video.exitPip' : '$origam.video.enterPip')"
+						:aria-label="t(state.pip.value ? 'origam.video.exitPip' : 'origam.video.enterPip')"
 						data-cy="origam-video-pip"
 						size="small"
 						variant="text"
@@ -261,7 +288,7 @@
 						v-if="allowRemotePlayback && state.remoteAvailable.value"
 						:icon="ICONS.CAST"
 						class="origam-video__btn"
-						:aria-label="t(state.remoteState.value === 'connected' ? '$origam.video.stopCasting' : '$origam.video.castToDevice')"
+						:aria-label="t(state.remoteState.value === 'connected' ? 'origam.video.stopCasting' : 'origam.video.castToDevice')"
 						data-cy="origam-video-cast"
 						size="small"
 						variant="text"
@@ -284,7 +311,7 @@
 								:icon="ICONS.COG"
 								class="origam-video__btn"
 								:class="{ 'origam-video__btn--active': configMenuOpen }"
-								:aria-label="t('$origam.video.settings')"
+								:aria-label="t('origam.video.settings')"
 								data-cy="origam-video-config"
 								size="small"
 								variant="text"
@@ -308,7 +335,7 @@
 										data-cy="origam-video-config-open-speed"
 										@click="configSection = 'speed'"
 								>
-									<span class="origam-video__config-row-label">{{ t('$origam.video.playbackSpeed') }}</span>
+									<span class="origam-video__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
 									<span class="origam-video__config-row-value">{{ formattedPlaybackRate }}</span>
 									<span class="origam-video__config-row-arrow" aria-hidden="true">›</span>
 								</button>
@@ -323,7 +350,7 @@
 										@click="configSection = 'main'"
 								>
 									<span class="origam-video__config-row-arrow origam-video__config-row-arrow--back" aria-hidden="true">‹</span>
-									<span class="origam-video__config-row-label">{{ t('$origam.video.playbackSpeed') }}</span>
+									<span class="origam-video__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
 								</button>
 								<button
 										v-for="rate in playbackRates"
@@ -334,7 +361,7 @@
 										:data-cy="`origam-video-config-rate-${rate}`"
 										@click="onPlaybackRateClick(rate)"
 								>
-									{{ rate === 1 ? t('$origam.video.normalSpeed') : `${rate}×` }}
+									{{ rate === 1 ? t('origam.video.normalSpeed') : `${rate}×` }}
 								</button>
 							</template>
 						</slot>
@@ -344,7 +371,7 @@
 				<origam-btn
 						:icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN"
 						class="origam-video__btn"
-						:aria-label="t(state.fullscreen.value ? '$origam.video.exitFullscreen' : '$origam.video.enterFullscreen')"
+						:aria-label="t(state.fullscreen.value ? 'origam.video.exitFullscreen' : 'origam.video.enterFullscreen')"
 						data-cy="origam-video-fullscreen"
 						size="small"
 						variant="text"
@@ -362,6 +389,7 @@
 >
 	import {
 		computed,
+		onBeforeUnmount,
 		ref,
 		type StyleValue,
 		useSlots,
@@ -405,7 +433,7 @@
 	 ********************************************************/
 	/*********************************************************
 	 * i18n — every user-facing label and aria string passes through
-	 * `t()`. Keys live under `$origam.video.*` in locales/{en,fr}.json.
+	 * `t()`. Keys live under `origam.video.*` in locales/{en,fr}.json.
 	 ********************************************************/
 	const { t } = useLocale()
 
@@ -461,6 +489,8 @@
 		VOLUME_OFF: MDI_ICONS.VOLUME_OFF,
 		REWIND: MDI_ICONS.REWIND,
 		FAST_FORWARD: MDI_ICONS.FAST_FORWARD,
+		ROTATE_LEFT: MDI_ICONS.ROTATE_LEFT,
+		ROTATE_RIGHT: MDI_ICONS.ROTATE_RIGHT,
 		COG: MDI_ICONS.COG,
 		CAST: MDI_ICONS.CAST
 	}
@@ -593,17 +623,40 @@
 	const onSkipForward = (): void => skipBy(Math.abs(props.skipSeconds || 0))
 
 	/*********************************************************
-	 * Double-tap to skip (touch). Detects two taps within 300ms on
-	 * the same half (left = backward, right = forward) of the video
-	 * surface. Single taps are NOT consumed here — they continue
-	 * propagating to the center play/pause overlay button.
+	 * Double-tap / double-click to skip. YouTube-style: two clicks
+	 * within 300ms on the same half (left = backward, right =
+	 * forward) of the video surface trigger a skip. Works for BOTH
+	 * touch (pointerType === 'touch') AND mouse (pointerType ===
+	 * 'mouse' or 'pen') so desktop users get the same behaviour
+	 * as mobile.
+	 *
+	 * Single clicks fall through to the center play/pause button
+	 * via the parent overlay — no `event.stopPropagation()` here.
+	 *
+	 * The visual feedback (ripple + seconds badge) is driven by
+	 * `skipFeedback`, consumed by the template overlay.
 	 ********************************************************/
 	const _lastTap = ref<{ time: number, side: 'left' | 'right' } | null>(null)
+	const skipFeedback = ref<{ side: 'left' | 'right', seconds: number, id: number } | null>(null)
+	let _skipFeedbackTimeout = -1
+
+	const triggerSkipFeedback = (side: 'left' | 'right'): void => {
+		skipFeedback.value = { side, seconds: props.skipSeconds, id: Date.now() }
+		if (_skipFeedbackTimeout !== -1) window.clearTimeout(_skipFeedbackTimeout)
+		_skipFeedbackTimeout = window.setTimeout(() => {
+			skipFeedback.value = null
+			_skipFeedbackTimeout = -1
+		}, 700)
+	}
+
+	onBeforeUnmount(() => {
+		if (_skipFeedbackTimeout !== -1) window.clearTimeout(_skipFeedbackTimeout)
+	})
+
 	const onVideoTap = (event: PointerEvent): void => {
 		if (!props.doubleTapToSkip) return
-		// Only handle synthesized touch taps — ignore mouse events so
-		// desktop users don't accidentally skip when double-clicking.
-		if (event.pointerType !== 'touch') return
+		// Skip keyboard / synthetic events without coordinates.
+		if (event.clientX == null) return
 		const target = event.currentTarget as HTMLElement
 		const rect = target.getBoundingClientRect()
 		const side: 'left' | 'right' = event.clientX - rect.left < rect.width / 2 ? 'left' : 'right'
@@ -612,6 +665,7 @@
 		if (last && now - last.time < 300 && last.side === side) {
 			if (side === 'left') onSkipBack()
 			else onSkipForward()
+			triggerSkipFeedback(side)
 			_lastTap.value = null
 			event.preventDefault()
 		} else {
@@ -641,7 +695,7 @@
 
 	const formattedPlaybackRate = computed<string>(() => {
 		const r = state.playbackRate.value
-		if (Math.abs(r - 1) < 0.01) return t('$origam.video.normalSpeed')
+		if (Math.abs(r - 1) < 0.01) return t('origam.video.normalSpeed')
 		return `${r}×`
 	})
 
@@ -1021,33 +1075,184 @@
 		border-radius: 50%;
 	}
 
-	/* Config menu (cog) — vertical list of options. Styled to sit
-	 * comfortably above the cog button via the OrigamTooltip overlay. */
-	:deep(.origam-video__config-menu) {
-		padding: 6px 0;
-		min-width: 160px;
+	.origam-video__skip-icon {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 56px;
+		height: 56px;
+		background: rgba(0, 0, 0, 0.55);
+		backdrop-filter: blur(4px);
+		border: none;
+		border-radius: 50%;
+		color: #ffffff;
+		cursor: pointer;
+		transition: background 180ms ease, transform 180ms ease;
+		padding: 0;
 	}
 
-	.origam-video__config-section {
+	.origam-video__skip-icon:hover,
+	.origam-video__skip-icon:focus-visible {
+		background: rgba(0, 0, 0, 0.75);
+		transform: scale(1.05);
+	}
+
+	.origam-video__skip-icon:focus-visible {
+		outline: 2px solid #ffffff;
+		outline-offset: 2px;
+	}
+
+	.origam-video__skip-icon .origam-icon {
+		font-size: 36px;
+		line-height: 1;
+	}
+
+	.origam-video__skip-seconds {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 11px;
+		font-weight: 700;
+		font-family: var(--origam-font---family, system-ui, sans-serif);
+		color: #ffffff;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.origam-video__skip-ripple {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 50%;
+		z-index: 3;
+		pointer-events: none;
+		background: radial-gradient(
+				circle at center,
+				rgba(255, 255, 255, 0.18) 0%,
+				rgba(255, 255, 255, 0) 70%
+		);
+	}
+
+	.origam-video__skip-ripple--left {
+		left: 0;
+	}
+
+	.origam-video__skip-ripple--right {
+		right: 0;
+	}
+
+	.origam-video__skip-ripple-icon {
+		width: 80px;
+		height: 80px;
+		background: rgba(0, 0, 0, 0.65);
+	}
+
+	.origam-video__skip-ripple-icon .origam-icon {
+		font-size: 52px;
+	}
+
+	.origam-video__skip-ripple-icon .origam-video__skip-seconds {
+		font-size: 14px;
+	}
+
+	.origam-video-skip-ripple-enter-active,
+	.origam-video-skip-ripple-leave-active {
+		transition: opacity 220ms ease, transform 220ms ease;
+	}
+
+	.origam-video-skip-ripple-enter-from,
+	.origam-video-skip-ripple-leave-to {
+		opacity: 0;
+		transform: scale(0.85);
+	}
+
+	.origam-video-skip-ripple-enter-to,
+	.origam-video-skip-ripple-leave-from {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.origam-video__skip-icon,
+		.origam-video__skip-ripple,
+		.origam-video-skip-ripple-enter-active,
+		.origam-video-skip-ripple-leave-active {
+			transition: none;
+		}
+	}
+
+	/* Config menu (cog) — compact YouTube-style drill-down :
+	 * Level 1 lists category rows ("Playback speed → 1×"). Tapping a
+	 * row swaps the body for the matching submenu (with a back row at
+	 * the top). Width stays tight so the menu never dwarfs the player. */
+	:deep(.origam-video__config-menu) {
+		padding: 4px 0;
+		min-width: 168px;
+		max-width: 220px;
+	}
+
+	.origam-video__config {
 		display: flex;
 		flex-direction: column;
+		font-size: 0.75rem;
+		line-height: 1.2;
 	}
 
-	.origam-video__config-section-title {
-		padding: 4px 12px 8px;
-		font-size: 0.7rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		color: rgba(255, 255, 255, 0.65);
+	/* Drill-down row used on the main level + the back row of a
+	 * submenu. Compact height, label + value/arrow ends. */
+	.origam-video__config-row {
+		all: unset;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 10px;
+		color: #ffffff;
+		cursor: pointer;
+		transition: background-color 120ms ease;
 	}
 
+	.origam-video__config-row:hover,
+	.origam-video__config-row:focus-visible {
+		background-color: rgba(255, 255, 255, 0.12);
+	}
+
+	.origam-video__config-row-label {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.origam-video__config-row-value {
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.origam-video__config-row-arrow {
+		color: rgba(255, 255, 255, 0.55);
+		font-size: 1rem;
+		line-height: 1;
+	}
+
+	.origam-video__config-row--back {
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		margin-bottom: 2px;
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.origam-video__config-row-arrow--back {
+		font-size: 1.1rem;
+	}
+
+	/* Leaf option (e.g. one playback rate). Same compact size as the
+	 * rows, with an active state for the currently-selected value. */
 	.origam-video__config-item {
 		all: unset;
 		display: flex;
 		align-items: center;
-		padding: 6px 12px;
-		font-size: 0.875rem;
+		padding: 5px 12px;
 		color: #ffffff;
 		cursor: pointer;
 		transition: background-color 120ms ease;
