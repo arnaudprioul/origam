@@ -91,6 +91,59 @@ import the component directly.
 This rule applies to **every** component using `withDefaults`. Audit
 your delivery once before commit.
 
+## ⛔ Story + doc sync on every component change (mandatory)
+
+**Every PR that adds, renames, or removes a prop / slot / emit on a
+component MUST update the matching `.story.vue` and `.md` in the
+same commit.** A Variant that doesn't reflect the live API is a
+documentation lie; a doc table missing the latest prop wastes the
+user's debugging cycle.
+
+### Story file structure (canonical)
+
+Every `stories/components/stories/{Name}/Origam{Name}.story.vue`
+MUST follow this exact section order:
+
+1. **`<Variant title="Default">`** — the playground. Renders the
+   component with every reactive control wired into the
+   `#controls` block. Use `useStoryInitState({...})` for the
+   state. Never name this `"Playground"` — the canonical title
+   is `"Default"`.
+2. **Props Variants** grouped by semantic theme (Visual /
+   Behaviour / Layout / Accessibility / Data / …). Pick the
+   grouping that tells the prop story best, keep group order
+   stable. Each title starts with `Prop — ` followed by the
+   prop name(s).
+3. **Slot Variants** — one per slot, with a custom snippet that
+   visibly differs from the default render. Title `Slot — {name}`.
+4. **Emit Variants** — one per emit (or one per logical cluster
+   when they make sense to demo together). Each Variant surfaces
+   a live counter or log of fires. Title `Emit — {names}`.
+
+### Doc file structure (canonical)
+
+`docs/components/{Name}/Origam{Name}.md` exposes:
+- Description + quick-start snippet
+- **Props** table — sub-tabled by group if the surface is large
+  (mirror the story groups)
+- **Emits** table
+- **Slots** table or list
+- Behaviour notes (animations, focus, a11y, SSR, browser support)
+- Composable reference (`use{Name}`) if the component ships one
+- 2-3 runnable usage examples
+
+### Pre-commit sanity
+
+Before committing, eyeball:
+- every prop in the `.vue` has a control in the Default Variant
+  AND a row in the doc's Props table
+- every emit in the `.vue` has at least one Variant
+- every slot in the `.vue` is exercised by at least one Variant
+
+If you're spawning an agent on a component, **the agent prompt
+MUST include this rule explicitly** so the deliverable lands
+story + doc + implementation together — not as a follow-up.
+
 ## Tech stack (snapshot)
 
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.

@@ -4,7 +4,7 @@
 			title="Watermark/OrigamWatermark"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IWatermarkProps>({
 					text: 'CONFIDENTIAL',
 					opacity: 0.1,
