@@ -208,155 +208,143 @@
 					name="controls"
 					v-bind="slotBindings"
 			>
-				<origam-btn
-						:icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY"
-						class="origam-video__btn"
-						:aria-label="t(state.playing.value ? 'origam.video.pause' : 'origam.video.play')"
-						data-cy="origam-video-play"
-						size="small"
-						variant="text"
-						@click="togglePlay"
-				/>
-
-				<span
-						class="origam-video__time"
-						data-cy="origam-video-time"
-				>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
-
-				<div
-						ref="scrubberRef"
-						class="origam-video__scrubber"
-						:class="{ 'origam-video__scrubber--scrubbing': isScrubbing }"
-						role="slider"
-						tabindex="0"
-						:aria-label="t('origam.video.seek')"
-						:aria-valuemin="0"
-						:aria-valuemax="scrubberMax"
-						:aria-valuenow="state.currentTime.value"
-						:aria-valuetext="formattedCurrentTime"
-						data-cy="origam-video-scrubber"
-						@pointerdown="onScrubberPointerDown"
-						@pointermove="onScrubberPointerMove"
-						@pointerleave="onScrubberPointerLeave"
-						@keydown="onScrubberKeyDown"
-				>
-					<div class="origam-video__scrubber-track">
-						<div
-								class="origam-video__scrubber-buffer"
-								:style="{ width: bufferedPct + '%' }"
-								aria-hidden="true"
-						/>
-						<div
-								class="origam-video__scrubber-progress"
-								:style="{ width: progressPct + '%' }"
-								aria-hidden="true"
-						/>
-						<div
-								v-if="hoverPct !== null"
-								class="origam-video__scrubber-hover-time"
-								:style="{ left: hoverPct + '%' }"
-								aria-hidden="true"
-						>{{ hoverTimeFormatted }}</div>
-						<div
-								class="origam-video__scrubber-thumb"
-								:style="{ left: progressPct + '%' }"
-								aria-hidden="true"
-						/>
+				<div class="origam-video__progress-row">
+					<div
+							ref="scrubberRef"
+							class="origam-video__scrubber"
+							:class="{ 'origam-video__scrubber--scrubbing': isScrubbing }"
+							role="slider"
+							tabindex="0"
+							:aria-label="t('origam.video.seek')"
+							:aria-valuemin="0"
+							:aria-valuemax="scrubberMax"
+							:aria-valuenow="state.currentTime.value"
+							:aria-valuetext="formattedCurrentTime"
+							data-cy="origam-video-scrubber"
+							@pointerdown="onScrubberPointerDown"
+							@pointermove="onScrubberPointerMove"
+							@pointerleave="onScrubberPointerLeave"
+							@keydown="onScrubberKeyDown"
+					>
+						<div class="origam-video__scrubber-track">
+							<div
+									class="origam-video__scrubber-buffer"
+									:style="{ width: bufferedPct + '%' }"
+									aria-hidden="true"
+							/>
+							<div
+									class="origam-video__scrubber-progress"
+									:style="{ width: progressPct + '%' }"
+									aria-hidden="true"
+							/>
+							<div
+									v-if="hoverPct !== null"
+									class="origam-video__scrubber-hover-time"
+									:style="{ left: hoverPct + '%' }"
+									aria-hidden="true"
+							>{{ hoverTimeFormatted }}</div>
+							<div
+									class="origam-video__scrubber-thumb"
+									:style="{ left: progressPct + '%' }"
+									aria-hidden="true"
+							/>
+						</div>
 					</div>
 				</div>
 
-				<origam-tooltip
-						:open-on-hover="true"
-						:open-on-click="false"
-						:close-delay="300"
-						:open-delay="80"
-						location="top"
-						content-class="origam-video__volume-tooltip"
-				>
-					<template #activator="{ props: activatorProps }">
-						<origam-btn
-								v-bind="activatorProps"
-								:icon="volumeIcon"
+				<div class="origam-video__buttons-row">
+					<div class="origam-video__buttons-left">
+						<button
+								type="button"
 								class="origam-video__btn"
-								:aria-label="t(state.muted.value ? 'origam.video.unmute' : 'origam.video.mute')"
-								data-cy="origam-video-mute"
-								size="small"
-								variant="text"
-								@click="methods.toggleMute()"
-						/>
-					</template>
-					<div class="origam-video__volume-wrapper">
-						<input
-								class="origam-video__volume"
-								type="range"
-								min="0"
-								max="1"
-								step="0.05"
-								:value="state.muted.value ? 0 : state.volume.value"
-								:aria-label="t('origam.video.volume')"
-								data-cy="origam-video-volume"
-								@input="onVolumeInput($event)"
-						/>
+								:aria-label="t(state.playing.value ? 'origam.video.pause' : 'origam.video.play')"
+								data-cy="origam-video-play"
+								@click="togglePlay"
+						>
+							<origam-icon :icon="state.playing.value ? ICONS.PAUSE : ICONS.PLAY" aria-hidden="true" />
+						</button>
+
+						<div
+								class="origam-video__volume-cluster"
+								:class="{ 'origam-video__volume-cluster--hover': volumeClusterHover }"
+								@mouseenter="volumeClusterHover = true"
+								@mouseleave="volumeClusterHover = false"
+						>
+							<button
+									type="button"
+									class="origam-video__btn"
+									:aria-label="t(state.muted.value ? 'origam.video.unmute' : 'origam.video.mute')"
+									data-cy="origam-video-mute"
+									@click="methods.toggleMute()"
+							>
+								<origam-icon :icon="volumeIcon" aria-hidden="true" />
+							</button>
+							<input
+									class="origam-video__volume-slider"
+									type="range"
+									min="0"
+									max="1"
+									step="0.05"
+									:value="state.muted.value ? 0 : state.volume.value"
+									:aria-label="t('origam.video.volume')"
+									data-cy="origam-video-volume"
+									@input="onVolumeInput($event)"
+							/>
+						</div>
+
+						<span class="origam-video__time" data-cy="origam-video-time">
+							<span class="origam-video__time-current">{{ formattedCurrentTime }}</span>
+							<span class="origam-video__time-sep">/</span>
+							<span class="origam-video__time-total">{{ formattedDuration }}</span>
+						</span>
 					</div>
-				</origam-tooltip>
 
-				<origam-btn
-						v-if="hasCaptions"
-						:icon="ICONS.CAPTIONS"
-						class="origam-video__btn"
-						:class="{ 'origam-video__btn--active': captionsEnabled }"
-						:aria-label="t(captionsEnabled ? 'origam.video.disableCaptions' : 'origam.video.enableCaptions')"
-						data-cy="origam-video-captions"
-						size="small"
-						variant="text"
-						:color="captionsEnabled ? 'primary' : undefined"
-						@click="toggleCaptions"
-				/>
-
-				<origam-btn
-						v-if="pipSupported"
-						:icon="ICONS.PIP"
-						class="origam-video__btn"
-						:aria-label="t(state.pip.value ? 'origam.video.exitPip' : 'origam.video.enterPip')"
-						data-cy="origam-video-pip"
-						size="small"
-						variant="text"
-						@click="togglePipBtn"
-				/>
-
-				<origam-btn
-						v-if="allowRemotePlayback && state.remoteAvailable.value"
-						:icon="ICONS.CAST"
-						class="origam-video__btn"
-						:aria-label="t(state.remoteState.value === 'connected' ? 'origam.video.stopCasting' : 'origam.video.castToDevice')"
-						data-cy="origam-video-cast"
-						size="small"
-						variant="text"
-						:color="state.remoteState.value === 'connected' ? 'primary' : undefined"
-						@click="onCastClick"
-				/>
-
-				<origam-tooltip
-						v-if="hasConfigContent"
-						v-model="configMenuOpen"
-						:open-on-hover="false"
-						:open-on-click="true"
-						:close-on-content-click="false"
-						location="top"
-						content-class="origam-video__config-menu"
-				>
-					<template #activator="{ props: activatorProps }">
-						<origam-btn
-								v-bind="activatorProps"
-								:icon="ICONS.COG"
+					<div class="origam-video__buttons-right">
+						<button
+								v-if="hasCaptions"
+								type="button"
 								class="origam-video__btn"
-								:class="{ 'origam-video__btn--active': configMenuOpen }"
-								:aria-label="t('origam.video.settings')"
-								data-cy="origam-video-config"
-								size="small"
-								variant="text"
-						/>
-					</template>
+								:class="{ 'origam-video__btn--active': captionsEnabled }"
+								:aria-label="t(captionsEnabled ? 'origam.video.disableCaptions' : 'origam.video.enableCaptions')"
+								data-cy="origam-video-captions"
+								@click="toggleCaptions"
+						>
+							<origam-icon :icon="ICONS.CAPTIONS" aria-hidden="true" />
+						</button>
+
+						<button
+								v-if="allowRemotePlayback && state.remoteAvailable.value"
+								type="button"
+								class="origam-video__btn"
+								:class="{ 'origam-video__btn--active': state.remoteState.value === 'connected' }"
+								:aria-label="t(state.remoteState.value === 'connected' ? 'origam.video.stopCasting' : 'origam.video.castToDevice')"
+								data-cy="origam-video-cast"
+								@click="onCastClick"
+						>
+							<origam-icon :icon="ICONS.CAST" aria-hidden="true" />
+						</button>
+
+						<origam-tooltip
+								v-if="hasConfigContent"
+								v-model="configMenuOpen"
+								:open-on-hover="false"
+								:open-on-click="true"
+								:close-on-content-click="false"
+								location="top"
+								content-class="origam-video__config-menu"
+						>
+							<template #activator="{ props: activatorProps }">
+								<button
+										v-bind="activatorProps"
+										type="button"
+										class="origam-video__btn"
+										:class="{ 'origam-video__btn--active': configMenuOpen }"
+										:aria-label="t('origam.video.settings')"
+										data-cy="origam-video-config"
+								>
+									<origam-icon :icon="ICONS.COG" aria-hidden="true" />
+								</button>
+							</template>
 					<div class="origam-video__config" data-cy="origam-video-config-menu">
 						<slot
 								name="config"
@@ -406,17 +394,30 @@
 							</template>
 						</slot>
 					</div>
-				</origam-tooltip>
+					</origam-tooltip>
 
-				<origam-btn
-						:icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN"
-						class="origam-video__btn"
-						:aria-label="t(state.fullscreen.value ? 'origam.video.exitFullscreen' : 'origam.video.enterFullscreen')"
-						data-cy="origam-video-fullscreen"
-						size="small"
-						variant="text"
-						@click="toggleFullscreenBtn"
-				/>
+					<button
+							v-if="pipSupported"
+							type="button"
+							class="origam-video__btn"
+							:aria-label="t(state.pip.value ? 'origam.video.exitPip' : 'origam.video.enterPip')"
+							data-cy="origam-video-pip"
+							@click="togglePipBtn"
+					>
+						<origam-icon :icon="ICONS.PIP" aria-hidden="true" />
+					</button>
+
+					<button
+							type="button"
+							class="origam-video__btn"
+							:aria-label="t(state.fullscreen.value ? 'origam.video.exitFullscreen' : 'origam.video.enterFullscreen')"
+							data-cy="origam-video-fullscreen"
+							@click="toggleFullscreenBtn"
+					>
+						<origam-icon :icon="state.fullscreen.value ? ICONS.FULLSCREEN_EXIT : ICONS.FULLSCREEN" aria-hidden="true" />
+					</button>
+					</div>
+				</div>
 			</slot>
 		</div>
 		</template>
@@ -885,6 +886,7 @@
 	const scrubberRef = ref<HTMLElement | null>(null)
 	const isScrubbing = ref<boolean>(false)
 	const hoverPct = ref<number | null>(null)
+	const volumeClusterHover = ref<boolean>(false)
 
 	const progressPct = computed(() => {
 		const max = scrubberMax.value
@@ -1163,12 +1165,80 @@
 		left: 0;
 		right: 0;
 		display: flex;
-		align-items: center;
-		gap: var(--origam-video__controls---gap, 8px);
-		padding: var(--origam-video__controls---padding, 8px 12px);
-		background: var(--origam-video__controls---background-color, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent));
-		color: var(--origam-video__controls---color, #ffffff);
+		flex-direction: column;
+		gap: 0;
+		padding: 0 0 6px;
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
+		color: #ffffff;
 		transition: opacity 180ms ease, transform 220ms ease;
+	}
+
+	.origam-video__progress-row {
+		padding: 0 12px;
+	}
+
+	.origam-video__buttons-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 8px;
+		min-height: 36px;
+	}
+
+	.origam-video__buttons-left,
+	.origam-video__buttons-right {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.origam-video__volume-cluster {
+		display: flex;
+		align-items: center;
+		overflow: hidden;
+	}
+
+	.origam-video__volume-slider {
+		appearance: none;
+		-webkit-appearance: none;
+		width: 0;
+		height: 3px;
+		margin: 0 0 0 0;
+		padding: 0;
+		background: rgba(255, 255, 255, 0.3);
+		border-radius: 2px;
+		cursor: pointer;
+		outline: none;
+		opacity: 0;
+		transition: width 180ms ease, opacity 180ms ease, margin 180ms ease;
+		accent-color: #ffffff;
+	}
+
+	.origam-video__volume-cluster--hover .origam-video__volume-slider,
+	.origam-video__volume-cluster:focus-within .origam-video__volume-slider {
+		width: 72px;
+		opacity: 1;
+		margin: 0 8px 0 0;
+	}
+
+	.origam-video__volume-slider::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 12px;
+		height: 12px;
+		border: none;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
+	}
+
+	.origam-video__volume-slider::-moz-range-thumb {
+		width: 12px;
+		height: 12px;
+		border: none;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
 	}
 
 	/* In inset mode, controls auto-fade unless `--visible` is added (on
@@ -1462,10 +1532,10 @@
 	 * played + thumb) anchored on a single track row. Hover tooltip
 	 * shows the timestamp at the cursor position. */
 	.origam-video__scrubber {
-		flex: 1 1 auto;
+		width: 100%;
 		min-width: 0;
 		position: relative;
-		height: 18px;
+		height: 14px;
 		display: flex;
 		align-items: center;
 		cursor: pointer;
@@ -1619,47 +1689,67 @@
 
 	.origam-video__btn {
 		all: unset;
+		box-sizing: border-box;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: var(--origam-video__btn---size, 32px);
-		height: var(--origam-video__btn---size, 32px);
-		border-radius: var(--origam-video__btn---border-radius, 4px);
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
 		cursor: pointer;
-		font-size: var(--origam-video__btn---font-size, 18px);
-		color: var(--origam-video__btn---color, #ffffff);
-		transition: background-color 120ms ease, color 120ms ease;
+		color: #ffffff;
+		transition: background-color 120ms ease, transform 120ms ease, opacity 120ms ease;
+		opacity: 0.95;
 	}
 
 	.origam-video__btn:hover,
 	.origam-video__btn:focus-visible {
-		background-color: var(--origam-video__btn---background-color-hover, rgba(255, 255, 255, 0.15));
-		color: var(--origam-video__btn---color-hover, #ffffff);
+		opacity: 1;
+		background-color: rgba(255, 255, 255, 0.12);
+	}
+
+	.origam-video__btn:active {
+		transform: scale(0.92);
 	}
 
 	.origam-video__btn--active {
-		background-color: var(--origam-video__btn---background-color-active, rgba(255, 255, 255, 0.25));
+		opacity: 1;
+	}
+
+	.origam-video__btn--active::after {
+		content: '';
+		position: absolute;
+		bottom: 2px;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: #ef4444;
+	}
+
+	.origam-video__btn .origam-icon {
+		font-size: 20px;
+		line-height: 1;
 	}
 
 	.origam-video__time {
-		font-family: var(--origam-video__time---font-family, ui-monospace, monospace);
-		font-size: var(--origam-video__time---font-size, 12px);
-		color: var(--origam-video__time---color, #ffffff);
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 0 6px;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+		color: #ffffff;
 		white-space: nowrap;
+		user-select: none;
 	}
 
-	.origam-video__scrubber {
-		flex: 1 1 auto;
-		min-width: 0;
-		accent-color: var(--origam-video__scrubber---color, #ffffff);
-		height: var(--origam-video__scrubber---thumb-size, 16px);
-		cursor: pointer;
+	.origam-video__time-sep {
+		opacity: 0.6;
 	}
 
-	.origam-video__volume {
-		width: var(--origam-video__volume---width, 80px);
-		accent-color: var(--origam-video__volume---color, #ffffff);
-		cursor: pointer;
+	.origam-video__time-total {
+		opacity: 0.7;
 	}
 
 	.origam-video--fullscreen {
