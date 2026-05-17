@@ -10,7 +10,7 @@ import { ref } from 'vue'
 import {
     __clearQrCodeCache,
     useQrCode
-} from './qrcode.composable'
+} from './qr-code.composable'
 
 describe('useQrCode', () => {
     beforeEach(() => {
