@@ -15,7 +15,7 @@
 					show-thumb-on-hover-only
 					show-hover-tooltip
 					:format-hover-tooltip="formatScrubberTime"
-					:aria-label="t('origam.video.seek')"
+					:aria-label="t('origam.media.seek')"
 					:aria-value-text="formattedCurrentTime"
 					class="origam-media-controller__scrubber"
 					data-cy="origam-media-controller-scrubber"
@@ -70,7 +70,7 @@
 								:model-value="resolvedVolume"
 								:max="1"
 								:step="0.05"
-								:aria-label="t('origam.video.volume')"
+								:aria-label="t('origam.media.volume')"
 								:aria-value-text="formattedVolume"
 								:format-hover-tooltip="formatVolumeTooltip"
 								data-cy="origam-media-controller-volume"
@@ -124,7 +124,7 @@
 								type="button"
 								class="origam-media-controller__btn"
 								:class="{ 'origam-media-controller__btn--active': configMenuOpen }"
-								:aria-label="t('origam.video.settings')"
+								:aria-label="t('origam.media.settings')"
 								data-cy="origam-media-controller-config"
 						>
 							<origam-icon
@@ -145,7 +145,7 @@
 									data-cy="origam-media-controller-config-open-quality"
 									@click="onOpenQualitySection"
 							>
-								<span class="origam-media-controller__config-row-label">{{ t('origam.video.quality') }}</span>
+								<span class="origam-media-controller__config-row-label">{{ t('origam.media.quality') }}</span>
 								<span class="origam-media-controller__config-row-value">{{ formattedQuality }}</span>
 								<span
 										class="origam-media-controller__config-row-arrow"
@@ -159,7 +159,7 @@
 									data-cy="origam-media-controller-config-open-speed"
 									@click="onOpenSpeedSection"
 							>
-								<span class="origam-media-controller__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
+								<span class="origam-media-controller__config-row-label">{{ t('origam.media.playbackSpeed') }}</span>
 								<span class="origam-media-controller__config-row-value">{{ formattedPlaybackRate }}</span>
 								<span
 										class="origam-media-controller__config-row-arrow"
@@ -179,7 +179,7 @@
 								>
 									<origam-icon :icon="ICONS.DOWNLOAD" />
 								</span>
-								<span class="origam-media-controller__config-row-label">{{ t('origam.video.download') }}</span>
+								<span class="origam-media-controller__config-row-label">{{ t('origam.media.download') }}</span>
 							</button>
 							<slot
 									name="configExtra"
@@ -198,7 +198,7 @@
 										class="origam-media-controller__config-row-arrow origam-media-controller__config-row-arrow--back"
 										aria-hidden="true"
 								>‹</span>
-								<span class="origam-media-controller__config-row-label">{{ t('origam.video.playbackSpeed') }}</span>
+								<span class="origam-media-controller__config-row-label">{{ t('origam.media.playbackSpeed') }}</span>
 							</button>
 							<button
 									v-for="rate in playbackRates"
@@ -224,7 +224,7 @@
 										class="origam-media-controller__config-row-arrow origam-media-controller__config-row-arrow--back"
 										aria-hidden="true"
 								>‹</span>
-								<span class="origam-media-controller__config-row-label">{{ t('origam.video.quality') }}</span>
+								<span class="origam-media-controller__config-row-label">{{ t('origam.media.quality') }}</span>
 							</button>
 							<button
 									v-for="q in qualityOptions"
@@ -384,7 +384,7 @@
 	const isCasting = computed<boolean>(() => state.value.remoteState.value === 'connected')
 
 	const castLabelKey = computed<string>(() => {
-		return isCasting.value ? 'origam.video.stopCasting' : 'origam.video.castToDevice'
+		return isCasting.value ? 'origam.media.stopCasting' : 'origam.media.castToDevice'
 	})
 
 	async function onCastClick (): Promise<void> {
@@ -399,7 +399,7 @@
 	 * parent so the Controller stays media-agnostic.
 	 ********************************************************/
 	const playPauseLabelKey = computed<string>(() => {
-		return state.value.playing.value ? 'origam.video.pause' : 'origam.video.play'
+		return state.value.playing.value ? 'origam.media.pause' : 'origam.media.play'
 	})
 
 	function onTogglePlay (): void {
@@ -413,7 +413,7 @@
 	 * drag up to un-mute in a single gesture (YouTube parity).
 	 ********************************************************/
 	const muteLabelKey = computed<string>(() => {
-		return state.value.muted.value ? 'origam.video.unmute' : 'origam.video.mute'
+		return state.value.muted.value ? 'origam.media.unmute' : 'origam.media.mute'
 	})
 
 	function onToggleMute (): void {
@@ -497,7 +497,7 @@
 	 ********************************************************/
 	const formattedPlaybackRate = computed<string>(() => {
 		const r = state.value.playbackRate.value
-		if (Math.abs(r - 1) < 0.01) return t('origam.video.normalSpeed')
+		if (Math.abs(r - 1) < 0.01) return t('origam.media.normalSpeed')
 		return `${r}×`
 	})
 
@@ -506,7 +506,7 @@
 	}
 
 	function playbackRateLabel (rate: number): string {
-		return rate === 1 ? t('origam.video.normalSpeed') : `${rate}×`
+		return rate === 1 ? t('origam.media.normalSpeed') : `${rate}×`
 	}
 
 	function onPlaybackRateClick (rate: number): void {
