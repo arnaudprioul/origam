@@ -13,7 +13,7 @@ QR re-paints with the right foreground without a re-encode.
 <template>
     <origam-qr-code
         value="https://origam.dev"
-        :size="240"
+        size="large"
         error-correction-level="M"
     />
 
@@ -24,9 +24,17 @@ QR re-paints with the right foreground without a re-encode.
     />
 
     <origam-qr-code
-        value="https://origam.dev/qrcode-with-logo"
+        value="https://origam.dev/qrcode-with-icon"
         error-correction-level="H"
-        :logo="{ src: '/logo.svg', size: 0.2 }"
+        icon="mdi-star"
+        :size="240"
+        rounded="default"
+    />
+
+    <origam-qr-code
+        value="https://origam.dev/qrcode-with-image"
+        error-correction-level="H"
+        :image="{ src: '/brand-logo.svg', alt: 'Brand', aspectRatio: 1 }"
         :size="240"
     />
 </template>
@@ -34,20 +42,48 @@ QR re-paints with the right foreground without a re-encode.
 
 ## Props
 
-| Prop                   | Type                          | Default          | Notes                                                                                          |
-|------------------------|-------------------------------|------------------|------------------------------------------------------------------------------------------------|
-| `value`                | `string`                      | required         | Text or URL to encode (UTF-8).                                                                 |
-| `size`                 | `number \| string`            | `240`            | Pixel number or any CSS dimension (`'14rem'`, `'min(80vw, 320px)'`).                           |
-| `errorCorrectionLevel` | `'L' \| 'M' \| 'Q' \| 'H'`    | `'M'`            | Reed-Solomon redundancy budget — see the matrix below.                                         |
-| `foreground`           | `string`                      | `'currentColor'` | Module fill colour. Defaults to inherit so theme switches work out-of-the-box.                 |
-| `background`           | `string`                      | `'transparent'`  | Matrix + quiet-zone fill. `'transparent'` keeps the parent surface visible.                    |
-| `margin`               | `number`                      | `4`              | Quiet-zone width (in modules). ISO/IEC 18004 recommends ≥4.                                    |
-| `logo`                 | `IQrCodeLogo`                 | —                | Optional centred overlay — see [Logo overlay](#logo-overlay).                                  |
-| `cornerRadius`         | `number`                      | `0`              | Per-module corner radius in module units (`0.5` = circles).                                    |
-| `ariaLabel`            | `string`                      | —                | Accessible label. Defaults to `"QR code for {value}"`.                                         |
-| `tag`                  | `string`                      | `'div'`          | Wrapper element.                                                                               |
-| `class`                | `string \| array \| object`   | —                |                                                                                                |
-| `style`                | `string \| array \| object`   | —                |                                                                                                |
+The component extends every standard DS transverse interface
+(`ICommonsComponentProps`, `ITagProps`, `IColorProps`, `IBgColorProps`,
+`IRoundedProps`, `ISizeProps`, `IBorderProps`, `IMarginProps`,
+`IPaddingProps`). Only the QR-specific props are listed below.
+
+| Prop                   | Type                                   | Default          | Notes                                                                                          |
+|------------------------|----------------------------------------|------------------|------------------------------------------------------------------------------------------------|
+| `value`                | `string`                               | required         | Text or URL to encode (UTF-8).                                                                 |
+| `errorCorrectionLevel` | `'L' \| 'M' \| 'Q' \| 'H'`             | `'M'`            | Reed-Solomon redundancy budget — see the matrix below.                                         |
+| `quietZone`            | `number`                               | `4`              | Quiet-zone width (in modules). ISO/IEC 18004 recommends ≥4.                                    |
+| `icon`                 | `TIcon`                                | —                | Centred `<OrigamIcon>` overlay. Mutually exclusive with `image`.                               |
+| `image`                | `string \| ISrcObject`                 | —                | Centred image overlay (URL or `ISrcObject`). Wins over `icon` when both are set.               |
+| `ariaLabel`            | `string`                               | —                | Accessible label. Defaults to `"QR code for {value}"`.                                         |
+
+### DS transverse props
+
+| Prop             | Source            | Effect                                                                                       |
+|------------------|-------------------|----------------------------------------------------------------------------------------------|
+| `color`          | `IColorProps`     | Dark-module fill — accepts a `TIntent` (`primary`, …), any CSS colour, or `'currentColor'`. |
+| `bgColor`        | `IBgColorProps`   | Quiet-zone background — same value space as `color`. `'transparent'` keeps the parent visible. |
+| `size`           | `ISizeProps`      | Wrapper width / height — accepts the canonical `TSize` rungs (`'x-small'` … `'x-large'`) **or** any raw number / CSS dimension. |
+| `rounded`        | `IRoundedProps`   | **Per-module** SVG corner radius (mapped to 0..0.5 module units). `'x-large'` paints circle modules. Distinct from a wrapper `border-radius`. |
+| `border`         | `IBorderProps`    | Wrapper border (rendered via `useBorder`).                                                  |
+| `margin`         | `IMarginProps`    | Wrapper outer spacing (rendered via `useMargin`).                                           |
+| `padding`        | `IPaddingProps`   | Wrapper inner spacing (rendered via `usePadding`).                                          |
+| `tag`            | `ITagProps`       | Wrapper element (default `'div'`).                                                          |
+| `class`, `style` | `ICommonsComponentProps` |                                                                                       |
+
+### `rounded` → per-module corner mapping
+
+| `rounded` value          | Internal cornerRadius (module units) |
+|--------------------------|--------------------------------------|
+| `undefined` / `''`       | `0` (square modules)                 |
+| `false`                  | `0`                                  |
+| `'x-small'`              | `0.10`                               |
+| `'small'`                | `0.18`                               |
+| `'default'`              | `0.25`                               |
+| `'medium'`               | `0.30`                               |
+| `'large'`                | `0.40`                               |
+| `'x-large'` / `true`     | `0.50` (circle modules)              |
+| `number`                 | clamped to `[0, 0.5]`                |
+| string CSS (`'4px'`)     | `0` (modules speak module units, not pixels) |
 
 ## Error correction levels
 
@@ -55,42 +91,65 @@ QR re-paints with the right foreground without a re-encode.
 |-------|----------|-----------------------------------------------------------------------|
 | `L`   | ~7%      | Clean digital display, dense payload, no overlay.                     |
 | `M`   | ~15%     | Default — balanced for screen and clean print without overlay.        |
-| `Q`   | ~25%     | Outdoor / print surface at risk of light damage; small logo overlay.  |
-| `H`   | ~30%     | Marketing-style codes with a centred logo (up to ~25–30% width).      |
+| `Q`   | ~25%     | Outdoor / print surface at risk of light damage; small icon overlay.  |
+| `H`   | ~30%     | Marketing-style codes with a centred icon/image (up to ~25–30% width).|
 
 Bumping the level **grows** the matrix for the same payload. Take that
 into account when designing for a fixed physical footprint — going
 from `L` to `H` on a long URL can push the matrix from a 25×25 to a
 33×33 grid, and the per-module size shrinks proportionally.
 
-## Logo overlay
+## Centre overlay — `icon`, `image`, `#center` slot
+
+Three overlay options, **slot wins over `image` wins over `icon`**:
+
+1. **`icon`** — pass any `TIcon` value (`'mdi-star'`, a Vue component,
+   an SVG-path array). Rendered via `<OrigamIcon>` positioned at the
+   centre of the wrapper (absolute, 20 % × 20 % of the wrapper box).
+
+2. **`image`** — pass a raw URL string or an `ISrcObject` shape (the
+   same shape `<OrigamImg>` accepts). Injected as an inline SVG
+   `<image>` element so the asset stays vector-friendly and SSR-safe.
+
+3. **`#center` scoped slot** — full control. Receives
+   `{ size }` (module units of the reserved square) so you can paint
+   custom HTML / SVG without re-deriving the geometry. When the slot
+   is provided, both `icon` and `image` are ignored.
 
 ```vue
 <origam-qr-code
-    value="https://origam.dev"
+    value="https://origam.dev/icon-overlay"
     error-correction-level="H"
-    :logo="{
-        src: '/brand-logo.svg',
-        size: 0.22,
-        padding: 8,
-        background: '#ffffff'
-    }"
+    icon="mdi-star"
+    :size="240"
 />
+
+<origam-qr-code
+    value="https://origam.dev/image-overlay"
+    error-correction-level="H"
+    :image="{ src: '/brand-logo.svg', alt: 'Brand', aspectRatio: 1 }"
+    :size="240"
+/>
+
+<origam-qr-code
+    value="https://origam.dev/custom-overlay"
+    error-correction-level="H"
+    :size="240"
+>
+    <template #center="{ size }">
+        <my-custom-marker :size="size" />
+    </template>
+</origam-qr-code>
 ```
 
-The overlay paints **on top** of the matrix — every module beneath
-the overlay is obscured and has to be reconstructed via the
-Reed-Solomon redundancy budget. Guidelines:
+Overlay sizing guidelines (centre block ≈ 20 % of wrapper width):
 
-| `errorCorrectionLevel` | Maximum overlay (`size`) |
-|------------------------|--------------------------|
-| `L`                    | do not use a logo        |
-| `M`                    | ≤ 0.10                   |
-| `Q`                    | ≤ 0.20                   |
-| `H`                    | ≤ 0.25 – 0.30            |
-
-Above `0.30` the composable surfaces a `console.warn` — no
-error-correction level can reliably reconstruct that much loss.
+| `errorCorrectionLevel` | Safe overlay surface |
+|------------------------|----------------------|
+| `L`                    | do not use an overlay |
+| `M`                    | ≤ 10 % wrapper width  |
+| `Q`                    | ≤ 20 % wrapper width  |
+| `H`                    | ≤ 25 – 30 % wrapper width |
 
 ## Scannability tips
 
@@ -101,11 +160,11 @@ error-correction level can reliably reconstruct that much loss.
   `scan_distance / 10 ≈ matrix_width`. A 240 px / 6 cm code is
   comfortable at arm's length; a 480 px / 12 cm code is needed for a
   poster meant to be scanned from 1 metre.
-- **Quiet zone** — the default `margin=4` is mandatory. Reducing it
+- **Quiet zone** — the default `quietZone=4` is mandatory. Reducing it
   below 4 makes the matrix harder to detect against busy backgrounds.
-- **Don't recolour blindly** — `currentColor` foreground works well
-  in any theme, but pairing it with a contrasting `background` is
-  what lets the scanner detect the matrix boundaries.
+- **Don't recolour blindly** — `color="currentColor"` works well in
+  any theme, but pairing it with a contrasting `bgColor` is what lets
+  the scanner detect the matrix boundaries.
 
 ## Accessibility
 
@@ -123,20 +182,23 @@ is exactly the accessibility contract.
 ## SSR
 
 The renderer is SSR-safe. `qrcode-generator` is pure JavaScript with
-no DOM access, and the SVG is emitted as a string via `v-html`. The
-matrix encodes identically on server and client — no hydration
-mismatch.
+no DOM access, and the SVG is emitted as a string mounted via
+`innerHTML` after `onMounted`. The matrix encodes identically on
+server and client — no hydration mismatch.
 
 ## Slots
 
-The component does not expose slots in v2.3. The roadmap for a
-`#center` scoped slot (custom logo / icon at the centre, with the
-reserved-square size passed to the consumer) is tracked in the
-composable's TypeScript signature — `useQrCode` already exposes
-`modules` and `size`, so anyone who needs a fully custom render can
-drop down to the composable and paint their own SVG.
+| Slot       | Scoped bindings        | Notes                                                                 |
+|------------|------------------------|-----------------------------------------------------------------------|
+| `center`   | `{ size: number }`     | Replaces `icon` / `image`. `size` is the central reserved square in module units (≈ 20 % of the matrix). |
 
 ## Composable — `useQrCode`
+
+The composable is intentionally **lower-level** than the component —
+it speaks `foreground` / `background` / `cornerRadius` (raw CSS
+values + module units) rather than the canonical DS contracts. The
+wrapper component maps `color` / `bgColor` / `rounded` down to these
+keys.
 
 ```ts
 import { useQrCode } from '@origam/composables'
@@ -144,7 +206,9 @@ import { useQrCode } from '@origam/composables'
 const { svg, modules, size } = useQrCode(valueRef, {
     errorCorrectionLevel: 'H',
     foreground: '#000',
-    background: '#fff'
+    background: '#fff',
+    cornerRadius: 0.25,
+    logo: { src: '/logo.svg', size: 0.2 }
 })
 ```
 

@@ -4,7 +4,7 @@
 			title="QrCode/OrigamQrCode"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IQrCodeProps>({
 					value: 'https://origam.dev',
 					size: 240,
@@ -12,18 +12,17 @@
 					color: 'currentColor',
 					bgColor: 'transparent',
 					quietZone: 4,
-					rounded: 'default',
-					cornerRadius: 0
+					rounded: 'default'
 				})"
 		>
 			<template #default="{ state }">
 				<div
 						class="story-shell"
-						data-cy="qrcode-playground"
+						data-cy="qrcode-default"
 				>
 					<origam-qr-code
 							v-bind="state"
-							data-cy="qrcode-playground-host"
+							data-cy="qrcode-default-host"
 					/>
 				</div>
 			</template>
@@ -47,19 +46,15 @@
 				/>
 				<HstText
 						v-model="state.bgColor"
-						title="bgColor (quiet zone bg)"
+						title="bgColor (quiet zone)"
 				/>
 				<HstNumber
 						v-model="state.quietZone"
 						title="quietZone (modules)"
 				/>
-				<HstNumber
-						v-model="state.cornerRadius"
-						title="cornerRadius"
-				/>
 				<HstSelect
 						v-model="state.rounded"
-						title="rounded (wrapper)"
+						title="rounded (per-module)"
 						:options="roundedOptions"
 				/>
 			</template>
@@ -87,6 +82,32 @@
 							color="#111111"
 							bg-color="#ffffff"
 							:data-cy="`qrcode-value-${entry.label}`"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — size (named rungs + raw)">
+			<div
+					class="story-shell"
+					data-cy="qrcode-size"
+			>
+				<p class="hint">
+					`size` accepts the canonical `ISizeProps` taxonomy
+					(`x-small`…`x-large`) **or** any raw number (pixels).
+				</p>
+				<div
+						v-for="entry in sizeSamples"
+						:key="entry.label"
+						class="story-col"
+				>
+					<strong>{{ entry.label }}</strong>
+					<origam-qr-code
+							value="https://origam.dev"
+							:size="entry.size"
+							color="#111111"
+							bg-color="#ffffff"
+							:data-cy="`qrcode-size-${entry.label}`"
 					/>
 				</div>
 			</div>
@@ -120,59 +141,31 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — cornerRadius (0 / 0.25 / 0.5)">
+		<Variant title="Prop — rounded (per-module shape)">
 			<div
 					class="story-shell"
-					data-cy="qrcode-corner-radius"
+					data-cy="qrcode-rounded"
 			>
 				<p class="hint">
-					Rounded modules soften the look but reduce scanner
-					tolerance on some readers — test before shipping a
-					non-zero value to production.
+					`rounded` (from `IRoundedProps`) controls the per-module
+					SVG corner radius. Named rungs map to 0..0.5 module units
+					(circles at `x-large`). Raw numbers in [0, 0.5] pass
+					through. Soft modules reduce scanner tolerance on some
+					readers — test before shipping.
 				</p>
 				<div
-						v-for="radius in cornerRadii"
-						:key="radius"
-						class="story-col"
-				>
-					<strong>cornerRadius = {{ radius }}</strong>
-					<origam-qr-code
-							value="https://origam.dev"
-							:corner-radius="radius"
-							:size="160"
-							color="#111111"
-							bg-color="#ffffff"
-							:data-cy="`qrcode-corner-${radius}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — logo overlay (size 0.15 / 0.2 / 0.25)">
-			<div
-					class="story-shell"
-					data-cy="qrcode-logo"
-			>
-				<p class="hint">
-					Logo overlay scales as a fraction of the QR width. Pair
-					with `errorCorrectionLevel="H"` — the overlay obscures
-					modules that the Reed-Solomon redundancy has to
-					reconstruct.
-				</p>
-				<div
-						v-for="entry in logoSamples"
+						v-for="entry in roundedSamples"
 						:key="entry.label"
 						class="story-col"
 				>
-					<strong>size = {{ entry.size }}</strong>
+					<strong>{{ entry.label }}</strong>
 					<origam-qr-code
-							value="https://origam.dev/qr-code-with-logo"
-							error-correction-level="H"
-							:logo="{ src: LOGO_SRC, size: entry.size }"
-							:size="200"
+							value="https://origam.dev"
+							:rounded="entry.rounded"
+							:size="160"
 							color="#111111"
 							bg-color="#ffffff"
-							:data-cy="`qrcode-logo-${entry.label}`"
+							:data-cy="`qrcode-rounded-${entry.label}`"
 					/>
 				</div>
 			</div>
@@ -206,23 +199,121 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — icon (centred OrigamIcon overlay)">
+			<div
+					class="story-shell"
+					data-cy="qrcode-icon"
+			>
+				<p class="hint">
+					`icon` accepts any `TIcon` value (MDI string, SVG path
+					array, or Vue component). Pair with
+					`errorCorrectionLevel="H"` — the overlay covers live
+					codewords.
+				</p>
+				<div
+						v-for="entry in iconSamples"
+						:key="entry.label"
+						class="story-col"
+				>
+					<strong>{{ entry.label }}</strong>
+					<origam-qr-code
+							value="https://origam.dev/icon-overlay"
+							error-correction-level="H"
+							:icon="entry.icon"
+							:size="180"
+							color="#111111"
+							bg-color="#ffffff"
+							:data-cy="`qrcode-icon-${entry.label}`"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — image (centred image overlay)">
+			<div
+					class="story-shell"
+					data-cy="qrcode-image"
+			>
+				<p class="hint">
+					`image` accepts a raw URL or an `ISrcObject`. The asset is
+					injected as an inline SVG `<image>` element — SSR-safe,
+					no client-side fetch needed. Pair with `errorCorrectionLevel="H"`.
+				</p>
+				<div
+						class="story-col"
+						data-cy="qrcode-image-string"
+				>
+					<strong>image = string (URL)</strong>
+					<origam-qr-code
+							value="https://origam.dev/image-overlay"
+							error-correction-level="H"
+							:image="LOGO_SRC"
+							:size="200"
+							color="#111111"
+							bg-color="#ffffff"
+					/>
+				</div>
+				<div
+						class="story-col"
+						data-cy="qrcode-image-object"
+				>
+					<strong>image = ISrcObject</strong>
+					<origam-qr-code
+							value="https://origam.dev/image-overlay-object"
+							error-correction-level="H"
+							:image="{ src: LOGO_SRC, alt: 'Origam logo', aspectRatio: 1 }"
+							:size="200"
+							color="#111111"
+							bg-color="#ffffff"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — quietZone (matrix padding)">
+			<div
+					class="story-shell"
+					data-cy="qrcode-quietzone"
+			>
+				<p class="hint">
+					`quietZone` reserves N modules as padding around the
+					matrix (ISO requires ≥4). Smaller values save space but
+					may break stricter scanners.
+				</p>
+				<div
+						v-for="qz in [2, 4, 8]"
+						:key="qz"
+						class="story-col"
+				>
+					<strong>quietZone = {{ qz }}</strong>
+					<origam-qr-code
+							value="https://origam.dev"
+							:quiet-zone="qz"
+							:size="160"
+							color="#111111"
+							bg-color="#ffffff"
+							:data-cy="`qrcode-quietzone-${qz}`"
+					/>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant title="Slot — #center (custom centre overlay)">
 			<div
 					class="story-shell"
 					data-cy="qrcode-center-slot"
 			>
 				<p class="hint">
-					The `#center` slot replaces the logo overlay with arbitrary
-					HTML. The slot receives `{ size }` (module units of the
-					reserved square) so consumers can scale their icon without
-					re-deriving the geometry. Use `errorCorrectionLevel="H"` —
-					the centre area masks live codewords.
+					The `#center` slot replaces both `icon` and `image`. It
+					receives `{ size }` (module units of the reserved
+					square) so consumers can scale their custom HTML / SVG
+					without re-deriving the geometry.
 				</p>
 				<div
 						class="story-col"
-						data-cy="qrcode-center-icon"
+						data-cy="qrcode-center-star"
 				>
-					<strong>icon marker (orange star)</strong>
+					<strong>star marker</strong>
 					<origam-qr-code
 							value="https://origam.dev/center-slot"
 							error-correction-level="H"
@@ -255,42 +346,42 @@
 			</div>
 		</Variant>
 
-		<Variant title="Wrapper props — rounded / border / margin / padding">
+		<Variant title="Wrapper props — border / margin / padding">
 			<div
 					class="story-shell"
 					data-cy="qrcode-wrapper-props"
 			>
 				<p class="hint">
-					`rounded`, `border`, `margin`, `padding` are standard DS
-					transverse props applied to the wrapper element — they do
-					not affect the QR matrix geometry.
+					`border`, `margin`, `padding` are the standard DS
+					transverse props applied to the wrapper element — they
+					do not affect the QR matrix geometry. Note: `rounded`
+					on this component drives per-module corners (not the
+					wrapper).
 				</p>
 				<div
 						class="story-col"
-						data-cy="qrcode-rounded-padding"
+						data-cy="qrcode-padding"
 				>
-					<strong>rounded="lg" + padding="3"</strong>
+					<strong>padding="3"</strong>
 					<origam-qr-code
-							value="https://origam.dev/wrapper-rounded"
+							value="https://origam.dev/wrapper-padding"
 							:size="160"
 							color="#111111"
 							bg-color="#e0f2fe"
-							rounded="lg"
 							padding="3"
 					/>
 				</div>
 				<div
 						class="story-col"
-						data-cy="qrcode-border-rounded"
+						data-cy="qrcode-border"
 				>
-					<strong>border="thin" + rounded="md" + padding="4"</strong>
+					<strong>border="thin" + padding="4"</strong>
 					<origam-qr-code
 							value="https://origam.dev/wrapper-border"
 							:size="160"
 							color="#0f172a"
 							bg-color="#ffffff"
 							border="thin"
-							rounded="md"
 							padding="4"
 					/>
 				</div>
@@ -320,7 +411,7 @@
 
 	import type { IQrCodeProps } from '@origam/interfaces'
 
-	import type { TQrCodeErrorCorrectionLevel } from '@origam/types'
+	import type { TIcon, TQrCodeErrorCorrectionLevel, TRounded, TSize } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -332,20 +423,17 @@
 	const LOGO_SRC = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23111827"/><text x="12" y="16" text-anchor="middle" fill="%23ffffff" font-size="10" font-family="Helvetica" font-weight="700">O</text></svg>'
 
 	const eccLevels: TQrCodeErrorCorrectionLevel[] = ['L', 'M', 'Q', 'H']
-	const cornerRadii = [0, 0.25, 0.5]
 
 	const eccOptions: Array<IOption<TQrCodeErrorCorrectionLevel>> = eccLevels.map(v => ({ label: v, value: v }))
 
-	const roundedOptions: Array<IOption<string>> = [
-		{ label: 'none', value: '0' },
-		{ label: 'xs', value: 'xs' },
-		{ label: 'sm', value: 'sm' },
+	const roundedOptions: Array<IOption<TRounded | string>> = [
+		{ label: 'none (0)', value: '' },
+		{ label: 'x-small', value: 'x-small' },
+		{ label: 'small', value: 'small' },
 		{ label: 'default', value: 'default' },
-		{ label: 'md', value: 'md' },
-		{ label: 'lg', value: 'lg' },
-		{ label: 'xl', value: 'xl' },
-		{ label: '2xl', value: '2xl' },
-		{ label: 'circle', value: 'circle' }
+		{ label: 'medium', value: 'medium' },
+		{ label: 'large', value: 'large' },
+		{ label: 'x-large (circle)', value: 'x-large' }
 	]
 
 	const valueSamples = [
@@ -358,10 +446,28 @@
 		}
 	]
 
-	const logoSamples = [
-		{ label: '015', size: 0.15 },
-		{ label: '020', size: 0.20 },
-		{ label: '025', size: 0.25 }
+	const sizeSamples: Array<{ label: string, size: TSize | number }> = [
+		{ label: 'x-small', size: 'x-small' },
+		{ label: 'small', size: 'small' },
+		{ label: 'default', size: 'default' },
+		{ label: 'large', size: 'large' },
+		{ label: 'x-large', size: 'x-large' },
+		{ label: '120 (px)', size: 120 },
+		{ label: '200 (px)', size: 200 }
+	]
+
+	const roundedSamples: Array<{ label: string, rounded: TRounded | number }> = [
+		{ label: 'none (0)', rounded: 0 },
+		{ label: 'x-small', rounded: 'x-small' },
+		{ label: 'default', rounded: 'default' },
+		{ label: 'large', rounded: 'large' },
+		{ label: 'x-large (circle)', rounded: 'x-large' }
+	]
+
+	const iconSamples: Array<{ label: string, icon: TIcon }> = [
+		{ label: 'mdi-star', icon: 'mdi-star' },
+		{ label: 'mdi-account', icon: 'mdi-account' },
+		{ label: 'mdi-heart', icon: 'mdi-heart' }
 	]
 
 	const themes = [

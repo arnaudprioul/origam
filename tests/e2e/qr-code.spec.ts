@@ -3,13 +3,14 @@ import { expect, test, type Page } from '@playwright/test'
 /**
  * OrigamQrCode — runtime probes for the SVG renderer, the matrix
  * regeneration under prop changes (errorCorrectionLevel, value,
- * cornerRadius, foreground, logo overlay) and the ARIA contract.
+ * rounded → per-module rx/ry, color, icon / image overlay) and the
+ * ARIA contract.
  *
  * Variants are reached via their dedicated titles — never via the
  * HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-qr-code-origamqrcode-story-vue'
+const STORY = '/story/stories-components-stories-qrcode-origamqrcode-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -21,12 +22,12 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamQrCode — Playground (smoke)', () => {
+test.describe('OrigamQrCode — Default (smoke)', () => {
     test('mounts and renders an inline <svg>', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="qrcode-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="qrcode-default-host"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         const svg = host.locator('svg').first()
@@ -34,18 +35,18 @@ test.describe('OrigamQrCode — Playground (smoke)', () => {
     })
 
     test('emits at least one dark <rect> for a non-empty value', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="qrcode-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="qrcode-default-host"]').first()
         // 1 background rect + N module rects → ≥ 2.
         const rectCount = await host.locator('svg rect').count()
         expect(rectCount).toBeGreaterThan(1)
     })
 
     test('root carries role="img" and an aria-label', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="qrcode-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="qrcode-default-host"]').first()
         await expect(host).toHaveAttribute('role', 'img')
         const aria = await host.getAttribute('aria-label')
         expect(aria).not.toBeNull()
@@ -53,9 +54,9 @@ test.describe('OrigamQrCode — Playground (smoke)', () => {
     })
 
     test('root carries the ECC modifier class', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="qrcode-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="qrcode-default-host"]').first()
         await expect(host).toHaveClass(/origam-qr-code--ecc-m/)
     })
 })
@@ -123,32 +124,33 @@ test.describe('OrigamQrCode — Prop errorCorrectionLevel', () => {
     })
 })
 
-test.describe('OrigamQrCode — Prop cornerRadius', () => {
-    test('cornerRadius=0 omits rx/ry attributes', async ({ page }) => {
-        await openVariant(page, 'Prop — cornerRadius (0 / 0.25 / 0.5)')
+test.describe('OrigamQrCode — Prop rounded (per-module shape)', () => {
+    test('rounded="" (0) omits rx attribute (square modules)', async ({ page }) => {
+        await openVariant(page, 'Prop — rounded (per-module shape)')
         const sandbox = sandboxOf(page)
-        const firstRect = sandbox.locator('[data-cy="qrcode-corner-0"] svg rect').nth(1)
+        // The story emits rounded=0 under the "none (0)" label.
+        const firstRect = sandbox.locator('[data-cy="qrcode-rounded-none (0)"] svg rect').nth(1)
         await expect(firstRect).toBeAttached({ timeout: 8000 })
         const rx = await firstRect.getAttribute('rx')
         // null OR "0" — the encoder may omit the attribute when 0.
         expect([null, '0']).toContain(rx)
     })
 
-    test('cornerRadius=0.5 paints rounded modules (rx="0.5")', async ({ page }) => {
-        await openVariant(page, 'Prop — cornerRadius (0 / 0.25 / 0.5)')
+    test('rounded="x-large" paints circle modules (rx="0.5")', async ({ page }) => {
+        await openVariant(page, 'Prop — rounded (per-module shape)')
         const sandbox = sandboxOf(page)
-        const firstRect = sandbox.locator('[data-cy="qrcode-corner-0.5"] svg rect').nth(1)
+        const firstRect = sandbox.locator('[data-cy="qrcode-rounded-x-large (circle)"] svg rect').nth(1)
         await expect(firstRect).toBeAttached({ timeout: 8000 })
         const rx = await firstRect.getAttribute('rx')
         expect(rx).toBe('0.5')
     })
 })
 
-test.describe('OrigamQrCode — Prop logo', () => {
-    test('renders an <image> element when a logo is configured', async ({ page }) => {
-        await openVariant(page, 'Prop — logo overlay (size 0.15 / 0.2 / 0.25)')
+test.describe('OrigamQrCode — Prop image (centre overlay)', () => {
+    test('renders an <image> element when image prop is configured', async ({ page }) => {
+        await openVariant(page, 'Prop — image (centred image overlay)')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="qrcode-logo-020"]').first()
+        const host = sandbox.locator('[data-cy="qrcode-image-string"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         const img = host.locator('svg image').first()
@@ -158,23 +160,38 @@ test.describe('OrigamQrCode — Prop logo', () => {
         expect(href!.length).toBeGreaterThan(0)
     })
 
-    test('larger logo size paints a larger overlay box', async ({ page }) => {
-        await openVariant(page, 'Prop — logo overlay (size 0.15 / 0.2 / 0.25)')
+    test('accepts an ISrcObject (image = { src, alt, aspectRatio })', async ({ page }) => {
+        await openVariant(page, 'Prop — image (centred image overlay)')
         const sandbox = sandboxOf(page)
 
-        const small = sandbox.locator('[data-cy="qrcode-logo-015"] svg image').first()
-        const large = sandbox.locator('[data-cy="qrcode-logo-025"] svg image').first()
-        await expect(small).toBeAttached({ timeout: 8000 })
+        const host = sandbox.locator('[data-cy="qrcode-image-object"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
 
-        const smallW = Number(await small.getAttribute('width'))
-        const largeW = Number(await large.getAttribute('width'))
-        expect(largeW).toBeGreaterThan(smallW)
+        const img = host.locator('svg image').first()
+        await expect(img).toBeAttached()
+        const href = await img.getAttribute('href')
+        expect(href).not.toBeNull()
+        expect(href!.length).toBeGreaterThan(0)
     })
 })
 
-test.describe('OrigamQrCode — Prop foreground / background', () => {
-    test('foreground colour propagates to the module <rect> fill', async ({ page }) => {
-        await openVariant(page, 'Prop — foreground / background (theming)')
+test.describe('OrigamQrCode — Prop icon (centre overlay)', () => {
+    test('renders the OrigamIcon overlay in the centre block', async ({ page }) => {
+        await openVariant(page, 'Prop — icon (centred OrigamIcon overlay)')
+        const sandbox = sandboxOf(page)
+        const host = sandbox.locator('[data-cy="qrcode-icon-mdi-star"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        // The icon overlay lives as a sibling of the svg-host span, inside
+        // the `.origam-qr-code__center` wrapper.
+        const overlay = host.locator('.origam-qr-code__center').first()
+        await expect(overlay).toBeAttached()
+    })
+})
+
+test.describe('OrigamQrCode — Prop color / bgColor', () => {
+    test('color propagates to the module <rect> fill', async ({ page }) => {
+        await openVariant(page, 'Prop — color / bgColor (theming)')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="qrcode-theme-brand"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
@@ -182,12 +199,12 @@ test.describe('OrigamQrCode — Prop foreground / background', () => {
         // Find any module rect (skip the background rect at x=0).
         const moduleRect = host.locator('svg rect').nth(1)
         const fill = await moduleRect.getAttribute('fill')
-        // foreground prop = '#7c3aed' → that exact value reaches the SVG.
+        // color prop = '#7c3aed' → that exact value reaches the SVG.
         expect(fill).toBe('#7c3aed')
     })
 
-    test('background prop paints the surface rect', async ({ page }) => {
-        await openVariant(page, 'Prop — foreground / background (theming)')
+    test('bgColor paints the surface rect', async ({ page }) => {
+        await openVariant(page, 'Prop — color / bgColor (theming)')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="qrcode-theme-dark"]').first()
         const bgRect = host.locator('svg rect').first()
