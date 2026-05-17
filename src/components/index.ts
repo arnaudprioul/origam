@@ -180,4 +180,4 @@ export * from './Timeline'
 
 export * from './Treeview'
 
-export * from './QRCode'
+export * from './QrCode'

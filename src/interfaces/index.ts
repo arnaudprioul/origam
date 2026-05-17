@@ -312,5 +312,5 @@ export * from './Mask/mask-options.interface'
 
 export * from './Nuxt/nuxt-module.interface'
 
-export * from './QRCode/qrcode.interface'
-export * from './QRCode/qrcode-logo.interface'
+export * from './QrCode/qr-code.interface'
+export * from './QrCode/qr-code-logo.interface'

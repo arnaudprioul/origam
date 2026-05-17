@@ -95,4 +95,4 @@ export * from './CssSupport/cssSupport.composable'
 
 export * from './Mask/mask.composable'
 
-export * from './QRCode/qrcode.composable'
+export * from './QrCode/qr-code.composable'

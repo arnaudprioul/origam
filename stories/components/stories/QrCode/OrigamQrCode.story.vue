@@ -296,4 +296,4 @@
 	}
 </style>
 
-<docs lang="md" src="@docs/components/QRCode/OrigamQRCode.md"/>
+<docs lang="md" src="@docs/component./QrCode/OrigamQRCode.md"/>
