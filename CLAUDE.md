@@ -144,6 +144,69 @@ If you're spawning an agent on a component, **the agent prompt
 MUST include this rule explicitly** so the deliverable lands
 story + doc + implementation together — not as a follow-up.
 
+## ⛔ Stash before ANY branch / checkout / reset operation (mandatory)
+
+**If you have uncommitted changes (working tree dirty) and you're
+about to do anything that could touch the working tree — switch
+branches, reset, checkout files, `git flow feature start/finish`,
+spawn an agent in a worktree, run a command that might be cancelled
+mid-flight — `git stash push -m "<descriptive label>"` FIRST.**
+
+This isn't optional. Lost work because of a `git checkout` that
+silently failed, an agent worktree that rolled the parent tree back,
+or a commit that "looked successful but the merge said Already up to
+date" is the most common avoidable disaster in this repo's history.
+It has happened multiple times in this codebase already — stop
+relearning it.
+
+### The mandatory flow
+
+```bash
+# Step 1 — ALWAYS stash if dirty
+git stash push -m "wip: <what you were doing>"
+
+# Step 2 — do the risky operation
+git checkout <branch>          # or merge, reset, flow op, …
+
+# Step 3 — pop the stash back
+git stash pop
+
+# Step 4 — if pop conflicted, resolve, don't discard
+#         the original stash entry stays in `git stash list`
+#         until you `git stash drop` explicitly
+```
+
+### When to stash (non-exhaustive)
+
+- Before `git checkout <branch>` when dirty.
+- Before `git flow feature start | finish | rebase`.
+- Before `git reset --hard | --mixed` on a dirty tree.
+- Before `git pull` on a dirty tree.
+- Before spawning a parallel agent that might create a worktree on
+  the same repo.
+- Before any "let me just check the other branch real quick" move.
+
+### When stash is NOT enough
+
+If you're about to do something destructive (force-push a tag,
+delete a branch with unpushed commits, `git clean -fd`), stash
+AND save a tag pointing at the current commit:
+
+```bash
+git stash push -m "before <op>"
+git tag -a backup/<date>-<topic> -m "safety net"
+# … do the risky thing …
+# if you need to recover: git checkout backup/<date>-<topic>
+```
+
+### Why this matters
+
+The runtime that hosts this repo has historically rolled back file
+edits between agent turns when worktrees collide or when an agent
+runs in an isolated copy that doesn't sync. The stash entry is the
+only artefact that survives those rollbacks — it lives in the local
+git object DB and is independent of the working tree state.
+
 ## Tech stack (snapshot)
 
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.
