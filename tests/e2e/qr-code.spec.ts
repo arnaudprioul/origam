@@ -38,6 +38,8 @@ test.describe('OrigamQrCode — Default (smoke)', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="qrcode-default-host"]').first()
+        // Wait for the SVG to be injected (watchEffect runs async on mount).
+        await expect(host.locator('svg').first()).toBeAttached({ timeout: 8000 })
         // 1 background rect + N module rects → ≥ 2.
         const rectCount = await host.locator('svg rect').count()
         expect(rectCount).toBeGreaterThan(1)
