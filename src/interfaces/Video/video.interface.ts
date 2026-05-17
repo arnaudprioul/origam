@@ -231,6 +231,26 @@ export interface IVideoProps extends ICommonsComponentProps {
      * @default true
      */
     doubleTapToSkip?: boolean
+    /**
+     * Adds a "Download" row to the settings (cog) menu that lets the
+     * viewer download the currently-playing video file. The browser's
+     * standard download dialog opens — no analytics, no XHR, no server
+     * call. Works on every modern browser (uses the native `download`
+     * attribute on a hidden `<a>` element).
+     *
+     * Set to `false` (default) to hide the row, e.g. for licensed
+     * content that must stay streamed.
+     *
+     * @default false
+     */
+    downloadable?: boolean
+    /**
+     * Override the downloaded file name. Defaults to the trailing
+     * segment of the source URL. Useful when the URL is opaque
+     * (e.g. signed-S3 with a hash basename) and you want the file
+     * to land in the user's Downloads folder with a clean name.
+     */
+    downloadFilename?: string
 }
 
 /**
@@ -257,6 +277,16 @@ export interface IVideoEmits {
      *  set this in response to the consumer's prop changes — only when
      *  the user picks a rate from the config menu. */
     (e: 'update:playbackRate', rate: number): void
+    /** Fired when the viewer picks a different quality from the
+     *  settings menu. Payload is the new `quality` identifier (e.g.
+     *  "1080p"). Consumers can persist this in localStorage to remember
+     *  the choice across sessions. */
+    (e: 'quality-change', quality: string): void
+    /** Fired when the viewer clicks the "Download" row in the settings
+     *  menu. Payload is the URL of the file being downloaded so the
+     *  consumer can log analytics or block the download by listening
+     *  with `.prevent` if needed. */
+    (e: 'download', url: string): void
 }
 
 /**

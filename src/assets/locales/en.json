@@ -135,6 +135,8 @@
       "rewind": "Rewind {0} seconds",
       "forward": "Forward {0} seconds",
       "seconds": "{0} seconds",
+      "quality": "Quality",
+      "download": "Download",
       "enterFullscreen": "Enter fullscreen",
       "exitFullscreen": "Exit fullscreen",
       "enterPip": "Enter picture in picture",

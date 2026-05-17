@@ -58,4 +58,21 @@ export interface IVideoSource {
      * sources it can't decode without a network round-trip.
      */
     type?: string
+    /**
+     * Quality identifier used to group multiple sources of the same
+     * content at different resolutions / bitrates (e.g. `"1080p"`,
+     * `"720p"`, `"480p"`, `"4K"`, `"auto"`).
+     *
+     * When ≥ 2 sources expose distinct `quality` values, OrigamVideo
+     * shows a "Quality" entry in the settings (cog) menu and lets the
+     * user swap between them. The currently-playing source is then
+     * matched on `quality` rather than on codec.
+     */
+    quality?: string
+    /**
+     * Optional human-readable label override for the quality switcher
+     * menu. Defaults to the `quality` value when not provided. Use
+     * this for cases like `quality: "auto"` rendered as `"Auto (720p)"`.
+     */
+    label?: string
 }
