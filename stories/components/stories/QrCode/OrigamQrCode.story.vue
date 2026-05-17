@@ -1,7 +1,7 @@
 <template>
 	<Story
 			group="components"
-			title="QRCode/OrigamQrCode"
+			title="QrCode/OrigamQrCode"
 	>
 		<Variant
 				title="Playground"
@@ -9,9 +9,10 @@
 					value: 'https://origam.dev',
 					size: 240,
 					errorCorrectionLevel: 'M',
-					foreground: '#000000',
-					background: '#ffffff',
-					margin: 4,
+					color: 'currentColor',
+					bgColor: 'transparent',
+					quietZone: 4,
+					rounded: 'default',
 					cornerRadius: 0
 				})"
 		>
@@ -41,20 +42,25 @@
 						:options="eccOptions"
 				/>
 				<HstText
-						v-model="state.foreground"
-						title="foreground"
+						v-model="state.color"
+						title="color (dark modules)"
 				/>
 				<HstText
-						v-model="state.background"
-						title="background"
+						v-model="state.bgColor"
+						title="bgColor (quiet zone bg)"
 				/>
 				<HstNumber
-						v-model="state.margin"
-						title="margin (modules)"
+						v-model="state.quietZone"
+						title="quietZone (modules)"
 				/>
 				<HstNumber
 						v-model="state.cornerRadius"
 						title="cornerRadius"
+				/>
+				<HstSelect
+						v-model="state.rounded"
+						title="rounded (wrapper)"
+						:options="roundedOptions"
 				/>
 			</template>
 		</Variant>
@@ -78,8 +84,8 @@
 					<origam-qr-code
 							:value="entry.value"
 							:size="160"
-							foreground="#111111"
-							background="#ffffff"
+							color="#111111"
+							bg-color="#ffffff"
 							:data-cy="`qrcode-value-${entry.label}`"
 					/>
 				</div>
@@ -106,8 +112,8 @@
 							value="https://origam.dev/design-system"
 							:error-correction-level="level"
 							:size="160"
-							foreground="#111111"
-							background="#ffffff"
+							color="#111111"
+							bg-color="#ffffff"
 							:data-cy="`qrcode-ecc-${level}`"
 					/>
 				</div>
@@ -134,8 +140,8 @@
 							value="https://origam.dev"
 							:corner-radius="radius"
 							:size="160"
-							foreground="#111111"
-							background="#ffffff"
+							color="#111111"
+							bg-color="#ffffff"
 							:data-cy="`qrcode-corner-${radius}`"
 					/>
 				</div>
@@ -160,27 +166,27 @@
 				>
 					<strong>size = {{ entry.size }}</strong>
 					<origam-qr-code
-							value="https://origam.dev/qrcode-with-logo"
+							value="https://origam.dev/qr-code-with-logo"
 							error-correction-level="H"
 							:logo="{ src: LOGO_SRC, size: entry.size }"
 							:size="200"
-							foreground="#111111"
-							background="#ffffff"
+							color="#111111"
+							bg-color="#ffffff"
 							:data-cy="`qrcode-logo-${entry.label}`"
 					/>
 				</div>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — foreground / background (theming)">
+		<Variant title="Prop — color / bgColor (theming)">
 			<div
 					class="story-shell"
 					data-cy="qrcode-themed"
 			>
 				<p class="hint">
-					Pure CSS theming — pass any colour to `foreground` /
-					`background`, or use `currentColor` to inherit from the
-					parent's `color`.
+					DS-first theming — pass a `TIntent` token (`primary`,
+					`success`, …) or any CSS colour to `color` / `bgColor`.
+					Use `currentColor` to inherit from the parent text colour.
 				</p>
 				<div
 						v-for="theme in themes"
@@ -191,10 +197,114 @@
 					<strong>{{ theme.label }}</strong>
 					<origam-qr-code
 							value="https://origam.dev"
-							:foreground="theme.foreground"
-							:background="theme.background"
+							:color="theme.color"
+							:bg-color="theme.bgColor"
 							:size="160"
 							:data-cy="`qrcode-theme-${theme.label}`"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — #center (custom centre overlay)">
+			<div
+					class="story-shell"
+					data-cy="qrcode-center-slot"
+			>
+				<p class="hint">
+					The `#center` slot replaces the logo overlay with arbitrary
+					HTML. The slot receives `{ size }` (module units of the
+					reserved square) so consumers can scale their icon without
+					re-deriving the geometry. Use `errorCorrectionLevel="H"` —
+					the centre area masks live codewords.
+				</p>
+				<div
+						class="story-col"
+						data-cy="qrcode-center-icon"
+				>
+					<strong>icon marker (orange star)</strong>
+					<origam-qr-code
+							value="https://origam.dev/center-slot"
+							error-correction-level="H"
+							:size="200"
+							color="#111111"
+							bg-color="#ffffff"
+					>
+						<template #center>
+							<div class="center-slot-icon">&#9733;</div>
+						</template>
+					</origam-qr-code>
+				</div>
+				<div
+						class="story-col"
+						data-cy="qrcode-center-brand"
+				>
+					<strong>brand letter (purple O)</strong>
+					<origam-qr-code
+							value="https://origam.dev/center-slot-brand"
+							error-correction-level="H"
+							:size="200"
+							color="#7c3aed"
+							bg-color="#f5f3ff"
+					>
+						<template #center>
+							<div class="center-slot-brand">O</div>
+						</template>
+					</origam-qr-code>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Wrapper props — rounded / border / margin / padding">
+			<div
+					class="story-shell"
+					data-cy="qrcode-wrapper-props"
+			>
+				<p class="hint">
+					`rounded`, `border`, `margin`, `padding` are standard DS
+					transverse props applied to the wrapper element — they do
+					not affect the QR matrix geometry.
+				</p>
+				<div
+						class="story-col"
+						data-cy="qrcode-rounded-padding"
+				>
+					<strong>rounded="lg" + padding="3"</strong>
+					<origam-qr-code
+							value="https://origam.dev/wrapper-rounded"
+							:size="160"
+							color="#111111"
+							bg-color="#e0f2fe"
+							rounded="lg"
+							padding="3"
+					/>
+				</div>
+				<div
+						class="story-col"
+						data-cy="qrcode-border-rounded"
+				>
+					<strong>border="thin" + rounded="md" + padding="4"</strong>
+					<origam-qr-code
+							value="https://origam.dev/wrapper-border"
+							:size="160"
+							color="#0f172a"
+							bg-color="#ffffff"
+							border="thin"
+							rounded="md"
+							padding="4"
+					/>
+				</div>
+				<div
+						class="story-col"
+						data-cy="qrcode-margin"
+				>
+					<strong>margin="4"</strong>
+					<origam-qr-code
+							value="https://origam.dev/wrapper-margin"
+							:size="160"
+							color="#111111"
+							bg-color="#fef9c3"
+							margin="4"
 					/>
 				</div>
 			</div>
@@ -226,6 +336,18 @@
 
 	const eccOptions: Array<IOption<TQrCodeErrorCorrectionLevel>> = eccLevels.map(v => ({ label: v, value: v }))
 
+	const roundedOptions: Array<IOption<string>> = [
+		{ label: 'none', value: '0' },
+		{ label: 'xs', value: 'xs' },
+		{ label: 'sm', value: 'sm' },
+		{ label: 'default', value: 'default' },
+		{ label: 'md', value: 'md' },
+		{ label: 'lg', value: 'lg' },
+		{ label: 'xl', value: 'xl' },
+		{ label: '2xl', value: '2xl' },
+		{ label: 'circle', value: 'circle' }
+	]
+
 	const valueSamples = [
 		{ label: 'url', value: 'https://origam.dev' },
 		{ label: 'text', value: 'Hello — origam!' },
@@ -245,21 +367,27 @@
 	const themes = [
 		{
 			label: 'light',
-			foreground: '#0f172a',
-			background: '#ffffff',
+			color: '#0f172a',
+			bgColor: '#ffffff',
 			surfaceStyle: { background: '#ffffff' }
 		},
 		{
 			label: 'dark',
-			foreground: '#f8fafc',
-			background: '#0f172a',
+			color: '#f8fafc',
+			bgColor: '#0f172a',
 			surfaceStyle: { background: '#0f172a', color: '#ffffff' }
 		},
 		{
 			label: 'brand',
-			foreground: '#7c3aed',
-			background: '#f5f3ff',
+			color: '#7c3aed',
+			bgColor: '#f5f3ff',
 			surfaceStyle: { background: '#f5f3ff' }
+		},
+		{
+			label: 'intent: primary',
+			color: 'primary',
+			bgColor: 'transparent',
+			surfaceStyle: { background: '#ffffff' }
 		}
 	]
 </script>
@@ -294,6 +422,32 @@
 		font: 600 0.75rem/1.2 ui-monospace, monospace;
 		color: var(--origam-color__text---primary, #171717);
 	}
+
+	.center-slot-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background: #fff;
+		color: #f97316;
+		font-size: 18px;
+		line-height: 1;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+	}
+
+	.center-slot-brand {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		background: #7c3aed;
+		color: #fff;
+		font: 700 18px/1 system-ui, sans-serif;
+	}
 </style>
 
-<docs lang="md" src="@docs/component./QrCode/OrigamQrCode.md"/>
+<docs lang="md" src="@docs/components/QrCode/OrigamQrCode.md"/>
