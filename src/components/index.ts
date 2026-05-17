@@ -78,6 +78,8 @@ export * from './Grid'
 
 export * from './Masonry'
 
+export * from './MediaController'
+
 export * from './MediaScrubber'
 
 export * from './Icon'
