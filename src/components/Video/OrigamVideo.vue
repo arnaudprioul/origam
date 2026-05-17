@@ -698,6 +698,24 @@
 		if (!props.doubleTapToSkip) return
 		// Skip keyboard / synthetic events without coordinates.
 		if (event.clientX == null) return
+
+		// Ignore taps that originate from interactive controls (buttons,
+		// scrubber, menu cog, volume slider, etc.). Only the bare video
+		// surface should trigger the double-tap skip — otherwise the
+		// wrapper handler shadows every click on the controls bar.
+		const eventTarget = event.target as HTMLElement | null
+		if (eventTarget && (
+			eventTarget.closest('.origam-video__controls') ||
+			eventTarget.closest('.origam-video__center-btn') ||
+			eventTarget.closest('button') ||
+			eventTarget.closest('input') ||
+			eventTarget.closest('[role="slider"]') ||
+			eventTarget.closest('[role="menu"]') ||
+			eventTarget.closest('[role="menuitem"]')
+		)) {
+			return
+		}
+
 		const target = event.currentTarget as HTMLElement
 		const rect = target.getBoundingClientRect()
 		const side: 'left' | 'right' = event.clientX - rect.left < rect.width / 2 ? 'left' : 'right'
@@ -1253,43 +1271,40 @@
 		position: absolute;
 		top: 0;
 		bottom: 0;
-		width: 45%;
+		width: 12%;
 		z-index: 3;
 		pointer-events: none;
-		background: rgba(0, 0, 0, 0.42);
+		background: rgba(0, 0, 0, 0.55);
 		display: flex;
 		align-items: center;
+		justify-content: center;
 	}
 
 	.origam-video__skip-ripple--left {
 		left: 0;
 		border-top-right-radius: 50% 50%;
 		border-bottom-right-radius: 50% 50%;
-		justify-content: flex-end;
-		padding-right: 12%;
 	}
 
 	.origam-video__skip-ripple--right {
 		right: 0;
 		border-top-left-radius: 50% 50%;
 		border-bottom-left-radius: 50% 50%;
-		justify-content: flex-start;
-		padding-left: 12%;
 	}
 
 	.origam-video__skip-ripple-content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 6px;
+		gap: 2px;
 		color: #ffffff;
+		text-align: center;
 	}
 
 	.origam-video__skip-chevrons {
 		display: inline-flex;
 		align-items: center;
 		gap: 0;
-		font-size: 36px;
 		line-height: 1;
 	}
 
@@ -1297,12 +1312,12 @@
 		display: inline-block;
 		line-height: 1;
 		opacity: 0.4;
-		margin: 0 -14px;
+		margin: 0 -10px;
 		animation: origam-video-chevron-pulse 900ms ease-in-out infinite;
 	}
 
 	.origam-video__skip-chevron .origam-icon {
-		font-size: 36px;
+		font-size: 26px;
 		line-height: 1;
 	}
 
@@ -1316,12 +1331,13 @@
 	}
 
 	.origam-video__skip-ripple-label {
-		font-size: 13px;
+		font-size: 11px;
 		font-weight: 600;
 		font-family: var(--origam-font---family, system-ui, sans-serif);
 		letter-spacing: 0.02em;
 		white-space: nowrap;
 		user-select: none;
+		line-height: 1.2;
 	}
 
 	.origam-video-skip-ripple-enter-active {
