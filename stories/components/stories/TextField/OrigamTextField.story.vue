@@ -609,7 +609,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITextFieldProps>({
 					label: 'Full name',
 					color: 'primary',

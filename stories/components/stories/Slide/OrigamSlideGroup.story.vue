@@ -6,7 +6,7 @@
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ direction: TDirection, showArrows: boolean | string, centerActive: boolean }>({
 					direction: DIRECTION.HORIZONTAL,
 					showArrows: 'always',

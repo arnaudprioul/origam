@@ -6,7 +6,7 @@
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IStepperProps>({
 					modelValue: 1,
 					orientation: 'horizontal',
@@ -178,7 +178,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IStepperProps>({
 					modelValue: 1,
 					orientation: 'horizontal',

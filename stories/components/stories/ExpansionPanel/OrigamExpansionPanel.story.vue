@@ -8,7 +8,7 @@
 			IExpansionPanelProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IExpansionPanelProps>({
 					title: 'Panel title',
 					content: 'Panel content text',

@@ -11,7 +11,7 @@
 			at the top so it's the prominent default.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IDrawerProps & { push: boolean | null, clipped: boolean | null }>({
 					permanent: true,
 					temporary: false,

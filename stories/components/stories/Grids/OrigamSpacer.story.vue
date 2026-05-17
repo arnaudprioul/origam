@@ -8,7 +8,7 @@
 			ISpacerProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISpacerProps>({ tag: 'div' })"
 		>
 			<template #default="{ state }">

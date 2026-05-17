@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IAvatarGroupProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IAvatarGroupProps & { size?: TSize }>({
 					items: people,
 					max: 4,

@@ -81,7 +81,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IWindowProps & { step: number }>({
 					step: 1,
 					direction: DIRECTION.HORIZONTAL,

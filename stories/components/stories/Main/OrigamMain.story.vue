@@ -10,7 +10,7 @@
 			padding-inline-start. Apply padding on a child div instead.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IMainProps>({
 					scrollable: false,
 					rounded: undefined,

@@ -8,7 +8,7 @@
 			wired via the sidebar.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITableProps>({
 					tag: 'div',
 					density: undefined,

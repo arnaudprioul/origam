@@ -8,7 +8,7 @@
 			the picker. Can be used standalone or inside the parent picker.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IDensityProps & { color: string; header: string }>({
 					density: DENSITY.DEFAULT,
 					color: 'primary',

@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IProgressCircularProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IProgressCircularProps>({
 					modelValue: 42,
 					max: 100,

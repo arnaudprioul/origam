@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every ISkeletonProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISkeletonProps>({
 					variant: 'text',
 					width: '200',

@@ -236,7 +236,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITreeviewProps>({
 					selectMode: 'none',
 					selectableNodes: 'leaf',

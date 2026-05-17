@@ -6,7 +6,7 @@
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IMenuProps>({
 					title: undefined,
 					openOnClick: true,

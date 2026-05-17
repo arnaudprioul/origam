@@ -4,7 +4,7 @@
 			title="Transition/OrigamWindowYReverseTranslate"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--window-y-reverse-translate',
 					disabled: false,

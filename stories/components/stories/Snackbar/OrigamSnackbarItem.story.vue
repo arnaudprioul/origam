@@ -4,7 +4,7 @@
     title="Snackbar/OrigamSnackbarItem"
   >
     <Variant
-      title="Playground"
+      title="Default"
       :init-state="() => useStoryInitState<ISnackbarItemProps>({
         intent: 'info',
         title: 'Notification title',

@@ -15,7 +15,7 @@
 
 		<!-- ── Playground ─────────────────────────────────────────────── -->
 
-		<Variant title="Playground">
+		<Variant title="Default">
 			<div style="padding: 24px;">
 				<origam-infinite-scroll
 						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"

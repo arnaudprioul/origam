@@ -8,7 +8,7 @@
 			IContainerProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IContainerProps>({
 					fluid: false,
 					fullscreen: false,

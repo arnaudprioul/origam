@@ -8,7 +8,7 @@
 			that applies MDI class strings directly to the DOM element.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
 					icon: MDI_HOME,
 					size: undefined,

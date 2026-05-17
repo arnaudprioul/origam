@@ -8,7 +8,7 @@
 			when the parent panel expands. Playground — first variant.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					content: string,
 					density: string,
@@ -24,7 +24,7 @@
 			<template #default="{ state }">
 				<origam-expansion-panels data-cy="expansion-content-playground-parent">
 					<origam-expansion-panel>
-						<origam-expansion-panel-header title="Playground"/>
+						<origam-expansion-panel-header title="Default"/>
 						<origam-expansion-panel-content v-bind="state" data-cy="expansion-content-playground"/>
 					</origam-expansion-panel>
 				</origam-expansion-panels>

@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IMessagesProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IMessagesProps>({
 					messages: ['Hint message.'],
 					active: true,

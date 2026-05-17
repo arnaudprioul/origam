@@ -4,7 +4,7 @@
 			title="Code/OrigamCode"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ICodeProps>({
 					tag: 'div',
 					lang: CODE_LANG.TS,

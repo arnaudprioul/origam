@@ -8,7 +8,7 @@
 			IRowProps knob via the sidebar controls.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IRowProps>({
 					align: undefined,
 					justify: undefined,

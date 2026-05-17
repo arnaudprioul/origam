@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every ILabelProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ILabelProps>({
 					tag: 'label',
 					text: 'OrigamLabel',

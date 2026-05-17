@@ -4,7 +4,7 @@
 			title="Parallax/OrigamParallax"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IParallaxProps>({
 					tag: 'div',
 					event: PARALLAX_EVENT.MOVE,

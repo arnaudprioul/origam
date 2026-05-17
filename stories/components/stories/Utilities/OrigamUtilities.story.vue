@@ -14,7 +14,7 @@
 			axis at a time.
 		-->
 
-		<Variant title="Playground">
+		<Variant title="Default">
 			<template #default>
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 					<div>

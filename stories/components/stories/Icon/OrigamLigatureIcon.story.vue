@@ -9,7 +9,7 @@
 			<span> with the appropriate font class.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({
 					icon: 'home',
 					size: undefined,

@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every ILoaderProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ILoaderProps>({
 					loading: true,
 					color: 'primary',

@@ -4,7 +4,7 @@
 			title="Transition/OrigamSnack"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--snack',
 					disabled: false,

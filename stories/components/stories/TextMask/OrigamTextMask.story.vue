@@ -4,7 +4,7 @@
 			title="TextMask/OrigamTextMask"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IPlaygroundState>({
 					text: 'ORIGAM',
 					from: 'primary',

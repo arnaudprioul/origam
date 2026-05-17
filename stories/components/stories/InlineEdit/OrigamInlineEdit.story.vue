@@ -4,7 +4,7 @@
 			title="InlineEdit/OrigamInlineEdit"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IInlineEditProps>({
 					modelValue: 'Initial title',
 					placeholder: 'Click to edit',

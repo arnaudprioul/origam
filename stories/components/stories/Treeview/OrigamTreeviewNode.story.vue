@@ -55,7 +55,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ depth: number }>({ depth: 0 })"
 		>
 			<template #default="{ state }">

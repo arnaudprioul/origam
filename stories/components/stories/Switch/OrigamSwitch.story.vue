@@ -331,7 +331,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISwitchProps>({
 					label: 'Enable feature',
 					color: 'primary',

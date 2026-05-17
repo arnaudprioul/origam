@@ -4,7 +4,7 @@
 			title="Transition/OrigamTranslatePicker"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--translate-picker',
 					disabled: false,

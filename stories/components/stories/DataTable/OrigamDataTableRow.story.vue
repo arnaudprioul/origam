@@ -8,7 +8,7 @@
 			OrigamDataTableRow is internal; use the `item` slot on
 			OrigamDataTable for custom row rendering.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<origam-data-table :headers="headers" :items="items" data-cy="row-default"/>
 		</Variant>
 

@@ -8,7 +8,7 @@
 			table's `group-by` prop. OrigamDataTableGroupHeaderRow is
 			internal; customise via the `group-header` slot.
 		-->
-		<Variant title="Playground">
+		<Variant title="Default">
 			<origam-data-table
 					:headers="headers"
 					:items="items"

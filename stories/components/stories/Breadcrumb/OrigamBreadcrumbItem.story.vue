@@ -6,7 +6,7 @@
 		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({
 					title: 'Breadcrumb item',
 					href: '/',

@@ -4,7 +4,7 @@
 			title="ColorGradient/OrigamColorGradient"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IPlaygroundState>({
 					type: 'linear',
 					from: 'primary',

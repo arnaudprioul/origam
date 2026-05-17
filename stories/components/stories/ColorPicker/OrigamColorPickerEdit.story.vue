@@ -8,7 +8,7 @@
 			input fields for editing color channel values.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					disabled?: boolean
 					mode?: string

@@ -8,7 +8,7 @@
 			wired via the sidebar.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IPickerTitleProps>({
 					title: 'Playground',
 					tag: 'div'

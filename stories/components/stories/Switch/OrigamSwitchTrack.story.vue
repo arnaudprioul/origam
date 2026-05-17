@@ -115,7 +115,7 @@
 		</Variant>
 
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ISwitchTrackProps>({
 					modelValue: true,
 					inset: false,

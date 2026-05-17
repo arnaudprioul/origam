@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every IDividerProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IDividerProps>({
 					direction: undefined,
 					length: undefined,

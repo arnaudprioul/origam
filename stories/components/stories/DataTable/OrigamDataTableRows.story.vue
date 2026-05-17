@@ -9,7 +9,7 @@
 			the parent table.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ itemsPerPage: number }>({ itemsPerPage: 3 })"
 		>
 			<template #default="{ state }">

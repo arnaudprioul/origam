@@ -4,7 +4,7 @@
 			title="Snackbar/OrigamSnackbarGroup"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					location: TSnackbarGroupLocation
 					max: number

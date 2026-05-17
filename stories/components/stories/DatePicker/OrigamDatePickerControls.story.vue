@@ -9,7 +9,7 @@
 			standalone variant shows the chrome in isolation.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ disabled: boolean; disabledNext: boolean; disabledPrev: boolean; disabledYear: boolean }>({
 					disabled: false,
 					disabledNext: false,

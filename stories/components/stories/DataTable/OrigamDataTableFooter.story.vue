@@ -9,7 +9,7 @@
 			the parent table's props and the `footer` slot.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{ itemsPerPage: number }>({ itemsPerPage: 5 })"
 		>
 			<template #default="{ state }">

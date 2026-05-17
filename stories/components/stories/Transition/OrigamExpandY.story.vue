@@ -4,7 +4,7 @@
 			title="Transition/OrigamExpandY"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--expand-y',
 					disabled: false,

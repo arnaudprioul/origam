@@ -7,7 +7,7 @@
 			Playground — first by convention. Exposes every ITooltipProps knob.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<ITooltipProps>({
 					text: 'Tooltip text',
 					openOnHover: true,

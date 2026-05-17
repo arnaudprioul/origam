@@ -9,7 +9,7 @@
 			main surface props.
 		-->
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<{
 					disabled?: boolean
 					dotSize?: number
