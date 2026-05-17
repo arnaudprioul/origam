@@ -1,7 +1,7 @@
 # OrigamQrCode
 
 Native SVG QR-code renderer powered by
-[`qrcode-generator`](https://www.npmjs.com/package/qr-code-generator)
+[`qrcode-generator`](https://www.npmjs.com/package/qrcode-generator)
 (~5 kB minified, pure JavaScript, no canvas dependency). Produces a
 scalable, themeable matrix that inherits the parent's `color` by
 default — drop it into any layout, swap the surrounding theme, the
@@ -24,7 +24,7 @@ QR re-paints with the right foreground without a re-encode.
     />
 
     <origam-qr-code
-        value="https://origam.dev/qr-code-with-logo"
+        value="https://origam.dev/qrcode-with-logo"
         error-correction-level="H"
         :logo="{ src: '/logo.svg', size: 0.2 }"
         :size="240"

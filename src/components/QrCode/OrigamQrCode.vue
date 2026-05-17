@@ -8,7 +8,13 @@
 			role="img"
 			:aria-label="resolvedAriaLabel"
 			data-cy="origam-qr-code"
-	/>
+	>
+		<slot
+				v-if="hasCenter"
+				name="center"
+				:size="centerSize"
+		/>
+	</component>
 </template>
 
 <script
@@ -19,13 +25,23 @@
 		computed,
 		ref,
 		type StyleValue,
+		useSlots,
 		watchEffect
 	} from 'vue'
 
-	import { useQrCode } from '../../composables'
+	import {
+		useBackgroundColor,
+		useBorder,
+		useMargin,
+		usePadding,
+		useQrCode,
+		useRounded,
+		useTextColor
+	} from '../../composables'
 
 	import type {
-		IQrCodeProps
+		IQrCodeProps,
+		IQrCodeSlots
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -42,39 +58,65 @@
 	 * Defaults are inlined here (not pulled from a QR_CODE_DEFAULTS
 	 * const) because the Vue SFC compiler analyses `withDefaults`
 	 * statically and only resolves literals — cf. CLAUDE.md rule.
+	 *
+	 * Prop mapping (public DS API → composable internal contract):
+	 * - `color`    (IColorProps)   → composable `foreground`
+	 * - `bgColor`  (IBgColorProps) → composable `background`
+	 * - `quietZone`                → composable `margin`
+	 * - `rounded`  (IRoundedProps) → wrapper border-radius via useRounded
+	 * - `border`   (IBorderProps)  → wrapper border via useBorder
+	 * - `margin`   (IMarginProps)  → wrapper spacing via useMargin
+	 * - `padding`  (IPaddingProps) → wrapper spacing via usePadding
 	 ********************************************************/
 	const props = withDefaults(defineProps<IQrCodeProps>(), {
 		tag: 'div',
 		size: 240,
 		errorCorrectionLevel: 'M',
-		foreground: 'currentColor',
-		background: 'transparent',
-		margin: 4,
+		color: 'currentColor',
+		bgColor: 'transparent',
+		quietZone: 4,
 		cornerRadius: 0,
 		logo: undefined,
 		ariaLabel: undefined
 	})
 
+	defineSlots<IQrCodeSlots>()
+
 	/*********************************************************
-	 * Resolved options snapshot — fed to the composable as a getter
-	 * so reactive prop changes invalidate the cached matrix.
+	 * Slots
+	 ********************************************************/
+	const slots = useSlots()
+
+	const hasCenter = computed(() => !!slots.center)
+
+	/*********************************************************
+	 * Resolved options snapshot — maps public DS prop names to the
+	 * composable's internal contract (foreground / background / margin).
+	 * When the #center slot is provided, logo is suppressed — the slot
+	 * owns the centre overlay entirely.
 	 ********************************************************/
 	const resolvedOptions = computed(() => ({
 		errorCorrectionLevel: props.errorCorrectionLevel,
-		foreground: props.foreground,
-		background: props.background,
-		margin: props.margin,
+		foreground: props.color ?? 'currentColor',
+		background: props.bgColor ?? 'transparent',
+		margin: props.quietZone ?? 4,
 		cornerRadius: props.cornerRadius,
-		logo: props.logo
+		logo: hasCenter.value ? undefined : props.logo
 	}))
 
-	const { svg } = useQrCode(() => props.value, resolvedOptions)
+	const { svg, size: matrixSize } = useQrCode(() => props.value, resolvedOptions)
+
+	/*********************************************************
+	 * Center slot geometry — the central reserved square is ~20% of
+	 * the matrix module count, mirroring the default logo overlay ratio.
+	 ********************************************************/
+	const centerSize = computed(() => Math.round(matrixSize.value * 0.2))
 
 	/*********************************************************
 	 * SVG injection — innerHTML mirrors the `<OrigamCode>` approach
 	 * and avoids the `v-html` lint warning. The SVG string itself is
 	 * sanitised inside the composable (XML metacharacters in
-	 * user-controlled `foreground` / `background` / `logo.src` are
+	 * user-controlled `color` / `bgColor` / `logo.src` are
 	 * escaped before they reach this element).
 	 ********************************************************/
 	const rootEl = ref<HTMLElement | null>(null)
@@ -105,10 +147,26 @@
 	})
 
 	/*********************************************************
+	 * DS transverse composables — wrapper-level tokens
+	 ********************************************************/
+	const { textColorClasses, textColorStyles } = useTextColor(props, 'color')
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { borderClasses, borderStyles } = useBorder(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const rootClasses = computed(() => [
 		`origam-qr-code--ecc-${props.errorCorrectionLevel.toLowerCase()}`,
+		...textColorClasses.value,
+		...backgroundColorClasses.value,
+		...roundedClasses.value,
+		...borderClasses.value,
+		...marginClasses.value,
+		...paddingClasses.value,
 		props.class
 	])
 
@@ -117,6 +175,12 @@
 			width: resolvedSize.value,
 			height: resolvedSize.value
 		},
+		textColorStyles.value,
+		backgroundColorStyles.value,
+		roundedStyles.value,
+		borderStyles.value,
+		marginStyles.value,
+		paddingStyles.value,
 		props.style
 	] as StyleValue)
 
@@ -136,8 +200,7 @@
 	.origam-qr-code {
 		display: inline-block;
 		line-height: 0;
-		color: var(--origam-qr-code---foreground);
-		background-color: var(--origam-qr-code---background-color);
+		position: relative;
 
 		:deep(svg) {
 			display: block;
