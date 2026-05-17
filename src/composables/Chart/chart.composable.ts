@@ -492,6 +492,20 @@ export const useChart = (options: IUseChartOptions) => {
                     .filter((other) => other.visible !== false).length
                 const stackOff = stackOffsets.value.get(seriesIdx) ?? []
 
+                // Horizontal-bar X scale: linear projection of the
+                // numeric Y range onto the plot's X span. `yRange`
+                // already absorbs `yMin`/`yMax` overrides + stacked
+                // accumulation so we just normalise into [0..1].
+                const horizRange = yRange.value
+                const horizSpan = Math.max(1e-9, horizRange.max - horizRange.min)
+                const xValuePx = (v: number): number => {
+                    const ratio = (v - horizRange.min) / horizSpan
+                    const px = x0 + ratio * (x1 - x0)
+                    if (px < x0) return x0
+                    if (px > x1) return x1
+                    return px
+                }
+
                 for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
                     const p = normalised[dataIdx]
                     if (kind === 'column') {
@@ -519,25 +533,28 @@ export const useChart = (options: IUseChartOptions) => {
                             dataIndex: dataIdx
                         })
                     } else {
-                        const centerY = scales.value.x(p.x, dataIdx, groupCount)
+                        // Horizontal bar — categorical axis runs along
+                        // Y (top-to-bottom), value axis runs along X.
+                        const slots = Math.max(1, groupCount)
+                        const slotCenterY = slots === 1
+                            ? (y0 + y1) / 2
+                            : y0 + (dataIdx / (slots - 1)) * (y1 - y0)
                         const barHeight = stacked
                             ? slotPx * 0.7
                             : (slotPx * 0.7) / Math.max(1, visibleCount)
                         const top = stacked
-                            ? centerY - barHeight / 2
-                            : centerY - (slotPx * 0.7) / 2 + visibleIdxInGroup * barHeight
-                        // For horizontal bars we reuse `scales.value.y` to map values to X.
+                            ? slotCenterY - barHeight / 2
+                            : slotCenterY - (slotPx * 0.7) / 2 + visibleIdxInGroup * barHeight
                         const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
-                        const right = scales.value.y(p.y + offset)
-                        const base = scales.value.y(offset)
-                        const left = Math.min(right, base)
+                        const rightPx = xValuePx(p.y + offset)
+                        const basePx = xValuePx(offset)
                         out.push({
                             seriesIndex: seriesIdx,
                             kind: 'rect',
                             rect: {
-                                x: x0 + (left - y0),
+                                x: Math.min(rightPx, basePx),
                                 y: top,
-                                width: Math.abs(right - base),
+                                width: Math.abs(rightPx - basePx),
                                 height: barHeight
                             },
                             color,
