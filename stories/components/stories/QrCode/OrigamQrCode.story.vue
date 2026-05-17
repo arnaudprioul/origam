@@ -236,7 +236,7 @@
 			>
 				<p class="hint">
 					`image` accepts a raw URL or an `ISrcObject`. The asset is
-					injected as an inline SVG `<image>` element — SSR-safe,
+					injected as an inline SVG &lt;image&gt; element — SSR-safe,
 					no client-side fetch needed. Pair with `errorCorrectionLevel="H"`.
 				</p>
 				<div

@@ -7,7 +7,7 @@ import { expect, test, type Page } from '@playwright/test'
  * titles — never via the HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-media-scrubber-origammediascrubber-story-vue'
+const STORY = '/story/stories-components-stories-mediascrubber-origammediascrubber-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -19,28 +19,28 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamMediaScrubber — Playground (mount + ARIA)', () => {
+test.describe('OrigamMediaScrubber — Default (mount + ARIA)', () => {
     test('mounts the primitive with role="slider"', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="media-scrubber-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="media-scrubber-default-host"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         await expect(host).toHaveAttribute('role', 'slider')
         await expect(host).toHaveAttribute('tabindex', '0')
     })
 
     test('aria-valuenow reflects the initial modelValue', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="media-scrubber-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="media-scrubber-default-host"]').first()
         await expect(host).toHaveAttribute('aria-valuenow', '30')
     })
 
     test('paints the thumb at the expected % position', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const thumb = sandbox.locator('[data-cy="media-scrubber-playground-host"] .origam-media-scrubber__thumb').first()
+        const thumb = sandbox.locator('[data-cy="media-scrubber-default-host"] .origam-media-scrubber__thumb').first()
         await expect(thumb).toBeAttached({ timeout: 8000 })
         const style = await thumb.getAttribute('style')
         expect(style).toMatch(/left:\s*30%/)
@@ -153,7 +153,7 @@ test.describe('OrigamMediaScrubber — Tooltip variant', () => {
 
 test.describe('OrigamMediaScrubber — disabled flag', () => {
     test('drops tabindex to -1 when disabled', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         // Flip the disabled checkbox in the Hst controls panel.
@@ -161,20 +161,20 @@ test.describe('OrigamMediaScrubber — disabled flag', () => {
         await disabledCheckbox.check({ force: true })
         await page.waitForTimeout(200)
 
-        const host = sandbox.locator('[data-cy="media-scrubber-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="media-scrubber-default-host"]').first()
         await expect(host).toHaveAttribute('tabindex', '-1')
         await expect(host).toHaveAttribute('aria-disabled', 'true')
     })
 
     test('ignores keyboard ArrowRight when disabled', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const disabledCheckbox = page.locator('label', { hasText: 'disabled' }).locator('input[type="checkbox"]').first()
         await disabledCheckbox.check({ force: true })
         await page.waitForTimeout(200)
 
-        const host = sandbox.locator('[data-cy="media-scrubber-playground-host"]').first()
+        const host = sandbox.locator('[data-cy="media-scrubber-default-host"]').first()
         const before = Number(await host.getAttribute('aria-valuenow'))
         await sandbox.locator('body').press('ArrowRight')
         await page.waitForTimeout(120)

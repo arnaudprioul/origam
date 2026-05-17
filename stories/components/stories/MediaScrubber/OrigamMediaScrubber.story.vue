@@ -4,7 +4,7 @@
 			title="MediaScrubber/OrigamMediaScrubber"
 	>
 		<Variant
-				title="Playground"
+				title="Default"
 				:init-state="() => useStoryInitState<IMediaScrubberProps>({
 					modelValue: 30,
 					min: 0,
@@ -21,7 +21,7 @@
 			<template #default="{ state }">
 				<div
 						class="story-shell"
-						data-cy="media-scrubber-playground"
+						data-cy="media-scrubber-default"
 				>
 					<p class="hint">
 						Live value: <strong>{{ state.modelValue }}</strong>
@@ -30,7 +30,7 @@
 						<origam-media-scrubber
 								v-bind="state"
 								v-model="state.modelValue"
-								data-cy="media-scrubber-playground-host"
+								data-cy="media-scrubber-default-host"
 						/>
 					</div>
 				</div>
