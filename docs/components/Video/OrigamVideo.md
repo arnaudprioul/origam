@@ -272,3 +272,11 @@ SSR-rendered video.
 - An analytics-collecting player. Wire your own `@timeupdate` /
   `@play` handlers from the host page — keeping the player free of
   tracking is intentional.
+
+## Related
+
+- [`<OrigamMediaController>`](../MediaController/OrigamMediaController.md) — the controls shell composed inside `<OrigamVideo>`. Captions, PiP, and fullscreen buttons are injected by `<OrigamVideo>` via the `#extraControlsRight` slot.
+- [`<OrigamMediaScrubber>`](../MediaScrubber/OrigamMediaScrubber.md) — the slider used inside the shell for the timeline scrubber and the volume cluster.
+- [`<OrigamAudio>`](../Audio/OrigamAudio.md) — the audio sibling that composes the same shell with an `<audio>` element + optional metadata strip.
+- `useVideoPlayer()` — composable layered on top of `useMediaPlayer` with video-specific state (fullscreen, PiP).
+- `useMediaPlayer()` — the shared base composable.
