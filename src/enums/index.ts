@@ -2,7 +2,7 @@ export * from './Icon/mdi.enum'
 
 export * from './Img/img.enum'
 
-export * from './Charts/chart.enum'
+export * from './Chart/chart.enum'
 
 export * from './Code/code-lang.enum'
 
