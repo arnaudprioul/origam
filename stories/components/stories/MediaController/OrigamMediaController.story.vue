@@ -3,7 +3,7 @@
 			group="components"
 			title="MediaController/OrigamMediaController"
 	>
-		<Variant title="Playground">
+		<Variant title="Default">
 			<div
 					class="story-shell"
 					data-cy="media-controller-playground"
@@ -33,7 +33,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — inset (overlay over the media surface)">
+		<Variant title="Prop — inset (overlay over the media surface)">
 			<div
 					class="story-shell"
 					data-cy="media-controller-inset"
@@ -87,7 +87,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — #extraControlsRight slot">
+		<Variant title="Slot — extraControlsRight">
 			<div
 					class="story-shell"
 					data-cy="media-controller-extras-right"
@@ -137,7 +137,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — #configExtra slot (custom config rows)">
+		<Variant title="Slot — configExtra (custom config rows)">
 			<div
 					class="story-shell"
 					data-cy="media-controller-config-extra"
@@ -179,7 +179,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — visible=false (hidden inset behaviour)">
+		<Variant title="Prop — visible (autohide-friendly hidden state)">
 			<div
 					class="story-shell"
 					data-cy="media-controller-visible-false"
@@ -208,6 +208,50 @@
 							data-cy="media-controller-visible-false-host"
 					/>
 				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — quality-change / download (counters)">
+			<div class="story-shell" data-cy="media-controller-emits">
+				<p class="hint">
+					<code>quality-change</code> fires when the listener picks a
+					quality from the config menu — the controller closes the
+					menu and the parent owns the <code>&lt;source&gt;</code>
+					swap. <code>download</code> fires when the "Download" row
+					is clicked.
+				</p>
+				<video
+						ref="emitVideoRef"
+						:src="BIG_BUCK_BUNNY"
+						class="story-media-el"
+						preload="metadata"
+				/>
+				<origam-media-controller
+						v-if="emitPlayer"
+						:state="emitPlayer.state"
+						:methods="emitPlayer.methods"
+						:downloadable="true"
+						:download-url="BIG_BUCK_BUNNY"
+						:quality-options="qualityDemoOptions"
+						:current-quality="currentQuality"
+						data-cy="media-controller-emits-host"
+						@quality-change="onQualityChange"
+						@download="counters.download++"
+				/>
+				<dl class="story-counters">
+					<div>
+						<dt>quality-change</dt>
+						<dd data-cy="media-controller-emit-count-quality">{{ counters.quality }}</dd>
+					</div>
+					<div>
+						<dt>current quality</dt>
+						<dd data-cy="media-controller-emit-current-quality">{{ currentQuality }}</dd>
+					</div>
+					<div>
+						<dt>download</dt>
+						<dd data-cy="media-controller-emit-count-download">{{ counters.download }}</dd>
+					</div>
+				</dl>
 			</div>
 		</Variant>
 	</Story>
@@ -242,6 +286,23 @@
 
 	const hiddenVideoRef = ref<HTMLVideoElement | null>(null)
 	const hiddenApi = useVideoPlayer({ videoRef: hiddenVideoRef })
+
+	const emitVideoRef = ref<HTMLVideoElement | null>(null)
+	const emitPlayer = useVideoPlayer({ videoRef: emitVideoRef })
+
+	const qualityDemoOptions = [
+		{ quality: '240p', label: '240p', src: BIG_BUCK_BUNNY },
+		{ quality: '480p', label: '480p', src: BIG_BUCK_BUNNY },
+		{ quality: '1080p', label: '1080p', src: BIG_BUCK_BUNNY }
+	] as const
+
+	const currentQuality = ref<string>('480p')
+	const counters = ref({ quality: 0, download: 0 })
+
+	function onQualityChange (quality: string): void {
+		currentQuality.value = quality
+		counters.value.quality += 1
+	}
 
 	const pickedAudioOutput = ref<string>('Default')
 
@@ -334,5 +395,32 @@
 	.story-config-row__value {
 		margin-left: auto;
 		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.story-counters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		margin: 12px 0 0;
+		padding: 12px;
+		background: var(--origam-color__surface---raised, #1f2937);
+		border-radius: 8px;
+	}
+
+	.story-counters > div {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.story-counters dt {
+		font: 0.75rem/1.2 ui-monospace, monospace;
+		color: var(--origam-color__text---secondary, #94a3b8);
+	}
+
+	.story-counters dd {
+		margin: 0;
+		font: 600 1rem/1.2 system-ui, sans-serif;
+		color: var(--origam-color__text---primary, #f9fafb);
 	}
 </style>

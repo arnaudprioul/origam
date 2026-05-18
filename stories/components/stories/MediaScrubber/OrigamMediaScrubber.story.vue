@@ -85,7 +85,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Variant — orientation (horizontal / vertical)">
+		<Variant title="Prop — orientation (horizontal / vertical)">
 			<div
 					class="story-shell"
 					data-cy="media-scrubber-orientation"
@@ -127,7 +127,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — buffer (media use case)">
+		<Variant title="Prop — buffered (media buffer indicator)">
 			<div
 					class="story-shell"
 					data-cy="media-scrubber-buffer"
@@ -150,7 +150,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — showHoverTooltip + formatHoverTooltip">
+		<Variant title="Prop — showHoverTooltip / formatHoverTooltip">
 			<div
 					class="story-shell"
 					data-cy="media-scrubber-tooltip"
@@ -174,7 +174,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — keyboard / a11y">
+		<Variant title="A11y — keyboard navigation">
 			<div
 					class="story-shell"
 					data-cy="media-scrubber-keyboard"
@@ -198,6 +198,118 @@
 					/>
 				</div>
 				<span class="value-label">value = {{ keyboardValue }}</span>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — disabled">
+			<div class="story-shell" data-cy="media-scrubber-disabled">
+				<p class="hint">
+					When <code>disabled=true</code>, pointer + keyboard
+					interaction is suppressed, the element is dropped from the
+					tab order (<code>tabindex="-1"</code>), and a 50 % opacity
+					applies. Use it during loading states or read-only views.
+				</p>
+				<div class="scrubber-horizontal-host">
+					<origam-media-scrubber
+							:model-value="40"
+							:max="100"
+							:disabled="true"
+							aria-label="Disabled demo"
+							data-cy="media-scrubber-disabled-host"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showThumbOnHoverOnly (YouTube pattern)">
+			<div class="story-shell" data-cy="media-scrubber-thumb-on-hover">
+				<p class="hint">
+					Hides the thumb at rest, reveals it on hover / focus / drag.
+					Matches the YouTube timeline behaviour where the scrubber
+					reads as a thin bar until the cursor lands on it.
+				</p>
+				<div class="scrubber-horizontal-host">
+					<origam-media-scrubber
+							:model-value="55"
+							:max="100"
+							:show-thumb-on-hover-only="true"
+							aria-label="Hover-thumb demo"
+							data-cy="media-scrubber-hover-thumb-host"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — tooltip (custom hover label)">
+			<div class="story-shell" data-cy="media-scrubber-tooltip-slot">
+				<p class="hint">
+					Override the default hover-tooltip body. Bindings:
+					<code>{ value: number }</code>. The slot only renders when
+					<code>showHoverTooltip=true</code> and the cursor is over
+					the track (horizontal orientation only).
+				</p>
+				<div class="scrubber-horizontal-host">
+					<origam-media-scrubber
+							:model-value="20"
+							:max="100"
+							:show-hover-tooltip="true"
+							aria-label="Custom tooltip demo"
+							data-cy="media-scrubber-tooltip-host"
+					>
+						<template #tooltip="{ value }">
+							<span class="custom-tooltip">
+								⏱ {{ Math.floor(value / 60) }}:{{ String(Math.floor(value % 60)).padStart(2, '0') }}
+							</span>
+						</template>
+					</origam-media-scrubber>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue / change / dragstart / dragend / hover">
+			<div class="story-shell" data-cy="media-scrubber-emits">
+				<p class="hint">
+					<code>update:modelValue</code> fires during drag + keyboard;
+					<code>change</code> fires once on pointer-up (committed value);
+					<code>dragstart</code> / <code>dragend</code> bracket the
+					drag; <code>hover</code> emits the hovered value (or
+					<code>null</code> on leave).
+				</p>
+				<div class="scrubber-horizontal-host">
+					<origam-media-scrubber
+							v-model="emitValue"
+							:max="100"
+							:show-hover-tooltip="true"
+							aria-label="Emit-counters demo"
+							data-cy="media-scrubber-emit-host"
+							@change="counters.change++"
+							@dragstart="counters.dragstart++"
+							@dragend="counters.dragend++"
+							@hover="onHover"
+					/>
+				</div>
+				<dl class="story-counters">
+					<div>
+						<dt>update:modelValue</dt>
+						<dd data-cy="media-scrubber-emit-count-modelValue">{{ emitValue }}</dd>
+					</div>
+					<div>
+						<dt>change (commits)</dt>
+						<dd data-cy="media-scrubber-emit-count-change">{{ counters.change }}</dd>
+					</div>
+					<div>
+						<dt>dragstart</dt>
+						<dd data-cy="media-scrubber-emit-count-dragstart">{{ counters.dragstart }}</dd>
+					</div>
+					<div>
+						<dt>dragend</dt>
+						<dd data-cy="media-scrubber-emit-count-dragend">{{ counters.dragend }}</dd>
+					</div>
+					<div>
+						<dt>hover (last)</dt>
+						<dd data-cy="media-scrubber-emit-count-hover">{{ lastHover === null ? '—' : Math.round(lastHover) }}</dd>
+					</div>
+				</dl>
 			</div>
 		</Variant>
 	</Story>
@@ -243,6 +355,18 @@
 	const keyboardValue = ref<number>(100)
 
 	const verticalLabel = computed(() => `${Math.round(verticalValue.value * 100)} %`)
+
+	const emitValue = ref<number>(40)
+	const counters = ref({
+		change: 0,
+		dragstart: 0,
+		dragend: 0
+	})
+	const lastHover = ref<number | null>(null)
+
+	function onHover (value: number | null): void {
+		lastHover.value = value
+	}
 </script>
 
 <style scoped>
@@ -305,5 +429,41 @@
 	.value-label {
 		font: 600 0.75rem/1.2 ui-monospace, monospace;
 		color: var(--origam-color__text---secondary, #94a3b8);
+	}
+
+	.custom-tooltip {
+		display: inline-block;
+		padding: 4px 8px;
+		background: var(--origam-color__surface---inverse, #111827);
+		color: var(--origam-color__text---on-inverse, #f9fafb);
+		border-radius: 4px;
+		font: 600 0.8rem/1.1 ui-monospace, monospace;
+	}
+
+	.story-counters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		margin: 12px 0 0;
+		padding: 12px;
+		background: var(--origam-color__surface---raised, #1f2937);
+		border-radius: 8px;
+	}
+
+	.story-counters > div {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.story-counters dt {
+		font: 0.75rem/1.2 ui-monospace, monospace;
+		color: var(--origam-color__text---secondary, #94a3b8);
+	}
+
+	.story-counters dd {
+		margin: 0;
+		font: 600 1rem/1.2 system-ui, sans-serif;
+		color: var(--origam-color__text---primary, #f9fafb);
 	}
 </style>
