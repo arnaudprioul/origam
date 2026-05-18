@@ -1006,14 +1006,25 @@
 		}
 	}
 
+	// YouTube-style double-tap skip overlay :
+	//   • half-disc anchored on left / right covering ~35 % of the
+	//     video width — the same proportion YouTube uses, big enough
+	//     to read at a glance without occluding the centre frame.
+	//   • dark backdrop with 18 % alpha — strong enough to read
+	//     against a bright frame, soft enough not to mask the action.
+	//   • three cascading chevrons + crisp seconds label.
+	//   • chevron pulse cascades INTO the direction of travel
+	//     (right ripple → right-to-left reading reversed via
+	//     `animation-direction: reverse` on the left disc) so the
+	//     eye follows the chevrons toward the skip target.
 	.origam-video__skip-ripple {
 		position: absolute;
 		top: 0;
 		bottom: 0;
-		width: 12%;
+		width: 35%;
 		z-index: 3;
 		pointer-events: none;
-		background: rgba(0, 0, 0, 0.55);
+		background: rgba(0, 0, 0, 0.18);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1023,54 +1034,62 @@
 		left: 0;
 		border-top-right-radius: 50% 50%;
 		border-bottom-right-radius: 50% 50%;
+		padding-right: 6%;
 	}
 
 	.origam-video__skip-ripple--right {
 		right: 0;
 		border-top-left-radius: 50% 50%;
 		border-bottom-left-radius: 50% 50%;
+		padding-left: 6%;
 	}
 
 	.origam-video__skip-ripple-content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 2px;
+		gap: 6px;
 		color: #ffffff;
 		text-align: center;
+		filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
 	}
 
 	.origam-video__skip-chevrons {
 		display: inline-flex;
 		align-items: center;
 		gap: 0;
-		line-height: 1;
+		line-height: 0;
 	}
 
 	.origam-video__skip-chevron {
 		display: inline-block;
-		line-height: 1;
-		opacity: 0.4;
-		margin: 0 -10px;
-		animation: origam-video-chevron-pulse 900ms ease-in-out infinite;
+		line-height: 0;
+		opacity: 0;
+		margin: 0 -6px;
+		animation: origam-video-chevron-pulse 700ms ease-out infinite;
 	}
 
-	.origam-video__skip-chevron .origam-icon {
-		font-size: 26px;
+	.origam-video__skip-chevron :deep(.origam-icon) {
+		font-size: 40px;
 		line-height: 1;
 	}
 
-	.origam-video__skip-chevron--1 { animation-delay: 0ms; }
-	.origam-video__skip-chevron--2 { animation-delay: 150ms; }
-	.origam-video__skip-chevron--3 { animation-delay: 300ms; }
+	.origam-video__skip-chevron--1 { animation-delay:   0ms; }
+	.origam-video__skip-chevron--2 { animation-delay: 110ms; }
+	.origam-video__skip-chevron--3 { animation-delay: 220ms; }
+
+	.origam-video__skip-ripple--left .origam-video__skip-chevron {
+		animation-direction: reverse;
+	}
 
 	@keyframes origam-video-chevron-pulse {
-		0%, 100% { opacity: 0.4; }
-		50%      { opacity: 1; }
+		0%   { opacity: 0;   transform: scale(0.88); }
+		35%  { opacity: 1;   transform: scale(1); }
+		100% { opacity: 0;   transform: scale(1); }
 	}
 
 	.origam-video__skip-ripple-label {
-		font-size: 11px;
+		font-size: 13px;
 		font-weight: 600;
 		font-family: var(--origam-font---family, system-ui, sans-serif);
 		letter-spacing: 0.02em;
@@ -1079,12 +1098,9 @@
 		line-height: 1.2;
 	}
 
-	.origam-video-skip-ripple-enter-active {
-		transition: opacity 200ms ease, transform 200ms ease;
-	}
-
+	.origam-video-skip-ripple-enter-active,
 	.origam-video-skip-ripple-leave-active {
-		transition: opacity 320ms ease, transform 320ms ease;
+		transition: opacity 220ms ease, transform 220ms ease;
 	}
 
 	.origam-video-skip-ripple-enter-from,

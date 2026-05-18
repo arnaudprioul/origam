@@ -619,16 +619,25 @@
 		width: 100%;
 	}
 
+	// YouTube-style compact volume popover :
+	//   • dark translucent backdrop
+	//   • narrow column (~28 px) so it never covers the playback area
+	//   • 80 px tall track — short enough to scan in one glance, long
+	//     enough to keep slider precision on a 0..1 range
+	//   • track 4 px / thumb 10 px (overrides MediaScrubber defaults)
+	//   • no chrome around the tooltip (border-radius lives on the
+	//     Tooltip surface itself, our content is pure scrubber)
 	:deep(.origam-media-controller__volume-tooltip) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 8px 6px;
+		padding: 10px 8px;
+		background-color: rgba(28, 28, 28, 0.92);
 	}
 
 	.origam-media-controller__volume-wrapper {
-		width: 32px;
-		height: 120px;
+		width: 14px;
+		height: 80px;
 		display: flex;
 		align-items: stretch;
 		justify-content: center;
@@ -637,6 +646,9 @@
 	.origam-media-controller__volume-scrubber {
 		--origam-media-scrubber---color: #ffffff;
 		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.3);
+		--origam-media-scrubber---track-size: 4px;
+		--origam-media-scrubber---track-size-active: 4px;
+		--origam-media-scrubber---thumb-diameter: 10px;
 	}
 
 	.origam-media-controller__btn {
