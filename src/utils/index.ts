@@ -61,7 +61,6 @@ export * from './DataTable/items.util'
 export * from './DataTable/sort.util'
 export * from './DataTable/group.util'
 
-export * from './Charts/chart.util'
 
 export * from './CommandPalette/fuzzy-match.util'
 
