@@ -628,16 +628,78 @@
 		video.load()
 	}
 
-	function onDownloadClick (): void {
+	/*********************************************************
+	 * Download click — browsers IGNORE the `download` attribute on
+	 * `<a>` elements when the href is cross-origin (HTML spec, anti-
+	 * phishing measure). With a cross-origin video URL the anchor
+	 * therefore just NAVIGATES to the file, which the browser then
+	 * opens in its media viewer / PiP — the symptom the user
+	 * reported ("le download m'ouvre la fenêtre réduite").
+	 *
+	 * Workaround : same-origin and data:/blob: URLs keep the cheap
+	 * anchor path. Cross-origin URLs go through a `fetch` so we can
+	 * materialise the bytes into a blob — the resulting `blob:` URL
+	 * is same-origin and the `download` attribute is honoured. If
+	 * the fetch is blocked by CORS we fall back to opening the URL
+	 * in a new tab (still better than silently failing).
+	 ********************************************************/
+	async function onDownloadClick (): Promise<void> {
 		const url = downloadUrl.value
 		if (!url) return
-		const a = document.createElement('a')
-		a.href = url
-		a.download = props.downloadFilename || url.split('/').pop()?.split('?')[0] || 'video'
-		document.body.appendChild(a)
-		a.click()
-		document.body.removeChild(a)
-		emit('download', url)
+		const filename = props.downloadFilename
+			|| url.split('/').pop()?.split('?')[0]
+			|| 'video'
+
+		const triggerAnchor = (href: string): void => {
+			const a = document.createElement('a')
+			a.href = href
+			a.download = filename
+			a.rel = 'noopener'
+			a.style.display = 'none'
+			document.body.appendChild(a)
+			a.click()
+			document.body.removeChild(a)
+		}
+
+		const isSameOriginOrLocal = (raw: string): boolean => {
+			if (raw.startsWith('data:') || raw.startsWith('blob:')) return true
+			try {
+				const u = new URL(raw, window.location.href)
+				return u.origin === window.location.origin
+			} catch {
+				return true
+			}
+		}
+
+		if (isSameOriginOrLocal(url)) {
+			triggerAnchor(url)
+			emit('download', url)
+			return
+		}
+
+		try {
+			const response = await fetch(url)
+			if (!response.ok) throw new Error(`HTTP ${ response.status }`)
+			const blob = await response.blob()
+			const blobUrl = URL.createObjectURL(blob)
+			try {
+				triggerAnchor(blobUrl)
+			} finally {
+				// Defer revoke so the browser has time to start streaming
+				// the bytes into the user's downloads folder. 30 s is
+				// generous — a multi-GB file may need more, but at that
+				// point the user should probably use a real download
+				// manager anyway.
+				setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000)
+			}
+			emit('download', url)
+		} catch {
+			// CORS denied / network down → fall back to opening the URL
+			// in a new tab. Not a download, but at least the action
+			// doesn't look broken.
+			window.open(url, '_blank', 'noopener,noreferrer')
+			emit('download', url)
+		}
 	}
 
 	const downloadUrl = computed<string | null>(() => {
