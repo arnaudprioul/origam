@@ -150,9 +150,9 @@
 								v-if="path.kind === 'path' && !isPie(path)"
 								:class="['origam-chart__path', `origam-chart__path--${effectiveTypeOf(path)}`]"
 								:d="path.d"
-								:stroke="path.color"
-								:fill="effectiveTypeOf(path) === 'area' ? path.color : 'none'"
-								:fill-opacity="effectiveTypeOf(path) === 'area' ? 0.25 : 0"
+								:stroke="path.variant === 'fill' ? 'none' : path.color"
+								:fill="path.variant !== 'stroke' && effectiveTypeOf(path) === 'area' ? path.color : 'none'"
+								:fill-opacity="path.variant !== 'stroke' && effectiveTypeOf(path) === 'area' ? 0.25 : 0"
 								:style="strokeStyleFor(path)"
 								data-cy="origam-chart-path"
 						/>

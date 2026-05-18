@@ -452,7 +452,8 @@ export const useChart = (options: IUseChartOptions) => {
                         d: areaPath(pts, baseline, smoothing === 'curve'),
                         color,
                         series: s,
-                        pathLength: length
+                        pathLength: length,
+                        variant: 'fill'
                     })
                 }
 
@@ -462,7 +463,8 @@ export const useChart = (options: IUseChartOptions) => {
                     d: dLine,
                     color,
                     series: s,
-                    pathLength: length
+                    pathLength: length,
+                    variant: kind === 'area' ? 'stroke' : undefined
                 })
 
                 // Emit one descriptor per data point — `<circle>` markers

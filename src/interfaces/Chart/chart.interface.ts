@@ -174,6 +174,13 @@ export interface IChartPath {
     dataIndex?: number
     /** Length of the path (used by stroke-dashoffset animation). */
     pathLength?: number
+    /**
+     * Sub-kind for `kind === 'path'`. Area charts emit two paths per
+     * series — the filled area down to the baseline (`variant: 'fill'`)
+     * and the overlaid stroke (`variant: 'stroke'`). The component reads
+     * the variant to decide whether to paint `fill` or `stroke`.
+     */
+    variant?: 'fill' | 'stroke'
 }
 
 /**
