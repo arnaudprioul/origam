@@ -3,6 +3,7 @@ import type {
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
+    IElevationProps,
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
@@ -17,6 +18,25 @@ import type {
 } from '../../types'
 
 /**
+ * Per-matrix overrides — applied INSIDE the SVG (modules + quiet
+ * zone) independently of the wrapper-level same-name props. Pass via
+ * the `qrCodeProps` slot on `<OrigamQrCode>`:
+ *
+ *   - `qrCodeProps.color`   → modules colour (overrides the wrapper
+ *                             `color` for the matrix paint only).
+ *   - `qrCodeProps.bgColor` → fill of the SVG's quiet-zone rect.
+ *   - `qrCodeProps.rounded` → per-module corner radius (mapped to
+ *                             [0, 0.5] module units via
+ *                             `resolveQrCornerRadius`).
+ *
+ * The DS-shape values (intents, hex, `currentColor`, named rungs)
+ * are transformed by `resolveQrColor` / `resolveQrCornerRadius` in
+ * `src/utils/QrCode/qr-code-adapters.util.ts` — consumers always pass
+ * canonical DS values, the component handles the SVG-side translation.
+ */
+export interface IQrCodeOptions extends IRoundedProps, IBgColorProps, IColorProps {}
+
+/**
  * Props for `<OrigamQrCode>` — SVG QR code renderer.
  *
  * The component owns no state: every prop change rebuilds the
@@ -24,21 +44,25 @@ import type {
  * The renderer is SSR-safe — no `window` / `document` / `canvas` API
  * is touched.
  *
- * DS transverse props:
- * - `color` (`IColorProps`) — dark module fill. Maps to the
- *   composable `foreground` channel. Defaults to `'currentColor'`.
- * - `bgColor` (`IBgColorProps`) — quiet-zone background. Maps to
- *   the composable `background` channel. Defaults to `'transparent'`.
- * - `size` (`ISizeProps`) — wrapper sizing. Accepts the canonical
- *   `TSize` rungs (`'x-small'` … `'x-large'`) or a raw number /
- *   pixel value. Drives both the CSS dimensions and the SVG
- *   `viewBox`-relative scaling.
- * - `rounded` (`IRoundedProps`) — per-module corner radius. Mapped
- *   internally to the SVG `rx` / `ry` attributes on each module
- *   rect. Accepts a named rung (default, small, large, …) or a raw
- *   number in module units (0 → square, 0.5 → circle).
- * - `border` / `margin` / `padding` (`IBorderProps` / `IMarginProps`
- *   / `IPaddingProps`) — standard spacing tokens on the wrapper.
+ * DS transverse props (all applied to the WRAPPER element, the
+ * standard chrome you get on every Origam component):
+ *
+ *   - `color`     (`IColorProps`)     — wrapper `color:` (text colour).
+ *                                       The SVG modules inherit this via
+ *                                       `fill="currentColor"` unless
+ *                                       `qrCodeProps.color` overrides.
+ *   - `bgColor`   (`IBgColorProps`)   — wrapper `background-color:`.
+ *   - `rounded`   (`IRoundedProps`)   — wrapper `border-radius`.
+ *   - `border`    (`IBorderProps`)    — wrapper `border`.
+ *   - `size`      (`ISizeProps`)      — wrapper width/height.
+ *   - `padding`   (`IPaddingProps`)   — wrapper inner spacing.
+ *   - `margin`    (`IMarginProps`)    — wrapper outer spacing.
+ *   - `elevation` (`IElevationProps`) — wrapper `box-shadow`.
+ *
+ * QR-internal props (apply to the SVG itself, NOT the wrapper):
+ *
+ *   - `qrCodeProps.color` / `.bgColor` / `.rounded` — see
+ *     `IQrCodeOptions` above for the full mapping.
  */
 export interface IQrCodeProps
     extends ICommonsComponentProps,
@@ -46,15 +70,28 @@ export interface IQrCodeProps
         IColorProps,
         IBgColorProps,
         IRoundedProps,
-        ISizeProps,
         IBorderProps,
-        IMarginProps,
-        IPaddingProps {
+        IElevationProps,
+        ISizeProps,
+        IPaddingProps,
+        IMarginProps {
     /**
      * Text or URL encoded into the QR matrix. UTF-8 is supported via
      * the underlying `qrcode-generator` Byte mode.
      */
     value: string
+    /**
+     * Optional heading rendered above the QR matrix inside the
+     * wrapper. Useful when the QR is presented alongside meta
+     * (campaign name, recipient, …) — no manual extra markup needed.
+     */
+    title?: string
+    /**
+     * Per-matrix overrides — see `IQrCodeOptions`. When omitted, the
+     * SVG inherits the wrapper-level `color` / `bgColor` / and
+     * defaults to square modules.
+     */
+    qrCodeProps?: IQrCodeOptions
     /**
      * Reed-Solomon redundancy level. Higher levels reserve more matrix
      * cells for correction codewords (and therefore tolerate more
@@ -74,22 +111,14 @@ export interface IQrCodeProps
     quietZone?: number
     /**
      * Optional centred icon overlay — rendered via `<OrigamIcon>` on
-     * top of the matrix. Mutually exclusive with `image`; when both
-     * are set, `image` wins (raster / vector asset is more specific).
-     *
-     * The overlay paints on top of the QR — pick a high
-     * `errorCorrectionLevel` (`Q` or `H`) when the icon covers more
-     * than ~10 % of the surface.
+     * top of the matrix. Coexists with `image`; the `#center` slot
+     * overrides both when provided.
      */
     icon?: TIcon
     /**
      * Optional centred image overlay. Accepts a raw URL (string) or
      * the standard `ISrcObject` shape (src / srcset / lazySrc /
-     * aspectRatio / alt).
-     *
-     * Rendered as an inline SVG `<image>` element so the asset stays
-     * vector-friendly and SSR-safe. Same caveat as `icon` — high ECC
-     * recommended when the overlay is large.
+     * aspectRatio / alt). Rendered as an `<OrigamAvatar>` overlay.
      */
     image?: string | ISrcObject
     /**
@@ -103,8 +132,9 @@ export interface IQrCodeProps
  * Options accepted by `useQrCode`. Lower-level than `IQrCodeProps`:
  * the composable does not speak the canonical DS contracts. It only
  * owns the raw SVG string — the wrapper component is responsible for
- * mapping `color` / `bgColor` / `size` / `rounded` down to the
- * primitive `foreground` / `background` / `cornerRadius` keys here.
+ * mapping `color` / `bgColor` / `rounded` (wrapper or qrCodeProps)
+ * down to the primitive `foreground` / `background` / `cornerRadius`
+ * keys here.
  */
 export interface IUseQrCodeOptions {
     /** Reed-Solomon level — same semantics as `IQrCodeProps`. */
@@ -118,7 +148,7 @@ export interface IUseQrCodeOptions {
     /**
      * Per-module corner radius in module units (0 → square,
      * 0.5 → circle). The component layer derives this from the
-     * public `rounded` prop.
+     * public `qrCodeProps.rounded` prop via `resolveQrCornerRadius`.
      */
     cornerRadius?: number
     /**

@@ -8,6 +8,11 @@
 			:aria-label="resolvedAriaLabel"
 			data-cy="origam-qr-code"
 	>
+		<h3
+				v-if="title"
+				class="origam-qr-code__title"
+				data-cy="origam-qr-code-title"
+		>{{ title }}</h3>
 		<span
 				ref="svgHost"
 				class="origam-qr-code__svg-host"
@@ -54,9 +59,11 @@
 	import {
 		useBackgroundColor,
 		useBorder,
+		useElevation,
 		useMargin,
 		usePadding,
 		useQrCode,
+		useRounded,
 		useSize,
 		useTextColor
 	} from '../../composables'
@@ -66,52 +73,44 @@
 		IQrCodeSlots
 	} from '../../interfaces'
 
-	import type { TRounded } from '../../types'
+	import { resolveQrColor, resolveQrCornerRadius } from '../../utils'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
-	 * Props + defaults for `<OrigamQrCode>`. The component is a pure
-	 * SVG renderer — it does NOT own state, NO event, NO input. The
-	 * rendered output is the raw SVG string built by the `useQrCode`
-	 * composable, mounted via `innerHTML` on the root ref (mirrors
-	 * the `<OrigamCode>` pattern — bypasses the v-html lint warning
-	 * while keeping the SVG sanitised at the composable layer).
+	 * Pure SVG renderer — owns NO state, NO event, NO input. Two
+	 * styling planes coexist on this component :
+	 *
+	 *  1. The **wrapper** — receives every canonical DS transverse
+	 *     contract (color / bgColor / rounded / border / size /
+	 *     padding / margin / elevation). The wrapper's `color:` is
+	 *     inherited by the SVG modules through `fill="currentColor"`
+	 *     unless `qrCodeProps.color` overrides.
+	 *
+	 *  2. The **SVG matrix** — driven by the optional `qrCodeProps`
+	 *     object (`IQrCodeOptions` extends IColorProps + IBgColorProps
+	 *     + IRoundedProps). When omitted, the SVG inherits from the
+	 *     wrapper. DS-shape values are transformed by
+	 *     `resolveQrColor` / `resolveQrCornerRadius` (see
+	 *     `src/utils/QrCode/qr-code-adapters.util.ts`) so consumers
+	 *     keep passing intents / named rungs as they would anywhere
+	 *     else in the DS — the SVG-side translation stays internal.
 	 *
 	 * Defaults are inlined here (not pulled from a QR_CODE_DEFAULTS
 	 * const) because the Vue SFC compiler analyses `withDefaults`
 	 * statically and only resolves literals — cf. CLAUDE.md rule.
-	 *
-	 * Prop mapping (public DS API → composable internal contract):
-	 * - `color`     (IColorProps)    → composable `foreground`
-	 * - `bgColor`   (IBgColorProps)  → composable `background`
-	 * - `size`      (ISizeProps)     → wrapper width/height via useSize
-	 * - `rounded`   (IRoundedProps)  → per-module SVG `rx`/`ry`
-	 *                                  (mapped to a 0..0.5 module-unit
-	 *                                  cornerRadius). Wrapper stays
-	 *                                  sharp — a QR with a rounded box
-	 *                                  is rarely the user intent.
-	 * - `quietZone`                  → composable `margin`
-	 * - `icon`                       → centred `<OrigamIcon>` (DOM overlay)
-	 * - `image`                      → centred `<OrigamAvatar>` (DOM overlay)
-	 * - `#center` slot               → overrides BOTH `icon` and `image`
-	 *                                  via slot-default-content pattern.
-	 *                                  When the slot is filled the inner
-	 *                                  Avatar/Icon fallback is discarded
-	 *                                  by Vue automatically.
-	 * - `border`    (IBorderProps)   → wrapper border via useBorder
-	 * - `margin`    (IMarginProps)   → wrapper spacing via useMargin
-	 * - `padding`   (IPaddingProps)  → wrapper spacing via usePadding
 	 ********************************************************/
 	const props = withDefaults(defineProps<IQrCodeProps>(), {
 		tag: 'div',
 		size: 240,
 		errorCorrectionLevel: 'M',
 		color: 'currentColor',
-		bgColor: 'transparent',
-		quietZone: 4,
+		bgColor: undefined,
 		rounded: undefined,
+		quietZone: 4,
+		title: undefined,
+		qrCodeProps: undefined,
 		icon: undefined,
 		image: undefined,
 		ariaLabel: undefined
@@ -120,15 +119,9 @@
 	defineSlots<IQrCodeSlots>()
 
 	/*********************************************************
-	 * Slots — the `center` slot uses the **slot-fallback** pattern:
-	 * its default content renders the Avatar (for `image`) and the
-	 * Icon (for `icon`) when no slot is provided by the consumer.
-	 * When the consumer DOES provide `#center`, Vue automatically
-	 * discards the fallback, so the Avatar/Icon and the slot
-	 * content never coexist.
-	 *
-	 * `hasCenter` gates the wrapper element itself: no slot, no
-	 * image, no icon → no overlay paint cost at all.
+	 * Slots — `center` slot wraps the default `icon` / `image`
+	 * overlay so consumers can override the centre paint while keeping
+	 * the matrix untouched.
 	 ********************************************************/
 	const slots = useSlots()
 
@@ -137,88 +130,59 @@
 	)
 
 	/*********************************************************
-	 * `rounded` → per-module cornerRadius (in module units 0..0.5).
+	 * SVG-matrix paint resolution.
 	 *
-	 * Mapping table — picked so each named rung paints a visually
-	 * distinct module shape:
-	 *   x-small        → 0.10 (barely-softened square)
-	 *   small          → 0.18
-	 *   default        → 0.25 (rounded square)
-	 *   medium         → 0.30
-	 *   large          → 0.40
-	 *   x-large        → 0.50 (circle modules)
-	 *   shaped[-invert] → fallback to default — the composite radii
-	 *                     don't translate to a per-module rx/ry, so
-	 *                     we settle on the canonical mid-rung.
+	 *   - `qrCodeProps.color`     → modules paint  (intent / hex / currentColor)
+	 *   - fallback to `props.color`              (wrapper-level color)
+	 *   - `qrCodeProps.bgColor`   → quiet-zone rect fill
+	 *   - fallback to `'transparent'`            (let wrapper bg show through)
+	 *   - `qrCodeProps.rounded`   → per-module corner radius (0..0.5)
+	 *   - fallback to 0 (square modules)
 	 *
-	 * `true`  → 0.50 (legacy "fully rounded")
-	 * `false` / `''` / `null` / `undefined` → 0 (square modules)
-	 * `number` → clamped to [0, 0.5]
-	 * string CSS dimension (e.g. `'4px'`) → 0 (modules speak module
-	 * units, not pixels — pixel input falls back to square modules).
+	 * The DS-shape → SVG-string translation lives in the
+	 * `resolveQrColor` / `resolveQrCornerRadius` adapters.
 	 ********************************************************/
-	const ROUNDED_TO_CORNER: Readonly<Record<string, number>> = {
-		'x-small': 0.10,
-		'small': 0.18,
-		'default': 0.25,
-		'medium': 0.30,
-		'large': 0.40,
-		'x-large': 0.50,
-		'shaped': 0.25,
-		'shaped-invert': 0.25
-	}
+	const resolvedQrColor = computed(() =>
+		resolveQrColor(
+			props.qrCodeProps?.color ?? props.color,
+			'foreground',
+			'currentColor'
+		)
+	)
 
-	const resolvedCornerRadius = computed<number>(() => {
-		const r = props.rounded
+	const resolvedQrBgColor = computed(() =>
+		resolveQrColor(
+			props.qrCodeProps?.bgColor,
+			'background',
+			'transparent'
+		)
+	)
 
-		if (r === undefined || r === null || r === false || r === '') return 0
-		if (r === true) return 0.5
-		if (typeof r === 'number') return Math.max(0, Math.min(0.5, r))
-		if (typeof r === 'string' && r in ROUNDED_TO_CORNER) {
-			return ROUNDED_TO_CORNER[r as TRounded]
-		}
-
-		return 0
-	})
+	const resolvedQrCornerRadius = computed(() =>
+		resolveQrCornerRadius(props.qrCodeProps?.rounded)
+	)
 
 	/*********************************************************
-	 * Resolved options snapshot — maps public DS prop names to the
-	 * composable's internal contract (foreground / background /
-	 * margin / cornerRadius).
-	 *
-	 * Note: the `logo` channel of `useQrCode` is intentionally NOT
-	 * used here — `image` and `icon` are rendered as DOM overlays
-	 * on top of the SVG, not as inline `<image>` children of the
-	 * SVG itself. This gives the slot fallback pattern its
-	 * `slot > image+icon` precedence semantics for free.
+	 * Composable input — maps the resolved values onto the
+	 * lower-level `useQrCode` contract.
 	 ********************************************************/
 	const resolvedOptions = computed(() => ({
 		errorCorrectionLevel: props.errorCorrectionLevel,
-		foreground: props.color ?? 'currentColor',
-		background: props.bgColor ?? 'transparent',
+		foreground: resolvedQrColor.value,
+		background: resolvedQrBgColor.value,
 		margin: props.quietZone ?? 4,
-		cornerRadius: resolvedCornerRadius.value
+		cornerRadius: resolvedQrCornerRadius.value
 	}))
 
 	const { svg, size: matrixSize } = useQrCode(() => props.value, resolvedOptions)
 
-	/*********************************************************
-	 * Centre overlay geometry — the central reserved square is
-	 * ~20% of the matrix module count, surfaced to the slot so
-	 * consumers can scale their custom paint without re-deriving
-	 * the geometry from the wrapper size.
-	 ********************************************************/
 	const centerSize = computed(() => Math.round(matrixSize.value * 0.2))
 
 	/*********************************************************
-	 * SVG injection — innerHTML mirrors the `<OrigamCode>` approach
-	 * and avoids the `v-html` lint warning. The SVG string itself is
-	 * sanitised inside the composable (XML metacharacters in
-	 * user-controlled `color` / `bgColor` are escaped before they
-	 * reach this element).
-	 *
-	 * The SVG is written into a dedicated `<span>` host so the
-	 * `#center` overlay sibling survives the innerHTML write.
+	 * SVG injection — innerHTML mirrors `<OrigamCode>` and bypasses
+	 * the v-html lint warning. The SVG fragment is sanitised inside
+	 * `useQrCode` (XML metacharacters in user-supplied values are
+	 * escaped before they reach the DOM).
 	 ********************************************************/
 	const svgHost = ref<HTMLElement | null>(null)
 
@@ -229,49 +193,56 @@
 	})
 
 	/*********************************************************
-	 * ARIA — fallback to a localisable description of the payload.
-	 * Consumers passing a custom `ariaLabel` override the default.
+	 * ARIA — falls back to a description of the encoded payload
+	 * when no explicit label is provided.
 	 ********************************************************/
 	const resolvedAriaLabel = computed<string>(() => {
 		if (props.ariaLabel) return props.ariaLabel
+		if (props.title) return props.title
 		return `QR code for ${ props.value }`
 	})
 
 	/*********************************************************
-	 * DS transverse composables — wrapper-level tokens.
-	 * `useRounded` is intentionally NOT consumed here: the `rounded`
-	 * prop in this component drives per-module SVG corners, not the
-	 * wrapper. Consumers who really need a rounded outer box can
-	 * still bind `class` / `style` directly.
+	 * Wrapper chrome — every canonical DS transverse composable.
+	 * The SCSS host is intentionally lean; nearly all the visual
+	 * surface is driven by these classes / styles.
 	 ********************************************************/
 	const { textColorClasses, textColorStyles } = useTextColor(props, 'color')
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
-	const { sizeClasses, sizeStyles } = useSize(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
-	const { marginClasses, marginStyles } = useMargin(props)
+	const { sizeClasses, sizeStyles } = useSize(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { elevationClasses, elevationStyles } = useElevation(props)
 
 	/*********************************************************
-	 * Class & Style
+	 * Class & Style — Strategy A: classes win for tokenised values,
+	 * inline styles win for raw CSS, both bind in parallel for
+	 * forward compatibility (v3.0 will retire the *Styles channel).
 	 ********************************************************/
 	const rootClasses = computed(() => [
 		`origam-qr-code--ecc-${ props.errorCorrectionLevel.toLowerCase() }`,
 		...textColorClasses.value,
 		...backgroundColorClasses.value,
-		...sizeClasses.value,
+		...roundedClasses.value,
 		...borderClasses.value,
-		...marginClasses.value,
+		...sizeClasses.value,
 		...paddingClasses.value,
+		...marginClasses.value,
+		...elevationClasses.value,
 		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => [
 		textColorStyles.value,
 		backgroundColorStyles.value,
-		sizeStyles.value,
+		roundedStyles.value,
 		borderStyles.value,
-		marginStyles.value,
+		sizeStyles.value,
 		paddingStyles.value,
+		marginStyles.value,
+		elevationStyles.value,
 		props.style
 	] as StyleValue)
 
@@ -289,15 +260,27 @@
 		scoped
 >
 	.origam-qr-code {
-		display: inline-block;
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 8px;
 		line-height: 0;
 		position: relative;
+	}
+
+	.origam-qr-code__title {
+		margin: 0;
+		font: 600 0.875rem/1.2 inherit;
+		text-align: center;
+		color: inherit;
+		line-height: 1.2;
 	}
 
 	.origam-qr-code__svg-host {
 		display: block;
 		width: 100%;
 		height: 100%;
+		position: relative;
 
 		:deep(svg) {
 			display: block;

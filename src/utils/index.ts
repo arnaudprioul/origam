@@ -72,3 +72,5 @@ export * from './Textarea/html-to-markdown.util'
 export * from './Mask/apply-mask.util'
 export * from './Mask/resolve-mask-config.util'
 export * from './Mask/validate-pattern.util'
+
+export * from './QrCode/qr-code-adapters.util'

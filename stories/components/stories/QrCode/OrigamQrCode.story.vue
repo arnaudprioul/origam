@@ -7,12 +7,20 @@
 				title="Default"
 				:init-state="() => useStoryInitState<IQrCodeProps>({
 					value: 'https://origam.dev',
+					title: '',
 					size: 240,
 					errorCorrectionLevel: 'M',
 					color: undefined,
 					bgColor: undefined,
+					rounded: undefined,
+					border: undefined,
+					elevation: undefined,
 					quietZone: 4,
-					rounded: ''
+					qrCodeProps: {
+						color: undefined,
+						bgColor: undefined,
+						rounded: undefined
+					}
 				})"
 		>
 			<template #default="{ state }">
@@ -31,34 +39,69 @@
 						v-model="state.value"
 						title="value"
 				/>
+				<HstText
+						v-model="state.title"
+						title="title"
+				/>
 				<HstNumber
 						v-model="state.size"
 						title="size (px)"
-				/>
-				<HstSelect
-						v-model="state.errorCorrectionLevel"
-						title="errorCorrectionLevel"
-						:options="eccOptions"
-				/>
-				<HstSelect
-						v-model="state.color"
-						title="color (dark modules)"
-						:options="intentList"
-				/>
-				<HstSelect
-						v-model="state.bgColor"
-						title="bgColor (quiet zone)"
-						:options="intentList"
 				/>
 				<HstNumber
 						v-model="state.quietZone"
 						title="quietZone (modules)"
 				/>
 				<HstSelect
-						v-model="state.rounded"
-						title="rounded (per-module)"
-						:options="roundedOptions"
+						v-model="state.errorCorrectionLevel"
+						title="errorCorrectionLevel"
+						:options="eccOptions"
 				/>
+				<details>
+					<summary>Wrapper chrome</summary>
+					<HstSelect
+							v-model="state.color"
+							title="color (wrapper / modules fallback)"
+							:options="intentList"
+					/>
+					<HstSelect
+							v-model="state.bgColor"
+							title="bgColor (wrapper background)"
+							:options="intentList"
+					/>
+					<HstSelect
+							v-model="state.rounded"
+							title="rounded (wrapper border-radius)"
+							:options="roundedList"
+					/>
+					<HstSelect
+							v-model="state.border"
+							title="border"
+							:options="borderList"
+					/>
+					<HstSelect
+							v-model="state.elevation"
+							title="elevation"
+							:options="elevationList"
+					/>
+				</details>
+				<details>
+					<summary>qrCodeProps (matrix internals)</summary>
+					<HstSelect
+							v-model="state.qrCodeProps.color"
+							title="qrCodeProps.color (modules)"
+							:options="intentList"
+					/>
+					<HstSelect
+							v-model="state.qrCodeProps.bgColor"
+							title="qrCodeProps.bgColor (quiet zone)"
+							:options="intentList"
+					/>
+					<HstSelect
+							v-model="state.qrCodeProps.rounded"
+							title="qrCodeProps.rounded (per-module radius)"
+							:options="roundedList"
+					/>
+				</details>
 			</template>
 		</Variant>
 
@@ -81,35 +124,45 @@
 					<origam-qr-code
 							:value="entry.value"
 							:size="160"
-							color="#111111"
-							bg-color="#ffffff"
 							:data-cy="`qrcode-value-${entry.label}`"
 					/>
 				</div>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — size (named rungs + raw)">
+		<Variant title="Prop — title (heading above the matrix)">
 			<div
 					class="story-shell"
-					data-cy="qrcode-size"
+					data-cy="qrcode-title"
 			>
 				<p class="hint">
-					`size` accepts the canonical `ISizeProps` taxonomy
-					(`x-small`…`x-large`) **or** any raw number (pixels).
+					`title` renders an &lt;h3&gt; heading inside the wrapper,
+					centered above the QR matrix. Used when the QR is
+					presented alongside meta (campaign name, recipient, …)
+					so consumers don't have to wrap the component
+					manually.
 				</p>
-				<div
-						v-for="entry in sizeSamples"
-						:key="entry.label"
-						class="story-col"
-				>
-					<strong>{{ entry.label }}</strong>
+				<div class="story-col">
 					<origam-qr-code
-							value="https://origam.dev"
-							:size="entry.size"
-							color="#111111"
-							bg-color="#ffffff"
-							:data-cy="`qrcode-size-${entry.label}`"
+							value="https://origam.dev/event-2026"
+							title="Origam Conf 2026"
+							:size="200"
+							border="thin"
+							rounded="medium"
+							padding="3"
+							data-cy="qrcode-title-event"
+					/>
+				</div>
+				<div class="story-col">
+					<origam-qr-code
+							value="https://origam.dev/contact"
+							title="Scan me"
+							color="primary"
+							bg-color="primary"
+							:size="200"
+							rounded="large"
+							padding="3"
+							data-cy="qrcode-title-contact"
 					/>
 				</div>
 			</div>
@@ -135,67 +188,66 @@
 							value="https://origam.dev/design-system"
 							:error-correction-level="level"
 							:size="160"
-							color="#111111"
-							bg-color="#ffffff"
 							:data-cy="`qrcode-ecc-${level}`"
 					/>
 				</div>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — rounded (per-module shape)">
+		<Variant title="Wrapper chrome — color / bgColor / rounded / border / elevation / padding / margin">
 			<div
 					class="story-shell"
-					data-cy="qrcode-rounded"
+					data-cy="qrcode-wrapper"
 			>
 				<p class="hint">
-					`rounded` (from `IRoundedProps`) controls the per-module
-					SVG corner radius. Named rungs map to 0..0.5 module units
-					(circles at `x-large`). Raw numbers in [0, 0.5] pass
-					through. Soft modules reduce scanner tolerance on some
-					readers — test before shipping.
-				</p>
-				<div
-						v-for="entry in roundedSamples"
-						:key="entry.label"
-						class="story-col"
-				>
-					<strong>{{ entry.label }}</strong>
-					<origam-qr-code
-							value="https://origam.dev"
-							:rounded="entry.rounded"
-							:size="160"
-							color="#111111"
-							bg-color="#ffffff"
-							:data-cy="`qrcode-rounded-${entry.label}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — color / bgColor (theming)">
-			<div
-					class="story-shell"
-					data-cy="qrcode-themed"
-			>
-				<p class="hint">
-					DS-first theming — pass a `TIntent` token (`primary`,
-					`success`, …) or any CSS colour to `color` / `bgColor`.
-					Use `currentColor` to inherit from the parent text colour.
+					Every canonical DS transverse contract applies to the
+					wrapper element — same vocabulary as on Card / Btn / etc.
+					The SVG matrix inherits the wrapper `color` through
+					`fill="currentColor"` unless `qrCodeProps.color`
+					overrides.
 				</p>
 				<div
 						v-for="theme in themes"
 						:key="theme.label"
 						class="story-col"
-						:style="theme.surfaceStyle"
 				>
 					<strong>{{ theme.label }}</strong>
 					<origam-qr-code
-							value="https://origam.dev"
-							:color="theme.color"
-							:bg-color="theme.bgColor"
+							v-bind="theme.props"
+							value="https://origam.dev/themed"
 							:size="160"
-							:data-cy="`qrcode-theme-${theme.label}`"
+							:data-cy="`qrcode-wrapper-${theme.label}`"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — qrCodeProps (matrix-level overrides)">
+			<div
+					class="story-shell"
+					data-cy="qrcode-internal"
+			>
+				<p class="hint">
+					`qrCodeProps.color`, `.bgColor`, `.rounded` apply ONLY
+					to the SVG matrix — the wrapper keeps its own
+					chrome. Useful when the QR needs to read against a
+					branded surface without forcing the wrapper to wear
+					the same paint.
+				</p>
+				<div
+						v-for="entry in qrCodePropsSamples"
+						:key="entry.label"
+						class="story-col"
+				>
+					<strong>{{ entry.label }}</strong>
+					<origam-qr-code
+							value="https://origam.dev/internal"
+							:qr-code-props="entry.qrCodeProps"
+							:bg-color="entry.bgColor"
+							:size="160"
+							rounded="medium"
+							padding="3"
+							:data-cy="`qrcode-internal-${entry.label}`"
 					/>
 				</div>
 			</div>
@@ -223,8 +275,6 @@
 							error-correction-level="H"
 							:icon="entry.icon"
 							:size="180"
-							color="#111111"
-							bg-color="#ffffff"
 							:data-cy="`qrcode-icon-${entry.label}`"
 					/>
 				</div>
@@ -237,9 +287,8 @@
 					data-cy="qrcode-image"
 			>
 				<p class="hint">
-					`image` accepts a raw URL or an `ISrcObject`. The asset is
-					injected as an inline SVG &lt;image&gt; element — SSR-safe,
-					no client-side fetch needed. Pair with `errorCorrectionLevel="H"`.
+					`image` accepts a raw URL or an `ISrcObject`. The asset
+					is injected as an `&lt;OrigamAvatar&gt;` overlay above the SVG.
 				</p>
 				<div
 						class="story-col"
@@ -251,8 +300,6 @@
 							error-correction-level="H"
 							:image="LOGO_SRC"
 							:size="200"
-							color="#111111"
-							bg-color="#ffffff"
 					/>
 				</div>
 				<div
@@ -265,36 +312,6 @@
 							error-correction-level="H"
 							:image="{ src: LOGO_SRC, alt: 'Origam logo', aspectRatio: 1 }"
 							:size="200"
-							color="#111111"
-							bg-color="#ffffff"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — quietZone (matrix padding)">
-			<div
-					class="story-shell"
-					data-cy="qrcode-quietzone"
-			>
-				<p class="hint">
-					`quietZone` reserves N modules as padding around the
-					matrix (ISO requires ≥4). Smaller values save space but
-					may break stricter scanners.
-				</p>
-				<div
-						v-for="qz in [2, 4, 8]"
-						:key="qz"
-						class="story-col"
-				>
-					<strong>quietZone = {{ qz }}</strong>
-					<origam-qr-code
-							value="https://origam.dev"
-							:quiet-zone="qz"
-							:size="160"
-							color="#111111"
-							bg-color="#ffffff"
-							:data-cy="`qrcode-quietzone-${qz}`"
 					/>
 				</div>
 			</div>
@@ -308,7 +325,7 @@
 				<p class="hint">
 					The `#center` slot replaces both `icon` and `image`. It
 					receives `{ size }` (module units of the reserved
-					square) so consumers can scale their custom HTML / SVG
+					square) so consumers can scale their custom paint
 					without re-deriving the geometry.
 				</p>
 				<div
@@ -320,85 +337,11 @@
 							value="https://origam.dev/center-slot"
 							error-correction-level="H"
 							:size="200"
-							color="#111111"
-							bg-color="#ffffff"
 					>
 						<template #center>
 							<div class="center-slot-icon">&#9733;</div>
 						</template>
 					</origam-qr-code>
-				</div>
-				<div
-						class="story-col"
-						data-cy="qrcode-center-brand"
-				>
-					<strong>brand letter (purple O)</strong>
-					<origam-qr-code
-							value="https://origam.dev/center-slot-brand"
-							error-correction-level="H"
-							:size="200"
-							color="#7c3aed"
-							bg-color="#f5f3ff"
-					>
-						<template #center>
-							<div class="center-slot-brand">O</div>
-						</template>
-					</origam-qr-code>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Wrapper props — border / margin / padding">
-			<div
-					class="story-shell"
-					data-cy="qrcode-wrapper-props"
-			>
-				<p class="hint">
-					`border`, `margin`, `padding` are the standard DS
-					transverse props applied to the wrapper element — they
-					do not affect the QR matrix geometry. Note: `rounded`
-					on this component drives per-module corners (not the
-					wrapper).
-				</p>
-				<div
-						class="story-col"
-						data-cy="qrcode-padding"
-				>
-					<strong>padding="3"</strong>
-					<origam-qr-code
-							value="https://origam.dev/wrapper-padding"
-							:size="160"
-							color="#111111"
-							bg-color="#e0f2fe"
-							padding="3"
-					/>
-				</div>
-				<div
-						class="story-col"
-						data-cy="qrcode-border"
-				>
-					<strong>border="thin" + padding="4"</strong>
-					<origam-qr-code
-							value="https://origam.dev/wrapper-border"
-							:size="160"
-							color="#0f172a"
-							bg-color="#ffffff"
-							border="thin"
-							padding="4"
-					/>
-				</div>
-				<div
-						class="story-col"
-						data-cy="qrcode-margin"
-				>
-					<strong>margin="4"</strong>
-					<origam-qr-code
-							value="https://origam.dev/wrapper-margin"
-							:size="160"
-							color="#111111"
-							bg-color="#fef9c3"
-							margin="4"
-					/>
 				</div>
 			</div>
 		</Variant>
@@ -411,13 +354,13 @@
 >
 	import { OrigamQrCode } from '@origam/components'
 
-	import type { IQrCodeProps } from '@origam/interfaces'
+	import type { IQrCodeOptions, IQrCodeProps } from '@origam/interfaces'
 
-	import type { TIcon, TQrCodeErrorCorrectionLevel, TRounded, TSize } from '@origam/types'
+	import type { TIcon, TIntent, TQrCodeErrorCorrectionLevel, TRounded } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 
-	import { intentList } from '@stories/const'
+	import { borderList, elevationList, intentList, roundedList } from '@stories/const'
 
 	interface IOption<T> {
 		label: string
@@ -430,16 +373,6 @@
 
 	const eccOptions: Array<IOption<TQrCodeErrorCorrectionLevel>> = eccLevels.map(v => ({ label: v, value: v }))
 
-	const roundedOptions: Array<IOption<TRounded | string>> = [
-		{ label: 'none (0)', value: '' },
-		{ label: 'x-small', value: 'x-small' },
-		{ label: 'small', value: 'small' },
-		{ label: 'default', value: 'default' },
-		{ label: 'medium', value: 'medium' },
-		{ label: 'large', value: 'large' },
-		{ label: 'x-large (circle)', value: 'x-large' }
-	]
-
 	const valueSamples = [
 		{ label: 'url', value: 'https://origam.dev' },
 		{ label: 'text', value: 'Hello — origam!' },
@@ -450,54 +383,73 @@
 		}
 	]
 
-	const sizeSamples: Array<{ label: string, size: TSize | number }> = [
-		{ label: 'x-small', size: 'x-small' },
-		{ label: 'small', size: 'small' },
-		{ label: 'default', size: 'default' },
-		{ label: 'large', size: 'large' },
-		{ label: 'x-large', size: 'x-large' },
-		{ label: '120 (px)', size: 120 },
-		{ label: '200 (px)', size: 200 }
-	]
-
-	const roundedSamples: Array<{ label: string, rounded: TRounded | number }> = [
-		{ label: 'none (0)', rounded: 0 },
-		{ label: 'x-small', rounded: 'x-small' },
-		{ label: 'default', rounded: 'default' },
-		{ label: 'large', rounded: 'large' },
-		{ label: 'x-large (circle)', rounded: 'x-large' }
-	]
-
 	const iconSamples: Array<{ label: string, icon: TIcon }> = [
 		{ label: 'mdi-star', icon: 'mdi-star' },
 		{ label: 'mdi-account', icon: 'mdi-account' },
 		{ label: 'mdi-heart', icon: 'mdi-heart' }
 	]
 
-	const themes = [
+	const themes: Array<{
+		label: string
+		props: Partial<IQrCodeProps>
+	}> = [
 		{
-			label: 'light',
-			color: '#0f172a',
-			bgColor: '#ffffff',
-			surfaceStyle: { background: '#ffffff' }
+			label: 'plain',
+			props: {
+				border: 'thin',
+				rounded: 'medium',
+				padding: '3'
+			}
 		},
 		{
-			label: 'dark',
-			color: '#f8fafc',
-			bgColor: '#0f172a',
-			surfaceStyle: { background: '#0f172a', color: '#ffffff' }
+			label: 'primary surface',
+			props: {
+				bgColor: 'primary' as TIntent,
+				rounded: 'large',
+				padding: '3'
+			}
 		},
 		{
-			label: 'brand',
-			color: '#7c3aed',
-			bgColor: '#f5f3ff',
-			surfaceStyle: { background: '#f5f3ff' }
+			label: 'success + elevation',
+			props: {
+				color: 'success' as TIntent,
+				bgColor: 'success' as TIntent,
+				rounded: 'medium',
+				elevation: 'md',
+				padding: '3'
+			}
 		},
 		{
-			label: 'intent: primary',
-			color: 'primary',
-			bgColor: 'transparent',
-			surfaceStyle: { background: '#ffffff' }
+			label: 'circle + border',
+			props: {
+				border: 'thick',
+				rounded: 'x-large' as TRounded,
+				padding: '4'
+			}
+		}
+	]
+
+	const qrCodePropsSamples: Array<{
+		label: string
+		qrCodeProps: IQrCodeOptions
+		bgColor?: TIntent
+	}> = [
+		{
+			label: 'primary modules / no override bg',
+			qrCodeProps: { color: 'primary' as TIntent, bgColor: undefined, rounded: undefined }
+		},
+		{
+			label: 'danger modules + soft bg',
+			qrCodeProps: { color: 'danger' as TIntent, bgColor: undefined, rounded: 'default' as TRounded },
+			bgColor: 'danger' as TIntent
+		},
+		{
+			label: 'circle modules (x-large)',
+			qrCodeProps: { color: undefined, bgColor: undefined, rounded: 'x-large' as TRounded }
+		},
+		{
+			label: 'info modules / large rounded',
+			qrCodeProps: { color: 'info' as TIntent, bgColor: undefined, rounded: 'large' as TRounded }
 		}
 	]
 </script>
@@ -526,6 +478,7 @@
 		border-radius: 8px;
 		background: var(--origam-color__surface---raised, #f5f5f5);
 		min-width: 180px;
+		align-items: center;
 	}
 
 	.story-col strong {
@@ -547,16 +500,14 @@
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
 	}
 
-	.center-slot-brand {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 36px;
-		height: 36px;
-		border-radius: 6px;
-		background: #7c3aed;
-		color: #fff;
-		font: 700 18px/1 system-ui, sans-serif;
+	details {
+		flex-basis: 100%;
+	}
+
+	details summary {
+		cursor: pointer;
+		font: 600 0.75rem/1.2 ui-monospace, monospace;
+		padding: 4px 0;
 	}
 </style>
 
