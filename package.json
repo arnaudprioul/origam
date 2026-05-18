@@ -119,7 +119,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "qrcode-generator": "^2.0.4",
-    "shiki": "^3.8.1"
+    "shiki": "^4.0.2"
   },
   "peerDependencies": {
     "vue": "^3.5.0",
