@@ -111,6 +111,56 @@ describe('useChart — paths (line)', () => {
         const series2Paths = chart.paths.value.filter((p) => p.series.name === 'S2')
         expect(series2Paths).toHaveLength(0)
     })
+
+    it('line series paths have no variant set', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B'],
+            series: [{ name: 'S', data: [1, 2] }]
+        }))
+        const linePaths = chart.paths.value.filter((p) => p.kind === 'path')
+        for (const p of linePaths) {
+            expect(p.variant).toBeUndefined()
+        }
+    })
+})
+
+describe('useChart — paths (area)', () => {
+    it('emits two path descriptors per area series: a fill and a stroke', () => {
+        const chart = useChart(makeOptions({
+            type: 'area',
+            categories: ['A', 'B', 'C'],
+            series: [{ name: 'S', data: [1, 2, 3] }]
+        }))
+        const areaPaths = chart.paths.value.filter((p) => p.kind === 'path')
+        expect(areaPaths.length).toBeGreaterThanOrEqual(2)
+        const fillPaths = areaPaths.filter((p) => p.variant === 'fill')
+        const strokePaths = areaPaths.filter((p) => p.variant === 'stroke')
+        expect(fillPaths).toHaveLength(1)
+        expect(strokePaths).toHaveLength(1)
+    })
+
+    it('fill path closes down to the baseline (contains Z)', () => {
+        const chart = useChart(makeOptions({
+            type: 'area',
+            categories: ['A', 'B'],
+            series: [{ name: 'S', data: [5, 10] }]
+        }))
+        const fillPath = chart.paths.value.find((p) => p.kind === 'path' && p.variant === 'fill')
+        expect(fillPath?.d).toBeDefined()
+        expect(fillPath!.d!.endsWith('Z')).toBe(true)
+    })
+
+    it('stroke path does not close (no trailing Z)', () => {
+        const chart = useChart(makeOptions({
+            type: 'area',
+            categories: ['A', 'B'],
+            series: [{ name: 'S', data: [5, 10] }]
+        }))
+        const strokePath = chart.paths.value.find((p) => p.kind === 'path' && p.variant === 'stroke')
+        expect(strokePath?.d).toBeDefined()
+        expect(strokePath!.d!.endsWith('Z')).toBe(false)
+    })
 })
 
 describe('useChart — paths (pie/donut)', () => {
