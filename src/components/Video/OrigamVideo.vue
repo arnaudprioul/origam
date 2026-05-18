@@ -1008,8 +1008,14 @@
 
 	// YouTube-parity double-tap skip overlay :
 	//
-	//   • Half-disc covers ~12 % of the video width — small, contained
-	//     indicator (NOT the giant overlay that buries the frame).
+	//   • Whole element is a PERFECT CIRCLE (`width: 40 %` of the
+	//     video width, `aspect-ratio: 1`, `border-radius: 50 %`).
+	//     Most of the disc lives OUTSIDE the video frame — we anchor
+	//     with `right: -28 %` (or `left: -28 %`), so only the
+	//     12 %-wide bulge intrudes into the visible area. The parent
+	//     `.origam-video` clips the offscreen portion via its existing
+	//     `overflow: hidden` — what the user sees is genuinely a slice
+	//     of a circle, not an elongated oval.
 	//   • Frosted background : light dark wash + `backdrop-filter:
 	//     blur(6px)` for the frosted look. Fallback (browsers without
 	//     backdrop-filter support) keeps a denser solid alpha so the
@@ -1024,14 +1030,15 @@
 	//     translate, just a subtle "puff in" matching YouTube.
 	.origam-video__skip-ripple {
 		position: absolute;
-		top: 0;
-		bottom: 0;
-		width: 12%;
+		top: 50%;
+		width: 40%;
+		aspect-ratio: 1;
 		z-index: 3;
 		pointer-events: none;
 		background: rgba(0, 0, 0, 0.45);
+		border-radius: 50%;
 		display: flex;
-		align-items: center;
+		flex-direction: column;
 		justify-content: center;
 	}
 
@@ -1044,17 +1051,15 @@
 	}
 
 	.origam-video__skip-ripple--left {
-		left: 0;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		padding-right: 2%;
+		left: -28%;
+		align-items: flex-end;
+		padding-right: 5%;
 	}
 
 	.origam-video__skip-ripple--right {
-		right: 0;
-		border-top-left-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-		padding-left: 2%;
+		right: -28%;
+		align-items: flex-start;
+		padding-left: 5%;
 	}
 
 	.origam-video__skip-ripple-content {
@@ -1112,6 +1117,14 @@
 		line-height: 1.2;
 	}
 
+	// Note: disc anchored at `top: 50%` with no transform — the y-axis
+	// `translateY(-50%)` we'd normally add is moved INTO the enter/leave
+	// keyframes so we can compose it with the scale puff-in without
+	// fighting the static positioning transform.
+	.origam-video__skip-ripple {
+		transform: translateY(-50%) scale(1);
+	}
+
 	.origam-video-skip-ripple-enter-active,
 	.origam-video-skip-ripple-leave-active {
 		transition: opacity 200ms ease, transform 200ms ease;
@@ -1120,13 +1133,13 @@
 	.origam-video-skip-ripple-enter-from,
 	.origam-video-skip-ripple-leave-to {
 		opacity: 0;
-		transform: scale(0.96);
+		transform: translateY(-50%) scale(0.96);
 	}
 
 	.origam-video-skip-ripple-enter-to,
 	.origam-video-skip-ripple-leave-from {
 		opacity: 1;
-		transform: scale(1);
+		transform: translateY(-50%) scale(1);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
