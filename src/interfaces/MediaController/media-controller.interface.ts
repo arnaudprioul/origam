@@ -95,6 +95,16 @@ export interface IMediaControllerProps extends ICommonsComponentProps {
      */
     downloadUrl?: string | null
     /**
+     * Suggested filename written to the `<a download="…">` attribute
+     * of the download row. Browsers honour this attribute on
+     * same-origin links; for cross-origin URLs the server's
+     * `Content-Disposition` header wins. Falls back to the URL's
+     * path basename when omitted.
+     *
+     * @default undefined
+     */
+    downloadFilename?: string
+    /**
      * Optional list of quality variants. When the array exposes ≥ 2
      * entries, a "Quality" drill-down appears in the config menu.
      * The Controller emits `quality-change` with the picked

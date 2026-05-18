@@ -166,9 +166,11 @@
 										aria-hidden="true"
 								>›</span>
 							</button>
-							<button
+							<a
 									v-if="canDownload"
-									type="button"
+									:href="downloadUrl as string"
+									:download="downloadFilename ?? resolvedDownloadFilename"
+									rel="noopener"
 									class="origam-media-controller__config-row origam-media-controller__config-row--action"
 									data-cy="origam-media-controller-config-download"
 									@click="onDownloadClick"
@@ -180,7 +182,7 @@
 									<origam-icon :icon="ICONS.DOWNLOAD" />
 								</span>
 								<span class="origam-media-controller__config-row-label">{{ t('origam.media.download') }}</span>
-							</button>
+							</a>
 							<slot
 									name="configExtra"
 									v-bind="configExtraBindings"
@@ -294,6 +296,7 @@
 		allowRemotePlayback: false,
 		downloadable: false,
 		downloadUrl: null,
+		downloadFilename: undefined,
 		qualityOptions: () => [],
 		currentQuality: null
 	})
@@ -535,15 +538,31 @@
 	}
 
 	/*********************************************************
-	 * Download — Controller emits `download`; parent owns the actual
-	 * fetch / anchor click. Only fired when both `downloadable` is
-	 * true AND `downloadUrl` is non-null (cf. `canDownload`).
+	 * Download — the menu row is a native `<a href :download>` link,
+	 * so the browser fires the download natively from the user gesture.
+	 * `onDownloadClick` only closes the menu and surfaces the
+	 * `download` emit for analytics / parent forwarding — the
+	 * navigation / save dialog is handled by the browser itself.
+	 *
+	 * Cross-origin nuance: if the video URL is on a third-party CDN
+	 * the browser ignores the `download` attribute (HTML spec) and
+	 * navigates to the URL instead. Same-origin / `data:` / `blob:`
+	 * URLs honour `download` and trigger a real "Save as…" flow.
+	 * Self-hosted videos therefore work out of the box; cross-origin
+	 * downloads require the CDN to send `Content-Disposition: attachment`.
 	 ********************************************************/
 	function onDownloadClick (): void {
 		if (!canDownload.value) return
 		emit('download')
 		closeMenu()
 	}
+
+	const resolvedDownloadFilename = computed<string>(() => {
+		if (!props.downloadUrl) return 'video'
+		const last = props.downloadUrl.split('/').pop()
+		if (!last) return 'video'
+		return last.split('?')[0] || 'video'
+	})
 
 	/*********************************************************
 	 * Class & Style
