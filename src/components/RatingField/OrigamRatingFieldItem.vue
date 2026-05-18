@@ -46,7 +46,7 @@
 
 	import { MDI_ICONS, VARIANT } from "../../enums"
 
-	import type { IRatingFieldItemProps } from '../../interfaces'
+	import type { IRatingFieldItemEmits, IRatingFieldItemProps } from '../../interfaces'
 
 	import type { TOrigamBtn } from "../../types"
 
@@ -65,7 +65,7 @@
 		itemAriaLabel: 'origam.rating.ariaLabel.item'
 	})
 
-	const emits = defineEmits(['mouseenter', 'mouseleave', 'click'])
+	const emits = defineEmits<IRatingFieldItemEmits>()
 
 	const {filterProps} = useProps<IRatingFieldItemProps>(props)
 

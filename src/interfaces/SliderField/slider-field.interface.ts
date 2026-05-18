@@ -3,10 +3,12 @@ import { useSteps } from '../../composables'
 import type {
     IBorderProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IDirectionProps,
     IElevationProps,
+    IFocusEmits,
     IFocusProps,
     IInputProps,
     IMarginProps,
@@ -112,4 +114,11 @@ export interface ISliderField {
     onSliderStart: (data: TSliderData) => void
     onSliderMove: (data: TSliderData) => void
     getActiveThumb: (e: MouseEvent | TouchEvent) => HTMLElement
+}
+
+/** Emits fired by `<OrigamSliderField>` — v-model + focus + drag lifecycle
+ *  (`start` fires on pointerdown of a thumb, `end` on pointerup). */
+export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {
+    (e: 'start', value: number | Array<number>): void
+    (e: 'end', value: number | Array<number>): void
 }

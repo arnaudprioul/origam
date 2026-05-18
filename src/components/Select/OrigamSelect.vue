@@ -313,7 +313,7 @@
 		TEXT_FIELD_TYPE
 	} from '../../enums'
 
-	import type { IInternalListItem, IItemProps, ISelectProps } from '../../interfaces'
+	import type { IInternalListItem, IItemProps, ISelectEmits, ISelectProps } from '../../interfaces'
 
 	import type {
 		TOrigamChip,
@@ -358,7 +358,7 @@
 		noDataText: 'origam.noDataText'
 	})
 
-	defineEmits(['click:control', 'mousedown:control', 'update:focused', 'update:modelValue', 'update:menu', 'click:prepend', 'click:prependInner', 'click:append', 'click:appendInner', 'click:clear'])
+	defineEmits<ISelectEmits>()
 
 	const {filterProps} = useProps<ISelectProps>(props)
 

@@ -1,11 +1,15 @@
 import type {
     IActiveProps,
     IBorderProps,
+    IClickLabelEmits,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
+    IFocusEmits,
     IHoverProps,
+    IIndeterminateEmits,
     IInputProps,
     ILoaderProps,
     IMarginProps,
@@ -20,3 +24,7 @@ export interface ISwitchProps extends ICommonsComponentProps, ITagProps, IPaddin
     inset?: boolean
     flat?: boolean
 }
+
+/** Emits fired by `<OrigamSwitch>` — v-model + focus + indeterminate
+ *  (three-state) + label click. */
+export interface ISwitchEmits extends ICommonsComponentEmits, IFocusEmits, IIndeterminateEmits, IClickLabelEmits {}

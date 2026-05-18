@@ -1,15 +1,19 @@
 import type {
+    IAdjacentEmits,
+    IAdjacentInnerEmits,
     IAdjacentInnerProps,
     IAdjacentProps,
     IBorderProps,
     IChipProps,
     IBgColorProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
     IFieldProps,
     IFiltersProps,
+    IFocusEmits,
     IInputProps,
     IItemProps,
     ILazyProps,
@@ -45,4 +49,13 @@ export interface ISelectProps extends ICommonsComponentProps, IColorProps, IBgCo
     search?: string
     closeText?: string
     openText?: string
+}
+
+/** Emits fired by `<OrigamSelect>` — v-model + focus + menu open/close +
+ *  click handlers on the control surface and the adjacent slots
+ *  (prepend / append / prependInner / appendInner / clear). */
+export interface ISelectEmits extends ICommonsComponentEmits, IFocusEmits, IAdjacentEmits, IAdjacentInnerEmits {
+    (e: 'click:control', event: MouseEvent): void
+    (e: 'mousedown:control', event: MouseEvent): void
+    (e: 'update:menu', value: boolean): void
 }

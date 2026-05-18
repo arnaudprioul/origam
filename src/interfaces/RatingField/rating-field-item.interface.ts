@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    IClickEmits,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -30,4 +31,11 @@ export interface IRatingFieldItemProps extends ICommonsComponentProps, ITagProps
     halfIncrements?: boolean
     checked?: boolean
     length?: number
+}
+
+/** Emits fired by `<OrigamRatingFieldItem>` — click + hover surface
+ *  (pointer enter / leave drive the half-rating preview). */
+export interface IRatingFieldItemEmits extends IClickEmits {
+    (e: 'mouseenter', event: MouseEvent): void
+    (e: 'mouseleave', event: MouseEvent): void
 }

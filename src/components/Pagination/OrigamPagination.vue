@@ -184,7 +184,7 @@
 
 	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 
-	import type { IPaginationProps } from "../../interfaces"
+	import type { IPaginationEmits, IPaginationProps } from "../../interfaces"
 
 	import { createRange, int } from "../../utils"
 
@@ -219,13 +219,7 @@
 		perPage: 10
 	})
 
-	const emits = defineEmits([
-		'update:modelValue',
-		'first',
-		'next',
-		'prev',
-		'last'
-	])
+	const emits = defineEmits<IPaginationEmits>()
 
 	const {filterProps} = useProps<IPaginationProps>(props)
 

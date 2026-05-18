@@ -157,7 +157,7 @@
 
 	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
 
-	import type { IRatingFieldProps } from '../../interfaces'
+	import type { IRatingFieldEmits, IRatingFieldProps } from '../../interfaces'
 
 	import type { TOrigamInput, TOrigamRatingFieldItem } from "../../types"
 
@@ -178,7 +178,7 @@
 		size: SIZES.DEFAULT
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IRatingFieldEmits>()
 
 	const {filterProps} = useProps<IRatingFieldProps>(props)
 

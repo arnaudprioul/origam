@@ -51,7 +51,7 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IRadioBtnProps } from '../../interfaces'
+	import type { IRadioBtnEmits, IRadioBtnProps } from '../../interfaces'
 
 	import type { TOrigamSelectionControl } from "../../types"
 
@@ -67,7 +67,7 @@
 		falseIcon: MDI_ICONS.RADIOBOX_BLANK
 	})
 
-	const emits = defineEmits(['update:modelValue', 'update:focused', 'click:label'])
+	const emits = defineEmits<IRadioBtnEmits>()
 
 	const {filterProps} = useProps<IRadioBtnProps>(props)
 

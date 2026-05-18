@@ -199,7 +199,7 @@
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { ISliderFieldProps } from "../../interfaces"
+	import type { ISliderFieldEmits, ISliderFieldProps } from "../../interfaces"
 
 	import type { TOrigamInput, TOrigamSliderFieldThumb, TOrigamSliderFieldTrack } from '../../types'
 
@@ -228,7 +228,7 @@
 		inset: false
 	})
 
-	const emits = defineEmits(['update:focused', 'update:modelValue', 'start', 'end'])
+	const emits = defineEmits<ISliderFieldEmits>()
 
 	const {filterProps} = useProps<ISliderFieldProps>(props)
 

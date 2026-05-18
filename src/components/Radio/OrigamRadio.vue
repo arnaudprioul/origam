@@ -117,7 +117,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IRadioProps } from '../../interfaces'
+	import type { IRadioEmits, IRadioProps } from '../../interfaces'
 
 	import type { TOrigamInput, TOrigamRadioBtn } from "../../types"
 
@@ -133,7 +133,7 @@
 		density: DENSITY.DEFAULT
 	})
 
-	const emits = defineEmits(['update:modelValue', 'update:focused', 'click:label'])
+	const emits = defineEmits<IRadioEmits>()
 
 
 	const {isHover, hoverState} = useHover(props)

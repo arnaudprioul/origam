@@ -62,7 +62,7 @@
 
 	import { KEYBOARD_VALUES } from '../../enums'
 
-	import type { ISliderFieldThumbProps } from "../../interfaces"
+	import type { ISliderFieldThumbEmits, ISliderFieldThumbProps } from "../../interfaces"
 
 	import { clamp, convertToUnit, int } from '../../utils'
 
@@ -81,7 +81,7 @@
 		position: 0
 	})
 
-	const emits = defineEmits(['update:modelValue'])
+	const emits = defineEmits<ISliderFieldThumbEmits>()
 
 	const {filterProps} = useProps<ISliderFieldThumbProps>(props)
 

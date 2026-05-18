@@ -2,6 +2,7 @@ import type {
     IBorderProps,
     IBgColorProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
@@ -69,4 +70,13 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
      * (`"Next"` in English).
      */
     nextText?: string
+}
+
+/** Emits fired by `<OrigamPagination>` — current page v-model + the four
+ *  navigation shortcuts (first / prev / next / last). */
+export interface IPaginationEmits extends ICommonsComponentEmits {
+    (e: 'first', value: number): void
+    (e: 'prev', value: number): void
+    (e: 'next', value: number): void
+    (e: 'last', value: number): void
 }

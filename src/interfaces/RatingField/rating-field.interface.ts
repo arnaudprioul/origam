@@ -1,6 +1,7 @@
 import type {
     IBorderProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
@@ -31,3 +32,6 @@ export interface IRatingFieldProps extends ICommonsComponentProps, IRippleProps,
     itemLabels?: Array<string>
     itemLabelPosition?: TBlock
 }
+
+/** Emits fired by `<OrigamRatingField>` — v-model on the rating value. */
+export interface IRatingFieldEmits extends ICommonsComponentEmits {}

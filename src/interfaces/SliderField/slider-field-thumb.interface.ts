@@ -1,6 +1,7 @@
 import type {
     IBorderProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDirectionProps,
     IElevationProps,
@@ -21,3 +22,6 @@ export interface ISliderFieldThumbProps extends ICommonsComponentProps, IColorPr
     readonly?: boolean
     disabled?: boolean
 }
+
+/** Emits fired by `<OrigamSliderFieldThumb>` — v-model on the thumb position. */
+export interface ISliderFieldThumbEmits extends ICommonsComponentEmits {}

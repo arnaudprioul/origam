@@ -137,7 +137,7 @@
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { ISwitchProps } from "../../interfaces"
+	import type { ISwitchEmits, ISwitchProps } from "../../interfaces"
 
 	import type { TOrigamInput, TOrigamSelectionControl } from "../../types"
 
@@ -155,7 +155,7 @@
 		centerAffix: true
 	})
 
-	defineEmits(['update:modelValue', 'update:focused', 'update:indeterminate', 'click:label'])
+	defineEmits<ISwitchEmits>()
 
 
 	const {isHover, hoverState} = useHover(props)
