@@ -16,6 +16,8 @@
 		<span
 				ref="svgHost"
 				class="origam-qr-code__svg-host"
+				:class="sizeClasses"
+				:style="svgHostStyles"
 		/>
 		<span
 				v-if="hasCenter"
@@ -71,7 +73,7 @@
 	import type {
 		IQrCodeProps,
 		IQrCodeSlots
-	} from '../../interfaces'
+	} from '../../interfaces/QrCode/qr-code.interface'
 
 	import { resolveQrColor, resolveQrCornerRadius } from '../../utils'
 
@@ -227,7 +229,6 @@
 		...backgroundColorClasses.value,
 		...roundedClasses.value,
 		...borderClasses.value,
-		...sizeClasses.value,
 		...paddingClasses.value,
 		...marginClasses.value,
 		...elevationClasses.value,
@@ -239,12 +240,21 @@
 		backgroundColorStyles.value,
 		roundedStyles.value,
 		borderStyles.value,
-		sizeStyles.value,
 		paddingStyles.value,
 		marginStyles.value,
 		elevationStyles.value,
 		props.style
 	] as StyleValue)
+
+	/*********************************************************
+	 * Size styles are intentionally NOT applied to the wrapper:
+	 * `useSize` forces both `width` AND `height`, which would crush
+	 * the title row + push the SVG into a non-square area. We move
+	 * the width/height contract onto the SVG host span so the SVG
+	 * stays square at the requested size and the wrapper auto-sizes
+	 * to fit the title + SVG stack.
+	 ********************************************************/
+	const svgHostStyles = computed<StyleValue>(() => sizeStyles.value as StyleValue)
 
 	/*********************************************************
 	 * Expose — handy for parents that want to read the rendered SVG
@@ -274,12 +284,12 @@
 		text-align: center;
 		color: inherit;
 		line-height: 1.2;
+		align-self: stretch;
 	}
 
 	.origam-qr-code__svg-host {
 		display: block;
-		width: 100%;
-		height: 100%;
+		aspect-ratio: 1;
 		position: relative;
 
 		:deep(svg) {
