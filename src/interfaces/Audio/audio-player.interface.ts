@@ -66,6 +66,11 @@ export interface IAudioSlots {
     cover?: () => any
     /** Override the title rendering. */
     title?: () => any
+    /** Override the default waveform `<canvas>` painter. Receives the
+     *  current peaks array + the playhead context so the consumer can
+     *  paint via SVG / WebGL / a custom canvas pass. Ported from
+     *  `ISoundSlots.waveform`. */
+    waveform?: (bindings: { peaks: Array<number>; currentTime: number; duration: number }) => any
     /** Override the entire controls (replaces the default
      *  `<OrigamMediaController>`). */
     controls?: (bindings: IAudioScopedSlotBindings) => any
@@ -112,10 +117,36 @@ export interface IAudioProps
      */
     artist?: string
     /**
+     * Optional album name shown below the artist (ported from
+     * `ISoundMetadata.album`). Renders only when set.
+     */
+    album?: string
+    /**
      * Optional cover image shown next to the title. Accepts a URL
      * string or an `ISrcObject` for srcset / lazy-src support.
      */
     cover?: string | ISrcObject
+    /**
+     * Display the computed waveform above the controls. Pass `true`
+     * to force the computation (when supported); pass `\'auto\'` to
+     * activate it only when the browser supports `OfflineAudioContext`.
+     * SSR + jsdom fall through to `false`.
+     *
+     * The decoder lives in `useWaveform` — fetch + decode through
+     * `OfflineAudioContext` + downsample channel 0 to 200 peaks.
+     *
+     * @default false
+     */
+    waveform?: boolean | \'auto\'
+    /**
+     * Stroke colour for the *played* portion of the waveform bars.
+     * Default `\'currentColor\'` so the waveform inherits the
+     * typographic theme. Override via the prop OR via
+     * `--origam-audio__waveform---color-played` directly on the wrapper.
+     *
+     * @default \'currentColor\'
+     */
+    waveformColor?: string
     /**
      * Starts playback as soon as `loadedmetadata` fires. Most
      * browsers require `muted=true` alongside `autoplay`; the
@@ -217,6 +248,10 @@ export interface IAudioEmits {
     /** Fired when the listener clicks the "Download" row in the
      *  config menu. Payload is the URL of the file. */
     (e: 'download', url: string): void
+    /** Fires once per waveform recomputation (typically when `src`
+     *  changes). Payload is the downsampled peaks array (0..1
+     *  amplitudes). Ported from `ISoundEmits['waveform']`. */
+    (e: 'waveform', peaks: Array<number>): void
 }
 
 /**

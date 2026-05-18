@@ -73,7 +73,34 @@
 							class="origam-audio__artist"
 							data-cy="origam-audio-artist"
 					>{{ artist }}</span>
+					<span
+							v-if="album"
+							class="origam-audio__album"
+							data-cy="origam-audio-album"
+					>{{ album }}</span>
 				</div>
+			</slot>
+		</div>
+
+		<div
+				v-if="waveformEnabled"
+				class="origam-audio__waveform"
+				data-cy="origam-audio-waveform"
+		>
+			<slot
+					name="waveform"
+					:peaks="peaks"
+					:current-time="state.currentTime.value"
+					:duration="state.duration.value"
+			>
+				<canvas
+						ref="canvasRef"
+						class="origam-audio__waveform-canvas"
+						:aria-label="waveformAriaLabel"
+						role="img"
+						data-cy="origam-audio-waveform-canvas"
+						@click="onWaveformClick"
+				/>
 			</slot>
 		</div>
 
@@ -137,6 +164,10 @@
 >
 	import {
 		computed,
+		nextTick,
+		onBeforeUnmount,
+		onMounted,
+		ref,
 		type StyleValue,
 		watch
 	} from 'vue'
@@ -147,6 +178,7 @@
 
 	import { useLocale } from '../../composables'
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
+	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
 	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
 
 	import { MDI_ICONS } from '../../enums'
@@ -187,6 +219,7 @@
 		tracks: () => [],
 		title: undefined,
 		artist: undefined,
+		album: undefined,
 		cover: undefined,
 		autoplay: false,
 		muted: false,
@@ -198,7 +231,9 @@
 		playbackRate: 1,
 		allowRemotePlayback: false,
 		downloadable: false,
-		downloadFilename: undefined
+		downloadFilename: undefined,
+		waveform: false,
+		waveformColor: 'currentColor'
 	})
 
 	const emit = defineEmits<IAudioEmits>()
@@ -310,8 +345,129 @@
 	})
 
 	const hasMetadata = computed<boolean>(() => {
-		return Boolean(props.title || props.artist || resolvedCover.value)
+		return Boolean(props.title || props.artist || props.album || resolvedCover.value)
 	})
+
+	/*********************************************************
+	 * Waveform — ported from `<OrigamSound>`. The headless
+	 * `useWaveform` composable decodes the source via
+	 * `OfflineAudioContext`, downsamples it to 200 peaks, and exposes
+	 * them as a reactive ref. We paint them on a `<canvas>` between the
+	 * metadata strip and the controls. Clicks on the canvas map to a
+	 * `seek()` so the waveform doubles as a coarse scrubber.
+	 *
+	 * `waveform === 'auto'` enables the feature only when the browser
+	 * supports `OfflineAudioContext` (SSR + jsdom fall through to false).
+	 ********************************************************/
+	const waveformEnabled = computed<boolean>(() => {
+		if (props.waveform === true) return true
+		if (props.waveform === 'auto') {
+			if (typeof window === 'undefined') return false
+			const win = window as unknown as { OfflineAudioContext?: unknown }
+			return Boolean(win.OfflineAudioContext)
+		}
+		return false
+	})
+
+	const waveformSrc = computed<string | undefined>(() => {
+		if (!waveformEnabled.value) return undefined
+		if (typeof props.src === 'string') return props.src
+		if (Array.isArray(props.src)) return props.src[0]?.src
+		return props.src?.src
+	})
+
+	const { peaks } = useWaveform(waveformSrc, {
+		bins: 200,
+		crossOrigin: props.crossorigin === 'use-credentials' || props.crossorigin === 'anonymous'
+			? props.crossorigin
+			: undefined
+	})
+
+	const waveformAriaLabel = computed<string>(() => t('origam.media.waveform', 'Audio waveform'))
+
+	watch(peaks, (next) => {
+		if (next.length > 0) emit('waveform', next)
+	})
+
+	const canvasRef = ref<HTMLCanvasElement | null>(null)
+	let resizeObserver: ResizeObserver | null = null
+
+	function drawWaveform (): void {
+		const canvas = canvasRef.value
+		if (!canvas) return
+		const ctx = canvas.getContext('2d')
+		if (!ctx) return
+		const list = peaks.value
+		if (list.length === 0) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			return
+		}
+
+		const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1
+		const rect = canvas.getBoundingClientRect()
+		const width = Math.max(1, Math.floor(rect.width * dpr))
+		const height = Math.max(1, Math.floor(rect.height * dpr))
+		if (canvas.width !== width) canvas.width = width
+		if (canvas.height !== height) canvas.height = height
+
+		const styles = window.getComputedStyle(canvas)
+		const playedColor = styles.getPropertyValue('--origam-audio__waveform---color-played').trim() || styles.color
+		const unplayedColor = styles.getPropertyValue('--origam-audio__waveform---color-unplayed').trim() || styles.color
+
+		const barCount = list.length
+		const barWidth = Math.max(1, Math.floor((width - (barCount - 1)) / barCount))
+		const midY = height / 2
+		const progress = Number.isFinite(state.duration.value) && state.duration.value > 0
+			? state.currentTime.value / state.duration.value
+			: 0
+		const playedBars = Math.floor(progress * barCount)
+
+		ctx.clearRect(0, 0, width, height)
+		for (let i = 0; i < barCount; i++) {
+			const value = list[i] ?? 0
+			const h = Math.max(1, value * midY)
+			const x = i * (barWidth + 1)
+			ctx.fillStyle = i <= playedBars ? playedColor : unplayedColor
+			ctx.fillRect(x, midY - h, barWidth, h * 2)
+		}
+	}
+
+	function scheduleDrawWaveform (): void {
+		if (typeof window === 'undefined') return
+		void nextTick(() => drawWaveform())
+	}
+
+	watch(
+		[peaks, () => state.currentTime.value, () => state.duration.value, () => props.waveformColor],
+		scheduleDrawWaveform
+	)
+	watch(waveformEnabled, () => scheduleDrawWaveform())
+
+	onMounted(() => {
+		if (typeof window === 'undefined') return
+		scheduleDrawWaveform()
+		if (typeof ResizeObserver !== 'undefined' && canvasRef.value) {
+			resizeObserver = new ResizeObserver(() => drawWaveform())
+			resizeObserver.observe(canvasRef.value)
+		}
+	})
+
+	onBeforeUnmount(() => {
+		if (resizeObserver) {
+			resizeObserver.disconnect()
+			resizeObserver = null
+		}
+	})
+
+	function onWaveformClick (event: MouseEvent): void {
+		const canvas = canvasRef.value
+		if (!canvas) return
+		if (!Number.isFinite(state.duration.value) || state.duration.value <= 0) return
+		const rect = canvas.getBoundingClientRect()
+		const x = event.clientX - rect.left
+		const ratio = Math.max(0, Math.min(1, x / rect.width))
+		methods.seek(ratio * state.duration.value)
+	}
 
 	/*********************************************************
 	 * Download — analogous to OrigamVideo's contract. Single-source
@@ -475,6 +631,31 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.origam-audio__album {
+		font: var(--origam-audio__album---font, 0.8rem/1.3 inherit);
+		color: var(--origam-audio__album---color, var(--origam-color__text---tertiary, var(--origam-color__text---secondary, inherit)));
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.origam-audio__waveform {
+		display: block;
+		width: 100%;
+		height: var(--origam-audio__waveform---height, 56px);
+		color: var(--origam-audio__waveform---color, currentColor);
+	}
+
+	.origam-audio__waveform-canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+
+		--origam-audio__waveform---color-played: var(--origam-color__accent---base, currentColor);
+		--origam-audio__waveform---color-unplayed: color-mix(in srgb, currentColor 35%, transparent);
 	}
 
 	.origam-audio__loading {
