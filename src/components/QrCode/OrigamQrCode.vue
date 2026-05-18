@@ -276,6 +276,12 @@
 		gap: 8px;
 		line-height: 0;
 		position: relative;
+		// Baseline inner spacing — matches the `gap` between title and
+		// SVG so the wrapper has the same breathing room on every side
+		// of the matrix. Overridden by the `padding` prop (via
+		// `usePadding(props)` inline styles) when the consumer
+		// provides one.
+		padding: 8px;
 	}
 
 	.origam-qr-code__title {

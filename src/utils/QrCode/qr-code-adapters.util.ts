@@ -1,4 +1,4 @@
-import { intentBgExpr, intentFgExpr, isIntent } from '../Commons/color.util'
+import { intentBgExpr, isIntent, tokenForegroundForIntent } from '../Commons/color.util'
 
 import type { TColor, TRounded } from '../../types'
 
@@ -32,11 +32,24 @@ const ROUNDED_TO_CORNER: Readonly<Record<string, number>> = {
  *     through verbatim.
  *   • `undefined` / `null` / empty → falls back to `fallback`.
  *
- * `role` decides which token slot of the intent is read:
- *   • `'foreground'` → the intent's `fg` slot (matches the way the
- *     modules render — they're the "ink" on the QR surface).
- *   • `'background'` → the intent's `bg` slot (matches the way the
- *     quiet-zone rect renders — the "paper" behind the ink).
+ * `role` decides which token slot of the intent is read — and the
+ * mapping matches the rest of the DS semantics for `color="primary"`
+ * / `bgColor="primary"` on text + surface elements:
+ *
+ *   • `'foreground'` → the intent's OWN paint (via
+ *     `tokenForegroundForIntent`, i.e. `fgSubtle` for primary /
+ *     feedback intents, `secondary.fg` for neutral / secondary).
+ *     Matches how `useColor` resolves `color="primary"` on any text
+ *     element: the text is painted primary itself, NOT its
+ *     white-on-dark contrast.
+ *   • `'background'` → the intent's `bg` slot (the actual surface
+ *     paint, e.g. primary's main violet) — same channel
+ *     `bgColor="primary"` uses on Card / Btn / Chip.
+ *
+ * This means `qrCodeProps.color="primary"` paints PURPLE modules,
+ * exactly as a consumer reading "make the modules primary" would
+ * expect — not the contrast white-on-primary pairing that
+ * `intentFgExpr` returns.
  */
 export function resolveQrColor (
     value: TColor | undefined | null,
@@ -46,7 +59,7 @@ export function resolveQrColor (
     if (value === null || value === undefined || value === '') return fallback
     if (isIntent(value)) {
         return role === 'foreground'
-            ? intentFgExpr(value, 'default')
+            ? tokenForegroundForIntent(value)
             : intentBgExpr(value, 'default')
     }
     return String(value)
