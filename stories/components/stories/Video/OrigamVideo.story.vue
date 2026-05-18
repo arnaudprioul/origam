@@ -948,14 +948,16 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	// Google Cloud Storage variant — same Big Buck Bunny payload but
-	// the bucket sets `Access-Control-Allow-Origin: *`, so the
-	// force-download blob path in `<OrigamMediaController>` works
-	// without `Content-Disposition: attachment` on the server side.
-	// (The `download.blender.org` mirror is CORS-blocked → the
-	// download button would fall back to a native navigation that
-	// opens the browser's built-in player.)
-	const BIG_BUCK_BUNNY = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+	// Wikimedia Commons mirror — same Big Buck Bunny payload re-encoded
+	// in WebM/VP9 (supported on every evergreen browser). The CDN
+	// returns `Access-Control-Allow-Origin: *`, so the force-download
+	// blob path in `<OrigamMediaController>` actually works
+	// end-to-end in Histoire.
+	// Alternative URLs tested but discarded :
+	//   • commondatastorage.googleapis.com/.../BigBuckBunny.mp4 → 403
+	//   • download.blender.org/.../BigBuckBunny_320x180.mp4 → no CORS
+	//   • cdn.plyr.io / w3schools / media.w3.org → no CORS
+	const BIG_BUCK_BUNNY = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm'
 	const BUNNY_POSTER = 'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg'
 
 	const MULTI_SOURCES: Array<IVideoSource> = [
