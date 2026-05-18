@@ -102,7 +102,6 @@ export * from './Watermark/watermark.composable'
 export * from './Media/use-media-player.composable'
 export * from './Video/video-player.composable'
 
-export * from './Sound/audio-player.composable'
 export * from './Audio/use-waveform.composable'
 
 export * from './Calendar/calendar.composable'

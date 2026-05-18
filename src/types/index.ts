@@ -318,7 +318,6 @@ export * from './Video/video-track-kind.type'
 
 export * from './Audio/audio-controls.type'
 
-export * from './Sound/sound-controls.type'
 
 export * from './Calendar/calendar-view.type'
 export * from './Calendar/calendar-time-format.type'

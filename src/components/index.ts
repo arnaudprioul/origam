@@ -190,7 +190,6 @@ export * from './Video'
 
 export * from './Audio'
 
-export * from './Sound'
 
 export * from './Calendar'
 
