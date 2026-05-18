@@ -30,6 +30,52 @@ peer extension attaches to it.
 </template>
 ```
 
+## Architecture
+
+`<OrigamVideo>` is **not** a monolith — it composes three building blocks:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  <OrigamVideo>                                              │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │ native <video> element                                │  │
+│  │   + poster overlay                                    │  │
+│  │   + state-pulse / skip-ripple / center-controls       │  │
+│  │   + double-tap touch handler                          │  │
+│  │   + ResizeObserver-driven autohide                    │  │
+│  └───────────────────────────────────────────────────────┘  │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │ <OrigamMediaController>  (shared with <OrigamAudio>)  │  │
+│  │   ┌─ scrubber row (using <OrigamMediaScrubber>)       │  │
+│  │   ├─ play / volume / time on the left                 │  │
+│  │   └─ #extraControlsRight slot (← Video injects here:  │  │
+│  │        captions, PiP, fullscreen)                     │  │
+│  └───────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+              │
+              └─── powered by useVideoPlayer()
+                    └─── extends useMediaPlayer()
+```
+
+Key consequences for advanced consumers :
+
+- The custom controls bar comes from
+  [`<OrigamMediaController>`](../MediaController/OrigamMediaController.md).
+  Captions / PiP / fullscreen buttons are video-specific — `<OrigamVideo>`
+  injects them via the controller's `#extraControlsRight` slot. To replace
+  the entire bar (e.g. brand-themed skin), use the `#controls` slot below.
+- The scrubber and the volume slider both run on
+  [`<OrigamMediaScrubber>`](../MediaScrubber/OrigamMediaScrubber.md) — same
+  pointer-events + keyboard + ARIA contract, no two different drag pipes.
+- Reactive state + imperative methods come from `useVideoPlayer({ videoRef })`,
+  which extends the media-agnostic `useMediaPlayer` with fullscreen / PiP
+  state (`state.fullscreen`, `state.pip`) and methods
+  (`enterFullscreen`, `requestPip`, …).
+
+You only need to know this when you want to mount the chrome on top of
+your own `<video>` element or compose the same surface from scratch — for
+the 99% case, `<OrigamVideo>` Just Works as a drop-in.
+
 ## Props
 
 ### Source & playback
@@ -55,6 +101,7 @@ peer extension attaches to it.
 | `controls`                 | `'custom' \| 'native' \| 'none'`              | `'custom'`   | Toolbar rendering strategy. `custom` = YouTube-style two-row chrome.   |
 | `aspectRatio`              | `string`                                      | `'16/9'`     | CSS `aspect-ratio` value — `'16/9'`, `'4/3'`, raw `'2 / 1'`, …         |
 | `inset`                    | `boolean`                                     | `true`       | Auto-hide toolbar while playing once the cursor leaves the player.     |
+| `showCenterControls`       | `boolean`                                     | `true`       | Show the centred play/pause + skip-backward + skip-forward overlay on hover and while paused. Set to `false` to keep only the chrome bar at the bottom. |
 | `skipSeconds`              | `number`                                      | `30`         | Seconds the double-tap skip jumps; also the value shown in the ripple. |
 
 ### Interactions
