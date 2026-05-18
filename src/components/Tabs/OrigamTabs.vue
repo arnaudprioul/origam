@@ -38,7 +38,7 @@
 
 	import { DENSITY, DIRECTION, TAB_VARIANT } from '../../enums'
 
-	import type { ITabsProps } from '../../interfaces'
+	import type { ITabsEmits, ITabsProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -54,7 +54,7 @@
 		selectedClass: 'origam-tab--active'
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ITabsEmits>()
 
 	const {filterProps} = useProps<ITabsProps>(props)
 

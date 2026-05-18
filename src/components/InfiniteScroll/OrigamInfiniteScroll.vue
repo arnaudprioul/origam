@@ -136,7 +136,7 @@
 		PROGRESS_TYPE
 	} from '../../enums'
 
-	import type { IInfiniteScrollProps } from '../../interfaces'
+	import type { IInfiniteScrollEmits, IInfiniteScrollProps } from '../../interfaces'
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 
@@ -155,7 +155,7 @@
 		emptyText: 'origam.infiniteScroll.empty'
 	})
 
-	const emits = defineEmits(['load'])
+	const emits = defineEmits<IInfiniteScrollEmits>()
 
 	const {filterProps} = useProps<IInfiniteScrollProps>(props)
 

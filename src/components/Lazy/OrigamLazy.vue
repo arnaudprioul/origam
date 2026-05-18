@@ -32,7 +32,7 @@
 
 	import { vIntersect } from '../../directives'
 
-	import type { ILazyComponentProps } from '../../interfaces'
+	import type { ILazyComponentProps, ILazyEmits } from '../../interfaces'
 
 	import type { TTransitionProps } from "../../types"
 
@@ -53,7 +53,7 @@
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ILazyEmits>()
 
 	const {filterProps} = useProps<ILazyComponentProps>(props)
 

@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDirectionProps,
     IElevationProps,
@@ -34,3 +35,6 @@ export interface IWindowProvide {
     isReversed: Ref<boolean>
     rootRef: Ref<HTMLElement | undefined>
 }
+
+/** Emits fired by `<OrigamWindow>` — v-model on the active slide. */
+export interface IWindowEmits extends ICommonsComponentEmits {}

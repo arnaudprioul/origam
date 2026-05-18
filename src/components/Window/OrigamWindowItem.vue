@@ -36,7 +36,7 @@
 
 	import { vTouch } from '../../directives'
 
-	import type { IWindowItemProps } from '../../interfaces'
+	import type { IWindowItemEmits, IWindowItemProps } from '../../interfaces'
 
 	import { convertToUnit } from '../../utils'
 
@@ -53,7 +53,7 @@
 		reverseTransition: undefined
 	})
 
-	defineEmits(['group:selected'])
+	defineEmits<IWindowItemEmits>()
 
 	const {filterProps} = useProps<IWindowItemProps>(props)
 

@@ -36,7 +36,7 @@
 
 	import { DIRECTION } from '../../enums'
 
-	import type { ITabPanelsProps, ITouchHandlers } from '../../interfaces'
+	import type { ITabPanelsEmits, ITabPanelsProps, ITouchHandlers } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -50,7 +50,7 @@
 		selectedClass: 'origam-tab-panel--active'
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ITabPanelsEmits>()
 
 	const {filterProps} = useProps<ITabPanelsProps>(props)
 

@@ -79,7 +79,7 @@
 
 	import { DIRECTION, MDI_ICONS } from "../../enums"
 
-	import type { IGoToOptions, ISlideGroupProps } from "../../interfaces"
+	import type { IGoToOptions, ISlideGroupEmits, ISlideGroupProps } from "../../interfaces"
 	import {
 		calculateCenteredTarget,
 		calculateUpdatedTarget,
@@ -112,7 +112,7 @@
 		selectedClass: 'origam-slide-group-item--active'
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ISlideGroupEmits>()
 
 	const {filterProps} = useProps<ISlideGroupProps>(props)
 

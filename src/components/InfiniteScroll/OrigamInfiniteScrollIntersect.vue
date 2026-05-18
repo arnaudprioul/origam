@@ -13,7 +13,7 @@
 	import { watch } from 'vue'
 	import { useIntersectionObserver, useProps } from '../../composables'
 
-	import type { IInfiniteScrollIntersectProps } from '../../interfaces'
+	import type { IInfiniteScrollIntersectEmits, IInfiniteScrollIntersectProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -21,7 +21,7 @@
 
 	const props = withDefaults(defineProps<IInfiniteScrollIntersectProps>(), {})
 
-	const emits = defineEmits(['intersect'])
+	const emits = defineEmits<IInfiniteScrollIntersectEmits>()
 
 	const {filterProps} = useProps<IInfiniteScrollIntersectProps>(props)
 

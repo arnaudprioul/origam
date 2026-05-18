@@ -35,3 +35,6 @@ export interface ITabPanelsProvide {
     transition: ComputedRef<string | false>
     isReversed: Ref<boolean>
 }
+
+/** Emits fired by `<OrigamTabPanels>` — v-model mirrors the parent tablist. */
+export interface ITabPanelsEmits extends ICommonsComponentEmits {}

@@ -113,7 +113,7 @@
 
 	import { IMG_STATE } from '../../enums'
 
-	import type { IImgProps, ISrcObject } from '../../interfaces'
+	import type { IImgEmits, IImgProps, ISrcObject } from '../../interfaces'
 
 	import type { TImgState } from '../../types'
 
@@ -127,7 +127,7 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IImgProps>(), {})
 
-	const emits = defineEmits(['loadstart', 'load', 'error'])
+	const emits = defineEmits<IImgEmits>()
 
 	const {filterProps} = useProps<IImgProps>(props)
 

@@ -28,7 +28,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { IVirtualScrollItemProps } from '../../interfaces'
+	import type { IVirtualScrollItemEmits, IVirtualScrollItemProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -39,7 +39,7 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollItemProps>(), {})
 
-	const emits = defineEmits(['update:height'])
+	const emits = defineEmits<IVirtualScrollItemEmits>()
 
 	const {filterProps} = useProps<IVirtualScrollItemProps>(props)
 

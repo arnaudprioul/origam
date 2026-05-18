@@ -75,7 +75,7 @@
 
 	import { AXIS, DIRECTION, MDI_ICONS } from '../../enums'
 
-	import type { ITouchHandlers, IWindowProps } from '../../interfaces'
+	import type { ITouchHandlers, IWindowEmits, IWindowProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -103,7 +103,7 @@
 		showArrows: true
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IWindowEmits>()
 
 	const {filterProps} = useProps<IWindowProps>(props)
 
