@@ -1,4 +1,5 @@
 import type {
+    IAdjacentEmits,
     IAdjacentProps,
     IBorderProps,
     ICommonsComponentProps,
@@ -13,3 +14,6 @@ export interface ICardHeaderProps extends ITagProps, ICommonsComponentProps, IBo
     subtitle?: string | number
     title?: string | number
 }
+
+/** Emits fired by `<OrigamCardHeader>` — clicks on prepend/append slots. */
+export interface ICardHeaderEmits extends IAdjacentEmits {}

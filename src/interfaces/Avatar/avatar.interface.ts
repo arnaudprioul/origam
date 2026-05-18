@@ -1,4 +1,5 @@
 import type {
+    IActiveEmits,
     IActiveProps,
     IBorderProps,
     IBgColorProps,
@@ -6,6 +7,7 @@ import type {
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
+    IHoverEmits,
     IHoverProps,
     IMarginProps,
     IPaddingProps,
@@ -28,3 +30,6 @@ export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRo
     image?: string | ISrcObject,
     text?: string
 }
+
+/** Emits fired by `<OrigamAvatar>` — active + hover state propagation. */
+export interface IAvatarEmits extends IActiveEmits, IHoverEmits {}

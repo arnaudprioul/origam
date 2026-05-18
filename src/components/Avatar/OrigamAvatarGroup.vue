@@ -56,7 +56,7 @@
 	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
 	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
 	import { DIRECTION } from "../../enums"
-	import type { IAvatarGroupProps, IAvatarProps } from "../../interfaces"
+	import type { IAvatarGroupEmits, IAvatarGroupProps, IAvatarProps } from "../../interfaces"
 	import type { TOrigamAvatar } from '../../types'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
@@ -87,7 +87,7 @@
 		}
 	}))
 
-	defineEmits(['update:active', 'update:hover'])
+	defineEmits<IAvatarGroupEmits>()
 
 	const {filterProps} = useProps<IAvatarGroupProps>(props)
 

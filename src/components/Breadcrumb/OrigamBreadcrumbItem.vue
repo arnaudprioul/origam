@@ -81,7 +81,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IBreadcrumbItemProps } from '../../interfaces'
+	import type { IBreadcrumbItemEmits, IBreadcrumbItemProps } from '../../interfaces'
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 
@@ -98,7 +98,7 @@
 	// injected by a parent `OrigamBreadcrumb`.
 	const props = useDefaults(_props)
 
-	defineEmits(['click:append', 'click:prepend', 'click:append'])
+	defineEmits<IBreadcrumbItemEmits>()
 
 	const {filterProps} = useProps<IBreadcrumbItemProps>(props)
 

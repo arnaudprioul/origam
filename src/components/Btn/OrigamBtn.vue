@@ -161,7 +161,7 @@
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { IBtnProps } from '../../interfaces'
+	import type { IBtnEmits, IBtnProps } from '../../interfaces'
 
 	import type { TOrigamProgress } from "../../types"
 
@@ -187,7 +187,7 @@
 	// override semantics: parent `??` item, instead of item-wins).
 	const props = useDefaults(_props)
 
-	defineEmits(['group:selected', 'click:append', 'click:prepend'])
+	defineEmits<IBtnEmits>()
 
 	const {filterProps} = useProps<IBtnProps>(props)
 

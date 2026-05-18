@@ -63,7 +63,7 @@
 
 	import { BLOCK, DENSITY } from '../../enums'
 
-	import type { IAppBarProps } from '../../interfaces'
+	import type { IAppBarEmits, IAppBarProps } from '../../interfaces'
 
 	import type { TOrigamToolbar } from "../../types"
 
@@ -85,7 +85,7 @@
 		modelValue: true
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IAppBarEmits>()
 
 	const {filterProps} = useProps<IAppBarProps>(props)
 

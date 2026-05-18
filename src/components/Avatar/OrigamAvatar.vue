@@ -62,7 +62,7 @@
 		useStyle
 	} from '../../composables'
 
-	import type { IAvatarProps, ISrcObject } from '../../interfaces'
+	import type { IAvatarEmits, IAvatarProps, ISrcObject } from '../../interfaces'
 	import { isEmpty } from "../../utils"
 
 	import type { ComputedRef, StyleValue } from 'vue'
@@ -82,7 +82,7 @@
 	// parent template still win; the group's values are used only as defaults.
 	const props = useDefaults(_props)
 
-	defineEmits(['update:active', 'update:hover'])
+	defineEmits<IAvatarEmits>()
 
 	const {filterProps} = useProps<IAvatarProps>(props)
 

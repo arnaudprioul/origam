@@ -99,7 +99,7 @@
 
 	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
 
-	import type { ICarouselProps, IGroupProvide } from '../../interfaces'
+	import type { ICarouselEmits, ICarouselProps, IGroupProvide } from '../../interfaces'
 
 	import type { TOrigamWindow } from "../../types"
 
@@ -123,7 +123,7 @@
 		showArrows: true
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ICarouselEmits>()
 
 	const {filterProps} = useProps<ICarouselProps>(props)
 	const {t} = useLocale()

@@ -1,4 +1,5 @@
 import type {
+    IAdjacentEmits,
     IAdjacentProps,
     IBorderProps,
     IBgColorProps,
@@ -7,6 +8,7 @@ import type {
     IDensityProps,
     IDimensionProps,
     IElevationProps,
+    IGroupEmits,
     IGroupItemProps,
     IHoverProps,
     ILinkProps,
@@ -35,3 +37,7 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
     stacked?: boolean
     text?: string
 }
+
+/** Emits fired by `<OrigamBtn>` — clicks on prepend/append slots and
+ *  group-membership lifecycle. */
+export interface IBtnEmits extends IAdjacentEmits, IGroupEmits {}

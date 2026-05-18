@@ -43,7 +43,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IBtnToggleProps } from '../../interfaces'
+	import type { IBtnToggleEmits, IBtnToggleProps } from '../../interfaces'
 
 	import type { TOrigamBtnGroup } from "../../types"
 
@@ -57,7 +57,7 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IBtnToggleProps>(), {tag: 'div', items: () => [], density: DENSITY.DEFAULT})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IBtnToggleEmits>()
 
 	const {filterProps} = useProps<IBtnToggleProps>(props)
 

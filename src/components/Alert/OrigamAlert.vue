@@ -134,7 +134,7 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IAlertProps } from '../../interfaces'
+	import type { IAlertEmits, IAlertProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -151,7 +151,7 @@
 		hover: true
 	})
 
-	const emits = defineEmits(['click:close', 'update:modelValue', 'update:hover'])
+	const emits = defineEmits<IAlertEmits>()
 
 	const {filterProps} = useProps<IAlertProps>(props)
 	const {t} = useLocale()

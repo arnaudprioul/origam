@@ -1,4 +1,5 @@
 import type {
+    IActiveEmits,
     IActiveProps,
     IAvatarProps,
     IBorderProps,
@@ -8,6 +9,7 @@ import type {
     IDensityProps,
     IDirectionProps,
     IElevationProps,
+    IHoverEmits,
     IHoverProps,
     IMarginProps,
     IPaddingProps,
@@ -22,3 +24,7 @@ export interface IAvatarGroupProps extends ICommonsComponentProps, IDirectionPro
     expandOnHover?: boolean
     expandOnClick?: boolean
 }
+
+/** Emits fired by `<OrigamAvatarGroup>` — propagates active + hover from
+ *  the underlying avatars. */
+export interface IAvatarGroupEmits extends IActiveEmits, IHoverEmits {}

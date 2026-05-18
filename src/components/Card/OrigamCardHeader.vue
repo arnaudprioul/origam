@@ -102,7 +102,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { ICardHeaderProps } from '../../interfaces'
+	import type { ICardHeaderEmits, ICardHeaderProps } from '../../interfaces'
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 
@@ -115,7 +115,7 @@
 
 	const props = withDefaults(defineProps<ICardHeaderProps>(), {tag: 'OrigamToolbar'})
 
-	defineEmits(['click:prepend', 'click:append'])
+	defineEmits<ICardHeaderEmits>()
 
 	const {filterProps} = useProps<ICardHeaderProps>(props)
 

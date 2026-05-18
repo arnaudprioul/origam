@@ -2,11 +2,14 @@ import type {
     IAdjacentProps,
     IBorderProps,
     IBgColorProps,
+    IClickCloseEmits,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IDimensionProps,
     IElevationProps,
+    IHoverEmits,
     IHoverProps,
     ILocationProps,
     IMarginProps,
@@ -28,3 +31,7 @@ export interface IAlertProps extends ICommonsComponentProps, ITagProps, IColorPr
     title?: string
     text?: string
 }
+
+/** Emits fired by `<OrigamAlert>` — close button, dismissal v-model,
+ *  hover propagation. */
+export interface IAlertEmits extends ICommonsComponentEmits, IClickCloseEmits, IHoverEmits {}

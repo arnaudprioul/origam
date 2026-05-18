@@ -1,5 +1,6 @@
 import type {
     IActiveProps,
+    IAdjacentEmits,
     IAdjacentProps,
     IBorderProps,
     IBgColorProps,
@@ -18,3 +19,6 @@ export interface IBreadcrumbItemProps extends ICommonsComponentProps, ITagProps,
     title: string
     disabled?: boolean
 }
+
+/** Emits fired by `<OrigamBreadcrumbItem>` — clicks on prepend/append icons. */
+export interface IBreadcrumbItemEmits extends IAdjacentEmits {}

@@ -1,13 +1,16 @@
 import type {
+    IActiveEmits,
     IBorderProps,
     IBtnProps,
     IBgColorProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IDimensionProps,
     IElevationProps,
     IGroupProps,
+    IHoverEmits,
     IHoverProps,
     ILayoutItemProps,
     IMarginProps,
@@ -24,3 +27,7 @@ export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, ICol
     mode?: TMode
     items?: Array<IBtnProps>
 }
+
+/** Emits fired by `<OrigamBottomNav>` — active item v-model + hover/active
+ *  propagation. */
+export interface IBottomNavEmits extends ICommonsComponentEmits, IActiveEmits, IHoverEmits {}

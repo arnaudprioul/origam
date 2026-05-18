@@ -58,7 +58,7 @@
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 	import { MODE } from "../../enums"
 
-	import type { IBottomNavProps, IBreadcrumbItemProps } from '../../interfaces'
+	import type { IBottomNavEmits, IBottomNavProps, IBreadcrumbItemProps } from '../../interfaces'
 	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
 	import { convertToUnit, int } from '../../utils'
@@ -88,7 +88,7 @@
 		transition: () => ({component: OrigamTranslateBottom}) as unknown as TTransitionProps
 	})
 
-	defineEmits(['update:modelValue', 'update:active', 'update:hover'])
+	defineEmits<IBottomNavEmits>()
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
 
