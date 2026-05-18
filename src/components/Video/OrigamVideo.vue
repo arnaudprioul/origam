@@ -1008,8 +1008,8 @@
 
 	// YouTube-parity double-tap skip overlay :
 	//
-	//   • Half-disc covers ~35 % of the video width — same proportion
-	//     YouTube's mobile / web player uses.
+	//   • Half-disc covers ~12 % of the video width — small, contained
+	//     indicator (NOT the giant overlay that buries the frame).
 	//   • Frosted background : light dark wash + `backdrop-filter:
 	//     blur(6px)` for the frosted look. Fallback (browsers without
 	//     backdrop-filter support) keeps a denser solid alpha so the
@@ -1026,7 +1026,7 @@
 		position: absolute;
 		top: 0;
 		bottom: 0;
-		width: 35%;
+		width: 12%;
 		z-index: 3;
 		pointer-events: none;
 		background: rgba(0, 0, 0, 0.45);
@@ -1047,21 +1047,21 @@
 		left: 0;
 		border-top-right-radius: 50% 50%;
 		border-bottom-right-radius: 50% 50%;
-		padding-right: 6%;
+		padding-right: 2%;
 	}
 
 	.origam-video__skip-ripple--right {
 		right: 0;
 		border-top-left-radius: 50% 50%;
 		border-bottom-left-radius: 50% 50%;
-		padding-left: 6%;
+		padding-left: 2%;
 	}
 
 	.origam-video__skip-ripple-content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 6px;
+		gap: 2px;
 		color: #ffffff;
 		text-align: center;
 		filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
@@ -1078,12 +1078,12 @@
 		display: inline-block;
 		line-height: 0;
 		opacity: 0.5;
-		margin: 0 -6px;
+		margin: 0 -3px;
 		animation: origam-video-chevron-wave 800ms ease-in-out infinite;
 	}
 
 	.origam-video__skip-chevron :deep(.origam-icon) {
-		font-size: 38px;
+		font-size: 20px;
 		line-height: 1;
 	}
 
@@ -1103,7 +1103,7 @@
 	.origam-video__skip-ripple--left  .origam-video__skip-chevron--3 { animation-delay:   0ms; }
 
 	.origam-video__skip-ripple-label {
-		font-size: 13px;
+		font-size: 11px;
 		font-weight: 600;
 		font-family: var(--origam-font---family, system-ui, sans-serif);
 		letter-spacing: 0.02em;
