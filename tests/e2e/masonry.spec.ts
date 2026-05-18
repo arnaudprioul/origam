@@ -28,9 +28,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 const STORY = '/story/stories-components-stories-masonry-origammasonry-story-vue'
 
-test.describe('OrigamMasonry — Playground (smoke + ARIA)', () => {
+test.describe('OrigamMasonry — Default (smoke + ARIA)', () => {
     test('mounts the masonry root with role="list"', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="masonry-playground-host"]').first()
@@ -41,7 +41,7 @@ test.describe('OrigamMasonry — Playground (smoke + ARIA)', () => {
     })
 
     test('renders 16 playground cards as masonry items', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const cards = sandbox.locator('[data-cy="masonry-playground-card"]')

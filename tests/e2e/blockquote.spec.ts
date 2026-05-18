@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
  * OrigamBlockquote — runtime probes for each variant and prop exposed
  * by the story. Each test exercises one orthogonal facet:
  *
- *   - Playground: smoke-test that the component mounts as a
+ *   - Default: smoke-test that the component mounts as a
  *     `<blockquote>` and exposes the `cite` attribute when set.
  *   - Prop — variant: `default` paints a left accent bar; `pull` adds
  *     top + bottom rules.
@@ -26,9 +26,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 const STORY = '/story/stories-components-stories-blockquote-origamblockquote-story-vue'
 
-test.describe('OrigamBlockquote — Playground (smoke + ARIA)', () => {
+test.describe('OrigamBlockquote — Default (smoke + ARIA)', () => {
     test('mounts as a native <blockquote> element', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="blockquote-playground-host"]').first()
@@ -39,7 +39,7 @@ test.describe('OrigamBlockquote — Playground (smoke + ARIA)', () => {
     })
 
     test('cite prop lands on the cite HTML attribute', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="blockquote-playground-host"]').first()
@@ -50,7 +50,7 @@ test.describe('OrigamBlockquote — Playground (smoke + ARIA)', () => {
     })
 
     test('renders the author + source in the attribution footer', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="blockquote-playground-host"]').first()

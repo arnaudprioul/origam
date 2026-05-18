@@ -167,9 +167,9 @@ test.describe('OrigamBreadcrumb — Slot: divider', () => {
 
 // ─── Playground ───────────────────────────────────────────────────────────────
 
-test.describe('OrigamBreadcrumb — Playground', () => {
+test.describe('OrigamBreadcrumb — Default', () => {
     test('renders without errors', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-playground"]').first()).toBeVisible({ timeout: 8000 })
     })

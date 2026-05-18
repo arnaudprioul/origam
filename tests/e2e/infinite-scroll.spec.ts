@@ -81,7 +81,7 @@ test.describe('OrigamInfiniteScroll', () => {
     test('Playground — infinite scroll renders with configurable side and mode', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Playground', exact: true }).click()
+        await page.getByRole('link', { name: 'Default', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

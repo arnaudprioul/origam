@@ -18,7 +18,7 @@ import { expect, test, type Page } from '@playwright/test'
  * HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-inline-edit-origaminlineedit-story-vue'
+const STORY = '/story/stories-components-stories-inlineedit-origaminlineedit-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -42,9 +42,9 @@ const textareaInField = (sandbox: ReturnType<typeof sandboxOf>, hostCy: string) 
 const fieldRoot = (sandbox: ReturnType<typeof sandboxOf>, hostCy: string) =>
     sandbox.locator(`[data-cy="${hostCy}"] [data-cy="origam-inline-edit-input"]`).first()
 
-test.describe('OrigamInlineEdit — Playground (display → edit transition)', () => {
+test.describe('OrigamInlineEdit — Default (display → edit transition)', () => {
     test('mounts with the display affordance visible (not the input)', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const display = sandbox.locator('[data-cy="inline-edit-playground-host"] [data-cy="origam-inline-edit-display"]').first()
@@ -55,7 +55,7 @@ test.describe('OrigamInlineEdit — Playground (display → edit transition)', (
     })
 
     test('clicking the display switches to edit mode (input visible, draft = current value)', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const display = sandbox.locator('[data-cy="inline-edit-playground-host"] [data-cy="origam-inline-edit-display"]').first()
@@ -67,7 +67,7 @@ test.describe('OrigamInlineEdit — Playground (display → edit transition)', (
     })
 
     test('Enter confirms, the input disappears, the v-model state updates', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const display = sandbox.locator('[data-cy="inline-edit-playground-host"] [data-cy="origam-inline-edit-display"]').first()
@@ -83,7 +83,7 @@ test.describe('OrigamInlineEdit — Playground (display → edit transition)', (
     })
 
     test('Esc cancels, the value is unchanged', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const display = sandbox.locator('[data-cy="inline-edit-playground-host"] [data-cy="origam-inline-edit-display"]').first()
@@ -99,7 +99,7 @@ test.describe('OrigamInlineEdit — Playground (display → edit transition)', (
     })
 
     test('display button carries an `aria-label` that quotes the current value', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const display = sandbox.locator('[data-cy="inline-edit-playground-host"] [data-cy="origam-inline-edit-display"]').first()

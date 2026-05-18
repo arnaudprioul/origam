@@ -9,7 +9,7 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
     await page.waitForLoadState('networkidle')
     // Activate the first available Variant so the sandbox iframe mounts.
     // We try a few common titles in order; the first match wins.
-    const candidates = ['Playground', 'Default', 'Basic', 'Sizes — small · default · large (stacked rows)']
+    const candidates = ['Default', 'Default', 'Basic', 'Sizes — small · default · large (stacked rows)']
     for (const title of candidates) {
         const loc = page.getByText(title, { exact: true }).last()
         if (await loc.count().catch(() => 0)) {

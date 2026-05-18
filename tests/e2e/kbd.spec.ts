@@ -13,7 +13,7 @@ import { expect, test, type Page } from '@playwright/test'
  *
  * Current Variant titles in OrigamKbd.story.vue:
  *   "Basic usage", "Showcase — Keyboard shortcuts", "Variant", "Color",
- *   "Size", "Rounded", "Border", "Separator", "Slot — default", "Playground"
+ *   "Size", "Rounded", "Border", "Separator", "Slot — default", "Default"
  */
 
 const STORY = '/story/stories-components-stories-kbd-origamkbd-story-vue'

@@ -230,9 +230,9 @@ test.describe('OrigamList — Emit: update:opened', () => {
 
 // ─── Playground ───────────────────────────────────────────────────────────────
 
-test.describe('OrigamList — Playground', () => {
+test.describe('OrigamList — Default', () => {
     test('renders without errors', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-playground"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="list-playground"] .origam-list-item').count()

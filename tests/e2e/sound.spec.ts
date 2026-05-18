@@ -20,9 +20,9 @@ const openVariant = async (page: Page, title: string) => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamSound — Playground', () => {
+test.describe('OrigamSound — Default', () => {
     test('renders a native <audio> element with the configured src', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="sound-playground-player"]').first()
@@ -37,7 +37,7 @@ test.describe('OrigamSound — Playground', () => {
     })
 
     test('renders the custom toolbar when controls=custom', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="sound-playground-player"]').first()
@@ -49,7 +49,7 @@ test.describe('OrigamSound — Playground', () => {
     })
 
     test('play button has a dynamic aria-label', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const btn = sandbox.locator('[data-cy="origam-sound-play"]').first()
@@ -57,7 +57,7 @@ test.describe('OrigamSound — Playground', () => {
     })
 
     test('scrubber declares role=slider with aria-valuemin/max', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const scrubber = sandbox.locator('[data-cy="origam-sound-scrubber"]').first()

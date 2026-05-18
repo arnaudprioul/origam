@@ -204,9 +204,9 @@ test.describe('OrigamExpansionPanels — Emit: group:selected', () => {
 
 // ─── Playground ───────────────────────────────────────────────────────────────
 
-test.describe('OrigamExpansionPanels — Playground', () => {
+test.describe('OrigamExpansionPanels — Default', () => {
     test('renders without errors', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="expansion-playground"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="expansion-playground"] .origam-expansion-panel').count()

@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
  * OrigamBracket — runtime probes for every prop / variant exposed by
  * the story. Each block targets one orthogonal facet:
  *
- *   - Playground: confirms the bracket mounts with the ARIA contract
+ *   - Default: confirms the bracket mounts with the ARIA contract
  *     (`role="region"`, `aria-label`, each round becomes a `role="group"`
  *     with `aria-labelledby` pointing at its title heading).
  *   - Variant: asserts the tree DOM (`__tree`) for tree variants vs
@@ -34,7 +34,7 @@ const STORY = '/story/stories-components-stories-bracket-origambracket-story-vue
 
 test.describe('OrigamBracket — ARIA contract (Playground)', () => {
     test('mounts with role="region" and aria-label', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const region = sandbox.locator('[data-cy="bracket-playground-host"]').first()
@@ -45,7 +45,7 @@ test.describe('OrigamBracket — ARIA contract (Playground)', () => {
     })
 
     test('each round is a group with aria-labelledby pointing at its title', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const round0 = sandbox.locator('[data-cy="origam-bracket-round-0"]').first()
@@ -61,7 +61,7 @@ test.describe('OrigamBracket — ARIA contract (Playground)', () => {
     })
 
     test('each match advertises role="group" with a vs aria-label', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const firstMatch = sandbox.locator('.origam-bracket-match').first()
@@ -73,7 +73,7 @@ test.describe('OrigamBracket — ARIA contract (Playground)', () => {
     })
 
     test('renders 8-player single-elim: 3 rounds, 4 + 2 + 1 matches', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const rounds = sandbox.locator('[data-cy^="origam-bracket-round-"]')

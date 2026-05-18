@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  * asserting on the exact glyph layout.
  */
 
-const STORY = '/story/stories-components-stories-number-format-origamnumberformat-story-vue'
+const STORY = '/story/stories-components-stories-numberformat-origamnumberformat-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -33,9 +33,9 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
 const normaliseWs = (text: string | null | undefined): string =>
     (text ?? '').replace(/\s+/g, ' ').trim()
 
-test.describe('OrigamNumberFormat — Playground (smoke)', () => {
+test.describe('OrigamNumberFormat — Default (smoke)', () => {
     test('mounts and renders the formatted number', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="number-format-playground-host"]').first()
@@ -49,7 +49,7 @@ test.describe('OrigamNumberFormat — Playground (smoke)', () => {
     })
 
     test('root carries the format modifier class', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="number-format-playground-host"]').first()
         await expect(host).toHaveClass(/origam-number-format--currency/)

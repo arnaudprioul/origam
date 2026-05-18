@@ -33,9 +33,9 @@ const getDecodedBackground = async (locator: ReturnType<Page['locator']>): Promi
     return decodeURIComponent(match[1])
 }
 
-test.describe('OrigamWatermark — Playground', () => {
+test.describe('OrigamWatermark — Default', () => {
     test('renders a layer with an SVG data-URL containing the text glyph', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="watermark-playground-host"]').first()
@@ -50,7 +50,7 @@ test.describe('OrigamWatermark — Playground', () => {
     })
 
     test('pointerEvents=none lets clicks pass through to the wrapped content', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const button = sandbox.locator('[data-cy="watermark-playground-button"]').first()
@@ -63,7 +63,7 @@ test.describe('OrigamWatermark — Playground', () => {
     })
 
     test('layer is marked aria-hidden so screen readers ignore the watermark', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()

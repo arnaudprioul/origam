@@ -90,7 +90,7 @@ test.describe('OrigamPagination', () => {
     test('Playground — pagination renders with all controls', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Playground', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

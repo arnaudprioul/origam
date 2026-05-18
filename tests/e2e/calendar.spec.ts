@@ -21,9 +21,9 @@ const openVariant = async (page: Page, title: string) => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamCalendar — Playground', () => {
+test.describe('OrigamCalendar — Default', () => {
     test('renders the root with role=application and a Calendar aria-label', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="calendar-playground-cal"]').first()
@@ -33,7 +33,7 @@ test.describe('OrigamCalendar — Playground', () => {
     })
 
     test('toolbar exposes role=toolbar and the prev/today/next buttons', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         await expect(sandbox.locator('[data-cy="origam-calendar-toolbar"]').first())
@@ -81,7 +81,7 @@ test.describe('OrigamCalendar — view (month / week / day / agenda)', () => {
 
 test.describe('OrigamCalendar — navigation', () => {
     test('clicking "next" moves the title forward by one month', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const title = sandbox.locator('[data-cy="origam-calendar-title"]').first()
@@ -92,7 +92,7 @@ test.describe('OrigamCalendar — navigation', () => {
     })
 
     test('clicking "today" resets the view to the current month', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="origam-calendar-next"]').first().click()
@@ -123,7 +123,7 @@ test.describe('OrigamCalendar — events', () => {
 
 test.describe('OrigamCalendar — ARIA / Keyboard', () => {
     test('day cells expose role=gridcell with aria-label', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const firstCell = sandbox.locator('[data-cy="calendar-playground-cal"] [role="gridcell"]').first()
@@ -131,7 +131,7 @@ test.describe('OrigamCalendar — ARIA / Keyboard', () => {
     })
 
     test('view switcher exposes role=tab with aria-selected', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const monthTab = sandbox.locator('[data-cy="origam-calendar-view-month"]').first()
@@ -140,7 +140,7 @@ test.describe('OrigamCalendar — ARIA / Keyboard', () => {
     })
 
     test('arrow-right keyboard nav advances current-date by 1 day', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="calendar-playground-cal"]').first()

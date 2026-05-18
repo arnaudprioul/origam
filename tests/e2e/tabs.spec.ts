@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
  * OrigamTabs — runtime probes for every prop / variant exposed by
  * the story. Each block targets one orthogonal facet:
  *
- *   - Playground: confirms the tablist mounts with the ARIA contract
+ *   - Default: confirms the tablist mounts with the ARIA contract
  *     (`role="tablist"`, `aria-orientation`, `aria-selected` per tab,
  *     `aria-controls` pointing to the matching panel).
  *   - Variant: asserts `origam-tabs--{variant}` modifier class flips
@@ -39,7 +39,7 @@ const SELECTED_CLASS = 'origam-tab--active'
 
 test.describe('OrigamTabs — ARIA contract (Playground)', () => {
     test('mounts with role="tablist" and matching aria-orientation', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const tablist = sandbox.locator('[data-cy="tabs-playground-host"]').first()
@@ -50,7 +50,7 @@ test.describe('OrigamTabs — ARIA contract (Playground)', () => {
     })
 
     test('each tab declares role="tab" with aria-selected reflecting the model', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const t0 = sandbox.locator('[data-cy="tab-playground-0"]').first()
@@ -67,7 +67,7 @@ test.describe('OrigamTabs — ARIA contract (Playground)', () => {
     })
 
     test('aria-controls points at the matching panel id', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const t1 = sandbox.locator('[data-cy="tab-playground-1"]').first()
@@ -82,7 +82,7 @@ test.describe('OrigamTabs — ARIA contract (Playground)', () => {
     })
 
     test('clicking another tab swaps the active class', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="tab-playground-2"]').click()
@@ -207,7 +207,7 @@ test.describe('OrigamTabs — lazy / eager panel mounting', () => {
 
 test.describe('OrigamTabs — keyboard navigation', () => {
     test('ArrowRight moves selection forward, ArrowLeft moves back', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const t0 = sandbox.locator('[data-cy="tab-playground-0"]').first()
@@ -226,7 +226,7 @@ test.describe('OrigamTabs — keyboard navigation', () => {
     })
 
     test('Home / End jump to first / last tab', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const t0 = sandbox.locator('[data-cy="tab-playground-0"]').first()

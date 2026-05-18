@@ -20,9 +20,9 @@ const openVariant = async (page: Page, title: string) => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamChart — Playground (root + ARIA)', () => {
+test.describe('OrigamChart — Default (root + ARIA)', () => {
     test('renders the figure root with the expected aria-label', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="chart-playground-chart"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
@@ -31,7 +31,7 @@ test.describe('OrigamChart — Playground (root + ARIA)', () => {
     })
 
     test('SVG carries role=img + title + desc for screen readers', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="chart-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
@@ -111,7 +111,7 @@ test.describe('OrigamChart — type matrix', () => {
 
 test.describe('OrigamChart — legend interaction', () => {
     test('renders a <ul role="list"> with one entry per series', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const legend = sandbox.locator('[data-cy="chart-playground-chart"] [data-cy="origam-chart-legend"]')
         await expect(legend).toHaveAttribute('role', 'list')

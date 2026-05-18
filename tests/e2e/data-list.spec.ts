@@ -61,7 +61,7 @@ test.describe('OrigamDataList — avatar mode (back-compat)', () => {
     })
 
     test('Playground — data list renders with all controls', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
     })

@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
  * OrigamSnackbarGroup — runtime probes for every prop / behaviour
  * exposed by the story. Each block targets one orthogonal facet:
  *
- *   - Playground: a notify click renders a visible item with the
+ *   - Default: a notify click renders a visible item with the
  *     ARIA contract (`role="region"`, `aria-live`).
  *   - Location: spawning a toast in each anchor renders into the
  *     matching `--{location}` modifier class.
@@ -40,9 +40,9 @@ const openVariant = async (page: Page, variant: string) => {
 
 const STORY = '/story/stories-components-stories-snackbarstack-origamsnackbarstack-story-vue'
 
-test.describe('OrigamSnackbarGroup — Playground', () => {
+test.describe('OrigamSnackbarGroup — Default', () => {
     test('notify renders an item, dismiss-all empties the stack', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const trigger = sandbox.locator('[data-cy="snackbar-group-playground-trigger"]').first()
@@ -65,7 +65,7 @@ test.describe('OrigamSnackbarGroup — Playground', () => {
     })
 
     test('stack renders OrigamSnackbarItem components (not duplicated markup)', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const trigger = sandbox.locator('[data-cy="snackbar-group-playground-trigger"]').first()
@@ -238,7 +238,7 @@ test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
 
 test.describe('OrigamSnackbarGroup — ARIA region', () => {
     test('stack root carries role="region"', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const root = sandbox.locator('[data-cy="snackbar-group-playground-host"]').first()

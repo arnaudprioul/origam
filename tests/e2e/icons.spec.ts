@@ -133,7 +133,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Playground — renders .origam-icon', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Playground', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

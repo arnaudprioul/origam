@@ -10,7 +10,7 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
     await page.waitForTimeout(1500)
 
     // Click first variant we find — we'll scan all paginations in the iframe.
-    for (const title of ['Color', 'Playground', 'Default', 'With color', 'Colored']) {
+    for (const title of ['Color', 'Default', 'Default', 'With color', 'Colored']) {
         const loc = page.getByText(title, { exact: true }).last()
         if (await loc.count().catch(() => 0)) {
             await loc.click({ timeout: 5_000 }).catch(() => {})

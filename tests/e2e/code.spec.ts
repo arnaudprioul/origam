@@ -80,7 +80,7 @@ test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
 test.describe('OrigamCode — runtime', () => {
 
     test('renders shiki-tokenised TS — DOM contains styled <span>s with CSS variable references', async ({ page }) => {
-        await gotoVariant(page, 'Playground')
+        await gotoVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const code = sandbox.locator('.origam-code__code').first()
 

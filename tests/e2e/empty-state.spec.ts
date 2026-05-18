@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
  * OrigamEmptyState — runtime probes for each preset / prop / slot
  * exposed by the story. Each test exercises one orthogonal facet:
  *
- *   - Playground: smoke-test that the component mounts and exposes
+ *   - Default: smoke-test that the component mounts and exposes
  *     the `role="status"` + `aria-live="polite"` contract.
  *   - Prop — preset: each preset paints the expected MDI class on
  *     the icon AND swaps the rendered intent modifier class.
@@ -26,9 +26,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 const STORY = '/story/stories-components-stories-emptystate-origamemptystate-story-vue'
 
-test.describe('OrigamEmptyState — Playground (smoke + ARIA)', () => {
+test.describe('OrigamEmptyState — Default (smoke + ARIA)', () => {
     test('mounts and exposes role=status + aria-live=polite on the root', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="empty-state-playground-host"]').first()
@@ -41,7 +41,7 @@ test.describe('OrigamEmptyState — Playground (smoke + ARIA)', () => {
     })
 
     test('renders the title and description from props', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="empty-state-playground-host"]').first()
@@ -54,7 +54,7 @@ test.describe('OrigamEmptyState — Playground (smoke + ARIA)', () => {
     })
 
     test('icon container is marked aria-hidden', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="empty-state-playground-host"]').first()

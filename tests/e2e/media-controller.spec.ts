@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test'
  * HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-media-controller-origammediacontroller-story-vue'
+const STORY = '/story/stories-components-stories-mediacontroller-origammediacontroller-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -21,9 +21,9 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamMediaController — Playground (mount + ARIA)', () => {
+test.describe('OrigamMediaController — Default (mount + ARIA)', () => {
     test('mounts the controls shell + play button', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="media-controller-playground-host"]').first()
@@ -35,7 +35,7 @@ test.describe('OrigamMediaController — Playground (mount + ARIA)', () => {
     })
 
     test('clicking play, then pause, flips the aria-label both ways', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const playBtn = sandbox.locator('[data-cy="origam-media-controller-play"]').first()
@@ -50,7 +50,7 @@ test.describe('OrigamMediaController — Playground (mount + ARIA)', () => {
 
 test.describe('OrigamMediaController — Config menu', () => {
     test('opens the config menu, navigates to speed, picks 2× and updates the rate', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const cog = sandbox.locator('[data-cy="origam-media-controller-config"]').first()

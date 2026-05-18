@@ -9,7 +9,7 @@ test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary int
     await page.waitForLoadState('networkidle')
 
     // Land on any variant that renders a primary btn
-    const candidates = ['Playground', 'Variants', 'Default', 'Sizes']
+    const candidates = ['Default', 'Variants', 'Default', 'Sizes']
     for (const title of candidates) {
         const loc = page.getByText(title, { exact: true }).last()
         if (await loc.count().catch(() => 0)) {

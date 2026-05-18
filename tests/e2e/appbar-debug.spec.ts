@@ -7,7 +7,7 @@ test.setTimeout(180_000)
 test('DEBUG appbar — btn shape: square + transparent at rest', async ({ page }) => {
     await page.goto(STORY_PATH)
     await page.waitForLoadState('networkidle')
-    for (const title of ['Playground', 'Default', 'Basic']) {
+    for (const title of ['Default', 'Default', 'Basic']) {
         const loc = page.getByText(title, { exact: true }).last()
         if (await loc.count().catch(() => 0)) {
             await loc.click({ timeout: 5_000 }).catch(() => {})

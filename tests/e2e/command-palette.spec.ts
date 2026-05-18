@@ -36,9 +36,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 const STORY = '/story/stories-components-stories-commandpalette-origamcommandpalette-story-vue'
 
-test.describe('OrigamCommandPalette — Playground (open via trigger / v-model)', () => {
+test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', () => {
     test('opens when the trigger button is clicked', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
@@ -49,7 +49,7 @@ test.describe('OrigamCommandPalette — Playground (open via trigger / v-model)'
     })
 
     test('input has role="combobox" and the list has role="listbox"', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
 
@@ -61,7 +61,7 @@ test.describe('OrigamCommandPalette — Playground (open via trigger / v-model)'
     })
 
     test('every command renders with role="option"', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
 
@@ -72,7 +72,7 @@ test.describe('OrigamCommandPalette — Playground (open via trigger / v-model)'
 
 test.describe('OrigamCommandPalette — global hotkey', () => {
     test('Meta+K opens the palette globally', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         // Click somewhere neutral first to make sure the sandbox iframe
@@ -87,7 +87,7 @@ test.describe('OrigamCommandPalette — global hotkey', () => {
 
 test.describe('OrigamCommandPalette — fuzzy search', () => {
     test('typing "set" surfaces commands matching "set" / "settings"', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
@@ -105,7 +105,7 @@ test.describe('OrigamCommandPalette — fuzzy search', () => {
     })
 
     test('typing a query that matches nothing shows the empty state', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
@@ -123,7 +123,7 @@ test.describe('OrigamCommandPalette — fuzzy search', () => {
 
 test.describe('OrigamCommandPalette — keyboard navigation', () => {
     test('ArrowDown moves the active descendant', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
@@ -139,7 +139,7 @@ test.describe('OrigamCommandPalette — keyboard navigation', () => {
     })
 
     test('Escape closes the palette when closeOnEscape is true', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
@@ -173,7 +173,7 @@ test.describe('OrigamCommandPalette — keyboard navigation', () => {
 
 test.describe('OrigamCommandPalette — backdrop', () => {
     test('clicking the backdrop closes the palette when closeOnBackdrop is true', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()

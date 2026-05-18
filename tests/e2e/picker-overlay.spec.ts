@@ -164,7 +164,7 @@ test.describe('OrigamPicker', () => {
     })
 
     test('Playground — mounts with composite props', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Playground')
+        await gotoVariant(page, STORIES.picker, 'Default')
         const sb = sandbox(page)
         const picker = sb.locator('[data-cy="picker-playground"]')
         await expect(picker).toBeVisible()
@@ -207,7 +207,7 @@ test.describe('OrigamPickerTitle', () => {
     })
 
     test('Playground — mounts with default tag div', async ({ page }) => {
-        await gotoVariant(page, STORIES.pickerTitle, 'Playground')
+        await gotoVariant(page, STORIES.pickerTitle, 'Default')
         const sb = sandbox(page)
         const title = sb.locator('[data-cy="picker-title-playground"]')
         await expect(title.evaluate((el) => el.tagName.toLowerCase())).resolves.toBe('div')
@@ -305,7 +305,7 @@ test.describe('OrigamOverlay', () => {
     })
 
     test('Playground — composite mounts and toggles', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Playground')
+        await gotoVariant(page, STORIES.overlay, 'Default')
         const sb = sandbox(page)
         await sb.locator('[data-cy="overlay-playground-activator"]').click()
         await expect(sb.locator('[data-cy="overlay-playground-content"]')).toBeVisible({ timeout: 4000 })
@@ -362,7 +362,7 @@ test.describe('OrigamOverlayScrim', () => {
     })
 
     test('Playground — mounts when toggled active', async ({ page }) => {
-        await gotoVariant(page, STORIES.scrim, 'Playground')
+        await gotoVariant(page, STORIES.scrim, 'Default')
         const sb = sandbox(page)
         // HstWrapper renders as <label role="checkbox"> with title as text content;
         // use getByRole instead of getByTitle (which looks for HTML title="" attribute).

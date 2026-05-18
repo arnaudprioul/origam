@@ -112,7 +112,7 @@ test.describe('OrigamLoader', () => {
     })
 
     test('Playground — exposes every prop control', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Playground')
+        await gotoVariant(page, STORIES.loader, 'Default')
         const sb = sandbox(page)
         await expect(sb.locator('.origam-loader').first()).toBeVisible({ timeout: 5000 })
     })
@@ -203,7 +203,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Playground — exposes every prop control', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Playground')
+        await gotoVariant(page, STORIES.progress, 'Default')
         const sb = sandbox(page)
         await expect(sb.locator('.origam-progress').first()).toBeVisible({ timeout: 5000 })
     })
@@ -306,7 +306,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Playground — exposes every prop control', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Playground')
+        await gotoVariant(page, STORIES.circular, 'Default')
         const sb = sandbox(page)
         await expect(sb.locator('.origam-progress--circular').first()).toBeVisible({ timeout: 5000 })
     })
@@ -436,7 +436,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Playground — exposes every prop control', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Playground')
+        await gotoVariant(page, STORIES.linear, 'Default')
         const sb = sandbox(page)
         await expect(sb.locator('.origam-progress--linear').first()).toBeVisible({ timeout: 5000 })
     })

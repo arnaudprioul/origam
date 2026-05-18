@@ -7,7 +7,7 @@ import { expect, test, type Page } from '@playwright/test'
  * ignored (the component types something but the SCSS doesn't wire
  * it through).
  *
- *   - Playground: smoke-test that the component mounts as `display: grid`
+ *   - Default: smoke-test that the component mounts as `display: grid`
  *     and resolves the default token-driven gap.
  *   - Prop — columns: every accepted shape (number / string / string[])
  *     produces a real `grid-template-columns` track list.
@@ -32,9 +32,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 const STORY = '/story/stories-components-stories-grid-origamgrid-story-vue'
 
-test.describe('OrigamGrid — Playground (smoke + defaults)', () => {
+test.describe('OrigamGrid — Default (smoke + defaults)', () => {
     test('mounts as display: grid and resolves the default gap token', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="grid-playground-host"]').first()
@@ -51,7 +51,7 @@ test.describe('OrigamGrid — Playground (smoke + defaults)', () => {
     })
 
     test('renders the cells inside a 4-column track grid (columns prop = 4 default)', async ({ page }) => {
-        await openVariant(page, STORY, 'Playground')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="grid-playground-host"]').first()

@@ -31,7 +31,7 @@ test.describe('OrigamExpansionPanel', () => {
     })
 
     test('Playground — panel renders with all controls', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="ep-playground"]')).toBeVisible({ timeout: 5000 })
     })

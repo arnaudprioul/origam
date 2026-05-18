@@ -38,9 +38,9 @@ const stubClipboard = async (page: Page) => {
     })
 }
 
-test.describe('OrigamClipboard — Playground', () => {
+test.describe('OrigamClipboard — Default', () => {
     test('mounts and renders the default icon trigger', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         await stubClipboard(page)
         const sandbox = sandboxOf(page)
 
@@ -52,7 +52,7 @@ test.describe('OrigamClipboard — Playground', () => {
     })
 
     test('default trigger writes the prop value to navigator.clipboard', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         await stubClipboard(page)
         const sandbox = sandboxOf(page)
 
@@ -66,7 +66,7 @@ test.describe('OrigamClipboard — Playground', () => {
     })
 
     test('default trigger ARIA label flips to "copied" after a successful copy', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         await stubClipboard(page)
         const sandbox = sandboxOf(page)
 
