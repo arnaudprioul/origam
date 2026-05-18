@@ -75,7 +75,9 @@
 
 	import { AXIS, DIRECTION, MDI_ICONS } from '../../enums'
 
-	import type { ITouchHandlers, IWindowEmits, IWindowProps } from '../../interfaces'
+	import type { ITouchHandlers, IWindowProps} from '../../interfaces'
+
+	import type { IWindowEmits } from '../../interfaces/Window/window.interface'
 
 	/*********************************************************
 	 * Global

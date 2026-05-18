@@ -28,7 +28,9 @@
 	useStyle
 } from '../../composables'
 
-	import type { IVirtualScrollItemEmits, IVirtualScrollItemProps } from '../../interfaces'
+	import type { IVirtualScrollItemProps} from '../../interfaces'
+
+	import type { IVirtualScrollItemEmits } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
 	/*********************************************************
 	 * Global

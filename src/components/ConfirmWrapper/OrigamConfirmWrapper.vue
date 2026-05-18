@@ -147,7 +147,9 @@
 	useVModel
 } from '../../composables'
 	import { DENSITY, DIRECTION } from '../../enums'
-	import type { IConfirmWrapperEmits, IConfirmWrapperProps, IConfirmWrapperSlots } from '../../interfaces'
+	import type { IConfirmWrapperProps, IConfirmWrapperSlots} from '../../interfaces'
+
+	import type { IConfirmWrapperEmits } from '../../interfaces/ConfirmWrapper/confirm-wrapper.interface'
 	import type { TOrigamLabel } from '../../types'
 	import { forwardRefs, getUid, wrapInArray } from '../../utils'
 

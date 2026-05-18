@@ -46,7 +46,9 @@
 	useStyle
 } from '../../composables'
 
-	import type { ISwitchTrackEmits, ISwitchTrackProps, ISwitchTrackSlots } from "../../interfaces"
+	import type { ISwitchTrackProps, ISwitchTrackSlots} from "../../interfaces"
+
+	import type { ISwitchTrackEmits } from '../../interfaces/Switch/switch-track.interface'
 
 	const props = withDefaults(defineProps<ISwitchTrackProps>(), {
 		modelValue: false,

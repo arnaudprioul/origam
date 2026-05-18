@@ -61,7 +61,9 @@
 
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IListActivatorProps, IListGroupEmits, IListGroupProps } from '../../interfaces'
+	import type { IListActivatorProps, IListGroupProps} from '../../interfaces'
+
+	import type { IListGroupEmits } from '../../interfaces/List/list-group.interface'
 
 	/*********************************************************
 	 * Global

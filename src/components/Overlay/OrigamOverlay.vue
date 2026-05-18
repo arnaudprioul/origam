@@ -79,7 +79,9 @@
 
 	import { BLOCK, EASING, KEYBOARD_VALUES, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { IOverlayEmits, IOverlayProps } from '../../interfaces'
+	import type { IOverlayProps} from '../../interfaces'
+
+	import type { IOverlayEmits } from '../../interfaces/Overlay/overlay.interface'
 
 	import type { TOrigamOverlayScrim, TTransitionProps } from "../../types"
 

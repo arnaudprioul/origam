@@ -136,7 +136,9 @@
 		PROGRESS_TYPE
 	} from '../../enums'
 
-	import type { IInfiniteScrollEmits, IInfiniteScrollProps } from '../../interfaces'
+	import type { IInfiniteScrollProps} from '../../interfaces'
+
+	import type { IInfiniteScrollEmits } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 

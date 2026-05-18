@@ -132,7 +132,9 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import type { IExpansionPanelsEmits, IExpansionPanelsProps } from '../../interfaces'
+	import type { IExpansionPanelsProps} from '../../interfaces'
+
+	import type { IExpansionPanelsEmits } from '../../interfaces/ExpensionPanel/expansion-panels.interface'
 
 	/*********************************************************
 	 * Global

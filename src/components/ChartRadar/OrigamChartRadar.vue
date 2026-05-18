@@ -27,9 +27,9 @@
 	import { OrigamChart } from '../Chart'
 
 	import type {
-		IChartBaseEmits,
-		IChartRadarProps
-	} from '../../interfaces'
+		IChartRadarProps} from '../../interfaces'
+
+	import type { IChartBaseEmits } from '../../interfaces/Chart/chart-base.interface'
 
 	/*********************************************************
 	 * Global

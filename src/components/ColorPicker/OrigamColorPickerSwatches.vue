@@ -42,7 +42,9 @@
 
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IColorPickerSwatchesEmits, IColorPickerSwatchesProps } from "../../interfaces"
+	import type { IColorPickerSwatchesProps} from "../../interfaces"
+
+	import type { IColorPickerSwatchesEmits } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
 	import type { TRGBA } from "../../types"
 
 	import { convertToUnit, deepEqual, getContrast, parseColor, RGBtoCSS, RGBtoHSV } from "../../utils"

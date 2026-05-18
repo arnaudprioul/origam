@@ -265,10 +265,9 @@
 	import { MDI_ICONS } from '../../enums'
 
 	import type {
-		IMediaControllerEmits,
-		IMediaControllerProps,
-		IMediaControllerSlots
-	} from '../../interfaces'
+		IMediaControllerProps, IMediaControllerSlots} from '../../interfaces'
+
+	import type { IMediaControllerEmits } from '../../interfaces/MediaController/media-controller.interface'
 
 	/*********************************************************
 	 * Global

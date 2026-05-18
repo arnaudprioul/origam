@@ -38,7 +38,9 @@
 
 	import { DENSITY, DIRECTION, TAB_VARIANT } from '../../enums'
 
-	import type { ITabsEmits, ITabsProps } from '../../interfaces'
+	import type { ITabsProps} from '../../interfaces'
+
+	import type { ITabsEmits } from '../../interfaces/Tabs/tabs.interface'
 
 	/*********************************************************
 	 * Global

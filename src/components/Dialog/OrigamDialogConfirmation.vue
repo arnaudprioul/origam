@@ -129,7 +129,9 @@
 
 	import { JUSTIFY } from '../../enums'
 
-	import type { IDialogConfirmationEmits, IDialogConfirmationProps } from '../../interfaces'
+	import type { IDialogConfirmationProps} from '../../interfaces'
+
+	import type { IDialogConfirmationEmits } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
 	import type { TOrigamDialog } from "../../types"
 

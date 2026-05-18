@@ -62,7 +62,9 @@
 
 	import { KEYBOARD_VALUES } from '../../enums'
 
-	import type { ISliderFieldThumbEmits, ISliderFieldThumbProps } from "../../interfaces"
+	import type { ISliderFieldThumbProps} from "../../interfaces"
+
+	import type { ISliderFieldThumbEmits } from '../../interfaces/SliderField/slider-field-thumb.interface'
 
 	import { clamp, convertToUnit, int } from '../../utils'
 

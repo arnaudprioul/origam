@@ -133,7 +133,9 @@
 
 	import { KEYBOARD_VALUES } from '../../enums'
 
-	import type { IListItemEmits, IListItemProps } from '../../interfaces'
+	import type { IListItemProps} from '../../interfaces'
+
+	import type { IListItemEmits } from '../../interfaces/List/list-item.interface'
 
 	import type { TListItemSlot } from '../../types'
 

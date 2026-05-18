@@ -42,7 +42,9 @@
 		useStyle
 } from '../../composables'
 
-	import type { ISheetEmits, ISheetProps } from "../../interfaces"
+	import type { ISheetProps} from "../../interfaces"
+
+	import type { ISheetEmits } from '../../interfaces/Sheet/sheet-emits.interface'
 
 	import type { TSheetSnapId, TSheetSnapPoint } from "../../types"
 

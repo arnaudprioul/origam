@@ -23,7 +23,9 @@
 	import { OrigamBtn } from "../../components"
 	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
-	import type { IDatePickerYearsEmits, IDatePickerYearsProps } from "../../interfaces"
+	import type { IDatePickerYearsProps} from "../../interfaces"
+
+	import type { IDatePickerYearsEmits } from '../../interfaces/DatePicker/date-picker-years.interface'
 	import { convertToUnit, createRange, int, templateRef } from "../../utils"
 
 	import { computed, nextTick, onMounted, StyleValue, watchEffect } from "vue"

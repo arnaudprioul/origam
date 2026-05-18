@@ -162,7 +162,9 @@
 
 	import { DENSITY, PROGRESS_TYPE } from '../../enums'
 
-	import type { ICardEmits, ICardProps } from '../../interfaces'
+	import type { ICardProps} from '../../interfaces'
+
+	import type { ICardEmits } from '../../interfaces/Card/card.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 

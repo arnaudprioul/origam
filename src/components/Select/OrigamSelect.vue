@@ -313,7 +313,9 @@
 		TEXT_FIELD_TYPE
 	} from '../../enums'
 
-	import type { IInternalListItem, IItemProps, ISelectEmits, ISelectProps } from '../../interfaces'
+	import type { IInternalListItem, IItemProps, ISelectProps} from '../../interfaces'
+
+	import type { ISelectEmits } from '../../interfaces/Select/select.interface'
 
 	import type {
 		TOrigamChip,

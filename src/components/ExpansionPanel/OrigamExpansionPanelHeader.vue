@@ -106,7 +106,9 @@
 
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderProps } from '../../interfaces'
+	import type { IExpansionPanelHeaderProps} from '../../interfaces'
+
+	import type { IExpansionPanelHeaderEmits } from '../../interfaces/ExpensionPanel/expansion-panel-header.interface'
 
 	/*********************************************************
 	 * Global

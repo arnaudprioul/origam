@@ -85,7 +85,9 @@
 
   import { vRipple } from '../../directives'
 
-  import type { ISelectionControlEmits, ISelectionControlProps, ISelectionControlSlots } from "../../interfaces"
+  import type { ISelectionControlProps, ISelectionControlSlots} from "../../interfaces"
+
+	import type { ISelectionControlEmits } from '../../interfaces/SelectionControl/selection-control.interface'
 
   import { deepEqual, filterInputAttrs, forwardRefs, getUid, matchesSelector, wrapInArray } from '../../utils'
 

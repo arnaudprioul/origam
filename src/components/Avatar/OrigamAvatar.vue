@@ -62,7 +62,9 @@
 		useStyle
 	} from '../../composables'
 
-	import type { IAvatarEmits, IAvatarProps, ISrcObject } from '../../interfaces'
+	import type { IAvatarProps, ISrcObject} from '../../interfaces'
+
+	import type { IAvatarEmits } from '../../interfaces/Avatar/avatar.interface'
 	import { isEmpty } from "../../utils"
 
 	import type { ComputedRef, StyleValue } from 'vue'

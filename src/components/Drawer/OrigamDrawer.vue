@@ -99,7 +99,9 @@
 
 	import { INLINE } from '../../enums'
 
-	import type { IDrawerEmits, IDrawerProps } from '../../interfaces'
+	import type { IDrawerProps} from '../../interfaces'
+
+	import type { IDrawerEmits } from '../../interfaces/Drawer/drawer.interface'
 
 	import { int } from "../../utils"
 

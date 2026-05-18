@@ -353,10 +353,9 @@
 	import { useCalendar } from '../../composables'
 
 	import type {
-		ICalendarEmits,
-		ICalendarProps,
-		IEvent
-	} from '../../interfaces'
+		ICalendarProps, IEvent} from '../../interfaces'
+
+	import type { ICalendarEmits } from '../../interfaces/Calendar/calendar.interface'
 
 	import type {
 		TCalendarNavigate,

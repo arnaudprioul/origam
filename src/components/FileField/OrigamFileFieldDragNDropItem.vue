@@ -50,7 +50,9 @@
 	useStyle
 } from '../../composables'
   import { MDI_ICONS } from '../../enums'
-  import type { IFileFieldDragNDropItemEmits, IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots } from '../../interfaces'
+  import type { IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots} from '../../interfaces'
+
+	import type { IFileFieldDragNDropItemEmits } from '../../interfaces/FileField/file-field-dragndrop-item.interface'
   import { humanReadableFileSize } from '../../utils'
 
   /*********************************************************

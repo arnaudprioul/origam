@@ -56,7 +56,9 @@
 	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
 	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
 	import { DIRECTION } from "../../enums"
-	import type { IAvatarGroupEmits, IAvatarGroupProps, IAvatarProps } from "../../interfaces"
+	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
+
+	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
 	import type { TOrigamAvatar } from '../../types'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'

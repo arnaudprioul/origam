@@ -27,7 +27,9 @@
 >
 	import { useProps, useResizeObserver , useStyle} from "../../composables"
 
-	import type { IColorPickerCanvasEmits, IColorPickerCanvasProps } from "../../interfaces"
+	import type { IColorPickerCanvasProps} from "../../interfaces"
+
+	import type { IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
 	import { clamp, convertToUnit, getEventCoordinates, int } from "../../utils"
 

@@ -395,7 +395,9 @@
 	useVModel
 } from '../../composables'
   import { DENSITY, MDI_ICONS } from '../../enums'
-  import type { IFileFieldEmits, IFileFieldProps, IFileFieldSlots } from '../../interfaces'
+  import type { IFileFieldProps, IFileFieldSlots} from '../../interfaces'
+
+	import type { IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
   import type { TOrigamField, TOrigamInput } from '../../types'
   import { filterInputAttrs, forwardRefs, humanReadableFileSize, wrapInArray } from '../../utils'
 

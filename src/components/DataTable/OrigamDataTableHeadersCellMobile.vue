@@ -201,7 +201,9 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileProps, IInternalListItem } from '../../interfaces'
+	import type { IDataTableHeadersCellMobileProps, IInternalListItem} from '../../interfaces'
+
+	import type { IDataTableHeadersCellMobileEmits } from '../../interfaces/DataTable/headers.interface'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 

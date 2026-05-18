@@ -36,7 +36,9 @@
 
 	import { vTouch } from '../../directives'
 
-	import type { IWindowItemEmits, IWindowItemProps } from '../../interfaces'
+	import type { IWindowItemProps} from '../../interfaces'
+
+	import type { IWindowItemEmits } from '../../interfaces/Window/window-item.interface'
 
 	import { convertToUnit } from '../../utils'
 

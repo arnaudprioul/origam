@@ -58,7 +58,9 @@
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 	import { MODE } from "../../enums"
 
-	import type { IBottomNavEmits, IBottomNavProps, IBreadcrumbItemProps } from '../../interfaces'
+	import type { IBottomNavProps, IBreadcrumbItemProps} from '../../interfaces'
+
+	import type { IBottomNavEmits } from '../../interfaces/BottomNav/bottom-nav.interface'
 	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
 	import { convertToUnit, int } from '../../utils'

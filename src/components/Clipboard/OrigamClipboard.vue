@@ -51,9 +51,9 @@
 	import { MDI_ICONS } from '../../enums'
 
 	import type {
-		IClipboardEmits,
-		IClipboardProps
-	} from '../../interfaces'
+		IClipboardProps} from '../../interfaces'
+
+	import type { IClipboardEmits } from '../../interfaces/Clipboard/clipboard.interface'
 
 	/*********************************************************
 	 * Global

@@ -199,7 +199,9 @@
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { ISliderFieldEmits, ISliderFieldProps } from "../../interfaces"
+	import type { ISliderFieldProps} from "../../interfaces"
+
+	import type { ISliderFieldEmits } from '../../interfaces/SliderField/slider-field.interface'
 
 	import type { TOrigamInput, TOrigamSliderFieldThumb, TOrigamSliderFieldTrack } from '../../types'
 

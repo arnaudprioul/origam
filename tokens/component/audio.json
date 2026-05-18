@@ -1,0 +1,62 @@
+{
+  "audio": {
+    "_comment": "Tokens for <OrigamAudio>. The metadata strip + waveform layer + controls shell are wrapped in an outer flex column with these spacing/colour tokens.",
+    "background-color":          { "$type": "color",      "$value": "{color.surface.raised}" },
+    "color":                     { "$type": "color",      "$value": "{color.text.primary}" },
+    "border-radius":             { "$type": "dimension",  "$value": "{radius.md}" },
+    "gap":                       { "$type": "dimension",  "$value": "{space.3}" },
+    "padding":                   { "$type": "dimension",  "$value": "{space.3}" },
+
+    "metadata": {
+      "gap":                     { "$type": "dimension",  "$value": "{space.3}" }
+    },
+
+    "text": {
+      "gap":                     { "$type": "dimension",  "$value": "{space.1}" }
+    },
+
+    "cover": {
+      "size":                    { "$type": "dimension",  "$value": "{space.16}" },
+      "border-radius":           { "$type": "dimension",  "$value": "{radius.md}" }
+    },
+
+    "title": {
+      "color":                   { "$type": "color",      "$value": "{color.text.primary}" },
+      "font":                    { "$type": "string",     "$value": "600 0.95rem/1.3 inherit" }
+    },
+
+    "artist": {
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" },
+      "font":                    { "$type": "string",     "$value": "0.85rem/1.3 inherit" }
+    },
+
+    "album": {
+      "_comment": "Ported from ISoundMetadata.album. Renders below the artist line. No semantic 'tertiary' text token in the DS yet — defaults to the disabled tone for a softer third tier.",
+      "color":                   { "$type": "color",      "$value": "{color.text.disabled}" },
+      "font":                    { "$type": "string",     "$value": "0.8rem/1.3 inherit" }
+    },
+
+    "waveform": {
+      "_comment": "Web-Audio-decoded peaks canvas. Tokens drive the bar colours (played/unplayed) and the canvas height.",
+      "height":                  { "$type": "dimension",  "$value": "56px" },
+      "color":                   { "$type": "color",      "$value": "{color.text.primary}" },
+      "color-played":            { "$type": "color",      "$value": "{color.action.primary.bg}" },
+      "color-unplayed":          { "$type": "color",      "$value": "{color.surface.overlay}" }
+    },
+
+    "loading": {
+      "font-size":               { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" }
+    },
+
+    "error": {
+      "background-color":        { "$type": "color",      "$value": "{color.feedback.danger.bgSubtle}" },
+      "color":                   { "$type": "color",      "$value": "{color.feedback.danger.fgSubtle}" },
+      "font-size":               { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "border-radius":           { "$type": "dimension",  "$value": "{radius.sm}" },
+      "padding":                 { "$type": "string",     "$value": "{space.2} {space.3}" },
+      "gap":                     { "$type": "dimension",  "$value": "{space.2}" },
+      "icon-font-size":          { "$type": "dimension",  "$value": "{font.size.lg}" }
+    }
+  }
+}

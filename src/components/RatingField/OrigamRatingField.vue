@@ -157,7 +157,9 @@
 
 	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
 
-	import type { IRatingFieldEmits, IRatingFieldProps } from '../../interfaces'
+	import type { IRatingFieldProps} from '../../interfaces'
+
+	import type { IRatingFieldEmits } from '../../interfaces/RatingField/rating-field.interface'
 
 	import type { TOrigamInput, TOrigamRatingFieldItem } from "../../types"
 

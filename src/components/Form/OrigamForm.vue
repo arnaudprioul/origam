@@ -68,7 +68,9 @@
 	useValidation
 } from '../../composables'
 
-	import type { IFormEmits, IFormProps, IFormSlots, ISubmitEventPromise } from '../../interfaces'
+	import type { IFormProps, IFormSlots, ISubmitEventPromise} from '../../interfaces'
+
+	import type { IFormEmits } from '../../interfaces/Form/form.interface'
 
 	import { forwardRefs, getUid } from '../../utils'
 

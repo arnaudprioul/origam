@@ -50,7 +50,9 @@
 	useStyle
 } from '../../composables'
   import { MDI_ICONS } from '../../enums'
-  import type { IFileFieldListItemEmits, IFileFieldListItemProps, IFileFieldListItemSlots } from '../../interfaces'
+  import type { IFileFieldListItemProps, IFileFieldListItemSlots} from '../../interfaces'
+
+	import type { IFileFieldListItemEmits } from '../../interfaces/FileField/file-field-list-item.interface'
   import { humanReadableFileSize } from '../../utils'
 
   /*********************************************************

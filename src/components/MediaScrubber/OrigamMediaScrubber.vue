@@ -74,10 +74,9 @@
 	} from '../../composables'
 
 	import type {
-		IMediaScrubberEmits,
-		IMediaScrubberProps,
-		IMediaScrubberSlots
-	} from '../../interfaces'
+		IMediaScrubberProps, IMediaScrubberSlots} from '../../interfaces'
+
+	import type { IMediaScrubberEmits } from '../../interfaces/MediaScrubber/media-scrubber.interface'
 
 	/*********************************************************
 	 * Global

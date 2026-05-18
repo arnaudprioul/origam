@@ -291,7 +291,9 @@
 		TEXTAREA_TOOLBAR_POSITION
 	} from '../../enums'
 
-	import type { ITextareaFieldEmits, ITextareaFieldProps, ITextareaFieldSlots } from '../../interfaces'
+	import type { ITextareaFieldProps, ITextareaFieldSlots} from '../../interfaces'
+
+	import type { ITextareaFieldEmits } from '../../interfaces/TextareaField/textarea-field.interface'
 
 	import type {
 		TOrigamField,

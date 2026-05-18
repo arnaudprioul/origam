@@ -303,13 +303,9 @@
 	import { useChart } from '../../composables/Chart/chart.composable'
 
 	import type {
-		IChartEmits,
-		IChartLegendItem,
-		IChartPath,
-		IChartPoint,
-		IChartProps,
-		IChartSeries
-	} from '../../interfaces'
+		IChartLegendItem, IChartPath, IChartPoint, IChartProps, IChartSeries} from '../../interfaces'
+
+	import type { IChartEmits } from '../../interfaces/Chart/chart.interface'
 
 	/*********************************************************
 	 * Global — `<OrigamChart>` props + defaults.

@@ -145,7 +145,8 @@
 
 	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
 
-	import type { IChipEmits, IChipProps } from '../../interfaces'
+	import type { IChipProps } from '../../interfaces'
+	import type { IChipEmits } from '../../interfaces/Chip/chip.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 

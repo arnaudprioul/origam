@@ -117,7 +117,9 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IRadioEmits, IRadioProps } from '../../interfaces'
+	import type { IRadioProps} from '../../interfaces'
+
+	import type { IRadioEmits } from '../../interfaces/Radio/radio.interface'
 
 	import type { TOrigamInput, TOrigamRadioBtn } from "../../types"
 

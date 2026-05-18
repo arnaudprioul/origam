@@ -141,13 +141,9 @@
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
 	import type {
-		IDataTableEmits,
-		IDataTableGroup,
-		IDataTableGroupableItem,
-		IDataTableProps,
-		IDataTableSelectableItem,
-		IDataTableSortItem
-	} from '../../interfaces'
+		IDataTableGroup, IDataTableGroupableItem, IDataTableProps, IDataTableSelectableItem, IDataTableSortItem} from '../../interfaces'
+
+	import type { IDataTableEmits } from '../../interfaces/DataTable/data-table.interface'
 
 	import type { TOrigamDataTableFooter, TOrigamDataTableHeaders, TOrigamDataTableRows, TOrigamTable } from "../../types"
 

@@ -184,7 +184,9 @@
 
 	import { MDI_ICONS } from '../../enums'
 
-	import type { ICommand, ICommandPaletteEmits, ICommandPaletteProps, ICommandPaletteSlots } from '../../interfaces'
+	import type { ICommand, ICommandPaletteProps, ICommandPaletteSlots} from '../../interfaces'
+
+	import type { ICommandPaletteEmits } from '../../interfaces/CommandPalette/command-palette.interface'
 
 	import { getUid } from '../../utils'
 

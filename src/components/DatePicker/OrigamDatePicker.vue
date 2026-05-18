@@ -114,7 +114,9 @@
 
 	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
 
-	import type { IDatePickerEmits, IDatePickerProps } from "../../interfaces"
+	import type { IDatePickerProps} from "../../interfaces"
+
+	import type { IDatePickerEmits } from '../../interfaces/DatePicker/date-picker.interface'
 
 	import type {
 		TOrigamDatePickerControls,

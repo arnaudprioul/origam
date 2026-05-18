@@ -26,7 +26,9 @@
 
 	import { DIRECTION, MDI_ICONS } from '../../enums'
 
-	import type { IChipGroupEmits, IChipGroupProps } from '../../interfaces'
+	import type { IChipGroupProps} from '../../interfaces'
+
+	import type { IChipGroupEmits } from '../../interfaces/Chip/chip-group.interface'
 
 	import type { TOrigamSlideGroup } from "../../types"
 

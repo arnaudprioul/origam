@@ -249,10 +249,9 @@
 	import { MDI_ICONS } from '../../enums'
 
 	import type {
-		IVideoEmits,
-		IVideoProps,
-		IVideoSource
-	} from '../../interfaces'
+		IVideoProps, IVideoSource} from '../../interfaces'
+
+	import type { IVideoEmits } from '../../interfaces/Video/video.interface'
 
 	/*********************************************************
 	 * Global

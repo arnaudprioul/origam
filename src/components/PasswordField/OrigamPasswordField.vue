@@ -333,11 +333,9 @@
 	import { vIntersect } from '../../directives'
 	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
 	import type {
-		IPasswordFieldEmits,
-		IPasswordFieldProps,
-		IPasswordFieldSlots,
-		IPasswordRequirement
-	} from '../../interfaces'
+		IPasswordFieldProps, IPasswordFieldSlots, IPasswordRequirement} from '../../interfaces'
+
+	import type { IPasswordFieldEmits } from '../../interfaces/PasswordField/password-field.interface'
 	import type { TOrigamField, TOrigamInput, TOrigamMenu } from '../../types'
 	import { filterInputAttrs, forwardRefs } from '../../utils'
 

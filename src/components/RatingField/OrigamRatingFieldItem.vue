@@ -46,7 +46,9 @@
 
 	import { MDI_ICONS, VARIANT } from "../../enums"
 
-	import type { IRatingFieldItemEmits, IRatingFieldItemProps } from '../../interfaces'
+	import type { IRatingFieldItemProps} from '../../interfaces'
+
+	import type { IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
 
 	import type { TOrigamBtn } from "../../types"
 

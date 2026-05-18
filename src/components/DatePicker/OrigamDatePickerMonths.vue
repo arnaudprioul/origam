@@ -24,7 +24,9 @@
 
 	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
-	import type { IDatePickerMonthsEmits, IDatePickerMonthsProps } from "../../interfaces"
+	import type { IDatePickerMonthsProps} from "../../interfaces"
+
+	import type { IDatePickerMonthsEmits } from '../../interfaces/DatePicker/date-picker-months.interface'
 
 	import { convertToUnit, createRange, int } from "../../utils"
 

@@ -134,7 +134,9 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IAlertEmits, IAlertProps } from '../../interfaces'
+	import type { IAlertProps} from '../../interfaces'
+
+	import type { IAlertEmits } from '../../interfaces/Alert/alert.interface'
 
 	/*********************************************************
 	 * Global

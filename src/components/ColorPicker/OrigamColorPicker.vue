@@ -102,7 +102,9 @@
 
 	import { COLOR_MODES_NAMES } from "../../enums"
 
-	import type { IColorPickerEmits, IColorPickerProps } from "../../interfaces"
+	import type { IColorPickerProps} from "../../interfaces"
+
+	import type { IColorPickerEmits } from '../../interfaces/ColorPicker/color-picker.interface'
 
 	import type {
 		TColorModes,

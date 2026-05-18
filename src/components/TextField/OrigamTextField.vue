@@ -205,7 +205,9 @@
 
 	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
 
-	import type { ITextFieldEmits, ITextFieldProps, ITextFieldSlots } from '../../interfaces'
+	import type { ITextFieldProps, ITextFieldSlots} from '../../interfaces'
+
+	import type { ITextFieldEmits } from '../../interfaces/TextField/text-field.interface'
 
 	import type { TOrigamField, TOrigamInput } from "../../types"
 

@@ -161,7 +161,9 @@
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { IBtnEmits, IBtnProps } from '../../interfaces'
+	import type { IBtnProps} from '../../interfaces'
+
+	import type { IBtnEmits } from '../../interfaces/Btn/btn.interface'
 
 	import type { TOrigamProgress } from "../../types"
 

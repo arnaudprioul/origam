@@ -76,7 +76,9 @@
 
 	import { useAdjacent, useDensity, useProps , useStyle} from "../../composables"
 
-	import type { IDatePickerHeaderEmits, IDatePickerHeaderProps } from "../../interfaces"
+	import type { IDatePickerHeaderProps} from "../../interfaces"
+
+	import type { IDatePickerHeaderEmits } from '../../interfaces/DatePicker/date-picker-header.interface'
 
 	import { computed, StyleValue, toRef, useSlots } from "vue"
 

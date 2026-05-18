@@ -97,7 +97,9 @@
 
 	import { MDI_ICONS, SIZES } from '../../enums'
 
-	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowEmits, IDataTableRowProps } from '../../interfaces'
+	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowProps} from '../../interfaces'
+
+	import type { IDataTableRowEmits } from '../../interfaces/DataTable/row.interface'
 
 	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
 

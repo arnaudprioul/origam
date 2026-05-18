@@ -121,7 +121,9 @@
 
 	import { PROGRESS_TYPE } from '../../enums'
 
-	import type { IExpansionPanelEmits, IExpansionPanelProps } from '../../interfaces'
+	import type { IExpansionPanelProps} from '../../interfaces'
+
+	import type { IExpansionPanelEmits } from '../../interfaces/ExpensionPanel/expansion-panel.interface'
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 

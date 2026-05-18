@@ -23,7 +23,9 @@
 	useProps,
 	useStyle
 } from '../../composables'
-	import type { IOverlayScrimEmits, IOverlayScrimProps } from '../../interfaces'
+	import type { IOverlayScrimProps} from '../../interfaces'
+
+	import type { IOverlayScrimEmits } from '../../interfaces/Overlay/overlay-scrim.interface'
 	import type { TTransitionProps } from "../../types"
 
 	/*********************************************************

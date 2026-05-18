@@ -184,7 +184,9 @@
 
 	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 
-	import type { IPaginationEmits, IPaginationProps } from "../../interfaces"
+	import type { IPaginationProps} from "../../interfaces"
+
+	import type { IPaginationEmits } from '../../interfaces/Pagination/pagination.interface'
 
 	import { createRange, int } from "../../utils"
 

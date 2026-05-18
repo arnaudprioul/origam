@@ -188,7 +188,9 @@
 
 	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 
-	import type { IFieldEmits, IFieldProps, IFieldSlots } from '../../interfaces'
+	import type { IFieldProps, IFieldSlots} from '../../interfaces'
+
+	import type { IFieldEmits } from '../../interfaces/Field/field.interface'
 
 	import type { TOrigamLabel } from "../../types"
 

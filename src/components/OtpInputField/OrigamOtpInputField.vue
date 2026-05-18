@@ -138,7 +138,9 @@
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 
-	import type { IOtpInputFieldEmits, IOtpInputFieldProps, IOtpInputFieldSlots } from "../../interfaces"
+	import type { IOtpInputFieldProps, IOtpInputFieldSlots} from "../../interfaces"
+
+	import type { IOtpInputFieldEmits } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
 	import type { TOrigamField } from "../../types"
 

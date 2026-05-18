@@ -52,7 +52,9 @@
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { ITooltipEmits, ITooltipProps } from '../../interfaces'
+	import type { ITooltipProps} from '../../interfaces'
+
+	import type { ITooltipEmits } from '../../interfaces/Tooltip/tooltip.interface'
 
 	import type { TAnchor, TOrigamOverlay } from '../../types'
 

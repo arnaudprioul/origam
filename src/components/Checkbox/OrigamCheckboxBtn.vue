@@ -52,7 +52,9 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { ICheckboxBtnEmits, ICheckboxBtnProps, ICheckboxBtnSlots } from '../../interfaces'
+	import type { ICheckboxBtnProps, ICheckboxBtnSlots} from '../../interfaces'
+
+	import type { ICheckboxBtnEmits } from '../../interfaces/Checkbox/checkbox-btn.interface'
 
 	import type { TOrigamSelectionControl } from "../../types"
 

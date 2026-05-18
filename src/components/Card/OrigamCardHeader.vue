@@ -102,7 +102,9 @@
 	useStyle
 } from '../../composables'
 
-	import type { ICardHeaderEmits, ICardHeaderProps } from '../../interfaces'
+	import type { ICardHeaderProps} from '../../interfaces'
+
+	import type { ICardHeaderEmits } from '../../interfaces/Card/card-header.interface'
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 

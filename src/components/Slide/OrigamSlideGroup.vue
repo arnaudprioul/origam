@@ -79,7 +79,9 @@
 
 	import { DIRECTION, MDI_ICONS } from "../../enums"
 
-	import type { IGoToOptions, ISlideGroupEmits, ISlideGroupProps } from "../../interfaces"
+	import type { IGoToOptions, ISlideGroupProps} from "../../interfaces"
+
+	import type { ISlideGroupEmits } from '../../interfaces/Slide/slide-group.interface'
 	import {
 		calculateCenteredTarget,
 		calculateUpdatedTarget,

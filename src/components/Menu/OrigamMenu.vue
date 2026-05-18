@@ -95,7 +95,9 @@
 
 	import { INLINE, KEYBOARD_VALUES, LOCATION_STRATEGIES, MDI_ICONS, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { IItemProps, IMenuEmits, IMenuProps } from '../../interfaces'
+	import type { IItemProps, IMenuProps} from '../../interfaces'
+
+	import type { IMenuEmits } from '../../interfaces/Menu/menu.interface'
 
 	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 

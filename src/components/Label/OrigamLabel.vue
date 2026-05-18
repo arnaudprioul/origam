@@ -29,7 +29,9 @@
 	useStyle
 } from '../../composables'
 
-	import type { ILabelEmits, ILabelProps, ILabelSlots } from '../../interfaces'
+	import type { ILabelProps, ILabelSlots} from '../../interfaces'
+
+	import type { ILabelEmits } from '../../interfaces/Label/label.interface'
 
 	/*********************************************************
 	 * Global

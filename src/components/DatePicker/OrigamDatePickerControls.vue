@@ -62,7 +62,9 @@
 
 	import { DATE_MODE, MDI_ICONS } from "../../enums"
 
-	import type { IDatePickerControlsEmits, IDatePickerControlsProps } from "../../interfaces"
+	import type { IDatePickerControlsProps} from "../../interfaces"
+
+	import type { IDatePickerControlsEmits } from '../../interfaces/DatePicker/date-picker-controls.interface'
 
 	import { computed, StyleValue } from "vue"
 

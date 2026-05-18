@@ -72,7 +72,9 @@
 
 	import { DENSITY, MDI_ICONS } from "../../enums"
 
-	import type { IColorPickerPreviewEmits, IColorPickerPreviewProps } from "../../interfaces"
+	import type { IColorPickerPreviewProps} from "../../interfaces"
+
+	import type { IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
 	import { consoleWarn, HSVtoCSS, parseColor, RGBtoHSV } from "../../utils"
 

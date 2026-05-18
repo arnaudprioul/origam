@@ -28,7 +28,9 @@
 
 	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
 
-	import type { IItemGroupEmits, IItemGroupProps } from '../../interfaces'
+	import type { IItemGroupProps} from '../../interfaces'
+
+	import type { IItemGroupEmits } from '../../interfaces/ItemGroup/item-group.interface'
 
 	/*********************************************************
 	 * Global

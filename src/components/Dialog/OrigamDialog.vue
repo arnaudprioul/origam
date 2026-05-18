@@ -136,7 +136,9 @@
 	import { IN_BROWSER } from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { MDI_ICONS } from '../../enums'
-	import type { IDialogEmits, IDialogProps } from '../../interfaces'
+	import type { IDialogProps} from '../../interfaces'
+
+	import type { IDialogEmits } from '../../interfaces/Dialog/dialog.interface'
 	import type { TOrigamCard, TOrigamOverlay, TTransitionProps } from '../../types'
 	import { focusableChildren, forwardRefs } from '../../utils'
 

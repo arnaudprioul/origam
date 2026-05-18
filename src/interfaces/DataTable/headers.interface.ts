@@ -2,7 +2,6 @@ import type { ComputedRef, Ref, UnwrapRef } from 'vue'
 import { ALIGN } from '../../enums'
 import type {
     IAdjacentEmits,
-    IAdjacentInnerEmits,
     IColorProps,
     ICommonsComponentProps,
     IDataTableItem,

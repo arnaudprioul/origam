@@ -113,7 +113,9 @@
 
 	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { IInputEmits, IInputProps, IInputSlots } from '../../interfaces'
+	import type { IInputProps, IInputSlots} from '../../interfaces'
+
+	import type { IInputEmits } from '../../interfaces/Input/input.interface'
 
 	import { getUid, wrapInArray } from '../../utils'
 

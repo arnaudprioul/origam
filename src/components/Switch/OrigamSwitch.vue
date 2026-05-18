@@ -137,7 +137,9 @@
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { ISwitchEmits, ISwitchProps } from "../../interfaces"
+	import type { ISwitchProps} from "../../interfaces"
+
+	import type { ISwitchEmits } from '../../interfaces/Switch/switch.interface'
 
 	import type { TOrigamInput, TOrigamSelectionControl } from "../../types"
 

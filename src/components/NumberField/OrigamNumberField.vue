@@ -259,7 +259,9 @@
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
-	import type { INumberFieldEmits, INumberFieldProps, INumberFieldSlots } from "../../interfaces"
+	import type { INumberFieldProps, INumberFieldSlots} from "../../interfaces"
+
+	import type { INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
 
 	import type { TOrigamTextField } from "../../types"
 

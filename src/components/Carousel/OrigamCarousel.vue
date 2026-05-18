@@ -99,7 +99,9 @@
 
 	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
 
-	import type { ICarouselEmits, ICarouselProps, IGroupProvide } from '../../interfaces'
+	import type { ICarouselProps, IGroupProvide} from '../../interfaces'
+
+	import type { ICarouselEmits } from '../../interfaces/Carousel/carousel.interface'
 
 	import type { TOrigamWindow } from "../../types"
 

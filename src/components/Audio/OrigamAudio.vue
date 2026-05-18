@@ -184,10 +184,9 @@
 	import { MDI_ICONS } from '../../enums'
 
 	import type {
-		IAudioEmits,
-		IAudioProps,
-		IAudioSource
-	} from '../../interfaces'
+		IAudioProps, IAudioSource} from '../../interfaces'
+
+	import type { IAudioEmits } from '../../interfaces/Audio/audio-player.interface'
 
 	/*********************************************************
 	 * Global
