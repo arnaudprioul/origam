@@ -128,7 +128,7 @@ export interface IAudioProps
     cover?: string | ISrcObject
     /**
      * Display the computed waveform above the controls. Pass `true`
-     * to force the computation (when supported); pass `\'auto\'` to
+     * to force the computation (when supported); pass `'auto'` to
      * activate it only when the browser supports `OfflineAudioContext`.
      * SSR + jsdom fall through to `false`.
      *
@@ -137,14 +137,14 @@ export interface IAudioProps
      *
      * @default false
      */
-    waveform?: boolean | \'auto\'
+    waveform?: boolean | 'auto'
     /**
      * Stroke colour for the *played* portion of the waveform bars.
-     * Default `\'currentColor\'` so the waveform inherits the
+     * Default `'currentColor'` so the waveform inherits the
      * typographic theme. Override via the prop OR via
      * `--origam-audio__waveform---color-played` directly on the wrapper.
      *
-     * @default \'currentColor\'
+     * @default 'currentColor'
      */
     waveformColor?: string
     /**
