@@ -9,10 +9,10 @@
 					value: 'https://origam.dev',
 					size: 240,
 					errorCorrectionLevel: 'M',
-					color: 'currentColor',
-					bgColor: 'transparent',
+					color: undefined,
+					bgColor: undefined,
 					quietZone: 4,
-					rounded: 'default'
+					rounded: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -40,13 +40,15 @@
 						title="errorCorrectionLevel"
 						:options="eccOptions"
 				/>
-				<HstText
+				<HstSelect
 						v-model="state.color"
 						title="color (dark modules)"
+						:options="intentList"
 				/>
-				<HstText
+				<HstSelect
 						v-model="state.bgColor"
 						title="bgColor (quiet zone)"
+						:options="intentList"
 				/>
 				<HstNumber
 						v-model="state.quietZone"
@@ -414,6 +416,8 @@
 	import type { TIcon, TQrCodeErrorCorrectionLevel, TRounded, TSize } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
+
+	import { intentList } from '@stories/const'
 
 	interface IOption<T> {
 		label: string
