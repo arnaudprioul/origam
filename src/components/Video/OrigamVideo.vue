@@ -1006,17 +1006,22 @@
 		}
 	}
 
-	// YouTube-style double-tap skip overlay :
-	//   • half-disc anchored on left / right covering ~35 % of the
-	//     video width — the same proportion YouTube uses, big enough
-	//     to read at a glance without occluding the centre frame.
-	//   • dark backdrop with 18 % alpha — strong enough to read
-	//     against a bright frame, soft enough not to mask the action.
-	//   • three cascading chevrons + crisp seconds label.
-	//   • chevron pulse cascades INTO the direction of travel
-	//     (right ripple → right-to-left reading reversed via
-	//     `animation-direction: reverse` on the left disc) so the
-	//     eye follows the chevrons toward the skip target.
+	// YouTube-parity double-tap skip overlay :
+	//
+	//   • Half-disc covers ~35 % of the video width — same proportion
+	//     YouTube's mobile / web player uses.
+	//   • Frosted background : light dark wash + `backdrop-filter:
+	//     blur(6px)` for the frosted look. Fallback (browsers without
+	//     backdrop-filter support) keeps a denser solid alpha so the
+	//     chevrons stay readable.
+	//   • Three chevrons stay visible at baseline opacity 0.5 ; a
+	//     brightness wave (opacity 1 + scale 1.1) cascades through
+	//     them on a 800 ms loop. The wave direction follows the skip
+	//     direction (right skip → wave runs left→right ; left skip →
+	//     wave runs right→left) via per-side animation-delay swap, so
+	//     the eye chases the chevrons toward the skip target.
+	//   • Disc itself fades + scales in/out (200 ms ease) — no
+	//     translate, just a subtle "puff in" matching YouTube.
 	.origam-video__skip-ripple {
 		position: absolute;
 		top: 0;
@@ -1024,10 +1029,18 @@
 		width: 35%;
 		z-index: 3;
 		pointer-events: none;
-		background: rgba(0, 0, 0, 0.18);
+		background: rgba(0, 0, 0, 0.45);
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	@supports ((backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))) {
+		.origam-video__skip-ripple {
+			background: rgba(0, 0, 0, 0.30);
+			backdrop-filter: blur(6px);
+			-webkit-backdrop-filter: blur(6px);
+		}
 	}
 
 	.origam-video__skip-ripple--left {
@@ -1064,29 +1077,30 @@
 	.origam-video__skip-chevron {
 		display: inline-block;
 		line-height: 0;
-		opacity: 0;
+		opacity: 0.5;
 		margin: 0 -6px;
-		animation: origam-video-chevron-pulse 700ms ease-out infinite;
+		animation: origam-video-chevron-wave 800ms ease-in-out infinite;
 	}
 
 	.origam-video__skip-chevron :deep(.origam-icon) {
-		font-size: 40px;
+		font-size: 38px;
 		line-height: 1;
 	}
 
-	.origam-video__skip-chevron--1 { animation-delay:   0ms; }
-	.origam-video__skip-chevron--2 { animation-delay: 110ms; }
-	.origam-video__skip-chevron--3 { animation-delay: 220ms; }
-
-	.origam-video__skip-ripple--left .origam-video__skip-chevron {
-		animation-direction: reverse;
+	@keyframes origam-video-chevron-wave {
+		0%, 80%, 100% { opacity: 0.5; transform: scale(1); }
+		40%           { opacity: 1;   transform: scale(1.1); }
 	}
 
-	@keyframes origam-video-chevron-pulse {
-		0%   { opacity: 0;   transform: scale(0.88); }
-		35%  { opacity: 1;   transform: scale(1); }
-		100% { opacity: 0;   transform: scale(1); }
-	}
+	// Cascade order follows the skip direction :
+	//   right skip → chevrons peak 1 → 2 → 3 (left to right)
+	//   left skip  → chevrons peak 3 → 2 → 1 (right to left)
+	.origam-video__skip-ripple--right .origam-video__skip-chevron--1 { animation-delay:   0ms; }
+	.origam-video__skip-ripple--right .origam-video__skip-chevron--2 { animation-delay: 120ms; }
+	.origam-video__skip-ripple--right .origam-video__skip-chevron--3 { animation-delay: 240ms; }
+	.origam-video__skip-ripple--left  .origam-video__skip-chevron--1 { animation-delay: 240ms; }
+	.origam-video__skip-ripple--left  .origam-video__skip-chevron--2 { animation-delay: 120ms; }
+	.origam-video__skip-ripple--left  .origam-video__skip-chevron--3 { animation-delay:   0ms; }
 
 	.origam-video__skip-ripple-label {
 		font-size: 13px;
@@ -1100,28 +1114,19 @@
 
 	.origam-video-skip-ripple-enter-active,
 	.origam-video-skip-ripple-leave-active {
-		transition: opacity 220ms ease, transform 220ms ease;
+		transition: opacity 200ms ease, transform 200ms ease;
 	}
 
 	.origam-video-skip-ripple-enter-from,
 	.origam-video-skip-ripple-leave-to {
 		opacity: 0;
-	}
-
-	.origam-video__skip-ripple--right.origam-video-skip-ripple-enter-from,
-	.origam-video__skip-ripple--right.origam-video-skip-ripple-leave-to {
-		transform: translateX(8%);
-	}
-
-	.origam-video__skip-ripple--left.origam-video-skip-ripple-enter-from,
-	.origam-video__skip-ripple--left.origam-video-skip-ripple-leave-to {
-		transform: translateX(-8%);
+		transform: scale(0.96);
 	}
 
 	.origam-video-skip-ripple-enter-to,
 	.origam-video-skip-ripple-leave-from {
 		opacity: 1;
-		transform: translateX(0);
+		transform: scale(1);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
