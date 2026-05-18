@@ -100,7 +100,12 @@ export * from './QrCode/qr-code.composable'
 export * from './Watermark/watermark.composable'
 
 export * from './Media/use-media-player.composable'
-export * from './Video/video-player.composable'
+// `video-player.composable` exposes `shouldSuppressAutoplay` as a thin
+// pass-through to the Media base — exporting it again from the barrel
+// triggers `conflicting star exports` at module-link time. Re-export
+// only the Video-specific surface (`VIDEO_DEFAULT_PRELOAD` now lives in
+// `src/consts/Video/video.const.ts` — composables don't host consts).
+export { useVideoPlayer } from './Video/video-player.composable'
 
 export * from './Audio/use-waveform.composable'
 

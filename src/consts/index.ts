@@ -76,3 +76,6 @@ export * from './Tabs/tabs.const'
 export * from './Mask/built-in-patterns.const'
 
 export * from './Theme/theme.const'
+
+export * from './Media/media.const'
+export * from './Video/video.const'

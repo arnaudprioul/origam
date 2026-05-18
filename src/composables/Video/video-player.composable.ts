@@ -19,7 +19,6 @@ import type {
  * so consumers can reference the canonical default in docs/tests
  * without re-typing the literal.
  */
-const VIDEO_DEFAULT_PRELOAD: 'none' | 'metadata' | 'auto' = 'metadata'
 
 /**
  * Headless video player composable. Composes the media-shared
@@ -207,4 +206,3 @@ export function shouldSuppressAutoplay (): boolean {
     return shouldSuppressAutoplayBase()
 }
 
-export { VIDEO_DEFAULT_PRELOAD }

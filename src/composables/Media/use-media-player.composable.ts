@@ -20,7 +20,6 @@ import type {
  * only" rule).
  */
 const MEDIA_DEFAULT_VOLUME = 1
-const MEDIA_DEFAULT_PRELOAD: 'none' | 'metadata' | 'auto' = 'metadata'
 
 /**
  * Predicate that returns true when the user has explicitly requested
@@ -441,4 +440,3 @@ export function shouldSuppressAutoplay (): boolean {
  * because the SFC inlines the literal at the call-site and only uses
  * this constant in JSDoc.
  */
-export { MEDIA_DEFAULT_PRELOAD }
