@@ -62,7 +62,7 @@
 
 	import { DATE_MODE, MDI_ICONS } from "../../enums"
 
-	import type { IDatePickerControlsProps } from "../../interfaces"
+	import type { IDatePickerControlsEmits, IDatePickerControlsProps } from "../../interfaces"
 
 	import { computed, StyleValue } from "vue"
 
@@ -80,7 +80,7 @@
 		viewMode: DATE_MODE.MONTH
 	})
 
-	const emits = defineEmits(['click:year', 'click:month', 'click:prev', 'click:next', 'click:text'])
+	const emits = defineEmits<IDatePickerControlsEmits>()
 
 	const {filterProps} = useProps<IDatePickerControlsProps>(props)
 

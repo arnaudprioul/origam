@@ -27,7 +27,7 @@
 >
 	import { useProps, useResizeObserver , useStyle} from "../../composables"
 
-	import type { IColorPickerCanvasProps } from "../../interfaces"
+	import type { IColorPickerCanvasEmits, IColorPickerCanvasProps } from "../../interfaces"
 
 	import { clamp, convertToUnit, getEventCoordinates, int } from "../../utils"
 
@@ -45,7 +45,7 @@
 		width: '100%'
 	})
 
-	const emits = defineEmits(['update:colorHsv'])
+	const emits = defineEmits<IColorPickerCanvasEmits>()
 
 	const {filterProps} = useProps<IColorPickerCanvasProps>(props)
 

@@ -114,7 +114,7 @@
 
 	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
 
-	import type { IDatePickerProps } from "../../interfaces"
+	import type { IDatePickerEmits, IDatePickerProps } from "../../interfaces"
 
 	import type {
 		TOrigamDatePickerControls,
@@ -142,7 +142,7 @@
 		header: 'origam.datePicker.header'
 	})
 
-	const emits = defineEmits(['update:modelValue', 'update:month', 'update:year', 'update:viewMode'])
+	const emits = defineEmits<IDatePickerEmits>()
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IDatePickerProps>(props)

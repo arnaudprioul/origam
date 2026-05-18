@@ -102,7 +102,7 @@
 
 	import { COLOR_MODES_NAMES } from "../../enums"
 
-	import type { IColorPickerProps } from "../../interfaces"
+	import type { IColorPickerEmits, IColorPickerProps } from "../../interfaces"
 
 	import type {
 		TColorModes,
@@ -135,7 +135,7 @@
 		modes: () => [COLOR_MODES_NAMES.RGB, COLOR_MODES_NAMES.RGBA, COLOR_MODES_NAMES.HSL, COLOR_MODES_NAMES.HSLA, COLOR_MODES_NAMES.HEX, COLOR_MODES_NAMES.HEXA]
 	})
 
-	defineEmits(['update:modelValue', 'update:mode'])
+	defineEmits<IColorPickerEmits>()
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IColorPickerProps>(props)

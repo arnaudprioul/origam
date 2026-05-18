@@ -72,7 +72,7 @@
 
 	import { DENSITY, MDI_ICONS } from "../../enums"
 
-	import type { IColorPickerPreviewProps } from "../../interfaces"
+	import type { IColorPickerPreviewEmits, IColorPickerPreviewProps } from "../../interfaces"
 
 	import { consoleWarn, HSVtoCSS, parseColor, RGBtoHSV } from "../../utils"
 
@@ -88,7 +88,7 @@
 
 	const props = withDefaults(defineProps<IColorPickerPreviewProps>(), {})
 
-	const emits = defineEmits(['update:colorHsv'])
+	const emits = defineEmits<IColorPickerPreviewEmits>()
 
 	const {filterProps} = useProps<IColorPickerPreviewProps>(props)
 

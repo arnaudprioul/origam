@@ -40,7 +40,7 @@
 
 	import { COLOR_MODES_NAMES, MDI_ICONS } from "../../enums"
 
-	import type { IColorPickerEditProps } from "../../interfaces"
+	import type { IColorPickerEditEmits, IColorPickerEditProps } from "../../interfaces"
 
 	import { computed, StyleValue } from "vue"
 
@@ -56,7 +56,7 @@
 		modes: () => [COLOR_MODES_NAMES.RGB, COLOR_MODES_NAMES.RGBA, COLOR_MODES_NAMES.HSL, COLOR_MODES_NAMES.HSLA, COLOR_MODES_NAMES.HEX, COLOR_MODES_NAMES.HEXA]
 	})
 
-	const emits = defineEmits(['update:colorHsv', 'update:mode'])
+	const emits = defineEmits<IColorPickerEditEmits>()
 
 	const {filterProps} = useProps<IColorPickerEditProps>(props)
 

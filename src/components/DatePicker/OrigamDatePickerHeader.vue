@@ -76,7 +76,7 @@
 
 	import { useAdjacent, useDensity, useProps , useStyle} from "../../composables"
 
-	import type { IDatePickerHeaderProps } from "../../interfaces"
+	import type { IDatePickerHeaderEmits, IDatePickerHeaderProps } from "../../interfaces"
 
 	import { computed, StyleValue, toRef, useSlots } from "vue"
 
@@ -89,7 +89,7 @@
 
 	const props = withDefaults(defineProps<IDatePickerHeaderProps>(), {})
 
-	const emits = defineEmits(['click'])
+	const emits = defineEmits<IDatePickerHeaderEmits>()
 
 	const {filterProps} = useProps<IDatePickerHeaderProps>(props)
 

@@ -24,7 +24,7 @@
 
 	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
-	import type { IDatePickerMonthsProps } from "../../interfaces"
+	import type { IDatePickerMonthsEmits, IDatePickerMonthsProps } from "../../interfaces"
 
 	import { convertToUnit, createRange, int } from "../../utils"
 
@@ -39,7 +39,7 @@
 
 	const props = withDefaults(defineProps<IDatePickerMonthsProps>(), {})
 
-	const emits = defineEmits(['update:month'])
+	const emits = defineEmits<IDatePickerMonthsEmits>()
 
 	const {filterProps} = useProps<IDatePickerMonthsProps>(props)
 

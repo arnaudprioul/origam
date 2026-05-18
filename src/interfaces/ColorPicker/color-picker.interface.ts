@@ -5,6 +5,7 @@ import type {
     IColorPickerPreviewProps,
     IColorPickerSwatchesProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IElevationProps,
     IMarginProps,
@@ -13,7 +14,21 @@ import type {
     IRoundedProps
 } from "../../interfaces"
 
-import type { THSVA } from "../../types"
+import type { TColorModes, THSVA } from "../../types"
+
+/** Shared emit shape for sub-components driving the HSVA model
+ *  (Canvas / Edit / Preview / Swatches all push their changes up the
+ *  same channel). Factored here so the four sub-component interfaces
+ *  can extend it without redeclaring. */
+export interface IColorHsvEmits {
+    (e: 'update:colorHsv', value: THSVA): void
+}
+
+/** Shared emit shape for sub-components that flip between color modes
+ *  (RGB / HSL / HSV / HEX, …). */
+export interface IColorModeEmits {
+    (e: 'update:mode', value: TColorModes): void
+}
 
 export interface IColorPickerProps extends ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IPickerProps, IColorProps, IColorPickerCanvasProps, IColorPickerPreviewProps, IColorPickerEditProps, IColorPickerSwatchesProps {
     canvasHeight?: string | number
@@ -37,3 +52,7 @@ export interface IColorPickerMode {
     from: (color: any) => THSVA
     to: (color: THSVA) => any
 }
+
+/** Emits fired by `<OrigamColorPicker>` — v-model on the resolved colour
+ *  plus the active input mode. */
+export interface IColorPickerEmits extends ICommonsComponentEmits, IColorModeEmits {}

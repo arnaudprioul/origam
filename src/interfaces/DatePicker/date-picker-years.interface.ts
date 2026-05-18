@@ -5,3 +5,8 @@ export interface IDatePickerYearsProps extends ICommonsComponentProps, IColorPro
     max?: unknown
     year: number
 }
+
+/** Emits fired by `<OrigamDatePickerYears>` — click on a year tile. */
+export interface IDatePickerYearsEmits {
+    (e: 'update:year', value: number): void
+}

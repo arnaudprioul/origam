@@ -6,3 +6,8 @@ export interface IDatePickerMonthsProps extends ICommonsComponentProps, IColorPr
     month: number
     year: number
 }
+
+/** Emits fired by `<OrigamDatePickerMonths>` — click on a month tile. */
+export interface IDatePickerMonthsEmits {
+    (e: 'update:month', value: number): void
+}

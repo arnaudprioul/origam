@@ -42,7 +42,7 @@
 
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IColorPickerSwatchesProps } from "../../interfaces"
+	import type { IColorPickerSwatchesEmits, IColorPickerSwatchesProps } from "../../interfaces"
 	import type { TRGBA } from "../../types"
 
 	import { convertToUnit, deepEqual, getContrast, parseColor, RGBtoCSS, RGBtoHSV } from "../../utils"
@@ -60,7 +60,7 @@
 		maxHeight: 150
 	})
 
-	const emits = defineEmits(['update:colorHsv'])
+	const emits = defineEmits<IColorPickerSwatchesEmits>()
 
 	const {filterProps} = useProps<IColorPickerSwatchesProps>(props)
 

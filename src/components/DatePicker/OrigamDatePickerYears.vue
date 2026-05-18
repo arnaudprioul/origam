@@ -23,7 +23,7 @@
 	import { OrigamBtn } from "../../components"
 	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
-	import type { IDatePickerYearsProps } from "../../interfaces"
+	import type { IDatePickerYearsEmits, IDatePickerYearsProps } from "../../interfaces"
 	import { convertToUnit, createRange, int, templateRef } from "../../utils"
 
 	import { computed, nextTick, onMounted, StyleValue, watchEffect } from "vue"
@@ -37,7 +37,7 @@
 
 	const props = withDefaults(defineProps<IDatePickerYearsProps>(), {})
 
-	const emits = defineEmits(['update:year'])
+	const emits = defineEmits<IDatePickerYearsEmits>()
 
 	const {filterProps} = useProps<IDatePickerYearsProps>(props)
 
