@@ -9,3 +9,9 @@ export interface IClickOutsideBindingArgs {
     closeConditional?: (e: Event) => boolean
     include?: () => Array<HTMLElement>
 }
+
+/** `click:outside` emit — fires when a pointer down event lands outside
+ *  the component's root (Dialog, Drawer, Sheet, …). */
+export interface IClickOutsideEmits {
+    (e: 'click:outside', event: MouseEvent): void
+}

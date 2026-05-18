@@ -40,6 +40,28 @@ export interface ICommonsComponentEmits {
     (e: 'update:modelValue', event: any): void
 }
 
+/** Generic `click` emit — bubbles the native MouseEvent. */
+export interface IClickEmits {
+    (e: 'click', event: MouseEvent): void
+}
+
+/** `click:close` emit — surface for dismissable surfaces (Alert, Snackbar, …). */
+export interface IClickCloseEmits {
+    (e: 'click:close', event: MouseEvent): void
+}
+
+/** `click:label` emit — fires when the user clicks the associated <label>
+ *  rather than the input chrome itself. Used by selection controls. */
+export interface IClickLabelEmits {
+    (e: 'click:label', event: MouseEvent): void
+}
+
+/** `update:indeterminate` emit — companion to `update:modelValue` for
+ *  three-state controls (Switch, Checkbox, …). */
+export interface IIndeterminateEmits {
+    (e: 'update:indeterminate', value: boolean): void
+}
+
 /** Default slot signature shared by container components. */
 export interface ICommonsComponentSlots {
     default?: () => any

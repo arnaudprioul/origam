@@ -49,3 +49,8 @@ export interface IGroupItemProvide {
     disabled: Ref<boolean | undefined>
     group: IGroupProvide
 }
+
+/** Emit signature for components that are part of a selectable group. */
+export interface IGroupEmits {
+    (e: 'group:selected', value: { value: boolean }): void
+}

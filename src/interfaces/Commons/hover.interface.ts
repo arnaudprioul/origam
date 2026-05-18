@@ -46,3 +46,8 @@ export interface IHoverHtmlElementHover {
     touched?: boolean
     isTouch?: boolean
 }
+
+/** Emit signature for components that propagate their hover state. */
+export interface IHoverEmits {
+    (e: 'update:hover', value: boolean): void
+}
