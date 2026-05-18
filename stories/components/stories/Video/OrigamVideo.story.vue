@@ -141,7 +141,7 @@
 					data-cy="video-src-modes"
 			>
 				<p class="hint">
-					`src` accepts a single URL or an array of `<source>` descriptors.
+					`src` accepts a single URL or an array of &lt;source&gt; descriptors.
 					The browser walks the array top-down and picks the first source
 					whose `type` it can decode.
 				</p>
@@ -259,7 +259,7 @@
 					data-cy="video-preload"
 			>
 				<p class="hint">
-					Buffering hint forwarded to the native `<video preload>`. `'metadata'`
+					Buffering hint forwarded to the native &lt;video preload&gt;. `'metadata'`
 					(default) loads just enough to compute the duration; `'none'` defers
 					everything until the user presses play; `'auto'` lets the browser
 					pre-buffer.
@@ -333,7 +333,7 @@
 					data-cy="video-tracks"
 			>
 				<p class="hint">
-					Captions are declared as `<track>` children. The toolbar exposes a
+					Captions are declared as &lt;track&gt; children. The toolbar exposes a
 					CC button that flips the active track between the declared `default`
 					and `disabled`.
 				</p>

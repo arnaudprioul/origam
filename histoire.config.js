@@ -28,6 +28,23 @@ export default defineConfig({
                 '@docs': resolve(__dirname, './docs'),
                 '@cypress': resolve(__dirname, './cypress'),
             }
+        },
+        server: {
+            watch: {
+                // `.claude/worktrees/<agent-id>` holds throwaway git
+                // worktrees spawned by parallel agents — each carries a
+                // full repo copy. Watching them blows past the macOS
+                // per-process file-descriptor cap (EMFILE: too many
+                // open files, watch) and crashes `histoire dev` at boot.
+                // Same logic for `tests/e2e/.results` (Playwright dumps
+                // screenshots / videos on every run) and `dist/`.
+                ignored: [
+                    '**/.claude/**',
+                    '**/tests/e2e/.results/**',
+                    '**/tests/e2e/.report/**',
+                    '**/dist/**'
+                ]
+            }
         }
     },
     theme: {

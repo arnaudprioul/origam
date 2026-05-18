@@ -22,12 +22,12 @@ const openVariant = async (page: Page, title: string) => {
     await page.waitForTimeout(400)
 }
 
-test.describe('OrigamVideo — Playground', () => {
+test.describe('OrigamVideo — Default', () => {
     test('renders a native <video> element with the configured src', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="video-playground-player"]').first()
+        const host = sandbox.locator('[data-cy="video-default-player"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         const video = host.locator('[data-cy="origam-video-el"]').first()
@@ -40,10 +40,10 @@ test.describe('OrigamVideo — Playground', () => {
     })
 
     test('renders the custom toolbar when controls=custom', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="video-playground-player"]').first()
+        const host = sandbox.locator('[data-cy="video-default-player"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         await expect(host.locator('[data-cy="origam-video-controls"]').first()).toBeVisible()
         await expect(host.locator('[data-cy="origam-video-play"]').first()).toBeVisible()
@@ -53,7 +53,7 @@ test.describe('OrigamVideo — Playground', () => {
     })
 
     test('play button has a dynamic aria-label', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const btn = sandbox.locator('[data-cy="origam-video-play"]').first()
@@ -61,7 +61,7 @@ test.describe('OrigamVideo — Playground', () => {
     })
 
     test('scrubber declares role=slider with aria-valuemin/max', async ({ page }) => {
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         const scrubber = sandbox.locator('[data-cy="origam-video-scrubber"]').first()
@@ -72,7 +72,7 @@ test.describe('OrigamVideo — Playground', () => {
 
 test.describe('OrigamVideo — controls modes', () => {
     test('controls=custom paints the in-house toolbar and the <video> has no native controls attribute', async ({ page }) => {
-        await openVariant(page, 'Prop — controls (custom vs native vs none)')
+        await openVariant(page, 'Prop — controls (custom / native / none)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="video-controls-custom"]').first()
@@ -85,7 +85,7 @@ test.describe('OrigamVideo — controls modes', () => {
     })
 
     test('controls=native sets the controls attribute on the <video> and renders no custom toolbar', async ({ page }) => {
-        await openVariant(page, 'Prop — controls (custom vs native vs none)')
+        await openVariant(page, 'Prop — controls (custom / native / none)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="video-controls-native"]').first()
@@ -100,7 +100,7 @@ test.describe('OrigamVideo — controls modes', () => {
     })
 
     test('controls=none renders neither the custom toolbar nor the native controls attribute', async ({ page }) => {
-        await openVariant(page, 'Prop — controls (custom vs native vs none)')
+        await openVariant(page, 'Prop — controls (custom / native / none)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="video-controls-none"]').first()
@@ -205,7 +205,7 @@ test.describe('OrigamVideo — prefers-reduced-motion', () => {
             if (msg.type() === 'warning') warnings.push(msg.text())
         })
 
-        await openVariant(page, 'Playground')
+        await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
         // Toggle autoplay on via the Histoire controls.
