@@ -2,6 +2,9 @@
 	<origam-chart
 			v-bind="forwardedProps"
 			:data-cy="`origam-chart-donut`"
+			@point-click="(point, originalEvent) => emit('point-click', point, originalEvent)"
+			@legend-click="(series, index) => emit('legend-click', series, index)"
+			@series-toggle="(series, visible) => emit('series-toggle', series, visible)"
 	>
 		<template
 				v-for="(_, name) in $slots"
@@ -38,6 +41,11 @@
 	 * inherited verbatim from `<OrigamChart>`. Use this component
 	 * when you want a type-safe surface; use `<OrigamChart>`
 	 * directly when you need to switch types at runtime.
+	 *
+	 * Emits (point-click / legend-click / series-toggle) are
+	 * explicitly re-emitted because Vue 3 custom events do NOT
+	 * bubble — without these listeners the parent never hears
+	 * the inner component's events.
 	 ********************************************************/
 	defineOptions({
 		name: 'OrigamChartDonut',
@@ -46,7 +54,7 @@
 
 	const props = defineProps<IChartDonutProps>()
 
-	defineEmits<IChartBaseEmits>()
+	const emit = defineEmits<IChartBaseEmits>()
 
 	/*********************************************************
 	 * Forwarded props — spread every declared prop onto the
