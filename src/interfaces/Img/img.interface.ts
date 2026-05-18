@@ -32,3 +32,12 @@ export interface ISrcObject {
     alt?: string
 }
 
+/** Emits fired by `<OrigamImg>` — native <img> lifecycle (loadstart fires
+ *  before the network request, load when the resource is fully decoded,
+ *  error when the browser gives up). */
+export interface IImgEmits {
+    (e: 'loadstart', value: { src: string }): void
+    (e: 'load', value: { src: string }): void
+    (e: 'error', value: { src: string }): void
+}
+

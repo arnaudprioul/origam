@@ -1,4 +1,5 @@
 import type {
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDirectionProps,
     IGroupProps,

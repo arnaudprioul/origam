@@ -1,6 +1,7 @@
 import type {
     IBgColorProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IDirectionProps,
@@ -35,3 +36,6 @@ export interface ITabsProps extends ICommonsComponentProps, ITagProps, IDirectio
     fixed?: boolean
     centered?: boolean
 }
+
+/** Emits fired by `<OrigamTabs>` — v-model on the active tab. */
+export interface ITabsEmits extends ICommonsComponentEmits {}

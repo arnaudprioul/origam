@@ -1,27 +1,14 @@
 <template>
 	<origam-chart
-			v-bind="$attrs"
-			type="radar"
-			:series="series"
-			:categories="categories"
-			:height="height"
-			:title="title"
-			:subtitle="subtitle"
-			:show-legend="showLegend"
-			:legend-position="legendPosition"
-			:show-tooltip="showTooltip"
-			:animated="animated"
-			:animation-duration="animationDuration"
-			:color-scheme="colorScheme"
-			:aspect-ratio="aspectRatio"
-			data-cy="origam-chart-radar"
+			v-bind="forwardedProps"
+			:data-cy="`origam-chart-radar`"
 	>
 		<template
-				v-for="(_, slotName) in $slots"
-				#[slotName]="slotProps"
+				v-for="(_, name) in $slots"
+				#[name]="slotProps"
 		>
 			<slot
-					:name="slotName"
+					:name="name"
 					v-bind="slotProps ?? {}"
 			/>
 		</template>
@@ -32,31 +19,44 @@
 		lang="ts"
 		setup
 >
+	import { computed } from 'vue'
+
 	import { OrigamChart } from '../Chart'
 
-	import type { IChartRadarProps } from '../../interfaces'
+	import type {
+		IChartBaseEmits,
+		IChartRadarProps
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
 	 * Thin wrapper around `<OrigamChart>` that hard-codes
-	 * `type="radar"` and exposes only radar-relevant props.
-	 * Behaviour, styling, accessibility, and i18n are inherited
-	 * verbatim from `<OrigamChart>`. Use this component when you
-	 * want a type-safe surface; use `<OrigamChart>` directly when
-	 * you need to switch types at runtime.
+	 * `type="radar"` and exposes only radar-relevant
+	 * props. Behaviour, styling, accessibility, and i18n are
+	 * inherited verbatim from `<OrigamChart>`. Use this component
+	 * when you want a type-safe surface; use `<OrigamChart>`
+	 * directly when you need to switch types at runtime.
 	 ********************************************************/
 	defineOptions({
 		name: 'OrigamChartRadar',
 		inheritAttrs: false
 	})
 
-	defineProps<IChartRadarProps>()
+	const props = defineProps<IChartRadarProps>()
 
-	defineEmits<{
-		(e: 'point-click', point: unknown, originalEvent: MouseEvent | KeyboardEvent): void
-		(e: 'legend-click', series: unknown, index: number): void
-		(e: 'series-toggle', series: unknown, visible: boolean): void
-	}>()
+	defineEmits<IChartBaseEmits>()
+
+	/*********************************************************
+	 * Forwarded props — spread every declared prop onto the
+	 * inner `<OrigamChart>` AND inject the hard-coded `type`.
+	 * Extra HTML attributes flow through Vue's `$attrs` mechanism
+	 * because `inheritAttrs: false` defers the attribute fallthrough
+	 * to the wrapped component.
+	 ********************************************************/
+	const forwardedProps = computed(() => ({
+		...props,
+		type: 'radar' as const
+	}))
 </script>

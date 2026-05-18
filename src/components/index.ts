@@ -194,3 +194,13 @@ export * from './Audio'
 export * from './Calendar'
 
 export * from './Chart'
+
+export * from './ChartArea'
+export * from './ChartBar'
+export * from './ChartColumn'
+export * from './ChartDonut'
+export * from './ChartLine'
+export * from './ChartPie'
+export * from './ChartRadar'
+export * from './ChartScatter'
+export * from './ChartTrend'

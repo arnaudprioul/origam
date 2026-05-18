@@ -16,3 +16,15 @@ export interface IInfiniteScrollIntersectProps extends ICommonsComponentProps {
     rootRef: HTMLElement
     margin?: string
 }
+
+/** Emits fired by `<OrigamInfiniteScroll>` — `load` fires when the sentinel
+ *  enters the viewport and the parent should fetch the next page. */
+export interface IInfiniteScrollEmits {
+    (e: 'load', value: { side: TInfiniteScrollSide, done: (status: 'ok' | 'empty' | 'error') => void }): void
+}
+
+/** Emits fired by `<OrigamInfiniteScrollIntersect>` — the lower-level
+ *  sentinel that just bubbles its IntersectionObserver entries. */
+export interface IInfiniteScrollIntersectEmits {
+    (e: 'intersect', value: { isIntersecting: boolean, side: TInfiniteScrollSide }): void
+}

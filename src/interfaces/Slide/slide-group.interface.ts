@@ -1,5 +1,6 @@
 import type {
     IBorderProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDirectionProps,
     IDisplayProps,
@@ -17,3 +18,6 @@ export interface ISlideGroupProps extends ICommonsComponentProps, ITagProps, IDi
     prevIcon?: TIcon
     showArrows?: boolean | string
 }
+
+/** Emits fired by `<OrigamSlideGroup>` — v-model on the active slide. */
+export interface ISlideGroupEmits extends ICommonsComponentEmits {}
