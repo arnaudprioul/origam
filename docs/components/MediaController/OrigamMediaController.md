@@ -416,13 +416,13 @@ control.
 
 ## Related
 
-- [`<OrigamMediaScrubber>`](../MediaScrubber/OrigamMediaScrubber.md) — the
+- `<OrigamMediaScrubber>` — the
   headless slider primitive composed internally for both the timeline and
   the volume cluster.
-- [`<OrigamVideo>`](../Video/OrigamVideo.md) — full video player that
+- `<OrigamVideo>` — full video player that
   composes `<OrigamMediaController>` and injects captions / PiP / fullscreen
   via `#extraControlsRight`.
-- [`<OrigamAudio>`](../Audio/OrigamAudio.md) — full audio player that
+- `<OrigamAudio>` — full audio player that
   composes `<OrigamMediaController>` without the video-specific buttons.
 - `useMediaPlayer` — the headless composable that produces the `state` and
   `methods` objects this component consumes.

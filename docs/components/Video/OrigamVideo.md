@@ -60,12 +60,12 @@ peer extension attaches to it.
 Key consequences for advanced consumers :
 
 - The custom controls bar comes from
-  [`<OrigamMediaController>`](../MediaController/OrigamMediaController.md).
+  `<OrigamMediaController>`.
   Captions / PiP / fullscreen buttons are video-specific — `<OrigamVideo>`
   injects them via the controller's `#extraControlsRight` slot. To replace
   the entire bar (e.g. brand-themed skin), use the `#controls` slot below.
 - The scrubber and the volume slider both run on
-  [`<OrigamMediaScrubber>`](../MediaScrubber/OrigamMediaScrubber.md) — same
+  `<OrigamMediaScrubber>` — same
   pointer-events + keyboard + ARIA contract, no two different drag pipes.
 - Reactive state + imperative methods come from `useVideoPlayer({ videoRef })`,
   which extends the media-agnostic `useMediaPlayer` with fullscreen / PiP
@@ -322,8 +322,8 @@ SSR-rendered video.
 
 ## Related
 
-- [`<OrigamMediaController>`](../MediaController/OrigamMediaController.md) — the controls shell composed inside `<OrigamVideo>`. Captions, PiP, and fullscreen buttons are injected by `<OrigamVideo>` via the `#extraControlsRight` slot.
-- [`<OrigamMediaScrubber>`](../MediaScrubber/OrigamMediaScrubber.md) — the slider used inside the shell for the timeline scrubber and the volume cluster.
-- [`<OrigamAudio>`](../Audio/OrigamAudio.md) — the audio sibling that composes the same shell with an `<audio>` element + optional metadata strip.
+- `<OrigamMediaController>` — the controls shell composed inside `<OrigamVideo>`. Captions, PiP, and fullscreen buttons are injected by `<OrigamVideo>` via the `#extraControlsRight` slot.
+- `<OrigamMediaScrubber>` — the slider used inside the shell for the timeline scrubber and the volume cluster.
+- `<OrigamAudio>` — the audio sibling that composes the same shell with an `<audio>` element + optional metadata strip.
 - `useVideoPlayer()` — composable layered on top of `useMediaPlayer` with video-specific state (fullscreen, PiP).
 - `useMediaPlayer()` — the shared base composable.

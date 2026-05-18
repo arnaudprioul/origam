@@ -355,9 +355,9 @@ Override any of them at the wrapper level (`<origam-audio style="--origam-audio-
 
 ## Related
 
-- [`<OrigamMediaController>`](../MediaController/OrigamMediaController.md) — the controls shell composed by this component.
-- [`<OrigamMediaScrubber>`](../MediaScrubber/OrigamMediaScrubber.md) — the slider used inside the shell for the scrubber and the volume.
-- [`<OrigamVideo>`](../Video/OrigamVideo.md) — the video equivalent, same shell + video-specific extras.
+- `<OrigamMediaController>` — the controls shell composed by this component.
+- `<OrigamMediaScrubber>` — the slider used inside the shell for the scrubber and the volume.
+- `<OrigamVideo>` — the video equivalent, same shell + video-specific extras.
 - `useAudioPlayer()` — composable returning `{ state, methods }` for an `<audio>` ref. Located at `src/composables/Audio/use-audio-player.composable.ts`.
 - `useMediaPlayer()` — the shared base composable. Located at `src/composables/Media/use-media-player.composable.ts`. `useAudioPlayer` is a thin wrapper.
 - `useWaveform()` — headless waveform decoder (fetch → `OfflineAudioContext` → downsample to peaks). Located at `src/composables/Audio/use-waveform.composable.ts`. Exposed standalone for consumers who want the peaks without `<OrigamAudio>`.

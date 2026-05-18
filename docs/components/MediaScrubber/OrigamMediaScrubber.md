@@ -378,13 +378,13 @@ element to retheme the scrubber without forking the component.
 
 ## Related
 
-- [`<OrigamMediaController>`](../MediaController/OrigamMediaController.md) — the full
+- `<OrigamMediaController>` — the full
   controls shell that composes two `<OrigamMediaScrubber>` instances
   (timeline + volume) with the play/mute/config buttons.
-- [`<OrigamVideo>`](../Video/OrigamVideo.md) — full video player that uses
+- `<OrigamVideo>` — full video player that uses
   `<OrigamMediaController>` (and therefore `<OrigamMediaScrubber>`) internally.
-- [`<OrigamAudio>`](../Audio/OrigamAudio.md) — full audio player with the
+- `<OrigamAudio>` — full audio player with the
   same controller wiring as the video player.
-- [`<OrigamSliderField>`](../SliderField/OrigamSliderField.md) — use this
+- `<OrigamSliderField>` — use this
   instead of `<OrigamMediaScrubber>` when you need a labelled form input
   with validation, helper text, and a numeric value display.
