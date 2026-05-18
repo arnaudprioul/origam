@@ -13,20 +13,25 @@
 				class="origam-qr-code__svg-host"
 		/>
 		<span
-				v-if="hasCustomCenter"
+				v-if="hasCenter"
 				class="origam-qr-code__center"
 				aria-hidden="true"
 		>
 			<slot
-					v-if="hasCenterSlot"
 					name="center"
 					:size="centerSize"
-			/>
-			<origam-icon
-					v-else-if="icon"
-					:icon="icon"
-					class="origam-qr-code__center-icon"
-			/>
+			>
+				<origam-avatar
+						v-if="image"
+						:image="image"
+						class="origam-qr-code__center-avatar"
+				/>
+				<origam-icon
+						v-if="icon"
+						:icon="icon"
+						class="origam-qr-code__center-icon"
+				/>
+			</slot>
 		</span>
 	</component>
 </template>
@@ -43,6 +48,7 @@
 		watchEffect
 	} from 'vue'
 
+	import { OrigamAvatar } from '../Avatar'
 	import { OrigamIcon } from '../Icon'
 
 	import {
@@ -57,8 +63,7 @@
 
 	import type {
 		IQrCodeProps,
-		IQrCodeSlots,
-		ISrcObject
+		IQrCodeSlots
 	} from '../../interfaces'
 
 	import type { TRounded } from '../../types'
@@ -88,9 +93,13 @@
 	 *                                  sharp — a QR with a rounded box
 	 *                                  is rarely the user intent.
 	 * - `quietZone`                  → composable `margin`
-	 * - `icon`                       → centred OrigamIcon overlay
-	 * - `image`                      → centred raster/vector image
-	 *                                  passed down to the SVG <image>
+	 * - `icon`                       → centred `<OrigamIcon>` (DOM overlay)
+	 * - `image`                      → centred `<OrigamAvatar>` (DOM overlay)
+	 * - `#center` slot               → overrides BOTH `icon` and `image`
+	 *                                  via slot-default-content pattern.
+	 *                                  When the slot is filled the inner
+	 *                                  Avatar/Icon fallback is discarded
+	 *                                  by Vue automatically.
 	 * - `border`    (IBorderProps)   → wrapper border via useBorder
 	 * - `margin`    (IMarginProps)   → wrapper spacing via useMargin
 	 * - `padding`   (IPaddingProps)  → wrapper spacing via usePadding
@@ -111,14 +120,20 @@
 	defineSlots<IQrCodeSlots>()
 
 	/*********************************************************
-	 * Slots — `center` overrides BOTH `icon` and `image`. The first
-	 * truthy of the three drives the centre overlay (slot > image > icon).
+	 * Slots — the `center` slot uses the **slot-fallback** pattern:
+	 * its default content renders the Avatar (for `image`) and the
+	 * Icon (for `icon`) when no slot is provided by the consumer.
+	 * When the consumer DOES provide `#center`, Vue automatically
+	 * discards the fallback, so the Avatar/Icon and the slot
+	 * content never coexist.
+	 *
+	 * `hasCenter` gates the wrapper element itself: no slot, no
+	 * image, no icon → no overlay paint cost at all.
 	 ********************************************************/
 	const slots = useSlots()
 
-	const hasCenterSlot = computed(() => !!slots.center)
-	const hasCustomCenter = computed(
-		() => hasCenterSlot.value || !!props.icon
+	const hasCenter = computed(
+		() => !!slots.center || !!props.icon || !!props.image
 	)
 
 	/*********************************************************
@@ -137,7 +152,7 @@
 	 *                     we settle on the canonical mid-rung.
 	 *
 	 * `true`  → 0.50 (legacy "fully rounded")
-	 * `false` / `''` / `null` / `undefined` → 0
+	 * `false` / `''` / `null` / `undefined` → 0 (square modules)
 	 * `number` → clamped to [0, 0.5]
 	 * string CSS dimension (e.g. `'4px'`) → 0 (modules speak module
 	 * units, not pixels — pixel input falls back to square modules).
@@ -167,44 +182,31 @@
 	})
 
 	/*********************************************************
-	 * Image overlay → forward to the composable `logo` channel.
-	 *
-	 * Accepts either a raw URL string or an ISrcObject. The
-	 * composable speaks the lower-level `logo` shape; we extract
-	 * `src` here (other ISrcObject keys — srcset, aspectRatio, … —
-	 * don't make sense inside an inline SVG `<image>` element).
-	 ********************************************************/
-	const resolvedImageLogo = computed(() => {
-		if (hasCustomCenter.value) return undefined
-		const img = props.image
-		if (!img) return undefined
-
-		const src = typeof img === 'string' ? img : (img as ISrcObject).src
-		if (!src) return undefined
-
-		return { src }
-	})
-
-	/*********************************************************
 	 * Resolved options snapshot — maps public DS prop names to the
 	 * composable's internal contract (foreground / background /
-	 * margin / cornerRadius / logo).
+	 * margin / cornerRadius).
+	 *
+	 * Note: the `logo` channel of `useQrCode` is intentionally NOT
+	 * used here — `image` and `icon` are rendered as DOM overlays
+	 * on top of the SVG, not as inline `<image>` children of the
+	 * SVG itself. This gives the slot fallback pattern its
+	 * `slot > image+icon` precedence semantics for free.
 	 ********************************************************/
 	const resolvedOptions = computed(() => ({
 		errorCorrectionLevel: props.errorCorrectionLevel,
 		foreground: props.color ?? 'currentColor',
 		background: props.bgColor ?? 'transparent',
 		margin: props.quietZone ?? 4,
-		cornerRadius: resolvedCornerRadius.value,
-		logo: resolvedImageLogo.value
+		cornerRadius: resolvedCornerRadius.value
 	}))
 
 	const { svg, size: matrixSize } = useQrCode(() => props.value, resolvedOptions)
 
 	/*********************************************************
 	 * Centre overlay geometry — the central reserved square is
-	 * ~20% of the matrix module count, mirroring the default logo
-	 * overlay ratio expected by the composable.
+	 * ~20% of the matrix module count, surfaced to the slot so
+	 * consumers can scale their custom paint without re-deriving
+	 * the geometry from the wrapper size.
 	 ********************************************************/
 	const centerSize = computed(() => Math.round(matrixSize.value * 0.2))
 
@@ -212,12 +214,11 @@
 	 * SVG injection — innerHTML mirrors the `<OrigamCode>` approach
 	 * and avoids the `v-html` lint warning. The SVG string itself is
 	 * sanitised inside the composable (XML metacharacters in
-	 * user-controlled `color` / `bgColor` / `image.src` are escaped
-	 * before they reach this element).
+	 * user-controlled `color` / `bgColor` are escaped before they
+	 * reach this element).
 	 *
 	 * The SVG is written into a dedicated `<span>` host so the
-	 * `#center` slot / `icon` overlay siblings survive the
-	 * innerHTML write.
+	 * `#center` overlay sibling survives the innerHTML write.
 	 ********************************************************/
 	const svgHost = ref<HTMLElement | null>(null)
 
@@ -233,7 +234,7 @@
 	 ********************************************************/
 	const resolvedAriaLabel = computed<string>(() => {
 		if (props.ariaLabel) return props.ariaLabel
-		return `QR code for ${props.value}`
+		return `QR code for ${ props.value }`
 	})
 
 	/*********************************************************
@@ -254,7 +255,7 @@
 	 * Class & Style
 	 ********************************************************/
 	const rootClasses = computed(() => [
-		`origam-qr-code--ecc-${props.errorCorrectionLevel.toLowerCase()}`,
+		`origam-qr-code--ecc-${ props.errorCorrectionLevel.toLowerCase() }`,
 		...textColorClasses.value,
 		...backgroundColorClasses.value,
 		...sizeClasses.value,
@@ -315,9 +316,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 4px;
 		pointer-events: none;
 	}
 
+	.origam-qr-code__center-avatar,
 	.origam-qr-code__center-icon {
 		width: 100%;
 		height: 100%;
