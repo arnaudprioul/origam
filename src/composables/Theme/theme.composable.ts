@@ -1,9 +1,9 @@
 import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, readonly, ref, watch } from 'vue'
-import type { TTheme, TThemeResolved } from '../../types'
 
-const STORAGE_KEY = 'origam-theme'
-const ATTR = 'data-theme'
+import { ORIGAM_THEME_ATTR as ATTR, ORIGAM_THEME_STORAGE_KEY as STORAGE_KEY } from '../../consts/Theme/theme.const'
+
+import type { TTheme, TThemeResolved } from '../../types'
 
 /**
  * Module-level singleton — every call to `useTheme()` shares the same Ref so

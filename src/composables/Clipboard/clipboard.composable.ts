@@ -5,19 +5,13 @@ import {
     type Ref
 } from 'vue'
 
+import { CLIPBOARD_DEFAULT_FEEDBACK_DURATION_MS as DEFAULT_FEEDBACK_DURATION_MS } from '../../consts/Clipboard/clipboard.const'
+
 import type { IUseClipboardOptions } from '../../interfaces'
 
-/**
- * Default feedback window (ms) — kept inline rather than imported from
- * a `CLIPBOARD_DEFAULTS` const to avoid breaking
- * `withDefaults(defineProps<…>())` static analysis at the component
- * call-site (cf. CLAUDE.md "withDefaults — inline literals only" rule).
- *
- * Composables are not affected by the compile-time inlining rule, so we
- * could centralise this in `src/consts/`, but keeping the value close
- * to the only function that uses it makes the lifecycle obvious.
- */
-const DEFAULT_FEEDBACK_DURATION_MS = 2000
+// `DEFAULT_FEEDBACK_DURATION_MS` lives in
+// `src/consts/Clipboard/clipboard.const.ts` (exported as
+// `CLIPBOARD_DEFAULT_FEEDBACK_DURATION_MS`).
 
 /**
  * Writes `text` to the system clipboard using the modern

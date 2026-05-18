@@ -6,31 +6,15 @@ import {
     toValue
 } from 'vue'
 
+import {
+    NUMBER_FORMAT_DEFAULT_CURRENCY,
+    NUMBER_FORMAT_FALLBACK_LOCALE,
+    NUMBER_FORMAT_LRU_CAPACITY
+} from '../../consts/NumberFormat/number-format.const'
+
 import type {
     IUseNumberFormatOptions
 } from '../../interfaces'
-
-/**
- * Maximum number of cached `Intl.NumberFormat` instances kept in the
- * module-level LRU. Sixteen covers most realistic UIs (a handful of
- * locales × a handful of format variations) without leaking memory on
- * long-lived storybook-style apps where every prop tweak would otherwise
- * spawn a fresh resolver.
- */
-const NUMBER_FORMAT_LRU_CAPACITY = 16
-
-/**
- * SSR-safe fallback locale used when no `<html lang>` attribute, no
- * `navigator.language`, and no explicit prop are available.
- */
-const NUMBER_FORMAT_FALLBACK_LOCALE = 'en-US'
-
-/**
- * Default currency used when `format === 'currency'` and the consumer
- * omits the `currency` prop. ISO 4217 mandates a code — we pick USD
- * rather than throwing so storybook controls stay forgiving.
- */
-const NUMBER_FORMAT_DEFAULT_CURRENCY = 'USD'
 
 /**
  * Module-level LRU keyed on the serialised resolver options. Reusing a

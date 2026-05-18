@@ -7,7 +7,8 @@ import {
     watch
 } from 'vue'
 
-import { DEFAULT_SHEET_SNAP_POINTS } from '../../consts'
+import { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet-snap-points.const'
+import { SHEET_FAST_FLICK_THRESHOLD as FAST_FLICK_THRESHOLD } from '../../consts/Sheet/sheet-swipe.const'
 import type { ISheetSwipeOptions, ISheetSwipeReturn } from '../../interfaces'
 import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
 
@@ -15,17 +16,10 @@ import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
 // '@/composables'` callsites continue to resolve. The const itself
 // lives in `src/consts/Sheet/sheet-snap-points.const.ts` per the
 // global CLAUDE.md "Constants ONLY in src/consts/" rule.
-export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts'
+export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet-snap-points.const'
 
-/**
- * Velocity threshold (in **pixels per millisecond**) above which the
- * release is treated as a "fast flick" — we then snap one step in the
- * direction of motion regardless of how close the current offset is to
- * any specific snap point. Anything slower falls back to nearest-by-
- * distance snapping. 0.5 px/ms ≈ a 200 px swipe in 400 ms, which feels
- * right for a deliberate up/down flick on a phone.
- */
-const FAST_FLICK_THRESHOLD = 0.5
+// `FAST_FLICK_THRESHOLD` lives in `src/consts/Sheet/sheet-swipe.const.ts`
+// (exported there as `SHEET_FAST_FLICK_THRESHOLD`).
 
 /**
  * Resolve a height token (number → px, string → CSS length) to absolute

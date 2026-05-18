@@ -4,14 +4,9 @@ import {
     watch
 } from 'vue'
 
-import type { IUseWaveformOptions } from '../../interfaces'
+import { WAVEFORM_DEFAULT_BINS } from '../../consts/Audio/audio.const'
 
-/**
- * Inline default — kept local so the SFC compiler does not have to
- * resolve a foreign-module symbol when `<OrigamSound>` mirrors the
- * literal in `withDefaults()`.
- */
-const WAVEFORM_DEFAULT_BINS = 200
+import type { IUseWaveformOptions } from '../../interfaces'
 
 /**
  * Headless waveform composable. Decodes the audio referenced by

@@ -30,6 +30,14 @@ export const SUPPORTED_LANGS: ReadonlyArray<CODE_LANG> = Object.freeze([
 export const CODE_CACHE_MAX_ENTRIES = 64
 
 /**
+ * Shiki themes used by `useCode`. Light + dark map to the GitHub themes
+ * (best contrast / nicest defaults on both modes). Override at the
+ * composable level if you need a different palette per app.
+ */
+export const CODE_LIGHT_THEME = 'github-light'
+export const CODE_DARK_THEME = 'github-dark'
+
+/**
  * Default values used by `OrigamCode`. Centralised so the story / docs /
  * tests pull the same constants and any future drift stays visible.
  */

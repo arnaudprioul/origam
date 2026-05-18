@@ -1,4 +1,6 @@
 import { computed, isRef, ref, Ref } from 'vue'
+
+import { ORIGAM_SHADOW_RUNGS, UTILITY_SHADOW_RUNGS } from '../../consts/Commons/elevation.const'
 import type { IElevationProps } from '../../interfaces'
 import { TColor } from "../../types"
 import { getCurrentInstanceName } from "../../utils"
@@ -20,29 +22,13 @@ function elevationToToken (level: number): string {
     return 'xl'
 }
 
-/**
- * Origam-native shadow rungs the consumer can pass directly via the
- * `elevation` prop instead of a Material 0..24 number — e.g.
- * `<OrigamCard elevation="md">` is equivalent to `elevation="6"` but
- * makes the intent explicit. Lookup is identity (rung name == token
- * suffix). Numeric inputs still flow through `elevationToToken`.
- */
-const ORIGAM_SHADOW_RUNGS = new Set([
-    'none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'
-])
+// `ORIGAM_SHADOW_RUNGS` + `UTILITY_SHADOW_RUNGS` live in
+// `src/consts/Commons/elevation.const.ts`.
+
 function isOrigamRung (value: unknown): value is string {
     return typeof value === 'string' && ORIGAM_SHADOW_RUNGS.has(value)
 }
 
-/**
- * Subset of shadow rungs for which a global utility class exists in
- * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
- * `2xl` and `3xl` are not yet emitted as utilities — they fall back
- * to the inline style path.
- */
-const UTILITY_SHADOW_RUNGS: ReadonlySet<string> = new Set([
-    'none', 'xs', 'sm', 'md', 'lg', 'xl'
-])
 function isUtilityRung (value: unknown): value is string {
     return typeof value === 'string' && UTILITY_SHADOW_RUNGS.has(value)
 }

@@ -5,21 +5,17 @@ import {
     type Ref
 } from 'vue'
 
+import { MEDIA_DEFAULT_VOLUME } from '../../consts/Media/media.const'
+
 import type {
     IMediaPlayerMethods,
     IMediaPlayerState,
     IUseMediaPlayerOptions
 } from '../../interfaces'
 
-/**
- * Inline defaults — kept close to the only function that consumes them
- * so the lifecycle is obvious at a glance. The SFC-level
- * `withDefaults(defineProps<…>())` blocks in `<OrigamVideo>` /
- * `<OrigamAudio>` still inline these literals so the Vue compiler can
- * resolve them statically (cf. CLAUDE.md "withDefaults inline literals
- * only" rule).
- */
-const MEDIA_DEFAULT_VOLUME = 1
+// `MEDIA_DEFAULT_VOLUME` lives in `src/consts/Media/media.const.ts`.
+// SFC `withDefaults(...)` blocks in `<OrigamVideo>` / `<OrigamAudio>`
+// keep the literal inline (cf. CLAUDE.md "inline literals only" rule).
 
 /**
  * Predicate that returns true when the user has explicitly requested

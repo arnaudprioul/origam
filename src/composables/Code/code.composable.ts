@@ -1,7 +1,7 @@
 import type { IUseCodeReturn } from '../../interfaces'
 import type { TCodeLang } from '../../types'
 
-import { CODE_CACHE_MAX_ENTRIES, SUPPORTED_LANGS } from '../../consts'
+import { CODE_CACHE_MAX_ENTRIES, CODE_DARK_THEME as DARK_THEME, CODE_LIGHT_THEME as LIGHT_THEME, SUPPORTED_LANGS } from '../../consts/Code/code.const'
 import { CODE_LANG } from '../../enums'
 
 /**
@@ -38,9 +38,6 @@ type ShikiHighlighter = {
         defaultColor?: false | string
     }) => string
 }
-
-const LIGHT_THEME = 'github-light'
-const DARK_THEME = 'github-dark'
 
 let _highlighterPromise: Promise<ShikiHighlighter> | null = null
 let _highlighterReady = false

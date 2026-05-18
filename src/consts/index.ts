@@ -79,3 +79,14 @@ export * from './Theme/theme.const'
 
 export * from './Media/media.const'
 export * from './Video/video.const'
+export * from './Watermark/watermark.const'
+export * from './QrCode/qr-code.const'
+export * from './NumberFormat/number-format.const'
+
+export * from './Chart/chart.const'
+export * from './Audio/audio.const'
+export * from './Sheet/sheet-swipe.const'
+export * from './Clipboard/clipboard.const'
+
+export * from './CssSupport/css-support.const'
+export * from './Commons/elevation.const'

@@ -8,34 +8,22 @@ import {
     toValue
 } from 'vue'
 
+import {
+    WATERMARK_DATA_ATTR,
+    WATERMARK_DEFAULT_ANGLE_DEG,
+    WATERMARK_DEFAULT_COLOR,
+    WATERMARK_DEFAULT_FONT_FAMILY,
+    WATERMARK_DEFAULT_FONT_SIZE_PX,
+    WATERMARK_DEFAULT_FONT_WEIGHT,
+    WATERMARK_DEFAULT_GAP_PX,
+    WATERMARK_DEFAULT_OPACITY,
+    WATERMARK_DEFAULT_POINTER_EVENTS,
+    WATERMARK_DEFAULT_Z_INDEX
+} from '../../consts/Watermark/watermark.const'
+
 import type {
     IUseWatermarkOptions
 } from '../../interfaces'
-
-/**
- * Default tile geometry — chosen to roughly match the spacing of
- * confidential-document watermarks in print previews (one glyph every
- * ~12 cm at standard zoom). Inlined here, not exported as a constant,
- * because the component still has to obey the
- * `withDefaults() — inline literals only` rule (cf. CLAUDE.md).
- */
-const WATERMARK_DEFAULT_GAP_PX = 120
-const WATERMARK_DEFAULT_FONT_SIZE_PX = 16
-const WATERMARK_DEFAULT_OPACITY = 0.1
-const WATERMARK_DEFAULT_ANGLE_DEG = -30
-const WATERMARK_DEFAULT_COLOR = 'currentColor'
-const WATERMARK_DEFAULT_FONT_FAMILY = 'inherit'
-const WATERMARK_DEFAULT_FONT_WEIGHT: number | string = 400
-const WATERMARK_DEFAULT_Z_INDEX = 1
-const WATERMARK_DEFAULT_POINTER_EVENTS: 'none' | 'auto' = 'none'
-
-/**
- * Marker attribute applied to every layer created via
- * `install()` / `<OrigamWatermark>`. Used by the anti-tamper
- * MutationObserver to detect "is this MY layer that just got removed?"
- * and re-inject it.
- */
-const WATERMARK_DATA_ATTR = 'data-origam-watermark'
 
 interface IResolvedOptions {
     text: string

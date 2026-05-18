@@ -1,5 +1,7 @@
 import { computed, onMounted, readonly, ref, type ComputedRef, type Ref } from 'vue'
 
+import { FEATURE_QUERIES } from '../../consts/CssSupport/css-support.const'
+
 // ────────────────────────────────────────────────────────────────────────────
 // CSS feature detection — `useCssSupport`
 // ────────────────────────────────────────────────────────────────────────────
@@ -45,29 +47,9 @@ import { computed, onMounted, readonly, ref, type ComputedRef, type Ref } from '
 const _cache = new Map<string, boolean>()
 let _initialized = false
 
-const FEATURE_QUERIES = {
-    grid:                 'display: grid',
-    subgrid:              'grid-template-columns: subgrid',
-    flexGap:              'gap: 1px',
-    containerQueries:     '(container-type: inline-size)',
-    has:                  'selector(:has(*))',
-    aspectRatio:          'aspect-ratio: 1',
-    colorMix:             'color: color-mix(in srgb, red, blue)',
-    accentColor:          'accent-color: red',
-    minMaxClamp:          'width: min(10px, 20px)',
-    mathFunctions:        'width: calc(min(10px, 20px) + max(5px, 8px))',
-    anchorPositioning:    'anchor-name: --foo',
-    scrollDrivenAnims:    'animation-timeline: scroll()',
-    viewTransitions:      'view-transition-name: foo',
-    nestedSelectors:      'selector(& > a)',
-    individualTransforms: 'translate: 1px 1px',
-    logicalProperties:    'margin-inline: 1px',
-    backdropFilter:       'backdrop-filter: blur(1px)',
-    fieldSizing:          'field-sizing: content',
-    textWrapBalance:      'text-wrap: balance',
-    contentVisibility:    'content-visibility: auto',
-    masonry:              'grid-template-rows: masonry'
-} as const satisfies Record<string, string>
+// `FEATURE_QUERIES` lives in `src/consts/CssSupport/css-support.const.ts`.
+// The matrix is intentionally an `as const satisfies` literal so the
+// `TCssFeatureName` derivation below stays narrow.
 
 export type TCssFeatureName = keyof typeof FEATURE_QUERIES
 export type TCssSupportMap = Readonly<Record<TCssFeatureName, boolean>>

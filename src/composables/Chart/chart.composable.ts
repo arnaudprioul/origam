@@ -31,6 +31,8 @@ import {
     type TPathPoint
 } from '../../utils/Chart/path.util'
 
+import { CHART_Y_TICK_COUNT } from '../../consts/Chart/chart.const'
+
 /**
  * Default palette cycled through when a series doesn't pin its own
  * `color`. Mirrors the eight `TIntent` values declared in
@@ -48,12 +50,7 @@ const DEFAULT_PALETTE: Array<TIntent> = [
     'neutral'
 ]
 
-/**
- * How many Y-axis ticks the chart draws by default. The composable
- * snaps the data range to a "nice" multiple of this — five rows
- * fits most narrow chart heights without crowding.
- */
-const Y_TICK_COUNT = 5
+// `Y_TICK_COUNT` (CHART_Y_TICK_COUNT) lives in `src/consts/Chart/chart.const.ts`.
 
 /**
  * Resolve a colour string to a usable CSS value. Intent strings
@@ -261,7 +258,7 @@ export const useChart = (options: IUseChartOptions) => {
      */
     const ticks: ComputedRef<{ x: Array<IChartTick>, y: Array<IChartTick> }> = computed(() => {
         const { min, max } = yRange.value
-        const step = niceStep(max - min, Y_TICK_COUNT)
+        const step = niceStep(max - min, CHART_Y_TICK_COUNT)
         const niceMin = Math.floor(min / step) * step
         const niceMax = Math.ceil(max / step) * step
 
