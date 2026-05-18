@@ -2,6 +2,7 @@ import type {
     IBorderProps,
     IBgColorProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IGroupProps,
     IMarginProps,
@@ -16,3 +17,6 @@ export interface IChipGroupProps extends ICommonsComponentProps, ITagProps, IGro
     filter?: boolean
     valueComparator?: (a: any, b: any) => boolean
 }
+
+/** Emits fired by `<OrigamChipGroup>` — v-model on the active chip set. */
+export interface IChipGroupEmits extends ICommonsComponentEmits {}

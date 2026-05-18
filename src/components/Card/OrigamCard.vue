@@ -162,7 +162,7 @@
 
 	import { DENSITY, PROGRESS_TYPE } from '../../enums'
 
-	import type { ICardProps } from '../../interfaces'
+	import type { ICardEmits, ICardProps } from '../../interfaces'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
@@ -174,7 +174,7 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
 
-	defineEmits(['click:append', 'click:prepend', 'update:active', 'update:hover'])
+	defineEmits<ICardEmits>()
 
 	const {filterProps} = useProps<ICardProps>(props)
 

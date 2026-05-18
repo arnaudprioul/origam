@@ -201,7 +201,7 @@
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IDataTableHeadersCellMobileProps, IInternalListItem } from '../../interfaces'
+	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileProps, IInternalListItem } from '../../interfaces'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 
@@ -211,7 +211,7 @@
 
 	const props = withDefaults(defineProps<IDataTableHeadersCellMobileProps>(), {})
 
-	const emits = defineEmits(['click:clear', 'click:prepend', 'click:append'])
+	const emits = defineEmits<IDataTableHeadersCellMobileEmits>()
 
 	const {filterProps} = useProps<IDataTableHeadersCellMobileProps>(props)
 

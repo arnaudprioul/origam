@@ -145,7 +145,7 @@
 
 	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
 
-	import type { IChipProps } from '../../interfaces'
+	import type { IChipEmits, IChipProps } from '../../interfaces'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
@@ -178,7 +178,7 @@
 	// chips passed via the default slot.
 	const props = useDefaults(_props)
 
-	const emits = defineEmits(['click:close', 'update:modelValue', 'group:selected', 'click', 'click:prepend', 'click:append'])
+	const emits = defineEmits<IChipEmits>()
 
 	const {filterProps} = useProps<IChipProps>(props)
 

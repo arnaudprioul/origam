@@ -37,3 +37,12 @@ export interface IItemProps {
     returnObject?: boolean
     valueComparator?: typeof deepEqual
 }
+
+/** Emits fired by `<OrigamList>` — selection / open state propagation and
+ *  user-driven click events on items. */
+export interface IListEmits {
+    (e: 'update:selected', value: Array<unknown>): void
+    (e: 'update:opened', value: Array<unknown>): void
+    (e: 'click:open', value: { id: unknown, value: boolean, path: Array<unknown> }): void
+    (e: 'click:select', value: { id: unknown, value: boolean, path: Array<unknown> }): void
+}

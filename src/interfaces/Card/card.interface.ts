@@ -1,5 +1,7 @@
 import type {
+    IActiveEmits,
     IActiveProps,
+    IAdjacentEmits,
     IAdjacentProps,
     IBorderProps,
     IBgColorProps,
@@ -8,6 +10,7 @@ import type {
     IDensityProps,
     IDimensionProps,
     IElevationProps,
+    IHoverEmits,
     ILinkProps,
     ILoaderProps,
     ILocationProps,
@@ -44,3 +47,7 @@ export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderPr
     title?: string | number
     type?: TCardType
 }
+
+/** Emits fired by `<OrigamCard>` — prepend/append clicks + active/hover
+ *  state propagation. */
+export interface ICardEmits extends IAdjacentEmits, IActiveEmits, IHoverEmits {}

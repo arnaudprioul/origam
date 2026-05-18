@@ -97,7 +97,7 @@
 
 	import { MDI_ICONS, SIZES } from '../../enums'
 
-	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowProps } from '../../interfaces'
+	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowEmits, IDataTableRowProps } from '../../interfaces'
 
 	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
 
@@ -111,7 +111,7 @@
 
 	const props = withDefaults(defineProps<IDataTableRowProps>(), {})
 
-	const emits = defineEmits(['expand', 'select'])
+	const emits = defineEmits<IDataTableRowEmits>()
 
 	const {filterProps} = useProps<IDataTableRowProps>(props)
 

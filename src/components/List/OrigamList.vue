@@ -108,7 +108,7 @@
 
 	import { DENSITY, KEYBOARD_VALUES, LINES, OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums'
 
-	import type { IListProps } from '../../interfaces'
+	import type { IListEmits, IListProps } from '../../interfaces'
 
 	import type { TFocusLocation } from '../../types'
 
@@ -133,7 +133,7 @@
 		density: DENSITY.DEFAULT
 	})
 
-	defineEmits(['update:selected', 'update:opened', 'click:open', 'click:select'])
+	defineEmits<IListEmits>()
 
 	const {filterProps} = useProps<IListProps>(props)
 

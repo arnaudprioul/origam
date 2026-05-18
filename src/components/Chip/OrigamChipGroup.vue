@@ -26,7 +26,7 @@
 
 	import { DIRECTION, MDI_ICONS } from '../../enums'
 
-	import type { IChipGroupProps } from '../../interfaces'
+	import type { IChipGroupEmits, IChipGroupProps } from '../../interfaces'
 
 	import type { TOrigamSlideGroup } from "../../types"
 
@@ -47,7 +47,7 @@
 		selectedClass: 'origam-chip--selected'
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IChipGroupEmits>()
 
 	const {filterProps} = useProps<IChipGroupProps>(props)
 

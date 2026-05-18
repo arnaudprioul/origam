@@ -133,7 +133,7 @@
 
 	import { KEYBOARD_VALUES } from '../../enums'
 
-	import type { IListItemProps } from '../../interfaces'
+	import type { IListItemEmits, IListItemProps } from '../../interfaces'
 
 	import type { TListItemSlot } from '../../types'
 
@@ -149,7 +149,7 @@
 	// injected by a parent `OrigamList`.
 	const props = useDefaults(_props)
 
-	const emits = defineEmits(['click', 'click:append', 'click:prepend'])
+	const emits = defineEmits<IListItemEmits>()
 
 	const {filterProps} = useProps<IListItemProps>(props)
 

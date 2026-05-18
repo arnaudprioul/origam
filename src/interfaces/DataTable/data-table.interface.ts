@@ -1,5 +1,6 @@
 import type { UnwrapRef } from 'vue'
 import type {
+    ICommonsComponentEmits,
     IDataTableExpandProps,
     IDataTableFooterProps,
     IDataTableGroup,
@@ -51,4 +52,16 @@ export interface IDataTableSlotProps<T> {
     groupedItems: Array<IDataTableItem<T> | IDataTableGroup<IDataTableItem<T>>>
     columns: Array<IInternalDataTableHeader>
     headers: Array<Array<IInternalDataTableHeader>>
+}
+
+/** Emits fired by `<OrigamDataTable>` — pagination, sorting, grouping,
+ *  expansion, selection, and the v-model that ties them together. */
+export interface IDataTableEmits extends ICommonsComponentEmits {
+    (e: 'update:page', value: number): void
+    (e: 'update:itemsPerPage', value: number): void
+    (e: 'update:sortBy', value: UnwrapRef<IDataTableProvideSort['sortBy']>): void
+    (e: 'update:options', value: Record<string, unknown>): void
+    (e: 'update:groupBy', value: UnwrapRef<IDataTableProvideGroup['groupBy']>): void
+    (e: 'update:expanded', value: ReadonlySet<unknown>): void
+    (e: 'update:currentItems', value: Array<IDataTableItem>): void
 }

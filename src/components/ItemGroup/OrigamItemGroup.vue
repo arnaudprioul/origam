@@ -28,7 +28,7 @@
 
 	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
 
-	import type { IItemGroupProps } from '../../interfaces'
+	import type { IItemGroupEmits, IItemGroupProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -39,7 +39,7 @@
 		selectedClass: 'origam-item--selected'
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IItemGroupEmits>()
 
 	const {filterProps} = useProps<IItemGroupProps>(props)
 

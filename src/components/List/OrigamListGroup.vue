@@ -61,7 +61,7 @@
 
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IListActivatorProps, IListGroupProps } from '../../interfaces'
+	import type { IListActivatorProps, IListGroupEmits, IListGroupProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -73,7 +73,7 @@
 		collapseIcon: MDI_ICONS.CHEVRON_UP
 	})
 
-	const emits = defineEmits(['click:activator'])
+	const emits = defineEmits<IListGroupEmits>()
 
 
 	const {isHover, hoverState} = useHover(props)

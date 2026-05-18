@@ -1,8 +1,10 @@
 import type {
     IActiveProps,
+    IAdjacentEmits,
     IAdjacentProps,
     IBgColorProps,
     IBorderProps,
+    IClickEmits,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -31,3 +33,6 @@ export interface IListItemProps extends IBorderProps, ICommonsComponentProps, ID
     title?: string | number
     value?: any
 }
+
+/** Emits fired by `<OrigamListItem>` — generic click + prepend/append slot clicks. */
+export interface IListItemEmits extends IClickEmits, IAdjacentEmits {}

@@ -1,4 +1,5 @@
 import type {
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IGroupItemProps,
     IGroupProps,
@@ -31,3 +32,6 @@ export interface IItemGroupProps extends ICommonsComponentProps, ITagProps, IGro
 export interface IItemGroupItemProps extends ICommonsComponentProps, ITagProps, IGroupItemProps {
     tag?: string
 }
+
+/** Emits fired by `<OrigamItemGroup>` — v-model on the active item set. */
+export interface IItemGroupEmits extends ICommonsComponentEmits {}

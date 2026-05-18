@@ -141,6 +141,7 @@
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
 	import type {
+		IDataTableEmits,
 		IDataTableGroup,
 		IDataTableGroupableItem,
 		IDataTableProps,
@@ -181,7 +182,7 @@
 		sortDescIcon: MDI_ICONS.ARROW_DOWN
 	})
 
-	defineEmits(['update:modelValue', 'update:page', 'update:itemsPerPage', 'update:sortBy', 'update:options', 'update:groupBy', 'update:expanded', 'update:currentItems'])
+	defineEmits<IDataTableEmits>()
 
 	const {filterProps} = useProps<IDataTableProps>(props)
 

@@ -1,6 +1,8 @@
 import type { ComputedRef, Ref, UnwrapRef } from 'vue'
 import { ALIGN } from '../../enums'
 import type {
+    IAdjacentEmits,
+    IAdjacentInnerEmits,
     IColorProps,
     ICommonsComponentProps,
     IDataTableItem,
@@ -34,6 +36,12 @@ export interface IDataTableHeadersProps extends ICommonsComponentProps, IColorPr
 export interface IDataTableHeadersCellMobileProps extends ICommonsComponentProps, IHeaderCellProps, IColorProps {
     columns: Array<IInternalDataTableHeader>
     colspan?: number
+}
+
+/** Emits fired by `<OrigamDataTableHeadersCellMobile>` — clear button +
+ *  prepend / append slot clicks. */
+export interface IDataTableHeadersCellMobileEmits extends IAdjacentEmits {
+    (e: 'click:clear', event: MouseEvent): void
 }
 
 export interface IDataTableHeadersCellProps extends ICommonsComponentProps, IColorProps, IHeaderCellProps {
