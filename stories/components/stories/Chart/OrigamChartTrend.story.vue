@@ -294,4 +294,4 @@
 	}
 </style>
 
-<docs lang="md" src="@docs/components/ChartTrend/OrigamChartTrend.md"/>
+<docs lang="md" src="@docs/components/Chart/OrigamChartTrend.md"/>

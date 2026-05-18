@@ -1,15 +1,15 @@
 <template>
 	<Story
 			group="components"
-			title="Chart/OrigamChartDonut"
+			title="Chart/OrigamChartColumn"
 	>
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IChartDonutProps>({
+				:init-state="() => useStoryInitState<IChartColumnProps>({
 					series: makeDemoSeries(),
 					categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
 					height: 320,
-					title: 'Donut chart',
+					title: 'Column chart',
 					subtitle: 'origam demo data',
 					showLegend: true,
 					legendPosition: 'bottom',
@@ -21,11 +21,11 @@
 			<template #default="{ state }">
 				<div
 						class="story-shell"
-						data-cy="chart-donut-default"
+						data-cy="chart-column-default"
 				>
-					<origam-chart-donut
+					<origam-chart-column
 							v-bind="state"
-							data-cy="chart-donut-default-host"
+							data-cy="chart-column-default-host"
 					/>
 				</div>
 			</template>
@@ -46,7 +46,7 @@
 		</Variant>
 
 		<Variant title="Prop — legendPosition (top / right / bottom / left)">
-			<div class="story-shell" data-cy="chart-donut-legend">
+			<div class="story-shell" data-cy="chart-column-legend">
 				<p class="hint">
 					Anchor of the legend block. The plotting area shrinks
 					accordingly via flex layout.
@@ -57,98 +57,98 @@
 						class="story-col"
 				>
 					<strong>legendPosition = {{ pos }}</strong>
-					<origam-chart-donut
+					<origam-chart-column
 							:series="makeDemoSeries()"
 							:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 							:height="220"
 							:legend-position="pos"
-							:data-cy="`chart-donut-legend-${pos}`"
+							:data-cy="`chart-column-legend-${pos}`"
 					/>
 				</div>
 			</div>
 		</Variant>
 
 		<Variant title="Prop — animated (on / off)">
-			<div class="story-shell" data-cy="chart-donut-animated">
+			<div class="story-shell" data-cy="chart-column-animated">
 				<p class="hint">
 					Toggle the entrance animation. Respects
 					<code>prefers-reduced-motion</code>.
 				</p>
 				<div class="story-col">
 					<strong>animated = true</strong>
-					<origam-chart-donut
+					<origam-chart-column
 							:series="makeDemoSeries()"
 							:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 							:height="240"
 							:animated="true"
-							data-cy="chart-donut-animated-on"
+							data-cy="chart-column-animated-on"
 					/>
 				</div>
 				<div class="story-col">
 					<strong>animated = false</strong>
-					<origam-chart-donut
+					<origam-chart-column
 							:series="makeDemoSeries()"
 							:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 							:height="240"
 							:animated="false"
-							data-cy="chart-donut-animated-off"
+							data-cy="chart-column-animated-off"
 					/>
 				</div>
 			</div>
 		</Variant>
 
 		<Variant title="Slot — title (custom title block)">
-			<div class="story-shell" data-cy="chart-donut-slot-title">
+			<div class="story-shell" data-cy="chart-column-slot-title">
 				<p class="hint">
 					Override the title block — the default renders
 					`title` + `subtitle` text. Slot has no bindings.
 				</p>
-				<origam-chart-donut
+				<origam-chart-column
 						:series="makeDemoSeries()"
 						:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 						:height="280"
-						data-cy="chart-donut-slot-title-host"
+						data-cy="chart-column-slot-title-host"
 				>
 					<template #title>
 						<div class="custom-title">
 							<span class="custom-title__badge">LIVE</span>
-							<strong class="custom-title__text">Donut — custom slot title</strong>
+							<strong class="custom-title__text">Column — custom slot title</strong>
 						</div>
 					</template>
-				</origam-chart-donut>
+				</origam-chart-column>
 			</div>
 		</Variant>
 
 		<Variant title="Slot — empty (no series state)">
-			<div class="story-shell" data-cy="chart-donut-slot-empty">
+			<div class="story-shell" data-cy="chart-column-slot-empty">
 				<p class="hint">
 					Renders when `series` is an empty array — useful for
 					loading states or filtered-out datasets.
 				</p>
-				<origam-chart-donut
+				<origam-chart-column
 						:series="[]"
 						:height="200"
-						data-cy="chart-donut-slot-empty-host"
+						data-cy="chart-column-slot-empty-host"
 				>
 					<template #empty>
 						<div class="custom-empty">No data to display</div>
 					</template>
-				</origam-chart-donut>
+				</origam-chart-column>
 			</div>
 		</Variant>
 
 		<Variant title="Emit — point-click / legend-click / series-toggle (counters)">
-			<div class="story-shell" data-cy="chart-donut-emits">
+			<div class="story-shell" data-cy="chart-column-emits">
 				<p class="hint">
 					Click a data point, click a legend entry, or
 					toggle a series via the legend to see the counters
 					increment.
 				</p>
-				<origam-chart-donut
+				<origam-chart-column
 						:series="makeDemoSeries()"
 						:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 						:height="280"
-						data-cy="chart-donut-emits-host"
+						data-cy="chart-column-emits-host"
 						@point-click="counters.pointClick++"
 						@legend-click="counters.legendClick++"
 						@series-toggle="counters.seriesToggle++"
@@ -156,15 +156,15 @@
 				<dl class="story-counters">
 					<div>
 						<dt>point-click</dt>
-						<dd data-cy="chart-donut-emit-count-point">{{ counters.pointClick }}</dd>
+						<dd data-cy="chart-column-emit-count-point">{{ counters.pointClick }}</dd>
 					</div>
 					<div>
 						<dt>legend-click</dt>
-						<dd data-cy="chart-donut-emit-count-legend">{{ counters.legendClick }}</dd>
+						<dd data-cy="chart-column-emit-count-legend">{{ counters.legendClick }}</dd>
 					</div>
 					<div>
 						<dt>series-toggle</dt>
-						<dd data-cy="chart-donut-emit-count-toggle">{{ counters.seriesToggle }}</dd>
+						<dd data-cy="chart-column-emit-count-toggle">{{ counters.seriesToggle }}</dd>
 					</div>
 				</dl>
 			</div>
@@ -178,9 +178,9 @@
 >
 	import { ref } from 'vue'
 
-	import { OrigamChartDonut } from '@origam/components'
+	import { OrigamChartColumn } from '@origam/components'
 
-	import type { IChartDonutProps } from '@origam/interfaces'
+	import type { IChartColumnProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -294,4 +294,4 @@
 	}
 </style>
 
-<docs lang="md" src="@docs/components/ChartDonut/OrigamChartDonut.md"/>
+<docs lang="md" src="@docs/components/Chart/OrigamChartColumn.md"/>

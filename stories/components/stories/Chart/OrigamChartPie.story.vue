@@ -1,15 +1,15 @@
 <template>
 	<Story
 			group="components"
-			title="Chart/OrigamChartRadar"
+			title="Chart/OrigamChartPie"
 	>
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IChartRadarProps>({
+				:init-state="() => useStoryInitState<IChartPieProps>({
 					series: makeDemoSeries(),
 					categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
 					height: 320,
-					title: 'Radar chart',
+					title: 'Pie chart',
 					subtitle: 'origam demo data',
 					showLegend: true,
 					legendPosition: 'bottom',
@@ -21,11 +21,11 @@
 			<template #default="{ state }">
 				<div
 						class="story-shell"
-						data-cy="chart-radar-default"
+						data-cy="chart-pie-default"
 				>
-					<origam-chart-radar
+					<origam-chart-pie
 							v-bind="state"
-							data-cy="chart-radar-default-host"
+							data-cy="chart-pie-default-host"
 					/>
 				</div>
 			</template>
@@ -46,7 +46,7 @@
 		</Variant>
 
 		<Variant title="Prop — legendPosition (top / right / bottom / left)">
-			<div class="story-shell" data-cy="chart-radar-legend">
+			<div class="story-shell" data-cy="chart-pie-legend">
 				<p class="hint">
 					Anchor of the legend block. The plotting area shrinks
 					accordingly via flex layout.
@@ -57,98 +57,98 @@
 						class="story-col"
 				>
 					<strong>legendPosition = {{ pos }}</strong>
-					<origam-chart-radar
+					<origam-chart-pie
 							:series="makeDemoSeries()"
 							:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 							:height="220"
 							:legend-position="pos"
-							:data-cy="`chart-radar-legend-${pos}`"
+							:data-cy="`chart-pie-legend-${pos}`"
 					/>
 				</div>
 			</div>
 		</Variant>
 
 		<Variant title="Prop — animated (on / off)">
-			<div class="story-shell" data-cy="chart-radar-animated">
+			<div class="story-shell" data-cy="chart-pie-animated">
 				<p class="hint">
 					Toggle the entrance animation. Respects
 					<code>prefers-reduced-motion</code>.
 				</p>
 				<div class="story-col">
 					<strong>animated = true</strong>
-					<origam-chart-radar
+					<origam-chart-pie
 							:series="makeDemoSeries()"
 							:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 							:height="240"
 							:animated="true"
-							data-cy="chart-radar-animated-on"
+							data-cy="chart-pie-animated-on"
 					/>
 				</div>
 				<div class="story-col">
 					<strong>animated = false</strong>
-					<origam-chart-radar
+					<origam-chart-pie
 							:series="makeDemoSeries()"
 							:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 							:height="240"
 							:animated="false"
-							data-cy="chart-radar-animated-off"
+							data-cy="chart-pie-animated-off"
 					/>
 				</div>
 			</div>
 		</Variant>
 
 		<Variant title="Slot — title (custom title block)">
-			<div class="story-shell" data-cy="chart-radar-slot-title">
+			<div class="story-shell" data-cy="chart-pie-slot-title">
 				<p class="hint">
 					Override the title block — the default renders
 					`title` + `subtitle` text. Slot has no bindings.
 				</p>
-				<origam-chart-radar
+				<origam-chart-pie
 						:series="makeDemoSeries()"
 						:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 						:height="280"
-						data-cy="chart-radar-slot-title-host"
+						data-cy="chart-pie-slot-title-host"
 				>
 					<template #title>
 						<div class="custom-title">
 							<span class="custom-title__badge">LIVE</span>
-							<strong class="custom-title__text">Radar — custom slot title</strong>
+							<strong class="custom-title__text">Pie — custom slot title</strong>
 						</div>
 					</template>
-				</origam-chart-radar>
+				</origam-chart-pie>
 			</div>
 		</Variant>
 
 		<Variant title="Slot — empty (no series state)">
-			<div class="story-shell" data-cy="chart-radar-slot-empty">
+			<div class="story-shell" data-cy="chart-pie-slot-empty">
 				<p class="hint">
 					Renders when `series` is an empty array — useful for
 					loading states or filtered-out datasets.
 				</p>
-				<origam-chart-radar
+				<origam-chart-pie
 						:series="[]"
 						:height="200"
-						data-cy="chart-radar-slot-empty-host"
+						data-cy="chart-pie-slot-empty-host"
 				>
 					<template #empty>
 						<div class="custom-empty">No data to display</div>
 					</template>
-				</origam-chart-radar>
+				</origam-chart-pie>
 			</div>
 		</Variant>
 
 		<Variant title="Emit — point-click / legend-click / series-toggle (counters)">
-			<div class="story-shell" data-cy="chart-radar-emits">
+			<div class="story-shell" data-cy="chart-pie-emits">
 				<p class="hint">
 					Click a data point, click a legend entry, or
 					toggle a series via the legend to see the counters
 					increment.
 				</p>
-				<origam-chart-radar
+				<origam-chart-pie
 						:series="makeDemoSeries()"
 						:categories="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']"
 						:height="280"
-						data-cy="chart-radar-emits-host"
+						data-cy="chart-pie-emits-host"
 						@point-click="counters.pointClick++"
 						@legend-click="counters.legendClick++"
 						@series-toggle="counters.seriesToggle++"
@@ -156,15 +156,15 @@
 				<dl class="story-counters">
 					<div>
 						<dt>point-click</dt>
-						<dd data-cy="chart-radar-emit-count-point">{{ counters.pointClick }}</dd>
+						<dd data-cy="chart-pie-emit-count-point">{{ counters.pointClick }}</dd>
 					</div>
 					<div>
 						<dt>legend-click</dt>
-						<dd data-cy="chart-radar-emit-count-legend">{{ counters.legendClick }}</dd>
+						<dd data-cy="chart-pie-emit-count-legend">{{ counters.legendClick }}</dd>
 					</div>
 					<div>
 						<dt>series-toggle</dt>
-						<dd data-cy="chart-radar-emit-count-toggle">{{ counters.seriesToggle }}</dd>
+						<dd data-cy="chart-pie-emit-count-toggle">{{ counters.seriesToggle }}</dd>
 					</div>
 				</dl>
 			</div>
@@ -178,9 +178,9 @@
 >
 	import { ref } from 'vue'
 
-	import { OrigamChartRadar } from '@origam/components'
+	import { OrigamChartPie } from '@origam/components'
 
-	import type { IChartRadarProps } from '@origam/interfaces'
+	import type { IChartPieProps } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -294,4 +294,4 @@
 	}
 </style>
 
-<docs lang="md" src="@docs/components/ChartRadar/OrigamChartRadar.md"/>
+<docs lang="md" src="@docs/components/Chart/OrigamChartPie.md"/>

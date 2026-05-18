@@ -32,15 +32,15 @@ import { defineComponent, h } from 'vue'
 
 import { mount } from '@vue/test-utils'
 
-import { OrigamChartArea } from '../ChartArea'
-import { OrigamChartBar } from '../ChartBar'
-import { OrigamChartColumn } from '../ChartColumn'
-import { OrigamChartDonut } from '../ChartDonut'
-import { OrigamChartLine } from '../ChartLine'
-import { OrigamChartPie } from '../ChartPie'
-import { OrigamChartRadar } from '../ChartRadar'
-import { OrigamChartScatter } from '../ChartScatter'
-import { OrigamChartTrend } from '../ChartTrend'
+import { OrigamChartArea } from '.'
+import { OrigamChartBar } from '.'
+import { OrigamChartColumn } from '.'
+import { OrigamChartDonut } from '.'
+import { OrigamChartLine } from '.'
+import { OrigamChartPie } from '.'
+import { OrigamChartRadar } from '.'
+import { OrigamChartScatter } from '.'
+import { OrigamChartTrend } from '.'
 
 /**
  * Stub for the inner `<OrigamChart>`. Declares every prop the
