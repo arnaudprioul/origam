@@ -676,33 +676,84 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — config (custom cog menu)">
+		<Variant title="Prop — showCenterControls (center play/skip overlay)">
 			<div
 					class="story-shell"
-					data-cy="video-slot-config"
+					data-cy="video-show-center-controls"
 			>
 				<p class="hint">
-					The `#config` slot fully replaces the default drill-down menu of the
-					cog button. The slot receives the runtime state, the imperative
-					methods, and a `setPlaybackRate(rate)` / `closeMenu()` helper pair.
+					Toggles the centred play/pause + skip-backward + skip-forward
+					overlay that appears on hover and while paused. With
+					<code>showCenterControls=false</code>, only the YouTube-style chrome
+					bar at the bottom is exposed.
+				</p>
+				<div class="story-col">
+					<strong>showCenterControls = true (default)</strong>
+					<origam-video
+							:src="BIG_BUCK_BUNNY"
+							:poster="BUNNY_POSTER"
+							:show-center-controls="true"
+							class="story-video"
+							data-cy="video-center-on"
+					/>
+				</div>
+				<div class="story-col">
+					<strong>showCenterControls = false</strong>
+					<origam-video
+							:src="BIG_BUCK_BUNNY"
+							:poster="BUNNY_POSTER"
+							:show-center-controls="false"
+							class="story-video"
+							data-cy="video-center-off"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — controls (full toolbar override)">
+			<div
+					class="story-shell"
+					data-cy="video-slot-controls-override"
+			>
+				<p class="hint">
+					The <code>#controls</code> slot fully replaces the chrome bar AND the
+					built-in config menu. Use it when you want to ship your own
+					skin or your own cog popover. The slot receives the
+					<code>IVideoScopedSlotBindings</code> object — state snapshot +
+					imperative <code>methods</code>. Since the MediaController extraction
+					(commit <code>2cbb9618</code>) this is the canonical way to
+					customise the cog menu; the legacy <code>#config</code> slot was
+					removed.
 				</p>
 				<origam-video
 						:src="BIG_BUCK_BUNNY"
 						:poster="BUNNY_POSTER"
 						class="story-video"
-						data-cy="video-slot-config-player"
+						data-cy="video-slot-controls-override-player"
 				>
-					<template #config="{ setPlaybackRate, closeMenu, playbackRate }">
-						<div class="story-custom-config">
+					<template #controls="{ playing, currentTime, duration, methods, playbackRate }">
+						<div class="story-custom-controls">
 							<button
-									v-for="rate in [0.75, 1, 1.5]"
-									:key="rate"
 									type="button"
-									class="story-custom-config__item"
-									:class="{ 'story-custom-config__item--active': Math.abs(playbackRate - rate) < 0.01 }"
-									:data-cy="`video-slot-config-rate-${rate}`"
-									@click="setPlaybackRate(rate); closeMenu()"
-							>{{ rate === 1 ? 'Normal' : `${rate}×` }}</button>
+									class="story-custom-controls__btn"
+									:aria-label="playing ? 'Pause' : 'Play'"
+									data-cy="video-custom-toggle"
+									@click="methods.toggle()"
+							>{{ playing ? '❚❚' : '▶' }}</button>
+							<span class="story-custom-controls__time">
+								{{ Math.round(currentTime) }}s / {{ Math.round(duration) }}s
+							</span>
+							<div class="story-custom-controls__rates">
+								<button
+										v-for="rate in [0.75, 1, 1.5]"
+										:key="rate"
+										type="button"
+										class="story-custom-controls__rate"
+										:class="{ 'story-custom-controls__rate--active': Math.abs(playbackRate - rate) < 0.01 }"
+										:data-cy="`video-custom-rate-${rate}`"
+										@click="methods.setPlaybackRate(rate)"
+								>{{ rate === 1 ? 'Normal' : `${rate}×` }}</button>
+							</div>
 						</div>
 					</template>
 				</origam-video>
@@ -1038,6 +1089,26 @@
 		font-family: ui-monospace, monospace;
 	}
 
+	.story-custom-controls__rates {
+		display: flex;
+		gap: 4px;
+	}
+
+	.story-custom-controls__rate {
+		background: rgba(255, 255, 255, 0.15);
+		color: #ffffff;
+		border: 0;
+		padding: 2px 8px;
+		border-radius: 4px;
+		cursor: pointer;
+		font: 0.8rem/1.2 ui-monospace, monospace;
+	}
+
+	.story-custom-controls__rate--active {
+		background: rgba(255, 255, 255, 0.4);
+		font-weight: 700;
+	}
+
 	.story-custom-poster {
 		position: absolute;
 		inset: 0;
@@ -1083,32 +1154,6 @@
 
 	.story-custom-error small {
 		opacity: 0.85;
-	}
-
-	.story-custom-config {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-		padding: 4px 0;
-		min-width: 140px;
-	}
-
-	.story-custom-config__item {
-		all: unset;
-		padding: 6px 12px;
-		font: 0.8125rem/1.2 system-ui, sans-serif;
-		color: #ffffff;
-		cursor: pointer;
-	}
-
-	.story-custom-config__item:hover,
-	.story-custom-config__item:focus-visible {
-		background-color: rgba(255, 255, 255, 0.12);
-	}
-
-	.story-custom-config__item--active {
-		font-weight: 600;
-		color: var(--origam-color__action--primary---bg, #60a5fa);
 	}
 
 	.story-counters {

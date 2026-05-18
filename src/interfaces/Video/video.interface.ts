@@ -44,16 +44,15 @@ export interface IVideoScopedSlotBindings {
     loading: boolean
     /** Set to the most recent media error (if any), else null. */
     error: MediaError | Error | null
+    /** Current playback rate (1 = normal). Mirrors the `update:playbackRate` v-model. */
+    playbackRate: number
+    /** True when at least one Remote Playback target is available on the network. */
+    remoteAvailable: boolean
+    /** Connection lifecycle from the Remote Playback API:
+     *  `'disconnected' | 'connecting' | 'connected'`. */
+    remoteState: 'disconnected' | 'connecting' | 'connected'
     /** Imperative actions — wired to the underlying `<video>` element. */
-    methods: {
-        play: () => Promise<void>
-        pause: () => void
-        seek: (seconds: number) => void
-        setVolume: (value: number) => void
-        toggleMute: () => void
-        toggleFullscreen: () => Promise<void>
-        togglePip: () => Promise<void>
-    }
+    methods: IVideoPlayerMethods
 }
 
 /**
