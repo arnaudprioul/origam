@@ -50,6 +50,9 @@ When NOT to use:
 ┌────────────────────────────────────────────────────────────┐
 │ [cover]  Title text                       ← metadata strip │
 │          Artist name                                       │
+│          Album name (optional)                             │
+├────────────────────────────────────────────────────────────┤
+│ ░░▒▒▓▓████▓▓▒▒░░  waveform canvas (optional)               │
 ├────────────────────────────────────────────────────────────┤
 │ <OrigamMediaController>                   ← controls shell │
 │   ◀──────── scrubber row ─────────────────────────────────▶│
@@ -57,10 +60,12 @@ When NOT to use:
 └────────────────────────────────────────────────────────────┘
 ```
 
-The metadata strip is optional — when `title`, `artist`, and `cover` are
-all unset (and no `#metadata` slot is provided), only the controls shell
-renders. The strip is a `flex-row` of the cover image + a `flex-column` of
-title / artist text; the controls shell sits below at the wrapper's gap.
+The metadata strip is optional — when `title`, `artist`, `album`, and
+`cover` are all unset (and no `#metadata` slot is provided), only the
+controls shell renders. The strip is a `flex-row` of the cover image + a
+`flex-column` of title / artist / album text. The optional waveform layer
+sits between the strip and the controls (only rendered when
+`waveform="true"` or `"auto"` with `OfflineAudioContext` support).
 
 ## Props
 
@@ -70,7 +75,10 @@ title / artist text; the controls shell sits below at the wrapper's gap.
 | `tracks`              | `Array<IVideoTrack>`                                                  | `[]`           | Optional captions / chapters tracks attached to the `<audio>`. Reuses the video track shape (`kind / src / srclang / label / default`).  |
 | `title`               | `string`                                                              | `undefined`    | Optional title rendered above the controls (e.g. *"Podcast Episode 42"*).                                                                |
 | `artist`              | `string`                                                              | `undefined`    | Optional artist / author rendered next to the title.                                                                                     |
+| `album`               | `string`                                                              | `undefined`    | Optional album name rendered below the artist (ported from `ISoundMetadata.album`). Renders only when set — no placeholder.              |
 | `cover`               | `string \| ISrcObject`                                                | `undefined`    | Optional cover image. Accepts a URL string or an `ISrcObject` for srcset / lazy-src support. Rendered via `<OrigamImg>`.                  |
+| `waveform`            | `boolean \| 'auto'`                                                    | `false`        | Display a Web-Audio-decoded peak waveform above the controls. `true` forces it; `'auto'` enables only when the browser supports `OfflineAudioContext`. Decoded via `useWaveform` (downsampled to 200 peaks, channel 0). Click anywhere on the canvas to seek. |
+| `waveformColor`       | `string`                                                              | `'currentColor'` | Stroke colour for the *played* portion of the waveform bars. Inherits the typographic theme by default. Can also be overridden via `--origam-audio__waveform---color-played` on the wrapper. |
 | `autoplay`            | `boolean`                                                             | `false`        | Starts playback on `loadedmetadata`. The component force-enables `muted` if the consumer asks for `autoplay` without an explicit `muted`. Suppressed when the user prefers reduced motion. |
 | `muted`               | `boolean`                                                             | `false`        | Starts muted.                                                                                                                            |
 | `loop`                | `boolean`                                                             | `false`        | Restarts at `0` when `ended` fires.                                                                                                      |
@@ -101,6 +109,7 @@ the matching DS transverse interfaces).
 | `error`                | `Event \| MediaError \| Error`   | The element or the source fails to load / decode. The composable normalises the payload to a `MediaError` when possible. |
 | `update:playbackRate`  | `number`                         | The listener picks a new rate from the config menu. The component does NOT echo the consumer's prop changes — only user actions. |
 | `download`             | `string`                         | The listener clicks the *"Download"* row. Payload is the resolved file URL.                                 |
+| `waveform`             | `Array<number>`                  | Fires once per waveform recomputation (typically on `src` change). Payload is the downsampled peaks array (0..1 amplitudes). Useful for analytics, custom overlays, or forwarding to an external visualiser. |
 
 ## Slots
 
@@ -109,6 +118,7 @@ the matching DS transverse interfaces).
 | `#metadata`  | —                                     | Replace the entire title/artist/cover strip with arbitrary HTML.                                             |
 | `#cover`     | —                                     | Replace just the cover image / placeholder slot.                                                             |
 | `#title`     | —                                     | Replace just the title element (keeps the artist line if `artist` is set).                                   |
+| `#waveform`  | `{ peaks: Array<number>; currentTime: number; duration: number }` | Replace the default `<canvas>` painter with arbitrary markup (SVG, WebGL, custom DIV bars). The bindings give you the current peaks + playhead context so you can paint your own visualiser. |
 | `#controls`  | `IAudioScopedSlotBindings` (state + methods + flags) | Replace the entire controls shell. Receives the same `state` / `methods` you'd get from `useAudioPlayer`, plus toggles for download, cast, etc. |
 | `#loading`   | —                                     | Overlay rendered while the media is loading.                                                                 |
 | `#error`     | `{ error: MediaError \| Error }`      | Overlay rendered when an error occurred. Default renders an inline message + alert icon.                     |
@@ -162,6 +172,69 @@ The browser walks the array top-down and picks the first source whose
 
 Useful when the platform's accessibility shortcuts matter more than a
 unified visual identity. The custom shell is not mounted.
+
+### Podcast with waveform
+
+```vue
+<origam-audio
+    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+    title="Episode 42 — How Vue 3 SFC compiler resolves withDefaults"
+    artist="origam podcast"
+    album="Season 3, May 2026"
+    cover="https://picsum.photos/seed/audio/120"
+    :waveform="true"
+/>
+```
+
+The waveform fetches + decodes the audio through `OfflineAudioContext`,
+downsamples it to 200 peaks, and paints a clickable canvas above the
+controls. Click anywhere on the canvas to seek to that position.
+
+### `waveform="auto"` (browser-feature-detected)
+
+```vue
+<origam-audio :src="src" waveform="auto" />
+```
+
+Enables the waveform only when the runtime supports `OfflineAudioContext`.
+SSR + jsdom fall through to no-waveform without warnings.
+
+### Custom `#waveform` slot — DIV bars instead of canvas
+
+```vue
+<origam-audio :src="src" :waveform="true">
+    <template #waveform="{ peaks, currentTime, duration }">
+        <div class="bars">
+            <div
+                v-for="(peak, i) in peaks"
+                :key="i"
+                class="bars__bar"
+                :class="{
+                    'bars__bar--played': duration > 0 && (i / peaks.length) <= (currentTime / duration)
+                }"
+                :style="{ height: Math.max(2, peak * 100) + '%' }"
+            />
+        </div>
+    </template>
+</origam-audio>
+```
+
+The default `<canvas>` painter is replaced by your markup. Bindings :
+`peaks` (0..1 amplitudes), `currentTime` (seconds), `duration` (seconds).
+
+### Forward waveform peaks to an external visualiser
+
+```vue
+<origam-audio
+    :src="src"
+    :waveform="true"
+    @waveform="onPeaks"
+/>
+```
+
+The `waveform` event fires once per recomputation (typically when `src`
+changes). Use it to feed a global analytics pipeline, persist the peaks
+for offline rendering, or pipe them into a sibling component.
 
 ### Downloadable + Remote Playback (Cast / AirPlay)
 
@@ -268,6 +341,12 @@ No `origam.audio.*` keys are consumed directly; everything goes through
 | `--origam-audio__title---color`                | `inherit`                                                        | Title colour.                                     |
 | `--origam-audio__artist---font`                | `0.85rem/1.3 inherit`                                            | Artist typography.                                |
 | `--origam-audio__artist---color`               | `var(--origam-color__text---secondary, inherit)`                 | Artist colour.                                    |
+| `--origam-audio__album---font`                 | `0.8rem/1.3 inherit`                                             | Album typography.                                 |
+| `--origam-audio__album---color`                | `var(--origam-color__text---tertiary, …--secondary, inherit)`    | Album colour (falls back to secondary).           |
+| `--origam-audio__waveform---height`            | `56px`                                                           | Waveform canvas height.                           |
+| `--origam-audio__waveform---color`             | `currentColor`                                                   | Default waveform stroke (inherits from wrapper).  |
+| `--origam-audio__waveform---color-played`      | `var(--origam-color__accent---base, currentColor)`               | Played bars colour. Override for branded themes.  |
+| `--origam-audio__waveform---color-unplayed`    | `color-mix(in srgb, currentColor 35%, transparent)`              | Unplayed bars colour.                             |
 | `--origam-audio__loading---font-size`          | `0.875rem`                                                       | Loading overlay text size.                        |
 | `--origam-audio__loading---color`              | `inherit`                                                        | Loading overlay colour.                           |
 | `--origam-audio--error---*`                    | (see component source)                                           | Error overlay tokens — background, colour, font, radius, padding, gap, icon size. |
@@ -281,3 +360,4 @@ Override any of them at the wrapper level (`<origam-audio style="--origam-audio-
 - [`<OrigamVideo>`](../Video/OrigamVideo.md) — the video equivalent, same shell + video-specific extras.
 - `useAudioPlayer()` — composable returning `{ state, methods }` for an `<audio>` ref. Located at `src/composables/Audio/use-audio-player.composable.ts`.
 - `useMediaPlayer()` — the shared base composable. Located at `src/composables/Media/use-media-player.composable.ts`. `useAudioPlayer` is a thin wrapper.
+- `useWaveform()` — headless waveform decoder (fetch → `OfflineAudioContext` → downsample to peaks). Located at `src/composables/Audio/use-waveform.composable.ts`. Exposed standalone for consumers who want the peaks without `<OrigamAudio>`.
