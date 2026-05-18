@@ -1,5 +1,6 @@
 import type {
     IActiveProps,
+    IAdjacentEmits,
     IAdjacentProps,
     IBgColorProps,
     IBorderProps,
@@ -25,3 +26,6 @@ export interface IExpansionPanelHeaderProps extends IColorProps, IBgColorProps, 
     readonly?: boolean
     title?: string
 }
+
+/** Emits fired by `<OrigamExpansionPanelHeader>` — prepend/append icon clicks. */
+export interface IExpansionPanelHeaderEmits extends IAdjacentEmits {}

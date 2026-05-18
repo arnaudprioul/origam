@@ -52,7 +52,7 @@
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { ITooltipProps } from '../../interfaces'
+	import type { ITooltipEmits, ITooltipProps } from '../../interfaces'
 
 	import type { TAnchor, TOrigamOverlay } from '../../types'
 
@@ -77,7 +77,7 @@
 		transition: false
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<ITooltipEmits>()
 
 	const {filterProps} = useProps<ITooltipProps>(props)
 

@@ -2,6 +2,7 @@ import type {
     IActivatorProps,
     IBgColorProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDimensionProps,
     ILazyProps,
@@ -16,3 +17,6 @@ export interface ITooltipProps extends ICommonsComponentProps, IOverlayProps, IC
     id?: string
     text?: string
 }
+
+/** Emits fired by `<OrigamTooltip>` — v-model on the open state. */
+export interface ITooltipEmits extends ICommonsComponentEmits {}

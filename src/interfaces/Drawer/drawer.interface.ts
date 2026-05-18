@@ -66,3 +66,8 @@ export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorder
      */
     clipped?: boolean | null
 }
+
+/** Emits fired by `<OrigamDrawer>` — v-model on the rail collapsed state. */
+export interface IDrawerEmits {
+    (e: 'update:rail', value: boolean): void
+}

@@ -136,7 +136,7 @@
 	import { IN_BROWSER } from '../../consts'
 	import { vIntersect } from '../../directives'
 	import { MDI_ICONS } from '../../enums'
-	import type { IDialogProps } from '../../interfaces'
+	import type { IDialogEmits, IDialogProps } from '../../interfaces'
 	import type { TOrigamCard, TOrigamOverlay, TTransitionProps } from '../../types'
 	import { focusableChildren, forwardRefs } from '../../utils'
 
@@ -166,7 +166,7 @@
 		openOnClick: true
 	})
 
-	const emits = defineEmits(['update:modelValue', 'isRead', 'click:outside'])
+	const emits = defineEmits<IDialogEmits>()
 
 	const {filterProps} = useProps<IDialogProps>(props)
 

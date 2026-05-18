@@ -106,7 +106,7 @@
 
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IExpansionPanelHeaderProps } from '../../interfaces'
+	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -120,7 +120,7 @@
 		collapseIcon: MDI_ICONS.CHEVRON_UP
 	})
 
-	defineEmits(['click:append', 'click:prepend'])
+	defineEmits<IExpansionPanelHeaderEmits>()
 
 	const {filterProps} = useProps<IExpansionPanelHeaderProps>(props)
 

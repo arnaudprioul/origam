@@ -23,7 +23,7 @@
 	useProps,
 	useStyle
 } from '../../composables'
-	import type { IOverlayScrimProps } from '../../interfaces'
+	import type { IOverlayScrimEmits, IOverlayScrimProps } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
 
 	/*********************************************************
@@ -36,7 +36,7 @@
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
-	const emits = defineEmits(['click', 'mouseenter', 'mouseleave'])
+	const emits = defineEmits<IOverlayScrimEmits>()
 
 	const {filterProps} = useProps<IOverlayScrimProps>(props)
 

@@ -79,7 +79,7 @@
 
 	import { BLOCK, EASING, KEYBOARD_VALUES, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { IOverlayProps } from '../../interfaces'
+	import type { IOverlayEmits, IOverlayProps } from '../../interfaces'
 
 	import type { TOrigamOverlayScrim, TTransitionProps } from "../../types"
 
@@ -125,7 +125,7 @@
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
-	const emits = defineEmits(['click:outside', 'update:modelValue', 'afterEnter', 'afterLeave', 'keydown'])
+	const emits = defineEmits<IOverlayEmits>()
 
 	const {filterProps} = useProps<IOverlayProps>(props)
 

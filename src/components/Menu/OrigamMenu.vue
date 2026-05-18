@@ -95,7 +95,7 @@
 
 	import { INLINE, KEYBOARD_VALUES, LOCATION_STRATEGIES, MDI_ICONS, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { IItemProps, IMenuProps } from '../../interfaces'
+	import type { IItemProps, IMenuEmits, IMenuProps } from '../../interfaces'
 
 	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 
@@ -120,7 +120,7 @@
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps
 	})
 
-	defineEmits(['update:modelValue', 'contextmenu'])
+	defineEmits<IMenuEmits>()
 
 	const {filterProps} = useProps<IMenuProps>(props)
 

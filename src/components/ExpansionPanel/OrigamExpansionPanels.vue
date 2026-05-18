@@ -132,7 +132,7 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import type { IExpansionPanelsProps } from '../../interfaces'
+	import type { IExpansionPanelsEmits, IExpansionPanelsProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -145,7 +145,7 @@
 		tag: 'div'
 	})
 
-	defineEmits(['update:modelValue'])
+	defineEmits<IExpansionPanelsEmits>()
 
 	const {filterProps} = useProps<IExpansionPanelsProps>(props)
 

@@ -3,6 +3,7 @@ import type {
     IBgColorProps,
     IBorderProps,
     IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     IDensityProps,
     IElevationProps,
@@ -29,3 +30,6 @@ export interface IExpansionPanelsProps extends IColorProps, IBgColorProps, ITagP
     collapseIcon?: TIcon
     hideActions?: boolean
 }
+
+/** Emits fired by `<OrigamExpansionPanels>` — v-model on the active panel set. */
+export interface IExpansionPanelsEmits extends ICommonsComponentEmits {}

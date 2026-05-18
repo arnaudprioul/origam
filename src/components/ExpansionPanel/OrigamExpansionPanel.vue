@@ -121,7 +121,7 @@
 
 	import { PROGRESS_TYPE } from '../../enums'
 
-	import type { IExpansionPanelProps } from '../../interfaces'
+	import type { IExpansionPanelEmits, IExpansionPanelProps } from '../../interfaces'
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 
@@ -140,7 +140,7 @@
 	// injected by a parent `OrigamExpansionPanels`.
 	const props = useDefaults(_props)
 
-	defineEmits(['group:selected'])
+	defineEmits<IExpansionPanelEmits>()
 
 	const {filterProps} = useProps<IExpansionPanelProps>(props)
 

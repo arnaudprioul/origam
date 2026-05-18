@@ -129,7 +129,7 @@
 
 	import { JUSTIFY } from '../../enums'
 
-	import type { IDialogConfirmationProps } from '../../interfaces'
+	import type { IDialogConfirmationEmits, IDialogConfirmationProps } from '../../interfaces'
 
 	import type { TOrigamDialog } from "../../types"
 
@@ -143,7 +143,7 @@
 		cancellable: true
 	})
 
-	const emits = defineEmits(['validate', 'cancel'])
+	const emits = defineEmits<IDialogConfirmationEmits>()
 
 	const {filterProps} = useProps<IDialogConfirmationProps>(props)
 

@@ -99,7 +99,7 @@
 
 	import { INLINE } from '../../enums'
 
-	import type { IDrawerProps } from '../../interfaces'
+	import type { IDrawerEmits, IDrawerProps } from '../../interfaces'
 
 	import { int } from "../../utils"
 
@@ -139,7 +139,7 @@
 		transition: 'origam-transition--drawer'
 	})
 
-	const emits = defineEmits(['update:rail'])
+	const emits = defineEmits<IDrawerEmits>()
 
 	const {filterProps} = useProps<IDrawerProps>(props)
 
