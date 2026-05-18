@@ -6,7 +6,7 @@
 import { nextTick, ref } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useWaveform } from './waveform.composable'
+import { useWaveform } from './use-waveform.composable'
 
 interface FakeAudioBuffer {
     length: number
