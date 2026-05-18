@@ -298,6 +298,128 @@
 				</dl>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — waveform (true vs false)">
+			<div class="story-shell" data-cy="audio-waveform-cmp">
+				<p class="hint">
+					Pass <code>:waveform="true"</code> to render a Web-Audio-decoded
+					peak visualisation between the metadata strip and the
+					controls. Click anywhere on the canvas to seek to that
+					position. Pass <code>'auto'</code> to enable only when the
+					browser supports <code>OfflineAudioContext</code>.
+				</p>
+				<div class="story-col">
+					<strong>waveform = false (default)</strong>
+					<origam-audio
+							:src="WAVEFORM_SRC"
+							title="Without waveform"
+							artist="origam"
+							data-cy="audio-waveform-off"
+					/>
+				</div>
+				<div class="story-col">
+					<strong>waveform = true</strong>
+					<origam-audio
+							:src="WAVEFORM_SRC"
+							title="With waveform"
+							artist="origam"
+							:waveform="true"
+							data-cy="audio-waveform-on"
+					/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — #waveform (custom DIV bars)">
+			<div class="story-shell" data-cy="audio-waveform-slot">
+				<p class="hint">
+					Override the default canvas painter with arbitrary markup.
+					Bindings: <code>{ peaks, currentTime, duration }</code>.
+				</p>
+				<origam-audio
+						:src="WAVEFORM_SRC"
+						:waveform="true"
+						title="Custom waveform painter"
+						data-cy="audio-waveform-custom"
+				>
+					<template #waveform="{ peaks, currentTime, duration }">
+						<div class="custom-waveform" data-cy="audio-waveform-bars">
+							<div
+									v-for="(peak, i) in peaks"
+									:key="i"
+									class="custom-waveform__bar"
+									:class="{ 'custom-waveform__bar--played': duration > 0 && (i / peaks.length) <= (currentTime / duration) }"
+									:style="{ height: Math.max(2, peak * 100) + '%' }"
+							/>
+						</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — waveform peaks (logs 200 values)">
+			<div class="story-shell" data-cy="audio-waveform-emit">
+				<p class="hint">
+					Fires once per recomputation (typically on
+					<code>src</code> change). Payload is the downsampled
+					peaks array (0..1 amplitudes) — handy for analytics or
+					forwarding to an external visualiser.
+				</p>
+				<origam-audio
+						:src="WAVEFORM_SRC"
+						:waveform="true"
+						title="Listen to the waveform emit"
+						data-cy="audio-waveform-emit-target"
+						@waveform="onWaveform"
+				/>
+				<div class="story-log" data-cy="audio-waveform-log">
+					<strong>Last peaks emitted ({{ waveformLogCount }} recomputations) :</strong>
+					<code v-if="waveformLastPeaks.length === 0">— waiting for first decode —</code>
+					<code v-else>[{{ waveformLastPeaks.slice(0, 10).map(v => v.toFixed(2)).join(', ') }}, … +{{ waveformLastPeaks.length - 10 }} more]</code>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — #cover (rotating vinyl)">
+			<div class="story-shell" data-cy="audio-cover-slot">
+				<p class="hint">
+					Replace the default cover image with arbitrary markup.
+					Combine with <code>state.playing.value</code> in the slot
+					template for play-state-aware visuals — here a vinyl
+					that spins while playing.
+				</p>
+				<origam-audio
+						:src="WAVEFORM_SRC"
+						title="Custom cover via slot"
+						artist="origam"
+						album="Slot demos"
+						data-cy="audio-cover-vinyl"
+				>
+					<template #cover>
+						<div class="custom-cover">
+							<div class="custom-cover__vinyl"></div>
+						</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — album (full metadata strip)">
+			<div class="story-shell" data-cy="audio-album">
+				<p class="hint">
+					Add a third metadata line below the artist. Renders only
+					when set — no placeholder.
+				</p>
+				<origam-audio
+						:src="WAVEFORM_SRC"
+						title="Episode 42"
+						artist="origam podcast"
+						album="Season 3, May 2026"
+						cover="https://picsum.photos/seed/audio-album/120"
+						data-cy="audio-album-target"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -315,6 +437,15 @@
 
 	const SOUND_HELIX_TRACK = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
 	const PICSUM_COVER = 'https://picsum.photos/seed/origam-audio/256/256'
+	const WAVEFORM_SRC = SOUND_HELIX_TRACK
+
+	const waveformLastPeaks = ref<Array<number>>([])
+	const waveformLogCount = ref(0)
+
+	function onWaveform (peaks: Array<number>): void {
+		waveformLastPeaks.value = peaks
+		waveformLogCount.value += 1
+	}
 
 	const MULTI_SOURCES: Array<IAudioSource> = [
 		{ src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', type: 'audio/mpeg' },
@@ -457,5 +588,51 @@
 	.story-counters dd {
 		margin: 0;
 		font: 600 1rem/1.2 system-ui, sans-serif;
+	}
+
+	.custom-waveform {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		width: 100%;
+		height: 56px;
+	}
+
+	.custom-waveform__bar {
+		flex: 1 1 auto;
+		min-width: 2px;
+		background: color-mix(in srgb, currentColor 30%, transparent);
+		border-radius: 1px;
+	}
+
+	.custom-waveform__bar--played {
+		background: var(--origam-color__accent---base, currentColor);
+	}
+
+	.custom-cover {
+		width: var(--origam-audio__cover---size, 64px);
+		height: var(--origam-audio__cover---size, 64px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: radial-gradient(circle at center, #1f2937 0%, #0f172a 100%);
+		border-radius: 50%;
+		overflow: hidden;
+	}
+
+	.custom-cover__vinyl {
+		width: 80%;
+		height: 80%;
+		background:
+			radial-gradient(circle at center, #f3f4f6 8%, transparent 9%),
+			radial-gradient(circle at center, #1f2937 12%, transparent 13%),
+			repeating-radial-gradient(circle at center, #111827 0 1px, #1f2937 1px 3px);
+		border-radius: 50%;
+		animation: vinyl-spin 4s linear infinite;
+	}
+
+	@keyframes vinyl-spin {
+		from { transform: rotate(0deg); }
+		to   { transform: rotate(360deg); }
 	}
 </style>
