@@ -948,7 +948,14 @@
 
 	import { useStoryInitState } from '@stories/composables'
 
-	const BIG_BUCK_BUNNY = 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4'
+	// Google Cloud Storage variant — same Big Buck Bunny payload but
+	// the bucket sets `Access-Control-Allow-Origin: *`, so the
+	// force-download blob path in `<OrigamMediaController>` works
+	// without `Content-Disposition: attachment` on the server side.
+	// (The `download.blender.org` mirror is CORS-blocked → the
+	// download button would fall back to a native navigation that
+	// opens the browser's built-in player.)
+	const BIG_BUCK_BUNNY = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
 	const BUNNY_POSTER = 'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg'
 
 	const MULTI_SOURCES: Array<IVideoSource> = [

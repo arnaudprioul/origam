@@ -173,7 +173,7 @@
 									rel="noopener"
 									class="origam-media-controller__config-row origam-media-controller__config-row--action"
 									data-cy="origam-media-controller-config-download"
-									@click="onDownloadClick"
+									@click="onDownloadClick($event)"
 							>
 								<span
 										class="origam-media-controller__config-row-icon"
@@ -538,23 +538,97 @@
 	}
 
 	/*********************************************************
-	 * Download — the menu row is a native `<a href :download>` link,
-	 * so the browser fires the download natively from the user gesture.
-	 * `onDownloadClick` only closes the menu and surfaces the
-	 * `download` emit for analytics / parent forwarding — the
-	 * navigation / save dialog is handled by the browser itself.
+	 * Download click — two paths :
 	 *
-	 * Cross-origin nuance: if the video URL is on a third-party CDN
-	 * the browser ignores the `download` attribute (HTML spec) and
-	 * navigates to the URL instead. Same-origin / `data:` / `blob:`
-	 * URLs honour `download` and trigger a real "Save as…" flow.
-	 * Self-hosted videos therefore work out of the box; cross-origin
-	 * downloads require the CDN to send `Content-Disposition: attachment`.
+	 *  1. SAME-origin / `data:` / `blob:` URL → let the native
+	 *     `<a href :download>` do its thing. The browser routes the
+	 *     click straight to "Save as…" because the download attribute
+	 *     is honoured on same-origin links.
+	 *
+	 *  2. CROSS-origin URL → the spec says the browser MUST IGNORE
+	 *     the download attribute on cross-origin anchors (anti-phishing
+	 *     measure). Letting the native click through would navigate to
+	 *     the file and open it in the browser's built-in media player.
+	 *     We intercept with `preventDefault()`, fetch the bytes via
+	 *     CORS-aware `fetch`, materialise into a `blob:` URL (which IS
+	 *     same-origin), then trigger a programmatic anchor click. We're
+	 *     still inside the click handler's transient-activation window
+	 *     so the browser counts this as user-initiated and the
+	 *     "Save as…" dialog fires.
+	 *
+	 *     If the CDN refuses CORS (no `Access-Control-Allow-Origin`),
+	 *     the fetch throws → we fall back to the original navigation
+	 *     (`window.location.assign`) so the user still SEES the file
+	 *     instead of a silent failure. Document this caveat — the only
+	 *     remediations are server-side : ship `Access-Control-Allow-
+	 *     Origin: *` AND/OR `Content-Disposition: attachment`.
 	 ********************************************************/
-	function onDownloadClick (): void {
+	const isSameOriginOrLocal = (raw: string): boolean => {
+		if (raw.startsWith('data:') || raw.startsWith('blob:')) return true
+		try {
+			const u = new URL(raw, window.location.href)
+			return u.origin === window.location.origin
+		} catch {
+			return true
+		}
+	}
+
+	async function forceDownloadViaBlob (url: string, filename: string): Promise<boolean> {
+		try {
+			const response = await fetch(url, { mode: 'cors', credentials: 'omit' })
+			if (!response.ok) return false
+			const blob = await response.blob()
+			const blobUrl = URL.createObjectURL(blob)
+			const a = document.createElement('a')
+			a.href = blobUrl
+			a.download = filename
+			a.rel = 'noopener'
+			a.style.display = 'none'
+			document.body.appendChild(a)
+			a.click()
+			document.body.removeChild(a)
+			// Defer revoke so the browser has time to stream the bytes
+			// into the user's downloads folder.
+			setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000)
+			return true
+		} catch {
+			return false
+		}
+	}
+
+	function onDownloadClick (event: MouseEvent): void {
 		if (!canDownload.value) return
-		emit('download')
+		const url = props.downloadUrl as string | null
+		if (!url) return
+		const filename = props.downloadFilename ?? resolvedDownloadFilename.value
+
 		closeMenu()
+		// Emit synchronously so consumers / unit tests see the event
+		// regardless of which path actually triggers the file save.
+		emit('download')
+
+		// Same-origin (or data:/blob:) → native <a download> handles it
+		// natively. Nothing else to do — the browser takes over once
+		// the click bubbles through.
+		if (isSameOriginOrLocal(url)) return
+
+		// Cross-origin → intercept BEFORE the native navigation, fetch
+		// as blob, then trigger a programmatic download inside the
+		// same click's transient activation window.
+		event.preventDefault()
+		void forceDownloadViaBlob(url, filename).then((ok) => {
+			if (ok) return
+			// CORS refused (or network down) → fall back to navigating
+			// to the URL so the user still gets the video. Worst case
+			// is the browser's built-in media viewer opens — same as
+			// if `preventDefault` had never run — but with a console
+			// warning so the integrator knows their CDN needs CORS or
+			// `Content-Disposition: attachment`.
+			console.warn(
+				`[origam] Could not force-download "${ url }". The CDN is cross-origin and refuses CORS, so the browser falls back to opening the file inline. Configure the CDN with \`Access-Control-Allow-Origin: *\` (or \`Content-Disposition: attachment\`) to enable real downloads.`
+			)
+			window.location.assign(url)
+		})
 	}
 
 	const resolvedDownloadFilename = computed<string>(() => {
