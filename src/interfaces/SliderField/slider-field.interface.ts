@@ -1,5 +1,3 @@
-import { useSteps } from '../../composables'
-
 import type {
     IBorderProps,
     IColorProps,
@@ -15,22 +13,14 @@ import type {
     IPaddingProps,
     IRippleProps,
     IRoundedProps,
-    ISliderFieldThumbProps,
     ISliderFieldTrackProps
 } from '../../interfaces'
 
 import type {
     TAlways,
-    TColor,
-    TDirectionBoth,
-    TOrigamSliderFieldThumb,
-    TOrigamSliderFieldTrack,
     TSize,
-    TSliderData,
-    TTick
+    TSliderFieldVariant
 } from '../../types'
-
-import { Ref } from 'vue'
 
 export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps {
     disabled?: boolean
@@ -41,15 +31,18 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
     max?: number | string
     min?: number | string
     step?: number | string
-    thumbProps?: ISliderFieldThumbProps
+    /**
+     * Visual props forwarded to the track sub-component (rail / fill / ticks).
+     * Color / size / rounded only — pointer math is owned by the native
+     * `<input type="range">`.
+     */
     trackProps?: ISliderFieldTrackProps
     reverse?: boolean
     modelValue?: number | string | Array<number> | Array<string>
     range?: boolean
 
-    // TODO - need rework to use tick interface
     showTicks?: TAlways
-    ticks?: Array<number> | string
+    ticks?: Array<number> | Record<string, string>
     tickSize?: TSize | number
     /**
      * Compact "inset" style — the draggable thumb sits **inside** the
@@ -60,65 +53,72 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
      * @default false
      */
     inset?: boolean
-}
 
-export interface ISliderFieldProvide {
-    activeThumbRef: Ref<HTMLElement | undefined>
-    decimals: Ref<number>
-    disabled: Ref<boolean | null | undefined>
-    readonly: Ref<boolean | null | undefined>
-    error: Ref<boolean | null | undefined>
-    elevation: Ref<string | number | undefined>
-    rounded: Ref<string | number | boolean | null | undefined>
-    border: Ref<string | number | boolean | TDirectionBoth | Array<TDirectionBoth> | null | undefined>
-    ripple: Ref<boolean | { class: string } | undefined>
-    color: Ref<TColor>
-    hoverColor: Ref<TColor>
-    activeColor: Ref<TColor>
-    bgColor: Ref<TColor>
-    hoverBgColor: Ref<TColor>
-    activeBgColor: Ref<TColor>
-    min: Ref<number>
-    max: Ref<number>
-    mousePressed: Ref<boolean>
-    numTicks: Ref<number>
-    onSliderMousedown: (e: MouseEvent) => void
-    onSliderTouchstart: (e: TouchEvent) => void
-    parseMouseMove: (e: MouseEvent | TouchEvent) => number
-    position: (val: number) => number
-    roundValue: (value: number) => number
-    showTicks: Ref<TAlways | undefined>
-    startOffset: Ref<number>
-    step: Ref<number>
-    ticks: Ref<number[] | string | undefined>
-    tickSize: Ref<number>
-    origamSliderFieldTrackRef: Ref<TOrigamSliderFieldTrack | null | undefined>
-    origamSliderFieldThumbRef: Ref<TOrigamSliderFieldThumb | null | undefined>
-    origamSliderFieldStartThumbRef: Ref<TOrigamSliderFieldThumb | null | undefined>
-    origamSliderFieldStopThumbRef: Ref<TOrigamSliderFieldThumb | null | undefined>
-    isVertical: Ref<boolean>
-    parsedTicks: Ref<Array<TTick>>
-    hasLabels: Ref<boolean>
-    isReversed: Ref<boolean | undefined>
-    indexFromEnd: Ref<boolean>
-}
+    /**
+     * Visual variant of the slider.
+     *
+     * - `'field'`  → default, wraps the slider in `<origam-input>` chrome
+     *               (label, messages, prepend/append). Use for form-grade
+     *               sliders (e.g. settings panels, ColorPicker HSL slider).
+     * - `'timer'`  → bare wrapper without `<origam-input>`. Hairline rail
+     *               (2 px at rest, 4 px on hover/focus), thumb hidden
+     *               until hover/focus/scrub. Use for media-scrubber-style
+     *               UI (video timeline, volume slider).
+     * - `'audio'`  → same as `timer`, plus a waveform background painted
+     *               from `peaks`. Use for `OrigamAudio` waveform scrubbing.
+     *
+     * @default 'field'
+     */
+    variant?: TSliderFieldVariant
 
-export interface ISliderField {
-    origamSliderFieldTrackRef: Ref<TOrigamSliderFieldTrack | null | undefined>
-    origamSliderFieldThumbRef: Ref<TOrigamSliderFieldThumb | null | undefined>
-    origamSliderFieldStartThumbRef: Ref<TOrigamSliderFieldThumb | null | undefined>
-    origamSliderFieldStopThumbRef: Ref<TOrigamSliderFieldThumb | null | undefined>
-    props: ISliderFieldProps
-    steps: ReturnType<typeof useSteps>
-    onSliderEnd: (data: TSliderData) => void
-    onSliderStart: (data: TSliderData) => void
-    onSliderMove: (data: TSliderData) => void
-    getActiveThumb: (e: MouseEvent | TouchEvent) => HTMLElement
+    /**
+     * Secondary fill rendered from `min` to `buffered`, layered behind
+     * the active fill at reduced opacity. Mirrors a video player's
+     * "loaded ranges" indicator. Has no effect when undefined.
+     */
+    buffered?: number
+
+    /**
+     * Hide the thumb at rest and only reveal it on container `:hover`,
+     * `:focus-within`, or during a drag. CSS-only — no JS state.
+     *
+     * For `variant='timer'` and `variant='audio'`, this is effectively
+     * always on (forced via the variant's class). For `variant='field'`,
+     * the consumer must opt in explicitly.
+     *
+     * @default false
+     */
+    showThumbOnHoverOnly?: boolean
+
+    /**
+     * Render a small floating tooltip above the rail showing the value
+     * under the cursor. The cursor X position is forwarded as a CSS
+     * variable updated in a single RAF-throttled `pointermove` handler.
+     *
+     * @default false
+     */
+    showHoverTooltip?: boolean
+
+    /**
+     * Formatter applied to the hover tooltip text. Receives the value
+     * under the cursor (clamped to `[min, max]`).
+     *
+     * @default (value: number) => String(value)
+     */
+    formatHoverTooltip?: (value: number) => string
+
+    /**
+     * Waveform peaks in the range `[0, 1]`. When set with
+     * `variant='audio'`, peaks are painted as vertical bars BEHIND the
+     * track via inline SVG: bars left of the thumb use the active color,
+     * bars right use a 35 %-mixed fade. No effect for other variants.
+     */
+    peaks?: ReadonlyArray<number>
 }
 
 /** Emits fired by `<OrigamSliderField>` — v-model + focus + drag lifecycle
  *  (`start` fires on pointerdown of a thumb, `end` on pointerup). */
 export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {
-    (e: 'start', value: number | Array<number>): void
-    (e: 'end', value: number | Array<number>): void
+    (e: 'start', value: number | string | Array<number> | Array<string>): void
+    (e: 'end', value: number | string | Array<number> | Array<string>): void
 }

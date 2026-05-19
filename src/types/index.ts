@@ -149,6 +149,8 @@ export * from './Masonry/masonry-align.type'
 
 export * from './MediaController/quality-option.type'
 
+export * from './MediaConfigMenu/media-config-section.type'
+
 export * from './MediaScrubber/media-scrubber-orientation.type'
 
 export * from './Icon/class-icon.type'
@@ -234,7 +236,7 @@ export * from './Slide/slide-group.type'
 
 export * from './SliderField/slider-field.type'
 export * from './SliderField/slider-field-track.type'
-export * from './SliderField/slider-field-thumb.type'
+export * from './SliderField/slider-field-variant.type'
 
 export * from './Snackbar/snackbar.type'
 
@@ -316,6 +318,8 @@ export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
 
 export * from './Audio/audio-controls.type'
+export * from './Audio/audio-variant.type'
+export * from './Audio/cover-position.type'
 
 
 export * from './Calendar/calendar-view.type'

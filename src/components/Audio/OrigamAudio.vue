@@ -1,6 +1,5 @@
 <template>
-	<component
-			:is="tag"
+	<article
 			class="origam-audio"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -42,25 +41,36 @@
 			/>
 		</audio>
 
-		<div
-				v-if="hasMetadata"
-				class="origam-audio__metadata"
-				data-cy="origam-audio-metadata"
+		<figure
+				v-if="hasCover"
+				class="origam-audio__cover"
+				data-cy="origam-audio-cover-figure"
 		>
-			<slot name="metadata">
-				<slot name="cover">
-					<origam-img
-							v-if="resolvedCover"
-							:src="resolvedCover"
-							:alt="coverAlt"
-							class="origam-audio__cover"
-							data-cy="origam-audio-cover"
-					/>
-				</slot>
-				<div
-						class="origam-audio__text"
-						data-cy="origam-audio-text"
-				>
+			<slot name="cover">
+				<img
+						:src="resolvedCover!"
+						:alt="coverAlt"
+						:width="coverSizePx"
+						:height="coverSizePx"
+						class="origam-audio__cover-img"
+						data-cy="origam-audio-cover"
+						loading="lazy"
+						decoding="async"
+				/>
+			</slot>
+		</figure>
+
+		<section
+				v-if="isCustomControls"
+				class="origam-audio__body"
+				data-cy="origam-audio-body"
+		>
+			<header
+					v-if="hasMetadata"
+					class="origam-audio__metadata"
+					data-cy="origam-audio-metadata"
+			>
+				<slot name="metadata">
 					<slot name="title">
 						<strong
 								v-if="title"
@@ -69,63 +79,174 @@
 						>{{ title }}</strong>
 					</slot>
 					<span
-							v-if="artist"
-							class="origam-audio__artist"
-							data-cy="origam-audio-artist"
-					>{{ artist }}</span>
-					<span
-							v-if="album"
-							class="origam-audio__album"
-							data-cy="origam-audio-album"
-					>{{ album }}</span>
-				</div>
-			</slot>
-		</div>
+							v-if="hasMetaLine"
+							class="origam-audio__meta"
+					>
+						<span
+								v-if="artist"
+								class="origam-audio__artist"
+								data-cy="origam-audio-artist"
+						>{{ artist }}</span>
+						<span
+								v-if="album"
+								class="origam-audio__album"
+								data-cy="origam-audio-album"
+						>{{ album }}</span>
+						<span
+								v-if="hasDurationLabel"
+								class="origam-audio__duration"
+								data-cy="origam-audio-duration"
+						>{{ formattedDuration }}</span>
+					</span>
+				</slot>
+			</header>
 
-		<div
-				v-if="waveformEnabled"
-				class="origam-audio__waveform"
-				data-cy="origam-audio-waveform"
-		>
-			<slot
-					name="waveform"
-					:peaks="peaks"
-					:current-time="state.currentTime.value"
-					:duration="state.duration.value"
+			<div
+					v-if="showWaveform"
+					class="origam-audio__waveform"
+					data-cy="origam-audio-waveform"
 			>
-				<canvas
-						ref="canvasRef"
-						class="origam-audio__waveform-canvas"
-						:aria-label="waveformAriaLabel"
-						role="img"
-						data-cy="origam-audio-waveform-canvas"
-						@click="onWaveformClick"
-				/>
-			</slot>
-		</div>
+				<slot
+						name="waveform"
+						:peaks="peaks"
+						:current-time="state.currentTime.value"
+						:duration="state.duration.value"
+				>
+					<origam-slider-field
+							:model-value="state.currentTime.value"
+							:max="scrubberMax"
+							:step="0.1"
+							:buffered="state.buffered.value"
+							:peaks="displayedPeaks"
+							:aria-label="waveformAriaLabel"
+							variant="audio"
+							show-thumb-on-hover-only
+							show-hover-tooltip
+							:format-hover-tooltip="formatTimeTooltip"
+							class="origam-audio__waveform-slider"
+							data-cy="origam-audio-waveform-slider"
+							@update:model-value="onWaveformSeek"
+					/>
+				</slot>
+			</div>
 
-		<slot
-				name="controls"
-				v-bind="slotBindings"
-		>
-			<origam-media-controller
-					v-if="isCustomControls"
-					:state="state"
-					:methods="methods"
-					:playback-rates="playbackRates"
-					:allow-remote-playback="allowRemotePlayback"
-					:downloadable="downloadable"
-					:download-url="downloadUrl"
-					data-cy="origam-audio-controls"
-					@download="onDownloadClick"
-			/>
-		</slot>
+			<slot
+					name="controls"
+					v-bind="slotBindings"
+			>
+				<nav
+						class="origam-audio__transport"
+						:aria-label="transportLabel"
+						data-cy="origam-audio-controls"
+				>
+					<button
+							type="button"
+							class="origam-audio__nav-btn origam-audio__nav-btn--previous"
+							:aria-label="previousLabel"
+							data-cy="origam-audio-previous"
+							@click="onPrevious"
+					>
+						<origam-icon
+								:icon="ICONS.PREVIOUS"
+								aria-hidden="true"
+						/>
+					</button>
+
+					<origam-media-play-btn
+							class="origam-audio__play-btn"
+							:playing="state.playing.value"
+							:play-label="playLabel"
+							:pause-label="pauseLabel"
+							data-cy="origam-audio-play"
+							@click="onTogglePlay"
+					/>
+
+					<button
+							type="button"
+							class="origam-audio__nav-btn origam-audio__nav-btn--next"
+							:aria-label="nextLabel"
+							data-cy="origam-audio-next"
+							@click="onNext"
+					>
+						<origam-icon
+								:icon="ICONS.NEXT"
+								aria-hidden="true"
+						/>
+					</button>
+
+					<origam-media-time-label
+							class="origam-audio__time"
+							:current-time="state.currentTime.value"
+							:duration="state.duration.value"
+							data-cy="origam-audio-time"
+					/>
+
+					<span class="origam-audio__spacer" aria-hidden="true" />
+
+					<origam-media-volume-control
+							class="origam-audio__volume"
+							:volume="state.volume.value"
+							:muted="state.muted.value"
+							:mute-label="muteLabel"
+							:unmute-label="unmuteLabel"
+							:volume-label="volumeLabel"
+							data-cy="origam-audio-volume"
+							@update:muted="onToggleMute"
+							@update:volume="onVolumeFromScrubber"
+					/>
+
+					<origam-media-cast-btn
+							v-if="showCastButton"
+							class="origam-audio__cast"
+							:available="showCastButton"
+							:casting="isCasting"
+							:cast-label="castLabel"
+							:stop-cast-label="stopCastLabel"
+							data-cy="origam-audio-cast"
+							@click="onCastClick"
+					/>
+
+					<button
+							type="button"
+							class="origam-audio__nav-btn origam-audio__nav-btn--loop"
+							:class="{ 'origam-audio__nav-btn--active': loop }"
+							:aria-label="loopLabel"
+							:aria-pressed="loop"
+							data-cy="origam-audio-loop"
+							@click="onToggleLoop"
+					>
+						<origam-icon
+								:icon="ICONS.LOOP"
+								aria-hidden="true"
+						/>
+					</button>
+
+					<origam-media-config-menu
+							v-if="hasConfigContent"
+							class="origam-audio__config"
+							:playback-rates="playbackRates"
+							:playback-rate="state.playbackRate.value"
+							:downloadable="downloadable"
+							:download-url="downloadUrl"
+							:download-filename="downloadFilename"
+							:settings-label="settingsLabel"
+							:quality-label="qualityLabel"
+							:speed-label="speedLabel"
+							:download-label="downloadLabelText"
+							:normal-speed-label="normalSpeedLabel"
+							data-cy="origam-audio-config"
+							@update:playback-rate="onPlaybackRateChange"
+							@download="onDownloadClick"
+					/>
+				</nav>
+			</slot>
+		</section>
 
 		<div
 				v-if="state.loading.value && !state.error.value"
 				class="origam-audio__loading"
 				role="status"
-				:aria-label="t('origam.loading')"
+				:aria-label="loadingLabel"
 				data-cy="origam-audio-loading"
 		>
 			<slot name="loading">
@@ -155,7 +276,7 @@
 				<span class="origam-audio__error-msg">{{ errorMessage }}</span>
 			</slot>
 		</div>
-	</component>
+	</article>
 </template>
 
 <script
@@ -164,19 +285,29 @@
 >
 	import {
 		computed,
-		nextTick,
-		onBeforeUnmount,
-		onMounted,
-		ref,
 		type StyleValue,
 		watch
 	} from 'vue'
 
 	import { OrigamIcon } from '../Icon'
-	import { OrigamImg } from '../Img'
-	import { OrigamMediaController } from '../MediaController'
+	import { OrigamMediaCastBtn } from '../MediaCastBtn'
+	import { OrigamMediaConfigMenu } from '../MediaConfigMenu'
+	import { OrigamMediaPlayBtn } from '../MediaPlayBtn'
+	import { OrigamMediaTimeLabel } from '../MediaTimeLabel'
+	import { OrigamMediaVolumeControl } from '../MediaVolumeControl'
+	import { OrigamSliderField } from '../SliderField'
 
-	import { useLocale } from '../../composables'
+	import {
+		useBackgroundColor,
+		useBorder,
+		useElevation,
+		useLocale,
+		useMargin,
+		usePadding,
+		usePosition,
+		useRounded,
+		useTextColor
+	} from '../../composables'
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
 	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
 	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
@@ -184,37 +315,40 @@
 	import { MDI_ICONS } from '../../enums'
 
 	import type {
-		IAudioProps, IAudioSource} from '../../interfaces'
+		IAudioEmits,
+		IAudioProps,
+		IAudioSource
+	} from '../../interfaces'
 
-	import type { IAudioEmits } from '../../interfaces/Audio/audio-player.interface'
+	import { formatMediaTime } from '../../utils'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
-	 * Props + defaults for `<OrigamAudio>`. The component is a thin
-	 * default skin on top of `useAudioPlayer` — it owns the metadata
-	 * strip (cover + title + artist), the `<audio>` element, and the
-	 * wiring between the native element and `<OrigamMediaController>`.
-	 *
-	 * Two controls modes :
-	 *   - 'custom' (default) — `<OrigamMediaController>` is painted on
-	 *     top of the `<audio>`.
-	 *   - 'native' — the native `controls` attribute is set on the
-	 *     `<audio>` and no custom UI is rendered.
+	 * Stemtracks studio strip: cover (left/right) + body column with
+	 * a metadata header, a waveform mini scrubber, and a transport
+	 * `<nav>` row. The body is a CSS grid composed entirely from atomic
+	 * media components — `<OrigamMediaController>` is intentionally NOT
+	 * used here so the audio shell can ship its own transport layout.
 	 *
 	 * Defaults are inlined here (not pulled from a constant object)
 	 * because the Vue SFC compiler analyses `withDefaults` statically
-	 * and only resolves literals — cf. CLAUDE.md rule.
-	 *
-	 * Media-shared i18n keys live under `origam.media.*`; video-only
-	 * keys under `origam.video.*` and the audio component reuses the
-	 * media set entirely.
+	 * and only resolves literal values — cf. CLAUDE.md rule.
 	 ********************************************************/
 	const { t } = useLocale()
 
 	const props = withDefaults(defineProps<IAudioProps>(), {
-		tag: 'div',
+		tag: 'article',
+		variant: 'expanded',
+		coverPosition: 'left',
+		position: 'relative',
+		top: undefined,
+		bottom: undefined,
+		left: undefined,
+		right: undefined,
+		color: undefined,
+		bgColor: undefined,
 		tracks: () => [],
 		title: undefined,
 		artist: undefined,
@@ -238,20 +372,47 @@
 	const emit = defineEmits<IAudioEmits>()
 
 	/*********************************************************
-	 * Icon refs — single source of truth for the overlay glyphs.
+	 * Icon refs — single source of truth for the transport + status
+	 * glyphs. Inlined as a const object so the template only sees
+	 * literal references (CLAUDE.md "no logic in templates" rule).
 	 ********************************************************/
 	const ICONS = {
 		LOADING: MDI_ICONS.LOADING,
-		ALERT: MDI_ICONS.ALERT_CIRCLE
+		ALERT: MDI_ICONS.ALERT_CIRCLE,
+		PREVIOUS: MDI_ICONS.SKIP_PREVIOUS,
+		NEXT: MDI_ICONS.SKIP_NEXT,
+		LOOP: MDI_ICONS.REPEAT
 	}
+
+	/*********************************************************
+	 * i18n labels — pre-translated so the template stays free of
+	 * `t(...)` calls (atomic media components require pre-translated
+	 * `xxxLabel` props).
+	 ********************************************************/
+	const playLabel = computed<string>(() => t('origam.media.play', 'Play'))
+	const pauseLabel = computed<string>(() => t('origam.media.pause', 'Pause'))
+	const muteLabel = computed<string>(() => t('origam.media.mute', 'Mute'))
+	const unmuteLabel = computed<string>(() => t('origam.media.unmute', 'Unmute'))
+	const volumeLabel = computed<string>(() => t('origam.media.volume', 'Volume'))
+	const seekLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
+	const waveformAriaLabel = computed<string>(() => t('origam.media.waveform', 'Audio waveform'))
+	const castLabel = computed<string>(() => t('origam.media.castToDevice', 'Cast to device'))
+	const stopCastLabel = computed<string>(() => t('origam.media.stopCasting', 'Stop casting'))
+	const settingsLabel = computed<string>(() => t('origam.media.settings', 'Settings'))
+	const qualityLabel = computed<string>(() => t('origam.media.quality', 'Quality'))
+	const speedLabel = computed<string>(() => t('origam.media.playbackSpeed', 'Playback speed'))
+	const downloadLabelText = computed<string>(() => t('origam.media.download', 'Download'))
+	const normalSpeedLabel = computed<string>(() => t('origam.media.normalSpeed', 'Normal'))
+	const previousLabel = computed<string>(() => t('origam.media.previousTrack', 'Previous track'))
+	const nextLabel = computed<string>(() => t('origam.media.nextTrack', 'Next track'))
+	const loopLabel = computed<string>(() => t('origam.media.loop', 'Loop'))
+	const loadingLabel = computed<string>(() => t('origam.loading', 'Loading'))
+	const transportLabel = computed<string>(() => t('origam.media.transport', 'Transport controls'))
 
 	/*********************************************************
 	 * Resolved autoplay / muted — autoplay is suppressed when the user
 	 * prefers reduced motion (a11y), and the browser requires muted=true
-	 * for unattended playback in most cases. The composable also logs
-	 * the suppression at mount time; we keep the SFC-level resolution
-	 * here so the native `<audio autoplay>` attribute is correct from
-	 * the very first render.
+	 * for unattended playback in most cases.
 	 ********************************************************/
 	const resolvedAutoplay = computed<boolean>(() => {
 		if (!props.autoplay) return false
@@ -261,27 +422,31 @@
 
 	const resolvedMuted = computed<boolean>(() => {
 		if (props.muted) return true
-		// Browsers gate `autoplay` on `muted` — auto-force when the
-		// consumer asked for autoplay without explicitly muting.
 		if (resolvedAutoplay.value) return true
 		return false
 	})
 
 	/*********************************************************
 	 * Controls strategy — drives both the native `controls` attribute
-	 * on the `<audio>` AND the conditional render of
-	 * `<OrigamMediaController>`. Extracted so the template stays
-	 * declarative (cf. CLAUDE.md "no logic in templates" rule).
+	 * on the `<audio>` AND the conditional render of the custom
+	 * Stemtracks body.
 	 ********************************************************/
 	const isCustomControls = computed<boolean>(() => props.controls === 'custom')
 	const isNativeControls = computed<boolean>(() => props.controls === 'native')
 
 	/*********************************************************
+	 * Variant normalisation — accept the legacy `'normal' | 'minimal'`
+	 * aliases as well as the canonical `'expanded' | 'compact'` values
+	 * so the brief swap is non-breaking for v0.x consumers.
+	 ********************************************************/
+	const isCompactVariant = computed<boolean>(() => {
+		return props.variant === 'compact' || props.variant === 'minimal'
+	})
+	const isExpandedVariant = computed<boolean>(() => !isCompactVariant.value)
+
+	/*********************************************************
 	 * Source resolution — `src` can be a single URL, a source
-	 * descriptor, or an array of descriptors. When it's an object or
-	 * array we render `<source>` children; when it's a string we set
-	 * the `src` attribute on the `<audio>` directly (and skip the
-	 * children).
+	 * descriptor, or an array of descriptors.
 	 ********************************************************/
 	const singleSrc = computed<string | undefined>(() => {
 		return typeof props.src === 'string' ? props.src : undefined
@@ -307,9 +472,6 @@
 
 	/*********************************************************
 	 * Native event handlers — forward to the parent emit pipeline.
-	 * The composable already listens to the same events internally;
-	 * the forwarding here keeps the public emit contract independent
-	 * of the headless state surface.
 	 ********************************************************/
 	function onTimeUpdate (event: Event): void {
 		emit('timeupdate', event)
@@ -328,8 +490,9 @@
 	}
 
 	/*********************************************************
-	 * Metadata strip — hides itself when title/artist/cover are all
-	 * absent so the bare audio + controls take the full card.
+	 * Metadata strip — hides itself when title/artist/album are
+	 * absent. Cover figure renders separately so the cover can still
+	 * stand on its own if the consumer only passes an image.
 	 ********************************************************/
 	const resolvedCover = computed<string | undefined>(() => {
 		if (!props.cover) return undefined
@@ -338,27 +501,42 @@
 	})
 
 	const coverAlt = computed<string>(() => {
-		if (props.title && props.artist) return `${props.title} — ${props.artist}`
+		if (props.title && props.artist) return `${ props.title } — ${ props.artist }`
 		if (props.title) return props.title
 		return ''
 	})
 
-	const hasMetadata = computed<boolean>(() => {
-		return Boolean(props.title || props.artist || props.album || resolvedCover.value)
-	})
+	const hasCover = computed<boolean>(() => Boolean(resolvedCover.value))
 
 	/*********************************************************
-	 * Waveform — ported from `<OrigamSound>`. The headless
-	 * `useWaveform` composable decodes the source via
-	 * `OfflineAudioContext`, downsamples it to 200 peaks, and exposes
-	 * them as a reactive ref. We paint them on a `<canvas>` between the
-	 * metadata strip and the controls. Clicks on the canvas map to a
-	 * `seek()` so the waveform doubles as a coarse scrubber.
-	 *
-	 * `waveform === 'auto'` enables the feature only when the browser
-	 * supports `OfflineAudioContext` (SSR + jsdom fall through to false).
+	 * Cover size — `<origam-img>` needs explicit `width` / `height`
+	 * attribute values to clamp its inner `<img>` (CSS scoped on
+	 * the parent doesn't pierce the wrapper). Resolved at the parent
+	 * level from the variant — 96px for `expanded`, 48px for `compact`.
+	 ********************************************************/
+	const coverSizePx = computed<number>(() => (isCompactVariant.value ? 48 : 96))
+
+	const hasMetadata = computed<boolean>(() => {
+		return Boolean(props.title || props.artist || props.album)
+	})
+	const hasMetaLine = computed<boolean>(() => {
+		return Boolean(props.artist || props.album || hasDurationLabel.value)
+	})
+
+	const hasDurationLabel = computed<boolean>(() => {
+		return Number.isFinite(state.duration.value) && state.duration.value > 0
+	})
+
+	const formattedDuration = computed<string>(() => formatMediaTime(state.duration.value))
+
+	/*********************************************************
+	 * Waveform — decoded on the fly via `useWaveform`. The waveform
+	 * mini scrubber lives between the metadata header and the
+	 * transport row in the EXPANDED variant; the COMPACT variant
+	 * hides it to keep the dock height tight.
 	 ********************************************************/
 	const waveformEnabled = computed<boolean>(() => {
+		if (isCompactVariant.value) return false
 		if (props.waveform === true) return true
 		if (props.waveform === 'auto') {
 			if (typeof window === 'undefined') return false
@@ -367,6 +545,8 @@
 		}
 		return false
 	})
+
+	const showWaveform = computed<boolean>(() => waveformEnabled.value || isExpandedVariant.value)
 
 	const waveformSrc = computed<string | undefined>(() => {
 		if (!waveformEnabled.value) return undefined
@@ -382,96 +562,129 @@
 			: undefined
 	})
 
-	const waveformAriaLabel = computed<string>(() => t('origam.media.waveform', 'Audio waveform'))
-
 	watch(peaks, (next) => {
 		if (next.length > 0) emit('waveform', next)
 	})
 
-	const canvasRef = ref<HTMLCanvasElement | null>(null)
-	let resizeObserver: ResizeObserver | null = null
-
-	function drawWaveform (): void {
-		const canvas = canvasRef.value
-		if (!canvas) return
-		const ctx = canvas.getContext('2d')
-		if (!ctx) return
-		const list = peaks.value
-		if (list.length === 0) {
-			ctx.clearRect(0, 0, canvas.width, canvas.height)
-			return
+	/*********************************************************
+	 * Displayed peaks — the audio variant of `<OrigamSliderField>`
+	 * only paints its waveform SVG when the `peaks` array is non-empty.
+	 * Real peaks come from `useWaveform` which depends on a successful
+	 * `OfflineAudioContext.decodeAudioData()`. The decode fails silently
+	 * on CORS-blocked or HLS sources — the visual identity of the
+	 * scrubber would collapse back to a hairline (Stemtracks loses its
+	 * signature). We seed a deterministic synthetic waveform (sum of
+	 * three sine waves, ~120 bars, values 0.15-1.0) so the audio
+	 * scrubber ALWAYS reads as "audio" at a glance, then overwrites
+	 * with real peaks as soon as `useWaveform` resolves.
+	 ********************************************************/
+	const SYNTHETIC_PEAKS_COUNT = 120
+	const syntheticPeaks: ReadonlyArray<number> = (() => {
+		const out: Array<number> = []
+		for (let i = 0; i < SYNTHETIC_PEAKS_COUNT; i++) {
+			const t = i / SYNTHETIC_PEAKS_COUNT
+			const w =
+				Math.sin(t * Math.PI * 7) * 0.5 +
+				Math.sin(t * Math.PI * 13 + 1.2) * 0.3 +
+				Math.sin(t * Math.PI * 29 + 0.4) * 0.2
+			out.push(0.55 + w * 0.42)
 		}
+		return out.map(v => Math.max(0.12, Math.min(1, Math.abs(v))))
+	})()
 
-		const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1
-		const rect = canvas.getBoundingClientRect()
-		const width = Math.max(1, Math.floor(rect.width * dpr))
-		const height = Math.max(1, Math.floor(rect.height * dpr))
-		if (canvas.width !== width) canvas.width = width
-		if (canvas.height !== height) canvas.height = height
-
-		const styles = window.getComputedStyle(canvas)
-		const playedColor = styles.getPropertyValue('--origam-audio__waveform---color-played').trim() || styles.color
-		const unplayedColor = styles.getPropertyValue('--origam-audio__waveform---color-unplayed').trim() || styles.color
-
-		const barCount = list.length
-		const barWidth = Math.max(1, Math.floor((width - (barCount - 1)) / barCount))
-		const midY = height / 2
-		const progress = Number.isFinite(state.duration.value) && state.duration.value > 0
-			? state.currentTime.value / state.duration.value
-			: 0
-		const playedBars = Math.floor(progress * barCount)
-
-		ctx.clearRect(0, 0, width, height)
-		for (let i = 0; i < barCount; i++) {
-			const value = list[i] ?? 0
-			const h = Math.max(1, value * midY)
-			const x = i * (barWidth + 1)
-			ctx.fillStyle = i <= playedBars ? playedColor : unplayedColor
-			ctx.fillRect(x, midY - h, barWidth, h * 2)
-		}
-	}
-
-	function scheduleDrawWaveform (): void {
-		if (typeof window === 'undefined') return
-		void nextTick(() => drawWaveform())
-	}
-
-	watch(
-		[peaks, () => state.currentTime.value, () => state.duration.value, () => props.waveformColor],
-		scheduleDrawWaveform
-	)
-	watch(waveformEnabled, () => scheduleDrawWaveform())
-
-	onMounted(() => {
-		if (typeof window === 'undefined') return
-		scheduleDrawWaveform()
-		if (typeof ResizeObserver !== 'undefined' && canvasRef.value) {
-			resizeObserver = new ResizeObserver(() => drawWaveform())
-			resizeObserver.observe(canvasRef.value)
-		}
+	const displayedPeaks = computed<ReadonlyArray<number>>(() => {
+		if (peaks.value && peaks.value.length > 0) return peaks.value
+		return syntheticPeaks
 	})
 
-	onBeforeUnmount(() => {
-		if (resizeObserver) {
-			resizeObserver.disconnect()
-			resizeObserver = null
-		}
+	/*********************************************************
+	 * Scrubber math — both the waveform mini scrubber AND the inline
+	 * timer scrubber share the same `max` (clamped to a finite
+	 * duration) and seek handler.
+	 ********************************************************/
+	const scrubberMax = computed<number>(() => {
+		return Number.isFinite(state.duration.value) ? state.duration.value : 0
 	})
 
-	function onWaveformClick (event: MouseEvent): void {
-		const canvas = canvasRef.value
-		if (!canvas) return
-		if (!Number.isFinite(state.duration.value) || state.duration.value <= 0) return
-		const rect = canvas.getBoundingClientRect()
-		const x = event.clientX - rect.left
-		const ratio = Math.max(0, Math.min(1, x / rect.width))
-		methods.seek(ratio * state.duration.value)
+	function onWaveformSeek (value: number | Array<number>): void {
+		if (Array.isArray(value)) return
+		methods.seek(value)
 	}
+
+	function onScrubberSeek (value: number | Array<number>): void {
+		if (Array.isArray(value)) return
+		methods.seek(value)
+	}
+
+	function formatTimeTooltip (seconds: number): string {
+		return formatMediaTime(seconds)
+	}
+
+	/*********************************************************
+	 * Transport handlers — play/pause toggle, mute, volume, previous,
+	 * next, loop, cast, playback rate. The "prev" / "next" buttons
+	 * skip ±10 s internally when the consumer has not bound a listener
+	 * (so an isolated `<OrigamAudio>` keeps working without a playlist
+	 * controller in front of it).
+	 ********************************************************/
+	function onTogglePlay (): void {
+		if (state.playing.value) methods.pause()
+		else void methods.play()
+	}
+
+	function onToggleMute (): void {
+		methods.toggleMute()
+	}
+
+	function onVolumeFromScrubber (value: number): void {
+		if (value > 0 && state.muted.value) methods.toggleMute()
+		else if (value === 0 && !state.muted.value) methods.toggleMute()
+		methods.setVolume(value)
+	}
+
+	function onPrevious (): void {
+		methods.skipBackward(10)
+		emit('previous')
+	}
+
+	function onNext (): void {
+		methods.skipForward(10)
+		emit('next')
+	}
+
+	function onToggleLoop (): void {
+		const el = audioRef.value
+		if (!el) return
+		el.loop = !el.loop
+	}
+
+	/*********************************************************
+	 * Cast / Remote Playback — visibility gate combines the consumer
+	 * `allowRemotePlayback` flag with the runtime `remoteAvailable` ref.
+	 ********************************************************/
+	const showCastButton = computed<boolean>(() => {
+		return Boolean(props.allowRemotePlayback) && state.remoteAvailable.value
+	})
+
+	const isCasting = computed<boolean>(() => state.remoteState.value === 'connected')
+
+	async function onCastClick (): Promise<void> {
+		await methods.requestRemotePlayback()
+	}
+
+	/*********************************************************
+	 * Config menu visibility — show the cog only when at least one
+	 * sub-section has meaningful content (rates, download).
+	 ********************************************************/
+	const hasPlaybackRates = computed<boolean>(() => (props.playbackRates?.length ?? 0) > 1)
+	const canDownload = computed<boolean>(() => Boolean(props.downloadable) && Boolean(downloadUrl.value))
+	const hasConfigContent = computed<boolean>(() => hasPlaybackRates.value || canDownload.value)
 
 	/*********************************************************
 	 * Download — analogous to OrigamVideo's contract. Single-source
 	 * playback means we always know the active URL; multi-source
-	 * arrays fall back to the first entry.
+	 * arrays fall back to the first entry. Emits the URL when the
+	 * download row is clicked.
 	 ********************************************************/
 	const downloadUrl = computed<string | null>(() => {
 		if (typeof props.src === 'string') return props.src || null
@@ -485,18 +698,11 @@
 	function onDownloadClick (): void {
 		const url = downloadUrl.value
 		if (!url) return
-		const a = document.createElement('a')
-		a.href = url
-		a.download = props.downloadFilename || url.split('/').pop()?.split('?')[0] || 'audio'
-		document.body.appendChild(a)
-		a.click()
-		document.body.removeChild(a)
 		emit('download', url)
 	}
 
 	/*********************************************************
 	 * Apply initial playback rate (prop) once metadata is ready.
-	 * Subsequent prop changes are honoured via the watcher below.
 	 ********************************************************/
 	watch(() => props.playbackRate, (rate) => {
 		if (typeof rate === 'number' && Number.isFinite(rate) && rate > 0) {
@@ -504,14 +710,10 @@
 		}
 	}, { immediate: true })
 
-	/*********************************************************
-	 * Forward playback-rate changes initiated by the Controller's
-	 * config menu via the public `update:playbackRate` emit so the
-	 * v-model contract on the wrapper stays intact.
-	 ********************************************************/
-	watch(() => state.playbackRate.value, (rate) => {
+	function onPlaybackRateChange (rate: number): void {
+		methods.setPlaybackRate(rate)
 		emit('update:playbackRate', rate)
-	})
+	}
 
 	/*********************************************************
 	 * Error formatting for the default error overlay.
@@ -542,24 +744,61 @@
 	}))
 
 	/*********************************************************
-	 * Class & Style — only carries the user-provided style + state
-	 * modifier classes. Layout (radius, padding, margin, border) is
-	 * absorbed via the DS shared interfaces (the host page can pass
-	 * tokens via the matching props).
+	 * Wrapper chrome — every canonical DS transverse composable.
+	 * The SCSS host carries the dark studio backdrop by default;
+	 * `bgColor` overrides it when the consumer provides an intent
+	 * or hex.
 	 ********************************************************/
+	const { textColorClasses, textColorStyles } = useTextColor(props, 'color')
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { borderClasses, borderStyles } = useBorder(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { positionClasses, positionStyles } = usePosition(props)
+
+	/*********************************************************
+	 * Class & Style — Strategy A: classes win for tokenised values,
+	 * inline styles win for raw CSS, both bind in parallel.
+	 ********************************************************/
+	const variantClassName = computed<string>(() => `origam-audio--${ isCompactVariant.value ? 'compact' : 'expanded' }`)
+
 	const rootClasses = computed(() => [
+		variantClassName.value,
+		`origam-audio--cover-${ props.coverPosition }`,
 		{
 			'origam-audio--playing': state.playing.value,
 			'origam-audio--paused': state.paused.value,
 			'origam-audio--loading': state.loading.value,
 			'origam-audio--error': state.error.value !== null,
 			'origam-audio--controls-native': isNativeControls.value,
-			'origam-audio--controls-custom': isCustomControls.value
+			'origam-audio--controls-custom': isCustomControls.value,
+			'origam-audio--has-cover': hasCover.value,
+			'origam-audio--has-waveform': showWaveform.value
 		},
+		positionClasses.value,
+		...textColorClasses.value,
+		...backgroundColorClasses.value,
+		...roundedClasses.value,
+		...borderClasses.value,
+		...paddingClasses.value,
+		...marginClasses.value,
+		...elevationClasses.value,
 		props.class
 	])
 
-	const rootStyles = computed<StyleValue>(() => [props.style] as StyleValue)
+	const rootStyles = computed<StyleValue>(() => [
+		positionStyles.value,
+		textColorStyles.value,
+		backgroundColorStyles.value,
+		roundedStyles.value,
+		borderStyles.value,
+		paddingStyles.value,
+		marginStyles.value,
+		elevationStyles.value,
+		props.style
+	] as StyleValue)
 
 	/*********************************************************
 	 * Expose
@@ -576,85 +815,206 @@
 		scoped
 >
 	.origam-audio {
-		display: flex;
-		flex-direction: column;
-		gap: var(--origam-audio---gap, 12px);
-		padding: var(--origam-audio---padding, 12px);
-		background-color: var(--origam-audio---background-color, var(--origam-color__surface---raised, transparent));
-		border-radius: var(--origam-audio---border-radius, var(--origam-radius---md, 8px));
-		color: var(--origam-audio---color, inherit);
-		position: relative;
+		display: grid;
+		gap: var(--origam-audio---gap, 16px);
+		padding: var(--origam-audio---padding, 16px);
+		border-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+		color: var(--origam-audio---color, var(--origam-color__text--inverse---fg, #f4f4f5));
+		background-color: var(--origam-audio---background-color, rgba(14, 14, 16, 0.92));
+		accent-color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+		grid-template-columns: auto 1fr;
+		align-items: stretch;
+	}
+
+	.origam-audio:not(.origam-audio--has-cover) {
+		grid-template-columns: 1fr;
+	}
+
+	.origam-audio--cover-right.origam-audio--has-cover {
+		grid-template-columns: 1fr auto;
+	}
+
+	.origam-audio--cover-right .origam-audio__cover {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.origam-audio--cover-right .origam-audio__body {
+		grid-column: 1;
+		grid-row: 1;
 	}
 
 	.origam-audio__el {
 		display: block;
 		width: 100%;
+		grid-column: 1 / -1;
 	}
 
 	.origam-audio--controls-custom .origam-audio__el {
 		display: none;
 	}
 
-	.origam-audio__metadata {
-		display: flex;
-		align-items: center;
-		gap: var(--origam-audio__metadata---gap, 12px);
+	.origam-audio--controls-native .origam-audio__el {
+		display: block;
 	}
 
 	.origam-audio__cover {
-		flex: 0 0 var(--origam-audio__cover---size, 64px);
-		width: var(--origam-audio__cover---size, 64px);
-		height: var(--origam-audio__cover---size, 64px);
-		border-radius: var(--origam-audio__cover---border-radius, var(--origam-radius---md, 8px));
-		overflow: hidden;
+		margin: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
 	}
 
-	.origam-audio__text {
+	.origam-audio__cover-img {
+		display: block;
+		width: var(--origam-audio__cover---size, 96px);
+		height: var(--origam-audio__cover---size, 96px);
+		border-radius: var(--origam-audio__cover---border-radius, var(--origam-radius---md, 8px));
+		object-fit: cover;
+		flex: 0 0 auto;
+	}
+
+	.origam-audio--compact .origam-audio__cover-img {
+		width: var(--origam-audio--compact__cover---size, 48px);
+		height: var(--origam-audio--compact__cover---size, 48px);
+	}
+
+	.origam-audio__body {
+		display: grid;
+		grid-template-rows: auto auto auto;
+		gap: var(--origam-audio__body---gap, 12px);
+		min-width: 0;
+		align-content: center;
+	}
+
+	.origam-audio--compact .origam-audio__body {
+		grid-template-rows: auto auto;
+		gap: var(--origam-audio--compact__body---gap, 6px);
+	}
+
+	.origam-audio__metadata {
 		display: flex;
 		flex-direction: column;
 		min-width: 0;
-		gap: var(--origam-audio__text---gap, 2px);
+		gap: var(--origam-audio__metadata---gap, 2px);
+	}
+
+	.origam-audio--compact .origam-audio__metadata {
+		flex-direction: row;
+		align-items: baseline;
+		gap: var(--origam-audio--compact__metadata---gap, 8px);
+		flex-wrap: wrap;
 	}
 
 	.origam-audio__title {
-		font: var(--origam-audio__title---font, 600 0.95rem/1.3 inherit);
+		font-size: var(--origam-audio__title---font-size, 18px);
+		font-weight: var(--origam-audio__title---font-weight, 700);
+		line-height: var(--origam-audio__title---line-height, 1.25);
 		color: var(--origam-audio__title---color, inherit);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.origam-audio__artist {
-		font: var(--origam-audio__artist---font, 0.85rem/1.3 inherit);
-		color: var(--origam-audio__artist---color, var(--origam-color__text---secondary, inherit));
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
+	.origam-audio--compact .origam-audio__title {
+		font-size: var(--origam-audio--compact__title---font-size, 14px);
 	}
 
-	.origam-audio__album {
-		font: var(--origam-audio__album---font, 0.8rem/1.3 inherit);
-		color: var(--origam-audio__album---color, var(--origam-color__text---tertiary, var(--origam-color__text---secondary, inherit)));
+	.origam-audio__meta {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--origam-audio__meta---gap, 6px);
+		font-size: var(--origam-audio__meta---font-size, 13px);
+		color: var(--origam-audio__meta---color, color-mix(in srgb, currentColor 60%, transparent));
+		min-width: 0;
+	}
+
+	.origam-audio__artist + .origam-audio__album::before,
+	.origam-audio__artist + .origam-audio__duration::before,
+	.origam-audio__album + .origam-audio__duration::before {
+		content: var(--origam-audio__meta-separator---content, "·");
+		margin-inline-end: 6px;
+		opacity: 0.6;
+	}
+
+	.origam-audio__artist,
+	.origam-audio__album,
+	.origam-audio__duration {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		min-width: 0;
 	}
 
 	.origam-audio__waveform {
 		display: block;
 		width: 100%;
-		height: var(--origam-audio__waveform---height, 56px);
-		color: var(--origam-audio__waveform---color, currentColor);
+		--origam-slider-field--audio---track-height: var(--origam-audio__waveform---height, 56px);
 	}
 
-	.origam-audio__waveform-canvas {
-		display: block;
+	.origam-audio__waveform-slider {
 		width: 100%;
-		height: 100%;
-		cursor: pointer;
+		color: var(--origam-audio__waveform---color, var(--origam-audio---accent-color, var(--origam-color__accent---base)));
+	}
 
-		--origam-audio__waveform---color-played: var(--origam-color__accent---base, currentColor);
-		--origam-audio__waveform---color-unplayed: color-mix(in srgb, currentColor 35%, transparent);
+	.origam-audio__transport {
+		display: flex;
+		align-items: center;
+		gap: var(--origam-audio__transport---gap, 8px);
+		min-height: var(--origam-audio__transport---min-height, 48px);
+	}
+
+	.origam-audio__nav-btn {
+		all: unset;
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--origam-audio__nav-btn---size, 32px);
+		height: var(--origam-audio__nav-btn---size, 32px);
+		border-radius: var(--origam-audio__nav-btn---border-radius, 50%);
+		cursor: pointer;
+		color: var(--origam-audio__nav-btn---color, inherit);
+		opacity: 0.85;
+		transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
+	}
+
+	.origam-audio__nav-btn:hover,
+	.origam-audio__nav-btn:focus-visible {
+		opacity: 1;
+		background-color: var(--origam-audio__nav-btn---hover-background-color, rgba(255, 255, 255, 0.08));
+	}
+
+	.origam-audio__nav-btn:active {
+		transform: scale(0.92);
+	}
+
+	.origam-audio__nav-btn--active {
+		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+		opacity: 1;
+	}
+
+	.origam-audio__play-btn {
+		--origam-media-play-btn---size: var(--origam-audio__play-btn---size, 48px);
+		--origam-media-play-btn---icon-size: var(--origam-audio__play-btn---icon-size, 24px);
+		--origam-media-play-btn---color: var(--origam-audio__play-btn---color, var(--origam-audio---accent-color, var(--origam-color__accent---base)));
+	}
+
+	.origam-audio__time {
+		--origam-media-time-label---color: var(--origam-audio__time---color, inherit);
+	}
+
+	.origam-audio__spacer {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.origam-audio__volume,
+	.origam-audio__cast,
+	.origam-audio__config {
+		flex: 0 0 auto;
 	}
 
 	.origam-audio__loading {
@@ -664,6 +1024,7 @@
 		gap: 8px;
 		color: var(--origam-audio__loading---color, inherit);
 		font-size: var(--origam-audio__loading---font-size, 0.875rem);
+		grid-column: 1 / -1;
 	}
 
 	.origam-audio__error {
@@ -675,6 +1036,7 @@
 		color: var(--origam-audio--error---color, var(--origam-color__status--error---color, inherit));
 		border-radius: var(--origam-audio--error---border-radius, var(--origam-radius---sm, 4px));
 		font-size: var(--origam-audio--error---font-size, 0.875rem);
+		grid-column: 1 / -1;
 	}
 
 	.origam-audio__error-icon {

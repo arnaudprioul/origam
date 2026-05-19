@@ -142,7 +142,10 @@
       "settings": "Settings",
       "back": "Back",
       "playbackSpeed": "Playback speed",
-      "normalSpeed": "Normal"
+      "normalSpeed": "Normal",
+      "previousTrack": "Previous track",
+      "nextTrack": "Next track",
+      "waveform": "Audio waveform"
     },
     "video": {
       "enterFullscreen": "Enter fullscreen",

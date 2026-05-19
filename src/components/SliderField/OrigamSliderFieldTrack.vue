@@ -14,11 +14,11 @@
 		/>
 
 		<div
-				v-if="showTicks"
+				v-if="showTicks && parsedTicks.length"
 				:class="sliderFieldTrackTicksClasses"
 		>
 			<template
-					v-for="(tick, index) in ticks"
+					v-for="(tick, index) in parsedTicks"
 					:key="index"
 			>
 				<div
@@ -51,15 +51,13 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, StyleValue, useSlots } from 'vue'
+	import { computed, StyleValue, useSlots } from 'vue'
 	import {
-	useBackgroundColor,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
-
-	import { ORIGAM_SLIDER_FIELD_KEY } from '../../consts'
+		useBackgroundColor,
+		useProps,
+		useRounded,
+		useStyle
+	} from '../../composables'
 
 	import type { ISliderFieldTrackProps } from "../../interfaces"
 
@@ -67,64 +65,34 @@
 
 	import { convertToUnit, int } from '../../utils'
 
-	/*********************************************************
-	 * Global
-	 *
-	 * @description
-	 * Props, slots, and slider context injection.
-	 ********************************************************/
 	const props = withDefaults(defineProps<ISliderFieldTrackProps>(), {
 		start: 0,
 		stop: 100,
-		size: 4
+		size: 4,
+		min: 0,
+		max: 100,
+		isVertical: false,
+		indexFromEnd: false,
+		showTicks: false,
+		tickSize: 2
 	})
 
 	const {filterProps} = useProps<ISliderFieldTrackProps>(props)
 
-	const slider = inject(ORIGAM_SLIDER_FIELD_KEY)
-
-	if (!slider) throw new Error('[Origam] -slider-track must be inside -slider')
-
 	const slots = useSlots()
 
-	const {
-		color: sliderColor,
-		bgColor: sliderBgColor,
-		error,
-		disabled,
-		rounded: sliderRounded,
-		showTicks: sliderShowTicks,
-		tickSize: sliderTickSize,
-		parsedTicks,
-		min,
-		max,
-		isVertical,
-		indexFromEnd
-	} = slider
-
-	/*********************************************************
-	 * State
-	 *
-	 * @description
-	 * Derived color, bgColor, size and tick visibility from
-	 * the parent slider context.
-	 ********************************************************/
 	const isDisabled = computed(() => {
-		return props.disabled ?? disabled.value
+		return !!props.disabled
 	})
-	// When `error` is on, force the `danger` intent on BOTH channels —
-	// `color` paints the FILL and the thumb (via currentColor), `bgColor`
-	// paints the rail (track background). Disabled keeps both `undefined`
-	// so SCSS can apply the muted neutral.
 	const color = computed(() => {
 		if (isDisabled.value) return undefined
-		if (error.value) return 'danger'
-		return sliderColor.value || props.color
+		if (props.error) return 'danger'
+		return props.color
 	})
 	const bgColor = computed(() => {
 		if (isDisabled.value) return undefined
-		if (error.value) return 'danger'
-		return sliderBgColor.value || props.bgColor
+		if (props.error) return 'danger'
+		return props.bgColor
 	})
 	const size = computed(() => {
 		if (typeof props?.size === 'number') {
@@ -135,44 +103,27 @@
 	})
 
 	const showTicks = computed(() => {
-		return !!sliderShowTicks.value
+		return !!props.showTicks
 	})
 
 	const roundedProps = computed(() => {
-		return props.rounded ?? sliderRounded.value
+		return props.rounded
 	})
 
-	/*********************************************************
-	 * Composables
-	 ********************************************************/
+	const parsedTicks = computed<Array<TTick>>(() => {
+		const ticks = props.ticks ?? []
+		return props.isVertical ? ticks.slice().reverse() : ticks
+	})
 
 	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
-	// Strict color/bgColor channel separation — same rule as switch:
-	//   • `bgColor` paints the RAIL (the un-filled background of the
-	//     track).
-	//   • `color`   paints the FILL (the active progress portion) and
-	//     is inherited by the thumb via `currentColor` on the wrapper.
-	// Pre-fix the channels were swapped — `color` painted the rail
-	// and `bgColor` painted the fill, which violated the project's
-	// strict color contract and produced counter-intuitive visuals.
-	// Phase 3 (Vague B) — class-first companion. `*Classes` drops the
-	// global `.origam--bg-{intent}` utility on the matching DOM node;
-	// `*Styles` still ships the inline fallback for legacy raw colors.
 	const {
 		backgroundColorClasses: trackFillColorClasses,
 		backgroundColorStyles: trackFillColorStyles
 	} = useBackgroundColor(color)
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(bgColor)
 
-	/*********************************************************
-	 * Track geometry
-	 *
-	 * @description
-	 * Direction-aware start/end logical CSS properties, fill
-	 * width/height, and tick positions.
-	 ********************************************************/
-	const startDir = computed(() => `inset-${isVertical.value ? 'block' : 'inline'}-${indexFromEnd.value ? 'end' : 'start'}`)
-	const endDir = computed(() => isVertical.value ? 'height' : 'width')
+	const startDir = computed(() => `inset-${props.isVertical ? 'block' : 'inline'}-${props.indexFromEnd ? 'end' : 'start'}`)
+	const endDir = computed(() => props.isVertical ? 'height' : 'width')
 
 	const backgroundStyles = computed(() => {
 		return {
@@ -191,16 +142,12 @@
 		}
 	})
 
-	const ticks = computed(() => {
-		return isVertical.value ? parsedTicks.value.slice().reverse() : parsedTicks.value
-	})
-
 	const sliderFieldTickStyles = (tick: TTick) => {
-		const directionValue = tick.value !== min.value && tick.value !== max.value ? convertToUnit(tick.position, '%') : undefined
+		const directionValue = tick.value !== props.min && tick.value !== props.max ? convertToUnit(tick.position, '%') : undefined
 
 		return [
 			{
-				'--origam-slider-field-track__tick---size': convertToUnit(sliderTickSize.value),
+				'--origam-slider-field-track__tick---size': convertToUnit(props.tickSize),
 				[startDir.value]: directionValue
 			},
 			props.style
@@ -211,19 +158,12 @@
 			'origam-slider-field-track__tick',
 			{
 				'origam-slider-field-track__tick--filled': tick.position >= props.start && tick.position <= props.stop,
-				'origam-slider-field-track__tick--first': tick.value === min.value,
-				'origam-slider-field-track__tick--last': tick.value === max.value
+				'origam-slider-field-track__tick--first': tick.value === props.min,
+				'origam-slider-field-track__tick--last': tick.value === props.max
 			}
 		]
 	}
 
-	/*********************************************************
-	 * Class & Style
-	 *
-	 * @description
-	 * Classes and styles for the track root, background fill,
-	 * active fill, and ticks container.
-	 ********************************************************/
 	const sliderFieldTrackStyles = computed(() => {
 		return [
 			{
@@ -271,19 +211,13 @@
 		return [
 			'origam-slider-field-track__ticks',
 			{
-				'origam-slider-field-track__ticks--always-show': sliderShowTicks.value === 'always'
+				'origam-slider-field-track__ticks--always-show': props.showTicks === 'always'
 			}
 		]
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles)
 
 
-	/*********************************************************
-	 * Expose
-	 *
-	 * @description
-	 * Public API surface exposed to parent refs.
-	 ********************************************************/
 	defineExpose({
 		filterProps,
 		css,
@@ -301,7 +235,9 @@
 	.origam-slider-field-track {
 		$this: &;
 
+		position: relative;
 		border-radius: 9999px;
+		pointer-events: none;
 
 		@media (forced-colors: active) {
 			border: thin solid buttontext;
@@ -374,11 +310,5 @@
 		&__background--opacity {
 			opacity: 0.38;
 		}
-	}
-</style>
-
-<style>
-	:root {
-
 	}
 </style>

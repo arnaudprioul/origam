@@ -1,12 +1,26 @@
 # OrigamAudio
 
-Full-featured audio player that wraps a native `<audio>` element with
-`<OrigamMediaController>` and an optional metadata strip (cover, title,
-artist). Drops into a page without surrounding chrome and respects the DS
-spacing / radius / border / margin / padding contract.
+Stemtracks-inspired studio strip — **not** a clone of `<OrigamVideo>` and
+**not** a thin wrapper over `<OrigamMediaController>`. It paints an album
+cover on either side of the surface (configurable via `coverPosition`)
+and a body column with three rows: a metadata header, a waveform mini
+scrubber, and a transport `<nav>` composed entirely of the atomic
+media sub-components (`<OrigamMediaPlayBtn>`, `<OrigamMediaVolumeControl>`,
+`<OrigamMediaTimeLabel>`, `<OrigamMediaCastBtn>`, `<OrigamMediaConfigMenu>`,
+plus two `<OrigamSliderField>` scrubbers — `variant="audio"` for the
+waveform and `variant="timer"` for the inline scrubber).
 
-It is SSR-safe — no `window` / `document` / `canvas` API is touched outside
-`onMounted`.
+Ships in two visual variants — `'expanded'` for full hero strips and
+`'compact'` for slim docks — and extends the canonical `IPositionProps`
+so the wrapper can be `static`, `relative`, `absolute`, `fixed`, or
+`sticky` with the standard `top` / `bottom` / `left` / `right` anchors.
+
+The root element is `<article>` (the surface is self-contained); the
+cover lives in a `<figure>`, the metadata header in a `<header>`, and
+the transport row in a `<nav>` — no `<div>` soup, no `role` overrides.
+
+It is SSR-safe — no `window` / `document` / `canvas` API is touched
+outside `onMounted`.
 
 ## Quick start
 
@@ -16,7 +30,8 @@ It is SSR-safe — no `window` / `document` / `canvas` API is touched outside
         :src="src"
         title="Episode 42 — How Vue 3 SFC compiler resolves withDefaults"
         artist="origam podcast"
-        cover="https://picsum.photos/seed/audio/120"
+        cover="https://picsum.photos/seed/audio/256"
+        :waveform="true"
         :downloadable="true"
     />
 </template>
@@ -30,16 +45,18 @@ const src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
 
 ## When to use
 
-- Podcasts, music players, single audio tracks with controls.
-- Anywhere you'd otherwise mount a `<audio controls>` and want the DS look
-  + custom config menu + cast + downloadable + remote playback.
-- When you need to swap the metadata strip out for a custom block (album
-  art, ratings, chapter markers) via the `#metadata` slot.
+- Podcasts, music players, single audio tracks with rich custom controls.
+- Anywhere you would otherwise mount `<audio controls>` and want the DS
+  look + a waveform + a config menu + cast + remote playback.
+- When you need to swap the metadata header out for a custom block (album
+  art, chapter markers, ratings) via the `#metadata` slot.
+- Sticky bottom-of-screen mini-players, sidebar players, "Now playing"
+  hero cards.
 
 When NOT to use:
 
 - One-shot SFX (button clicks, notification chimes, game effects) — reach
-  for `<OrigamSound>` (or its successor) which has no controls and a
+  for `<OrigamSound>` (or its successor) which has no UI and a
   fire-and-forget API.
 - A bare `<audio>` is enough when you want the platform's accessibility
   shortcuts and no custom skin — pass `controls="native"` instead.
@@ -47,317 +64,239 @@ When NOT to use:
 ## Anatomy
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│ [cover]  Title text                       ← metadata strip │
-│          Artist name                                       │
-│          Album name (optional)                             │
-├────────────────────────────────────────────────────────────┤
-│ ░░▒▒▓▓████▓▓▒▒░░  waveform canvas (optional)               │
-├────────────────────────────────────────────────────────────┤
-│ <OrigamMediaController>                   ← controls shell │
-│   ◀──────── scrubber row ─────────────────────────────────▶│
-│   [▶] [🔊] [vol] [00:30 / 02:00] … [⚙ config / ↑ cast]    │
-└────────────────────────────────────────────────────────────┘
+variant="expanded", coverPosition="left"
+┌──────────────────────────────────────────────────────────────────────┐
+│  ┌────┐                                                              │
+│  │ 96 │   Track Title (18 px Bold)                                   │
+│  │ px │   Artist · Album · 03:14                                     │
+│  │ cov│                                                              │
+│  └────┘   ░░▒▒▓▓██▒░░  ← <OrigamSliderField variant="audio">         │
+│                                                                      │
+│  ⏮  ⬤PLAY⬤  ⏭   00:42 / 03:14  ─━━━━●──── 🔊 ⚙ ↺ ⋯               │
+│      48 px                          ← <OrigamSliderField variant=    │
+│                                       "timer"> hairline 2 px → 4 px  │
+│                                       on hover                       │
+└──────────────────────────────────────────────────────────────────────┘
+
+variant="expanded", coverPosition="right"  — swaps the grid columns
+
+variant="compact"
+┌──────────────────────────────────────────────────────────────────────┐
+│ [48px] Title · Artist     ⏮ ⬤ ⏭  00:42 / 03:14  ━━●━━ 🔊 ⚙ ↺ ⋯    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
-The metadata strip is optional — when `title`, `artist`, `album`, and
-`cover` are all unset (and no `#metadata` slot is provided), only the
-controls shell renders. The strip is a `flex-row` of the cover image + a
-`flex-column` of title / artist / album text. The optional waveform layer
-sits between the strip and the controls (only rendered when
-`waveform="true"` or `"auto"` with `OfflineAudioContext` support).
+The `compact` variant hides the waveform mini scrubber and inlines the
+metadata next to a 48 px cover to keep the dock height tight. The
+`expanded` variant ships a 96 px cover, the metadata header, and the
+waveform when `waveform="true"` (or `"auto"` with `OfflineAudioContext`
+support).
+
+The metadata header is optional — when `title`, `artist`, and `album`
+are all unset (and no `#metadata` slot is provided), only the cover
++ body render. The cover figure is omitted when no `cover` is provided.
 
 ## Props
 
-| Prop                  | Type                                                                  | Default        | Description                                                                                                                              |
-|-----------------------|-----------------------------------------------------------------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `src`                 | `string \| IAudioSource \| Array<IAudioSource>`                       | required       | Media URL, single source object `{ src, type }`, or array of sources for codec fallback. The browser walks the array top-down.            |
-| `tracks`              | `Array<IVideoTrack>`                                                  | `[]`           | Optional captions / chapters tracks attached to the `<audio>`. Reuses the video track shape (`kind / src / srclang / label / default`).  |
-| `title`               | `string`                                                              | `undefined`    | Optional title rendered above the controls (e.g. *"Podcast Episode 42"*).                                                                |
-| `artist`              | `string`                                                              | `undefined`    | Optional artist / author rendered next to the title.                                                                                     |
-| `album`               | `string`                                                              | `undefined`    | Optional album name rendered below the artist (ported from `ISoundMetadata.album`). Renders only when set — no placeholder.              |
-| `cover`               | `string \| ISrcObject`                                                | `undefined`    | Optional cover image. Accepts a URL string or an `ISrcObject` for srcset / lazy-src support. Rendered via `<OrigamImg>`.                  |
-| `waveform`            | `boolean \| 'auto'`                                                    | `false`        | Display a Web-Audio-decoded peak waveform above the controls. `true` forces it; `'auto'` enables only when the browser supports `OfflineAudioContext`. Decoded via `useWaveform` (downsampled to 200 peaks, channel 0). Click anywhere on the canvas to seek. |
-| `waveformColor`       | `string`                                                              | `'currentColor'` | Stroke colour for the *played* portion of the waveform bars. Inherits the typographic theme by default. Can also be overridden via `--origam-audio__waveform---color-played` on the wrapper. |
-| `autoplay`            | `boolean`                                                             | `false`        | Starts playback on `loadedmetadata`. The component force-enables `muted` if the consumer asks for `autoplay` without an explicit `muted`. Suppressed when the user prefers reduced motion. |
-| `muted`               | `boolean`                                                             | `false`        | Starts muted.                                                                                                                            |
-| `loop`                | `boolean`                                                             | `false`        | Restarts at `0` when `ended` fires.                                                                                                      |
-| `preload`             | `'none' \| 'metadata' \| 'auto'`                                       | `'metadata'`   | Buffering hint. `'metadata'` loads just enough to compute duration; `'none'` defers everything; `'auto'` pre-buffers.                    |
-| `crossorigin`         | `string`                                                              | `undefined`    | Mirrors the native `crossorigin` attribute. Required when the media is served from a CORS-enabled origin and you need WebAudio access.   |
-| `controls`            | `'custom' \| 'native'`                                                 | `'custom'`     | `'custom'` paints `<OrigamMediaController>`. `'native'` exposes the browser's built-in `controls` attribute on the `<audio>`.            |
-| `playbackRates`       | `ReadonlyArray<number>`                                               | `[0.5, 0.75, 1, 1.25, 1.5, 2]` | Available speeds exposed via the config menu.                                                                                |
-| `playbackRate`        | `number`                                                              | `1`            | Initial playback rate. Two-way bound through `update:playbackRate`.                                                                      |
-| `allowRemotePlayback` | `boolean`                                                             | `false`        | Enable the cast / AirPlay button (Remote Playback API). The button only renders when a compatible device is detected.                    |
-| `downloadable`        | `boolean`                                                             | `false`        | Adds a *"Download"* row to the cog menu.                                                                                                  |
-| `downloadFilename`    | `string`                                                              | trailing URL segment | Override the downloaded file name.                                                                                                  |
+### Layout & variants
 
-Plus the inherited DS contracts (no specific defaults — applied verbatim if
-provided): `class`, `style` (from `ICommonsComponentProps`), `tag` (default
-`'div'`, from `ITagProps`), `rounded`, `border`, `margin`, `padding` (from
-the matching DS transverse interfaces).
+| Prop            | Type                                                             | Default       | Description                                                                                                                                            |
+|-----------------|------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `variant`       | `'expanded' \| 'compact' \| 'normal' \| 'minimal'`                | `'expanded'`  | `expanded` = full Stemtracks strip. `compact` = slim transport-only dock. Legacy `'normal'` / `'minimal'` aliases resolve to `expanded` / `compact`.   |
+| `coverPosition` | `'left' \| 'right'`                                              | `'left'`      | Side of the surface where the album cover is painted. The body column sits on the opposite side.                                                       |
+| `position`      | `'static' \| 'relative' \| 'absolute' \| 'fixed' \| 'sticky'`     | `'relative'`  | Inherited from `IPositionProps`. Drives the wrapper's CSS `position` so the player can be docked / floated.                                            |
+| `top`           | `number \| string`                                               | `undefined`   | Inherited from `IPositionProps`. CSS `top` offset.                                                                                                     |
+| `bottom`        | `number \| string`                                               | `undefined`   | Inherited from `IPositionProps`. CSS `bottom` offset.                                                                                                  |
+| `left`          | `number \| string`                                               | `undefined`   | Inherited from `IPositionProps`. CSS `left` offset.                                                                                                    |
+| `right`         | `number \| string`                                               | `undefined`   | Inherited from `IPositionProps`. CSS `right` offset.                                                                                                   |
+| `color`         | `TColor`                                                         | `undefined`   | Foreground colour — accepts an intent (`'primary'`, `'success'`, …) or a raw CSS color.                                                                |
+| `bgColor`       | `TColor`                                                         | `undefined`   | Surface background — overrides the default dark studio backdrop (`rgba(14, 14, 16, 0.92)`).                                                            |
+| `elevation`     | `string \| number`                                               | `undefined`   | Picks a shadow token rung (`'xs'…'2xl'`) or a Material 0..24 level.                                                                                    |
+| `rounded`       | `string \| number \| boolean`                                    | `undefined`   | Picks a radius token (`'sm'…'xl'`) or a numeric pixel value.                                                                                           |
+| `border`        | `IBorderProps['border']`                                         | `undefined`   | Picks a border token.                                                                                                                                  |
+| `padding`       | `IPaddingProps['padding']`                                       | `undefined`   | Padding tokens (axis or per-side).                                                                                                                     |
+| `margin`        | `IMarginProps['margin']`                                         | `undefined`   | Margin tokens (axis or per-side).                                                                                                                      |
+| `tag`           | `string`                                                         | `'article'`   | `IAudioProps` extends `ITagProps`. The root is always rendered as `<article>` for HTML semantics; the prop is preserved for typed consumers.            |
 
-## Events
+### Media
 
-| Event                  | Payload                          | Fires when                                                                                                  |
-|------------------------|----------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `play`                 | —                                | The underlying `<audio>` starts playback.                                                                   |
-| `pause`                | —                                | Playback pauses (user, programmatic, or browser-driven).                                                    |
-| `ended`                | —                                | Playback reaches the end (or wraps when `loop=true`).                                                       |
-| `timeupdate`           | `Event`                          | The native `timeupdate` event fires (throttled by the browser, typically 4×/s).                             |
-| `volumechange`         | `Event`                          | Volume or muted state changes.                                                                              |
-| `loadedmetadata`       | `Event`                          | Duration becomes available.                                                                                 |
-| `error`                | `Event \| MediaError \| Error`   | The element or the source fails to load / decode. The composable normalises the payload to a `MediaError` when possible. |
-| `update:playbackRate`  | `number`                         | The listener picks a new rate from the config menu. The component does NOT echo the consumer's prop changes — only user actions. |
-| `download`             | `string`                         | The listener clicks the *"Download"* row. Payload is the resolved file URL.                                 |
-| `waveform`             | `Array<number>`                  | Fires once per waveform recomputation (typically on `src` change). Payload is the downsampled peaks array (0..1 amplitudes). Useful for analytics, custom overlays, or forwarding to an external visualiser. |
+| Prop                  | Type                                              | Default                          | Description                                                                                                              |
+|-----------------------|---------------------------------------------------|----------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| `src`                 | `string \| IAudioSource \| Array<IAudioSource>`    | **required**                     | Single URL, source descriptor, or array of descriptors for codec fallback.                                               |
+| `tracks`              | `Array<IVideoTrack>`                              | `[]`                             | Captions / chapters tracks attached to the `<audio>`. Reuses the video track shape.                                       |
+| `title`               | `string`                                          | `undefined`                      | Track title (18 px bold).                                                                                                |
+| `artist`              | `string`                                          | `undefined`                      | Artist / author. Painted next to the album with a `·` separator.                                                          |
+| `album`               | `string`                                          | `undefined`                      | Album name. Painted in the meta line.                                                                                    |
+| `cover`               | `string \| ISrcObject`                            | `undefined`                      | Album cover. Accepts a URL or an `ISrcObject` for srcset support.                                                        |
+| `autoplay`            | `boolean`                                         | `false`                          | Suppressed when the user prefers reduced motion. Implies `muted="true"`.                                                  |
+| `muted`               | `boolean`                                         | `false`                          | Starts the player muted.                                                                                                 |
+| `loop`                | `boolean`                                         | `false`                          | Loops playback. The transport `↺` button reflects + toggles this.                                                         |
+| `preload`             | `'none' \| 'metadata' \| 'auto'`                   | `'metadata'`                     | Buffering hint.                                                                                                          |
+| `crossorigin`         | `'anonymous' \| 'use-credentials'`                 | `undefined`                      | Native `crossorigin` attribute. Required for WebAudio access on CORS-enabled CDNs.                                       |
+| `controls`            | `'custom' \| 'native'`                            | `'custom'`                       | `'custom'` renders the Stemtracks transport `<nav>`. `'native'` falls back to the browser's built-in audio bar.           |
+| `playbackRates`       | `ReadonlyArray<number>`                           | `[0.5, 0.75, 1, 1.25, 1.5, 2]`   | Available rates in the Speed drill-down.                                                                                 |
+| `playbackRate`        | `number`                                          | `1`                              | Initial playback rate.                                                                                                   |
+| `allowRemotePlayback` | `boolean`                                         | `false`                          | Enable the cast / AirPlay button (Remote Playback API).                                                                  |
+| `downloadable`        | `boolean`                                         | `false`                          | Adds a Download row to the cog menu.                                                                                     |
+| `downloadFilename`    | `string`                                          | `undefined`                      | Override the downloaded file name. Defaults to the trailing URL segment.                                                  |
+| `waveform`            | `boolean \| 'auto'`                                | `false`                          | Decode and paint the waveform mini scrubber. `'auto'` falls back to `false` on SSR / no-OfflineAudioContext browsers.    |
+| `waveformColor`       | `string`                                          | `'currentColor'`                 | Played-bars colour for the waveform.                                                                                     |
+
+## Emits
+
+| Event                    | Payload                                | Fires                                                                                                                  |
+|--------------------------|----------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `play`                   | —                                      | Underlying `<audio>` started playback.                                                                                 |
+| `pause`                  | —                                      | Underlying `<audio>` paused.                                                                                           |
+| `ended`                  | —                                      | Underlying `<audio>` reached the end of the track.                                                                     |
+| `timeupdate`             | `Event`                                | Native DOM event forwarded.                                                                                            |
+| `volumechange`           | `Event`                                | Native DOM event forwarded.                                                                                            |
+| `loadedmetadata`         | `Event`                                | Fires once metadata has loaded and `duration` is finite.                                                               |
+| `error`                  | `Event \| MediaError \| Error`         | Wraps the native `<audio>` `error` event with the resolved `MediaError` when available.                                |
+| `update:playbackRate`    | `number`                               | Listener picked a rate from the cog menu.                                                                              |
+| `download`               | `string` (URL)                         | Listener clicked the Download row. Payload is the file URL.                                                            |
+| `waveform`               | `Array<number>` (200 0..1 amplitudes)   | Fires once per recomputation (typically on `src` change).                                                              |
+| `previous`               | —                                      | Listener clicked the `⏮` button. The component ALSO skips -10 s internally so isolated players keep working.            |
+| `next`                   | —                                      | Listener clicked the `⏭` button. The component ALSO skips +10 s internally.                                             |
 
 ## Slots
 
-| Slot         | Bindings                              | Description                                                                                                  |
-|--------------|---------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `#metadata`  | —                                     | Replace the entire title/artist/cover strip with arbitrary HTML.                                             |
-| `#cover`     | —                                     | Replace just the cover image / placeholder slot.                                                             |
-| `#title`     | —                                     | Replace just the title element (keeps the artist line if `artist` is set).                                   |
-| `#waveform`  | `{ peaks: Array<number>; currentTime: number; duration: number }` | Replace the default `<canvas>` painter with arbitrary markup (SVG, WebGL, custom DIV bars). The bindings give you the current peaks + playhead context so you can paint your own visualiser. |
-| `#controls`  | `IAudioScopedSlotBindings` (state + methods + flags) | Replace the entire controls shell. Receives the same `state` / `methods` you'd get from `useAudioPlayer`, plus toggles for download, cast, etc. |
-| `#loading`   | —                                     | Overlay rendered while the media is loading.                                                                 |
-| `#error`     | `{ error: MediaError \| Error }`      | Overlay rendered when an error occurred. Default renders an inline message + alert icon.                     |
+| Slot         | Bindings                                                          | Default content                                                                                          |
+|--------------|-------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| `cover`      | —                                                                 | `<origam-img>` of the resolved `cover`.                                                                  |
+| `metadata`   | —                                                                 | Title + artist · album · duration meta line.                                                             |
+| `title`      | —                                                                 | `<strong>` with the `title` prop.                                                                        |
+| `waveform`   | `{ peaks: Array<number>, currentTime: number, duration: number }`  | `<origam-slider-field variant="audio">`.                                                                 |
+| `controls`   | `IAudioScopedSlotBindings`                                        | Transport `<nav>` composed of the atomic media sub-components.                                            |
+| `loading`    | —                                                                 | `<origam-icon icon="LOADING">`.                                                                          |
+| `error`      | `{ error: MediaError \| Error }`                                  | `<origam-icon>` + `<span>` with the error message.                                                       |
+
+## CSS variables
+
+Components expose their internals as CSS variables under
+`--origam-audio---*` (root) and `--origam-audio__*---*` (BEM children).
+State variants use the double-tiret separator
+(`--origam-audio--{state}---*`).
+
+| Variable                                                | Default                                        | Notes                                                                  |
+|---------------------------------------------------------|------------------------------------------------|------------------------------------------------------------------------|
+| `--origam-audio---background-color`                     | `rgba(14, 14, 16, 0.92)`                        | Default studio backdrop. Overridden by `bgColor` prop.                |
+| `--origam-audio---color`                                | `var(--origam-color__text--inverse---fg)`       | Foreground colour. Overridden by `color` prop.                        |
+| `--origam-audio---accent-color`                         | `var(--origam-color__accent---base)`            | Drives both scrubbers' fill + the active loop pill via `accent-color`. |
+| `--origam-audio---gap`                                  | `16px`                                          | Grid gap between cover and body.                                       |
+| `--origam-audio---padding`                              | `16px`                                          | Surface padding.                                                       |
+| `--origam-audio---border-radius`                        | `var(--origam-radius---lg, 12px)`               | Surface radius.                                                        |
+| `--origam-audio__cover---size`                          | `96px`                                          | Expanded variant cover size.                                           |
+| `--origam-audio--compact__cover---size`                 | `48px`                                          | Compact variant cover size.                                            |
+| `--origam-audio__title---font-size`                     | `18px`                                          | Title size (expanded). Overridden in compact.                          |
+| `--origam-audio__meta---color`                          | `color-mix(in srgb, currentColor 60%, transparent)` | Subtle meta line colour.                                            |
+| `--origam-audio__transport---gap`                       | `8px`                                           | Spacing between transport-row controls.                                |
+| `--origam-audio__transport---min-height`                | `48px`                                          | Transport row min-height.                                              |
+| `--origam-audio__nav-btn---size`                        | `32px`                                          | Prev / next / loop nav buttons.                                        |
+| `--origam-audio__play-btn---size`                       | `48px`                                          | Forwarded to the atomic `<OrigamMediaPlayBtn>` via its public var.      |
+
+## Composables exposed
+
+| Ref         | Type                              | Notes                                                                  |
+|-------------|-----------------------------------|------------------------------------------------------------------------|
+| `audioRef`  | `Ref<HTMLAudioElement \| null>`   | The native element. `null` until mount.                                |
+| `state`    | `IAudioPlayerState`               | Reactive state surface — `playing`, `paused`, `currentTime`, `duration`, `buffered`, `volume`, `muted`, `ready`, `loading`, `error`, `playbackRate`, `remoteAvailable`, `remoteState`. |
+| `methods`  | `IAudioPlayerMethods`             | Imperative methods — `play`, `pause`, `toggle`, `seek`, `setVolume`, `toggleMute`, `load`, `skipBackward`, `skipForward`, `setPlaybackRate`, `requestRemotePlayback`, `stopRemotePlayback`. |
 
 ## Examples
 
-### Minimal single-track
-
-```vue
-<origam-audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" />
-```
-
-The controls shell paints by itself; no metadata strip is rendered.
-
-### Podcast — with title, artist, cover
-
-```vue
-<origam-audio
-    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-    title="Episode 42 — How Vue 3 SFC compiler resolves withDefaults"
-    artist="origam podcast"
-    cover="https://picsum.photos/seed/audio-cover/120"
-    :downloadable="true"
-/>
-```
-
-Cover lives left of the title block; downloads land in the cog menu.
-
-### Multiple sources (codec fallback)
-
-```vue
-<origam-audio
-    :src="[
-        { src: '/audio/track.mp3', type: 'audio/mpeg' },
-        { src: '/audio/track.ogg', type: 'audio/ogg' }
-    ]"
-/>
-```
-
-The browser walks the array top-down and picks the first source whose
-`type` it can decode without a network round-trip.
-
-### `controls="native"` — browser fallback
-
-```vue
-<origam-audio
-    src="/audio/announcement.mp3"
-    controls="native"
-/>
-```
-
-Useful when the platform's accessibility shortcuts matter more than a
-unified visual identity. The custom shell is not mounted.
-
-### Podcast with waveform
-
-```vue
-<origam-audio
-    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-    title="Episode 42 — How Vue 3 SFC compiler resolves withDefaults"
-    artist="origam podcast"
-    album="Season 3, May 2026"
-    cover="https://picsum.photos/seed/audio/120"
-    :waveform="true"
-/>
-```
-
-The waveform fetches + decodes the audio through `OfflineAudioContext`,
-downsamples it to 200 peaks, and paints a clickable canvas above the
-controls. Click anywhere on the canvas to seek to that position.
-
-### `waveform="auto"` (browser-feature-detected)
-
-```vue
-<origam-audio :src="src" waveform="auto" />
-```
-
-Enables the waveform only when the runtime supports `OfflineAudioContext`.
-SSR + jsdom fall through to no-waveform without warnings.
-
-### Custom `#waveform` slot — DIV bars instead of canvas
-
-```vue
-<origam-audio :src="src" :waveform="true">
-    <template #waveform="{ peaks, currentTime, duration }">
-        <div class="bars">
-            <div
-                v-for="(peak, i) in peaks"
-                :key="i"
-                class="bars__bar"
-                :class="{
-                    'bars__bar--played': duration > 0 && (i / peaks.length) <= (currentTime / duration)
-                }"
-                :style="{ height: Math.max(2, peak * 100) + '%' }"
-            />
-        </div>
-    </template>
-</origam-audio>
-```
-
-The default `<canvas>` painter is replaced by your markup. Bindings :
-`peaks` (0..1 amplitudes), `currentTime` (seconds), `duration` (seconds).
-
-### Forward waveform peaks to an external visualiser
+### Expanded with waveform
 
 ```vue
 <origam-audio
     :src="src"
+    title="Daydream"
+    artist="Origam DS Cast"
+    album="Season 3"
+    cover="https://picsum.photos/seed/audio/256"
+    variant="expanded"
     :waveform="true"
-    @waveform="onPeaks"
 />
 ```
 
-The `waveform` event fires once per recomputation (typically when `src`
-changes). Use it to feed a global analytics pipeline, persist the peaks
-for offline rendering, or pipe them into a sibling component.
-
-### Downloadable + Remote Playback (Cast / AirPlay)
+### Compact dock pinned to the bottom
 
 ```vue
 <origam-audio
-    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-    :downloadable="true"
-    :allow-remote-playback="true"
-    download-filename="origam-podcast-ep-42.mp3"
+    :src="src"
+    variant="compact"
+    position="sticky"
+    bottom="0"
+    title="Pinned"
+    artist="Origam"
+    :cover="cover"
 />
 ```
 
-The cast button only renders when the Remote Playback API reports an
-available device on the local network.
-
-### Custom `#metadata` slot
+### Branded surface
 
 ```vue
-<origam-audio :src="src">
-    <template #metadata>
-        <div class="hero">
-            <origam-img :src="albumArt" class="hero__art" />
-            <div class="hero__text">
-                <strong>{{ track.title }}</strong>
-                <span>{{ track.album }} · {{ track.year }}</span>
-                <origam-rating-field :model-value="track.rating" readonly />
-            </div>
-        </div>
-    </template>
-</origam-audio>
+<origam-audio
+    :src="src"
+    bg-color="primary"
+    color="surface"
+    title="Branded"
+    artist="Origam DS"
+    album="Tokens"
+    :cover="cover"
+/>
 ```
 
-### Custom `#controls` slot — full override
+### Playlist controller (consuming `previous` / `next`)
 
 ```vue
-<origam-audio :src="src">
-    <template #controls="{ state, methods }">
-        <button @click="methods.toggle()">
-            {{ state.playing.value ? 'Pause' : 'Play' }}
-        </button>
-        <input
-            type="range"
-            min="0"
-            :max="state.duration.value"
-            :value="state.currentTime.value"
-            @input="methods.seek(Number($event.target.value))"
-        >
-    </template>
-</origam-audio>
+<origam-audio
+    :src="currentTrack.src"
+    :title="currentTrack.title"
+    :artist="currentTrack.artist"
+    :cover="currentTrack.cover"
+    @previous="playlist.previous()"
+    @next="playlist.next()"
+    @ended="playlist.next()"
+/>
 ```
 
-The slot bindings expose the same `state` / `methods` as `useAudioPlayer`,
-so any control surface can replace the default `<OrigamMediaController>`.
+When a `previous` / `next` listener is bound, the component still falls
+back to skipping ±10 s on the current track internally — the consumer
+gets the emit AND the user gets a useful default in isolation.
+
+### Native fallback
+
+```vue
+<origam-audio :src="src" controls="native" />
+```
+
+Renders the browser's built-in audio bar. The transport `<nav>` is not
+mounted.
 
 ## Accessibility
 
-- The underlying `<audio>` element is keyboard-accessible by default
-  (play/pause via the platform shortcuts).
-- The controls shell labels every button through `origam.media.*` i18n
-  keys (`play`, `pause`, `mute`, `unmute`, `volume`, `seek`, `settings`,
-  `back`, `playbackSpeed`, …) so localisation Just Works.
-- The metadata strip uses semantic HTML (`<strong>` for the title,
-  ordinary text for the artist) so screen readers announce the track
-  before the controls.
-- The `<OrigamMediaScrubber>` inside the shell exposes
-  `role="slider"`, `aria-orientation`, `aria-valuemin / max / now /
-  text` plus the full keyboard contract (Arrow keys, Home, End, PageUp,
-  PageDown).
-- When `autoplay` is requested AND the user has
-  `prefers-reduced-motion: reduce`, autoplay is suppressed — the user
-  presses play to start.
+- Root is `<article>` so screen readers announce the player as a
+  self-contained region.
+- Cover lives in a `<figure>` (no `<figcaption>` by default because the
+  cover is decorative when the metadata header carries the same info).
+- Transport row is `<nav aria-label="Transport controls">` so users can
+  jump to it via the rotor / landmark menu.
+- Every button carries a translated `aria-label`. The loop button also
+  exposes `aria-pressed`.
+- `accent-color: var(--origam-audio---accent-color)` on the root paints
+  both scrubbers via the platform's native tint (no JS, no canvas).
+- `autoplay` is suppressed when the user has requested reduced motion.
 
-## i18n keys
+## Notes
 
-The component consumes the shared media namespace via
-`<OrigamMediaController>`:
-
-- `origam.media.play`, `origam.media.pause`
-- `origam.media.mute`, `origam.media.unmute`, `origam.media.volume`
-- `origam.media.seek`, `origam.media.rewind`, `origam.media.forward`,
-  `origam.media.seconds`
-- `origam.media.settings`, `origam.media.back`,
-  `origam.media.playbackSpeed`, `origam.media.normalSpeed`
-- `origam.media.quality`, `origam.media.download`
-- `origam.media.castToDevice`, `origam.media.stopCasting`
-
-No `origam.audio.*` keys are consumed directly; everything goes through
-`origam.media.*` so audio and video share the same translation contracts.
-
-## CSS variables
-
-| Variable                                       | Default                                                          | Notes                                             |
-|------------------------------------------------|------------------------------------------------------------------|---------------------------------------------------|
-| `--origam-audio---background-color`            | `var(--origam-color__surface---raised, transparent)`             | Wrapper background.                               |
-| `--origam-audio---color`                       | `inherit`                                                        | Default text colour for the wrapper.              |
-| `--origam-audio---border-radius`               | `var(--origam-radius---md, 8px)`                                 | Outer corner radius.                              |
-| `--origam-audio---gap`                         | `12px`                                                           | Gap between the metadata strip and the controls.  |
-| `--origam-audio---padding`                     | `12px`                                                           | Wrapper inner padding.                            |
-| `--origam-audio__metadata---gap`               | `12px`                                                           | Gap between cover and text block in the strip.    |
-| `--origam-audio__cover---size`                 | `64px`                                                           | Cover image square size.                          |
-| `--origam-audio__cover---border-radius`        | `var(--origam-radius---md, 8px)`                                 | Cover image corner radius.                        |
-| `--origam-audio__text---gap`                   | `2px`                                                            | Gap between title and artist lines.               |
-| `--origam-audio__title---font`                 | `600 0.95rem/1.3 inherit`                                        | Title typography.                                 |
-| `--origam-audio__title---color`                | `inherit`                                                        | Title colour.                                     |
-| `--origam-audio__artist---font`                | `0.85rem/1.3 inherit`                                            | Artist typography.                                |
-| `--origam-audio__artist---color`               | `var(--origam-color__text---secondary, inherit)`                 | Artist colour.                                    |
-| `--origam-audio__album---font`                 | `0.8rem/1.3 inherit`                                             | Album typography.                                 |
-| `--origam-audio__album---color`                | `var(--origam-color__text---tertiary, …--secondary, inherit)`    | Album colour (falls back to secondary).           |
-| `--origam-audio__waveform---height`            | `56px`                                                           | Waveform canvas height.                           |
-| `--origam-audio__waveform---color`             | `currentColor`                                                   | Default waveform stroke (inherits from wrapper).  |
-| `--origam-audio__waveform---color-played`      | `var(--origam-color__accent---base, currentColor)`               | Played bars colour. Override for branded themes.  |
-| `--origam-audio__waveform---color-unplayed`    | `color-mix(in srgb, currentColor 35%, transparent)`              | Unplayed bars colour.                             |
-| `--origam-audio__loading---font-size`          | `0.875rem`                                                       | Loading overlay text size.                        |
-| `--origam-audio__loading---color`              | `inherit`                                                        | Loading overlay colour.                           |
-| `--origam-audio--error---*`                    | (see component source)                                           | Error overlay tokens — background, colour, font, radius, padding, gap, icon size. |
-
-Override any of them at the wrapper level (`<origam-audio style="--origam-audio---padding: 16px;" />`) or in a parent stylesheet.
-
-## Related
-
-- `<OrigamMediaController>` — the controls shell composed by this component.
-- `<OrigamMediaScrubber>` — the slider used inside the shell for the scrubber and the volume.
-- `<OrigamVideo>` — the video equivalent, same shell + video-specific extras.
-- `useAudioPlayer()` — composable returning `{ state, methods }` for an `<audio>` ref. Located at `src/composables/Audio/use-audio-player.composable.ts`.
-- `useMediaPlayer()` — the shared base composable. Located at `src/composables/Media/use-media-player.composable.ts`. `useAudioPlayer` is a thin wrapper.
-- `useWaveform()` — headless waveform decoder (fetch → `OfflineAudioContext` → downsample to peaks). Located at `src/composables/Audio/use-waveform.composable.ts`. Exposed standalone for consumers who want the peaks without `<OrigamAudio>`.
+- The component does NOT mount `<OrigamMediaController>` — the
+  Stemtracks transport is composed directly from the atomic media
+  sub-components so the `expanded` layout can ship its bespoke spacing
+  + the waveform mini scrubber.
+- The `accent-color` CSS property on the root means both scrubbers
+  inherit the audio's accent without manual wiring. To override per
+  player, set `--origam-audio---accent-color` on the instance.
+- The default background (`rgba(14, 14, 16, 0.92)`) is intentionally
+  near-black to evoke a studio strip. Pass `bgColor` (intent or hex)
+  to override.

@@ -2,6 +2,9 @@ export * from './Icon/mdi.enum'
 
 export * from './Img/img.enum'
 
+export * from './Audio/audio-variant.enum'
+export * from './Audio/cover-position.enum'
+
 export * from './Chart/chart.enum'
 
 export * from './Code/code-lang.enum'
@@ -74,6 +77,8 @@ export * from './Parallax/parallax-easing.enum'
 export * from './DataTable/data-table.enum'
 
 export * from './DatePicker/date-picker.enum'
+
+export * from './SliderField/slider-field-variant.enum'
 
 export * from './Tabs/tab-variant.enum'
 

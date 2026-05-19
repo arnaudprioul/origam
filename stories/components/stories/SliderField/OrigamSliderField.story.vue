@@ -18,6 +18,10 @@
 					disabled: false,
 					readonly: false,
 					error: false,
+					variant: 'field',
+					buffered: undefined,
+					showThumbOnHoverOnly: false,
+					showHoverTooltip: false,
 				})"
 		>
 			<template #default="{ state }">
@@ -29,17 +33,21 @@
 				<div data-cy="slider-playground-status">value = {{ playgroundModel }}</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.label"    title="label"/>
-				<HstSelect   v-model="state.color"    title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.density"  title="density" :options="densityList"/>
-				<HstSlider   v-model="state.min"      title="min"     :min="-100" :max="0"/>
-				<HstSlider   v-model="state.max"      title="max"     :min="1"    :max="200"/>
-				<HstSlider   v-model="state.step"     title="step"    :min="1"    :max="50"/>
-				<HstCheckbox v-model="state.range"    title="range"/>
-				<HstCheckbox v-model="state.reverse"  title="reverse"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstCheckbox v-model="state.error"    title="error"/>
+				<HstText     v-model="state.label"                title="label"/>
+				<HstSelect   v-model="state.variant"              title="variant"  :options="sliderFieldVariantList"/>
+				<HstSelect   v-model="state.color"                title="color"    :options="intentList"/>
+				<HstSelect   v-model="state.density"              title="density"  :options="densityList"/>
+				<HstSlider   v-model="state.min"                  title="min"      :min="-100" :max="0"/>
+				<HstSlider   v-model="state.max"                  title="max"      :min="1"    :max="200"/>
+				<HstSlider   v-model="state.step"                 title="step"     :min="1"    :max="50"/>
+				<HstSlider   v-model="state.buffered"             title="buffered" :min="0"    :max="100"/>
+				<HstCheckbox v-model="state.range"                title="range"/>
+				<HstCheckbox v-model="state.reverse"              title="reverse"/>
+				<HstCheckbox v-model="state.disabled"             title="disabled"/>
+				<HstCheckbox v-model="state.readonly"             title="readonly"/>
+				<HstCheckbox v-model="state.error"                title="error"/>
+				<HstCheckbox v-model="state.showThumbOnHoverOnly" title="showThumbOnHoverOnly"/>
+				<HstCheckbox v-model="state.showHoverTooltip"     title="showHoverTooltip"/>
 			</template>
 		</Variant>
 
@@ -271,6 +279,97 @@
 		</Variant>
 
 		<Variant
+				title="Variant — variant=timer (video scrubber)"
+				:init-state="() => useStoryInitState<{ buffered: number, showHoverTooltip: boolean }>({ buffered: 65, showHoverTooltip: true })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px; background: #111; border-radius: 8px;">
+					<small style="color: rgba(255,255,255,0.6);">Sober video-scrubber look — no input chrome, hairline rail, thumb hidden until hover.</small>
+					<origam-slider-field
+							v-model="timerModel"
+							variant="timer"
+							color="primary"
+							:buffered="state.buffered"
+							:show-hover-tooltip="state.showHoverTooltip"
+							:format-hover-tooltip="formatTimerHover"
+							:min="0"
+							:max="100"
+							label="Playback timeline"
+							data-cy="slider-timer"
+					/>
+					<div data-cy="slider-timer-status" style="color: rgba(255,255,255,0.8);">value = {{ timerModel }} / buffered = {{ state.buffered }}</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider   v-model="state.buffered"         title="buffered"         :min="0" :max="100"/>
+				<HstCheckbox v-model="state.showHoverTooltip" title="showHoverTooltip"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Variant — variant=audio (waveform)"
+				:init-state="() => useStoryInitState<{ buffered: number }>({ buffered: 80 })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px; background: #111; border-radius: 8px;">
+					<small style="color: rgba(255,255,255,0.6);">Waveform background painted from `peaks` — bars left of the thumb use the active color, bars right use a 35 % mix.</small>
+					<origam-slider-field
+							v-model="audioModel"
+							variant="audio"
+							color="primary"
+							:buffered="state.buffered"
+							:peaks="demoPeaks"
+							:show-hover-tooltip="true"
+							:format-hover-tooltip="formatTimerHover"
+							:min="0"
+							:max="100"
+							label="Audio waveform"
+							data-cy="slider-audio"
+					/>
+					<div data-cy="slider-audio-status" style="color: rgba(255,255,255,0.8);">value = {{ audioModel }} / peaks = {{ demoPeaks.length }} bars</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider v-model="state.buffered" title="buffered" :min="0" :max="100"/>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Variant — buffered (media loaded indicator)"
+				:init-state="() => useStoryInitState<{ buffered: number }>({ buffered: 50 })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<small>The `buffered` prop renders a secondary fill at reduced opacity between `min` and `buffered`. Works for every variant.</small>
+					<origam-slider-field
+							v-model="bufferedFieldModel"
+							variant="field"
+							color="primary"
+							:buffered="state.buffered"
+							:min="0"
+							:max="100"
+							label="variant=field"
+							data-cy="slider-buffered-field"
+					/>
+					<origam-slider-field
+							v-model="bufferedTimerModel"
+							variant="timer"
+							color="primary"
+							:buffered="state.buffered"
+							:min="0"
+							:max="100"
+							label="variant=timer"
+							data-cy="slider-buffered-timer"
+					/>
+					<div data-cy="slider-buffered-status">field = {{ bufferedFieldModel }} / timer = {{ bufferedTimerModel }} / buffered = {{ state.buffered }}</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider v-model="state.buffered" title="buffered" :min="0" :max="100"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — disabled, readonly & error"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
 		>
@@ -308,132 +407,6 @@
 			</template>
 		</Variant>
 
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — append">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
-				<template #append>
-					<origam-icon :icon="MDI_ICONS.HEART"/>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
-				<span>Custom slot content</span>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — details">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
-				<template #details>
-					<span>Custom details area</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — label">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
-				<template #label>
-					<span>Custom label</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — message">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume" :error-messages="['Error message']">
-				<template #message="{ message }">
-					<span>{{ message }}</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — messages">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume" :error-messages="['Error one', 'Error two']">
-				<template #messages>
-					<span>Custom messages area</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — prepend">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
-				<template #prepend>
-					<origam-icon :icon="MDI_ICONS.HEART"/>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — thumb.label">
-			<origam-slider-field v-model="stepModel" :min="0" :max="100" label="Volume">
-				<template #thumb.label="{ value }">
-					<span>{{ value }}%</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — thumb.labelStart">
-			<origam-slider-field v-model="rangeModel" :min="0" :max="100" label="Price range" range>
-				<template #thumb.labelStart="{ value }">
-					<span>{{ value }}</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<Variant title="Slot — thumb.labelStop">
-			<origam-slider-field v-model="rangeModel" :min="0" :max="100" label="Price range" range>
-				<template #thumb.labelStop="{ value }">
-					<span>{{ value }}</span>
-				</template>
-			</origam-slider-field>
-		</Variant>
-
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — end">
-			<origam-slider-field
-					v-model="emitModel"
-					:min="0"
-					:max="100"
-					label="Drag to end"
-					data-cy="slider-emit-end"
-					@end="logEvent('end', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — start">
-			<origam-slider-field
-					v-model="emitModel"
-					:min="0"
-					:max="100"
-					label="Drag to start"
-					data-cy="slider-emit-start"
-					@start="logEvent('start', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:focused">
-			<origam-slider-field
-					v-model="emitModel"
-					:min="0"
-					:max="100"
-					label="Focus me"
-					data-cy="slider-emit-focused"
-					@update:focused="logEvent('update:focused', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<origam-slider-field
-					v-model="emitModel"
-					:min="0"
-					:max="100"
-					label="Move me"
-					data-cy="slider-emit-update"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-			<div data-cy="slider-emit-status">value = {{ emitModel }}</div>
-		</Variant>
 	</Story>
 </template>
 
@@ -442,11 +415,10 @@
 		setup
 >
 	import { ref } from 'vue'
-	import { logEvent } from 'histoire/client'
 
-	import { OrigamIcon, OrigamSliderField } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
+	import { OrigamSliderField } from '@origam/components'
 	import type { IColorProps, IOptions, ISliderFieldProps } from '@origam/interfaces'
+	import type { TSliderFieldVariant } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
@@ -455,15 +427,18 @@
 		hoverList
 	} from '@stories/const'
 
-	const colorModel      = ref(50)
-	const rangeModel      = ref([20, 80])
-	const stepModel       = ref(50)
-	const ticksModel      = ref(50)
-	const directionModel  = ref(50)
-	const reverseModel    = ref(50)
-	const statesModel     = ref(40)
-	const emitModel       = ref(50)
-	const playgroundModel = ref(50)
+	const colorModel         = ref(50)
+	const rangeModel         = ref([20, 80])
+	const stepModel          = ref(50)
+	const ticksModel         = ref(50)
+	const directionModel     = ref(50)
+	const reverseModel       = ref(50)
+	const statesModel        = ref(40)
+	const playgroundModel    = ref(50)
+	const timerModel         = ref(35)
+	const audioModel         = ref(50)
+	const bufferedFieldModel = ref(30)
+	const bufferedTimerModel = ref(30)
 
 	const ticksList: Array<IOptions<string>> = [
 		{ label: 'always', value: 'always' },
@@ -473,6 +448,28 @@
 		{ label: 'horizontal', value: 'horizontal' },
 		{ label: 'vertical',   value: 'vertical'   },
 	]
+
+	const sliderFieldVariantList: Array<IOptions<TSliderFieldVariant>> = [
+		{ label: 'field (default)', value: 'field' },
+		{ label: 'timer',           value: 'timer' },
+		{ label: 'audio',           value: 'audio' },
+	]
+
+	const formatTimerHover = (value: number): string => {
+		const totalSeconds = Math.round(value * 1.8)
+		const minutes = Math.floor(totalSeconds / 60)
+		const seconds = totalSeconds % 60
+		return `${minutes}:${String(seconds).padStart(2, '0')}`
+	}
+
+	const demoPeaks: ReadonlyArray<number> = Array.from({ length: 200 }, (_, index) => {
+		const phase = (index / 200) * Math.PI * 6
+		const envelope = 0.6 + 0.35 * Math.sin(phase * 0.5)
+		const detail = 0.35 * Math.sin(phase * 2.7) + 0.15 * Math.sin(phase * 5.1)
+		const noise = ((index * 9301 + 49297) % 233280) / 233280 * 0.18
+		const raw = envelope + detail + noise
+		return Math.max(0.05, Math.min(1, Math.abs(raw)))
+	})
 </script>
 
 <docs lang="md" src="@docs/components/SliderField/OrigamSliderField.md"/>

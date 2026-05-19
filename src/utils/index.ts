@@ -1,3 +1,5 @@
+export * from './Media/format-time.util'
+
 export * from './Commons/anchor.util'
 export * from './Commons/border.util'
 export * from './Commons/color.util'
@@ -51,8 +53,6 @@ export * from './List/list-item.util'
 export * from './Transition/transition.util'
 
 export * from './Slide/slide-group.util'
-
-export * from './SliderField/slider-field.util'
 
 export * from './Parallax/parallax-element.util'
 

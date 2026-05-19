@@ -1,8 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
 
 /**
- * <OrigamAudio> — runtime probes for the audio component built on top
- * of <OrigamMediaController>.
+ * <OrigamAudio> — runtime probes for the Stemtracks-style audio shell
+ * built directly from the atomic media sub-components (OrigamMediaPlayBtn,
+ * OrigamMediaVolumeControl, OrigamMediaTimeLabel, OrigamMediaCastBtn,
+ * OrigamMediaConfigMenu) and two OrigamSliderField scrubbers
+ * (`variant="audio"` for the waveform, `variant="timer"` for the inline
+ * transport scrubber).
  *
  * Variants are reached via their dedicated titles — never via the
  * HstSelect picker dropdown (custom DOM, brittle).
@@ -29,7 +33,7 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
 }
 
 test.describe('OrigamAudio — Default playground', () => {
-    test('mounts the <audio> element and the controller shell', async ({ page }) => {
+    test('mounts the <audio> element and the transport <nav>', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
@@ -40,7 +44,25 @@ test.describe('OrigamAudio — Default playground', () => {
         const tag = await audio.evaluate((node) => node.tagName)
         expect(tag).toBe('AUDIO')
 
-        await expect(host.locator('[data-cy="origam-audio-controls"]').first()).toBeVisible()
+        const nav = host.locator('[data-cy="origam-audio-controls"]').first()
+        await expect(nav).toBeVisible()
+        expect(await nav.evaluate((node) => node.tagName)).toBe('NAV')
+    })
+
+    test('uses the semantic <article> root + <figure> cover + <header> metadata', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="audio-default-player"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        expect(await host.evaluate((node) => node.tagName)).toBe('ARTICLE')
+        const cover = host.locator('[data-cy="origam-audio-cover-figure"]').first()
+        await expect(cover).toBeVisible()
+        expect(await cover.evaluate((node) => node.tagName)).toBe('FIGURE')
+        const meta = host.locator('[data-cy="origam-audio-metadata"]').first()
+        await expect(meta).toBeVisible()
+        expect(await meta.evaluate((node) => node.tagName)).toBe('HEADER')
     })
 
     test('renders title, artist, and cover when provided', async ({ page }) => {
@@ -56,7 +78,7 @@ test.describe('OrigamAudio — Default playground', () => {
     })
 
     test('hides the metadata strip in the bare single-track Variant', async ({ page }) => {
-        await openVariant(page, 'Variant — single track')
+        await openVariant(page, 'Variant — single track (no metadata)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="audio-single-player"]').first()
@@ -71,13 +93,11 @@ test.describe('OrigamAudio — play / pause toggle', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const playBtn = sandbox.locator('[data-cy="origam-media-controller-play"]').first()
+        const playBtn = sandbox.locator('[data-cy="origam-audio-play"]').first()
         await expect(playBtn).toBeVisible({ timeout: 8000 })
         await expect(playBtn).toHaveAttribute('aria-label', /play/i)
 
         await playBtn.click()
-        // Chromium honours the user gesture and starts playback; the
-        // composable flips the aria-label to "Pause".
         await expect(playBtn).toHaveAttribute('aria-label', /pause/i, { timeout: 5000 })
 
         await playBtn.click()
@@ -94,15 +114,15 @@ test.describe('OrigamAudio — playback rate via cog menu', () => {
         const audio = host.locator('[data-cy="origam-audio-el"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        const cog = sandbox.locator('[data-cy="origam-media-controller-config"]').first()
+        const cog = sandbox.locator('[data-cy="origam-audio-config"]').first()
         await expect(cog).toBeVisible({ timeout: 8000 })
         await cog.click()
 
-        const openSpeed = sandbox.locator('[data-cy="origam-media-controller-config-open-speed"]').first()
+        const openSpeed = sandbox.locator('[data-cy="origam-audio-config-open-speed"]').first()
         await expect(openSpeed).toBeVisible({ timeout: 5000 })
         await openSpeed.click()
 
-        const twoX = sandbox.locator('[data-cy="origam-media-controller-config-rate-2"]').first()
+        const twoX = sandbox.locator('[data-cy="origam-audio-config-rate-2"]').first()
         await expect(twoX).toBeVisible({ timeout: 5000 })
         await twoX.click()
 
@@ -113,8 +133,8 @@ test.describe('OrigamAudio — playback rate via cog menu', () => {
 })
 
 test.describe('OrigamAudio — controls=native', () => {
-    test('the <audio> carries the native controls attribute and the controller is NOT mounted', async ({ page }) => {
-        await openVariant(page, 'Variant — controls="native"')
+    test('the <audio> carries the native controls attribute and the transport is NOT mounted', async ({ page }) => {
+        await openVariant(page, 'Variant — controls=native')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="audio-native-player"]').first()
@@ -136,11 +156,11 @@ test.describe('OrigamAudio — downloadable', () => {
         const host = sandbox.locator('[data-cy="audio-downloadable-player"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        const cog = sandbox.locator('[data-cy="origam-media-controller-config"]').first()
+        const cog = sandbox.locator('[data-cy="origam-audio-config"]').first()
         await expect(cog).toBeVisible({ timeout: 8000 })
         await cog.click()
 
-        const download = sandbox.locator('[data-cy="origam-media-controller-config-download"]').first()
+        const download = sandbox.locator('[data-cy="origam-audio-config-download"]').first()
         await expect(download).toBeVisible({ timeout: 5000 })
     })
 })
@@ -155,23 +175,139 @@ test.describe('OrigamAudio — Remote Playback availability gate (headless cavea
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        await expect(sandbox.locator('[data-cy="origam-media-controller-cast"]')).toHaveCount(0)
+        await expect(sandbox.locator('[data-cy="origam-audio-cast"]')).toHaveCount(0)
     })
 })
 
-test.describe('OrigamAudio — slot overrides', () => {
-    test('the #metadata + #controls slots fully replace the default rendering', async ({ page }) => {
-        await openVariant(page, 'Slot — override #metadata and #controls')
+test.describe('OrigamAudio — variant routing', () => {
+    test('expanded variant renders the waveform mini scrubber', async ({ page }) => {
+        await openVariant(page, 'Variant — variant=expanded')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-slots-player"]').first()
+        const host = sandbox.locator('[data-cy="audio-expanded-player"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
+        await expect(host.locator('[data-cy="origam-audio-waveform"]')).toBeVisible()
+    })
 
-        await expect(sandbox.locator('[data-cy="audio-slots-meta"]').first()).toBeVisible()
-        await expect(sandbox.locator('[data-cy="audio-slots-controls"]').first()).toBeVisible()
+    test('compact variant hides the waveform mini scrubber', async ({ page }) => {
+        await openVariant(page, 'Variant — variant=compact')
+        const sandbox = sandboxOf(page)
 
-        // The default controller is replaced — there should be no
-        // controller wrapper rendered when the slot is provided.
-        await expect(host.locator('[data-cy="origam-audio-controls"]')).toHaveCount(0)
+        const host = sandbox.locator('[data-cy="audio-compact-player"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+        await expect(host.locator('[data-cy="origam-audio-waveform"]')).toHaveCount(0)
+    })
+
+    test('cover-position=right swaps the grid columns', async ({ page }) => {
+        await openVariant(page, 'Variant — coverPosition=right')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="audio-cover-right-player"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+        const classes = await host.evaluate((node) => Array.from(node.classList))
+        expect(classes).toContain('origam-audio--cover-right')
+    })
+})
+
+test.describe('OrigamAudio — transport navigation', () => {
+    test('previous and next buttons are mounted with translated aria-labels', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const previous = sandbox.locator('[data-cy="origam-audio-previous"]').first()
+        const next = sandbox.locator('[data-cy="origam-audio-next"]').first()
+        await expect(previous).toBeVisible({ timeout: 8000 })
+        await expect(next).toBeVisible()
+        await expect(previous).toHaveAttribute('aria-label', /previous/i)
+        await expect(next).toHaveAttribute('aria-label', /next/i)
+    })
+})
+
+test.describe('OrigamAudio — scrubber drag fluidity', () => {
+    /**
+     * Drag-fluidity probe — synthesise N pointer events on the inline
+     * timer scrubber via JS (Chromium's HostFunction injection runs in
+     * the page context, no PointerEvent constructor latency). The
+     * SliderField rewrite (Phase 2) targets ≤ 50 ms/event end-to-end;
+     * audio reuses the same component so the budget transfers.
+     *
+     * We measure the wall-clock spread across 30 synthetic pointermove
+     * events on the inline timer scrubber's native <input type="range">.
+     * Browser engines coalesce pointermoves to ≤ 1 per frame (~16ms),
+     * so the realistic floor sits around 16 ms/event; the assertion
+     * keeps the ceiling at 50 ms to absorb headless variance.
+     */
+    test('the inline timer scrubber sustains ≤ 50 ms/event under sustained drag', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const scrubber = sandbox.locator('[data-cy="origam-audio-scrubber"]').first()
+        await expect(scrubber).toBeVisible({ timeout: 8000 })
+
+        const perMs = await scrubber.evaluate((node) => {
+            const input = node.querySelector('input[type="range"]') as HTMLInputElement | null
+            if (!input) return Number.NaN
+            const rect = input.getBoundingClientRect()
+            const startX = rect.left + 4
+            const endX = rect.right - 4
+            const y = rect.top + rect.height / 2
+            const count = 30
+            const start = performance.now()
+            for (let i = 0; i < count; i++) {
+                const x = startX + ((endX - startX) * i) / (count - 1)
+                input.dispatchEvent(new PointerEvent('pointermove', {
+                    clientX: x,
+                    clientY: y,
+                    bubbles: true,
+                    cancelable: true,
+                    pointerType: 'mouse'
+                }))
+                input.dispatchEvent(new Event('input', { bubbles: true }))
+            }
+            const elapsed = performance.now() - start
+            return elapsed / count
+        })
+
+        // eslint-disable-next-line no-console
+        console.log(`[probe] inline timer scrubber per-event: ${ perMs.toFixed(2) } ms`)
+        expect(Number.isFinite(perMs)).toBe(true)
+        expect(perMs).toBeLessThanOrEqual(50)
+    })
+
+    test('the waveform mini scrubber sustains ≤ 50 ms/event under sustained drag', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const waveform = sandbox.locator('[data-cy="origam-audio-waveform-slider"]').first()
+        await expect(waveform).toBeVisible({ timeout: 8000 })
+
+        const perMs = await waveform.evaluate((node) => {
+            const input = node.querySelector('input[type="range"]') as HTMLInputElement | null
+            if (!input) return Number.NaN
+            const rect = input.getBoundingClientRect()
+            const startX = rect.left + 4
+            const endX = rect.right - 4
+            const y = rect.top + rect.height / 2
+            const count = 30
+            const start = performance.now()
+            for (let i = 0; i < count; i++) {
+                const x = startX + ((endX - startX) * i) / (count - 1)
+                input.dispatchEvent(new PointerEvent('pointermove', {
+                    clientX: x,
+                    clientY: y,
+                    bubbles: true,
+                    cancelable: true,
+                    pointerType: 'mouse'
+                }))
+                input.dispatchEvent(new Event('input', { bubbles: true }))
+            }
+            const elapsed = performance.now() - start
+            return elapsed / count
+        })
+
+        // eslint-disable-next-line no-console
+        console.log(`[probe] waveform mini scrubber per-event: ${ perMs.toFixed(2) } ms`)
+        expect(Number.isFinite(perMs)).toBe(true)
+        expect(perMs).toBeLessThanOrEqual(50)
     })
 })

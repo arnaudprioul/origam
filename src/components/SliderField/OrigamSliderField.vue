@@ -1,5 +1,6 @@
 <template>
 	<origam-input
+			v-if="isFieldVariant"
 			ref="origamInputRef"
 			:class="sliderFieldClasses"
 			:focused="isFocused"
@@ -30,113 +31,166 @@
 
 				<div
 						class="origam-slider-field__container"
-						@mousedown="handleSliderMousedown"
-						@touchstartPassive="handleSliderTouchstart"
+						@click="handleContainerClick"
+						@pointermove="handleHoverPointerMove"
+						@pointerleave="handleHoverPointerLeave"
 				>
-
 					<origam-slider-field-track
-							ref="origamSliderFieldTrackRef"
+							:bg-color="bgColor"
+							:color="color"
+							:disabled="isDisabled"
+							:error="error"
+							:index-from-end="indexFromEnd"
+							:is-vertical="isVertical"
+							:max="resolvedMax"
+							:min="resolvedMin"
+							:show-ticks="showTicks"
 							:start="isRange ? trackRangeStart : 0"
 							:stop="isRange ? trackRangeStop : trackStop"
+							:tick-size="tickSize"
+							:ticks="parsedTicks"
 							class="origam-slider-field__track"
 							v-bind="{...trackProps}"
+					>
+						<template
+								v-if="$slots.item"
+								#item="itemSlotProps"
+						>
+							<slot
+									name="item"
+									v-bind="itemSlotProps"
+							/>
+						</template>
+					</origam-slider-field-track>
+
+					<div
+							v-if="hasBuffered"
+							class="origam-slider-field__buffered"
+							:style="bufferedStyles"
+							aria-hidden="true"
 					/>
 
 					<template v-if="!isRange">
 						<input
 								:id="id"
+								:aria-describedby="messagesId"
+								:aria-label="label"
+								:class="nativeInputClasses(false)"
 								:disabled="isDisabled"
+								:max="resolvedMax"
+								:min="resolvedMin"
 								:name="name || id"
+								:orient="isVertical ? 'vertical' : undefined"
 								:readonly="isReadonly"
-								:value="model"
-								tabindex="-1"
+								:step="resolvedStep || 'any'"
+								:style="nativeInputStyles(modelPercentage)"
+								:value="singleValue"
+								class="origam-slider-field__input"
+								type="range"
+								@blur="handleBlur"
+								@change="handleSingleChange"
+								@focus="handleFocus"
+								@input="handleSingleInput"
+								@pointerdown="handleStart"
+								@pointerup="handleEnd"
+								@touchend="handleEnd"
+								@touchstart="handleStart"
 						/>
 
-						<origam-slider-field-thumb
-								ref="origamSliderFieldThumbRef"
-								:aria-describedby="messagesId"
-								:focused="isFocused"
-								:max="max"
-								:min="min"
-								:model-value="model"
-								:position="trackStop"
-								class="origam-slider-field__thumb"
-								v-bind="{...thumbProps}"
-								@blur="handleBlur"
-								@focus="handleFocus"
-								@update:model-value="handleUpdateModelValue"
+						<div
+								:class="thumbClasses(isFocused)"
+								:style="thumbStyles(modelPercentage)"
+								aria-hidden="true"
 						>
-							<template
-									v-if="slots['thumb.label']"
-									#default
-							>
-								<slot name="thumb.label"/>
-							</template>
-						</origam-slider-field-thumb>
+							<div
+									:class="thumbSurfaceClasses"
+									:style="thumbSurfaceStyles"
+							/>
+						</div>
 					</template>
 					<template v-else>
 						<input
 								:id="`${id}__start`"
-								:disabled="isDisabled"
-								:name="name || id"
-								:readonly="isReadonly"
-								:value="model[0]"
-								tabindex="-1"
-						/>
-
-						<origam-slider-field-thumb
-								ref="origamSliderFieldStartThumbRef"
 								:aria-describedby="messagesId"
-								:focused="isFocused && activeThumbRef === origamSliderFieldStartThumbRef?.$el"
-								:max="model[1]"
-								:min="min"
-								:model-value="model[0]"
-								:position="trackRangeStart"
-								class="origam-slider-field__thumb origam-slider-field__thumb--start"
-								v-bind="{...thumbProps}"
+								:aria-label="label ? `${label} (start)` : undefined"
+								:class="nativeInputClasses(false)"
+								:disabled="isDisabled"
+								:max="resolvedMax"
+								:min="resolvedMin"
+								:name="name || id"
+								:orient="isVertical ? 'vertical' : undefined"
+								:readonly="isReadonly"
+								:step="resolvedStep || 'any'"
+								:style="nativeInputStyles(rangeStartPercentage)"
+								:value="rangeValue[0]"
+								class="origam-slider-field__input origam-slider-field__input--start"
+								type="range"
 								@blur="handleBlur"
+								@change="handleRangeStartChange"
 								@focus="handleRangeFocusStart"
-								@update:model-value="handleUpdateModelValue"
-						>
-							<template
-									v-if="slots['thumb.labelStart']"
-									#default
-							>
-								<slot name="thumb.labelStart"/>
-							</template>
-						</origam-slider-field-thumb>
+								@input="handleRangeStartInput"
+								@pointerdown="handleStart"
+								@pointerup="handleEnd"
+								@touchend="handleEnd"
+								@touchstart="handleStart"
+						/>
 
 						<input
 								:id="`${id}__stop`"
+								:aria-describedby="messagesId"
+								:aria-label="label ? `${label} (end)` : undefined"
+								:class="nativeInputClasses(true)"
 								:disabled="isDisabled"
+								:max="resolvedMax"
+								:min="resolvedMin"
 								:name="name || id"
+								:orient="isVertical ? 'vertical' : undefined"
 								:readonly="isReadonly"
-								:value="model[1]"
-								tabindex="-1"
+								:step="resolvedStep || 'any'"
+								:style="nativeInputStyles(rangeStopPercentage)"
+								:value="rangeValue[1]"
+								class="origam-slider-field__input origam-slider-field__input--stop"
+								type="range"
+								@blur="handleBlur"
+								@change="handleRangeStopChange"
+								@focus="handleRangeFocusStop"
+								@input="handleRangeStopInput"
+								@pointerdown="handleStart"
+								@pointerup="handleEnd"
+								@touchend="handleEnd"
+								@touchstart="handleStart"
 						/>
 
-						<origam-slider-field-thumb
-								ref="origamSliderFieldStopThumbRef"
-								:aria-describedby="messagesId"
-								:focused="isFocused && activeThumbRef === origamSliderFieldStopThumbRef?.$el"
-								:max="max"
-								:min="model[0]"
-								:model-value="model[1]"
-								:position="trackRangeStop"
-								class="origam-slider-field__thumb origam-slider-field__thumb--stop"
-								v-bind="{...thumbProps}"
-								@blur="handleBlur"
-								@focus="handleRangeFocusStop"
-								@update:model-value="handleUpdateModelValue"
+						<div
+								:class="thumbClasses(isFocused && lastInteracted === 'start')"
+								:style="thumbStyles(rangeStartPercentage)"
+								aria-hidden="true"
+								class="origam-slider-field__thumb--start"
 						>
-							<template
-									v-if="slots['thumb.labelStop']"
-									#default
-							>
-								<slot name="thumb.labelStop"/>
-							</template>
-						</origam-slider-field-thumb>
+							<div
+									:class="thumbSurfaceClasses"
+									:style="thumbSurfaceStyles"
+							/>
+						</div>
+
+						<div
+								:class="thumbClasses(isFocused && lastInteracted === 'stop')"
+								:style="thumbStyles(rangeStopPercentage)"
+								aria-hidden="true"
+								class="origam-slider-field__thumb--stop"
+						>
+							<div
+									:class="thumbSurfaceClasses"
+									:style="thumbSurfaceStyles"
+							/>
+						</div>
 					</template>
+
+					<output
+							v-if="showHoverTooltip"
+							class="origam-slider-field__hover-tooltip"
+							aria-hidden="true"
+					>{{ hoverTooltipLabel }}</output>
 				</div>
 			</slot>
 		</template>
@@ -178,6 +232,190 @@
 			/>
 		</template>
 	</origam-input>
+
+	<section
+			v-else
+			:class="bareWrapperClasses"
+			:style="sliderFieldStyles"
+			:aria-label="label"
+			:data-variant="variant"
+	>
+		<div
+				class="origam-slider-field__container"
+				@click="handleContainerClick"
+				@pointermove="handleHoverPointerMove"
+				@pointerleave="handleHoverPointerLeave"
+		>
+			<svg
+					v-if="hasPeaks"
+					class="origam-slider-field__waveform"
+					:viewBox="waveformViewBox"
+					preserveAspectRatio="none"
+					aria-hidden="true"
+			>
+				<rect
+						v-for="(peak, index) in normalizedPeaks"
+						:key="index"
+						:x="(index / normalizedPeaks.length) * 100"
+						:y="50 - (peak * 50)"
+						:width="100 / normalizedPeaks.length"
+						:height="peak * 100"
+						:class="waveformBarClass(index)"
+				/>
+			</svg>
+
+			<origam-slider-field-track
+					:bg-color="bgColor"
+					:color="color"
+					:disabled="disabled"
+					:error="error"
+					:index-from-end="indexFromEnd"
+					:is-vertical="isVertical"
+					:max="resolvedMax"
+					:min="resolvedMin"
+					:show-ticks="showTicks"
+					:start="isRange ? trackRangeStart : 0"
+					:stop="isRange ? trackRangeStop : trackStop"
+					:tick-size="tickSize"
+					:ticks="parsedTicks"
+					class="origam-slider-field__track"
+					v-bind="{...trackProps}"
+			>
+				<template
+						v-if="$slots.item"
+						#item="itemSlotProps"
+				>
+					<slot
+							name="item"
+							v-bind="itemSlotProps"
+					/>
+				</template>
+			</origam-slider-field-track>
+
+			<div
+					v-if="hasBuffered"
+					class="origam-slider-field__buffered"
+					:style="bufferedStyles"
+					aria-hidden="true"
+			/>
+
+			<template v-if="!isRange">
+				<input
+						:aria-label="label"
+						:class="nativeInputClasses(false)"
+						:disabled="disabled"
+						:max="resolvedMax"
+						:min="resolvedMin"
+						:name="name"
+						:orient="isVertical ? 'vertical' : undefined"
+						:readonly="readonly"
+						:step="resolvedStep || 'any'"
+						:style="nativeInputStyles(modelPercentage)"
+						:value="singleValue"
+						class="origam-slider-field__input"
+						type="range"
+						@blur="handleBlur"
+						@change="handleSingleChange"
+						@focus="handleFocus"
+						@input="handleSingleInput"
+						@pointerdown="handleStart"
+						@pointerup="handleEnd"
+						@touchend="handleEnd"
+						@touchstart="handleStart"
+				/>
+
+				<div
+						:class="thumbClasses(isFocused)"
+						:style="thumbStyles(modelPercentage)"
+						aria-hidden="true"
+				>
+					<div
+							:class="thumbSurfaceClasses"
+							:style="thumbSurfaceStyles"
+					/>
+				</div>
+			</template>
+			<template v-else>
+				<input
+						:aria-label="label ? `${label} (start)` : undefined"
+						:class="nativeInputClasses(false)"
+						:disabled="disabled"
+						:max="resolvedMax"
+						:min="resolvedMin"
+						:name="name ? `${name}__start` : undefined"
+						:orient="isVertical ? 'vertical' : undefined"
+						:readonly="readonly"
+						:step="resolvedStep || 'any'"
+						:style="nativeInputStyles(rangeStartPercentage)"
+						:value="rangeValue[0]"
+						class="origam-slider-field__input origam-slider-field__input--start"
+						type="range"
+						@blur="handleBlur"
+						@change="handleRangeStartChange"
+						@focus="handleRangeFocusStart"
+						@input="handleRangeStartInput"
+						@pointerdown="handleStart"
+						@pointerup="handleEnd"
+						@touchend="handleEnd"
+						@touchstart="handleStart"
+				/>
+
+				<input
+						:aria-label="label ? `${label} (end)` : undefined"
+						:class="nativeInputClasses(true)"
+						:disabled="disabled"
+						:max="resolvedMax"
+						:min="resolvedMin"
+						:name="name ? `${name}__stop` : undefined"
+						:orient="isVertical ? 'vertical' : undefined"
+						:readonly="readonly"
+						:step="resolvedStep || 'any'"
+						:style="nativeInputStyles(rangeStopPercentage)"
+						:value="rangeValue[1]"
+						class="origam-slider-field__input origam-slider-field__input--stop"
+						type="range"
+						@blur="handleBlur"
+						@change="handleRangeStopChange"
+						@focus="handleRangeFocusStop"
+						@input="handleRangeStopInput"
+						@pointerdown="handleStart"
+						@pointerup="handleEnd"
+						@touchend="handleEnd"
+						@touchstart="handleStart"
+				/>
+
+				<div
+						:class="thumbClasses(isFocused && lastInteracted === 'start')"
+						:style="thumbStyles(rangeStartPercentage)"
+						aria-hidden="true"
+						class="origam-slider-field__thumb--start"
+				>
+					<div
+							:class="thumbSurfaceClasses"
+							:style="thumbSurfaceStyles"
+					/>
+				</div>
+
+				<div
+						:class="thumbClasses(isFocused && lastInteracted === 'stop')"
+						:style="thumbStyles(rangeStopPercentage)"
+						aria-hidden="true"
+						class="origam-slider-field__thumb--stop"
+				>
+					<div
+							:class="thumbSurfaceClasses"
+							:style="thumbSurfaceStyles"
+					/>
+				</div>
+			</template>
+
+			<output
+					v-if="showHoverTooltip"
+					class="origam-slider-field__hover-tooltip"
+					aria-hidden="true"
+			>{{ hoverTooltipLabel }}</output>
+		</div>
+	</section>
 </template>
 
 <script
@@ -185,41 +423,35 @@
 		setup
 >
 	import { computed, ref, StyleValue, useSlots, WritableComputedRef } from 'vue'
-	import { OrigamInput, OrigamLabel, OrigamSliderFieldThumb, OrigamSliderFieldTrack } from '../../components'
+	import { OrigamInput, OrigamLabel, OrigamSliderFieldTrack } from '../../components'
 
 	import {
-	useFocus,
-	useProps,
-	useRtl,
-	useSlider,
-	useSteps,
-	useStyle,
-	useVModel
-} from '../../composables'
+		useBackgroundColor,
+		useFocus,
+		useProps,
+		useRtl,
+		useSteps,
+		useStyle,
+		useTextColor,
+		useVModel
+	} from '../../composables'
 
-	import { DENSITY, DIRECTION } from '../../enums'
+	import { DENSITY, DIRECTION, SLIDER_FIELD_VARIANT } from '../../enums'
 
-	import type { ISliderFieldProps} from "../../interfaces"
+	import type { ISliderFieldProps } from "../../interfaces"
 
 	import type { ISliderFieldEmits } from '../../interfaces/SliderField/slider-field.interface'
 
-	import type { TOrigamInput, TOrigamSliderFieldThumb, TOrigamSliderFieldTrack } from '../../types'
+	import type { TOrigamInput, TTick } from '../../types'
 
-	import { getSliderFieldOffset, omit } from '../../utils'
+	import { clamp, convertToUnit, createRange, omit } from '../../utils'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
-	 * Props, emits, slots and component refs.
+	 * Props, emits, slots and the focus + RTL composables.
 	 ********************************************************/
-	// NOTE: `inset` is intersected INLINE on the defineProps type so the
-	// Vue SFC compiler always picks it up from this file, even if the
-	// shared ISliderFieldProps interface was hot-reloaded after first
-	// compile (a Vite / vue-plugin caching edge case bit us before).
-	// The canonical typing lives in ISliderFieldProps; this is just a
-	// belt-and-braces re-declaration so the runtime props descriptor
-	// is always in sync.
 	const props = withDefaults(defineProps<ISliderFieldProps & { inset?: boolean }>(), {
 		min: 0,
 		max: 100,
@@ -227,7 +459,11 @@
 		step: 0,
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
-		inset: false
+		inset: false,
+		variant: 'field',
+		showThumbOnHoverOnly: false,
+		showHoverTooltip: false,
+		formatHoverTooltip: (value: number) => String(value)
 	})
 
 	const emits = defineEmits<ISliderFieldEmits>()
@@ -235,266 +471,464 @@
 	const {filterProps} = useProps<ISliderFieldProps>(props)
 
 	const origamInputRef = ref<TOrigamInput>()
-	const origamSliderFieldThumbRef = ref<TOrigamSliderFieldThumb>()
-	const origamSliderFieldTrackRef = ref<TOrigamSliderFieldTrack>()
-	const origamSliderFieldStartThumbRef = ref<TOrigamSliderFieldThumb>()
-	const origamSliderFieldStopThumbRef = ref<TOrigamSliderFieldThumb>()
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Variant routing
+	 *
+	 * @description
+	 * `variant='field'` keeps the legacy chrome (Phase-1 default).
+	 * `variant='timer' | 'audio'` drop the `<origam-input>` wrapper
+	 * for a sober media-scrubber look. Audio adds a waveform SVG.
+	 ********************************************************/
+	const isFieldVariant = computed(() => props.variant === SLIDER_FIELD_VARIANT.FIELD)
+	const isAudioVariant = computed(() => props.variant === SLIDER_FIELD_VARIANT.AUDIO)
+	const isBareVariant = computed(() => !isFieldVariant.value)
 
 	/*********************************************************
 	 * Value & Range
 	 *
 	 * @description
 	 * Model value management, range mode detection, and the
-	 * core useSlider composable wiring (drag, thumb refs,
-	 * start/end/move callbacks).
+	 * tick-aware stepping math via `useSteps`.
 	 ********************************************************/
-	const isRange = computed(() => {
-		return props.range
-	})
+	const isRange = computed(() => !!props.range)
+	const isVertical = computed(() => props.direction === DIRECTION.VERTICAL)
+	const isReversed = computed(() => !!props.reverse)
+	const indexFromEnd = computed(() => isVertical.value !== isReversed.value)
 
 	const steps = useSteps(props)
-
-	/*********************************************************
-	 * Composables
-	 ********************************************************/
-
-	const {
-		activeThumbRef,
-		min,
-		max,
-		mousePressed,
-		roundValue,
-		onSliderMousedown: handleSliderMousedown,
-		onSliderTouchstart: handleSliderTouchstart,
-		position,
-		hasLabels
-	} = useSlider({
-		origamSliderFieldTrackRef,
-		origamSliderFieldThumbRef,
-		origamSliderFieldStartThumbRef,
-		origamSliderFieldStopThumbRef,
-		props,
-		steps,
-		onSliderStart: ({value}) => {
-			if (!isRange.value) {
-				model.value = roundValue(value)
-			}
-
-			emits('start', model.value)
-		},
-		onSliderEnd: ({value}) => {
-			if (isRange.value) {
-				const modelVal = model.value as [number, number]
-
-				const newValue: [number, number] = activeThumbRef.value === origamSliderFieldStartThumbRef.value?.$el
-						? [value, modelVal[1]]
-						: [modelVal[0], value]
-
-				if (newValue[0] < newValue[1]) {
-					model.value = newValue
-				}
-			} else {
-				model.value = roundValue(value)
-			}
-
-			emits('end', model.value)
-		},
-		onSliderMove: ({value}) => {
-			if (isRange.value) {
-				const [start, stop] = model.value as [number, number]
-
-				if (start === stop && start !== min.value) {
-					activeThumbRef.value = value > start ? origamSliderFieldStopThumbRef.value?.$el : origamSliderFieldStartThumbRef.value?.$el
-					activeThumbRef.value?.focus()
-				}
-
-				if (activeThumbRef.value === origamSliderFieldStartThumbRef.value?.$el) {
-					model.value = [Math.min(value, stop), stop]
-				} else {
-					model.value = [start, Math.max(start, value)]
-				}
-			} else {
-				model.value = roundValue(value)
-			}
-		},
-		getActiveThumb: (e: MouseEvent | TouchEvent) => {
-			if (isRange.value) {
-				// Pre-fix three copy-paste typos in this branch made the
-				// STOP thumb completely unreachable in range mode:
-				//   1. `if (!start || !start)` — second clause should
-				//      check `!stop`. With STOP never validated, the
-				//      function happily proceeded with a null ref.
-				//   2. `stopOffset = …(e, START.$el, …)` — measured
-				//      the click distance to the START thumb instead
-				//      of the STOP thumb, so both offsets resolved to
-				//      the same point.
-				//   3. The ternary returned `START.$el` in BOTH
-				//      branches, so the active thumb always resolved
-				//      to START regardless of which one the user
-				//      clicked.
-				// User-reported: "je ne peux pas cliqué sur le 2eme
-				// control, je peux changé le premier mais le 2eme
-				// impossible".
-				if (!origamSliderFieldStartThumbRef.value || !origamSliderFieldStopThumbRef.value) return
-
-				const startOffset = getSliderFieldOffset(e, origamSliderFieldStartThumbRef.value.$el, props.direction)
-				const stopOffset  = getSliderFieldOffset(e, origamSliderFieldStopThumbRef.value.$el, props.direction)
-
-				const a = Math.abs(startOffset)
-				const b = Math.abs(stopOffset)
-
-				return (a < b || (a === b && startOffset < 0))
-						? origamSliderFieldStartThumbRef.value.$el
-						: origamSliderFieldStopThumbRef.value.$el
-			} else {
-				return origamSliderFieldThumbRef.value?.$el
-			}
-		}
-	})
-
-	/*********************************************************
-	 * Value
-	 ********************************************************/
+	const {min: resolvedMin, max: resolvedMax, step: resolvedStep, roundValue} = steps
 
 	const model = useVModel(
 			props,
 			'modelValue',
-			isRange.value ? [min.value, max.value] : min.value,
+			isRange.value ? [resolvedMin.value, resolvedMax.value] : resolvedMin.value,
 			(value: number | string | Array<number> | Array<string> | undefined) => {
 				if (isRange.value) {
 					const array = value as Array<number> | Array<string>
-					if (!array?.length) return [min.value, max.value]
+					if (!array?.length) return [resolvedMin.value, resolvedMax.value]
 
-					return array.map((val) => steps.roundValue(val))
+					return array.map((val) => roundValue(val))
 				}
 
-				return steps.roundValue(value == null ? steps.min.value : value as number | string)
+				return roundValue(value == null ? resolvedMin.value : value as number | string)
 			}
 	) as WritableComputedRef<[number, number] | number> & { readonly externalValue: Array<number> | number }
 
+	const singleValue = computed(() => {
+		return isRange.value ? resolvedMin.value : (model.value as number)
+	})
+	const rangeValue = computed<[number, number]>(() => {
+		if (!isRange.value) return [resolvedMin.value, resolvedMax.value]
+		const v = model.value as [number, number]
+		return [v[0] ?? resolvedMin.value, v[1] ?? resolvedMax.value]
+	})
+
 	/*********************************************************
-	 * Focus
+	 * Position math
 	 *
 	 * @description
-	 * Focus state and range-thumb focus routing — ensures the
-	 * correct thumb is focused when thumbs overlap at min/max.
+	 * Pure-function value → percentage conversion, fully driven
+	 * by the native `<input type="range">` value. No JS drag
+	 * pipeline, no pointer math — the browser owns it.
 	 ********************************************************/
+	const toPercent = (val: number) => {
+		const span = resolvedMax.value - resolvedMin.value
+		if (!span) return 0
+		const pct = ((val - resolvedMin.value) / span) * 100
+		return clamp(isNaN(pct) ? 0 : pct, 0, 100)
+	}
+
+	const modelPercentage = computed(() => toPercent(singleValue.value))
+	const rangeStartPercentage = computed(() => toPercent(rangeValue.value[0]))
+	const rangeStopPercentage = computed(() => toPercent(rangeValue.value[1]))
+
+	const trackStop = computed(() => modelPercentage.value)
+	const trackRangeStart = computed(() => rangeStartPercentage.value)
+	const trackRangeStop = computed(() => rangeStopPercentage.value)
 
 	/*********************************************************
-	 * Effect
+	 * Buffered (media-scrubber parity)
+	 *
+	 * @description
+	 * `buffered` paints a secondary fill from `min` to `buffered`.
+	 * Rendered as a sibling DOM element behind the active fill —
+	 * CSS owns the visual stacking, no inline JS layout math.
 	 ********************************************************/
+	const hasBuffered = computed(() => {
+		if (typeof props.buffered !== 'number') return false
+		return Number.isFinite(props.buffered)
+	})
 
+	const bufferedPercentage = computed(() => {
+		if (!hasBuffered.value) return 0
+		const clamped = clamp(props.buffered as number, resolvedMin.value, resolvedMax.value)
+		return toPercent(clamped)
+	})
+
+	const bufferedStyles = computed<StyleValue>(() => {
+		const pct = bufferedPercentage.value
+		if (isVertical.value) {
+			return { height: `${pct}%`, bottom: '0' }
+		}
+		return indexFromEnd.value
+				? { width: `${pct}%`, insetInlineEnd: '0' }
+				: { width: `${pct}%`, insetInlineStart: '0' }
+	})
+
+	/*********************************************************
+	 * Waveform (variant='audio')
+	 *
+	 * @description
+	 * `peaks` is a `[0..1]` array drawn as vertical bars BEHIND the
+	 * track via inline SVG (a single `<svg>` sibling — `pointer-events:
+	 * none` so the native input keeps full pointer capture). The bar
+	 * fill is split at the model thumb position: left of the thumb uses
+	 * `currentColor`, right uses a 35 % mix.
+	 ********************************************************/
+	const hasPeaks = computed(() => {
+		if (!isAudioVariant.value) return false
+		const peaks = props.peaks
+		return Array.isArray(peaks) && peaks.length > 0
+	})
+
+	const normalizedPeaks = computed(() => {
+		const peaks = props.peaks ?? []
+		return peaks.map((p) => clamp(Number.isFinite(p) ? p : 0, 0, 1))
+	})
+
+	const waveformViewBox = computed(() => '0 0 100 100')
+
+	const waveformBarClass = (index: number) => {
+		const barPct = (index / Math.max(1, normalizedPeaks.value.length)) * 100
+		return barPct <= modelPercentage.value
+				? 'origam-slider-field__waveform-bar origam-slider-field__waveform-bar--active'
+				: 'origam-slider-field__waveform-bar origam-slider-field__waveform-bar--inactive'
+	}
+
+	/*********************************************************
+	 * Hover tooltip (RAF-throttled)
+	 *
+	 * @description
+	 * The X-position of the cursor on the rail is forwarded as a CSS
+	 * variable (`--origam-slider-field---hover-x`). A single pointermove
+	 * handler is RAF-throttled so the tooltip position never re-renders
+	 * more than once per frame.
+	 ********************************************************/
+	const hoverValue = ref<number | null>(null)
+	const hoverRafId = ref<number | null>(null)
+	const hoverContainerEl = ref<HTMLElement | null>(null)
+
+	const hoverTooltipLabel = computed(() => {
+		const fn = props.formatHoverTooltip
+		const value = hoverValue.value ?? 0
+		return fn ? fn(value) : String(value)
+	})
+
+	const computeHoverFromEvent = (event: PointerEvent, container: HTMLElement) => {
+		const rect = container.getBoundingClientRect()
+		const pct = isVertical.value
+				? clamp(((rect.bottom - event.clientY) / Math.max(1, rect.height)) * 100, 0, 100)
+				: clamp(((event.clientX - rect.left) / Math.max(1, rect.width)) * 100, 0, 100)
+		const adjusted = indexFromEnd.value && !isVertical.value ? 100 - pct : pct
+		const span = resolvedMax.value - resolvedMin.value
+		const rawValue = resolvedMin.value + (adjusted / 100) * span
+		hoverValue.value = roundValue(clamp(rawValue, resolvedMin.value, resolvedMax.value)) as number
+		container.style.setProperty('--origam-slider-field---hover-x', `${pct}%`)
+	}
+
+	const handleHoverPointerMove = (event: PointerEvent) => {
+		if (props.disabled) return
+		if (!props.showHoverTooltip) return
+		const container = event.currentTarget as HTMLElement | null
+		if (!container) return
+		hoverContainerEl.value = container
+		if (hoverRafId.value !== null) return
+		hoverRafId.value = requestAnimationFrame(() => {
+			hoverRafId.value = null
+			computeHoverFromEvent(event, container)
+		})
+	}
+
+	const handleHoverPointerLeave = () => {
+		if (hoverRafId.value !== null) {
+			cancelAnimationFrame(hoverRafId.value)
+			hoverRafId.value = null
+		}
+		const container = hoverContainerEl.value
+		if (container) {
+			container.style.removeProperty('--origam-slider-field---hover-x')
+		}
+		hoverValue.value = null
+	}
+
+	/*********************************************************
+	 * Ticks
+	 *
+	 * @description
+	 * Tick descriptors computed once at the parent level and
+	 * forwarded to the track as a flat array — keeps the track
+	 * component dumb (props in, DOM out).
+	 ********************************************************/
+	const tickSize = computed<number>(() => {
+		if (typeof props.tickSize === 'number') return props.tickSize
+		return 2
+	})
+
+	const parsedTicks = computed<Array<TTick>>(() => {
+		if (!props.showTicks) return []
+
+		const span = resolvedMax.value - resolvedMin.value
+		const step = resolvedStep.value
+		const ticksProp = props.ticks
+
+		if (!ticksProp) {
+			if (!step || span <= 0) return []
+			const count = span / step
+			if (!isFinite(count)) return []
+			return createRange(count + 1).map((t) => {
+				const value = resolvedMin.value + (t * step)
+				return {
+					value,
+					position: toPercent(value)
+				}
+			})
+		}
+
+		if (Array.isArray(ticksProp)) {
+			return ticksProp.map((t) => ({
+				value: t,
+				position: toPercent(t),
+				label: String(t)
+			}))
+		}
+
+		if (typeof ticksProp === 'object' && ticksProp !== null) {
+			return Object.keys(ticksProp as Record<string, string>).map((key) => ({
+				value: parseFloat(key),
+				position: toPercent(parseFloat(key)),
+				label: (ticksProp as unknown as Record<string, string>)[key]
+			}))
+		}
+
+		return []
+	})
+
+	const hasTickLabels = computed(() => parsedTicks.value.some(({label}) => !!label))
+
+	/*********************************************************
+	 * Focus & range thumb routing
+	 *
+	 * @description
+	 * Focus state plus a `lastInteracted` flag that tracks which
+	 * of the two range thumbs received the most recent input —
+	 * used by the visual thumb proxy + the e2e/ a11y story.
+	 ********************************************************/
 	const {isFocused, onFocus, onBlur} = useFocus(props)
 	const {rtlClasses} = useRtl()
 
-	/*********************************************************
-	 * Event handlers
-	 ********************************************************/
+	const lastInteracted = ref<'start' | 'stop'>('stop')
 
 	const handleFocus = () => {
 		onFocus()
 	}
-	const handleRangeFocusStart = (e: FocusEvent) => {
-		onFocus()
-
-		const modelVal = model.value as [number, number]
-
-		activeThumbRef.value = origamSliderFieldStartThumbRef.value?.$el
-
-		// Make sure second thumb is focused if
-		// the thumbs are on top of each other
-		// and they are both at minimum value
-		// but only if focused from outside.
-		if (modelVal[0] === modelVal[1] && modelVal[1] === min.value && e.relatedTarget !== origamSliderFieldStopThumbRef.value?.$el) {
-			origamSliderFieldStartThumbRef.value?.$el.blur()
-			origamSliderFieldStopThumbRef.value?.$el.focus()
-		}
-	}
-	const handleRangeFocusStop = (e: FocusEvent) => {
-		onFocus()
-
-		const modelVal = model.value as [number, number]
-
-		activeThumbRef.value = origamSliderFieldStopThumbRef.value?.$el
-
-		// Make sure second thumb is focused if
-		// the thumbs are on top of each other
-		// and they are both at minimum value
-		// but only if focused from outside.
-		if (modelVal[0] === modelVal[1] && modelVal[0] === max.value && e.relatedTarget !== origamSliderFieldStartThumbRef.value?.$el) {
-			origamSliderFieldStopThumbRef.value?.$el.blur()
-			origamSliderFieldStartThumbRef.value?.$el.focus()
-		}
-	}
 	const handleBlur = () => {
 		onBlur()
-
-		if (isRange.value) {
-			activeThumbRef.value = undefined
-		}
+	}
+	const handleRangeFocusStart = () => {
+		lastInteracted.value = 'start'
+		onFocus()
+	}
+	const handleRangeFocusStop = () => {
+		lastInteracted.value = 'stop'
+		onFocus()
 	}
 
 	/*********************************************************
-	 * Track positions
+	 * Pointer lifecycle
 	 *
 	 * @description
-	 * Computed track fill positions for single and range mode.
+	 * `start` / `end` emits map 1:1 to pointerdown / pointerup
+	 * on the native input. The browser handles the drag itself,
+	 * so we only need to flag pressed state for styling.
 	 ********************************************************/
-	const trackStop = computed(() => {
-		if (isRange.value) return
+	const mousePressed = ref(false)
+	const handleStart = () => {
+		if (props.readonly || props.disabled) return
+		mousePressed.value = true
+		emits('start', model.value)
+	}
+	const handleEnd = () => {
+		mousePressed.value = false
+		emits('end', model.value)
+	}
 
-		return position(model.value as number)
-	})
-	const trackRangeStart = computed(() => {
-		if (!isRange.value) return
-
-		const modelVal = model.value as [number, number]
-
-		return position(modelVal[0] as number)
-	})
-	const trackRangeStop = computed(() => {
-		if (!isRange.value) return
-
-		const modelVal = model.value as [number, number]
-
-		return position(modelVal[1] as number)
-	})
-
-	const handleUpdateModelValue = (v: number | [number, number]) => {
+	/*********************************************************
+	 * Input handlers
+	 *
+	 * @description
+	 * Native `input` (live drag) and `change` (commit) events
+	 * are bridged to v-model with step rounding.
+	 ********************************************************/
+	const handleSingleInput = (e: Event) => {
+		const target = e.target as HTMLInputElement
+		const v = roundValue(target.value)
+		model.value = v
+	}
+	const handleSingleChange = (e: Event) => {
+		const target = e.target as HTMLInputElement
+		const v = roundValue(target.value)
 		model.value = v
 	}
 
+	const handleRangeStartInput = (e: Event) => {
+		const target = e.target as HTMLInputElement
+		lastInteracted.value = 'start'
+		const v = roundValue(target.value)
+		const [, stop] = rangeValue.value
+		model.value = [Math.min(v, stop), stop]
+	}
+	const handleRangeStartChange = (e: Event) => handleRangeStartInput(e)
+
+	const handleRangeStopInput = (e: Event) => {
+		const target = e.target as HTMLInputElement
+		lastInteracted.value = 'stop'
+		const v = roundValue(target.value)
+		const [start] = rangeValue.value
+		model.value = [start, Math.max(v, start)]
+	}
+	const handleRangeStopChange = (e: Event) => handleRangeStopInput(e)
+
 	/*********************************************************
-	 * Props forwarding
+	 * Click-on-rail (range mode)
 	 *
 	 * @description
-	 * Filtered props forwarded to child Input, Thumb and Track.
+	 * In range mode the two stacked native inputs can shadow
+	 * each other for a rail click — we proxy the click to the
+	 * closest thumb when the original target is the container
+	 * itself (not an input).
+	 ********************************************************/
+	const handleContainerClick = (e: MouseEvent) => {
+		if (!isRange.value) return
+		if (props.readonly || props.disabled) return
+		const target = e.target as HTMLElement
+		if (target.tagName === 'INPUT') return
+
+		const container = (e.currentTarget as HTMLElement)
+		const rect = container.getBoundingClientRect()
+		const pct = isVertical.value
+				? (rect.bottom - e.clientY) / rect.height
+				: (e.clientX - rect.left) / rect.width
+		const adjusted = indexFromEnd.value ? 1 - pct : pct
+		const span = resolvedMax.value - resolvedMin.value
+		const rawValue = clamp(resolvedMin.value + adjusted * span, resolvedMin.value, resolvedMax.value)
+		const value = roundValue(rawValue)
+		const [start, stop] = rangeValue.value
+		// Pick the thumb whose value is closer to the click position.
+		const distStart = Math.abs(value - start)
+		const distStop = Math.abs(value - stop)
+		if (distStart <= distStop) {
+			lastInteracted.value = 'start'
+			model.value = [Math.min(value, stop), stop]
+		} else {
+			lastInteracted.value = 'stop'
+			model.value = [start, Math.max(value, start)]
+		}
+	}
+
+	/*********************************************************
+	 * Color
+	 *
+	 * @description
+	 * `color` paints the fill + thumb surface (`currentColor`),
+	 * `bgColor` paints the rail. `error` forces `danger` on both
+	 * (override convention shared with Input/Form/Snackbar).
+	 ********************************************************/
+	const color = computed(() => {
+		if (props.disabled) return undefined
+		if (props.error) return 'danger'
+		return props.color
+	})
+	const bgColor = computed(() => {
+		if (props.disabled) return undefined
+		if (props.error) return 'danger'
+		return props.bgColor
+	})
+
+	const {backgroundColorClasses: thumbBgClasses, backgroundColorStyles: thumbBgStyles} = useBackgroundColor(color)
+	const {textColorClasses: thumbTextClasses, textColorStyles: thumbTextStyles} = useTextColor(color)
+
+	/*********************************************************
+	 * Native input styling
+	 *
+	 * @description
+	 * Forwarded props (Input wrapper, Track, container classes,
+	 * and the thumb visual proxy). The native `<input>` itself
+	 * is transparent — it owns interaction only.
 	 ********************************************************/
 
 	/*********************************************************
 	 * Forwarded props
 	 ********************************************************/
-
 	const inputProps = computed(() => {
 		// Strip the entire IColorProps surface so `OrigamInput` (the
 		// row wrapper) doesn't paint the consumer's intent on its
 		// background. `color` / `bgColor` stay strictly scoped to the
 		// slider track + thumb (per the project's color contract).
-		// Same fix family as the OrigamSwitch wrapper-bg leak in 3b6ba3f.
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
-	const thumbProps = computed(() => {
-		return omit(props.thumbProps ?? {}, ['modelValue', 'class', 'focused', 'min', 'max', 'position'])
-	})
 	const trackProps = computed(() => {
-		return omit(props.trackProps ?? {}, ['class', 'start', 'stop'])
+		return omit(props.trackProps ?? {}, ['class', 'start', 'stop', 'color', 'bgColor', 'disabled', 'error', 'isVertical', 'indexFromEnd', 'showTicks', 'tickSize', 'ticks', 'min', 'max'])
 	})
 
 	const hasPrepend = computed(() => {
 		return !!(props.label) || slots.label || slots.prepend
 	})
+
+	const nativeInputClasses = (isStop: boolean) => {
+		return [
+			'origam-slider-field__input',
+			isStop ? 'origam-slider-field__input--upper' : 'origam-slider-field__input--lower'
+		]
+	}
+
+	const nativeInputStyles = (percentage: number) => {
+		return {
+			'--origam-slider-field__input---percentage': `${percentage}%`
+		}
+	}
+
+	const thumbClasses = (focused: boolean) => {
+		return [
+			'origam-slider-field-thumb',
+			'origam-slider-field__thumb',
+			{
+				'origam-slider-field-thumb--focused': focused,
+				'origam-slider-field-thumb--pressed': focused && mousePressed.value
+			}
+		]
+	}
+
+	const thumbStyles = (percentage: number) => {
+		const dirVar = isVertical.value ? 'bottom' : 'inset-inline-start'
+		const computedPct = indexFromEnd.value && !isVertical.value ? 100 - percentage : percentage
+		return {
+			[dirVar]: `${computedPct}%`
+		} as StyleValue
+	}
+
+	const thumbSurfaceClasses = computed(() => [
+		'origam-slider-field-thumb__surface',
+		thumbTextClasses.value,
+		thumbBgClasses.value
+	])
+
+	const thumbSurfaceStyles = computed(() => [
+		thumbTextStyles.value,
+		thumbBgStyles.value
+	] as StyleValue)
 
 	/*********************************************************
 	 * Class & Style
@@ -504,20 +938,48 @@
 	 ********************************************************/
 	const sliderFieldStyles = computed(() => {
 		return [
+			{
+				'--origam-slider-field---thumb-size': convertToUnit(20),
+				'--origam-slider-field---track-size': convertToUnit(typeof props.trackProps?.size === 'number' ? props.trackProps.size : 4)
+			},
 			props.style
 		] as StyleValue
 	})
+	const variantClass = computed(() => `origam-slider-field--variant-${props.variant ?? SLIDER_FIELD_VARIANT.FIELD}`)
+
+	const sharedStateClasses = computed(() => ({
+		'origam-slider-field--has-labels': slots.tickLabel || hasTickLabels.value,
+		'origam-slider-field--focused': isFocused.value,
+		'origam-slider-field--pressed': mousePressed.value,
+		'origam-slider-field--disabled': props.disabled,
+		'origam-slider-field--readonly': props.readonly,
+		'origam-slider-field--error': props.error,
+		'origam-slider-field--range': isRange.value,
+		'origam-slider-field--inset': props.inset,
+		'origam-slider-field--vertical': isVertical.value,
+		'origam-slider-field--horizontal': !isVertical.value,
+		'origam-slider-field--reverse': isReversed.value,
+		'origam-slider-field--thumb-on-hover': props.showThumbOnHoverOnly || isBareVariant.value,
+		'origam-slider-field--has-buffered': hasBuffered.value,
+		'origam-slider-field--has-peaks': hasPeaks.value
+	}))
+
 	const sliderFieldClasses = computed(() => {
 		return [
 			'origam-slider-field',
-			{
-				'origam-slider-field--has-labels': slots.tickLabel || hasLabels.value,
-				'origam-slider-field--focused': isFocused.value,
-				'origam-slider-field--pressed': mousePressed.value,
-				'origam-slider-field--disabled': props.disabled,
-				'origam-slider-field--range': isRange.value,
-				'origam-slider-field--inset': props.inset
-			},
+			variantClass.value,
+			sharedStateClasses.value,
+			rtlClasses.value,
+			props.class
+		]
+	})
+
+	const bareWrapperClasses = computed(() => {
+		return [
+			'origam-slider-field',
+			'origam-slider-field--bare',
+			variantClass.value,
+			sharedStateClasses.value,
 			rtlClasses.value,
 			props.class
 		]
@@ -557,17 +1019,136 @@
 			justify-content: center;
 			align-items: center;
 			cursor: pointer;
-
-			input {
-				cursor: default;
-				padding: 0;
-				width: 100%;
-				display: none;
-			}
 		}
 
 		&__label {
 			margin-inline-end: 12px;
+		}
+
+		&__input {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+			position: absolute;
+			margin: 0;
+			padding: 0;
+			background: transparent;
+			cursor: pointer;
+			outline: none;
+			pointer-events: auto;
+
+			&::-webkit-slider-runnable-track {
+				background: transparent;
+				border: none;
+				height: 100%;
+			}
+
+			&::-moz-range-track {
+				background: transparent;
+				border: none;
+				height: 100%;
+			}
+
+			&::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				appearance: none;
+				width: var(--origam-slider-field---thumb-size, 20px);
+				height: var(--origam-slider-field---thumb-size, 20px);
+				background: transparent;
+				border: none;
+				cursor: grab;
+				pointer-events: auto;
+			}
+
+			&::-moz-range-thumb {
+				width: var(--origam-slider-field---thumb-size, 20px);
+				height: var(--origam-slider-field---thumb-size, 20px);
+				background: transparent;
+				border: none;
+				cursor: grab;
+				pointer-events: auto;
+			}
+
+			&:focus-visible::-webkit-slider-thumb {
+				cursor: grabbing;
+			}
+
+			&:disabled {
+				cursor: not-allowed;
+
+				&::-webkit-slider-thumb {
+					cursor: not-allowed;
+				}
+
+				&::-moz-range-thumb {
+					cursor: not-allowed;
+				}
+			}
+		}
+
+		&__thumb {
+			position: absolute;
+			pointer-events: none;
+			width: var(--origam-slider-field---thumb-size, 20px);
+			height: var(--origam-slider-field---thumb-size, 20px);
+			transform: translate(-50%, -50%);
+			top: 50%;
+			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1);
+		}
+
+		&__buffered {
+			position: absolute;
+			pointer-events: none;
+			background: var(--origam-slider-field__buffered---background-color, color-mix(in srgb, currentColor 40%, transparent));
+			opacity: var(--origam-slider-field__buffered---opacity, 0.5);
+			border-radius: 999px;
+			top: 50%;
+			transform: translateY(-50%);
+			height: var(--origam-slider-field--variant--field---track-thickness, var(--origam-slider-field---track-size, 4px));
+			z-index: 1;
+		}
+
+		&__waveform {
+			position: absolute;
+			pointer-events: none;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		&__waveform-bar {
+			&--active {
+				fill: currentColor;
+			}
+
+			&--inactive {
+				fill: color-mix(in srgb, currentColor 35%, transparent);
+			}
+		}
+
+		&__hover-tooltip {
+			position: absolute;
+			pointer-events: none;
+			bottom: calc(100% + 6px);
+			inset-inline-start: var(--origam-slider-field---hover-x, 0%);
+			transform: translateX(-50%);
+			padding: 3px 6px;
+			background: var(--origam-slider-field__hover-tooltip---background-color, var(--origam-color__surface--inverse---bg, rgba(0, 0, 0, 0.85)));
+			color: var(--origam-slider-field__hover-tooltip---color, var(--origam-color__on--inverse---fg, #ffffff));
+			font-size: 11px;
+			font-weight: 600;
+			font-family: var(--origam-font---family, system-ui, sans-serif);
+			border-radius: 3px;
+			white-space: nowrap;
+			z-index: 4;
+			opacity: 0;
+			transition: opacity 120ms ease;
+		}
+
+		&__container:hover &__hover-tooltip,
+		&__container:focus-within &__hover-tooltip,
+		&--pressed &__hover-tooltip {
+			opacity: 1;
 		}
 
 		&.origam-input {
@@ -585,158 +1166,135 @@
 			}
 
 			&--error {
-				--origam-slider-field__track---color: var(--origam-slider-field--error__track---color, inherit);
-
-				:not(.origam-input--disabled) {
-					--origam-slider-field__track---background-color: var(--origam-slider-field--error__track---background-color, currentColor);
-
-					#{$this}__container {
-						color: rgba(255, 0, 0, 1);
-					}
+				#{$this}__container {
+					color: rgba(255, 0, 0, 1);
 				}
 			}
+		}
 
-			&--horizontal {
+		&--horizontal {
+			align-items: center;
+			margin-inline: 8px 8px;
+
+			:deep(.origam-input__control) {
+				min-height: 32px;
+				display: flex;
 				align-items: center;
-				margin-inline: 8px 8px;
+			}
 
-				:deep(.origam-input__control) {
-					min-height: 32px;
-					display: flex;
-					align-items: center;
+			:deep(.origam-slider-field-track) {
+				display: flex;
+				align-items: center;
+				width: 100%;
+				font-size: 0.5rem;
+				padding: 0 5px;
+				background-color: rgb(148, 148, 148);
+				height: var(--origam-slider-field---track-size, 14px);
+				transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+
+				.origam-slider-field-track__background {
+					height: var(--origam-slider-field---track-size, 14px);
 				}
 
-				:deep(.origam-slider-field-track) {
-					display: flex;
-					align-items: center;
-					width: 100%;
-					touch-action: pan-y;
-					font-size: 0.5rem;
-					padding: 0 5px;
-					background-color: rgb(148, 148, 148);
-					height: 14px;
-					cursor: pointer;
-					transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
-
-					.origam-slider-field-track__background {
-						height: 14px;
-					}
-
-					.origam-slider-field-track__fill {
-						height: inherit;
-					}
-
-					.origam-slider-field-track__tick {
-						margin-top: calc(calc(14px + 2px) / 2);
-					}
-
-					.origam-slider-field-track__tick-label {
-						margin-top: calc(14px / 2 + 8px);
-						transform: translateX(-50%);
-					}
-
-					.origam-slider-field-track__tick--first {
-						margin-inline-start: calc(14px + 1px);
-						transform: translateX(0%);
-					}
-
-					.origam-slider-field-track__tick--last {
-						margin-inline-start: calc(100% - 14px - 1px);
-						transform: translateX(-100%);
-					}
+				.origam-slider-field-track__fill {
+					height: inherit;
 				}
 
-				:deep(.origam-slider-field-thumb) {
-					top: 50%;
-					transform: translateY(-50%);
-					inset-inline-start: calc(var(--origam-slider-field-thumb---position) - var(--origam-slider-field-thumb---size, 20) / 2);
+				.origam-slider-field-track__tick {
+					margin-top: calc(calc(var(--origam-slider-field---track-size, 14px) + 2px) / 2);
+				}
 
-					.origam-slider-field-thumb__label-container {
-						left: calc(var(--origam-slider-field-thumb---size, 4) / 2);
-						top: 0;
-					}
+				.origam-slider-field-track__tick-label {
+					margin-top: calc(var(--origam-slider-field---track-size, 14px) / 2 + 8px);
+					transform: translateX(-50%);
+				}
 
-					.origam-slider-field-thumb__label {
-						bottom: calc(var(--origam-slider-field-thumb---size, 4) / 2);
-						transform: translateX(-50%);
+				.origam-slider-field-track__tick--first {
+					margin-inline-start: calc(var(--origam-slider-field---track-size, 14px) + 1px);
+					transform: translateX(0%);
+				}
 
-						&:before {
-							border-left: 6px solid transparent;
-							border-right: 6px solid transparent;
-							border-top: 6px solid currentColor;
-							bottom: -6px;
-						}
-					}
+				.origam-slider-field-track__tick--last {
+					margin-inline-start: calc(100% - var(--origam-slider-field---track-size, 14px) - 1px);
+					transform: translateX(-100%);
 				}
 			}
 
-			&--vertical {
+			#{$this}__input {
+				inset-inline-start: 0;
+				width: 100%;
+				height: var(--origam-slider-field---thumb-size, 20px);
+			}
+		}
+
+		&--vertical {
+			justify-content: center;
+			margin-top: 12px;
+			margin-bottom: 12px;
+
+			:deep(.origam-input__control) {
+				min-height: 300px;
+			}
+
+			:deep(.origam-slider-field-track) {
+				height: 100%;
+				display: flex;
 				justify-content: center;
-				margin-top: 12px;
-				margin-bottom: 12px;
+				width: calc(var(--origam-slider-field-track---size, 2) + 2px);
 
-				:deep(.origam-input__control) {
-					min-height: 300px;
+				.origam-slider-field-track__background {
+					width: var(--origam-slider-field-track---size, 2);
 				}
 
-				:deep(.origam-slider-field-track) {
+				.origam-slider-field-track__fill {
+					width: inherit;
+				}
+
+				.origam-slider-field-track__ticks {
 					height: 100%;
-					display: flex;
-					justify-content: center;
-					width: calc(var(--origam-slider-field-track---size, 2) + 2px);
-					touch-action: pan-x;
-
-					.origam-slider-field-track__background {
-						width: var(--origam-slider-field-track---size, 2);
-					}
-
-					.origam-slider-field-track__fill {
-						width: inherit;
-					}
-
-					.origam-slider-field-track__ticks {
-						height: 100%;
-					}
-
-					.origam-slider-field-track__tick {
-						margin-inline-start: calc(calc(var(--origam-slider-field-track---size) + 2px) / 2);
-						transform: translate(calc(var(--origam-slider-field-track---size, 2) / -2), calc(var(--origam-slider-field-track---size, 2) / 2));
-					}
-
-					.origam-slider-field-track__tick--first {
-						bottom: calc(0% + var(--origam-slider-field-track---size, 2) + 1px);
-					}
-
-					.origam-slider-field-track__tick--last {
-						bottom: calc(100% - var(--origam-slider-field-track---size, 2) - 1px);
-					}
-
-					.origam-slider-field-track__tick-label {
-						margin-inline-start: calc(var(--origam-slider-field-track---size, 2) / 2 + 12px);
-						transform: translateY(-50%);
-					}
 				}
 
-				:deep(.origam-slider-field-thumb) {
-					top: calc(var(--origam-slider-field-thumb---position) - var(--origam-slider-field-thumb---size, 4) / 2);
-
-					.origam-slider-field-thumb__label-container {
-						top: calc(var(--origam-slider-field-thumb---size, 4) / 2);
-						right: 0;
-					}
-
-					.origam-slider-field-thumb__label {
-						top: -12.5px;
-						left: calc(var(--origam-slider-field-thumb---size, 4) / 2);
-
-						&:before {
-							border-right: 6px solid currentColor;
-							border-top: 6px solid transparent;
-							border-bottom: 6px solid transparent;
-							left: -6px;
-						}
-					}
+				.origam-slider-field-track__tick {
+					margin-inline-start: calc(calc(var(--origam-slider-field-track---size) + 2px) / 2);
+					transform: translate(calc(var(--origam-slider-field-track---size, 2) / -2), calc(var(--origam-slider-field-track---size, 2) / 2));
 				}
+
+				.origam-slider-field-track__tick--first {
+					bottom: calc(0% + var(--origam-slider-field-track---size, 2) + 1px);
+				}
+
+				.origam-slider-field-track__tick--last {
+					bottom: calc(100% - var(--origam-slider-field-track---size, 2) - 1px);
+				}
+
+				.origam-slider-field-track__tick-label {
+					margin-inline-start: calc(var(--origam-slider-field-track---size, 2) / 2 + 12px);
+					transform: translateY(-50%);
+				}
+			}
+
+			#{$this}__input {
+				writing-mode: vertical-lr;
+				-webkit-appearance: slider-vertical;
+				appearance: slider-vertical;
+				width: var(--origam-slider-field---thumb-size, 20px);
+				height: 100%;
+				top: 0;
+			}
+
+			#{$this}__thumb {
+				top: auto;
+				left: 50%;
+				transform: translate(-50%, 50%);
+			}
+
+			#{$this}__buffered {
+				top: auto;
+				bottom: 0;
+				inset-inline-start: 50%;
+				transform: translateX(-50%);
+				width: var(--origam-slider-field--variant--field---track-thickness, var(--origam-slider-field---track-size, 4px));
+				height: auto;
 			}
 		}
 
@@ -758,12 +1316,8 @@
 			}
 		}
 
-		/* --inset — compact style: thumb stays INSIDE the track instead
-		 * of overflowing it. Track is thicker, thumb smaller and tucked
-		 * inside. Mirrors OrigamSwitch's `inset` flag. Works in both
-		 * horizontal and vertical orientations. */
 		&--inset {
-			:deep(.origam-slider-field__thumb) {
+			#{$this}__thumb {
 				width: 10px;
 				height: 10px;
 			}
@@ -781,7 +1335,7 @@
 				border-radius: 999px;
 			}
 
-			&.origam-input--horizontal {
+			&.origam-slider-field--horizontal {
 				:deep(.origam-input__control) {
 					min-height: 16px;
 				}
@@ -793,7 +1347,7 @@
 				}
 			}
 
-			&.origam-input--vertical {
+			&.origam-slider-field--vertical {
 				:deep(.origam-input__control) {
 					min-height: 0;
 					min-width: 16px;
@@ -806,11 +1360,193 @@
 				}
 			}
 		}
+
+		&--range {
+			#{$this}__input--start,
+			#{$this}__input--stop {
+				inset-inline-start: 0;
+				pointer-events: none;
+			}
+		}
+
+		&--thumb-on-hover {
+			#{$this}__thumb {
+				opacity: 0;
+				transition: opacity 120ms ease, transform 0.15s 0.05s cubic-bezier(0, 0, 0.2, 1);
+			}
+
+			#{$this}__container:hover #{$this}__thumb,
+			#{$this}__container:focus-within #{$this}__thumb,
+			&#{$this}--pressed #{$this}__thumb {
+				opacity: 1;
+			}
+		}
 	}
-</style>
 
-<style>
-	:root {
+	.origam-slider-field--bare {
+		--origam-slider-field--variant--field---track-thickness: var(--origam-slider-field--bare---track-thickness, 2px);
+		--origam-slider-field--variant--field---track-thickness-active: var(--origam-slider-field--bare---track-thickness-active, 4px);
 
+		display: block;
+		position: relative;
+		width: 100%;
+		min-width: 0;
+		color: var(--origam-slider-field--bare---accent-color, var(--origam-color__action--primary---bg));
+
+		.origam-slider-field__container {
+			min-height: 14px;
+			height: 14px;
+		}
+
+		:deep(.origam-slider-field-track) {
+			background-color: var(--origam-slider-field--bare---track-background-color, color-mix(in srgb, currentColor 25%, transparent));
+			border-radius: 999px;
+			height: var(--origam-slider-field--variant--field---track-thickness);
+			width: 100%;
+			transition: height 140ms ease;
+
+			.origam-slider-field-track__background {
+				background: transparent;
+				height: 100%;
+			}
+
+			.origam-slider-field-track__fill {
+				background: currentColor;
+				height: 100%;
+				border-radius: 999px;
+			}
+		}
+
+		.origam-slider-field__buffered {
+			background: var(--origam-slider-field__buffered--bare---background-color, color-mix(in srgb, currentColor 40%, transparent));
+			opacity: 1;
+			border-radius: 999px;
+			height: var(--origam-slider-field--variant--field---track-thickness);
+			z-index: 1;
+		}
+
+		.origam-slider-field__input {
+			inset-inline-start: 0;
+			width: 100%;
+			height: 14px;
+		}
+
+		.origam-slider-field__thumb {
+			--origam-slider-field---thumb-size: var(--origam-slider-field--bare---thumb-size, 12px);
+			background: currentColor;
+		}
+
+		&:hover :deep(.origam-slider-field-track),
+		&:focus-within :deep(.origam-slider-field-track),
+		&.origam-slider-field--pressed :deep(.origam-slider-field-track) {
+			height: var(--origam-slider-field--variant--field---track-thickness-active);
+		}
+
+		&:hover .origam-slider-field__buffered,
+		&:focus-within .origam-slider-field__buffered,
+		&.origam-slider-field--pressed .origam-slider-field__buffered {
+			height: var(--origam-slider-field--variant--field---track-thickness-active);
+		}
+	}
+
+	.origam-slider-field--variant-audio {
+		--origam-slider-field--audio---track-height: 48px;
+
+		.origam-slider-field__container {
+			min-height: var(--origam-slider-field--audio---track-height);
+			height: var(--origam-slider-field--audio---track-height);
+		}
+
+		.origam-slider-field__input {
+			height: var(--origam-slider-field--audio---track-height);
+		}
+
+		.origam-slider-field-thumb {
+			display: none;
+		}
+
+		.origam-slider-field-track {
+			background-color: transparent;
+		}
+
+		:deep(.origam-slider-field-track__background),
+		:deep(.origam-slider-field-track__fill) {
+			background-color: transparent;
+		}
+	}
+
+	.origam-slider-field-thumb {
+		$this: &;
+
+		color: rgba(66, 66, 66, 1);
+		outline: none;
+		transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+
+		&__surface {
+			width: var(--origam-slider-field---thumb-size, 20px);
+			height: var(--origam-slider-field---thumb-size, 20px);
+			border: 1px solid var(--origam-slider-field-thumb__surface---border-color, rgba(0, 0, 0, 0.18));
+			border-radius: 50%;
+			user-select: none;
+			background-color: currentColor;
+			box-shadow: none;
+			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1), 0.2s border-color cubic-bezier(0.4, 0, 0.2, 1);
+
+			@media (forced-colors: active) {
+				background-color: highlight;
+			}
+
+			&:before {
+				transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				content: "";
+				color: inherit;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				background: currentColor;
+				position: absolute;
+				pointer-events: none;
+				opacity: 0;
+			}
+		}
+
+		&--focused {
+			#{$this}__surface {
+				&:before {
+					transform: scale(2);
+					opacity: 0.12;
+				}
+			}
+		}
+
+		&--pressed {
+			transition: none;
+
+			#{$this}__surface {
+				&:before {
+					opacity: 0.12;
+				}
+			}
+		}
+
+		@media (hover: hover) {
+			&:hover {
+				#{$this}__surface {
+					&:before {
+						transform: scale(2);
+					}
+				}
+
+				&:not(#{$this}--focused) {
+					#{$this}__surface {
+						&:before {
+							opacity: 0.04;
+						}
+					}
+				}
+			}
+		}
 	}
 </style>

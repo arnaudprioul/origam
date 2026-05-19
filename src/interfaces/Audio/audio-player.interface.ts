@@ -1,20 +1,24 @@
 import type { Ref } from 'vue'
 
 import type {
+    IBgColorProps,
     IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
+    IElevationProps,
     IMarginProps,
     IMediaPlayerEmits,
     IMediaPlayerMethods,
     IMediaPlayerState,
     IPaddingProps,
+    IPositionProps,
     IRoundedProps,
     ISrcObject,
     ITagProps,
     IVideoTrack
 } from '../../interfaces'
 
-import type { TAudioControls } from '../../types'
+import type { TAudioControls, TAudioVariant, TCoverPosition } from '../../types'
 
 /**
  * A single `<source>` entry when the consumer passes multiple audio
@@ -92,7 +96,34 @@ export interface IAudioProps
         IRoundedProps,
         IBorderProps,
         IMarginProps,
-        IPaddingProps {
+        IPaddingProps,
+        IElevationProps,
+        IPositionProps,
+        IColorProps,
+        IBgColorProps {
+    /**
+     * Visual variant of the audio surface.
+     *
+     * - `'expanded'` — full Stemtracks studio strip: 96 px cover,
+     *                  title / artist / album header, waveform mini
+     *                  scrubber above the transport row.
+     * - `'compact'`  — slim transport-only dock: 48 px cover, inline
+     *                  metadata, no waveform, transport row only.
+     *
+     * Legacy `'normal'` / `'minimal'` alias values remain accepted for
+     * backward compatibility and resolve to `'expanded'` / `'compact'`.
+     *
+     * @default 'expanded'
+     */
+    variant?: TAudioVariant
+    /**
+     * Side of the surface where the album cover is painted. The
+     * controller column sits on the opposite side. Swap to keep the
+     * cover next to the page edge (e.g. against a left sidebar).
+     *
+     * @default 'left'
+     */
+    coverPosition?: TCoverPosition
     /**
      * Media URL — either a single string for `<audio src>`, an
      * `IAudioSource` object (`{ src, type }`), or an array of sources
@@ -252,6 +283,14 @@ export interface IAudioEmits {
      *  changes). Payload is the downsampled peaks array (0..1
      *  amplitudes). Ported from `ISoundEmits['waveform']`. */
     (e: 'waveform', peaks: Array<number>): void
+    /** Fires when the listener clicks the "previous track" button.
+     *  Emitted only when the listener bound a handler — otherwise the
+     *  component falls back to skipping 10 s backward internally. */
+    (e: 'previous'): void
+    /** Fires when the listener clicks the "next track" button.
+     *  Emitted only when the listener bound a handler — otherwise the
+     *  component falls back to skipping 10 s forward internally. */
+    (e: 'next'): void
 }
 
 /**
