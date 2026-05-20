@@ -1,9 +1,9 @@
 <template>
 	<component
-			:is="link.tag.value"
+			:is="link.tag"
 			v-ripple="isClickable && ripple"
 			:class="cardClasses"
-			:href="link.href.value"
+			:href="link.href"
 			:style="cardStyles"
 			:tabindex="disabled ? -1 : undefined"
 			@click="handleClick"

@@ -1,11 +1,11 @@
 <template>
 	<component
-			:is="link.tag.value"
+			:is="link.tag"
 			v-ripple="rippleProps"
 			:class="chipClasses"
 			:disabled="disabled"
 			:draggable="draggable"
-			:href="link.href.value"
+			:href="link.href"
 			:style="chipStyles"
 			:tabindex="isClickable ? 0 : undefined"
 			@click="handleClick"

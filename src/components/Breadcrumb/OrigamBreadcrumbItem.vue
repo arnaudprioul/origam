@@ -1,9 +1,9 @@
 <template>
 	<component
-			:is="link.tag.value"
+			:is="link.tag"
 			:aria-current="isActive ? 'page' : undefined"
 			:class="breadcrumbItemClasses"
-			:href="link.href.value"
+			:href="link.href"
 			:style="breadcrumbItemStyles"
 			@click="link.navigate"
 			@mouseenter="handleMouseenter"

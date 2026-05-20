@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="link.tag.value"
+			:is="link.tag"
 			v-ripple="isClickable && ripple"
 			:class="listItemClasses"
 			:href="link.href.value"
