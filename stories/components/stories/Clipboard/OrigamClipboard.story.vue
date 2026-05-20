@@ -43,7 +43,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Default — no slot (auto-rendered icon button)">
+		<Variant title="Slot — default (auto-rendered icon button)">
 			<div
 					class="story-shell"
 					data-cy="clipboard-default"

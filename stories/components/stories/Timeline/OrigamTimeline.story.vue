@@ -133,7 +133,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Orientation — horizontal (scroll-snap slider)">
+		<Variant title="Prop — orientation (horizontal, scroll-snap slider)">
 			<div style="max-width: 560px;">
 				<origam-timeline
 					orientation="horizontal"
@@ -146,7 +146,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Orientation — horizontal with icons">
+		<Variant title="Prop — orientation (horizontal with icons)">
 			<div style="max-width: 560px;">
 				<origam-timeline
 					orientation="horizontal"

@@ -10,7 +10,7 @@
 			involves the parent switch driving its `modelValue`.
 		-->
 
-		<Variant title="Default — both states">
+		<Variant title="Both states (off / on)">
 			<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
 				<origam-switch-track :model-value="false" data-cy="switch-track-off"/>
 				<origam-switch-track :model-value="true"  data-cy="switch-track-on"/>

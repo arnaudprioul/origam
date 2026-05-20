@@ -99,7 +99,7 @@
 			<origam-code tag="div" :lang="CODE_LANG.TS" :code="shortSnippet" filename="div-compat.ts" line-numbers/>
 		</Variant>
 
-		<Variant title="Syntax — CSS variables theming">
+		<Variant title="CSS variables theming">
 			<origam-code :lang="CODE_LANG.TS" :code="shortSnippet" line-numbers filename="theme-tokens.ts"/>
 		</Variant>
 	</Story>

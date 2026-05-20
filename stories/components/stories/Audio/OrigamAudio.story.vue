@@ -156,7 +156,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Variant — variant=expanded">
+		<Variant title="Prop — variant (expanded)">
 			<div
 					class="story-shell"
 					data-cy="audio-expanded"
@@ -179,7 +179,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — variant=compact">
+		<Variant title="Prop — variant (compact)">
 			<div
 					class="story-shell"
 					data-cy="audio-compact"
@@ -200,7 +200,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — coverPosition=right">
+		<Variant title="Prop — coverPosition (right edge)">
 			<div
 					class="story-shell"
 					data-cy="audio-cover-right"
@@ -222,7 +222,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — position=sticky (docked bottom)">
+		<Variant title="Prop — position (sticky docked bottom)">
 			<div
 					class="story-shell story-shell--tall"
 					data-cy="audio-docked"
@@ -251,7 +251,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — controls=native">
+		<Variant title="Prop — controls (custom / native)">
 			<div
 					class="story-shell"
 					data-cy="audio-native"
@@ -271,7 +271,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — downloadable">
+		<Variant title="Prop — downloadable + downloadFilename">
 			<div
 					class="story-shell"
 					data-cy="audio-downloadable"
@@ -298,7 +298,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — multiple sources (codec fallback)">
+		<Variant title="Prop — src (array form, codec fallback)">
 			<div
 					class="story-shell"
 					data-cy="audio-multi"
@@ -317,7 +317,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — bgColor + color (branded surface)">
+		<Variant title="Prop — bgColor + color (branded surface)">
 			<div
 					class="story-shell"
 					data-cy="audio-brand"
@@ -342,7 +342,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — single track (no metadata)">
+		<Variant title="Prop — src (single track, no metadata)">
 			<div
 					class="story-shell"
 					data-cy="audio-single"
@@ -359,6 +359,39 @@
 				/>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — src (playlist, multi-track)">
+			<div
+					class="story-shell"
+					data-cy="audio-playlist"
+			>
+				<p class="hint">
+					Pass a <code>playlist</code> to enable track navigation —
+					prev / next jump tracks (instead of skipping 10 s), the
+					cover / metadata strip swap, and a clickable list renders
+					below the transport. The loop button cycles
+					<strong>none → all → one</strong> (icon swaps to a "loop
+					once" glyph on the third state). The shuffle button (only
+					shown when a playlist is active) flips the navigation
+					order to a deterministic Fisher-Yates shuffle.
+				</p>
+				<origam-audio
+						v-model:current-track-index="playlistIndex"
+						v-model:loop-mode="playlistLoopMode"
+						v-model:shuffle="playlistShuffle"
+						:playlist="DEMO_PLAYLIST"
+						class="story-audio"
+						data-cy="audio-playlist-player"
+						@track-change="(track, idx) => logEmit('track-change', `${ idx } · ${ track.title }`)"
+						@update:loop-mode="(m) => logEmit('update:loopMode', m)"
+						@update:shuffle="(s) => logEmit('update:shuffle', String(s))"
+				/>
+				<pre
+						class="story-log"
+						data-cy="audio-playlist-log"
+				>{{ logLines.join('\n') }}</pre>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -370,7 +403,8 @@
 
 	import { OrigamAudio } from '@origam/components'
 
-	import type { IAudioSource } from '@origam/interfaces'
+	import type { IAudioSource, IAudioTrack } from '@origam/interfaces'
+	import type { TAudioLoopMode } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -381,6 +415,49 @@
 		{ src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', type: 'audio/mpeg' },
 		{ src: 'https://www.soundhelix.com/examples/ogg/SoundHelix-Song-1.ogg', type: 'audio/ogg' }
 	]
+
+	const DEMO_PLAYLIST: ReadonlyArray<IAudioTrack> = [
+		{
+			id: 'sh-1',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+			title: 'Daydream',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-1/96',
+			duration: 372
+		},
+		{
+			id: 'sh-2',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+			title: 'Liftoff',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-2/96',
+			duration: 422
+		},
+		{
+			id: 'sh-3',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+			title: 'Submerged',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-3/96',
+			duration: 366
+		},
+		{
+			id: 'sh-4',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+			title: 'Pixel Drift',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-4/96',
+			duration: 313
+		}
+	]
+
+	const playlistIndex = ref(0)
+	const playlistLoopMode = ref<TAudioLoopMode>('none')
+	const playlistShuffle = ref(false)
 
 	const controlsOptions = [
 		{ value: 'custom', label: 'custom' },

@@ -40,7 +40,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Event — Move">
+		<Variant title="Emit — move">
 			<origam-parallax :event="PARALLAX_EVENT.MOVE" :style="hostStyle">
 				<origam-parallax-element :strength="20">
 					<div :style="layerStyle">Move your cursor</div>
@@ -48,7 +48,7 @@
 			</origam-parallax>
 		</Variant>
 
-		<Variant title="Event — Scroll">
+		<Variant title="Emit — scroll">
 			<origam-parallax :event="PARALLAX_EVENT.SCROLL" :style="hostStyle">
 				<origam-parallax-element :strength="20">
 					<div :style="layerStyle">Scroll the page</div>
@@ -57,7 +57,7 @@
 			<div :style="scrollFiller"></div>
 		</Variant>
 
-		<Variant title="Event — Orientation">
+		<Variant title="Emit — orientation">
 			<origam-parallax :event="PARALLAX_EVENT.ORIENTATION" :style="hostStyle">
 				<origam-parallax-element :strength="20">
 					<div :style="layerStyle">Tilt your device</div>

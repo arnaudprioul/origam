@@ -141,7 +141,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — quoted">
+		<Variant title="Prop — variant (quoted deep dive)">
 			<div
 					class="story-shell"
 					data-cy="blockquote-quoted-showcase"

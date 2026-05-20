@@ -84,7 +84,7 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Note — usage guidance">
+		<Variant title="Usage guidance">
 			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
 				<p>
 					<code>&lt;origam-list-group-activator&gt;</code> is normally
