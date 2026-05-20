@@ -11,14 +11,14 @@
 				:src="singleSrc"
 				:autoplay="resolvedAutoplay"
 				:muted="resolvedMuted"
-				:loop="loop"
+				:loop="audioLoopAttr"
 				:controls="isNativeControls"
 				:preload="preload"
 				:crossorigin="crossorigin"
 				data-cy="origam-audio-el"
 				@play="emit('play')"
 				@pause="emit('pause')"
-				@ended="emit('ended')"
+				@ended="onNativeEnded"
 				@timeupdate="onTimeUpdate"
 				@volumechange="onVolumeChange"
 				@loadedmetadata="onLoadedMetadata"
@@ -73,25 +73,25 @@
 				<slot name="metadata">
 					<slot name="title">
 						<strong
-								v-if="title"
+								v-if="resolvedTitle"
 								class="origam-audio__title"
 								data-cy="origam-audio-title"
-						>{{ title }}</strong>
+						>{{ resolvedTitle }}</strong>
 					</slot>
 					<span
 							v-if="hasMetaLine"
 							class="origam-audio__meta"
 					>
 						<span
-								v-if="artist"
+								v-if="resolvedArtist"
 								class="origam-audio__artist"
 								data-cy="origam-audio-artist"
-						>{{ artist }}</span>
+						>{{ resolvedArtist }}</span>
 						<span
-								v-if="album"
+								v-if="resolvedAlbum"
 								class="origam-audio__album"
 								data-cy="origam-audio-album"
-						>{{ album }}</span>
+						>{{ resolvedAlbum }}</span>
 						<span
 								v-if="hasDurationLabel"
 								class="origam-audio__duration"
@@ -207,16 +207,32 @@
 					/>
 
 					<button
+							v-if="hasPlaylist"
+							type="button"
+							class="origam-audio__nav-btn origam-audio__nav-btn--shuffle"
+							:class="{ 'origam-audio__nav-btn--active': internalShuffle }"
+							:aria-label="shuffleLabel"
+							:aria-pressed="internalShuffle"
+							data-cy="origam-audio-shuffle"
+							@click="onToggleShuffle"
+					>
+						<origam-icon
+								:icon="ICONS.SHUFFLE"
+								aria-hidden="true"
+						/>
+					</button>
+
+					<button
 							type="button"
 							class="origam-audio__nav-btn origam-audio__nav-btn--loop"
-							:class="{ 'origam-audio__nav-btn--active': loop }"
-							:aria-label="loopLabel"
-							:aria-pressed="loop"
+							:class="loopBtnClasses"
+							:aria-label="loopAriaLabel"
+							:aria-pressed="isLoopActive"
 							data-cy="origam-audio-loop"
 							@click="onToggleLoop"
 					>
 						<origam-icon
-								:icon="ICONS.LOOP"
+								:icon="loopIcon"
 								aria-hidden="true"
 						/>
 					</button>
@@ -241,6 +257,60 @@
 				</nav>
 			</slot>
 		</section>
+
+		<slot
+				v-if="hasPlaylist"
+				name="playlist"
+				:tracks="props.playlist"
+				:current-index="safeTrackIndex"
+				:select="setActiveTrack"
+		>
+			<ol
+					class="origam-audio__playlist"
+					data-cy="origam-audio-playlist"
+			>
+				<li
+						v-for="(track, index) in props.playlist"
+						:key="track.id ?? index"
+						class="origam-audio__playlist-item"
+						:class="{ 'origam-audio__playlist-item--active': index === safeTrackIndex }"
+						:data-cy="`origam-audio-playlist-item-${ index }`"
+				>
+					<button
+							type="button"
+							class="origam-audio__playlist-btn"
+							:aria-current="index === safeTrackIndex ? 'true' : undefined"
+							@click="setActiveTrack(index)"
+					>
+						<span
+								class="origam-audio__playlist-index"
+								aria-hidden="true"
+						>{{ index + 1 }}</span>
+						<img
+								v-if="track.cover"
+								:src="track.cover"
+								:alt="track.title ?? ''"
+								class="origam-audio__playlist-cover"
+								loading="lazy"
+								decoding="async"
+								width="32"
+								height="32"
+						/>
+						<span class="origam-audio__playlist-text">
+							<span class="origam-audio__playlist-title">{{ track.title ?? `Track ${ index + 1 }` }}</span>
+							<span
+									v-if="track.artist"
+									class="origam-audio__playlist-artist"
+							>{{ track.artist }}</span>
+						</span>
+						<span
+								v-if="track.duration"
+								class="origam-audio__playlist-duration"
+						>{{ formatMediaTime(track.duration) }}</span>
+					</button>
+				</li>
+			</ol>
+		</slot>
 
 		<div
 				v-if="state.loading.value && !state.error.value"
@@ -285,6 +355,8 @@
 >
 	import {
 		computed,
+		nextTick,
+		ref,
 		type StyleValue,
 		watch
 	} from 'vue'
@@ -317,8 +389,11 @@
 	import type {
 		IAudioEmits,
 		IAudioProps,
-		IAudioSource
-	} from '../../interfaces'
+		IAudioSource,
+		IAudioTrack
+	} from '../../interfaces/Audio/audio-player.interface'
+
+	import type { TAudioLoopMode } from '../../types'
 
 	import { formatMediaTime } from '../../utils'
 
@@ -357,6 +432,10 @@
 		autoplay: false,
 		muted: false,
 		loop: false,
+		loopMode: 'none',
+		shuffle: false,
+		playlist: undefined,
+		currentTrackIndex: 0,
 		preload: 'metadata',
 		crossorigin: undefined,
 		controls: 'custom',
@@ -381,7 +460,9 @@
 		ALERT: MDI_ICONS.ALERT_CIRCLE,
 		PREVIOUS: MDI_ICONS.SKIP_PREVIOUS,
 		NEXT: MDI_ICONS.SKIP_NEXT,
-		LOOP: MDI_ICONS.REPEAT
+		LOOP: MDI_ICONS.REPEAT,
+		LOOP_ONE: MDI_ICONS.REPEAT_ONCE,
+		SHUFFLE: MDI_ICONS.SHUFFLE
 	}
 
 	/*********************************************************
@@ -394,8 +475,7 @@
 	const muteLabel = computed<string>(() => t('origam.media.mute', 'Mute'))
 	const unmuteLabel = computed<string>(() => t('origam.media.unmute', 'Unmute'))
 	const volumeLabel = computed<string>(() => t('origam.media.volume', 'Volume'))
-	const seekLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
-	const waveformAriaLabel = computed<string>(() => t('origam.media.waveform', 'Audio waveform'))
+	const waveformAriaLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
 	const castLabel = computed<string>(() => t('origam.media.castToDevice', 'Cast to device'))
 	const stopCastLabel = computed<string>(() => t('origam.media.stopCasting', 'Stop casting'))
 	const settingsLabel = computed<string>(() => t('origam.media.settings', 'Settings'))
@@ -405,7 +485,10 @@
 	const normalSpeedLabel = computed<string>(() => t('origam.media.normalSpeed', 'Normal'))
 	const previousLabel = computed<string>(() => t('origam.media.previousTrack', 'Previous track'))
 	const nextLabel = computed<string>(() => t('origam.media.nextTrack', 'Next track'))
-	const loopLabel = computed<string>(() => t('origam.media.loop', 'Loop'))
+	const loopAllLabel = computed<string>(() => t('origam.media.loopAll', 'Loop playlist'))
+	const loopOneLabel = computed<string>(() => t('origam.media.loopOne', 'Loop track'))
+	const loopOffLabel = computed<string>(() => t('origam.media.loopOff', 'Loop off'))
+	const shuffleLabel = computed<string>(() => t('origam.media.shuffle', 'Shuffle'))
 	const loadingLabel = computed<string>(() => t('origam.loading', 'Loading'))
 	const transportLabel = computed<string>(() => t('origam.media.transport', 'Transport controls'))
 
@@ -445,17 +528,185 @@
 	const isExpandedVariant = computed<boolean>(() => !isCompactVariant.value)
 
 	/*********************************************************
-	 * Source resolution — `src` can be a single URL, a source
-	 * descriptor, or an array of descriptors.
+	 * Playlist state machine
+	 *
+	 * @description
+	 * When `props.playlist` is set, the active track drives the
+	 * `<audio>` source AND the metadata strip. The component owns
+	 * an internal `currentTrackIndex` ref that v-models against the
+	 * parent so consumers can either read it or control it externally.
+	 *
+	 * Shuffle mode picks a new track uniformly at random from the
+	 * full playlist at EACH navigation event (prev / next / auto-
+	 * advance on `ended`). Same track twice in a row is allowed —
+	 * it's true randomness, not a pre-computed permutation. To avoid
+	 * "stuck on the same track" feeling on small playlists, we
+	 * retry once when the picked index matches the current track and
+	 * the playlist has more than one entry.
 	 ********************************************************/
+	const hasPlaylist = computed<boolean>(() => Array.isArray(props.playlist) && props.playlist.length > 0)
+
+	const internalTrackIndex = ref<number>(props.currentTrackIndex ?? 0)
+
+	watch(() => props.currentTrackIndex, (next) => {
+		if (typeof next === 'number' && next !== internalTrackIndex.value) {
+			internalTrackIndex.value = next
+		}
+	})
+
+	const safeTrackIndex = computed<number>(() => {
+		if (!hasPlaylist.value) return 0
+		const total = props.playlist!.length
+		if (total === 0) return 0
+		const i = internalTrackIndex.value
+		return ((i % total) + total) % total
+	})
+
+	const activeTrack = computed<IAudioTrack | undefined>(() => {
+		if (!hasPlaylist.value) return undefined
+		return props.playlist![safeTrackIndex.value]
+	})
+
+	function setActiveTrack (nextIndex: number): void {
+		if (!hasPlaylist.value) return
+		const total = props.playlist!.length
+		if (total === 0) return
+		const wrapped = ((nextIndex % total) + total) % total
+		if (wrapped === safeTrackIndex.value) return
+		internalTrackIndex.value = wrapped
+		emit('update:currentTrackIndex', wrapped)
+		const track = props.playlist![wrapped]
+		if (track) emit('track-change', track, wrapped)
+	}
+
+	/*********************************************************
+	 * Random pick — uniformly samples a playlist index from the
+	 * (total - 1) non-current tracks. Guarantees the next track
+	 * is always different from the current one, so shuffle always
+	 * advances. The math `(cur + 1 + r) % total` with `r` uniform
+	 * in `[0, total - 1)` enumerates every non-current index
+	 * exactly once with equal probability.
+	 ********************************************************/
+	function pickRandomIndex (): number {
+		const total = props.playlist?.length ?? 0
+		if (total <= 1) return 0
+		const cur = safeTrackIndex.value
+		const offset = 1 + Math.floor(Math.random() * (total - 1))
+		return (cur + offset) % total
+	}
+
+	function navigateRelative (delta: 1 | -1): void {
+		if (!hasPlaylist.value) return
+		const total = props.playlist!.length
+		if (total === 0) return
+
+		if (internalShuffle.value) {
+			setActiveTrack(pickRandomIndex())
+			return
+		}
+
+		let target = safeTrackIndex.value + delta
+		if (target < 0 || target >= total) {
+			if (resolvedLoopMode.value === 'all' || resolvedLoopMode.value === 'one') {
+				target = ((target % total) + total) % total
+			} else {
+				return
+			}
+		}
+		setActiveTrack(target)
+	}
+
+	/*********************************************************
+	 * Loop mode (tri-state) + shuffle — v-modelled with the parent.
+	 * `loopMode` cycle: 'none' → 'all' → 'one' → 'none'.
+	 *
+	 * Legacy `loop: true` maps to `loopMode='one'` at read-time when
+	 * the consumer hasn't explicitly set `loopMode`.
+	 ********************************************************/
+	// Initialise the internal loop mode honouring the legacy `loop:true`
+	// flag when the consumer hasn't passed an explicit `loopMode`.
+	// `withDefaults` resolves `loopMode` to `'none'` by default, so we
+	// only fall through to `'one'` when `loop:true` AND `loopMode` was
+	// left at its default — never overriding an explicit `'none'`.
+	const initialLoopMode: TAudioLoopMode =
+		props.loopMode && props.loopMode !== 'none'
+			? props.loopMode
+			: (props.loop ? 'one' : 'none')
+
+	const internalLoopMode = ref<TAudioLoopMode>(initialLoopMode)
+	watch(() => props.loopMode, (next) => {
+		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
+	})
+
+	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
+
+	function cycleLoopMode (): void {
+		const next: TAudioLoopMode =
+			internalLoopMode.value === 'none' ? 'all'
+				: internalLoopMode.value === 'all' ? 'one'
+					: 'none'
+		internalLoopMode.value = next
+		emit('update:loopMode', next)
+	}
+
+	/*********************************************************
+	 * Loop button — icon swap + active flag + ARIA label driven by
+	 * the current tri-state mode. The button stays in the transport
+	 * row regardless of whether a playlist is set; in single-track
+	 * use, `'all'` and `'one'` are equivalent (no next track to wrap
+	 * to) but the visual cue still tells the user the player will
+	 * restart on `ended`.
+	 ********************************************************/
+	const loopIcon = computed<string>(() => {
+		return resolvedLoopMode.value === 'one' ? ICONS.LOOP_ONE : ICONS.LOOP
+	})
+
+	const isLoopActive = computed<boolean>(() => resolvedLoopMode.value !== 'none')
+
+	const loopBtnClasses = computed(() => ({
+		'origam-audio__nav-btn--active': isLoopActive.value,
+		'origam-audio__nav-btn--loop-one': resolvedLoopMode.value === 'one',
+		'origam-audio__nav-btn--loop-all': resolvedLoopMode.value === 'all'
+	}))
+
+	const loopAriaLabel = computed<string>(() => {
+		if (resolvedLoopMode.value === 'one') return loopOneLabel.value
+		if (resolvedLoopMode.value === 'all') return loopAllLabel.value
+		return loopOffLabel.value
+	})
+
+	const internalShuffle = ref<boolean>(props.shuffle ?? false)
+	watch(() => props.shuffle, (next) => {
+		if (typeof next === 'boolean' && next !== internalShuffle.value) {
+			internalShuffle.value = next
+		}
+	})
+
+	function toggleShuffle (): void {
+		internalShuffle.value = !internalShuffle.value
+		emit('update:shuffle', internalShuffle.value)
+	}
+
+	/*********************************************************
+	 * Source resolution — when a playlist is active the `<audio>`
+	 * source comes from the active track; otherwise we fall back to
+	 * the root `src` prop.
+	 ********************************************************/
+	const effectiveSrc = computed<string | IAudioSource | Array<IAudioSource> | undefined>(() => {
+		if (hasPlaylist.value && activeTrack.value) return activeTrack.value.src
+		return props.src
+	})
+
 	const singleSrc = computed<string | undefined>(() => {
-		return typeof props.src === 'string' ? props.src : undefined
+		const s = effectiveSrc.value
+		return typeof s === 'string' ? s : undefined
 	})
 
 	const resolvedSources = computed<Array<IAudioSource>>(() => {
-		if (typeof props.src === 'string') return []
-		if (Array.isArray(props.src)) return props.src
-		return [props.src]
+		const s = effectiveSrc.value
+		if (typeof s === 'string' || s == null) return []
+		if (Array.isArray(s)) return s
+		return [s]
 	})
 
 	const resolvedTracks = computed(() => props.tracks ?? [])
@@ -494,15 +745,22 @@
 	 * absent. Cover figure renders separately so the cover can still
 	 * stand on its own if the consumer only passes an image.
 	 ********************************************************/
+	const resolvedTitle = computed<string | undefined>(() => activeTrack.value?.title ?? props.title)
+	const resolvedArtist = computed<string | undefined>(() => activeTrack.value?.artist ?? props.artist)
+	const resolvedAlbum = computed<string | undefined>(() => activeTrack.value?.album ?? props.album)
+
 	const resolvedCover = computed<string | undefined>(() => {
+		if (activeTrack.value?.cover) return activeTrack.value.cover
 		if (!props.cover) return undefined
 		if (typeof props.cover === 'string') return props.cover
 		return props.cover.src
 	})
 
 	const coverAlt = computed<string>(() => {
-		if (props.title && props.artist) return `${ props.title } — ${ props.artist }`
-		if (props.title) return props.title
+		const t = resolvedTitle.value
+		const a = resolvedArtist.value
+		if (t && a) return `${ t } — ${ a }`
+		if (t) return t
 		return ''
 	})
 
@@ -517,10 +775,10 @@
 	const coverSizePx = computed<number>(() => (isCompactVariant.value ? 48 : 96))
 
 	const hasMetadata = computed<boolean>(() => {
-		return Boolean(props.title || props.artist || props.album)
+		return Boolean(resolvedTitle.value || resolvedArtist.value || resolvedAlbum.value)
 	})
 	const hasMetaLine = computed<boolean>(() => {
-		return Boolean(props.artist || props.album || hasDurationLabel.value)
+		return Boolean(resolvedArtist.value || resolvedAlbum.value || hasDurationLabel.value)
 	})
 
 	const hasDurationLabel = computed<boolean>(() => {
@@ -611,11 +869,6 @@
 		methods.seek(value)
 	}
 
-	function onScrubberSeek (value: number | Array<number>): void {
-		if (Array.isArray(value)) return
-		methods.seek(value)
-	}
-
 	function formatTimeTooltip (seconds: number): string {
 		return formatMediaTime(seconds)
 	}
@@ -643,19 +896,64 @@
 	}
 
 	function onPrevious (): void {
-		methods.skipBackward(10)
 		emit('previous')
+		if (hasPlaylist.value) {
+			navigateRelative(-1)
+		} else {
+			methods.skipBackward(10)
+		}
 	}
 
 	function onNext (): void {
-		methods.skipForward(10)
 		emit('next')
+		if (hasPlaylist.value) {
+			navigateRelative(1)
+		} else {
+			methods.skipForward(10)
+		}
 	}
 
 	function onToggleLoop (): void {
-		const el = audioRef.value
-		if (!el) return
-		el.loop = !el.loop
+		cycleLoopMode()
+	}
+
+	function onToggleShuffle (): void {
+		toggleShuffle()
+	}
+
+	/*********************************************************
+	 * Native `<audio>` loop attribute — mapped from the resolved
+	 * loop mode. `'one'` sets the native `loop` flag so the same
+	 * track restarts on `ended` without our intervention. `'all'`
+	 * keeps `loop=false` and triggers a programmatic `next` on
+	 * `ended` to advance through the playlist; on the last track
+	 * we wrap to the first. `'none'` lets playback stop after the
+	 * last track.
+	 ********************************************************/
+	const audioLoopAttr = computed<boolean>(() => resolvedLoopMode.value === 'one')
+
+	function onNativeEnded (): void {
+		emit('ended')
+		if (resolvedLoopMode.value === 'one') return
+		if (!hasPlaylist.value) return
+		const total = props.playlist!.length
+		if (total === 0) return
+
+		if (internalShuffle.value) {
+			setActiveTrack(pickRandomIndex())
+			void nextTick(() => { void methods.play() })
+			return
+		}
+
+		const cur = safeTrackIndex.value
+		const target = cur + 1
+		if (target < total) {
+			setActiveTrack(target)
+			void nextTick(() => { void methods.play() })
+		} else if (resolvedLoopMode.value === 'all') {
+			setActiveTrack(0)
+			void nextTick(() => { void methods.play() })
+		}
 	}
 
 	/*********************************************************
@@ -823,7 +1121,7 @@
 		background-color: var(--origam-audio---background-color, rgba(14, 14, 16, 0.92));
 		accent-color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
 		grid-template-columns: auto 1fr;
-		align-items: stretch;
+		align-items: start;
 	}
 
 	.origam-audio:not(.origam-audio--has-cover) {
@@ -994,6 +1292,21 @@
 	.origam-audio__nav-btn--active {
 		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
 		opacity: 1;
+		background-color: var(--origam-audio__nav-btn--active---background-color, color-mix(in srgb, var(--origam-audio---accent-color, var(--origam-color__accent---base)) 18%, transparent));
+		position: relative;
+	}
+
+	.origam-audio__nav-btn--active::after {
+		content: '';
+		position: absolute;
+		bottom: 3px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+		pointer-events: none;
 	}
 
 	.origam-audio__play-btn {
@@ -1041,5 +1354,105 @@
 
 	.origam-audio__error-icon {
 		font-size: var(--origam-audio--error---icon-font-size, 1.1rem);
+	}
+
+	.origam-audio__playlist {
+		grid-column: 1 / -1;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--origam-audio__playlist---gap, 2px);
+		max-height: var(--origam-audio__playlist---max-height, 220px);
+		overflow-y: auto;
+		border-top: 1px solid var(--origam-audio__playlist---border-color, rgba(244, 244, 245, 0.08));
+		padding-top: var(--origam-audio__playlist---padding-top, 8px);
+	}
+
+	.origam-audio__playlist-item {
+		margin: 0;
+	}
+
+	.origam-audio__playlist-btn {
+		all: unset;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		gap: var(--origam-audio__playlist-btn---gap, 10px);
+		padding: var(--origam-audio__playlist-btn---padding, 6px 8px);
+		width: 100%;
+		border-radius: var(--origam-audio__playlist-btn---border-radius, 6px);
+		cursor: pointer;
+		color: var(--origam-audio__playlist-btn---color, color-mix(in srgb, currentColor 80%, transparent));
+		transition: background-color 120ms ease, color 120ms ease;
+	}
+
+	.origam-audio__playlist-btn:hover,
+	.origam-audio__playlist-btn:focus-visible {
+		background-color: var(--origam-audio__playlist-btn--hover---background-color, rgba(255, 255, 255, 0.06));
+		color: var(--origam-audio__playlist-btn--hover---color, inherit);
+	}
+
+	.origam-audio__playlist-item--active .origam-audio__playlist-btn {
+		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+		background-color: var(--origam-audio__playlist-item--active---background-color, rgba(124, 58, 237, 0.12));
+	}
+
+	.origam-audio__playlist-index {
+		font-variant-numeric: tabular-nums;
+		font-size: 12px;
+		min-width: 18px;
+		text-align: end;
+		opacity: 0.6;
+	}
+
+	.origam-audio__playlist-cover {
+		flex: 0 0 32px;
+		width: 32px;
+		height: 32px;
+		border-radius: 4px;
+		object-fit: cover;
+		display: block;
+	}
+
+	.origam-audio__playlist-text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		flex: 1 1 auto;
+		gap: 1px;
+	}
+
+	.origam-audio__playlist-title {
+		font-size: 13px;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: inherit;
+	}
+
+	.origam-audio__playlist-artist {
+		font-size: 12px;
+		opacity: 0.65;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.origam-audio__playlist-duration {
+		font-variant-numeric: tabular-nums;
+		font-size: 12px;
+		opacity: 0.6;
+		flex: 0 0 auto;
+	}
+
+	.origam-audio__nav-btn--loop-one {
+		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+	}
+
+	.origam-audio--compact .origam-audio__playlist {
+		display: none;
 	}
 </style>

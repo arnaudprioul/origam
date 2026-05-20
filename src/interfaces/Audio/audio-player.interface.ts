@@ -18,7 +18,37 @@ import type {
     IVideoTrack
 } from '../../interfaces'
 
-import type { TAudioControls, TAudioVariant, TCoverPosition } from '../../types'
+import type { TAudioControls, TAudioLoopMode, TAudioVariant, TCoverPosition } from '../../types'
+
+/**
+ * Descriptor for a single track in an `<OrigamAudio>` playlist.
+ *
+ * The `src` field is mandatory; everything else is optional metadata
+ * surfaced on the player chrome when the track becomes active.
+ * `cover` defaults to the consumer-level `cover` prop when unset,
+ * `title` / `artist` / `album` fall back to the matching root props.
+ */
+export interface IAudioTrack {
+    /** Absolute or root-relative audio URL (or an array for codec
+     *  fallback / a single `{ src, type }` descriptor). */
+    src: string | IAudioSource | Array<IAudioSource>
+    /** Display title for this track. Falls back to the root `title`
+     *  prop when omitted. */
+    title?: string
+    /** Display artist. Falls back to the root `artist` prop. */
+    artist?: string
+    /** Display album. Falls back to the root `album` prop. */
+    album?: string
+    /** Cover image URL. Falls back to the root `cover` prop. */
+    cover?: string
+    /** Optional pre-known duration in seconds (shown in the playlist
+     *  list before the audio is loaded). Once metadata loads the
+     *  runtime duration overrides this value for the active track. */
+    duration?: number
+    /** Optional stable identifier — used as the `<li>` key in the
+     *  playlist list. Defaults to the array index when omitted. */
+    id?: string | number
+}
 
 /**
  * A single `<source>` entry when the consumer passes multiple audio
@@ -197,11 +227,59 @@ export interface IAudioProps
      */
     muted?: boolean
     /**
-     * Loops playback. The player restarts at `0` when `ended` fires.
+     * Legacy loop flag. When `true` is mapped to `loopMode='one'` at
+     * runtime so a v0.x consumer keeps the "loop this track forever"
+     * behaviour without source change. Prefer `loopMode` for new code.
      *
+     * @deprecated Use `loopMode` instead.
      * @default false
      */
     loop?: boolean
+    /**
+     * Tri-state loop strategy when a playlist is active. Cycled by the
+     * loop button in the transport row:
+     *   - `'none'` → no loop, playback stops after the last track
+     *   - `'all'`  → loop the playlist, wrap from last to first
+     *   - `'one'`  → loop the current track on its own `ended`
+     *
+     * For a single-track usage (`src` only, no `playlist`), `'one'`
+     * keeps the legacy `loop` behaviour and `'all'` is equivalent to
+     * `'one'` (there's no next track to wrap to).
+     *
+     * @default 'none'
+     */
+    loopMode?: TAudioLoopMode
+    /**
+     * Shuffle the playlist order when navigating with prev / next or
+     * auto-advancing on track end. The shuffled order is computed
+     * deterministically (Fisher-Yates seeded by playlist length) so
+     * consumers can re-render predictably; opt out of stability by
+     * controlling the playlist array externally.
+     *
+     * Has no visible effect when no `playlist` is provided.
+     *
+     * @default false
+     */
+    shuffle?: boolean
+    /**
+     * Optional list of tracks to play sequentially. When set, the
+     * `prev` / `next` transport buttons navigate the list instead of
+     * skipping 10 s, the cover / metadata strip switches to the active
+     * track, and a clickable list renders below the transport.
+     *
+     * Mutually informative with the top-level `src` prop: if `src`
+     * AND `playlist` are both set, `playlist` wins and `src` is
+     * ignored. The active track is `playlist[currentTrackIndex]`.
+     */
+    playlist?: Array<IAudioTrack>
+    /**
+     * Index of the currently-active track in the `playlist`. Supports
+     * `v-model:currentTrackIndex` for two-way binding (parent stays the
+     * source of truth for which track is playing).
+     *
+     * @default 0
+     */
+    currentTrackIndex?: number
     /**
      * Buffering hint. `'metadata'` (default) loads just enough to
      * compute the duration; `'none'` defers everything until the
@@ -284,13 +362,26 @@ export interface IAudioEmits {
      *  amplitudes). Ported from `ISoundEmits['waveform']`. */
     (e: 'waveform', peaks: Array<number>): void
     /** Fires when the listener clicks the "previous track" button.
-     *  Emitted only when the listener bound a handler — otherwise the
-     *  component falls back to skipping 10 s backward internally. */
+     *  Always emitted alongside the in-component navigation (playlist
+     *  jump if a playlist is set, otherwise the listener can implement
+     *  its own previous logic). */
     (e: 'previous'): void
-    /** Fires when the listener clicks the "next track" button.
-     *  Emitted only when the listener bound a handler — otherwise the
-     *  component falls back to skipping 10 s forward internally. */
+    /** Fires when the listener clicks the "next track" button. Same
+     *  contract as `previous`. */
     (e: 'next'): void
+    /** Two-way binding for the active playlist index. Fires when the
+     *  user clicks a track in the list, presses prev / next, or when
+     *  the player auto-advances on `ended`. */
+    (e: 'update:currentTrackIndex', index: number): void
+    /** Two-way binding for the loop mode. Fires when the user cycles
+     *  the loop button (`none` → `all` → `one` → `none`). */
+    (e: 'update:loopMode', mode: TAudioLoopMode): void
+    /** Two-way binding for the shuffle flag. Fires when the user
+     *  toggles the shuffle button. */
+    (e: 'update:shuffle', shuffle: boolean): void
+    /** Fires whenever the active track changes (manual click, prev /
+     *  next, auto-advance). Payload is the new track descriptor. */
+    (e: 'track-change', track: IAudioTrack, index: number): void
 }
 
 /**

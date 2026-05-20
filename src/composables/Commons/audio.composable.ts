@@ -1,10 +1,10 @@
 import { ref, shallowRef, watch } from 'vue'
-import type { IAudioProps } from '../../interfaces'
+import type { IUseAudioProps } from '../../interfaces'
 
 /*********************************************************
  * useAudio
  ********************************************************/
-export function useAudio (props: IAudioProps) {
+export function useAudio (props: IUseAudioProps) {
     const analyser = ref<AnalyserNode | null>(null)
     const audioArray = shallowRef<Uint8Array | null>(null)
     const audioRef = ref()

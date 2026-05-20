@@ -319,6 +319,7 @@ export * from './Video/video-track-kind.type'
 
 export * from './Audio/audio-controls.type'
 export * from './Audio/audio-variant.type'
+export * from './Audio/audio-loop-mode.type'
 export * from './Audio/cover-position.type'
 
 
