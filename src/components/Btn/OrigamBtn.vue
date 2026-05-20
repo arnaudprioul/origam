@@ -1,12 +1,12 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
 			:id="id"
 			v-ripple="isRipple"
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
 			:href="link.href.value"
-			:type="link.tag === 'a' ? undefined : 'button'"
+			:type="link.tag.value === 'a' ? undefined : 'button'"
 			:value="valueAttr"
 			@click="handleClick"
 			@mouseenter="handleMouseenter"
