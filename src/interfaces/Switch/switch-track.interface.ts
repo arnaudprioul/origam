@@ -50,4 +50,12 @@ export interface ISwitchTrackSlotsProps {
 export interface ISwitchTrackSlots extends ICommonsComponentSlots {
     'track.true'?: (props: ISwitchTrackSlotsProps) => any
     'track.false'?: (props: ISwitchTrackSlotsProps) => any
+    /**
+     * Free-form overlay rendered inside the track AFTER the
+     * `track.true` / `track.false` half-labels. Used by `OrigamSwitch`
+     * to host a linear progress bar when `loading={ type: 'line' }`,
+     * but consumers can put any absolute-positioned decoration here
+     * (gradient sweep, sparkles, …) without subclassing the track.
+     */
+    overlay?: (props: ISwitchTrackSlotsProps) => any
 }

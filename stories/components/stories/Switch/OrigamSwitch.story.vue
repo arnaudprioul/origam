@@ -306,7 +306,7 @@
 		</Variant>
 
 		<Variant title="Loading shapes">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 480px;">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 560px;">
 				<div style="display: flex; align-items: center; gap: 12px;">
 					<code style="min-width: 240px;">loading={true}</code>
 					<origam-switch :model-value="false" loading disabled label="Bool" data-cy="switch-loading-bool"/>

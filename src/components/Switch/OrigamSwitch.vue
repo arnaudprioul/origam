@@ -1,12 +1,16 @@
 <template>
-	<origam-skeleton
+	<div
 			v-if="isSkeletonLoading"
-			variant="rectangular"
-			:rounded="true"
-			:width="'52px'"
-			:height="'32px'"
-			v-bind="loaderConfig.overrides"
-	/>
+			class="origam-switch__skeleton"
+			:class="{ 'origam-switch__skeleton--inset': inset }"
+			aria-busy="true"
+			aria-label="Loading"
+			role="status"
+			data-cy="origam-switch-skeleton"
+	>
+		<span class="origam-switch__skeleton-track"/>
+		<span class="origam-switch__skeleton-thumb"/>
+	</div>
 
 	<origam-input
 			v-else
@@ -63,6 +67,22 @@
 									v-bind="slotProps"
 							/>
 						</template>
+
+						<template
+								v-if="isLineLoading"
+								#overlay
+						>
+							<origam-progress
+									:active="loaderConfig.isActive"
+									:color="color"
+									:indeterminate="loaderConfig.indeterminate"
+									:model-value="loaderConfig.modelValue"
+									:type="PROGRESS_TYPE.LINEAR"
+									class="origam-switch__progress origam-switch__progress--linear"
+									data-cy="origam-switch-progress-linear"
+									v-bind="loaderConfig.overrides"
+							/>
+						</template>
 					</origam-switch-track>
 				</template>
 
@@ -87,7 +107,7 @@
 								/>
 							</template>
 
-							<template v-if="hasLoading">
+							<template v-if="hasCircularLoading">
 								<slot name="loader">
 									<div class="origam-switch__loader">
 										<origam-progress
@@ -120,7 +140,6 @@
 		OrigamInput,
 		OrigamProgress,
 		OrigamSelectionControl,
-		OrigamSkeleton,
 		OrigamSwitchTrack,
 		OrigamTranslateScale
 	} from '../../components'
@@ -254,6 +273,30 @@
 		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
 	})
 
+	/**
+	 * True when the active loader kind is `'line'` — a thin linear
+	 * progress that overlays the track at the switch's full width
+	 * (52 × 32 footprint). Visually completes the existing skeleton
+	 * and circular variants:
+	 *   - `'circular'`  → spinning circle INSIDE the thumb (default).
+	 *   - `'line'`      → indeterminate line ACROSS the track.
+	 *   - `'skeleton'`  → custom switch-shaped placeholder block.
+	 */
+	const isLineLoading = computed(() => {
+		return loaderConfig.value.isActive && loaderConfig.value.kind === 'line'
+	})
+
+	/**
+	 * True when the thumb itself should host the spinner — i.e. any
+	 * active loader EXCEPT the line variant (which lives on the
+	 * track) or skeleton (which replaces the whole switch).
+	 */
+	const hasCircularLoading = computed(() => {
+		if (slots.loader) return true
+		const cfg = loaderConfig.value
+		return cfg.isActive && cfg.kind !== 'line' && cfg.kind !== 'skeleton'
+	})
+
 	/*********************************************************
 	 * Class & Style
 	 *
@@ -309,11 +352,101 @@
 		lang="scss"
 		scoped
 >
+	/*
+	 * Skeleton placeholder mimicking the switch silhouette — a 52×32
+	 * rounded track + a 20px circular thumb pinned to the left so the
+	 * shape is unmistakably a switch (vs the previous plain rectangle
+	 * which looked like a generic loading bar). Both halves share the
+	 * `--origam-switch__skeleton-bg` pulse animation inherited from
+	 * the broader skeleton token so the rhythm matches OrigamSkeleton.
+	 */
+	@keyframes origam-switch-skeleton-pulse {
+		0%, 100% { opacity: 1; }
+		50%      { opacity: 0.55; }
+	}
+
+	.origam-switch__skeleton {
+		position: relative;
+		display: inline-block;
+		width: var(--origam-switch__skeleton---width, 52px);
+		height: var(--origam-switch__skeleton---height, 32px);
+		animation: origam-switch-skeleton-pulse 1.6s ease-in-out infinite;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+
+		.origam-switch__skeleton-track {
+			position: absolute;
+			inset: 0;
+			border-radius: 999px;
+			background-color: var(--origam-switch__skeleton-track---background-color, color-mix(in srgb, currentColor 14%, transparent));
+		}
+
+		.origam-switch__skeleton-thumb {
+			position: absolute;
+			top: 50%;
+			left: 6px;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			transform: translateY(-50%);
+			background-color: var(--origam-switch__skeleton-thumb---background-color, color-mix(in srgb, currentColor 28%, transparent));
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+		}
+
+		&--inset {
+			.origam-switch__skeleton-thumb {
+				/* inset switches use a 24px thumb that overflows the track */
+				width: 24px;
+				height: 24px;
+				left: 4px;
+			}
+		}
+	}
+
 	.origam-switch {
 		$this: &;
 
 		:deep(.origam-label) {
 			padding-inline-start: 10px;
+		}
+
+		/*
+		 * Line loader — thin linear progress positioned ON the track,
+		 * spanning the full switch footprint (46×14 standard or 52×32
+		 * inset). Sits BEHIND the thumb so the thumb stays visually
+		 * dominant and the consumer still sees the on/off position
+		 * while the background indicates async work in flight.
+		 *
+		 * `OrigamProgressLinear` ships an inline `height: thickness`
+		 * (4 px default) that wins over standard CSS — we force it
+		 * to 100 % via `:deep()` so the bar fills the track height
+		 * regardless of the standard / inset variant.
+		 */
+		&__progress--linear {
+			position: absolute !important;
+			inset: 0 !important;
+			width: 100% !important;
+			/*
+			 * `OrigamProgressLinear` inlines `height: 4px` on its root via
+			 * `:style="{ height: thickness }"`, which beats any non-important
+			 * scoped rule. `!important` here is the only way to expand the
+			 * loader to the full track height without subclassing the
+			 * progress component.
+			 */
+			height: 100% !important;
+			line-height: 1 !important;
+			border-radius: inherit;
+			pointer-events: none;
+			z-index: 0;
+			overflow: hidden;
+
+			:deep(.origam-progress__background),
+			:deep(.origam-progress__loader),
+			:deep(.origam-progress__bar) {
+				height: 100% !important;
+			}
 		}
 
 		&__loader {

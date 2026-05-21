@@ -25,6 +25,11 @@
 					v-bind="slotProps"
 			/>
 		</div>
+
+		<slot
+				name="overlay"
+				v-bind="slotProps"
+		/>
 	</div>
 </template>
 
@@ -172,6 +177,7 @@
 	.origam-switch-track {
 		$this: &;
 
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		font-size: 0.5rem;
@@ -183,6 +189,7 @@
 		min-width: 36px;
 		cursor: pointer;
 		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+		overflow: hidden;
 
 		@media (forced-colors: active) {
 			border: 1px solid;

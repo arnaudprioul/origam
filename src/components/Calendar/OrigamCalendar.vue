@@ -1021,9 +1021,26 @@
 		cursor: not-allowed;
 	}
 
+	/*
+	 * Active toolbar button (selected view: Month / Week / Day / Agenda).
+	 * Previously fell back to `currentColor` for bg + `#ffffff` for fg —
+	 * when the calendar lived on a light surface with white-ish
+	 * `currentColor` (e.g. tinted via a wrapper, or the unset token
+	 * resolved to a near-white value), the active btn rendered as
+	 * white-on-white and the user lost the selected view indicator.
+	 *
+	 * Use the DS primary intent pair (`action.primary.bg` + matching
+	 * `.fg`) so the selected view is unambiguously highlighted on any
+	 * surface, light or dark, with WCAG-validated contrast.
+	 */
 	.origam-calendar__toolbar-btn--active {
-		background-color: var(--origam-calendar__event---bg-color-default, currentColor);
-		color: var(--origam-calendar__event---color-default, #ffffff);
+		background-color: var(--origam-calendar__toolbar-btn--active---background-color, var(--origam-color__action--primary---bg));
+		color: var(--origam-calendar__toolbar-btn--active---color, var(--origam-color__action--primary---fg));
+	}
+
+	.origam-calendar__toolbar-btn--active:hover:not(:disabled),
+	.origam-calendar__toolbar-btn--active:focus-visible {
+		background-color: var(--origam-calendar__toolbar-btn--active---background-color-hover, color-mix(in srgb, var(--origam-color__action--primary---bg) 88%, black));
 	}
 
 	.origam-calendar__body {
