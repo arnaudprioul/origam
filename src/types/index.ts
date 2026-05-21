@@ -147,11 +147,7 @@ export * from './Grid/grid-align.type'
 
 export * from './Masonry/masonry-align.type'
 
-export * from './MediaController/quality-option.type'
-
-export * from './MediaConfigMenu/media-config-section.type'
-
-export * from './MediaScrubber/media-scrubber-orientation.type'
+export * from './Media'
 
 export * from './Icon/class-icon.type'
 export * from './Icon/component-icon.type'

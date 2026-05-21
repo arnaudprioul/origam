@@ -242,10 +242,10 @@
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamIcon } from '../Icon'
-	import { OrigamMediaController } from '../MediaController'
+	import { OrigamMediaController } from '../Media'
 	import { OrigamResponsive } from '../Responsive'
 
-	import { shouldSuppressAutoplay, useLocale, useVideoPlayer } from '../../composables'
+	import { shouldSuppressAutoplay, useColorEffect, useLocale, useVideoPlayer } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -312,7 +312,9 @@
 		allowRemotePlayback: true,
 		doubleTapToSkip: true,
 		downloadable: false,
-		downloadFilename: undefined
+		downloadFilename: undefined,
+		color: undefined,
+		bgColor: undefined
 	})
 
 	const emit = defineEmits<IVideoEmits>()
@@ -827,6 +829,43 @@
 	}))
 
 	/*********************************************************
+	 * Colour mixin — `color` and `bgColor` props let the consumer
+	 * tint the video chrome (icons + scrubber) and the host
+	 * background. `useColorEffect` pairs them WCAG-aware so a
+	 * single intent (`color="primary"`) flows through without
+	 * leaving illegible text on a saturated surface.
+	 ********************************************************/
+	const { colorClasses, colorStyles } = useColorEffect(props)
+
+	const hasColorProp = computed(() => !!props.color)
+	const hasBgColorProp = computed(() => !!props.bgColor)
+
+	/*********************************************************
+	 * scrubberColorStyle — drives `--origam-media-controller__scrubber---color`
+	 * on the host. The MediaController reads this variable for the
+	 * played-portion of the scrubber.
+	 *
+	 *   - No `color` / `bgColor` prop → default to **white**.
+	 *     The video overlay is dark (rgba(0,0,0,0.55) gradient on
+	 *     the bottom bar) and the rest of the chrome (play/volume/
+	 *     cog icons, time) is white via `.origam-video__btn`. A
+	 *     white scrubber matches that hierarchy.
+	 *
+	 *   - `color` OR `bgColor` set → `currentColor`. Through
+	 *     `useColorEffect`'s class/style binding the host's `color`
+	 *     is the resolved intent fg, so the scrubber adopts it.
+	 *     (`bgColor="primary"` alone auto-pairs the fg to primary's
+	 *     paired foreground token via `useColorEffect`, so the
+	 *     scrubber tracks that contrast pair automatically.)
+	 ********************************************************/
+	const scrubberColorStyle = computed<Record<string, string>>(() => {
+		if (hasColorProp.value || hasBgColorProp.value) {
+			return { '--origam-media-controller__scrubber---color': 'currentColor' }
+		}
+		return { '--origam-media-controller__scrubber---color': '#ffffff' }
+	})
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const rootClasses = computed(() => [
@@ -839,14 +878,23 @@
 			'origam-video--pip': state.pip.value,
 			'origam-video--controls-native': props.controls === 'native',
 			'origam-video--controls-custom': props.controls === 'custom',
-			'origam-video--controls-none': props.controls === 'none'
+			'origam-video--controls-none': props.controls === 'none',
+			'origam-video--has-color': hasColorProp.value,
+			'origam-video--has-bg-color': hasBgColorProp.value
 		},
+		...colorClasses.value,
 		props.class
 	])
 
 	// aspect-ratio is now handled by `<origam-responsive :aspect-ratio>`.
-	// rootStyles only carries the user-provided style pass-through.
-	const rootStyles = computed<StyleValue>(() => [props.style] as StyleValue)
+	// rootStyles carries the user pass-through + the scrubber colour
+	// variable + the inline output of `useColorEffect` for raw / custom
+	// values that don't have a utility class.
+	const rootStyles = computed<StyleValue>(() => [
+		colorStyles.value,
+		scrubberColorStyle.value,
+		props.style
+	] as StyleValue)
 
 	/*********************************************************
 	 * Expose
@@ -869,6 +917,72 @@
 		background-color: var(--origam-video---background-color, #000000);
 		overflow: hidden;
 		border-radius: var(--origam-video---border-radius, 0);
+
+		/*
+		 * Force the chrome (MediaController play / volume / cog,
+		 * native `<button>`-based MediaVolumeControl) to white by
+		 * default — the controller's own SCSS reads `color:
+		 * var(--origam-media-controller---color, inherit)` which
+		 * defaults to the `#171717` text-primary token. On the dark
+		 * video overlay that produces near-invisible icons (the
+		 * user-reported "icons all black" symptom).
+		 *
+		 * The variable is overridden to `inherit` further down when
+		 * the consumer passes `color` / `bgColor`, so `useColorEffect`
+		 * gets to drive the tint through.
+		 */
+		--origam-media-controller---color: #ffffff;
+	}
+
+	/*
+	 * Tint propagation when the consumer passes `color` or `bgColor`:
+	 * the MediaController + the white-by-default `.origam-video__btn`
+	 * icons need to inherit the host colour so the scrubber's
+	 * `currentColor` (set by `scrubberColorStyle`) AND the icons
+	 * track the user's intent. Without these overrides the
+	 * MediaController's own scoped `color: var(--origam-media-controller---color, inherit)`
+	 * pins the chrome back to the dark text-primary token.
+	 */
+	.origam-video--has-color,
+	.origam-video--has-bg-color {
+		--origam-media-controller---color: inherit;
+
+		:deep(.origam-media-controller) {
+			color: inherit;
+		}
+
+		.origam-video__btn {
+			color: inherit;
+		}
+	}
+
+	/*
+	 * Native `<button class="origam-media-volume-control__btn">` lives
+	 * inside OrigamMediaVolumeControl with its own scoped CSS that
+	 * doesn't honour `--origam-media-controller---color`. Force it
+	 * to inherit from the controller (which is now white by default)
+	 * so the volume icon matches the rest of the chrome.
+	 */
+	:deep(.origam-media-volume-control__btn) {
+		color: inherit;
+	}
+
+	/*
+	 * Scrubber track / buffer background — overrides the MediaController
+	 * defaults so the dark, semi-translucent track doesn't let the
+	 * video frame underneath bleed through with whatever hue the
+	 * picture has at the playhead position (the user-reported "pink
+	 * scrubber" symptom on a pastel-toned video frame). White-tinted
+	 * translucent backgrounds give a uniform light-grey track on
+	 * every video regardless of content.
+	 *
+	 * The :deep(.) reaches into the OrigamMediaScrubber scope to set
+	 * its internal slots; the consumer can still override per-instance
+	 * via `--origam-media-scrubber---track-background-color`.
+	 */
+	:deep(.origam-media-controller__scrubber) {
+		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.28);
+		--origam-media-scrubber---buffer-background-color: rgba(255, 255, 255, 0.42);
 	}
 
 	.origam-video__el {

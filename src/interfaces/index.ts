@@ -177,23 +177,9 @@ export * from './Grid/grid-item.interface'
 
 export * from './Masonry/masonry.interface'
 
-export * from './Media/media-player.interface'
+export * from './Media'
 
 export * from './Audio/audio-player.interface'
-
-export * from './MediaController/media-controller.interface'
-
-export * from './MediaPlayBtn/media-play-btn.interface'
-
-export * from './MediaVolumeControl/media-volume-control.interface'
-
-export * from './MediaTimeLabel/media-time-label.interface'
-
-export * from './MediaCastBtn/media-cast-btn.interface'
-
-export * from './MediaConfigMenu/media-config-menu.interface'
-
-export * from './MediaScrubber/media-scrubber.interface'
 
 export * from './Icon/icon.interface'
 

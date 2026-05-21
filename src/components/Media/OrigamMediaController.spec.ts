@@ -7,8 +7,8 @@
 //   - `inset` and `visible` modifier classes,
 //   - config menu open/close + speed selection contract.
 //
-// The Tooltip-driven popovers are mounted with `attachTo: document.body`
-// because OrigamTooltip teleports its content to the body root.
+// OrigamBtn and OrigamMenu are stubbed so the spec does not need the
+// OrigamDisplay injection that OrigamOverlay requires.
 
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
@@ -116,6 +116,63 @@ interface IMountOptions {
     currentQuality?: string | null
 }
 
+// OrigamMenu stub: renders the items tree as flat <button> elements so
+// the spec can trigger clicks and assert `data-cy` presence without
+// needing the real Menu (which depends on OrigamOverlay / useDisplay).
+// Each item carries a `data-cy` derived from its `key` field:
+//   speed-root  → ignored (it's the parent row)
+//   speed-0.5   → [data-cy="origam-media-controller-config-rate-0.5"]
+//   quality-720p→ [data-cy="origam-media-controller-config-quality-720p"]
+//   download    → [data-cy="origam-media-controller-config-download"]
+const OrigamMenuStub = {
+    props: ['modelValue', 'items'],
+    emits: ['update:modelValue', 'select'],
+    template: `
+        <div class="origam-menu-stub" :data-open="modelValue">
+            <slot name="activator" :props="{}" />
+            <template v-if="modelValue">
+                <template v-for="item in flatItems" :key="item.key">
+                    <button
+                        type="button"
+                        :data-cy="itemDataCy(item.key)"
+                        @click="$emit('select', item)"
+                    >{{ item.title }}</button>
+                </template>
+            </template>
+        </div>
+    `,
+    computed: {
+        flatItems (): Array<any> {
+            const flat: Array<any> = []
+            const walk = (items: Array<any>) => {
+                for (const item of (items ?? [])) {
+                    if (item.children && item.children.length) {
+                        walk(item.children)
+                    } else {
+                        flat.push(item)
+                    }
+                }
+            }
+            walk((this as any).items ?? [])
+            return flat
+        }
+    },
+    methods: {
+        itemDataCy (key: string): string {
+            if (key.startsWith('speed-')) {
+                const rate = key.replace('speed-', '')
+                return `origam-media-controller-config-rate-${rate}`
+            }
+            if (key.startsWith('quality-')) {
+                const q = key.replace('quality-', '')
+                return `origam-media-controller-config-quality-${q}`
+            }
+            if (key === 'download') return 'origam-media-controller-config-download'
+            return `origam-media-controller-config-${key}`
+        }
+    }
+}
+
 const mountController = (opts: IMountOptions = {}): {
     wrapper: VueWrapper
     methods: IVideoPlayerMethods
@@ -131,14 +188,22 @@ const mountController = (opts: IMountOptions = {}): {
             },
             stubs: {
                 OrigamIcon: { template: '<i aria-hidden="true" />' },
-                OrigamTooltip: {
-                    props: ['modelValue'],
-                    template: `
-                        <div class="origam-tooltip-stub">
-                            <slot name="activator" :props="{}" />
-                            <slot />
-                        </div>
-                    `
+                // OrigamBtn renders as a <button>. data-cy is not a declared prop
+                // so it stays in $attrs and is applied to the root via fallthrough.
+                // v-bind="$attrs" forwards data-cy, onClick, and any other attrs
+                // the controller passes — including the @click="onTogglePlay" handler.
+                OrigamBtn: {
+                    props: ['icon', 'active', 'ariaLabel'],
+                    template: '<button type="button" :aria-label="ariaLabel" :aria-pressed="active" v-bind="$attrs" />'
+                },
+                OrigamMenu: OrigamMenuStub,
+                // VolumeControl stub: the scrubber element carries aria-valuenow.
+                // data-cy is not a prop → stays in $attrs → auto-falls-through to
+                // the single root element, which also carries aria-valuenow.
+                OrigamMediaVolumeControl: {
+                    props: ['volume', 'muted', 'muteLabel', 'unmuteLabel', 'volumeLabel'],
+                    emits: ['update:muted', 'update:volume'],
+                    template: '<div role="slider" :aria-valuenow="muted ? 0 : volume" v-bind="$attrs" />'
                 },
                 OrigamMediaScrubber: {
                     props: ['modelValue', 'orientation', 'ariaLabel', 'ariaValueText', 'max', 'step', 'buffered'],
@@ -265,7 +330,6 @@ describe('OrigamMediaController — config menu', () => {
         const exposed = wrapper.vm as any
 
         exposed.configMenuOpen = true
-        exposed.configSection = 'speed'
         await wrapper.vm.$nextTick()
 
         const rateBtn = wrapper.find('[data-cy="origam-media-controller-config-rate-1.5"]')
@@ -288,7 +352,6 @@ describe('OrigamMediaController — quality emits', () => {
         })
         const exposed = wrapper.vm as any
         exposed.configMenuOpen = true
-        exposed.configSection = 'quality'
         await wrapper.vm.$nextTick()
 
         const qualityBtn = wrapper.find('[data-cy="origam-media-controller-config-quality-720p"]')

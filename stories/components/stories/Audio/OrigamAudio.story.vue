@@ -278,15 +278,22 @@
 			>
 				<p class="hint">
 					Setting <code>downloadable</code> adds a Download row to
-					the cog menu. Clicking it triggers the native download
-					dialog and emits a <code>download</code> event with the
-					source URL.
+					the cog menu. The MediaController detects same-origin
+					vs cross-origin and routes accordingly — for cross-origin
+					URLs (this demo) it fetches the file as a blob and
+					triggers the save-to-disk flow on a same-origin blob URL,
+					so the <code>download</code> attribute is actually
+					honoured (instead of the browser navigating to the file).
+					Demo uses a CORS-enabled sample so the round-trip
+					succeeds; without CORS the controller falls back to
+					opening the URL in a new tab.
 				</p>
 				<origam-audio
-						:src="SOUND_HELIX_TRACK"
+						:src="SAMPLELIB_MP3"
 						:downloadable="true"
+						download-filename="sample-3s.mp3"
 						title="Downloadable Track"
-						artist="SoundHelix"
+						artist="SampleLib"
 						class="story-audio"
 						data-cy="audio-downloadable-player"
 						@download="logEmit('download', $event)"
@@ -317,27 +324,74 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — bgColor + color (branded surface)">
+		<Variant title="Prop — bgColor (auto-contrast)">
 			<div
 					class="story-shell"
 					data-cy="audio-brand"
 			>
 				<p class="hint">
-					Repaint the surface via the DS intent system —
-					<code>bgColor="primary"</code> picks the action ramp,
-					<code>color="surface"</code> picks a contrast-aware
-					foreground.
+					Repaint the surface via the DS intent system — passing only
+					<code>bgColor="primary"</code> auto-pairs the foreground with
+					the intent's WCAG-validated <em>fg</em> token (white on the
+					primary purple). The scrubber adopts the same paired colour
+					so progress stays visible on the branded surface.
 				</p>
 				<origam-audio
 						:src="SOUND_HELIX_TRACK"
 						bg-color="primary"
-						color="surface"
-						title="Branded"
+						title="Auto-contrast"
 						artist="Origam DS"
-						album="Tokens"
+						album="bgColor=primary, no color"
 						:cover="PICSUM_COVER"
 						class="story-audio"
 						data-cy="audio-brand-player"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — color (scrubber follows color)">
+			<div
+					class="story-shell"
+					data-cy="audio-color"
+			>
+				<p class="hint">
+					Setting <code>color="primary"</code> alone tints the text AND
+					the scrubber accent — the bg stays neutral so the contrast is
+					controlled by the surface, not the intent.
+				</p>
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						color="primary"
+						title="Tinted text"
+						artist="Origam DS"
+						album="color=primary"
+						:cover="PICSUM_COVER"
+						class="story-audio"
+						data-cy="audio-color-player"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — color + bgColor (paired intents)">
+			<div
+					class="story-shell"
+					data-cy="audio-paired"
+			>
+				<p class="hint">
+					Two distinct intents — <code>bgColor="success"</code> paired
+					with <code>color="warning"</code> — let the consumer override
+					the auto-pair when they want a deliberate accent contrast.
+				</p>
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						bg-color="success"
+						color="warning"
+						title="Paired intents"
+						artist="Origam DS"
+						album="success bg, warning fg"
+						:cover="PICSUM_COVER"
+						class="story-audio"
+						data-cy="audio-paired-player"
 				/>
 			</div>
 		</Variant>
@@ -409,6 +463,11 @@
 	import { useStoryInitState } from '@stories/composables'
 
 	const SOUND_HELIX_TRACK = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+	// CORS-enabled MP3 (Access-Control-Allow-Origin: *) used by the
+	// downloadable variant so the cog-menu Download row can actually
+	// fetch + blob the file on cross-origin without falling back to
+	// "open in new tab".
+	const SAMPLELIB_MP3 = 'https://samplelib.com/mp3/sample-3s.mp3'
 	const PICSUM_COVER = 'https://picsum.photos/seed/origam-audio/256/256'
 
 	const MULTI_SOURCES: Array<IAudioSource> = [

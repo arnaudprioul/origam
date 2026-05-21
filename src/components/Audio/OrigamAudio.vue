@@ -32,7 +32,7 @@
 			/>
 			<track
 					v-for="trackItem in resolvedTracks"
-					:key="`${trackItem.kind}-${trackItem.srclang}`"
+					:key="`${ trackItem.kind }-${ trackItem.srclang }`"
 					:kind="trackItem.kind"
 					:src="trackItem.src"
 					:srclang="trackItem.srclang"
@@ -41,71 +41,93 @@
 			/>
 		</audio>
 
-		<figure
-				v-if="hasCover"
-				class="origam-audio__cover"
-				data-cy="origam-audio-cover-figure"
-		>
-			<slot name="cover">
-				<img
-						:src="resolvedCover!"
-						:alt="coverAlt"
-						:width="coverSizePx"
-						:height="coverSizePx"
-						class="origam-audio__cover-img"
-						data-cy="origam-audio-cover"
-						loading="lazy"
-						decoding="async"
-				/>
-			</slot>
-		</figure>
-
-		<section
+		<origam-media-controller
 				v-if="isCustomControls"
-				class="origam-audio__body"
-				data-cy="origam-audio-body"
+				v-model:loop-mode="internalLoopMode"
+				v-model:shuffle="internalShuffle"
+				:state="state"
+				:methods="methods"
+				:playback-rates="playbackRates"
+				:allow-remote-playback="allowRemotePlayback"
+				:downloadable="downloadable"
+				:download-url="downloadUrl"
+				:download-filename="downloadFilename"
+				:show-previous="hasPlaylist"
+				:show-next="hasPlaylist"
+				:show-loop="true"
+				:show-shuffle="hasPlaylist"
+				class="origam-audio__controller"
+				data-cy="origam-audio-controls"
+				@previous="onPrevious"
+				@next="onNext"
+				@download="onDownloadClick"
 		>
-			<header
-					v-if="hasMetadata"
-					class="origam-audio__metadata"
-					data-cy="origam-audio-metadata"
-			>
-				<slot name="metadata">
-					<slot name="title">
-						<strong
-								v-if="resolvedTitle"
-								class="origam-audio__title"
-								data-cy="origam-audio-title"
-						>{{ resolvedTitle }}</strong>
-					</slot>
-					<span
-							v-if="hasMetaLine"
-							class="origam-audio__meta"
+			<template #header>
+				<slot name="header">
+					<div
+							v-if="hasCover || hasMetadata"
+							class="origam-audio__header"
+							:class="{ 'origam-audio__header--no-cover': !hasCover }"
 					>
-						<span
-								v-if="resolvedArtist"
-								class="origam-audio__artist"
-								data-cy="origam-audio-artist"
-						>{{ resolvedArtist }}</span>
-						<span
-								v-if="resolvedAlbum"
-								class="origam-audio__album"
-								data-cy="origam-audio-album"
-						>{{ resolvedAlbum }}</span>
-						<span
-								v-if="hasDurationLabel"
-								class="origam-audio__duration"
-								data-cy="origam-audio-duration"
-						>{{ formattedDuration }}</span>
-					</span>
-				</slot>
-			</header>
+						<figure
+								v-if="hasCover"
+								class="origam-audio__cover"
+								data-cy="origam-audio-cover-figure"
+						>
+							<slot name="cover">
+								<img
+										:src="resolvedCover!"
+										:alt="coverAlt"
+										:width="coverSizePx"
+										:height="coverSizePx"
+										class="origam-audio__cover-img"
+										data-cy="origam-audio-cover"
+										loading="lazy"
+										decoding="async"
+								/>
+							</slot>
+						</figure>
 
-			<div
-					v-if="showWaveform"
-					class="origam-audio__waveform"
-					data-cy="origam-audio-waveform"
-			>
+						<header
+								v-if="hasMetadata"
+								class="origam-audio__metadata"
+								data-cy="origam-audio-metadata"
+						>
+							<slot name="metadata">
+								<slot name="title">
+									<strong
+											v-if="resolvedTitle"
+											class="origam-audio__title"
+											data-cy="origam-audio-title"
+									>{{ resolvedTitle }}</strong>
+								</slot>
+								<span
+										v-if="hasMetaLine"
+										class="origam-audio__meta"
+								>
+									<span
+											v-if="resolvedArtist"
+											class="origam-audio__artist"
+											data-cy="origam-audio-artist"
+									>{{ resolvedArtist }}</span>
+									<span
+											v-if="resolvedAlbum"
+											class="origam-audio__album"
+											data-cy="origam-audio-album"
+									>{{ resolvedAlbum }}</span>
+									<span
+											v-if="hasDurationLabel"
+											class="origam-audio__duration"
+											data-cy="origam-audio-duration"
+									>{{ formattedDuration }}</span>
+								</span>
+							</slot>
+						</header>
+					</div>
+				</slot>
+			</template>
+
+			<template #waveform>
 				<slot
 						name="waveform"
 						:peaks="peaks"
@@ -117,200 +139,56 @@
 							:max="scrubberMax"
 							:step="0.1"
 							:buffered="state.buffered.value"
-							:peaks="displayedPeaks"
+							:peaks="isCompactVariant ? undefined : displayedPeaks"
 							:aria-label="waveformAriaLabel"
-							variant="audio"
+							:variant="isCompactVariant ? 'timer' : 'audio'"
 							show-thumb-on-hover-only
 							show-hover-tooltip
 							:format-hover-tooltip="formatTimeTooltip"
 							class="origam-audio__waveform-slider"
+							:style="{ color: 'inherit' }"
 							data-cy="origam-audio-waveform-slider"
 							@update:model-value="onWaveformSeek"
 					/>
 				</slot>
-			</div>
+			</template>
 
-			<slot
-					name="controls"
-					v-bind="slotBindings"
+			<template
+					v-if="hasPlaylist"
+					#footer
 			>
-				<nav
-						class="origam-audio__transport"
-						:aria-label="transportLabel"
-						data-cy="origam-audio-controls"
+				<slot
+						name="playlist"
+						:tracks="props.playlist"
+						:current-index="safeTrackIndex"
+						:select="setActiveTrack"
 				>
-					<button
-							type="button"
-							class="origam-audio__nav-btn origam-audio__nav-btn--previous"
-							:aria-label="previousLabel"
-							data-cy="origam-audio-previous"
-							@click="onPrevious"
+					<origam-list
+						class="origam-audio__playlist"
+						data-cy="origam-audio-playlist"
 					>
-						<origam-icon
-								:icon="ICONS.PREVIOUS"
-								aria-hidden="true"
-						/>
-					</button>
-
-					<origam-media-play-btn
-							class="origam-audio__play-btn"
-							:playing="state.playing.value"
-							:play-label="playLabel"
-							:pause-label="pauseLabel"
-							data-cy="origam-audio-play"
-							@click="onTogglePlay"
-					/>
-
-					<button
-							type="button"
-							class="origam-audio__nav-btn origam-audio__nav-btn--next"
-							:aria-label="nextLabel"
-							data-cy="origam-audio-next"
-							@click="onNext"
-					>
-						<origam-icon
-								:icon="ICONS.NEXT"
-								aria-hidden="true"
-						/>
-					</button>
-
-					<origam-media-time-label
-							class="origam-audio__time"
-							:current-time="state.currentTime.value"
-							:duration="state.duration.value"
-							data-cy="origam-audio-time"
-					/>
-
-					<span class="origam-audio__spacer" aria-hidden="true" />
-
-					<origam-media-volume-control
-							class="origam-audio__volume"
-							:volume="state.volume.value"
-							:muted="state.muted.value"
-							:mute-label="muteLabel"
-							:unmute-label="unmuteLabel"
-							:volume-label="volumeLabel"
-							data-cy="origam-audio-volume"
-							@update:muted="onToggleMute"
-							@update:volume="onVolumeFromScrubber"
-					/>
-
-					<origam-media-cast-btn
-							v-if="showCastButton"
-							class="origam-audio__cast"
-							:available="showCastButton"
-							:casting="isCasting"
-							:cast-label="castLabel"
-							:stop-cast-label="stopCastLabel"
-							data-cy="origam-audio-cast"
-							@click="onCastClick"
-					/>
-
-					<button
-							v-if="hasPlaylist"
-							type="button"
-							class="origam-audio__nav-btn origam-audio__nav-btn--shuffle"
-							:class="{ 'origam-audio__nav-btn--active': internalShuffle }"
-							:aria-label="shuffleLabel"
-							:aria-pressed="internalShuffle"
-							data-cy="origam-audio-shuffle"
-							@click="onToggleShuffle"
-					>
-						<origam-icon
-								:icon="ICONS.SHUFFLE"
-								aria-hidden="true"
-						/>
-					</button>
-
-					<button
-							type="button"
-							class="origam-audio__nav-btn origam-audio__nav-btn--loop"
-							:class="loopBtnClasses"
-							:aria-label="loopAriaLabel"
-							:aria-pressed="isLoopActive"
-							data-cy="origam-audio-loop"
-							@click="onToggleLoop"
-					>
-						<origam-icon
-								:icon="loopIcon"
-								aria-hidden="true"
-						/>
-					</button>
-
-					<origam-media-config-menu
-							v-if="hasConfigContent"
-							class="origam-audio__config"
-							:playback-rates="playbackRates"
-							:playback-rate="state.playbackRate.value"
-							:downloadable="downloadable"
-							:download-url="downloadUrl"
-							:download-filename="downloadFilename"
-							:settings-label="settingsLabel"
-							:quality-label="qualityLabel"
-							:speed-label="speedLabel"
-							:download-label="downloadLabelText"
-							:normal-speed-label="normalSpeedLabel"
-							data-cy="origam-audio-config"
-							@update:playback-rate="onPlaybackRateChange"
-							@download="onDownloadClick"
-					/>
-				</nav>
-			</slot>
-		</section>
-
-		<slot
-				v-if="hasPlaylist"
-				name="playlist"
-				:tracks="props.playlist"
-				:current-index="safeTrackIndex"
-				:select="setActiveTrack"
-		>
-			<ol
-					class="origam-audio__playlist"
-					data-cy="origam-audio-playlist"
-			>
-				<li
-						v-for="(track, index) in props.playlist"
-						:key="track.id ?? index"
-						class="origam-audio__playlist-item"
-						:class="{ 'origam-audio__playlist-item--active': index === safeTrackIndex }"
-						:data-cy="`origam-audio-playlist-item-${ index }`"
-				>
-					<button
-							type="button"
-							class="origam-audio__playlist-btn"
-							:aria-current="index === safeTrackIndex ? 'true' : undefined"
-							@click="setActiveTrack(index)"
-					>
-						<span
-								class="origam-audio__playlist-index"
-								aria-hidden="true"
-						>{{ index + 1 }}</span>
-						<img
-								v-if="track.cover"
-								:src="track.cover"
-								:alt="track.title ?? ''"
-								class="origam-audio__playlist-cover"
-								loading="lazy"
-								decoding="async"
-								width="32"
-								height="32"
-						/>
-						<span class="origam-audio__playlist-text">
-							<span class="origam-audio__playlist-title">{{ track.title ?? `Track ${ index + 1 }` }}</span>
-							<span
-									v-if="track.artist"
-									class="origam-audio__playlist-artist"
-							>{{ track.artist }}</span>
-						</span>
-						<span
-								v-if="track.duration"
-								class="origam-audio__playlist-duration"
-						>{{ formatMediaTime(track.duration) }}</span>
-					</button>
-				</li>
-			</ol>
-		</slot>
+						<origam-list-item
+								v-for="(track, index) in props.playlist"
+								:key="track.id ?? index"
+								:active="index === safeTrackIndex"
+								:title="track.title ?? `Track ${ index + 1 }`"
+								:subtitle="track.artist"
+								:prepend-avatar="track.cover"
+								class="origam-audio__playlist-item"
+								:data-cy="`origam-audio-playlist-item-${ index }`"
+								@click="setActiveTrack(index)"
+						>
+							<template
+									v-if="track.duration"
+									#append
+							>
+								<span class="origam-audio__playlist-duration">{{ formatMediaTime(track.duration) }}</span>
+							</template>
+						</origam-list-item>
+					</origam-list>
+				</slot>
+			</template>
+		</origam-media-controller>
 
 		<div
 				v-if="state.loading.value && !state.error.value"
@@ -362,23 +240,19 @@
 	} from 'vue'
 
 	import { OrigamIcon } from '../Icon'
-	import { OrigamMediaCastBtn } from '../MediaCastBtn'
-	import { OrigamMediaConfigMenu } from '../MediaConfigMenu'
-	import { OrigamMediaPlayBtn } from '../MediaPlayBtn'
-	import { OrigamMediaTimeLabel } from '../MediaTimeLabel'
-	import { OrigamMediaVolumeControl } from '../MediaVolumeControl'
+	import { OrigamList, OrigamListItem } from '../List'
+	import { OrigamMediaController } from '../Media'
 	import { OrigamSliderField } from '../SliderField'
 
 	import {
-		useBackgroundColor,
 		useBorder,
+		useColorEffect,
 		useElevation,
 		useLocale,
 		useMargin,
 		usePadding,
 		usePosition,
-		useRounded,
-		useTextColor
+		useRounded
 	} from '../../composables'
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
 	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
@@ -458,39 +332,18 @@
 	const ICONS = {
 		LOADING: MDI_ICONS.LOADING,
 		ALERT: MDI_ICONS.ALERT_CIRCLE,
-		PREVIOUS: MDI_ICONS.SKIP_PREVIOUS,
-		NEXT: MDI_ICONS.SKIP_NEXT,
-		LOOP: MDI_ICONS.REPEAT,
-		LOOP_ONE: MDI_ICONS.REPEAT_ONCE,
-		SHUFFLE: MDI_ICONS.SHUFFLE
 	}
 
 	/*********************************************************
-	 * i18n labels — pre-translated so the template stays free of
-	 * `t(...)` calls (atomic media components require pre-translated
-	 * `xxxLabel` props).
+	 * i18n labels — only the ones used by OrigamAudio's own
+	 * overlays / scrubber aria-label. Every transport label
+	 * (play, pause, mute, volume, prev, next, loop, shuffle,
+	 * cast, settings, speed, quality, download, normal-speed,
+	 * transport) lives inside `<origam-media-controller>` and
+	 * resolves there directly.
 	 ********************************************************/
-	const playLabel = computed<string>(() => t('origam.media.play', 'Play'))
-	const pauseLabel = computed<string>(() => t('origam.media.pause', 'Pause'))
-	const muteLabel = computed<string>(() => t('origam.media.mute', 'Mute'))
-	const unmuteLabel = computed<string>(() => t('origam.media.unmute', 'Unmute'))
-	const volumeLabel = computed<string>(() => t('origam.media.volume', 'Volume'))
 	const waveformAriaLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
-	const castLabel = computed<string>(() => t('origam.media.castToDevice', 'Cast to device'))
-	const stopCastLabel = computed<string>(() => t('origam.media.stopCasting', 'Stop casting'))
-	const settingsLabel = computed<string>(() => t('origam.media.settings', 'Settings'))
-	const qualityLabel = computed<string>(() => t('origam.media.quality', 'Quality'))
-	const speedLabel = computed<string>(() => t('origam.media.playbackSpeed', 'Playback speed'))
-	const downloadLabelText = computed<string>(() => t('origam.media.download', 'Download'))
-	const normalSpeedLabel = computed<string>(() => t('origam.media.normalSpeed', 'Normal'))
-	const previousLabel = computed<string>(() => t('origam.media.previousTrack', 'Previous track'))
-	const nextLabel = computed<string>(() => t('origam.media.nextTrack', 'Next track'))
-	const loopAllLabel = computed<string>(() => t('origam.media.loopAll', 'Loop playlist'))
-	const loopOneLabel = computed<string>(() => t('origam.media.loopOne', 'Loop track'))
-	const loopOffLabel = computed<string>(() => t('origam.media.loopOff', 'Loop off'))
-	const shuffleLabel = computed<string>(() => t('origam.media.shuffle', 'Shuffle'))
 	const loadingLabel = computed<string>(() => t('origam.loading', 'Loading'))
-	const transportLabel = computed<string>(() => t('origam.media.transport', 'Transport controls'))
 
 	/*********************************************************
 	 * Resolved autoplay / muted — autoplay is suppressed when the user
@@ -567,12 +420,38 @@
 		return props.playlist![safeTrackIndex.value]
 	})
 
+	/*********************************************************
+	 * `pendingResumeOnLoad` carries the "user was playing when we
+	 * swapped the track" intent across the async reload cycle:
+	 *
+	 *   1. Vue updates `<audio :src>` synchronously after
+	 *      `setActiveTrack`.
+	 *   2. The browser resets the audio element to a fresh state,
+	 *      pausing playback and re-emitting `loadstart` /
+	 *      `loadedmetadata` / `canplay` as the new track buffers.
+	 *   3. Once `state.ready` flips back to true (= `canplay`), the
+	 *      watch below kicks off `methods.play()` so the user
+	 *      perceives an uninterrupted hand-off between tracks.
+	 *
+	 * Without this flag, clicking the next btn while playing would
+	 * silently land on the new track in a paused state — the exact
+	 * user-reported bug ("passé au next stop la lecture et
+	 * impossible de la relancer").
+	 ********************************************************/
+	const pendingResumeOnLoad = ref<boolean>(false)
+
 	function setActiveTrack (nextIndex: number): void {
 		if (!hasPlaylist.value) return
 		const total = props.playlist!.length
 		if (total === 0) return
 		const wrapped = ((nextIndex % total) + total) % total
 		if (wrapped === safeTrackIndex.value) return
+
+		// Snapshot the playback intent BEFORE we mutate the index —
+		// the src swap is reactive and pauses playback before we get
+		// another chance to read `state.playing`.
+		if (state.playing.value) pendingResumeOnLoad.value = true
+
 		internalTrackIndex.value = wrapped
 		emit('update:currentTrackIndex', wrapped)
 		const track = props.playlist![wrapped]
@@ -637,43 +516,17 @@
 	watch(() => props.loopMode, (next) => {
 		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
 	})
+	// Legacy `loop: boolean` flag — mirror runtime changes into the
+	// tri-state mode so toggling `:loop="true"` from a parent checks
+	// the loop button. Only fires when `loopMode` was not explicitly
+	// set by the consumer (otherwise loopMode wins).
+	watch(() => props.loop, (next) => {
+		if (props.loopMode && props.loopMode !== 'none') return
+		internalLoopMode.value = next ? 'one' : 'none'
+		emit('update:loopMode', internalLoopMode.value)
+	})
 
 	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
-
-	function cycleLoopMode (): void {
-		const next: TAudioLoopMode =
-			internalLoopMode.value === 'none' ? 'all'
-				: internalLoopMode.value === 'all' ? 'one'
-					: 'none'
-		internalLoopMode.value = next
-		emit('update:loopMode', next)
-	}
-
-	/*********************************************************
-	 * Loop button — icon swap + active flag + ARIA label driven by
-	 * the current tri-state mode. The button stays in the transport
-	 * row regardless of whether a playlist is set; in single-track
-	 * use, `'all'` and `'one'` are equivalent (no next track to wrap
-	 * to) but the visual cue still tells the user the player will
-	 * restart on `ended`.
-	 ********************************************************/
-	const loopIcon = computed<string>(() => {
-		return resolvedLoopMode.value === 'one' ? ICONS.LOOP_ONE : ICONS.LOOP
-	})
-
-	const isLoopActive = computed<boolean>(() => resolvedLoopMode.value !== 'none')
-
-	const loopBtnClasses = computed(() => ({
-		'origam-audio__nav-btn--active': isLoopActive.value,
-		'origam-audio__nav-btn--loop-one': resolvedLoopMode.value === 'one',
-		'origam-audio__nav-btn--loop-all': resolvedLoopMode.value === 'all'
-	}))
-
-	const loopAriaLabel = computed<string>(() => {
-		if (resolvedLoopMode.value === 'one') return loopOneLabel.value
-		if (resolvedLoopMode.value === 'all') return loopAllLabel.value
-		return loopOffLabel.value
-	})
 
 	const internalShuffle = ref<boolean>(props.shuffle ?? false)
 	watch(() => props.shuffle, (next) => {
@@ -681,11 +534,6 @@
 			internalShuffle.value = next
 		}
 	})
-
-	function toggleShuffle (): void {
-		internalShuffle.value = !internalShuffle.value
-		emit('update:shuffle', internalShuffle.value)
-	}
 
 	/*********************************************************
 	 * Source resolution — when a playlist is active the `<audio>`
@@ -720,6 +568,29 @@
 		loop: props.loop,
 		preload: props.preload
 	})
+
+	/*********************************************************
+	 * Resume playback once the new track is ready — paired with
+	 * `pendingResumeOnLoad` from `setActiveTrack`.
+	 *
+	 * We listen to the native `loadeddata` event on the <audio>
+	 * element directly because the composable's `state.ready` flag
+	 * doesn't flip back to `false` on `loadstart` (track swap), so
+	 * it would never re-fire the false → true transition needed to
+	 * drive a watcher. Subscribing to the DOM event gives us a
+	 * deterministic "new track is buffered, you can play()" signal
+	 * exactly once per track change.
+	 ********************************************************/
+	watch(audioRef, (el, prev, onCleanup) => {
+		if (!el) return
+		const onLoadedData = () => {
+			if (!pendingResumeOnLoad.value) return
+			pendingResumeOnLoad.value = false
+			methods.play()
+		}
+		el.addEventListener('loadeddata', onLoadedData)
+		onCleanup(() => el.removeEventListener('loadeddata', onLoadedData))
+	}, { immediate: true })
 
 	/*********************************************************
 	 * Native event handlers — forward to the parent emit pipeline.
@@ -874,27 +745,11 @@
 	}
 
 	/*********************************************************
-	 * Transport handlers — play/pause toggle, mute, volume, previous,
-	 * next, loop, cast, playback rate. The "prev" / "next" buttons
-	 * skip ±10 s internally when the consumer has not bound a listener
-	 * (so an isolated `<OrigamAudio>` keeps working without a playlist
-	 * controller in front of it).
+	 * Transport handlers — previous / next bubbled from
+	 * `<origam-media-controller>` are handled here (we own the
+	 * playlist + skip-time policy). Play / pause / mute / volume
+	 * are routed by MediaController directly through `methods.*`.
 	 ********************************************************/
-	function onTogglePlay (): void {
-		if (state.playing.value) methods.pause()
-		else void methods.play()
-	}
-
-	function onToggleMute (): void {
-		methods.toggleMute()
-	}
-
-	function onVolumeFromScrubber (value: number): void {
-		if (value > 0 && state.muted.value) methods.toggleMute()
-		else if (value === 0 && !state.muted.value) methods.toggleMute()
-		methods.setVolume(value)
-	}
-
 	function onPrevious (): void {
 		emit('previous')
 		if (hasPlaylist.value) {
@@ -911,14 +766,6 @@
 		} else {
 			methods.skipForward(10)
 		}
-	}
-
-	function onToggleLoop (): void {
-		cycleLoopMode()
-	}
-
-	function onToggleShuffle (): void {
-		toggleShuffle()
 	}
 
 	/*********************************************************
@@ -956,41 +803,23 @@
 		}
 	}
 
-	/*********************************************************
-	 * Cast / Remote Playback — visibility gate combines the consumer
-	 * `allowRemotePlayback` flag with the runtime `remoteAvailable` ref.
-	 ********************************************************/
-	const showCastButton = computed<boolean>(() => {
-		return Boolean(props.allowRemotePlayback) && state.remoteAvailable.value
-	})
-
-	const isCasting = computed<boolean>(() => state.remoteState.value === 'connected')
-
-	async function onCastClick (): Promise<void> {
-		await methods.requestRemotePlayback()
-	}
 
 	/*********************************************************
-	 * Config menu visibility — show the cog only when at least one
-	 * sub-section has meaningful content (rates, download).
-	 ********************************************************/
-	const hasPlaybackRates = computed<boolean>(() => (props.playbackRates?.length ?? 0) > 1)
-	const canDownload = computed<boolean>(() => Boolean(props.downloadable) && Boolean(downloadUrl.value))
-	const hasConfigContent = computed<boolean>(() => hasPlaybackRates.value || canDownload.value)
-
-	/*********************************************************
-	 * Download — analogous to OrigamVideo's contract. Single-source
-	 * playback means we always know the active URL; multi-source
-	 * arrays fall back to the first entry. Emits the URL when the
-	 * download row is clicked.
+	 * Download URL resolution — single-source playback means we
+	 * always know the active URL; multi-source arrays fall back to
+	 * the first entry. Forwarded to `<origam-media-controller>` via
+	 * its `:download-url` prop. The Controller emits `download` when
+	 * the listener clicks the row; we re-emit with the URL payload
+	 * for v0.x consumers.
 	 ********************************************************/
 	const downloadUrl = computed<string | null>(() => {
-		if (typeof props.src === 'string') return props.src || null
-		if (Array.isArray(props.src)) {
-			const first = props.src[0]
+		const src = effectiveSrc.value
+		if (typeof src === 'string') return src || null
+		if (Array.isArray(src)) {
+			const first = src[0]
 			return first?.src ?? null
 		}
-		return props.src?.src ?? null
+		return src?.src ?? null
 	})
 
 	function onDownloadClick (): void {
@@ -1008,10 +837,14 @@
 		}
 	}, { immediate: true })
 
-	function onPlaybackRateChange (rate: number): void {
-		methods.setPlaybackRate(rate)
+	/*********************************************************
+	 * Forward playback-rate updates from `<origam-media-controller>`'s
+	 * config menu through our public emit pipeline so v-model'ing
+	 * `:playback-rate` on `<origam-audio>` keeps working.
+	 ********************************************************/
+	watch(() => state.playbackRate.value, (rate) => {
 		emit('update:playbackRate', rate)
-	}
+	})
 
 	/*********************************************************
 	 * Error formatting for the default error overlay.
@@ -1024,31 +857,33 @@
 	})
 
 	/*********************************************************
-	 * Slot bindings — single source of truth for the `#controls`
-	 * scoped slot.
-	 ********************************************************/
-	const slotBindings = computed(() => ({
-		playing: state.playing.value,
-		paused: state.paused.value,
-		currentTime: state.currentTime.value,
-		duration: state.duration.value,
-		buffered: state.buffered.value,
-		volume: state.volume.value,
-		muted: state.muted.value,
-		playbackRate: state.playbackRate.value,
-		loading: state.loading.value,
-		error: state.error.value,
-		methods
-	}))
-
-	/*********************************************************
 	 * Wrapper chrome — every canonical DS transverse composable.
 	 * The SCSS host carries the dark studio backdrop by default;
 	 * `bgColor` overrides it when the consumer provides an intent
 	 * or hex.
 	 ********************************************************/
-	const { textColorClasses, textColorStyles } = useTextColor(props, 'color')
-	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	/*********************************************************
+	 * `useColorEffect` resolves color + bgColor TOGETHER so that
+	 * passing `bgColor="primary"` automatically pairs with the
+	 * intent's WCAG-validated foreground token (no invisible
+	 * text on dark intent surfaces). The composable falls back
+	 * to inline `:style` declarations for raw hex/rgb values
+	 * and keeps the resting tokens whenever both props are
+	 * supplied so the consumer's intent is always respected.
+	 ********************************************************/
+	const { colorClasses, colorStyles } = useColorEffect(props)
+	const hasColorProp = computed(() => !!props.color)
+	const hasBgColorProp = computed(() => !!props.bgColor)
+	const scrubberColorStyle = computed<Record<string, string>>(() => {
+		// When the consumer sets `color` (or `bgColor`, which auto-pairs
+		// its fg via `useColorEffect`), the scrubber adopts the resulting
+		// `currentColor`. With NO color prop, the scrubber stays neutral
+		// grey so it doesn't compete with the play-button accent.
+		if (hasColorProp.value || hasBgColorProp.value) {
+			return {'--origam-media-controller__scrubber---color': 'currentColor'}
+		}
+		return {'--origam-media-controller__scrubber---color': 'var(--origam-color__text---secondary, color-mix(in srgb, currentColor 55%, transparent))'}
+	})
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
@@ -1076,8 +911,11 @@
 			'origam-audio--has-waveform': showWaveform.value
 		},
 		positionClasses.value,
-		...textColorClasses.value,
-		...backgroundColorClasses.value,
+		...colorClasses.value,
+		{
+			'origam-audio--has-color': hasColorProp.value,
+			'origam-audio--has-bg-color': hasBgColorProp.value
+		},
 		...roundedClasses.value,
 		...borderClasses.value,
 		...paddingClasses.value,
@@ -1088,8 +926,8 @@
 
 	const rootStyles = computed<StyleValue>(() => [
 		positionStyles.value,
-		textColorStyles.value,
-		backgroundColorStyles.value,
+		colorStyles.value,
+		scrubberColorStyle.value,
 		roundedStyles.value,
 		borderStyles.value,
 		paddingStyles.value,
@@ -1112,347 +950,797 @@
 		lang="scss"
 		scoped
 >
+	@keyframes origam-audio-vinyl-spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
 	.origam-audio {
-		display: grid;
-		gap: var(--origam-audio---gap, 16px);
+		$this: &;
+
+		display: block;
+		position: var(--origam-audio---position, static);
 		padding: var(--origam-audio---padding, 16px);
 		border-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
-		color: var(--origam-audio---color, var(--origam-color__text--inverse---fg, #f4f4f5));
-		background-color: var(--origam-audio---background-color, rgba(14, 14, 16, 0.92));
-		accent-color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
-		grid-template-columns: auto 1fr;
-		align-items: start;
-	}
+		color: var(--origam-audio---color, var(--origam-color__text---primary));
+		background-color: var(--origam-audio---background-color, var(--origam-color__surface---raised));
+		accent-color: var(--origam-audio---accent-color, var(--origam-color__action--primary---bg));
+		border: var(--origam-audio---border-width, 1px) solid var(--origam-audio---border-color, var(--origam-color__border---subtle));
+		box-shadow: var(--origam-audio---box-shadow, 0px 1px 3px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px -1px rgba(0, 0, 0, 0.06));
 
-	.origam-audio:not(.origam-audio--has-cover) {
-		grid-template-columns: 1fr;
-	}
+		:deep(.origam-slider-field--bare) {
+			color: inherit !important;
+		}
 
-	.origam-audio--cover-right.origam-audio--has-cover {
-		grid-template-columns: 1fr auto;
-	}
+		&__el {
+			display: block;
+			width: 100%;
+		}
 
-	.origam-audio--cover-right .origam-audio__cover {
-		grid-column: 2;
-		grid-row: 1;
-	}
+		&__header {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			gap: var(--origam-audio__header---gap, 16px);
+			align-items: center;
+			margin-bottom: var(--origam-audio__header---margin-bottom, 12px);
 
-	.origam-audio--cover-right .origam-audio__body {
-		grid-column: 1;
-		grid-row: 1;
-	}
+			&--no-cover {
+				grid-template-columns: 1fr;
+			}
+		}
 
-	.origam-audio__el {
-		display: block;
-		width: 100%;
-		grid-column: 1 / -1;
-	}
+		&__cover {
+			margin: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex: 0 0 auto;
+			position: relative;
+			width: var(--origam-audio__cover---size, 96px);
+			height: var(--origam-audio__cover---size, 96px);
+			border-radius: 50%;
+			overflow: hidden;
+			box-shadow:
+				0 4px 12px rgba(0, 0, 0, 0.28),
+				inset 0 0 0 1px rgba(0, 0, 0, 0.4);
 
-	.origam-audio--controls-custom .origam-audio__el {
-		display: none;
-	}
+			/*
+			 * Spindle hole — a real transparent dot punched THROUGH the
+			 * whole disc (image + grooves + label) so the audio shell
+			 * background (or whatever is rendered behind it) shows
+			 * through. Implemented with a CSS `mask` that fills the
+			 * disc with opaque black except for a small radial cutout
+			 * at the centre. Prefix variant covers Safari ≤ 15.
+			 */
+			--origam-audio__cover---spindle-radius: 3%;
 
-	.origam-audio--controls-native .origam-audio__el {
-		display: block;
-	}
+			mask:
+				radial-gradient(
+					circle at center,
+					transparent 0,
+					transparent var(--origam-audio__cover---spindle-radius),
+					black calc(var(--origam-audio__cover---spindle-radius) + 0.5%),
+					black 100%
+				);
+			-webkit-mask:
+				radial-gradient(
+					circle at center,
+					transparent 0,
+					transparent var(--origam-audio__cover---spindle-radius),
+					black calc(var(--origam-audio__cover---spindle-radius) + 0.5%),
+					black 100%
+				);
+		}
 
-	.origam-audio__cover {
-		margin: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex: 0 0 auto;
-	}
+		&__cover-img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			border-radius: 50%;
+			object-fit: cover;
+		}
 
-	.origam-audio__cover-img {
-		display: block;
-		width: var(--origam-audio__cover---size, 96px);
-		height: var(--origam-audio__cover---size, 96px);
-		border-radius: var(--origam-audio__cover---border-radius, var(--origam-radius---md, 8px));
-		object-fit: cover;
-		flex: 0 0 auto;
-	}
+		/*
+		 * Vinyl-record overlay — pure CSS, no extra DOM.
+		 *
+		 *   ::before draws the concentric grooves with a
+		 *     `repeating-radial-gradient` of thin, translucent dark
+		 *     bands. The gradient repeats every 4 px from the center,
+		 *     giving 8–12 visible rings at 96 px and proportionally
+		 *     scaling with `--origam-audio__cover---size`.
+		 *
+		 *   ::after draws the center label disc: a black ring with a
+		 *     small transparent spindle hole punched through the
+		 *     middle via a radial-gradient mask. The ring sits on
+		 *     top of the album art, framing it as the "label" of the
+		 *     record.
+		 *
+		 * Both pseudo-elements are `pointer-events: none` so the user
+		 * can still interact with the image / play-btn underneath.
+		 */
+		&__cover::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 50%;
+			pointer-events: none;
+			background:
+				repeating-radial-gradient(
+					circle at center,
+					rgba(0, 0, 0, 0.32) 0,
+					rgba(0, 0, 0, 0.32) 1px,
+					transparent 1px,
+					transparent 6px
+				);
+			mix-blend-mode: multiply;
+		}
 
-	.origam-audio--compact .origam-audio__cover-img {
-		width: var(--origam-audio--compact__cover---size, 48px);
-		height: var(--origam-audio--compact__cover---size, 48px);
-	}
+		&__cover::after {
+			/*
+			 * Label disc — solid black ring framing the spindle hole.
+			 * The hole itself is no longer drawn by this pseudo: the
+			 * mask on `.origam-audio__cover` punches a real transparent
+			 * dot through this disc + image + grooves at the exact
+			 * centre, so we get a single continuous see-through hole.
+			 */
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 26%;
+			height: 26%;
+			border-radius: 50%;
+			background: #0a0a0a;
+			box-shadow:
+				inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+				0 0 6px rgba(0, 0, 0, 0.35);
+			pointer-events: none;
+		}
 
-	.origam-audio__body {
-		display: grid;
-		grid-template-rows: auto auto auto;
-		gap: var(--origam-audio__body---gap, 12px);
-		min-width: 0;
-		align-content: center;
-	}
+		/*
+		 * Spin the disc while playing, freeze when paused. Real LPs
+		 * spin at 33⅓ RPM (≈ 1.8 s per turn); we use 3.5 s for a
+		 * gentler perceptual motion that doesn't compete with the
+		 * scrubber updates.
+		 */
+		&--playing &__cover {
+			animation: origam-audio-vinyl-spin 3.5s linear infinite;
+		}
 
-	.origam-audio--compact .origam-audio__body {
-		grid-template-rows: auto auto;
-		gap: var(--origam-audio--compact__body---gap, 6px);
-	}
+		&--paused &__cover,
+		&--loading &__cover {
+			animation: origam-audio-vinyl-spin 3.5s linear infinite;
+			animation-play-state: paused;
+		}
 
-	.origam-audio__metadata {
-		display: flex;
-		flex-direction: column;
-		min-width: 0;
-		gap: var(--origam-audio__metadata---gap, 2px);
-	}
+		@media (prefers-reduced-motion: reduce) {
+			&__cover {
+				animation: none !important;
+			}
+		}
 
-	.origam-audio--compact .origam-audio__metadata {
-		flex-direction: row;
-		align-items: baseline;
-		gap: var(--origam-audio--compact__metadata---gap, 8px);
-		flex-wrap: wrap;
-	}
+		&__metadata {
+			display: flex;
+			flex-direction: column;
+			min-width: 0;
+			gap: var(--origam-audio__metadata---gap, 2px);
+		}
 
-	.origam-audio__title {
-		font-size: var(--origam-audio__title---font-size, 18px);
-		font-weight: var(--origam-audio__title---font-weight, 700);
-		line-height: var(--origam-audio__title---line-height, 1.25);
-		color: var(--origam-audio__title---color, inherit);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+		&__title {
+			font-size: var(--origam-audio__title---font-size, 18px);
+			font-weight: var(--origam-audio__title---font-weight, 700);
+			line-height: var(--origam-audio__title---line-height, 1.25);
+			color: var(--origam-audio__title---color, inherit);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 
-	.origam-audio--compact .origam-audio__title {
-		font-size: var(--origam-audio--compact__title---font-size, 14px);
-	}
+		&__meta {
+			display: inline-flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: var(--origam-audio__meta---gap, 6px);
+			font-size: var(--origam-audio__meta---font-size, 13px);
+			color: var(--origam-audio__meta---color, color-mix(in srgb, currentColor 60%, transparent));
+			min-width: 0;
+		}
 
-	.origam-audio__meta {
-		display: inline-flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: var(--origam-audio__meta---gap, 6px);
-		font-size: var(--origam-audio__meta---font-size, 13px);
-		color: var(--origam-audio__meta---color, color-mix(in srgb, currentColor 60%, transparent));
-		min-width: 0;
-	}
+		&__artist,
+		&__album,
+		&__duration {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			min-width: 0;
+		}
 
-	.origam-audio__artist + .origam-audio__album::before,
-	.origam-audio__artist + .origam-audio__duration::before,
-	.origam-audio__album + .origam-audio__duration::before {
-		content: var(--origam-audio__meta-separator---content, "·");
-		margin-inline-end: 6px;
-		opacity: 0.6;
-	}
+		&__artist + &__album::before,
+		&__artist + &__duration::before,
+		&__album + &__duration::before {
+			content: var(--origam-audio__meta-separator---content, "·");
+			margin-inline-end: 6px;
+			opacity: 0.6;
+		}
 
-	.origam-audio__artist,
-	.origam-audio__album,
-	.origam-audio__duration {
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		min-width: 0;
-	}
+		&__waveform {
+			display: block;
+			width: 100%;
+			--origam-slider-field--audio---track-height: var(--origam-audio__waveform---height, 56px);
+		}
 
-	.origam-audio__waveform {
-		display: block;
-		width: 100%;
-		--origam-slider-field--audio---track-height: var(--origam-audio__waveform---height, 56px);
-	}
+		&__waveform-slider {
+			width: 100%;
+			color: var(--origam-audio__waveform---color, color-mix(in srgb, currentColor 50%, transparent));
+		}
 
-	.origam-audio__waveform-slider {
-		width: 100%;
-		color: var(--origam-audio__waveform---color, var(--origam-audio---accent-color, var(--origam-color__accent---base)));
-	}
+		&__transport {
+			display: flex;
+			align-items: center;
+			gap: var(--origam-audio__transport---gap, 8px);
+			min-height: var(--origam-audio__transport---min-height, 48px);
+		}
 
-	.origam-audio__transport {
-		display: flex;
-		align-items: center;
-		gap: var(--origam-audio__transport---gap, 8px);
-		min-height: var(--origam-audio__transport---min-height, 48px);
-	}
+		&__nav-btn {
+			all: unset;
+			box-sizing: border-box;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: var(--origam-audio__nav-btn---size, 32px);
+			height: var(--origam-audio__nav-btn---size, 32px);
+			border-radius: var(--origam-audio__nav-btn---border-radius, 50%);
+			cursor: pointer;
+			color: var(--origam-audio__nav-btn---color, inherit);
+			opacity: 0.85;
+			transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
 
-	.origam-audio__nav-btn {
-		all: unset;
-		box-sizing: border-box;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: var(--origam-audio__nav-btn---size, 32px);
-		height: var(--origam-audio__nav-btn---size, 32px);
-		border-radius: var(--origam-audio__nav-btn---border-radius, 50%);
-		cursor: pointer;
-		color: var(--origam-audio__nav-btn---color, inherit);
-		opacity: 0.85;
-		transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
-	}
+			&:hover,
+			&:focus-visible {
+				opacity: 1;
+				background-color: var(--origam-audio__nav-btn---hover-background-color, color-mix(in srgb, currentColor 8%, transparent));
+			}
 
-	.origam-audio__nav-btn:hover,
-	.origam-audio__nav-btn:focus-visible {
-		opacity: 1;
-		background-color: var(--origam-audio__nav-btn---hover-background-color, rgba(255, 255, 255, 0.08));
-	}
+			&:active {
+				transform: scale(0.92);
+			}
 
-	.origam-audio__nav-btn:active {
-		transform: scale(0.92);
-	}
+			&--active {
+				color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+				opacity: 1;
+				background-color: var(--origam-audio__nav-btn--active---background-color, color-mix(in srgb, var(--origam-audio---accent-color, var(--origam-color__accent---base)) 18%, transparent));
+				position: relative;
 
-	.origam-audio__nav-btn--active {
-		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
-		opacity: 1;
-		background-color: var(--origam-audio__nav-btn--active---background-color, color-mix(in srgb, var(--origam-audio---accent-color, var(--origam-color__accent---base)) 18%, transparent));
-		position: relative;
-	}
+				&::after {
+					content: '';
+					position: absolute;
+					bottom: 3px;
+					left: 50%;
+					transform: translateX(-50%);
+					width: 4px;
+					height: 4px;
+					border-radius: 50%;
+					background: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+					pointer-events: none;
+				}
+			}
 
-	.origam-audio__nav-btn--active::after {
-		content: '';
-		position: absolute;
-		bottom: 3px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 4px;
-		height: 4px;
-		border-radius: 50%;
-		background: var(--origam-audio---accent-color, var(--origam-color__accent---base));
-		pointer-events: none;
-	}
+			&--loop-one {
+				color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
+			}
+		}
 
-	.origam-audio__play-btn {
-		--origam-media-play-btn---size: var(--origam-audio__play-btn---size, 48px);
-		--origam-media-play-btn---icon-size: var(--origam-audio__play-btn---icon-size, 24px);
-		--origam-media-play-btn---color: var(--origam-audio__play-btn---color, var(--origam-audio---accent-color, var(--origam-color__accent---base)));
-	}
+		&__play-btn {
+			--origam-media-play-btn---size: var(--origam-audio__play-btn---size, 48px);
+			--origam-media-play-btn---icon-size: var(--origam-audio__play-btn---icon-size, 24px);
+			--origam-media-play-btn---color: var(--origam-audio__play-btn---color, var(--origam-audio---accent-color, var(--origam-color__accent---base)));
+		}
 
-	.origam-audio__time {
-		--origam-media-time-label---color: var(--origam-audio__time---color, inherit);
-	}
+		&__time {
+			--origam-media-time-label---color: var(--origam-audio__time---color, inherit);
+		}
 
-	.origam-audio__spacer {
-		flex: 1 1 auto;
-		min-width: 0;
-	}
+		&__spacer {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
 
-	.origam-audio__volume,
-	.origam-audio__cast,
-	.origam-audio__config {
-		flex: 0 0 auto;
-	}
+		&__volume,
+		&__cast,
+		&__config {
+			flex: 0 0 auto;
+		}
 
-	.origam-audio__loading {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		color: var(--origam-audio__loading---color, inherit);
-		font-size: var(--origam-audio__loading---font-size, 0.875rem);
-		grid-column: 1 / -1;
-	}
+		&__loading {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			color: var(--origam-audio__loading---color, inherit);
+			font-size: var(--origam-audio__loading---font-size, 0.875rem);
+			grid-column: 1 / -1;
+		}
 
-	.origam-audio__error {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--origam-audio--error---gap, 6px);
-		padding: var(--origam-audio--error---padding, 8px 12px);
-		background-color: var(--origam-audio--error---background-color, var(--origam-color__status--error--bg, transparent));
-		color: var(--origam-audio--error---color, var(--origam-color__status--error---color, inherit));
-		border-radius: var(--origam-audio--error---border-radius, var(--origam-radius---sm, 4px));
-		font-size: var(--origam-audio--error---font-size, 0.875rem);
-		grid-column: 1 / -1;
-	}
+		&__error {
+			display: inline-flex;
+			align-items: center;
+			gap: var(--origam-audio--error---gap, 6px);
+			padding: var(--origam-audio--error---padding, 8px 12px);
+			background-color: var(--origam-audio--error---background-color, var(--origam-color__status--error--bg, transparent));
+			color: var(--origam-audio--error---color, var(--origam-color__status--error---color, inherit));
+			border-radius: var(--origam-audio--error---border-radius, var(--origam-radius---sm, 4px));
+			font-size: var(--origam-audio--error---font-size, 0.875rem);
+			grid-column: 1 / -1;
+		}
 
-	.origam-audio__error-icon {
-		font-size: var(--origam-audio--error---icon-font-size, 1.1rem);
-	}
+		&__error-icon {
+			font-size: var(--origam-audio--error---icon-font-size, 1.1rem);
+		}
 
-	.origam-audio__playlist {
-		grid-column: 1 / -1;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: var(--origam-audio__playlist---gap, 2px);
-		max-height: var(--origam-audio__playlist---max-height, 220px);
-		overflow-y: auto;
-		border-top: 1px solid var(--origam-audio__playlist---border-color, rgba(244, 244, 245, 0.08));
-		padding-top: var(--origam-audio__playlist---padding-top, 8px);
-	}
+		&__playlist {
+			max-height: var(--origam-audio__playlist---max-height, 220px);
+			overflow-y: auto;
+			border-top: 1px solid var(--origam-audio__playlist---border-color, color-mix(in srgb, currentColor 8%, transparent));
+			padding-top: var(--origam-audio__playlist---padding-top, 8px);
+			margin-top: var(--origam-audio__playlist---margin-top, 12px);
+			background-color: transparent;
 
-	.origam-audio__playlist-item {
-		margin: 0;
-	}
+			/*
+			 * Playlist inherits the host's resolved color/bgColor:
+			 * `transparent` background + `color: inherit` lets the
+			 * playlist visually adopt whatever the consumer set on
+			 * the audio shell (intent surface, custom hex, dark
+			 * theme, …) without needing a dedicated set of tokens.
+			 */
+			:deep(.origam-list),
+			:deep(.origam-list-item) {
+				background-color: transparent;
+				color: inherit;
+			}
 
-	.origam-audio__playlist-btn {
-		all: unset;
-		box-sizing: border-box;
-		display: flex;
-		align-items: center;
-		gap: var(--origam-audio__playlist-btn---gap, 10px);
-		padding: var(--origam-audio__playlist-btn---padding, 6px 8px);
-		width: 100%;
-		border-radius: var(--origam-audio__playlist-btn---border-radius, 6px);
-		cursor: pointer;
-		color: var(--origam-audio__playlist-btn---color, color-mix(in srgb, currentColor 80%, transparent));
-		transition: background-color 120ms ease, color 120ms ease;
-	}
+			:deep(.origam-list-item__content),
+			:deep(.origam-list-item__title),
+			:deep(.origam-list-item__subtitle) {
+				color: inherit;
+			}
 
-	.origam-audio__playlist-btn:hover,
-	.origam-audio__playlist-btn:focus-visible {
-		background-color: var(--origam-audio__playlist-btn--hover---background-color, rgba(255, 255, 255, 0.06));
-		color: var(--origam-audio__playlist-btn--hover---color, inherit);
-	}
+			:deep(.origam-list-item__subtitle) {
+				opacity: 0.7;
+			}
+		}
 
-	.origam-audio__playlist-item--active .origam-audio__playlist-btn {
-		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
-		background-color: var(--origam-audio__playlist-item--active---background-color, rgba(124, 58, 237, 0.12));
-	}
+		&__playlist-item {
+			cursor: pointer;
+			border-radius: 6px;
+			transition: background-color 120ms ease, color 120ms ease;
 
-	.origam-audio__playlist-index {
-		font-variant-numeric: tabular-nums;
-		font-size: 12px;
-		min-width: 18px;
-		text-align: end;
-		opacity: 0.6;
-	}
+			/* Breathing room between the avatar and the content (title /
+			   subtitle). Pre-fix the OrigamListItem grid put them flush. */
+			:deep(.origam-list-item__prepend) {
+				margin-inline-end: var(--origam-audio__playlist-item__prepend---margin-inline-end, 12px);
+			}
 
-	.origam-audio__playlist-cover {
-		flex: 0 0 32px;
-		width: 32px;
-		height: 32px;
-		border-radius: 4px;
-		object-fit: cover;
-		display: block;
-	}
+			/*
+			 * Vinyl decoration on the playlist avatar — same recipe as
+			 * the main audio cover (concentric grooves + center label
+			 * with spindle hole). The avatar is a small square that
+			 * becomes circular here.
+			 */
+			:deep(.origam-avatar) {
+				position: relative;
+				border-radius: 50%;
+				overflow: hidden;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 
-	.origam-audio__playlist-text {
-		display: flex;
-		flex-direction: column;
-		min-width: 0;
-		flex: 1 1 auto;
-		gap: 1px;
-	}
+				/* Spindle hole punched through the avatar (mirror of
+				   the main cover — see comment block on `&__cover`). */
+				mask:
+					radial-gradient(
+						circle at center,
+						transparent 0,
+						transparent 3.5%,
+						black 4%,
+						black 100%
+					);
+				-webkit-mask:
+					radial-gradient(
+						circle at center,
+						transparent 0,
+						transparent 3.5%,
+						black 4%,
+						black 100%
+					);
+			}
 
-	.origam-audio__playlist-title {
-		font-size: 13px;
-		font-weight: 600;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		color: inherit;
-	}
+			:deep(.origam-avatar__image),
+			:deep(.origam-avatar__wrapper) {
+				border-radius: 50%;
+			}
 
-	.origam-audio__playlist-artist {
-		font-size: 12px;
-		opacity: 0.65;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+			:deep(.origam-avatar)::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				border-radius: 50%;
+				pointer-events: none;
+				background:
+					repeating-radial-gradient(
+						circle at center,
+						rgba(0, 0, 0, 0.32) 0,
+						rgba(0, 0, 0, 0.32) 1px,
+						transparent 1px,
+						transparent 5px
+					);
+				mix-blend-mode: multiply;
+				z-index: 1;
+			}
 
-	.origam-audio__playlist-duration {
-		font-variant-numeric: tabular-nums;
-		font-size: 12px;
-		opacity: 0.6;
-		flex: 0 0 auto;
-	}
+			:deep(.origam-avatar)::after {
+				/* Solid label disc; real spindle hole is punched by
+				   the `mask` on `.origam-avatar` itself. */
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 28%;
+				height: 28%;
+				border-radius: 50%;
+				background: #0a0a0a;
+				pointer-events: none;
+				z-index: 2;
+			}
 
-	.origam-audio__nav-btn--loop-one {
-		color: var(--origam-audio---accent-color, var(--origam-color__accent---base));
-	}
+			&:hover {
+				background-color: color-mix(in srgb, currentColor 8%, transparent);
+			}
 
-	.origam-audio--compact .origam-audio__playlist {
-		display: none;
+			&.origam-list-item--active {
+				background-color: color-mix(in srgb, currentColor 16%, transparent);
+
+				:deep(.origam-list-item__content),
+				:deep(.origam-list-item__title) {
+					color: inherit;
+				}
+			}
+		}
+
+		&__playlist-artist {
+			font-size: 12px;
+			opacity: 0.65;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&__playlist-duration {
+			font-variant-numeric: tabular-nums;
+			font-size: 12px;
+			opacity: 0.6;
+			flex: 0 0 auto;
+		}
+
+		/*
+		 * Visual hierarchy applied to EVERY variant (expanded, compact)
+		 * so the play btn always reads as the primary action.
+		 *
+		 *   - Secondary actions (loop, shuffle, volume, cog, prev, next):
+		 *     square 24×24 (compact) / 32×32 (expanded) with icons sized
+		 *     at ~75 % of the frame.
+		 *   - Play btn: exactly 2× the secondary size — 48×48 (compact)
+		 *     / 64×64 (expanded) — mirrors Spotify / YouTube Music. The
+		 *     icon also doubles in size to keep the visual hierarchy
+		 *     unambiguous (no perceptible difference when the frame
+		 *     grows but the glyph stays the same).
+		 *
+		 * `density="compact"` on `<origam-btn>` subtracts 8 px from
+		 * `--origam-btn---height`, so we neutralise it
+		 * (`--origam-btn---density: 0px`) AND force `min-width` /
+		 * `min-height` so OrigamBtn's calc keeps our values.
+		 *
+		 * `!important` is used here on purpose: OrigamBtn ships its own
+		 * `--origam-btn---*` defaults through a `&--icon` modifier rule
+		 * with the same specificity (`.origam-btn--icon`), and source
+		 * order alone is fragile across HMR reloads — `!important` makes
+		 * the audio hierarchy robust regardless of when the host
+		 * stylesheet lands in the cascade.
+		 */
+		:deep(.origam-media-controller__buttons-row .origam-btn) {
+			--origam-btn---density: 0px !important;
+			--origam-btn---min-width: var(--origam-audio__btn---size, 28px) !important;
+			--origam-btn---width: var(--origam-audio__btn---size, 28px) !important;
+			--origam-btn---height: var(--origam-audio__btn---size, 28px) !important;
+			--origam-btn---min-height: var(--origam-audio__btn---size, 28px) !important;
+
+			.origam-icon {
+				font-size: var(--origam-audio__btn---icon-size, 16px) !important;
+			}
+		}
+
+		/*
+		 * The volume control is NOT an `<origam-btn>` — it's a raw
+		 * `<button class="origam-media-volume-control__btn">` exposed
+		 * by `OrigamMediaVolumeControl` (which owns its own scrubber
+		 * popover). Its native scoped CSS ships a 36 × 36 frame with a
+		 * 20 px icon — too prominent next to our 24 / 14 secondaries.
+		 * Align the volume btn on the same secondary footprint so the
+		 * row visually flattens around the dominant play btn.
+		 */
+		:deep(.origam-media-controller__buttons-row .origam-media-volume-control__btn) {
+			width: var(--origam-audio__btn---size, 28px) !important;
+			height: var(--origam-audio__btn---size, 28px) !important;
+			min-width: var(--origam-audio__btn---size, 28px) !important;
+			min-height: var(--origam-audio__btn---size, 28px) !important;
+
+			.origam-icon {
+				font-size: var(--origam-audio__btn---icon-size, 16px) !important;
+			}
+		}
+
+		:deep(.origam-media-controller__buttons-row .origam-btn.origam-media-controller__play-btn) {
+			--origam-btn---min-width: var(--origam-audio__play-btn---size, 64px) !important;
+			--origam-btn---width: var(--origam-audio__play-btn---size, 64px) !important;
+			--origam-btn---height: var(--origam-audio__play-btn---size, 64px) !important;
+			--origam-btn---min-height: var(--origam-audio__play-btn---size, 64px) !important;
+
+			.origam-icon {
+				font-size: var(--origam-audio__play-btn---icon-size, 48px) !important;
+			}
+		}
+
+		&--controls-custom #{$this}__el {
+			display: none;
+		}
+
+		&--controls-native #{$this}__el {
+			display: block;
+		}
+
+		&--cover-right {
+			#{$this}__header {
+				grid-template-columns: 1fr auto;
+			}
+
+			#{$this}__cover {
+				grid-column: 2;
+				grid-row: 1;
+			}
+
+			#{$this}__metadata {
+				grid-column: 1;
+				grid-row: 1;
+			}
+		}
+
+		&--has-color,
+		&--has-bg-color {
+			#{$this}__waveform-slider,
+			#{$this}__title {
+				color: inherit;
+			}
+
+			#{$this}__meta {
+				color: color-mix(in srgb, currentColor 78%, transparent);
+			}
+
+			#{$this}__artist {
+				color: color-mix(in srgb, currentColor 82%, transparent);
+			}
+
+			#{$this}__album,
+			#{$this}__duration {
+				color: color-mix(in srgb, currentColor 70%, transparent);
+			}
+
+			:deep(.origam-media-controller) {
+				color: inherit;
+			}
+		}
+
+		&--compact {
+			padding: var(--origam-audio--compact---padding, 8px 12px);
+			/*
+			 * Compact mode pins the progress bar (`position: absolute`)
+			 * to the bottom edge, which requires a positioned ancestor.
+			 * When the consumer didn't pass `position="…"` we promote
+			 * the box to `relative` via the CSS variable so the
+			 * progress anchoring still works; if `position="sticky"`
+			 * (or any other modifier) is set, the modifier rule below
+			 * the variant block overrides this default.
+			 */
+			--origam-audio---position: relative;
+			overflow: hidden;
+
+			#{$this}__cover-img {
+				width: var(--origam-audio--compact__cover---size, 48px);
+				height: var(--origam-audio--compact__cover---size, 48px);
+			}
+
+			#{$this}__metadata {
+				flex-direction: row;
+				align-items: baseline;
+				gap: var(--origam-audio--compact__metadata---gap, 8px);
+				flex-wrap: wrap;
+			}
+
+			#{$this}__title {
+				font-size: var(--origam-audio--compact__title---font-size, 14px);
+			}
+
+			#{$this}__playlist {
+				display: none;
+			}
+
+			:deep(.origam-media-controller) {
+				display: grid;
+				grid-template-columns: 1fr auto;
+				grid-template-areas: "header transport";
+				gap: 0 8px;
+				padding: 0;
+
+				> #{$this}__header {
+					grid-area: header;
+					margin-bottom: 0;
+					align-items: center;
+					gap: var(--origam-audio--compact__header---gap, 12px);
+				}
+			}
+
+			:deep(.origam-media-controller__buttons-row) {
+				grid-area: transport;
+				min-height: 0;
+				padding: 0 0 4px 0;
+				gap: 2px;
+				align-self: center;
+			}
+
+			:deep(.origam-media-controller__buttons-left),
+			:deep(.origam-media-controller__buttons-right) {
+				gap: 0;
+			}
+
+			/*
+			 * Visual hierarchy in the compact dock:
+			 *   - secondary actions (loop, shuffle, volume, cog, prev, next)
+			 *     shrink to a square 24×24 footprint so the row stays dense;
+			 *   - the play btn becomes the unique anchor at 48×48 — exactly
+			 *     2× the secondary size, mirroring Spotify / YouTube Music
+			 *     mini-players.
+			 *
+			 * `density="compact"` on `<origam-btn>` subtracts 8 px from
+			 * `--origam-btn---height`, so we neutralise it on the play btn
+			 * (`--origam-btn---density: 0px`) AND force `min-height` /
+			 * `min-width` so the calc inside OrigamBtn keeps the 48 px.
+			 */
+			:deep(.origam-media-controller__buttons-row .origam-btn) {
+				--origam-btn---density: 0px !important;
+				--origam-btn---min-width: var(--origam-audio--compact__btn---size, 24px) !important;
+				--origam-btn---width: var(--origam-audio--compact__btn---size, 24px) !important;
+				--origam-btn---height: var(--origam-audio--compact__btn---size, 24px) !important;
+				--origam-btn---min-height: var(--origam-audio--compact__btn---size, 24px) !important;
+
+				.origam-icon {
+					font-size: var(--origam-audio--compact__btn---icon-size, 14px) !important;
+				}
+			}
+
+			/* Volume btn (raw `<button>`, see comment in the root rule) */
+			:deep(.origam-media-controller__buttons-row .origam-media-volume-control__btn) {
+				width: var(--origam-audio--compact__btn---size, 24px) !important;
+				height: var(--origam-audio--compact__btn---size, 24px) !important;
+				min-width: var(--origam-audio--compact__btn---size, 24px) !important;
+				min-height: var(--origam-audio--compact__btn---size, 24px) !important;
+
+				.origam-icon {
+					font-size: var(--origam-audio--compact__btn---icon-size, 14px) !important;
+				}
+			}
+
+			:deep(.origam-media-controller__buttons-row .origam-btn.origam-media-controller__play-btn) {
+				--origam-btn---min-width: var(--origam-audio--compact__play-btn---size, 56px) !important;
+				--origam-btn---width: var(--origam-audio--compact__play-btn---size, 56px) !important;
+				--origam-btn---height: var(--origam-audio--compact__play-btn---size, 56px) !important;
+				--origam-btn---min-height: var(--origam-audio--compact__play-btn---size, 56px) !important;
+
+				.origam-icon {
+					font-size: var(--origam-audio--compact__play-btn---icon-size, 40px) !important;
+				}
+			}
+
+			:deep(.origam-media-controller__time) {
+				display: none;
+			}
+
+			/*
+			 * Compact progress — pinned to the bottom edge of the audio shell,
+			 * spanning the full width so it reads as part of the chrome
+			 * (mirrors the OrigamCard top-edge progress, here on the bottom).
+			 * The audio shell has `position: relative` + `overflow: hidden`,
+			 * so the bar follows the rounded-corner clip without extra rules.
+			 */
+			:deep(.origam-media-controller__progress-row) {
+				position: absolute;
+				inset-inline: 0;
+				inset-block-end: 0;
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				height: var(--origam-audio--compact__progress---height, 3px);
+				z-index: 1;
+				pointer-events: auto;
+
+				.origam-slider-field {
+					--origam-slider-field--bare---track-thickness: var(--origam-audio--compact__progress---height, 3px);
+					--origam-slider-field--bare---track-thickness-active: var(--origam-audio--compact__progress---height, 3px);
+					--origam-slider-field--bare---track-background-color: color-mix(in srgb, currentColor 22%, transparent);
+					width: 100%;
+					height: var(--origam-audio--compact__progress---height, 3px);
+					/*
+					 * `.origam-slider-field--horizontal` ships with
+					 * `margin-inline: 8px 8px` for native sliders; in the
+					 * compact docked-progress role we need the bar to bleed
+					 * edge-to-edge so it reads as part of the chrome.
+					 */
+					margin-inline: 0;
+				}
+
+				.origam-slider-field__input {
+					inset-inline-start: 0;
+				}
+
+				.origam-slider-field-track {
+					background-color: color-mix(in srgb, currentColor 22%, transparent) !important;
+					border-radius: 0 !important;
+				}
+
+				.origam-slider-field-track__background {
+					background-color: transparent !important;
+				}
+
+				.origam-slider-field-track__fill {
+					background-color: currentColor !important;
+					border-radius: 0 !important;
+				}
+			}
+
+			:deep(.origam-slider-field__container) {
+				min-height: var(--origam-audio--compact__progress---height, 3px);
+				height: var(--origam-audio--compact__progress---height, 3px);
+				padding: 0;
+			}
+		}
+
+		/*
+		 * Position modifiers — placed AFTER `&--compact` on purpose so
+		 * they win in source order when both classes coexist (e.g.
+		 * `variant="compact" position="sticky" bottom="0"`). `usePosition`
+		 * emits the modifier class AND inline `top|right|bottom|left`
+		 * styles; the modifier flips the `--origam-audio---position`
+		 * variable consumed by the root rule.
+		 */
+		&--relative {
+			--origam-audio---position: relative;
+		}
+
+		&--absolute {
+			--origam-audio---position: absolute;
+		}
+
+		&--fixed {
+			--origam-audio---position: fixed;
+		}
+
+		&--sticky {
+			--origam-audio---position: sticky;
+		}
+
+		&--static {
+			--origam-audio---position: static;
+		}
 	}
 </style>

@@ -215,7 +215,10 @@
       "component/snackbar-group": "enabled",
       "component/command-palette": "enabled",
       "component/blockquote": "enabled",
-      "component/video": "enabled"
+      "component/video": "enabled",
+      "component/audio": "enabled",
+      "component/media-scrubber": "enabled",
+      "component/media-controller": "enabled"
     }
   }
 ]

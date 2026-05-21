@@ -76,7 +76,7 @@
 	import type {
 		IMediaScrubberProps, IMediaScrubberSlots} from '../../interfaces'
 
-	import type { IMediaScrubberEmits } from '../../interfaces/MediaScrubber/media-scrubber.interface'
+	import type { IMediaScrubberEmits } from '../../interfaces/Media/media-scrubber.interface'
 
 	/*********************************************************
 	 * Global

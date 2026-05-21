@@ -78,19 +78,7 @@ export * from './Grid'
 
 export * from './Masonry'
 
-export * from './MediaController'
-
-export * from './MediaPlayBtn'
-
-export * from './MediaVolumeControl'
-
-export * from './MediaTimeLabel'
-
-export * from './MediaCastBtn'
-
-export * from './MediaConfigMenu'
-
-export * from './MediaScrubber'
+export * from './Media'
 
 export * from './Icon'
 

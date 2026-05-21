@@ -49,8 +49,9 @@
 	import { computed } from 'vue'
 
 	import { OrigamIcon } from '../Icon'
-	import { OrigamMediaScrubber } from '../MediaScrubber'
 	import { OrigamTooltip } from '../Tooltip'
+
+	import OrigamMediaScrubber from './OrigamMediaScrubber.vue'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -121,7 +122,7 @@
 		height: var(--origam-media-volume-control---btn-size, 36px);
 		border-radius: var(--origam-media-volume-control---btn-border-radius, 50%);
 		cursor: pointer;
-		color: var(--origam-media-volume-control---color, #ffffff);
+		color: var(--origam-media-volume-control---color, inherit);
 		transition: background-color 120ms ease, transform 120ms ease, opacity 120ms ease;
 		opacity: 0.95;
 	}
@@ -129,7 +130,7 @@
 	.origam-media-volume-control__btn:hover,
 	.origam-media-volume-control__btn:focus-visible {
 		opacity: 1;
-		background-color: var(--origam-media-volume-control---hover-background-color, rgba(255, 255, 255, 0.12));
+		background-color: var(--origam-media-volume-control---hover-background-color, color-mix(in srgb, currentColor 12%, transparent));
 	}
 
 	.origam-media-volume-control__btn:active {
@@ -158,8 +159,8 @@
 	}
 
 	.origam-media-volume-control__scrubber {
-		--origam-media-scrubber---color: #ffffff;
-		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.3);
+		--origam-media-scrubber---color: currentColor;
+		--origam-media-scrubber---track-background-color: color-mix(in srgb, currentColor 30%, transparent);
 		--origam-media-scrubber---track-size: 4px;
 		--origam-media-scrubber---track-size-active: 4px;
 		--origam-media-scrubber---thumb-diameter: 10px;

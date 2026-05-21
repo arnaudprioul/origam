@@ -1,6 +1,8 @@
 import type { Ref } from 'vue'
 
 import type {
+    IBgColorProps,
+    IColorProps,
     ICommonsComponentProps,
     IMediaPlayerEmits,
     IMediaPlayerMethods,
@@ -82,7 +84,7 @@ export interface IVideoSlots {
 /**
  * Props for `<OrigamVideo>`.
  */
-export interface IVideoProps extends ICommonsComponentProps {
+export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps {
     /**
      * Media URL — either a single string for `<video src>`, or an array
      * of `<source>` descriptors when multiple formats are provided. The
