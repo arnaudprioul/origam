@@ -773,8 +773,8 @@ export const useChart = (options: IUseChartOptions) => {
                  *     fixed radius — standard scatter behaviour.
                  */
                 const SCATTER_DEFAULT_R = 5
-                const SCATTER_MIN_R = 4
-                const SCATTER_MAX_R = 18
+                const SCATTER_MIN_R = 5
+                const SCATTER_MAX_R = 36
 
                 const scatterSeries = series.filter((other) => effectiveType(other) === 'scatter' && other.visible !== false)
                 let xMin = Infinity
