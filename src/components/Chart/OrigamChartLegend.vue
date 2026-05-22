@@ -35,7 +35,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref } from 'vue'
+	import { computed } from 'vue'
 
 	import type {
 		IChartLegendEmits,
@@ -99,33 +99,20 @@
 	 * the child receives it.
 	 ********************************************************/
 	/*
-	 * Local hidden-set fallback. Mutating `entry.series.visible` from a
-	 * child relies on Vue 3's deep-reactivity over a prop array — that
-	 * propagates fine when the consumer hands an explicitly reactive
-	 * object, but breaks silently when the series live in a plain
-	 * module-level `const` (the common case: fixtures, server payloads
-	 * copied raw). The local Set guarantees an immediate visual flip
-	 * regardless of how the consumer manages reactivity; the parent
-	 * can ALSO mutate `series.visible` for actual data filtering, and
-	 * the two states stay in sync because the legend reads the parent
-	 * state first then layers its local override on top.
+	 * Each legend entry carries its own `visible` flag (resolved from
+	 * the parent's series state by `useChart`). Clicking emits the
+	 * inverted visibility upward — the parent owns the actual state
+	 * and re-derives `items` with the new `visible` value, which
+	 * flows back through props and updates the `--hidden` modifier.
+	 *
+	 * The item REMAINS clickable while hidden so the user can
+	 * re-enable a previously hidden series.
 	 */
-	const hiddenSeries = ref<Set<string>>(new Set())
-
-	const isHidden = (entry: IChartLegendItem): boolean => {
-		if (hiddenSeries.value.has(entry.series.name)) return true
-		return entry.series.visible === false
-	}
+	const isHidden = (entry: IChartLegendItem): boolean => entry.visible === false
 
 	const onItemClick = (entry: IChartLegendItem): void => {
 		emit('legend-click', entry.series, entry.index)
-		const wasHidden = isHidden(entry)
-		const nextVisible = wasHidden
-		// Mirror the toggle into our local Set so the legend item gets
-		// the `--hidden` modifier even when the parent doesn't surface
-		// the visibility flip back through the items prop.
-		if (nextVisible) hiddenSeries.value.delete(entry.series.name)
-		else hiddenSeries.value.add(entry.series.name)
+		const nextVisible = entry.visible === false
 		emit('series-toggle', entry.series, nextVisible)
 	}
 </script>

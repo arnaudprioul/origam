@@ -189,7 +189,7 @@
 	 ********************************************************/
 	const cartesianProps = computed(() => ({
 		type: props.type as TChartCartesianKind,
-		series: visibleSeries.value,
+		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -213,7 +213,7 @@
 
 	const polarProps = computed(() => ({
 		type: props.type as TChartPolarKind,
-		series: visibleSeries.value,
+		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -231,7 +231,7 @@
 	}))
 
 	const radarProps = computed(() => ({
-		series: visibleSeries.value,
+		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -245,7 +245,7 @@
 	}))
 
 	const gaugeProps = computed(() => ({
-		series: visibleSeries.value,
+		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -274,19 +274,31 @@
 	}
 
 	/*
-	 * `OrigamChartLegend` emits the intended next visibility but
-	 * doesn't own the series array — we maintain a local reactive
-	 * `hiddenSeries: Set<string>` here and filter the series before
-	 * forwarding them to the family components. This sidesteps Vue
-	 * 3's silent reactivity drop when the consumer hands a plain
-	 * module-level `const` of series (the fixture case) where deep
-	 * mutations on `series[i].visible` don't propagate back through
-	 * the prop chain.
+	 * Legend toggle policy:
+	 *
+	 *   - The legend must show ALL series at all times (struck-through
+	 *     when hidden) so the user can re-enable a previously hidden
+	 *     series — filtering them out of the legend would trap the
+	 *     consumer in a dead-end.
+	 *
+	 *   - The chart paths, however, must STOP rendering the hidden
+	 *     series. `useChart` already gates path generation on
+	 *     `series[i].visible !== false`; we just need to surface the
+	 *     hidden state on each series via a cloned array.
+	 *
+	 * `hiddenSeries: Set<string>` is the source of truth. We rebuild
+	 * `seriesWithVisibility` on every toggle — each series gets a
+	 * fresh shallow clone with `visible` set so neither the consumer
+	 * fixture nor the chart engine has to deal with deep mutation
+	 * (which Vue 3 silently drops on plain module-level consts).
 	 */
 	const hiddenSeries = ref<Set<string>>(new Set())
 
-	const visibleSeries = computed<Array<IChartSeries>>(() =>
-		props.series.filter((s) => !hiddenSeries.value.has(s.name))
+	const seriesWithVisibility = computed<Array<IChartSeries>>(() =>
+		props.series.map((s) => ({
+			...s,
+			visible: !hiddenSeries.value.has(s.name)
+		}))
 	)
 
 	const onSeriesToggle = (series: IChartSeries, visible: boolean): void => {
