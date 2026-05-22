@@ -113,3 +113,34 @@
 		return String(value)
 	}
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	/*
+	 * Axis component is rendered as SVG `<g>` fragments by the
+	 * cartesian family. SVG elements MUST have an explicit `stroke`
+	 * / `fill` to be visible — there is no default. When the
+	 * component is used STANDALONE (without the cartesian parent),
+	 * no `:deep()` rule from above paints the lines, so `showGrid`
+	 * appears to "do nothing" because the lines exist in the DOM
+	 * but have no stroke. The rules below ship visible defaults
+	 * scoped to the axis component itself; consumers can override
+	 * via the `--origam-chart__{grid,axis}---*` CSS variables.
+	 */
+	.origam-chart__grid-line {
+		stroke: var(--origam-chart__grid---color, var(--origam-color-border-subtle, #e5e7eb));
+		stroke-width: var(--origam-chart__grid---stroke-width, 1);
+	}
+
+	.origam-chart__axis-line {
+		stroke: var(--origam-chart__axis---color, var(--origam-color-border-default, #d1d5db));
+		stroke-width: var(--origam-chart__axis---stroke-width, 1);
+	}
+
+	.origam-chart__axis-label {
+		fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
+		font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
+	}
+</style>
