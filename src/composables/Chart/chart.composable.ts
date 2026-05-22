@@ -726,13 +726,49 @@ export const useChart = (options: IUseChartOptions) => {
             }
 
             if (kind === 'scatter') {
+                /*
+                 * Scatter X values are arbitrary numeric coordinates
+                 * (e.g. age, distance, score), NOT categorical indices.
+                 * `scales.x` treats numeric values as "0..count-1
+                 * indices into the slot grid", which over-runs the
+                 * plot when the actual X values exceed the data count
+                 * (the user-reported "points outside the plot zone"
+                 * symptom — a series with X=13 over a 6-point fixture
+                 * landed at 2.6 × plot width past `x0`).
+                 *
+                 * Compute the scatter X range from the consumer data
+                 * across ALL scatter series (so the X axis is shared
+                 * and points from different series align), then map
+                 * linearly into the plot.
+                 */
+                const scatterSeries = series.filter((other) => effectiveType(other) === 'scatter' && other.visible !== false)
+                let xMin = Infinity
+                let xMax = -Infinity
+                for (const sp of scatterSeries) {
+                    for (const entry of sp.data) {
+                        const xv = typeof entry === 'number' ? entry : entry.x
+                        const x = typeof xv === 'number' ? xv : 0
+                        if (x < xMin) xMin = x
+                        if (x > xMax) xMax = x
+                    }
+                }
+                const xSpan = Math.max(1e-9, xMax - xMin)
+                const xPx = (v: number): number => {
+                    const ratio = (v - xMin) / xSpan
+                    const px = x0 + ratio * (x1 - x0)
+                    if (px < x0) return x0
+                    if (px > x1) return x1
+                    return px
+                }
+
                 for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
                     const p = normalised[dataIdx]
+                    const cxRaw = typeof p.x === 'number' ? p.x : Number(p.x)
                     out.push({
                         seriesIndex: seriesIdx,
                         kind: 'circle',
                         circle: {
-                            cx: scales.value.x(p.x, dataIdx, slotCount.value),
+                            cx: xPx(Number.isFinite(cxRaw) ? cxRaw : 0),
                             cy: scales.value.y(p.y),
                             r: 5
                         },
