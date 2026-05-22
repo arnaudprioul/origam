@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (11 primitives)">
+		<Variant title="Prop — type (13 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, eight visualisation primitives. Switch via the
+					One component, thirteen visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -215,6 +215,58 @@
 								:gauge-max="100"
 								gauge-unit="%"
 								data-cy="chart-type-gauge"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>funnel</strong>
+						<origam-chart
+								type="funnel"
+								:series="FIXTURE_FUNNEL"
+								:categories="FIXTURE_FUNNEL_CATEGORIES"
+								:height="240"
+								data-cy="chart-type-funnel"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>pyramid</strong>
+						<origam-chart
+								type="pyramid"
+								:series="FIXTURE_FUNNEL"
+								:categories="FIXTURE_FUNNEL_CATEGORIES"
+								:height="240"
+								data-cy="chart-type-pyramid"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — pyramid / funnel (side by side)">
+			<div
+					class="story-shell"
+					data-cy="chart-pyramid-funnel"
+			>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>funnel</strong>
+						<origam-chart
+								type="funnel"
+								:series="FIXTURE_FUNNEL"
+								:categories="FIXTURE_FUNNEL_CATEGORIES"
+								:height="360"
+								title="Conversion funnel"
+								data-cy="chart-pyramid-funnel-funnel"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>pyramid</strong>
+						<origam-chart
+								type="pyramid"
+								:series="FIXTURE_FUNNEL"
+								:categories="FIXTURE_FUNNEL_CATEGORIES"
+								:height="360"
+								title="Org pyramid"
+								data-cy="chart-pyramid-funnel-pyramid"
 						/>
 					</div>
 				</div>
@@ -656,6 +708,8 @@
 		{ value: 'scatter', label: 'scatter' },
 		{ value: 'radar', label: 'radar' },
 		{ value: 'gauge', label: 'gauge' },
+		{ value: 'funnel', label: 'funnel' },
+		{ value: 'pyramid', label: 'pyramid' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -789,6 +843,11 @@
 	const FIXTURE_RADAR: Array<IChartSeries> = [
 		{ name: 'Player A', data: [80, 65, 75, 90, 70, 60], color: 'primary', type: 'radar' },
 		{ name: 'Player B', data: [55, 85, 60, 70, 90, 80], color: 'success', type: 'radar' }
+	]
+
+	const FIXTURE_FUNNEL_CATEGORIES = ['Visitors', 'Leads', 'Prospects', 'Demos', 'Customers']
+	const FIXTURE_FUNNEL: Array<IChartSeries> = [
+		{ name: 'Pipeline', data: [1000, 600, 200, 80, 50] }
 	]
 
 	const logLines = ref<Array<string>>([])

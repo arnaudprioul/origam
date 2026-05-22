@@ -9,5 +9,7 @@ export enum CHART_TYPE {
     RADAR = 'radar',
     SPLINE = 'spline',
     STEPPED_LINE = 'stepped-line',
-    GAUGE = 'gauge'
+    GAUGE = 'gauge',
+    PYRAMID = 'pyramid',
+    FUNNEL = 'funnel'
 }

@@ -74,6 +74,25 @@
 			/>
 		</template>
 	</origam-chart-gauge>
+
+	<origam-chart-pyramid
+			v-else-if="isPyramidType"
+			v-bind="pyramidProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-pyramid>
 </template>
 
 <script
@@ -85,11 +104,13 @@
 	import OrigamChartCartesian from './OrigamChartCartesian.vue'
 	import OrigamChartGauge from './OrigamChartGauge.vue'
 	import OrigamChartPolar from './OrigamChartPolar.vue'
+	import OrigamChartPyramid from './OrigamChartPyramid.vue'
 	import OrigamChartRadar from './OrigamChartRadar.vue'
 
 	import {
 		CHART_CARTESIAN_KIND,
 		CHART_POLAR_KIND,
+		CHART_PYRAMID_KIND,
 		CHART_TYPE
 	} from '../../enums'
 
@@ -105,7 +126,8 @@
 
 	import type {
 		TChartCartesianKind,
-		TChartPolarKind
+		TChartPolarKind,
+		TChartPyramidKind
 	} from '../../types'
 
 	/*********************************************************
@@ -172,11 +194,13 @@
 	 ********************************************************/
 	const CARTESIAN_TYPES: Array<string> = Object.values(CHART_CARTESIAN_KIND)
 	const POLAR_TYPES: Array<string> = Object.values(CHART_POLAR_KIND)
+	const PYRAMID_TYPES: Array<string> = Object.values(CHART_PYRAMID_KIND)
 
 	const isCartesianType = computed(() => CARTESIAN_TYPES.includes(props.type))
 	const isPolarType = computed(() => POLAR_TYPES.includes(props.type))
 	const isRadarType = computed(() => props.type === CHART_TYPE.RADAR)
 	const isGaugeType = computed(() => props.type === CHART_TYPE.GAUGE)
+	const isPyramidType = computed(() => PYRAMID_TYPES.includes(props.type))
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -260,6 +284,24 @@
 		gaugeMin: props.gaugeMin,
 		gaugeMax: props.gaugeMax,
 		gaugeUnit: props.gaugeUnit
+	}))
+
+	const pyramidProps = computed(() => ({
+		type: props.type as TChartPyramidKind,
+		series: seriesWithVisibility.value,
+		categories: props.categories,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
 	}))
 
 	/*********************************************************

@@ -330,5 +330,6 @@ export * from './Chart/chart-item.type'
 
 export * from './Chart/chart-cartesian-kind.type'
 export * from './Chart/chart-polar-kind.type'
+export * from './Chart/chart-pyramid-kind.type'
 
 
