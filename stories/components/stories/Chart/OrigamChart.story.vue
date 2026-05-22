@@ -337,12 +337,20 @@
 					class="story-shell"
 					data-cy="chart-palette"
 			>
+				<p class="hint">
+					Both demos use <code>FIXTURE_FIVE_SERIES_NO_COLOR</code>
+					— the per-series <code>color</code> field is intentionally
+					omitted so the chart-level <code>colorScheme</code> drives
+					the palette. If a series defines its own <code>color</code>,
+					it always wins over <code>colorScheme</code> (the consumer's
+					explicit intent overrides the fallback palette).
+				</p>
 				<div class="story-grid story-grid--2">
 					<div class="story-col">
-						<strong>primary palette (default)</strong>
+						<strong>default 8-intent cycle</strong>
 						<origam-chart
 								type="column"
-								:series="FIXTURE_FIVE_SERIES"
+								:series="FIXTURE_FIVE_SERIES_NO_COLOR"
 								:categories="FIXTURE_MONTHS"
 								:height="240"
 								data-cy="chart-palette-default"
@@ -352,7 +360,7 @@
 						<strong>custom CSS palette (hex)</strong>
 						<origam-chart
 								type="column"
-								:series="FIXTURE_FIVE_SERIES"
+								:series="FIXTURE_FIVE_SERIES_NO_COLOR"
 								:categories="FIXTURE_MONTHS"
 								:color-scheme="['#8b5cf6', '#ec4899', '#f97316', '#22c55e', '#0ea5e9']"
 								:height="240"
