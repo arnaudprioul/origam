@@ -201,7 +201,7 @@
 		animationDuration: 600,
 		colorScheme: () => [],
 		aspectRatio: undefined,
-		sliceGap: 4,
+		sliceGap: 0,
 		labelPlacement: 'auto',
 		xAxisFormat: undefined,
 		yAxisFormat: undefined
@@ -318,12 +318,15 @@
 		const isFunnel = props.type !== 'pyramid'
 
 		/*
-		 * Silhouette endpoints — fraction of plotW.
-		 * Funnel:  top=1.0 (full width)  →  bottom=0.12 (narrow exit)
-		 * Pyramid: top=0.12 (narrow tip) →  bottom=1.0 (full base)
-		 * The narrow side is NOT a point so labels remain legible.
+		 * Silhouette endpoints — fraction of plotW. TIP_FRACTION=0
+		 * gives a true point at the narrow end (canonical funnel /
+		 * pyramid). Labels on the narrow-end band auto-relocate
+		 * outside via labelFitsInside when the band gets too short.
+		 *
+		 * Funnel:  top = full width →  bottom = 0 (point)
+		 * Pyramid: top = 0 (point)  →  bottom = full width
 		 */
-		const TIP_FRACTION = 0.12
+		const TIP_FRACTION = 0
 		const topSilhouette = isFunnel ? plotW : plotW * TIP_FRACTION
 		const botSilhouette = isFunnel ? plotW * TIP_FRACTION : plotW
 
