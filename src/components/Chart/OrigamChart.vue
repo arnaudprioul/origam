@@ -116,7 +116,7 @@
 	 * (`type`, `series`, `categories`, …) and routes to one of
 	 * four family components based on `props.type`:
 	 *
-	 * - cartesian (line/area/bar/column/scatter/spline/stepped-line/trend)
+	 * - cartesian (line/area/bar/column/scatter/spline/stepped-line)
 	 *   -> `<OrigamChartCartesian>`
 	 * - polar (pie/donut) -> `<OrigamChartPolar>` (no axes, no grid)
 	 * - radar -> `<OrigamChartRadar>` (rings + spokes + polygons)
@@ -198,7 +198,7 @@
 		legendPosition: props.legendPosition,
 		showTooltip: props.showTooltip,
 		showGrid: props.showGrid,
-		showAxis: props.type === 'trend' ? false : props.showAxis,
+		showAxis: props.showAxis,
 		animated: props.animated,
 		animationDuration: props.animationDuration,
 		stacked: props.stacked,

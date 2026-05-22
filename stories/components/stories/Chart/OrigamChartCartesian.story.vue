@@ -207,24 +207,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — type (trend)">
-			<div
-					class="story-shell"
-					data-cy="cartesian-type-trend"
-			>
-				<p class="hint">
-					Trend sparklines suppress axes, grid, legend, and header. They are designed to fill a table cell or dashboard tile.
-				</p>
-				<origam-chart-cartesian
-						type="trend"
-						:series="FIXTURE_SALES_SERIES"
-						:categories="FIXTURE_MONTHS"
-						:height="80"
-						data-cy="cartesian-chart-trend"
-				/>
-			</div>
-		</Variant>
-
 		<Variant title="Prop — stacked">
 			<div
 					class="story-shell"
@@ -724,8 +706,7 @@
 		{ value: 'area', label: 'area' },
 		{ value: 'bar', label: 'bar' },
 		{ value: 'column', label: 'column' },
-		{ value: 'scatter', label: 'scatter' },
-		{ value: 'trend', label: 'trend' }
+		{ value: 'scatter', label: 'scatter' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [

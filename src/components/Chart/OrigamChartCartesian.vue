@@ -192,7 +192,7 @@
 	 *
 	 * @description
 	 * Cartesian chart family — renders `line`, `area`, `bar`,
-	 * `column`, `scatter`, `spline`, `stepped-line`, `trend`. Owns
+	 * `column`, `scatter`, `spline`, `stepped-line`. Owns
 	 * the X+Y axes + grid + tick labels via `<OrigamChartAxis>`.
 	 *
 	 * Polar / radar / gauge live in their own family components so
@@ -241,13 +241,11 @@
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 360
 	const PADDING_DEFAULT = { top: 24, right: 24, bottom: 36, left: 48 }
-	const PADDING_TREND = { top: 4, right: 4, bottom: 4, left: 4 }
 
 	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
-	const isTrend = computed(() => props.type === 'trend')
-	const chartPadding = computed(() => (isTrend.value ? PADDING_TREND : PADDING_DEFAULT))
+	const chartPadding = computed(() => PADDING_DEFAULT)
 
 	/*********************************************************
 	 * Engine — `useChart` produces every descriptor needed to
@@ -317,8 +315,7 @@
 	const rootClasses = computed(() => ({
 		[`origam-chart-cartesian--${ props.type }`]: true,
 		[`origam-chart-cartesian--legend-${ props.legendPosition }`]: true,
-		'origam-chart-cartesian--no-animation': !props.animated,
-		'origam-chart-cartesian--trend': isTrend.value
+		'origam-chart-cartesian--no-animation': !props.animated
 	}))
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -516,11 +513,6 @@
 				"body legend";
 		}
 
-		&--trend {
-			gap: 0;
-			padding: 0;
-		}
-
 		&__header {
 			grid-area: header;
 			display: flex;
@@ -586,8 +578,7 @@
 		.origam-chart__svg--animated .origam-chart__path--line,
 		.origam-chart__svg--animated .origam-chart__path--area,
 		.origam-chart__svg--animated .origam-chart__path--spline,
-		.origam-chart__svg--animated .origam-chart__path--stepped-line,
-		.origam-chart__svg--animated .origam-chart__path--trend {
+		.origam-chart__svg--animated .origam-chart__path--stepped-line {
 			stroke-dasharray: var(--origam-chart-path---length, 1000);
 			stroke-dashoffset: var(--origam-chart-path---length, 1000);
 			animation: origam-chart-cartesian-draw var(--origam-chart---animation-duration, 600ms) ease-out forwards;
@@ -724,12 +715,6 @@
 			stroke-dashoffset: 0;
 		}
 
-		&--trend {
-			:deep(.origam-chart__legend),
-			#{$this}__header {
-				display: none;
-			}
-		}
 	}
 
 	@keyframes origam-chart-cartesian-draw {

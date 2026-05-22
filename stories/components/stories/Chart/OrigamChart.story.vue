@@ -96,7 +96,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (12 primitives)">
+		<Variant title="Prop — type (11 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
@@ -215,16 +215,6 @@
 								:gauge-max="100"
 								gauge-unit="%"
 								data-cy="chart-type-gauge"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>trend</strong>
-						<origam-chart
-								type="trend"
-								:series="FIXTURE_SALES_SERIES"
-								:categories="FIXTURE_MONTHS"
-								:height="240"
-								data-cy="chart-type-trend"
 						/>
 					</div>
 				</div>
@@ -617,7 +607,6 @@
 		{ value: 'scatter', label: 'scatter' },
 		{ value: 'radar', label: 'radar' },
 		{ value: 'gauge', label: 'gauge' },
-		{ value: 'trend', label: 'trend' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [

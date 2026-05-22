@@ -1,6 +1,6 @@
 # OrigamChartCartesian
 
-Tightly-typed cartesian chart surface covering eight topologies: `line`, `area`, `bar`, `column`, `scatter`, `spline`, `stepped-line`, and `trend`. Owns the X + Y plotting area, axes, grid, and tick labels as first-class concerns and deliberately rejects polar / radar / gauge types at the TypeScript level.
+Tightly-typed cartesian chart surface covering seven topologies: \`line\`, \`area\`, \`bar\`, \`column\`, \`scatter\`, \`spline\`, and \`stepped-line\`. Owns the X + Y plotting area, axes, grid, and tick labels as first-class concerns and deliberately rejects polar / radar / gauge types at the TypeScript level.
 
 Use this component when the chart type is fixed at compile time and you want `TChartCartesianKind` enforced on the `type` prop. Use `OrigamChart` when you need to switch between families at runtime.
 
@@ -57,7 +57,7 @@ function onPointClick(point: IChartPoint) {
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `type` | `TChartCartesianKind` | `'line'` | Cartesian topology. One of `'line'`, `'area'`, `'bar'`, `'column'`, `'scatter'`, `'spline'`, `'stepped-line'`, `'trend'`. |
+| `type` | `TChartCartesianKind` | `'line'` | Cartesian topology. One of `'line'`, `'area'`, `'bar'`, `'column'`, `'scatter'`, `'spline'`, `'stepped-line'`. |
 | `height` | `number \| string` | `360` | Chart height. A plain number is `px`; any CSS length is accepted. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette applied when a series omits its own `color`. |
@@ -114,18 +114,15 @@ function onPointClick(point: IChartPoint) {
 | `area` | Filled polygon + stroke per series + markers | Yes |
 | `spline` | Polyline per series, defaults to `'monotone'` smoothing | Yes (overridable) |
 | `stepped-line` | Right-angle staircase per series + markers | No |
-| `trend` | Polyline per series, no markers, no chrome | No |
 | `column` | Vertical `<rect>` per data point | N/A |
 | `bar` | Horizontal `<rect>` per data point | N/A |
 | `scatter` | `<circle>` per data point, no connecting path | N/A |
 
 **`spline` smoothing override.** `spline` calls the monotone path generator by default. Pass `smoothing='curve'` to switch to Catmull-Rom, or `smoothing='none'` to collapse back to straight segments (at which point it is identical to `line`).
 
-**`trend` sparklines.** `type='trend'` suppresses axes, grid, legend, title, and circle markers. It is designed to fill a table cell or dashboard KPI tile with a compact sparkline. `showAxis`, `showGrid`, and `showLegend` have no effect.
-
 **Stacked bar / column.** `stacked=true` accumulates series values per data index. The Y scale is computed over the stacked totals — the global `yMin` / `yMax` overrides still apply after stacking. Stacking on `line`, `area`, or `scatter` has no visual effect.
 
-**Mix charts.** Each series can set its own `type` to override the chart-level type. A common pattern: a `column` chart with a `line` trend overlay on top. The series-level type must be a `TChartType` value; there is no restriction to cartesian-only values at the series level, but using polar or gauge types on a series in a cartesian chart has undefined behaviour.
+**Mix charts.** Each series can set its own `type` to override the chart-level type. A common pattern: a `column` chart with a `line` overlay on top. The series-level type must be a `TChartType` value; there is no restriction to cartesian-only values at the series level, but using polar or gauge types on a series in a cartesian chart has undefined behaviour.
 
 **Scatter data shape.** `scatter` requires explicit `{x, y}` objects in `series[n].data`. Number-only data is technically accepted but all points land on the same X position since there is no implicit category axis.
 
@@ -191,7 +188,7 @@ function formatRevenue(v: number) {
 </script>
 ```
 
-### Mix chart — column + trend line overlay
+### Mix chart — column + line overlay
 
 ```vue
 <template>
@@ -200,7 +197,7 @@ function formatRevenue(v: number) {
     :series="series"
     :categories="months"
     :height="320"
-    title="Revenue with trend"
+    title="Revenue with overlay"
   />
 </template>
 

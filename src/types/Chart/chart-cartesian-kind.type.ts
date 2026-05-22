@@ -23,4 +23,3 @@ export type TChartCartesianKind =
     | 'scatter'
     | 'spline'
     | 'stepped-line'
-    | 'trend'

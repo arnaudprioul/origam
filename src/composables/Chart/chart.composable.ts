@@ -567,7 +567,6 @@ export const useChart = (options: IUseChartOptions) => {
                 || kind === 'area'
                 || kind === 'spline'
                 || kind === 'stepped-line'
-                || kind === 'trend'
             ) {
                 const pts: Array<TPathPoint> = normalised.map((p) => [
                     scales.value.x(p.x, p.dataIndex, slotCount.value),
@@ -632,9 +631,8 @@ export const useChart = (options: IUseChartOptions) => {
                 })
 
                 // Emit one descriptor per data point — `<circle>` markers
-                // and the hover hit zones. Trend sparklines skip markers
-                // to keep the visual ratio compact.
-                if (kind !== 'trend') {
+                // and the hover hit zones.
+                {
                     for (let dataIdx = 0; dataIdx < pts.length; dataIdx++) {
                         out.push({
                             seriesIndex: seriesIdx,

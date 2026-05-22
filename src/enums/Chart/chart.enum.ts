@@ -1,5 +1,4 @@
 export enum CHART_TYPE {
-    TREND = 'trend',
     LINE = 'line',
     AREA = 'area',
     BAR = 'bar',

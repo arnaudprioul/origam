@@ -306,20 +306,6 @@ describe('useChart — paths (stepped-line)', () => {
     })
 })
 
-describe('useChart — paths (trend)', () => {
-    it('emits a single line path with NO circle markers for trend', () => {
-        const chart = useChart(makeOptions({
-            type: 'trend',
-            categories: ['A', 'B', 'C', 'D'],
-            series: [{ name: 'S', data: [1, 2, 3, 4] }]
-        }))
-        const lines = chart.paths.value.filter((p) => p.kind === 'path')
-        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
-        expect(lines.length).toBeGreaterThanOrEqual(1)
-        expect(circles).toHaveLength(0)
-    })
-})
-
 describe('useChart — legend + hover', () => {
     it('emits one legend entry per series', () => {
         const chart = useChart(makeOptions({

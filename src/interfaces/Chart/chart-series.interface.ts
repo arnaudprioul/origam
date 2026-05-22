@@ -16,7 +16,7 @@ import type {
  *
  * Each series can override the global colour palette via `color`
  * (intent name OR raw CSS string) and the global chart `type` via
- * `type` (mix-chart — a column with a trend `line` overlaid).
+ * `type` (mix-chart — a column with a `line` overlaid).
  */
 export interface IChartSeries {
     /** Display name in the legend + screen-reader description. */
@@ -46,7 +46,7 @@ export interface IChartSeries {
     /**
      * Override the chart-level `type` for this series only.
      * Enables mix charts (a `column` chart with a `line`
-     * trend line on top).
+     * overlay on top).
      */
     type?: TChartType
 }

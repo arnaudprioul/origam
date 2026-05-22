@@ -10,6 +10,5 @@ export enum CHART_CARTESIAN_KIND {
     COLUMN = 'column',
     SCATTER = 'scatter',
     SPLINE = 'spline',
-    STEPPED_LINE = 'stepped-line',
-    TREND = 'trend'
+    STEPPED_LINE = 'stepped-line'
 }

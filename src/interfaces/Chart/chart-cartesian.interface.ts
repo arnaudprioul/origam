@@ -13,7 +13,7 @@ import type {
  * Props for `<OrigamChartCartesian>` — the cartesian family
  * component. Owns the X+Y plotting area (axes, grid, tick labels)
  * AND the line / area / bar / column / scatter / spline /
- * stepped-line / trend topologies.
+ * stepped-line topologies.
  *
  * Distinct from the legacy `<OrigamChart>` shell because it
  * deliberately rejects polar / radar / gauge values — the `type`
