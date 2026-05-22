@@ -11,5 +11,9 @@ export enum CHART_TYPE {
     STEPPED_LINE = 'stepped-line',
     GAUGE = 'gauge',
     PYRAMID = 'pyramid',
-    FUNNEL = 'funnel'
+    FUNNEL = 'funnel',
+    HONEYCOMB = 'honeycomb',
+    TREEMAP = 'treemap',
+    SANKEY = 'sankey',
+    WORD_CLOUD = 'word-cloud'
 }

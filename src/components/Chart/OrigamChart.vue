@@ -93,6 +93,82 @@
 			/>
 		</template>
 	</origam-chart-pyramid>
+
+	<origam-chart-honeycomb
+			v-else-if="isHoneycombType"
+			v-bind="honeycombProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-honeycomb>
+
+	<origam-chart-treemap
+			v-else-if="isTreemapType"
+			v-bind="treemapProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-treemap>
+
+	<origam-chart-sankey
+			v-else-if="isSankeyType"
+			v-bind="sankeyProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-sankey>
+
+	<origam-chart-word-cloud
+			v-else-if="isWordCloudType"
+			v-bind="wordCloudProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-word-cloud>
 </template>
 
 <script
@@ -103,9 +179,13 @@
 
 	import OrigamChartCartesian from './OrigamChartCartesian.vue'
 	import OrigamChartGauge from './OrigamChartGauge.vue'
+	import OrigamChartHoneycomb from './OrigamChartHoneycomb.vue'
 	import OrigamChartPolar from './OrigamChartPolar.vue'
 	import OrigamChartPyramid from './OrigamChartPyramid.vue'
 	import OrigamChartRadar from './OrigamChartRadar.vue'
+	import OrigamChartSankey from './OrigamChartSankey.vue'
+	import OrigamChartTreemap from './OrigamChartTreemap.vue'
+	import OrigamChartWordCloud from './OrigamChartWordCloud.vue'
 
 	import {
 		CHART_CARTESIAN_KIND,
@@ -201,6 +281,10 @@
 	const isRadarType = computed(() => props.type === CHART_TYPE.RADAR)
 	const isGaugeType = computed(() => props.type === CHART_TYPE.GAUGE)
 	const isPyramidType = computed(() => PYRAMID_TYPES.includes(props.type))
+	const isHoneycombType = computed(() => props.type === CHART_TYPE.HONEYCOMB)
+	const isTreemapType = computed(() => props.type === CHART_TYPE.TREEMAP)
+	const isSankeyType = computed(() => props.type === CHART_TYPE.SANKEY)
+	const isWordCloudType = computed(() => props.type === CHART_TYPE.WORD_CLOUD)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -301,6 +385,68 @@
 		colorScheme: props.colorScheme,
 		aspectRatio: props.aspectRatio,
 		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const honeycombProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const treemapProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const sankeyProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const wordCloudProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
 		yAxisFormat: props.yAxisFormat
 	}))
 

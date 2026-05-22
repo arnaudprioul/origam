@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (13 primitives)">
+		<Variant title="Prop — type (17 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, thirteen visualisation primitives. Switch via the
+					One component, seventeen visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -237,7 +237,59 @@
 								data-cy="chart-type-pyramid"
 						/>
 					</div>
+					<div class="story-col">
+						<strong>honeycomb</strong>
+						<origam-chart
+								type="honeycomb"
+								:series="FIXTURE_HONEYCOMB_3X3"
+								:height="240"
+								data-cy="chart-type-honeycomb"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>treemap</strong>
+						<origam-chart
+								type="treemap"
+								:series="FIXTURE_TREEMAP_TECH"
+								:height="240"
+								data-cy="chart-type-treemap"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>sankey</strong>
+						<origam-chart
+								type="sankey"
+								:series="FIXTURE_SANKEY_FUNNEL"
+								:height="240"
+								data-cy="chart-type-sankey"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>word-cloud</strong>
+						<origam-chart
+								type="word-cloud"
+								:series="FIXTURE_WORD_CLOUD_TECH"
+								:height="240"
+								data-cy="chart-type-word-cloud"
+						/>
+					</div>
 				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — honeycomb tile-map">
+			<div
+					class="story-shell"
+					data-cy="chart-honeycomb"
+			>
+				<origam-chart-honeycomb
+						:series="FIXTURE_HONEYCOMB_3X3"
+						:height="360"
+						:show-label="true"
+						title="Honeycomb grid"
+						subtitle="9-tile categorical fixture"
+						data-cy="chart-honeycomb-9tiles"
+				/>
 			</div>
 		</Variant>
 
@@ -690,7 +742,7 @@
 >
 	import { ref } from 'vue'
 
-	import { OrigamChart } from '@origam/components'
+	import { OrigamChart, OrigamChartHoneycomb } from '@origam/components'
 
 	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
 
@@ -709,7 +761,11 @@
 		{ value: 'radar', label: 'radar' },
 		{ value: 'gauge', label: 'gauge' },
 		{ value: 'funnel', label: 'funnel' },
-		{ value: 'pyramid', label: 'pyramid' }
+		{ value: 'pyramid', label: 'pyramid' },
+		{ value: 'honeycomb', label: 'honeycomb' },
+		{ value: 'treemap', label: 'treemap' },
+		{ value: 'sankey', label: 'sankey' },
+		{ value: 'word-cloud', label: 'word-cloud' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -848,6 +904,79 @@
 	const FIXTURE_FUNNEL_CATEGORIES = ['Visitors', 'Leads', 'Prospects', 'Demos', 'Customers']
 	const FIXTURE_FUNNEL: Array<IChartSeries> = [
 		{ name: 'Pipeline', data: [1000, 600, 200, 80, 50] }
+	]
+
+	const FIXTURE_HONEYCOMB_3X3: Array<IChartSeries> = [
+		{
+			name: 'Grid 3x3',
+			data: [
+				{ x: 0, y: 0, name: 'A1', color: 'primary' },
+				{ x: 1, y: 0, name: 'A2', color: 'success' },
+				{ x: 2, y: 0, name: 'A3', color: 'warning' },
+				{ x: 0, y: 1, name: 'B1', color: 'danger' },
+				{ x: 1, y: 1, name: 'B2', color: 'info' },
+				{ x: 2, y: 1, name: 'B3', color: 'secondary' },
+				{ x: 0, y: 2, name: 'C1', color: 'ghost' },
+				{ x: 1, y: 2, name: 'C2', color: 'primary' },
+				{ x: 2, y: 2, name: 'C3', color: 'success' }
+			]
+		}
+	]
+
+	const FIXTURE_TREEMAP_TECH: Array<IChartSeries> = [
+		{
+			name: 'Tech Portfolio',
+			data: [
+				{ name: 'AAPL', value: 25 },
+				{ name: 'MSFT', value: 18 },
+				{ name: 'GOOG', value: 14 },
+				{ name: 'AMZN', value: 11 },
+				{ name: 'NVDA', value: 9 },
+				{ name: 'META', value: 7 },
+				{ name: 'TSLA', value: 5 },
+				{ name: 'ORCL', value: 4 },
+				{ name: 'IBM', value: 4 },
+				{ name: 'ADBE', value: 3 }
+			] as Array<any>
+		}
+	]
+
+	const FIXTURE_SANKEY_FUNNEL: Array<IChartSeries> = [
+		{
+			name: 'Web Funnel',
+			data: [
+				{ from: 'Home', to: 'Catalogue', value: 100 },
+				{ from: 'Catalogue', to: 'Cart', value: 40 },
+				{ from: 'Catalogue', to: 'Exit', value: 60 },
+				{ from: 'Cart', to: 'Checkout', value: 25 },
+				{ from: 'Cart', to: 'Exit', value: 15 },
+				{ from: 'Checkout', to: 'Success', value: 20 },
+				{ from: 'Checkout', to: 'Failure', value: 5 }
+			] as Array<any>
+		}
+	]
+
+	const FIXTURE_WORD_CLOUD_TECH: Array<IChartSeries> = [
+		{
+			name: 'Tech Buzzwords',
+			data: [
+				{ text: 'AI', value: 100 },
+				{ text: 'ML', value: 90 },
+				{ text: 'Cloud', value: 80 },
+				{ text: 'Data', value: 75 },
+				{ text: 'Kubernetes', value: 70 },
+				{ text: 'Vue', value: 65 },
+				{ text: 'React', value: 60 },
+				{ text: 'TypeScript', value: 60 },
+				{ text: 'Python', value: 55 },
+				{ text: 'Rust', value: 50 },
+				{ text: 'Go', value: 45 },
+				{ text: 'GraphQL', value: 40 },
+				{ text: 'REST', value: 35 },
+				{ text: 'Docker', value: 35 },
+				{ text: 'Serverless', value: 30 }
+			] as Array<any>
+		}
 	]
 
 	const logLines = ref<Array<string>>([])

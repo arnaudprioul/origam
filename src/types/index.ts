@@ -331,5 +331,9 @@ export * from './Chart/chart-item.type'
 export * from './Chart/chart-cartesian-kind.type'
 export * from './Chart/chart-polar-kind.type'
 export * from './Chart/chart-pyramid-kind.type'
+export * from './Chart/chart-honeycomb-orientation.type'
+export * from './Chart/chart-honeycomb-color-mode.type'
+export * from './Chart/chart-treemap-algorithm.type'
+export * from './Chart/chart-word-cloud-rotation.type'
 
 
