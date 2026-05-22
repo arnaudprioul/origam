@@ -765,8 +765,8 @@
 		{
 			name: 'Cohort A',
 			data: [
-				{ x: 1, y: 5 }, { x: 2, y: 8 }, { x: 3, y: 7 },
-				{ x: 5, y: 12 }, { x: 8, y: 9 }, { x: 13, y: 18 }
+				{ x: 1, y: 5, z: 3 }, { x: 2, y: 8, z: 12 }, { x: 3, y: 7, z: 7 },
+				{ x: 5, y: 12, z: 22 }, { x: 8, y: 9, z: 15 }, { x: 13, y: 18, z: 30 }
 			],
 			color: 'primary',
 			type: 'scatter'
@@ -774,8 +774,8 @@
 		{
 			name: 'Cohort B',
 			data: [
-				{ x: 2, y: 3 }, { x: 4, y: 6 }, { x: 6, y: 10 },
-				{ x: 9, y: 14 }, { x: 12, y: 22 }
+				{ x: 2, y: 3, z: 5 }, { x: 4, y: 6, z: 18 }, { x: 6, y: 10, z: 9 },
+				{ x: 9, y: 14, z: 25 }, { x: 12, y: 22, z: 35 }
 			],
 			color: 'success',
 			type: 'scatter'
