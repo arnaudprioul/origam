@@ -203,7 +203,7 @@
 					<template #tooltip="{ point, category }">
 						<div class="custom-tooltip">
 							<strong>{{ category }}</strong>
-							<span>{{ point?.y?.toLocaleString() }} mentions</span>
+							<span>{{ typeof point?.y === 'number' ? point.y.toLocaleString() : (point?.y ?? '') }} mentions</span>
 						</div>
 					</template>
 				</origam-chart-word-cloud>

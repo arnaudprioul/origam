@@ -250,7 +250,7 @@
 					<template #tooltip="{ point, category }">
 						<div class="custom-tooltip">
 							<strong>{{ category }}</strong>
-							<span>{{ point?.y?.toLocaleString() }} users</span>
+							<span>{{ typeof point?.y === 'number' ? point.y.toLocaleString() : (point?.y ?? '') }} users</span>
 						</div>
 					</template>
 				</origam-chart-pyramid>

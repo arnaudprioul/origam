@@ -192,7 +192,7 @@
 					<template #tooltip="{ node, path, point }">
 						<div class="custom-tooltip">
 							<strong>{{ path || node?.name }}</strong>
-							<span>{{ point?.y?.toLocaleString() }}</span>
+							<span>{{ typeof point?.y === 'number' ? point.y.toLocaleString() : (point?.y ?? '') }}</span>
 						</div>
 					</template>
 				</origam-chart-sunburst>

@@ -272,35 +272,28 @@
 	}
 
 	/*********************************************************
-	 * Geometry — trapezoid path generator
+	 * Geometry — canonical pyramid / funnel
 	 *
-	 * Coordinate space: x0..x1 horizontal, y0..y1 vertical.
-	 * For each visible slot i the trapezoid top-width and
-	 * bottom-width are derived from the slot's value AND its
-	 * neighbour's value, so adjacent trapezoids share their
-	 * common edge — no gaps, no overlap.
+	 * Canonical pyramid (Highcharts-style): the WHOLE chart is a
+	 * single triangular silhouette divided into horizontal bands.
+	 *   - The silhouette is fixed (top width vs bottom width).
+	 *   - Each band's HEIGHT is proportional to its value (NOT
+	 *     its width — width is a function of vertical position
+	 *     on the linear taper).
+	 *   - Adjacent bands share their common edge → no kinks, no
+	 *     gaps, the outline reads as a single triangle.
 	 *
-	 * `funnel`  — widest at top, narrowing down. Slot 0 carries
-	 *             the first data point. Top edge = own value,
-	 *             bottom edge = next value (last slot tapers to
-	 *             a point).
-	 * `pyramid` — widest at bottom. Internally we reverse the
-	 *             data array so slot 0 carries the LAST data
-	 *             point (smallest in a descending dataset) and
-	 *             slot N-1 carries the FIRST. The funnel algo
-	 *             is then applied as-is — the picture comes out
-	 *             mirrored vertically. The original data index
-	 *             is preserved on each slice so legend toggles,
-	 *             colours and emits stay consistent with the
-	 *             consumer-supplied order.
+	 * `funnel`  — silhouette = inverted triangle. Top = full width,
+	 *             bottom = narrow band. Largest value sits at top,
+	 *             smallest at bottom.
+	 * `pyramid` — silhouette = upright triangle. Top = narrow band,
+	 *             bottom = full width. Smallest at top, largest at
+	 *             bottom (data reversed internally so the consumer
+	 *             can pass descending values).
 	 *
-	 * For a trapezoid with top-width W_top and bottom-width
-	 * W_bottom, centred at x=(x0+x1)/2:
-	 *   topLeft  = cx - W_top/2
-	 *   topRight = cx + W_top/2
-	 *   botRight = cx + W_bot/2
-	 *   botLeft  = cx - W_bot/2
-	 * → path: M topLeft,y0 L topRight,y0 L botRight,y1 L botLeft,y1 Z
+	 * Each band is a trapezoid. Width at any Y is linearly
+	 * interpolated between silhouette top-width and bottom-width:
+	 *   w(α) = topW + (botW - topW) · α   with   α = (y - y0) / H
 	 ********************************************************/
 	const slices = computed<Array<IChartPyramidSlice>>(() => {
 		const series = props.series?.[0]
@@ -312,7 +305,7 @@
 
 		if (count === 0) return []
 
-		const maxVal = Math.max(...values.filter((v) => Number.isFinite(v) && v >= 0), 1e-9)
+		const total = values.reduce((s, v) => s + (Number.isFinite(v) && v >= 0 ? v : 0), 0) || 1e-9
 
 		const x0 = PADDING.left
 		const x1 = SVG_WIDTH - PADDING.right
@@ -320,58 +313,59 @@
 		const y1 = SVG_HEIGHT - PADDING.bottom
 		const cx = (x0 + x1) / 2
 		const plotW = x1 - x0
-
-		const gap = props.sliceGap ?? 4
 		const totalH = y1 - y0
-		const slotH = (totalH - gap * (count - 1)) / Math.max(1, count)
 
 		const isFunnel = props.type !== 'pyramid'
 
 		/*
-		 * Build the slot → data-index mapping once. For funnel the
-		 * slot order matches the consumer's array. For pyramid the
-		 * order is reversed so the largest value lands at the
-		 * bottom of the canvas. Everything below (value, category,
-		 * colour, hidden lookup, emit payload) reads through this
-		 * mapping — that way slot 0 always represents "top of the
-		 * canvas" and dataIndex stays consistent with the consumer.
+		 * Silhouette endpoints — fraction of plotW.
+		 * Funnel:  top=1.0 (full width)  →  bottom=0.12 (narrow exit)
+		 * Pyramid: top=0.12 (narrow tip) →  bottom=1.0 (full base)
+		 * The narrow side is NOT a point so labels remain legible.
+		 */
+		const TIP_FRACTION = 0.12
+		const topSilhouette = isFunnel ? plotW : plotW * TIP_FRACTION
+		const botSilhouette = isFunnel ? plotW * TIP_FRACTION : plotW
+
+		const widthAt = (alpha: number): number =>
+			topSilhouette + (botSilhouette - topSilhouette) * Math.max(0, Math.min(1, alpha))
+
+		/*
+		 * Data-index mapping. Funnel renders in array order. Pyramid
+		 * reverses so the consumer-supplied descending list becomes
+		 * smallest-at-top, largest-at-bottom — the canonical pyramid.
 		 */
 		const dataIndexForSlot = (slot: number): number => isFunnel ? slot : (count - 1 - slot)
-		const safeRatio = (val: number): number => (Number.isFinite(val) && val >= 0 ? val : 0) / maxVal
+
+		/*
+		 * Visible band heights are proportional to their values
+		 * relative to the total — that is the defining property of
+		 * the canonical pyramid (height ∝ value, width = linear
+		 * interpolation along Y). Optional sliceGap is subtracted
+		 * from the available vertical space; default = 0 so the
+		 * silhouette stays unbroken.
+		 */
+		const gap = props.sliceGap ?? 0
+		const usableH = Math.max(totalH - gap * Math.max(0, count - 1), 1)
 
 		const result: Array<IChartPyramidSlice> = []
 
+		let cursorY = y0
 		for (let slot = 0; slot < count; slot++) {
 			const dataIdx = dataIndexForSlot(slot)
 			const cat = categoryLabel(dataIdx)
 			const isHidden = hiddenLabels.value.has(cat)
 			const v = Number.isFinite(values[dataIdx]) && values[dataIdx] >= 0 ? values[dataIdx] : 0
 
-			const slotTop = y0 + slot * (slotH + gap)
-			const slotBot = slotTop + slotH
+			const bandH = (v / total) * usableH
+			const slotTop = cursorY
+			const slotBot = slotTop + bandH
 
-			/*
-			 * Trapezoid widths:
-			 *   - top edge = own value (slot 0 starts at its true
-			 *     magnitude, not the full canvas width)
-			 *   - bottom edge = NEXT slot's value (continuous joint
-			 *     between adjacent trapezoids)
-			 *   - LAST slot bottom = same as top → flat rectangle so
-			 *     the silhouette terminates as a base, not a point.
-			 *     Funnel: smallest value sits at bottom as a small
-			 *     flat band (matches typical funnel-chart conventions).
-			 *     Pyramid: largest value sits at bottom as a full-width
-			 *     flat base (the actual pyramid shape).
-			 *
-			 * Using safeRatio() keeps NaN / negative values from
-			 * producing weird geometry — they collapse to 0.
-			 */
-			const topRatio = safeRatio(v)
-			const nextDataIdx = slot < count - 1 ? dataIndexForSlot(slot + 1) : -1
-			const botRatio = nextDataIdx >= 0 ? safeRatio(values[nextDataIdx]) : topRatio
+			const alphaTop = (slotTop - y0) / totalH
+			const alphaBot = (slotBot - y0) / totalH
 
-			const topW = plotW * topRatio
-			const botW = plotW * botRatio
+			const topW = widthAt(alphaTop)
+			const botW = widthAt(alphaBot)
 
 			const tl = cx - topW / 2
 			const tr = cx + topW / 2
@@ -382,7 +376,9 @@
 
 			const labelX = cx
 			const labelY = (slotTop + slotBot) / 2
-			const labelFitsInside = slotH >= LABEL_FITS_INSIDE_MIN_HEIGHT
+			const labelFitsInside = bandH >= LABEL_FITS_INSIDE_MIN_HEIGHT
+
+			cursorY = slotBot + gap
 
 			result.push({
 				index: dataIdx,

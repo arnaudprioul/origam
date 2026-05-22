@@ -59,10 +59,9 @@
 							:class="{ 'origam-chart__sankey-link--active': hoveredLinkIndex === link.index }"
 							:d="link.d"
 							:style="{
-								stroke: link.color,
-								strokeOpacity: hoveredLinkIndex === link.index ? Math.min(linkOpacity + 0.2, 1) : linkOpacity,
-								strokeWidth: link.strokeWidth,
-								fill: 'none'
+								fill: link.color,
+								fillOpacity: hoveredLinkIndex === link.index ? Math.min(linkOpacity + 0.2, 1) : linkOpacity,
+								stroke: 'none'
 							}"
 							:data-cy="`origam-chart-sankey-link-${ link.index }`"
 							tabindex="0"
@@ -554,8 +553,11 @@
 		 * Assign source-side Y offsets: for each source node, sort
 		 * its outgoing links by target Y ascending so the topmost
 		 * link leaves the node from the top of its outgoing band.
+		 * We store the band TOP (not its centre) — the ribbon is
+		 * drawn as a filled path with explicit top + bottom edges,
+		 * so we need the exact vertical extent.
 		 */
-		const srcOffsetMap = new Map<number, { y0: number, srcBandH: number }>()
+		const srcOffsetMap = new Map<number, { yTop: number, srcBandH: number }>()
 		const bySource = new Map<string, Array<TLinkSpec>>()
 		for (const s of specs) {
 			if (!bySource.has(s.from)) bySource.set(s.from, [])
@@ -566,17 +568,17 @@
 			const source = nodeMap.get(from)!
 			let acc = source.y
 			for (const link of group) {
-				srcOffsetMap.set(link.index, { y0: acc + link.srcBandH / 2, srcBandH: link.srcBandH })
+				srcOffsetMap.set(link.index, { yTop: acc, srcBandH: link.srcBandH })
 				acc += link.srcBandH
 			}
 		}
 
 		/*
-		 * Same trick on the receiving side — incoming bands stack
-		 * sorted by source Y so the topmost band on the target
-		 * came from the topmost source.
+		 * Same on the receiving side. Incoming bands stack from
+		 * the target's top edge, sorted by source Y so the topmost
+		 * band on the target came from the topmost source.
 		 */
-		const tgtOffsetMap = new Map<number, { y1: number, tgtBandH: number }>()
+		const tgtOffsetMap = new Map<number, { yTop: number, tgtBandH: number }>()
 		const byTarget = new Map<string, Array<TLinkSpec>>()
 		for (const s of specs) {
 			if (!byTarget.has(s.to)) byTarget.set(s.to, [])
@@ -587,11 +589,20 @@
 			const target = nodeMap.get(to)!
 			let acc = target.y
 			for (const link of group) {
-				tgtOffsetMap.set(link.index, { y1: acc + link.tgtBandH / 2, tgtBandH: link.tgtBandH })
+				tgtOffsetMap.set(link.index, { yTop: acc, tgtBandH: link.tgtBandH })
 				acc += link.tgtBandH
 			}
 		}
 
+		/*
+		 * Filled ribbon path — two Bezier curves (top + bottom)
+		 * joined by short vertical segments at each node face.
+		 * Each curve uses control points midway between source
+		 * and target so the band hugs both ends. Drawing the
+		 * ribbon as a fill instead of a stroke means the band's
+		 * vertical extent matches the source / target band exactly
+		 * — no spillover above / below the node bars.
+		 */
 		const links: Array<IChartSankeyLink> = []
 		for (const s of specs) {
 			const srcOff = srcOffsetMap.get(s.index)
@@ -601,19 +612,22 @@
 			const targetNode = nodeMap.get(s.to)!
 
 			const x0 = sourceNode.x + props.nodeWidth
-			const y0 = srcOff.y0
 			const x1 = targetNode.x
-			const y1 = tgtOff.y1
 
-			/*
-			 * Tighter Bezier — control points sit at the midpoint
-			 * horizontally so the curve hugs the source / target
-			 * tangents and doesn't loop back when y0 ≈ y1.
-			 */
-			const cpOffset = Math.max((x1 - x0) * 0.5, 24)
-			const pathD = `M ${ x0 },${ y0 } C ${ x0 + cpOffset },${ y0 } ${ x1 - cpOffset },${ y1 } ${ x1 },${ y1 }`
+			const y0Top = srcOff.yTop
+			const y0Bot = srcOff.yTop + srcOff.srcBandH
+			const y1Top = tgtOff.yTop
+			const y1Bot = tgtOff.yTop + tgtOff.tgtBandH
 
-			const strokeW = Math.max((s.srcBandH + s.tgtBandH) / 2, 1)
+			const cp = (x1 - x0) * 0.5
+
+			const pathD = [
+				`M ${ x0 },${ y0Top }`,
+				`C ${ x0 + cp },${ y0Top } ${ x1 - cp },${ y1Top } ${ x1 },${ y1Top }`,
+				`L ${ x1 },${ y1Bot }`,
+				`C ${ x1 - cp },${ y1Bot } ${ x0 + cp },${ y0Bot } ${ x0 },${ y0Bot }`,
+				'Z'
+			].join(' ')
 
 			links.push({
 				index: s.index,
@@ -623,7 +637,7 @@
 				formatted: formatValue(s.value),
 				d: pathD,
 				color: s.color,
-				strokeWidth: strokeW
+				strokeWidth: Math.max((s.srcBandH + s.tgtBandH) / 2, 1)
 			})
 		}
 
