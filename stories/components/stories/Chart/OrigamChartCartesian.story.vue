@@ -380,22 +380,30 @@
 					class="story-shell"
 					data-cy="cartesian-color-scheme"
 			>
+				<p class="hint">
+					Both demos use <code>FIXTURE_FIVE_SERIES_NO_COLOR</code>
+					— the per-series <code>color</code> field is intentionally
+					omitted so the chart-level <code>colorScheme</code>
+					actually drives the palette. If a series defines its own
+					<code>color</code> it ALWAYS wins (explicit consumer
+					intent overrides the fallback palette).
+				</p>
 				<div class="story-grid story-grid--2">
 					<div class="story-col">
-						<strong>default palette</strong>
+						<strong>default palette (DS 8-intent cycle)</strong>
 						<origam-chart-cartesian
 								type="column"
-								:series="FIXTURE_FIVE_SERIES"
+								:series="FIXTURE_FIVE_SERIES_NO_COLOR"
 								:categories="FIXTURE_MONTHS"
 								:height="260"
 								data-cy="cartesian-palette-default"
 						/>
 					</div>
 					<div class="story-col">
-						<strong>custom palette</strong>
+						<strong>custom hex palette</strong>
 						<origam-chart-cartesian
 								type="column"
-								:series="FIXTURE_FIVE_SERIES"
+								:series="FIXTURE_FIVE_SERIES_NO_COLOR"
 								:categories="FIXTURE_MONTHS"
 								:color-scheme="['#8b5cf6', '#ec4899', '#f97316', '#22c55e', '#0ea5e9']"
 								:height="260"
@@ -735,6 +743,14 @@
 		{ name: 'Product C', data: [4, 6, 10, 9, 13, 16, 14, 18, 21, 23, 25, 28], color: 'warning' },
 		{ name: 'Product D', data: [3, 5, 8, 7, 10, 13, 11, 15, 17, 19, 21, 23], color: 'danger' },
 		{ name: 'Product E', data: [2, 3, 5, 4, 7, 9, 8, 11, 13, 15, 17, 19], color: 'info' }
+	]
+
+	const FIXTURE_FIVE_SERIES_NO_COLOR: Array<IChartSeries> = [
+		{ name: 'Product A', data: [10, 14, 18, 16, 22, 28, 25, 30, 33, 36, 38, 42] },
+		{ name: 'Product B', data: [6, 10, 14, 12, 18, 22, 19, 24, 28, 30, 32, 35] },
+		{ name: 'Product C', data: [4, 6, 10, 9, 13, 16, 14, 18, 21, 23, 25, 28] },
+		{ name: 'Product D', data: [3, 5, 8, 7, 10, 13, 11, 15, 17, 19, 21, 23] },
+		{ name: 'Product E', data: [2, 3, 5, 4, 7, 9, 8, 11, 13, 15, 17, 19] }
 	]
 
 	const FIXTURE_QUARTER_SERIES: Array<IChartSeries> = [
