@@ -553,7 +553,18 @@ export const useChart = (options: IUseChartOptions) => {
                 for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
                     const p = normalised[dataIdx]
                     if (kind === 'column') {
-                        const centerX = scales.value.x(p.x, dataIdx, groupCount)
+                        /*
+                         * Column slots use the "band" scale (each slot
+                         * occupies `slotPx` of the plot, centred on its
+                         * midpoint), NOT the edge-to-edge `idx / (slots-1)`
+                         * mapping used by `scales.x` for line / scatter /
+                         * spline. Without this the first column for
+                         * `dataIdx=0` would be centred on `x0` (the Y-axis)
+                         * and half of it would overflow to the LEFT of the
+                         * axis — the user-reported "column over the axis"
+                         * symptom on the leftmost (Jan) bar.
+                         */
+                        const centerX = x0 + (dataIdx + 0.5) * slotPx
                         const barWidth = stacked
                             ? slotPx * 0.7
                             : (slotPx * 0.7) / Math.max(1, visibleCount)
@@ -579,10 +590,12 @@ export const useChart = (options: IUseChartOptions) => {
                     } else {
                         // Horizontal bar — categorical axis runs along
                         // Y (top-to-bottom), value axis runs along X.
+                        // Same "band" centring as column: slot centred
+                        // on its midpoint, not on edge-to-edge spaced.
                         const slots = Math.max(1, groupCount)
                         const slotCenterY = slots === 1
                             ? (y0 + y1) / 2
-                            : y0 + (dataIdx / (slots - 1)) * (y1 - y0)
+                            : y0 + (dataIdx + 0.5) * slotPx
                         const barHeight = stacked
                             ? slotPx * 0.7
                             : (slotPx * 0.7) / Math.max(1, visibleCount)
