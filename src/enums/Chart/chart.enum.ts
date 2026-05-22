@@ -15,5 +15,9 @@ export enum CHART_TYPE {
     HONEYCOMB = 'honeycomb',
     TREEMAP = 'treemap',
     SANKEY = 'sankey',
-    WORD_CLOUD = 'word-cloud'
+    WORD_CLOUD = 'word-cloud',
+    HEATMAP = 'heatmap',
+    SUNBURST = 'sunburst',
+    BOX_PLOT = 'box-plot',
+    PICTORIAL = 'pictorial'
 }

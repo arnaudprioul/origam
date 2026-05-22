@@ -335,5 +335,6 @@ export * from './Chart/chart-honeycomb-orientation.type'
 export * from './Chart/chart-honeycomb-color-mode.type'
 export * from './Chart/chart-treemap-algorithm.type'
 export * from './Chart/chart-word-cloud-rotation.type'
+export * from './Chart/chart-pictorial-direction.type'
 
 

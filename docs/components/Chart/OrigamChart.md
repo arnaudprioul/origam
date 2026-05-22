@@ -1,8 +1,8 @@
 # OrigamChart
 
-Universal chart shell that dispatches to one of nine rendering families based on the `type` prop. Accepts seventeen visualisation primitives — `line`, `area`, `bar`, `column`, `scatter`, `spline`, `stepped-line`, `pie`, `donut`, `radar`, `gauge`, `funnel`, `pyramid`, `honeycomb`, `treemap`, `sankey`, `word-cloud` — through a single consistent API. Pure SVG rendering; no canvas, no `d3`, no `chart.js`.
+Universal chart shell that dispatches to one of thirteen rendering families based on the `type` prop. Accepts twenty-one visualisation primitives — `line`, `area`, `bar`, `column`, `scatter`, `spline`, `stepped-line`, `pie`, `donut`, `radar`, `gauge`, `funnel`, `pyramid`, `honeycomb`, `treemap`, `sankey`, `word-cloud`, `heatmap`, `sunburst`, `box-plot`, `pictorial` — through a single consistent API. Pure SVG rendering; no canvas, no `d3`, no `chart.js`.
 
-Prefer a family-level component (`OrigamChartCartesian`, `OrigamChartPolar`, `OrigamChartRadar`, `OrigamChartGauge`, `OrigamChartPyramid`, `OrigamChartHoneycomb`, `OrigamChartTreemap`, `OrigamChartSankey`, `OrigamChartWordCloud`) when the chart type is fixed at compile time and you want a tightly-typed prop surface. Use `OrigamChart` when the type is determined at runtime or you need to switch families dynamically.
+Prefer a family-level component (`OrigamChartCartesian`, `OrigamChartPolar`, `OrigamChartRadar`, `OrigamChartGauge`, `OrigamChartPyramid`, `OrigamChartHoneycomb`, `OrigamChartTreemap`, `OrigamChartSankey`, `OrigamChartWordCloud`, `OrigamChartHeatmap`, `OrigamChartSunburst`, `OrigamChartBoxPlot`, `OrigamChartPictorial`) when the chart type is fixed at compile time and you want a tightly-typed prop surface. Use `OrigamChart` when the type is determined at runtime or you need to switch families dynamically.
 
 ## Import
 
@@ -56,7 +56,7 @@ function onPointClick(point: IChartPoint) {
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `type` | `TChartType` | `'line'` | Visualisation primitive. One of `'line'`, `'area'`, `'bar'`, `'column'`, `'scatter'`, `'spline'`, `'stepped-line'`, `'pie'`, `'donut'`, `'radar'`, `'gauge'`, `'funnel'`, `'pyramid'`, `'honeycomb'`, `'treemap'`, `'sankey'`, `'word-cloud'`. |
+| `type` | `TChartType` | `'line'` | Visualisation primitive. One of `'line'`, `'area'`, `'bar'`, `'column'`, `'scatter'`, `'spline'`, `'stepped-line'`, `'pie'`, `'donut'`, `'radar'`, `'gauge'`, `'funnel'`, `'pyramid'`, `'honeycomb'`, `'treemap'`, `'sankey'`, `'word-cloud'`, `'heatmap'`, `'sunburst'`, `'box-plot'`, `'pictorial'`. |
 | `height` | `number \| string` | `360` | Chart height. A plain number is interpreted as `px`. Any valid CSS length is accepted. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand (`'16/9'`, `'4/3'`, `'1/1'`). When set, overrides `height` and the chart scales with its container width. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette applied when a series omits its own `color`. Pass intent names (e.g. `'primary'`) or raw CSS values. Cycles by index. |

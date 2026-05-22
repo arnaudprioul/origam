@@ -14,6 +14,7 @@ export * from './Chart/chart-honeycomb-orientation.enum'
 export * from './Chart/chart-honeycomb-color-mode.enum'
 export * from './Chart/chart-treemap-algorithm.enum'
 export * from './Chart/chart-word-cloud-rotation.enum'
+export * from './Chart/chart-pictorial-direction.enum'
 
 export * from './Code/code-lang.enum'
 

@@ -352,17 +352,23 @@
 
 			/*
 			 * Trapezoid widths:
-			 *   - top edge = own value (so slot 0 starts at its
-			 *     true magnitude, not full canvas width)
-			 *   - bottom edge = NEXT slot's value (continuous joint)
-			 *   - last slot tapers to a point (bot = 0)
+			 *   - top edge = own value (slot 0 starts at its true
+			 *     magnitude, not the full canvas width)
+			 *   - bottom edge = NEXT slot's value (continuous joint
+			 *     between adjacent trapezoids)
+			 *   - LAST slot bottom = same as top → flat rectangle so
+			 *     the silhouette terminates as a base, not a point.
+			 *     Funnel: smallest value sits at bottom as a small
+			 *     flat band (matches typical funnel-chart conventions).
+			 *     Pyramid: largest value sits at bottom as a full-width
+			 *     flat base (the actual pyramid shape).
 			 *
 			 * Using safeRatio() keeps NaN / negative values from
 			 * producing weird geometry — they collapse to 0.
 			 */
 			const topRatio = safeRatio(v)
 			const nextDataIdx = slot < count - 1 ? dataIndexForSlot(slot + 1) : -1
-			const botRatio = nextDataIdx >= 0 ? safeRatio(values[nextDataIdx]) : 0
+			const botRatio = nextDataIdx >= 0 ? safeRatio(values[nextDataIdx]) : topRatio
 
 			const topW = plotW * topRatio
 			const botW = plotW * botRatio

@@ -391,6 +391,58 @@
 			byColumn.get(col)!.push(name)
 		}
 
+		/*
+		 * Barycentric node ordering — sort each column so each node
+		 * sits near the average position of its neighbours. Two
+		 * sweeps (left-to-right then right-to-left, applied twice)
+		 * are enough to minimise crossings on the typical 3-5
+		 * column funnel without paying for a full LP solver.
+		 */
+		const orderIndex = new Map<string, number>()
+		const sortedColumns = Array.from(byColumn.keys()).sort((a, b) => a - b)
+		for (const col of sortedColumns) {
+			const names = byColumn.get(col)!
+			names.forEach((n, i) => orderIndex.set(n, i))
+		}
+
+		const predecessors = new Map<string, Array<string>>()
+		const successors = new Map<string, Array<string>>()
+		for (const name of nodeNames) {
+			predecessors.set(name, [])
+			successors.set(name, [])
+		}
+		for (const { from, to } of edges) {
+			successors.get(from)!.push(to)
+			predecessors.get(to)!.push(from)
+		}
+
+		const barycenter = (neighbours: Array<string>): number => {
+			if (!neighbours.length) return Number.POSITIVE_INFINITY
+			let sum = 0
+			let count = 0
+			for (const n of neighbours) {
+				const idx = orderIndex.get(n)
+				if (idx !== undefined) { sum += idx; count++ }
+			}
+			return count ? sum / count : Number.POSITIVE_INFINITY
+		}
+
+		const sweep = (direction: 'down' | 'up') => {
+			const cols = direction === 'down' ? sortedColumns : [...sortedColumns].reverse()
+			for (const col of cols) {
+				const names = byColumn.get(col)!
+				if (names.length < 2) continue
+				const neighbours = direction === 'down' ? predecessors : successors
+				names.sort((a, b) => barycenter(neighbours.get(a)!) - barycenter(neighbours.get(b)!))
+				names.forEach((n, i) => orderIndex.set(n, i))
+			}
+		}
+
+		for (let pass = 0; pass < 2; pass++) {
+			sweep('down')
+			sweep('up')
+		}
+
 		const nodes: Array<IChartSankeyNode> = []
 
 		for (const [col, names] of byColumn.entries()) {
@@ -434,9 +486,9 @@
 
 		if (layoutNodes.value.length === 0) return []
 
-		const nodeMap = new Map<string, IChartSankeyNode & { outgoingOffset: number, incomingOffset: number }>()
+		const nodeMap = new Map<string, IChartSankeyNode>()
 		for (const node of layoutNodes.value) {
-			nodeMap.set(node.name, { ...node, outgoingOffset: 0, incomingOffset: 0 })
+			nodeMap.set(node.name, node)
 		}
 
 		const incomingSum = new Map<string, number>()
@@ -450,10 +502,26 @@
 			incomingSum.set(d.to, (incomingSum.get(d.to) ?? 0) + d.value)
 		}
 
-		const maxNodeValue = Math.max(...Array.from(nodeMap.values()).map(n => n.value), 1)
+		/*
+		 * Pre-compute per-link source / target band heights and
+		 * sort the links so ribbons leave each source in target-Y
+		 * order and arrive at each target in source-Y order. Without
+		 * this sort, ribbons cross themselves on the same node and
+		 * produce the swirl-from-hell visual.
+		 */
+		type TLinkSpec = {
+			index: number
+			from: string
+			to: string
+			value: number
+			color: string
+			srcBandH: number
+			tgtBandH: number
+			srcY: number
+			tgtY: number
+		}
 
-		const links: Array<IChartSankeyLink> = []
-
+		const specs: Array<TLinkSpec> = []
 		for (let i = 0; i < data.length; i++) {
 			const d = data[i]
 			const sourceNode = nodeMap.get(d.from)
@@ -462,35 +530,99 @@
 
 			const srcOutTotal = outgoingSum.get(d.from) ?? 1
 			const tgtInTotal = incomingSum.get(d.to) ?? 1
-
 			const srcBandH = srcOutTotal > 0 ? (d.value / srcOutTotal) * sourceNode.height : 0
 			const tgtBandH = tgtInTotal > 0 ? (d.value / tgtInTotal) * targetNode.height : 0
-			const strokeW = Math.max((srcBandH + tgtBandH) / 2, 1)
-
-			const x0 = sourceNode.x + props.nodeWidth
-			const y0 = sourceNode.y + sourceNode.outgoingOffset + srcBandH / 2
-
-			const x1 = targetNode.x
-			const y1 = targetNode.y + targetNode.incomingOffset + tgtBandH / 2
-
-			const cpOffset = (x1 - x0) * 0.5
-			const pathD = `M ${ x0 },${ y0 } C ${ x0 + cpOffset },${ y0 } ${ x1 - cpOffset },${ y1 } ${ x1 },${ y1 }`
-
-			sourceNode.outgoingOffset += srcBandH
-			targetNode.incomingOffset += tgtBandH
 
 			const linkColor = d.color
 				? resolveColor(d.color)
-				: (nodeMap.get(d.from)?.color ?? 'currentColor')
+				: (sourceNode.color ?? 'currentColor')
 
-			links.push({
+			specs.push({
 				index: i,
 				from: d.from,
 				to: d.to,
 				value: d.value,
-				formatted: formatValue(d.value),
-				d: pathD,
 				color: linkColor,
+				srcBandH,
+				tgtBandH,
+				srcY: sourceNode.y,
+				tgtY: targetNode.y
+			})
+		}
+
+		/*
+		 * Assign source-side Y offsets: for each source node, sort
+		 * its outgoing links by target Y ascending so the topmost
+		 * link leaves the node from the top of its outgoing band.
+		 */
+		const srcOffsetMap = new Map<number, { y0: number, srcBandH: number }>()
+		const bySource = new Map<string, Array<TLinkSpec>>()
+		for (const s of specs) {
+			if (!bySource.has(s.from)) bySource.set(s.from, [])
+			bySource.get(s.from)!.push(s)
+		}
+		for (const [from, group] of bySource.entries()) {
+			group.sort((a, b) => a.tgtY - b.tgtY)
+			const source = nodeMap.get(from)!
+			let acc = source.y
+			for (const link of group) {
+				srcOffsetMap.set(link.index, { y0: acc + link.srcBandH / 2, srcBandH: link.srcBandH })
+				acc += link.srcBandH
+			}
+		}
+
+		/*
+		 * Same trick on the receiving side — incoming bands stack
+		 * sorted by source Y so the topmost band on the target
+		 * came from the topmost source.
+		 */
+		const tgtOffsetMap = new Map<number, { y1: number, tgtBandH: number }>()
+		const byTarget = new Map<string, Array<TLinkSpec>>()
+		for (const s of specs) {
+			if (!byTarget.has(s.to)) byTarget.set(s.to, [])
+			byTarget.get(s.to)!.push(s)
+		}
+		for (const [to, group] of byTarget.entries()) {
+			group.sort((a, b) => a.srcY - b.srcY)
+			const target = nodeMap.get(to)!
+			let acc = target.y
+			for (const link of group) {
+				tgtOffsetMap.set(link.index, { y1: acc + link.tgtBandH / 2, tgtBandH: link.tgtBandH })
+				acc += link.tgtBandH
+			}
+		}
+
+		const links: Array<IChartSankeyLink> = []
+		for (const s of specs) {
+			const srcOff = srcOffsetMap.get(s.index)
+			const tgtOff = tgtOffsetMap.get(s.index)
+			if (!srcOff || !tgtOff) continue
+			const sourceNode = nodeMap.get(s.from)!
+			const targetNode = nodeMap.get(s.to)!
+
+			const x0 = sourceNode.x + props.nodeWidth
+			const y0 = srcOff.y0
+			const x1 = targetNode.x
+			const y1 = tgtOff.y1
+
+			/*
+			 * Tighter Bezier — control points sit at the midpoint
+			 * horizontally so the curve hugs the source / target
+			 * tangents and doesn't loop back when y0 ≈ y1.
+			 */
+			const cpOffset = Math.max((x1 - x0) * 0.5, 24)
+			const pathD = `M ${ x0 },${ y0 } C ${ x0 + cpOffset },${ y0 } ${ x1 - cpOffset },${ y1 } ${ x1 },${ y1 }`
+
+			const strokeW = Math.max((s.srcBandH + s.tgtBandH) / 2, 1)
+
+			links.push({
+				index: s.index,
+				from: s.from,
+				to: s.to,
+				value: s.value,
+				formatted: formatValue(s.value),
+				d: pathD,
+				color: s.color,
 				strokeWidth: strokeW
 			})
 		}

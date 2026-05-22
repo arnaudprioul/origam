@@ -83,6 +83,7 @@ export * from './QrCode/qr-code.const'
 export * from './NumberFormat/number-format.const'
 
 export * from './Chart/chart.const'
+export * from './Chart/pictorial-icons.const'
 export * from './Audio/audio.const'
 export * from './Sheet/sheet-swipe.const'
 export * from './Clipboard/clipboard.const'

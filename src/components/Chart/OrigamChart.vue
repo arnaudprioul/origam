@@ -169,6 +169,82 @@
 			/>
 		</template>
 	</origam-chart-word-cloud>
+
+	<origam-chart-heatmap
+			v-else-if="isHeatmapType"
+			v-bind="heatmapProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-heatmap>
+
+	<origam-chart-sunburst
+			v-else-if="isSunburstType"
+			v-bind="sunburstProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-sunburst>
+
+	<origam-chart-box-plot
+			v-else-if="isBoxPlotType"
+			v-bind="boxPlotProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-box-plot>
+
+	<origam-chart-pictorial
+			v-else-if="isPictorialType"
+			v-bind="pictorialProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-pictorial>
 </template>
 
 <script
@@ -183,7 +259,11 @@
 	import OrigamChartPolar from './OrigamChartPolar.vue'
 	import OrigamChartPyramid from './OrigamChartPyramid.vue'
 	import OrigamChartRadar from './OrigamChartRadar.vue'
+	import OrigamChartBoxPlot from './OrigamChartBoxPlot.vue'
+	import OrigamChartHeatmap from './OrigamChartHeatmap.vue'
+	import OrigamChartPictorial from './OrigamChartPictorial.vue'
 	import OrigamChartSankey from './OrigamChartSankey.vue'
+	import OrigamChartSunburst from './OrigamChartSunburst.vue'
 	import OrigamChartTreemap from './OrigamChartTreemap.vue'
 	import OrigamChartWordCloud from './OrigamChartWordCloud.vue'
 
@@ -285,6 +365,10 @@
 	const isTreemapType = computed(() => props.type === CHART_TYPE.TREEMAP)
 	const isSankeyType = computed(() => props.type === CHART_TYPE.SANKEY)
 	const isWordCloudType = computed(() => props.type === CHART_TYPE.WORD_CLOUD)
+	const isHeatmapType = computed(() => props.type === CHART_TYPE.HEATMAP)
+	const isSunburstType = computed(() => props.type === CHART_TYPE.SUNBURST)
+	const isBoxPlotType = computed(() => props.type === CHART_TYPE.BOX_PLOT)
+	const isPictorialType = computed(() => props.type === CHART_TYPE.PICTORIAL)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -447,6 +531,77 @@
 		animationDuration: props.animationDuration,
 		colorScheme: props.colorScheme,
 		aspectRatio: props.aspectRatio,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const heatmapProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const sunburstProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const boxPlotProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		categories: props.categories,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		showGrid: props.showGrid,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat,
+		yMin: props.yMin,
+		yMax: props.yMax
+	}))
+
+	const pictorialProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		categories: props.categories,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
 		yAxisFormat: props.yAxisFormat
 	}))
 
