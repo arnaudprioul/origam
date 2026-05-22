@@ -92,6 +92,10 @@ export interface IChartPyramidSlice {
      */
     labelX: number
     labelY: number
-    /** `true` when the slice height is tall enough for inside labels. */
+    /** SVG `text-anchor` attribute matching `labelX` placement. */
+    labelAnchor: 'middle' | 'start'
+    /** Y of the leader-line target (band right edge midpoint). */
+    leaderX: number
+    /** `true` when the band is wide enough to host the label inside. */
     labelFitsInside: boolean
 }

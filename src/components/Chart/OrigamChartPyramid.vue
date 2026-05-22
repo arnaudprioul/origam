@@ -70,6 +70,18 @@
 							@mouseleave="onSliceLeave"
 					/>
 
+					<line
+							v-for="slice in outsideLabelSlices"
+							:key="`leader-${ slice.index }`"
+							class="origam-chart__pyramid-leader"
+							:x1="slice.leaderX"
+							:y1="slice.labelY"
+							:x2="slice.labelX - 2"
+							:y2="slice.labelY"
+							:stroke="slice.color"
+							:data-cy="`origam-chart-pyramid-leader-${ slice.index }`"
+					/>
+
 					<text
 							v-for="slice in visibleSlices"
 							:key="`label-${ slice.index }`"
@@ -80,7 +92,7 @@
 							}"
 							:x="slice.labelX"
 							:y="slice.labelY"
-							text-anchor="middle"
+							:text-anchor="effectiveLabelPlacement(slice) === 'inside' ? 'middle' : 'start'"
 							dominant-baseline="middle"
 							:data-cy="`origam-chart-pyramid-label-${ slice.index }`"
 					>
@@ -216,7 +228,9 @@
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 400
 	const PADDING = { top: 20, right: 120, bottom: 20, left: 20 }
-	const LABEL_FITS_INSIDE_MIN_HEIGHT = 28
+	const LABEL_FITS_INSIDE_MIN_HEIGHT = 18
+	const LABEL_FITS_INSIDE_MIN_WIDTH = 90
+	const LABEL_OUTSIDE_X_OFFSET = 10
 
 	/*********************************************************
 	 * Default colour palette — mirrors useChart's DEFAULT_PALETTE
@@ -377,13 +391,27 @@
 
 			const d = `M ${ tl },${ slotTop } L ${ tr },${ slotTop } L ${ br },${ slotBot } L ${ bl },${ slotBot } Z`
 
-			const labelX = cx
 			const labelY = (slotTop + slotBot) / 2
+			/*
+			 * Inside-fit requires BOTH enough vertical room AND enough
+			 * width at the band's midpoint to host the label text.
+			 * For the narrow tip of a pyramid / funnel the band is
+			 * tall but ~0px wide → label must go outside.
+			 */
+			const alphaMid = (labelY - y0) / totalH
+			const midW = widthAt(alphaMid)
 			const labelFitsInside = bandH >= LABEL_FITS_INSIDE_MIN_HEIGHT
+				&& midW >= LABEL_FITS_INSIDE_MIN_WIDTH
+
+			const labelAnchor: 'middle' | 'start' = labelFitsInside ? 'middle' : 'start'
+			const leaderX = cx + midW / 2
+			const labelX = labelFitsInside ? cx : leaderX + LABEL_OUTSIDE_X_OFFSET
 
 			cursorY = slotBot + gap
 
 			result.push({
+				labelAnchor,
+				leaderX,
 				index: dataIdx,
 				d,
 				color: colorFor(dataIdx),
@@ -401,6 +429,10 @@
 	})
 
 	const visibleSlices = computed(() => slices.value.filter((s) => s.visible))
+
+	const outsideLabelSlices = computed(() =>
+		visibleSlices.value.filter((s) => effectiveLabelPlacement(s) === 'outside')
+	)
 
 	/*********************************************************
 	 * Legend items — one per data point (slice), keyed by
