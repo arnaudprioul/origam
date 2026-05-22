@@ -298,18 +298,64 @@ export const useChart = (options: IUseChartOptions) => {
     }
 
     /**
-     * Pre-resolved legend entries. Toggling a legend item flips
-     * `IChartSeries.visible`; the chart picks that up via the
-     * series getter on the next paint.
+     * Pre-resolved legend entries. Two shapes:
+     *
+     *   1. **Single pie / donut series** → one legend entry per slice
+     *      (category). Each entry's `series` reference points to the
+     *      ONE pie series so the consumer still has the original data
+     *      handle; the `name` displayed comes from `categories[i]`
+     *      (legend renderer reads `series.name`). Each slice gets its
+     *      colour from the palette, matching the ring's category
+     *      partitioning.
+     *
+     *   2. **Anything else** (multi-pie-series → concentric rings,
+     *      cartesian, radar, gauge) → one legend entry per SERIES,
+     *      coloured from the per-series `colorFor()` resolver.
+     *
+     * Toggling either shape flips a `visible` flag the parent shell
+     * tracks via `hiddenSeries: Set<string>` (keyed by display name).
      */
-    const legend: ComputedRef<Array<IChartLegendItem>> = computed(() =>
-        options.series().map((series, index) => ({
+    const legend: ComputedRef<Array<IChartLegendItem>> = computed(() => {
+        const allSeries = options.series()
+        const pieSeriesList = allSeries.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')
+        const cats = options.categories()
+        const scheme = options.colorScheme().length ? options.colorScheme() : DEFAULT_PALETTE
+        const hidden = options.hiddenLabels?.() ?? new Set<string>()
+
+        // Single-series pie / donut → expose each slice as a legend
+        // entry so the consumer can address slices by category name.
+        // The synthetic series wrapper carries the slice label as
+        // `name` so the legend renderer + the shell's hidden-set
+        // lookup work uniformly across all chart families.
+        if (pieSeriesList.length === 1 && pieSeriesList[0].data.length > 1) {
+            const s = pieSeriesList[0]
+            const data = s.data as Array<number | { x: number | string, y: number }>
+            return data.map((entry, i) => {
+                const label = cats[i] ?? (typeof entry === 'object' && entry !== null ? String(entry.x) : `Slice ${ i + 1 }`)
+                const labelStr = String(label)
+                const sliceSeries: IChartSeries = {
+                    ...s,
+                    name: labelStr,
+                    data: [entry],
+                    visible: !hidden.has(labelStr)
+                }
+                return {
+                    series: sliceSeries,
+                    index: i,
+                    color: s.color ? resolveColor(s.color) : resolveColor(scheme[i % scheme.length]),
+                    visible: !hidden.has(labelStr)
+                }
+            })
+        }
+
+        // Default: one entry per series.
+        return allSeries.map((series, index) => ({
             series,
             index,
             color: colorFor(series, index),
             visible: series.visible !== false
         }))
-    )
+    })
 
     /**
      * Number of categories — used by the per-series effective type
@@ -395,89 +441,92 @@ export const useChart = (options: IUseChartOptions) => {
         const pieSeriesList = series.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')
         if (pieSeriesList.length > 0) {
             /*
-             * Pie / donut path generator supports TWO input shapes:
+             * Pie / donut path generator. Two rendering modes:
              *
-             *   1. **Single series, N data points** (typical pie input) —
-             *      one series with `data: [a, b, c, …]`. Each data point
-             *      becomes a slice. Slice labels come from
-             *      `categories[i]`.
+             *   1. **Single series → classic pie / donut** — one series
+             *      with N data points produces N slices, one per data
+             *      point. Categories drive the slice colours so the
+             *      legend can address each slice by its X label.
              *
-             *   2. **N series, 1 data point each** (multi-series input
-             *      synthesised by the shell for "line-chart data fed to
-             *      pie / donut" cases). Each series becomes a slice.
-             *      Slice labels come from `series.name`. This is the
-             *      shape `<OrigamChart>` produces when the consumer
-             *      hands `Array<{name, data:[…]}>` + `categories` and
-             *      picks `type='pie'`: rather than picking a single
-             *      series and discarding the rest, the shell explodes
-             *      the first series into one series per category so
-             *      the legend can address slices by category name.
+             *   2. **Multi-series → concentric rings** — each series
+             *      becomes its own ring, stacked from the centre out:
+             *      series[0] = innermost band, series[N-1] = outermost.
+             *      Inside each ring, the same `categories` drive the
+             *      angular partitioning so a given category occupies
+             *      the SAME colour across all rings. Each ring's
+             *      angular sweep is proportional to its OWN series
+             *      total, so the user can compare distribution shapes
+             *      at a glance.
              *
-             * Discriminator: if every pie series has exactly one data
-             * point, we're in mode 2; otherwise mode 1.
+             * For donut, the global `innerR = outerR * donutHoleSize`
+             * is preserved (central hole). The remaining annulus
+             * `[innerR..outerR]` is divided into N equal bands.
              */
-            const isSeriesAsSlice = pieSeriesList.length > 1 &&
-                pieSeriesList.every((s) => s.data.length === 1)
-
             const outerR = Math.max(10, Math.min(x1 - x0, y1 - y0) / 2 - 4)
-            const isDonut = pieSeriesList.some((s) => effectiveType(s) === 'donut')
-            const innerR = isDonut ? outerR * options.donutHoleSize() : 0
+            const isDonut = effectiveType(pieSeriesList[0]) === 'donut'
+            const baseInner = isDonut ? outerR * options.donutHoleSize() : 0
             const scheme = options.colorScheme().length ? options.colorScheme() : DEFAULT_PALETTE
+            const visibleSeries = pieSeriesList.filter((s) => s.visible !== false)
 
-            type SliceDesc = {
-                value: number
-                color: string
-                ownerSeries: IChartSeries
-                dataIndex: number
+            if (visibleSeries.length === 0) return out
+
+            const bandThickness = (outerR - baseInner) / visibleSeries.length
+            const hidden = options.hiddenLabels?.() ?? new Set<string>()
+            const cats = options.categories()
+            const isSingleRing = visibleSeries.length === 1
+
+            // Single source of truth for category colours — categories
+            // across rings share the colour so the user instantly sees
+            // which slice corresponds to which category at every depth.
+            const categoryColor = (dataIdx: number, fallbackSeries: IChartSeries): string => {
+                if (fallbackSeries.color) return resolveColor(fallbackSeries.color)
+                return resolveColor(scheme[dataIdx % scheme.length])
             }
-            const slices: Array<SliceDesc> = []
 
-            if (isSeriesAsSlice) {
-                for (let i = 0; i < pieSeriesList.length; i++) {
-                    const s = pieSeriesList[i]
-                    if (s.visible === false) continue
-                    const entry = s.data[0]
-                    const v = typeof entry === 'number' ? entry : entry.y
-                    if (!Number.isFinite(v) || v <= 0) continue
-                    const color = s.color
-                        ? resolveColor(s.color)
-                        : resolveColor(scheme[i % scheme.length])
-                    // `dataIndex: 0` because each synthetic series carries
-                    // a single value at `data[0]`. The slice "index"
-                    // semantics for accessibility / tooltips comes from
-                    // `series.name`, which already encodes the category.
-                    slices.push({ value: v, color, ownerSeries: s, dataIndex: 0 })
-                }
-            } else {
-                const s = pieSeriesList[0]
+            const labelFor = (i: number, entry: number | { x: number | string, y: number } | undefined): string => {
+                if (cats[i] != null) return String(cats[i])
+                if (entry != null && typeof entry === 'object') return String(entry.x)
+                return `Slice ${ i + 1 }`
+            }
+
+            for (let ringIdx = 0; ringIdx < visibleSeries.length; ringIdx++) {
+                const s = visibleSeries[ringIdx]
+                const ringInner = baseInner + bandThickness * ringIdx
+                const ringOuter = baseInner + bandThickness * (ringIdx + 1)
+
                 const data = s.data as Array<number | { x: number | string, y: number }>
+
+                // Compute ring total AFTER skipping per-label hidden slices
+                // — only relevant for the single-ring mode where the
+                // legend addresses slices by category name. In multi-ring
+                // mode the legend addresses entire rings (series.visible
+                // already filtered them above), so `hidden` only matters
+                // for the single-ring case.
+                const ringTotal = data.reduce<number>((acc, entry, i) => {
+                    if (isSingleRing && hidden.has(labelFor(i, entry))) return acc
+                    const v = typeof entry === 'number' ? entry : (entry?.y ?? 0)
+                    return acc + (Number.isFinite(v) && v > 0 ? v : 0)
+                }, 0)
+                if (ringTotal === 0) continue
+
+                let angle = 0
                 for (let i = 0; i < data.length; i++) {
                     const entry = data[i]
-                    const v = typeof entry === 'number' ? entry : entry.y
+                    if (isSingleRing && hidden.has(labelFor(i, entry))) continue
+                    const v = typeof entry === 'number' ? entry : (entry?.y ?? 0)
                     if (!Number.isFinite(v) || v <= 0) continue
-                    const color = s.color
-                        ? resolveColor(s.color)
-                        : resolveColor(scheme[i % scheme.length])
-                    slices.push({ value: v, color, ownerSeries: s, dataIndex: i })
+                    const sweep = (v / ringTotal) * Math.PI * 2
+                    const endAngle = angle + sweep
+                    out.push({
+                        seriesIndex: series.indexOf(s),
+                        kind: 'path',
+                        d: arcPath(cx, cy, ringOuter, ringInner, angle, endAngle),
+                        color: categoryColor(i, s),
+                        series: s,
+                        dataIndex: i
+                    })
+                    angle = endAngle
                 }
-            }
-
-            const sliceTotal = slices.reduce((acc, sl) => acc + sl.value, 0)
-            if (sliceTotal === 0) return out
-
-            let angle = 0
-            for (const sl of slices) {
-                const sweep = (sl.value / sliceTotal) * Math.PI * 2
-                const endAngle = angle + sweep
-                out.push({
-                    seriesIndex: series.indexOf(sl.ownerSeries),
-                    kind: 'path',
-                    d: arcPath(cx, cy, outerR, innerR, angle, endAngle),
-                    color: sl.color,
-                    series: sl.ownerSeries,
-                    dataIndex: sl.dataIndex
-                })
-                angle = endAngle
             }
             return out
         }

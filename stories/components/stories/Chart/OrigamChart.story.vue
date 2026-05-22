@@ -231,6 +231,45 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — pie / donut (concentric rings, multi-series)">
+			<div
+					class="story-shell"
+					data-cy="chart-polar-rings"
+			>
+				<p class="hint">
+					Multi-series pie / donut renders as <strong>concentric
+					rings</strong> — series&nbsp;0 = inner ring,
+					series&nbsp;N-1 = outer ring. Each ring is sliced by
+					the same <code>categories</code>, with the SAME colour
+					per category so cross-ring comparison is immediate.
+					Clicking a ring's series in the legend toggles that
+					whole ring.
+				</p>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>donut, 2 series</strong>
+						<origam-chart
+								type="donut"
+								:series="FIXTURE_SALES_SERIES"
+								:categories="FIXTURE_MONTHS"
+								:height="320"
+								data-cy="chart-rings-donut-2"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>pie, 5 series</strong>
+						<origam-chart
+								type="pie"
+								:series="FIXTURE_FIVE_SERIES"
+								:categories="FIXTURE_MONTHS"
+								:height="320"
+								data-cy="chart-rings-pie-5"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant title="Prop — series (1 vs 2 vs 5 series)">
 			<div
 					class="story-shell"

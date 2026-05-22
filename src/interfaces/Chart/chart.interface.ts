@@ -227,4 +227,13 @@ export interface IUseChartOptions {
     width: () => number
     height: () => number
     padding: () => { top: number, right: number, bottom: number, left: number }
+    /**
+     * Per-label hidden set. Used by the single-pie / donut path to
+     * skip slices whose category label was toggled OFF in the
+     * legend. Cartesian / radar / gauge / multi-pie use `series.visible`
+     * for the same purpose; this option exists for the pie/donut
+     * "category as slice" mode where there's no per-slice series to
+     * attach visibility to. Optional — defaults to an empty Set.
+     */
+    hiddenLabels?: () => Set<string>
 }

@@ -197,9 +197,25 @@
 	/*********************************************************
 	 * Engine
 	 ********************************************************/
+	/*
+	 * Local hidden-labels set drives the per-slice (single ring) /
+	 * per-ring (multi-ring) visibility toggle. Keyed by display name
+	 * (category for single-ring, series name for multi-ring). The
+	 * shell uses the same pattern but with its own ref — this family
+	 * stays usable standalone.
+	 */
+	const hiddenLabels = ref<Set<string>>(new Set())
+
+	const seriesWithVisibility = computed<Array<IChartSeries>>(() =>
+		props.series.map((s) => ({
+			...s,
+			visible: !hiddenLabels.value.has(s.name)
+		}))
+	)
+
 	const chart = useChart({
 		type: () => props.type,
-		series: () => props.series,
+		series: () => seriesWithVisibility.value,
 		categories: () => props.categories,
 		stacked: () => false,
 		donutHoleSize: () => props.donutHoleSize,
@@ -209,7 +225,8 @@
 		yMax: () => undefined,
 		width: () => SVG_WIDTH,
 		height: () => SVG_HEIGHT,
-		padding: () => PADDING_POLAR
+		padding: () => PADDING_POLAR,
+		hiddenLabels: () => hiddenLabels.value
 	})
 
 	const { viewBox, paths, legend, slotCount } = chart
@@ -327,7 +344,8 @@
 	}
 
 	const onSeriesToggle = (series: IChartSeries, nextVisible: boolean): void => {
-		series.visible = nextVisible
+		if (nextVisible) hiddenLabels.value.delete(series.name)
+		else hiddenLabels.value.add(series.name)
 		emit('series-toggle', series, nextVisible)
 	}
 
