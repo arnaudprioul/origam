@@ -95,13 +95,13 @@ const resolveColor = (raw: TIntent | string | undefined): string => {
  * (number form). Categorical `x` strings are mapped to their
  * `categories` index later by the X scale.
  */
-const toPoints = (series: IChartSeries): Array<{ x: number | string, y: number, dataIndex: number }> => {
+const toPoints = (series: IChartSeries): Array<{ x: number | string, y: number, z?: number, dataIndex: number }> => {
     if (!series.data?.length) return []
     return series.data.map((entry, i) => {
         if (typeof entry === 'number') {
             return { x: i, y: entry, dataIndex: i }
         }
-        return { x: entry.x, y: entry.y, dataIndex: i }
+        return { x: entry.x, y: entry.y, z: entry.z, dataIndex: i }
     })
 }
 
@@ -750,29 +750,49 @@ export const useChart = (options: IUseChartOptions) => {
 
             if (kind === 'scatter') {
                 /*
-                 * Scatter X values are arbitrary numeric coordinates
-                 * (e.g. age, distance, score), NOT categorical indices.
-                 * `scales.x` treats numeric values as "0..count-1
-                 * indices into the slot grid", which over-runs the
-                 * plot when the actual X values exceed the data count
-                 * (the user-reported "points outside the plot zone"
-                 * symptom — a series with X=13 over a 6-point fixture
-                 * landed at 2.6 × plot width past `x0`).
+                 * Scatter — (x, y) dots with optional `z` third
+                 * dimension that drives the dot RADIUS (bubble-style
+                 * variant of the standard scatter plot).
                  *
-                 * Compute the scatter X range from the consumer data
-                 * across ALL scatter series (so the X axis is shared
-                 * and points from different series align), then map
-                 * linearly into the plot.
+                 *   - X scale: linear projection of the data's X range
+                 *     onto the plot. Pre-fix this routed through
+                 *     `scales.x` which treats numeric values as
+                 *     "0..count-1 indices into the slot grid", and
+                 *     scatter X values can exceed the data count
+                 *     freely. A series with `x: 13` over a 6-point
+                 *     fixture landed at `13 / 5 = 2.6 × plotWidth` past
+                 *     `x0` — outside the SVG. The local `xPx()` mapping
+                 *     scopes the range to the actual data span across
+                 *     ALL visible scatter series so cohorts share the
+                 *     horizontal axis.
+                 *
+                 *   - Radius: if a point carries `z`, scale it linearly
+                 *     into `[MIN_R..MAX_R]` from the global Z range
+                 *     (across visible scatter series). When no point
+                 *     in the chart has `z`, all dots keep the default
+                 *     fixed radius — standard scatter behaviour.
                  */
+                const SCATTER_DEFAULT_R = 5
+                const SCATTER_MIN_R = 4
+                const SCATTER_MAX_R = 18
+
                 const scatterSeries = series.filter((other) => effectiveType(other) === 'scatter' && other.visible !== false)
                 let xMin = Infinity
                 let xMax = -Infinity
+                let zMin = Infinity
+                let zMax = -Infinity
+                let hasZ = false
                 for (const sp of scatterSeries) {
                     for (const entry of sp.data) {
                         const xv = typeof entry === 'number' ? entry : entry.x
                         const x = typeof xv === 'number' ? xv : 0
                         if (x < xMin) xMin = x
                         if (x > xMax) xMax = x
+                        if (typeof entry !== 'number' && typeof entry.z === 'number' && Number.isFinite(entry.z)) {
+                            hasZ = true
+                            if (entry.z < zMin) zMin = entry.z
+                            if (entry.z > zMax) zMax = entry.z
+                        }
                     }
                 }
                 const xSpan = Math.max(1e-9, xMax - xMin)
@@ -782,6 +802,12 @@ export const useChart = (options: IUseChartOptions) => {
                     if (px < x0) return x0
                     if (px > x1) return x1
                     return px
+                }
+                const zSpan = Math.max(1e-9, zMax - zMin)
+                const radiusFor = (z: number | undefined): number => {
+                    if (!hasZ || typeof z !== 'number' || !Number.isFinite(z)) return SCATTER_DEFAULT_R
+                    const ratio = zSpan === 0 ? 0.5 : (z - zMin) / zSpan
+                    return SCATTER_MIN_R + ratio * (SCATTER_MAX_R - SCATTER_MIN_R)
                 }
 
                 for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
@@ -793,7 +819,7 @@ export const useChart = (options: IUseChartOptions) => {
                         circle: {
                             cx: xPx(Number.isFinite(cxRaw) ? cxRaw : 0),
                             cy: scales.value.y(p.y),
-                            r: 5
+                            r: radiusFor(p.z)
                         },
                         color,
                         series: s,

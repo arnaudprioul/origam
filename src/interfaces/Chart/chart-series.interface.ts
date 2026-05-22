@@ -63,4 +63,12 @@ export interface IChartSeriesPoint {
     y: number
     /** Optional friendly label (overrides `x` in tooltips). */
     name?: string
+    /**
+     * Third dimension for `scatter` — turns the chart into a
+     * bubble plot where the dot RADIUS scales with `z`. Useful
+     * when each (x, y) coordinate carries an associated magnitude
+     * (sample size, population, score, …). When absent the point
+     * keeps the default fixed radius.
+     */
+    z?: number
 }
