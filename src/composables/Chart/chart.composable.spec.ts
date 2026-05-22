@@ -306,6 +306,45 @@ describe('useChart — paths (stepped-line)', () => {
     })
 })
 
+describe('useChart — combination (per-series type override)', () => {
+    it('renders mixed primitives when each series sets its own `type`', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            categories: ['Jan', 'Feb', 'Mar'],
+            series: [
+                { name: 'Volume', data: [10, 20, 30], type: 'column' },
+                { name: 'Trend', data: [15, 22, 28], type: 'line' }
+            ]
+        }))
+        const rects = chart.paths.value.filter((p) => p.kind === 'rect')
+        const paths = chart.paths.value.filter((p) => p.kind === 'path')
+        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
+
+        // Column series emits N rects (one per data point).
+        expect(rects).toHaveLength(3)
+        // Line series emits 1 path (the polyline).
+        expect(paths.length).toBeGreaterThanOrEqual(1)
+        // Line series emits N circle markers.
+        expect(circles.length).toBeGreaterThanOrEqual(3)
+    })
+
+    it('series-level `type` wins over the chart-level `type`', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            categories: ['A', 'B'],
+            series: [
+                // Chart says 'column' but this series overrides to 'line'.
+                { name: 'OnlyLine', data: [1, 2], type: 'line' }
+            ]
+        }))
+        const rects = chart.paths.value.filter((p) => p.kind === 'rect')
+        const paths = chart.paths.value.filter((p) => p.kind === 'path')
+        // No rect should be emitted — the only series asks for line.
+        expect(rects).toHaveLength(0)
+        expect(paths.length).toBeGreaterThanOrEqual(1)
+    })
+})
+
 describe('useChart — legend + hover', () => {
     it('emits one legend entry per series', () => {
         const chart = useChart(makeOptions({

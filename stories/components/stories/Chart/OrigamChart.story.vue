@@ -221,6 +221,47 @@
 			</div>
 		</Variant>
 
+		<Variant title="Combination — series[i].type override (line + column / area + line)">
+			<div
+					class="story-shell"
+					data-cy="chart-combination"
+			>
+				<p class="hint">
+					Each series can override the chart-level <code>type</code>
+					via its own <code>type</code> field, producing a
+					<strong>mix chart</strong>. Common patterns:
+					<code>column</code> volume with a <code>line</code>
+					trend on top, or <code>area</code> baseline with a
+					<code>line</code> highlight. The chart-level
+					<code>type</code> drives the axes + plot geometry; each
+					series-level <code>type</code> only picks its own
+					rendering primitive.
+				</p>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>column + line overlay</strong>
+						<origam-chart
+								type="column"
+								:series="FIXTURE_COMBO_COLUMN_LINE"
+								:categories="FIXTURE_MONTHS"
+								:height="320"
+								data-cy="chart-combo-column-line"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>area + line highlight</strong>
+						<origam-chart
+								type="area"
+								:series="FIXTURE_COMBO_AREA_LINE"
+								:categories="FIXTURE_MONTHS"
+								:height="320"
+								data-cy="chart-combo-area-line"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant title="Prop — pie / donut (concentric rings, multi-series)">
 			<div
 					class="story-shell"
@@ -663,6 +704,36 @@
 	const FIXTURE_SALES_SERIES_NO_COLOR: Array<IChartSeries> = [
 		{ name: 'Sales 2025', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42] },
 		{ name: 'Sales 2026', data: [16, 22, 25, 23, 30, 38, 35, 41, 39, 45, 48, 52] }
+	]
+
+	const FIXTURE_COMBO_COLUMN_LINE: Array<IChartSeries> = [
+		{
+			name: 'Volume',
+			data: [120, 185, 210, 250, 280, 320, 290, 360, 340, 410, 440, 480],
+			color: 'primary',
+			type: 'column'
+		},
+		{
+			name: 'Trend',
+			data: [140, 175, 220, 240, 290, 310, 310, 350, 360, 400, 430, 470],
+			color: 'danger',
+			type: 'line'
+		}
+	]
+
+	const FIXTURE_COMBO_AREA_LINE: Array<IChartSeries> = [
+		{
+			name: 'Baseline',
+			data: [80, 100, 120, 110, 140, 170, 160, 190, 175, 210, 230, 250],
+			color: 'success',
+			type: 'area'
+		},
+		{
+			name: 'Highlight',
+			data: [85, 105, 125, 115, 145, 175, 165, 195, 180, 215, 235, 255],
+			color: 'warning',
+			type: 'line'
+		}
 	]
 
 	const FIXTURE_FIVE_SERIES_NO_COLOR: Array<IChartSeries> = [
