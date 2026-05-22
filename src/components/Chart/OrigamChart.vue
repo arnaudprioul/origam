@@ -294,12 +294,62 @@
 	 */
 	const hiddenSeries = ref<Set<string>>(new Set())
 
-	const seriesWithVisibility = computed<Array<IChartSeries>>(() =>
-		props.series.map((s) => ({
+	/*
+	 * For pie / donut, the consumer typically supplies the SAME data
+	 * shape as a line / bar chart: an array of series with N data
+	 * points keyed against `categories`. Naively passing that to the
+	 * polar engine gives a single series with N slices but a legend
+	 * full of SERIES names (e.g. "Sales 2025") — which is useless
+	 * because the slices represent CATEGORIES (Jan / Feb / Mar / …).
+	 *
+	 * We synthesise a series-per-category here so:
+	 *   - the legend exposes one item per slice (categorical label),
+	 *   - clicking a legend item toggles THAT slice's visibility,
+	 *   - the polar engine receives a multi-series input it can
+	 *     iterate as a flat slice list.
+	 *
+	 * When the consumer already passes the "pie shape" (single series,
+	 * data = slice values), we leave it untouched — the polar engine
+	 * detects this via the "single series with >1 data points" branch.
+	 *
+	 * Visibility is keyed by the synthesised series name (= category
+	 * label), so the `hiddenSeries` Set works uniformly across families.
+	 */
+	const seriesForPolar = computed<Array<IChartSeries>>(() => {
+		if (!isPolarType.value || !props.series || props.series.length === 0) return []
+		const first = props.series[0]
+		if (!first || !Array.isArray(first.data) || first.data.length === 0) return []
+		const firstData = first.data as Array<number | { x: number | string, y: number } | undefined>
+
+		// Explode the first series into one synthetic series per slice.
+		// Works for BOTH input shapes (single series with N points, or
+		// multi-series-line-data) because we only ever read the first
+		// series's data — the polar engine doesn't need the other
+		// series for rendering (pie/donut are 1D by nature). The
+		// synthetic series are keyed by category label so the hidden
+		// set lookup is stable across re-renders.
+		return firstData.reduce<Array<IChartSeries>>((acc, entry, i) => {
+			if (entry == null) return acc
+			const value = typeof entry === 'number' ? entry : entry.y
+			if (!Number.isFinite(value)) return acc
+			const cats = props.categories ?? []
+			const label = cats[i] ?? (typeof entry === 'object' && entry !== null ? String(entry.x) : `Slice ${ i + 1 }`)
+			acc.push({
+				name: label,
+				data: [value],
+				visible: !hiddenSeries.value.has(label)
+			} as IChartSeries)
+			return acc
+		}, [])
+	})
+
+	const seriesWithVisibility = computed<Array<IChartSeries>>(() => {
+		if (isPolarType.value) return seriesForPolar.value
+		return props.series.map((s) => ({
 			...s,
 			visible: !hiddenSeries.value.has(s.name)
 		}))
-	)
+	})
 
 	const onSeriesToggle = (series: IChartSeries, visible: boolean): void => {
 		if (visible) hiddenSeries.value.delete(series.name)

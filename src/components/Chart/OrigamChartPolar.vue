@@ -345,9 +345,18 @@
 	})
 
 	const sliceAriaLabel = (path: IChartPath) => {
-		const entry = path.series.data[path.dataIndex ?? 0]
-		const y = typeof entry === 'number' ? entry : entry.y
-		const cat = props.categories[path.dataIndex ?? 0] ?? path.dataIndex
+		// Defensive: `path.dataIndex` may exceed `series.data.length`
+		// in series-as-slice mode (each synthetic series has
+		// `data: [value]` so the only valid index is 0). Fall back
+		// to `data[0]` then to NaN if the data array is empty.
+		const idx = path.dataIndex ?? 0
+		const entry = path.series.data[idx] ?? path.series.data[0]
+		const y = entry == null
+			? NaN
+			: typeof entry === 'number'
+				? entry
+				: entry.y
+		const cat = props.categories[idx] ?? path.series.name ?? idx
 		return `${ cat }: ${ formatY(y) }`
 	}
 </script>

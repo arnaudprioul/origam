@@ -392,37 +392,90 @@ export const useChart = (options: IUseChartOptions) => {
         const baseline = scales.value.y(Math.max(0, yRange.value.min))
         const smoothing = options.smoothing()
 
-        const pieSeries = series.find((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')
-        if (pieSeries) {
-            // Pie / donut path — slices share the same Y mapping
-            // (they don't have one) so the helper short-circuits
-            // the Cartesian code path entirely.
-            const total = pieTotal.value
+        const pieSeriesList = series.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')
+        if (pieSeriesList.length > 0) {
+            /*
+             * Pie / donut path generator supports TWO input shapes:
+             *
+             *   1. **Single series, N data points** (typical pie input) —
+             *      one series with `data: [a, b, c, …]`. Each data point
+             *      becomes a slice. Slice labels come from
+             *      `categories[i]`.
+             *
+             *   2. **N series, 1 data point each** (multi-series input
+             *      synthesised by the shell for "line-chart data fed to
+             *      pie / donut" cases). Each series becomes a slice.
+             *      Slice labels come from `series.name`. This is the
+             *      shape `<OrigamChart>` produces when the consumer
+             *      hands `Array<{name, data:[…]}>` + `categories` and
+             *      picks `type='pie'`: rather than picking a single
+             *      series and discarding the rest, the shell explodes
+             *      the first series into one series per category so
+             *      the legend can address slices by category name.
+             *
+             * Discriminator: if every pie series has exactly one data
+             * point, we're in mode 2; otherwise mode 1.
+             */
+            const isSeriesAsSlice = pieSeriesList.length > 1 &&
+                pieSeriesList.every((s) => s.data.length === 1)
+
             const outerR = Math.max(10, Math.min(x1 - x0, y1 - y0) / 2 - 4)
-            const innerR = effectiveType(pieSeries) === 'donut'
-                ? outerR * options.donutHoleSize()
-                : 0
+            const isDonut = pieSeriesList.some((s) => effectiveType(s) === 'donut')
+            const innerR = isDonut ? outerR * options.donutHoleSize() : 0
+            const scheme = options.colorScheme().length ? options.colorScheme() : DEFAULT_PALETTE
+
+            type SliceDesc = {
+                value: number
+                color: string
+                ownerSeries: IChartSeries
+                dataIndex: number
+            }
+            const slices: Array<SliceDesc> = []
+
+            if (isSeriesAsSlice) {
+                for (let i = 0; i < pieSeriesList.length; i++) {
+                    const s = pieSeriesList[i]
+                    if (s.visible === false) continue
+                    const entry = s.data[0]
+                    const v = typeof entry === 'number' ? entry : entry.y
+                    if (!Number.isFinite(v) || v <= 0) continue
+                    const color = s.color
+                        ? resolveColor(s.color)
+                        : resolveColor(scheme[i % scheme.length])
+                    // `dataIndex: 0` because each synthetic series carries
+                    // a single value at `data[0]`. The slice "index"
+                    // semantics for accessibility / tooltips comes from
+                    // `series.name`, which already encodes the category.
+                    slices.push({ value: v, color, ownerSeries: s, dataIndex: 0 })
+                }
+            } else {
+                const s = pieSeriesList[0]
+                const data = s.data as Array<number | { x: number | string, y: number }>
+                for (let i = 0; i < data.length; i++) {
+                    const entry = data[i]
+                    const v = typeof entry === 'number' ? entry : entry.y
+                    if (!Number.isFinite(v) || v <= 0) continue
+                    const color = s.color
+                        ? resolveColor(s.color)
+                        : resolveColor(scheme[i % scheme.length])
+                    slices.push({ value: v, color, ownerSeries: s, dataIndex: i })
+                }
+            }
+
+            const sliceTotal = slices.reduce((acc, sl) => acc + sl.value, 0)
+            if (sliceTotal === 0) return out
 
             let angle = 0
-            const pieData = pieSeries.data as Array<number | { x: number | string, y: number }>
-            for (let i = 0; i < pieData.length; i++) {
-                const entry = pieData[i]
-                const y = typeof entry === 'number' ? entry : entry.y
-                if (y <= 0 || total === 0) continue
-                const sweep = (y / total) * Math.PI * 2
+            for (const sl of slices) {
+                const sweep = (sl.value / sliceTotal) * Math.PI * 2
                 const endAngle = angle + sweep
-                const color = pieSeries.color
-                    ? resolveColor(pieSeries.color)
-                    : resolveColor(
-                        (options.colorScheme().length ? options.colorScheme() : DEFAULT_PALETTE)[i % 8]
-                    )
                 out.push({
-                    seriesIndex: series.indexOf(pieSeries),
+                    seriesIndex: series.indexOf(sl.ownerSeries),
                     kind: 'path',
                     d: arcPath(cx, cy, outerR, innerR, angle, endAngle),
-                    color,
-                    series: pieSeries,
-                    dataIndex: i
+                    color: sl.color,
+                    series: sl.ownerSeries,
+                    dataIndex: sl.dataIndex
                 })
                 angle = endAngle
             }
