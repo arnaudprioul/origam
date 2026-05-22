@@ -67,12 +67,9 @@
 					>
 						<path
 								v-if="path.kind === 'path'"
-								:class="['origam-chart__path', `origam-chart__path--${ effectiveTypeOf(path) }`]"
+								:class="['origam-chart__path', `origam-chart__path--${ effectiveTypeOf(path) }`, { 'origam-chart__path--area-fill': path.variant === 'fill' && effectiveTypeOf(path) === 'area' }]"
 								:d="path.d"
-								:stroke="path.variant === 'fill' ? 'none' : path.color"
-								:fill="path.variant !== 'stroke' && effectiveTypeOf(path) === 'area' ? path.color : 'none'"
-								:fill-opacity="path.variant !== 'stroke' && effectiveTypeOf(path) === 'area' ? 0.25 : 0"
-								:style="strokeStyleFor(path)"
+								:style="pathStyleFor(path)"
 								data-cy="origam-chart-path"
 						/>
 						<rect
@@ -371,6 +368,29 @@
 		const length = path.pathLength ?? 0
 		if (!length) return {}
 		return { '--origam-chart-path---length': String(length) }
+	}
+
+	/*
+	 * Combined inline style for SVG `<path>` — pre-fix the fill /
+	 * stroke were emitted as SVG presentation attributes
+	 * (`fill="..."`, `stroke="..."`), which are treated as INITIAL
+	 * CSS values and lose against the scoped `.origam-chart__path
+	 * { fill: none; }` rule below. The area's translucent fill
+	 * therefore never rendered — the user-reported "area looks
+	 * identical to line" symptom. Inline styles have higher
+	 * precedence than CSS rules, so emitting them here makes the
+	 * fill / stroke survive the cascade.
+	 */
+	const pathStyleFor = (path: IChartPath): StyleValue => {
+		const base = strokeStyleFor(path) as Record<string, string>
+		const isAreaFill = path.variant === 'fill' && effectiveTypeOf(path) === 'area'
+		const isStroke = path.variant !== 'fill'
+		return {
+			...base,
+			fill: isAreaFill ? path.color : 'none',
+			fillOpacity: isAreaFill ? '0.25' : '0',
+			stroke: isStroke ? path.color : 'none'
+		}
 	}
 
 	/*********************************************************
