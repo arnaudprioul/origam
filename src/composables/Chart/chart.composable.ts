@@ -36,6 +36,8 @@ import {
 
 import { CHART_Y_TICK_COUNT } from '../../consts/Chart/chart.const'
 
+import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
+
 /**
  * Default palette cycled through when a series doesn't pin its own
  * `color`. Mirrors the eight `TIntent` values declared in
@@ -56,14 +58,35 @@ const DEFAULT_PALETTE: Array<TIntent> = [
 // `Y_TICK_COUNT` (CHART_Y_TICK_COUNT) lives in `src/consts/Chart/chart.const.ts`.
 
 /**
- * Resolve a colour string to a usable CSS value. Intent strings
- * map to the semantic action token; raw CSS strings pass through
- * untouched. Unknown intents fall back to `currentColor`.
+ * Resolve a colour string to a usable CSS value.
+ *
+ * - Raw CSS strings (hex, `rgb()`, `rgba()`, `hsl()`, `hsla()`,
+ *   `var(…)`, `currentColor`, `transparent`, gradients) pass through
+ *   untouched.
+ * - DS intent names (`primary`, `secondary`, `ghost`, `neutral`,
+ *   `success`, `warning`, `danger`, `info`) route through
+ *   `intentBgExpr()` so the chart picks up the proper token namespace
+ *   (`action--*` for action intents, `feedback--*` for feedback
+ *   intents). Pre-fix the chart hard-coded `action--{name}---bg`,
+ *   which only exists for `primary / secondary / ghost`; every other
+ *   intent fell through to the `currentColor` fallback and rendered
+ *   as black on light theme.
+ * - Anything else (an unknown string) falls back to `currentColor`.
  */
 const resolveColor = (raw: TIntent | string | undefined): string => {
     if (!raw) return 'currentColor'
-    if (/^(#|rgb|rgba|hsl|hsla|var|currentColor|transparent)/i.test(raw)) return raw
-    return `var(--origam-color__action--${raw}---bg, var(--origam-color--${raw}, currentColor))`
+    // Raw CSS values — hex, rgb, hsl, named keywords, gradients, var().
+    if (/^(#|rgb|hsl|var|currentColor|transparent|linear-gradient|radial-gradient|conic-gradient)/i.test(raw)) {
+        return raw
+    }
+    // DS intent → route through the canonical helper so feedback
+    // intents (success / warning / danger / info) resolve to their
+    // `feedback--*---bg` tokens rather than the non-existent
+    // `action--success---bg`.
+    if (isIntent(raw)) {
+        return intentBgExpr(raw as TIntent, 'default')
+    }
+    return 'currentColor'
 }
 
 /**

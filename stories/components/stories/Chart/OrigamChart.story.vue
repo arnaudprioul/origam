@@ -359,7 +359,7 @@
 						/>
 					</div>
 					<div class="story-col">
-						<strong>custom CSS palette</strong>
+						<strong>custom CSS palette (hex)</strong>
 						<origam-chart
 								type="column"
 								:series="FIXTURE_FIVE_SERIES"
@@ -367,6 +367,100 @@
 								:color-scheme="['#8b5cf6', '#ec4899', '#f97316', '#22c55e', '#0ea5e9']"
 								:height="240"
 								data-cy="chart-palette-custom"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — colorScheme (custom — hsl / rgb / rgba / hex mix)">
+			<div
+					class="story-shell"
+					data-cy="chart-palette-custom-formats"
+			>
+				<p class="hint">
+					The <code>colorScheme</code> prop accepts ANY valid CSS
+					colour string: hex, <code>rgb()</code>,
+					<code>rgba()</code> for alpha,
+					<code>hsl()</code> / <code>hsla()</code>,
+					<code>currentColor</code>, named keywords. Use the
+					alpha channel via <code>rgba()</code> / <code>hsla()</code>
+					to dim a series without losing identity. Note that
+					per-series <code>color</code> overrides the palette;
+					these demos use fixtures WITHOUT a series-level
+					colour so the <code>colorScheme</code> kicks in.
+				</p>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>mixed formats (hex / rgb / hsl / rgba / hsla)</strong>
+						<origam-chart
+								type="line"
+								:series="FIXTURE_FIVE_SERIES_NO_COLOR"
+								:categories="FIXTURE_MONTHS"
+								:color-scheme="[
+                                    '#7c3aed',
+                                    'rgb(236, 72, 153)',
+                                    'hsl(199, 89%, 48%)',
+                                    'rgba(34, 197, 94, 0.7)',
+                                    'hsla(280, 100%, 60%, 0.55)'
+                                ]"
+								:height="280"
+								data-cy="chart-palette-mixed"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>opacity comparison (alpha)</strong>
+						<origam-chart
+								type="area"
+								:series="FIXTURE_SALES_SERIES_NO_COLOR"
+								:categories="FIXTURE_MONTHS"
+								:color-scheme="[
+                                    'rgba(124, 58, 237, 0.9)',
+                                    'rgba(124, 58, 237, 0.35)'
+                                ]"
+								:height="280"
+								data-cy="chart-palette-alpha"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — colorScheme (all DS intents)">
+			<div
+					class="story-shell"
+					data-cy="chart-palette-intents"
+			>
+				<p class="hint">
+					Every DS intent name (<code>primary, secondary, ghost,
+					neutral, success, warning, danger, info</code>) is a
+					valid <code>colorScheme</code> entry. The chart routes
+					each through <code>intentBgExpr()</code> so the proper
+					token namespace is used:
+					<code>action--*</code> for action intents,
+					<code>feedback--*</code> for feedback intents.
+				</p>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>action intents</strong>
+						<origam-chart
+								type="column"
+								:series="FIXTURE_THREE_NO_COLOR"
+								:categories="FIXTURE_MONTHS"
+								:color-scheme="['primary', 'secondary', 'ghost']"
+								:height="240"
+								data-cy="chart-palette-action"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>feedback intents</strong>
+						<origam-chart
+								type="column"
+								:series="FIXTURE_FOUR_NO_COLOR"
+								:categories="FIXTURE_MONTHS"
+								:color-scheme="['success', 'warning', 'danger', 'info']"
+								:height="240"
+								data-cy="chart-palette-feedback"
 						/>
 					</div>
 				</div>
@@ -567,6 +661,32 @@
 			data: [62],
 			color: 'primary'
 		}
+	]
+
+	const FIXTURE_SALES_SERIES_NO_COLOR: Array<IChartSeries> = [
+		{ name: 'Sales 2025', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42] },
+		{ name: 'Sales 2026', data: [16, 22, 25, 23, 30, 38, 35, 41, 39, 45, 48, 52] }
+	]
+
+	const FIXTURE_FIVE_SERIES_NO_COLOR: Array<IChartSeries> = [
+		{ name: 'Product A', data: [10, 14, 18, 16, 22, 28, 25, 30, 33, 36, 38, 42] },
+		{ name: 'Product B', data: [6, 10, 14, 12, 18, 22, 19, 24, 28, 30, 32, 35] },
+		{ name: 'Product C', data: [4, 6, 10, 9, 13, 16, 14, 18, 21, 23, 25, 28] },
+		{ name: 'Product D', data: [3, 5, 8, 7, 10, 13, 11, 15, 17, 19, 21, 23] },
+		{ name: 'Product E', data: [2, 3, 5, 4, 7, 9, 8, 11, 13, 15, 17, 19] }
+	]
+
+	const FIXTURE_THREE_NO_COLOR: Array<IChartSeries> = [
+		{ name: 'A', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42] },
+		{ name: 'B', data: [8, 12, 16, 14, 20, 26, 22, 28, 25, 31, 34, 38] },
+		{ name: 'C', data: [5, 8, 12, 10, 15, 20, 17, 22, 20, 26, 28, 32] }
+	]
+
+	const FIXTURE_FOUR_NO_COLOR: Array<IChartSeries> = [
+		{ name: 'A', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42] },
+		{ name: 'B', data: [8, 12, 16, 14, 20, 26, 22, 28, 25, 31, 34, 38] },
+		{ name: 'C', data: [5, 8, 12, 10, 15, 20, 17, 22, 20, 26, 28, 32] },
+		{ name: 'D', data: [3, 5, 8, 7, 10, 13, 11, 15, 17, 19, 21, 23] }
 	]
 
 	const FIXTURE_SCATTER: Array<IChartSeries> = [
