@@ -6,7 +6,7 @@
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					type: 'funnel',
+					type: 'pyramid',
 					height: 400,
 					animated: true,
 					showLegend: true,
@@ -30,7 +30,7 @@
 							:show-tooltip="Boolean(state.showTooltip)"
 							:legend-position="state.legendPosition"
 							:label-placement="state.labelPlacement"
-							title="Conversion funnel"
+							title="Conversion pyramid"
 							subtitle="Q1 2026"
 							data-cy="pyramid-playground-chart"
 							@point-click="onPointClick"
