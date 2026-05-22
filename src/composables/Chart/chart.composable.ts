@@ -26,6 +26,7 @@ import {
     linePath,
     monotonePath,
     pathLength as computePathLength,
+    steppedPathLength,
     polarToCartesian,
     polygonPath,
     smoothPath,
@@ -471,7 +472,17 @@ export const useChart = (options: IUseChartOptions) => {
                     areaMode = false
                 }
 
-                const length = computePathLength(pts)
+                /*
+             * Length policy per topology. The animation reveals the
+             * stroke via `stroke-dasharray: length; dashoffset: length`
+             * → 0, so under-counting the length truncates the visible
+             * portion of the stroke (the stepped-line tail-cut bug).
+             * `stepped-line` uses the Manhattan helper because its
+             * `d` includes both horizontal AND vertical legs.
+             */
+            const length = kind === 'stepped-line'
+                ? steppedPathLength(pts)
+                : computePathLength(pts)
 
                 if (kind === 'area') {
                     out.push({
