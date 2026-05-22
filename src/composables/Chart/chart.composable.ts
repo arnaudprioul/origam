@@ -279,34 +279,69 @@ export const useChart = (options: IUseChartOptions) => {
     })
 
     /**
-     * Y / X gridline + label descriptors. `niceStep` rounds the
-     * Y increments to a human-friendly multiple.
+     * Y / X gridline + label descriptors.
+     *
+     * The bar (horizontal) chart swaps the role of each axis:
+     *   - categorical axis (Jan, Feb, …) runs along Y (one entry per
+     *     data slot, top-to-bottom)
+     *   - value axis (0, 10, 20, …) runs along X (`niceStep`-rounded)
+     *
+     * Every other cartesian / radar / polar topology uses the standard
+     * orientation (categories along X, values along Y).
+     *
+     * We detect the bar mode by looking at the chart-level type AND
+     * any per-series override — a single bar series anywhere in the
+     * input is enough to flip the orientation (mix-charts with bar
+     * are rare but legal).
      */
     const ticks: ComputedRef<{ x: Array<IChartTick>, y: Array<IChartTick> }> = computed(() => {
         const { min, max } = yRange.value
         const step = niceStep(max - min, CHART_Y_TICK_COUNT)
         const niceMin = Math.floor(min / step) * step
         const niceMax = Math.ceil(max / step) * step
+        const cats = categories.value
+        const allSeries = options.series()
+        const isBarMode = options.type() === 'bar' || allSeries.some((s) => s.type === 'bar')
 
-        const yTicks: Array<IChartTick> = []
+        // Value-axis tick descriptors — position depends on orientation:
+        //   bar (horizontal) → along X using `scales.x` interpolated value mapping
+        //   everything else  → along Y using `scales.y`
+        const valueTicks: Array<IChartTick> = []
         for (let v = niceMin; v <= niceMax + 1e-9; v += step) {
-            yTicks.push({
+            valueTicks.push({
                 value: v,
                 label: String(Math.round(v * 1000) / 1000),
-                position: scales.value.y(v)
+                position: isBarMode
+                    ? (() => {
+                        const { x0, x1 } = plot.value
+                        const range = Math.max(1e-9, niceMax - niceMin)
+                        const ratio = (v - niceMin) / range
+                        return x0 + ratio * (x1 - x0)
+                    })()
+                    : scales.value.y(v)
             })
         }
 
-        const cats = categories.value
-        const xTicks: Array<IChartTick> = cats.length
+        // Categorical tick descriptors — same role flip:
+        //   bar (horizontal) → along Y, slot-centred (band scale)
+        //   everything else  → along X, edge-to-edge mapping via scales.x
+        const categoryTicks: Array<IChartTick> = cats.length
             ? cats.map((cat, i) => ({
                 value: cat,
                 label: cat,
-                position: scales.value.x(cat, i, cats.length)
+                position: isBarMode
+                    ? (() => {
+                        const { y0, y1 } = plot.value
+                        const slotPx = (y1 - y0) / Math.max(1, cats.length)
+                        return y0 + (i + 0.5) * slotPx
+                    })()
+                    : scales.value.x(cat, i, cats.length)
             }))
             : []
 
-        return { x: xTicks, y: yTicks }
+        return isBarMode
+            ? { x: valueTicks, y: categoryTicks }
+            : { x: categoryTicks, y: valueTicks }
     })
 
     /**
