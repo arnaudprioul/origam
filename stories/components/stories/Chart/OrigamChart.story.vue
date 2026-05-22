@@ -96,7 +96,7 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (8 primitives)">
+		<Variant title="Prop — type (12 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
@@ -183,6 +183,48 @@
 								:categories="FIXTURE_RADAR_AXES"
 								:height="240"
 								data-cy="chart-type-radar"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>spline</strong>
+						<origam-chart
+								type="spline"
+								:series="FIXTURE_SALES_SERIES"
+								:categories="FIXTURE_MONTHS"
+								:height="240"
+								data-cy="chart-type-spline"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>stepped-line</strong>
+						<origam-chart
+								type="stepped-line"
+								:series="FIXTURE_SALES_SERIES"
+								:categories="FIXTURE_MONTHS"
+								:height="240"
+								data-cy="chart-type-stepped-line"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>gauge</strong>
+						<origam-chart
+								type="gauge"
+								:series="FIXTURE_GAUGE"
+								:height="240"
+								:gauge-min="0"
+								:gauge-max="100"
+								gauge-unit="%"
+								data-cy="chart-type-gauge"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>trend</strong>
+						<origam-chart
+								type="trend"
+								:series="FIXTURE_SALES_SERIES"
+								:categories="FIXTURE_MONTHS"
+								:height="240"
+								data-cy="chart-type-trend"
 						/>
 					</div>
 				</div>
@@ -432,13 +474,17 @@
 
 	const TYPE_OPTIONS = [
 		{ value: 'line', label: 'line' },
+		{ value: 'spline', label: 'spline' },
+		{ value: 'stepped-line', label: 'stepped-line' },
 		{ value: 'area', label: 'area' },
 		{ value: 'bar', label: 'bar' },
 		{ value: 'column', label: 'column' },
 		{ value: 'pie', label: 'pie' },
 		{ value: 'donut', label: 'donut' },
 		{ value: 'scatter', label: 'scatter' },
-		{ value: 'radar', label: 'radar' }
+		{ value: 'radar', label: 'radar' },
+		{ value: 'gauge', label: 'gauge' },
+		{ value: 'trend', label: 'trend' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -473,6 +519,14 @@
 		{
 			name: 'Revenue',
 			data: [120, 80, 60, 45, 25]
+		}
+	]
+
+	const FIXTURE_GAUGE: Array<IChartSeries> = [
+		{
+			name: 'Completion',
+			data: [62],
+			color: 'primary'
 		}
 	]
 

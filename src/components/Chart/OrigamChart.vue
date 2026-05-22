@@ -80,7 +80,7 @@
 		lang="ts"
 		setup
 >
-	import { computed } from 'vue'
+	import { computed, ref } from 'vue'
 
 	import OrigamChartCartesian from './OrigamChartCartesian.vue'
 	import OrigamChartGauge from './OrigamChartGauge.vue'
@@ -189,7 +189,7 @@
 	 ********************************************************/
 	const cartesianProps = computed(() => ({
 		type: props.type as TChartCartesianKind,
-		series: props.series,
+		series: visibleSeries.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -213,7 +213,7 @@
 
 	const polarProps = computed(() => ({
 		type: props.type as TChartPolarKind,
-		series: props.series,
+		series: visibleSeries.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -231,7 +231,7 @@
 	}))
 
 	const radarProps = computed(() => ({
-		series: props.series,
+		series: visibleSeries.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -245,7 +245,7 @@
 	}))
 
 	const gaugeProps = computed(() => ({
-		series: props.series,
+		series: visibleSeries.value,
 		categories: props.categories,
 		height: props.height,
 		title: props.title,
@@ -274,16 +274,24 @@
 	}
 
 	/*
-	 * `OrigamChartLegend` only emits the intended next visibility — it
-	 * does NOT mutate the series object itself (Vue 3 marks child-scoped
-	 * prop values as readonly, so the write would be dropped). The
-	 * canonical pattern is "child emits, parent mutates" — flipping
-	 * `series.visible` here propagates through the reactive proxy back
-	 * to `useChart`'s consumer of `series`, so the legend item gets the
-	 * `--hidden` modifier AND the corresponding series stops rendering.
+	 * `OrigamChartLegend` emits the intended next visibility but
+	 * doesn't own the series array — we maintain a local reactive
+	 * `hiddenSeries: Set<string>` here and filter the series before
+	 * forwarding them to the family components. This sidesteps Vue
+	 * 3's silent reactivity drop when the consumer hands a plain
+	 * module-level `const` of series (the fixture case) where deep
+	 * mutations on `series[i].visible` don't propagate back through
+	 * the prop chain.
 	 */
+	const hiddenSeries = ref<Set<string>>(new Set())
+
+	const visibleSeries = computed<Array<IChartSeries>>(() =>
+		props.series.filter((s) => !hiddenSeries.value.has(s.name))
+	)
+
 	const onSeriesToggle = (series: IChartSeries, visible: boolean): void => {
-		series.visible = visible
+		if (visible) hiddenSeries.value.delete(series.name)
+		else hiddenSeries.value.add(series.name)
 		emit('series-toggle', series, visible)
 	}
 </script>
