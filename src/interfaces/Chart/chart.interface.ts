@@ -96,6 +96,21 @@ export interface IChartProps extends ICommonsComponentProps {
     yMin?: number
     /** Override the auto-computed Y max. */
     yMax?: number
+    /**
+     * Lower bound of the gauge range. Ignored unless `type='gauge'`.
+     * Default `0`.
+     */
+    gaugeMin?: number
+    /**
+     * Upper bound of the gauge range. Ignored unless `type='gauge'`.
+     * Default `100`.
+     */
+    gaugeMax?: number
+    /**
+     * Optional unit appended to the gauge centre label
+     * (e.g. `'%'`, `' km/h'`). Ignored unless `type='gauge'`.
+     */
+    gaugeUnit?: string
 }
 
 /**

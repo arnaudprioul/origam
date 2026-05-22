@@ -472,8 +472,7 @@
 	const FIXTURE_REVENUE_PIE: Array<IChartSeries> = [
 		{
 			name: 'Revenue',
-			data: [120, 80, 60, 45, 25],
-			type: 'pie'
+			data: [120, 80, 60, 45, 25]
 		}
 	]
 

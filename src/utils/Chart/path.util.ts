@@ -65,20 +65,101 @@ export const smoothPath = (points: Array<TPathPoint>): string => {
 }
 
 /**
- * Closes the path produced by `linePath` / `smoothPath` down to the
- * `baselineY` then back to the first X — the canonical "area chart"
- * shape.
+ * Monotone cubic-Bezier spline through `points`. Unlike
+ * `smoothPath`, the Fritsch-Carlson tangent estimate guarantees
+ * the curve is monotone between every pair of points — no
+ * overshoot at sharp peaks, no spurious bumps. Most production
+ * "spline" charts (Highcharts, ApexCharts, Chart.js) use this
+ * algorithm rather than naive Catmull-Rom.
  *
- * Pass the smoothed line in via `lineD` so the area shares the
- * exact curve of the visible stroke.
+ * Falls back to `linePath` when there are fewer than 3 points.
+ */
+export const monotonePath = (points: Array<TPathPoint>): string => {
+    if (points.length < 3) return linePath(points)
+
+    const n = points.length
+    const dx: Array<number> = []
+    const dy: Array<number> = []
+    const m: Array<number> = []
+
+    // Slopes between consecutive points.
+    for (let i = 0; i < n - 1; i++) {
+        dx.push(points[i + 1][0] - points[i][0])
+        dy.push(points[i + 1][1] - points[i][1])
+        m.push(dx[i] === 0 ? 0 : dy[i] / dx[i])
+    }
+
+    // Tangents at interior points use Fritsch-Carlson averaging.
+    const t: Array<number> = new Array(n)
+    t[0] = m[0]
+    t[n - 1] = m[n - 2]
+    for (let i = 1; i < n - 1; i++) {
+        if (m[i - 1] * m[i] <= 0) {
+            // Sign change or zero slope -> tangent is 0 (preserve monotonicity).
+            t[i] = 0
+        } else {
+            // Weighted harmonic mean keeps the tangent monotone.
+            const w1 = 2 * dx[i] + dx[i - 1]
+            const w2 = dx[i] + 2 * dx[i - 1]
+            t[i] = (w1 + w2) / (w1 / m[i - 1] + w2 / m[i])
+        }
+    }
+
+    // Emit cubic Bezier segments using the tangents.
+    let d = `M${formatNum(points[0][0])},${formatNum(points[0][1])}`
+    for (let i = 0; i < n - 1; i++) {
+        const cp1x = points[i][0] + dx[i] / 3
+        const cp1y = points[i][1] + (t[i] * dx[i]) / 3
+        const cp2x = points[i + 1][0] - dx[i] / 3
+        const cp2y = points[i + 1][1] - (t[i + 1] * dx[i]) / 3
+        d += ` C${formatNum(cp1x)},${formatNum(cp1y)} ${formatNum(cp2x)},${formatNum(cp2y)} ${formatNum(points[i + 1][0])},${formatNum(points[i + 1][1])}`
+    }
+    return d
+}
+
+/**
+ * Stepped (staircase) polyline through `points`. Each segment
+ * draws horizontally from `points[i]` to `points[i+1].x`, then
+ * vertically to `points[i+1].y`. Used by the `stepped-line` chart
+ * type for "event log" / "discrete state" visualisations.
+ *
+ * Returns an empty string when `points` is empty.
+ */
+export const steppedPath = (points: Array<TPathPoint>): string => {
+    if (!points.length) return ''
+    const [first, ...rest] = points
+    let d = `M${formatNum(first[0])},${formatNum(first[1])}`
+    let prevY = first[1]
+    for (const [x, y] of rest) {
+        // Horizontal segment first (hold previous Y), then vertical to new Y.
+        d += ` L${formatNum(x)},${formatNum(prevY)} L${formatNum(x)},${formatNum(y)}`
+        prevY = y
+    }
+    return d
+}
+
+/**
+ * Closes the path produced by `linePath` / `smoothPath` /
+ * `monotonePath` / `steppedPath` down to the `baselineY` then back
+ * to the first X — the canonical "area chart" shape.
+ *
+ * `smooth` accepts:
+ *   - `false` — straight line segments (default).
+ *   - `true` — Catmull-Rom Bezier (`smoothPath`).
+ *   - `'monotone'` — Fritsch-Carlson Bezier (`monotonePath`).
+ *   - `'stepped'` — staircase (`steppedPath`).
  */
 export const areaPath = (
     points: Array<TPathPoint>,
     baselineY: number,
-    smooth = false
+    smooth: boolean | 'monotone' | 'stepped' = false
 ): string => {
     if (!points.length) return ''
-    const lineD = smooth ? smoothPath(points) : linePath(points)
+    let lineD: string
+    if (smooth === 'monotone') lineD = monotonePath(points)
+    else if (smooth === 'stepped') lineD = steppedPath(points)
+    else if (smooth === true) lineD = smoothPath(points)
+    else lineD = linePath(points)
     const lastX = points[points.length - 1][0]
     const firstX = points[0][0]
     return `${lineD} L${formatNum(lastX)},${formatNum(baselineY)} L${formatNum(firstX)},${formatNum(baselineY)} Z`

@@ -24,10 +24,12 @@ import {
     arcPath,
     areaPath,
     linePath,
+    monotonePath,
     pathLength as computePathLength,
     polarToCartesian,
     polygonPath,
     smoothPath,
+    steppedPath,
     type TPathPoint
 } from '../../utils/Chart/path.util'
 
@@ -434,19 +436,48 @@ export const useChart = (options: IUseChartOptions) => {
             const kind = effectiveType(s)
             const normalised = toPoints(s)
 
-            if (kind === 'line' || kind === 'area') {
+            if (
+                kind === 'line'
+                || kind === 'area'
+                || kind === 'spline'
+                || kind === 'stepped-line'
+                || kind === 'trend'
+            ) {
                 const pts: Array<TPathPoint> = normalised.map((p) => [
                     scales.value.x(p.x, p.dataIndex, slotCount.value),
                     scales.value.y(p.y)
                 ])
-                const dLine = smoothing === 'curve' ? smoothPath(pts) : linePath(pts)
+
+                // Resolve the actual stroke generator per topology.
+                // `spline` defaults to monotone smoothing unless the
+                // consumer explicitly picks another mode. `stepped-line`
+                // is its own topology (no smoothing applies).
+                const effectiveSmoothing: TChartSmoothing =
+                    kind === 'spline' && smoothing === 'none' ? 'monotone' : smoothing
+
+                let dLine: string
+                let areaMode: boolean | 'monotone' | 'stepped' = false
+                if (kind === 'stepped-line') {
+                    dLine = steppedPath(pts)
+                    areaMode = 'stepped'
+                } else if (effectiveSmoothing === 'monotone') {
+                    dLine = monotonePath(pts)
+                    areaMode = 'monotone'
+                } else if (effectiveSmoothing === 'curve') {
+                    dLine = smoothPath(pts)
+                    areaMode = true
+                } else {
+                    dLine = linePath(pts)
+                    areaMode = false
+                }
+
                 const length = computePathLength(pts)
 
                 if (kind === 'area') {
                     out.push({
                         seriesIndex: seriesIdx,
                         kind: 'path',
-                        d: areaPath(pts, baseline, smoothing === 'curve'),
+                        d: areaPath(pts, baseline, areaMode),
                         color,
                         series: s,
                         pathLength: length,
@@ -465,16 +496,19 @@ export const useChart = (options: IUseChartOptions) => {
                 })
 
                 // Emit one descriptor per data point — `<circle>` markers
-                // and the hover hit zones.
-                for (let dataIdx = 0; dataIdx < pts.length; dataIdx++) {
-                    out.push({
-                        seriesIndex: seriesIdx,
-                        kind: 'circle',
-                        circle: { cx: pts[dataIdx][0], cy: pts[dataIdx][1], r: 4 },
-                        color,
-                        series: s,
-                        dataIndex: dataIdx
-                    })
+                // and the hover hit zones. Trend sparklines skip markers
+                // to keep the visual ratio compact.
+                if (kind !== 'trend') {
+                    for (let dataIdx = 0; dataIdx < pts.length; dataIdx++) {
+                        out.push({
+                            seriesIndex: seriesIdx,
+                            kind: 'circle',
+                            circle: { cx: pts[dataIdx][0], cy: pts[dataIdx][1], r: 4 },
+                            color,
+                            series: s,
+                            dataIndex: dataIdx
+                        })
+                    }
                 }
                 continue
             }

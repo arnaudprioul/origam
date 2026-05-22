@@ -328,4 +328,7 @@ export * from './Chart/chart-smoothing.type'
 export * from './Chart/chart-type.type'
 export * from './Chart/chart-item.type'
 
+export * from './Chart/chart-cartesian-kind.type'
+export * from './Chart/chart-polar-kind.type'
+
 

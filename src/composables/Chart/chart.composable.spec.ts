@@ -253,6 +253,73 @@ describe('useChart — paths (scatter / radar)', () => {
     })
 })
 
+describe('useChart — paths (spline)', () => {
+    it('emits a smooth path (contains C commands) for spline', () => {
+        const chart = useChart(makeOptions({
+            type: 'spline',
+            categories: ['A', 'B', 'C', 'D'],
+            series: [{ name: 'S', data: [1, 5, 2, 7] }]
+        }))
+        const splinePath = chart.paths.value.find((p) => p.kind === 'path')
+        expect(splinePath?.d).toBeDefined()
+        // Spline uses monotone curves -> at least one C command.
+        expect(splinePath!.d).toContain('C')
+    })
+
+    it('honors explicit smoothing="curve" override on spline', () => {
+        const chart = useChart(makeOptions({
+            type: 'spline',
+            smoothing: 'curve',
+            categories: ['A', 'B', 'C'],
+            series: [{ name: 'S', data: [1, 5, 2] }]
+        }))
+        const splinePath = chart.paths.value.find((p) => p.kind === 'path')
+        // Still smooth, still contains C commands.
+        expect(splinePath!.d).toContain('C')
+    })
+})
+
+describe('useChart — paths (stepped-line)', () => {
+    it('emits horizontal-then-vertical L segments per pair', () => {
+        const chart = useChart(makeOptions({
+            type: 'stepped-line',
+            categories: ['A', 'B', 'C'],
+            series: [{ name: 'S', data: [1, 5, 2] }]
+        }))
+        const stepPath = chart.paths.value.find((p) => p.kind === 'path')
+        expect(stepPath?.d).toBeDefined()
+        // No C commands in a stepped-line path.
+        expect(stepPath!.d).not.toContain('C')
+        // 3 points -> 4 L commands (2 per pair).
+        const lCount = (stepPath!.d!.match(/L/g) ?? []).length
+        expect(lCount).toBe(4)
+    })
+
+    it('still emits one circle marker per data point', () => {
+        const chart = useChart(makeOptions({
+            type: 'stepped-line',
+            categories: ['A', 'B', 'C'],
+            series: [{ name: 'S', data: [1, 5, 2] }]
+        }))
+        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
+        expect(circles).toHaveLength(3)
+    })
+})
+
+describe('useChart — paths (trend)', () => {
+    it('emits a single line path with NO circle markers for trend', () => {
+        const chart = useChart(makeOptions({
+            type: 'trend',
+            categories: ['A', 'B', 'C', 'D'],
+            series: [{ name: 'S', data: [1, 2, 3, 4] }]
+        }))
+        const lines = chart.paths.value.filter((p) => p.kind === 'path')
+        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
+        expect(lines.length).toBeGreaterThanOrEqual(1)
+        expect(circles).toHaveLength(0)
+    })
+})
+
 describe('useChart — legend + hover', () => {
     it('emits one legend entry per series', () => {
         const chart = useChart(makeOptions({

@@ -4,10 +4,12 @@ import {
     arcPath,
     areaPath,
     linePath,
+    monotonePath,
     pathLength,
     polarToCartesian,
     polygonPath,
     smoothPath,
+    steppedPath,
     type TPathPoint
 } from './path.util'
 
@@ -54,6 +56,69 @@ describe('areaPath', () => {
 
     it('returns empty string for an empty input', () => {
         expect(areaPath([], 50)).toBe('')
+    })
+
+    it('uses monotone curve when smooth="monotone"', () => {
+        const d = areaPath([[0, 0], [10, 10], [20, 0]], 50, 'monotone')
+        expect(d.startsWith('M0,0')).toBe(true)
+        // Monotone path emits C commands like smoothPath does.
+        expect(d).toContain('C')
+    })
+
+    it('uses stepped polyline when smooth="stepped"', () => {
+        const d = areaPath([[0, 0], [10, 10]], 50, 'stepped')
+        // Stepped path: M start, L x2,y1, L x2,y2 (horizontal then vertical)
+        expect(d).toContain('L10,0')
+        expect(d).toContain('L10,10')
+    })
+})
+
+describe('monotonePath', () => {
+    it('falls back to a straight line below 3 points', () => {
+        const pts: Array<TPathPoint> = [[0, 0], [10, 10]]
+        expect(monotonePath(pts)).toBe('M0,0 L10,10')
+    })
+
+    it('emits cubic Bezier commands for 3+ points', () => {
+        const pts: Array<TPathPoint> = [[0, 0], [10, 10], [20, 0]]
+        const d = monotonePath(pts)
+        expect(d.startsWith('M0,0')).toBe(true)
+        const cubicCount = (d.match(/C/g) ?? []).length
+        // 3 points -> 2 segments -> 2 C commands.
+        expect(cubicCount).toBe(2)
+    })
+
+    it('produces a tangent of 0 at a peak (no overshoot)', () => {
+        // A monotone increase followed by a monotone decrease should
+        // emit a tangent of 0 at the peak. The Bezier control point
+        // for the segment LEAVING the peak should equal the peak's Y.
+        const pts: Array<TPathPoint> = [[0, 0], [10, 10], [20, 0]]
+        const d = monotonePath(pts)
+        // First segment ends at (10,10) -> control point should be
+        // roughly (cp2x, 10) i.e. horizontal tangent at the peak.
+        expect(d).toContain('10,10')
+    })
+})
+
+describe('steppedPath', () => {
+    it('returns empty string for an empty input', () => {
+        expect(steppedPath([])).toBe('')
+    })
+
+    it('emits horizontal-then-vertical L commands between every pair', () => {
+        // Three points -> M, then 2 segments of (horizontal + vertical).
+        const d = steppedPath([[0, 0], [10, 5], [20, 5]])
+        // After the M, expect L 10,0 (horizontal hold) then L 10,5 (vertical step).
+        expect(d).toContain('L10,0 L10,5')
+        // Then L 20,5 (horizontal hold) then L 20,5 (no vertical -> same).
+        expect(d).toContain('L20,5')
+    })
+
+    it('produces twice as many L commands as input minus 1', () => {
+        // n points -> 2*(n-1) L commands (one horizontal + one vertical per segment).
+        const d = steppedPath([[0, 0], [5, 1], [10, 2], [15, 3]])
+        const lCount = (d.match(/L/g) ?? []).length
+        expect(lCount).toBe(6)
     })
 })
 

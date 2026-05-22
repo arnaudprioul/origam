@@ -7,6 +7,8 @@ export * from './Audio/audio-loop-mode.enum'
 export * from './Audio/cover-position.enum'
 
 export * from './Chart/chart.enum'
+export * from './Chart/chart-cartesian-kind.enum'
+export * from './Chart/chart-polar-kind.enum'
 
 export * from './Code/code-lang.enum'
 

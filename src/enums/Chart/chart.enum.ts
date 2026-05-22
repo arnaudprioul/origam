@@ -7,5 +7,8 @@ export enum CHART_TYPE {
     PIE = 'pie',
     DONUT = 'donut',
     SCATTER = 'scatter',
-    RADAR = 'radar'
+    RADAR = 'radar',
+    SPLINE = 'spline',
+    STEPPED_LINE = 'stepped-line',
+    GAUGE = 'gauge'
 }
