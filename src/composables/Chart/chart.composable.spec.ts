@@ -593,6 +593,7 @@ describe('useChart — secondary Y axis (dual scale)', () => {
 })
 
 import {
+    computeAnnotationGeometry,
     computePlotBandGeometry,
     computePlotLineGeometry
 } from './chart.composable'
@@ -817,5 +818,140 @@ describe('computePlotLineGeometry — X-axis lines', () => {
             scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
         )
         expect(junGeo!.x1).toBeGreaterThan(janGeo!.x1)
+    })
+})
+
+describe('computeAnnotationGeometry', () => {
+    const cats = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const categoryCount = cats.length
+
+    const scales = {
+        x: (v: number | string, dataIndex?: number, _catCount?: number): number => {
+            const idx = typeof v === 'string' ? cats.indexOf(v) : (dataIndex ?? Number(v))
+            const slots = cats.length
+            return PLOT_X0 + (idx / (slots - 1)) * (PLOT_X1 - PLOT_X0)
+        },
+        y: (v: number): number => {
+            return PLOT_Y1 - ((v / 60) * (PLOT_Y1 - PLOT_Y0))
+        }
+    }
+
+    it('returns null for an unresolvable x coordinate', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'arrow', x: NaN as unknown as number, y: 20 },
+            scales, cats, categoryCount
+        )
+        expect(geo).toBeNull()
+    })
+
+    it('arrow — ax/ay map to the tail data coordinate', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'arrow', x: 'Jan', y: 0, x2: 'Dec', y2: 60, color: 'primary', width: 2 },
+            scales, cats, categoryCount
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.kind).toBe('arrow')
+        expect(geo!.ax).toBe(PLOT_X0)
+        expect(geo!.bx).toBeCloseTo(PLOT_X1, 0)
+    })
+
+    it('arrow — arrowPoints is a non-empty string', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'arrow', x: 'Jan', y: 10, x2: 'Jun', y2: 30 },
+            scales, cats, categoryCount
+        )
+        expect(typeof geo!.arrowPoints).toBe('string')
+        expect(geo!.arrowPoints!.length).toBeGreaterThan(0)
+    })
+
+    it('arrow — head is to the right of tail when x2 > x', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'arrow', x: 'Jan', y: 10, x2: 'Jun', y2: 30 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.bx).toBeGreaterThan(geo!.ax)
+    })
+
+    it('label — callout and leaderEnd are populated', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'label', x: 'Mar', y: 22, text: 'Launch', color: 'primary' },
+            scales, cats, categoryCount
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.callout).toBeDefined()
+        expect(geo!.leaderEnd).toBeDefined()
+        expect(geo!.callout!.width).toBeGreaterThan(0)
+        expect(geo!.callout!.height).toBeGreaterThan(0)
+    })
+
+    it('label — callout box is wider for longer text', () => {
+        const short = computeAnnotationGeometry(
+            { kind: 'label', x: 'Mar', y: 22, text: 'Hi' },
+            scales, cats, categoryCount
+        )
+        const long = computeAnnotationGeometry(
+            { kind: 'label', x: 'Mar', y: 22, text: 'A very long annotation label text' },
+            scales, cats, categoryCount
+        )
+        expect(long!.callout!.width).toBeGreaterThan(short!.callout!.width)
+    })
+
+    it('circle — radius defaults to 12', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'circle', x: 'Jul', y: 28 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.radius).toBe(12)
+    })
+
+    it('circle — custom radius is preserved', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'circle', x: 'Jul', y: 28, radius: 20 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.radius).toBe(20)
+    })
+
+    it('circle — ax/ay are centred on the data point', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'circle', x: 'Jan', y: 0 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.ax).toBe(PLOT_X0)
+        expect(geo!.ay).toBe(PLOT_Y1)
+    })
+
+    it('bracket — ax maps to left, bx to right', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'bracket', x: 'Jan', y: 36, x2: 'Jun', y2: 36 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.ax).toBeLessThan(geo!.bx)
+    })
+
+    it('bracket — stroke colour resolves from intent', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'bracket', x: 'Jan', y: 36, x2: 'Jun', y2: 36, color: 'success' },
+            scales, cats, categoryCount
+        )
+        expect(geo!.stroke).toMatch(/var\(--origam/)
+    })
+
+    it('default dx is 0 and dy is -14 when not specified', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'circle', x: 'Jan', y: 0 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.dx).toBe(0)
+        expect(geo!.dy).toBe(-14)
+    })
+
+    it('custom dx/dy override defaults', () => {
+        const geo = computeAnnotationGeometry(
+            { kind: 'circle', x: 'Jan', y: 0, dx: 10, dy: -30 },
+            scales, cats, categoryCount
+        )
+        expect(geo!.dx).toBe(10)
+        expect(geo!.dy).toBe(-30)
     })
 })
