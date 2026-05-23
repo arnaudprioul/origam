@@ -23,5 +23,7 @@ export enum CHART_TYPE {
     CANDLESTICK = 'candlestick',
     STREAMGRAPH = 'streamgraph',
     VARIWIDE = 'variwide',
-    POLAR_BAR = 'polar-bar'
+    POLAR_BAR = 'polar-bar',
+    BULLET = 'bullet',
+    PARETO = 'pareto'
 }

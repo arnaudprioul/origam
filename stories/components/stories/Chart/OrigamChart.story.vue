@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (25 primitives)">
+		<Variant title="Prop — type (27 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, twenty-five visualisation primitives. Switch via the
+					One component, twenty-seven visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -346,6 +346,25 @@
 								:categories="FIXTURE_POLAR_BAR_CATEGORIES"
 								:height="240"
 								data-cy="chart-type-polar-bar"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>bullet</strong>
+						<origam-chart
+								type="bullet"
+								:series="FIXTURE_BULLET"
+								:categories="FIXTURE_BULLET_CATEGORIES"
+								:height="240"
+								data-cy="chart-type-bullet"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>pareto</strong>
+						<origam-chart
+								type="pareto"
+								:series="FIXTURE_PARETO"
+								:height="240"
+								data-cy="chart-type-pareto"
 						/>
 					</div>
 				</div>
@@ -866,7 +885,9 @@
 		{ value: 'candlestick', label: 'candlestick' },
 		{ value: 'streamgraph', label: 'streamgraph' },
 		{ value: 'variwide', label: 'variwide' },
-		{ value: 'polar-bar', label: 'polar-bar' }
+		{ value: 'polar-bar', label: 'polar-bar' },
+		{ value: 'bullet', label: 'bullet' },
+		{ value: 'pareto', label: 'pareto' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -1161,6 +1182,27 @@
 	const FIXTURE_POLAR_BAR_CATEGORIES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 	const FIXTURE_POLAR_BAR: Array<IChartSeries> = [
 		{ name: 'Weekly Activity', data: [8, 9, 7, 8, 10, 4, 3] }
+	]
+
+	const FIXTURE_BULLET_CATEGORIES = ['Revenue', 'Profit', 'NPS']
+	const FIXTURE_BULLET: Array<IChartSeries> = [
+		{ name: 'Revenue', data: [{ value: 420, target: 500, ranges: [{ to: 200 }, { to: 350 }, { to: 600 }] }] as any },
+		{ name: 'Profit', data: [{ value: 28, target: 35, ranges: [{ to: 15 }, { to: 25 }, { to: 40 }] }] as any },
+		{ name: 'NPS', data: [{ value: 4.3, target: 4.5, ranges: [{ to: 3 }, { to: 4 }, { to: 5 }] }] as any }
+	]
+
+	const FIXTURE_PARETO: Array<IChartSeries> = [
+		{
+			name: 'Defects',
+			data: [
+				{ category: 'Welding', value: 89 },
+				{ category: 'Wrong size', value: 66 },
+				{ category: 'Loose fastener', value: 52 },
+				{ category: 'Scratch', value: 41 },
+				{ category: 'Bent', value: 28 },
+				{ category: 'Other', value: 12 }
+			] as any
+		}
 	]
 
 	const logLines = ref<Array<string>>([])

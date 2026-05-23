@@ -321,6 +321,44 @@
 			/>
 		</template>
 	</origam-chart-polar-bar>
+
+	<origam-chart-bullet
+			v-else-if="isBulletType"
+			v-bind="bulletProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-bullet>
+
+	<origam-chart-pareto
+			v-else-if="isParetoType"
+			v-bind="paretoProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-pareto>
 </template>
 
 <script
@@ -341,6 +379,8 @@
 	import OrigamChartPictorial from './OrigamChartPictorial.vue'
 	import OrigamChartSankey from './OrigamChartSankey.vue'
 	import OrigamChartStreamgraph from './OrigamChartStreamgraph.vue'
+	import OrigamChartBullet from './OrigamChartBullet.vue'
+	import OrigamChartPareto from './OrigamChartPareto.vue'
 	import OrigamChartPolarBar from './OrigamChartPolarBar.vue'
 	import OrigamChartVariwide from './OrigamChartVariwide.vue'
 	import OrigamChartSunburst from './OrigamChartSunburst.vue'
@@ -453,6 +493,8 @@
 	const isStreamgraphType = computed(() => props.type === CHART_TYPE.STREAMGRAPH)
 	const isVariwideType = computed(() => props.type === CHART_TYPE.VARIWIDE)
 	const isPolarBarType = computed(() => props.type === CHART_TYPE.POLAR_BAR)
+	const isBulletType = computed(() => props.type === CHART_TYPE.BULLET)
+	const isParetoType = computed(() => props.type === CHART_TYPE.PARETO)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -759,6 +801,40 @@
 		animated: props.animated,
 		animationDuration: props.animationDuration,
 		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const bulletProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		categories: props.categories,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const paretoProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		showGrid: props.showGrid,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
 		aspectRatio: props.aspectRatio,
 		xAxisFormat: props.xAxisFormat,
 		yAxisFormat: props.yAxisFormat
