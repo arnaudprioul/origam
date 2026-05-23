@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (28 primitives)">
+		<Variant title="Prop — type (29 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, twenty-eight visualisation primitives. Switch via the
+					One component, twenty-nine visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -897,7 +897,8 @@
 		{ value: 'polar-bar', label: 'polar-bar' },
 		{ value: 'bullet', label: 'bullet' },
 		{ value: 'pareto', label: 'pareto' },
-		{ value: 'map', label: 'map' }
+		{ value: 'map', label: 'map' },
+		{ value: 'sparkline', label: 'sparkline' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [

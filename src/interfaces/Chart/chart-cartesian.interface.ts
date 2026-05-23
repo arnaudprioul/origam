@@ -7,6 +7,7 @@ import type {
     IChartPlotBand,
     IChartPlotLine,
     IChartPoint,
+    IChartRangeSelector,
     IChartSecondaryYAxis
 } from '../../interfaces'
 
@@ -90,14 +91,40 @@ export interface IChartCartesianProps extends IChartBaseProps {
      * A breadcrumb `<nav>` appears above the chart when depth > 1.
      */
     drilldown?: IChartDrilldownProps
+    /**
+     * Enable zoom / pan interactions on the plot area.
+     *
+     * - Mouse-down + drag → draws a selection rectangle; release zooms
+     *   to that X range.
+     * - Shift + scroll-wheel → zooms in / out around the cursor X.
+     * - Ctrl + drag → pans left / right.
+     * - A "Reset zoom" button appears in the top-right when zoomed.
+     *
+     * Default `false`.
+     */
+    zoomable?: boolean
+    /**
+     * Optional band-style range-selector toolbar rendered above the chart.
+     * Provides preset zoom buttons (`1w`, `1m`, `3m`, `6m`, `1y`, `all`).
+     * Requires `zoomable` to be `true` for full effect but can be used
+     * independently to set an initial window via `selected`.
+     */
+    rangeSelector?: IChartRangeSelector
 }
 
-/** Emits surfaced by `<OrigamChartCartesian>`. Extends the family base with drilldown events. */
+/** Emits surfaced by `<OrigamChartCartesian>`. Extends the family base with drilldown and zoom events. */
 export interface IChartCartesianEmits extends IChartBaseEmits {
     /** Fired when the user drills into a sub-dataset. */
     (e: 'drill', link: IChartDrilldownLink, point: IChartPoint): void
     /** Fired when the user navigates back one drilldown level. */
     (e: 'drill-up'): void
+    /**
+     * Fired on every committed zoom (drag-release, wheel stop, or range-selector
+     * button click). `start` and `end` are category indices (inclusive).
+     */
+    (e: 'zoom', range: { start: number, end: number }): void
+    /** Fired when the user resets the zoom to the full data range. */
+    (e: 'reset-zoom'): void
 }
 
 /** Slot signatures exposed by `<OrigamChartCartesian>`. */

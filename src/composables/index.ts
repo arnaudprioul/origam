@@ -112,3 +112,4 @@ export * from './Audio/use-waveform.composable'
 export * from './Calendar/calendar.composable'
 
 export * from './Chart/chart.composable'
+export * from './Chart/chart-zoom.composable'

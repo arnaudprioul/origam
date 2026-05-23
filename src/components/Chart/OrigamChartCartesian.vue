@@ -28,6 +28,15 @@
 			</slot>
 		</div>
 
+		<origam-chart-range-selector
+				v-if="hasRangeSelector"
+				:buttons="rangeSelectorButtons"
+				:active-index="rangeSelectorActiveIndex"
+				:data-length="activeCategories.length"
+				data-cy="origam-chart-cartesian-range-selector"
+				@select="onRangeSelectorSelect"
+		/>
+
 		<nav
 				v-if="hasDrilldown && isDrilled"
 				class="origam-chart-cartesian__breadcrumb"
@@ -79,6 +88,9 @@
 					data-cy="origam-chart-cartesian-svg"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
+					@mousedown="onSvgMouseDown"
+					@mouseup="onSvgMouseUp"
+					@wheel.prevent="onSvgWheel"
 			>
 				<title>{{ svgTitle }}</title>
 				<desc>{{ svgDesc }}</desc>
@@ -256,6 +268,52 @@
 						>{{ d.geo!.label }}</text>
 					</template>
 				</g>
+
+				<g
+						v-if="zoomable && isDragging && dragSelectionRect !== null"
+						class="origam-chart__zoom-selection"
+						data-cy="origam-chart-zoom-selection"
+						aria-hidden="true"
+				>
+					<rect
+							:x="dragSelectionRect.x"
+							:y="dragSelectionRect.y"
+							:width="dragSelectionRect.width"
+							:height="dragSelectionRect.height"
+							:style="{ fill: 'rgba(59,130,246,0.15)', stroke: 'rgba(59,130,246,0.6)', strokeWidth: '1' }"
+					/>
+				</g>
+
+				<g
+						v-if="zoomable && isZoomed"
+						class="origam-chart__zoom-reset"
+						data-cy="origam-chart-zoom-reset"
+						:transform="`translate(${ plot.x1 - 68 }, ${ plot.y0 })`"
+				>
+					<rect
+							x="0"
+							y="0"
+							width="64"
+							height="20"
+							rx="4"
+							:style="{ fill: 'var(--origam-chart__zoom-reset---bg, rgba(59,130,246,0.9))', cursor: 'pointer' }"
+							tabindex="0"
+							role="button"
+							aria-label="Reset zoom"
+							data-cy="origam-chart-zoom-reset-btn"
+							@click="onZoomReset"
+							@keydown.enter.prevent="onZoomReset"
+							@keydown.space.prevent="onZoomReset"
+					/>
+					<text
+							x="32"
+							y="13"
+							text-anchor="middle"
+							dominant-baseline="auto"
+							pointer-events="none"
+							:style="{ fill: '#ffffff', fontSize: '0.6875rem', fontWeight: '600' }"
+					>Reset zoom</text>
+				</g>
 			</svg>
 
 			<origam-chart-tooltip
@@ -317,12 +375,14 @@
 	import {
 		computed,
 		ref,
-		type StyleValue
+		type StyleValue,
+		watch
 	} from 'vue'
 
 	import {
 		useBackgroundColor,
 		useChart,
+		useChartZoom,
 		useDimension,
 		useElevation,
 		useMargin,
@@ -335,8 +395,11 @@
 		computePlotLineGeometry
 	} from '../../composables/Chart/chart.composable'
 
+	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS } from '../../consts/Chart/chart.const'
+
 	import OrigamChartAxis from './OrigamChartAxis.vue'
 	import OrigamChartLegend from './OrigamChartLegend.vue'
+	import OrigamChartRangeSelector from './OrigamChartRangeSelector.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import type {
@@ -348,6 +411,7 @@
 		IChartPlotBand,
 		IChartPlotLine,
 		IChartPoint,
+		IChartRangeSelectorButton,
 		IChartSeries,
 		IChartSeriesPoint
 	} from '../../interfaces'
@@ -397,7 +461,9 @@
 		secondaryYAxis: undefined,
 		plotBands: () => [],
 		plotLines: () => [],
-		drilldown: undefined
+		drilldown: undefined,
+		zoomable: false,
+		rangeSelector: undefined
 	})
 
 	const emit = defineEmits<IChartCartesianEmits>()
@@ -507,16 +573,105 @@
 	)
 
 	/*********************************************************
+	 * Zoom / pan state — `useChartZoom` manages the visible
+	 * category window. The engine clips `activeCategories` to
+	 * `[zoomStart, zoomEnd]` before scale computation. When
+	 * `zoomable` is `false` the window covers the full range and
+	 * all methods are no-ops from the consumer's perspective.
+	 ********************************************************/
+	const zoom = useChartZoom({ dataLength: () => activeCategories.value.length })
+
+	const {
+		zoomStart,
+		zoomEnd,
+		zoomEndRaw,
+		isDragging,
+		dragStartPx,
+		dragEndPx,
+		isZoomed,
+		zoomTo,
+		zoomReset: zoomResetState,
+		zoomBy,
+		panBy,
+		pxToCategoryIndex,
+		categoryIndexToPx,
+		WHEEL_ZOOM_STEP
+	} = zoom
+
+	const visibleCategories = computed<Array<string>>(() => {
+		if (!props.zoomable) return activeCategories.value
+		const len = activeCategories.value.length
+		if (!len) return activeCategories.value
+		const s = zoomStart.value
+		const e = Math.min(zoomEnd.value, len - 1)
+		return activeCategories.value.slice(s, e + 1)
+	})
+
+	/*********************************************************
+	 * Range selector state — tracks which button is currently active.
+	 ********************************************************/
+	const rangeSelectorActiveIndex = ref<number>(-1)
+
+	const hasRangeSelector = computed(() =>
+		Boolean(props.rangeSelector?.enabled)
+	)
+
+	const rangeSelectorButtons = computed<Array<IChartRangeSelectorButton>>(() => {
+		const custom = props.rangeSelector?.buttons
+		if (custom && custom.length) return custom
+		return CHART_RANGE_SELECTOR_DEFAULT_BUTTONS as Array<IChartRangeSelectorButton>
+	})
+
+	const onRangeSelectorSelect = (index: number, start: number, end: number): void => {
+		rangeSelectorActiveIndex.value = index
+		if (props.zoomable) {
+			zoomTo(start, end)
+			emit('zoom', { start, end })
+		}
+	}
+
+	watch(
+		() => activeCategories.value.length,
+		() => {
+			zoomResetState()
+			rangeSelectorActiveIndex.value = -1
+			const sel = props.rangeSelector?.selected
+			if (sel !== undefined && rangeSelectorButtons.value[sel]) {
+				const btn = rangeSelectorButtons.value[sel]
+				const len = activeCategories.value.length
+				let start: number
+				let end: number
+				if (btn.fraction !== undefined) {
+					const windowSize = Math.round(len * Math.max(0, Math.min(1, btn.fraction)))
+					start = Math.max(0, len - windowSize)
+					end = len - 1
+				} else if (btn.count !== undefined) {
+					start = Math.max(0, len - btn.count)
+					end = len - 1
+				} else {
+					start = 0
+					end = len - 1
+				}
+				rangeSelectorActiveIndex.value = sel
+				if (props.zoomable) zoomTo(start, end)
+			}
+		},
+		{ immediate: true }
+	)
+
+	/*********************************************************
 	 * Engine — `useChart` produces every descriptor needed to
 	 * paint. The thunks make the composable reactive against
 	 * `props` without owning the prop reference itself.
 	 * When drilled in, `activeSeries` / `activeCategories` point
 	 * to the sub-dataset instead of the root props.
+	 * The zoom window clips the visible category slice so the
+	 * X scale maps only the visible range to the full plot width.
 	 ********************************************************/
 	const chart = useChart({
 		type: () => props.type,
 		series: () => activeSeries.value,
-		categories: () => activeCategories.value,
+		categories: () => visibleCategories.value,
 		stacked: () => props.stacked,
 		stacking: () => props.stacking,
 		// donutHoleSize is a no-op for cartesian; fixed to 0.
@@ -587,14 +742,17 @@
 		const p = hoveredPath.value
 		if (!p) return null
 		const series = p.series
-		const dataIdx = p.dataIndex ?? 0
-		const entry = series.data[dataIdx]
-		const x = typeof entry === 'number' ? (activeCategories.value[dataIdx] ?? dataIdx) : entry.x
+		const visibleIdx = p.dataIndex ?? 0
+		const absIdx = zoomStart.value + visibleIdx
+		const entry = series.data[absIdx] ?? series.data[visibleIdx]
+		const x = typeof entry === 'number'
+			? (visibleCategories.value[visibleIdx] ?? activeCategories.value[absIdx] ?? absIdx)
+			: entry.x
 		const y = typeof entry === 'number' ? entry : entry.y
 		return {
 			seriesIndex: p.seriesIndex,
 			seriesName: series.name,
-			dataIndex: dataIdx,
+			dataIndex: absIdx,
 			x,
 			y,
 			color: p.color
@@ -647,7 +805,8 @@
 	}))
 
 	const svgClasses = computed(() => ({
-		'origam-chart__svg--animated': props.animated
+		'origam-chart__svg--animated': props.animated,
+		'origam-chart__svg--zoomable': props.zoomable
 	}))
 
 	const hasTitleBlock = computed(() => Boolean(props.title || props.subtitle))
@@ -757,8 +916,123 @@
 	}
 
 	const onSvgMouseLeave = () => {
+		if (isDragging.value) {
+			isDragging.value = false
+			dragStartPx.value = null
+			dragEndPx.value = null
+		}
 		onPointLeaveEvent()
 	}
+
+	/*********************************************************
+	 * Zoom / pan interactions
+	 *
+	 * SVG has a fixed coordinate space (600 × 360). Mouse events
+	 * are in DOM pixels; we convert via `getBoundingClientRect()` +
+	 * the scale factor between DOM and SVG viewBox dimensions.
+	 ********************************************************/
+
+	const svgToCategoryIndex = (clientX: number): number => {
+		const svgEl = svgRef.value
+		if (!svgEl) return 0
+		const rect = svgEl.getBoundingClientRect()
+		const domRatio = SVG_WIDTH / Math.max(1, rect.width)
+		const svgX = (clientX - rect.left) * domRatio
+		return pxToCategoryIndex(svgX, plot.value.x0, plot.value.x1)
+	}
+
+	const onSvgMouseDown = (event: MouseEvent): void => {
+		if (!props.zoomable) return
+		if (event.button !== 0) return
+
+		if (event.ctrlKey || event.metaKey) {
+			isDragging.value = false
+			dragStartPx.value = event.clientX
+			return
+		}
+
+		isDragging.value = true
+		dragStartPx.value = event.clientX
+		dragEndPx.value = event.clientX
+
+		const handleMouseMove = (mv: MouseEvent): void => {
+			if (!isDragging.value) return
+			dragEndPx.value = mv.clientX
+		}
+
+		const handleMouseUp = (mu: MouseEvent): void => {
+			window.removeEventListener('mousemove', handleMouseMove)
+			window.removeEventListener('mouseup', handleMouseUp)
+
+			if (!isDragging.value) return
+			isDragging.value = false
+
+			const startIdx = svgToCategoryIndex(dragStartPx.value ?? mu.clientX)
+			const endIdx = svgToCategoryIndex(mu.clientX)
+			dragStartPx.value = null
+			dragEndPx.value = null
+
+			const lo = Math.floor(Math.min(startIdx, endIdx))
+			const hi = Math.ceil(Math.max(startIdx, endIdx))
+			if (hi - lo < 1) return
+			const len = activeCategories.value.length
+			const absLo = zoomStart.value + lo
+			const absHi = Math.min(len - 1, zoomStart.value + hi)
+			if (absHi - absLo < 1) return
+			zoomTo(absLo, absHi)
+			rangeSelectorActiveIndex.value = -1
+			emit('zoom', { start: absLo, end: absHi })
+		}
+
+		window.addEventListener('mousemove', handleMouseMove)
+		window.addEventListener('mouseup', handleMouseUp)
+	}
+
+	const onSvgMouseUp = (_event: MouseEvent): void => {
+	}
+
+	const onSvgWheel = (event: WheelEvent): void => {
+		if (!props.zoomable) return
+		if (!event.shiftKey) return
+		event.preventDefault()
+
+		const svgEl = svgRef.value
+		if (!svgEl) return
+		const rect = svgEl.getBoundingClientRect()
+		const domRatio = SVG_WIDTH / Math.max(1, rect.width)
+		const svgX = (event.clientX - rect.left) * domRatio
+		const { x0, x1 } = plot.value
+		const plotWidth = Math.max(1, x1 - x0)
+		const anchorFraction = Math.max(0, Math.min(1, (svgX - x0) / plotWidth))
+
+		const zoomIn = event.deltaY < 0
+		const delta = zoomIn ? WHEEL_ZOOM_STEP : -WHEEL_ZOOM_STEP
+		zoomBy(delta, anchorFraction)
+		rangeSelectorActiveIndex.value = -1
+		emit('zoom', { start: zoomStart.value, end: zoomEnd.value })
+	}
+
+	const onZoomReset = (): void => {
+		zoomResetState()
+		rangeSelectorActiveIndex.value = -1
+		emit('reset-zoom')
+	}
+
+	const dragSelectionRect = computed<{ x: number, y: number, width: number, height: number } | null>(() => {
+		if (!isDragging.value || dragStartPx.value === null || dragEndPx.value === null) return null
+		const svgEl = svgRef.value
+		if (!svgEl) return null
+		const rect = svgEl.getBoundingClientRect()
+		const domRatio = SVG_WIDTH / Math.max(1, rect.width)
+		const startSvgX = (dragStartPx.value - rect.left) * domRatio
+		const endSvgX = (dragEndPx.value - rect.left) * domRatio
+		const { x0, x1, y0, y1 } = plot.value
+		const left = Math.max(x0, Math.min(x1, Math.min(startSvgX, endSvgX)))
+		const right = Math.max(x0, Math.min(x1, Math.max(startSvgX, endSvgX)))
+		const width = right - left
+		if (width < 1) return null
+		return { x: left, y: y0, width, height: y1 - y0 }
+	})
 
 	const onPointActivate = (path: IChartPath, event: MouseEvent | KeyboardEvent) => {
 		if (!hoveredPoint.value || hoveredPath.value !== path) {
@@ -808,9 +1082,10 @@
 
 	const pointAriaLabel = (path: IChartPath) => {
 		const dataIdx = path.dataIndex ?? 0
-		const entry = path.series.data[dataIdx]
+		const absIdx = zoomStart.value + dataIdx
+		const entry = path.series.data[absIdx] ?? path.series.data[dataIdx]
 		const y = typeof entry === 'number' ? entry : entry.y
-		const cat = activeCategories.value[dataIdx] ?? dataIdx
+		const cat = visibleCategories.value[dataIdx] ?? activeCategories.value[absIdx] ?? absIdx
 		const isPercent = effectiveStacking.value === 'percent' && props.stacked
 		if (isPercent) {
 			const pct = percentValues.value.get(path.seriesIndex)?.[dataIdx] ?? 0
@@ -834,10 +1109,11 @@
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
 		box-sizing: border-box;
-		grid-template-rows: auto auto 1fr auto;
+		grid-template-rows: auto auto auto 1fr auto;
 		grid-template-columns: 1fr;
 		grid-template-areas:
 			"header"
+			"range-selector"
 			"breadcrumb"
 			"body"
 			"legend";
@@ -845,35 +1121,39 @@
 		&--legend-top {
 			grid-template-areas:
 				"header"
+				"range-selector"
 				"breadcrumb"
 				"legend"
 				"body";
-			grid-template-rows: auto auto auto 1fr;
+			grid-template-rows: auto auto auto auto 1fr;
 		}
 
 		&--legend-bottom {
 			grid-template-areas:
 				"header"
+				"range-selector"
 				"breadcrumb"
 				"body"
 				"legend";
-			grid-template-rows: auto auto 1fr auto;
+			grid-template-rows: auto auto auto 1fr auto;
 		}
 
 		&--legend-left {
 			grid-template-columns: auto minmax(0, 1fr);
-			grid-template-rows: auto auto minmax(0, 1fr);
+			grid-template-rows: auto auto auto minmax(0, 1fr);
 			grid-template-areas:
 				"header header"
+				"range-selector range-selector"
 				"breadcrumb breadcrumb"
 				"legend body";
 		}
 
 		&--legend-right {
 			grid-template-columns: minmax(0, 1fr) auto;
-			grid-template-rows: auto auto minmax(0, 1fr);
+			grid-template-rows: auto auto auto minmax(0, 1fr);
 			grid-template-areas:
 				"header header"
+				"range-selector range-selector"
 				"breadcrumb breadcrumb"
 				"body legend";
 		}
@@ -883,6 +1163,10 @@
 			display: flex;
 			flex-direction: column;
 			gap: 4px;
+		}
+
+		:deep(.origam-chart-range-selector) {
+			grid-area: range-selector;
 		}
 
 		&__breadcrumb {
@@ -989,6 +1273,10 @@
 			min-height: 0;
 			overflow: visible;
 			display: block;
+
+			&--zoomable {
+				cursor: crosshair;
+			}
 		}
 
 		:deep(.origam-chart__grid-line) {

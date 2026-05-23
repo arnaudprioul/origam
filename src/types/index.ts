@@ -341,5 +341,6 @@ export * from './Chart/chart-pictorial-mode.type'
 export * from './Chart/chart-streamgraph-offset.type'
 export * from './Chart/chart-bullet-orientation.type'
 export * from './Chart/chart-map-mode.type'
+export * from './Chart/chart-sparkline-kind.type'
 
 

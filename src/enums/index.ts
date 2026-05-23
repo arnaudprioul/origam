@@ -19,6 +19,7 @@ export * from './Chart/chart-pictorial-mode.enum'
 export * from './Chart/chart-streamgraph-offset.enum'
 export * from './Chart/chart-bullet-orientation.enum'
 export * from './Chart/chart-map-mode.enum'
+export * from './Chart/chart-sparkline-kind.enum'
 export * from './Chart/chart-stacking.enum'
 
 export * from './Code/code-lang.enum'

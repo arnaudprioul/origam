@@ -813,6 +813,47 @@
 				>{{ logLines.join('\n') }}</pre>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — zoomable + rangeSelector (5-year daily prices)">
+			<div
+					class="story-shell"
+					data-cy="cartesian-zoom"
+			>
+				<p class="hint">
+					Drag inside the plot to zoom into a sub-range. Scroll-wheel
+					zooms around the cursor. Ctrl-drag pans. Click a range button
+					to jump to a preset window. Click "Reset zoom" to restore the
+					full range.
+				</p>
+				<origam-chart-cartesian
+						type="line"
+						:series="FIXTURE_DAILY_PRICES"
+						:categories="FIXTURE_DAILY_DATES"
+						:height="380"
+						:zoomable="true"
+						:range-selector="{
+							enabled: true,
+							buttons: [
+								{ label: '1m', count: 30 },
+								{ label: '3m', count: 90 },
+								{ label: '6m', count: 180 },
+								{ label: '1y', count: 365 },
+								{ label: 'all' }
+							],
+							selected: 3
+						}"
+						title="Daily prices (5 years)"
+						subtitle="Drag to zoom, scroll to pinch, ctrl+drag to pan"
+						data-cy="cartesian-zoom-chart"
+						@zoom="onZoom"
+						@reset-zoom="onResetZoom"
+				/>
+				<pre
+						class="story-log"
+						data-cy="cartesian-zoom-log"
+				>{{ logLines.join('\n') }}</pre>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -1062,9 +1103,44 @@
 		}
 	]
 
+	/*
+	 * 5 years of daily mock prices ≈ 1825 categories.
+	 * Random walk seeded so the chart is stable across re-renders.
+	 */
+	const FIXTURE_DAILY_LENGTH = 1825
+	const buildDailyPrices = (): Array<number> => {
+		let v = 100
+		const seed = 1234
+		let s = seed
+		return Array.from({ length: FIXTURE_DAILY_LENGTH }, () => {
+			s = (s * 9301 + 49297) % 233280
+			const r = s / 233280
+			v += (r - 0.5) * 2.5
+			return Math.max(20, Math.round(v * 10) / 10)
+		})
+	}
+	const buildDailyDates = (): Array<string> => {
+		const start = new Date('2021-01-01').getTime()
+		return Array.from({ length: FIXTURE_DAILY_LENGTH }, (_, i) => {
+			const d = new Date(start + i * 86400000)
+			return d.toISOString().slice(0, 10)
+		})
+	}
+	const FIXTURE_DAILY_PRICES: Array<IChartSeries> = [
+		{ name: 'Stock A', data: buildDailyPrices(), color: 'primary' }
+	]
+	const FIXTURE_DAILY_DATES = buildDailyDates()
+
 	const logLines = ref<Array<string>>([])
 	const appendLog = (line: string) => {
 		logLines.value = [line, ...logLines.value].slice(0, 8)
+	}
+
+	const onZoom = (range: { start: number, end: number }) => {
+		appendLog(`zoom → [${range.start} .. ${range.end}]`)
+	}
+	const onResetZoom = () => {
+		appendLog('reset-zoom')
 	}
 
 	const onPointClick = (point: IChartPoint) => {

@@ -378,6 +378,25 @@
 			/>
 		</template>
 	</origam-chart-map>
+
+	<origam-chart-sparkline
+			v-else-if="isSparklineType"
+			v-bind="sparklineProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-sparkline>
 </template>
 
 <script
@@ -401,6 +420,7 @@
 	import OrigamChartBullet from './OrigamChartBullet.vue'
 	import OrigamChartMap from './OrigamChartMap.vue'
 	import OrigamChartPareto from './OrigamChartPareto.vue'
+	import OrigamChartSparkline from './OrigamChartSparkline.vue'
 	import OrigamChartPolarBar from './OrigamChartPolarBar.vue'
 	import OrigamChartVariwide from './OrigamChartVariwide.vue'
 	import OrigamChartSunburst from './OrigamChartSunburst.vue'
@@ -516,6 +536,7 @@
 	const isBulletType = computed(() => props.type === CHART_TYPE.BULLET)
 	const isParetoType = computed(() => props.type === CHART_TYPE.PARETO)
 	const isMapType = computed(() => props.type === CHART_TYPE.MAP)
+	const isSparklineType = computed(() => props.type === CHART_TYPE.SPARKLINE)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -541,6 +562,7 @@
 		animated: props.animated,
 		animationDuration: props.animationDuration,
 		stacked: props.stacked,
+		stacking: props.stacking,
 		colorScheme: props.colorScheme,
 		xAxisFormat: props.xAxisFormat,
 		yAxisFormat: props.yAxisFormat,
@@ -549,7 +571,9 @@
 		yMin: props.yMin,
 		yMax: props.yMax,
 		plotBands: props.plotBands,
-		plotLines: props.plotLines
+		plotLines: props.plotLines,
+		secondaryYAxis: props.secondaryYAxis,
+		drilldown: props.drilldown
 	}))
 
 	const polarProps = computed(() => ({
@@ -568,7 +592,8 @@
 		colorScheme: props.colorScheme,
 		xAxisFormat: props.xAxisFormat,
 		yAxisFormat: props.yAxisFormat,
-		aspectRatio: props.aspectRatio
+		aspectRatio: props.aspectRatio,
+		drilldown: props.drilldown
 	}))
 
 	const radarProps = computed(() => ({
@@ -875,6 +900,15 @@
 		animationDuration: props.animationDuration,
 		aspectRatio: props.aspectRatio,
 		yAxisFormat: props.yAxisFormat
+	}))
+
+	const sparklineProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		width: props.width,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		aspectRatio: props.aspectRatio
 	}))
 
 	/*********************************************************
