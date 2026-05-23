@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-heatmap"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-heatmap"
@@ -239,7 +239,14 @@
 		IChartSeries
 	} from '../../interfaces'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
@@ -294,6 +301,11 @@
 	const emit = defineEmits<IChartHeatmapEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * SVG coordinate constants
@@ -537,10 +549,17 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-heatmap--legend-${ props.legendPosition }`]: true,
-		'origam-chart-heatmap--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-heatmap--legend-${ props.legendPosition }`]: true,
+			'origam-chart-heatmap--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

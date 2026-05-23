@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-sankey"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-sankey"
@@ -188,7 +188,14 @@
 		IChartSeries
 	} from '../../interfaces'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
@@ -233,6 +240,11 @@
 	const emit = defineEmits<IChartSankeyEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginStyles } = useMargin(props)
+	const { paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * Static SVG box — always paints into 600 × 400 coordinate
@@ -748,10 +760,15 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-sankey--legend-${ props.legendPosition }`]: true,
-		'origam-chart-sankey--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-sankey--legend-${ props.legendPosition }`]: true,
+			'origam-chart-sankey--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-treemap"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-treemap"
@@ -170,7 +170,14 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import type {
 		IChartLegendItem,
@@ -229,6 +236,11 @@
 	const emit = defineEmits<IChartTreemapEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginStyles } = useMargin(props)
+	const { paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed 600 × 400 coordinate space.
@@ -530,11 +542,16 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-treemap--legend-${ props.legendPosition }`]: true,
-		[`origam-chart-treemap--algorithm-${ props.algorithm }`]: true,
-		'origam-chart-treemap--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-treemap--legend-${ props.legendPosition }`]: true,
+			[`origam-chart-treemap--algorithm-${ props.algorithm }`]: true,
+			'origam-chart-treemap--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

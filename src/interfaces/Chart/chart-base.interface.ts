@@ -1,8 +1,13 @@
 import type {
+    IBgColorProps,
     IChartPoint,
     IChartSeries,
     ICommonsComponentProps,
-    IDimensionProps
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps
 } from '../../interfaces'
 
 import type {
@@ -21,7 +26,14 @@ import type {
  * stays available for advanced consumers — it uses `IChartProps`
  * which is `IChartBaseProps + type + all type-specific options`.
  */
-export interface IChartBaseProps extends ICommonsComponentProps, IDimensionProps {
+export interface IChartBaseProps
+    extends ICommonsComponentProps,
+        IDimensionProps,
+        IMarginProps,
+        IPaddingProps,
+        IRoundedProps,
+        IElevationProps,
+        IBgColorProps {
     /** Data series — one or more. Empty array renders the `#empty` slot. */
     series: Array<IChartSeries>
     /**

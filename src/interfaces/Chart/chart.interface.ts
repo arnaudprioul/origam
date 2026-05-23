@@ -1,8 +1,13 @@
 import type {
+    IBgColorProps,
     IChartPoint,
     IChartSeries,
     ICommonsComponentProps,
-    IDimensionProps
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps
 } from '../../interfaces'
 
 import type {
@@ -19,7 +24,14 @@ import type {
  * `withDefaults(defineProps<IChartProps>(), { … })` per the
  * project's "literals-only" rule.
  */
-export interface IChartProps extends ICommonsComponentProps, IDimensionProps {
+export interface IChartProps
+    extends ICommonsComponentProps,
+        IDimensionProps,
+        IMarginProps,
+        IPaddingProps,
+        IRoundedProps,
+        IElevationProps,
+        IBgColorProps {
     /** Visualisation primitive. Default `'line'`. */
     type?: TChartType
     /** Data series — one or more. Empty array renders the `#empty` slot. */

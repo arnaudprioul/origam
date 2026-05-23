@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-box-plot"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-box-plot"
@@ -262,7 +262,14 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import type {
 		IChartBoxPlotBox,
@@ -327,6 +334,11 @@
 	const emit = defineEmits<IChartBoxPlotEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed coordinate space, CSS scales it.
@@ -605,11 +617,18 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-box-plot--legend-${ props.legendPosition }`]: true,
-		'origam-chart-box-plot--no-animation': !props.animated,
-		'origam-chart-box-plot--no-axis': !props.showAxis
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-box-plot--legend-${ props.legendPosition }`]: true,
+			'origam-chart-box-plot--no-animation': !props.animated,
+			'origam-chart-box-plot--no-axis': !props.showAxis
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

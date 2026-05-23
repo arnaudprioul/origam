@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-word-cloud"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-word-cloud"
@@ -155,7 +155,14 @@
 		IChartWordCloudWord
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
@@ -200,6 +207,11 @@
 	const emit = defineEmits<IChartWordCloudEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed 800 × 500 coordinate space;
@@ -437,10 +449,17 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-word-cloud--legend-${ props.legendPosition }`]: true,
-		'origam-chart-word-cloud--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-word-cloud--legend-${ props.legendPosition }`]: true,
+			'origam-chart-word-cloud--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-cartesian"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-cartesian"
@@ -173,7 +173,15 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useChart, useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useChart,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import OrigamChartAxis from './OrigamChartAxis.vue'
 	import OrigamChartLegend from './OrigamChartLegend.vue'
@@ -233,6 +241,11 @@
 	const emit = defineEmits<IChartCartesianEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * Static — viewBox geometry. SVG renders into a fixed coordinate
@@ -314,11 +327,18 @@
 	/*********************************************************
 	 * Root classes / styles — `aspectRatio` wins over `height`.
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-cartesian--${ props.type }`]: true,
-		[`origam-chart-cartesian--legend-${ props.legendPosition }`]: true,
-		'origam-chart-cartesian--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-cartesian--${ props.type }`]: true,
+			[`origam-chart-cartesian--legend-${ props.legendPosition }`]: true,
+			'origam-chart-cartesian--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

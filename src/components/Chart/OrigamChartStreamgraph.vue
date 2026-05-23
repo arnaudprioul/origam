@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-streamgraph"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-streamgraph"
@@ -189,7 +189,14 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import type {
 		IChartLegendItem,
@@ -248,6 +255,11 @@
 	const emit = defineEmits<IChartStreamgraphEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * SVG coordinate space — fixed logical box; CSS scales it
@@ -593,11 +605,18 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-streamgraph--offset-${ props.offsetMode }`]: true,
-		[`origam-chart-streamgraph--legend-${ props.legendPosition }`]: true,
-		'origam-chart-streamgraph--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-streamgraph--offset-${ props.offsetMode }`]: true,
+			[`origam-chart-streamgraph--legend-${ props.legendPosition }`]: true,
+			'origam-chart-streamgraph--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

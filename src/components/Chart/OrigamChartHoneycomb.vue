@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-honeycomb"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-honeycomb"
@@ -153,7 +153,14 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import type {
 		IChartHoneycombEmits,
@@ -213,6 +220,11 @@
 	const emit = defineEmits<IChartHoneycombEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginStyles } = useMargin(props)
+	const { paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
 	 * Default colour palette — mirrors useChart's DEFAULT_PALETTE
@@ -464,12 +476,17 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
-	const rootClasses = computed(() => ({
-		[`origam-chart-honeycomb--${ props.orientation }`]: true,
-		[`origam-chart-honeycomb--${ props.colorMode }`]: true,
-		[`origam-chart-honeycomb--legend-${ props.legendPosition }`]: true,
-		'origam-chart-honeycomb--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-honeycomb--${ props.orientation }`]: true,
+			[`origam-chart-honeycomb--${ props.colorMode }`]: true,
+			[`origam-chart-honeycomb--legend-${ props.legendPosition }`]: true,
+			'origam-chart-honeycomb--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}

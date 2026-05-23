@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-radar"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-radar"
@@ -148,7 +148,15 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useChart, useDimension } from '../../composables'
+	import {
+		useBackgroundColor,
+		useChart,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 
@@ -190,6 +198,11 @@
 	const emit = defineEmits<IChartBaseEmits>()
 
 	const { dimensionStyles } = useDimension(props)
+	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
+	const { elevationClasses, elevationStyles } = useElevation(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 360
@@ -273,10 +286,17 @@
 		return props.series.every((s) => !s.data?.length || s.visible === false)
 	})
 
-	const rootClasses = computed(() => ({
-		[`origam-chart-radar--legend-${ props.legendPosition }`]: true,
-		'origam-chart-radar--no-animation': !props.animated
-	}))
+	const rootClasses = computed(() => [
+		{
+			[`origam-chart-radar--legend-${ props.legendPosition }`]: true,
+			'origam-chart-radar--no-animation': !props.animated
+		},
+		backgroundColorClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
+		roundedClasses.value
+	])
 
 	const rootStyles = computed<StyleValue>(() => {
 		const out: Record<string, string> = {}
