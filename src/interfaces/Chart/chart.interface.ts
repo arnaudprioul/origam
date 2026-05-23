@@ -1,5 +1,6 @@
 import type {
     IBgColorProps,
+    IChartAnnotation,
     IChartPlotBand,
     IChartPlotLine,
     IChartPoint,
@@ -142,6 +143,13 @@ export interface IChartProps
      * `<OrigamChartCartesian>` only — ignored for polar / radar / gauge.
      */
     plotLines?: Array<IChartPlotLine>
+    /**
+     * Overlay annotations drawn on top of the series layer. Forwarded to
+     * `<OrigamChartCartesian>` only — ignored for polar / radar / gauge /
+     * other non-cartesian families. Annotations are positioned in data
+     * coordinates. Four kinds: `'arrow'`, `'label'`, `'circle'`, `'bracket'`.
+     */
+    annotations?: Array<IChartAnnotation>
 }
 
 /**

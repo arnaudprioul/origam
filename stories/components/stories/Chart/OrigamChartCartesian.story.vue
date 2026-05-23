@@ -854,6 +854,24 @@
 				>{{ logLines.join('\n') }}</pre>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — annotations (arrow / label / circle / bracket)">
+			<div
+					class="story-shell"
+					data-cy="cartesian-annotations"
+			>
+				<origam-chart-cartesian
+						type="line"
+						:series="FIXTURE_SALES_SERIES"
+						:categories="FIXTURE_MONTHS"
+						:height="360"
+						:annotations="FIXTURE_ANNOTATIONS"
+						title="Monthly sales with annotations"
+						subtitle="Arrow · Label · Circle · Bracket"
+						data-cy="cartesian-annotations-chart"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -866,6 +884,7 @@
 	import { OrigamChartCartesian } from '@origam/components'
 
 	import type {
+		IChartAnnotation,
 		IChartDrilldownLink,
 		IChartDrilldownProps,
 		IChartPlotBand,
@@ -906,6 +925,52 @@
 	const FIXTURE_SALES_SERIES: Array<IChartSeries> = [
 		{ name: 'Sales 2025', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42], color: 'primary' },
 		{ name: 'Sales 2026', data: [16, 22, 25, 23, 30, 38, 35, 41, 39, 45, 48, 52], color: 'success' }
+	]
+
+	const FIXTURE_ANNOTATIONS: Array<IChartAnnotation> = [
+		{
+			kind: 'arrow',
+			x: 'May',
+			y: 25,
+			x2: 'Sep',
+			y2: 30,
+			text: 'Q3 surge',
+			color: 'danger',
+			width: 2,
+			dx: 0,
+			dy: -16
+		},
+		{
+			kind: 'label',
+			x: 'Mar',
+			y: 22,
+			text: 'Launch',
+			color: 'primary',
+			dx: 0,
+			dy: -10
+		},
+		{
+			kind: 'circle',
+			x: 'Jul',
+			y: 28,
+			text: 'Outlier',
+			color: 'warning',
+			radius: 14,
+			dx: 2,
+			dy: 0
+		},
+		{
+			kind: 'bracket',
+			x: 'Oct',
+			y: 36,
+			x2: 'Dec',
+			y2: 42,
+			text: 'Q4 ramp',
+			color: 'success',
+			width: 2,
+			dx: 0,
+			dy: -18
+		}
 	]
 
 	const FIXTURE_FIVE_SERIES: Array<IChartSeries> = [

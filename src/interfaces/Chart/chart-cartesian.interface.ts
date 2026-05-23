@@ -1,4 +1,5 @@
 import type {
+    IChartAnnotation,
     IChartBaseEmits,
     IChartBaseProps,
     IChartBaseSlots,
@@ -110,6 +111,15 @@ export interface IChartCartesianProps extends IChartBaseProps {
      * independently to set an initial window via `selected`.
      */
     rangeSelector?: IChartRangeSelector
+    /**
+     * Overlay annotations drawn on top of the series layer. Annotations
+     * are positioned in data coordinates and projected to SVG pixel space
+     * at render time. Cartesian-only — non-cartesian chart families ignore
+     * this prop.
+     *
+     * Four kinds: `'arrow'`, `'label'`, `'circle'`, `'bracket'`.
+     */
+    annotations?: Array<IChartAnnotation>
 }
 
 /** Emits surfaced by `<OrigamChartCartesian>`. Extends the family base with drilldown and zoom events. */

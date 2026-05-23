@@ -314,6 +314,119 @@
 							:style="{ fill: '#ffffff', fontSize: '0.6875rem', fontWeight: '600' }"
 					>Reset zoom</text>
 				</g>
+
+				<g
+						v-if="annotationGeos.length"
+						class="origam-chart__annotations"
+						aria-hidden="true"
+						data-cy="origam-chart-annotations"
+				>
+					<template
+							v-for="(geo, i) in annotationGeos"
+							:key="`anno-${ i }`"
+					>
+						<template v-if="geo.kind === 'arrow'">
+							<line
+									class="origam-chart__annotation-line"
+									:x1="geo.ax"
+									:y1="geo.ay"
+									:x2="geo.bx"
+									:y2="geo.by"
+									:style="{ stroke: geo.stroke, strokeWidth: geo.strokeWidth }"
+									data-cy="origam-chart-annotation-arrow-line"
+							/>
+							<polygon
+									class="origam-chart__annotation-arrowhead"
+									:points="geo.arrowPoints"
+									:style="{ fill: geo.stroke }"
+									data-cy="origam-chart-annotation-arrow-head"
+							/>
+							<text
+									v-if="geo.text"
+									class="origam-chart__annotation-text"
+									:x="geo.ax + geo.dx"
+									:y="geo.ay + geo.dy"
+									text-anchor="middle"
+									dominant-baseline="auto"
+									:style="{ fill: geo.stroke }"
+									data-cy="origam-chart-annotation-arrow-text"
+							>{{ geo.text }}</text>
+						</template>
+
+						<template v-else-if="geo.kind === 'label'">
+							<line
+									v-if="geo.leaderEnd"
+									class="origam-chart__annotation-leader"
+									:x1="geo.ax"
+									:y1="geo.ay"
+									:x2="geo.leaderEnd.x"
+									:y2="geo.leaderEnd.y"
+									:style="{ stroke: geo.stroke, strokeWidth: geo.strokeWidth, strokeDasharray: '3 3' }"
+									data-cy="origam-chart-annotation-leader"
+							/>
+							<rect
+									v-if="geo.callout"
+									class="origam-chart__annotation-callout"
+									:x="geo.callout.x"
+									:y="geo.callout.y"
+									:width="geo.callout.width"
+									:height="geo.callout.height"
+									rx="4"
+									:style="{ fill: geo.stroke }"
+									data-cy="origam-chart-annotation-callout"
+							/>
+							<text
+									v-if="geo.text && geo.callout"
+									class="origam-chart__annotation-callout-text"
+									:x="geo.callout.x + geo.callout.width / 2"
+									:y="geo.callout.y + geo.callout.height / 2"
+									text-anchor="middle"
+									dominant-baseline="middle"
+									data-cy="origam-chart-annotation-label-text"
+							>{{ geo.text }}</text>
+						</template>
+
+						<template v-else-if="geo.kind === 'circle'">
+							<circle
+									class="origam-chart__annotation-circle"
+									:cx="geo.ax"
+									:cy="geo.ay"
+									:r="geo.radius"
+									:style="{ stroke: geo.stroke, strokeWidth: geo.strokeWidth }"
+									data-cy="origam-chart-annotation-circle"
+							/>
+							<text
+									v-if="geo.text"
+									class="origam-chart__annotation-text"
+									:x="geo.ax + geo.radius + geo.dx + 4"
+									:y="geo.ay + geo.dy"
+									text-anchor="start"
+									dominant-baseline="middle"
+									:style="{ fill: geo.stroke }"
+									data-cy="origam-chart-annotation-circle-text"
+							>{{ geo.text }}</text>
+						</template>
+
+						<template v-else-if="geo.kind === 'bracket'">
+							<path
+									class="origam-chart__annotation-bracket"
+									:d="`M ${geo.ax},${geo.by + 8} L ${geo.ax},${geo.ay} L ${geo.bx},${geo.by} L ${geo.bx},${geo.by + 8}`"
+									:style="{ stroke: geo.stroke, strokeWidth: geo.strokeWidth }"
+									data-cy="origam-chart-annotation-bracket"
+							/>
+							<text
+									v-if="geo.text"
+									class="origam-chart__annotation-text"
+									:x="(geo.ax + geo.bx) / 2 + geo.dx"
+									:y="Math.min(geo.ay, geo.by) + geo.dy"
+									text-anchor="middle"
+									dominant-baseline="auto"
+									:style="{ fill: geo.stroke }"
+									data-cy="origam-chart-annotation-bracket-text"
+							>{{ geo.text }}</text>
+						</template>
+					</template>
+				</g>
 			</svg>
 
 			<origam-chart-tooltip
@@ -391,6 +504,7 @@
 	} from '../../composables'
 
 	import {
+		computeAnnotationGeometry,
 		computePlotBandGeometry,
 		computePlotLineGeometry
 	} from '../../composables/Chart/chart.composable'
@@ -403,6 +517,7 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import type {
+		IChartAnnotationGeo,
 		IChartCartesianEmits,
 		IChartCartesianProps,
 		IChartDrilldownFrame,
@@ -461,6 +576,7 @@
 		secondaryYAxis: undefined,
 		plotBands: () => [],
 		plotLines: () => [],
+		annotations: () => [],
 		drilldown: undefined,
 		zoomable: false,
 		rangeSelector: undefined
@@ -731,6 +847,19 @@
 	const aboveLines = computed(() =>
 		lineDescriptors.value.filter((d) => (d.line.layer ?? 'above') === 'above')
 	)
+
+	/*********************************************************
+	 * Annotations — projected above all series and decorations.
+	 * Each entry is `IChartAnnotationGeo | null`; nulls are
+	 * filtered out so the template never receives bad geometry.
+	 ********************************************************/
+	const annotationGeos = computed<Array<IChartAnnotationGeo>>(() => {
+		const annos = props.annotations ?? []
+		if (!annos.length) return []
+		return annos
+			.map((a) => computeAnnotationGeometry(a, scales.value, visibleCategories.value, slotCount.value))
+			.filter((g): g is IChartAnnotationGeo => g !== null)
+	})
 
 	/*********************************************************
 	 * Hover / tooltip — pure data flow, no DOM measurements
@@ -1448,6 +1577,39 @@
 		.origam-chart__plot-line-label {
 			font-size: var(--origam-chart__plot-line-label---font-size, 0.6875rem);
 			font-weight: var(--origam-chart__plot-line-label---font-weight, 600);
+			pointer-events: none;
+		}
+
+		.origam-chart__annotation-line,
+		.origam-chart__annotation-leader,
+		.origam-chart__annotation-bracket {
+			fill: none;
+			pointer-events: none;
+		}
+
+		.origam-chart__annotation-arrowhead {
+			pointer-events: none;
+		}
+
+		.origam-chart__annotation-circle {
+			fill: none;
+			pointer-events: none;
+		}
+
+		.origam-chart__annotation-callout {
+			pointer-events: none;
+		}
+
+		.origam-chart__annotation-callout-text {
+			fill: var(--origam-chart__annotation-callout---text-color, #ffffff);
+			font-size: var(--origam-chart__annotation-callout---font-size, 0.6875rem);
+			font-weight: var(--origam-chart__annotation-callout---font-weight, 600);
+			pointer-events: none;
+		}
+
+		.origam-chart__annotation-text {
+			font-size: var(--origam-chart__annotation---font-size, 0.6875rem);
+			font-weight: var(--origam-chart__annotation---font-weight, 600);
 			pointer-events: none;
 		}
 

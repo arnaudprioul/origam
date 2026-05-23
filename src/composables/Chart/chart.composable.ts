@@ -6,6 +6,8 @@ import {
 } from 'vue'
 
 import type {
+    IChartAnnotation,
+    IChartAnnotationGeo,
     IChartLegendItem,
     IChartPath,
     IChartPlotBand,
@@ -262,6 +264,93 @@ export const computePlotLineGeometry = (
         labelY: plotY0 + 12,
         labelAnchor: 'start'
     }
+}
+
+/**
+ * Arrowhead polygon string. Returns an SVG `polygon` `points`
+ * attribute value for a filled triangle at `(hx, hy)` pointing in
+ * the direction from `(tx, ty)` toward `(hx, hy)`. Size is `size`
+ * SVG units.
+ */
+const arrowheadPoints = (tx: number, ty: number, hx: number, hy: number, size: number): string => {
+    const angle = Math.atan2(hy - ty, hx - tx)
+    const spread = Math.PI / 5
+    const left = angle + Math.PI - spread
+    const right = angle + Math.PI + spread
+    const lx = hx + size * Math.cos(left)
+    const ly = hy + size * Math.sin(left)
+    const rx = hx + size * Math.cos(right)
+    const ry = hy + size * Math.sin(right)
+    return `${hx.toFixed(2)},${hy.toFixed(2)} ${lx.toFixed(2)},${ly.toFixed(2)} ${rx.toFixed(2)},${ry.toFixed(2)}`
+}
+
+/**
+ * Project a single `IChartAnnotation` into pixel space using the
+ * chart's X/Y scales and the current category list.
+ *
+ * Returns `null` when required coordinates cannot be resolved
+ * (e.g. a category string that doesn't exist in the list).
+ */
+export const computeAnnotationGeometry = (
+    anno: IChartAnnotation,
+    scales: IChartScales,
+    categories: Array<string>,
+    categoryCount: number
+): IChartAnnotationGeo | null => {
+    const stroke = resolveColor(anno.color ?? 'primary')
+    const strokeWidth = anno.width ?? 1.5
+    const dx = anno.dx ?? 0
+    const dy = anno.dy ?? -14
+    const radius = anno.radius ?? 12
+
+    const ax = scales.x(anno.x, typeof anno.x === 'number' ? anno.x : categories.indexOf(anno.x), categoryCount)
+    const ay = scales.y(anno.y)
+
+    const bxRaw = anno.x2 !== undefined ? anno.x2 : anno.x
+    const byRaw = anno.y2 !== undefined ? anno.y2 : anno.y
+    const bx = scales.x(bxRaw, typeof bxRaw === 'number' ? bxRaw : categories.indexOf(bxRaw), categoryCount)
+    const by = scales.y(byRaw)
+
+    if (!Number.isFinite(ax) || !Number.isFinite(ay)) return null
+
+    const base: IChartAnnotationGeo = {
+        kind: anno.kind,
+        stroke,
+        strokeWidth,
+        ax,
+        ay,
+        bx: Number.isFinite(bx) ? bx : ax,
+        by: Number.isFinite(by) ? by : ay,
+        dx,
+        dy,
+        radius,
+        text: anno.text
+    }
+
+    if (anno.kind === 'arrow') {
+        const size = Math.max(6, strokeWidth * 4)
+        return {
+            ...base,
+            arrowPoints: arrowheadPoints(ax, ay, base.bx, base.by, size)
+        }
+    }
+
+    if (anno.kind === 'label') {
+        const text = anno.text ?? ''
+        const charWidth = 7
+        const padding = 8
+        const boxW = Math.max(48, text.length * charWidth + padding * 2)
+        const boxH = 24
+        const calloutX = ax + dx - boxW / 2
+        const calloutY = ay + dy - boxH
+        return {
+            ...base,
+            callout: { x: calloutX, y: calloutY, width: boxW, height: boxH },
+            leaderEnd: { x: ax + dx, y: calloutY + boxH }
+        }
+    }
+
+    return base
 }
 
 /**

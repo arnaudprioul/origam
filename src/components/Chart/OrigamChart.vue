@@ -572,6 +572,7 @@
 		yMax: props.yMax,
 		plotBands: props.plotBands,
 		plotLines: props.plotLines,
+		annotations: props.annotations,
 		secondaryYAxis: props.secondaryYAxis,
 		drilldown: props.drilldown
 	}))
