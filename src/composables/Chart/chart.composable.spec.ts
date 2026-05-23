@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import type { IChartSeries } from '../../interfaces'
+import type { IChartSecondaryYAxis, IChartSeries } from '../../interfaces'
 
-import type { TChartSmoothing, TChartType } from '../../types'
+import type { TChartSmoothing, TChartStacking, TChartType } from '../../types'
 
 import { useChart } from './chart.composable'
 
@@ -11,16 +11,19 @@ function makeOptions (overrides: Partial<{
     series: Array<IChartSeries>
     categories: Array<string>
     stacked: boolean
+    stacking: TChartStacking
     smoothing: TChartSmoothing
     donutHoleSize: number
     yMin: number
     yMax: number
+    secondaryYAxis: IChartSecondaryYAxis
 }> = {}) {
     return {
         type: () => overrides.type ?? 'line',
         series: () => overrides.series ?? [],
         categories: () => overrides.categories ?? [],
         stacked: () => overrides.stacked ?? false,
+        stacking: () => overrides.stacking ?? 'normal' as TChartStacking,
         smoothing: () => overrides.smoothing ?? 'none' as TChartSmoothing,
         donutHoleSize: () => overrides.donutHoleSize ?? 0,
         colorScheme: () => [],
@@ -28,7 +31,8 @@ function makeOptions (overrides: Partial<{
         yMax: () => overrides.yMax,
         width: () => 400,
         height: () => 200,
-        padding: () => ({ top: 20, right: 20, bottom: 30, left: 40 })
+        padding: () => ({ top: 20, right: 20, bottom: 30, left: 40 }),
+        secondaryYAxis: overrides.secondaryYAxis ? () => overrides.secondaryYAxis : undefined
     }
 }
 
@@ -382,5 +386,208 @@ describe('useChart — legend + hover', () => {
         expect(chart.hover.value).not.toBeNull()
         chart.onPointHover(null)
         expect(chart.hover.value).toBeNull()
+    })
+})
+
+describe('useChart — stacking=percent mode', () => {
+    const PERCENT_SERIES: Array<IChartSeries> = [
+        { name: 'S1', data: [30, 20], type: 'column' },
+        { name: 'S2', data: [20, 60], type: 'column' },
+        { name: 'S3', data: [50, 20], type: 'column' }
+    ]
+
+    it('yRange is fixed at 0–100 in percent mode', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'percent',
+            categories: ['A', 'B'],
+            series: PERCENT_SERIES
+        }))
+        expect(chart.yRange.value.min).toBe(0)
+        expect(chart.yRange.value.max).toBe(100)
+    })
+
+    it('percentValues totals to 100 per X index', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'percent',
+            categories: ['A', 'B'],
+            series: PERCENT_SERIES
+        }))
+        const pctMap = chart.percentValues.value
+        const NUM_SERIES = PERCENT_SERIES.length
+        for (let dataIdx = 0; dataIdx < 2; dataIdx++) {
+            let total = 0
+            for (let si = 0; si < NUM_SERIES; si++) {
+                total += pctMap.get(si)?.[dataIdx] ?? 0
+            }
+            expect(total).toBeCloseTo(100, 5)
+        }
+    })
+
+    it('Y-axis ticks are fixed at 0, 25, 50, 75, 100 in percent mode', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'percent',
+            categories: ['A', 'B'],
+            series: PERCENT_SERIES
+        }))
+        const yTicks = chart.ticks.value.y
+        const tickValues = yTicks.map((t) => t.value)
+        expect(tickValues).toEqual([0, 25, 50, 75, 100])
+    })
+
+    it('Y-axis tick labels use % suffix in percent mode', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'percent',
+            categories: ['A', 'B'],
+            series: PERCENT_SERIES
+        }))
+        const yTicks = chart.ticks.value.y
+        for (const tick of yTicks) {
+            expect(tick.label).toMatch(/%$/)
+        }
+    })
+
+    it('effectiveStacking returns percent when stacking=percent', () => {
+        const chart = useChart(makeOptions({
+            stacked: true,
+            stacking: 'percent'
+        }))
+        expect(chart.effectiveStacking.value).toBe('percent')
+    })
+
+    it('effectiveStacking defaults to normal when stacking omitted', () => {
+        const chart = useChart(makeOptions({ stacked: true }))
+        expect(chart.effectiveStacking.value).toBe('normal')
+    })
+
+    it('normal stacking keeps yRange based on raw stack totals', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'normal',
+            categories: ['A', 'B'],
+            series: PERCENT_SERIES
+        }))
+        expect(chart.yRange.value.max).toBe(100)
+        expect(chart.yRange.value.min).toBe(0)
+    })
+
+    it('column rects in percent mode all share the full plot height', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'percent',
+            categories: ['A'],
+            series: [
+                { name: 'S1', data: [25], type: 'column' },
+                { name: 'S2', data: [75], type: 'column' }
+            ]
+        }))
+        const rects = chart.paths.value.filter((p) => p.kind === 'rect')
+        const totalHeight = rects.reduce((acc, r) => acc + (r.rect?.height ?? 0), 0)
+        const plotHeight = 200 - 20 - 30
+        expect(totalHeight).toBeCloseTo(plotHeight, 0)
+    })
+
+    it('percentValues is empty when stacking=normal', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            stacked: true,
+            stacking: 'normal',
+            categories: ['A', 'B'],
+            series: PERCENT_SERIES
+        }))
+        expect(chart.percentValues.value.size).toBe(0)
+    })
+})
+
+describe('useChart — secondary Y axis (dual scale)', () => {
+    const DUAL_SERIES = [
+        { name: 'Temperature', data: [5, 10, 20, 23], yAxis: 0 as 0 | 1 },
+        { name: 'Rainfall', data: [100, 80, 50, 30], yAxis: 1 as 0 | 1, type: 'column' as const }
+    ]
+
+    it('secondaryYRange is computed only from yAxis===1 series', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B', 'C', 'D'],
+            series: DUAL_SERIES,
+            secondaryYAxis: { min: 0, max: 150 }
+        }))
+        expect(chart.secondaryYRange.value.min).toBe(0)
+        expect(chart.secondaryYRange.value.max).toBe(150)
+    })
+
+    it('primary yRange excludes yAxis===1 series', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B', 'C', 'D'],
+            series: DUAL_SERIES
+        }))
+        expect(chart.yRange.value.max).toBeLessThanOrEqual(25)
+        expect(chart.yRange.value.max).toBeGreaterThan(0)
+    })
+
+    it('secondaryTicks is non-empty when axis-1 series exist', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B', 'C', 'D'],
+            series: DUAL_SERIES,
+            secondaryYAxis: { min: 0, max: 150 }
+        }))
+        expect(chart.secondaryTicks.value.length).toBeGreaterThan(0)
+    })
+
+    it('secondaryTicks is empty when no series use yAxis===1', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B'],
+            series: [{ name: 'S', data: [1, 2] }]
+        }))
+        expect(chart.secondaryTicks.value).toHaveLength(0)
+    })
+
+    it('axis-0 and axis-1 line series project to different Y pixel ranges', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['Jan', 'Feb', 'Mar', 'Apr'],
+            series: DUAL_SERIES,
+            secondaryYAxis: { min: 0, max: 150 }
+        }))
+        const tempPaths = chart.paths.value.filter(
+            (p) => p.series.name === 'Temperature' && p.kind === 'circle'
+        )
+        const rainPaths = chart.paths.value.filter(
+            (p) => p.series.name === 'Rainfall' && p.kind === 'rect'
+        )
+
+        // temperature max (23) on left axis [0..25 approx] should NOT
+        // pixel-match rainfall max (100) on right axis [0..150].
+        // If they mapped to the same scale they would produce identical cy/y values.
+        const tempTopY = Math.min(...tempPaths.map((p) => p.circle!.cy))
+        const rainTopY = Math.min(...rainPaths.map((p) => p.rect!.y))
+
+        // Both are inside the plot but at different pixel heights
+        expect(tempTopY).not.toBeCloseTo(rainTopY, 0)
+    })
+
+    it('secondaryTicks respect explicit min/max overrides', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B'],
+            series: [{ name: 'Rain', data: [10, 20], yAxis: 1 }],
+            secondaryYAxis: { min: 0, max: 200 }
+        }))
+        const ticks = chart.secondaryTicks.value
+        const tickValues = ticks.map((t) => Number(t.value))
+        expect(Math.min(...tickValues)).toBeGreaterThanOrEqual(0)
+        expect(Math.max(...tickValues)).toBeLessThanOrEqual(200)
     })
 })

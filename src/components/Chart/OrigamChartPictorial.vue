@@ -52,6 +52,7 @@
 					<symbol
 							id="origam-chart-pictorial-icon"
 							viewBox="0 0 24 24"
+							:preserveAspectRatio="mode === 'fill' ? 'xMidYMax meet' : 'xMidYMid meet'"
 					>
 						<path :d="icon" />
 					</symbol>
@@ -62,9 +63,9 @@
 							:id="`origam-chart-pictorial-clip-${ col.seriesIndex }-${ col.dataIndex }`"
 					>
 						<rect
-								:x="0"
-								:y="fillClipY(col)"
-								:width="fillIconSize"
+								:x="fillColX(col)"
+								:y="fillColY(col) + fillClipY(col)"
+								:width="fillIconWidth"
 								:height="fillClipHeight(col)"
 						/>
 					</clipPath>
@@ -151,8 +152,8 @@
 								href="#origam-chart-pictorial-icon"
 								:x="0"
 								:y="0"
-								:width="fillIconSize"
-								:height="fillIconSize"
+								:width="fillIconWidth"
+								:height="fillIconHeight"
 								:style="{ fill: emptyIconColor }"
 								class="origam-chart-pictorial__icon origam-chart-pictorial__icon--empty"
 						/>
@@ -160,8 +161,8 @@
 								href="#origam-chart-pictorial-icon"
 								:x="0"
 								:y="0"
-								:width="fillIconSize"
-								:height="fillIconSize"
+								:width="fillIconWidth"
+								:height="fillIconHeight"
 								:style="{ fill: col.color }"
 								:clip-path="`url(#origam-chart-pictorial-clip-${ col.seriesIndex }-${ col.dataIndex })`"
 								class="origam-chart-pictorial__icon origam-chart-pictorial__icon--filled"
@@ -169,7 +170,7 @@
 
 						<text
 								v-if="showLabel"
-								:x="fillIconSize / 2"
+								:x="fillIconWidth / 2"
 								:y="fillLabelY(col)"
 								class="origam-chart-pictorial__value-label"
 								text-anchor="middle"
@@ -188,7 +189,7 @@
 						<text
 								v-for="col in fillModeColumns"
 								:key="`axis-fill-${ col.seriesIndex }-${ col.dataIndex }`"
-								:x="fillColX(col) + fillIconSize / 2"
+								:x="fillColX(col) + fillIconWidth / 2"
 								:y="PLOT_Y + fillPlotHeight + AXIS_PADDING"
 								class="origam-chart-pictorial__axis-label"
 								text-anchor="middle"
@@ -609,19 +610,29 @@
 		fillCategoryCount.value * (props.series?.length ?? 0)
 	)
 
-	const fillIconSize = computed<number>(() => {
+	/**
+	 * fillIconWidth — horizontal space per column (derived from SVG_WIDTH).
+	 * fillIconHeight — vertical space each icon occupies (= full plot height).
+	 * Keeping them separate allows portrait icons to fill the column vertically
+	 * while the column width remains constrained by the number of categories.
+	 */
+	const fillIconWidth = computed<number>(() => {
 		const totalCols = fillTotalCols.value
 		if (totalCols <= 0) return 0
 		const totalGaps = (totalCols - 1) * FILL_GAP
 		return Math.max(24, (SVG_WIDTH - totalGaps) / totalCols)
 	})
 
+	const fillIconHeight = computed<number>(() =>
+		Math.max(24, fillPlotHeight.value)
+	)
+
 	const fillModeColumns = computed<Array<IChartPictorialColumn>>(() => {
 		if (props.mode !== CHART_PICTORIAL_MODE.FILL) return []
 		if (!props.series?.length || fillCategoryCount.value === 0) return []
 
 		const result: Array<IChartPictorialColumn> = []
-		const iSize = fillIconSize.value
+		const iWidth = fillIconWidth.value
 		const seriesLen = props.series.length
 
 		for (let catIdx = 0; catIdx < fillCategoryCount.value; catIdx++) {
@@ -645,9 +656,9 @@
 					totalSlots: 1,
 					filledSlots: 1,
 					color: colorForSeries(serIdx),
-					x: colIdx * (iSize + FILL_GAP),
+					x: colIdx * (iWidth + FILL_GAP),
 					y: PLOT_Y.value,
-					iconSize: iSize,
+					iconSize: iWidth,
 					visible: !isHidden
 				})
 			}
@@ -670,12 +681,12 @@
 
 	const fillClipY = (col: IChartPictorialColumn): number => {
 		const ratio = fillRatio(col)
-		return col.iconSize * (1 - ratio)
+		return fillIconHeight.value * (1 - ratio)
 	}
 
 	const fillClipHeight = (col: IChartPictorialColumn): number => {
 		const ratio = fillRatio(col)
-		return col.iconSize * ratio
+		return fillIconHeight.value * ratio
 	}
 
 	const fillLabelY = (_col: IChartPictorialColumn): number =>

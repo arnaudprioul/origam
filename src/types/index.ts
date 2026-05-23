@@ -324,6 +324,7 @@ export * from './Calendar/calendar-time-format.type'
 
 export * from './Chart/chart-legend-position.type'
 export * from './Chart/chart-smoothing.type'
+export * from './Chart/chart-stacking.type'
 
 export * from './Chart/chart-type.type'
 export * from './Chart/chart-item.type'

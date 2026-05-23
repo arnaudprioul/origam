@@ -24,11 +24,18 @@ export interface IChartAxisProps {
         cx: number
         cy: number
     }
-    /** Tick descriptors for X + Y. Comes from `useChart().ticks.value`. */
+    /** Tick descriptors for X + Y (primary left axis). Comes from `useChart().ticks.value`. */
     ticks: {
         x: Array<IChartTick>
         y: Array<IChartTick>
     }
+    /**
+     * Tick descriptors for the secondary right Y axis.
+     * When provided, a second vertical axis is rendered on the
+     * right edge of the plot area. Comes from
+     * `useChart().secondaryTicks.value`.
+     */
+    secondaryYTicks?: Array<IChartTick>
     /**
      * Render the four-corner axis frame + tick labels. When `false`,
      * the component renders nothing (mirrors the legacy `showAxis`
@@ -50,4 +57,24 @@ export interface IChartAxisProps {
      * `String(value)`.
      */
     yAxisFormat?: (value: number) => string
+    /**
+     * Formatter applied to the secondary (right) Y-axis tick labels.
+     * Falls back to `yAxisFormat`, then `String(value)`.
+     */
+    secondaryYAxisFormat?: (value: number) => string
+}
+
+/**
+ * Configuration object for the secondary (right-hand) Y axis.
+ * Passed as the `secondaryYAxis` prop on `<OrigamChartCartesian>`.
+ */
+export interface IChartSecondaryYAxis {
+    /** Force the minimum value of the secondary Y scale. Auto-computed when absent. */
+    min?: number
+    /** Force the maximum value of the secondary Y scale. Auto-computed when absent. */
+    max?: number
+    /** Formatter applied to the right-axis tick labels. */
+    format?: (value: number) => string
+    /** Optional axis title rendered alongside the right axis. */
+    title?: string
 }

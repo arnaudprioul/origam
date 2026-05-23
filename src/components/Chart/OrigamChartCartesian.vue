@@ -51,10 +51,12 @@
 				<origam-chart-axis
 						:plot="plot"
 						:ticks="ticks"
+						:secondary-y-ticks="secondaryTicks"
 						:show-axis="showAxis"
 						:show-grid="showGrid"
 						:x-axis-format="xAxisFormat"
 						:y-axis-format="yAxisFormat"
+						:secondary-y-axis-format="secondaryYAxis?.format"
 				/>
 
 				<g
@@ -119,7 +121,7 @@
 					:x="mousePos.x"
 					:y="mousePos.y"
 					:x-axis-format="xAxisFormat"
-					:y-axis-format="yAxisFormat"
+					:y-axis-format="activeYAxisFormat"
 			>
 				<template
 						v-if="$slots.tooltip"
@@ -229,13 +231,15 @@
 		animated: true,
 		animationDuration: 600,
 		stacked: false,
+		stacking: 'normal',
 		colorScheme: () => [],
 		xAxisFormat: undefined,
 		yAxisFormat: undefined,
 		aspectRatio: undefined,
 		smoothing: 'none',
 		yMin: undefined,
-		yMax: undefined
+		yMax: undefined,
+		secondaryYAxis: undefined
 	})
 
 	const emit = defineEmits<IChartCartesianEmits>()
@@ -256,11 +260,18 @@
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 360
 	const PADDING_DEFAULT = { top: 24, right: 24, bottom: 36, left: 48 }
+	const PADDING_WITH_SECONDARY_AXIS = { top: 24, right: 56, bottom: 36, left: 48 }
 
 	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
-	const chartPadding = computed(() => PADDING_DEFAULT)
+	const hasSecondaryAxis = computed(() =>
+		Boolean(props.secondaryYAxis) || props.series.some((s) => (s.yAxis ?? 0) === 1)
+	)
+
+	const chartPadding = computed(() =>
+		hasSecondaryAxis.value ? PADDING_WITH_SECONDARY_AXIS : PADDING_DEFAULT
+	)
 
 	/*********************************************************
 	 * Engine — `useChart` produces every descriptor needed to
@@ -272,6 +283,7 @@
 		series: () => props.series,
 		categories: () => props.categories,
 		stacked: () => props.stacked,
+		stacking: () => props.stacking,
 		// donutHoleSize is a no-op for cartesian; fixed to 0.
 		donutHoleSize: () => 0,
 		colorScheme: () => props.colorScheme,
@@ -280,10 +292,11 @@
 		yMax: () => props.yMax,
 		width: () => SVG_WIDTH,
 		height: () => SVG_HEIGHT,
-		padding: () => chartPadding.value
+		padding: () => chartPadding.value,
+		secondaryYAxis: () => props.secondaryYAxis
 	})
 
-	const { viewBox, ticks, paths, legend, plot, yRange, slotCount } = chart
+	const { viewBox, ticks, secondaryTicks, paths, legend, plot, yRange, slotCount, effectiveStacking, percentValues } = chart
 
 	/*********************************************************
 	 * Hover / tooltip — pure data flow, no DOM measurements
@@ -367,6 +380,36 @@
 		if (props.yAxisFormat) return props.yAxisFormat(value)
 		return String(value)
 	}
+
+	/**
+	 * Y-axis formatter active for the currently hovered series.
+	 *
+	 * - Secondary axis: uses `secondaryYAxis.format` when present.
+	 * - Percent stacking: overrides with `rawValue (XX.X%)` so the
+	 *   tooltip shows both the raw data value and the stack share.
+	 * - Default: falls back to `props.yAxisFormat` or identity.
+	 */
+	const activeYAxisFormat = computed<((v: number) => string) | undefined>(() => {
+		const isPercent = effectiveStacking.value === 'percent' && props.stacked
+
+		if (isPercent) {
+			return (rawY: number) => {
+				const seriesIdx = hoveredPath.value?.seriesIndex ?? -1
+				const dataIdx = hoveredPath.value?.dataIndex ?? 0
+				const pct = seriesIdx >= 0
+					? (percentValues.value.get(seriesIdx)?.[dataIdx] ?? 0)
+					: 0
+				const base = props.yAxisFormat ? props.yAxisFormat(rawY) : String(rawY)
+				return `${base} (${pct.toFixed(1)}%)`
+			}
+		}
+
+		const s = hoveredSeries.value
+		if (s && (s.yAxis ?? 0) === 1 && props.secondaryYAxis?.format) {
+			return props.secondaryYAxis.format
+		}
+		return props.yAxisFormat
+	})
 
 	/*********************************************************
 	 * Path classification — pie / donut helpers don't apply
@@ -471,9 +514,15 @@
 	})
 
 	const pointAriaLabel = (path: IChartPath) => {
-		const entry = path.series.data[path.dataIndex ?? 0]
+		const dataIdx = path.dataIndex ?? 0
+		const entry = path.series.data[dataIdx]
 		const y = typeof entry === 'number' ? entry : entry.y
-		const cat = props.categories[path.dataIndex ?? 0] ?? path.dataIndex
+		const cat = props.categories[dataIdx] ?? dataIdx
+		const isPercent = effectiveStacking.value === 'percent' && props.stacked
+		if (isPercent) {
+			const pct = percentValues.value.get(path.seriesIndex)?.[dataIdx] ?? 0
+			return `${ path.series.name }, ${ cat }: ${ formatY(y) } (${ pct.toFixed(1) }%)`
+		}
 		return `${ path.series.name }, ${ cat }: ${ formatY(y) }`
 	}
 </script>

@@ -16,9 +16,12 @@ import type {
 } from '../../interfaces'
 
 import type {
+    TChartStacking,
     TChartType,
     TIntent
 } from '../../types'
+
+import { CHART_STACKING } from '../../enums'
 
 import {
     arcPath,
@@ -109,15 +112,24 @@ const toPoints = (series: IChartSeries): Array<{ x: number | string, y: number, 
  * Aggregate min / max across every visible series. Stacked charts
  * sum the per-index Y values instead of taking the per-series max
  * — otherwise the top of the stack falls off the plot.
+ *
+ * In `'percent'` stacking mode the Y range is fixed at `0 → 100`;
+ * yMin / yMax overrides are intentionally ignored so the axis
+ * stays canonical.
  */
 const computeYRange = (
     series: Array<IChartSeries>,
     stacked: boolean,
+    stacking: TChartStacking,
     yMinOverride?: number,
     yMaxOverride?: number
 ): { min: number, max: number } => {
     const visible = series.filter((s) => s.visible !== false)
     if (!visible.length) return { min: 0, max: 1 }
+
+    if (stacked && stacking === CHART_STACKING.PERCENT) {
+        return { min: 0, max: 100 }
+    }
 
     if (stacked) {
         const dataLengths = visible.map((s) => s.data.length)
@@ -229,14 +241,44 @@ export const useChart = (options: IUseChartOptions) => {
         }
     })
 
+    /**
+     * Effective stacking mode. `'percent'` is only active when
+     * both `stacked=true` AND `stacking='percent'` are set. The
+     * `stacking` option is optional on `IUseChartOptions` (backward
+     * compatibility) so we default to `'normal'`.
+     */
+    const effectiveStacking = computed<TChartStacking>(() =>
+        options.stacking?.() ?? CHART_STACKING.NORMAL
+    )
+
     const yRange = computed(() =>
         computeYRange(
-            options.series(),
+            options.series().filter((s) => (s.yAxis ?? 0) === 0),
             options.stacked(),
+            effectiveStacking.value,
             options.yMin(),
             options.yMax()
         )
     )
+
+    /**
+     * Y range for the secondary (right-hand) axis. Aggregates only
+     * series with `yAxis === 1`. Falls back to `{ min: 0, max: 1 }`
+     * when no such series exists or when no `secondaryYAxis` option
+     * is provided.
+     */
+    const secondaryYRange = computed((): { min: number, max: number } => {
+        const secondary = options.secondaryYAxis?.()
+        const axis1Series = options.series().filter((s) => (s.yAxis ?? 0) === 1 && s.visible !== false)
+        if (!axis1Series.length && !secondary) return { min: 0, max: 1 }
+        return computeYRange(
+            axis1Series,
+            false,
+            CHART_STACKING.NORMAL,
+            secondary?.min,
+            secondary?.max
+        )
+    })
 
     const categories = computed(() => options.categories())
 
@@ -279,6 +321,23 @@ export const useChart = (options: IUseChartOptions) => {
     })
 
     /**
+     * Secondary (right-hand) Y pixel mapper. Returns the same
+     * signature as `scales.value.y` but projects against
+     * `secondaryYRange` instead of `yRange`.
+     */
+    const scaleY1 = computed(() => {
+        const { y0, y1 } = plot.value
+        const { min, max } = secondaryYRange.value
+        const yPxPerUnit = (y1 - y0) / Math.max(1e-9, max - min)
+        return (value: number): number => {
+            const px = y1 - (value - min) * yPxPerUnit
+            if (px < y0) return y0
+            if (px > y1) return y1
+            return px
+        }
+    })
+
+    /**
      * Y / X gridline + label descriptors.
      *
      * The bar (horizontal) chart swaps the role of each axis:
@@ -295,10 +354,23 @@ export const useChart = (options: IUseChartOptions) => {
      * are rare but legal).
      */
     const ticks: ComputedRef<{ x: Array<IChartTick>, y: Array<IChartTick> }> = computed(() => {
-        const { min, max } = yRange.value
-        const step = niceStep(max - min, CHART_Y_TICK_COUNT)
-        const niceMin = Math.floor(min / step) * step
-        const niceMax = Math.ceil(max / step) * step
+        const isPercentMode = options.stacked() && effectiveStacking.value === CHART_STACKING.PERCENT
+
+        let niceMin: number
+        let niceMax: number
+        let step: number
+
+        if (isPercentMode) {
+            niceMin = 0
+            niceMax = 100
+            step = 25
+        } else {
+            const { min, max } = yRange.value
+            step = niceStep(max - min, CHART_Y_TICK_COUNT)
+            niceMin = Math.floor(min / step) * step
+            niceMax = Math.ceil(max / step) * step
+        }
+
         const cats = categories.value
         const allSeries = options.series()
         const isBarMode = options.type() === 'bar' || allSeries.some((s) => s.type === 'bar')
@@ -308,9 +380,12 @@ export const useChart = (options: IUseChartOptions) => {
         //   everything else  → along Y using `scales.y`
         const valueTicks: Array<IChartTick> = []
         for (let v = niceMin; v <= niceMax + 1e-9; v += step) {
+            const label = isPercentMode
+                ? `${Math.round(v)}%`
+                : String(Math.round(v * 1000) / 1000)
             valueTicks.push({
                 value: v,
-                label: String(Math.round(v * 1000) / 1000),
+                label,
                 position: isBarMode
                     ? (() => {
                         const { x0, x1 } = plot.value
@@ -342,6 +417,37 @@ export const useChart = (options: IUseChartOptions) => {
         return isBarMode
             ? { x: valueTicks, y: categoryTicks }
             : { x: categoryTicks, y: valueTicks }
+    })
+
+    /**
+     * Tick descriptors for the secondary (right-hand) Y axis. Only
+     * populated when `secondaryYAxis` is configured OR at least one
+     * visible series carries `yAxis === 1`. Bar mode is excluded —
+     * the horizontal bar family flips the axes so a secondary Y axis
+     * doesn't make sense in that orientation.
+     */
+    const secondaryTicks: ComputedRef<Array<IChartTick>> = computed(() => {
+        const secondary = options.secondaryYAxis?.()
+        const axis1Series = options.series().filter((s) => (s.yAxis ?? 0) === 1 && s.visible !== false)
+        const allSeries = options.series()
+        const isBarMode = options.type() === 'bar' || allSeries.some((s) => s.type === 'bar')
+
+        if (isBarMode) return []
+        if (!secondary && !axis1Series.length) return []
+
+        const { min, max } = secondaryYRange.value
+        const step = niceStep(max - min, CHART_Y_TICK_COUNT)
+        const niceMin = Math.floor(min / step) * step
+        const niceMax = Math.ceil(max / step) * step
+        const out: Array<IChartTick> = []
+        for (let v = niceMin; v <= niceMax + 1e-9; v += step) {
+            out.push({
+                value: v,
+                label: String(Math.round(v * 1000) / 1000),
+                position: scaleY1.value(v)
+            })
+        }
+        return out
     })
 
     /**
@@ -440,31 +546,88 @@ export const useChart = (options: IUseChartOptions) => {
      * Per-series, per-data-index stacked offset. Bar / column
      * charts use this when `stacked = true` to slide the rect up
      * by the cumulative height of the previous visible series.
+     *
+     * In `'percent'` mode offsets and rendered values are expressed
+     * as percentage points (0–100) rather than raw data units, so
+     * each column fills the full plot height (0 → 100 %).
      */
     const stackOffsets = computed<Map<number, Array<number>>>(() => {
         const offsets = new Map<number, Array<number>>()
         if (!options.stacked()) return offsets
 
+        const isPercent = effectiveStacking.value === CHART_STACKING.PERCENT
+
         const visible = options.series()
             .map((s, i) => ({ s, i }))
             .filter(({ s }) => s.visible !== false)
 
-        // For each data index, walk visible series in order and
-        // accumulate the running total before the current series.
         const length = Math.max(...visible.map(({ s }) => s.data.length), 0)
-        for (let dataIdx = 0; dataIdx < length; dataIdx++) {
-            let runningPositive = 0
-            let runningNegative = 0
-            for (const { s, i } of visible) {
-                const entry = s.data[dataIdx]
-                const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                if (!offsets.has(i)) offsets.set(i, [])
-                offsets.get(i)![dataIdx] = y >= 0 ? runningPositive : runningNegative
-                if (y >= 0) runningPositive += y
-                else runningNegative += y
+
+        if (isPercent) {
+            for (let dataIdx = 0; dataIdx < length; dataIdx++) {
+                let total = 0
+                for (const { s } of visible) {
+                    const entry = s.data[dataIdx]
+                    const y = typeof entry === 'number' ? entry : entry?.y ?? 0
+                    if (y > 0) total += y
+                }
+                const safeTot = total || 1
+                let runningPct = 0
+                for (const { s, i } of visible) {
+                    const entry = s.data[dataIdx]
+                    const y = typeof entry === 'number' ? entry : entry?.y ?? 0
+                    if (!offsets.has(i)) offsets.set(i, [])
+                    offsets.get(i)![dataIdx] = runningPct
+                    if (y > 0) runningPct += (y / safeTot) * 100
+                }
+            }
+        } else {
+            for (let dataIdx = 0; dataIdx < length; dataIdx++) {
+                let runningPositive = 0
+                let runningNegative = 0
+                for (const { s, i } of visible) {
+                    const entry = s.data[dataIdx]
+                    const y = typeof entry === 'number' ? entry : entry?.y ?? 0
+                    if (!offsets.has(i)) offsets.set(i, [])
+                    offsets.get(i)![dataIdx] = y >= 0 ? runningPositive : runningNegative
+                    if (y >= 0) runningPositive += y
+                    else runningNegative += y
+                }
             }
         }
         return offsets
+    })
+
+    /**
+     * Per-series, per-data-index percentage of the column total.
+     * Populated only when `stacking='percent'`. Used by the tooltip
+     * to show the share alongside the raw value.
+     */
+    const percentValues = computed<Map<number, Array<number>>>(() => {
+        const pctMap = new Map<number, Array<number>>()
+        if (!options.stacked() || effectiveStacking.value !== CHART_STACKING.PERCENT) return pctMap
+
+        const visible = options.series()
+            .map((s, i) => ({ s, i }))
+            .filter(({ s }) => s.visible !== false)
+
+        const length = Math.max(...visible.map(({ s }) => s.data.length), 0)
+        for (let dataIdx = 0; dataIdx < length; dataIdx++) {
+            let total = 0
+            for (const { s } of visible) {
+                const entry = s.data[dataIdx]
+                const y = typeof entry === 'number' ? entry : entry?.y ?? 0
+                if (y > 0) total += y
+            }
+            const safeTot = total || 1
+            for (const { s, i } of visible) {
+                const entry = s.data[dataIdx]
+                const y = typeof entry === 'number' ? entry : entry?.y ?? 0
+                if (!pctMap.has(i)) pctMap.set(i, [])
+                pctMap.get(i)![dataIdx] = y > 0 ? (y / safeTot) * 100 : 0
+            }
+        }
+        return pctMap
     })
 
     /**
@@ -597,6 +760,14 @@ export const useChart = (options: IUseChartOptions) => {
             const kind = effectiveType(s)
             const normalised = toPoints(s)
 
+            // Resolve the Y-mapping function for this series.
+            // Series assigned to axis 1 use the secondary right-hand scale;
+            // all others project against the primary left scale.
+            const seriesAxisIndex = s.yAxis ?? 0
+            const yFn = seriesAxisIndex === 1 ? scaleY1.value : scales.value.y
+            const seriesRange = seriesAxisIndex === 1 ? secondaryYRange.value : yRange.value
+            const seriesBaseline = yFn(Math.max(0, seriesRange.min))
+
             if (
                 kind === 'line'
                 || kind === 'area'
@@ -605,7 +776,7 @@ export const useChart = (options: IUseChartOptions) => {
             ) {
                 const pts: Array<TPathPoint> = normalised.map((p) => [
                     scales.value.x(p.x, p.dataIndex, slotCount.value),
-                    scales.value.y(p.y)
+                    yFn(p.y)
                 ])
 
                 // Resolve the actual stroke generator per topology.
@@ -647,7 +818,7 @@ export const useChart = (options: IUseChartOptions) => {
                     out.push({
                         seriesIndex: seriesIdx,
                         kind: 'path',
-                        d: areaPath(pts, baseline, areaMode),
+                        d: areaPath(pts, seriesBaseline, areaMode),
                         color,
                         series: s,
                         pathLength: length,
@@ -689,6 +860,7 @@ export const useChart = (options: IUseChartOptions) => {
                     ? (x1 - x0) / Math.max(1, groupCount)
                     : (y1 - y0) / Math.max(1, groupCount)
                 const stacked = options.stacked()
+                const isPercent = stacked && effectiveStacking.value === CHART_STACKING.PERCENT
                 const visibleIdxInGroup = series
                     .slice(0, seriesIdx)
                     .filter((other) => other.visible !== false).length
@@ -710,6 +882,15 @@ export const useChart = (options: IUseChartOptions) => {
 
                 for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
                     const p = normalised[dataIdx]
+
+                    // In percent mode, convert the raw data value to
+                    // its percentage share of the column total at this
+                    // data index. `stackOffsets` stores percent offsets
+                    // so we must use matching percent units here.
+                    const renderY = isPercent
+                        ? (percentValues.value.get(seriesIdx)?.[dataIdx] ?? 0)
+                        : p.y
+
                     if (kind === 'column') {
                         /*
                          * Column slots use the "band" scale (each slot
@@ -730,8 +911,8 @@ export const useChart = (options: IUseChartOptions) => {
                             ? centerX - barWidth / 2
                             : centerX - (slotPx * 0.7) / 2 + visibleIdxInGroup * barWidth
                         const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
-                        const top = scales.value.y(p.y + offset)
-                        const base = scales.value.y(offset)
+                        const top = yFn(renderY + offset)
+                        const base = yFn(offset)
                         out.push({
                             seriesIndex: seriesIdx,
                             kind: 'rect',
@@ -761,7 +942,7 @@ export const useChart = (options: IUseChartOptions) => {
                             ? slotCenterY - barHeight / 2
                             : slotCenterY - (slotPx * 0.7) / 2 + visibleIdxInGroup * barHeight
                         const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
-                        const rightPx = xValuePx(p.y + offset)
+                        const rightPx = xValuePx(renderY + offset)
                         const basePx = xValuePx(offset)
                         out.push({
                             seriesIndex: seriesIdx,
@@ -851,7 +1032,7 @@ export const useChart = (options: IUseChartOptions) => {
                         kind: 'circle',
                         circle: {
                             cx: xPx(Number.isFinite(cxRaw) ? cxRaw : 0),
-                            cy: scales.value.y(p.y),
+                            cy: yFn(p.y),
                             r: radiusFor(p.z)
                         },
                         color,
@@ -909,14 +1090,18 @@ export const useChart = (options: IUseChartOptions) => {
         viewBox,
         scales,
         ticks,
+        secondaryTicks,
         paths,
         legend,
         hover,
         onPointHover,
         plot,
         yRange,
+        secondaryYRange,
         slotCount,
         colorFor,
-        effectiveType
+        effectiveType,
+        effectiveStacking,
+        percentValues
     }
 }

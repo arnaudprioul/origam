@@ -1,6 +1,7 @@
 import type {
     IBgColorProps,
     IChartPoint,
+    IChartSecondaryYAxis,
     IChartSeries,
     ICommonsComponentProps,
     IDimensionProps,
@@ -13,6 +14,7 @@ import type {
 import type {
     TChartLegendPosition,
     TChartSmoothing,
+    TChartStacking,
     TChartType,
     TIntent
 } from '../../types'
@@ -68,6 +70,15 @@ export interface IChartProps
     animationDuration?: number
     /** Stack series on `bar` / `column`. Default `false`. */
     stacked?: boolean
+    /**
+     * Stacking mode applied when `stacked=true`.
+     *
+     * - `'normal'`  — raw absolute values (default, matches pre-v2
+     *                 `stacked=true` behaviour).
+     * - `'percent'` — every stack is normalised to 100 %; Y-axis
+     *                 fixed at `0 → 100`, tick labels use `${v}%`.
+     */
+    stacking?: TChartStacking
     /**
      * Inner-radius proportion for `donut`. `0` collapses to a pie,
      * `1` to a ring of zero thickness. Default `0.6` when
@@ -226,6 +237,12 @@ export interface IUseChartOptions {
     series: () => Array<IChartSeries>
     categories: () => Array<string>
     stacked: () => boolean
+    /**
+     * Stacking mode when `stacked()` is `true`. Optional — defaults
+     * to `'normal'` so callers that don't expose the prop yet are
+     * unaffected.
+     */
+    stacking?: () => TChartStacking
     donutHoleSize: () => number
     colorScheme: () => Array<TIntent | string>
     smoothing: () => TChartSmoothing
@@ -243,4 +260,10 @@ export interface IUseChartOptions {
      * attach visibility to. Optional — defaults to an empty Set.
      */
     hiddenLabels?: () => Set<string>
+    /**
+     * Secondary (right-hand) Y axis configuration. Optional — when
+     * absent the engine ignores `series.yAxis === 1` assignments and
+     * plots everything against the primary left axis.
+     */
+    secondaryYAxis?: () => IChartSecondaryYAxis | undefined
 }

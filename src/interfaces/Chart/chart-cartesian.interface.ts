@@ -1,12 +1,14 @@
 import type {
     IChartBaseEmits,
     IChartBaseProps,
-    IChartBaseSlots
+    IChartBaseSlots,
+    IChartSecondaryYAxis
 } from '../../interfaces'
 
 import type {
     TChartCartesianKind,
-    TChartSmoothing
+    TChartSmoothing,
+    TChartStacking
 } from '../../types'
 
 /**
@@ -30,6 +32,14 @@ export interface IChartCartesianProps extends IChartBaseProps {
      */
     stacked?: boolean
     /**
+     * Stacking mode when `stacked=true`.
+     *
+     * - `'normal'`  — raw absolute values (default).
+     * - `'percent'` — every stack normalised to 100 %; Y-axis fixed
+     *                 `0 → 100`, tick labels use `${v}%`.
+     */
+    stacking?: TChartStacking
+    /**
      * Smoothing strategy for `line` / `area` / `spline`.
      * Default `'none'` for `line` / `area`, `'monotone'` for
      * `spline` (overridable).
@@ -49,6 +59,13 @@ export interface IChartCartesianProps extends IChartBaseProps {
     xAxisFormat?: (value: string | number) => string
     /** Formatter applied to Y-axis tick labels. */
     yAxisFormat?: (value: number) => string
+    /**
+     * Configuration for the secondary (right-hand) Y axis. When
+     * provided, series with `yAxis: 1` are projected against this
+     * scale. The axis is only rendered when at least one visible
+     * series uses `yAxis: 1` OR when this prop is explicitly set.
+     */
+    secondaryYAxis?: IChartSecondaryYAxis
 }
 
 /** Emits surfaced by `<OrigamChartCartesian>`. Mirrors the family base. */

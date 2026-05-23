@@ -49,6 +49,15 @@ export interface IChartSeries {
      * overlay on top).
      */
     type?: TChartType
+
+    /**
+     * Which Y axis this series is mapped to.
+     * `0` (default) = left primary axis, `1` = right secondary axis.
+     * Only meaningful for cartesian chart families (line, area, bar,
+     * column, scatter, spline, stepped-line). Ignored for pie, donut,
+     * radar, and gauge.
+     */
+    yAxis?: 0 | 1
 }
 
 /**

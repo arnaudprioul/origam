@@ -56,6 +56,31 @@
 			{{ formatX(tick.value) }}
 		</text>
 	</g>
+
+	<g
+			v-if="showAxis && secondaryYTicks && secondaryYTicks.length"
+			class="origam-chart__axis origam-chart__axis--secondary"
+			data-cy="origam-chart-axis-secondary"
+	>
+		<line
+				class="origam-chart__axis-line origam-chart__axis-line--secondary"
+				:x1="plot.x1"
+				:y1="plot.y0"
+				:x2="plot.x1"
+				:y2="plot.y1"
+		/>
+		<text
+				v-for="(tick, i) in secondaryYTicks"
+				:key="`y2l-${ i }`"
+				class="origam-chart__axis-label origam-chart__axis-label--y origam-chart__axis-label--y-secondary"
+				:x="plot.x1 + 8"
+				:y="tick.position"
+				text-anchor="start"
+				dominant-baseline="middle"
+		>
+			{{ formatSecondaryY(tick.value as number) }}
+		</text>
+	</g>
 </template>
 
 <script
@@ -95,7 +120,9 @@
 		showAxis: true,
 		showGrid: true,
 		xAxisFormat: undefined,
-		yAxisFormat: undefined
+		yAxisFormat: undefined,
+		secondaryYTicks: undefined,
+		secondaryYAxisFormat: undefined
 	})
 
 	/*********************************************************
@@ -109,6 +136,12 @@
 	}
 
 	const formatY = (value: number): string => {
+		if (props.yAxisFormat) return props.yAxisFormat(value)
+		return String(value)
+	}
+
+	const formatSecondaryY = (value: number): string => {
+		if (props.secondaryYAxisFormat) return props.secondaryYAxisFormat(value)
 		if (props.yAxisFormat) return props.yAxisFormat(value)
 		return String(value)
 	}

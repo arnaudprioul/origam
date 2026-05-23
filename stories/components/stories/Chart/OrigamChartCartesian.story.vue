@@ -692,6 +692,75 @@
 				>{{ logLines.join('\n') }}</pre>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — secondaryYAxis (dual scale: temperature + rainfall)">
+			<div
+					class="story-shell"
+					data-cy="cartesian-dual-axis"
+			>
+				<p class="hint">
+					Temperature (line, left axis, °C) and Rainfall (column, right axis, mm) share
+					the same X axis but project against independent Y scales. The temperature line
+					should peak around 60-70% of the plot height (23°C / ~25°C max). Rainfall bars
+					should peak near 85% of the plot height (130mm / ~150mm max).
+				</p>
+				<origam-chart-cartesian
+						type="line"
+						:series="FIXTURE_DUAL_AXIS_SERIES"
+						:categories="FIXTURE_MONTHS"
+						:height="360"
+						:secondary-y-axis="FIXTURE_DUAL_AXIS_SECONDARY"
+						:y-axis-format="(v) => v + ' °C'"
+						title="Temperature &amp; Rainfall"
+						subtitle="Monthly averages — dual Y axes"
+						data-cy="cartesian-dual-axis-chart"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — stacking (normal vs percent side by side)">
+			<div
+					class="story-shell"
+					data-cy="cartesian-stacking"
+			>
+				<p class="hint">
+					App-store reviews per month per rating (5★ to 1★) over 12 months.
+					Total monthly volume varies — the normal stack shows raw counts; the
+					percent stack reveals which rating dominates over time, independently of
+					review volume.
+				</p>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>stacking = normal</strong>
+						<origam-chart-cartesian
+								type="column"
+								:series="FIXTURE_APP_REVIEWS"
+								:categories="FIXTURE_MONTHS"
+								:stacked="true"
+								stacking="normal"
+								:height="300"
+								title="Review volume"
+								subtitle="Raw count per rating"
+								data-cy="cartesian-stacking-normal"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>stacking = percent</strong>
+						<origam-chart-cartesian
+								type="column"
+								:series="FIXTURE_APP_REVIEWS"
+								:categories="FIXTURE_MONTHS"
+								:stacked="true"
+								stacking="percent"
+								:height="300"
+								title="Rating distribution"
+								subtitle="% share per month"
+								data-cy="cartesian-stacking-percent"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -703,7 +772,7 @@
 
 	import { OrigamChartCartesian } from '@origam/components'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
+	import type { IChartPoint, IChartSecondaryYAxis, IChartSeries } from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -778,6 +847,37 @@
 			type: 'scatter'
 		}
 	]
+
+	const FIXTURE_DUAL_AXIS_SERIES: Array<IChartSeries> = [
+		{
+			name: 'Temperature',
+			data: [5, 6, 8, 12, 16, 20, 23, 22, 18, 13, 9, 6],
+			color: 'danger',
+			yAxis: 0
+		},
+		{
+			name: 'Rainfall',
+			data: [110, 80, 65, 50, 45, 40, 30, 35, 60, 90, 110, 130],
+			color: 'info',
+			type: 'column',
+			yAxis: 1
+		}
+	]
+
+	const FIXTURE_APP_REVIEWS: Array<IChartSeries> = [
+		{ name: '5 stars', color: 'success', data: [320, 290, 350, 410, 390, 460, 520, 500, 480, 440, 510, 560] },
+		{ name: '4 stars', color: 'primary', data: [180, 200, 210, 230, 220, 260, 290, 270, 250, 240, 280, 300] },
+		{ name: '3 stars', color: 'warning', data: [90, 80, 100, 110, 95, 120, 130, 125, 115, 105, 120, 130] },
+		{ name: '2 stars', color: 'danger', data: [50, 60, 45, 70, 55, 65, 80, 75, 60, 55, 70, 80] },
+		{ name: '1 star', color: 'neutral', data: [30, 40, 25, 50, 35, 45, 60, 55, 40, 35, 50, 55] }
+	]
+
+	const FIXTURE_DUAL_AXIS_SECONDARY: IChartSecondaryYAxis = {
+		min: 0,
+		max: 150,
+		format: (v: number) => v + ' mm',
+		title: 'Rainfall (mm)'
+	}
 
 	const logLines = ref<Array<string>>([])
 	const appendLog = (line: string) => {
