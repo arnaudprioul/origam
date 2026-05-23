@@ -21,6 +21,14 @@ export interface IChartSunburstDatum {
 }
 
 /**
+ * How the label for a node is rendered.
+ * - `'inline'`  — centred horizontally inside the arc (wide arcs).
+ * - `'rotated'` — rotated tangentially along the arc midpoint (narrow arcs).
+ * - `'leader'`  — placed outside the chart with a leader line (very narrow arcs).
+ */
+export type TChartSunburstLabelMode = 'inline' | 'rotated' | 'leader'
+
+/**
  * Fully-resolved node produced by the geometry engine. Every field is
  * definite — defaults / inherited values have been applied.
  */
@@ -51,6 +59,8 @@ export interface IChartSunburstNode {
     visible: boolean
     /** Full ancestor path string `"Root > Branch > Leaf"`. */
     path: string
+    /** How the label for this node should be rendered. */
+    labelMode: TChartSunburstLabelMode
 }
 
 /** Props for `<OrigamChartSunburst>`. */

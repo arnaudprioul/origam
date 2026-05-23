@@ -19,5 +19,7 @@ export enum CHART_TYPE {
     HEATMAP = 'heatmap',
     SUNBURST = 'sunburst',
     BOX_PLOT = 'box-plot',
-    PICTORIAL = 'pictorial'
+    PICTORIAL = 'pictorial',
+    CANDLESTICK = 'candlestick',
+    STREAMGRAPH = 'streamgraph'
 }

@@ -72,16 +72,39 @@
 					/>
 
 					<text
-							v-for="node in labelNodes"
+							v-for="node in inlineOrRotatedLabelNodes"
 							:key="`label-${ node.id }`"
 							class="origam-chart__sunburst-label"
-							:text-anchor="labelAnchor(node)"
+							:class="`origam-chart__sunburst-label--${ node.labelMode }`"
+							text-anchor="middle"
 							dominant-baseline="middle"
 							:transform="labelTransform(node)"
 							:data-cy="`origam-chart-sunburst-label-${ node.id }`"
 					>
-						{{ node.name }}
+						{{ truncatedLabel(node) }}
 					</text>
+
+					<g
+							v-for="node in leaderLabelNodes"
+							:key="`leader-${ node.id }`"
+							class="origam-chart__sunburst-leader"
+							:data-cy="`origam-chart-sunburst-leader-${ node.id }`"
+					>
+						<polyline
+								class="origam-chart__sunburst-leader-line"
+								:points="leaderLinePoints(node)"
+								fill="none"
+						/>
+						<text
+								class="origam-chart__sunburst-label origam-chart__sunburst-label--leader"
+								dominant-baseline="middle"
+								:text-anchor="leaderTextAnchor(node)"
+								:transform="leaderTextTransform(node)"
+								:data-cy="`origam-chart-sunburst-label-${ node.id }`"
+						>
+							{{ truncatedLabelLeader(node) }}
+						</text>
+					</g>
 				</g>
 			</svg>
 
@@ -161,7 +184,8 @@
 		IChartSunburstDatum,
 		IChartSunburstEmits,
 		IChartSunburstNode,
-		IChartSunburstProps
+		IChartSunburstProps,
+		TChartSunburstLabelMode
 	} from '../../interfaces/Chart/chart-sunburst.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -211,7 +235,24 @@
 	const SVG_SIZE = 400
 	const CENTER = SVG_SIZE / 2
 	const MAX_DEPTH_CAP = 4
-	const MIN_LABEL_ANGLE = 0.1
+
+	/**
+	 * Angular-span thresholds for label rendering strategy:
+	 * - ≥ LABEL_ANGLE_INLINE  (~5.7°): render label horizontally inside the arc.
+	 * - ≥ LABEL_ANGLE_ROTATED (~2.9°): render label rotated along the arc midpoint.
+	 * - < LABEL_ANGLE_ROTATED          : render label outside via leader line.
+	 */
+	const LABEL_ANGLE_INLINE = 0.1
+	const LABEL_ANGLE_ROTATED = 0.05
+
+	/** Estimated character width factor (fraction of font-size) for truncation. */
+	const CHAR_WIDTH_FACTOR = 0.6
+	/** Font size in SVG units (matches CSS 0.625rem at 16px base). */
+	const LABEL_FONT_SIZE = 10
+	/** Extra radial clearance beyond outerR for leader elbow. */
+	const LEADER_ELBOW_OFFSET = 18
+	/** Horizontal extension past the elbow for the label anchor. */
+	const LEADER_HORIZ_OFFSET = 28
 
 	/*********************************************************
 	 * Default colour palette — mirrors the DS intent cycle
@@ -431,6 +472,14 @@
 
 			const d = arcPath(innerR, outerR, parentStartAngle, parentEndAngle)
 
+			const arcSpan = parentEndAngle - parentStartAngle
+			const labelMode: TChartSunburstLabelMode =
+				arcSpan >= LABEL_ANGLE_INLINE
+					? 'inline'
+					: arcSpan >= LABEL_ANGLE_ROTATED
+						? 'rotated'
+						: 'leader'
+
 			result.push({
 				id: nodePath,
 				name: datum.name,
@@ -444,7 +493,8 @@
 				d,
 				color: nodeColor,
 				visible: !isHidden,
-				path: nodePath
+				path: nodePath,
+				labelMode
 			})
 
 			if (datum.children?.length && depth + 1 <= MAX_DEPTH_CAP) {
@@ -481,16 +531,47 @@
 		allNodes.value.filter((n) => n.visible)
 	)
 
-	const labelNodes = computed(() => {
+	const inlineOrRotatedLabelNodes = computed(() => {
 		if (!props.showLabel) return []
-		return visibleNodes.value.filter((n) => {
-			const span = n.endAngle - n.startAngle
-			return span >= MIN_LABEL_ANGLE
-		})
+		return visibleNodes.value.filter((n) => n.labelMode === 'inline' || n.labelMode === 'rotated')
+	})
+
+	const leaderLabelNodes = computed(() => {
+		if (!props.showLabel) return []
+		return visibleNodes.value.filter((n) => n.labelMode === 'leader')
 	})
 
 	/*********************************************************
-	 * Label geometry — centred in the arc
+	 * Text truncation helpers
+	 ********************************************************/
+	const chordBudget = (node: IChartSunburstNode): number => {
+		const midR = (node.innerR + node.outerR) / 2
+		const span = node.endAngle - node.startAngle
+		return midR * 2 * Math.sin(span / 2)
+	}
+
+	const truncatedLabel = (node: IChartSunburstNode): string => {
+		const budget = chordBudget(node)
+		const maxChars = Math.floor(budget / (LABEL_FONT_SIZE * CHAR_WIDTH_FACTOR))
+		if (maxChars <= 0) return ''
+		if (node.name.length <= maxChars) return node.name
+		if (maxChars <= 1) return '…'
+		return node.name.slice(0, maxChars - 1) + '…'
+	}
+
+	const truncatedLabelLeader = (node: IChartSunburstNode): string => {
+		const maxChars = 14
+		if (node.name.length <= maxChars) return node.name
+		return node.name.slice(0, maxChars - 1) + '…'
+	}
+
+	/*********************************************************
+	 * Label geometry — inline / rotated (centred in arc)
+	 *
+	 * inline  — rotate so text reads tangentially (same direction as arc)
+	 *           but flip 180° on the left half so it never reads upside-down.
+	 * rotated — same tangential rotation; the only visual difference is the
+	 *           narrower budget tracked by truncatedLabel().
 	 ********************************************************/
 	const labelTransform = (node: IChartSunburstNode): string => {
 		const midAngle = (node.startAngle + node.endAngle) / 2
@@ -502,7 +583,56 @@
 		return `translate(${ x },${ y }) rotate(${ rotation })`
 	}
 
-	const labelAnchor = (_node: IChartSunburstNode): string => 'middle'
+	/*********************************************************
+	 * Leader-line geometry — outside-chart labels
+	 *
+	 * Strategy: elbow at outerR + LEADER_ELBOW_OFFSET along the midpoint
+	 * radial, then horizontal to LEADER_HORIZ_OFFSET. Label sits at the
+	 * end of the horizontal leg.
+	 ********************************************************/
+	const leaderElbow = (node: IChartSunburstNode): { x: number, y: number } => {
+		const midAngle = (node.startAngle + node.endAngle) / 2
+		const elbowR = node.outerR + LEADER_ELBOW_OFFSET
+		return {
+			x: elbowR * Math.cos(midAngle),
+			y: elbowR * Math.sin(midAngle)
+		}
+	}
+
+	const leaderEnd = (node: IChartSunburstNode): { x: number, y: number } => {
+		const elbow = leaderElbow(node)
+		const sign = elbow.x >= 0 ? 1 : -1
+		return {
+			x: elbow.x + sign * LEADER_HORIZ_OFFSET,
+			y: elbow.y
+		}
+	}
+
+	const leaderStartPoint = (node: IChartSunburstNode): { x: number, y: number } => {
+		const midAngle = (node.startAngle + node.endAngle) / 2
+		return {
+			x: node.outerR * Math.cos(midAngle),
+			y: node.outerR * Math.sin(midAngle)
+		}
+	}
+
+	const leaderLinePoints = (node: IChartSunburstNode): string => {
+		const start = leaderStartPoint(node)
+		const elbow = leaderElbow(node)
+		const end = leaderEnd(node)
+		return `${ start.x },${ start.y } ${ elbow.x },${ elbow.y } ${ end.x },${ end.y }`
+	}
+
+	const leaderTextAnchor = (node: IChartSunburstNode): string => {
+		const elbow = leaderElbow(node)
+		return elbow.x >= 0 ? 'start' : 'end'
+	}
+
+	const leaderTextTransform = (node: IChartSunburstNode): string => {
+		const end = leaderEnd(node)
+		const sign = end.x >= 0 ? 1 : -1
+		return `translate(${ end.x + sign * 3 },${ end.y })`
+	}
 
 	/*********************************************************
 	 * Legend items — root-level nodes only
@@ -768,6 +898,22 @@
 			font-weight: var(--origam-chart__sunburst-label---font-weight, 500);
 			fill: var(--origam-chart__sunburst-label---color, #ffffff);
 			user-select: none;
+
+			&--leader {
+				fill: var(--origam-chart__sunburst-label--leader---color, var(--origam-color-text-primary, #111827));
+				font-size: var(--origam-chart__sunburst-label---font-size, 0.625rem);
+			}
+		}
+
+		.origam-chart__sunburst-leader {
+			pointer-events: none;
+
+			.origam-chart__sunburst-leader-line {
+				stroke: var(--origam-chart__sunburst-leader-line---color, var(--origam-color-text-secondary, #6b7280));
+				stroke-width: var(--origam-chart__sunburst-leader-line---width, 1);
+				stroke-linecap: round;
+				stroke-linejoin: round;
+			}
 		}
 
 		.origam-chart__svg--animated .origam-chart__sunburst-arc {

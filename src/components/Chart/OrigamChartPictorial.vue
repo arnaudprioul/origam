@@ -285,6 +285,8 @@
 	const VALUE_LABEL_HEIGHT = 16
 	const AXIS_PADDING = 4
 	const SERIES_GAP = 4
+	const MAX_SLOTS = 8
+	const MIN_ICON_SIZE = 24
 
 	/*********************************************************
 	 * Default colour palette — mirrors useChart's DEFAULT_PALETTE
@@ -351,10 +353,20 @@
 		return max
 	})
 
-	const slotsPerColumn = computed<number>(() => {
+	const rawSlotsPerColumn = computed<number>(() => {
 		const m = maxValue.value
 		if (m <= 0) return 1
 		return Math.ceil(m / Math.max(1, props.iconsPerUnit))
+	})
+
+	const slotsPerColumn = computed<number>(() =>
+		Math.min(rawSlotsPerColumn.value, MAX_SLOTS)
+	)
+
+	const effectiveIconsPerUnit = computed<number>(() => {
+		const raw = rawSlotsPerColumn.value
+		if (raw <= MAX_SLOTS) return Math.max(1, props.iconsPerUnit)
+		return maxValue.value / MAX_SLOTS
 	})
 
 	const categoryCount = computed<number>(() => {
@@ -403,9 +415,13 @@
 		const s = slotsPerColumn.value
 		if (s <= 0) return 0
 		if (props.direction === 'vertical') {
-			return Math.max(2, (plotHeight.value / s) - ICON_GAP)
+			const slotH = plotHeight.value / s - ICON_GAP
+			const colBound = columnWidth.value - ICON_GAP
+			return Math.max(MIN_ICON_SIZE, Math.min(slotH, colBound))
 		}
-		return Math.max(2, (plotWidth.value / s) - ICON_GAP)
+		const slotW = plotWidth.value / s - ICON_GAP
+		const colBound = columnWidth.value - ICON_GAP
+		return Math.max(MIN_ICON_SIZE, Math.min(slotW, colBound))
 	})
 
 	/*********************************************************
@@ -429,7 +445,7 @@
 					? 0
 					: typeof raw === 'number' ? raw : (raw as { y: number }).y
 				const safeValue = Number.isFinite(value) && value >= 0 ? value : 0
-				const filledSlots = Math.round(safeValue / Math.max(1, props.iconsPerUnit))
+				const filledSlots = Math.round(safeValue / effectiveIconsPerUnit.value)
 				const colIdx = catIdx * seriesCount.value + serIdx
 				const isHidden = hiddenSeries.value.has(s.name)
 

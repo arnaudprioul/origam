@@ -14,7 +14,7 @@
 					showAxis: true,
 					legendPosition: 'bottom',
 					direction: 'vertical',
-					iconsPerUnit: 5
+					iconsPerUnit: 10
 				})"
 		>
 			<template #default="{ state }">

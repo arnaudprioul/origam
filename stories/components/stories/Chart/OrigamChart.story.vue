@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (21 primitives)">
+		<Variant title="Prop — type (23 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, twenty-one visualisation primitives. Switch via the
+					One component, twenty-three visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -271,6 +271,62 @@
 								:series="FIXTURE_WORD_CLOUD_TECH"
 								:height="240"
 								data-cy="chart-type-word-cloud"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>heatmap</strong>
+						<origam-chart
+								type="heatmap"
+								:series="FIXTURE_HEATMAP"
+								:height="240"
+								data-cy="chart-type-heatmap"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>sunburst</strong>
+						<origam-chart
+								type="sunburst"
+								:series="FIXTURE_SUNBURST"
+								:height="240"
+								data-cy="chart-type-sunburst"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>box-plot</strong>
+						<origam-chart
+								type="box-plot"
+								:series="FIXTURE_BOXPLOT"
+								:height="240"
+								data-cy="chart-type-box-plot"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>pictorial</strong>
+						<origam-chart
+								type="pictorial"
+								:series="FIXTURE_PICTORIAL"
+								:categories="FIXTURE_PICTORIAL_CATEGORIES"
+								:height="240"
+								data-cy="chart-type-pictorial"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>candlestick</strong>
+						<origam-chart
+								type="candlestick"
+								:series="FIXTURE_CANDLESTICK"
+								:height="240"
+								data-cy="chart-type-candlestick"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>streamgraph</strong>
+						<origam-chart
+								type="streamgraph"
+								:series="FIXTURE_STREAMGRAPH"
+								:categories="FIXTURE_STREAMGRAPH_CATEGORIES"
+								:height="240"
+								data-cy="chart-type-streamgraph"
 						/>
 					</div>
 				</div>
@@ -769,7 +825,9 @@
 		{ value: 'heatmap', label: 'heatmap' },
 		{ value: 'sunburst', label: 'sunburst' },
 		{ value: 'box-plot', label: 'box-plot' },
-		{ value: 'pictorial', label: 'pictorial' }
+		{ value: 'pictorial', label: 'pictorial' },
+		{ value: 'candlestick', label: 'candlestick' },
+		{ value: 'streamgraph', label: 'streamgraph' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -981,6 +1039,71 @@
 				{ text: 'Serverless', value: 30 }
 			] as Array<any>
 		}
+	]
+
+	const FIXTURE_HEATMAP: Array<IChartSeries> = [
+		{
+			name: 'Activity',
+			data: Array.from({ length: 35 }, (_, i) => ({
+				x: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i % 7],
+				y: Math.floor(i / 7),
+				value: Math.floor(Math.random() * 50)
+			})) as Array<any>
+		}
+	]
+
+	const FIXTURE_SUNBURST: Array<IChartSeries> = [
+		{
+			name: 'Budget',
+			data: [
+				{ name: 'Engineering', value: 50, children: [
+					{ name: 'Frontend', value: 20 },
+					{ name: 'Backend', value: 20 },
+					{ name: 'DevOps', value: 10 }
+				] },
+				{ name: 'Marketing', value: 30 },
+				{ name: 'Sales', value: 20 }
+			] as Array<any>
+		}
+	]
+
+	const FIXTURE_BOXPLOT: Array<IChartSeries> = [
+		{
+			name: 'Latency (ms)',
+			data: [
+				{ category: '/users', min: 12, q1: 18, median: 24, q3: 32, max: 58, outliers: [120] },
+				{ category: '/products', min: 20, q1: 28, median: 38, q3: 52, max: 90, outliers: [] },
+				{ category: '/orders', min: 45, q1: 58, median: 70, q3: 88, max: 132, outliers: [] }
+			] as Array<any>
+		}
+	]
+
+	const FIXTURE_PICTORIAL_CATEGORIES = ['Promoters', 'Passives', 'Detractors']
+	const FIXTURE_PICTORIAL: Array<IChartSeries> = [
+		{ name: 'Satisfaction', data: [65, 25, 10] }
+	]
+
+	const FIXTURE_CANDLESTICK: Array<IChartSeries> = [
+		{
+			name: 'AAPL',
+			data: [
+				{ date: 'May 1', open: 150, high: 153, low: 149, close: 152 },
+				{ date: 'May 2', open: 152, high: 155, low: 151, close: 154 },
+				{ date: 'May 3', open: 154, high: 156, low: 152, close: 153 },
+				{ date: 'May 4', open: 153, high: 158, low: 153, close: 157 },
+				{ date: 'May 5', open: 157, high: 160, low: 156, close: 159 },
+				{ date: 'May 6', open: 159, high: 161, low: 156, close: 157 },
+				{ date: 'May 7', open: 157, high: 162, low: 157, close: 161 }
+			] as Array<any>
+		}
+	]
+
+	const FIXTURE_STREAMGRAPH_CATEGORIES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+	const FIXTURE_STREAMGRAPH: Array<IChartSeries> = [
+		{ name: 'Pop', data: [420, 480, 510, 460, 440, 490] },
+		{ name: 'Rock', data: [320, 360, 340, 380, 410, 390] },
+		{ name: 'Jazz', data: [120, 140, 130, 150, 160, 145] },
+		{ name: 'Electronic', data: [280, 310, 330, 360, 400, 420] }
 	]
 
 	const logLines = ref<Array<string>>([])

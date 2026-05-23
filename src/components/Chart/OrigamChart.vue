@@ -245,6 +245,44 @@
 			/>
 		</template>
 	</origam-chart-pictorial>
+
+	<origam-chart-candlestick
+			v-else-if="isCandlestickType"
+			v-bind="candlestickProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-candlestick>
+
+	<origam-chart-streamgraph
+			v-else-if="isStreamgraphType"
+			v-bind="streamgraphProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-streamgraph>
 </template>
 
 <script
@@ -260,9 +298,11 @@
 	import OrigamChartPyramid from './OrigamChartPyramid.vue'
 	import OrigamChartRadar from './OrigamChartRadar.vue'
 	import OrigamChartBoxPlot from './OrigamChartBoxPlot.vue'
+	import OrigamChartCandlestick from './OrigamChartCandlestick.vue'
 	import OrigamChartHeatmap from './OrigamChartHeatmap.vue'
 	import OrigamChartPictorial from './OrigamChartPictorial.vue'
 	import OrigamChartSankey from './OrigamChartSankey.vue'
+	import OrigamChartStreamgraph from './OrigamChartStreamgraph.vue'
 	import OrigamChartSunburst from './OrigamChartSunburst.vue'
 	import OrigamChartTreemap from './OrigamChartTreemap.vue'
 	import OrigamChartWordCloud from './OrigamChartWordCloud.vue'
@@ -369,6 +409,8 @@
 	const isSunburstType = computed(() => props.type === CHART_TYPE.SUNBURST)
 	const isBoxPlotType = computed(() => props.type === CHART_TYPE.BOX_PLOT)
 	const isPictorialType = computed(() => props.type === CHART_TYPE.PICTORIAL)
+	const isCandlestickType = computed(() => props.type === CHART_TYPE.CANDLESTICK)
+	const isStreamgraphType = computed(() => props.type === CHART_TYPE.STREAMGRAPH)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -597,6 +639,44 @@
 		legendPosition: props.legendPosition,
 		showTooltip: props.showTooltip,
 		showAxis: props.showAxis,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const candlestickProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		showGrid: props.showGrid,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat,
+		yMin: props.yMin,
+		yMax: props.yMax
+	}))
+
+	const streamgraphProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		categories: props.categories,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		showGrid: props.showGrid,
 		animated: props.animated,
 		animationDuration: props.animationDuration,
 		colorScheme: props.colorScheme,
