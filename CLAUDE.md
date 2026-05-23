@@ -6,6 +6,58 @@ by capturing project-specific conventions.
 
 ---
 
+## ⛔ Reuse existing interfaces / composables — never duplicate (mandatory)
+
+**Before declaring a new prop on a component interface, audit
+`src/interfaces/Commons/*` for an existing one that already
+covers the surface. If one exists, `extends` it.**
+
+Concretely:
+
+- **Dimensions** (`height`, `width`, `minHeight`, `minWidth`,
+  `maxHeight`, `maxWidth`) → `extends IDimensionProps` and
+  consume the values via `useDimension(props).dimensionStyles`.
+- **Spacing** (`margin*`, `padding*`) → `extends IMarginProps`
+  / `IPaddingProps`, consumed via `useMargin` / `usePadding`.
+- **Color** → `extends IColorProps`, consumed via `useColor` /
+  `useBackgroundColor` / `useTextColor` / `useColorEffect`.
+- **Border / rounded / elevation** → `IBorderProps`,
+  `IRoundedProps`, `IElevationProps` (each with its own composable).
+- **Density / size** → `IDensityProps`, `ISizeProps`.
+- **Location / position** → `ILocationProps`, `IPositionProps`.
+
+The same rule applies to **composables** and **utilities** —
+if `useFoo` already does the job, don't roll your own `useBar`
+with the same body. Import the existing one.
+
+Two avoidable bugs come from violating this rule:
+
+1. **Half-implemented surfaces** — a component declares
+   `height` but ignores `width` / `maxHeight` / etc., so a
+   consumer's `maxHeight="50vh"` silently does nothing.
+2. **Drift** — the standard `convertToUnit` from
+   `useDimension` accepts numbers (`→ "Npx"`), CSS lengths,
+   custom-property refs, `aspect-ratio` shortcuts. A
+   hand-rolled height parser will inevitably miss one of
+   these cases over time.
+
+Pre-commit audit (every new / modified component):
+
+```bash
+# 1. Are any of the standard prop names declared inline?
+grep -nE "height\??:|width\??:|margin\??:|padding\??:" \
+     src/interfaces/<area>/<name>.interface.ts
+
+# 2. If so, does the interface already extend the matching
+#    Commons interface? If not, refactor.
+```
+
+The interfaces under `src/interfaces/Commons/*.interface.ts`
+are the **single source of truth** for cross-cutting prop
+surfaces. Treat them as building blocks, not as references.
+
+---
+
 ## ⛔ "Test-as-you-build" rule for stories (mandatory)
 
 **Every new story MUST ship with a matching Playwright spec that asserts

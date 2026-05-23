@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-polar"
 			:class="rootClasses"
-			:style="rootStyles"
+			:style="[rootStyles, dimensionStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-polar"
@@ -133,7 +133,7 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useChart } from '../../composables/Chart/chart.composable'
+	import { useChart, useDimension } from '../../composables'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
@@ -182,6 +182,8 @@
 	})
 
 	const emit = defineEmits<IChartPolarEmits>()
+
+	const { dimensionStyles } = useDimension(props)
 
 	/*********************************************************
 	 * Static — polar charts need less padding than cartesian
@@ -278,10 +280,6 @@
 		const out: Record<string, string> = {}
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
-		} else if (typeof props.height === 'number') {
-			out.height = `${ props.height }px`
-		} else if (typeof props.height === 'string') {
-			out.height = props.height
 		}
 		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
 		return out

@@ -1,7 +1,8 @@
 import type {
     IChartPoint,
     IChartSeries,
-    ICommonsComponentProps
+    ICommonsComponentProps,
+    IDimensionProps
 } from '../../interfaces'
 
 import type {
@@ -18,7 +19,7 @@ import type {
  * `withDefaults(defineProps<IChartProps>(), { … })` per the
  * project's "literals-only" rule.
  */
-export interface IChartProps extends ICommonsComponentProps {
+export interface IChartProps extends ICommonsComponentProps, IDimensionProps {
     /** Visualisation primitive. Default `'line'`. */
     type?: TChartType
     /** Data series — one or more. Empty array renders the `#empty` slot. */
@@ -29,12 +30,6 @@ export interface IChartProps extends ICommonsComponentProps {
      * numeric index.
      */
     categories?: Array<string>
-    /**
-     * Chart height. Accepts a number (interpreted as `px`) or any
-     * valid CSS length / `aspect-ratio` shorthand. Ignored when
-     * `aspectRatio` is set.
-     */
-    height?: number | string
     /** Optional title rendered above the plotting area. */
     title?: string
     /** Optional subtitle rendered below the title. */

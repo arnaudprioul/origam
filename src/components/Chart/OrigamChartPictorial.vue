@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-pictorial"
 			:class="rootClasses"
-			:style="rootStyles"
+			:style="[rootStyles, dimensionStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-pictorial"
@@ -214,6 +214,8 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
+	import { useDimension } from '../../composables'
+
 	import type {
 		IChartLegendItem,
 		IChartPoint,
@@ -273,6 +275,8 @@
 	})
 
 	const emit = defineEmits<IChartPictorialEmits>()
+
+	const { dimensionStyles } = useDimension(props)
 
 	/*********************************************************
 	 * Static SVG coordinate space
@@ -601,10 +605,6 @@
 		const out: Record<string, string> = {}
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
-		} else if (typeof props.height === 'number') {
-			out.height = `${ props.height }px`
-		} else if (typeof props.height === 'string') {
-			out.height = props.height
 		}
 		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
 		return out

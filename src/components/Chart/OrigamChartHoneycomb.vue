@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-honeycomb"
 			:class="rootClasses"
-			:style="rootStyles"
+			:style="[rootStyles, dimensionStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-honeycomb"
@@ -153,6 +153,8 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
+	import { useDimension } from '../../composables'
+
 	import type {
 		IChartHoneycombEmits,
 		IChartHoneycombProps,
@@ -209,6 +211,8 @@
 	})
 
 	const emit = defineEmits<IChartHoneycombEmits>()
+
+	const { dimensionStyles } = useDimension(props)
 
 	/*********************************************************
 	 * Default colour palette — mirrors useChart's DEFAULT_PALETTE
@@ -471,10 +475,6 @@
 		const out: Record<string, string> = {}
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
-		} else if (typeof props.height === 'number') {
-			out.height = `${ props.height }px`
-		} else if (typeof props.height === 'string') {
-			out.height = props.height
 		}
 		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
 		return out
