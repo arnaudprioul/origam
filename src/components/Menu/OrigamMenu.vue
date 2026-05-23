@@ -26,7 +26,7 @@
 		<template #default>
 			<div
 					:class="menuContentClasses"
-					:style="colorStyles"
+					:style="[colorStyles, roundedStyles, borderStyles, elevationStyles, paddingStyles, marginStyles]"
 			>
 				<slot name="default">
 					<origam-list class="origam-menu__list">
@@ -84,12 +84,13 @@
 	} from '../../components'
 
 	import {
-	useBothColor,
-	useProps,
-	useScopeId,
-	useStyle,
-	useVModel
-} from '../../composables'
+		useBothColor,
+		useProps,
+		useScopeId,
+		useStateEffect,
+		useStyle,
+		useVModel
+	} from '../../composables'
 
 	import { ORIGAM_MENU_KEY } from '../../consts'
 
@@ -152,6 +153,14 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	const {
+		roundedClasses, roundedStyles,
+		borderClasses, borderStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles,
+	} = useStateEffect(props)
 
 	/*********************************************************
 	 * Value
@@ -327,7 +336,12 @@
 	const menuContentClasses = computed(() => {
 		return [
 			'origam-menu__content',
-			colorClasses.value
+			colorClasses.value,
+			roundedClasses.value,
+			borderClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value
 		]
 	})
 	const menuClasses = computed(() => {

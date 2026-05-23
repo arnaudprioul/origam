@@ -153,7 +153,16 @@
 
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
-	import { useProps, useRounded } from '../../composables'
+	import {
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded,
+		useTextColor
+	} from '../../composables'
 
 	import {
 		BRACKET_DEFAULT_MATCH_GAP,
@@ -495,10 +504,22 @@
 	 * Class & Style
 	 ********************************************************/
 	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(props, 'bgColor')
+	const {textColorClasses, textColorStyles} = useTextColor(props, 'color')
+	const {dimensionStyles} = useDimension(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
 
 	const rootStyles = computed<StyleValue>(() => {
 		return [
 			roundedStyles.value,
+			backgroundColorStyles.value,
+			textColorStyles.value,
+			dimensionStyles.value,
+			elevationStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			{
 				'--origam-bracket---round-gap': `${roundGap}px`,
 				'--origam-bracket---match-gap': `${baseGap}px`
@@ -515,6 +536,11 @@
 			`origam-bracket--density-${props.density ?? 'default'}`,
 			`origam-bracket--color-${props.color}`,
 			roundedClasses.value,
+			backgroundColorClasses.value,
+			textColorClasses.value,
+			elevationClasses.value,
+			marginClasses.value,
+			paddingClasses.value,
 			props.class
 		]
 	})

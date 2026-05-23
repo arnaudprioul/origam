@@ -1,11 +1,17 @@
 import type {
+    IBgColorProps,
+    IColorProps,
     ICommonsComponentProps,
     IDensityProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
     IRoundedProps,
     ITagProps
 } from '../../interfaces'
 
-import type { TBracketVariant, TIntent } from '../../types'
+import type { TBracketVariant } from '../../types'
 
 import type { IBracketRound } from './bracket-round.interface'
 
@@ -19,7 +25,7 @@ import type { IBracketRound } from './bracket-round.interface'
  * data and re-render. No internal state is held about scores or
  * winners — the data passed in is the source of truth.
  */
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps {
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to
@@ -61,13 +67,6 @@ export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensi
      * @default false
      */
     showSeed?: boolean
-    /**
-     * Semantic intent driving the winner highlight color, the connector
-     * "winner" stroke, and any focus rings.
-     *
-     * @default 'primary'
-     */
-    color?: TIntent
     /**
      * Whether match cards should be interactive (cursor, hover state,
      * keyboard focus). When `false`, click handlers still fire but the

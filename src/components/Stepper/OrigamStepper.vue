@@ -39,10 +39,11 @@
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
 	import {
-		useStateEffect,
 		useDensity,
+		useDimension,
 		useProps,
 		useSize,
+		useStateEffect,
 		useStyle
 	} from '../../composables'
 
@@ -117,26 +118,43 @@
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
-	// Phase 3 (Vague D) — class-first companion alongside inline styles.
-	/*********************************************************
-	 * Composables
-	 ********************************************************/
 
-	const { colorClasses, colorStyles } = useStateEffect(props)
+	const {
+		colorClasses, colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles
+	} = useStateEffect(props)
 	const { densityClasses } = useDensity(props)
 	const { sizeClasses } = useSize(props)
+	const { dimensionStyles } = useDimension(props)
 
 	const stepperStyles = computed(() => {
 		return [
-			colorStyles.value, props.style
+			colorStyles.value,
+			roundedStyles.value,
+			borderStyles.value,
+			dimensionStyles.value,
+			elevationStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
+			props.style
 		] as StyleValue
 	})
 
 	const stepperClasses = computed(() => [
-		'origam-stepper', `origam-stepper--${props.orientation ?? 'horizontal'}`, hoverState, activeState,
+		'origam-stepper',
+		`origam-stepper--${props.orientation ?? 'horizontal'}`,
 		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,
+		roundedClasses.value,
+		borderClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
 		props.class
 	])
 
