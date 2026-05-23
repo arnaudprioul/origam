@@ -21,5 +21,7 @@ export enum CHART_TYPE {
     BOX_PLOT = 'box-plot',
     PICTORIAL = 'pictorial',
     CANDLESTICK = 'candlestick',
-    STREAMGRAPH = 'streamgraph'
+    STREAMGRAPH = 'streamgraph',
+    VARIWIDE = 'variwide',
+    POLAR_BAR = 'polar-bar'
 }

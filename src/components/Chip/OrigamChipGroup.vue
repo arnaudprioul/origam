@@ -20,7 +20,7 @@
 >
 	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
 
-	import { useGroup, useProps , useStyle} from "../../composables"
+	import { useBorder, useGroup, useMargin, usePadding, useProps, useRounded, useStyle } from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 
@@ -61,6 +61,15 @@
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_CHIP_GROUP_KEY)
 
+	/*********************************************************
+	 * Spacing / border / rounded
+	 ********************************************************/
+
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+
 	// Push the visual-token props down to every descendant `<origam-chip>`
 	// as DEFAULTS (children that pass their own value still win). Same
 	// pattern as `OrigamBtnGroup` — see the propagation contract there.
@@ -92,6 +101,10 @@
 
 	const chipGroupStyles = computed(() => {
 		return [
+			marginStyles.value,
+			paddingStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -101,6 +114,10 @@
 			{
 				'origam-chip-group--column': props.column
 			},
+			marginClasses.value,
+			paddingClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
 			props.class
 		]
 	})

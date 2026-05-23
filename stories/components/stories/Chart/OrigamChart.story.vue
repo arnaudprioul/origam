@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (23 primitives)">
+		<Variant title="Prop — type (25 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, twenty-three visualisation primitives. Switch via the
+					One component, twenty-five visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -329,7 +329,42 @@
 								data-cy="chart-type-streamgraph"
 						/>
 					</div>
+					<div class="story-col">
+						<strong>variwide</strong>
+						<origam-chart
+								type="variwide"
+								:series="FIXTURE_VARIWIDE_GDP"
+								:height="240"
+								data-cy="chart-type-variwide"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>polar-bar</strong>
+						<origam-chart
+								type="polar-bar"
+								:series="FIXTURE_POLAR_BAR"
+								:categories="FIXTURE_POLAR_BAR_CATEGORIES"
+								:height="240"
+								data-cy="chart-type-polar-bar"
+						/>
+					</div>
 				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — variwide (GDP × Population)">
+			<div
+					class="story-shell"
+					data-cy="chart-variwide"
+			>
+				<origam-chart
+						type="variwide"
+						:series="FIXTURE_VARIWIDE_GDP"
+						:height="360"
+						title="GDP × Population (2023)"
+						subtitle="Width = population (M) · Height = GDP (T$)"
+						data-cy="chart-variwide-gdp"
+				/>
 			</div>
 		</Variant>
 
@@ -802,6 +837,8 @@
 
 	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
 
+	import type { IChartVariwideDatum } from '@origam/interfaces'
+
 	import { useStoryInitState } from '@stories/composables'
 
 	const TYPE_OPTIONS = [
@@ -827,7 +864,9 @@
 		{ value: 'box-plot', label: 'box-plot' },
 		{ value: 'pictorial', label: 'pictorial' },
 		{ value: 'candlestick', label: 'candlestick' },
-		{ value: 'streamgraph', label: 'streamgraph' }
+		{ value: 'streamgraph', label: 'streamgraph' },
+		{ value: 'variwide', label: 'variwide' },
+		{ value: 'polar-bar', label: 'polar-bar' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -1104,6 +1143,24 @@
 		{ name: 'Rock', data: [320, 360, 340, 380, 410, 390] },
 		{ name: 'Jazz', data: [120, 140, 130, 150, 160, 145] },
 		{ name: 'Electronic', data: [280, 310, 330, 360, 400, 420] }
+	]
+
+	const GDP_VARIWIDE_DATA: Array<IChartVariwideDatum> = [
+		{ category: 'US', value: 23, width: 331 },
+		{ category: 'China', value: 18, width: 1411 },
+		{ category: 'Germany', value: 4.2, width: 83 },
+		{ category: 'Japan', value: 4.9, width: 125 },
+		{ category: 'India', value: 3.5, width: 1393 },
+		{ category: 'UK', value: 3.1, width: 67 }
+	]
+
+	const FIXTURE_VARIWIDE_GDP: Array<IChartSeries> = [
+		{ name: 'GDP × Population', data: GDP_VARIWIDE_DATA as unknown as Array<number> }
+	]
+
+	const FIXTURE_POLAR_BAR_CATEGORIES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+	const FIXTURE_POLAR_BAR: Array<IChartSeries> = [
+		{ name: 'Weekly Activity', data: [8, 9, 7, 8, 10, 4, 3] }
 	]
 
 	const logLines = ref<Array<string>>([])

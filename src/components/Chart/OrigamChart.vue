@@ -283,6 +283,44 @@
 			/>
 		</template>
 	</origam-chart-streamgraph>
+
+	<origam-chart-variwide
+			v-else-if="isVariwideType"
+			v-bind="variwideProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-variwide>
+
+	<origam-chart-polar-bar
+			v-else-if="isPolarBarType"
+			v-bind="polarBarProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-polar-bar>
 </template>
 
 <script
@@ -303,6 +341,8 @@
 	import OrigamChartPictorial from './OrigamChartPictorial.vue'
 	import OrigamChartSankey from './OrigamChartSankey.vue'
 	import OrigamChartStreamgraph from './OrigamChartStreamgraph.vue'
+	import OrigamChartPolarBar from './OrigamChartPolarBar.vue'
+	import OrigamChartVariwide from './OrigamChartVariwide.vue'
 	import OrigamChartSunburst from './OrigamChartSunburst.vue'
 	import OrigamChartTreemap from './OrigamChartTreemap.vue'
 	import OrigamChartWordCloud from './OrigamChartWordCloud.vue'
@@ -411,6 +451,8 @@
 	const isPictorialType = computed(() => props.type === CHART_TYPE.PICTORIAL)
 	const isCandlestickType = computed(() => props.type === CHART_TYPE.CANDLESTICK)
 	const isStreamgraphType = computed(() => props.type === CHART_TYPE.STREAMGRAPH)
+	const isVariwideType = computed(() => props.type === CHART_TYPE.VARIWIDE)
+	const isPolarBarType = computed(() => props.type === CHART_TYPE.POLAR_BAR)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -677,6 +719,43 @@
 		showTooltip: props.showTooltip,
 		showAxis: props.showAxis,
 		showGrid: props.showGrid,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const variwideProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		showAxis: props.showAxis,
+		showGrid: props.showGrid,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		colorScheme: props.colorScheme,
+		aspectRatio: props.aspectRatio,
+		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat,
+		yMin: props.yMin,
+		yMax: props.yMax
+	}))
+
+	const polarBarProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		categories: props.categories,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
 		animated: props.animated,
 		animationDuration: props.animationDuration,
 		colorScheme: props.colorScheme,
