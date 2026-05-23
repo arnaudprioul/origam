@@ -1,5 +1,13 @@
 import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
     ITagProps
 } from '../../interfaces'
 
@@ -38,7 +46,7 @@ export type TMasonryColumnBreakpoints = Record<number, number>
  * `useMasonry` JS fallback runs (`ResizeObserver` + bucket-fill
  * algorithm). The runtime decision is transparent to the consumer.
  */
-export interface IMasonryProps extends ICommonsComponentProps, ITagProps {
+export interface IMasonryProps extends ICommonsComponentProps, ITagProps, IDimensionProps, IMarginProps, IPaddingProps, IRoundedProps, IElevationProps, IBgColorProps, IColorProps, IBorderProps {
     /**
      * Number of columns to use when no breakpoint matches the container
      * width. Must be a positive integer ≥ 1.

@@ -1,23 +1,14 @@
 import type {
-    IBorderProps,
-    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
     IInputProps,
     ILabelProps,
-    IMarginProps,
-    IPaddingProps,
     IRippleProps,
-    IRoundedProps,
-    ISizeProps,
     ITagProps
 } from '../../interfaces'
 
 import type { TBlock, TIcon } from '../../types'
 
-export interface IRatingFieldProps extends ICommonsComponentProps, IRippleProps, IDensityProps, IPaddingProps, IBorderProps, IMarginProps, IRoundedProps, IElevationProps, IColorProps, ISizeProps, ITagProps, IInputProps, ILabelProps {
+export interface IRatingFieldProps extends IInputProps, IRippleProps, ITagProps, ILabelProps {
     name?: string
     itemAriaLabel?: string
     clearable?: boolean

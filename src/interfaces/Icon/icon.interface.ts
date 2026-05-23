@@ -1,9 +1,12 @@
 import type {
+    IBgColorProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
+    IDimensionProps,
     IMarginProps,
     IPaddingProps,
+    IRoundedProps,
     ISizeProps,
     ITagProps
 } from '../../interfaces'
@@ -14,7 +17,7 @@ export interface IIconProps {
     icon?: TIcon
 }
 
-export interface IIconComponentProps extends IIconProps, IColorProps, ICommonsComponentProps, ITagProps, ISizeProps, IPaddingProps, IMarginProps, IBorderProps {
+export interface IIconComponentProps extends IIconProps, IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, ISizeProps, IPaddingProps, IMarginProps, IBorderProps, IDimensionProps, IRoundedProps {
     disabled?: boolean
 }
 

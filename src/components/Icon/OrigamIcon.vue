@@ -21,10 +21,12 @@
 	import {
 	useBorder,
 	useBothColor,
+	useDimension,
 	useIcon,
 	useMargin,
 	usePadding,
 	useProps,
+	useRounded,
 	useSize,
 	useStyle
 } from '../../composables'
@@ -60,6 +62,8 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {dimensionStyles} = useDimension(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const slots = useSlots()
 	const {iconData} = useIcon(computed(() => slotIcon.value || props.icon))
@@ -83,6 +87,8 @@
 			colorStyles.value,
 			sizeStyles.value,
 			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
 			marginStyles.value,
 			paddingStyles.value,
 			props.style
@@ -97,6 +103,7 @@
 			colorClasses.value,
 			sizeClasses.value,
 			borderClasses.value,
+			roundedClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class

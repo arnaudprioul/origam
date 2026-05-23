@@ -1,24 +1,15 @@
 import type {
-    IAdjacentInnerProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
     IFieldEmits,
     IFieldProps,
     IFieldSlots,
     IInputEmits,
     IInputProps,
     IInputSlots,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
     IVariantProps
 } from "../../interfaces"
 import type { TIcon } from "../../types"
 
-export interface INumberFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IVariantProps, IAdjacentInnerProps {
+export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantProps {
     autofocus?: boolean
     placeholder?: string
     persistentPlaceholder?: boolean

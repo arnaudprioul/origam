@@ -18,10 +18,17 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, StyleValue, toRef } from 'vue'
 	import {
+	useBorder,
+	useBothColor,
 	useCreateLayout,
+	useDimension,
+	useElevation,
+	useMargin,
+	usePadding,
 	useProps,
+	useRounded,
 	useStyle
 } from '../../composables'
 
@@ -43,6 +50,13 @@
 	 ********************************************************/
 
 	const {layoutClasses, layoutStyles, layoutRef: origamLayoutRef, getLayoutItem, items, layoutId} = useCreateLayout(props)
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses} = useElevation(props)
+	const {dimensionStyles} = useDimension(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
 
 	/*********************************************************
 	 * Class & Style
@@ -59,10 +73,28 @@
 	 ********************************************************/
 
 	const layStyles = computed(() => {
-		return [layoutStyles.value, props.style] as StyleValue
+		return [
+			layoutStyles.value,
+			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
+			paddingStyles.value,
+			marginStyles.value,
+			props.style
+		] as StyleValue
 	})
 	const layClasses = computed(() => {
-		return [layoutClasses.value, props.class]
+		return [
+			layoutClasses.value,
+			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
+			props.class
+		]
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(layStyles)
 

@@ -245,7 +245,7 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamResponsive } from '../Responsive'
 
-	import { shouldSuppressAutoplay, useColorEffect, useLocale, useVideoPlayer } from '../../composables'
+	import { shouldSuppressAutoplay, useBorder, useColorEffect, useDimension, useElevation, useLocale, useMargin, usePadding, useRounded, useVideoPlayer } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -841,6 +841,17 @@
 	const hasBgColorProp = computed(() => !!props.bgColor)
 
 	/*********************************************************
+	 * Layout composables — margin / padding / border / rounded /
+	 * elevation / dimension wired from the extended interface.
+	 ********************************************************/
+	const { borderClasses, borderStyles } = useBorder(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { elevationClasses } = useElevation(props)
+	const { dimensionStyles } = useDimension(props)
+
+	/*********************************************************
 	 * scrubberColorStyle — drives `--origam-media-controller__scrubber---color`
 	 * on the host. The MediaController reads this variable for the
 	 * played-portion of the scrubber.
@@ -883,6 +894,11 @@
 			'origam-video--has-bg-color': hasBgColorProp.value
 		},
 		...colorClasses.value,
+		borderClasses.value,
+		roundedClasses.value,
+		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
 		props.class
 	])
 
@@ -893,6 +909,11 @@
 	const rootStyles = computed<StyleValue>(() => [
 		colorStyles.value,
 		scrubberColorStyle.value,
+		borderStyles.value,
+		roundedStyles.value,
+		marginStyles.value,
+		paddingStyles.value,
+		dimensionStyles.value,
 		props.style
 	] as StyleValue)
 

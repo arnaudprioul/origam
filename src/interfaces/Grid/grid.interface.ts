@@ -1,5 +1,13 @@
 import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
     ITagProps
 } from '../../interfaces'
 
@@ -32,7 +40,7 @@ export type TGridTracks = number | string | ReadonlyArray<string>
  * No track measurement, no JS resize observation — modern browsers
  * have shipped Grid since 2017 and we lean on that.
  */
-export interface IGridProps extends ICommonsComponentProps, ITagProps {
+export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensionProps, IMarginProps, IPaddingProps, IRoundedProps, IElevationProps, IBgColorProps, IColorProps, IBorderProps {
     /**
      * Track template for the inline axis (`grid-template-columns`).
      *

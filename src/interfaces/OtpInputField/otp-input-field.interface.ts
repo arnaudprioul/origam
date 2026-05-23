@@ -1,23 +1,16 @@
 import type {
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
     IFieldEmits,
     IFieldProps,
     IFieldSlots,
-    IFocusProps,
     IInputEmits,
     IInputProps,
     IInputSlots,
-    IRoundedProps,
     IVariantProps
 } from "../../interfaces"
 
 import type { TOtpInputFieldType } from "../../types"
 
-export interface IOtpInputFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IDimensionProps, IFieldProps, IInputProps, IRoundedProps, IElevationProps, IVariantProps, IFocusProps {
+export interface IOtpInputFieldProps extends IFieldProps, IInputProps, IVariantProps {
     autofocus?: boolean
     divider?: string
     focusAll?: boolean

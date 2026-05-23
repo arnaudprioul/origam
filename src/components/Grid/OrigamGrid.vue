@@ -12,7 +12,18 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, StyleValue, toRef } from 'vue'
+
+	import {
+		useBorder,
+		useBothColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded
+	} from '../../composables'
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
@@ -48,6 +59,8 @@
 		autoColumns: undefined,
 		autoRows: undefined
 	})
+
+	const {filterProps} = useProps<IGridProps>(props)
 
 	/*********************************************************
 	 * Track serialisation
@@ -130,6 +143,17 @@
 	const rowGapCss = computed<string | undefined>(() => serialiseGap(props.rowGap))
 
 	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses} = useElevation(props)
+	const {dimensionStyles} = useDimension(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+
+	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -155,7 +179,16 @@
 		if (props.alignContent) style['--origam-grid---align-content'] = props.alignContent
 		if (props.justifyContent) style['--origam-grid---justify-content'] = props.justifyContent
 
-		return [style, props.style] as StyleValue
+		return [
+			style,
+			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
+			paddingStyles.value,
+			marginStyles.value,
+			props.style
+		] as StyleValue
 	})
 
 	const gridClasses = computed(() => {
@@ -164,6 +197,12 @@
 			{
 				'origam-grid--inline': props.inline
 			},
+			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
@@ -172,6 +211,7 @@
 	 * Expose
 	 ********************************************************/
 	defineExpose({
+		filterProps,
 		columnsCss,
 		rowsCss,
 		areasCss,

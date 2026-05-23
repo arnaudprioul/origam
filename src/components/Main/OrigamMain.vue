@@ -17,9 +17,11 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, StyleValue, toRef } from 'vue'
 	import {
 	useBorder,
+	useBothColor,
+	useElevation,
 	useLayout,
 	useMargin,
 	usePadding,
@@ -55,6 +57,8 @@
 
 	const {mainStyles: mainLayoutStyles} = useLayout()
 	const {ssrBootStyles} = useSsrBoot()
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {elevationClasses} = useElevation(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
@@ -71,6 +75,7 @@
 		return [
 			mainLayoutStyles.value,
 			ssrBootStyles.value,
+			colorStyles.value,
 			roundedStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
@@ -84,6 +89,8 @@
 			{
 				'origam-main--scrollable': props.scrollable
 			},
+			colorClasses.value,
+			elevationClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,

@@ -41,12 +41,13 @@
 >
 	import {
 		computed,
+		toRef,
 		type StyleValue
 	} from 'vue'
 
 	import { OrigamIcon } from '../Icon'
 
-	import { useClipboard } from '../../composables'
+	import { useBorder, useBothColor, useClipboard, useMargin, usePadding, useRounded } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -79,6 +80,19 @@
 	})
 
 	const emit = defineEmits<IClipboardEmits>()
+
+	/*********************************************************
+	 * Color
+	 ********************************************************/
+	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Composables — layout & chrome.
+	 ********************************************************/
+	const { borderClasses, borderStyles } = useBorder(props)
+	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
 
 	/*********************************************************
 	 * Composable — owns the copy pipeline + auto-resetting flag.
@@ -122,10 +136,22 @@
 			'origam-clipboard--copied': copied.value,
 			'origam-clipboard--disabled': props.disabled
 		},
+		colorClasses.value,
+		borderClasses.value,
+		roundedClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
 		props.class
 	])
 
-	const rootStyles = computed<StyleValue>(() => [props.style] as StyleValue)
+	const rootStyles = computed<StyleValue>(() => [
+		colorStyles.value,
+		borderStyles.value,
+		roundedStyles.value,
+		marginStyles.value,
+		paddingStyles.value,
+		props.style
+	] as StyleValue)
 
 	/*********************************************************
 	 * Expose

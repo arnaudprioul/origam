@@ -1,5 +1,15 @@
 import type { ComponentInternalInstance, ComputedRef, CSSProperties, Ref } from 'vue'
-import type { ICommonsComponentProps } from '../../interfaces'
+import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
+    ICommonsComponentProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps
+} from '../../interfaces'
 
 import type { TDirectionBoth } from '../../types'
 
@@ -44,7 +54,7 @@ export interface ILayerItem extends ILayer {
     position: TDirectionBoth
 }
 
-export interface ILayoutProps extends ICommonsComponentProps {
+export interface ILayoutProps extends ICommonsComponentProps, IDimensionProps, IMarginProps, IPaddingProps, IRoundedProps, IElevationProps, IBgColorProps, IColorProps, IBorderProps {
     overlaps?: Array<string>
     fullHeight?: boolean
 }

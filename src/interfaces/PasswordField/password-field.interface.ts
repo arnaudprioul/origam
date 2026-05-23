@@ -1,16 +1,10 @@
 import type {
-    IAdjacentInnerProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
     IFieldEmits,
     IFieldSlots,
     IInputEmits,
     IInputSlots,
     IMenuProps,
     IPasswordRequirement,
-    IRoundedProps,
     ITextFieldProps
 } from '../../interfaces'
 
@@ -30,9 +24,7 @@ import type { TIcon, TPasswordStrengthLevel } from '../../types'
  * Extends `ITextFieldProps` so anything you can pass to TextField
  * (counter, placeholder, persistentPlaceholder, etc.) flows through.
  */
-export interface IPasswordFieldProps extends ICommonsComponentProps,
-    IColorProps, IDensityProps, ITextFieldProps,
-    IRoundedProps, IElevationProps, IAdjacentInnerProps {
+export interface IPasswordFieldProps extends ITextFieldProps {
     /** Icon shown when the password is HIDDEN (toggle reveals). */
     onIcon?: TIcon
     /** Icon shown when the password is VISIBLE (toggle hides). */

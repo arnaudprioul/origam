@@ -40,7 +40,18 @@
 		watch
 	} from 'vue'
 
-	import { useCssSupport, useMasonry } from '../../composables'
+	import {
+		useBorder,
+		useBothColor,
+		useCssSupport,
+		useDimension,
+		useElevation,
+		useMargin,
+		useMasonry,
+		usePadding,
+		useProps,
+		useRounded
+	} from '../../composables'
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
@@ -66,6 +77,8 @@
 		align: 'top',
 		columnBreakpoints: undefined
 	})
+
+	const {filterProps} = useProps<IMasonryProps>(props)
 
 	const slots = useSlots()
 	const rootEl = ref<HTMLElement | null>(null)
@@ -231,6 +244,17 @@
 	}
 
 	/*********************************************************
+	 * Composables
+	 ********************************************************/
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses} = useElevation(props)
+	const {dimensionStyles} = useDimension(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+
+	/*********************************************************
 	 * Container CSS (both paths)
 	 *
 	 * @description
@@ -253,7 +277,16 @@
 		} else {
 			style['--origam-masonry---container-height'] = `${layout.value.containerHeight}px`
 		}
-		return [style, props.style] as StyleValue
+		return [
+			style,
+			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
+			paddingStyles.value,
+			marginStyles.value,
+			props.style
+		] as StyleValue
 	})
 
 	const masonryClasses = computed(() => {
@@ -264,6 +297,12 @@
 				'origam-masonry--js': !useCssPath.value,
 				'origam-masonry--animated': props.animated
 			},
+			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
@@ -272,6 +311,7 @@
 	 * Expose
 	 ********************************************************/
 	defineExpose({
+		filterProps,
 		layout,
 		relayout,
 		useCssPath,

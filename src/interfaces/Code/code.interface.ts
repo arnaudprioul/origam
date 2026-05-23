@@ -1,6 +1,9 @@
 import type {
+    IBgColorProps,
     IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
+    IDimensionProps,
     IElevationProps,
     IMarginProps,
     IPaddingProps,
@@ -19,7 +22,7 @@ import type { TCodeLang } from '../../types'
  * conservative default so existing call sites keep their behaviour
  * (plain-text, no line numbers, copy button visible).
  */
-export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps {
+export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps {
     /**
      * The code to highlight. When omitted, the default slot is used as the
      * source — useful for multi-line snippets that are nicer to read in
@@ -50,11 +53,6 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      * to `true` — most code blocks benefit from it.
      */
     copyable?: boolean
-    /**
-     * Cap the rendered block at this height and enable vertical scroll
-     * past it. `null` (default) lets the block grow to fit its content.
-     */
-    maxHeight?: number | string | null
     /**
      * Auto-format the code before highlighting. Reserved for v3 — prettier
      * is intentionally NOT bundled at runtime to keep the tarball small.

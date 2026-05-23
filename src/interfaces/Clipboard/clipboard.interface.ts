@@ -1,5 +1,11 @@
 import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
     ITagProps
 } from '../../interfaces'
 
@@ -16,7 +22,7 @@ import type {
  * inline pill, animation, …) pass a `#default` scoped slot exposing
  * `{ copy, copied, error }` and render whatever they want.
  */
-export interface IClipboardProps extends ICommonsComponentProps, ITagProps {
+export interface IClipboardProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IRoundedProps, IMarginProps, IPaddingProps {
     /**
      * Text payload written to the clipboard on `copy()`. Required.
      * Re-read each time the trigger fires, so a parent that mutates

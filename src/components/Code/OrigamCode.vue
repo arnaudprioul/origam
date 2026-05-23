@@ -60,12 +60,14 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, useSlots, watch } from 'vue'
+	import { computed, onMounted, ref, toRef, useSlots, watch } from 'vue'
 
 	import {
 		useBorder,
+		useBothColor,
 		useClipboard,
 		useCode,
+		useDimension,
 		useElevation,
 		useMargin,
 		usePadding,
@@ -106,7 +108,6 @@
 		format: false,
 		code: undefined,
 		highlightLines: null,
-		maxHeight: null,
 		filename: undefined
 	})
 
@@ -124,6 +125,8 @@
 	const { elevationClasses } = useElevation(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { marginClasses, marginStyles } = useMargin(props)
+	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const { dimensionStyles } = useDimension(props)
 	const { highlight } = useCode()
 
 	/*********************************************************
@@ -306,7 +309,8 @@
 		roundedClasses.value,
 		elevationClasses.value,
 		paddingClasses.value,
-		marginClasses.value
+		marginClasses.value,
+		colorClasses.value
 	])
 
 	const codeStyles = computed(() => [
@@ -314,6 +318,8 @@
 		roundedStyles.value,
 		paddingStyles.value,
 		marginStyles.value,
+		colorStyles.value,
+		dimensionStyles.value,
 		{}
 	])
 
