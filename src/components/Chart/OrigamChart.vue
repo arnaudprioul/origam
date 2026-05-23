@@ -359,6 +359,25 @@
 			/>
 		</template>
 	</origam-chart-pareto>
+
+	<origam-chart-map
+			v-else-if="isMapType"
+			v-bind="mapProps"
+			:data-cy="dataCyAttr"
+			@point-click="onPointClick"
+			@legend-click="onLegendClick"
+			@series-toggle="onSeriesToggle"
+	>
+		<template
+				v-for="(_, name) in $slots"
+				#[name]="slotBindings"
+		>
+			<slot
+					:name="name"
+					v-bind="slotBindings ?? {}"
+			/>
+		</template>
+	</origam-chart-map>
 </template>
 
 <script
@@ -380,6 +399,7 @@
 	import OrigamChartSankey from './OrigamChartSankey.vue'
 	import OrigamChartStreamgraph from './OrigamChartStreamgraph.vue'
 	import OrigamChartBullet from './OrigamChartBullet.vue'
+	import OrigamChartMap from './OrigamChartMap.vue'
 	import OrigamChartPareto from './OrigamChartPareto.vue'
 	import OrigamChartPolarBar from './OrigamChartPolarBar.vue'
 	import OrigamChartVariwide from './OrigamChartVariwide.vue'
@@ -495,6 +515,7 @@
 	const isPolarBarType = computed(() => props.type === CHART_TYPE.POLAR_BAR)
 	const isBulletType = computed(() => props.type === CHART_TYPE.BULLET)
 	const isParetoType = computed(() => props.type === CHART_TYPE.PARETO)
+	const isMapType = computed(() => props.type === CHART_TYPE.MAP)
 
 	const dataCyAttr = computed(() => `origam-chart origam-chart--${ props.type }`)
 
@@ -837,6 +858,20 @@
 		animationDuration: props.animationDuration,
 		aspectRatio: props.aspectRatio,
 		xAxisFormat: props.xAxisFormat,
+		yAxisFormat: props.yAxisFormat
+	}))
+
+	const mapProps = computed(() => ({
+		series: seriesWithVisibility.value,
+		height: props.height,
+		title: props.title,
+		subtitle: props.subtitle,
+		showLegend: props.showLegend,
+		legendPosition: props.legendPosition,
+		showTooltip: props.showTooltip,
+		animated: props.animated,
+		animationDuration: props.animationDuration,
+		aspectRatio: props.aspectRatio,
 		yAxisFormat: props.yAxisFormat
 	}))
 

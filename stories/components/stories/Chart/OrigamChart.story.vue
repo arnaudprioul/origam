@@ -96,13 +96,13 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (27 primitives)">
+		<Variant title="Prop — type (28 primitives)">
 			<div
 					class="story-shell"
 					data-cy="chart-types"
 			>
 				<p class="hint">
-					One component, twenty-seven visualisation primitives. Switch via the
+					One component, twenty-eight visualisation primitives. Switch via the
 					<code>type</code> prop; the rest of the API is shared.
 				</p>
 				<div class="story-grid story-grid--3">
@@ -365,6 +365,15 @@
 								:series="FIXTURE_PARETO"
 								:height="240"
 								data-cy="chart-type-pareto"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>map</strong>
+						<origam-chart
+								type="map"
+								:series="FIXTURE_MAP"
+								:height="240"
+								data-cy="chart-type-map"
 						/>
 					</div>
 				</div>
@@ -887,7 +896,8 @@
 		{ value: 'variwide', label: 'variwide' },
 		{ value: 'polar-bar', label: 'polar-bar' },
 		{ value: 'bullet', label: 'bullet' },
-		{ value: 'pareto', label: 'pareto' }
+		{ value: 'pareto', label: 'pareto' },
+		{ value: 'map', label: 'map' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
@@ -1201,6 +1211,22 @@
 				{ category: 'Scratch', value: 41 },
 				{ category: 'Bent', value: 28 },
 				{ category: 'Other', value: 12 }
+			] as any
+		}
+	]
+
+	const FIXTURE_MAP: Array<IChartSeries> = [
+		{
+			name: 'GDP',
+			data: [
+				{ code: 'US', value: 27.4, name: 'United States' },
+				{ code: 'CN', value: 17.7, name: 'China' },
+				{ code: 'DE', value: 4.4, name: 'Germany' },
+				{ code: 'JP', value: 4.2, name: 'Japan' },
+				{ code: 'IN', value: 3.5, name: 'India' },
+				{ code: 'GB', value: 3.1, name: 'United Kingdom' },
+				{ code: 'FR', value: 3.0, name: 'France' },
+				{ code: 'BR', value: 2.1, name: 'Brazil' }
 			] as any
 		}
 	]

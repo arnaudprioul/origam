@@ -336,7 +336,9 @@ export * from './Chart/chart-honeycomb-color-mode.type'
 export * from './Chart/chart-treemap-algorithm.type'
 export * from './Chart/chart-word-cloud-rotation.type'
 export * from './Chart/chart-pictorial-direction.type'
+export * from './Chart/chart-pictorial-mode.type'
 export * from './Chart/chart-streamgraph-offset.type'
 export * from './Chart/chart-bullet-orientation.type'
+export * from './Chart/chart-map-mode.type'
 
 

@@ -1,5 +1,5 @@
 import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
-import type { TChartPictorialDirection, TIntent } from '../../types'
+import type { TChartPictorialDirection, TChartPictorialMode, TIntent } from '../../types'
 
 /**
  * Props for `<OrigamChartPictorial>` — the pictorial / isotype family.
@@ -40,6 +40,14 @@ export interface IChartPictorialProps extends IChartBaseProps {
      * Default `'vertical'`.
      */
     direction?: TChartPictorialDirection
+    /**
+     * Rendering mode.
+     * - `'stack'` — classic isotype: rows of small repeated icons (default).
+     * - `'fill'` — one large icon per category, clip-masked from the bottom
+     *   up to the fill ratio, like a thermometer / glass fill effect.
+     *   The unfilled portion shows the icon silhouette as a faint "shadow".
+     */
+    mode?: TChartPictorialMode
     /**
      * Display the raw value label above (vertical) or to the right
      * (horizontal) of each column. Default `true`.

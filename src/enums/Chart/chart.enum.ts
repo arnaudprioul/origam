@@ -25,5 +25,6 @@ export enum CHART_TYPE {
     VARIWIDE = 'variwide',
     POLAR_BAR = 'polar-bar',
     BULLET = 'bullet',
-    PARETO = 'pareto'
+    PARETO = 'pareto',
+    MAP = 'map'
 }

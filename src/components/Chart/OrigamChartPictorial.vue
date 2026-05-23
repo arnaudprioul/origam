@@ -55,9 +55,23 @@
 					>
 						<path :d="icon" />
 					</symbol>
+
+					<clipPath
+							v-for="col in fillModeColumns"
+							:key="`clip-${ col.seriesIndex }-${ col.dataIndex }`"
+							:id="`origam-chart-pictorial-clip-${ col.seriesIndex }-${ col.dataIndex }`"
+					>
+						<rect
+								:x="0"
+								:y="fillClipY(col)"
+								:width="fillIconSize"
+								:height="fillClipHeight(col)"
+						/>
+					</clipPath>
 				</defs>
 
 				<g
+						v-if="mode === 'stack'"
 						class="origam-chart__series"
 						data-cy="origam-chart-pictorial-series"
 				>
@@ -114,7 +128,79 @@
 				</g>
 
 				<g
-						v-if="showAxis && direction === 'vertical'"
+						v-else
+						class="origam-chart__series origam-chart__series--fill"
+						data-cy="origam-chart-pictorial-series"
+				>
+					<g
+							v-for="col in fillModeColumns"
+							:key="`fill-col-${ col.seriesIndex }-${ col.dataIndex }`"
+							:transform="`translate(${ fillColX(col) }, ${ fillColY(col) })`"
+							class="origam-chart-pictorial__column"
+							:data-cy="`origam-chart-pictorial-col-${ col.dataIndex }`"
+							tabindex="0"
+							role="button"
+							:aria-label="fillColumnAriaLabel(col)"
+							@click="onColumnActivate(col, $event)"
+							@keydown.enter.prevent="onColumnActivate(col, $event)"
+							@keydown.space.prevent="onColumnActivate(col, $event)"
+							@mouseenter="onColumnEnter(col)"
+							@mouseleave="onColumnLeave"
+					>
+						<use
+								href="#origam-chart-pictorial-icon"
+								:x="0"
+								:y="0"
+								:width="fillIconSize"
+								:height="fillIconSize"
+								:style="{ fill: emptyIconColor }"
+								class="origam-chart-pictorial__icon origam-chart-pictorial__icon--empty"
+						/>
+						<use
+								href="#origam-chart-pictorial-icon"
+								:x="0"
+								:y="0"
+								:width="fillIconSize"
+								:height="fillIconSize"
+								:style="{ fill: col.color }"
+								:clip-path="`url(#origam-chart-pictorial-clip-${ col.seriesIndex }-${ col.dataIndex })`"
+								class="origam-chart-pictorial__icon origam-chart-pictorial__icon--filled"
+						/>
+
+						<text
+								v-if="showLabel"
+								:x="fillIconSize / 2"
+								:y="fillLabelY(col)"
+								class="origam-chart-pictorial__value-label"
+								text-anchor="middle"
+								dominant-baseline="middle"
+								:data-cy="`origam-chart-pictorial-label-${ col.dataIndex }`"
+						>
+							{{ fillValueLabel(col) }}
+						</text>
+					</g>
+
+					<g
+							v-if="showAxis"
+							class="origam-chart-pictorial__axis"
+							data-cy="origam-chart-pictorial-axis-fill"
+					>
+						<text
+								v-for="col in fillModeColumns"
+								:key="`axis-fill-${ col.seriesIndex }-${ col.dataIndex }`"
+								:x="fillColX(col) + fillIconSize / 2"
+								:y="PLOT_Y + fillPlotHeight + AXIS_PADDING"
+								class="origam-chart-pictorial__axis-label"
+								text-anchor="middle"
+								dominant-baseline="hanging"
+						>
+							{{ axisLabel(col) }}
+						</text>
+					</g>
+				</g>
+
+				<g
+						v-if="mode === 'stack' && showAxis && direction === 'vertical'"
 						class="origam-chart-pictorial__axis"
 						data-cy="origam-chart-pictorial-axis"
 				>
@@ -132,7 +218,7 @@
 				</g>
 
 				<g
-						v-if="showAxis && direction === 'horizontal'"
+						v-if="mode === 'stack' && showAxis && direction === 'horizontal'"
 						class="origam-chart-pictorial__axis"
 						data-cy="origam-chart-pictorial-axis"
 				>
@@ -238,6 +324,7 @@
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
 	import type { TIntent } from '../../types'
+	import { CHART_PICTORIAL_MODE } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -263,6 +350,7 @@
 		iconColor: undefined,
 		emptyIconColor: 'rgba(0,0,0,0.1)',
 		iconsPerUnit: 1,
+		mode: 'stack',
 		direction: 'vertical',
 		height: 400,
 		title: undefined,
@@ -499,6 +587,111 @@
 	const visibleColumns = computed(() => columns.value.filter((c) => c.visible))
 
 	/*********************************************************
+	 * Fill mode geometry
+	 * One large icon per category, clip-masked from bottom up
+	 * to show the fill ratio (like a thermometer / glass fill).
+	 ********************************************************/
+	const FILL_LABEL_HEIGHT = 20
+	const FILL_GAP = 12
+	const FILL_AXIS_HEIGHT = computed<number>(() => (props.showAxis ? AXIS_LABEL_HEIGHT + AXIS_PADDING : 0))
+	const FILL_LABEL_RESERVE = computed<number>(() => (props.showLabel ? FILL_LABEL_HEIGHT : 0))
+
+	const fillPlotHeight = computed<number>(() =>
+		SVG_HEIGHT - FILL_AXIS_HEIGHT.value - FILL_LABEL_RESERVE.value
+	)
+
+	const fillCategoryCount = computed<number>(() => {
+		if (!props.series?.length) return 0
+		return Math.max(...props.series.map((s) => s.data?.length ?? 0))
+	})
+
+	const fillTotalCols = computed<number>(() =>
+		fillCategoryCount.value * (props.series?.length ?? 0)
+	)
+
+	const fillIconSize = computed<number>(() => {
+		const totalCols = fillTotalCols.value
+		if (totalCols <= 0) return 0
+		const totalGaps = (totalCols - 1) * FILL_GAP
+		return Math.max(24, (SVG_WIDTH - totalGaps) / totalCols)
+	})
+
+	const fillModeColumns = computed<Array<IChartPictorialColumn>>(() => {
+		if (props.mode !== CHART_PICTORIAL_MODE.FILL) return []
+		if (!props.series?.length || fillCategoryCount.value === 0) return []
+
+		const result: Array<IChartPictorialColumn> = []
+		const iSize = fillIconSize.value
+		const seriesLen = props.series.length
+
+		for (let catIdx = 0; catIdx < fillCategoryCount.value; catIdx++) {
+			for (let serIdx = 0; serIdx < seriesLen; serIdx++) {
+				const s = props.series[serIdx]
+				if (!s) continue
+				const isHidden = hiddenSeries.value.has(s.name)
+				const raw = s.data[catIdx]
+				const value = raw == null
+					? 0
+					: typeof raw === 'number' ? raw : (raw as { y: number }).y
+				const safeValue = Number.isFinite(value) && value >= 0 ? value : 0
+				const colIdx = catIdx * seriesLen + serIdx
+
+				result.push({
+					seriesIndex: serIdx,
+					dataIndex: catIdx,
+					category: categoryLabel(catIdx),
+					value: safeValue,
+					formatted: formatValue(safeValue),
+					totalSlots: 1,
+					filledSlots: 1,
+					color: colorForSeries(serIdx),
+					x: colIdx * (iSize + FILL_GAP),
+					y: PLOT_Y.value,
+					iconSize: iSize,
+					visible: !isHidden
+				})
+			}
+		}
+
+		return result.filter((c) => c.visible)
+	})
+
+	const fillColX = (col: IChartPictorialColumn): number =>
+		col.x
+
+	const fillColY = (col: IChartPictorialColumn): number =>
+		col.y
+
+	const fillRatio = (col: IChartPictorialColumn): number => {
+		const max = maxValue.value
+		if (max <= 0) return 0
+		return Math.min(1, Math.max(0, col.value / max))
+	}
+
+	const fillClipY = (col: IChartPictorialColumn): number => {
+		const ratio = fillRatio(col)
+		return col.iconSize * (1 - ratio)
+	}
+
+	const fillClipHeight = (col: IChartPictorialColumn): number => {
+		const ratio = fillRatio(col)
+		return col.iconSize * ratio
+	}
+
+	const fillLabelY = (_col: IChartPictorialColumn): number =>
+		-FILL_LABEL_HEIGHT / 2
+
+	const fillValueLabel = (col: IChartPictorialColumn): string => {
+		const pct = Math.round(fillRatio(col) * 100)
+		return `${ col.formatted } (${ pct }%)`
+	}
+
+	const fillColumnAriaLabel = (col: IChartPictorialColumn): string => {
+		const pct = Math.round(fillRatio(col) * 100)
+		return `${ col.category }: ${ col.formatted } — ${ pct }% of maximum`
+	}
+
+	/*********************************************************
 	 * Icon position helpers
 	 * Vertical: icons stacked bottom-to-top (slot 0 = bottom)
 	 * Horizontal: icons stacked left-to-right (slot 0 = left)
@@ -567,9 +760,13 @@
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredColKey = ref<string | null>(null)
 
+	const activeColumns = computed<Array<IChartPictorialColumn>>(() =>
+		props.mode === CHART_PICTORIAL_MODE.FILL ? fillModeColumns.value : visibleColumns.value
+	)
+
 	const hoveredColumn = computed<IChartPictorialColumn | null>(() => {
 		if (!hoveredColKey.value) return null
-		return visibleColumns.value.find(
+		return activeColumns.value.find(
 			(c) => `${ c.seriesIndex }-${ c.dataIndex }` === hoveredColKey.value
 		) ?? null
 	})
@@ -601,7 +798,7 @@
 		if (!props.series?.length) return true
 		const hasData = props.series.some((s) => s.data?.length > 0)
 		if (!hasData) return true
-		return visibleColumns.value.length === 0
+		return activeColumns.value.length === 0
 	})
 
 	/*********************************************************
@@ -610,6 +807,7 @@
 	const rootClasses = computed(() => [
 		{
 			[`origam-chart-pictorial--${ props.direction }`]: true,
+			[`origam-chart-pictorial--${ props.mode }`]: true,
 			[`origam-chart-pictorial--legend-${ props.legendPosition }`]: true,
 			'origam-chart-pictorial--no-animation': !props.animated
 		},
@@ -930,8 +1128,21 @@
 			border-radius: var(--origam-chart__legend-swatch---border-radius, 3px);
 		}
 
+		&--fill &__icon--filled {
+			transition: clip-path 400ms ease;
+		}
+
+		&--fill &__column:hover &__icon--filled,
+		&--fill &__column:focus-visible &__icon--filled {
+			filter: brightness(1.12) saturate(1.1);
+		}
+
 		&--no-animation &__icon {
 			animation: none;
+		}
+
+		&--no-animation &__icon--filled {
+			transition: none;
 		}
 	}
 

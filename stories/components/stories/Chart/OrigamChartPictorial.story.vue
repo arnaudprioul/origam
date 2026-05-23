@@ -14,7 +14,8 @@
 					showAxis: true,
 					legendPosition: 'bottom',
 					direction: 'vertical',
-					iconsPerUnit: 10
+					iconsPerUnit: 10,
+					mode: CHART_PICTORIAL_MODE.FILL
 				})"
 		>
 			<template #default="{ state }">
@@ -23,8 +24,8 @@
 						data-cy="pictorial-playground"
 				>
 					<origam-chart-pictorial
-							:series="FIXTURE_SATISFACTION"
-							:categories="FIXTURE_SATISFACTION_CATEGORIES"
+							:series="FIXTURE_BEER"
+							:categories="FIXTURE_BEER_CATEGORIES"
 							:height="Number(state.height)"
 							:animated="Boolean(state.animated)"
 							:show-legend="Boolean(state.showLegend)"
@@ -34,8 +35,10 @@
 							:legend-position="state.legendPosition"
 							:direction="state.direction"
 							:icons-per-unit="Number(state.iconsPerUnit)"
-							title="Customer satisfaction"
-							subtitle="Q1 2026"
+							:mode="state.mode"
+							:icon="PICTORIAL_ICON_BEER_MUG"
+							title="Beer consumption per capita (litres)"
+							subtitle="Top 8 countries"
 							data-cy="pictorial-playground-chart"
 							@point-click="onPointClick"
 							@legend-click="onLegendClick"
@@ -48,6 +51,11 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
+				<HstSelect
+						v-model="state.mode"
+						title="mode"
+						:options="MODE_OPTIONS"
+				/>
 				<HstSelect
 						v-model="state.direction"
 						title="direction"
@@ -89,14 +97,48 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — icon (person / heart / star / dollar)">
+		<Variant title="Prop — mode (stack vs fill)">
+			<div
+					class="story-shell"
+					data-cy="pictorial-mode"
+			>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>mode="stack" (classic isotype)</strong>
+						<origam-chart-pictorial
+								:series="FIXTURE_SATISFACTION"
+								:categories="FIXTURE_SATISFACTION_CATEGORIES"
+								:icons-per-unit="5"
+								:height="360"
+								mode="stack"
+								title="Customer satisfaction"
+								data-cy="pictorial-mode-stack"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>mode="fill" (glass fill / thermometer)</strong>
+						<origam-chart-pictorial
+								:series="FIXTURE_BEER"
+								:categories="FIXTURE_BEER_CATEGORIES"
+								:height="360"
+								mode="fill"
+								:icon="PICTORIAL_ICON_BEER_MUG"
+								title="Beer consumption per capita"
+								data-cy="pictorial-mode-fill"
+						/>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — icon (person / beer / heart / star / dollar)">
 			<div
 					class="story-shell"
 					data-cy="pictorial-icons"
 			>
-				<div class="story-grid story-grid--4">
+				<div class="story-grid story-grid--3">
 					<div class="story-col">
-						<strong>person (default)</strong>
+						<strong>person (stack, default)</strong>
 						<origam-chart-pictorial
 								:series="FIXTURE_SATISFACTION"
 								:categories="FIXTURE_SATISFACTION_CATEGORIES"
@@ -107,12 +149,24 @@
 						/>
 					</div>
 					<div class="story-col">
-						<strong>heart</strong>
+						<strong>beer (fill mode)</strong>
+						<origam-chart-pictorial
+								:series="FIXTURE_BEER"
+								:categories="FIXTURE_BEER_CATEGORIES"
+								:height="300"
+								mode="fill"
+								:icon="PICTORIAL_ICON_BEER_MUG"
+								title="Beer consumption"
+								data-cy="pictorial-icon-beer"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>heart (fill mode)</strong>
 						<origam-chart-pictorial
 								:series="FIXTURE_SATISFACTION"
 								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
 								:height="300"
+								mode="fill"
 								:icon="PICTORIAL_ICON_HEART"
 								icon-color="danger"
 								title="Satisfaction"
@@ -120,7 +174,7 @@
 						/>
 					</div>
 					<div class="story-col">
-						<strong>star</strong>
+						<strong>star (stack)</strong>
 						<origam-chart-pictorial
 								:series="FIXTURE_RATINGS"
 								:categories="FIXTURE_RATINGS_CATEGORIES"
@@ -133,16 +187,29 @@
 						/>
 					</div>
 					<div class="story-col">
-						<strong>dollar</strong>
+						<strong>dollar (fill mode)</strong>
 						<origam-chart-pictorial
 								:series="FIXTURE_SATISFACTION"
 								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
 								:height="300"
+								mode="fill"
 								:icon="PICTORIAL_ICON_DOLLAR"
 								icon-color="success"
-								title="Satisfaction"
+								title="Budget"
 								data-cy="pictorial-icon-dollar"
+						/>
+					</div>
+					<div class="story-col">
+						<strong>house (fill mode)</strong>
+						<origam-chart-pictorial
+								:series="FIXTURE_SATISFACTION"
+								:categories="FIXTURE_SATISFACTION_CATEGORIES"
+								:height="300"
+								mode="fill"
+								:icon="PICTORIAL_ICON_HOUSE"
+								icon-color="info"
+								title="Occupancy"
+								data-cy="pictorial-icon-house"
 						/>
 					</div>
 				</div>
@@ -337,12 +404,21 @@
 	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
 
 	import {
+		PICTORIAL_ICON_BEER_MUG,
 		PICTORIAL_ICON_DOLLAR,
 		PICTORIAL_ICON_HEART,
+		PICTORIAL_ICON_HOUSE,
 		PICTORIAL_ICON_STAR
 	} from '@origam/consts'
 
+	import { CHART_PICTORIAL_MODE } from '@origam/enums'
+
 	import { useStoryInitState } from '@stories/composables'
+
+	const MODE_OPTIONS = [
+		{ value: CHART_PICTORIAL_MODE.STACK, label: 'stack' },
+		{ value: CHART_PICTORIAL_MODE.FILL, label: 'fill' }
+	]
 
 	const DIRECTION_OPTIONS = [
 		{ value: 'vertical', label: 'vertical' },
@@ -354,6 +430,21 @@
 		{ value: 'bottom', label: 'bottom' },
 		{ value: 'left', label: 'left' },
 		{ value: 'right', label: 'right' }
+	]
+
+	const FIXTURE_BEER_CATEGORIES = [
+		'Czech Republic',
+		'Austria',
+		'Germany',
+		'Poland',
+		'Ireland',
+		'Romania',
+		'Spain',
+		'Belgium'
+	]
+
+	const FIXTURE_BEER: Array<IChartSeries> = [
+		{ name: 'Litres per capita', data: [188, 107, 99, 98, 91, 88, 79, 71] }
 	]
 
 	const FIXTURE_SATISFACTION_CATEGORIES = ['Promoters', 'Passives', 'Detractors']

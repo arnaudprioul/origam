@@ -15,8 +15,10 @@ export * from './Chart/chart-honeycomb-color-mode.enum'
 export * from './Chart/chart-treemap-algorithm.enum'
 export * from './Chart/chart-word-cloud-rotation.enum'
 export * from './Chart/chart-pictorial-direction.enum'
+export * from './Chart/chart-pictorial-mode.enum'
 export * from './Chart/chart-streamgraph-offset.enum'
 export * from './Chart/chart-bullet-orientation.enum'
+export * from './Chart/chart-map-mode.enum'
 
 export * from './Code/code-lang.enum'
 
