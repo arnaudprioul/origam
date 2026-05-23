@@ -591,3 +591,231 @@ describe('useChart — secondary Y axis (dual scale)', () => {
         expect(Math.max(...tickValues)).toBeLessThanOrEqual(200)
     })
 })
+
+import {
+    computePlotBandGeometry,
+    computePlotLineGeometry
+} from './chart.composable'
+
+const PLOT_CATS = ['Jan', 'Feb', 'Mar', 'Jun']
+const PLOT_X0 = 40
+const PLOT_X1 = 360
+const PLOT_Y0 = 20
+const PLOT_Y1 = 170
+
+const makePlotScales = () => ({
+    x: (v: number | string): number => {
+        const idx = typeof v === 'string' ? PLOT_CATS.indexOf(v) : Number(v)
+        const slots = PLOT_CATS.length
+        return PLOT_X0 + (idx / (slots - 1)) * (PLOT_X1 - PLOT_X0)
+    },
+    y: (v: number): number => {
+        return PLOT_Y1 - ((v / 60) * (PLOT_Y1 - PLOT_Y0))
+    }
+})
+
+describe('computePlotBandGeometry — Y-axis bands', () => {
+    const scales = makePlotScales()
+
+    it('returns a rect spanning full plot width for a Y-axis band', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 20, to: 40, color: 'success', opacity: 0.15 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.x).toBe(PLOT_X0)
+        expect(geo!.width).toBe(PLOT_X1 - PLOT_X0)
+        expect(geo!.height).toBeGreaterThan(0)
+    })
+
+    it('top of band is above the bottom for from < to in axis units', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 10, to: 30 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.y + geo!.height).toBeGreaterThan(geo!.y)
+    })
+
+    it('returns null when band is entirely above the plot (values > yMax)', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 70, to: 90 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).toBeNull()
+    })
+
+    it('correctly places the label centre inside the band', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 20, to: 40, label: 'Target' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.label).toBe('Target')
+        expect(geo!.labelX).toBe((PLOT_X0 + PLOT_X1) / 2)
+        expect(geo!.labelY).toBeCloseTo(geo!.y + geo!.height / 2, 1)
+    })
+
+    it('resolves intent color string to a CSS var expression for fill', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 10, to: 20, color: 'danger' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.fill).toContain('var(')
+    })
+
+    it('uses default opacity 0.15 when not specified', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 10, to: 20 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.opacity).toBe(0.15)
+    })
+
+    it('respects custom opacity', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'y', from: 10, to: 20, opacity: 0.4 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.opacity).toBe(0.4)
+    })
+})
+
+describe('computePlotBandGeometry — X-axis bands', () => {
+    const scales = makePlotScales()
+
+    it('returns a rect spanning full plot height for an X-axis band', () => {
+        const geo = computePlotBandGeometry(
+            { axis: 'x', from: 'Jan', to: 'Feb' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.y).toBe(PLOT_Y0)
+        expect(geo!.height).toBe(PLOT_Y1 - PLOT_Y0)
+        expect(geo!.width).toBeGreaterThan(0)
+    })
+
+    it('Jan–Mar band is wider than Jan–Feb band', () => {
+        const geo12 = computePlotBandGeometry(
+            { axis: 'x', from: 'Jan', to: 'Feb' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        const geo13 = computePlotBandGeometry(
+            { axis: 'x', from: 'Jan', to: 'Mar' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo13!.width).toBeGreaterThan(geo12!.width)
+    })
+})
+
+describe('computePlotLineGeometry — Y-axis lines', () => {
+    const scales = makePlotScales()
+
+    it('returns a horizontal line across the full plot width', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.x1).toBe(PLOT_X0)
+        expect(geo!.x2).toBe(PLOT_X1)
+        expect(geo!.y1).toBe(geo!.y2)
+    })
+
+    it('returns null when the Y value maps outside the plot', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 999 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).toBeNull()
+    })
+
+    it('solid dash resolves to "none"', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30, dash: 'solid' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.strokeDasharray).toBe('none')
+    })
+
+    it('dashed dash resolves to a non-empty pattern', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30, dash: 'dashed' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.strokeDasharray).not.toBe('none')
+        expect(geo!.strokeDasharray.length).toBeGreaterThan(0)
+    })
+
+    it('dotted and dashed produce different patterns', () => {
+        const geoDashed = computePlotLineGeometry(
+            { axis: 'y', value: 30, dash: 'dashed' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        const geoDotted = computePlotLineGeometry(
+            { axis: 'y', value: 30, dash: 'dotted' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geoDashed!.strokeDasharray).not.toBe(geoDotted!.strokeDasharray)
+    })
+
+    it('labelAlign=right places label at right edge', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30, label: 'Avg', labelAlign: 'right' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.labelX).toBe(PLOT_X1)
+        expect(geo!.labelAnchor).toBe('end')
+    })
+
+    it('labelAlign=left places label at left edge', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30, label: 'Avg', labelAlign: 'left' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.labelX).toBe(PLOT_X0)
+        expect(geo!.labelAnchor).toBe('start')
+    })
+
+    it('default stroke width is 1.5', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.strokeWidth).toBe(1.5)
+    })
+
+    it('custom stroke width is respected', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'y', value: 30, width: 3 },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo!.strokeWidth).toBe(3)
+    })
+})
+
+describe('computePlotLineGeometry — X-axis lines', () => {
+    const scales = makePlotScales()
+
+    it('returns a vertical line across the full plot height', () => {
+        const geo = computePlotLineGeometry(
+            { axis: 'x', value: 'Jun' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(geo).not.toBeNull()
+        expect(geo!.y1).toBe(PLOT_Y0)
+        expect(geo!.y2).toBe(PLOT_Y1)
+        expect(geo!.x1).toBe(geo!.x2)
+    })
+
+    it('resolves the correct pixel X: Jun > Jan', () => {
+        const junGeo = computePlotLineGeometry(
+            { axis: 'x', value: 'Jun' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        const janGeo = computePlotLineGeometry(
+            { axis: 'x', value: 'Jan' },
+            scales, PLOT_CATS, PLOT_X0, PLOT_X1, PLOT_Y0, PLOT_Y1
+        )
+        expect(junGeo!.x1).toBeGreaterThan(janGeo!.x1)
+    })
+})

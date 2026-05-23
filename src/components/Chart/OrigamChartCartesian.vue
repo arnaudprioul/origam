@@ -28,6 +28,41 @@
 			</slot>
 		</div>
 
+		<nav
+				v-if="hasDrilldown && isDrilled"
+				class="origam-chart-cartesian__breadcrumb"
+				aria-label="Drilldown navigation"
+				data-cy="origam-chart-cartesian-breadcrumb"
+		>
+			<button
+					class="origam-chart-cartesian__breadcrumb-back"
+					type="button"
+					:aria-label="drilldownBackLabel"
+					data-cy="origam-chart-cartesian-breadcrumb-back"
+					@click="onDrillUp"
+			>{{ drilldownBackLabel }}</button>
+			<ol class="origam-chart-cartesian__breadcrumb-trail">
+				<li
+						v-for="item in breadcrumbItems"
+						:key="item.depth"
+						class="origam-chart-cartesian__breadcrumb-item"
+						:class="{ 'origam-chart-cartesian__breadcrumb-item--active': item.depth === drillStack.length - 1 }"
+				>
+					<button
+							v-if="item.depth < drillStack.length - 1"
+							class="origam-chart-cartesian__breadcrumb-link"
+							type="button"
+							@click="onBreadcrumbClick(item.depth)"
+					>{{ item.name }}</button>
+					<span
+							v-else
+							class="origam-chart-cartesian__breadcrumb-current"
+							aria-current="page"
+					>{{ item.name }}</span>
+				</li>
+			</ol>
+		</nav>
+
 		<div
 				class="origam-chart-cartesian__body"
 				:class="bodyClasses"
@@ -58,6 +93,61 @@
 						:y-axis-format="yAxisFormat"
 						:secondary-y-axis-format="secondaryYAxis?.format"
 				/>
+
+				<g
+						v-if="belowBands.length || belowLines.length"
+						class="origam-chart__plot-decorations origam-chart__plot-decorations--below"
+						data-cy="origam-chart-plot-below"
+				>
+					<template
+							v-for="(d, i) in belowBands"
+							:key="`pb-below-${ i }`"
+					>
+						<rect
+								class="origam-chart__plot-band"
+								:x="d.geo!.x"
+								:y="d.geo!.y"
+								:width="d.geo!.width"
+								:height="d.geo!.height"
+								:style="{ fill: d.geo!.fill, fillOpacity: d.geo!.opacity }"
+								data-cy="origam-chart-plot-band"
+						/>
+						<text
+								v-if="d.geo!.label"
+								class="origam-chart__plot-band-label"
+								:x="d.geo!.labelX"
+								:y="d.geo!.labelY"
+								text-anchor="middle"
+								dominant-baseline="middle"
+								:style="{ fill: d.geo!.labelColor }"
+								data-cy="origam-chart-plot-band-label"
+						>{{ d.geo!.label }}</text>
+					</template>
+					<template
+							v-for="(d, i) in belowLines"
+							:key="`pl-below-${ i }`"
+					>
+						<line
+								class="origam-chart__plot-line"
+								:x1="d.geo!.x1"
+								:y1="d.geo!.y1"
+								:x2="d.geo!.x2"
+								:y2="d.geo!.y2"
+								:style="{ stroke: d.geo!.stroke, strokeWidth: d.geo!.strokeWidth, strokeDasharray: d.geo!.strokeDasharray }"
+								data-cy="origam-chart-plot-line"
+						/>
+						<text
+								v-if="d.geo!.label"
+								class="origam-chart__plot-line-label"
+								:x="d.geo!.labelX"
+								:y="d.geo!.labelY"
+								:text-anchor="d.geo!.labelAnchor"
+								dominant-baseline="auto"
+								:style="{ fill: d.geo!.stroke }"
+								data-cy="origam-chart-plot-line-label"
+						>{{ d.geo!.label }}</text>
+					</template>
+				</g>
 
 				<g
 						class="origam-chart__series"
@@ -109,6 +199,61 @@
 								@mouseenter="onPointEnter(path)"
 								@mouseleave="onPointLeaveEvent"
 						/>
+					</template>
+				</g>
+
+				<g
+						v-if="aboveBands.length || aboveLines.length"
+						class="origam-chart__plot-decorations origam-chart__plot-decorations--above"
+						data-cy="origam-chart-plot-above"
+				>
+					<template
+							v-for="(d, i) in aboveBands"
+							:key="`pb-above-${ i }`"
+					>
+						<rect
+								class="origam-chart__plot-band"
+								:x="d.geo!.x"
+								:y="d.geo!.y"
+								:width="d.geo!.width"
+								:height="d.geo!.height"
+								:style="{ fill: d.geo!.fill, fillOpacity: d.geo!.opacity }"
+								data-cy="origam-chart-plot-band"
+						/>
+						<text
+								v-if="d.geo!.label"
+								class="origam-chart__plot-band-label"
+								:x="d.geo!.labelX"
+								:y="d.geo!.labelY"
+								text-anchor="middle"
+								dominant-baseline="middle"
+								:style="{ fill: d.geo!.labelColor }"
+								data-cy="origam-chart-plot-band-label"
+						>{{ d.geo!.label }}</text>
+					</template>
+					<template
+							v-for="(d, i) in aboveLines"
+							:key="`pl-above-${ i }`"
+					>
+						<line
+								class="origam-chart__plot-line"
+								:x1="d.geo!.x1"
+								:y1="d.geo!.y1"
+								:x2="d.geo!.x2"
+								:y2="d.geo!.y2"
+								:style="{ stroke: d.geo!.stroke, strokeWidth: d.geo!.strokeWidth, strokeDasharray: d.geo!.strokeDasharray }"
+								data-cy="origam-chart-plot-line"
+						/>
+						<text
+								v-if="d.geo!.label"
+								class="origam-chart__plot-line-label"
+								:x="d.geo!.labelX"
+								:y="d.geo!.labelY"
+								:text-anchor="d.geo!.labelAnchor"
+								dominant-baseline="auto"
+								:style="{ fill: d.geo!.stroke }"
+								data-cy="origam-chart-plot-line-label"
+						>{{ d.geo!.label }}</text>
 					</template>
 				</g>
 			</svg>
@@ -185,6 +330,11 @@
 		useRounded
 	} from '../../composables'
 
+	import {
+		computePlotBandGeometry,
+		computePlotLineGeometry
+	} from '../../composables/Chart/chart.composable'
+
 	import OrigamChartAxis from './OrigamChartAxis.vue'
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
@@ -192,9 +342,14 @@
 	import type {
 		IChartCartesianEmits,
 		IChartCartesianProps,
+		IChartDrilldownFrame,
+		IChartDrilldownLink,
 		IChartPath,
+		IChartPlotBand,
+		IChartPlotLine,
 		IChartPoint,
-		IChartSeries
+		IChartSeries,
+		IChartSeriesPoint
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -239,10 +394,88 @@
 		smoothing: 'none',
 		yMin: undefined,
 		yMax: undefined,
-		secondaryYAxis: undefined
+		secondaryYAxis: undefined,
+		plotBands: () => [],
+		plotLines: () => [],
+		drilldown: undefined
 	})
 
 	const emit = defineEmits<IChartCartesianEmits>()
+
+	/*********************************************************
+	 * Drilldown state — a navigation stack where index 0 is the
+	 * root frame (props.series / props.categories). Each drill-in
+	 * pushes a new frame; "Back" pops it. The chart engine always
+	 * reads the top frame so reactivity flows automatically.
+	 *
+	 * Cycle detection: a point's drilldown id is looked up in the
+	 * dataset bank; if the id already appears in the current stack
+	 * we silently ignore the click to prevent infinite loops.
+	 * Maximum depth is naturally bounded by the number of distinct
+	 * dataset ids the consumer provides — infinite levels are
+	 * supported as long as there are no cycles.
+	 ********************************************************/
+	const drillStack = ref<Array<IChartDrilldownFrame>>([])
+
+	const activeSeries = computed<Array<IChartSeries>>(() => {
+		if (!drillStack.value.length) return props.series
+		return drillStack.value[drillStack.value.length - 1].series
+	})
+
+	const activeCategories = computed<Array<string>>(() => {
+		if (!drillStack.value.length) return props.categories
+		return drillStack.value[drillStack.value.length - 1].categories
+	})
+
+	const hasDrilldown = computed(() => Boolean(props.drilldown?.datasets?.length))
+
+	const isDrilled = computed(() => drillStack.value.length > 0)
+
+	const breadcrumbItems = computed<Array<{ name: string, depth: number }>>(() => {
+		const root = { name: props.title ?? 'Root', depth: -1 }
+		return [root, ...drillStack.value.map((frame, i) => ({ name: frame.name, depth: i }))]
+	})
+
+	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+
+	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
+		if (!props.drilldown) return null
+		const dataset = props.drilldown.datasets.find((d) => d.id === link.id)
+		if (!dataset) return null
+		return {
+			name: dataset.name,
+			series: dataset.series,
+			categories: dataset.categories ?? []
+		}
+	}
+
+	const isDrilldownCycle = (id: string): boolean =>
+		drillStack.value.some((frame) => frame.name === id)
+
+	const onDrillIn = (link: IChartDrilldownLink, point: IChartPoint): void => {
+		if (isDrilldownCycle(link.id)) return
+		const frame = resolveDrilldownLink(link)
+		if (!frame) return
+		drillStack.value = [...drillStack.value, frame]
+		hoveredPath.value = null
+		emit('drill', link, point)
+	}
+
+	const onDrillUp = (): void => {
+		if (!drillStack.value.length) return
+		drillStack.value = drillStack.value.slice(0, -1)
+		hoveredPath.value = null
+		emit('drill-up')
+	}
+
+	const onBreadcrumbClick = (depth: number): void => {
+		if (depth === -1) {
+			drillStack.value = []
+		} else {
+			drillStack.value = drillStack.value.slice(0, depth + 1)
+		}
+		hoveredPath.value = null
+	}
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -266,7 +499,7 @@
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
 	const hasSecondaryAxis = computed(() =>
-		Boolean(props.secondaryYAxis) || props.series.some((s) => (s.yAxis ?? 0) === 1)
+		Boolean(props.secondaryYAxis) || activeSeries.value.some((s) => (s.yAxis ?? 0) === 1)
 	)
 
 	const chartPadding = computed(() =>
@@ -277,11 +510,13 @@
 	 * Engine — `useChart` produces every descriptor needed to
 	 * paint. The thunks make the composable reactive against
 	 * `props` without owning the prop reference itself.
+	 * When drilled in, `activeSeries` / `activeCategories` point
+	 * to the sub-dataset instead of the root props.
 	 ********************************************************/
 	const chart = useChart({
 		type: () => props.type,
-		series: () => props.series,
-		categories: () => props.categories,
+		series: () => activeSeries.value,
+		categories: () => activeCategories.value,
 		stacked: () => props.stacked,
 		stacking: () => props.stacking,
 		// donutHoleSize is a no-op for cartesian; fixed to 0.
@@ -296,7 +531,51 @@
 		secondaryYAxis: () => props.secondaryYAxis
 	})
 
-	const { viewBox, ticks, secondaryTicks, paths, legend, plot, yRange, slotCount, effectiveStacking, percentValues } = chart
+	const { viewBox, ticks, secondaryTicks, paths, legend, plot, scales, yRange, slotCount, effectiveStacking, percentValues } = chart
+
+	/*********************************************************
+	 * Plot bands + lines — background decoration layers.
+	 * Split by `layer` so the template renders below/above
+	 * data in the correct order without z-index tricks.
+	 ********************************************************/
+	const bandDescriptors = computed(() => {
+		const { x0, x1, y0, y1 } = plot.value
+		return (props.plotBands ?? []).map((band: IChartPlotBand) => ({
+			band,
+			geo: computePlotBandGeometry(
+				band,
+				scales.value,
+				activeCategories.value,
+				x0, x1, y0, y1
+			)
+		})).filter((d) => d.geo !== null)
+	})
+
+	const lineDescriptors = computed(() => {
+		const { x0, x1, y0, y1 } = plot.value
+		return (props.plotLines ?? []).map((line: IChartPlotLine) => ({
+			line,
+			geo: computePlotLineGeometry(
+				line,
+				scales.value,
+				activeCategories.value,
+				x0, x1, y0, y1
+			)
+		})).filter((d) => d.geo !== null)
+	})
+
+	const belowBands = computed(() =>
+		bandDescriptors.value.filter((d) => (d.band.layer ?? 'below') === 'below')
+	)
+	const aboveBands = computed(() =>
+		bandDescriptors.value.filter((d) => d.band.layer === 'above')
+	)
+	const belowLines = computed(() =>
+		lineDescriptors.value.filter((d) => (d.line.layer ?? 'above') === 'below')
+	)
+	const aboveLines = computed(() =>
+		lineDescriptors.value.filter((d) => (d.line.layer ?? 'above') === 'above')
+	)
 
 	/*********************************************************
 	 * Hover / tooltip — pure data flow, no DOM measurements
@@ -310,7 +589,7 @@
 		const series = p.series
 		const dataIdx = p.dataIndex ?? 0
 		const entry = series.data[dataIdx]
-		const x = typeof entry === 'number' ? (props.categories[dataIdx] ?? dataIdx) : entry.x
+		const x = typeof entry === 'number' ? (activeCategories.value[dataIdx] ?? dataIdx) : entry.x
 		const y = typeof entry === 'number' ? entry : entry.y
 		return {
 			seriesIndex: p.seriesIndex,
@@ -326,15 +605,15 @@
 	)
 	const hoveredCategory = computed<string | number>(() => {
 		if (!hoveredPoint.value) return ''
-		return props.categories[hoveredPoint.value.dataIndex] ?? hoveredPoint.value.x
+		return activeCategories.value[hoveredPoint.value.dataIndex] ?? hoveredPoint.value.x
 	})
 
 	/*********************************************************
 	 * Empty state — fired when no series carries usable data.
 	 ********************************************************/
 	const showEmpty = computed(() => {
-		if (!props.series?.length) return true
-		return props.series.every((s) => !s.data?.length || s.visible === false)
+		if (!activeSeries.value?.length) return true
+		return activeSeries.value.every((s) => !s.data?.length || s.visible === false)
 	})
 
 	/*********************************************************
@@ -485,9 +764,23 @@
 		if (!hoveredPoint.value || hoveredPath.value !== path) {
 			hoveredPath.value = path
 		}
-		if (hoveredPoint.value) {
-			emit('point-click', hoveredPoint.value, event)
+		if (!hoveredPoint.value) return
+
+		const currentPoint = hoveredPoint.value
+
+		if (hasDrilldown.value) {
+			const dataIdx = path.dataIndex ?? 0
+			const entry = path.series.data[dataIdx]
+			const drillLink = (typeof entry !== 'number')
+				? (entry as IChartSeriesPoint).drilldown
+				: undefined
+			if (drillLink) {
+				onDrillIn(drillLink, currentPoint)
+				return
+			}
 		}
+
+		emit('point-click', currentPoint, event)
 	}
 
 	const onLegendClick = (series: IChartSeries, index: number): void => {
@@ -506,7 +799,7 @@
 	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
 	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
 	const svgDesc = computed(() => {
-		const seriesCount = props.series.length
+		const seriesCount = activeSeries.value.length
 		if (!seriesCount) return 'No data'
 		const range = yRange.value
 		const points = slotCount.value
@@ -517,7 +810,7 @@
 		const dataIdx = path.dataIndex ?? 0
 		const entry = path.series.data[dataIdx]
 		const y = typeof entry === 'number' ? entry : entry.y
-		const cat = props.categories[dataIdx] ?? dataIdx
+		const cat = activeCategories.value[dataIdx] ?? dataIdx
 		const isPercent = effectiveStacking.value === 'percent' && props.stacked
 		if (isPercent) {
 			const pct = percentValues.value.get(path.seriesIndex)?.[dataIdx] ?? 0
@@ -541,42 +834,47 @@
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
 		box-sizing: border-box;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto auto 1fr auto;
 		grid-template-columns: 1fr;
 		grid-template-areas:
 			"header"
+			"breadcrumb"
 			"body"
 			"legend";
 
 		&--legend-top {
 			grid-template-areas:
 				"header"
+				"breadcrumb"
 				"legend"
 				"body";
-			grid-template-rows: auto auto 1fr;
+			grid-template-rows: auto auto auto 1fr;
 		}
 
 		&--legend-bottom {
 			grid-template-areas:
 				"header"
+				"breadcrumb"
 				"body"
 				"legend";
-			grid-template-rows: auto 1fr auto;
+			grid-template-rows: auto auto 1fr auto;
 		}
 
 		&--legend-left {
 			grid-template-columns: auto minmax(0, 1fr);
-			grid-template-rows: auto minmax(0, 1fr);
+			grid-template-rows: auto auto minmax(0, 1fr);
 			grid-template-areas:
 				"header header"
+				"breadcrumb breadcrumb"
 				"legend body";
 		}
 
 		&--legend-right {
 			grid-template-columns: minmax(0, 1fr) auto;
-			grid-template-rows: auto minmax(0, 1fr);
+			grid-template-rows: auto auto minmax(0, 1fr);
 			grid-template-areas:
 				"header header"
+				"breadcrumb breadcrumb"
 				"body legend";
 		}
 
@@ -585,6 +883,79 @@
 			display: flex;
 			flex-direction: column;
 			gap: 4px;
+		}
+
+		&__breadcrumb {
+			grid-area: breadcrumb;
+			display: flex;
+			align-items: center;
+			gap: var(--origam-chart__breadcrumb---gap, 8px);
+			font-size: var(--origam-chart__breadcrumb---font-size, 0.8125rem);
+			color: var(--origam-chart__breadcrumb---color, var(--origam-color-text-secondary, #6b7280));
+		}
+
+		&__breadcrumb-back {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			padding: 4px 10px;
+			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color-border-default, #d1d5db));
+			border-radius: var(--origam-chart__breadcrumb-back---border-radius, 4px);
+			background-color: var(--origam-chart__breadcrumb-back---background-color, transparent);
+			color: var(--origam-chart__breadcrumb-back---color, inherit);
+			font-size: inherit;
+			cursor: pointer;
+			white-space: nowrap;
+			transition: background-color 120ms ease, border-color 120ms ease;
+
+			&:hover,
+			&:focus-visible {
+				background-color: var(--origam-chart__breadcrumb-back---hover-background-color, rgba(0, 0, 0, 0.05));
+				outline: none;
+			}
+		}
+
+		&__breadcrumb-trail {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			flex-wrap: wrap;
+		}
+
+		&__breadcrumb-item {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+
+			&:not(:last-child)::after {
+				content: "/";
+				opacity: 0.5;
+			}
+		}
+
+		&__breadcrumb-link {
+			background: none;
+			border: none;
+			padding: 0;
+			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color-action-primary-text, #3b82f6));
+			font-size: inherit;
+			cursor: pointer;
+			text-decoration: underline;
+			text-underline-offset: 2px;
+
+			&:hover,
+			&:focus-visible {
+				opacity: 0.8;
+				outline: none;
+			}
+		}
+
+		&__breadcrumb-current {
+			font-weight: var(--origam-chart__breadcrumb-current---font-weight, 600);
+			color: var(--origam-chart__breadcrumb-current---color, inherit);
 		}
 
 		&__title {
@@ -773,6 +1144,23 @@
 			width: 12px;
 			height: 12px;
 			border-radius: var(--origam-chart__legend-swatch---border-radius, 3px);
+		}
+
+		.origam-chart__plot-band-label {
+			font-size: var(--origam-chart__plot-band-label---font-size, 0.6875rem);
+			font-weight: var(--origam-chart__plot-band-label---font-weight, 600);
+			pointer-events: none;
+		}
+
+		.origam-chart__plot-line {
+			pointer-events: none;
+			fill: none;
+		}
+
+		.origam-chart__plot-line-label {
+			font-size: var(--origam-chart__plot-line-label---font-size, 0.6875rem);
+			font-weight: var(--origam-chart__plot-line-label---font-weight, 600);
+			pointer-events: none;
 		}
 
 		&--no-animation .origam-chart__path,

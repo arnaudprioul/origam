@@ -329,6 +329,9 @@ export * from './Calendar/calendar.interface'
 
 export * from './Chart/chart-series.interface'
 export * from './Chart/chart-point.interface'
+export * from './Chart/chart-drilldown.interface'
+export * from './Chart/chart-plot-band.interface'
+export * from './Chart/chart-plot-line.interface'
 export * from './Chart/chart.interface'
 export * from './Chart/chart-base.interface'
 

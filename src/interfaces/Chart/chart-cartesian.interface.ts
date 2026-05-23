@@ -2,6 +2,11 @@ import type {
     IChartBaseEmits,
     IChartBaseProps,
     IChartBaseSlots,
+    IChartDrilldownLink,
+    IChartDrilldownProps,
+    IChartPlotBand,
+    IChartPlotLine,
+    IChartPoint,
     IChartSecondaryYAxis
 } from '../../interfaces'
 
@@ -66,10 +71,34 @@ export interface IChartCartesianProps extends IChartBaseProps {
      * series uses `yAxis: 1` OR when this prop is explicitly set.
      */
     secondaryYAxis?: IChartSecondaryYAxis
+    /**
+     * Coloured rectangular zones drawn behind (or above) the chart
+     * data. Cartesian-only. Bands with `layer='below'` (default)
+     * are drawn before the series paths; `layer='above'` after.
+     */
+    plotBands?: Array<IChartPlotBand>
+    /**
+     * Threshold lines drawn at a fixed axis value. Cartesian-only.
+     * Lines default to `layer='above'` so they remain visible over
+     * data; set `layer='below'` to draw them behind.
+     */
+    plotLines?: Array<IChartPlotLine>
+    /**
+     * Drilldown configuration. When provided, data points that carry
+     * an `IChartDrilldownLink` in their object-form entry trigger a
+     * chart-level navigation instead of (or alongside) `point-click`.
+     * A breadcrumb `<nav>` appears above the chart when depth > 1.
+     */
+    drilldown?: IChartDrilldownProps
 }
 
-/** Emits surfaced by `<OrigamChartCartesian>`. Mirrors the family base. */
-export type IChartCartesianEmits = IChartBaseEmits
+/** Emits surfaced by `<OrigamChartCartesian>`. Extends the family base with drilldown events. */
+export interface IChartCartesianEmits extends IChartBaseEmits {
+    /** Fired when the user drills into a sub-dataset. */
+    (e: 'drill', link: IChartDrilldownLink, point: IChartPoint): void
+    /** Fired when the user navigates back one drilldown level. */
+    (e: 'drill-up'): void
+}
 
 /** Slot signatures exposed by `<OrigamChartCartesian>`. */
 export type IChartCartesianSlots = IChartBaseSlots

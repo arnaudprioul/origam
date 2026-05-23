@@ -28,6 +28,41 @@
 			</slot>
 		</div>
 
+		<nav
+				v-if="hasDrilldown && isDrilled"
+				class="origam-chart-polar__breadcrumb"
+				aria-label="Drilldown navigation"
+				data-cy="origam-chart-polar-breadcrumb"
+		>
+			<button
+					class="origam-chart-polar__breadcrumb-back"
+					type="button"
+					:aria-label="drilldownBackLabel"
+					data-cy="origam-chart-polar-breadcrumb-back"
+					@click="onDrillUp"
+			>{{ drilldownBackLabel }}</button>
+			<ol class="origam-chart-polar__breadcrumb-trail">
+				<li
+						v-for="item in breadcrumbItems"
+						:key="item.depth"
+						class="origam-chart-polar__breadcrumb-item"
+						:class="{ 'origam-chart-polar__breadcrumb-item--active': item.depth === drillStack.length - 1 }"
+				>
+					<button
+							v-if="item.depth < drillStack.length - 1"
+							class="origam-chart-polar__breadcrumb-link"
+							type="button"
+							@click="onBreadcrumbClick(item.depth)"
+					>{{ item.name }}</button>
+					<span
+							v-else
+							class="origam-chart-polar__breadcrumb-current"
+							aria-current="page"
+					>{{ item.name }}</span>
+				</li>
+			</ol>
+		</nav>
+
 		<div
 				class="origam-chart-polar__body"
 				:class="bodyClasses"
@@ -147,11 +182,14 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import type {
+		IChartDrilldownFrame,
+		IChartDrilldownLink,
 		IChartPath,
 		IChartPoint,
 		IChartPolarEmits,
 		IChartPolarProps,
-		IChartSeries
+		IChartSeries,
+		IChartSeriesPoint
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -186,10 +224,79 @@
 		colorScheme: () => [],
 		xAxisFormat: undefined,
 		yAxisFormat: undefined,
-		aspectRatio: undefined
+		aspectRatio: undefined,
+		drilldown: undefined
 	})
 
 	const emit = defineEmits<IChartPolarEmits>()
+
+	/*********************************************************
+	 * Drilldown state — mirrors the cartesian implementation.
+	 * Pie / donut slices can carry a drilldown link on their
+	 * object-form data entry; clicking such a slice replaces the
+	 * chart with the matching sub-dataset and shows a breadcrumb.
+	 ********************************************************/
+	const drillStack = ref<Array<IChartDrilldownFrame>>([])
+
+	const activeSeries = computed<Array<IChartSeries>>(() => {
+		if (!drillStack.value.length) return props.series
+		return drillStack.value[drillStack.value.length - 1].series
+	})
+
+	const activeCategories = computed<Array<string>>(() => {
+		if (!drillStack.value.length) return props.categories
+		return drillStack.value[drillStack.value.length - 1].categories
+	})
+
+	const hasDrilldown = computed(() => Boolean(props.drilldown?.datasets?.length))
+
+	const isDrilled = computed(() => drillStack.value.length > 0)
+
+	const breadcrumbItems = computed<Array<{ name: string, depth: number }>>(() => {
+		const root = { name: props.title ?? 'Root', depth: -1 }
+		return [root, ...drillStack.value.map((frame, i) => ({ name: frame.name, depth: i }))]
+	})
+
+	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+
+	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
+		if (!props.drilldown) return null
+		const dataset = props.drilldown.datasets.find((d) => d.id === link.id)
+		if (!dataset) return null
+		return {
+			name: dataset.name,
+			series: dataset.series,
+			categories: dataset.categories ?? []
+		}
+	}
+
+	const isDrilldownCycle = (id: string): boolean =>
+		drillStack.value.some((frame) => frame.name === id)
+
+	const onDrillIn = (link: IChartDrilldownLink, point: IChartPoint): void => {
+		if (isDrilldownCycle(link.id)) return
+		const frame = resolveDrilldownLink(link)
+		if (!frame) return
+		drillStack.value = [...drillStack.value, frame]
+		hoveredPath.value = null
+		emit('drill', link, point)
+	}
+
+	const onDrillUp = (): void => {
+		if (!drillStack.value.length) return
+		drillStack.value = drillStack.value.slice(0, -1)
+		hoveredPath.value = null
+		emit('drill-up')
+	}
+
+	const onBreadcrumbClick = (depth: number): void => {
+		if (depth === -1) {
+			drillStack.value = []
+		} else {
+			drillStack.value = drillStack.value.slice(0, depth + 1)
+		}
+		hoveredPath.value = null
+	}
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -222,7 +329,7 @@
 	const hiddenLabels = ref<Set<string>>(new Set())
 
 	const seriesWithVisibility = computed<Array<IChartSeries>>(() =>
-		props.series.map((s) => ({
+		activeSeries.value.map((s) => ({
 			...s,
 			visible: !hiddenLabels.value.has(s.name)
 		}))
@@ -231,7 +338,7 @@
 	const chart = useChart({
 		type: () => props.type,
 		series: () => seriesWithVisibility.value,
-		categories: () => props.categories,
+		categories: () => activeCategories.value,
 		stacked: () => false,
 		donutHoleSize: () => props.donutHoleSize,
 		colorScheme: () => props.colorScheme,
@@ -256,7 +363,7 @@
 		const series = p.series
 		const dataIdx = p.dataIndex ?? 0
 		const entry = series.data[dataIdx]
-		const x = typeof entry === 'number' ? (props.categories[dataIdx] ?? dataIdx) : entry.x
+		const x = typeof entry === 'number' ? (activeCategories.value[dataIdx] ?? dataIdx) : entry.x
 		const y = typeof entry === 'number' ? entry : entry.y
 		return {
 			seriesIndex: p.seriesIndex,
@@ -272,12 +379,12 @@
 	)
 	const hoveredCategory = computed<string | number>(() => {
 		if (!hoveredPoint.value) return ''
-		return props.categories[hoveredPoint.value.dataIndex] ?? hoveredPoint.value.x
+		return activeCategories.value[hoveredPoint.value.dataIndex] ?? hoveredPoint.value.x
 	})
 
 	const showEmpty = computed(() => {
-		if (!props.series?.length) return true
-		return props.series.every((s) => !s.data?.length || s.visible === false)
+		if (!activeSeries.value?.length) return true
+		return activeSeries.value.every((s) => !s.data?.length || s.visible === false)
 	})
 
 	/*********************************************************
@@ -352,9 +459,23 @@
 		if (!hoveredPoint.value || hoveredPath.value !== path) {
 			hoveredPath.value = path
 		}
-		if (hoveredPoint.value) {
-			emit('point-click', hoveredPoint.value, event)
+		if (!hoveredPoint.value) return
+
+		const currentPoint = hoveredPoint.value
+
+		if (hasDrilldown.value) {
+			const dataIdx = path.dataIndex ?? 0
+			const entry = path.series.data[dataIdx]
+			const drillLink = (typeof entry !== 'number')
+				? (entry as IChartSeriesPoint).drilldown
+				: undefined
+			if (drillLink) {
+				onDrillIn(drillLink, currentPoint)
+				return
+			}
 		}
+
+		emit('point-click', currentPoint, event)
 	}
 
 	const onLegendClick = (series: IChartSeries, index: number): void => {
@@ -374,17 +495,13 @@
 	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
 	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
 	const svgDesc = computed(() => {
-		const seriesCount = props.series.length
+		const seriesCount = activeSeries.value.length
 		if (!seriesCount) return 'No data'
 		const points = slotCount.value
 		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }.`
 	})
 
 	const sliceAriaLabel = (path: IChartPath) => {
-		// Defensive: `path.dataIndex` may exceed `series.data.length`
-		// in series-as-slice mode (each synthetic series has
-		// `data: [value]` so the only valid index is 0). Fall back
-		// to `data[0]` then to NaN if the data array is empty.
 		const idx = path.dataIndex ?? 0
 		const entry = path.series.data[idx] ?? path.series.data[0]
 		const y = entry == null
@@ -392,7 +509,7 @@
 			: typeof entry === 'number'
 				? entry
 				: entry.y
-		const cat = props.categories[idx] ?? path.series.name ?? idx
+		const cat = activeCategories.value[idx] ?? path.series.name ?? idx
 		return `${ cat }: ${ formatY(y) }`
 	}
 </script>
@@ -411,42 +528,47 @@
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
 		box-sizing: border-box;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto auto 1fr auto;
 		grid-template-columns: 1fr;
 		grid-template-areas:
 			"header"
+			"breadcrumb"
 			"body"
 			"legend";
 
 		&--legend-top {
 			grid-template-areas:
 				"header"
+				"breadcrumb"
 				"legend"
 				"body";
-			grid-template-rows: auto auto 1fr;
+			grid-template-rows: auto auto auto 1fr;
 		}
 
 		&--legend-bottom {
 			grid-template-areas:
 				"header"
+				"breadcrumb"
 				"body"
 				"legend";
-			grid-template-rows: auto 1fr auto;
+			grid-template-rows: auto auto 1fr auto;
 		}
 
 		&--legend-left {
 			grid-template-columns: auto minmax(0, 1fr);
-			grid-template-rows: auto minmax(0, 1fr);
+			grid-template-rows: auto auto minmax(0, 1fr);
 			grid-template-areas:
 				"header header"
+				"breadcrumb breadcrumb"
 				"legend body";
 		}
 
 		&--legend-right {
 			grid-template-columns: minmax(0, 1fr) auto;
-			grid-template-rows: auto minmax(0, 1fr);
+			grid-template-rows: auto auto minmax(0, 1fr);
 			grid-template-areas:
 				"header header"
+				"breadcrumb breadcrumb"
 				"body legend";
 		}
 
@@ -455,6 +577,79 @@
 			display: flex;
 			flex-direction: column;
 			gap: 4px;
+		}
+
+		&__breadcrumb {
+			grid-area: breadcrumb;
+			display: flex;
+			align-items: center;
+			gap: var(--origam-chart__breadcrumb---gap, 8px);
+			font-size: var(--origam-chart__breadcrumb---font-size, 0.8125rem);
+			color: var(--origam-chart__breadcrumb---color, var(--origam-color-text-secondary, #6b7280));
+		}
+
+		&__breadcrumb-back {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			padding: 4px 10px;
+			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color-border-default, #d1d5db));
+			border-radius: var(--origam-chart__breadcrumb-back---border-radius, 4px);
+			background-color: var(--origam-chart__breadcrumb-back---background-color, transparent);
+			color: var(--origam-chart__breadcrumb-back---color, inherit);
+			font-size: inherit;
+			cursor: pointer;
+			white-space: nowrap;
+			transition: background-color 120ms ease, border-color 120ms ease;
+
+			&:hover,
+			&:focus-visible {
+				background-color: var(--origam-chart__breadcrumb-back---hover-background-color, rgba(0, 0, 0, 0.05));
+				outline: none;
+			}
+		}
+
+		&__breadcrumb-trail {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			flex-wrap: wrap;
+		}
+
+		&__breadcrumb-item {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+
+			&:not(:last-child)::after {
+				content: "/";
+				opacity: 0.5;
+			}
+		}
+
+		&__breadcrumb-link {
+			background: none;
+			border: none;
+			padding: 0;
+			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color-action-primary-text, #3b82f6));
+			font-size: inherit;
+			cursor: pointer;
+			text-decoration: underline;
+			text-underline-offset: 2px;
+
+			&:hover,
+			&:focus-visible {
+				opacity: 0.8;
+				outline: none;
+			}
+		}
+
+		&__breadcrumb-current {
+			font-weight: var(--origam-chart__breadcrumb-current---font-weight, 600);
+			color: var(--origam-chart__breadcrumb-current---color, inherit);
 		}
 
 		&__title {

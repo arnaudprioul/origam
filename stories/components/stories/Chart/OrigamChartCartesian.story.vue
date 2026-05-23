@@ -761,6 +761,58 @@
 				</div>
 			</div>
 		</Variant>
+	
+		<Variant title="Prop — plotBands + plotLines (target range + danger zone + average)">
+			<div
+					class="story-shell"
+					data-cy="cartesian-plot-bands"
+			>
+				<p class="hint">
+					Green band: target Y range 20–40. Red band: danger Y range 45–60.
+					Blue dashed line: average at Y=30. Orange dotted vertical line at Jun (above data).
+				</p>
+				<origam-chart-cartesian
+						type="line"
+						:series="FIXTURE_SALES_SERIES"
+						:categories="FIXTURE_MONTHS"
+						:height="360"
+						:plot-bands="FIXTURE_PLOT_BANDS"
+						:plot-lines="FIXTURE_PLOT_LINES"
+						title="Sales targets & thresholds"
+						subtitle="Plot bands + lines demo"
+						data-cy="cartesian-plot-bands-chart"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — drilldown (browser market share)">
+			<div
+					class="story-shell"
+					data-cy="cartesian-drilldown"
+			>
+				<p class="hint">
+					Click a browser bar to drill into its version breakdown. Use the Back button or breadcrumb to return.
+					Each data point carries a drilldown link; the chart swaps series on click and shows a breadcrumb.
+				</p>
+				<origam-chart-cartesian
+						type="column"
+						:series="FIXTURE_BROWSER_SERIES"
+						:categories="FIXTURE_BROWSER_CATEGORIES"
+						:height="360"
+						:drilldown="FIXTURE_BROWSER_DRILLDOWN"
+						title="Browser market share"
+						subtitle="Click a browser to see version breakdown"
+						data-cy="cartesian-drilldown-chart"
+						@drill="onDrill"
+						@drill-up="onDrillUp"
+						@point-click="onPointClick"
+				/>
+				<pre
+						class="story-log"
+						data-cy="cartesian-drilldown-log"
+				>{{ logLines.join('\n') }}</pre>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -772,7 +824,16 @@
 
 	import { OrigamChartCartesian } from '@origam/components'
 
-	import type { IChartPoint, IChartSecondaryYAxis, IChartSeries } from '@origam/interfaces'
+	import type {
+		IChartDrilldownLink,
+		IChartDrilldownProps,
+		IChartPlotBand,
+		IChartPlotLine,
+		IChartPoint,
+		IChartSecondaryYAxis,
+		IChartSeries,
+		IChartSeriesPoint
+	} from '@origam/interfaces'
 
 	import { useStoryInitState } from '@stories/composables'
 
@@ -879,6 +940,128 @@
 		title: 'Rainfall (mm)'
 	}
 
+	const FIXTURE_BROWSER_CATEGORIES = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other']
+
+	const FIXTURE_BROWSER_SERIES: Array<IChartSeries> = [
+		{
+			name: 'Market share',
+			color: 'primary',
+			data: [
+				{ x: 'Chrome', y: 61, drilldown: { id: 'chrome', name: 'Chrome' } } as IChartSeriesPoint,
+				{ x: 'Safari', y: 19, drilldown: { id: 'safari', name: 'Safari' } } as IChartSeriesPoint,
+				{ x: 'Firefox', y: 9, drilldown: { id: 'firefox', name: 'Firefox' } } as IChartSeriesPoint,
+				{ x: 'Edge', y: 5, drilldown: { id: 'edge', name: 'Edge' } } as IChartSeriesPoint,
+				{ x: 'Other', y: 6, drilldown: { id: 'other', name: 'Other' } } as IChartSeriesPoint
+			] as Array<IChartSeriesPoint>
+		}
+	]
+
+	const FIXTURE_BROWSER_DRILLDOWN: IChartDrilldownProps = {
+		backLabel: '← Back',
+		datasets: [
+			{
+				id: 'chrome',
+				name: 'Chrome versions',
+				categories: ['v124', 'v123', 'v122', 'v121', 'Older'],
+				series: [
+					{
+						name: 'Chrome',
+						color: 'primary',
+						data: [32, 26, 15, 11, 16] as Array<number>
+					}
+				]
+			},
+			{
+				id: 'safari',
+				name: 'Safari versions',
+				categories: ['v17', 'v16', 'v15', 'Older'],
+				series: [
+					{
+						name: 'Safari',
+						color: 'success',
+						data: [55, 28, 12, 5] as Array<number>
+					}
+				]
+			},
+			{
+				id: 'firefox',
+				name: 'Firefox versions',
+				categories: ['v125', 'v124', 'v123', 'Older'],
+				series: [
+					{
+						name: 'Firefox',
+						color: 'warning',
+						data: [48, 32, 14, 6] as Array<number>
+					}
+				]
+			},
+			{
+				id: 'edge',
+				name: 'Edge versions',
+				categories: ['v124', 'v123', 'v122', 'Older'],
+				series: [
+					{
+						name: 'Edge',
+						color: 'info',
+						data: [60, 25, 10, 5] as Array<number>
+					}
+				]
+			},
+			{
+				id: 'other',
+				name: 'Other browsers',
+				categories: ['Opera', 'Samsung', 'UC Browser', 'Misc'],
+				series: [
+					{
+						name: 'Other',
+						color: 'neutral',
+						data: [30, 35, 20, 15] as Array<number>
+					}
+				]
+			}
+		]
+	}
+
+	const FIXTURE_PLOT_BANDS: Array<IChartPlotBand> = [
+		{
+			axis: 'y',
+			from: 20,
+			to: 40,
+			color: 'success',
+			opacity: 0.15,
+			label: 'Target range',
+			layer: 'below'
+		},
+		{
+			axis: 'y',
+			from: 45,
+			to: 60,
+			color: 'danger',
+			opacity: 0.2,
+			label: 'Danger zone',
+			layer: 'below'
+		}
+	]
+
+	const FIXTURE_PLOT_LINES: Array<IChartPlotLine> = [
+		{
+			axis: 'y',
+			value: 30,
+			color: 'primary',
+			dash: 'dashed',
+			label: 'Average',
+			layer: 'above'
+		},
+		{
+			axis: 'x',
+			value: 'Jun',
+			color: 'warning',
+			dash: 'dotted',
+			label: 'Launch',
+			layer: 'above'
+		}
+	]
+
 	const logLines = ref<Array<string>>([])
 	const appendLog = (line: string) => {
 		logLines.value = [line, ...logLines.value].slice(0, 8)
@@ -892,6 +1075,12 @@
 	}
 	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
 		appendLog(`series-toggle → ${series.name} now ${visible ? 'visible' : 'hidden'}`)
+	}
+	const onDrill = (link: IChartDrilldownLink) => {
+		appendLog(`drill → id="${link.id}" name="${link.name ?? ''}"`)
+	}
+	const onDrillUp = () => {
+		appendLog('drill-up')
 	}
 </script>
 

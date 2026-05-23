@@ -1,7 +1,10 @@
 import type {
     IChartBaseEmits,
     IChartBaseProps,
-    IChartBaseSlots
+    IChartBaseSlots,
+    IChartDrilldownLink,
+    IChartDrilldownProps,
+    IChartPoint
 } from '../../interfaces'
 
 import type { TChartPolarKind } from '../../types'
@@ -30,10 +33,22 @@ export interface IChartPolarProps extends IChartBaseProps {
     xAxisFormat?: (value: string | number) => string
     /** Formatter applied to the tooltip Y value. */
     yAxisFormat?: (value: number) => string
+    /**
+     * Drilldown configuration. When provided, data points that carry
+     * an `IChartDrilldownLink` in their object-form entry trigger a
+     * chart-level navigation instead of (or alongside) `point-click`.
+     * A breadcrumb `<nav>` appears above the chart when depth > 1.
+     */
+    drilldown?: IChartDrilldownProps
 }
 
-/** Emits surfaced by `<OrigamChartPolar>`. Mirrors the family base. */
-export type IChartPolarEmits = IChartBaseEmits
+/** Emits surfaced by `<OrigamChartPolar>`. Extends the family base with drilldown events. */
+export interface IChartPolarEmits extends IChartBaseEmits {
+    /** Fired when the user drills into a sub-dataset. */
+    (e: 'drill', link: IChartDrilldownLink, point: IChartPoint): void
+    /** Fired when the user navigates back one drilldown level. */
+    (e: 'drill-up'): void
+}
 
 /** Slot signatures exposed by `<OrigamChartPolar>`. */
 export type IChartPolarSlots = IChartBaseSlots

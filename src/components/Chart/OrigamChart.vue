@@ -547,7 +547,9 @@
 		aspectRatio: props.aspectRatio,
 		smoothing: props.smoothing,
 		yMin: props.yMin,
-		yMax: props.yMax
+		yMax: props.yMax,
+		plotBands: props.plotBands,
+		plotLines: props.plotLines
 	}))
 
 	const polarProps = computed(() => ({

@@ -8,6 +8,8 @@ import {
 import type {
     IChartLegendItem,
     IChartPath,
+    IChartPlotBand,
+    IChartPlotLine,
     IChartPoint,
     IChartScales,
     IChartSeries,
@@ -90,6 +92,176 @@ const resolveColor = (raw: TIntent | string | undefined): string => {
         return intentBgExpr(raw as TIntent, 'default')
     }
     return 'currentColor'
+}
+
+/**
+ * Resolve a dash pattern to an SVG `stroke-dasharray` value.
+ */
+const dashArray = (dash: IChartPlotLine['dash']): string => {
+    if (dash === 'dotted') return '2 4'
+    if (dash === 'solid') return 'none'
+    return '6 4'
+}
+
+/**
+ * Resolve a categorical X value (string label or numeric index) to
+ * a pixel position using the category list.
+ */
+const resolveCategoryX = (
+    value: number | string,
+    categories: Array<string>,
+    plotX0: number,
+    plotX1: number
+): number => {
+    const idx = typeof value === 'string'
+        ? categories.indexOf(value)
+        : (value as number)
+    const slots = Math.max(1, categories.length)
+    if (slots === 1) return (plotX0 + plotX1) / 2
+    const clamped = Math.max(0, Math.min(slots - 1, idx))
+    return plotX0 + (clamped / (slots - 1)) * (plotX1 - plotX0)
+}
+
+/**
+ * Compute geometry for a single plot band. Returns an object with
+ * SVG rect attributes and label positioning, or `null` when the
+ * band falls entirely outside the plot.
+ */
+export const computePlotBandGeometry = (
+    band: IChartPlotBand,
+    scales: IChartScales,
+    categories: Array<string>,
+    plotX0: number,
+    plotX1: number,
+    plotY0: number,
+    plotY1: number
+): {
+    x: number
+    y: number
+    width: number
+    height: number
+    fill: string
+    opacity: number
+    label: string | undefined
+    labelX: number
+    labelY: number
+    labelColor: string
+} | null => {
+    const axis = band.axis ?? 'y'
+    const fill = resolveColor(band.color ?? 'warning')
+    const opacity = band.opacity ?? 0.15
+    const labelColor = resolveColor(band.labelColor ?? undefined)
+
+    if (axis === 'y') {
+        const fromPx = scales.y(Number(band.from))
+        const toPx = scales.y(Number(band.to))
+        const top = Math.min(fromPx, toPx)
+        const bot = Math.max(fromPx, toPx)
+        const clampedTop = Math.max(plotY0, Math.min(plotY1, top))
+        const clampedBot = Math.max(plotY0, Math.min(plotY1, bot))
+        const h = clampedBot - clampedTop
+        if (h <= 0) return null
+        return {
+            x: plotX0,
+            y: clampedTop,
+            width: plotX1 - plotX0,
+            height: h,
+            fill,
+            opacity,
+            label: band.label,
+            labelX: (plotX0 + plotX1) / 2,
+            labelY: clampedTop + h / 2,
+            labelColor
+        }
+    }
+
+    const fromPx = resolveCategoryX(band.from, categories, plotX0, plotX1)
+    const toPx = resolveCategoryX(band.to, categories, plotX0, plotX1)
+    const left = Math.min(fromPx, toPx)
+    const right = Math.max(fromPx, toPx)
+    const clampedLeft = Math.max(plotX0, Math.min(plotX1, left))
+    const clampedRight = Math.max(plotX0, Math.min(plotX1, right))
+    const w = clampedRight - clampedLeft
+    if (w <= 0) return null
+    return {
+        x: clampedLeft,
+        y: plotY0,
+        width: w,
+        height: plotY1 - plotY0,
+        fill,
+        opacity,
+        label: band.label,
+        labelX: clampedLeft + w / 2,
+        labelY: (plotY0 + plotY1) / 2,
+        labelColor
+    }
+}
+
+/**
+ * Compute geometry for a single plot line. Returns an object with
+ * SVG line attributes and label positioning, or `null` when the
+ * line falls outside the plot.
+ */
+export const computePlotLineGeometry = (
+    line: IChartPlotLine,
+    scales: IChartScales,
+    categories: Array<string>,
+    plotX0: number,
+    plotX1: number,
+    plotY0: number,
+    plotY1: number
+): {
+    x1: number
+    y1: number
+    x2: number
+    y2: number
+    stroke: string
+    strokeWidth: number
+    strokeDasharray: string
+    label: string | undefined
+    labelX: number
+    labelY: number
+    labelAnchor: string
+} | null => {
+    const axis = line.axis ?? 'y'
+    const stroke = resolveColor(line.color ?? 'danger')
+    const strokeWidth = line.width ?? 1.5
+    const strokeDasharray = dashArray(line.dash)
+
+    if (axis === 'y') {
+        const py = scales.y(Number(line.value))
+        if (py < plotY0 || py > plotY1) return null
+        const isRight = (line.labelAlign ?? 'right') === 'right'
+        return {
+            x1: plotX0,
+            y1: py,
+            x2: plotX1,
+            y2: py,
+            stroke,
+            strokeWidth,
+            strokeDasharray,
+            label: line.label,
+            labelX: isRight ? plotX1 : plotX0,
+            labelY: py - 4,
+            labelAnchor: isRight ? 'end' : 'start'
+        }
+    }
+
+    const px = resolveCategoryX(line.value, categories, plotX0, plotX1)
+    if (px < plotX0 || px > plotX1) return null
+    return {
+        x1: px,
+        y1: plotY0,
+        x2: px,
+        y2: plotY1,
+        stroke,
+        strokeWidth,
+        strokeDasharray,
+        label: line.label,
+        labelX: px + 4,
+        labelY: plotY0 + 12,
+        labelAnchor: 'start'
+    }
 }
 
 /**

@@ -1,5 +1,7 @@
 import type {
     IBgColorProps,
+    IChartPlotBand,
+    IChartPlotLine,
     IChartPoint,
     IChartSecondaryYAxis,
     IChartSeries,
@@ -129,6 +131,17 @@ export interface IChartProps
      * (e.g. `'%'`, `' km/h'`). Ignored unless `type='gauge'`.
      */
     gaugeUnit?: string
+    /**
+     * Coloured rectangular zones drawn behind (or above) the chart
+     * data. Forwarded to `<OrigamChartCartesian>` only — ignored for
+     * polar / radar / gauge families.
+     */
+    plotBands?: Array<IChartPlotBand>
+    /**
+     * Threshold lines drawn at a fixed axis value. Forwarded to
+     * `<OrigamChartCartesian>` only — ignored for polar / radar / gauge.
+     */
+    plotLines?: Array<IChartPlotLine>
 }
 
 /**

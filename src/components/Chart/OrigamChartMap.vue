@@ -236,8 +236,8 @@
 
 	import { CHART_MAP_MODE } from '../../enums/Chart/chart-map-mode.enum'
 
-	import { WORLD_MAP_PATHS } from '../../consts/Chart/world-map.const'
-	import { COUNTRY_CENTROIDS } from '../../consts/Chart/country-centroids.const'
+	import { WORLD_GEOGRAPHIC_DATA } from '../../consts/Chart/world-geographic.const'
+	import { multiPolygonToSvgPath, multiPolygonCentroid } from '../../utils/Chart/mercator.util'
 
 	import type { TIntent } from '../../types'
 
@@ -300,6 +300,25 @@
 	const LEGEND_Y_OFFSET = 12
 	const LEGEND_X = 20
 	const LEGEND_W = 200
+
+	/*********************************************************
+	 * Projected paths — computed once from geographic data.
+	 * Each country multi-polygon is projected via Mercator to
+	 * SVG pixel space on a 1000 × 500 canvas.
+	 ********************************************************/
+	const WORLD_MAP_PATHS: Record<string, string> = Object.fromEntries(
+		Object.entries(WORLD_GEOGRAPHIC_DATA).map(([code, multi]) => [
+			code,
+			multiPolygonToSvgPath(multi, SVG_WIDTH, SVG_HEIGHT)
+		])
+	)
+
+	const COUNTRY_CENTROIDS: Record<string, [number, number]> = Object.fromEntries(
+		Object.entries(WORLD_GEOGRAPHIC_DATA).map(([code, multi]) => [
+			code,
+			multiPolygonCentroid(multi, SVG_WIDTH, SVG_HEIGHT)
+		])
+	)
 
 	/*********************************************************
 	 * Mode helpers

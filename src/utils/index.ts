@@ -74,3 +74,6 @@ export * from './Mask/resolve-mask-config.util'
 export * from './Mask/validate-pattern.util'
 
 export * from './QrCode/qr-code-adapters.util'
+
+export * from './Chart/path.util'
+export * from './Chart/mercator.util'

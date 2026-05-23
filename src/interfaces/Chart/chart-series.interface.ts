@@ -3,6 +3,8 @@ import type {
     TIntent
 } from '../../types'
 
+import type { IChartDrilldownLink } from './chart-drilldown.interface'
+
 /**
  * A single data series rendered by `<OrigamChart>`. The `data`
  * accepts two shapes:
@@ -80,4 +82,10 @@ export interface IChartSeriesPoint {
      * keeps the default fixed radius.
      */
     z?: number
+    /**
+     * Drilldown reference. When present and the chart has a matching
+     * `IChartDrilldownDataset`, clicking this point replaces the chart
+     * view with the sub-dataset.
+     */
+    drilldown?: IChartDrilldownLink
 }
