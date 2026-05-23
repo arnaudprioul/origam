@@ -1,6 +1,6 @@
-import { IColorProps, ICommonsComponentProps } from '../../interfaces'
+import type { IColorProps, ICommonsComponentProps } from '../../interfaces'
 
-export interface IFileFieldListItemProps extends ICommonsComponentProps {
+export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorProps {
     file: File
     index: number
     progress?: number
@@ -8,7 +8,6 @@ export interface IFileFieldListItemProps extends ICommonsComponentProps {
     removeIcon?: string
     disabled?: boolean
     readonly?: boolean
-    color?: IColorProps['color']
     showSize?: boolean | 1000 | 1024
 }
 
