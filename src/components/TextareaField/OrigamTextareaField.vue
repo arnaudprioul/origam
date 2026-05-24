@@ -136,6 +136,8 @@
 								:name="name"
 								:placeholder="placeholder"
 								:readonly="isReadonly"
+								:required="required || undefined"
+								:aria-required="required ? 'true' : undefined"
 								:rows="rows"
 								:value="model"
 								v-bind="{ ...fieldSlotProps, ...inputAttrs }"

@@ -21,6 +21,7 @@
 			>
 				<origam-card
 						ref="origamCardRef"
+						:aria-labelledby="dialogTitleId"
 						aria-modal="true"
 						role="dialog"
 						v-bind="cardProps"
@@ -44,6 +45,7 @@
 							<origam-btn
 									:icon="MDI_ICONS.CLOSE"
 									:rounded="0"
+									aria-label="Close dialog"
 									bg-color="transparent"
 									@click="handleClose"
 							/>
@@ -68,7 +70,10 @@
 							v-if="slots['header-title']"
 							#header-title
 					>
-						<slot name="header-title"/>
+						<slot
+								name="header-title"
+								v-bind="{titleId: dialogTitleId}"
+						/>
 					</template>
 
 					<template
@@ -124,6 +129,7 @@
 		setup
 >
 	import { computed, mergeProps, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
+	import { getUid } from '../../utils'
 	import { OrigamBtn, OrigamCard, OrigamIcon, OrigamOverlay, OrigamTranslateScale } from '../../components'
 	import {
 	useProps,
@@ -184,6 +190,8 @@
 
 	const {scopeId} = useScopeId()
 	const slots = useSlots()
+	const uid = getUid()
+	const dialogTitleId = computed(() => `origam-dialog-title-${uid}`)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 	const origamCardRef = ref<TOrigamCard>()

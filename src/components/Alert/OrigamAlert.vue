@@ -3,7 +3,8 @@
 			:is="tag"
 			:id="id"
 			:class="alertClasses"
-			role="alert"
+			:role="props.status === 'warning' || props.status === 'error' ? 'alert' : 'status'"
+			:aria-live="props.status === 'warning' || props.status === 'error' ? 'assertive' : 'polite'"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
 	>

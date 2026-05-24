@@ -464,6 +464,10 @@
         &:before {
           opacity: calc(0.12 * 1);
         }
+
+        outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+        outline-offset: var(--origam-space---1, 2px);
+        border-radius: 50%;
       }
     }
 

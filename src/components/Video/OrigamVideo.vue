@@ -1149,6 +1149,10 @@
 			transition: opacity 100ms ease;
 			transform: translate(-50%, -50%);
 		}
+
+		.origam-video__loading-icon {
+			animation: none;
+		}
 	}
 
 	// YouTube-parity double-tap skip overlay :

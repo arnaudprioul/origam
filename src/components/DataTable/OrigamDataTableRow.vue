@@ -41,6 +41,8 @@
 									v-bind="slotProps(i, column)"
 							>
 								<origam-btn
+										:aria-expanded="isExpanded(item)"
+										:aria-label="isExpanded(item) ? 'Collapse row' : 'Expand row'"
 										:icon="isExpanded(item) ? MDI_ICONS.CHEVRON_UP : MDI_ICONS.CHEVRON_DOWN"
 										:size="SIZES.SMALL"
 										@click="handleBtnClick"

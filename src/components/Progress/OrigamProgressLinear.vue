@@ -395,6 +395,18 @@
 					animation-play-state: running;
 				}
 			}
+
+			@media (prefers-reduced-motion: reduce) {
+				&#{$this}--indeterminate #{$this}__bar {
+					animation: none;
+					left: 0;
+					width: 50%;
+				}
+
+				#{$this}__stream {
+					animation: none;
+				}
+			}
 		}
 	}
 </style>

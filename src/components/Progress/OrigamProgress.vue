@@ -2,7 +2,9 @@
 	<component
 			:is="progressComponent"
 			ref="origamProgressRef"
+			:aria-busy="props.indeterminate ? true : undefined"
 			:aria-hidden="!active"
+			:aria-label="props.label ?? 'Loading'"
 			:aria-valuemax="max"
 			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressClasses"

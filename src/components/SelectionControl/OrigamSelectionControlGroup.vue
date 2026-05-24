@@ -1,6 +1,7 @@
 <template>
 	<div
 			:id="name"
+			role="group"
 			:class="selectionControlGroupClasses"
 			:style="selectionControlGroupStyles"
 	>

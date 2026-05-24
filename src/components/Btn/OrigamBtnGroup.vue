@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			role="group"
 			:class="btnGroupClasses"
 	>
 		<origam-defaults-provider :defaults="slotDefaults">

@@ -3,8 +3,11 @@
 		<component
 				:is="tag"
 				v-show="isSelected"
+				:aria-labelledby="`expansion-panel-header-${expansionPanel.id}`"
 				:class="expansionPanelContentClasses"
+				:id="`expansion-panel-content-${expansionPanel.id}`"
 				:style="expansionPanelContentStyles"
+				role="region"
 		>
 			<div class="origam-expansion-panel-content__wrapper">
 				<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">

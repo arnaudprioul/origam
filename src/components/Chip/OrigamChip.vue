@@ -93,11 +93,13 @@
 			</slot>
 		</div>
 
-		<div
+		<button
 				v-if="hasClose"
 				key="close"
+				:aria-label="t(closeLabel)"
 				class="origam-chip__close"
-				@click="handleClickClose"
+				type="button"
+				@click.stop="handleClickClose"
 		>
 			<slot
 					name="close"
@@ -106,13 +108,13 @@
 				<origam-icon
 						v-if="closeIcon"
 						key="close-icon"
-						:aria-label="t(closeLabel)"
 						:density="density"
 						:icon="closeIcon"
+						aria-hidden="true"
 						size="x-small"
 				/>
 			</slot>
-		</div>
+		</button>
 
 	</component>
 </template>

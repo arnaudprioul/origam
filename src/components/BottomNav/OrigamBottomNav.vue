@@ -5,6 +5,7 @@
 				v-if="isActive"
 				:id="id"
 				:class="bottomNavClasses"
+				aria-label="Bottom navigation"
 				@mouseenter="handleMouseenter"
 				@mouseleave="handleMouseleave"
 		>

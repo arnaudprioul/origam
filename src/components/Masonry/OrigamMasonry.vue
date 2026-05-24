@@ -357,5 +357,12 @@
 		&--animated.origam-masonry--css {
 			transition: grid-template-columns var(--origam-masonry---transition-duration) var(--origam-masonry---transition-easing);
 		}
+
+		@media (prefers-reduced-motion: reduce) {
+			&--animated.origam-masonry--js .origam-masonry__item,
+			&--animated.origam-masonry--css {
+				transition: none;
+			}
+		}
 	}
 </style>

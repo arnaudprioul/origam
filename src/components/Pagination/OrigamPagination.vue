@@ -456,7 +456,7 @@
 						// behaviour the user expects from a uniform row
 						// of nav buttons.
 						active: isActive,
-						'aria-current': isActive,
+						'aria-current': isActive ? 'page' : undefined,
 						'aria-label': t(isActive ? props.currentPageAriaLabel : props.pageAriaLabel, item),
 						onClick: (e: Event) => setValue(e, item)
 					}

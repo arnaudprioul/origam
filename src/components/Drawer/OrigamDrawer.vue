@@ -17,6 +17,7 @@
 					:is="tag"
 					v-if="isActive"
 					:ref="rootEl"
+					:aria-label="props.name || 'Navigation'"
 					:class="drawerClasses"
 					:style="drawerStyles"
 					v-bind="{...scopeId, ...$attrs}"
@@ -588,6 +589,13 @@
 	// beat CSS rules unless the rule is `!important`. Without it, the
 	// keyframe transforms below are stomped → drawer never animates
 	// visibly.
+
+	@media (prefers-reduced-motion: reduce) {
+		.origam-transition--drawer-enter-active,
+		.origam-transition--drawer-leave-active {
+			transition-duration: 0.01ms !important;
+		}
+	}
 
 	.origam-transition--drawer {
 		&-enter-active,

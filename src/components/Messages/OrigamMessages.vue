@@ -8,7 +8,7 @@
 				:class="messagesClasses"
 				:style="messagesStyles"
 				aria-live="polite"
-				role="alert"
+				role="status"
 		>
 			<template
 					v-for="(message, index) in messages"

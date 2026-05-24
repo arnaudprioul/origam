@@ -765,6 +765,12 @@
 		}
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		.origam-command-palette__loading-icon {
+			animation: none;
+		}
+	}
+
 	.origam-command-palette--fade-enter-active,
 	.origam-command-palette--fade-leave-active {
 		transition: opacity 140ms ease;

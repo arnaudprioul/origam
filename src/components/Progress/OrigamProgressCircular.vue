@@ -337,4 +337,11 @@
 			transform: rotate(270deg);
 		}
 	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.origam-progress--circular.origam-progress--indeterminate > svg,
+		.origam-progress--circular.origam-progress--indeterminate .origam-progress__overlay {
+			animation: none;
+		}
+	}
 </style>

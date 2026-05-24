@@ -2,8 +2,8 @@
 	<component
 			:is="tag"
 			:id="id"
+			:aria-label="t('origam.breadcrumb.ariaLabel', 'Breadcrumb')"
 			:class="breadcrumbClasses"
-			aria-label="Breadcrumb"
 	>
 		<origam-defaults-provider :defaults="slotDefaults">
 			<slot name="default">
@@ -58,6 +58,7 @@
 
 	import {
 		useDensity,
+		useLocale,
 		useProps,
 		useStateEffect,
 		useStyle
@@ -86,6 +87,7 @@
 	})
 
 	const {filterProps} = useProps<IBreadcrumbProps>(props)
+	const {t} = useLocale()
 
 	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`
 	// as DEFAULTS — items that pass their own props still win.

@@ -190,7 +190,8 @@
 	})
 
 	const treeviewClasses = computed(() => [
-		'origam-treeview', colorClasses.value, hoverState, activeState,
+		'origam-treeview',
+		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,
 		props.class

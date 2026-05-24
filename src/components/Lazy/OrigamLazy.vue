@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			v-intersect="intersect"
+			:aria-busy="!isActive || undefined"
 			:class="lazyClasses"
 			:style="lazyStyles"
 	>

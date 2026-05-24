@@ -5,7 +5,7 @@
 			:class="infiniteScrollClasses"
 			:style="infiniteScrollStyles"
 	>
-		<div class="origam-infinite-scroll__side">
+		<div class="origam-infinite-scroll__side" role="status" aria-live="polite">
 			<template v-if="hasStartIntersect">
 				<slot
 						name="error"
@@ -69,7 +69,7 @@
 			/>
 		</template>
 
-		<div class="origam-infinite-scroll__side">
+		<div class="origam-infinite-scroll__side" role="status" aria-live="polite">
 			<template v-if="hasStartIntersect">
 				<slot
 						name="error"

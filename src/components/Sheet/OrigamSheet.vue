@@ -12,8 +12,8 @@
 				v-if="showHandle"
 				ref="handleEl"
 				class="origam-sheet__handle"
-				role="separator"
-				aria-orientation="horizontal"
+				role="button"
+				tabindex="0"
 				aria-label="Drag handle"
 				data-cy="sheet-bottom-handle"
 		>

@@ -176,8 +176,14 @@
 		progressRaf = window.requestAnimationFrame(tick)
 	}
 
+	const prefersReducedMotion = (): boolean => {
+		if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
+		return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+	}
+
 	const startTimeout = () => {
 		if (!props.cycle || !origamWindowRef.value) return
+		if (prefersReducedMotion()) return
 
 		slideTimeout = window.setTimeout(origamWindowRef.value.group.next, +props.interval > 0 ? +props.interval : 6000)
 		startProgress()

@@ -1,6 +1,7 @@
 <template>
 	<origam-data-table-column-cell
 			:align="column.align"
+			:aria-sort="column.sortable && !disableSort ? (isSorted(column) ? (sortBy.find((s: IDataTableSortItem) => s.key === column.key)?.order === 'desc' ? 'descending' : 'ascending') : 'none') : undefined"
 			:class="dataTableHeaderCellClasses"
 			:colspan="column.colspan"
 			:fixed="column.fixed"

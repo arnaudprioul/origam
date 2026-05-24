@@ -245,6 +245,13 @@
 		}
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		.origam-skeleton--pulse {
+			animation: none;
+			background-image: none;
+		}
+	}
+
 	.origam-skeleton-wrapper {
 		&--list-item {
 			display: flex;

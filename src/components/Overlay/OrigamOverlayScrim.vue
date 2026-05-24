@@ -4,6 +4,7 @@
 				v-if="active"
 				:class="scrimClasses"
 				:style="scrimStyles"
+				aria-hidden="true"
 				v-bind="$attrs"
 				@click="handleClick"
 				@mouseenter="handleMouseenter"

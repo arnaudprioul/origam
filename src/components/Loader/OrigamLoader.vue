@@ -1,6 +1,8 @@
 <template>
 	<component
 			:is="tag"
+			:aria-busy="isLoading || undefined"
+			:aria-label="isLoading ? 'Loading' : undefined"
 			:class="loaderClasses"
 			:style="loaderStyles"
 	>

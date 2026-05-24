@@ -89,6 +89,8 @@
 									:name="name"
 									:placeholder="placeholder"
 									:readonly="isReadonly"
+									:required="required || undefined"
+									:aria-required="required ? 'true' : undefined"
 									:size="1"
 									:type="resolvedInputType"
 									:value="displayValue"

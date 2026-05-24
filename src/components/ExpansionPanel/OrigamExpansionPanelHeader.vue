@@ -2,9 +2,11 @@
 	<component
 			:is="tag"
 			v-ripple="ripple"
+			:aria-controls="`expansion-panel-content-${expansionPanel.id}`"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
 			:disabled="isDisabled"
+			:id="`expansion-panel-header-${expansionPanel.id}`"
 			:style="expansionPanelHeaderStyles"
 			:tabindex="isDisabled ? -1 : undefined"
 			type="button"

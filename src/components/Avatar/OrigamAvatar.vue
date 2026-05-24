@@ -127,7 +127,7 @@
 
 	const imageProps = computed(() => {
 		const imgSrc: ISrcObject = {
-			alt: 'avatar',
+			alt: typeof props.image === 'object' && props.image && 'alt' in props.image ? (props.image as ISrcObject).alt ?? '' : '',
 			aspectRatio: 1
 		}
 

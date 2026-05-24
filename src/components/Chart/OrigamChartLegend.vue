@@ -8,10 +8,12 @@
 		<li
 				v-for="entry in safeItems"
 				:key="entry.series?.name ?? entry.index"
-				role="listitem"
+				:aria-label="`${entry.series?.name ?? ''}: ${isHidden(entry) ? 'hidden, click to show' : 'visible, click to hide'}`"
+				:aria-pressed="!isHidden(entry)"
 				class="origam-chart__legend-item"
 				:class="{ 'origam-chart__legend-item--hidden': isHidden(entry) }"
 				:data-cy="`origam-chart-legend-${ entry.index }`"
+				role="button"
 				tabindex="0"
 				@click="onItemClick(entry)"
 				@keydown.enter.prevent="onItemClick(entry)"
@@ -24,6 +26,7 @@
 				<span
 						class="origam-chart__legend-swatch"
 						:style="{ backgroundColor: entry.color }"
+						aria-hidden="true"
 				/>
 				<span class="origam-chart__legend-label">{{ entry.series?.name ?? '' }}</span>
 			</slot>
