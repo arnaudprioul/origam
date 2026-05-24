@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -109,7 +109,7 @@
     "type:dev": "vue-tsc --watch --noEmit --skipLibCheck",
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "test:unit": "vitest",
-    "test:a11y": "playwright test tests/a11y --reporter=list",
+    "test:a11y": "playwright test --config=playwright.a11y.config.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",

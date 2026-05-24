@@ -536,7 +536,17 @@
 				? optionId(highlightIndex.value)
 				: undefined
 
+		/*
+		 * `role="combobox"` MUST sit on the same element as the
+		 * `aria-haspopup` / `aria-expanded` / `aria-controls`
+		 * attributes — axe-core's `aria-allowed-attr` rule will
+		 * flag those attrs as illegal on an element without the
+		 * matching combobox role. We force the role here so
+		 * regardless of how `OrigamTextField` distributes the
+		 * fall-through attrs, the role travels with them.
+		 */
 		return {
+			role: 'combobox',
 			'aria-haspopup': 'listbox',
 			'aria-expanded': menu.value ? 'true' : 'false',
 			'aria-controls': menu.value ? listboxId : undefined,
