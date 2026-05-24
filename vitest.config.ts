@@ -18,7 +18,7 @@ export default defineConfig({
         // (each worktree carries its own checked-out copy of the suite,
         // multiplying the run by N and surfacing unrelated branch
         // failures as collateral noise).
-        exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**', '.claude/**'],
+        exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**', 'tests/a11y/**', '.claude/**'],
         globals: true,
         environment: 'jsdom'
     }

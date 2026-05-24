@@ -154,6 +154,12 @@
       "exitPip": "Exit picture in picture",
       "enableCaptions": "Enable captions",
       "disableCaptions": "Disable captions"
+    },
+    "colorPicker": {
+      "canvas": {
+        "ariaLabel": "Saturation and lightness",
+        "value": "Saturation {0}%, lightness {1}%"
+      }
     }
   }
 }

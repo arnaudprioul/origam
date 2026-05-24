@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:class="dataTableColumnClasses"
+			:scope="tag === 'th' ? 'col' : undefined"
 			:style="dataTableColumnStyles"
 	>
 		<slot name="default"/>

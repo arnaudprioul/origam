@@ -13,7 +13,11 @@
 				:style="tableWrapperStyles"
 		>
 			<slot name="wrapper">
-				<table>
+				<table :aria-rowcount="ariaRowcount || undefined">
+					<caption
+							v-if="caption"
+							:class="['origam-table__caption', {'origam-table__caption--visible': captionVisible}]"
+					>{{ caption }}</caption>
 					<slot name="default"/>
 				</table>
 			</slot>
@@ -47,6 +51,7 @@
 	 * @description
 	 * Props with defaults, filterProps utility, and slot ref.
 	 ********************************************************/
+
 	const props = withDefaults(defineProps<ITableProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT
@@ -147,6 +152,32 @@
 		font-size: var(--origam-table---font-size, 0.875rem);
 		border-radius: var(--origam-table---border-radius, 0);
 		overflow: hidden;
+
+		&__caption {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+
+			&--visible {
+				position: static;
+				width: auto;
+				height: auto;
+				padding: var(--origam-table__caption---padding, 8px 16px);
+				margin: 0;
+				overflow: visible;
+				clip: auto;
+				white-space: normal;
+				font-size: var(--origam-table__caption---font-size, 0.875rem);
+				color: var(--origam-table__caption---color, var(--origam-color__text---secondary));
+				text-align: var(--origam-table__caption---text-align, start);
+			}
+		}
 
 		&__wrapper {
 			overflow-x: auto;

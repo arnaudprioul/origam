@@ -6,6 +6,7 @@ export interface IColorPickerCanvasProps extends ICommonsComponentProps, IDimens
     colorHsv?: THSVA | null
     disabled?: boolean
     dotSize?: string | number
+    ariaLabel?: string
 }
 
 /** Emits fired by `<OrigamColorPickerCanvas>` — drag/click updates the HSVA. */

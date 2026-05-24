@@ -87,7 +87,7 @@
 >
 	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow, OrigamSkeleton } from '../../components'
 
-	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLoader, useLocale, useProps, useSelection } from '../../composables'
+	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLoader, useLocale, usePagination, useProps, useSelection } from '../../composables'
 
 	import type {
 		IDataTableGroup,
@@ -130,6 +130,7 @@
 	const {isSelected, toggleSelect} = useSelection()
 	const {toggleGroup, isGroupOpen} = useGroupBy()
 	const {mobile} = useDisplay(props)
+	const {startIndex} = usePagination()
 
 	const slotProps = (item: any, index: number): IDataTableItemBaseSlot => {
 		return {
@@ -182,7 +183,8 @@
 						// on every viewport <1280px regardless of what
 						// the consumer set on the DataTable.
 						mobileBreakpoint: props.mobileBreakpoint,
-						mobile: mobile.value
+						mobile: mobile.value,
+						'aria-rowindex': startIndex.value + index + 2
 					},
 					getPrefixedEventHandlers(attrs, ':row', () => slotPropsLocal),
 					typeof props.rowProps === 'function'

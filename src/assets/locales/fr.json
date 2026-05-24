@@ -149,6 +149,12 @@
       "exitPip": "Désactiver image dans l'image",
       "enableCaptions": "Activer les sous-titres",
       "disableCaptions": "Désactiver les sous-titres"
+    },
+    "colorPicker": {
+      "canvas": {
+        "ariaLabel": "Saturation et luminosité",
+        "value": "Saturation {0}%, luminosité {1}%"
+      }
     }
   }
 }

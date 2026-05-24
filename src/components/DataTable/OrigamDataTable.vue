@@ -4,6 +4,7 @@
 			:class="dataTableClasses"
 			:style="dataTableStyles"
 			v-bind="tableProps"
+			:ariaRowcount="itemsLength"
 	>
 		<template
 				v-if="slots.top"
@@ -138,6 +139,8 @@
 		useStyle
 } from '../../composables'
 
+	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts'
+
 	import { DENSITY, MDI_ICONS } from '../../enums'
 
 	import type {
@@ -147,7 +150,7 @@
 
 	import type { TOrigamDataTableFooter, TOrigamDataTableHeaders, TOrigamDataTableRows, TOrigamTable } from "../../types"
 
-	import { computed, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, provide, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -258,6 +261,8 @@
 	})
 
 	const {isExpanded, toggleExpand} = provideExpanded(props)
+
+	provide(ORIGAM_DATA_TABLE_SHOW_SELECT_KEY, toRef(props, 'showSelect') as unknown as Ref<boolean>)
 
 	useOptions({
 		page,

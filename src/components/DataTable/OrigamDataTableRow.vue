@@ -1,5 +1,6 @@
 <template>
 	<tr
+			:aria-selected="showSelect ? isSelected([item]) : undefined"
 			:class="dataTableRowClasses"
 			:style="dataTableRowStyles"
 			v-bind="$attrs"
@@ -105,7 +106,9 @@
 
 	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
 
-	import { computed, StyleValue, toDisplayString, withModifiers } from 'vue'
+	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts'
+
+	import { computed, inject, ref, Ref, StyleValue, toDisplayString, withModifiers } from 'vue'
 
 	const vm = getCurrentInstance('dataTableRow')
 
@@ -122,6 +125,8 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
+
+	const showSelect = inject<Ref<boolean>>(ORIGAM_DATA_TABLE_SHOW_SELECT_KEY, ref(false))
 
 	const {displayClasses, mobile} = useDisplay(props, 'origam-data-table-row')
 	const {isSelected, toggleSelect, someSelected, allSelected, selectAll} = useSelection()

@@ -11,7 +11,7 @@
 			:style="selectStyles"
 			:title="t(label)"
 			:validation-value="validationValue"
-			v-bind="{ ...textFieldProps }"
+			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
 			@change="handleChange"
 			@keydown="handleKeydown"
@@ -84,6 +84,7 @@
 					<origam-list
 							v-if="hasList"
 							ref="origamListRef"
+							:id="listboxId"
 							:select-strategy="multiple ? SELECT_STRATEGY.INDEPENDENT : SELECT_STRATEGY.SINGLE_INDEPENDENT"
 							:selected="selectedValues"
 							:tabindex="-1"
@@ -326,7 +327,7 @@
 		TTransitionProps
 	} from '../../types'
 
-	import { deepEqual, forwardRefs, matchesSelector, noop, wrapInArray } from '../../utils'
+	import { deepEqual, forwardRefs, getUid, matchesSelector, noop, wrapInArray } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -388,6 +389,24 @@
 	// expose certain props/methods (notably `$el`, which the proxy filters
 	// because of its `$` prefix).
 	const vm = getCurrentInstance()
+
+	/*********************************************************
+	 * WAI-ARIA combobox IDs
+	 *
+	 * @description
+	 * Stable IDs for the listbox + per-option elements.
+	 * `listboxId` is applied to the OrigamList root; each option
+	 * gets `optionId(index)` so `aria-activedescendant` on the
+	 * combobox input can point to the keyboard-highlighted row
+	 * without moving DOM focus off the input.
+	 ********************************************************/
+	const _uid = getUid()
+	const listboxId = `origam-select-listbox-${_uid}`
+	const optionId = (index: number) => `${listboxId}-opt-${index}`
+
+	// Index of the currently keyboard-highlighted option.
+	// -1 = no highlight (listbox closed or nothing highlighted).
+	const highlightIndex = shallowRef(-1)
 
 	/*********************************************************
 	 * Value & model
@@ -504,19 +523,38 @@
 	})
 	const menuProps = computed(() => {
 		return {
-			...props.menuProps,
-			activatorProps: {
-				...(props.menuProps?.activatorProps || {}),
-				'aria-haspopup': 'listbox' // Set aria-haspopup to 'listbox'
-			}
+			...props.menuProps
+		}
+	})
+
+	// Computed ARIA attrs forwarded to the TextField (→ <input>).
+	// `aria-activedescendant` is only emitted when the menu is open
+	// AND a real option is highlighted.
+	const comboboxAriaAttrs = computed(() => {
+		const activeDescendant =
+			menu.value && highlightIndex.value >= 0
+				? optionId(highlightIndex.value)
+				: undefined
+
+		return {
+			'aria-haspopup': 'listbox',
+			'aria-expanded': menu.value ? 'true' : 'false',
+			'aria-controls': menu.value ? listboxId : undefined,
+			'aria-autocomplete': props.autocomplete ? 'list' : undefined,
+			'aria-activedescendant': activeDescendant
 		}
 	})
 
 	const menuListItemProps = (item: IInternalListItem, itemRef: VNodeRef, index: number) => {
+		const isKeyboardHighlighted = highlightIndex.value === index
+		const isItemSelected = isSelected(item)
 		return mergeProps(item.props ?? {}, {
 			ref: itemRef,
 			key: index,
-			active: (highlightFirst.value && index === 0) ? true : isSelected(item),
+			id: optionId(index),
+			role: 'option',
+			'aria-selected': isItemSelected,
+			active: (highlightFirst.value && index === 0) || isItemSelected || isKeyboardHighlighted,
 			onClick: () => handleSelect(item, null)
 		})
 	}
@@ -639,7 +677,31 @@
 
 		const keyMenuOut = [KEYBOARD_VALUES.ESC, KEYBOARD_VALUES.TAB]
 		if (keyMenuOut.includes(e.key as typeof keyMenuOut[number])) {
+			highlightIndex.value = -1
 			menu.value = false
+		}
+
+		// WAI-ARIA combobox: highlight navigation stays on the <input>.
+		// DOM focus never leaves the input — only aria-activedescendant changes.
+		const itemCount = displayItems.value.length
+		if (menu.value && itemCount > 0) {
+			if (e.key === KEYBOARD_VALUES.DOWN) {
+				highlightIndex.value = highlightIndex.value < itemCount - 1
+					? highlightIndex.value + 1
+					: 0
+			} else if (e.key === KEYBOARD_VALUES.UP) {
+				highlightIndex.value = highlightIndex.value > 0
+					? highlightIndex.value - 1
+					: itemCount - 1
+			} else if (e.key === KEYBOARD_VALUES.HOME) {
+				highlightIndex.value = 0
+			} else if (e.key === KEYBOARD_VALUES.END) {
+				highlightIndex.value = itemCount - 1
+			} else if (e.key === KEYBOARD_VALUES.ENTER && highlightIndex.value >= 0) {
+				handleSelect(displayItems.value[highlightIndex.value] as IInternalListItem, null)
+				highlightIndex.value = -1
+				return
+			}
 		}
 
 		if (e.key === KEYBOARD_VALUES.HOME) {
@@ -758,6 +820,7 @@
 		}
 	}
 	const handleAfterLeave = () => {
+		highlightIndex.value = -1
 		if (isFocused.value) {
 			isPristine.value = true
 			origamTextFieldRef.value?.focus()

@@ -1,9 +1,11 @@
 import { provideSelection } from '../../composables'
 import type { IDataTableSelectStrategy } from '../../interfaces'
 
-import type { InjectionKey } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 
 export const ORIGAM_DATA_TABLE_SELECT_KEY: InjectionKey<ReturnType<typeof provideSelection>> = Symbol.for('origam:data-table-selection')
+
+export const ORIGAM_DATA_TABLE_SHOW_SELECT_KEY: InjectionKey<Ref<boolean>> = Symbol.for('origam:data-table-show-select')
 
 export const singleSelectStrategy: IDataTableSelectStrategy = {
     showSelectAll: false,

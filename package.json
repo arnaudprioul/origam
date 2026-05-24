@@ -109,6 +109,7 @@
     "type:dev": "vue-tsc --watch --noEmit --skipLibCheck",
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "test:unit": "vitest",
+    "test:a11y": "playwright test tests/a11y --reporter=list",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
@@ -137,6 +138,7 @@
     }
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@histoire/plugin-vue": "^1.0.0-beta.1",
     "@nuxt/kit": "^4.4.5",
     "@playwright/test": "^1.48.0",
@@ -144,6 +146,7 @@
     "@types/jest": "^30.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/test-utils": "^2.4.6",
+    "axe-core": "^4.11.4",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-vue": "^10.3.0",

@@ -1,8 +1,13 @@
 <template>
 	<div
 			ref="resizeRef"
+			:aria-label="canvasAriaLabel"
+			:aria-valuetext="canvasAriaValueText"
 			:class="colorPickerCanvasClasses"
 			:style="colorPickerCanvasStyles"
+			role="application"
+			tabindex="0"
+			@keydown="handleKeyDown"
 			@mousedown="handleMouseDown"
 			@touchstart.passive="handleMouseDown"
 	>
@@ -10,6 +15,7 @@
 				ref="canvasRef"
 				:height="canvasHeight"
 				:width="canvasWidth"
+				aria-hidden="true"
 		/>
 		<template v-if="colorHsv">
 			<div
@@ -25,9 +31,11 @@
 		lang="ts"
 		setup
 >
-	import { useProps, useResizeObserver , useStyle} from "../../composables"
+	import { useLocale, useProps, useResizeObserver, useStyle } from "../../composables"
 
-	import type { IColorPickerCanvasProps} from "../../interfaces"
+	import { KEYBOARD_VALUES } from "../../enums"
+
+	import type { IColorPickerCanvasProps } from "../../interfaces"
 
 	import type { IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
@@ -50,6 +58,7 @@
 	const emits = defineEmits<IColorPickerCanvasEmits>()
 
 	const {filterProps} = useProps<IColorPickerCanvasProps>(props)
+	const {t} = useLocale()
 
 	const isInteracting = shallowRef(false)
 	const canvasRef = ref<HTMLCanvasElement | null>()
@@ -153,8 +162,84 @@
 	}
 
 	/*********************************************************
+	 * ARIA computed values
+	 ********************************************************/
+
+	const canvasAriaLabel = computed(() => {
+		return props.ariaLabel ?? t('origam.colorPicker.canvas.ariaLabel')
+	})
+
+	const canvasAriaValueText = computed(() => {
+		const s = Math.round((props.colorHsv?.s ?? 0) * 100)
+		const v = Math.round((props.colorHsv?.v ?? 0) * 100)
+
+		return t('origam.colorPicker.canvas.value', s, v)
+	})
+
+	/*********************************************************
 	 * Event handlers
 	 ********************************************************/
+
+	const STEP_SMALL = 0.01
+	const STEP_LARGE = 0.05
+
+	const handleKeyDown = (e: KeyboardEvent) => {
+		if (props.disabled) return
+
+		const step = e.shiftKey ? STEP_LARGE : STEP_SMALL
+		const hsv = props.colorHsv
+
+		if (!hsv) return
+
+		let {h, s, v, a} = hsv
+		let handled = false
+
+		switch (e.key) {
+			case KEYBOARD_VALUES.LEFT:
+				s = clamp(s - step, 0, 1)
+				handled = true
+				break
+			case KEYBOARD_VALUES.RIGHT:
+				s = clamp(s + step, 0, 1)
+				handled = true
+				break
+			case KEYBOARD_VALUES.UP:
+				v = clamp(v + step, 0, 1)
+				handled = true
+				break
+			case KEYBOARD_VALUES.DOWN:
+				v = clamp(v - step, 0, 1)
+				handled = true
+				break
+			case KEYBOARD_VALUES.HOME:
+				s = 0
+				handled = true
+				break
+			case KEYBOARD_VALUES.END:
+				s = 1
+				handled = true
+				break
+			case KEYBOARD_VALUES.PAGEUP:
+				v = 1
+				handled = true
+				break
+			case KEYBOARD_VALUES.PAGEDOWN:
+				v = 0
+				handled = true
+				break
+		}
+
+		if (!handled) return
+
+		e.preventDefault()
+
+		emits('update:colorHsv', {h, s, v, a})
+
+		_dotPosition.value = {
+			x: s * canvasWidth.value,
+			y: (1 - v) * canvasHeight.value
+		}
+	}
 
 	const handleMouseDown = (e: MouseEvent | TouchEvent) => {
 		if (e.type === 'mousedown') {
@@ -277,6 +362,12 @@
 		overflow: hidden;
 		contain: content;
 		touch-action: none;
+		outline: none;
+
+		&:focus-visible {
+			outline: 2px solid var(--origam-color__border---focus);
+			outline-offset: 2px;
+		}
 
 		&__dot {
 			position: absolute;

@@ -2,6 +2,7 @@
 	<component
 			:is="link.tag"
 			v-ripple="isClickable && ripple"
+			:id="props.id"
 			:class="listItemClasses"
 			:href="link.href.value"
 			:style="listItemStyles"
