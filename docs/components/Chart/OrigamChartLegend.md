@@ -100,7 +100,7 @@ interface IChartLegendItem {
 
 | Name | Bindings | Description |
 |------|----------|-------------|
-| `legend-item` | `{ series: IChartSeries, index: number, visible: boolean }` | Replace one legend entry. The default render is `<span class="origam-chart__legend-swatch" :style="{ backgroundColor: entry.color }" /> + <span class="origam-chart__legend-label">{{ series.name }}</span>`. Use this slot to add an icon, a trend badge, a tooltip, etc. |
+| `legend-item` | `{ series: IChartSeries, index: number, visible: boolean }` | Replace one legend entry. The default render is a colour swatch + an inline label that prints `series.name`. Use this slot to add an icon, a trend badge, a tooltip, etc. |
 
 ## Behaviour notes
 

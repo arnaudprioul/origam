@@ -6,8 +6,8 @@
 			data-cy="origam-chart-legend"
 	>
 		<li
-				v-for="entry in items"
-				:key="entry.series.name"
+				v-for="entry in safeItems"
+				:key="entry.series?.name ?? entry.index"
 				role="listitem"
 				class="origam-chart__legend-item"
 				:class="{ 'origam-chart__legend-item--hidden': isHidden(entry) }"
@@ -25,7 +25,7 @@
 						class="origam-chart__legend-swatch"
 						:style="{ backgroundColor: entry.color }"
 				/>
-				<span class="origam-chart__legend-label">{{ entry.series.name }}</span>
+				<span class="origam-chart__legend-label">{{ entry.series?.name ?? '' }}</span>
 			</slot>
 		</li>
 	</ul>
@@ -80,6 +80,18 @@
 	const legendClasses = computed(() => ({
 		[`origam-chart__legend--${ props.position }`]: true
 	}))
+
+	/*
+	 * Defensive guard — when the legend is mounted with an undefined
+	 * or partially-populated `items` prop (e.g. by VitePress's SSR
+	 * pass which sometimes instantiates components without runtime
+	 * data), filter out entries that are missing the `series` ref.
+	 * The runtime data path always supplies a series, so this guard
+	 * only affects the SSR + empty-prop edge case.
+	 */
+	const safeItems = computed(() =>
+		(props.items ?? []).filter((e) => e && e.series)
+	)
 
 	/*********************************************************
 	 * Interaction
