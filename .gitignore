@@ -36,6 +36,8 @@ docs/.vitepress/cache
 # Test
 tests/e2e/.report
 tests/e2e/.results
+tests/a11y/.report
+tests/a11y/.results
 
 # Debug files
 *.debug*
