@@ -1,0 +1,330 @@
+{
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
+  "about": {
+    "changelogLink": "Changelog",
+    "contact": {
+      "body": "For anything that doesn't fit a GitHub issue:",
+      "github": "View on GitHub",
+      "githubLabel": "View origam on GitHub (opens in new tab)",
+      "public": "For public questions, prefer",
+      "searchable": "so the answer is searchable.",
+      "title": "Contact"
+    },
+    "content": {
+      "regionLabel": "Full story"
+    },
+    "externalLink": "opens in new tab",
+    "getInvolved": {
+      "title": "Get involved"
+    },
+    "hero": {
+      "subtitle": "Why we built it, what's inside, and who's behind it.",
+      "title": "About origam"
+    },
+    "lastUpdated": "Last updated",
+    "meta": {
+      "description": "Why we built origam, what's inside, who's behind it.",
+      "ogImageAlt": "About origam",
+      "ogTitle": "About origam",
+      "title": "About · origam"
+    },
+    "principles": {
+      "heading": "Philosophy",
+      "headingId": "principles-heading"
+    },
+    "stack": {
+      "heading": "Stack we use",
+      "headingId": "stack-heading",
+      "opensNewTab": "opens in new tab"
+    },
+    "stats": {
+      "regionLabel": "Key figures"
+    }
+  },
+  "blog": {
+    "breadcrumbLabel": "Breadcrumb",
+    "editOnGithub": "Edit on GitHub",
+    "editOnGithubLabel": "Edit this article on GitHub (opens in new tab)",
+    "heading": "Blog",
+    "meta": {
+      "ogImageAlt": "origam Blog"
+    },
+    "nextPage": "Next",
+    "nextPageLabel": "Next page",
+    "notFound": "Article not found",
+    "pageDescription": "Releases, philosophy, tutorials.",
+    "pageInfo": "Page {current} of {total}",
+    "pageTitle": "Blog · origam",
+    "paginationLabel": "Blog pagination",
+    "postsLabel": "Blog posts",
+    "prevPage": "Previous",
+    "prevPageLabel": "Previous page",
+    "readArticle": "Read article",
+    "readArticleLabel": "Read article: {title}",
+    "readingTime": "{n} min read",
+    "relatedArticles": "Related articles",
+    "subtitle": "Releases, philosophy, tutorials.",
+    "tagsLabel": "Article tags"
+  },
+  "changelog": {
+    "comingSoon": "Coming soon",
+    "empty": "No changes match the selected filters",
+    "filtersLabel": "Filter by change type",
+    "heading": "Changelog",
+    "meta": {
+      "description": "Every release, every change.",
+      "ogImageAlt": "origam Changelog",
+      "title": "Changelog · origam"
+    },
+    "releasesLabel": "Releases",
+    "subtitle": "Every release, every change.",
+    "unreleased": "Unreleased",
+    "viewOnGithub": "View on GitHub",
+    "viewOnGithubAriaLabel": "View CHANGELOG.md on GitHub"
+  },
+  "codeDemo": {
+    "clickedTimes": "Clicked",
+    "heading": "Quick start",
+    "openPlayground": "Open in playground",
+    "previewLabel": "Live component preview",
+    "snippetCaption": "Vue SFC usage example",
+    "subtitle": "Drop origam components into your Vue 3 project in seconds.",
+    "times": "times"
+  },
+  "common": {
+    "loading": "Loading…"
+  },
+  "components": {
+    "card": {
+      "linkLabel": "View {name} component"
+    },
+    "detail": {
+      "backToComponents": "Back to components",
+      "breadcrumbNav": "Breadcrumb",
+      "fullStory": "Open story fullscreen",
+      "githubSource": "Source on GitHub",
+      "noData": "No data available.",
+      "notFound": "Component not found.",
+      "seoDescriptionFallback": "{name} component — origam Vue 3 design system.",
+      "seoTitle": "{name} · origam",
+      "storyRegion": "Live story preview",
+      "storyTitle": "{name} story preview",
+      "tabEmits": "Emits",
+      "tabExamples": "Examples",
+      "tabNav": "Component documentation tabs",
+      "tabOverview": "Overview",
+      "tabProps": "Props",
+      "tabSlots": "Slots",
+      "viewInDocs": "View in docs"
+    },
+    "grid": {
+      "empty": "No components match this filter.",
+      "region": "Components list"
+    },
+    "index": {
+      "allCategories": "All",
+      "filterNav": "Filter by category",
+      "heading": "Components",
+      "mainRegion": "Components gallery",
+      "meta": {
+        "ogImageAlt": "origam Components"
+      },
+      "searchLabel": "Search components",
+      "searchPlaceholder": "Search…",
+      "seoDescription": "~95 components, 29 charts, filter by category.",
+      "seoTitle": "Components · origam"
+    }
+  },
+  "ctaBanner": {
+    "browse": "Browse components",
+    "copyLabel": "Copy install command",
+    "github": "GitHub",
+    "githubLabel": "View on GitHub (opens in new tab)",
+    "subtitle": "Install origam and start building production-grade Vue 3 UIs today.",
+    "title": "Ready to ship faster?"
+  },
+  "features": {
+    "a11y": {
+      "desc": "Automated axe-core tests on every component.",
+      "title": "WCAG 2.1 AA"
+    },
+    "charts": {
+      "desc": "Highcharts-tier coverage in your bundle.",
+      "title": "29 chart primitives"
+    },
+    "css": {
+      "desc": ":has(), container queries, color-mix, prefers-reduced-motion.",
+      "title": "CSS-first"
+    },
+    "heading": "Why origam",
+    "subtitle": "Production-ready, accessible, and developer-friendly.",
+    "tokens": {
+      "desc": "Multi-theme (light/dark/brand) via Tokens Studio.",
+      "title": "Design tokens"
+    },
+    "typescript": {
+      "desc": "Strict mode, complete types, ergonomic APIs.",
+      "title": "TypeScript first"
+    },
+    "vue": {
+      "desc": "Composition API, script setup, SFC, no jank.",
+      "title": "Vue 3 native"
+    }
+  },
+  "footer": {
+    "community": "Community",
+    "contact": "Contact",
+    "copyright": "© 2026 origam · MIT · v2.5.1",
+    "github": "GitHub",
+    "license": "License",
+    "madeWith": "Made with",
+    "product": "Product",
+    "resources": "Resources",
+    "tagline": "The Vue 3 design system that just works."
+  },
+  "home": {
+    "hero": {
+      "copyInstall": "Copy install command",
+      "ctaBrowse": "Browse components",
+      "ctaGithub": "GitHub",
+      "ctaGithubLabel": "View origam on GitHub (opens in new tab)",
+      "installCaption": "Install origam via npm",
+      "subtitle": "29 chart primitives, ~95 components, full a11y, design tokens out of the box.",
+      "title": "The Vue 3 design system that just works"
+    },
+    "meta": {
+      "description": "29 chart primitives, ~95 components, full a11y, design tokens. The Vue 3 design system that just works.",
+      "ogImageAlt": "origam — The Vue 3 design system that just works",
+      "ogTitle": "The Vue 3 design system that just works",
+      "title": "origam · Vue 3 design system"
+    }
+  },
+  "nav": {
+    "about": "About",
+    "blog": "Blog",
+    "changelog": "Changelog",
+    "closeMenu": "Close menu",
+    "components": "Components",
+    "docs": "Docs",
+    "github": "GitHub",
+    "githubLabel": "View on GitHub (opens in new tab)",
+    "home": "Home",
+    "logoLabel": "origam — home",
+    "mainLabel": "Main",
+    "openMenu": "Open menu",
+    "playground": "Playground",
+    "stories": "Stories",
+    "switchToDark": "Switch to dark theme",
+    "switchToLight": "Switch to light theme"
+  },
+  "playground": {
+    "editor": {
+      "label": "Vue SFC code editor",
+      "loading": "Loading editor…"
+    },
+    "meta": {
+      "description": "Try origam components in your browser. No install required.",
+      "ogImageAlt": "origam Playground",
+      "ogTitle": "Playground",
+      "title": "Playground · origam"
+    },
+    "preview": {
+      "errorLabel": "Compilation error",
+      "errorTitle": "Compilation error",
+      "loading": "Compiling preview…",
+      "loadingBrowser": "Preview renders in the browser",
+      "ssr": "Preview renders in the browser"
+    },
+    "share": {
+      "copied": "Link copied!",
+      "fallback": "Copy this URL: "
+    },
+    "split": {
+      "label": "Code editor and preview"
+    },
+    "tabs": {
+      "code": "Code",
+      "label": "Editor and preview tabs",
+      "preview": "Preview"
+    },
+    "toolbar": {
+      "copied": "Link copied!",
+      "navLabel": "Playground actions",
+      "reset": "Reset",
+      "resetLabel": "Reset to default template",
+      "share": "Share link",
+      "shareLabel": "Copy share link to clipboard",
+      "stories": "Open in stories",
+      "storiesLabel": "Open matching story in Histoire",
+      "templateLabel": "Template"
+    }
+  },
+  "search": {
+    "dialogLabel": "Site search",
+    "empty": "Try searching for a component, blog post, or doc page.",
+    "errorDev": "Search index not available. Run `npm run build` first.",
+    "escape": "Esc",
+    "inputLabel": "Search",
+    "loading": "Searching…",
+    "navigate": "navigate",
+    "noResults": "No results for",
+    "openLabel": "Open search",
+    "placeholder": "Search components, posts, docs…",
+    "select": "select",
+    "toggle": "toggle"
+  },
+  "showcase": {
+    "alert": {
+      "info": "WCAG 2.1 AA on every component.",
+      "label": "Alert",
+      "success": "Strict TypeScript throughout."
+    },
+    "avatars": {
+      "label": "Avatar group"
+    },
+    "badge": {
+      "inbox": "Inbox",
+      "label": "Badge",
+      "status": "Status"
+    },
+    "btn": {
+      "flat": "Flat",
+      "label": "Button variants",
+      "outlined": "Outlined",
+      "text": "Text",
+      "tonal": "Tonal"
+    },
+    "alertSuccess": {
+      "label": "Alert success"
+    },
+    "avatar": {
+      "label": "Avatar group"
+    },
+    "btnOutline": {
+      "label": "Outlined button"
+    },
+    "card": {
+      "label": "Card with badge"
+    },
+    "carouselLabel": "Component showcase carousel",
+    "chip": {
+      "label": "Chips"
+    },
+    "chips": {
+      "a11y": "A11y",
+      "css": "CSS-first",
+      "label": "Chip group",
+      "tokens": "Tokens",
+      "ts": "TypeScript",
+      "vue3": "Vue 3"
+    },
+    "cta": "View all components",
+    "heading": "See it in action",
+    "progress": {
+      "label": "Progress"
+    },
+    "subtitle": "Every component ships accessible, themed, and production-ready."
+  }
+}

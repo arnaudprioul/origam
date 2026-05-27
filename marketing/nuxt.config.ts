@@ -1,5 +1,6 @@
 import { MARKETING_DEFAULTS } from './app/consts/marketing.const'
 import { ROUTE_RULES } from './app/consts/route-rules.const'
+import { I18N_LOCALES } from './app/consts/i18n.const'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -17,7 +18,8 @@ export default defineNuxtConfig({
         '@nuxt/content',
         '@nuxt/image',
         '@nuxtjs/seo',
-        '@nuxtjs/plausible'
+        '@nuxtjs/plausible',
+        '@nuxtjs/i18n'
     ],
 
     experimental: {
@@ -91,6 +93,22 @@ export default defineNuxtConfig({
 
     robots: {
         disallow: ['/playground/share']
+    },
+
+    i18n: {
+        locales: I18N_LOCALES,
+        defaultLocale: 'en',
+        strategy: 'prefix_except_default',
+        langDir: 'locales',
+        lazy: true,
+        compilation: { strictMessage: false },
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'origam_locale',
+            redirectOn: 'root',
+            alwaysRedirect: false
+        },
+        baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://origam.dev'
     },
 
     vite: {

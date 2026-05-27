@@ -74,6 +74,8 @@ function handleNavLinkClick (href: string): void {
 
                 <ThemeToggle />
 
+                <LanguageSwitcher />
+
                 <OrigamBtn
                     class="site-nav__burger"
                     variant="text"

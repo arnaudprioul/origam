@@ -1,14 +1,20 @@
+import { useI18n } from 'vue-i18n'
+
 /**
- * useI18nFallback — minimal `t(key, fallback)` shim until @nuxtjs/i18n is wired up
- * (V2, see SPEC §2 — "i18n (V2)"). Keeps every visible string already running
- * through a function call so the migration to vue-i18n is a one-import swap and
- * not a project-wide find/replace.
+ * Wrapper around vue-i18n t() that keeps the (key, fallback) signature
+ * historically used in this codebase. If the key resolves to itself
+ * (vue-i18n default behaviour when missing), we return the fallback.
  *
- * Phase 1 contract: `t('a11y.skipToContent', 'Skip to content')` returns the
- * fallback. Real translation comes online with task tracked in Phase 2/4.
+ * This preserves backward compat with all the t(key, fallback) calls
+ * made during Phases 1-4 before i18n was wired.
  */
 export function useI18nFallback () {
-    const t = (_key: string, fallback: string): string => fallback
+    const { t: i18nT, locale } = useI18n()
 
-    return { t }
+    function t (key: string, fallback: string): string {
+        const resolved = i18nT(key)
+        return resolved === key ? fallback : resolved
+    }
+
+    return { t, locale }
 }
