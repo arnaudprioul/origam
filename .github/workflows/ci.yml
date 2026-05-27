@@ -114,7 +114,7 @@ jobs:
         run: npm ci --legacy-peer-deps --no-audit --no-fund
 
       - name: Build library
-        run: npm run server:build
+        run: npm run lib:build
 
       - name: Assert dist output exists
         run: |
