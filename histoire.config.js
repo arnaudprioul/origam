@@ -23,7 +23,7 @@ export default defineConfig({
     vite: {
         resolve: {
             alias: {
-                '@origam': resolve(__dirname, './src'),
+                '@origam': resolve(__dirname, './packages/ds/src'),
                 '@stories': resolve(__dirname, './stories'),
                 '@docs': resolve(__dirname, './docs'),
                 '@cypress': resolve(__dirname, './cypress'),
