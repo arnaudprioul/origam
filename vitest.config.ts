@@ -8,16 +8,22 @@ export default defineConfig({
         tsconfigPaths()
     ],
     test: {
-        include: ['**/*.spec.ts'],
-        // Vitest collects every `**/*.spec.ts`, but `tests/e2e/*.spec.ts`
-        // are Playwright suites that import `@playwright/test` — Vitest
-        // chokes on `test.describe` from Playwright's runtime. Keep the
-        // e2e tree out of the unit-test surface.
-        // `.claude/worktrees/**` holds throwaway git worktrees spawned by
-        // parallel Claude agents — Vitest must NOT collect specs there
-        // (each worktree carries its own checked-out copy of the suite,
-        // multiplying the run by N and surfacing unrelated branch
-        // failures as collateral noise).
+        /*
+         * Unit tests live in `tests/TU/` mirroring the `src/` tree
+         * (e.g. `src/composables/Foo/foo.composable.ts` → its spec
+         * is at `tests/TU/composables/Foo/foo.composable.spec.ts`).
+         *
+         * - `tests/e2e/` runs via Playwright (own config) — keep
+         *   out of vitest discovery so `test.describe` doesn't
+         *   collide with Playwright's runtime.
+         * - `tests/a11y/` runs via Playwright (separate config) —
+         *   same reason.
+         * - `.claude/worktrees/**` holds throwaway git worktrees
+         *   spawned by parallel Claude agents — must NOT be
+         *   collected (would multiply the run by N and surface
+         *   unrelated branch failures).
+         */
+        include: ['tests/TU/**/*.spec.ts'],
         exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**', 'tests/a11y/**', '.claude/**'],
         globals: true,
         environment: 'jsdom'

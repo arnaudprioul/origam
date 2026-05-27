@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -88,16 +88,14 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dev": "npm run server:dev && npm run story:dev && npm run docs:dev",
-    "build": "npm run server:build && npm run story:build && npm run docs:build",
-    "preview": "npm run server:preview && npm run story:preview && npm run docs:preview",
+    "dev": "npm run story:dev && npm run docs:dev",
+    "build": "npm run lib:build && npm run story:build && npm run docs:build",
+    "preview": "npm run story:preview && npm run docs:preview",
     "story:dev": "CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=600 histoire dev",
     "story:dev:native": "histoire dev",
     "story:build": "histoire build",
     "story:preview": "histoire preview",
-    "server:dev": "npm run tokens:build && vite",
-    "server:build": "npm run tokens:build && unbuild",
-    "server:preview": "vite preview",
+    "lib:build": "npm run tokens:build && unbuild",
     "tokens:build": "node scripts/build-tokens.mjs",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
@@ -117,7 +115,7 @@
     "test:e2e:cypress-legacy": "cypress",
     "test:open": "cypress open",
     "clean": "rm -rf dist node_modules package-lock.json",
-    "prepublishOnly": "npm run tokens:build && npm run server:build && npm run test:unit -- --run"
+    "prepublishOnly": "npm run tokens:build && npm run lib:build && npm run test:unit -- --run"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
