@@ -158,6 +158,10 @@
       "desc": ":has(), container queries, color-mix, prefers-reduced-motion.",
       "title": "CSS-first"
     },
+    "figma": {
+      "desc": "Sync tokens & components both ways via Origam DS Sync.",
+      "title": "Figma plugin"
+    },
     "heading": "Why origam",
     "subtitle": "Production-ready, accessible, and developer-friendly.",
     "tokens": {
@@ -178,11 +182,14 @@
     "contact": "Contact",
     "copyright": "© 2026 origam · MIT · v2.5.1",
     "github": "GitHub",
+    "integrations": "Integrations",
     "license": "License",
     "madeWith": "Made with",
+    "npm": "npm package",
     "product": "Product",
     "resources": "Resources",
-    "tagline": "The Vue 3 design system that just works."
+    "tagline": "The Vue 3 design system that just works.",
+    "tokensStudio": "Tokens Studio"
   },
   "home": {
     "hero": {
@@ -208,6 +215,7 @@
     "closeMenu": "Close menu",
     "components": "Components",
     "docs": "Docs",
+    "figma": "Figma plugin",
     "github": "GitHub",
     "githubLabel": "View on GitHub (opens in new tab)",
     "home": "Home",
@@ -218,6 +226,66 @@
     "stories": "Stories",
     "switchToDark": "Switch to dark theme",
     "switchToLight": "Switch to light theme"
+  },
+  "figma": {
+    "meta": {
+      "title": "Figma plugin · origam",
+      "description": "Origam DS Sync — the official Figma plugin that syncs origam tokens and components into your design files.",
+      "ogTitle": "Figma plugin",
+      "ogAlt": "Origam DS Sync — Figma plugin"
+    },
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "integrations": "Integrations",
+      "figma": "Figma plugin"
+    },
+    "eyebrow": "Integration",
+    "tagline": "Bridge your origam design system and Figma. Sync tokens, generate component sets, export back to the repo — no manual copy-paste.",
+    "cta": {
+      "download": "Get the plugin",
+      "releases": "View releases"
+    },
+    "features": {
+      "title": "What it does",
+      "componentSets": {
+        "title": "14 component sets",
+        "body": "The most-used origam components rendered as native Figma COMPONENT_SETs — variants, states, sizes ready to drop in a frame."
+      },
+      "tokensStudio": {
+        "title": "Tokens Studio round-trip",
+        "body": "Export your design changes back to the repo as Tokens Studio JSON. No manual copy/paste, no token drift."
+      },
+      "scssExport": {
+        "title": "SCSS export",
+        "body": "Generate origam-compatible SCSS variables from your Figma file — same naming convention as the runtime tokens."
+      },
+      "variables": {
+        "title": "Figma Variables aware",
+        "body": "Consumes Tokens Studio variables already imported in your file — does not duplicate or override them."
+      }
+    },
+    "requirements": {
+      "title": "Requirements",
+      "desktop": "Figma desktop app (web client cannot load local plugins)",
+      "tokensStudio": "Tokens Studio for Figma plugin (free)",
+      "node": "Node 22+ for building the plugin from source"
+    },
+    "downloads": {
+      "title": "Get the source",
+      "note": "The plugin lives in the same monorepo as the origam library. Clone, build, and load it as a Figma development plugin."
+    },
+    "download": {
+      "source": "Source on GitHub",
+      "readme": "Installation guide",
+      "changelog": "Plugin changelog"
+    },
+    "install": {
+      "title": "Install in 4 steps",
+      "step1": "Clone the repo and cd into figma-plugin/",
+      "step2": "Run npm install && npm run build to produce dist/code.js + dist/ui.html",
+      "step3": "Open Figma desktop → Plugins → Development → Import plugin from manifest → pick figma-plugin/manifest.json",
+      "step4": "Run the plugin from any Figma file with Tokens Studio variables loaded"
+    }
   },
   "playground": {
     "editor": {

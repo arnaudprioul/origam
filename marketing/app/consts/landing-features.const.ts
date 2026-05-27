@@ -54,5 +54,14 @@ export const LANDING_FEATURES: ReadonlyArray<IFeature> = [
         descFallback: 'Composition API, <script setup>, SFC, no jank.',
         iconName: 'mdi:vuejs',
         intent: 'danger'
+    },
+    {
+        id: 'figma',
+        i18nKey: 'features.figma.title',
+        fallback: 'Figma plugin',
+        descKey: 'features.figma.desc',
+        descFallback: 'Sync tokens & components both ways via Origam DS Sync.',
+        iconName: 'mdi:vector-polyline',
+        intent: 'info'
     }
 ] as const

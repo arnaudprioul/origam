@@ -158,6 +158,10 @@
       "desc": ":has(), container queries, color-mix, prefers-reduced-motion.",
       "title": "CSS-first"
     },
+    "figma": {
+      "desc": "Synchronisez tokens et composants dans les deux sens via Origam DS Sync.",
+      "title": "Plugin Figma"
+    },
     "heading": "Pourquoi origam",
     "subtitle": "Prêt pour la production, accessible et orienté développeur.",
     "tokens": {
@@ -178,11 +182,14 @@
     "contact": "Contact",
     "copyright": "© 2026 origam · MIT · v2.5.1",
     "github": "GitHub",
+    "integrations": "Intégrations",
     "license": "Licence",
     "madeWith": "Fait avec",
+    "npm": "Package npm",
     "product": "Produit",
     "resources": "Ressources",
-    "tagline": "Le design system Vue 3 qui fonctionne tout simplement."
+    "tagline": "Le design system Vue 3 qui fonctionne tout simplement.",
+    "tokensStudio": "Tokens Studio"
   },
   "home": {
     "hero": {
@@ -208,6 +215,7 @@
     "closeMenu": "Fermer le menu",
     "components": "Composants",
     "docs": "Docs",
+    "figma": "Plugin Figma",
     "github": "GitHub",
     "githubLabel": "Voir sur GitHub (s'ouvre dans un nouvel onglet)",
     "home": "Accueil",
@@ -218,6 +226,66 @@
     "stories": "Stories",
     "switchToDark": "Passer au thème sombre",
     "switchToLight": "Passer au thème clair"
+  },
+  "figma": {
+    "meta": {
+      "title": "Plugin Figma · origam",
+      "description": "Origam DS Sync — le plugin Figma officiel qui synchronise les tokens et composants origam dans vos fichiers de design.",
+      "ogTitle": "Plugin Figma",
+      "ogAlt": "Origam DS Sync — plugin Figma"
+    },
+    "breadcrumb": {
+      "label": "Fil d'Ariane",
+      "integrations": "Intégrations",
+      "figma": "Plugin Figma"
+    },
+    "eyebrow": "Intégration",
+    "tagline": "Reliez votre design system origam à Figma. Synchronisez les tokens, générez les composants, exportez vers le repo — sans copier-coller manuel.",
+    "cta": {
+      "download": "Télécharger le plugin",
+      "releases": "Voir les versions"
+    },
+    "features": {
+      "title": "Ce qu'il fait",
+      "componentSets": {
+        "title": "14 jeux de composants",
+        "body": "Les composants origam les plus utilisés rendus comme COMPONENT_SET Figma natifs — variantes, états et tailles prêts à poser dans une frame."
+      },
+      "tokensStudio": {
+        "title": "Aller-retour Tokens Studio",
+        "body": "Exportez vos modifications de design vers le repo au format Tokens Studio JSON. Pas de copier-coller manuel, pas de drift de tokens."
+      },
+      "scssExport": {
+        "title": "Export SCSS",
+        "body": "Générez des variables SCSS compatibles origam depuis votre fichier Figma — même convention de nommage que les tokens runtime."
+      },
+      "variables": {
+        "title": "Compatible Figma Variables",
+        "body": "Consomme les variables Tokens Studio déjà importées dans votre fichier — ne duplique ni n'écrase rien."
+      }
+    },
+    "requirements": {
+      "title": "Prérequis",
+      "desktop": "Application Figma desktop (le client web ne peut pas charger les plugins locaux)",
+      "tokensStudio": "Plugin Tokens Studio for Figma (gratuit)",
+      "node": "Node 22+ pour builder le plugin depuis les sources"
+    },
+    "downloads": {
+      "title": "Récupérer les sources",
+      "note": "Le plugin vit dans le même monorepo que la lib origam. Clonez, buildez, puis chargez-le comme un plugin de développement Figma."
+    },
+    "download": {
+      "source": "Source sur GitHub",
+      "readme": "Guide d'installation",
+      "changelog": "Journal des modifications du plugin"
+    },
+    "install": {
+      "title": "Installer en 4 étapes",
+      "step1": "Clonez le repo et cd dans figma-plugin/",
+      "step2": "Lancez npm install && npm run build pour produire dist/code.js + dist/ui.html",
+      "step3": "Ouvrez Figma desktop → Plugins → Développement → Importer un plugin depuis manifest → choisissez figma-plugin/manifest.json",
+      "step4": "Lancez le plugin depuis n'importe quel fichier Figma avec les variables Tokens Studio chargées"
+    }
   },
   "playground": {
     "editor": {

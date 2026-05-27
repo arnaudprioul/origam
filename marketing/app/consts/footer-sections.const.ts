@@ -33,6 +33,33 @@ export const FOOTER_SECTIONS: ReadonlyArray<IFooterSection> = [
         ]
     },
     {
+        id: 'integrations',
+        titleKey: 'footer.integrations',
+        titleFallback: 'Integrations',
+        links: [
+            {
+                id: 'footer-figma',
+                labelKey: 'nav.figma',
+                labelFallback: 'Figma plugin',
+                href: '/integrations/figma'
+            },
+            {
+                id: 'footer-tokens-studio',
+                labelKey: 'footer.tokensStudio',
+                labelFallback: 'Tokens Studio',
+                href: 'https://tokens.studio/',
+                external: true
+            },
+            {
+                id: 'footer-npm',
+                labelKey: 'footer.npm',
+                labelFallback: 'npm package',
+                href: 'https://www.npmjs.com/package/origam',
+                external: true
+            }
+        ]
+    },
+    {
         id: 'community',
         titleKey: 'footer.community',
         titleFallback: 'Community',

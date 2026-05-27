@@ -26,6 +26,12 @@ export const NAV_LINKS: ReadonlyArray<INavLink> = [
         href: '/stories'
     },
     {
+        id: 'figma',
+        labelKey: 'nav.figma',
+        labelFallback: 'Figma plugin',
+        href: '/integrations/figma'
+    },
+    {
         id: 'blog',
         labelKey: 'nav.blog',
         labelFallback: 'Blog',
