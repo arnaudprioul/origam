@@ -1,0 +1,39 @@
+{
+  "name": "@origam/marketing",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "origam — Nuxt 4 marketing site (landing, components showcase, playground, blog, hub for docs + stories).",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "generate": "nuxt generate",
+    "postinstall": "nuxt prepare",
+    "assets:build": "node scripts/build-static-assets.mjs",
+    "assets:check": "node scripts/build-static-assets.mjs --check",
+    "build:full": "cd .. && npm run lib:build && npm run story:build && npm run docs:build && cd marketing && npm run assets:build && nuxt build",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
+    "typecheck": "nuxt typecheck",
+    "test:unit": "vitest"
+  },
+  "dependencies": {
+    "@nuxt/content": "^3.0.0",
+    "@nuxt/image": "^1.8.0",
+    "@nuxt/og-image": "^4.0.0",
+    "@nuxtjs/plausible": "^1.0.0",
+    "@nuxtjs/seo": "^2.0.0",
+    "nuxt": "^4.0.0",
+    "origam": "file:..",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0",
+    "vue-tsc": "^3.0.0"
+  }
+}
