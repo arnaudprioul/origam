@@ -59,7 +59,7 @@ jobs:
         run: npm run tokens:build
 
       - name: Build library
-        run: npm run server:build
+        run: npm run lib:build
 
       - name: Unit tests
         run: npm run test:unit -- --run

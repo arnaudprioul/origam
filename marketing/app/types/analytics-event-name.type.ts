@@ -1,0 +1,12 @@
+export type TAnalyticsEventName =
+    | 'cta:install:copy'
+    | 'cta:github:click'
+    | 'cta:browse-components:click'
+    | 'component:click'
+    | 'theme:change'
+    | 'playground:share'
+    | 'playground:reset'
+    | 'playground:template:load'
+    | 'search:open'
+    | 'search:select'
+    | 'nav:link:click'
