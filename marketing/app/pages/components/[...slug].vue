@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { COMPONENT_LIST } from '~/consts/component-list.const'
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+import { SEO_TWITTER_SITE, SEO_TWITTER_HANDLE } from '~/consts/seo.const'
+import { useComponentDoc } from '~/composables/useComponentDoc'
+import { useBreadcrumbListLd } from '~/composables/useStructuredData'
 
 const { t } = useI18nFallback()
 const route = useRoute()
@@ -17,6 +20,8 @@ const componentMeta = computed(() =>
 )
 
 const componentName = computed(() => componentMeta.value?.name ?? componentSlug.value)
+
+const { doc, pending } = useComponentDoc(componentSlug.value)
 
 const storyName = computed(() => {
     const name = componentName.value.toLowerCase()
@@ -54,26 +59,61 @@ function selectTab(tab: TDetailTab) {
     activeTab.value = tab
 }
 
+const componentDescription = computed(() =>
+    doc.value?.description ??
+    componentMeta.value?.description ??
+    t('components.detail.seoDescriptionFallback', `${componentName.value} component — origam Vue 3 design system.`)
+)
+
 useSeoMeta({
     title: computed(() =>
         t('components.detail.seoTitle', `${componentName.value} · origam`)
     ),
-    description: computed(() =>
-        componentMeta.value?.description ??
-        t('components.detail.seoDescriptionFallback', `${componentName.value} component — origam Vue 3 design system.`)
-    ),
+    description: componentDescription,
     ogTitle: computed(() =>
         t('components.detail.seoTitle', `${componentName.value} · origam`)
     ),
-    ogDescription: computed(() =>
-        componentMeta.value?.description ??
-        t('components.detail.seoDescriptionFallback', `${componentName.value} component — origam Vue 3 design system.`)
-    )
+    ogDescription: componentDescription,
+    ogImageAlt: computed(() => componentName.value),
+    twitterCard: 'summary_large_image',
+    twitterSite: SEO_TWITTER_SITE,
+    twitterCreator: SEO_TWITTER_HANDLE
 })
+
+defineOgImageComponent('OgImageTemplate', {
+    title: componentName.value,
+    description: componentDescription.value,
+    type: 'component'
+})
+
+useBreadcrumbListLd([
+    { name: t('nav.home', 'Home'), url: '/' },
+    { name: t('nav.components', 'Components'), url: '/components' },
+    { name: componentName.value, url: route.fullPath }
+])
 </script>
 
 <template>
-    <div class="component-detail">
+    <div
+        v-if="!pending && !doc && !componentMeta"
+        class="component-detail component-detail--not-found"
+    >
+        <p class="component-detail__not-found-msg">
+            {{ t('components.detail.notFound', 'Component not found.') }}
+        </p>
+        <NuxtLink
+            to="/components"
+            class="component-detail__back-link"
+        >
+            {{ t('components.detail.backToComponents', 'Back to components') }}
+        </NuxtLink>
+    </div>
+
+    <article
+        v-else
+        class="component-detail"
+        data-pagefind-filter="type:component"
+    >
         <header class="component-detail__header">
             <nav
                 :aria-label="t('components.detail.breadcrumbNav', 'Breadcrumb')"
@@ -104,8 +144,11 @@ useSeoMeta({
                 </span>
             </div>
 
-            <p v-if="componentMeta" class="component-detail__description">
-                {{ componentMeta.description }}
+            <p
+                v-if="doc?.description ?? componentMeta?.description"
+                class="component-detail__description"
+            >
+                {{ doc?.description ?? componentMeta?.description }}
             </p>
 
             <div class="component-detail__links">
@@ -170,31 +213,106 @@ useSeoMeta({
                 </nav>
 
                 <div
-                    v-for="tab in TAB_KEYS"
-                    :key="tab"
-                    :id="`tabpanel-${tab}`"
+                    id="tabpanel-overview"
                     role="tabpanel"
-                    :aria-labelledby="`tab-${tab}`"
-                    :hidden="activeTab !== tab"
+                    aria-labelledby="tab-overview"
+                    :hidden="activeTab !== 'overview'"
                     class="component-detail__tabpanel"
                 >
-                    <div class="component-detail__coming-soon">
-                        <p class="component-detail__coming-soon-text">
-                            {{ t('components.detail.comingSoon', 'Coming soon') }}
-                        </p>
-                        <a
-                            :href="docsUrl"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="component-detail__ext-link"
-                        >
-                            {{ t('components.detail.viewInDocs', 'View in docs') }}
-                        </a>
-                    </div>
+                    <p
+                        v-if="doc?.description ?? componentMeta?.description"
+                        class="component-detail__overview-desc"
+                    >
+                        {{ doc?.description ?? componentMeta?.description }}
+                    </p>
+                    <a
+                        :href="docsUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="component-detail__ext-link"
+                    >
+                        {{ t('components.detail.viewInDocs', 'View in docs') }}
+                    </a>
+                </div>
+
+                <div
+                    id="tabpanel-props"
+                    role="tabpanel"
+                    aria-labelledby="tab-props"
+                    :hidden="activeTab !== 'props'"
+                    class="component-detail__tabpanel component-detail__tabpanel--table"
+                >
+                    <ComponentPropsTable
+                        v-if="doc"
+                        :props="doc.props"
+                    />
+                    <p
+                        v-else
+                        class="component-detail__loading"
+                    >
+                        {{ pending ? t('common.loading', 'Loading…') : t('components.detail.noData', 'No data available.') }}
+                    </p>
+                </div>
+
+                <div
+                    id="tabpanel-slots"
+                    role="tabpanel"
+                    aria-labelledby="tab-slots"
+                    :hidden="activeTab !== 'slots'"
+                    class="component-detail__tabpanel component-detail__tabpanel--table"
+                >
+                    <ComponentSlotsTable
+                        v-if="doc"
+                        :slots="doc.slots"
+                    />
+                    <p
+                        v-else
+                        class="component-detail__loading"
+                    >
+                        {{ pending ? t('common.loading', 'Loading…') : t('components.detail.noData', 'No data available.') }}
+                    </p>
+                </div>
+
+                <div
+                    id="tabpanel-emits"
+                    role="tabpanel"
+                    aria-labelledby="tab-emits"
+                    :hidden="activeTab !== 'emits'"
+                    class="component-detail__tabpanel component-detail__tabpanel--table"
+                >
+                    <ComponentEmitsTable
+                        v-if="doc"
+                        :emits="doc.emits"
+                    />
+                    <p
+                        v-else
+                        class="component-detail__loading"
+                    >
+                        {{ pending ? t('common.loading', 'Loading…') : t('components.detail.noData', 'No data available.') }}
+                    </p>
+                </div>
+
+                <div
+                    id="tabpanel-examples"
+                    role="tabpanel"
+                    aria-labelledby="tab-examples"
+                    :hidden="activeTab !== 'examples'"
+                    class="component-detail__tabpanel"
+                >
+                    <ComponentExamples
+                        v-if="doc"
+                        :doc="doc"
+                    />
+                    <p
+                        v-else
+                        class="component-detail__loading"
+                    >
+                        {{ pending ? t('common.loading', 'Loading…') : t('components.detail.noData', 'No data available.') }}
+                    </p>
                 </div>
             </aside>
         </div>
-    </div>
+    </article>
 </template>
 
 <style scoped>
@@ -203,6 +321,28 @@ useSeoMeta({
     max-inline-size: 88rem;
     margin-inline: auto;
     padding: 1.5rem 1.5rem 4rem;
+}
+
+.component-detail--not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 4rem;
+    text-align: center;
+}
+
+.component-detail__not-found-msg {
+    font-size: 1rem;
+    color: var(--origam-color-text-secondary);
+    margin: 0;
+}
+
+.component-detail__back-link {
+    font-size: 0.875rem;
+    color: var(--origam-color-primary-600);
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
 .component-detail__header {
@@ -381,19 +521,23 @@ useSeoMeta({
     border-radius: 0 0 var(--origam-rounded-lg, 0.5rem) var(--origam-rounded-lg, 0.5rem);
 }
 
-.component-detail__coming-soon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 2rem 1rem;
-    text-align: center;
+.component-detail__tabpanel--table {
+    padding: 0;
+    overflow-x: auto;
 }
 
-.component-detail__coming-soon-text {
+.component-detail__overview-desc {
     font-size: 0.9375rem;
     color: var(--origam-color-text-secondary);
+    margin: 0 0 1rem;
+    line-height: 1.6;
+}
+
+.component-detail__loading {
+    font-size: 0.875rem;
+    color: var(--origam-color-text-secondary);
     margin: 0;
+    padding: 1rem;
 }
 
 @container (max-width: 820px) {

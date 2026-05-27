@@ -20,11 +20,16 @@ export default defineNuxtConfig({
         '@nuxtjs/plausible'
     ],
 
+    experimental: {
+        viewTransition: true
+    },
+
     css: [
         'origam/tokens/css/primitive',
         'origam/tokens/css/light',
         'origam/tokens/css/utilities',
-        'origam/styles'
+        'origam/styles',
+        '~/assets/css/view-transitions.css'
     ],
 
     runtimeConfig: {
@@ -73,5 +78,27 @@ export default defineNuxtConfig({
 
     image: {
         format: ['webp', 'avif']
+    },
+
+    ogImage: {
+        fonts: ['Inter:400', 'Inter:700']
+    },
+
+    sitemap: {
+        autoLastmod: true,
+        exclude: ['/playground', '/playground/**']
+    },
+
+    robots: {
+        disallow: ['/playground/share']
+    },
+
+    vite: {
+        optimizeDeps: {
+            include: ['monaco-editor', '@vue/repl']
+        },
+        worker: {
+            format: 'es' as const
+        }
     }
 })

@@ -3,6 +3,7 @@ import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const { t } = useI18nFallback()
 const config = useRuntimeConfig()
+const { track } = useAnalytics()
 
 const HERO_INTENTS = ['primary', 'success', 'warning', 'danger', 'info', 'secondary', 'ghost', 'neutral'] as const
 const HERO_CELL_COUNT = 24
@@ -99,6 +100,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
                     rounded="pill"
                     append-icon="mdi:arrow-right"
                     size="lg"
+                    @click="track('cta:browse-components:click')"
                 >
                     {{ t('home.hero.ctaBrowse', 'Browse components') }}
                 </OrigamBtn>
@@ -112,6 +114,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
                     prepend-icon="mdi:github"
                     size="lg"
                     :aria-label="t('home.hero.ctaGithubLabel', 'View origam on GitHub (opens in new tab)')"
+                    @click="track('cta:github:click')"
                 >
                     {{ t('home.hero.ctaGithub', 'GitHub') }}
                 </OrigamBtn>
@@ -129,6 +132,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
                     <OrigamClipboard
                         :text="installSnippet"
                         :aria-label="t('home.hero.copyInstall', 'Copy install command')"
+                        @copy="track('cta:install:copy')"
                     />
                 </div>
             </figure>

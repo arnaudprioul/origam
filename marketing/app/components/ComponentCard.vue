@@ -6,6 +6,14 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18nFallback()
+const { track } = useAnalytics()
+
+function handleCardClick (): void {
+    track('component:click', {
+        name: props.component.name,
+        category: props.component.category
+    })
+}
 
 const CATEGORY_INTENT_MAP: Record<string, string> = {
     layout:     'primary',
@@ -48,6 +56,7 @@ const cardInitial = computed(() => props.component.name.charAt(0))
             :to="detailHref"
             class="component-card__link"
             :aria-label="cardLinkLabel"
+            @click="handleCardClick"
         >
             <div
                 class="component-card__preview"

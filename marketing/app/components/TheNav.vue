@@ -3,6 +3,7 @@ import { NAV_LINKS } from '~/consts/nav-links.const'
 
 const { t } = useI18nFallback()
 const config = useRuntimeConfig()
+const { track } = useAnalytics()
 
 const isMobileMenuOpen = ref(false)
 
@@ -12,6 +13,11 @@ function toggleMobileMenu (): void {
 
 function closeMobileMenu (): void {
     isMobileMenuOpen.value = false
+}
+
+function handleNavLinkClick (href: string): void {
+    closeMobileMenu()
+    track('nav:link:click', { href })
 }
 </script>
 
@@ -43,7 +49,7 @@ function closeMobileMenu (): void {
                             :to="link.href"
                             class="site-nav__link"
                             active-class="site-nav__link--active"
-                            @click="closeMobileMenu"
+                            @click="handleNavLinkClick(link.href)"
                         >
                             {{ t(link.labelKey, link.labelFallback) }}
                         </NuxtLink>
@@ -52,6 +58,8 @@ function closeMobileMenu (): void {
             </nav>
 
             <div class="site-nav__actions">
+                <SearchTrigger />
+
                 <OrigamBtn
                     :href="`https://github.com/${config.public.githubRepo}`"
                     target="_blank"

@@ -8,14 +8,17 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "nuxt dev",
-    "build": "nuxt build",
+    "dev": "npm run changelog:build && npm run meta:build && nuxt dev",
+    "build": "nuxt build && pagefind --site .output/public --output-subdir pagefind",
     "preview": "nuxt preview",
-    "generate": "nuxt generate",
+    "generate": "nuxt generate && pagefind --site .output/public --output-subdir pagefind",
     "postinstall": "nuxt prepare",
+    "changelog:build": "node scripts/parse-changelog.mjs --out=.generated/changelog.json",
+    "meta:build": "node scripts/extract-component-meta.mjs --out=.generated/components-meta.json",
     "assets:build": "node scripts/build-static-assets.mjs",
     "assets:check": "node scripts/build-static-assets.mjs --check",
-    "build:full": "cd .. && npm run lib:build && npm run story:build && npm run docs:build && cd marketing && npm run assets:build && nuxt build",
+    "search:build": "pagefind --site .output/public --output-subdir pagefind",
+    "build:full": "cd .. && npm run lib:build && npm run story:build && npm run docs:build && cd marketing && npm run changelog:build && npm run meta:build && npm run assets:build && nuxt build && npm run search:build",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
     "typecheck": "nuxt typecheck",
     "test:unit": "vitest"
@@ -26,12 +29,15 @@
     "@nuxt/og-image": "^4.0.0",
     "@nuxtjs/plausible": "^1.0.0",
     "@nuxtjs/seo": "^2.0.0",
+    "@vue/repl": "^4.4.0",
+    "monaco-editor": "^0.52.0",
     "nuxt": "^4.0.0",
     "origam": "file:..",
     "vue": "^3.5.0",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "pagefind": "^1.1.0",
     "typescript": "^5.8.0",
     "vitest": "^3.0.0",
     "vue-tsc": "^3.0.0"

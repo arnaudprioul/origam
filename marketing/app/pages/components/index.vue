@@ -4,6 +4,7 @@ import type { TComponentCategory } from '~/types/component-category.type'
 import { COMPONENT_CATEGORIES } from '~/consts/component-categories.const'
 import { useComponentList } from '~/composables/useComponentList'
 import { useDebounce } from '~/composables/useDebounce'
+import { SEO_TWITTER_SITE, SEO_TWITTER_HANDLE } from '~/consts/seo.const'
 
 const { t } = useI18nFallback()
 const { total, filter } = useComponentList()
@@ -18,7 +19,17 @@ useSeoMeta({
     ogDescription: t(
         'components.index.seoDescription',
         '~95 components, 29 charts, filter by category.'
-    )
+    ),
+    ogImageAlt: t('components.index.meta.ogImageAlt', 'origam Components'),
+    twitterCard: 'summary_large_image',
+    twitterSite: SEO_TWITTER_SITE,
+    twitterCreator: SEO_TWITTER_HANDLE
+})
+
+defineOgImageComponent('OgImageTemplate', {
+    title: t('components.index.heading', 'Components'),
+    description: t('components.index.seoDescription', '~95 components, 29 charts, filter by category.'),
+    type: 'component'
 })
 
 const activeCategory = ref<TComponentCategory | undefined>(undefined)
@@ -37,7 +48,10 @@ const ALL_LABEL = t('components.index.allCategories', 'All')
 </script>
 
 <template>
-    <div class="components-page">
+    <section
+        class="components-page"
+        data-pagefind-filter="type:page"
+    >
         <header class="components-page__header">
             <h1 class="components-page__title">
                 {{ t('components.index.heading', 'Components') }}
@@ -121,10 +135,11 @@ const ALL_LABEL = t('components.index.allCategories', 'All')
                 <ComponentsGrid
                     :category="activeCategory"
                     :search-query="debouncedSearch"
+                    data-pagefind-ignore
                 />
             </section>
         </div>
-    </div>
+    </section>
 </template>
 
 <style scoped>

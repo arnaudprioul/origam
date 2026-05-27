@@ -16,9 +16,13 @@ node_modules
 *.tsbuildinfo
 dist
 
+# Generated at build time
+.generated
+
 # Static assets generated at build time (regenerated from sibling builds)
 public/docs
 public/stories
+public/pagefind
 
 # IDE / OS
 .DS_Store

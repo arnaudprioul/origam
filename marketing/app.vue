@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { SKIP_LINK_TARGET_ID, SKIP_LINK_HREF } from '~/consts/a11y.const'
+import { useWebsiteLd } from '~/composables/useStructuredData'
 
 const { t } = useI18nFallback()
+
+useWebsiteLd()
+
+useHead({
+    link: [
+        { rel: 'preconnect', href: 'https://plausible.origam.dev' }
+    ]
+})
 </script>
 
 <template>
@@ -20,6 +29,8 @@ const { t } = useI18nFallback()
         </main>
 
         <TheFooter />
+
+        <SearchOverlay />
     </OrigamApp>
 </template>
 

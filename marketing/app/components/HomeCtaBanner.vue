@@ -3,6 +3,7 @@ import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const { t } = useI18nFallback()
 const config = useRuntimeConfig()
+const { track } = useAnalytics()
 
 const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 </script>
@@ -32,6 +33,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
                     <OrigamClipboard
                         :text="installSnippet"
                         :aria-label="t('ctaBanner.copyLabel', 'Copy install command')"
+                        @copy="track('cta:install:copy')"
                     />
                 </div>
             </div>

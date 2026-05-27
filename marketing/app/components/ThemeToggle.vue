@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18nFallback()
+const { track } = useAnalytics()
 
 const currentTheme = ref<'light' | 'dark'>('light')
 
@@ -11,6 +12,7 @@ onMounted(() => {
 function toggleTheme (): void {
     currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
     document.documentElement.setAttribute('data-theme', currentTheme.value)
+    track('theme:change', { theme: currentTheme.value })
 }
 
 const label = computed(() =>
