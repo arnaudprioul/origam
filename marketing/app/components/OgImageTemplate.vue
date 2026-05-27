@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TOgImageType } from '~/types/og-image.type'
 import { OG_TYPE_BADGE_LABEL, OG_TYPE_ACCENT_VAR } from '~/consts/og-image.const'
+import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const props = withDefaults(defineProps<{
     title?: string
@@ -14,6 +15,13 @@ const props = withDefaults(defineProps<{
 
 const badgeLabel = computed(() => OG_TYPE_BADGE_LABEL[props.type])
 const accentVar = computed(() => OG_TYPE_ACCENT_VAR[props.type])
+const siteHost = computed(() => {
+    try {
+        return new URL(MARKETING_DEFAULTS.siteUrl).host
+    } catch {
+        return MARKETING_DEFAULTS.siteUrl
+    }
+})
 </script>
 
 <template>
@@ -32,7 +40,16 @@ const accentVar = computed(() => OG_TYPE_ACCENT_VAR[props.type])
                 <span class="og-badge__label">{{ badgeLabel }}</span>
             </div>
 
-            <p class="og-wordmark">origam</p>
+            <div class="og-brand">
+                <img
+                    src="/logo.svg"
+                    alt=""
+                    class="og-brand__logo"
+                    width="80"
+                    height="80"
+                >
+                <p class="og-wordmark">origam</p>
+            </div>
 
             <h1 class="og-title">{{ title }}</h1>
 
@@ -40,7 +57,7 @@ const accentVar = computed(() => OG_TYPE_ACCENT_VAR[props.type])
         </div>
 
         <div class="og-footer">
-            <span class="og-footer__url">origam.dev</span>
+            <span class="og-footer__url">{{ siteHost }}</span>
             <span class="og-footer__tagline">Vue 3 design system</span>
         </div>
     </div>
@@ -125,6 +142,18 @@ const accentVar = computed(() => OG_TYPE_ACCENT_VAR[props.type])
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--og-accent, var(--origam-color-primary-400, #957cff));
+}
+
+.og-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.og-brand__logo {
+    inline-size: 80px;
+    block-size: 80px;
+    display: block;
 }
 
 .og-wordmark {

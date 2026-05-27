@@ -8,13 +8,30 @@ services:
     environment:
       - NITRO_HOST=0.0.0.0
       - NITRO_PORT=3000
-      - NUXT_PUBLIC_PLAUSIBLE_DOMAIN=${NUXT_PUBLIC_PLAUSIBLE_DOMAIN:-origam.dev}
-      - NUXT_PUBLIC_PLAUSIBLE_API_HOST=${NUXT_PUBLIC_PLAUSIBLE_API_HOST:-https://plausible.origam.dev}
+      - NODE_ENV=${NODE_ENV:-production}
+
+      # --- Site identity (override per env) ---
+      - NUXT_PUBLIC_SITE_URL=${NUXT_PUBLIC_SITE_URL:-https://origam.dev.elysera.net}
+      - NUXT_PUBLIC_GITHUB_REPO=${NUXT_PUBLIC_GITHUB_REPO:-arnaudprioul/origam}
+      - NUXT_PUBLIC_NPM_PKG=${NUXT_PUBLIC_NPM_PKG:-origam}
+      - NUXT_PUBLIC_NPM_VERSION=${NUXT_PUBLIC_NPM_VERSION:-2.5.1}
+      - NUXT_PUBLIC_CONTACT_EMAIL=${NUXT_PUBLIC_CONTACT_EMAIL:-}
+
+      # --- Analytics (Plausible) — leave empty to disable tracking ---
+      - NUXT_PUBLIC_PLAUSIBLE_DOMAIN=${NUXT_PUBLIC_PLAUSIBLE_DOMAIN:-}
+      - NUXT_PUBLIC_PLAUSIBLE_API_HOST=${NUXT_PUBLIC_PLAUSIBLE_API_HOST:-}
+
     labels:
       - "coolify.managed=true"
       - "traefik.enable=true"
-      - "traefik.http.routers.origam.rule=Host(`origam.dev`)"
+
+      # --- HTTP router (resolved at runtime from NUXT_PUBLIC_SITE_URL host) ---
+      - "traefik.http.routers.origam.rule=Host(`${TRAEFIK_HOST:-origam.dev.elysera.net}`)"
       - "traefik.http.routers.origam.entrypoints=https"
       - "traefik.http.routers.origam.tls=true"
       - "traefik.http.routers.origam.tls.certresolver=letsencrypt"
       - "traefik.http.services.origam.loadbalancer.server.port=3000"
+
+      # --- Healthcheck route (Coolify probe + Traefik LB) ---
+      - "traefik.http.services.origam.loadbalancer.healthcheck.path=/api/health"
+      - "traefik.http.services.origam.loadbalancer.healthcheck.interval=30s"

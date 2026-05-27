@@ -30,6 +30,14 @@ function handleNavLinkClick (href: string): void {
                 :aria-label="t('nav.logoLabel', 'origam — home')"
                 @click="closeMobileMenu"
             >
+                <img
+                    src="/logo.svg"
+                    alt=""
+                    class="site-nav__logo-img"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                >
                 <span class="site-nav__logo-text" aria-hidden="true">origam</span>
             </NuxtLink>
 
@@ -112,10 +120,17 @@ function handleNavLinkClick (href: string): void {
 }
 
 .site-nav__logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    gap: var(--origam-space-2, 0.5rem);
     text-decoration: none;
     flex-shrink: 0;
+}
+
+.site-nav__logo-img {
+    inline-size: 2rem;
+    block-size: 2rem;
+    display: block;
 }
 
 .site-nav__logo-text {

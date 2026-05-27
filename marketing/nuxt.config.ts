@@ -36,16 +36,18 @@ export default defineNuxtConfig({
 
     runtimeConfig: {
         public: {
-            githubRepo: MARKETING_DEFAULTS.githubRepo,
-            npmPkg: MARKETING_DEFAULTS.npmPkg,
-            npmVersion: MARKETING_DEFAULTS.npmVersion,
+            githubRepo: process.env.NUXT_PUBLIC_GITHUB_REPO ?? MARKETING_DEFAULTS.githubRepo,
+            npmPkg: process.env.NUXT_PUBLIC_NPM_PKG ?? MARKETING_DEFAULTS.npmPkg,
+            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? MARKETING_DEFAULTS.npmVersion,
+            siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl,
+            contactEmail: process.env.NUXT_PUBLIC_CONTACT_EMAIL ?? MARKETING_DEFAULTS.contactEmail,
             plausibleDomain: process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN ?? MARKETING_DEFAULTS.plausibleDomain,
             plausibleApiHost: process.env.NUXT_PUBLIC_PLAUSIBLE_API_HOST ?? MARKETING_DEFAULTS.plausibleApiHost
         }
     },
 
     site: {
-        url: MARKETING_DEFAULTS.siteUrl,
+        url: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl,
         name: MARKETING_DEFAULTS.siteName,
         description: MARKETING_DEFAULTS.siteDescription,
         defaultLocale: MARKETING_DEFAULTS.defaultLocale
@@ -59,7 +61,8 @@ export default defineNuxtConfig({
                 'data-theme': MARKETING_DEFAULTS.defaultTheme
             },
             link: [
-                { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+                { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },
+                { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath }
             ]
         }
     },
@@ -68,7 +71,8 @@ export default defineNuxtConfig({
         domain: process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN ?? MARKETING_DEFAULTS.plausibleDomain,
         apiHost: process.env.NUXT_PUBLIC_PLAUSIBLE_API_HOST ?? MARKETING_DEFAULTS.plausibleApiHost,
         autoOutboundTracking: true,
-        autoFileDownloadsTracking: false
+        autoFileDownloadsTracking: false,
+        enabled: Boolean(process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN && process.env.NUXT_PUBLIC_PLAUSIBLE_API_HOST)
     },
 
     nitro: {
@@ -108,7 +112,7 @@ export default defineNuxtConfig({
             redirectOn: 'root',
             alwaysRedirect: false
         },
-        baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://origam.dev'
+        baseUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl
     },
 
     vite: {

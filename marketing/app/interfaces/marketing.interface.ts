@@ -12,4 +12,7 @@ export interface IMarketingDefaults {
     readonly defaultTheme: TTheme
     readonly plausibleDomain: string
     readonly plausibleApiHost: string
+    readonly contactEmail: string
+    readonly logoPath: string
+    readonly faviconPath: string
 }

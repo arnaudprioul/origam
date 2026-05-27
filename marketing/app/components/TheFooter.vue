@@ -14,6 +14,14 @@ const { t } = useI18nFallback()
                     class="site-footer__logo"
                     :aria-label="t('nav.logoLabel', 'origam — home')"
                 >
+                    <img
+                        src="/logo.svg"
+                        alt=""
+                        class="site-footer__logo-img"
+                        width="40"
+                        height="40"
+                        aria-hidden="true"
+                    >
                     <span class="site-footer__logo-text">origam</span>
                 </NuxtLink>
                 <p class="site-footer__tagline">
@@ -95,8 +103,16 @@ const { t } = useI18nFallback()
 
 .site-footer__logo {
     display: inline-flex;
+    align-items: center;
+    gap: var(--origam-space-2, 0.5rem);
     text-decoration: none;
     margin-block-end: var(--origam-space-3, 0.75rem);
+}
+
+.site-footer__logo-img {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    display: block;
 }
 
 .site-footer__logo-text {

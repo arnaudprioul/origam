@@ -81,6 +81,14 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
         </div>
 
         <div class="home-hero__content">
+            <img
+                src="/logo.svg"
+                alt=""
+                class="home-hero__logo"
+                width="96"
+                height="96"
+                aria-hidden="true"
+            >
             <h1
                 id="hero-title"
                 class="home-hero__title"
@@ -175,6 +183,25 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 .home-hero__mini-card {
     width: 100%;
     max-width: 8rem;
+}
+
+.home-hero__logo {
+    inline-size: 6rem;
+    block-size: 6rem;
+    display: block;
+    margin-block-end: var(--origam-space-2, 0.5rem);
+    filter: drop-shadow(0 4px 24px color-mix(in srgb, var(--origam-color-action-primary-bg, currentColor) 25%, transparent));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .home-hero__logo {
+        animation: home-hero-logo-float 6s ease-in-out infinite;
+    }
+}
+
+@keyframes home-hero-logo-float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
 }
 
 .home-hero__content {
