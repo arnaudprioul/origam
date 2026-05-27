@@ -7,10 +7,10 @@
     "paths": {
       "@origam": ["./packages/ds/src"],
       "@origam/*": ["./packages/ds/src/*"],
-      "@stories": ["./stories"],
-      "@stories/*": ["./stories/*"],
-      "@docs": ["./docs"],
-      "@docs/*": ["./docs/*"]
+      "@stories": ["./packages/stories"],
+      "@stories/*": ["./packages/stories/*"],
+      "@docs": ["./packages/docs"],
+      "@docs/*": ["./packages/docs/*"]
     }
   },
   "include": [
@@ -29,9 +29,9 @@
   "references": [
     { "path": "./tsconfig.node.json" },
     { "path": "./packages/ds/tsconfig.json" },
-    { "path": "./stories/tsconfig.json" },
-    { "path": "./docs/tsconfig.json" },
-    { "path": "./tests/TU/tsconfig.json" },
-    { "path": "./tests/e2e/tsconfig.json" }
+    { "path": "./packages/stories/tsconfig.json" },
+    { "path": "./packages/docs/tsconfig.json" },
+    { "path": "./packages/tests/TU/tsconfig.json" },
+    { "path": "./packages/tests/e2e/tsconfig.json" }
   ]
 }

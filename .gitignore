@@ -17,6 +17,8 @@ dist-ssr
 # Vitepress
 docs/.vitepress/dist
 docs/.vitepress/cache
+packages/docs/.vitepress/dist
+packages/docs/.vitepress/cache
 
 # Local files
 *.local
@@ -38,6 +40,10 @@ tests/e2e/.report
 tests/e2e/.results
 tests/a11y/.report
 tests/a11y/.results
+packages/tests/e2e/.report
+packages/tests/e2e/.results
+packages/tests/a11y/.report
+packages/tests/a11y/.results
 
 # Debug files
 *.debug*
