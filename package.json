@@ -2,6 +2,7 @@
   "name": "origam",
   "version": "2.5.1",
   "type": "module",
+  "packageManager": "pnpm@9.15.0",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
     "vue",
