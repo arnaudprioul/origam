@@ -23,8 +23,10 @@ import { fileURLToPath } from 'node:url'
 // ---------------------------------------------------------------------------
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const MARKETING_DIR = resolve(__dirname, '..')
-const ORIGAM_SRC = resolve(MARKETING_DIR, '..', 'src')
-const ORIGAM_ROOT = resolve(MARKETING_DIR, '..')
+// After the monorepo migration the lib source lives at packages/ds/src,
+// not packages/src. MARKETING_DIR/.. is `packages/`, so the lib is `ds/src`.
+const ORIGAM_ROOT = resolve(MARKETING_DIR, '..', 'ds')
+const ORIGAM_SRC = resolve(ORIGAM_ROOT, 'src')
 
 // ---------------------------------------------------------------------------
 // CLI args parsing

@@ -37,7 +37,9 @@ const SKIP_SECTION_PREFIXES = [
 ]
 
 const DEFAULT_OUT = resolve(__dirname, '../.generated/changelog.json')
-const CHANGELOG_PATH = resolve(__dirname, '../../CHANGELOG.md')
+// After the monorepo migration the script is at packages/marketing/scripts/,
+// so the repo-root CHANGELOG.md is three levels up.
+const CHANGELOG_PATH = resolve(__dirname, '../../../CHANGELOG.md')
 
 function log (level, message, data) {
     const entry = { level, message, ts: new Date().toISOString() }

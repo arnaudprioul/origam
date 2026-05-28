@@ -56,6 +56,16 @@ WORKDIR /app/packages/marketing
 # Assemble public/stories and public/docs from sibling builds
 RUN node scripts/build-static-assets.mjs
 
+# Generate the data files the Nuxt server routes import at build time.
+# - components-meta.json : props/emits/slots extracted from packages/ds
+#                          (consumed by server/api/components/*.get.ts)
+# - changelog.json       : parsed from repo-root CHANGELOG.md
+# These live in .generated/ which is gitignored, so they MUST be built
+# from source during the Docker build. Without them, the Nuxt build
+# crashes at the prerender step with "Could not load .generated/*.json".
+RUN node scripts/extract-component-meta.mjs --out=.generated/components-meta.json
+RUN node scripts/parse-changelog.mjs --out=.generated/changelog.json
+
 # Nuxt production build → .output/
 RUN pnpm run build
 
