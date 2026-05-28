@@ -6,7 +6,12 @@
 
 A Vue 3 design system built on modern CSS, design tokens, and a CSS-first
 philosophy. Multi-theme out of the box, token-driven utility classes, and
-~100 production-ready components.
+~80 production-ready components.
+
+This repository is a **pnpm monorepo**. The published package (`origam`
+on npm) lives in `packages/ds/`; the surrounding packages host the
+docs site, Histoire stories, end-to-end tests, marketing site and the
+companion Figma plugin.
 
 ---
 
@@ -137,8 +142,10 @@ The `origam-utilities.css` sheet generates 66 utility classes
 `.origam--rounded-*`, ...) that map 1:1 to semantic tokens.
 
 Tokens are sourced from Tokens Studio (DTCG JSON) and compiled with
-Style Dictionary v4. See [`tokens/`](./tokens) for the source and
-[`scripts/build-tokens.mjs`](./scripts/build-tokens.mjs) for the build.
+Style Dictionary v4. See [`packages/ds/tokens/`](./packages/ds/tokens)
+for the source and
+[`packages/ds/scripts/build-tokens.mjs`](./packages/ds/scripts/build-tokens.mjs)
+for the build.
 
 ---
 
@@ -156,7 +163,7 @@ Around 80 component families, all prefixed `Origam*`:
 | Data         | `OrigamDataTable`, `OrigamDataList`, `OrigamTable`, `OrigamCarousel`, `OrigamTimeline`, `OrigamExpansionPanel`, `OrigamVirtualScroll`, `OrigamInfiniteScroll` |
 | Display      | `OrigamCard`, `OrigamChip`, `OrigamAvatar`, `OrigamIcon`, `OrigamImg`, `OrigamKbd`, `OrigamTitle`, `OrigamLabel` |
 
-The full catalogue lives in [`src/components/index.ts`](./src/components/index.ts).
+The full catalogue lives in [`packages/ds/src/components/index.ts`](./packages/ds/src/components/index.ts).
 
 ---
 
@@ -184,7 +191,7 @@ A library of ~80 composables. The ones you'll touch most often:
 | `useGoTo`           | Smooth-scroll helper, configurable per-locale.                     |
 | `useDefaults`       | Read the component-defaults injected by `<OrigamDefaultsProvider>`.|
 
-Full list in [`src/composables/index.ts`](./src/composables/index.ts).
+Full list in [`packages/ds/src/composables/index.ts`](./packages/ds/src/composables/index.ts).
 
 ---
 
@@ -206,7 +213,7 @@ if (css.value.containerQueries) {
 ```
 
 The full feature matrix lives in
-[`src/composables/CssSupport/cssSupport.composable.ts`](./src/composables/CssSupport/cssSupport.composable.ts).
+[`packages/ds/src/composables/CssSupport/cssSupport.composable.ts`](./packages/ds/src/composables/CssSupport/cssSupport.composable.ts).
 Never call `CSS.supports()` directly — always go through `useCssSupport()`
 so the matrix stays auditable.
 
@@ -230,7 +237,7 @@ export default defineNuxtConfig({
 })
 ```
 
-Full reference: [`docs/integrations/nuxt.md`](./docs/integrations/nuxt.md).
+Full reference: [`packages/docs/integrations/nuxt.md`](./packages/docs/integrations/nuxt.md).
 
 ---
 
@@ -248,25 +255,63 @@ requires **Node >= 22** (see [`.nvmrc`](./.nvmrc)).
 
 ---
 
+## Repository layout
+
+The repo is a pnpm monorepo with six packages.
+
+| Package | Purpose | Published? |
+|---|---|---|
+| [`packages/ds`](./packages/ds) | Vue 3 design system — components, composables, tokens. | ✅ npm: `origam` |
+| [`packages/marketing`](./packages/marketing) | Nuxt 4 marketing site (landing, showcase, playground). | private |
+| [`packages/stories`](./packages/stories) | Histoire stories (~208 specs, used as the visual sandbox). | private |
+| [`packages/docs`](./packages/docs) | VitePress documentation site. | private |
+| [`packages/tests`](./packages/tests) | Vitest (unit) + Playwright (e2e + a11y) suites. | private |
+| [`packages/figma-plugin`](./packages/figma-plugin) | Figma plugin syncing Origam tokens ⇄ Figma Variables. | private |
+
+Cross-package dependencies use pnpm's `workspace:*` protocol.
+`packages/ds` is the only package published to npm; tags trigger
+`release.yml` which publishes from that directory exclusively.
+
+---
+
 ## Contributing
 
 Engineering principles, naming conventions, the classes-first contract,
 and the "test-as-you-build" rule live in [`CLAUDE.md`](./CLAUDE.md).
 Token authoring (Tokens Studio JSON, Style Dictionary pipeline) lives in
-[`tokens/`](./tokens) and is documented in
-[`tokens/CHANGELOG.md`](./tokens/CHANGELOG.md).
+[`packages/ds/tokens/`](./packages/ds/tokens) and is documented in
+[`packages/ds/tokens/CHANGELOG.md`](./packages/ds/tokens/CHANGELOG.md).
 
-Local commands:
+### Local setup (~5 min on a fresh clone)
 
 ```bash
-npm install
-npm run server:dev     # Vite playground
-npm run story:dev      # Histoire stories
-npm run docs:dev       # VitePress docs
-npm run tokens:build   # Rebuild CSS/SCSS/TS tokens
-npm run test:unit      # Vitest
-npm run test:e2e       # Playwright
+git clone https://github.com/arnaudprioul/origam.git
+cd origam
+
+corepack enable          # pnpm@9.15.0 becomes the active package manager
+pnpm install             # installs every workspace + hoists shared deps
+
+pnpm -F origam build           # build the library
+pnpm -F @origam/stories dev    # http://localhost:6006 — Histoire sandbox
+pnpm -F @origam/docs dev       # VitePress documentation
+pnpm -F @origam/marketing dev  # http://localhost:3000 — marketing site
 ```
+
+### Common commands
+
+| Goal | Command |
+|---|---|
+| Build the library | `pnpm -F origam build` |
+| Build every package | `pnpm -r build` |
+| Rebuild tokens (CSS / SCSS / TS) | `pnpm -F origam tokens:build` |
+| Run unit tests | `pnpm -F @origam/tests test:unit:run` |
+| Run e2e tests | `pnpm -F @origam/tests test:e2e` |
+| Run a11y tests | `pnpm -F @origam/tests test:a11y` |
+| Lint (auto-fix) | `pnpm run lint:fix` |
+
+Node ≥ 22 is mandatory (see [`.nvmrc`](./.nvmrc)). See
+[`CLAUDE.md`](./CLAUDE.md) → *Monorepo workflow* for the full convention
+on adding deps and authoring stories/docs in sync with components.
 
 ---
 

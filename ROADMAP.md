@@ -18,6 +18,10 @@
 - ✅ Sortie publique sur npm, tarball 869 kB, 0 vuln critique.
 - ✅ Pre-delivery automatisé via `prepublishOnly` (tokens + build + 220 TU).
 - ✅ README correct, CHANGELOG à jour.
+- ✅ **Monorepo migration completed (mai 2026)** — 6 packages pnpm workspace
+  (`ds`, `marketing`, `stories`, `docs`, `tests`, `figma-plugin`). La lib publie
+  toujours sous `origam` depuis `packages/ds/`. Voir
+  [`MONOREPO_PROPOSAL.md`](./MONOREPO_PROPOSAL.md) pour le rationnel.
 - ❌ Pas de doc en ligne. Pas de stories déployées. Pas de communauté.
 - ❌ CI = Qodana scan + tokens-sync seulement. Pas de pipeline lint/test/build/publi.
 - ❌ Coverage Playwright partielle (~100 specs pour 161 stories).
@@ -279,6 +283,13 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 |---|---|
 | Module Nuxt officiel (sub-export `origam/nuxt`) | ✅ livré |
 | SSR safety audit + `useCssSupportClient` + `OrigamClientOnly` | ✅ livré |
+| **pnpm monorepo (6 packages)** | ✅ livré (mai 2026) |
+
+### Wave 3.5 — Build tooling (à venir)
+
+| Item | Effort | Note |
+|---|---|---|
+| **Turborepo** | M | Cache local + remote (Vercel ou self-hosted) sur `build`, `test`, `lint`. Critique dès que le pipeline CI dépasse 8 min. À ajouter après 1-2 semaines de stabilisation post-monorepo (cf. MONOREPO_PROPOSAL §5.3). |
 
 ### Wave 4 — Nouveaux composants (à venir, à priorier)
 

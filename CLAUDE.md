@@ -9,7 +9,7 @@ by capturing project-specific conventions.
 ## ⛔ Reuse existing interfaces / composables — never duplicate (mandatory)
 
 **Before declaring a new prop on a component interface, audit
-`src/interfaces/Commons/*` for an existing one that already
+`packages/ds/src/interfaces/Commons/*` for an existing one that already
 covers the surface. If one exists, `extends` it.**
 
 Concretely:
@@ -46,13 +46,13 @@ Pre-commit audit (every new / modified component):
 ```bash
 # 1. Are any of the standard prop names declared inline?
 grep -nE "height\??:|width\??:|margin\??:|padding\??:" \
-     src/interfaces/<area>/<name>.interface.ts
+     packages/ds/src/interfaces/<area>/<name>.interface.ts
 
 # 2. If so, does the interface already extend the matching
 #    Commons interface? If not, refactor.
 ```
 
-The interfaces under `src/interfaces/Commons/*.interface.ts`
+The interfaces under `packages/ds/src/interfaces/Commons/*.interface.ts`
 are the **single source of truth** for cross-cutting prop
 surfaces. Treat them as building blocks, not as references.
 
@@ -63,7 +63,7 @@ surfaces. Treat them as building blocks, not as references.
 **Every new story MUST ship with a matching Playwright spec that asserts
 every prop / Variant produces a distinct runtime behaviour.** Don't write
 the doc + story and call it done — write the doc, the story, AND
-`tests/e2e/{component}.spec.ts` together. The spec must:
+`packages/tests/e2e/{component}.spec.ts` together. The spec must:
 
 1. Navigate to each `<Variant>` (via the dedicated Variant titles, not
    via the HstSelect picker dropdown which is custom DOM and brittle).
@@ -153,7 +153,7 @@ user's debugging cycle.
 
 ### Story file structure (canonical)
 
-Every `stories/components/stories/{Name}/Origam{Name}.story.vue`
+Every `packages/stories/components/stories/{Name}/Origam{Name}.story.vue`
 MUST follow this exact section order:
 
 1. **`<Variant title="Default">`** — the playground. Renders the
@@ -174,7 +174,7 @@ MUST follow this exact section order:
 
 ### Doc file structure (canonical)
 
-`docs/components/{Name}/Origam{Name}.md` exposes:
+`packages/docs/components/{Name}/Origam{Name}.md` exposes:
 - Description + quick-start snippet
 - **Props** table — sub-tabled by group if the surface is large
   (mirror the story groups)
@@ -264,12 +264,114 @@ git object DB and is independent of the working tree state.
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.
 - **Vite + Histoire + VitePress** for dev, stories, and docs.
 - **unbuild** for the published library (consumed by external apps).
-- **Cypress** (component tests), **Vitest** (unit tests, jsdom).
+- **Playwright** (e2e + a11y), **Vitest** (unit tests, jsdom).
 - **Style Dictionary v4** + **@tokens-studio/sd-transforms** for design
   tokens (multi-theme, multi-output: CSS, SCSS, TS types).
+- **pnpm workspaces** — monorepo, 6 packages under `packages/`.
 
 The project requires **Node >= 22** (see `.nvmrc`). The unit tests do not
 run on Node 18 because `@vitejs/plugin-vue` calls `crypto.hash()` (Node 21+).
+
+---
+
+## Project structure (monorepo)
+
+The repo is a **pnpm workspace** with 6 packages. The only package
+published to npm is `packages/ds/` (as `origam`). Everything else stays
+private and supports the lib (docs, stories, tests, marketing, Figma
+sync).
+
+```
+packages/
+  ds/                — Published Vue 3 library (npm: origam)
+    src/
+      assets/css/    — main.css + generated token sheets
+      assets/scss/   — main.scss + tokens (_primitive.scss, _light.scss, …)
+      components/    — Origam{PascalCase}.vue (~80 families)
+      composables/   — use{CamelCase}.ts (~80 transversal hooks)
+      consts/        — kebab-case.const.ts (SCREAMING_SNAKE values)
+      directives/    — v-{kebab-case}.directive.ts
+      enums/         — kebab-case.enum.ts
+      interfaces/    — kebab-case.interface.ts (I prefix)
+      services/      — kebab-case.service.ts
+      types/         — kebab-case.type.ts (T prefix)
+      utils/         — kebab-case.util.ts
+      nuxt/          — official Nuxt module sub-export
+    tokens/          — Tokens Studio DTCG sources (primitive + semantic + component)
+    scripts/         — build-tokens.mjs, tokens.config.mjs
+    build.config.ts  — unbuild entry
+  marketing/         — Nuxt 4 marketing site (landing + showcase + docs hub)
+    pages/, components/, scripts/
+  stories/           — Histoire stories (~208 specs)
+    components/, foundations/
+    histoire.config.js
+  docs/              — VitePress documentation (component refs, integrations)
+    components/, integrations/, .vitepress/
+  tests/             — Centralised test runner
+    TU/              — Vitest unit specs
+    e2e/             — Playwright e2e + a11y specs
+    vitest.config.ts, playwright.config.ts, playwright.a11y.config.ts
+  figma-plugin/      — Figma DS Sync plugin (variables ⇄ Origam tokens)
+    src/, esbuild.config.mjs
+```
+
+The root holds only:
+- `package.json` (workspace manager, root scripts delegating via `pnpm -F`)
+- `pnpm-workspace.yaml` (lists `packages/*`)
+- `pnpm-lock.yaml`
+- Top-level docs (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`)
+- `docker/` (Dockerfile.docs, Dockerfile.stories, nginx.conf)
+- `.github/workflows/`, `.husky/`, `.nvmrc`, `eslint.config.js`
+
+---
+
+## Monorepo workflow
+
+### Install
+
+```bash
+corepack enable          # makes pnpm@9.15.0 the active package manager
+pnpm install             # installs every workspace + hoists shared deps
+```
+
+### Running scripts
+
+Always go through `pnpm -F <name>` (filter) — never `cd packages/x && npm run …`.
+Root scripts already delegate, so the most common entries are:
+
+| Goal | Command |
+|---|---|
+| Build the lib | `pnpm -F origam build` *(or root `pnpm run build:lib`)* |
+| Build everything | `pnpm -r build` *(or root `pnpm run build:all`)* |
+| Tokens rebuild | `pnpm -F origam tokens:build` |
+| Run stories locally | `pnpm -F @origam/stories dev` *(`http://localhost:6006`)* |
+| Run docs locally | `pnpm -F @origam/docs dev` |
+| Run marketing locally | `pnpm -F @origam/marketing dev` *(`http://localhost:3000`)* |
+| Unit tests (watch) | `pnpm -F @origam/tests test:unit` |
+| Unit tests (CI) | `pnpm -F @origam/tests test:unit:run` |
+| E2E tests | `pnpm -F @origam/tests test:e2e` |
+| A11y tests | `pnpm -F @origam/tests test:a11y` |
+| Lint (root) | `pnpm run lint:fix` |
+
+### Adding dependencies
+
+- **Shared dev tools** (eslint, husky, …) — root `package.json` only.
+- **Runtime deps of a package** — `pnpm -F <pkg> add <dep>` (lands in the
+  package's own `package.json`, hoisted via the workspace store).
+- **Cross-package deps** — declare `"<dep>": "workspace:*"` in the
+  consumer's `package.json`. pnpm rewrites the protocol on publish.
+
+### Versioning convention (decision β)
+
+- `packages/ds/` follows the historical `origam` semver
+  (`2.5.x → 2.6.x → 3.0.0`). It is the single npm publish.
+- `@origam/marketing`, `@origam/stories`, `@origam/docs`,
+  `@origam/tests`, `@origam/figma-plugin` are all `private: true`,
+  versioned independently (`0.x.y`). They never publish to npm; tags
+  reference the lib version only.
+
+The `release.yml` workflow asserts `git tag == packages/ds/package.json
+version` and publishes from `packages/ds/` exclusively.
 
 ---
 
@@ -297,7 +399,7 @@ should:
 
 ### `useCssSupport()` — the single feature-detection layer
 
-Located at `src/composables/CssSupport/cssSupport.composable.ts`.
+Located at `packages/ds/src/composables/CssSupport/cssSupport.composable.ts`.
 
 ```ts
 import { useCssSupport } from '@/composables'
@@ -333,14 +435,14 @@ keeps bundles smaller, performance better, and theming free.
 
 ## Design tokens
 
-Source of truth: `tokens/` (Tokens Studio JSON, DTCG format).
+Source of truth: `packages/ds/tokens/` (Tokens Studio JSON, DTCG format).
 
 Three tiers — agents must respect the boundary:
 
 ```
-primitive    →  raw values (color.neutral.500, space.4, …)        – tokens/primitive.json
-semantic     →  intent (color.surface.default, color.action.primary.bg)  – tokens/semantic/{theme}.json
-component    →  per-component refs (btn.background-color)         – tokens/component/{name}.json
+primitive    →  raw values (color.neutral.500, space.4, …)        – packages/ds/tokens/primitive.json
+semantic     →  intent (color.surface.default, color.action.primary.bg)  – packages/ds/tokens/semantic/{theme}.json
+component    →  per-component refs (btn.background-color)         – packages/ds/tokens/component/{name}.json
 ```
 
 Naming convention emitted in CSS (handled by Style Dictionary transform):
@@ -354,14 +456,14 @@ Naming convention emitted in CSS (handled by Style Dictionary transform):
 | Component (BEM child) | `component.card.overlay.bg` | `--origam-card__overlay---bg` |
 
 Build:
-- `npm run tokens:build` — one-shot rebuild of CSS + SCSS + TS types.
-- `npm run tokens:watch` — rebuild on `tokens/**/*.json` change.
-- `npm run tokens:lint` — dry-run validation.
-- Auto-prereq of `server:dev` and `server:build`.
+- `pnpm -F origam tokens:build` — one-shot rebuild of CSS + SCSS + TS types.
+- `pnpm -F origam tokens:watch` — rebuild on `packages/ds/tokens/**/*.json` change.
+- `pnpm -F origam tokens:lint` — dry-run validation.
+- Auto-prereq of the lib build.
 
 When migrating a component:
 1. Audit every `--origam-{cmp}---*` var the SCSS uses.
-2. Make sure `tokens/component/{cmp}.json` declares each (with full
+2. Make sure `packages/ds/tokens/component/{cmp}.json` declares each (with full
    property names, e.g. `background-color` not `bg`).
 3. Replace any hardcoded hex/rgb in the SCSS by `var(--origam-color-…)`
    references (or `var(--origam-shadow-{rung})` for elevation).
@@ -384,11 +486,11 @@ Runtime helpers:
   override (e.g. a brand-X Card inside a neutral page).
 
 To add a brand theme:
-1. Drop a `tokens/semantic/brand-{name}.json` overriding the semantics
+1. Drop a `packages/ds/tokens/semantic/brand-{name}.json` overriding the semantics
    you need.
-2. Optionally add `tokens/{name}/primitive-override.json` if the brand
+2. Optionally add `packages/ds/tokens/{name}/primitive-override.json` if the brand
    needs a different primary ramp.
-3. Register the theme in `tokens/$themes.json`.
+3. Register the theme in `packages/ds/tokens/$themes.json`.
 4. Rebuild — `[data-theme="brand-{name}"] { … }` is auto-emitted.
 
 ---
@@ -400,7 +502,7 @@ per value via `useColorEffect`). The migration path is:
 - Pass a `TIntent` value (`'primary' | 'success' | 'danger' | …`).
 - For one-off custom colors, use `:style="{'--origam-btn---background-color': myColor}"`.
 
-`TIntent` is defined in `src/types/Commons/intent.type.ts`.
+`TIntent` is defined in `packages/ds/src/types/Commons/intent.type.ts`.
 
 ---
 
@@ -410,7 +512,7 @@ Transversal composables (`useColor`, `useBackgroundColor`, `useTextColor`,
 `useColorEffect`, `useElevation`, `useRounded`, `useBorder`, `useMargin`,
 `usePadding`, `useSize`) emit utility classes when the consumer passes a
 **tokenised** value, and fall back to inline styles only for **custom**
-values. The 66 utility classes live in `src/assets/css/tokens/origam-utilities.css`
+values. The 66 utility classes live in `packages/ds/src/assets/css/tokens/origam-utilities.css`
 (generated by Style Dictionary). Naming convention: `.origam--{group}-{value}`
 with **double-tiret** as the utility-root separator
 (e.g. `.origam--color-primary`, `.origam--shadow-md`, `.origam--rounded-lg`).
@@ -464,11 +566,14 @@ will retire the `*Styles` returns.
 
 ## Component conventions (origam-specific)
 
-- Files: `Origam{PascalCase}.vue`, `Origam{PascalCase}.spec.js`,
-  `Origam{PascalCase}.cy.ts`, `Origam{PascalCase}.md` per component dir.
-- Composables: `src/composables/{Domain}/{kebabCase}.composable.ts`.
-- Types: `T` prefix, files under `src/types/{Domain}/{kebab-case}.type.ts`.
-- Interfaces: `I` prefix, files under `src/interfaces/{Domain}/{kebab-case}.interface.ts`.
+- Files: `Origam{PascalCase}.vue` per component dir under
+  `packages/ds/src/components/{Name}/`. The matching story lives in
+  `packages/stories/components/stories/{Name}/Origam{Name}.story.vue`;
+  the doc in `packages/docs/components/{Name}/Origam{Name}.md`; the
+  e2e spec in `packages/tests/e2e/{component}.spec.ts`.
+- Composables: `packages/ds/src/composables/{Domain}/{kebabCase}.composable.ts`.
+- Types: `T` prefix, files under `packages/ds/src/types/{Domain}/{kebab-case}.type.ts`.
+- Interfaces: `I` prefix, files under `packages/ds/src/interfaces/{Domain}/{kebab-case}.interface.ts`.
 - CSS variables (component-local): `--origam-{component}---{property}`
   with **triple-tiret** as the block/property separator. State variants
   use `--origam-{component}--{state}---{property}` (double-tiret).
@@ -481,8 +586,8 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 22** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `npm run tokens:build` must succeed and not produce a token resolution
-  warning ("token collisions detected" is acceptable — caused by
-  cross-theme name reuse, expected).
-- `npm audit --omit=dev` should be clean to ship; dev tree contains
+- `pnpm -F origam tokens:build` must succeed and not produce a token
+  resolution warning ("token collisions detected" is acceptable — caused
+  by cross-theme name reuse, expected).
+- `pnpm audit --prod` should be clean to ship; dev tree contains
   pre-existing histoire-alpha vulns documented as accepted risk.

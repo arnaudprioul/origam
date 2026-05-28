@@ -27,16 +27,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Run ESLint (no auto-fix)
-        run: npx eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
+        run: pnpm exec eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
 
   tokens:
     name: Tokens build & lint
@@ -44,36 +48,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Validate tokens JSON
         run: |
-          for f in tokens/*.json tokens/semantic/*.json tokens/component/*.json; do
+          for f in packages/ds/tokens/*.json packages/ds/tokens/semantic/*.json packages/ds/tokens/component/*.json; do
             [ -f "$f" ] || continue
             node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" \
               || { echo "::error file=$f::Invalid JSON"; exit 1; }
           done
 
       - name: Tokens lint (strict)
-        run: npm run tokens:lint
+        run: pnpm -F origam tokens:lint
 
       - name: Tokens build
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Upload generated token artefacts
         uses: actions/upload-artifact@v4
         with:
           name: tokens-dist
           path: |
-            src/assets/css/tokens
-            src/assets/scss/tokens
-            src/types/tokens.type.ts
+            packages/ds/src/assets/css/tokens
+            packages/ds/src/assets/scss/tokens
+            packages/ds/src/types/tokens.type.ts
           retention-days: 7
           if-no-files-found: error
 
@@ -84,19 +92,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Build tokens (prereq for component tests)
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Vitest
-        run: npm run test:unit -- --run --reporter=default
+        run: pnpm -F @origam/tests test:unit:run
 
   build:
     name: Library build (unbuild)
@@ -105,28 +117,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Build library
-        run: npm run lib:build
+        run: pnpm -F origam build
 
       - name: Assert dist output exists
         run: |
-          test -d dist/src || { echo "::error::dist/src missing after build"; exit 1; }
-          test -f dist/src/origam.js \
-            || { echo "::error::dist/src/origam.js missing — entry not emitted"; exit 1; }
+          test -d packages/ds/dist/src || { echo "::error::packages/ds/dist/src missing after build"; exit 1; }
+          test -f packages/ds/dist/src/origam.js \
+            || { echo "::error::packages/ds/dist/src/origam.js missing — entry not emitted"; exit 1; }
 
       - name: Upload library dist
         uses: actions/upload-artifact@v4
         with:
           name: library-dist
-          path: dist/
+          path: packages/ds/dist/
           retention-days: 7
           if-no-files-found: error
 
@@ -138,18 +154,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Resolve Playwright version
         id: pw
         run: |
-          version=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
@@ -161,17 +181,17 @@ jobs:
 
       - name: Install Playwright Chromium
         if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
 
       - name: Install Playwright OS deps only
         if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
 
       - name: Build tokens
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Run Playwright (chromium)
-        run: npx playwright test --project=chromium
+        run: pnpm -F @origam/tests exec playwright test --project=chromium
 
       - name: Upload Playwright report
         if: always()
@@ -179,7 +199,7 @@ jobs:
         with:
           name: playwright-report
           path: |
-            tests/e2e/.report
-            tests/e2e/.results
+            packages/tests/e2e/.report
+            packages/tests/e2e/.results
           retention-days: 7
           if-no-files-found: ignore
