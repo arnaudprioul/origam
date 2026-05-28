@@ -82,6 +82,22 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
+# Install curl. Two reasons:
+#  1. Coolify's container healthcheck runs `curl ... || wget ...` via
+#     `docker exec`. Without curl in PATH it falls back to busybox wget.
+#  2. Busybox wget on Alpine resolves `localhost` to ::1 (IPv6) FIRST
+#     via musl, tries to connect, fails (Node only listens on IPv4
+#     0.0.0.0:3000 by default), and does NOT fall back to 127.0.0.1.
+#     The container then reports `Connection refused` on every probe
+#     even though the server is healthy on IPv4. curl handles the
+#     IPv4/IPv6 fallback gracefully (happy eyeballs), so the same
+#     `curl http://localhost:3000/api/health` works.
+#  Verified locally:
+#    wget  http://localhost:3000   → Connection refused (musl ::1 first)
+#    wget  http://127.0.0.1:3000   → OK
+#    curl  http://localhost:3000   → OK (curl falls back to v4)
+RUN apk add --no-cache curl
+
 RUN addgroup -g 1001 -S nodejs && adduser -S nuxt -u 1001
 
 COPY --from=builder --chown=nuxt:nodejs /app/packages/marketing/.output ./.output
@@ -94,7 +110,11 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:3000/api/health || exit 1
+# Use 127.0.0.1 explicitly (not `localhost`) to bypass the musl IPv6
+# resolution order. Use curl (installed above) so the failure mode is
+# clear in logs if it ever breaks again.
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=20s \
+    CMD curl --silent --fail --show-error --max-time 4 \
+        http://127.0.0.1:3000/api/health > /dev/null || exit 1
 
 CMD ["node", ".output/server/index.mjs"]
