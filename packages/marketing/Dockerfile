@@ -30,6 +30,10 @@ RUN pnpm install --frozen-lockfile
 
 # Copy source needed for the lib + assets builds
 COPY tsconfig*.json ./
+# CHANGELOG.md is read by packages/marketing/scripts/parse-changelog.mjs
+# during the Nuxt build (resolves to /app/CHANGELOG.md inside the image).
+# It is intentionally NOT ignored in .dockerignore for this reason.
+COPY CHANGELOG.md ./
 COPY packages/ds ./packages/ds
 COPY packages/stories ./packages/stories
 COPY packages/docs ./packages/docs
@@ -67,7 +71,12 @@ RUN node scripts/extract-component-meta.mjs --out=.generated/components-meta.jso
 RUN node scripts/parse-changelog.mjs --out=.generated/changelog.json
 
 # Nuxt production build → .output/
-RUN pnpm run build
+# Bump V8 heap: the Nitro SSR build pulls in the whole origam lib + all
+# server routes + prerendered components-meta. With ~2 GB default heap
+# the SSR step OOMs ("Reached heap limit Allocation failed"). 4 GB is
+# comfortable for the current footprint and stays well under Docker
+# Desktop / Coolify host limits.
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
 
 # ---- Stage 3: minimal production image ----
 FROM node:22-alpine AS runner
