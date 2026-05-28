@@ -3,8 +3,30 @@
 # Build context: root of the origam repository (parent of packages/marketing/)
 # docker build -f packages/marketing/Dockerfile -t origam-marketing .
 # ============================================================
+#
+# Cache-friendly layer order
+# --------------------------
+# COPY / RUN steps are ordered so that the *cheap* layers come first and
+# the *expensive but frequently-changing* layers come last. Concretely:
+#
+#   workspace manifests           → almost never change
+#     pnpm install                ↳ cached for weeks
+#   tsconfig + CHANGELOG          → change rarely
+#   packages/ds source            → changes per lib release
+#     pnpm -F origam build        ↳ heavy (~25 s) but cached unless ds/ changed
+#   packages/stories source       → changes per story update
+#     pnpm -F @origam/stories build ↳ heaviest single step (~45 s); cached
+#                                    unless stories/ or ds/ changed
+#   packages/marketing source     → most volatile (every PR usually touches it)
+#     nuxt build                  ↳ ~45 s; cached unless marketing/ changed
+#
+# Why this matters: every step AFTER a changed COPY is invalidated. Putting
+# marketing LAST means a marketing-only change skips the lib & stories
+# rebuilds and the whole image rebuilds in ~50 s instead of ~3 min. Faster
+# builds also make Coolify-host kills (concurrent deploys, host pressure)
+# far less likely to hit our pipeline.
 
-# ---- Stage 1: build the origam library, stories, and docs ----
+# ---- Stage 1: build the origam library, stories, and marketing site ----
 FROM node:22-alpine AS builder
 WORKDIR /app
 
@@ -28,36 +50,40 @@ COPY packages/docs/package.json ./packages/docs/
 
 RUN pnpm install --frozen-lockfile
 
-# Copy source needed for the lib + assets builds
+# Stable inputs needed by the lib build
 COPY tsconfig*.json ./
 # CHANGELOG.md is read by packages/marketing/scripts/parse-changelog.mjs
 # during the Nuxt build (resolves to /app/CHANGELOG.md inside the image).
 # It is intentionally NOT ignored in .dockerignore for this reason.
 COPY CHANGELOG.md ./
-COPY packages/ds ./packages/ds
-COPY packages/stories ./packages/stories
-COPY packages/docs ./packages/docs
-COPY packages/marketing ./packages/marketing
 
-# Build the origam library (tokens + unbuild)
+# ---- Lib build (cached unless packages/ds changes) ----
+COPY packages/ds ./packages/ds
 RUN pnpm -F origam build
 
-# Build Histoire stories static site
-RUN pnpm -F @origam/stories build
-
-# Build VitePress docs static site — SKIPPED for V1.
-# vitepress@1.6.x + esbuild@0.21.5 has a wasm shim bug
-# (`Expected ":" but found "}"` in wasm.!~{001}~.js).
-# Tracking in follow-up ticket. The marketing site serves /docs/*
-# from public/docs/ which will be empty until this is resolved —
-# user-visible impact: the "/docs" links from /components/<name>
-# pages show 404 until fixed.
+# Docs source is copied BEFORE the stories build because Histoire pulls
+# component markdown from packages/docs/components/<Name>/Origam<Name>.md
+# at story-collection time (e.g. App/OrigamApp.md). Without the docs
+# tree present, `histoire build` fails with ENOENT mid-collection.
+# The VitePress build itself is SKIPPED for V1 (vitepress@1.6.x +
+# esbuild@0.21.5 wasm shim bug — `Expected ":" but found "}"` in
+# wasm.!~{001}~.js, tracked in a follow-up ticket). The marketing
+# site serves /docs/* from public/docs/ which will be empty until
+# this is resolved — user-visible impact: the "/docs" links from
+# /components/<name> pages show 404 until fixed.
+COPY packages/docs ./packages/docs
 # RUN pnpm -F @origam/docs build
 
-# ---- Stage 2: build the Nuxt marketing site ----
+# ---- Stories build (cached unless packages/stories, ds, or docs changes) ----
+COPY packages/stories ./packages/stories
+RUN pnpm -F @origam/stories build
+
+# ---- Marketing build (the most volatile bit — copied LAST) ----
+COPY packages/marketing ./packages/marketing
 WORKDIR /app/packages/marketing
 
-# Assemble public/stories and public/docs from sibling builds
+# Assemble public/stories from sibling builds (stories dist must already
+# exist at this point — it was built above).
 RUN node scripts/build-static-assets.mjs
 
 # Generate the data files the Nuxt server routes import at build time.
@@ -78,7 +104,7 @@ RUN node scripts/parse-changelog.mjs --out=.generated/changelog.json
 # Desktop / Coolify host limits.
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
 
-# ---- Stage 3: minimal production image ----
+# ---- Stage 2: minimal production image ----
 FROM node:22-alpine AS runner
 WORKDIR /app
 
