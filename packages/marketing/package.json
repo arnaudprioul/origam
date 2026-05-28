@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "description": "origam — Nuxt 4 marketing site (landing, components showcase, playground, blog, hub for docs + stories).",
+  "description": "origam \u2014 Nuxt 4 marketing site (landing, components showcase, playground, blog, hub for docs + stories).",
   "engines": {
     "node": ">=22"
   },
@@ -33,7 +33,7 @@
     "@vue/repl": "^4.4.0",
     "monaco-editor": "^0.52.0",
     "nuxt": "^4.0.0",
-    "origam": "workspace:*",
+    "origam": "*",
     "vue": "^3.5.0",
     "vue-i18n": "^11.0.0",
     "vue-router": "^4.5.0"

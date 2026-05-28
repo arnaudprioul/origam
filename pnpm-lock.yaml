@@ -39,8 +39,8 @@ importers:
   packages/docs:
     dependencies:
       origam:
-        specifier: workspace:*
-        version: link:../ds
+        specifier: '*'
+        version: 2.5.0(vue-i18n@11.4.2(vue@3.5.17(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.17(typescript@5.9.3)))(vue@3.5.17(typescript@5.9.3))
       vue:
         specifier: ^3.5.0
         version: 3.5.17(typescript@5.9.3)
@@ -119,8 +119,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.3
       origam:
-        specifier: workspace:*
-        version: link:../ds
+        specifier: '*'
+        version: 2.5.0(vue-i18n@11.4.2(vue@3.5.35(typescript@5.8.3)))(vue-router@4.6.4(vue@3.5.35(typescript@5.8.3)))(vue@3.5.35(typescript@5.8.3))
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -174,8 +174,8 @@ importers:
         specifier: ^4.0.0
         version: 4.4.6(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@parcel/watcher@2.5.6)(@types/node@24.0.14)(@vue/compiler-sfc@3.5.35)(better-sqlite3@11.10.0)(cac@6.7.14)(db0@0.3.4(better-sqlite3@11.10.0))(eslint@9.31.0(jiti@2.7.0))(ioredis@5.11.0)(magicast@0.5.3)(optionator@0.9.4)(rollup-plugin-visualizer@7.0.1(rollup@4.60.4))(rollup@4.60.4)(sass@1.89.2)(srvx@0.11.16)(terser@5.48.0)(typescript@5.8.3)(vite@7.3.3(@types/node@24.0.14)(jiti@2.7.0)(sass@1.89.2)(terser@5.48.0)(yaml@2.9.0))(vue-tsc@3.0.2(typescript@5.8.3))(yaml@2.9.0)
       origam:
-        specifier: workspace:*
-        version: link:../ds
+        specifier: '*'
+        version: 2.5.0(vue-i18n@11.4.2(vue@3.5.17(typescript@5.8.3)))(vue-router@4.6.4(vue@3.5.17(typescript@5.8.3)))(vue@3.5.17(typescript@5.8.3))
       vue:
         specifier: ^3.5.0
         version: 3.5.17(typescript@5.8.3)
@@ -205,8 +205,8 @@ importers:
   packages/stories:
     dependencies:
       origam:
-        specifier: workspace:*
-        version: link:../ds
+        specifier: '*'
+        version: 2.5.0(vue-i18n@11.4.2(vue@3.5.17(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.17(typescript@5.9.3)))(vue@3.5.17(typescript@5.9.3))
       vue:
         specifier: ^3.5.0
         version: 3.5.17(typescript@5.9.3)
@@ -233,8 +233,8 @@ importers:
   packages/tests:
     dependencies:
       origam:
-        specifier: workspace:*
-        version: link:../ds
+        specifier: '*'
+        version: 2.5.0(vue-i18n@11.4.2(vue@3.5.17(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.17(typescript@5.9.3)))(vue@3.5.17(typescript@5.9.3))
       vue:
         specifier: ^3.5.0
         version: 3.5.17(typescript@5.9.3)
@@ -6215,6 +6215,19 @@ packages:
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
+
+  origam@2.5.0:
+    resolution: {integrity: sha512-PCGnYcKlPqohs/FJNc3W+63EsjF6S4SxcRC6Pu3KVLGWQbWJSMVI7ycGMO5t3Ch4ywGcFwoYEveddxUAQR6h0A==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      vue: ^3.5.0
+      vue-i18n: ^11.0.0
+      vue-router: ^4.5.0
+    peerDependenciesMeta:
+      vue-i18n:
+        optional: true
+      vue-router:
+        optional: true
 
   oxc-minify@0.131.0:
     resolution: {integrity: sha512-Ch0sBbrqZpeNZUMhVDbU2yrTWTVrUT/MkXb9E2DAc+hbhxbbO8D/XklUtfPP86/iqrkvl178+YQvh5u8Of1mUg==}
@@ -15362,6 +15375,36 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
+  origam@2.5.0(vue-i18n@11.4.2(vue@3.5.17(typescript@5.8.3)))(vue-router@4.6.4(vue@3.5.17(typescript@5.8.3)))(vue@3.5.17(typescript@5.8.3)):
+    dependencies:
+      '@mdi/font': 7.4.47
+      qrcode-generator: 2.0.4
+      shiki: 3.8.1
+      vue: 3.5.17(typescript@5.8.3)
+    optionalDependencies:
+      vue-i18n: 11.4.2(vue@3.5.17(typescript@5.8.3))
+      vue-router: 4.6.4(vue@3.5.17(typescript@5.8.3))
+
+  origam@2.5.0(vue-i18n@11.4.2(vue@3.5.17(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.17(typescript@5.9.3)))(vue@3.5.17(typescript@5.9.3)):
+    dependencies:
+      '@mdi/font': 7.4.47
+      qrcode-generator: 2.0.4
+      shiki: 3.8.1
+      vue: 3.5.17(typescript@5.9.3)
+    optionalDependencies:
+      vue-i18n: 11.4.2(vue@3.5.17(typescript@5.9.3))
+      vue-router: 4.6.4(vue@3.5.17(typescript@5.9.3))
+
+  origam@2.5.0(vue-i18n@11.4.2(vue@3.5.35(typescript@5.8.3)))(vue-router@4.6.4(vue@3.5.35(typescript@5.8.3)))(vue@3.5.35(typescript@5.8.3)):
+    dependencies:
+      '@mdi/font': 7.4.47
+      qrcode-generator: 2.0.4
+      shiki: 3.8.1
+      vue: 3.5.35(typescript@5.8.3)
+    optionalDependencies:
+      vue-i18n: 11.4.2(vue@3.5.35(typescript@5.8.3))
+      vue-router: 4.6.4(vue@3.5.35(typescript@5.8.3))
+
   oxc-minify@0.131.0:
     optionalDependencies:
       '@oxc-minify/binding-android-arm-eabi': 0.131.0
@@ -17704,6 +17747,24 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.17(typescript@5.8.3)
 
+  vue-i18n@11.4.2(vue@3.5.17(typescript@5.9.3)):
+    dependencies:
+      '@intlify/core-base': 11.4.2
+      '@intlify/devtools-types': 11.4.2
+      '@intlify/shared': 11.4.2
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.17(typescript@5.9.3)
+    optional: true
+
+  vue-i18n@11.4.2(vue@3.5.35(typescript@5.8.3)):
+    dependencies:
+      '@intlify/core-base': 11.4.2
+      '@intlify/devtools-types': 11.4.2
+      '@intlify/shared': 11.4.2
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.35(typescript@5.8.3)
+    optional: true
+
   vue-i18n@11.4.2(vue@3.5.35(typescript@5.9.3)):
     dependencies:
       '@intlify/core-base': 11.4.2
@@ -17716,6 +17777,18 @@ snapshots:
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.17(typescript@5.8.3)
+
+  vue-router@4.6.4(vue@3.5.17(typescript@5.9.3)):
+    dependencies:
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.17(typescript@5.9.3)
+    optional: true
+
+  vue-router@4.6.4(vue@3.5.35(typescript@5.8.3)):
+    dependencies:
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.35(typescript@5.8.3)
+    optional: true
 
   vue-router@4.6.4(vue@3.5.35(typescript@5.9.3)):
     dependencies:

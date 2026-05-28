@@ -14,7 +14,7 @@
     "preview": "histoire preview"
   },
   "dependencies": {
-    "origam": "workspace:*",
+    "origam": "*",
     "vue": "^3.5.0"
   },
   "devDependencies": {

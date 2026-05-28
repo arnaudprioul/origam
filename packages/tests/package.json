@@ -18,7 +18,7 @@
     "test:a11y": "playwright test --config=playwright.a11y.config.ts"
   },
   "dependencies": {
-    "origam": "workspace:*",
+    "origam": "*",
     "vue": "^3.5.0"
   },
   "devDependencies": {

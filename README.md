@@ -8,17 +8,17 @@ A Vue 3 design system built on modern CSS, design tokens, and a CSS-first
 philosophy. Multi-theme out of the box, token-driven utility classes, and
 ~80 production-ready components.
 
-This repository is a **pnpm monorepo**. The published package (`origam`
-on npm) lives in `packages/ds/`; the surrounding packages host the
-docs site, Histoire stories, end-to-end tests, marketing site and the
-companion Figma plugin.
+This repository is a **monorepo** that works with **npm, pnpm and yarn
+workspaces**. The published package (`origam` on npm) lives in
+`packages/ds/`; the surrounding packages host the docs site, Histoire
+stories, end-to-end tests, marketing site and the companion Figma plugin.
 
 ---
 
-## Installation
+## Installation (as a consumer)
 
 ```bash
-npm install origam
+npm install origam      # or: pnpm add origam, or: yarn add origam
 ```
 
 Peer dependencies — pulled in by default, but you can dedupe in your app:
@@ -284,12 +284,32 @@ Token authoring (Tokens Studio JSON, Style Dictionary pipeline) lives in
 
 ### Local setup (~5 min on a fresh clone)
 
+The repo declares **both** `"workspaces": ["packages/*"]` (npm / yarn
+syntax) and ships a `pnpm-workspace.yaml` so any of the three package
+managers works. Internal cross-package refs use the plain `"*"` version
+range (no `workspace:*` protocol), keeping every PM happy.
+
+| PM | Install | Run a script in a package |
+|---|---|---|
+| **pnpm** (recommended — fastest install, the only lockfile we commit) | `corepack enable && pnpm install` | `pnpm -F <pkg> <script>` |
+| **npm** | `npm install` | `npm run <script> --workspace=<pkg>` |
+| **yarn** (1.x) | `yarn install` | `yarn workspace <pkg> <script>` |
+
+Only `pnpm-lock.yaml` is committed. `package-lock.json` and `yarn.lock`
+are git-ignored, so the three lockfiles never drift against each other
+in version control.
+
 ```bash
 git clone https://github.com/arnaudprioul/origam.git
 cd origam
 
-corepack enable          # pnpm@9.15.0 becomes the active package manager
-pnpm install             # installs every workspace + hoists shared deps
+# Recommended:
+corepack enable                # pnpm@9.15.0
+pnpm install
+
+# Or equivalent:
+# npm install
+# yarn install
 
 pnpm -F origam build           # build the library
 pnpm -F @origam/stories dev    # http://localhost:6006 — Histoire sandbox
@@ -299,15 +319,19 @@ pnpm -F @origam/marketing dev  # http://localhost:3000 — marketing site
 
 ### Common commands
 
-| Goal | Command |
-|---|---|
-| Build the library | `pnpm -F origam build` |
-| Build every package | `pnpm -r build` |
-| Rebuild tokens (CSS / SCSS / TS) | `pnpm -F origam tokens:build` |
-| Run unit tests | `pnpm -F @origam/tests test:unit:run` |
-| Run e2e tests | `pnpm -F @origam/tests test:e2e` |
-| Run a11y tests | `pnpm -F @origam/tests test:a11y` |
-| Lint (auto-fix) | `pnpm run lint:fix` |
+The root scripts are pnpm-flavoured for brevity, but every script
+delegates to a workspace package so the equivalent npm / yarn invocation
+also works.
+
+| Goal | pnpm | npm | yarn |
+|---|---|---|---|
+| Build the library | `pnpm -F origam build` | `npm run build --workspace=origam` | `yarn workspace origam build` |
+| Build every package | `pnpm -r build` | `npm run build --workspaces` | `yarn workspaces run build` |
+| Rebuild tokens | `pnpm -F origam tokens:build` | `npm run tokens:build --workspace=origam` | `yarn workspace origam tokens:build` |
+| Run unit tests | `pnpm -F @origam/tests test:unit:run` | `npm run test:unit:run --workspace=@origam/tests` | `yarn workspace @origam/tests test:unit:run` |
+| Run e2e tests | `pnpm -F @origam/tests test:e2e` | (idem) | (idem) |
+| Run a11y tests | `pnpm -F @origam/tests test:a11y` | (idem) | (idem) |
+| Lint (auto-fix) | `pnpm run lint:fix` | `npm run lint:fix` | `yarn lint:fix` |
 
 Node ≥ 22 is mandatory (see [`.nvmrc`](./.nvmrc)). See
 [`CLAUDE.md`](./CLAUDE.md) → *Monorepo workflow* for the full convention

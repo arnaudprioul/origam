@@ -3,7 +3,6 @@
   "version": "2.5.1",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@9.15.0",
   "description": "origam monorepo — Vue 3 design system (lib + marketing + stories + docs + tests + figma plugin). Workspace root, not published. The publishable package lives in packages/ds.",
   "license": "MIT",
   "author": "Prioul Arnaud",
@@ -18,6 +17,9 @@
   "engines": {
     "node": ">=22"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build:lib": "pnpm -F origam build",
     "build:marketing": "pnpm -F @origam/marketing build",

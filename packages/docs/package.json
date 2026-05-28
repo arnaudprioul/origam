@@ -14,7 +14,7 @@
     "preview": "vitepress preview ."
   },
   "dependencies": {
-    "origam": "workspace:*",
+    "origam": "*",
     "vue": "^3.5.0"
   },
   "devDependencies": {
