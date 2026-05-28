@@ -14,7 +14,7 @@ useHead({
 </script>
 
 <template>
-    <OrigamApp>
+    <div class="app-shell">
         <a
             :href="SKIP_LINK_HREF"
             class="skip-link"
@@ -31,7 +31,7 @@ useHead({
         <TheFooter />
 
         <SearchOverlay />
-    </OrigamApp>
+    </div>
 </template>
 
 <style scoped>

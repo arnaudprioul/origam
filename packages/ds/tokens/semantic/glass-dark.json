@@ -1,0 +1,87 @@
+{
+  "color": {
+    "surface": {
+      "default":   { "$type": "color", "$value": "#0F0E1A" },
+      "raised":    { "$type": "color", "$value": "rgba(255,255,255,0.06)" },
+      "overlay":   { "$type": "color", "$value": "rgba(255,255,255,0.04)" },
+      "sunken":    { "$type": "color", "$value": "#0A0917" },
+      "disabled":  { "$type": "color", "$value": "rgba(255,255,255,0.03)" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "#FFFFFF" },
+      "secondary": { "$type": "color", "$value": "#C4B5FD" },
+      "disabled":  { "$type": "color", "$value": "#6B5FAF" },
+      "inverse":   { "$type": "color", "$value": "#0F0E1A" },
+      "onColor":   { "$type": "color", "$value": "#FFFFFF" }
+    },
+    "border": {
+      "default":  { "$type": "color", "$value": "rgba(255,255,255,0.12)" },
+      "subtle":   { "$type": "color", "$value": "rgba(255,255,255,0.06)" },
+      "strong":   { "$type": "color", "$value": "rgba(255,255,255,0.20)" },
+      "focus":    { "$type": "color", "$value": "#DDD6FE" }
+    },
+    "action": {
+      "primary": {
+        "bg":         { "$type": "color", "$value": "#A78BFA" },
+        "bgHover":    { "$type": "color", "$value": "#DDD6FE" },
+        "bgSubtle":   { "$type": "color", "$value": "rgba(167,139,250,0.14)" },
+        "bgDisabled": { "$type": "color", "$value": "rgba(255,255,255,0.06)" },
+        "fg":         { "$type": "color", "$value": "#0F0E1A" },
+        "fgSubtle":   { "$type": "color", "$value": "#DDD6FE" },
+        "fgDisabled": { "$type": "color", "$value": "#6B5FAF" }
+      },
+      "secondary": {
+        "bg":         { "$type": "color", "$value": "rgba(255,255,255,0.06)" },
+        "bgHover":    { "$type": "color", "$value": "rgba(255,255,255,0.12)" },
+        "bgDisabled": { "$type": "color", "$value": "rgba(255,255,255,0.03)" },
+        "fg":         { "$type": "color", "$value": "#FFFFFF" },
+        "fgDisabled": { "$type": "color", "$value": "#6B5FAF" }
+      },
+      "ghost": {
+        "bg":         { "$type": "color", "$value": "transparent" },
+        "bgHover":    { "$type": "color", "$value": "rgba(255,255,255,0.06)" },
+        "bgDisabled": { "$type": "color", "$value": "transparent" },
+        "fg":         { "$type": "color", "$value": "#DDD6FE" },
+        "fgDisabled": { "$type": "color", "$value": "#6B5FAF" }
+      }
+    },
+    "feedback": {
+      "success": {
+        "bg":       { "$type": "color", "$value": "#6EE7B7" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(110,231,183,0.14)" },
+        "fg":       { "$type": "color", "$value": "#0F0E1A" },
+        "fgSubtle": { "$type": "color", "$value": "#6EE7B7" },
+        "border":   { "$type": "color", "$value": "#6EE7B7" }
+      },
+      "warning": {
+        "bg":       { "$type": "color", "$value": "#FCD34D" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(252,211,77,0.14)" },
+        "fg":       { "$type": "color", "$value": "#0F0E1A" },
+        "fgSubtle": { "$type": "color", "$value": "#FCD34D" },
+        "border":   { "$type": "color", "$value": "#FCD34D" }
+      },
+      "danger": {
+        "bg":       { "$type": "color", "$value": "#FCA5A5" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(252,165,165,0.14)" },
+        "fg":       { "$type": "color", "$value": "#0F0E1A" },
+        "fgSubtle": { "$type": "color", "$value": "#FCA5A5" },
+        "border":   { "$type": "color", "$value": "#FCA5A5" }
+      },
+      "info": {
+        "bg":       { "$type": "color", "$value": "#93C5FD" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(147,197,253,0.14)" },
+        "fg":       { "$type": "color", "$value": "#0F0E1A" },
+        "fgSubtle": { "$type": "color", "$value": "#93C5FD" },
+        "border":   { "$type": "color", "$value": "#93C5FD" }
+      }
+    },
+    "overlay": {
+      "scrim": { "$type": "color", "$value": "#0F0E1A" }
+    }
+  },
+  "radius": {
+    "sm": { "$type": "dimension", "$value": "10px" },
+    "md": { "$type": "dimension", "$value": "16px" },
+    "lg": { "$type": "dimension", "$value": "22px" }
+  }
+}

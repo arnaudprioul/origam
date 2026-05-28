@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { NAV_LINKS } from '~/consts/nav-links.const'
+import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const { t } = useI18nFallback()
 const config = useRuntimeConfig()
 const { track } = useAnalytics()
+const route = useRoute()
 
 const isMobileMenuOpen = ref(false)
+
+const DISPLAY_NAV_LINKS = NAV_LINKS.filter(l =>
+    ['components', 'playground', 'docs', 'stories', 'blog', 'changelog'].includes(l.id)
+)
 
 function toggleMobileMenu (): void {
     isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -19,6 +25,10 @@ function handleNavLinkClick (href: string): void {
     closeMobileMenu()
     track('nav:link:click', { href })
 }
+
+function isActive (href: string): boolean {
+    return route.path === href || route.path.startsWith(href + '/')
+}
 </script>
 
 <template>
@@ -30,15 +40,9 @@ function handleNavLinkClick (href: string): void {
                 :aria-label="t('nav.logoLabel', 'origam — home')"
                 @click="closeMobileMenu"
             >
-                <img
-                    src="/logo.svg"
-                    alt=""
-                    class="site-nav__logo-img"
-                    width="32"
-                    height="32"
-                    aria-hidden="true"
-                >
+                <MarketingIcon name="logo" :size="26" class="site-nav__logo-icon" aria-hidden="true" />
                 <span class="site-nav__logo-text" aria-hidden="true">origam</span>
+                <span class="site-nav__version" aria-hidden="true">v{{ MARKETING_DEFAULTS.npmVersion }}</span>
             </NuxtLink>
 
             <nav
@@ -49,14 +53,15 @@ function handleNavLinkClick (href: string): void {
             >
                 <ul class="site-nav__list" role="list">
                     <li
-                        v-for="link in NAV_LINKS"
+                        v-for="link in DISPLAY_NAV_LINKS"
                         :key="link.id"
                         class="site-nav__item"
                     >
                         <NuxtLink
                             :to="link.href"
                             class="site-nav__link"
-                            active-class="site-nav__link--active"
+                            :aria-current="isActive(link.href) ? 'page' : undefined"
+                            :class="{ 'site-nav__link--active': isActive(link.href) }"
                             @click="handleNavLinkClick(link.href)"
                         >
                             {{ t(link.labelKey, link.labelFallback) }}
@@ -79,10 +84,10 @@ function handleNavLinkClick (href: string): void {
                     size="sm"
                     class="site-nav__github-btn"
                 >
-                    {{ t('nav.github', 'GitHub') }}
+                    4.2k
                 </OrigamBtn>
 
-                <ThemeToggle />
+                <ThemeSwitcher />
 
                 <LanguageSwitcher />
 
@@ -129,10 +134,9 @@ function handleNavLinkClick (href: string): void {
     flex-shrink: 0;
 }
 
-.site-nav__logo-img {
-    inline-size: 2rem;
-    block-size: 2rem;
-    display: block;
+.site-nav__logo-icon {
+    color: var(--origam-color__action--primary---bg, #7c3aed);
+    flex-shrink: 0;
 }
 
 .site-nav__logo-text {
@@ -140,15 +144,13 @@ function handleNavLinkClick (href: string): void {
     font-weight: var(--origam-font__weight---bold, 700);
     color: var(--origam-color__text---primary, #171717);
     letter-spacing: -0.03em;
-    background: linear-gradient(
-        135deg,
-        var(--origam-color__action--primary---bg, #7c3aed),
-        var(--origam-color__feedback--info---bg, #2196f3)
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+}
+
+.site-nav__version {
+    font-family: var(--origam-font__family---mono, monospace);
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    color: var(--origam-color__text---secondary, #525252);
+    font-weight: var(--origam-font__weight---regular, 400);
 }
 
 .site-nav__links {

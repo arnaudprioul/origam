@@ -113,7 +113,7 @@ const { t } = useI18nFallback()
 
 .site-footer__inner {
     display: grid;
-    grid-template-columns: 2fr repeat(3, 1fr);
+    grid-template-columns: 2fr repeat(4, 1fr);
     gap: var(--origam-space---8, 2rem);
     max-width: 80rem;
     margin-inline: auto;
@@ -252,6 +252,12 @@ const { t } = useI18nFallback()
 
     .site-footer__brand {
         grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 1280px) {
+    .site-footer__inner {
+        grid-template-columns: 2fr repeat(2, 1fr);
     }
 }
 

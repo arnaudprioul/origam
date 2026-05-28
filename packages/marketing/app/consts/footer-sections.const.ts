@@ -97,9 +97,30 @@ export const FOOTER_SECTIONS: ReadonlyArray<IFooterSection> = [
                 href: '/about'
             },
             {
+                id: 'footer-tokens-studio-res',
+                labelKey: 'footer.tokensStudio',
+                labelFallback: 'Tokens Studio',
+                href: 'https://tokens.studio/',
+                external: true
+            },
+            {
+                id: 'footer-npm-res',
+                labelKey: 'footer.npm',
+                labelFallback: 'npm package',
+                href: 'https://www.npmjs.com/package/origam',
+                external: true
+            }
+        ]
+    },
+    {
+        id: 'legal',
+        titleKey: 'footer.cols.legal.title',
+        titleFallback: 'Legal',
+        links: [
+            {
                 id: 'footer-license',
                 labelKey: 'footer.license',
-                labelFallback: 'License',
+                labelFallback: 'MIT License',
                 href: 'https://github.com/arnaudprioul/origam/blob/main/LICENSE',
                 external: true
             },

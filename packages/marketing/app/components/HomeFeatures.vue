@@ -1,27 +1,77 @@
 <script setup lang="ts">
-import { LANDING_FEATURES } from '~/consts/landing-features.const'
-
 const { t } = useI18nFallback()
+
+const FEATURES = [
+    {
+        id: 'charts',
+        icon: 'chart',
+        titleKey: 'home.features.items.1.title',
+        titleFallback: '29 chart primitives',
+        descKey: 'home.features.items.1.desc',
+        descFallback: 'Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license.'
+    },
+    {
+        id: 'a11y',
+        icon: 'shield',
+        titleKey: 'home.features.items.2.title',
+        titleFallback: 'WCAG 2.1 AA verified',
+        descKey: 'home.features.items.2.desc',
+        descFallback: 'Each component ships with axe-core + Playwright a11y tests. Keyboard, screen-readers, motion: covered.'
+    },
+    {
+        id: 'tokens',
+        icon: 'layers',
+        titleKey: 'home.features.items.3.title',
+        titleFallback: 'Design tokens',
+        descKey: 'home.features.items.3.desc',
+        descFallback: 'Multi-theme via Tokens Studio. Switch between light, dark, or your own brand at runtime with zero remount.'
+    },
+    {
+        id: 'typescript',
+        icon: 'type',
+        titleKey: 'home.features.items.4.title',
+        titleFallback: 'TypeScript first',
+        descKey: 'home.features.items.4.desc',
+        descFallback: 'Strict mode, full type inference, generics on Data Table/List. Your IDE will thank you.'
+    },
+    {
+        id: 'css',
+        icon: 'dna',
+        titleKey: 'home.features.items.5.title',
+        titleFallback: 'CSS-first',
+        descKey: 'home.features.items.5.desc',
+        descFallback: "Container queries, :has(), color-mix(), view-transition-name. We use modern CSS so you don't reinvent it."
+    },
+    {
+        id: 'vue',
+        icon: 'bolt',
+        titleKey: 'home.features.items.6.title',
+        titleFallback: 'Composition API',
+        descKey: 'home.features.items.6.desc',
+        descFallback: 'Built on script setup + Composition API. Headless composables exposed when you need to go low-level.'
+    }
+] as const
 </script>
 
 <template>
     <section
-        class="home-features"
+        class="home-features m-section"
         aria-labelledby="features-title"
     >
-        <div class="home-features__inner">
+        <div class="home-features__inner m-container">
             <header class="home-features__header">
-                <div class="home-features__eyebrow">
-                    {{ t('home.features.eyebrow', 'Why choose origam') }}
-                </div>
+                <span class="m-section-pre">{{ t('home.features.eyebrow', "WHAT'S INSIDE") }}</span>
                 <h2
                     id="features-title"
-                    class="home-features__title"
+                    class="home-features__title m-h2"
                 >
-                    {{ t('features.heading', 'Why origam') }}
+                    {{ t('home.features.title', "Everything you'd expect.") }}<br>
+                    <span class="home-features__title-secondary">
+                        {{ t('home.features.titleSecondary', "Nothing you wouldn't.") }}
+                    </span>
                 </h2>
-                <p class="home-features__subtitle">
-                    {{ t('features.subtitle', 'Production-ready, accessible, and developer-friendly.') }}
+                <p class="home-features__body m-body">
+                    {{ t('home.features.body', 'A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.') }}
                 </p>
             </header>
 
@@ -30,25 +80,25 @@ const { t } = useI18nFallback()
                 role="list"
             >
                 <li
-                    v-for="feature in LANDING_FEATURES"
+                    v-for="feature in FEATURES"
                     :key="feature.id"
                     class="home-features__item"
                 >
-                    <article
-                        class="home-features__card"
-                        :class="`home-features__card--${feature.intent}`"
-                    >
+                    <article class="home-features__cell">
                         <div
-                            class="home-features__icon-wrapper"
-                            :class="`home-features__icon-wrapper--${feature.intent}`"
+                            class="home-features__icon"
                             aria-hidden="true"
                         >
-                            <OrigamIcon :icon="feature.iconName" />
+                            <MarketingIcon
+                                :name="feature.icon"
+                                :size="22"
+                                :stroke="1.6"
+                            />
                         </div>
-                        <h3 class="home-features__card-title">
-                            {{ t(feature.i18nKey, feature.fallback) }}
+                        <h3 class="home-features__cell-title m-h3">
+                            {{ t(feature.titleKey, feature.titleFallback) }}
                         </h3>
-                        <p class="home-features__card-desc">
+                        <p class="home-features__cell-desc">
                             {{ t(feature.descKey, feature.descFallback) }}
                         </p>
                     </article>
@@ -59,162 +109,123 @@ const { t } = useI18nFallback()
 </template>
 
 <style scoped>
-.home-features {
-    padding-block: var(--origam-space---20, 5rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    container-type: inline-size;
-}
-
 .home-features__inner {
-    max-width: 80rem;
-    margin-inline: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space---12, 3rem);
+    gap: var(--origam-space---16, 4rem);
 }
 
 .home-features__header {
-    text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---3, 0.75rem);
-}
-
-.home-features__eyebrow {
-    display: inline-block;
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-    padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
-    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 8%, transparent);
-    border-radius: var(--origam-radius---full, 9999px);
+    gap: var(--origam-space---4, 1rem);
+    max-width: 37.5rem;
 }
 
 .home-features__title {
-    font-size: clamp(1.75rem, 3vw + 0.5rem, 2.75rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    letter-spacing: -0.025em;
-    color: var(--origam-color__text---primary, #171717);
     margin: 0;
 }
 
-.home-features__subtitle {
-    font-size: var(--origam-font__size---xl, 1.125rem);
-    color: var(--origam-color__text---secondary, #525252);
+.home-features__title-secondary {
+    color: var(--m-text-quiet, var(--origam-color__text---tertiary, #737373));
+}
+
+.home-features__body {
     margin: 0;
-    max-width: 40rem;
-    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
 }
 
 .home-features__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--origam-space---6, 1.5rem);
     list-style: none;
     margin: 0;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
+    border-radius: var(--m-radius-lg, var(--origam-radius---xl, 1rem));
+    overflow: hidden;
 }
 
 .home-features__item {
     display: flex;
 }
 
-.home-features__card {
+.home-features__item:nth-child(-n+3) .home-features__cell {
+    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
+}
+
+.home-features__item:not(:nth-child(3n)) .home-features__cell {
+    border-inline-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
+}
+
+.home-features__cell {
     display: flex;
     flex-direction: column;
     gap: var(--origam-space---3, 0.75rem);
-    padding: var(--origam-space---6, 1.5rem);
-    border-radius: var(--origam-radius---2xl, 1.5rem);
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    background-color: var(--origam-color__surface---raised, #ffffff);
-    box-shadow: var(--origam-shadow---md);
-    transition: transform 0.2s var(--origam-motion__easing---standard), box-shadow 0.2s var(--origam-motion__easing---standard);
+    padding: var(--origam-space---8, 2rem);
+    background: var(--m-surface, var(--origam-color__surface---raised, #ffffff));
     width: 100%;
 }
 
-.home-features__card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--origam-shadow---lg);
-}
-
-.home-features__icon-wrapper {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: var(--origam-radius---xl, 1rem);
-    font-size: 1.5rem;
+.home-features__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--m-radius, var(--origam-radius---md, 0.5rem));
+    background: var(--m-accent-bg, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 10%, transparent));
+    color: var(--m-accent-soft, var(--origam-color__action--primary---fgSubtle, #6d28d9));
+    border: 1px solid var(--m-accent-border, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 30%, transparent));
     flex-shrink: 0;
 }
 
-.home-features__icon-wrapper--primary {
-    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent);
-    color: var(--origam-color__action--primary---bg, #7c3aed);
-}
-
-.home-features__icon-wrapper--success {
-    background-color: color-mix(in srgb, var(--origam-color__feedback--success---bg, #4caf50) 12%, transparent);
-    color: var(--origam-color__feedback--success---bg, #4caf50);
-}
-
-.home-features__icon-wrapper--secondary {
-    background-color: color-mix(in srgb, var(--origam-color__color__neutral---600, #525252) 12%, transparent);
-    color: var(--origam-color__neutral---600, #525252);
-}
-
-.home-features__icon-wrapper--info {
-    background-color: color-mix(in srgb, var(--origam-color__feedback--info---bg, #2196f3) 12%, transparent);
-    color: var(--origam-color__feedback--info---bg, #2196f3);
-}
-
-.home-features__icon-wrapper--warning {
-    background-color: color-mix(in srgb, var(--origam-color__feedback--warning---bg, #fb8c00) 12%, transparent);
-    color: var(--origam-color__feedback--warning---bg, #fb8c00);
-}
-
-.home-features__icon-wrapper--danger {
-    background-color: color-mix(in srgb, var(--origam-color__feedback--danger---bg, #ef4444) 12%, transparent);
-    color: var(--origam-color__feedback--danger---bg, #ef4444);
-}
-
-.home-features__card-title {
-    font-size: var(--origam-font__size---2xl, 1.25rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---primary, #171717);
+.home-features__cell-title {
     margin: 0;
-    line-height: var(--origam-font__lineHeight---snug, 1.375);
 }
 
-.home-features__card-desc {
-    font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__text---secondary, #525252);
+.home-features__cell-desc {
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #525252));
     line-height: var(--origam-font__lineHeight---relaxed, 1.625);
     margin: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .home-features__card {
-        transition: none;
-    }
-
-    .home-features__card:hover {
-        transform: none;
-    }
-}
-
-@container (max-width: 900px) {
+@media (max-width: 900px) {
     .home-features__grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .home-features__item:nth-child(-n+3) .home-features__cell {
+        border-block-end: none;
+    }
+
+    .home-features__item:not(:nth-child(3n)) .home-features__cell {
+        border-inline-end: none;
+    }
+
+    .home-features__item:nth-child(-n+4) .home-features__cell {
+        border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
+    }
+
+    .home-features__item:not(:nth-child(2n)) .home-features__cell {
+        border-inline-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
+    }
 }
 
-@container (max-width: 580px) {
+@media (max-width: 580px) {
     .home-features__grid {
         grid-template-columns: 1fr;
+    }
+
+    .home-features__item:nth-child(-n+4) .home-features__cell {
+        border-block-end: none;
+    }
+
+    .home-features__item:not(:nth-child(2n)) .home-features__cell {
+        border-inline-end: none;
+    }
+
+    .home-features__item:not(:last-child) .home-features__cell {
+        border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
     }
 }
 </style>

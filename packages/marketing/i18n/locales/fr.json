@@ -187,35 +187,107 @@
     "copyright": "© 2026 origam · MIT · v2.5.1",
     "github": "GitHub",
     "integrations": "Intégrations",
-    "license": "Licence",
+    "license": "Licence MIT",
     "madeWith": "Fait avec",
     "npm": "Package npm",
     "product": "Produit",
     "resources": "Ressources",
     "tagline": "Le design system Vue 3 qui fonctionne tout simplement.",
-    "tokensStudio": "Tokens Studio"
+    "tokensStudio": "Tokens Studio",
+    "signature": "Fait avec origam, par des humains.",
+    "cols": {
+      "product": { "title": "Produit" },
+      "resources": { "title": "Ressources" },
+      "community": { "title": "Communauté" },
+      "legal": { "title": "Légal" }
+    }
   },
   "home": {
     "hero": {
+      "announce": "v2.5.0 — 29 graphiques livrés, WCAG 2.1 AA validé",
+      "copy": "Copier",
       "copyInstall": "Copier la commande d'installation",
       "ctaBrowse": "Parcourir les composants",
       "ctaGithub": "GitHub",
       "ctaGithubLabel": "Voir origam sur GitHub (s'ouvre dans un nouvel onglet)",
+      "ctaPrimary": "Parcourir les composants",
+      "ctaSecondary": "Star sur GitHub",
       "eyebrow": "Vue 3 · TypeScript · Open Source",
       "installCaption": "Installer origam via npm",
+      "installCmd": "npm install origam",
       "statsA11y": "accessibilité",
       "statsCharts": "primitives de graphiques",
       "statsComponents": "composants",
-      "subtitle": "29 primitives de graphiques, ~95 composants, a11y complète, design tokens inclus.",
+      "subtitle": "95 composants. 29 primitives de graphiques. A11y complète. Design tokens inclus. Pour Vue 3 avec une DX TypeScript-first.",
       "title": "Le design system Vue 3 qui fonctionne tout simplement",
       "titleLine1": "Le design system Vue 3",
-      "titleLine2": "qui fonctionne tout simplement"
+      "titleLine2": "qui fonctionne tout simplement",
+      "titleAlt": {
+        "editorial": "Le DS Vue 3 — conçu comme vous l'écririez.",
+        "geek": "> Le design system Vue 3\\n> qui fonctionne tout simplement_"
+      }
+    },
+    "stats": {
+      "components": { "value": "95", "label": "Composants" },
+      "charts": { "value": "29", "label": "Primitives graphiques" },
+      "a11y": { "value": "100%", "label": "WCAG 2.1 AA" },
+      "size": { "value": "<50kb", "label": "Tree-shakable" },
+      "license": { "value": "MIT", "label": "Open source" },
+      "regionLabel": "Chiffres clés"
     },
     "features": {
-      "eyebrow": "Pourquoi choisir origam"
+      "eyebrow": "CE QU'IL CONTIENT",
+      "title": "Tout ce qu'on attend.",
+      "titleSecondary": "Rien de plus.",
+      "body": "Un toolkit complet pour livrer des apps Vue 3 — des primitives atomiques à la dataviz complexe, chaque pièce testée, thémée et conforme a11y.",
+      "items": {
+        "1": { "title": "29 primitives graphiques", "desc": "Line, area, bar, donut, candlestick, heatmap — couverture niveau Highcharts sans la licence." },
+        "2": { "title": "WCAG 2.1 AA vérifié", "desc": "Chaque composant embarque des tests axe-core + Playwright a11y. Clavier, lecteurs d'écran, motion : tout est couvert." },
+        "3": { "title": "Design tokens", "desc": "Multi-thème via Tokens Studio. Basculez entre clair, sombre ou votre propre marque à l'exécution sans remount." },
+        "4": { "title": "TypeScript d'abord", "desc": "Mode strict, inférence complète, génériques sur Data Table/List. Votre IDE vous remerciera." },
+        "5": { "title": "CSS-first", "desc": "Container queries, :has(), color-mix(), view-transition-name. On utilise le CSS moderne pour que vous n'ayez pas à le réinventer." },
+        "6": { "title": "Composition API", "desc": "Basé sur script setup + Composition API. Composables headless exposés quand vous avez besoin d'aller en bas niveau." }
+      }
+    },
+    "playground": {
+      "eyebrow": "PLAYGROUND LIVE",
+      "title": "Essayez avant de livrer.",
+      "codeRegionLabel": "Éditeur de code",
+      "codeCaption": "Exemple Vue SFC",
+      "previewRegionLabel": "Aperçu en direct",
+      "tabs": {
+        "share": "PARTAGER",
+        "open": "OUVRIR"
+      },
+      "preview": {
+        "title": "Bonjour Origam",
+        "body": "Le design system Vue 3 qui fonctionne tout simplement. Essayez un composant en direct.",
+        "cta": "Démarrer"
+      }
     },
     "showcase": {
-      "eyebrow": "Composants en direct"
+      "eyebrow": "SHOWCASE",
+      "title": "95 composants.",
+      "titleSub": "Une seule vibe.",
+      "viewAll": "Voir tout",
+      "table": { "label": "Data Table", "sub": "Triable · filtrable · virtualisé", "tag": "Données" },
+      "chart": { "label": "Chart Line", "sub": "+12,4% ce mois" },
+      "switch": { "label": "Switch", "sub": "inset · flat · default" },
+      "chips": { "label": "Chips", "sub": "6 intentions" },
+      "avatars": { "label": "Groupe d'avatars", "sub": "+24 membres" }
+    },
+    "themes": {
+      "eyebrow": "THÈMES",
+      "title": "Un design system.",
+      "titleSub": "Toutes les marques.",
+      "body": "Tokens de design conformes DTCG, multi-thème inclus. Basculez entre clair, sombre ou votre marque perso à l'exécution — sans remount, sans scintillement.",
+      "compat": "→ tokens.studio compatible · → Style Dictionary v4"
+    },
+    "cta": {
+      "title": "Prêt à livrer plus vite ?",
+      "body": "Lancez votre projet Vue 3 avec origam en 30 secondes.",
+      "primary": "Démarrer",
+      "secondary": "Lire la doc"
     },
     "codeDemo": {
       "eyebrow": "Démarrez rapidement",
@@ -246,9 +318,26 @@
     "mainLabel": "Navigation principale",
     "openMenu": "Ouvrir le menu",
     "playground": "Playground",
+    "search": "Rechercher…",
+    "searchHint": "⌘K",
     "stories": "Stories",
     "switchToDark": "Passer au thème sombre",
     "switchToLight": "Passer au thème clair"
+  },
+  "themes": {
+    "label": "Thème",
+    "mode": "Mode",
+    "light": "Clair",
+    "dark": "Sombre",
+    "switcherLabel": "Changer de thème",
+    "sobre": { "label": "Sobre", "desc": "Linear · style Vercel" },
+    "glass": { "label": "Glass", "desc": "Verre dépoli · lumineux" },
+    "geek": { "label": "Geek", "desc": "Terminal · mono · vert" },
+    "cartoon": { "label": "Cartoon", "desc": "daisyUI · néo-brutaliste" },
+    "editorial": { "label": "Editorial", "desc": "Magazine · serif" },
+    "material": { "label": "Material", "desc": "Google Material 3" },
+    "ecom": { "label": "Ecom", "desc": "Style AliExpress · Amazon" },
+    "apple": { "label": "Apple", "desc": "Premium · minimal · épuré" }
   },
   "figma": {
     "meta": {

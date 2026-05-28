@@ -11,7 +11,7 @@
 
 import StyleDictionary from 'style-dictionary'
 import { permutateThemes, register } from '@tokens-studio/sd-transforms'
-import { readFileSync, watch, mkdirSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, watch, mkdirSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -147,6 +147,19 @@ StyleDictionary.registerTransform({
 })
 
 // ────────────────────────────────────────────────────────────────────────────
+// Brand theme parsing — `sobre-dark` → { brand: 'sobre', mode: 'dark' }.
+// Identifies compound theme IDs of the shape `<brand>-<mode>` where
+// `mode` is either `light` or `dark`. Used to emit compound selectors
+// `[data-theme="<brand>"][data-mode="<mode>"]` so marketing consumers can
+// flip mode independently of brand.
+// ────────────────────────────────────────────────────────────────────────────
+function parseBrandTheme (name) {
+    const m = /^([a-z0-9]+)-(light|dark)$/.exec(name)
+    if (!m) return null
+    return { brand: m[1], mode: m[2] }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // CSS format: emits a theme-scoped block of CSS variables.
 // ────────────────────────────────────────────────────────────────────────────
 StyleDictionary.registerFormat({
@@ -180,6 +193,17 @@ StyleDictionary.registerFormat({
                 ''
             ].filter(Boolean).join('\n')
         }
+        // <brand>-<mode> (e.g. "sobre-dark") → compound attribute selector
+        const brand = parseBrandTheme(themeName)
+        if (brand) {
+            return [
+                header.trimEnd(),
+                `[data-theme="${brand.brand}"][data-mode="${brand.mode}"] {`,
+                decls,
+                '}',
+                ''
+            ].filter(Boolean).join('\n')
+        }
         // brand-X / any other theme → scoped attribute selector only
         return `${header}[data-theme="${themeName}"] {\n${decls}\n}\n`
     }
@@ -206,6 +230,10 @@ StyleDictionary.registerFormat({
         }
         if (themeName === 'dark') {
             return `${header}[data-theme="dark"] {\n${decls}\n}\n`
+        }
+        const brand = parseBrandTheme(themeName)
+        if (brand) {
+            return `${header}[data-theme="${brand.brand}"][data-mode="${brand.mode}"] {\n${decls}\n}\n`
         }
         return `${header}[data-theme="${themeName}"] {\n${decls}\n}\n`
     }
@@ -665,7 +693,50 @@ async function build () {
         }
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // Aggregated `themes-all.css` — concatenates every brand-* combo file
+    // so marketing consumers can `<link rel="stylesheet" href=".../themes-all.css">`
+    // once and flip themes with `<html data-theme="sobre" data-mode="dark">`.
+    //
+    // Skipped in dry-run (no underlying CSS files exist).
+    // ────────────────────────────────────────────────────────────────────
     if (!isDryRun) {
+        const cssOutDir = resolve(projectRoot, 'src/assets/css/tokens')
+        const scssOutDir = resolve(projectRoot, 'src/assets/scss/tokens')
+        const brandCombos = Object.keys(themesMap)
+            .map(n => n.toLowerCase())
+            .filter(n => parseBrandTheme(n))
+            .sort()
+
+        if (brandCombos.length > 0) {
+            const aggregateHeader = [
+                '/* origam tokens — themes-all (auto-generated, do not edit) */',
+                '/*                                                           */',
+                '/* Aggregates every <brand>-<mode> CSS combo behind a single */',
+                '/* import. Activate via:                                     */',
+                '/*   <html data-theme="sobre" data-mode="dark">              */',
+                ''
+            ].join('\n')
+
+            const cssParts = [aggregateHeader]
+            const scssParts = [aggregateHeader]
+            for (const combo of brandCombos) {
+                const cssPath = resolve(cssOutDir, `${combo}.css`)
+                const scssPath = resolve(scssOutDir, `_${combo}.scss`)
+                if (existsSync(cssPath)) {
+                    cssParts.push(`\n/* ── ${combo} ───────────────────────────────── */`)
+                    cssParts.push(readFileSync(cssPath, 'utf-8'))
+                }
+                if (existsSync(scssPath)) {
+                    scssParts.push(`\n/* ── ${combo} ───────────────────────────────── */`)
+                    scssParts.push(readFileSync(scssPath, 'utf-8'))
+                }
+            }
+            writeFileSync(resolve(cssOutDir, 'themes-all.css'), cssParts.join('\n'))
+            writeFileSync(resolve(scssOutDir, '_themes-all.scss'), scssParts.join('\n'))
+            console.log(`[tokens] aggregated ${brandCombos.length} brand combo(s) → themes-all.css`)
+        }
+
         console.log('[tokens] all themes built successfully')
     }
 }

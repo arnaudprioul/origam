@@ -1,0 +1,98 @@
+{
+  "color": {
+    "surface": {
+      "default":   { "$type": "color", "$value": "#0A0A0A" },
+      "raised":    { "$type": "color", "$value": "#0E0E0E" },
+      "overlay":   { "$type": "color", "$value": "#131313" },
+      "sunken":    { "$type": "color", "$value": "#050505" },
+      "disabled":  { "$type": "color", "$value": "#171717" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "#FFFFFF" },
+      "secondary": { "$type": "color", "$value": "#D4D4D4" },
+      "disabled":  { "$type": "color", "$value": "#525252" },
+      "inverse":   { "$type": "color", "$value": "#0A0A0A" },
+      "onColor":   { "$type": "color", "$value": "#FFFFFF" }
+    },
+    "border": {
+      "default":  { "$type": "color", "$value": "rgba(255,255,255,0.10)" },
+      "subtle":   { "$type": "color", "$value": "rgba(255,255,255,0.05)" },
+      "strong":   { "$type": "color", "$value": "rgba(255,255,255,0.20)" },
+      "focus":    { "$type": "color", "$value": "#A78BFA" }
+    },
+    "action": {
+      "primary": {
+        "bg":         { "$type": "color", "$value": "#A78BFA" },
+        "bgHover":    { "$type": "color", "$value": "#C4B5FD" },
+        "bgSubtle":   { "$type": "color", "$value": "rgba(167,139,250,0.14)" },
+        "bgDisabled": { "$type": "color", "$value": "#171717" },
+        "fg":         { "$type": "color", "$value": "#0A0A0A" },
+        "fgSubtle":   { "$type": "color", "$value": "#C4B5FD" },
+        "fgDisabled": { "$type": "color", "$value": "#525252" }
+      },
+      "secondary": {
+        "bg":         { "$type": "color", "$value": "#131313" },
+        "bgHover":    { "$type": "color", "$value": "#1F1F1F" },
+        "bgDisabled": { "$type": "color", "$value": "#0E0E0E" },
+        "fg":         { "$type": "color", "$value": "#FFFFFF" },
+        "fgDisabled": { "$type": "color", "$value": "#525252" }
+      },
+      "ghost": {
+        "bg":         { "$type": "color", "$value": "transparent" },
+        "bgHover":    { "$type": "color", "$value": "rgba(255,255,255,0.06)" },
+        "bgDisabled": { "$type": "color", "$value": "transparent" },
+        "fg":         { "$type": "color", "$value": "#A78BFA" },
+        "fgDisabled": { "$type": "color", "$value": "#525252" }
+      }
+    },
+    "feedback": {
+      "success": {
+        "bg":       { "$type": "color", "$value": "#6EE7B7" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(110,231,183,0.10)" },
+        "fg":       { "$type": "color", "$value": "#0A0A0A" },
+        "fgSubtle": { "$type": "color", "$value": "#6EE7B7" },
+        "border":   { "$type": "color", "$value": "#6EE7B7" }
+      },
+      "warning": {
+        "bg":       { "$type": "color", "$value": "#FCD34D" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(252,211,77,0.10)" },
+        "fg":       { "$type": "color", "$value": "#0A0A0A" },
+        "fgSubtle": { "$type": "color", "$value": "#FCD34D" },
+        "border":   { "$type": "color", "$value": "#FCD34D" }
+      },
+      "danger": {
+        "bg":       { "$type": "color", "$value": "#FCA5A5" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(252,165,165,0.10)" },
+        "fg":       { "$type": "color", "$value": "#0A0A0A" },
+        "fgSubtle": { "$type": "color", "$value": "#FCA5A5" },
+        "border":   { "$type": "color", "$value": "#FCA5A5" }
+      },
+      "info": {
+        "bg":       { "$type": "color", "$value": "#93C5FD" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(147,197,253,0.10)" },
+        "fg":       { "$type": "color", "$value": "#0A0A0A" },
+        "fgSubtle": { "$type": "color", "$value": "#93C5FD" },
+        "border":   { "$type": "color", "$value": "#93C5FD" }
+      }
+    },
+    "overlay": {
+      "scrim": { "$type": "color", "$value": "#000000" }
+    }
+  },
+  "radius": {
+    "none": { "$type": "dimension", "$value": "0px" },
+    "xs":   { "$type": "dimension", "$value": "0px" },
+    "sm":   { "$type": "dimension", "$value": "0px" },
+    "md":   { "$type": "dimension", "$value": "0px" },
+    "lg":   { "$type": "dimension", "$value": "0px" },
+    "xl":   { "$type": "dimension", "$value": "0px" },
+    "2xl":  { "$type": "dimension", "$value": "0px" },
+    "full": { "$type": "dimension", "$value": "0px" }
+  },
+  "font": {
+    "family": {
+      "sans":  { "$type": "fontFamily", "$value": "Fraunces, Playfair Display, Georgia, serif" },
+      "serif": { "$type": "fontFamily", "$value": "Fraunces, Playfair Display, Georgia, serif" }
+    }
+  }
+}

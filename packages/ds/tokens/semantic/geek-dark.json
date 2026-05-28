@@ -1,0 +1,94 @@
+{
+  "color": {
+    "surface": {
+      "default":   { "$type": "color", "$value": "#050A05" },
+      "raised":    { "$type": "color", "$value": "#0A140A" },
+      "overlay":   { "$type": "color", "$value": "#0E1A0E" },
+      "sunken":    { "$type": "color", "$value": "#020502" },
+      "disabled":  { "$type": "color", "$value": "#0A140A" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "#4ADE80" },
+      "secondary": { "$type": "color", "$value": "#16A34A" },
+      "disabled":  { "$type": "color", "$value": "#14532D" },
+      "inverse":   { "$type": "color", "$value": "#050A05" },
+      "onColor":   { "$type": "color", "$value": "#050A05" }
+    },
+    "border": {
+      "default":  { "$type": "color", "$value": "rgba(74,222,128,0.15)" },
+      "subtle":   { "$type": "color", "$value": "rgba(74,222,128,0.06)" },
+      "strong":   { "$type": "color", "$value": "rgba(74,222,128,0.35)" },
+      "focus":    { "$type": "color", "$value": "#4ADE80" }
+    },
+    "action": {
+      "primary": {
+        "bg":         { "$type": "color", "$value": "#4ADE80" },
+        "bgHover":    { "$type": "color", "$value": "#6EE7B7" },
+        "bgSubtle":   { "$type": "color", "$value": "rgba(74,222,128,0.10)" },
+        "bgDisabled": { "$type": "color", "$value": "#0E1A0E" },
+        "fg":         { "$type": "color", "$value": "#050A05" },
+        "fgSubtle":   { "$type": "color", "$value": "#6EE7B7" },
+        "fgDisabled": { "$type": "color", "$value": "#14532D" }
+      },
+      "secondary": {
+        "bg":         { "$type": "color", "$value": "#0E1A0E" },
+        "bgHover":    { "$type": "color", "$value": "#16291B" },
+        "bgDisabled": { "$type": "color", "$value": "#0A140A" },
+        "fg":         { "$type": "color", "$value": "#4ADE80" },
+        "fgDisabled": { "$type": "color", "$value": "#14532D" }
+      },
+      "ghost": {
+        "bg":         { "$type": "color", "$value": "transparent" },
+        "bgHover":    { "$type": "color", "$value": "rgba(74,222,128,0.08)" },
+        "bgDisabled": { "$type": "color", "$value": "transparent" },
+        "fg":         { "$type": "color", "$value": "#6EE7B7" },
+        "fgDisabled": { "$type": "color", "$value": "#14532D" }
+      }
+    },
+    "feedback": {
+      "success": {
+        "bg":       { "$type": "color", "$value": "#4ADE80" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(74,222,128,0.10)" },
+        "fg":       { "$type": "color", "$value": "#050A05" },
+        "fgSubtle": { "$type": "color", "$value": "#6EE7B7" },
+        "border":   { "$type": "color", "$value": "#4ADE80" }
+      },
+      "warning": {
+        "bg":       { "$type": "color", "$value": "#FBBF24" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(251,191,36,0.10)" },
+        "fg":       { "$type": "color", "$value": "#050A05" },
+        "fgSubtle": { "$type": "color", "$value": "#FBBF24" },
+        "border":   { "$type": "color", "$value": "#FBBF24" }
+      },
+      "danger": {
+        "bg":       { "$type": "color", "$value": "#FCA5A5" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(252,165,165,0.10)" },
+        "fg":       { "$type": "color", "$value": "#050A05" },
+        "fgSubtle": { "$type": "color", "$value": "#FCA5A5" },
+        "border":   { "$type": "color", "$value": "#FCA5A5" }
+      },
+      "info": {
+        "bg":       { "$type": "color", "$value": "#93C5FD" },
+        "bgSubtle": { "$type": "color", "$value": "rgba(147,197,253,0.10)" },
+        "fg":       { "$type": "color", "$value": "#050A05" },
+        "fgSubtle": { "$type": "color", "$value": "#93C5FD" },
+        "border":   { "$type": "color", "$value": "#93C5FD" }
+      }
+    },
+    "overlay": {
+      "scrim": { "$type": "color", "$value": "#000000" }
+    }
+  },
+  "radius": {
+    "sm": { "$type": "dimension", "$value": "2px" },
+    "md": { "$type": "dimension", "$value": "4px" },
+    "lg": { "$type": "dimension", "$value": "4px" },
+    "full": { "$type": "dimension", "$value": "4px" }
+  },
+  "font": {
+    "family": {
+      "sans":  { "$type": "fontFamily", "$value": "JetBrains Mono, Fira Code, ui-monospace, monospace" },
+      "serif": { "$type": "fontFamily", "$value": "JetBrains Mono, Fira Code, ui-monospace, monospace" }
+    }
+  }
+}

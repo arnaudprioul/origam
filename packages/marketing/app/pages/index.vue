@@ -32,9 +32,11 @@ useWebsiteLd()
         data-pagefind-filter="type:page"
     >
         <HomeHero />
+        <HomeStats />
         <HomeFeatures />
+        <HomePlayground />
         <HomeShowcase />
-        <HomeCodeDemo />
+        <HomeThemes />
         <HomeCtaBanner />
     </article>
 </template>

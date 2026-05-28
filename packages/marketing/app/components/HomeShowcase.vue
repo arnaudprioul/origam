@@ -1,13 +1,14 @@
 <script setup lang="ts">
 const { t } = useI18nFallback()
 
-const activeTab = ref(0)
+const TABLE_ROWS = [
+    { project: 'Aurora release', owner: 'Arnaud', status: 'Shipped', color: 'success' as const },
+    { project: 'Tokens v2', owner: 'Léa', status: 'In review', color: 'warning' as const },
+    { project: 'A11y audit', owner: 'Jade', status: 'Shipped', color: 'success' as const },
+    { project: 'Chart engine', owner: 'Marc', status: 'Draft', color: 'neutral' as const },
+    { project: 'New theme', owner: 'Romi', status: 'In review', color: 'warning' as const }
+] as const
 
-const SHOWCASE_TABS = ['buttons', 'chips', 'alerts', 'avatars'] as const
-
-function selectTab (index: number): void {
-    activeTab.value = index
-}
 </script>
 
 <template>
@@ -17,207 +18,132 @@ function selectTab (index: number): void {
     >
         <div class="home-showcase__inner">
             <header class="home-showcase__header">
-                <div class="home-showcase__eyebrow">
-                    {{ t('home.showcase.eyebrow', 'Live components') }}
+                <span class="m-section-pre">{{ t('home.showcase.eyebrow', 'SHOWCASE') }}</span>
+                <div class="home-showcase__title-row">
+                    <div>
+                        <h2
+                            id="showcase-title"
+                            class="home-showcase__title m-h2"
+                        >
+                            {{ t('home.showcase.title', '95 components.') }}<br>
+                            {{ t('home.showcase.titleSub', 'One vibe.') }}
+                        </h2>
+                    </div>
+                    <OrigamBtn
+                        to="/components"
+                        variant="outlined"
+                        rounded="pill"
+                        append-icon="mdi:arrow-right"
+                    >
+                        {{ t('home.showcase.viewAll', 'View all') }}
+                    </OrigamBtn>
                 </div>
-                <h2
-                    id="showcase-title"
-                    class="home-showcase__title"
-                >
-                    {{ t('showcase.heading', 'See it in action') }}
-                </h2>
-                <p class="home-showcase__subtitle">
-                    {{ t('showcase.subtitle', 'Every component ships accessible, themed, and production-ready.') }}
-                </p>
             </header>
 
-            <div class="home-showcase__stage">
-                <div class="home-showcase__hero-tiles">
-                    <div class="home-showcase__tile home-showcase__tile--large">
-                        <div class="home-showcase__tile-header">
-                            <span class="home-showcase__tile-label">
-                                {{ t('showcase.btn.label', 'Button variants') }}
-                            </span>
+            <div class="home-showcase__grid">
+                <article class="home-showcase__tile home-showcase__tile--table" aria-labelledby="tile-table-title">
+                    <header class="home-showcase__tile-header">
+                        <h3 id="tile-table-title" class="m-h3 home-showcase__tile-title">
+                            {{ t('home.showcase.table.label', 'Data Table') }}
+                        </h3>
+                        <span class="home-showcase__tile-sub">{{ t('home.showcase.table.sub', 'Sortable · filterable · virtualized') }}</span>
+                        <OrigamChip color="primary" variant="tonal" size="sm" class="home-showcase__tile-tag">
+                            {{ t('home.showcase.table.tag', 'Data') }}
+                        </OrigamChip>
+                    </header>
+                    <div class="home-showcase__table">
+                        <div class="home-showcase__table-head" role="row" aria-hidden="true">
+                            <span>Project</span>
+                            <span>Owner</span>
+                            <span>Status</span>
                         </div>
-                        <div class="home-showcase__tile-body">
-                            <div class="home-showcase__demo-row">
-                                <OrigamBtn color="primary" variant="flat" rounded="lg">
-                                    {{ t('showcase.btn.flat', 'Primary') }}
-                                </OrigamBtn>
-                                <OrigamBtn color="primary" variant="outlined" rounded="lg">
-                                    {{ t('showcase.btn.outlined', 'Outlined') }}
-                                </OrigamBtn>
-                                <OrigamBtn color="primary" variant="tonal" rounded="lg">
-                                    {{ t('showcase.btn.tonal', 'Tonal') }}
-                                </OrigamBtn>
-                            </div>
-                            <div class="home-showcase__demo-row">
-                                <OrigamBtn color="success" variant="flat" rounded="lg">
-                                    {{ t('showcase.btn.success', 'Success') }}
-                                </OrigamBtn>
-                                <OrigamBtn color="danger" variant="flat" rounded="lg">
-                                    {{ t('showcase.btn.danger', 'Danger') }}
-                                </OrigamBtn>
-                                <OrigamBtn color="warning" variant="flat" rounded="lg">
-                                    {{ t('showcase.btn.warning', 'Warning') }}
-                                </OrigamBtn>
-                            </div>
-                            <div class="home-showcase__demo-row">
-                                <OrigamBtn color="primary" variant="flat" rounded="pill" prepend-icon="mdi:plus">
-                                    {{ t('showcase.btn.icon', 'With icon') }}
-                                </OrigamBtn>
-                                <OrigamBtn color="primary" variant="text">
-                                    {{ t('showcase.btn.text', 'Text') }}
-                                </OrigamBtn>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="home-showcase__tile home-showcase__tile--medium">
-                        <div class="home-showcase__tile-header">
-                            <span class="home-showcase__tile-label">
-                                {{ t('showcase.chips.label', 'Chip group') }}
-                            </span>
-                        </div>
-                        <div class="home-showcase__tile-body">
-                            <div class="home-showcase__demo-wrap">
-                                <OrigamChip color="primary" variant="tonal" size="sm">
-                                    {{ t('showcase.chips.vue3', 'Vue 3') }}
-                                </OrigamChip>
-                                <OrigamChip color="success" variant="tonal" size="sm">
-                                    {{ t('showcase.chips.a11y', 'A11y') }}
-                                </OrigamChip>
-                                <OrigamChip color="info" variant="tonal" size="sm">
-                                    {{ t('showcase.chips.ts', 'TypeScript') }}
-                                </OrigamChip>
-                                <OrigamChip color="secondary" variant="tonal" size="sm">
-                                    {{ t('showcase.chips.tokens', 'Tokens') }}
-                                </OrigamChip>
-                                <OrigamChip color="warning" variant="tonal" size="sm">
-                                    {{ t('showcase.chips.css', 'CSS-first') }}
-                                </OrigamChip>
-                                <OrigamChip color="danger" variant="tonal" size="sm">
-                                    {{ t('showcase.chips.openSource', 'Open Source') }}
-                                </OrigamChip>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="home-showcase__tile home-showcase__tile--medium">
-                        <div class="home-showcase__tile-header">
-                            <span class="home-showcase__tile-label">
-                                {{ t('showcase.avatars.label', 'Avatar group') }}
-                            </span>
-                        </div>
-                        <div class="home-showcase__tile-body">
-                            <OrigamAvatarGroup>
-                                <OrigamAvatar color="primary" size="md">A</OrigamAvatar>
-                                <OrigamAvatar color="success" size="md">B</OrigamAvatar>
-                                <OrigamAvatar color="warning" size="md">C</OrigamAvatar>
-                                <OrigamAvatar color="danger" size="md">D</OrigamAvatar>
-                                <OrigamAvatar color="info" size="md">+4</OrigamAvatar>
-                            </OrigamAvatarGroup>
-                        </div>
-                    </div>
-
-                    <div class="home-showcase__tile home-showcase__tile--large">
-                        <div class="home-showcase__tile-header">
-                            <span class="home-showcase__tile-label">
-                                {{ t('showcase.alert.label', 'Alerts') }}
-                            </span>
-                        </div>
-                        <div class="home-showcase__tile-body home-showcase__tile-body--col">
-                            <OrigamAlert
-                                color="info"
-                                variant="tonal"
-                                prepend-icon="mdi:information"
+                        <ul class="home-showcase__table-body" role="list">
+                            <li
+                                v-for="row in TABLE_ROWS"
+                                :key="row.project"
+                                class="home-showcase__table-row"
                             >
-                                {{ t('showcase.alert.info', 'WCAG 2.1 AA on every component.') }}
-                            </OrigamAlert>
-                            <OrigamAlert
-                                color="success"
-                                variant="tonal"
-                                prepend-icon="mdi:check-circle"
-                            >
-                                {{ t('showcase.alert.success', 'Strict TypeScript throughout.') }}
-                            </OrigamAlert>
-                            <OrigamAlert
-                                color="warning"
-                                variant="tonal"
-                                prepend-icon="mdi:alert"
-                            >
-                                {{ t('showcase.alert.warning', 'Zero dependencies outside Vue.') }}
-                            </OrigamAlert>
-                        </div>
+                                <span class="home-showcase__table-cell home-showcase__table-cell--name">{{ row.project }}</span>
+                                <span class="home-showcase__table-cell home-showcase__table-cell--owner">{{ row.owner }}</span>
+                                <span class="home-showcase__table-cell">
+                                    <OrigamChip :color="row.color" variant="tonal" size="xs">
+                                        {{ row.status }}
+                                    </OrigamChip>
+                                </span>
+                            </li>
+                        </ul>
                     </div>
+                </article>
 
-                    <div class="home-showcase__tile home-showcase__tile--wide">
-                        <div class="home-showcase__tile-header">
-                            <span class="home-showcase__tile-label">
-                                {{ t('showcase.progress.label', 'Progress') }}
-                            </span>
-                        </div>
-                        <div class="home-showcase__tile-body home-showcase__tile-body--col">
-                            <div class="home-showcase__progress-row">
-                                <span class="home-showcase__progress-label">
-                                    {{ t('showcase.progress.primary', 'Primary') }}
-                                </span>
-                                <OrigamProgress
-                                    :model-value="72"
-                                    color="primary"
-                                    rounded="pill"
-                                />
-                            </div>
-                            <div class="home-showcase__progress-row">
-                                <span class="home-showcase__progress-label">
-                                    {{ t('showcase.progress.success', 'Success') }}
-                                </span>
-                                <OrigamProgress
-                                    :model-value="45"
-                                    color="success"
-                                    rounded="pill"
-                                />
-                            </div>
-                            <div class="home-showcase__progress-row">
-                                <span class="home-showcase__progress-label">
-                                    {{ t('showcase.progress.warning', 'Warning') }}
-                                </span>
-                                <OrigamProgress
-                                    :model-value="88"
-                                    color="warning"
-                                    rounded="pill"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                <article class="home-showcase__tile" aria-labelledby="tile-chart-title">
+                    <header class="home-showcase__tile-header">
+                        <h3 id="tile-chart-title" class="m-h3 home-showcase__tile-title">
+                            {{ t('home.showcase.chart.label', 'Chart Line') }}
+                        </h3>
+                        <span class="home-showcase__tile-sub home-showcase__tile-sub--success">
+                            {{ t('home.showcase.chart.sub', '+12.4% this month') }}
+                        </span>
+                    </header>
+                    <svg viewBox="0 0 200 80" class="home-showcase__chart" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="var(--m-accent, #8B5CF6)" stop-opacity=".5" />
+                                <stop offset="1" stop-color="var(--m-accent, #8B5CF6)" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,60 L20,55 L40,58 L60,40 L80,42 L100,30 L120,28 L140,18 L160,22 L180,12 L200,8 L200,80 L0,80 Z" fill="url(#chart-grad)" />
+                        <path d="M0,60 L20,55 L40,58 L60,40 L80,42 L100,30 L120,28 L140,18 L160,22 L180,12 L200,8" stroke="var(--m-accent, #8B5CF6)" stroke-width="1.8" fill="none" stroke-linecap="round" />
+                    </svg>
+                </article>
 
-                    <div class="home-showcase__tile home-showcase__tile--medium">
-                        <div class="home-showcase__tile-header">
-                            <span class="home-showcase__tile-label">
-                                {{ t('showcase.badge.label', 'Badges') }}
-                            </span>
-                        </div>
-                        <div class="home-showcase__tile-body">
-                            <div class="home-showcase__demo-row">
-                                <OrigamBadge color="danger" content="3">
-                                    <OrigamBtn color="primary" variant="flat" rounded="lg" size="sm">
-                                        {{ t('showcase.badge.inbox', 'Inbox') }}
-                                    </OrigamBtn>
-                                </OrigamBadge>
-                                <OrigamBadge color="success" dot>
-                                    <OrigamBtn variant="outlined" rounded="lg" size="sm">
-                                        {{ t('showcase.badge.status', 'Status') }}
-                                    </OrigamBtn>
-                                </OrigamBadge>
-                                <OrigamBadge color="warning" content="!">
-                                    <OrigamBtn color="secondary" variant="tonal" rounded="lg" size="sm">
-                                        {{ t('showcase.badge.alerts', 'Alerts') }}
-                                    </OrigamBtn>
-                                </OrigamBadge>
-                            </div>
-                        </div>
+                <article class="home-showcase__tile" aria-labelledby="tile-switch-title">
+                    <header class="home-showcase__tile-header">
+                        <h3 id="tile-switch-title" class="m-h3 home-showcase__tile-title">
+                            {{ t('home.showcase.switch.label', 'Switch') }}
+                        </h3>
+                        <span class="home-showcase__tile-sub">{{ t('home.showcase.switch.sub', 'inset · flat · default') }}</span>
+                    </header>
+                    <div class="home-showcase__switch-row">
+                        <OrigamSwitch :model-value="false" aria-label="Switch off state" />
+                        <OrigamSwitch :model-value="true" color="primary" aria-label="Switch on state" />
                     </div>
-                </div>
+                </article>
+
+                <article class="home-showcase__tile" aria-labelledby="tile-chips-title">
+                    <header class="home-showcase__tile-header">
+                        <h3 id="tile-chips-title" class="m-h3 home-showcase__tile-title">
+                            {{ t('home.showcase.chips.label', 'Chips') }}
+                        </h3>
+                        <span class="home-showcase__tile-sub">{{ t('home.showcase.chips.sub', '6 intents') }}</span>
+                    </header>
+                    <div class="home-showcase__chips">
+                        <OrigamChip color="primary" variant="tonal" size="sm">
+                            {{ t('showcase.chips.vue3', 'Vue 3') }}
+                        </OrigamChip>
+                        <OrigamChip color="neutral" variant="tonal" size="sm">
+                            {{ t('showcase.chips.tokens', 'Tokens') }}
+                        </OrigamChip>
+                        <OrigamChip color="success" variant="tonal" size="sm">
+                            {{ t('showcase.chips.a11y', 'A11y') }}
+                        </OrigamChip>
+                    </div>
+                </article>
+
+                <article class="home-showcase__tile" aria-labelledby="tile-avatars-title">
+                    <header class="home-showcase__tile-header">
+                        <h3 id="tile-avatars-title" class="m-h3 home-showcase__tile-title">
+                            {{ t('home.showcase.avatars.label', 'Avatar Group') }}
+                        </h3>
+                        <span class="home-showcase__tile-sub">{{ t('home.showcase.avatars.sub', '+24 members') }}</span>
+                    </header>
+                    <OrigamAvatarGroup>
+                        <OrigamAvatar color="primary" size="sm">A</OrigamAvatar>
+                        <OrigamAvatar color="success" size="sm">L</OrigamAvatar>
+                        <OrigamAvatar color="warning" size="sm">J</OrigamAvatar>
+                        <OrigamAvatar color="danger" size="sm">M</OrigamAvatar>
+                        <OrigamAvatar color="neutral" size="sm">+24</OrigamAvatar>
+                    </OrigamAvatarGroup>
+                </article>
             </div>
 
             <div class="home-showcase__cta">
@@ -262,49 +188,27 @@ function selectTab (index: number): void {
 }
 
 .home-showcase__header {
-    text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: var(--origam-space---3, 0.75rem);
 }
 
-.home-showcase__eyebrow {
-    display: inline-block;
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--origam-color__feedback--info---fgSubtle, #1e40af);
-    padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
-    background-color: color-mix(in srgb, var(--origam-color__feedback--info---bg, #2196f3) 8%, transparent);
-    border-radius: var(--origam-radius---full, 9999px);
+.home-showcase__title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--origam-space---4, 1rem);
+    flex-wrap: wrap;
 }
 
 .home-showcase__title {
-    font-size: clamp(1.75rem, 3vw + 0.5rem, 2.75rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    letter-spacing: -0.025em;
-    color: var(--origam-color__text---primary, #171717);
     margin: 0;
 }
 
-.home-showcase__subtitle {
-    font-size: var(--origam-font__size---xl, 1.125rem);
-    color: var(--origam-color__text---secondary, #525252);
-    margin: 0;
-    max-width: 40rem;
-    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
-}
-
-.home-showcase__stage {
-    width: 100%;
-}
-
-.home-showcase__hero-tiles {
+.home-showcase__grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: auto;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
     gap: var(--origam-space---4, 1rem);
 }
 
@@ -314,70 +218,130 @@ function selectTab (index: number): void {
     border-radius: var(--origam-radius---2xl, 1.5rem);
     box-shadow: var(--origam-shadow---sm);
     overflow: hidden;
-    transition: box-shadow 0.2s var(--origam-motion__easing---standard);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s ease;
 }
 
 .home-showcase__tile:hover {
     box-shadow: var(--origam-shadow---md);
 }
 
-.home-showcase__tile--large {
-    grid-column: span 2;
-}
-
-.home-showcase__tile--wide {
-    grid-column: span 3;
+.home-showcase__tile--table {
+    grid-row: span 2;
 }
 
 .home-showcase__tile-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-space---1, 0.25rem);
     padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem) var(--origam-space---3, 0.75rem);
     border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
 }
 
-.home-showcase__tile-label {
+.home-showcase__tile-title {
+    margin: 0;
+}
+
+.home-showcase__tile-sub {
     font-size: var(--origam-font__size---sm, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
     color: var(--origam-color__text---secondary, #525252);
+}
+
+.home-showcase__tile-sub--success {
+    color: var(--origam-color__feedback--success---fg, #16a34a);
+}
+
+.home-showcase__tile-tag {
+    align-self: flex-start;
+    margin-block-start: var(--origam-space---1, 0.25rem);
+}
+
+.home-showcase__table {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.home-showcase__table-head {
+    display: grid;
+    grid-template-columns: 1fr 5rem 6rem;
+    padding: var(--origam-space---2, 0.5rem) var(--origam-space---5, 1.25rem);
+    font-size: var(--origam-font__size---xs, 0.6875rem);
+    font-weight: var(--origam-font__weight---semibold, 600);
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.06em;
+    color: var(--origam-color__text---tertiary, #737373);
+    background-color: var(--origam-color__surface---sunken, #fafafa);
+    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
 }
 
-.home-showcase__tile-body {
-    padding: var(--origam-space---5, 1.25rem);
+.home-showcase__table-body {
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space---3, 0.75rem);
 }
 
-.home-showcase__tile-body--col {
-    flex-direction: column;
-}
-
-.home-showcase__demo-row {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: var(--origam-space---2, 0.5rem);
+.home-showcase__table-row {
+    display: grid;
+    grid-template-columns: 1fr 5rem 6rem;
     align-items: center;
+    padding: var(--origam-space---3, 0.75rem) var(--origam-space---5, 1.25rem);
+    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    transition: background-color 0.1s ease;
 }
 
-.home-showcase__demo-wrap {
+.home-showcase__table-row:last-child {
+    border-block-end: none;
+}
+
+.home-showcase__table-row:hover {
+    background-color: var(--origam-color__surface---sunken, #fafafa);
+}
+
+.home-showcase__table-cell {
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    color: var(--origam-color__text---primary, #171717);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-showcase__table-cell--name {
+    font-weight: var(--origam-font__weight---medium, 500);
+}
+
+.home-showcase__table-cell--owner {
+    color: var(--origam-color__text---secondary, #525252);
+}
+
+.home-showcase__chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-block-start: auto;
+    padding: var(--origam-space---4, 1rem);
+}
+
+.home-showcase__switch-row {
+    display: flex;
+    align-items: center;
+    gap: var(--origam-space---4, 1rem);
+    padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem);
+    flex: 1;
+}
+
+.home-showcase__chips {
     display: flex;
     flex-wrap: wrap;
     gap: var(--origam-space---2, 0.5rem);
-    align-items: center;
-}
-
-.home-showcase__progress-row {
-    display: grid;
-    grid-template-columns: 5rem 1fr;
-    gap: var(--origam-space---3, 0.75rem);
-    align-items: center;
-}
-
-.home-showcase__progress-label {
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--origam-color__text---secondary, #525252);
-    font-weight: var(--origam-font__weight---medium, 500);
+    align-items: flex-start;
+    padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem);
+    flex: 1;
 }
 
 .home-showcase__cta {
@@ -388,29 +352,30 @@ function selectTab (index: number): void {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .home-showcase__tile {
+    .home-showcase__tile,
+    .home-showcase__table-row {
         transition: none;
     }
 }
 
 @container (max-width: 900px) {
-    .home-showcase__hero-tiles {
-        grid-template-columns: repeat(2, 1fr);
+    .home-showcase__grid {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .home-showcase__tile--wide {
+    .home-showcase__tile--table {
         grid-column: span 2;
+        grid-row: auto;
     }
 }
 
 @container (max-width: 600px) {
-    .home-showcase__hero-tiles {
+    .home-showcase__grid {
         grid-template-columns: 1fr;
     }
 
-    .home-showcase__tile--large,
-    .home-showcase__tile--wide {
-        grid-column: span 1;
+    .home-showcase__tile--table {
+        grid-column: 1;
     }
 }
 </style>

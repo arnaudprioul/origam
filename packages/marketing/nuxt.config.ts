@@ -45,7 +45,15 @@ export default defineNuxtConfig({
     // at `dist/src/assets/css/main.css` which is a 0-byte file (the real
     // entry is `main.scss`, never compiled by unbuild). Removed.
     css: [
+        // origam's 16-brand theme matrix (sobre/glass/geek/cartoon/editorial/
+        // material/ecom/apple × light/dark). Each combo is scoped to
+        // `[data-theme="X"][data-mode="Y"]` so the marketing site simply
+        // toggles those two data-attributes on <html> to swap the entire
+        // visual identity at runtime — no remount, no flicker. Generated
+        // by `pnpm -F origam tokens:build`.
+        'origam/tokens/css/themes-all',
         '~/assets/css/base.css',
+        '~/assets/css/marketing-chrome.css',
         '~/assets/css/view-transitions.css'
     ],
 

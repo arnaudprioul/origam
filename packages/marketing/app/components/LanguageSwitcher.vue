@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { useLocale, useSwitchLocalePath } from '#i18n'
+import { useI18n } from 'vue-i18n'
+import { useSwitchLocalePath } from '#i18n'
 import { I18N_LOCALES } from '~/consts/i18n.const'
 
-const { locale } = useLocale()
+// `@nuxtjs/i18n@9` removed the `useLocale()` helper that used to live
+// under `#i18n`. The current API exposes the active locale via the
+// underlying `vue-i18n` `useI18n()` composable. Combined with Nuxt's
+// `useSwitchLocalePath()` we keep the same select-driven behaviour.
+const { locale } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
 function onChange (event: Event): void {
