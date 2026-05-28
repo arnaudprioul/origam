@@ -65,10 +65,12 @@ const TABLE_ROWS = [
                             >
                                 <span class="home-showcase__table-cell home-showcase__table-cell--name">{{ row.project }}</span>
                                 <span class="home-showcase__table-cell home-showcase__table-cell--owner">{{ row.owner }}</span>
-                                <span class="home-showcase__table-cell">
-                                    <OrigamChip :color="row.color" variant="tonal" size="xs">
-                                        {{ row.status }}
-                                    </OrigamChip>
+                                <span
+                                    class="home-showcase__table-cell home-showcase__table-status"
+                                    :data-intent="row.color"
+                                >
+                                    <span class="home-showcase__table-status-dot" aria-hidden="true" />
+                                    {{ row.status }}
                                 </span>
                             </li>
                         </ul>
@@ -118,13 +120,13 @@ const TABLE_ROWS = [
                     </header>
                     <div class="home-showcase__chips">
                         <OrigamChip color="primary" variant="tonal" size="sm">
-                            {{ t('showcase.chips.vue3', 'Vue 3') }}
+                            {{ t('home.showcase.chips.primary', 'Primary') }}
                         </OrigamChip>
                         <OrigamChip color="neutral" variant="tonal" size="sm">
-                            {{ t('showcase.chips.tokens', 'Tokens') }}
+                            {{ t('home.showcase.chips.neutral', 'Neutral') }}
                         </OrigamChip>
                         <OrigamChip color="success" variant="tonal" size="sm">
-                            {{ t('showcase.chips.a11y', 'A11y') }}
+                            {{ t('home.showcase.chips.success', 'Success') }}
                         </OrigamChip>
                     </div>
                 </article>
@@ -146,36 +148,15 @@ const TABLE_ROWS = [
                 </article>
             </div>
 
-            <div class="home-showcase__cta">
-                <OrigamBtn
-                    to="/components"
-                    color="primary"
-                    variant="flat"
-                    rounded="pill"
-                    append-icon="mdi:arrow-right"
-                    size="lg"
-                >
-                    {{ t('showcase.cta', 'View all components') }}
-                </OrigamBtn>
-                <OrigamBtn
-                    to="/playground"
-                    variant="outlined"
-                    rounded="pill"
-                    prepend-icon="mdi:play-circle-outline"
-                    size="lg"
-                >
-                    {{ t('showcase.ctaPlayground', 'Try the playground') }}
-                </OrigamBtn>
-            </div>
         </div>
     </section>
 </template>
 
 <style scoped>
 .home-showcase {
-    padding-block: var(--origam-space---20, 5rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    background-color: var(--origam-color__surface---sunken, #fafafa);
+    padding-block: 6rem;
+    padding-inline: 3.5rem;
+    background-color: var(--m-bg, var(--origam-color__surface---default, #0A0A0A));
     container-type: inline-size;
 }
 
@@ -213,18 +194,19 @@ const TABLE_ROWS = [
 }
 
 .home-showcase__tile {
-    background-color: var(--origam-color__surface---raised, #ffffff);
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    border-radius: var(--origam-radius---2xl, 1.5rem);
-    box-shadow: var(--origam-shadow---sm);
+    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-radius: var(--m-radius, var(--origam-radius---md, 10px));
+    box-shadow: var(--m-shadow-card, 0 8px 24px -16px rgba(0, 0, 0, 0.6));
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.2s ease;
+    transition: border-color 0.2s ease;
+    padding: 1.5rem;
 }
 
 .home-showcase__tile:hover {
-    box-shadow: var(--origam-shadow---md);
+    border-color: var(--m-accent-border, color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 30%, transparent));
 }
 
 .home-showcase__tile--table {
@@ -234,18 +216,19 @@ const TABLE_ROWS = [
 .home-showcase__tile-header {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space---1, 0.25rem);
-    padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem) var(--origam-space---3, 0.75rem);
-    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    gap: 0.25rem;
+    padding: 0;
+    margin-block-end: 1rem;
 }
 
 .home-showcase__tile-title {
     margin: 0;
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
 }
 
 .home-showcase__tile-sub {
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--origam-color__text---secondary, #525252);
+    font-size: 0.75rem;
+    color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
 }
 
 .home-showcase__tile-sub--success {
@@ -340,15 +323,35 @@ const TABLE_ROWS = [
     flex-wrap: wrap;
     gap: var(--origam-space---2, 0.5rem);
     align-items: flex-start;
-    padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem);
+    padding: 0;
     flex: 1;
 }
 
-.home-showcase__cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--origam-space---3, 0.75rem);
-    justify-content: center;
+.home-showcase__table-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+}
+
+.home-showcase__table-status[data-intent="success"] {
+    color: var(--m-success, var(--origam-color__feedback--success---fg, #6EE7B7));
+}
+
+.home-showcase__table-status[data-intent="warning"] {
+    color: var(--m-warning, var(--origam-color__feedback--warning---fg, #FBBF24));
+}
+
+.home-showcase__table-status[data-intent="neutral"] {
+    color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
+}
+
+.home-showcase__table-status-dot {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -35,13 +35,9 @@ const MINI_THEMES = [
                         v-for="theme in MARKETING_THEMES"
                         :key="theme.id"
                     >
-                        <OrigamChip
-                            color="neutral"
-                            variant="outlined"
-                            size="sm"
-                        >
+                        <span class="m-pill m-pill--neutral">
                             {{ t(`themes.${theme.id}.label`, theme.label) }}
-                        </OrigamChip>
+                        </span>
                     </li>
                 </ul>
 

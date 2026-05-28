@@ -183,9 +183,9 @@ const FEATURES = [
 }
 
 .home-features__cell-desc {
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #525252));
-    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
+    font-size: 0.875rem;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
+    line-height: 1.6;
     margin: 0;
 }
 

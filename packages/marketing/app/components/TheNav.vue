@@ -110,9 +110,9 @@ function isActive (href: string): boolean {
     position: sticky;
     inset-block-start: 0;
     z-index: var(--origam-zIndex---sticky, 1020);
-    background-color: color-mix(in srgb, var(--m-bg, var(--origam-color__surface---default, #fff)) 85%, transparent);
-    -webkit-backdrop-filter: blur(16px) saturate(1.8);
-    backdrop-filter: blur(16px) saturate(1.8);
+    background-color: color-mix(in srgb, var(--m-bg, var(--origam-color__surface---default, #fff)) 70%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
     border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
     inline-size: 100%;
     overflow: visible;
@@ -152,10 +152,10 @@ function isActive (href: string): boolean {
 }
 
 .site-nav__version {
-    font-family: var(--origam-font__family---mono, monospace);
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #525252));
-    font-weight: var(--origam-font__weight---regular, 400);
+    font-family: var(--m-font-mono, var(--origam-font__family---mono, monospace));
+    font-size: 11px;
+    color: var(--m-text-dim, var(--origam-color__text---disabled, #525252));
+    font-weight: 400;
 }
 
 .site-nav__links {
@@ -182,32 +182,30 @@ function isActive (href: string): boolean {
 .site-nav__link {
     display: inline-flex;
     align-items: center;
-    padding-inline: var(--origam-space---3, 0.75rem);
-    padding-block: var(--origam-space---2, 0.5rem);
-    font-size: var(--origam-font__size---md, 0.875rem);
-    font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #525252));
+    padding-inline: 0.625rem;
+    padding-block: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     text-decoration: none;
-    border-radius: var(--origam-radius---md, 0.5rem);
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition: color 0.15s ease;
     white-space: nowrap;
 }
 
 .site-nav__link:hover {
-    color: var(--m-text, var(--origam-color__text---primary, #171717));
-    background-color: var(--m-surface-2, var(--origam-color__surface---overlay, #f5f5f5));
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
 }
 
 .site-nav__link:focus-visible {
-    color: var(--m-text, var(--origam-color__text---primary, #171717));
-    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+    outline: 2px solid var(--m-accent, var(--origam-color__border---focus, #7c3aed));
     outline-offset: 2px;
+    border-radius: 2px;
 }
 
 .site-nav__link--active {
-    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
-    font-weight: var(--origam-font__weight---semibold, 600);
-    background-color: color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 8%, transparent);
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+    font-weight: 600;
 }
 
 .site-nav__actions {

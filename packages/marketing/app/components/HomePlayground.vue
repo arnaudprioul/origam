@@ -74,32 +74,22 @@ const CODE_LINES = [
                         :aria-label="t('home.playground.previewRegionLabel', 'Live preview')"
                     >
                         <div class="m-dotgrid home-playground__dotgrid" aria-hidden="true" />
-                        <OrigamCard
-                            variant="tonal"
-                            rounded="lg"
-                            class="home-playground__preview-card"
-                        >
-                            <OrigamCardHeader>
-                                <h3 class="home-playground__preview-title">
-                                    {{ t('home.playground.preview.title', 'Hello Origam') }}
-                                </h3>
-                            </OrigamCardHeader>
-                            <OrigamCardText>
-                                <p class="home-playground__preview-body">
-                                    {{ t('home.playground.preview.body', 'The Vue 3 design system that just works. Try a component live.') }}
-                                </p>
-                            </OrigamCardText>
-                            <OrigamCardText>
-                                <OrigamBtn
-                                    color="primary"
-                                    variant="flat"
-                                    rounded="md"
-                                    append-icon="mdi:arrow-right"
-                                >
-                                    {{ t('home.playground.preview.cta', 'Get started') }}
-                                </OrigamBtn>
-                            </OrigamCardText>
-                        </OrigamCard>
+                        <article class="home-playground__preview-card">
+                            <h3 class="home-playground__preview-title">
+                                {{ t('home.playground.preview.title', 'Hello Origam') }}
+                            </h3>
+                            <p class="home-playground__preview-body">
+                                {{ t('home.playground.preview.body', 'The Vue 3 design system that just works. Try a component live.') }}
+                            </p>
+                            <OrigamBtn
+                                color="primary"
+                                variant="flat"
+                                rounded="md"
+                                append-icon="mdi:arrow-right"
+                            >
+                                {{ t('home.playground.preview.cta', 'Get started') }}
+                            </OrigamBtn>
+                        </article>
                     </div>
                 </div>
             </div>
@@ -131,26 +121,26 @@ const CODE_LINES = [
 }
 
 .home-playground__title {
-    font-size: clamp(1.75rem, 3vw + 0.5rem, 2.75rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    letter-spacing: -0.025em;
-    color: var(--origam-color__text---primary, #171717);
+    font-size: clamp(2rem, 3.5vw + 0.5rem, 3rem);
+    font-weight: var(--m-h2-weight, 700);
+    letter-spacing: var(--m-h2-tracking, -0.03em);
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
     margin: 0;
 }
 
 .home-playground__window {
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    border-radius: var(--origam-radius---2xl, 1.5rem);
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-radius: var(--m-radius-lg, var(--origam-radius---xl, 14px));
     overflow: hidden;
-    box-shadow: var(--origam-shadow---xl);
-    background: var(--origam-color__surface---raised, #fff);
+    box-shadow: var(--m-shadow-elev, 0 24px 64px -16px rgba(0, 0, 0, 0.5));
+    background: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
 }
 
 .home-playground__winbar-filename {
     margin-inline-start: var(--origam-space---3, 0.75rem);
-    color: var(--origam-color__text---primary, #171717);
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    font-family: var(--origam-font__family---mono, monospace);
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+    font-size: 11px;
+    font-family: var(--m-font-mono, var(--origam-font__family---mono, monospace));
 }
 
 .home-playground__winbar-actions {
@@ -164,19 +154,19 @@ const CODE_LINES = [
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    border-radius: var(--origam-radius---sm, 0.25rem);
-    background: var(--origam-color__surface---raised, #fff);
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    border-radius: var(--m-radius-sm, var(--origam-radius---sm, 6px));
+    background: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
     font-size: 10px;
-    font-family: var(--origam-font__family---mono, monospace);
-    color: var(--origam-color__text---secondary, #525252);
+    font-family: var(--m-font-mono, var(--origam-font__family---mono, monospace));
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     letter-spacing: 0.04em;
 }
 
 .home-playground__winbar-btn--accent {
-    background: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent);
-    color: var(--origam-color__action--primary---bg, #7c3aed);
-    border-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 30%, transparent);
+    background: var(--m-accent-bg, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 14%, transparent));
+    color: var(--m-accent-soft, var(--origam-color__action--primary---fgSubtle, #A78BFA));
+    border-color: var(--m-accent-border, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 30%, transparent));
 }
 
 .home-playground__split {
@@ -186,8 +176,8 @@ const CODE_LINES = [
 }
 
 .home-playground__code-panel {
-    border-inline-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    background: var(--origam-color__surface---sunken, #fafafa);
+    border-inline-end: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    background: var(--m-bg, var(--origam-color__surface---default, #0A0A0A));
 }
 
 .home-playground__code-figure {
@@ -216,7 +206,7 @@ const CODE_LINES = [
     display: grid;
     place-items: center;
     padding: var(--origam-space---12, 3rem);
-    background: var(--origam-color__surface---sunken, #fafafa);
+    background: var(--m-bg, var(--origam-color__surface---default, #0A0A0A));
     position: relative;
 }
 
@@ -224,6 +214,7 @@ const CODE_LINES = [
     position: absolute;
     inset: 0;
     pointer-events: none;
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
 }
 
 .home-playground__preview-card {
@@ -231,19 +222,29 @@ const CODE_LINES = [
     z-index: 1;
     width: 100%;
     max-width: 320px;
+    padding: 1.5rem;
+    margin: 0;
+    background: var(--m-surface-2, var(--origam-color__surface---overlay, #171717));
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-radius: var(--m-radius-lg, var(--origam-radius---xl, 14px));
+    box-shadow: var(--m-shadow-card, 0 8px 24px -16px rgba(0, 0, 0, 0.6));
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
 }
 
 .home-playground__preview-title {
-    font-size: var(--origam-font__size---2xl, 1.25rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    color: var(--origam-color__text---primary, #171717);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
     margin: 0;
 }
 
 .home-playground__preview-body {
-    font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__text---secondary, #525252);
-    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
+    font-size: 0.8125rem;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
+    line-height: 1.6;
     margin: 0;
 }
 

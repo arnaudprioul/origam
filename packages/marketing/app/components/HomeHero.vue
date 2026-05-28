@@ -44,9 +44,10 @@ function copyInstall (): void {
             <div class="home-hero__ctas">
                 <OrigamBtn
                     to="/components"
-                    variant="outlined"
+                    color="primary"
+                    variant="flat"
                     rounded="md"
-                    size="default"
+                    size="lg"
                     append-icon="mdi:arrow-right"
                     @click="track('cta:browse-components:click')"
                 >
@@ -59,8 +60,8 @@ function copyInstall (): void {
                     rel="noopener noreferrer"
                     variant="outlined"
                     rounded="md"
-                    size="default"
-                    prepend-icon="mdi:github"
+                    size="lg"
+                    prepend-icon="mdi:star-outline"
                     :aria-label="t('home.hero.ctaGithubLabel', 'View origam on GitHub (opens in new tab)')"
                     @click="track('cta:github:click')"
                 >
@@ -154,17 +155,21 @@ function copyInstall (): void {
 
 .home-hero__title {
     margin: 0;
-    font-size: clamp(2.25rem, 5vw + 0.5rem, 4rem);
+    font-size: clamp(3rem, 6vw + 1rem, 5.25rem);
     font-weight: var(--m-h1-weight, 800);
     letter-spacing: var(--m-h1-tracking, -0.045em);
-    line-height: var(--m-h1-lineh, 1);
-    color: var(--m-text, var(--origam-color__text---primary, #fafafa));
+    line-height: var(--m-h1-lineh, 0.95);
+    background: var(--m-glow-text, linear-gradient(180deg, #fff 0%, #fff 50%, #A3A3A3 100%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     max-inline-size: 22ch;
 }
 
 .home-hero__subtitle {
     margin: 0;
-    font-size: clamp(0.9375rem, 1vw + 0.5rem, 1.0625rem);
+    font-size: clamp(1rem, 1vw + 0.5rem, 1.1875rem);
     line-height: 1.55;
     color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     max-inline-size: 36rem;

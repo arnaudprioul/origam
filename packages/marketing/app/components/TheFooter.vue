@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FOOTER_SECTIONS } from '~/consts/footer-sections.const'
-import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const { t } = useI18nFallback()
 </script>
@@ -14,39 +13,12 @@ const { t } = useI18nFallback()
                     class="site-footer__logo"
                     :aria-label="t('nav.logoLabel', 'origam — home')"
                 >
-                    <img
-                        src="/logo.svg"
-                        alt=""
-                        class="site-footer__logo-img"
-                        width="40"
-                        height="40"
-                        aria-hidden="true"
-                    >
+                    <MarketingIcon name="logo" :size="22" aria-hidden="true" />
                     <span class="site-footer__logo-text">origam</span>
                 </NuxtLink>
                 <p class="site-footer__tagline">
                     {{ t('footer.tagline', 'The Vue 3 design system that just works.') }}
                 </p>
-                <div class="site-footer__social">
-                    <a
-                        :href="`https://github.com/${MARKETING_DEFAULTS.githubRepo}`"
-                        class="site-footer__social-link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        :aria-label="t('nav.githubLabel', 'View on GitHub (opens in new tab)')"
-                    >
-                        <OrigamIcon icon="mdi:github" />
-                    </a>
-                    <a
-                        href="https://www.npmjs.com/package/origam"
-                        class="site-footer__social-link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="npm"
-                    >
-                        <OrigamIcon icon="mdi:npm" />
-                    </a>
-                </div>
             </div>
 
             <nav
@@ -87,18 +59,10 @@ const { t } = useI18nFallback()
 
         <div class="site-footer__bottom">
             <p class="site-footer__legal">
-                {{ t('footer.copyright', `© 2026 origam · MIT · v${MARKETING_DEFAULTS.npmVersion}`) }}
+                {{ t('footer.copyright', '© 2026 origam · MIT') }}
             </p>
             <p class="site-footer__madewith">
-                {{ t('footer.madeWith', 'Made with') }}
-                <a
-                    href="https://github.com/arnaudprioul/origam"
-                    class="site-footer__link site-footer__link--inline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    origam
-                </a>
+                {{ t('footer.signature', 'Made with origam, by humans.') }}
             </p>
         </div>
     </footer>
@@ -130,61 +94,23 @@ const { t } = useI18nFallback()
     margin-block-end: var(--origam-space---3, 0.75rem);
 }
 
-.site-footer__logo-img {
-    inline-size: 2rem;
-    block-size: 2rem;
-    display: block;
+.site-footer__logo-text {
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
 }
 
-.site-footer__logo-text {
-    font-size: var(--origam-font__size---2xl, 1.25rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    letter-spacing: -0.03em;
-    background: linear-gradient(
-        135deg,
-        var(--origam-color__action--primary---bg, #7c3aed),
-        var(--origam-color__feedback--info---bg, #2196f3)
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+.site-footer__logo :deep(.mkt-icon) {
+    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
 }
 
 .site-footer__tagline {
-    font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
-    margin: 0 0 var(--origam-space---4, 1rem);
-    max-width: 20rem;
-    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
-}
-
-.site-footer__social {
-    display: flex;
-    gap: var(--origam-space---2, 0.5rem);
-}
-
-.site-footer__social-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: var(--origam-radius---md, 0.5rem);
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
-    text-decoration: none;
-    transition: color 0.15s ease, background-color 0.15s ease;
-    font-size: 1.125rem;
-}
-
-.site-footer__social-link:hover {
-    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
-    background-color: var(--m-accent-bg, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent));
-}
-
-.site-footer__social-link:focus-visible {
-    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
-    outline-offset: 2px;
+    font-size: 0.8125rem;
+    color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
+    margin: 0;
+    max-inline-size: 20rem;
+    line-height: 1.6;
 }
 
 .site-footer__section-title {

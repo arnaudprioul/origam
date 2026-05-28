@@ -163,11 +163,12 @@
     "badge": "Start now — it's free",
     "browse": "Browse components",
     "copyLabel": "Copy install command",
+    "docs": "Read docs",
     "github": "GitHub",
     "githubLabel": "View on GitHub (opens in new tab)",
     "installCaption": "Install origam via npm",
     "socialProof": "Joined by teams shipping faster",
-    "subtitle": "Install origam and start building production-grade Vue 3 UIs today.",
+    "subtitle": "Spin up your Vue 3 project with origam in 30 seconds.",
     "title": "Ready to ship faster?"
   },
   "features": {
@@ -205,7 +206,7 @@
   "footer": {
     "community": "Community",
     "contact": "Contact",
-    "copyright": "© 2026 origam · MIT · v2.5.1",
+    "copyright": "© 2026 origam · MIT",
     "github": "GitHub",
     "integrations": "Integrations",
     "license": "MIT License",
