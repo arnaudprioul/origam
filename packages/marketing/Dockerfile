@@ -8,8 +8,16 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Enable pnpm via corepack (workspace manager)
-RUN corepack enable
+# Enable pnpm via corepack and PIN the version. The repo deliberately
+# does NOT carry a `packageManager` field in root package.json (to keep
+# npm/yarn workspaces compatibility for local dev). Without that field
+# corepack pulls the latest pnpm — currently pnpm@11.x ships a new
+# `minimumReleaseAge` policy that rejects lockfile entries for packages
+# published within the last few hours, which breaks reproducible builds
+# right after upstream releases (Vue 3.5.x, etc.).
+# Lock the Docker build to pnpm@9.15.0 (same version we develop on).
+RUN corepack enable \
+    && corepack prepare pnpm@9.15.0 --activate
 
 # Copy workspace manifests first so the install layer caches well
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
