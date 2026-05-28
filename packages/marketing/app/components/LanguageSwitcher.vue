@@ -42,9 +42,8 @@ function selectLocale (code: string): void {
 <template>
     <OrigamMenu
         v-model="isOpen"
-        :close-on-content-click="true"
-        offset="6"
-        location="bottom end"
+        :offset="6"
+        location="bottom right"
     >
         <template #activator="{ props: activatorProps }">
             <OrigamBtn

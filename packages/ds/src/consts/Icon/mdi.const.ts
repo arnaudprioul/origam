@@ -6,8 +6,18 @@ import { MDI_ICONS } from '../../enums'
 import type { IIconAliases, IIconSet } from '../../interfaces'
 
 export const MDI: IIconSet = {
-    // Not using mergeProps here, functional components merge props by default (?)
-    component: (props: any) => h(OrigamClassIcon, {...props, class: 'mdi'})
+    // The MDI font CSS exposes each glyph as `.mdi-<name>` (e.g. `.mdi-magnify`).
+    // Consumers may pass either the bare name (`magnify`) — as is the case when
+    // an `mdi:` prefix has been stripped by the icon resolver — or the already-
+    // prefixed form (`mdi-magnify`, as found in MDI_ALIASES below). We
+    // normalise to always emit the `mdi-` class so the font renders.
+    component: (props: any) => h(OrigamClassIcon, {
+        ...props,
+        icon: typeof props.icon === 'string' && !props.icon.startsWith('mdi-')
+            ? `mdi-${props.icon}`
+            : props.icon,
+        class: 'mdi'
+    })
 }
 
 export const MDI_ALIASES: IIconAliases = {

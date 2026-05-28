@@ -65,7 +65,7 @@ const _ = head
 <template>
     <OrigamMenu
         v-model="isOpen"
-        location="bottom end"
+        location="bottom right"
         :close-on-content-click="false"
         min-width="280"
     >
