@@ -49,6 +49,8 @@
     "./styles": {
       "scss": "./dist/src/assets/scss/main.scss",
       "style": "./dist/src/assets/css/main.css",
+      "import": "./dist/src/assets/css/main.css",
+      "require": "./dist/src/assets/css/main.css",
       "default": "./dist/src/assets/css/main.css"
     },
     "./tokens/css": "./dist/src/assets/css/tokens/primitive.css",

@@ -14,7 +14,8 @@
     "preview": "histoire preview"
   },
   "dependencies": {
-    "origam": "*",
+    "@mdi/font": "^7.4.47",
+    "origam": "workspace:*",
     "vue": "^3.5.0"
   },
   "devDependencies": {

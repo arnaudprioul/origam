@@ -41,8 +41,14 @@ RUN pnpm -F origam build
 # Build Histoire stories static site
 RUN pnpm -F @origam/stories build
 
-# Build VitePress docs static site
-RUN pnpm -F @origam/docs build
+# Build VitePress docs static site — SKIPPED for V1.
+# vitepress@1.6.x + esbuild@0.21.5 has a wasm shim bug
+# (`Expected ":" but found "}"` in wasm.!~{001}~.js).
+# Tracking in follow-up ticket. The marketing site serves /docs/*
+# from public/docs/ which will be empty until this is resolved —
+# user-visible impact: the "/docs" links from /components/<name>
+# pages show 404 until fixed.
+# RUN pnpm -F @origam/docs build
 
 # ---- Stage 2: build the Nuxt marketing site ----
 WORKDIR /app/packages/marketing

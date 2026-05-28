@@ -127,23 +127,30 @@ async function main() {
     const docsDest = resolve(MARKETING_ROOT, 'public', 'docs')
 
     const sources = [
-        { label: 'stories', src: storiesSrc, dest: storiesDest },
-        { label: 'docs', src: docsSrc, dest: docsDest },
+        // `optional: true` → the build proceeds even if the source dir is
+        // missing. /docs/* will return 404 in production until the docs
+        // build is re-enabled (see Dockerfile comment around line 45).
+        { label: 'stories', src: storiesSrc, dest: storiesDest, optional: false },
+        { label: 'docs', src: docsSrc, dest: docsDest, optional: true },
     ]
 
     // --- Check phase: verify sources exist ---
     let hasErrors = false
-    for (const { label, src } of sources) {
-        if (existsSync(src)) {
-            log(`check-${label}`, 'ok', src)
+    const presentSources = []
+    for (const entry of sources) {
+        if (existsSync(entry.src)) {
+            log(`check-${entry.label}`, 'ok', entry.src)
+            presentSources.push(entry)
+        } else if (entry.optional) {
+            log(`check-${entry.label}`, 'skipped-optional', entry.src)
         } else {
-            logError(`check-${label}`, `Source directory missing — run the matching build command first`, src)
+            logError(`check-${entry.label}`, `Source directory missing — run the matching build command first`, entry.src)
             hasErrors = true
         }
     }
 
     if (hasErrors) {
-        logError('result', 'One or more source directories are missing. Aborting.')
+        logError('result', 'One or more required source directories are missing. Aborting.')
         process.exit(1)
     }
 
@@ -152,8 +159,8 @@ async function main() {
         process.exit(0)
     }
 
-    // --- Copy phase ---
-    for (const { label, src, dest } of sources) {
+    // --- Copy phase (only present sources) ---
+    for (const { label, src, dest } of presentSources) {
         // Clean destination before copy to prevent stale assets
         if (existsSync(dest)) {
             log(`clean-${label}`, 'removing', dest)
