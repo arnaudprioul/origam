@@ -6,7 +6,7 @@ const CODE_LINES = [
     { n: 2, parts: [{ cls: 'm-tk-kw', text: '<' + '/script>' }] },
     { n: 3, parts: [] },
     { n: 4, parts: [{ cls: 'm-tk-kw', text: '<template>' }] },
-    { n: 5, parts: [{ text: '  ' }, { cls: 'm-tk-tag', text: '<OrigamCard ' }, { cls: 'm-tk-attr', text: 'elevated' }, { cls: 'm-tk-tag', text: '>' }] },
+    { n: 5, parts: [{ text: '  ' }, { cls: 'm-tk-tag', text: '<OrigamCard ' }, { cls: 'm-tk-attr', text: ':elevation' }, { text: '=' }, { cls: 'm-tk-str', text: '"3"' }, { cls: 'm-tk-tag', text: '>' }] },
     { n: 6, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '<OrigamTitle>' }, { text: 'Hello Origam' }, { cls: 'm-tk-tag', text: '</OrigamTitle>' }] },
     { n: 7, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '<OrigamBtn ' }, { cls: 'm-tk-attr', text: 'color' }, { text: '=' }, { cls: 'm-tk-str', text: '"primary"' }, { cls: 'm-tk-tag', text: '>' }] },
     { n: 8, parts: [{ text: '      Get started' }] },
@@ -74,22 +74,20 @@ const CODE_LINES = [
                         :aria-label="t('home.playground.previewRegionLabel', 'Live preview')"
                     >
                         <div class="m-dotgrid home-playground__dotgrid" aria-hidden="true" />
-                        <article class="home-playground__preview-card">
-                            <h3 class="home-playground__preview-title">
+                        <OrigamCard
+                            :elevation="3"
+                            class="home-playground__preview-card"
+                        >
+                            <OrigamTitle tag="h3">
                                 {{ t('home.playground.preview.title', 'Hello Origam') }}
-                            </h3>
-                            <p class="home-playground__preview-body">
-                                {{ t('home.playground.preview.body', 'The Vue 3 design system that just works. Try a component live.') }}
-                            </p>
+                            </OrigamTitle>
                             <OrigamBtn
                                 color="primary"
-                                variant="flat"
-                                rounded="md"
                                 append-icon="mdi:arrow-right"
                             >
                                 {{ t('home.playground.preview.cta', 'Get started') }}
                             </OrigamBtn>
-                        </article>
+                        </OrigamCard>
                     </div>
                 </div>
             </div>
@@ -222,30 +220,6 @@ const CODE_LINES = [
     z-index: 1;
     width: 100%;
     max-width: 320px;
-    padding: 1.5rem;
-    margin: 0;
-    background: var(--m-surface-2, var(--origam-color__surface---overlay, #171717));
-    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
-    border-radius: var(--m-radius-lg, var(--origam-radius---xl, 14px));
-    box-shadow: var(--m-shadow-card, 0 8px 24px -16px rgba(0, 0, 0, 0.6));
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-start;
-}
-
-.home-playground__preview-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
-    margin: 0;
-}
-
-.home-playground__preview-body {
-    font-size: 0.8125rem;
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
-    line-height: 1.6;
-    margin: 0;
 }
 
 .sr-only {

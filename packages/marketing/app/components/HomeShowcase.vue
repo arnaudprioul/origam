@@ -9,6 +9,12 @@ const TABLE_ROWS = [
     { project: 'New theme', owner: 'Romi', status: 'In review', color: 'warning' as const }
 ] as const
 
+const AVATAR_ITEMS_WITH_REST = [
+    { text: 'A', color: 'primary' },
+    { text: 'L', color: 'success' },
+    { text: 'J', color: 'warning' },
+    { text: 'M', color: 'danger' }
+] as const
 </script>
 
 <template>
@@ -138,13 +144,17 @@ const TABLE_ROWS = [
                         </h3>
                         <span class="home-showcase__tile-sub">{{ t('home.showcase.avatars.sub', '+24 members') }}</span>
                     </header>
-                    <OrigamAvatarGroup>
-                        <OrigamAvatar color="primary" size="sm">A</OrigamAvatar>
-                        <OrigamAvatar color="success" size="sm">L</OrigamAvatar>
-                        <OrigamAvatar color="warning" size="sm">J</OrigamAvatar>
-                        <OrigamAvatar color="danger" size="sm">M</OrigamAvatar>
-                        <OrigamAvatar color="neutral" size="sm">+24</OrigamAvatar>
-                    </OrigamAvatarGroup>
+                    <div class="home-showcase__avatars">
+                        <OrigamAvatar
+                            v-for="item in AVATAR_ITEMS_WITH_REST"
+                            :key="item.text"
+                            :text="item.text"
+                            :color="item.color"
+                            size="default"
+                            class="home-showcase__avatars-item"
+                        />
+                        <span class="home-showcase__avatars-rest" aria-label="24 more members">+24</span>
+                    </div>
                 </article>
             </div>
 
@@ -352,6 +362,28 @@ const TABLE_ROWS = [
     border-radius: 50%;
     background: currentColor;
     flex-shrink: 0;
+}
+
+.home-showcase__avatars {
+    display: flex;
+    align-items: center;
+}
+
+.home-showcase__avatars-item {
+    margin-inline-start: -10px;
+    border: 2px solid var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+}
+
+.home-showcase__avatars-item:first-child {
+    margin-inline-start: 0;
+}
+
+.home-showcase__avatars-rest {
+    margin-inline-start: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
+    font-family: var(--m-font-mono, var(--origam-font__family---mono, monospace));
 }
 
 @media (prefers-reduced-motion: reduce) {

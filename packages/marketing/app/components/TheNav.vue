@@ -200,12 +200,23 @@ function isActive (href: string): boolean {
     color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
     outline: 2px solid var(--m-accent, var(--origam-color__border---focus, #7c3aed));
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .site-nav__link--active {
     color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
     font-weight: 600;
+    position: relative;
+}
+
+.site-nav__link--active::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -4px;
+    inset-inline: 0.625rem;
+    block-size: 2px;
+    background: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
+    border-radius: 1px;
 }
 
 .site-nav__actions {

@@ -51,7 +51,6 @@ function selectLocale (code: string): void {
                 variant="outlined"
                 rounded="md"
                 size="sm"
-                density="comfortable"
                 append-icon="mdi:chevron-down"
                 :aria-label="t('nav.language', 'Choose language')"
             >

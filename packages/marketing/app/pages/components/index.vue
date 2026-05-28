@@ -315,6 +315,7 @@ const countLabel = computed(() =>
     font-size: 0.6875rem;
     color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
     font-family: var(--m-font-mono, var(--origam-font__family---mono, monospace));
+    margin-inline-start: 0.5rem;
 }
 
 .components-page__status-item {

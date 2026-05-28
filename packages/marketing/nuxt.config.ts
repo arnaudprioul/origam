@@ -32,6 +32,17 @@ export default defineNuxtConfig({
         '@nuxtjs/i18n'
     ],
 
+    // Nuxt's default component auto-import prefixes nested directories
+    // (e.g. `app/components/icons/MarketingIcon.vue` becomes
+    // `<IconsMarketingIcon>`). Our marketing templates use `<MarketingIcon>`
+    // directly because the icons subfolder is just an organizational
+    // convenience, not part of the API surface. Disabling `pathPrefix`
+    // resolves the components by file name only — no more unresolved
+    // `<MarketingIcon>` tags leaking into the rendered HTML.
+    components: [
+        { path: '~/components', pathPrefix: false }
+    ],
+
     experimental: {
         viewTransition: true
     },

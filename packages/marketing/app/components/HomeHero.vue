@@ -104,15 +104,22 @@ function copyInstall (): void {
 .home-hero__glow {
     position: absolute;
     inset-inline: 0;
-    inset-block-start: -10rem;
-    block-size: 40rem;
-    background: radial-gradient(
-        ellipse 60% 50% at 50% 0%,
-        color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 18%, transparent),
-        transparent 70%
-    );
+    inset-block-start: -8rem;
+    block-size: 50rem;
+    background:
+        radial-gradient(
+            ellipse 50% 35% at 50% 8%,
+            color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 45%, transparent),
+            transparent 60%
+        ),
+        radial-gradient(
+            ellipse 80% 60% at 50% 0%,
+            color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 24%, transparent),
+            transparent 75%
+        );
     pointer-events: none;
     z-index: 0;
+    filter: blur(20px);
 }
 
 .home-hero__content {

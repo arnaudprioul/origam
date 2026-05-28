@@ -214,10 +214,10 @@ function handleKeydown (event: KeyboardEvent): void {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
-    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    background: var(--m-surface-2, var(--origam-color__surface---overlay, #1A1A1A));
+    border: 1px solid var(--m-border-strong, rgba(255, 255, 255, 0.16));
     border-radius: var(--m-radius-lg, var(--origam-radius---xl, 14px));
-    box-shadow: var(--m-shadow-elev, 0 24px 64px -16px rgba(0, 0, 0, 0.6));
+    box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
     color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
     inline-size: 100%;
     max-block-size: 70vh;
