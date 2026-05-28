@@ -75,7 +75,18 @@ async function loadHighlighter (): Promise<ShikiHighlighter> {
         // Dynamic import keeps shiki out of the initial bundle. We embed
         // BOTH a light and a dark theme so the dual-colour CSS-var output
         // works without re-tokenising on theme switch.
-        const shiki = await import('shiki')
+        //
+        // `/* @vite-ignore */` is REQUIRED for VitePress builds: without
+        // it, Rollup follows the dep graph into shiki's WASM loader and
+        // emits an invalid virtual chunk `wasm.!~{001}~.js` containing
+        // `{ __proto__: null, default }` shorthand — `default` is a
+        // reserved word so esbuild rejects the chunk during transpile.
+        // The comment tells Vite to leave the specifier alone and load
+        // shiki at runtime via the host's `import()` (Node ESM /
+        // browser native), which is exactly what we want anyway since
+        // shiki is heavy and only needed once a code-block actually
+        // renders.
+        const shiki = await import(/* @vite-ignore */ 'shiki')
         const highlighter = await shiki.createHighlighter({
             themes: [LIGHT_THEME, DARK_THEME],
             langs: [...SUPPORTED_LANGS]
