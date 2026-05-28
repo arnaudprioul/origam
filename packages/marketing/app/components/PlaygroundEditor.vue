@@ -75,7 +75,7 @@ onMounted(() => {
     initMonaco().catch((err: unknown) => {
         loadError.value = err instanceof Error ? err.message : String(err)
         isLoading.value = false
-        // eslint-disable-next-line no-console
+         
         console.error('[PlaygroundEditor] Monaco init failed:', err)
     })
 })

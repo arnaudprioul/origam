@@ -9,9 +9,12 @@ const route = useRoute()
 
 const isMobileMenuOpen = ref(false)
 
-const DISPLAY_NAV_LINKS = NAV_LINKS.filter(l =>
-    ['components', 'playground', 'docs', 'stories', 'blog', 'changelog'].includes(l.id)
-)
+const DISPLAY_NAV_LINKS = NAV_LINKS
+
+const openDropdownId = ref<string | null>(null)
+function setDropdown (id: string | null) {
+    openDropdownId.value = id
+}
 
 function toggleMobileMenu (): void {
     isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -57,7 +60,61 @@ function isActive (href: string): boolean {
                         :key="link.id"
                         class="site-nav__item"
                     >
+                        <OrigamMenu
+                            v-if="link.children && link.children.length"
+                            :model-value="openDropdownId === link.id"
+                            :open-on-hover="true"
+                            location="bottom"
+                            :offset="8"
+                            min-width="320"
+                            @update:model-value="(v) => setDropdown(v ? link.id : null)"
+                        >
+                            <template #activator="{ props: activatorProps }">
+                                <button
+                                    v-bind="activatorProps"
+                                    type="button"
+                                    class="site-nav__link site-nav__link--dropdown"
+                                    :class="{ 'site-nav__link--active': isActive(link.href) }"
+                                >
+                                    {{ t(link.labelKey, link.labelFallback) }}
+                                    <OrigamIcon
+                                        icon="mdi:chevron-down"
+                                        :size="14"
+                                        class="site-nav__link-chevron"
+                                    />
+                                </button>
+                            </template>
+                            <div class="site-nav__dropdown">
+                                <NuxtLink
+                                    v-for="child in link.children"
+                                    :key="child.id"
+                                    :to="child.href"
+                                    class="site-nav__dropdown-item"
+                                    @click="handleNavLinkClick(child.href); setDropdown(null)"
+                                >
+                                    <span
+                                        v-if="child.icon"
+                                        class="site-nav__dropdown-icon"
+                                        aria-hidden="true"
+                                    >
+                                        <OrigamIcon :icon="child.icon" :size="18" />
+                                    </span>
+                                    <span class="site-nav__dropdown-text">
+                                        <span class="site-nav__dropdown-title">
+                                            {{ t(child.labelKey, child.labelFallback) }}
+                                        </span>
+                                        <span
+                                            v-if="child.descKey"
+                                            class="site-nav__dropdown-desc"
+                                        >
+                                            {{ t(child.descKey, child.descFallback ?? '') }}
+                                        </span>
+                                    </span>
+                                </NuxtLink>
+                            </div>
+                        </OrigamMenu>
                         <NuxtLink
+                            v-else
                             :to="link.href"
                             class="site-nav__link"
                             :aria-current="isActive(link.href) ? 'page' : undefined"
@@ -217,6 +274,80 @@ function isActive (href: string): boolean {
     block-size: 2px;
     background: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
     border-radius: 1px;
+}
+
+.site-nav__link--dropdown {
+    background: transparent;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    gap: 0.25rem;
+}
+
+.site-nav__link-chevron {
+    transition: transform 0.2s ease;
+    color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
+}
+
+.site-nav__link--dropdown[aria-expanded="true"] .site-nav__link-chevron {
+    transform: rotate(180deg);
+}
+
+.site-nav__dropdown {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    background: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-radius: var(--m-radius, var(--origam-radius---md, 10px));
+    box-shadow: var(--m-shadow-elev, 0 24px 64px -16px rgba(0, 0, 0, 0.6));
+    min-inline-size: 20rem;
+}
+
+.site-nav__dropdown-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--m-radius-sm, var(--origam-radius---sm, 6px));
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+}
+
+.site-nav__dropdown-item:hover {
+    background-color: var(--m-accent-bg, color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 14%, transparent));
+}
+
+.site-nav__dropdown-icon {
+    flex-shrink: 0;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: var(--m-radius-sm, 6px);
+    background: var(--m-accent-bg, color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 14%, transparent));
+    color: var(--m-accent-soft, var(--origam-color__action--primary---fgSubtle, #A78BFA));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-nav__dropdown-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-inline-size: 0;
+}
+
+.site-nav__dropdown-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+}
+
+.site-nav__dropdown-desc {
+    font-size: 0.75rem;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
+    line-height: 1.4;
 }
 
 .site-nav__actions {

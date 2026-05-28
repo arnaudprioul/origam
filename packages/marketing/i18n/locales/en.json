@@ -344,7 +344,29 @@
     "searchHint": "⌘K",
     "stories": "Stories",
     "switchToDark": "Switch to dark theme",
-    "switchToLight": "Switch to light theme"
+    "switchToLight": "Switch to light theme",
+    "docsItems": {
+      "gettingStarted": "Getting started",
+      "gettingStartedDesc": "Install origam in a Vue 3 app in 30 seconds.",
+      "why": "Why origam",
+      "whyDesc": "95 components, 29 charts, full a11y, CSS-first.",
+      "installation": "Installation",
+      "installationDesc": "npm, pnpm, yarn, Nuxt module.",
+      "theming": "Theming",
+      "themingDesc": "Design tokens, multi-theme, brand variants.",
+      "migration": "Migration",
+      "migrationDesc": "Upgrade from v1 to v2."
+    },
+    "componentsItems": {
+      "browse": "Browse all",
+      "browseDesc": "95 components, filterable by category.",
+      "stories": "Stories",
+      "storiesDesc": "Histoire interactive playgrounds for every component.",
+      "charts": "Chart primitives",
+      "chartsDesc": "29 chart types — line, area, bar, donut, …",
+      "figma": "Figma plugin",
+      "figmaDesc": "Sync tokens & components both ways."
+    }
   },
   "themes": {
     "label": "Theme",

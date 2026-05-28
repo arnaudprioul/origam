@@ -344,7 +344,29 @@
     "searchHint": "⌘K",
     "stories": "Stories",
     "switchToDark": "Passer au thème sombre",
-    "switchToLight": "Passer au thème clair"
+    "switchToLight": "Passer au thème clair",
+    "docsItems": {
+      "gettingStarted": "Démarrer",
+      "gettingStartedDesc": "Installez origam dans une app Vue 3 en 30 secondes.",
+      "why": "Pourquoi origam",
+      "whyDesc": "95 composants, 29 graphiques, a11y complète, CSS-first.",
+      "installation": "Installation",
+      "installationDesc": "npm, pnpm, yarn, module Nuxt.",
+      "theming": "Thèmes",
+      "themingDesc": "Design tokens, multi-thème, variantes de marque.",
+      "migration": "Migration",
+      "migrationDesc": "Mettre à jour de v1 vers v2."
+    },
+    "componentsItems": {
+      "browse": "Parcourir tout",
+      "browseDesc": "95 composants, filtrables par catégorie.",
+      "stories": "Stories",
+      "storiesDesc": "Playgrounds interactifs Histoire pour chaque composant.",
+      "charts": "Graphiques",
+      "chartsDesc": "29 types de graphiques — ligne, aire, barre, donut, …",
+      "figma": "Plugin Figma",
+      "figmaDesc": "Synchronisez tokens & composants dans les deux sens."
+    }
   },
   "themes": {
     "label": "Thème",
