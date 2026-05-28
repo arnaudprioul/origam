@@ -114,6 +114,8 @@ function isActive (href: string): boolean {
     -webkit-backdrop-filter: blur(16px) saturate(1.8);
     backdrop-filter: blur(16px) saturate(1.8);
     border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
+    inline-size: 100%;
+    overflow: visible;
 }
 
 .site-nav__inner {
@@ -124,6 +126,9 @@ function isActive (href: string): boolean {
     margin-inline: auto;
     padding-inline: var(--origam-space---6, 1.5rem);
     padding-block: var(--origam-space---3, 0.75rem);
+    min-block-size: 3.5rem;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
 }
 
 .site-nav__logo {
@@ -154,7 +159,9 @@ function isActive (href: string): boolean {
 }
 
 .site-nav__links {
-    flex: 1;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
 }
 
 .site-nav__list {
@@ -164,6 +171,12 @@ function isActive (href: string): boolean {
     list-style: none;
     margin: 0;
     padding: 0;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
+}
+
+.site-nav__item {
+    flex-shrink: 0;
 }
 
 .site-nav__link {
@@ -177,6 +190,7 @@ function isActive (href: string): boolean {
     text-decoration: none;
     border-radius: var(--origam-radius---md, 0.5rem);
     transition: color 0.15s ease, background-color 0.15s ease;
+    white-space: nowrap;
 }
 
 .site-nav__link:hover {
@@ -201,13 +215,26 @@ function isActive (href: string): boolean {
     align-items: center;
     gap: var(--origam-space---2, 0.5rem);
     flex-shrink: 0;
+    margin-inline-start: auto;
 }
 
 .site-nav__burger {
     display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1180px) {
+    .site-nav__version {
+        display: none;
+    }
+}
+
+@media (max-width: 1080px) {
+    .site-nav__github-btn :deep(.origam-btn__content) {
+        display: none;
+    }
+}
+
+@media (max-width: 960px) {
     .site-nav__burger {
         display: flex;
     }
@@ -225,6 +252,7 @@ function isActive (href: string): boolean {
         border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
         padding: var(--origam-space---4, 1rem);
         box-shadow: var(--origam-shadow---lg);
+        overflow: visible;
     }
 
     .site-nav__links--open {

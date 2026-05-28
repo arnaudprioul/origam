@@ -327,7 +327,7 @@
   "nav": {
     "about": "À propos",
     "blog": "Blog",
-    "changelog": "Journal des modifications",
+    "changelog": "Versions",
     "closeMenu": "Fermer le menu",
     "components": "Composants",
     "docs": "Docs",
@@ -497,7 +497,8 @@
     "openLabel": "Ouvrir la recherche",
     "placeholder": "Rechercher des composants, articles, docs…",
     "select": "sélectionner",
-    "toggle": "basculer"
+    "toggle": "basculer",
+    "trigger": "Rechercher…"
   },
   "showcase": {
     "alert": {

@@ -14,7 +14,7 @@ const { open, shortcutLabel } = useSearchHotkey()
         :aria-label="t('search.openLabel', 'Open search')"
         @click="open"
     >
-        <span class="search-trigger__label">{{ t('search.placeholder', 'Search…') }}</span>
+        <span class="search-trigger__label">{{ t('search.trigger', 'Search…') }}</span>
         <template #append>
             <OrigamChip
                 size="xs"
@@ -29,7 +29,11 @@ const { open, shortcutLabel } = useSearchHotkey()
 
 <style scoped>
 .search-trigger__label {
-    min-inline-size: 6rem;
+    min-inline-size: 0;
+    max-inline-size: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     text-align: start;
 }
 

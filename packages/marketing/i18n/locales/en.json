@@ -497,7 +497,8 @@
     "openLabel": "Open search",
     "placeholder": "Search components, posts, docs…",
     "select": "select",
-    "toggle": "toggle"
+    "toggle": "toggle",
+    "trigger": "Search…"
   },
   "showcase": {
     "alert": {
