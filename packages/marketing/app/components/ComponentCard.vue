@@ -28,26 +28,10 @@ const CATEGORY_INTENT_MAP: Record<string, string> = {
 
 const categoryIntent = computed(() => CATEGORY_INTENT_MAP[props.component.category] ?? 'neutral')
 
-const INITIAL_COLORS: ReadonlyArray<string> = [
-    'var(--origam-color-primary-500)',
-    'var(--origam-color-secondary-500)',
-    'var(--origam-color-success-500)',
-    'var(--origam-color-warning-500)',
-    'var(--origam-color-danger-500)',
-    'var(--origam-color-info-500)',
-    'var(--origam-color-neutral-400)'
-]
-
-const accentColor = computed(() => {
-    const index = props.component.name.charCodeAt(0) % INITIAL_COLORS.length
-    return INITIAL_COLORS[index]
-})
-
 const detailHref = computed(() => `/components/${props.component.slug}`)
 const cardLinkLabel = computed(() =>
     t('components.card.linkLabel', `View ${props.component.name} component`)
 )
-const cardInitial = computed(() => props.component.name.charAt(0))
 </script>
 
 <template>
@@ -61,11 +45,11 @@ const cardInitial = computed(() => props.component.name.charAt(0))
             <div
                 class="component-card__preview"
                 role="presentation"
-                :style="{ '--card-accent': accentColor }"
             >
-                <span class="component-card__initial" aria-hidden="true">
-                    {{ cardInitial }}
-                </span>
+                <div class="m-dotgrid component-card__preview-dotgrid" aria-hidden="true" />
+                <div class="component-card__preview-content">
+                    <ComponentMiniPreview :name="component.name" />
+                </div>
             </div>
 
             <header class="component-card__header">
@@ -114,30 +98,30 @@ const cardInitial = computed(() => props.component.name.charAt(0))
 
 .component-card__preview {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    block-size: 7rem;
-    background:
-        radial-gradient(
-            circle at 50% 50%,
-            color-mix(in srgb, var(--card-accent) 32%, transparent),
-            color-mix(in srgb, var(--card-accent) 6%, transparent) 70%
-        ),
-        var(--m-bg, var(--origam-color-surface-default, #0a0a0a));
+    display: grid;
+    place-items: center;
+    block-size: 8.75rem;
+    background: var(--m-bg, var(--origam-color-surface-default, #0a0a0a));
     border-block-end: 1px solid var(--m-border, var(--origam-color-border-subtle, rgba(255, 255, 255, 0.08)));
     flex-shrink: 0;
     overflow: hidden;
 }
 
-.component-card__initial {
-    font-size: 2.75rem;
-    font-weight: 800;
-    color: var(--card-accent);
-    line-height: 1;
-    font-family: var(--m-font-mono, var(--origam-font-mono, monospace));
-    user-select: none;
-    text-shadow: 0 0 16px color-mix(in srgb, var(--card-accent) 40%, transparent);
+.component-card__preview-dotgrid {
+    position: absolute;
+    inset: 0;
+    color: var(--m-text, var(--origam-color-text-primary, #fafafa));
+    pointer-events: none;
+}
+
+.component-card__preview-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 0.75rem;
 }
 
 .component-card__header {
