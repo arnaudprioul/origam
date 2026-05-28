@@ -126,6 +126,19 @@
     },
     "index": {
       "allCategories": "Tous",
+      "categoriesTitle": "Catégories",
+      "categories": {
+        "layout": "Mise en page",
+        "navigation": "Navigation",
+        "forms": "Formulaires",
+        "data": "Données",
+        "feedback": "Feedback",
+        "overlay": "Overlay",
+        "media": "Médias",
+        "utilities": "Utilitaires"
+      },
+      "count": "{filteredCount} composants sur {total}",
+      "eyebrow": "EXPLORER",
       "filterNav": "Filtrer par catégorie",
       "heading": "Composants",
       "mainRegion": "Galerie des composants",
@@ -133,9 +146,17 @@
         "ogImageAlt": "Composants origam"
       },
       "searchLabel": "Rechercher des composants",
-      "searchPlaceholder": "Rechercher…",
+      "searchPlaceholder": "Rechercher des composants…",
       "seoDescription": "~95 composants, 29 graphiques, filtrer par catégorie.",
-      "seoTitle": "Composants · origam"
+      "seoTitle": "Composants · origam",
+      "sort": "Trier : A → Z",
+      "statusTitle": "Statut",
+      "status": {
+        "stable": "Stable",
+        "beta": "Beta",
+        "experimental": "Expérimental"
+      },
+      "subtitle": "~95 composants et 29 primitives de graphiques — accessibles, typés, dirigés par tokens."
     }
   },
   "ctaBanner": {
@@ -400,6 +421,27 @@
     }
   },
   "playground": {
+    "eyebrow": "PLAYGROUND LIVE",
+    "title": "Essayez origam dans votre navigateur",
+    "theme": "Thème :",
+    "loadPrefix": "CHARGER →",
+    "templatesNav": "Charger un template",
+    "lines": "{n} lignes",
+    "live": "LIVE",
+    "compiled": "Compilé en 84ms",
+    "bundle": "Bundle : 12,4 ko gzip",
+    "console": {
+      "title": "Console",
+      "compiled": "Compilation réussie",
+      "loaded": "4 composants origam chargés",
+      "theme": "Thème :",
+      "a11y": "0 avertissement a11y"
+    },
+    "tip": {
+      "title": "Astuce",
+      "bodyPrefix": "Essayez de changer ",
+      "bodyMid": " en "
+    },
     "editor": {
       "label": "Éditeur de code Vue SFC",
       "loading": "Chargement de l'éditeur…"
@@ -422,7 +464,9 @@
       "fallback": "Copiez cette URL : "
     },
     "split": {
-      "label": "Éditeur de code et aperçu"
+      "label": "Éditeur de code et aperçu",
+      "codeRegion": "Éditeur de code",
+      "previewRegion": "Aperçu en direct"
     },
     "tabs": {
       "code": "Code",

@@ -1,3 +1,7 @@
+/* eslint-disable no-useless-escape -- the `<\/script>` escapes are
+ * mandatory: these strings are embedded inside the &lt;script setup&gt;
+ * block of this file, and Vue's SFC parser closes the block on the
+ * literal `</script>`. Removing the backslash breaks the build. */
 import type { IPlaygroundTemplate } from '~/interfaces/playground.interface'
 
 const BTN_CODE = `<script setup lang="ts">

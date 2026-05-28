@@ -4,7 +4,7 @@
 			:class="dataTableClasses"
 			:style="dataTableStyles"
 			v-bind="tableProps"
-			:ariaRowcount="itemsLength"
+			:aria-rowcount="itemsLength"
 	>
 		<template
 				v-if="slots.top"

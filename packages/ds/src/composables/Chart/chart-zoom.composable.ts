@@ -98,7 +98,7 @@ export function useChartZoom(options: { dataLength: () => number }) {
         const visibleRange = cur - zoomStart.value
         if (visibleRange < MIN_VISIBLE_CATEGORIES - 1 && deltaFraction > 0) return
 
-        const delta = visibleRange * deltaFraction
+        const _delta = visibleRange * deltaFraction
         const anchor = zoomStart.value + visibleRange * Math.max(0, Math.min(1, anchorFraction))
         const newStart = anchor - (anchor - zoomStart.value) * (1 - deltaFraction)
         const newEnd = anchor + (cur - anchor) * (1 - deltaFraction)

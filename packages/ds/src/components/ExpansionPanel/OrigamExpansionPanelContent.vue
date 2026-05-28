@@ -3,9 +3,9 @@
 		<component
 				:is="tag"
 				v-show="isSelected"
+				:id="`expansion-panel-content-${expansionPanel.id}`"
 				:aria-labelledby="`expansion-panel-header-${expansionPanel.id}`"
 				:class="expansionPanelContentClasses"
-				:id="`expansion-panel-content-${expansionPanel.id}`"
 				:style="expansionPanelContentStyles"
 				role="region"
 		>

@@ -106,9 +106,10 @@ const { t } = useI18nFallback()
 
 <style scoped>
 .site-footer {
-    background-color: var(--origam-color__surface---raised, #ffffff);
-    border-block-start: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
     padding-block-start: var(--origam-space---16, 4rem);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
 }
 
 .site-footer__inner {
@@ -152,7 +153,7 @@ const { t } = useI18nFallback()
 
 .site-footer__tagline {
     font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__text---secondary, #525252);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     margin: 0 0 var(--origam-space---4, 1rem);
     max-width: 20rem;
     line-height: var(--origam-font__lineHeight---relaxed, 1.625);
@@ -170,15 +171,15 @@ const { t } = useI18nFallback()
     width: 2rem;
     height: 2rem;
     border-radius: var(--origam-radius---md, 0.5rem);
-    color: var(--origam-color__text---secondary, #525252);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     text-decoration: none;
     transition: color 0.15s ease, background-color 0.15s ease;
     font-size: 1.125rem;
 }
 
 .site-footer__social-link:hover {
-    color: var(--origam-color__action--primary---bg, #7c3aed);
-    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 8%, transparent);
+    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
+    background-color: var(--m-accent-bg, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent));
 }
 
 .site-footer__social-link:focus-visible {
@@ -188,11 +189,11 @@ const { t } = useI18nFallback()
 
 .site-footer__section-title {
     font-size: var(--origam-font__size---sm, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---primary, #171717);
+    font-weight: var(--origam-font__weight---bold, 700);
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
     margin: 0 0 var(--origam-space---4, 1rem);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--m-uppercase-tracking, 0.08em);
 }
 
 .site-footer__links {
@@ -206,13 +207,13 @@ const { t } = useI18nFallback()
 
 .site-footer__link {
     font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__text---secondary, #525252);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     text-decoration: none;
     transition: color 0.15s ease;
 }
 
 .site-footer__link:hover {
-    color: var(--origam-color__action--primary---bg, #7c3aed);
+    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
 }
 
 .site-footer__link:focus-visible {
@@ -230,19 +231,19 @@ const { t } = useI18nFallback()
     margin-inline: auto;
     padding-inline: var(--origam-space---6, 1.5rem);
     padding-block: var(--origam-space---4, 1rem);
-    border-block-start: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
 }
 
 .site-footer__legal,
 .site-footer__madewith {
     font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--origam-color__text---secondary, #525252);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     margin: 0;
 }
 
 .site-footer__link--inline {
     font-size: inherit;
-    color: var(--origam-color__action--primary---bg, #7c3aed);
+    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
 }
 
 @media (max-width: 1024px) {

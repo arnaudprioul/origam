@@ -28,7 +28,7 @@ function tagColor (tag: string): string {
     return BLOG_TAG_COLORS[tag as TBlogTag] ?? 'neutral'
 }
 
-const postSlug = computed(() => {
+const _postSlug = computed(() => {
     const parts = (p: string) => p.split('/').at(-1) ?? ''
     return (post: { _path: string }) => parts(post._path)
 })

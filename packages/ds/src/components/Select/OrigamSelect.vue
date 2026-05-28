@@ -83,8 +83,8 @@
 				<template #default>
 					<origam-list
 							v-if="hasList"
-							ref="origamListRef"
 							:id="listboxId"
+							ref="origamListRef"
 							:select-strategy="multiple ? SELECT_STRATEGY.INDEPENDENT : SELECT_STRATEGY.SINGLE_INDEPENDENT"
 							:selected="selectedValues"
 							:tabindex="-1"

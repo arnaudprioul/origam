@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+// removed unused ref import
 import type { Ref } from 'vue'
 import type { IComponentDoc } from '~/interfaces/component-doc.interface'
 

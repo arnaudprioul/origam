@@ -197,11 +197,11 @@ useBreadcrumbListLd([
                             role="presentation"
                         >
                             <button
+                                :id="`tab-${tab}`"
                                 type="button"
                                 role="tab"
                                 :aria-selected="activeTab === tab"
                                 :aria-controls="`tabpanel-${tab}`"
-                                :id="`tab-${tab}`"
                                 class="component-detail__tab-btn"
                                 :class="{ 'component-detail__tab-btn--active': activeTab === tab }"
                                 @click="selectTab(tab)"

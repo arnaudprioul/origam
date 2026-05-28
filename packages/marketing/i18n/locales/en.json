@@ -126,6 +126,19 @@
     },
     "index": {
       "allCategories": "All",
+      "categoriesTitle": "Categories",
+      "categories": {
+        "layout": "Layout",
+        "navigation": "Navigation",
+        "forms": "Forms",
+        "data": "Data display",
+        "feedback": "Feedback",
+        "overlay": "Overlay",
+        "media": "Media",
+        "utilities": "Utilities"
+      },
+      "count": "Showing {filteredCount} of {total} components",
+      "eyebrow": "BROWSE",
       "filterNav": "Filter by category",
       "heading": "Components",
       "mainRegion": "Components gallery",
@@ -133,9 +146,17 @@
         "ogImageAlt": "origam Components"
       },
       "searchLabel": "Search components",
-      "searchPlaceholder": "Search…",
+      "searchPlaceholder": "Search components…",
       "seoDescription": "~95 components, 29 charts, filter by category.",
-      "seoTitle": "Components · origam"
+      "seoTitle": "Components · origam",
+      "sort": "Sort: A → Z",
+      "statusTitle": "Status",
+      "status": {
+        "stable": "Stable",
+        "beta": "Beta",
+        "experimental": "Experimental"
+      },
+      "subtitle": "~95 components and 29 chart primitives — accessible, typed, token-driven."
     }
   },
   "ctaBanner": {
@@ -400,6 +421,27 @@
     }
   },
   "playground": {
+    "eyebrow": "LIVE PLAYGROUND",
+    "title": "Try origam in your browser",
+    "theme": "Theme:",
+    "loadPrefix": "LOAD →",
+    "templatesNav": "Load template",
+    "lines": "{n} lines",
+    "live": "LIVE",
+    "compiled": "Compiled in 84ms",
+    "bundle": "Bundle: 12.4kb gzip",
+    "console": {
+      "title": "Console",
+      "compiled": "Compiled successfully",
+      "loaded": "Loaded 4 components from origam",
+      "theme": "Theme:",
+      "a11y": "0 a11y warnings"
+    },
+    "tip": {
+      "title": "Pro tip",
+      "bodyPrefix": "Try changing ",
+      "bodyMid": " to "
+    },
     "editor": {
       "label": "Vue SFC code editor",
       "loading": "Loading editor…"
@@ -422,7 +464,9 @@
       "fallback": "Copy this URL: "
     },
     "split": {
-      "label": "Code editor and preview"
+      "label": "Code editor and preview",
+      "codeRegion": "Code editor",
+      "previewRegion": "Live preview"
     },
     "tabs": {
       "code": "Code",

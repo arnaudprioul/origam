@@ -1,18 +1,38 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSwitchLocalePath } from '#i18n'
 import { I18N_LOCALES } from '~/consts/i18n.const'
 
-// `@nuxtjs/i18n@9` removed the `useLocale()` helper that used to live
-// under `#i18n`. The current API exposes the active locale via the
-// underlying `vue-i18n` `useI18n()` composable. Combined with Nuxt's
-// `useSwitchLocalePath()` we keep the same select-driven behaviour.
+/*
+ * Bouton + OrigamMenu pattern. On expose l'activateur via le slot
+ * `#activator` qui reçoit les props ARIA (aria-expanded, aria-haspopup,
+ * etc.) et le handler de toggle déjà câblés par OrigamMenu. La liste
+ * est rendue par OrigamList + OrigamListItem pour rester homogène avec
+ * le reste du DS (focus ring, hover, active, keyboard, etc.).
+ *
+ * @nuxtjs/i18n@9 — la prop `locale` exposée par vue-i18n donne le code
+ * actif ; `useSwitchLocalePath()` produit le path à pousser sur clic.
+ */
+
+const { t } = useI18nFallback()
 const { locale } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
-function onChange (event: Event): void {
-    const target = event.target as HTMLSelectElement
-    const path = switchLocalePath(target.value)
+const FLAGS: Record<string, string> = {
+    en: '🇬🇧',
+    fr: '🇫🇷'
+}
+
+const currentLocale = computed(() =>
+    I18N_LOCALES.find((loc) => loc.code === locale.value) ?? I18N_LOCALES[0]
+)
+
+const isOpen = ref(false)
+
+function selectLocale (code: string): void {
+    const path = switchLocalePath(code)
+    isOpen.value = false
     if (path) {
         navigateTo(path)
     }
@@ -20,62 +40,62 @@ function onChange (event: Event): void {
 </script>
 
 <template>
-    <label class="language-switcher">
-        <span class="language-switcher__label sr-only">Choose language</span>
-        <select
-            class="language-switcher__select"
-            :value="locale"
-            aria-label="Choose language"
-            @change="onChange"
+    <OrigamMenu
+        v-model="isOpen"
+        :close-on-content-click="true"
+        offset="6"
+        location="bottom end"
+    >
+        <template #activator="{ props: activatorProps }">
+            <OrigamBtn
+                v-bind="activatorProps"
+                variant="outlined"
+                rounded="md"
+                size="sm"
+                density="comfortable"
+                append-icon="mdi:chevron-down"
+                :aria-label="t('nav.language', 'Choose language')"
+            >
+                <span class="language-switcher__flag" aria-hidden="true">{{ FLAGS[currentLocale.code] ?? '🌐' }}</span>
+                <span class="language-switcher__code">{{ currentLocale.code.toUpperCase() }}</span>
+            </OrigamBtn>
+        </template>
+
+        <OrigamList
+            density="compact"
+            min-width="180"
         >
-            <option
+            <OrigamListItem
                 v-for="loc in I18N_LOCALES"
                 :key="loc.code"
-                :value="loc.code"
+                :active="loc.code === locale"
+                :aria-current="loc.code === locale ? 'true' : undefined"
+                @click="selectLocale(loc.code)"
             >
-                {{ loc.name }}
-            </option>
-        </select>
-    </label>
+                <template #prepend>
+                    <span class="language-switcher__flag" aria-hidden="true">{{ FLAGS[loc.code] ?? '🌐' }}</span>
+                </template>
+                <OrigamListItemTitle>{{ loc.name }}</OrigamListItemTitle>
+                <template
+                    v-if="loc.code === locale"
+                    #append
+                >
+                    <OrigamIcon icon="mdi:check" />
+                </template>
+            </OrigamListItem>
+        </OrigamList>
+    </OrigamMenu>
 </template>
 
 <style scoped>
-.language-switcher {
-    display: inline-flex;
-    align-items: center;
+.language-switcher__flag {
+    font-size: 1rem;
+    line-height: 1;
 }
 
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
-
-.language-switcher__select {
-    appearance: none;
-    background-color: transparent;
-    border: 1px solid var(--origam-color-border-default, transparent);
-    border-radius: var(--origam-rounded-md, 0.5rem);
-    color: var(--origam-color-text-muted, currentColor);
-    cursor: pointer;
-    font-size: var(--origam-font-size-sm, 0.875rem);
-    font-weight: var(--origam-font-weight-medium, 500);
-    padding-inline: var(--origam-space-3, 0.75rem);
-    padding-block: var(--origam-space-2, 0.5rem);
-    transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.language-switcher__select:hover,
-.language-switcher__select:focus-visible {
-    border-color: var(--origam-color-action-primary-bg, currentColor);
-    color: var(--origam-color-text-default, currentColor);
-    outline: 2px solid var(--origam-color-action-primary-bg, currentColor);
-    outline-offset: 2px;
+.language-switcher__code {
+    font-weight: var(--origam-font__weight---semibold, 600);
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
 }
 </style>

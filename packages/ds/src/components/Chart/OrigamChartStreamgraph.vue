@@ -383,7 +383,7 @@
 
 		for (let i = 1; i < n; i++) {
 			let g = 0
-			let nTotal = totals[i] + totals[i - 1]
+			const nTotal = totals[i] + totals[i - 1]
 
 			for (let j = 0; j < L; j++) {
 				let cumBefore = 0

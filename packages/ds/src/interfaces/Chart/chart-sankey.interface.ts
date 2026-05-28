@@ -1,4 +1,4 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
 
 import type { TIntent } from '../../types'
 

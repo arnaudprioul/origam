@@ -100,11 +100,8 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     padding-block: var(--origam-space---20, 5rem);
     padding-inline: var(--origam-space---6, 1.5rem);
     overflow: hidden;
-    background: linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 92%, transparent),
-        color-mix(in srgb, var(--origam-color__feedback--info---bg, #2196f3) 88%, transparent)
-    );
+    background: var(--m-surface-2, var(--origam-color__surface---overlay, #171717));
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
 }
 
 .home-cta-banner__glow {
@@ -113,20 +110,20 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     height: 40rem;
     border-radius: var(--origam-radius---full, 9999px);
     pointer-events: none;
-    opacity: 0.15;
+    opacity: 0.18;
     filter: blur(80px);
 }
 
 .home-cta-banner__glow--left {
     top: -20rem;
     left: -10rem;
-    background: var(--origam-color__primary---300, #c4b5fd);
+    background: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
 }
 
 .home-cta-banner__glow--right {
     bottom: -20rem;
     right: -10rem;
-    background: var(--origam-color__blue---300, #93c5fd);
+    background: var(--m-accent-soft, var(--origam-color__action--primary---fgSubtle, #93c5fd));
 }
 
 .home-cta-banner__inner {
@@ -146,12 +143,12 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     align-items: center;
     gap: var(--origam-space---2, 0.5rem);
     padding: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
-    background-color: color-mix(in srgb, var(--origam-color__neutral---0, #ffffff) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--origam-color__neutral---0, #ffffff) 25%, transparent);
+    background-color: var(--m-accent-bg, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 14%, transparent));
+    border: 1px solid var(--m-accent-border, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 30%, transparent));
     border-radius: var(--origam-radius---full, 9999px);
     font-size: var(--origam-font__size---sm, 0.75rem);
     font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__neutral---0, #ffffff);
+    color: var(--m-accent-soft, var(--origam-color__action--primary---fgSubtle, #A78BFA));
     letter-spacing: 0.02em;
 }
 
@@ -159,14 +156,14 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     font-size: clamp(2rem, 4vw + 0.5rem, 3.5rem);
     font-weight: var(--origam-font__weight---bold, 700);
     letter-spacing: -0.03em;
-    color: var(--origam-color__neutral---0, #ffffff);
+    color: var(--m-text, var(--origam-color__text---primary, #fafafa));
     margin: 0;
     line-height: var(--origam-font__lineHeight---tight, 1.1);
 }
 
 .home-cta-banner__subtitle {
     font-size: var(--origam-font__size---xl, 1.125rem);
-    color: color-mix(in srgb, var(--origam-color__neutral---0, #ffffff) 80%, transparent);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     margin: 0;
     line-height: var(--origam-font__lineHeight---relaxed, 1.625);
     max-width: 38rem;
@@ -181,16 +178,15 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     align-items: center;
     gap: var(--origam-space---3, 0.75rem);
     padding: var(--origam-space---3, 0.75rem) var(--origam-space---5, 1.25rem);
-    background-color: color-mix(in srgb, var(--origam-color__neutral---900, #171717) 80%, transparent);
-    border: 1px solid color-mix(in srgb, var(--origam-color__neutral---0, #ffffff) 15%, transparent);
+    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
     border-radius: var(--origam-radius---xl, 1rem);
-    backdrop-filter: blur(8px);
 }
 
 .home-cta-banner__install-prefix {
     font-family: var(--origam-font__family---mono, monospace);
     font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__feedback--success---bg, #4caf50);
+    color: var(--m-success, var(--origam-color__feedback--success---bg, #4caf50));
     font-weight: var(--origam-font__weight---bold, 700);
     flex-shrink: 0;
 }
@@ -198,7 +194,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 .home-cta-banner__code {
     font-family: var(--origam-font__family---mono, monospace);
     font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__neutral---100, #f5f5f5);
+    color: var(--m-text, var(--origam-color__text---primary, #f5f5f5));
 }
 
 .home-cta-banner__ctas {
@@ -221,7 +217,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 
 .home-cta-banner__avatars > * {
     margin-inline-start: -8px;
-    border: 2px solid color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 80%, transparent);
+    border: 2px solid var(--m-surface-2, var(--origam-color__surface---overlay, #171717));
 }
 
 .home-cta-banner__avatars > *:first-child {
@@ -230,7 +226,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 
 .home-cta-banner__social-text {
     font-size: var(--origam-font__size---sm, 0.75rem);
-    color: color-mix(in srgb, var(--origam-color__neutral---0, #ffffff) 70%, transparent);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     font-weight: var(--origam-font__weight---medium, 500);
 }
 

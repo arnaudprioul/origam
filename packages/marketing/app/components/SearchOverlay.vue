@@ -10,7 +10,6 @@ const { isOpen, close, shortcutLabel } = useSearchHotkey()
 const { query, results, pending, hasError, isReady, init } = usePagefindSearch()
 const { track } = useAnalytics()
 
-const dialogRef = ref<HTMLDialogElement | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
 const activeIndex = ref(0)
 
@@ -31,16 +30,12 @@ const showNoResults = computed(
 )
 
 watch(isOpen, async (open) => {
-    if (!open) {
-        dialogRef.value?.close()
-        return
-    }
+    if (!open) return
     track('search:open')
     if (!isReady.value && !hasError.value) {
         await init()
     }
     await nextTick()
-    dialogRef.value?.showModal()
     inputRef.value?.focus()
     activeIndex.value = 0
 })
@@ -52,7 +47,6 @@ watch(results, () => {
 onMounted(async () => {
     if (isOpen.value) {
         await init()
-        dialogRef.value?.showModal()
     }
 })
 
@@ -86,172 +80,138 @@ function handleKeydown (event: KeyboardEvent): void {
         activateResult()
     }
 }
-
-function handleBackdropClick (event: MouseEvent): void {
-    if (event.target === dialogRef.value) {
-        close()
-    }
-}
 </script>
 
 <template>
-    <dialog
-        v-show="isOpen"
-        ref="dialogRef"
-        class="search-overlay"
+    <OrigamDialog
+        v-model="isOpen"
+        max-width="640"
+        rounded="lg"
         :aria-label="t('search.dialogLabel', 'Site search')"
-        @click="handleBackdropClick"
-        @close="close"
+        @keydown="handleKeydown"
     >
-        <article
-            class="search-overlay__panel"
-            role="combobox"
-            aria-haspopup="listbox"
-            :aria-expanded="hasMinQuery"
-            :aria-controls="hasMinQuery ? 'search-results' : undefined"
-        >
-            <header class="search-overlay__header">
-                <OrigamIcon
-                    icon="mdi:magnify"
-                    class="search-overlay__icon"
-                    aria-hidden="true"
-                />
-                <input
-                    ref="inputRef"
-                    v-model="query"
-                    type="search"
-                    class="search-overlay__input"
-                    :placeholder="t('search.placeholder', 'Search components, posts, docs…')"
-                    :aria-label="t('search.inputLabel', 'Search')"
-                    :aria-activedescendant="activeOptionId"
-                    aria-autocomplete="list"
-                    autocomplete="off"
-                    spellcheck="false"
-                    @keydown="handleKeydown"
-                >
-                <OrigamChip
-                    size="xs"
-                    variant="outlined"
-                    class="search-overlay__shortcut"
-                >
-                    {{ t('search.escape', 'Esc') }}
-                </OrigamChip>
-            </header>
-
-            <section
-                v-if="hasError"
-                class="search-overlay__state search-overlay__state--error"
-                role="status"
+        <template #default>
+            <article
+                class="search-overlay__panel"
+                role="combobox"
+                aria-haspopup="listbox"
+                :aria-expanded="hasMinQuery"
+                :aria-controls="hasMinQuery ? 'search-results' : undefined"
             >
-                <OrigamIcon
-                    icon="mdi:cloud-off-outline"
-                    class="search-overlay__state-icon"
-                    aria-hidden="true"
-                />
-                <p>{{ t('search.errorDev', 'Search index not available. Run `npm run build` first.') }}</p>
-            </section>
-
-            <section
-                v-else-if="showEmpty"
-                class="search-overlay__state"
-                role="status"
-            >
-                <p>{{ t('search.empty', 'Try searching for a component, blog post, or doc page.') }}</p>
-            </section>
-
-            <section
-                v-else-if="pending"
-                class="search-overlay__state"
-                role="status"
-                aria-busy="true"
-            >
-                <p>{{ t('search.loading', 'Searching…') }}</p>
-            </section>
-
-            <section
-                v-else-if="showNoResults"
-                class="search-overlay__state"
-                role="status"
-            >
-                <p>{{ t('search.noResults', 'No results for') }} "{{ query }}".</p>
-            </section>
-
-            <section
-                v-else
-                id="search-results"
-                class="search-overlay__results"
-            >
-                <article
-                    v-for="group in results"
-                    :key="group.type"
-                    class="search-overlay__group"
-                >
-                    <h2 class="search-overlay__group-title">{{ group.label }}</h2>
-                    <ul
-                        role="listbox"
-                        class="search-overlay__list"
-                        :aria-label="group.label"
+                <header class="search-overlay__header">
+                    <OrigamTextField
+                        ref="inputRef"
+                        v-model="query"
+                        type="search"
+                        variant="outlined"
+                        prepend-inner-icon="mdi:magnify"
+                        :placeholder="t('search.placeholder', 'Search components, posts, docs…')"
+                        :aria-label="t('search.inputLabel', 'Search')"
+                        :aria-activedescendant="activeOptionId"
+                        aria-autocomplete="list"
+                        autocomplete="off"
+                        spellcheck="false"
+                        class="search-overlay__search-field"
+                        @keydown="handleKeydown"
+                    />
+                    <OrigamChip
+                        size="xs"
+                        variant="outlined"
+                        class="search-overlay__shortcut"
                     >
-                        <SearchResultItem
-                            v-for="(result, idx) in group.results"
-                            :key="result.id"
-                            :result="result"
-                            :is-active="flatResults.indexOf(result) === activeIndex"
-                            @click="activateResult"
-                            @mouseenter="activeIndex = flatResults.indexOf(result)"
-                        />
-                    </ul>
-                </article>
-            </section>
+                        {{ t('search.escape', 'Esc') }}
+                    </OrigamChip>
+                </header>
 
-            <footer class="search-overlay__footer">
-                <span class="search-overlay__hint">
-                    <OrigamChip size="xs" variant="outlined">↑↓</OrigamChip>
-                    {{ t('search.navigate', 'navigate') }}
-                </span>
-                <span class="search-overlay__hint">
-                    <OrigamChip size="xs" variant="outlined">↵</OrigamChip>
-                    {{ t('search.select', 'select') }}
-                </span>
-                <span class="search-overlay__hint">
-                    <OrigamChip size="xs" variant="outlined">{{ shortcutLabel }}</OrigamChip>
-                    {{ t('search.toggle', 'toggle') }}
-                </span>
-            </footer>
-        </article>
-    </dialog>
+                <section
+                    v-if="hasError"
+                    class="search-overlay__state search-overlay__state--error"
+                    role="status"
+                >
+                    <OrigamIcon
+                        icon="mdi:cloud-off-outline"
+                        class="search-overlay__state-icon"
+                        aria-hidden="true"
+                    />
+                    <p>{{ t('search.errorDev', 'Search index not available. Run `npm run build` first.') }}</p>
+                </section>
+
+                <section
+                    v-else-if="showEmpty"
+                    class="search-overlay__state"
+                    role="status"
+                >
+                    <p>{{ t('search.empty', 'Try searching for a component, blog post, or doc page.') }}</p>
+                </section>
+
+                <section
+                    v-else-if="pending"
+                    class="search-overlay__state"
+                    role="status"
+                    aria-busy="true"
+                >
+                    <p>{{ t('search.loading', 'Searching…') }}</p>
+                </section>
+
+                <section
+                    v-else-if="showNoResults"
+                    class="search-overlay__state"
+                    role="status"
+                >
+                    <p>{{ t('search.noResults', 'No results for') }} "{{ query }}".</p>
+                </section>
+
+                <section
+                    v-else
+                    id="search-results"
+                    class="search-overlay__results"
+                >
+                    <article
+                        v-for="group in results"
+                        :key="group.type"
+                        class="search-overlay__group"
+                    >
+                        <h2 class="search-overlay__group-title">{{ group.label }}</h2>
+                        <ul
+                            role="listbox"
+                            class="search-overlay__list"
+                            :aria-label="group.label"
+                        >
+                            <SearchResultItem
+                                v-for="result in group.results"
+                                :key="result.id"
+                                :result="result"
+                                :is-active="flatResults.indexOf(result) === activeIndex"
+                                @click="activateResult"
+                                @mouseenter="activeIndex = flatResults.indexOf(result)"
+                            />
+                        </ul>
+                    </article>
+                </section>
+
+                <footer class="search-overlay__footer">
+                    <span class="search-overlay__hint">
+                        <OrigamChip size="xs" variant="outlined">↑↓</OrigamChip>
+                        {{ t('search.navigate', 'navigate') }}
+                    </span>
+                    <span class="search-overlay__hint">
+                        <OrigamChip size="xs" variant="outlined">↵</OrigamChip>
+                        {{ t('search.select', 'select') }}
+                    </span>
+                    <span class="search-overlay__hint">
+                        <OrigamChip size="xs" variant="outlined">{{ shortcutLabel }}</OrigamChip>
+                        {{ t('search.toggle', 'toggle') }}
+                    </span>
+                </footer>
+            </article>
+        </template>
+    </OrigamDialog>
 </template>
 
 <style scoped>
-.search-overlay {
-    position: fixed;
-    inset: 0;
-    inline-size: 100vw;
-    block-size: 100vh;
-    max-inline-size: none;
-    max-block-size: none;
-    margin: 0;
-    padding: var(--origam-space-6, 1.5rem);
-    border: none;
-    background-color: color-mix(in srgb, var(--origam-color-surface-default, currentColor) 0%, transparent);
-    overflow: hidden;
-}
-
-.search-overlay::backdrop {
-    background-color: color-mix(in srgb, var(--origam-color-surface-overlay, #000) 60%, transparent);
-    backdrop-filter: blur(8px);
-}
-
 .search-overlay__panel {
     display: flex;
     flex-direction: column;
-    inline-size: min(640px, 100%);
-    max-block-size: min(70vh, 640px);
-    margin-inline: auto;
-    margin-block-start: 10vh;
-    background-color: var(--origam-color-surface-default, currentColor);
-    border-radius: var(--origam-rounded-2xl, 1rem);
-    box-shadow: var(--origam-shadow-xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25));
     overflow: hidden;
 }
 
@@ -263,24 +223,9 @@ function handleBackdropClick (event: MouseEvent): void {
     border-block-end: 1px solid var(--origam-color-border-subtle, transparent);
 }
 
-.search-overlay__icon {
-    flex-shrink: 0;
-    color: var(--origam-color-text-muted, currentColor);
-    font-size: var(--origam-font-size-xl, 1.25rem);
-}
-
-.search-overlay__input {
+.search-overlay__search-field {
     flex: 1;
     min-inline-size: 0;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-size: var(--origam-font-size-base, 1rem);
-    color: var(--origam-color-text-default, currentColor);
-}
-
-.search-overlay__input::placeholder {
-    color: var(--origam-color-text-muted, currentColor);
 }
 
 .search-overlay__shortcut {
@@ -354,8 +299,8 @@ function handleBackdropClick (event: MouseEvent): void {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .search-overlay::backdrop {
-        backdrop-filter: none;
+    .search-overlay__panel {
+        animation: none;
     }
 }
 </style>

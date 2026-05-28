@@ -59,8 +59,8 @@
 
 					<clipPath
 							v-for="col in fillModeColumns"
-							:key="`clip-${ col.seriesIndex }-${ col.dataIndex }`"
 							:id="`origam-chart-pictorial-clip-${ col.seriesIndex }-${ col.dataIndex }`"
+							:key="`clip-${ col.seriesIndex }-${ col.dataIndex }`"
 					>
 						<rect
 								:x="fillColX(col)"
@@ -536,7 +536,6 @@
 		if (!props.series?.length || categoryCount.value === 0) return []
 
 		const result: Array<IChartPictorialColumn> = []
-		const totalCols = categoryCount.value * seriesCount.value
 		const colW = columnWidth.value
 		const iSize = iconSize.value
 
@@ -736,7 +735,7 @@
 		return columnWidth.value / 2
 	}
 
-	const labelY = (col: IChartPictorialColumn): number => {
+	const labelY = (_col: IChartPictorialColumn): number => {
 		if (props.direction === 'horizontal') {
 			return columnWidth.value / 2
 		}

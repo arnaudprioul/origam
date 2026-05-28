@@ -1,4 +1,4 @@
-import { readdirSync, statSync } from 'node:fs'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { addComponentsDir, addImports, addPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
@@ -118,7 +118,7 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
                     if (entry.endsWith('.d.ts')) continue
                     let src = ''
                     try {
-                        src = require('node:fs').readFileSync(full, 'utf-8') as string
+                        src = readFileSync(full, 'utf-8')
                     } catch {
                         continue
                     }

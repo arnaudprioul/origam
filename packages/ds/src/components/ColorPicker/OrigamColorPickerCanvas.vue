@@ -191,7 +191,8 @@
 
 		if (!hsv) return
 
-		let {h, s, v, a} = hsv
+		const {h, a} = hsv
+		let {s, v} = hsv
 		let handled = false
 
 		switch (e.key) {

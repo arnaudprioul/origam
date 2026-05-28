@@ -1,4 +1,4 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint } from '../../interfaces'
 
 import type { TChartHoneycombColorMode, TChartHoneycombOrientation, TIntent } from '../../types'
 

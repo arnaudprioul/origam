@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/* eslint-disable no-useless-escape -- the backslash inside SFC_SNIPPET
+ * is intentional: it escapes the inner script close-tag so Vue's SFC
+ * parser doesn't terminate this outer block prematurely. */
 const { t } = useI18nFallback()
 
 const SFC_SNIPPET = `<script setup lang="ts">

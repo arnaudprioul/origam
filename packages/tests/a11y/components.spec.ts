@@ -159,10 +159,10 @@ for (const { name, slug } of COMPONENT_STORIES) {
     runner(`a11y — ${name} Default Variant`, async ({ page }) => {
         const { blocking, all } = await runAxeOn(page, slug)
         if (all.length > 0) {
-            // eslint-disable-next-line no-console
+             
             console.log(`[a11y] ${name}: ${all.length} total violation(s), ${blocking.length} blocking`)
             for (const v of blocking) {
-                // eslint-disable-next-line no-console
+                 
                 console.log(`  ✗ ${v.id} (${v.impact}): ${v.help}`)
             }
         }

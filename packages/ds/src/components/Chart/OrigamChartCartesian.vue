@@ -700,7 +700,6 @@
 	const {
 		zoomStart,
 		zoomEnd,
-		zoomEndRaw,
 		isDragging,
 		dragStartPx,
 		dragEndPx,
@@ -708,9 +707,7 @@
 		zoomTo,
 		zoomReset: zoomResetState,
 		zoomBy,
-		panBy,
 		pxToCategoryIndex,
-		categoryIndexToPx,
 		WHEEL_ZOOM_STEP
 	} = zoom
 

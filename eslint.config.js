@@ -13,6 +13,26 @@ export default typescriptEslint.config(
 			'**/.history',
 			'**/node_modules',
 			'**/stories',
+			// `.claude/worktrees/<agent>/` are stale git worktree copies
+			// from earlier agent runs (`isolation: "worktree"`). They
+			// contain duplicates of files we already lint at the repo
+			// root — including the figma-plugin TSX/JSX which needs its
+			// own parser config (cf. figma-plugin/** ignore below).
+			// Linting them produces ~200 parse errors that block every
+			// commit while having no semantic value (after merge the
+			// worktree dir is just leftover scaffolding).
+			'.claude/worktrees/**',
+			// `.nuxt/` is Nuxt's build-time scratch dir. It contains
+			// generated `.d.ts` files (components, runtime-config,
+			// nitro-config, etc.) with broad utility types (`{}` empty
+			// object, triple-slash references, …) that don't pass our
+			// strict lint config. They are regenerated on every Nuxt
+			// build and never authored — exclude them. The leading `.`
+			// makes the global `*.d.ts` pattern miss them on some
+			// glob implementations, hence the explicit listing.
+			'**/.nuxt/**',
+			'.output/**',
+			'**/.output/**',
 			// VitePress generates JS cache files under docs/.vitepress/cache/deps
 			// that re-emit deprecated rule names (`es5/no-es6-methods`,
 			// `@typescript-eslint/no-explicit-any` as ESLint v8 rule strings).
@@ -25,6 +45,7 @@ export default typescriptEslint.config(
 			// library and has its own lifecycle). Excluded from the lib
 			// lint to keep `package origam` cleanly typed.
 			'figma-plugin/**',
+			'packages/figma-plugin/**',
 		],
 	},
 	{
@@ -75,6 +96,17 @@ export default typescriptEslint.config(
 		files: ['**/*.spec.ts', '**/*.spec.js', '**/*.cy.ts', '**/*.test.ts'],
 		rules: {
 			"@typescript-eslint/no-unused-vars": "warn"
+		}
+	},
+	{
+		// Nuxt page components use file-based routing: the file name IS
+		// the route (`pages/index.vue` → `/`, `pages/about.vue` →
+		// `/about`). Nuxt forbids multi-word file names for routes — so
+		// the Vue rule that requires multi-word *component* names
+		// doesn't apply here. Demote to off for the marketing pages.
+		files: ['packages/marketing/app/pages/**/*.vue'],
+		rules: {
+			"vue/multi-word-component-names": "off"
 		}
 	},
 	{

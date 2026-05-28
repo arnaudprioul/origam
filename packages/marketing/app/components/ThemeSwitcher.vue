@@ -37,6 +37,16 @@ onMounted(() => {
     }
 })
 
+const isDark = computed({
+    get: () => currentMode.value === 'dark',
+    set: (value: boolean) => {
+        currentMode.value = value ? 'dark' : 'light'
+        modeCookie.value = currentMode.value
+        track('mode:switch', { theme: currentTheme.value, mode: currentMode.value })
+        emit('change', { theme: currentTheme.value, mode: currentMode.value })
+    }
+})
+
 function applyTheme (themeId: string): void {
     currentTheme.value = themeId
     themeCookie.value = themeId
@@ -45,160 +55,90 @@ function applyTheme (themeId: string): void {
     emit('change', { theme: themeId, mode: currentMode.value })
 }
 
-function toggleMode (): void {
-    currentMode.value = currentMode.value === 'light' ? 'dark' : 'light'
-    modeCookie.value = currentMode.value
-    track('mode:switch', { theme: currentTheme.value, mode: currentMode.value })
-    emit('change', { theme: currentTheme.value, mode: currentMode.value })
-}
-
-function toggleDropdown (): void {
-    isOpen.value = !isOpen.value
-}
-
-
 const currentThemeData = computed(() =>
     MARKETING_THEMES.find(th => th.id === currentTheme.value) ?? MARKETING_THEMES[0]
 )
-
-const dropdownId = 'theme-switcher-dropdown'
-const containerRef = ref<HTMLElement | null>(null)
-
-function handleOutsideClick (event: MouseEvent): void {
-    if (containerRef.value && !containerRef.value.contains(event.target as Node)) {
-        isOpen.value = false
-    }
-}
-
-onMounted(() => {
-    document.addEventListener('click', handleOutsideClick)
-})
-
-onUnmounted(() => {
-    document.removeEventListener('click', handleOutsideClick)
-})
 
 const _ = head
 </script>
 
 <template>
-    <div
-        ref="containerRef"
-        class="theme-switcher"
-        :class="{ 'theme-switcher--open': isOpen }"
+    <OrigamMenu
+        v-model="isOpen"
+        location="bottom end"
+        :close-on-content-click="false"
+        min-width="280"
     >
-        <button
-            type="button"
-            class="theme-switcher__trigger"
-            :aria-expanded="isOpen"
-            :aria-controls="dropdownId"
-            :aria-label="t('themes.switcherLabel', 'Switch theme')"
-            @click="toggleDropdown"
-        >
-            <span
-                class="theme-switcher__swatch"
-                :style="{ background: currentThemeData.swatch }"
-                aria-hidden="true"
-            />
-            <span class="theme-switcher__label">
-                {{ t('themes.label', 'Theme') }}: <strong>{{ currentThemeData.label }}</strong>
-            </span>
-            <MarketingIcon name="chevron-down" :size="14" aria-hidden="true" />
-        </button>
+        <template #activator="{ props: activatorProps }">
+            <OrigamBtn
+                variant="outlined"
+                rounded="md"
+                size="sm"
+                append-icon="mdi:chevron-down"
+                :aria-label="t('themes.switcherLabel', 'Switch theme')"
+                v-bind="activatorProps"
+            >
+                <span
+                    class="theme-switcher__swatch"
+                    :style="{ background: currentThemeData.swatch }"
+                    aria-hidden="true"
+                />
+                <span class="theme-switcher__label">
+                    {{ t('themes.label', 'Theme') }}: <strong>{{ currentThemeData.label }}</strong>
+                </span>
+            </OrigamBtn>
+        </template>
 
-        <div
-            :id="dropdownId"
-            class="theme-switcher__dropdown"
-            role="listbox"
-            :aria-label="t('themes.switcherLabel', 'Switch theme')"
-            :aria-hidden="!isOpen"
-        >
+        <div class="theme-switcher__menu-content">
             <div class="theme-switcher__mode-row">
                 <span class="theme-switcher__mode-label">{{ t('themes.mode', 'Mode') }}</span>
-                <button
-                    type="button"
-                    class="theme-switcher__mode-toggle"
-                    :aria-pressed="currentMode === 'dark'"
-                    :aria-label="currentMode === 'light' ? t('nav.switchToDark', 'Switch to dark mode') : t('nav.switchToLight', 'Switch to light mode')"
-                    @click="toggleMode"
-                >
-                    <MarketingIcon
-                        :name="currentMode === 'light' ? 'moon' : 'sun'"
-                        :size="14"
-                        aria-hidden="true"
+                <div class="theme-switcher__mode-toggle-row">
+                    <OrigamIcon icon="mdi:weather-night" :size="14" aria-hidden="true" />
+                    <OrigamSwitch
+                        v-model="isDark"
+                        color="primary"
+                        density="compact"
+                        :aria-label="isDark ? t('nav.switchToLight', 'Switch to light mode') : t('nav.switchToDark', 'Switch to dark mode')"
                     />
-                    {{ currentMode === 'light' ? t('themes.dark', 'Dark') : t('themes.light', 'Light') }}
-                </button>
+                    <OrigamIcon icon="mdi:weather-sunny" :size="14" aria-hidden="true" />
+                </div>
             </div>
 
-            <hr class="theme-switcher__divider" aria-hidden="true" />
+            <OrigamDivider />
 
-            <ul role="list" class="theme-switcher__list">
-                <li
+            <OrigamList density="compact">
+                <OrigamListItem
                     v-for="theme in MARKETING_THEMES"
                     :key="theme.id"
+                    :active="theme.id === currentTheme"
+                    :title="theme.label"
+                    :subtitle="theme.desc"
                     role="option"
                     :aria-selected="theme.id === currentTheme"
+                    @click="applyTheme(theme.id)"
                 >
-                    <button
-                        type="button"
-                        class="theme-switcher__item"
-                        :class="{ 'theme-switcher__item--active': theme.id === currentTheme }"
-                        @click="applyTheme(theme.id)"
-                    >
+                    <template #prepend>
                         <span
                             class="theme-switcher__item-swatch"
                             :style="{ background: theme.swatch }"
                             aria-hidden="true"
                         />
-                        <span class="theme-switcher__item-text">
-                            <span class="theme-switcher__item-name">{{ theme.label }}</span>
-                            <span class="theme-switcher__item-desc">{{ theme.desc }}</span>
-                        </span>
-                        <MarketingIcon
+                    </template>
+                    <template #append>
+                        <OrigamIcon
                             v-if="theme.id === currentTheme"
-                            name="check"
+                            icon="mdi:check"
                             :size="14"
                             aria-hidden="true"
                         />
-                    </button>
-                </li>
-            </ul>
+                    </template>
+                </OrigamListItem>
+            </OrigamList>
         </div>
-    </div>
+    </OrigamMenu>
 </template>
 
 <style scoped>
-.theme-switcher {
-    position: relative;
-}
-
-.theme-switcher__trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--origam-space---2, 0.5rem);
-    padding: 7px 12px;
-    border-radius: var(--origam-radius---md, 0.5rem);
-    background: var(--origam-color__surface---raised, #fff);
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---primary, #171717);
-    cursor: pointer;
-    font-family: inherit;
-    transition: border-color 0.15s ease;
-    white-space: nowrap;
-}
-
-.theme-switcher__trigger:hover {
-    border-color: var(--origam-color__action--primary---bg, #7c3aed);
-}
-
-.theme-switcher__trigger:focus-visible {
-    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
-    outline-offset: 2px;
-}
-
 .theme-switcher__swatch {
     display: inline-block;
     width: 18px;
@@ -217,22 +157,8 @@ const _ = head
     font-weight: var(--origam-font__weight---semibold, 600);
 }
 
-.theme-switcher__dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    min-width: 260px;
-    background: var(--origam-color__surface---raised, #fff);
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    border-radius: var(--origam-radius---lg, 0.75rem);
-    box-shadow: var(--origam-shadow---xl);
-    padding: 8px;
-    z-index: var(--origam-zIndex---dropdown, 1030);
-}
-
-.theme-switcher--open .theme-switcher__dropdown {
-    display: block;
+.theme-switcher__menu-content {
+    padding: var(--origam-space---2, 0.5rem);
 }
 
 .theme-switcher__mode-row {
@@ -250,75 +176,10 @@ const _ = head
     letter-spacing: 0.06em;
 }
 
-.theme-switcher__mode-toggle {
+.theme-switcher__mode-toggle-row {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border-radius: var(--origam-radius---md, 0.5rem);
-    background: var(--origam-color__surface---sunken, #fafafa);
-    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---primary, #171717);
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.15s ease;
-}
-
-.theme-switcher__mode-toggle:hover {
-    background: var(--origam-color__surface---overlay, #f5f5f5);
-}
-
-.theme-switcher__mode-toggle:focus-visible {
-    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
-    outline-offset: 2px;
-}
-
-.theme-switcher__divider {
-    margin: 4px 0;
-    border: none;
-    border-block-start: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-}
-
-.theme-switcher__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.theme-switcher__item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: var(--origam-radius---sm, 0.25rem);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__text---primary, #171717);
-    font-family: inherit;
-    text-align: left;
-    transition: background-color 0.1s ease;
-}
-
-.theme-switcher__item:hover {
-    background: var(--origam-color__surface---sunken, #fafafa);
-}
-
-.theme-switcher__item--active {
-    background: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 8%, transparent);
-    color: var(--origam-color__action--primary---bg, #7c3aed);
-}
-
-.theme-switcher__item:focus-visible {
-    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
-    outline-offset: 2px;
+    gap: 4px;
 }
 
 .theme-switcher__item-swatch {
@@ -329,23 +190,6 @@ const _ = head
     border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
     flex-shrink: 0;
     overflow: hidden;
-}
-
-.theme-switcher__item-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.theme-switcher__item-name {
-    font-weight: var(--origam-font__weight---semibold, 600);
-    font-size: var(--origam-font__size---md, 0.875rem);
-}
-
-.theme-switcher__item-desc {
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--origam-color__text---secondary, #525252);
-    font-weight: var(--origam-font__weight---regular, 400);
+    margin-inline-end: var(--origam-space---2, 0.5rem);
 }
 </style>

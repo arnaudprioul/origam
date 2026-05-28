@@ -268,7 +268,7 @@ test.describe('OrigamAudio — scrubber drag fluidity', () => {
             return elapsed / count
         })
 
-        // eslint-disable-next-line no-console
+         
         console.log(`[probe] inline timer scrubber per-event: ${ perMs.toFixed(2) } ms`)
         expect(Number.isFinite(perMs)).toBe(true)
         expect(perMs).toBeLessThanOrEqual(50)
@@ -305,7 +305,7 @@ test.describe('OrigamAudio — scrubber drag fluidity', () => {
             return elapsed / count
         })
 
-        // eslint-disable-next-line no-console
+         
         console.log(`[probe] waveform mini scrubber per-event: ${ perMs.toFixed(2) } ms`)
         expect(Number.isFinite(perMs)).toBe(true)
         expect(perMs).toBeLessThanOrEqual(50)

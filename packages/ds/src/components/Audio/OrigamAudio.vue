@@ -581,7 +581,7 @@
 	 * deterministic "new track is buffered, you can play()" signal
 	 * exactly once per track change.
 	 ********************************************************/
-	watch(audioRef, (el, prev, onCleanup) => {
+	watch(audioRef, (el, _prev, onCleanup) => {
 		if (!el) return
 		const onLoadedData = () => {
 			if (!pendingResumeOnLoad.value) return

@@ -264,7 +264,7 @@
 	 * Derived flags combining slot and prop loading states.
 	 ********************************************************/
 
-	const hasLoading = computed(() => {
+	const _hasLoading = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
 	})
 

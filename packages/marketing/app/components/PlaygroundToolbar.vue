@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { TPlaygroundTemplate } from '~/types/playground-template.type'
 import { PLAYGROUND_TEMPLATES } from '~/consts/playground-templates.const'
 
@@ -19,12 +18,17 @@ const { track } = useAnalytics()
 const showCopied = ref(false)
 let copyTimer: ReturnType<typeof setTimeout> | null = null
 
-function onTemplateChange (event: Event) {
-    const select = event.target as HTMLSelectElement
-    const id = select.value as TPlaygroundTemplate
-    emit('select-template', id)
-    track('playground:template:load', { template: id })
-}
+const selectedTemplate = computed({
+    get: () => props.activeTemplate ?? 'btn',
+    set: (id: TPlaygroundTemplate) => {
+        emit('select-template', id)
+        track('playground:template:load', { template: id })
+    }
+})
+
+const templateItems = computed(() =>
+    PLAYGROUND_TEMPLATES.map(t => ({ title: t.label, value: t.id }))
+)
 
 function onReset () {
     emit('reset')
@@ -76,37 +80,31 @@ function openInStories () {
                 >
                     {{ t('playground.toolbar.templateLabel', 'Template') }}
                 </label>
-                <select
+                <OrigamSelect
                     id="playground-template-select"
-                    class="playground-toolbar__select"
-                    :value="activeTemplate ?? 'btn'"
-                    @change="onTemplateChange"
-                >
-                    <option
-                        v-for="tpl in PLAYGROUND_TEMPLATES"
-                        :key="tpl.id"
-                        :value="tpl.id"
-                    >
-                        {{ tpl.label }}
-                    </option>
-                </select>
+                    v-model="selectedTemplate"
+                    :items="templateItems"
+                    item-title="title"
+                    item-value="value"
+                    variant="outlined"
+                    density="compact"
+                />
             </div>
 
             <div class="playground-toolbar__actions">
-                <button
-                    type="button"
-                    class="playground-toolbar__btn"
+                <OrigamBtn
+                    variant="outlined"
                     :aria-label="t('playground.toolbar.resetLabel', 'Reset to default template')"
                     @click="onReset"
                 >
                     {{ t('playground.toolbar.reset', 'Reset') }}
-                </button>
+                </OrigamBtn>
 
-                <button
-                    type="button"
-                    class="playground-toolbar__btn playground-toolbar__btn--primary"
+                <OrigamBtn
+                    variant="flat"
+                    color="primary"
+                    aria-live="polite"
                     :aria-label="t('playground.toolbar.shareLabel', 'Copy share link to clipboard')"
-                    :aria-live="'polite'"
                     @click="onShare"
                 >
                     <span v-if="showCopied">
@@ -115,16 +113,15 @@ function openInStories () {
                     <span v-else>
                         {{ t('playground.toolbar.share', 'Share link') }}
                     </span>
-                </button>
+                </OrigamBtn>
 
-                <button
-                    type="button"
-                    class="playground-toolbar__btn playground-toolbar__btn--ghost"
+                <OrigamBtn
+                    variant="text"
                     :aria-label="t('playground.toolbar.storiesLabel', 'Open matching story in Histoire')"
                     @click="openInStories"
                 >
                     {{ t('playground.toolbar.stories', 'Open in stories') }}
-                </button>
+                </OrigamBtn>
             </div>
         </nav>
     </header>
@@ -163,73 +160,10 @@ function openInStories () {
     white-space: nowrap;
 }
 
-.playground-toolbar__select {
-    font-size: var(--origam-font-size-sm, 0.875rem);
-    padding-block: var(--origam-space-1-5, 0.375rem);
-    padding-inline: var(--origam-space-3, 0.75rem);
-    border-radius: var(--origam-rounded-lg, 0.5rem);
-    border: 1px solid var(--origam-color-border-default, transparent);
-    background-color: var(--origam-color-surface-subtle, transparent);
-    color: var(--origam-color-text-default, currentColor);
-    cursor: pointer;
-    outline-offset: 2px;
-}
-
-.playground-toolbar__select:focus-visible {
-    outline: 2px solid var(--origam-color-action-primary-bg, currentColor);
-}
-
 .playground-toolbar__actions {
     display: flex;
     align-items: center;
     gap: var(--origam-space-2, 0.5rem);
     flex-wrap: wrap;
-}
-
-.playground-toolbar__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--origam-space-1-5, 0.375rem);
-    padding-block: var(--origam-space-1-5, 0.375rem);
-    padding-inline: var(--origam-space-4, 1rem);
-    border-radius: var(--origam-rounded-lg, 0.5rem);
-    border: 1px solid var(--origam-color-border-default, transparent);
-    background-color: var(--origam-color-surface-subtle, transparent);
-    color: var(--origam-color-text-default, currentColor);
-    font-size: var(--origam-font-size-sm, 0.875rem);
-    font-weight: var(--origam-font-weight-medium, 500);
-    cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
-    white-space: nowrap;
-}
-
-.playground-toolbar__btn:hover {
-    background-color: var(--origam-color-surface-muted, transparent);
-}
-
-.playground-toolbar__btn:focus-visible {
-    outline: 2px solid var(--origam-color-action-primary-bg, currentColor);
-    outline-offset: 2px;
-}
-
-.playground-toolbar__btn--primary {
-    background-color: var(--origam-color-action-primary-bg, currentColor);
-    color: var(--origam-color-action-primary-fg, #fff);
-    border-color: var(--origam-color-action-primary-bg, transparent);
-}
-
-.playground-toolbar__btn--primary:hover {
-    background-color: var(--origam-color-action-primary-bg-hover, currentColor);
-    border-color: var(--origam-color-action-primary-bg-hover, transparent);
-}
-
-.playground-toolbar__btn--ghost {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.playground-toolbar__btn--ghost:hover {
-    background-color: var(--origam-color-surface-subtle, transparent);
 }
 </style>

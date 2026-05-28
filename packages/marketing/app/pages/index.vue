@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-import { SEO_TWITTER_SITE, SEO_TWITTER_HANDLE, SEO_DEFAULT_OG_IMAGE } from '~/consts/seo.const'
+import { SEO_TWITTER_SITE, SEO_TWITTER_HANDLE } from '~/consts/seo.const'
 import { useSoftwareApplicationLd, useWebsiteLd } from '~/composables/useStructuredData'
 
 const { t } = useI18nFallback()

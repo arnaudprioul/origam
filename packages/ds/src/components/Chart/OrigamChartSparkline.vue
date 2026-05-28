@@ -198,7 +198,7 @@
 		aspectRatio: undefined
 	})
 
-	const emit = defineEmits<IChartSparklineEmits>()
+	defineEmits<IChartSparklineEmits>()
 
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)

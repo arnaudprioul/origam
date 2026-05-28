@@ -26,7 +26,7 @@ defineOgImageComponent('OgImageTemplate', {
     type: 'page'
 })
 
-const { releases, filterByTypes } = useChangelog()
+const { releases: _releases, filterByTypes } = useChangelog()
 
 const activeTypes = ref<TChangelogType[]>([])
 
@@ -79,22 +79,16 @@ function isTypeActive (type: TChangelogType): boolean {
                     :key="type"
                     class="changelog-page__filter-item"
                 >
-                    <button
-                        type="button"
-                        class="changelog-page__chip"
-                        :class="{ 'changelog-page__chip--active': isTypeActive(type) }"
-                        :data-intent="CHANGELOG_TYPE_COLORS[type]"
-                        :aria-pressed="isTypeActive(type)"
+                    <OrigamChip
+                        variant="tonal"
+                        :color="CHANGELOG_TYPE_COLORS[type]"
+                        :model-value="isTypeActive(type)"
+                        :prepend-icon="CHANGELOG_TYPE_ICONS[type]"
                         :aria-label="t(`changelog.filter.${type}`, CHANGELOG_TYPE_LABELS[type])"
                         @click="toggleType(type)"
                     >
-                        <OrigamIcon
-                            :icon="CHANGELOG_TYPE_ICONS[type]"
-                            class="changelog-page__chip-icon"
-                            aria-hidden="true"
-                        />
                         {{ CHANGELOG_TYPE_LABELS[type] }}
-                    </button>
+                    </OrigamChip>
                 </li>
             </ul>
         </aside>
@@ -200,75 +194,6 @@ function isTypeActive (type: TChangelogType): boolean {
     display: contents;
 }
 
-.changelog-page__chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.875rem;
-    border-radius: var(--origam-rounded-full, 9999px);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    border: 1px solid var(--origam-color-border-subtle);
-    background-color: var(--origam-color-surface-default);
-    color: var(--origam-color-text-secondary);
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-.changelog-page__chip:hover {
-    background-color: var(--origam-color-surface-raised);
-    color: var(--origam-color-text-primary);
-}
-
-.changelog-page__chip:focus-visible {
-    outline: 2px solid var(--origam-color-primary-500);
-    outline-offset: 2px;
-}
-
-.changelog-page__chip--active[data-intent="success"] {
-    background-color: color-mix(in srgb, var(--origam-color-success-500) 15%, transparent);
-    color: var(--origam-color-success-700);
-    border-color: var(--origam-color-success-400);
-}
-
-.changelog-page__chip--active[data-intent="info"] {
-    background-color: color-mix(in srgb, var(--origam-color-info-500) 15%, transparent);
-    color: var(--origam-color-info-700);
-    border-color: var(--origam-color-info-400);
-}
-
-.changelog-page__chip--active[data-intent="ghost"] {
-    background-color: color-mix(in srgb, var(--origam-color-neutral-400) 20%, transparent);
-    color: var(--origam-color-neutral-700);
-    border-color: var(--origam-color-neutral-400);
-}
-
-.changelog-page__chip--active[data-intent="secondary"] {
-    background-color: color-mix(in srgb, var(--origam-color-secondary-500) 15%, transparent);
-    color: var(--origam-color-secondary-700);
-    border-color: var(--origam-color-secondary-400);
-}
-
-.changelog-page__chip--active[data-intent="warning"] {
-    background-color: color-mix(in srgb, var(--origam-color-warning-500) 15%, transparent);
-    color: var(--origam-color-warning-700);
-    border-color: var(--origam-color-warning-400);
-}
-
-.changelog-page__chip--active[data-intent="danger"] {
-    background-color: color-mix(in srgb, var(--origam-color-danger-500) 15%, transparent);
-    color: var(--origam-color-danger-700);
-    border-color: var(--origam-color-danger-400);
-}
-
-.changelog-page__chip-icon {
-    flex-shrink: 0;
-    inline-size: 1rem;
-    block-size: 1rem;
-}
 
 .changelog-page__releases {
     display: flex;

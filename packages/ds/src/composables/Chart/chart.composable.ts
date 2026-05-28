@@ -896,7 +896,7 @@ export const useChart = (options: IUseChartOptions) => {
      * column when categories drive separate slices). Pie charts
      * only use `series[0]` — extra series are silently ignored.
      */
-    const pieTotal = computed<number>(() => {
+    const _pieTotal = computed<number>(() => {
         const first = options.series()[0]
         if (!first) return 0
         let total = 0
@@ -917,7 +917,7 @@ export const useChart = (options: IUseChartOptions) => {
         const series = options.series()
         const cats = categories.value
         const { x0, x1, y0, y1, cx, cy } = plot.value
-        const baseline = scales.value.y(Math.max(0, yRange.value.min))
+        const _baseline = scales.value.y(Math.max(0, yRange.value.min))
         const smoothing = options.smoothing()
 
         const pieSeriesList = series.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')

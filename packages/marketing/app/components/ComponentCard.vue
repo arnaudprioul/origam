@@ -85,17 +85,18 @@ const cardInitial = computed(() => props.component.name.charAt(0))
 
 <style scoped>
 .component-card {
-    border-radius: var(--origam-rounded-2xl, 1rem);
-    background-color: var(--origam-color-surface-default);
-    box-shadow: var(--origam-shadow-md);
+    border-radius: var(--m-radius-lg, var(--origam-rounded-xl, 0.75rem));
+    background-color: var(--m-surface, var(--origam-color-surface-default, #0e0e0e));
+    border: 1px solid var(--m-border, var(--origam-color-border-subtle, rgba(255, 255, 255, 0.08)));
     overflow: hidden;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     container-type: inline-size;
 }
 
 .component-card:hover {
-    box-shadow: var(--origam-shadow-lg);
-    transform: translateY(-4px);
+    border-color: var(--m-accent-border, color-mix(in srgb, var(--m-accent, var(--origam-color-action-primary-bg, #7c3aed)) 30%, transparent));
+    transform: translateY(-2px);
+    box-shadow: var(--m-shadow-card, 0 8px 24px -8px rgba(0, 0, 0, 0.4));
 }
 
 .component-card:focus-within {
@@ -112,27 +113,31 @@ const cardInitial = computed(() => props.component.name.charAt(0))
 }
 
 .component-card__preview {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     block-size: 7rem;
-    background: linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--card-accent) 20%, transparent),
-        color-mix(in srgb, var(--card-accent) 8%, transparent)
-    );
-    border-block-end: 1px solid var(--origam-color-border-subtle);
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            color-mix(in srgb, var(--card-accent) 32%, transparent),
+            color-mix(in srgb, var(--card-accent) 6%, transparent) 70%
+        ),
+        var(--m-bg, var(--origam-color-surface-default, #0a0a0a));
+    border-block-end: 1px solid var(--m-border, var(--origam-color-border-subtle, rgba(255, 255, 255, 0.08)));
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .component-card__initial {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2.75rem;
+    font-weight: 800;
     color: var(--card-accent);
     line-height: 1;
-    opacity: 0.8;
-    font-family: var(--origam-font-mono, monospace);
+    font-family: var(--m-font-mono, var(--origam-font-mono, monospace));
     user-select: none;
+    text-shadow: 0 0 16px color-mix(in srgb, var(--card-accent) 40%, transparent);
 }
 
 .component-card__header {
@@ -193,14 +198,14 @@ const cardInitial = computed(() => props.component.name.charAt(0))
 .component-card__name {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--origam-color-text-primary);
+    color: var(--m-text, var(--origam-color-text-primary, #fafafa));
     margin: 0;
     line-height: 1.25;
 }
 
 .component-card__description {
     font-size: 0.8125rem;
-    color: var(--origam-color-text-secondary);
+    color: var(--m-text-soft, var(--origam-color-text-secondary, #a3a3a3));
     margin: 0;
     padding: 0.375rem 1rem 1rem;
     line-height: 1.5;

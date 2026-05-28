@@ -110,10 +110,10 @@ function isActive (href: string): boolean {
     position: sticky;
     inset-block-start: 0;
     z-index: var(--origam-zIndex---sticky, 1020);
-    background-color: color-mix(in srgb, var(--origam-color__surface---default, #fff) 85%, transparent);
+    background-color: color-mix(in srgb, var(--m-bg, var(--origam-color__surface---default, #fff)) 85%, transparent);
     -webkit-backdrop-filter: blur(16px) saturate(1.8);
     backdrop-filter: blur(16px) saturate(1.8);
-    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
 }
 
 .site-nav__inner {
@@ -135,21 +135,21 @@ function isActive (href: string): boolean {
 }
 
 .site-nav__logo-icon {
-    color: var(--origam-color__action--primary---bg, #7c3aed);
+    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
     flex-shrink: 0;
 }
 
 .site-nav__logo-text {
     font-size: var(--origam-font__size---2xl, 1.25rem);
     font-weight: var(--origam-font__weight---bold, 700);
-    color: var(--origam-color__text---primary, #171717);
+    color: var(--m-text, var(--origam-color__text---primary, #171717));
     letter-spacing: -0.03em;
 }
 
 .site-nav__version {
     font-family: var(--origam-font__family---mono, monospace);
     font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--origam-color__text---secondary, #525252);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #525252));
     font-weight: var(--origam-font__weight---regular, 400);
 }
 
@@ -173,27 +173,27 @@ function isActive (href: string): boolean {
     padding-block: var(--origam-space---2, 0.5rem);
     font-size: var(--origam-font__size---md, 0.875rem);
     font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---secondary, #525252);
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #525252));
     text-decoration: none;
     border-radius: var(--origam-radius---md, 0.5rem);
     transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .site-nav__link:hover {
-    color: var(--origam-color__text---primary, #171717);
-    background-color: var(--origam-color__surface---overlay, #f5f5f5);
+    color: var(--m-text, var(--origam-color__text---primary, #171717));
+    background-color: var(--m-surface-2, var(--origam-color__surface---overlay, #f5f5f5));
 }
 
 .site-nav__link:focus-visible {
-    color: var(--origam-color__text---primary, #171717);
+    color: var(--m-text, var(--origam-color__text---primary, #171717));
     outline: 2px solid var(--origam-color__border---focus, #7c3aed);
     outline-offset: 2px;
 }
 
 .site-nav__link--active {
-    color: var(--origam-color__action--primary---bg, #7c3aed);
+    color: var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed));
     font-weight: var(--origam-font__weight---semibold, 600);
-    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 8%, transparent);
+    background-color: color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 8%, transparent);
 }
 
 .site-nav__actions {
@@ -221,8 +221,8 @@ function isActive (href: string): boolean {
         position: absolute;
         inset-block-start: 100%;
         inset-inline: 0;
-        background-color: var(--origam-color__surface---default, #fff);
-        border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+        background-color: var(--m-bg, var(--origam-color__surface---default, #fff));
+        border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, #d4d4d4));
         padding: var(--origam-space---4, 1rem);
         box-shadow: var(--origam-shadow---lg);
     }

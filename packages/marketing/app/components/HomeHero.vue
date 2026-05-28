@@ -151,15 +151,15 @@ function copyInstall (): void {
                     <code class="home-hero__install-code">
                         npm install <span class="home-hero__install-pkg">origam</span>
                     </code>
-                    <button
-                        type="button"
-                        class="home-hero__install-copy"
+                    <OrigamBtn
+                        variant="text"
+                        size="sm"
+                        :prepend-icon="isCopied ? 'mdi:check' : 'mdi:content-copy'"
                         :aria-label="t('home.hero.copyInstall', 'Copy install command')"
                         @click="copyInstall"
                     >
-                        <MarketingIcon :name="isCopied ? 'check' : 'copy'" :size="11" aria-hidden="true" />
                         {{ isCopied ? t('home.hero.copied', 'Copied!') : t('home.hero.copy', 'Copy') }}
-                    </button>
+                    </OrigamBtn>
                 </div>
             </figure>
         </div>
@@ -309,31 +309,6 @@ function copyInstall (): void {
     color: var(--m-accent-soft, var(--origam-color__action--primary---bg, #7c3aed));
 }
 
-.home-hero__install-copy {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 8px;
-    border-radius: var(--m-radius-sm, var(--origam-radius---sm, 0.25rem));
-    background: var(--m-surface-2, var(--origam-color__surface---overlay, #171717));
-    border: none;
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--m-text-quiet, var(--origam-color__text---secondary, #525252));
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.15s ease;
-    flex-shrink: 0;
-}
-
-.home-hero__install-copy:hover {
-    background: var(--m-accent-bg, color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent));
-    color: var(--m-accent-soft, var(--origam-color__action--primary---bg, #7c3aed));
-}
-
-.home-hero__install-copy:focus-visible {
-    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
-    outline-offset: 2px;
-}
 
 .sr-only {
     position: absolute;

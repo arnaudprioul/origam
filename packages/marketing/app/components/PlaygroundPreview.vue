@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef, watch } from 'vue'
+import type { ReplStore } from '@vue/repl'
+
+/*
+ * @vue/repl@4 API:
+ * - `useStore({...})` is a *composable* (NOT a constructor) — calling
+ *   `new ReplStore(...)` was the old @vue/repl@2 API. After minification
+ *   that became `new i(...)` → "i is not a constructor" runtime crash.
+ * - The new store mutates its own `files` ref; updates flow through
+ *   `addFile()` / `renameFile()` / direct `store.files['App.vue'] = ...`
+ *   on a fresh File instance.
+ */
 
 const props = defineProps<{
     code: string
@@ -11,21 +22,17 @@ const isClient = ref(false)
 const isLoading = ref(true)
 const compileError = ref<string | null>(null)
 
-type ReplStore = InstanceType<typeof import('@vue/repl')['ReplStore']>
-
 const store = shallowRef<ReplStore | null>(null)
 const ReplComponent = shallowRef<object | null>(null)
 
 async function initRepl () {
-    const { ReplStore, Repl } = await import('@vue/repl')
+    const { useStore, Repl, File } = await import('@vue/repl')
 
-    const replStore = new ReplStore({
-        serializedState: undefined
-    })
+    const replStore = useStore()
 
-    await replStore.setFiles({
-        'App.vue': props.code
-    })
+    // Replace the default playground file with the consumer code.
+    replStore.files['App.vue'] = new File('App.vue', props.code)
+    replStore.activeFilename = 'App.vue'
 
     store.value = replStore
     ReplComponent.value = Repl
@@ -47,8 +54,10 @@ watch(() => props.code, async (newCode) => {
         return
     }
     try {
+        const { File } = await import('@vue/repl')
         compileError.value = null
-        await store.value.setFiles({ 'App.vue': newCode })
+        store.value.files['App.vue'] = new File('App.vue', newCode)
+        store.value.activeFilename = 'App.vue'
     } catch (err: unknown) {
         compileError.value = err instanceof Error ? err.message : String(err)
     }
