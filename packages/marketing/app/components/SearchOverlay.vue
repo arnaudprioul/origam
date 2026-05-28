@@ -87,6 +87,7 @@ function handleKeydown (event: KeyboardEvent): void {
         v-model="isOpen"
         max-width="640"
         rounded="lg"
+        :scrim="true"
         :aria-label="t('search.dialogLabel', 'Site search')"
         @keydown="handleKeydown"
     >
@@ -213,6 +214,13 @@ function handleKeydown (event: KeyboardEvent): void {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-radius: var(--m-radius-lg, var(--origam-radius---xl, 14px));
+    box-shadow: var(--m-shadow-elev, 0 24px 64px -16px rgba(0, 0, 0, 0.6));
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+    inline-size: 100%;
+    max-block-size: 70vh;
 }
 
 .search-overlay__header {
@@ -220,7 +228,7 @@ function handleKeydown (event: KeyboardEvent): void {
     align-items: center;
     gap: var(--origam-space-3, 0.75rem);
     padding: var(--origam-space-4, 1rem) var(--origam-space-5, 1.25rem);
-    border-block-end: 1px solid var(--origam-color-border-subtle, transparent);
+    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
 }
 
 .search-overlay__search-field {
