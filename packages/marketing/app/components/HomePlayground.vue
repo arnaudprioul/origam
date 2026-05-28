@@ -7,12 +7,16 @@ const CODE_LINES = [
     { n: 3, parts: [] },
     { n: 4, parts: [{ cls: 'm-tk-kw', text: '<template>' }] },
     { n: 5, parts: [{ text: '  ' }, { cls: 'm-tk-tag', text: '<OrigamCard ' }, { cls: 'm-tk-attr', text: ':elevation' }, { text: '=' }, { cls: 'm-tk-str', text: '"3"' }, { cls: 'm-tk-tag', text: '>' }] },
-    { n: 6, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '<OrigamTitle>' }, { text: 'Hello Origam' }, { cls: 'm-tk-tag', text: '</OrigamTitle>' }] },
-    { n: 7, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '<OrigamBtn ' }, { cls: 'm-tk-attr', text: 'color' }, { text: '=' }, { cls: 'm-tk-str', text: '"primary"' }, { cls: 'm-tk-tag', text: '>' }] },
-    { n: 8, parts: [{ text: '      Get started' }] },
-    { n: 9, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '</OrigamBtn>' }] },
-    { n: 10, parts: [{ text: '  ' }, { cls: 'm-tk-tag', text: '</OrigamCard>' }] },
-    { n: 11, parts: [{ cls: 'm-tk-kw', text: '</template>' }] }
+    { n: 6, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '<OrigamCardHeader>' }] },
+    { n: 7, parts: [{ text: '      ' }, { cls: 'm-tk-tag', text: '<OrigamTitle>' }, { text: 'Hello Origam' }, { cls: 'm-tk-tag', text: '</OrigamTitle>' }] },
+    { n: 8, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '</OrigamCardHeader>' }] },
+    { n: 9, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '<OrigamCardText>' }] },
+    { n: 10, parts: [{ text: '      ' }, { cls: 'm-tk-tag', text: '<OrigamBtn ' }, { cls: 'm-tk-attr', text: 'color' }, { text: '=' }, { cls: 'm-tk-str', text: '"primary"' }, { cls: 'm-tk-tag', text: '>' }] },
+    { n: 11, parts: [{ text: '        Get started' }] },
+    { n: 12, parts: [{ text: '      ' }, { cls: 'm-tk-tag', text: '</OrigamBtn>' }] },
+    { n: 13, parts: [{ text: '    ' }, { cls: 'm-tk-tag', text: '</OrigamCardText>' }] },
+    { n: 14, parts: [{ text: '  ' }, { cls: 'm-tk-tag', text: '</OrigamCard>' }] },
+    { n: 15, parts: [{ cls: 'm-tk-kw', text: '</template>' }] }
 ] as const
 </script>
 
@@ -76,17 +80,25 @@ const CODE_LINES = [
                         <div class="m-dotgrid home-playground__dotgrid" aria-hidden="true" />
                         <OrigamCard
                             :elevation="3"
+                            rounded="lg"
                             class="home-playground__preview-card"
                         >
-                            <OrigamTitle tag="h3">
-                                {{ t('home.playground.preview.title', 'Hello Origam') }}
-                            </OrigamTitle>
-                            <OrigamBtn
-                                color="primary"
-                                append-icon="mdi:arrow-right"
-                            >
-                                {{ t('home.playground.preview.cta', 'Get started') }}
-                            </OrigamBtn>
+                            <OrigamCardHeader>
+                                <OrigamTitle tag="h3">
+                                    {{ t('home.playground.preview.title', 'Hello Origam') }}
+                                </OrigamTitle>
+                            </OrigamCardHeader>
+                            <OrigamCardText>
+                                <OrigamBtn
+                                    color="primary"
+                                    variant="flat"
+                                    rounded="md"
+                                    append-icon="mdi:arrow-right"
+                                    block
+                                >
+                                    {{ t('home.playground.preview.cta', 'Get started') }}
+                                </OrigamBtn>
+                            </OrigamCardText>
                         </OrigamCard>
                     </div>
                 </div>

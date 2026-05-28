@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onScopeDispose, ref, watch } from 'vue'
+import { nextTick, onMounted, onScopeDispose, ref, watch } from 'vue'
 import { useMonacoTheme } from '~/composables/useMonacoTheme'
 import { PLAYGROUND_MONACO_OPTIONS } from '~/consts/playground.const'
 
@@ -17,12 +17,19 @@ const { monacoTheme } = useMonacoTheme()
 const editorRoot = ref<HTMLDivElement | null>(null)
 const isLoading = ref(true)
 const isClient = ref(false)
+const loadError = ref<string | null>(null)
 
 let editorInstance: import('monaco-editor').editor.IStandaloneCodeEditor | null = null
 let monacoModule: typeof import('monaco-editor') | null = null
 
 async function initMonaco () {
+    // Wait one tick so the v-else template branch mounts and binds
+    // editorRoot. Without this, Monaco can't initialise (silently
+    // bails on `!editorRoot.value`), and the skeleton stays forever.
+    await nextTick()
     if (!editorRoot.value) {
+        loadError.value = 'editor mount point missing'
+        isLoading.value = false
         return
     }
 
@@ -65,7 +72,12 @@ async function initMonaco () {
 
 onMounted(() => {
     isClient.value = true
-    initMonaco()
+    initMonaco().catch((err: unknown) => {
+        loadError.value = err instanceof Error ? err.message : String(err)
+        isLoading.value = false
+        // eslint-disable-next-line no-console
+        console.error('[PlaygroundEditor] Monaco init failed:', err)
+    })
 })
 
 watch(monacoTheme, (theme) => {

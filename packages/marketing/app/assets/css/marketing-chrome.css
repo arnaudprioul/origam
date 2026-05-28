@@ -42,6 +42,17 @@
     --m-glow-text: linear-gradient(180deg, var(--origam-color__text---primary, #fff) 0%, var(--origam-color__text---primary, #fff) 50%, var(--origam-color__text---secondary, #A3A3A3) 100%);
     --m-uppercase-tracking: .08em;
     --m-pre-title-color: var(--origam-color__action--primary---fgSubtle, #A78BFA);
+
+    /* Override origam DS chip horizontal padding defaults across the
+     * marketing site. Defaults (8/10/12/14/17 px) leave the text glued
+     * to the chip border, especially when prepend/append slots eat the
+     * inner edge. Bumping each tier by ~4 px gives every chip on the
+     * site enough breathing room without re-skinning each one. */
+    --origam-chip---padding-xs: 10px;
+    --origam-chip---padding-sm: 14px;
+    --origam-chip---padding-md: 16px;
+    --origam-chip---padding-lg: 18px;
+    --origam-chip---padding-xl: 22px;
 }
 
 [data-theme="geek"] {

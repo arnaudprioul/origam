@@ -166,9 +166,12 @@ const AVATAR_ITEMS_WITH_REST = [
 .home-showcase {
     padding-block: 6rem;
     padding-inline: 3.5rem;
-    background-color: var(--m-bg, var(--origam-color__surface---default, #0A0A0A));
+    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
     container-type: inline-size;
 }
+
 
 .home-showcase__inner {
     max-width: 80rem;
@@ -204,7 +207,7 @@ const AVATAR_ITEMS_WITH_REST = [
 }
 
 .home-showcase__tile {
-    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    background-color: var(--m-bg, var(--origam-color__surface---default, #0A0A0A));
     border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
     border-radius: var(--m-radius, var(--origam-radius---md, 10px));
     box-shadow: var(--m-shadow-card, 0 8px 24px -16px rgba(0, 0, 0, 0.6));

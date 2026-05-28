@@ -109,6 +109,12 @@ const FEATURES = [
 </template>
 
 <style scoped>
+.home-features {
+    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+}
+
 .home-features__inner {
     display: flex;
     flex-direction: column;

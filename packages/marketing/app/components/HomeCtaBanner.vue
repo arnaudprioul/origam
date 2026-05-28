@@ -61,10 +61,21 @@ const { track } = useAnalytics()
 
 .home-cta-banner__glow {
     position: absolute;
-    inset: -10rem 0 auto 0;
-    block-size: 40rem;
-    background: var(--m-bg-decor-1, radial-gradient(ellipse 60% 50% at 50% 0%, color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 18%, transparent), transparent 60%));
+    inset: -6rem 0 auto 0;
+    block-size: 50rem;
+    background:
+        radial-gradient(
+            ellipse 45% 40% at 50% 12%,
+            color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 50%, transparent),
+            transparent 60%
+        ),
+        radial-gradient(
+            ellipse 80% 60% at 50% 0%,
+            color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 28%, transparent),
+            transparent 75%
+        );
     pointer-events: none;
+    filter: blur(8px);
 }
 
 .home-cta-banner__inner {
