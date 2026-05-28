@@ -213,7 +213,7 @@
     "npm": "Package npm",
     "product": "Produit",
     "resources": "Ressources",
-    "tagline": "Le design system Vue 3 qui fonctionne tout simplement.",
+    "tagline": "Le design system Vue 3 qui fait le job.",
     "tokensStudio": "Tokens Studio",
     "signature": "Fait avec origam, par des humains.",
     "cols": {
@@ -240,12 +240,12 @@
       "statsCharts": "primitives de graphiques",
       "statsComponents": "composants",
       "subtitle": "95 composants. 29 primitives de graphiques. A11y complète. Design tokens inclus. Pour Vue 3 avec une DX TypeScript-first.",
-      "title": "Le design system Vue 3 qui fonctionne tout simplement",
+      "title": "Le design system Vue 3 qui fait le job.",
       "titleLine1": "Le design system Vue 3",
-      "titleLine2": "qui fonctionne tout simplement",
+      "titleLine2": "qui fait le job.",
       "titleAlt": {
         "editorial": "Le DS Vue 3 — conçu comme vous l'écririez.",
-        "geek": "> Le design system Vue 3\\n> qui fonctionne tout simplement_"
+        "geek": "> Le design system Vue 3\\n> qui fait le job_"
       }
     },
     "stats": {
@@ -282,7 +282,7 @@
       },
       "preview": {
         "title": "Bonjour Origam",
-        "body": "Le design system Vue 3 qui fonctionne tout simplement. Essayez un composant en direct.",
+        "body": "Le design system Vue 3 qui fait le job. Essayez un composant en direct.",
         "cta": "Démarrer"
       }
     },
@@ -318,9 +318,9 @@
       "step3": "Utiliser n'importe quel composant"
     },
     "meta": {
-      "description": "29 primitives de graphiques, ~95 composants, a11y complète, design tokens. Le design system Vue 3 qui fonctionne tout simplement.",
-      "ogImageAlt": "origam — Le design system Vue 3 qui fonctionne tout simplement",
-      "ogTitle": "Le design system Vue 3 qui fonctionne tout simplement",
+      "description": "29 primitives de graphiques, ~95 composants, a11y complète, design tokens. Le design system Vue 3 qui fait le job.",
+      "ogImageAlt": "origam — Le design system Vue 3 qui fait le job",
+      "ogTitle": "Le design system Vue 3 qui fait le job",
       "title": "origam · Design system Vue 3"
     }
   },

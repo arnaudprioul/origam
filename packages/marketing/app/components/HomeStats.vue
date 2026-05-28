@@ -64,8 +64,9 @@ const STATS = [
 .home-stats {
     padding-block: var(--origam-space---10, 2.5rem);
     padding-inline: var(--origam-space---6, 1.5rem);
-    border-block-start: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    background: var(--m-bg, var(--origam-color__surface---default, #0a0a0a));
 }
 
 .home-stats__inner {

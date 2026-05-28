@@ -240,9 +240,9 @@
       "statsCharts": "chart primitives",
       "statsComponents": "components",
       "subtitle": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
-      "title": "The Vue 3 design system that just works",
+      "title": "The Vue 3 design system that just works.",
       "titleLine1": "The Vue 3 design system",
-      "titleLine2": "that just works",
+      "titleLine2": "that just works.",
       "titleAlt": {
         "editorial": "The Vue 3 DS — built like you'd write it.",
         "geek": "> The Vue 3 design system\\n> that just works_"
