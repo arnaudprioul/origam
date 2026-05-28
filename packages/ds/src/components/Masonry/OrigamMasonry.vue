@@ -12,7 +12,7 @@
 		<template v-else>
 			<div
 					v-for="(child, idx) in childrenVNodes"
-					:key="(child as any)?.key ?? idx"
+					:key="child?.key ?? idx"
 					:ref="(el) => bindItemRef(idx, el)"
 					class="origam-masonry__item"
 					role="listitem"

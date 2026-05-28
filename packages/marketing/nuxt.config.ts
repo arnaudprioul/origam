@@ -15,6 +15,16 @@ export default defineNuxtConfig({
     },
 
     modules: [
+        // origam/nuxt MUST come first: it registers every <Origam*> component
+        // and bundles their scoped CSS into the build. Without it, every
+        // <OrigamBtn> / <OrigamChip> / <OrigamCard> in the templates falls
+        // back to rendering its slot as plain text with no styling at all
+        // (which is what was happening on the first prod deploy — the page
+        // showed component slot text on top of a white page, no chips, no
+        // buttons, no card chrome). The module also auto-injects the token
+        // CSS (primitive + light/dark + utilities) so we don't need to
+        // list those in `css:` below.
+        'origam/nuxt',
         '@nuxt/content',
         '@nuxt/image',
         '@nuxtjs/seo',
@@ -26,11 +36,16 @@ export default defineNuxtConfig({
         viewTransition: true
     },
 
+    // The origam Nuxt module injects token CSS (primitive + light + dark +
+    // utilities) on its own. We add ONLY the marketing-specific globals
+    // here: base body typography / colours pulled from origam tokens, and
+    // the view-transition keyframes.
+    //
+    // Note: the old `origam/styles` import that used to live here pointed
+    // at `dist/src/assets/css/main.css` which is a 0-byte file (the real
+    // entry is `main.scss`, never compiled by unbuild). Removed.
     css: [
-        'origam/tokens/css/primitive',
-        'origam/tokens/css/light',
-        'origam/tokens/css/utilities',
-        'origam/styles',
+        '~/assets/css/base.css',
         '~/assets/css/view-transitions.css'
     ],
 
@@ -73,6 +88,14 @@ export default defineNuxtConfig({
         autoOutboundTracking: true,
         autoFileDownloadsTracking: false,
         enabled: Boolean(process.env.NUXT_PUBLIC_PLAUSIBLE_DOMAIN && process.env.NUXT_PUBLIC_PLAUSIBLE_API_HOST)
+    },
+
+    // Push the `origam` workspace package through the full build
+    // pipeline (Vue + TS + Vite plugins). Without `transpile`, the .vue
+    // files under origam/dist/ are treated as plain JS by Rollup and
+    // any template binding with TS-shaped syntax breaks the parse.
+    build: {
+        transpile: ['origam']
     },
 
     nitro: {
@@ -124,6 +147,34 @@ export default defineNuxtConfig({
     },
 
     vite: {
+        // Resolve `origam` (and its sub-paths) to the workspace SOURCE
+        // instead of the published `dist/`. The dist build (mkdist) keeps
+        // a few TS-shaped expressions inside .vue templates / scripts
+        // (e.g. `(child as any)?.key`, computed-key object literals)
+        // that don't round-trip cleanly through Rollup's plain-JS parser
+        // when the lib is consumed from `node_modules`. Pointing at the
+        // source side-steps the issue: the .vue files go through Vite's
+        // @vitejs/plugin-vue with TS support enabled, which is the
+        // pipeline they were written for.
+        //
+        // Trade-off: incremental builds get a bit slower (Vite re-
+        // compiles ~95 .vue files on each marketing build) but they
+        // build correctly. A follow-up ticket should harden the lib
+        // dist build so this alias becomes optional.
+        resolve: {
+            alias: {
+                'origam/nuxt': new URL('../ds/src/nuxt/module.ts', import.meta.url).pathname,
+                'origam/components': new URL('../ds/src/components', import.meta.url).pathname,
+                'origam/composables': new URL('../ds/src/composables', import.meta.url).pathname,
+                'origam/directives': new URL('../ds/src/directives', import.meta.url).pathname,
+                'origam/enums': new URL('../ds/src/enums', import.meta.url).pathname,
+                'origam/consts': new URL('../ds/src/consts', import.meta.url).pathname,
+                'origam/utils': new URL('../ds/src/utils', import.meta.url).pathname,
+                'origam/types': new URL('../ds/src/types', import.meta.url).pathname,
+                'origam/interfaces': new URL('../ds/src/interfaces', import.meta.url).pathname,
+                'origam/services': new URL('../ds/src/services', import.meta.url).pathname
+            }
+        },
         optimizeDeps: {
             include: ['monaco-editor', '@vue/repl']
         },

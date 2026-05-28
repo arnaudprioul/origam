@@ -20,7 +20,7 @@
 		useSlots
 	} from 'vue'
 
-	import { resolveGradient } from '../../utils/Commons/gradient.util.ts'
+	import { resolveGradient } from '../../utils/Commons/gradient.util'
 
 	import type { ITextMaskProps } from '../../interfaces'
 

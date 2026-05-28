@@ -20,8 +20,8 @@ import {
     tokenForegroundForIntent,
     tokenStylesForIntent,
     warnLegacyColor,
-} from '../../utils/Commons/color.util.ts'
-import { isGradient, resolveGradient } from '../../utils/Commons/gradient.util.ts'
+} from '../../utils/Commons/color.util'
+import { isGradient, resolveGradient } from '../../utils/Commons/gradient.util'
 
 // ────────────────────────────────────────────────────────────────────────────
 // Composable rule: ONLY `use*` functions live in this file.

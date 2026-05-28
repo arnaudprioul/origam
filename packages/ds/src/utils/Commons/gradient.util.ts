@@ -1,7 +1,7 @@
 import type { IGradient, IGradientStop } from '../../interfaces/Commons/gradient.interface'
 import type { TColor, TIntent } from '../../types'
 
-import { intentTokenBase, isIntent } from './color.util.ts'
+import { intentTokenBase, isIntent } from './color.util'
 
 // ════════════════════════════════════════════════════════════════════════════
 // Gradient support — `useColor` / `useBackgroundColor` / `useTextColor`
