@@ -964,3 +964,28 @@ each step.
 
 **End of proposal.** Awaiting decision on §5 (workspaces tool) and §7
 (open questions) to start Step 1.
+
+---
+
+## Migration completed (mai 2026)
+
+The 12-step plan above shipped on `feature/monorepo-pnpm`. The repo is
+now a pnpm workspace with 6 packages under `packages/`. Reference
+commits:
+
+| Step | Commit | Scope |
+|---|---|---|
+| 1-3 | `4d53558b` | pnpm prep + `packages/` skeleton, lockfile import |
+| 4 | `d031c095` | move ds (src/tokens/scripts/build.config/public) |
+| 5-9 | `70f1819f` | move marketing / stories / docs / tests / figma |
+| 10 | *this branch* | root `package.json` rewrite (workspace manager only) |
+| 11 | *this branch* | CI workflows (`ci.yml`, `release.yml`, `tokens-sync.yml`, `docker/Dockerfile.*`) |
+| 12 | *this branch* | docs pass (`CLAUDE.md`, `README.md`, `ROADMAP.md`, `CLAUDE_CODE_BRIEF.md`) |
+| 13 | *PR feature/monorepo-pnpm → develop* | merge, awaiting user validation |
+
+Checkpoint at hand-off : `ds` build green, TU `752 / 1 skip`, stories
+`208 / 2200`, docs build green, figma plugin build green, marketing
+build green.
+
+Open follow-up (tracked in `ROADMAP.md` → Wave 3.5) : add **Turborepo**
+once the pipeline has been stable for 1-2 weeks (cf. §5.3 above).

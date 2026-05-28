@@ -1,0 +1,134 @@
+{
+  "name": "origam",
+  "version": "2.5.1",
+  "type": "module",
+  "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
+  "keywords": [
+    "vue",
+    "vue3",
+    "design-system",
+    "components",
+    "ui",
+    "ui-library",
+    "design-tokens",
+    "tokens-studio",
+    "style-dictionary",
+    "typescript",
+    "composition-api",
+    "scss",
+    "css-variables",
+    "theming",
+    "dark-mode",
+    "a11y"
+  ],
+  "license": "MIT",
+  "author": "Prioul Arnaud",
+  "homepage": "https://github.com/arnaudprioul/origam#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnaudprioul/origam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arnaudprioul/origam/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.vue"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "scss": "./dist/src/assets/scss/main.scss",
+      "style": "./dist/src/assets/css/main.css",
+      "default": "./dist/src/origam.js"
+    },
+    "./styles": {
+      "scss": "./dist/src/assets/scss/main.scss",
+      "style": "./dist/src/assets/css/main.css",
+      "default": "./dist/src/assets/css/main.css"
+    },
+    "./tokens/css": "./dist/src/assets/css/tokens/primitive.css",
+    "./tokens/css/primitive": "./dist/src/assets/css/tokens/primitive.css",
+    "./tokens/css/light": "./dist/src/assets/css/tokens/light.css",
+    "./tokens/css/dark": "./dist/src/assets/css/tokens/dark.css",
+    "./tokens/css/utilities": "./dist/src/assets/css/tokens/origam-utilities.css",
+    "./tokens/scss": "./dist/src/assets/scss/tokens/_primitive.scss",
+    "./tokens/scss/primitive": "./dist/src/assets/scss/tokens/_primitive.scss",
+    "./tokens/scss/light": "./dist/src/assets/scss/tokens/_light.scss",
+    "./tokens/scss/dark": "./dist/src/assets/scss/tokens/_dark.scss",
+    "./tokens/scss/utilities": "./dist/src/assets/scss/tokens/_origam-utilities.scss",
+    "./tokens/types": "./dist/src/types/tokens.type.d.ts",
+    "./origam": "./dist/src/origam.js",
+    "./nuxt": {
+      "types": "./dist/src/nuxt/module.d.ts",
+      "import": "./dist/src/nuxt/module.js",
+      "require": "./dist/src/nuxt/module.cjs",
+      "default": "./dist/src/nuxt/module.js"
+    },
+    "./components": "./dist/src/components/index.js",
+    "./components/*": "./dist/src/components/*/index.js",
+    "./composables": "./dist/src/composables/index.js",
+    "./directives": "./dist/src/directives/index.js",
+    "./enums": "./dist/src/enums/index.js",
+    "./consts": "./dist/src/consts/index.js",
+    "./types": "./dist/src/types/index.d.ts",
+    "./interfaces": "./dist/src/interfaces/index.d.ts",
+    "./services": "./dist/src/services/index.js",
+    "./utils": "./dist/src/utils/index.js",
+    "./*": "./dist/src/*"
+  },
+  "files": [
+    "dist/src/",
+    "dist/tokens/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "pnpm run tokens:build && unbuild",
+    "lib:build": "pnpm run build",
+    "tokens:build": "node scripts/build-tokens.mjs",
+    "tokens:watch": "node scripts/build-tokens.mjs --watch",
+    "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "qrcode-generator": "^2.0.4",
+    "shiki": "^3.8.1"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0",
+    "vue-i18n": "^11.0.0",
+    "vue-router": "^4.5.0"
+  },
+  "peerDependenciesMeta": {
+    "vue-i18n": {
+      "optional": true
+    },
+    "vue-router": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@nuxt/kit": "^4.4.5",
+    "@tokens-studio/sd-transforms": "^1.2.9",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "sass": "^1.89.2",
+    "style-dictionary": "^4.4.0",
+    "ts-transformer-keys": "^0.4.4",
+    "typescript": "^5.8.3",
+    "unbuild": "^3.5.0",
+    "unplugin-vue-components": "^28.8.0",
+    "vite": "^7.0.5",
+    "vite-plugin-commonjs": "^0.10.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vue": "^3.5.17",
+    "vue-sfc-transformer": "^0.1.16",
+    "vue-tsc": "^3.0.2"
+  }
+}
