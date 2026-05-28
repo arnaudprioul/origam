@@ -86,6 +86,7 @@
   },
   "codeDemo": {
     "clickedTimes": "Clicked",
+    "copyLabel": "Copy code snippet",
     "heading": "Quick start",
     "openPlayground": "Open in playground",
     "previewLabel": "Live component preview",
@@ -138,10 +139,13 @@
     }
   },
   "ctaBanner": {
+    "badge": "Start now — it's free",
     "browse": "Browse components",
     "copyLabel": "Copy install command",
     "github": "GitHub",
     "githubLabel": "View on GitHub (opens in new tab)",
+    "installCaption": "Install origam via npm",
+    "socialProof": "Joined by teams shipping faster",
     "subtitle": "Install origam and start building production-grade Vue 3 UIs today.",
     "title": "Ready to ship faster?"
   },
@@ -197,9 +201,28 @@
       "ctaBrowse": "Browse components",
       "ctaGithub": "GitHub",
       "ctaGithubLabel": "View origam on GitHub (opens in new tab)",
+      "eyebrow": "Vue 3 · TypeScript · Open Source",
       "installCaption": "Install origam via npm",
+      "statsA11y": "accessibility",
+      "statsCharts": "chart primitives",
+      "statsComponents": "components",
       "subtitle": "29 chart primitives, ~95 components, full a11y, design tokens out of the box.",
-      "title": "The Vue 3 design system that just works"
+      "title": "The Vue 3 design system that just works",
+      "titleLine1": "The Vue 3 design system",
+      "titleLine2": "that just works"
+    },
+    "features": {
+      "eyebrow": "Why choose origam"
+    },
+    "showcase": {
+      "eyebrow": "Live components"
+    },
+    "codeDemo": {
+      "eyebrow": "Get started fast",
+      "livePreview": "Live preview",
+      "step1": "Install the package",
+      "step2": "Import the Nuxt module",
+      "step3": "Use any component"
     },
     "meta": {
       "description": "29 chart primitives, ~95 components, full a11y, design tokens. The Vue 3 design system that just works.",
@@ -346,23 +369,29 @@
   "showcase": {
     "alert": {
       "info": "WCAG 2.1 AA on every component.",
-      "label": "Alert",
-      "success": "Strict TypeScript throughout."
+      "label": "Alerts",
+      "success": "Strict TypeScript throughout.",
+      "warning": "Zero dependencies outside Vue."
     },
     "avatars": {
       "label": "Avatar group"
     },
     "badge": {
+      "alerts": "Alerts",
       "inbox": "Inbox",
-      "label": "Badge",
+      "label": "Badges",
       "status": "Status"
     },
     "btn": {
-      "flat": "Flat",
+      "danger": "Danger",
+      "flat": "Primary",
+      "icon": "With icon",
       "label": "Button variants",
       "outlined": "Outlined",
+      "success": "Success",
       "text": "Text",
-      "tonal": "Tonal"
+      "tonal": "Tonal",
+      "warning": "Warning"
     },
     "alertSuccess": {
       "label": "Alert success"
@@ -384,14 +413,19 @@
       "a11y": "A11y",
       "css": "CSS-first",
       "label": "Chip group",
+      "openSource": "Open Source",
       "tokens": "Tokens",
       "ts": "TypeScript",
       "vue3": "Vue 3"
     },
     "cta": "View all components",
+    "ctaPlayground": "Try the playground",
     "heading": "See it in action",
     "progress": {
-      "label": "Progress"
+      "label": "Progress",
+      "primary": "Primary",
+      "success": "Success",
+      "warning": "Warning"
     },
     "subtitle": "Every component ships accessible, themed, and production-ready."
   }

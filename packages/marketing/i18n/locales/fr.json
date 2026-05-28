@@ -86,6 +86,7 @@
   },
   "codeDemo": {
     "clickedTimes": "Cliqué",
+    "copyLabel": "Copier l'extrait de code",
     "heading": "Démarrage rapide",
     "openPlayground": "Ouvrir dans le playground",
     "previewLabel": "Aperçu du composant en direct",
@@ -138,10 +139,13 @@
     }
   },
   "ctaBanner": {
+    "badge": "Commencez maintenant — c'est gratuit",
     "browse": "Parcourir les composants",
     "copyLabel": "Copier la commande d'installation",
     "github": "GitHub",
     "githubLabel": "Voir sur GitHub (s'ouvre dans un nouvel onglet)",
+    "installCaption": "Installer origam via npm",
+    "socialProof": "Rejoint par des équipes qui livrent plus vite",
     "subtitle": "Installez origam et commencez à créer des UI Vue 3 prêtes pour la production dès aujourd'hui.",
     "title": "Prêt à livrer plus vite ?"
   },
@@ -197,9 +201,28 @@
       "ctaBrowse": "Parcourir les composants",
       "ctaGithub": "GitHub",
       "ctaGithubLabel": "Voir origam sur GitHub (s'ouvre dans un nouvel onglet)",
+      "eyebrow": "Vue 3 · TypeScript · Open Source",
       "installCaption": "Installer origam via npm",
+      "statsA11y": "accessibilité",
+      "statsCharts": "primitives de graphiques",
+      "statsComponents": "composants",
       "subtitle": "29 primitives de graphiques, ~95 composants, a11y complète, design tokens inclus.",
-      "title": "Le design system Vue 3 qui fonctionne tout simplement"
+      "title": "Le design system Vue 3 qui fonctionne tout simplement",
+      "titleLine1": "Le design system Vue 3",
+      "titleLine2": "qui fonctionne tout simplement"
+    },
+    "features": {
+      "eyebrow": "Pourquoi choisir origam"
+    },
+    "showcase": {
+      "eyebrow": "Composants en direct"
+    },
+    "codeDemo": {
+      "eyebrow": "Démarrez rapidement",
+      "livePreview": "Aperçu en direct",
+      "step1": "Installer le package",
+      "step2": "Importer le module Nuxt",
+      "step3": "Utiliser n'importe quel composant"
     },
     "meta": {
       "description": "29 primitives de graphiques, ~95 composants, a11y complète, design tokens. Le design system Vue 3 qui fonctionne tout simplement.",
@@ -346,23 +369,29 @@
   "showcase": {
     "alert": {
       "info": "WCAG 2.1 AA sur chaque composant.",
-      "label": "Alerte",
-      "success": "TypeScript strict partout."
+      "label": "Alertes",
+      "success": "TypeScript strict partout.",
+      "warning": "Zéro dépendance hors Vue."
     },
     "avatars": {
       "label": "Groupe d'avatars"
     },
     "badge": {
+      "alerts": "Alertes",
       "inbox": "Boîte de réception",
-      "label": "Badge",
+      "label": "Badges",
       "status": "Statut"
     },
     "btn": {
-      "flat": "Plat",
+      "danger": "Danger",
+      "flat": "Primaire",
+      "icon": "Avec icône",
       "label": "Variantes de bouton",
       "outlined": "Contour",
+      "success": "Succès",
       "text": "Texte",
-      "tonal": "Tonal"
+      "tonal": "Tonal",
+      "warning": "Avertissement"
     },
     "alertSuccess": {
       "label": "Alerte succès"
@@ -384,14 +413,19 @@
       "a11y": "A11y",
       "css": "CSS-first",
       "label": "Groupe de chips",
+      "openSource": "Open Source",
       "tokens": "Tokens",
       "ts": "TypeScript",
       "vue3": "Vue 3"
     },
     "cta": "Voir tous les composants",
+    "ctaPlayground": "Essayer le playground",
     "heading": "En action",
     "progress": {
-      "label": "Progression"
+      "label": "Progression",
+      "primary": "Primaire",
+      "success": "Succès",
+      "warning": "Avertissement"
     },
     "subtitle": "Chaque composant est accessible, thémé et prêt pour la production."
   }

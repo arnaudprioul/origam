@@ -42,10 +42,10 @@ function handleNavLinkClick (href: string): void {
             </NuxtLink>
 
             <nav
+                id="mobile-nav"
                 class="site-nav__links"
                 :class="{ 'site-nav__links--open': isMobileMenuOpen }"
                 :aria-label="t('nav.mainLabel', 'Main')"
-                :aria-expanded="isMobileMenuOpen"
             >
                 <ul class="site-nav__list" role="list">
                     <li
@@ -73,9 +73,11 @@ function handleNavLinkClick (href: string): void {
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="outlined"
+                    rounded="pill"
                     prepend-icon="mdi:github"
                     :aria-label="t('nav.githubLabel', 'View on GitHub (opens in new tab)')"
                     size="sm"
+                    class="site-nav__github-btn"
                 >
                     {{ t('nav.github', 'GitHub') }}
                 </OrigamBtn>
@@ -102,27 +104,27 @@ function handleNavLinkClick (href: string): void {
 .site-nav {
     position: sticky;
     inset-block-start: 0;
-    z-index: var(--origam-z-index-app-bar, 100);
-    background-color: color-mix(in srgb, var(--origam-color-surface-default, #fff) 80%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border-block-end: 1px solid var(--origam-color-border-default, transparent);
+    z-index: var(--origam-zIndex---sticky, 1020);
+    background-color: color-mix(in srgb, var(--origam-color__surface---default, #fff) 85%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8);
+    backdrop-filter: blur(16px) saturate(1.8);
+    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
 }
 
 .site-nav__inner {
     display: flex;
     align-items: center;
-    gap: var(--origam-space-4, 1rem);
+    gap: var(--origam-space---4, 1rem);
     max-width: 80rem;
     margin-inline: auto;
-    padding-inline: var(--origam-space-6, 1.5rem);
-    padding-block: var(--origam-space-3, 0.75rem);
+    padding-inline: var(--origam-space---6, 1.5rem);
+    padding-block: var(--origam-space---3, 0.75rem);
 }
 
 .site-nav__logo {
     display: inline-flex;
     align-items: center;
-    gap: var(--origam-space-2, 0.5rem);
+    gap: var(--origam-space---2, 0.5rem);
     text-decoration: none;
     flex-shrink: 0;
 }
@@ -134,10 +136,19 @@ function handleNavLinkClick (href: string): void {
 }
 
 .site-nav__logo-text {
-    font-size: var(--origam-font-size-xl, 1.25rem);
-    font-weight: var(--origam-font-weight-bold, 700);
-    color: var(--origam-color-text-default, currentColor);
-    letter-spacing: -0.02em;
+    font-size: var(--origam-font__size---2xl, 1.25rem);
+    font-weight: var(--origam-font__weight---bold, 700);
+    color: var(--origam-color__text---primary, #171717);
+    letter-spacing: -0.03em;
+    background: linear-gradient(
+        135deg,
+        var(--origam-color__action--primary---bg, #7c3aed),
+        var(--origam-color__feedback--info---bg, #2196f3)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .site-nav__links {
@@ -147,7 +158,7 @@ function handleNavLinkClick (href: string): void {
 .site-nav__list {
     display: flex;
     align-items: center;
-    gap: var(--origam-space-1, 0.25rem);
+    gap: var(--origam-space---1, 0.25rem);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -156,33 +167,37 @@ function handleNavLinkClick (href: string): void {
 .site-nav__link {
     display: inline-flex;
     align-items: center;
-    padding-inline: var(--origam-space-3, 0.75rem);
-    padding-block: var(--origam-space-2, 0.5rem);
-    font-size: var(--origam-font-size-sm, 0.875rem);
-    font-weight: var(--origam-font-weight-medium, 500);
-    color: var(--origam-color-text-muted, currentColor);
+    padding-inline: var(--origam-space---3, 0.75rem);
+    padding-block: var(--origam-space---2, 0.5rem);
+    font-size: var(--origam-font__size---md, 0.875rem);
+    font-weight: var(--origam-font__weight---medium, 500);
+    color: var(--origam-color__text---secondary, #525252);
     text-decoration: none;
-    border-radius: var(--origam-rounded-md, 0.5rem);
+    border-radius: var(--origam-radius---md, 0.5rem);
     transition: color 0.15s ease, background-color 0.15s ease;
 }
 
-.site-nav__link:hover,
+.site-nav__link:hover {
+    color: var(--origam-color__text---primary, #171717);
+    background-color: var(--origam-color__surface---overlay, #f5f5f5);
+}
+
 .site-nav__link:focus-visible {
-    color: var(--origam-color-text-default, currentColor);
-    background-color: var(--origam-color-surface-subtle, transparent);
-    outline: 2px solid var(--origam-color-action-primary-bg, currentColor);
+    color: var(--origam-color__text---primary, #171717);
+    outline: 2px solid var(--origam-color__border---focus, #7c3aed);
     outline-offset: 2px;
 }
 
 .site-nav__link--active {
-    color: var(--origam-color-action-primary-bg, currentColor);
-    font-weight: var(--origam-font-weight-semibold, 600);
+    color: var(--origam-color__action--primary---bg, #7c3aed);
+    font-weight: var(--origam-font__weight---semibold, 600);
+    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 8%, transparent);
 }
 
 .site-nav__actions {
     display: flex;
     align-items: center;
-    gap: var(--origam-space-2, 0.5rem);
+    gap: var(--origam-space---2, 0.5rem);
     flex-shrink: 0;
 }
 
@@ -190,44 +205,24 @@ function handleNavLinkClick (href: string): void {
     display: none;
 }
 
-@container style(--mobile: 1) {
-    .site-nav__burger {
-        display: flex;
-    }
-
-    .site-nav__links {
-        display: none;
-        position: absolute;
-        inset-block-start: 100%;
-        inset-inline: 0;
-        background-color: var(--origam-color-surface-default, #fff);
-        border-block-end: 1px solid var(--origam-color-border-default, transparent);
-        padding: var(--origam-space-4, 1rem);
-    }
-
-    .site-nav__links--open {
-        display: block;
-    }
-
-    .site-nav__list {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
 @media (max-width: 768px) {
     .site-nav__burger {
         display: flex;
     }
 
+    .site-nav__github-btn {
+        display: none;
+    }
+
     .site-nav__links {
         display: none;
         position: absolute;
         inset-block-start: 100%;
         inset-inline: 0;
-        background-color: var(--origam-color-surface-default, #fff);
-        border-block-end: 1px solid var(--origam-color-border-default, transparent);
-        padding: var(--origam-space-4, 1rem);
+        background-color: var(--origam-color__surface---default, #fff);
+        border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+        padding: var(--origam-space---4, 1rem);
+        box-shadow: var(--origam-shadow---lg);
     }
 
     .site-nav__links--open {
@@ -237,6 +232,12 @@ function handleNavLinkClick (href: string): void {
     .site-nav__list {
         flex-direction: column;
         align-items: stretch;
+        gap: var(--origam-space---1, 0.25rem);
+    }
+
+    .site-nav__link {
+        padding-block: var(--origam-space---3, 0.75rem);
+        border-radius: var(--origam-radius---lg, 0.75rem);
     }
 }
 </style>

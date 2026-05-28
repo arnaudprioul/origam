@@ -81,19 +81,23 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
         </div>
 
         <div class="home-hero__content">
-            <img
-                src="/logo.svg"
-                alt=""
-                class="home-hero__logo"
-                width="96"
-                height="96"
-                aria-hidden="true"
-            >
+            <div class="home-hero__eyebrow" aria-hidden="true">
+                <span class="home-hero__eyebrow-dot"></span>
+                <span class="home-hero__eyebrow-text">
+                    {{ t('home.hero.eyebrow', 'Vue 3 · TypeScript · Open Source') }}
+                </span>
+            </div>
+
             <h1
                 id="hero-title"
                 class="home-hero__title"
             >
-                {{ t('home.hero.title', 'The Vue 3 design system that just works') }}
+                <span class="home-hero__title-line">
+                    {{ t('home.hero.titleLine1', 'The Vue 3 design system') }}
+                </span>
+                <span class="home-hero__title-gradient">
+                    {{ t('home.hero.titleLine2', 'that just works') }}
+                </span>
             </h1>
 
             <p class="home-hero__subtitle">
@@ -133,6 +137,9 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
                     {{ t('home.hero.installCaption', 'Install origam via npm') }}
                 </figcaption>
                 <div class="home-hero__install-inner">
+                    <span class="home-hero__install-live" aria-hidden="true">
+                        <span class="home-hero__live-dot"></span>
+                    </span>
                     <OrigamCode
                         class="home-hero__code"
                         language="bash"
@@ -144,6 +151,23 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
                     />
                 </div>
             </figure>
+
+            <div class="home-hero__stats" aria-hidden="true">
+                <div class="home-hero__stat">
+                    <span class="home-hero__stat-value">~95</span>
+                    <span class="home-hero__stat-label">{{ t('home.hero.statsComponents', 'components') }}</span>
+                </div>
+                <div class="home-hero__stat-divider"></div>
+                <div class="home-hero__stat">
+                    <span class="home-hero__stat-value">29</span>
+                    <span class="home-hero__stat-label">{{ t('home.hero.statsCharts', 'chart primitives') }}</span>
+                </div>
+                <div class="home-hero__stat-divider"></div>
+                <div class="home-hero__stat">
+                    <span class="home-hero__stat-value">WCAG AA</span>
+                    <span class="home-hero__stat-label">{{ t('home.hero.statsA11y', 'accessibility') }}</span>
+                </div>
+            </div>
         </div>
     </header>
 </template>
@@ -156,8 +180,25 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding-block: var(--origam-space-20, 5rem);
-    padding-inline: var(--origam-space-6, 1.5rem);
+    padding-block: var(--origam-space---20, 5rem);
+    padding-inline: var(--origam-space---6, 1.5rem);
+    background: radial-gradient(
+        ellipse 80% 60% at 50% -10%,
+        color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 18%, transparent),
+        transparent
+    );
+}
+
+.home-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 60% 40% at 80% 70%,
+        color-mix(in srgb, var(--origam-color__feedback--info---bg, #2196f3) 10%, transparent),
+        transparent
+    );
+    pointer-events: none;
 }
 
 .home-hero__grid {
@@ -166,9 +207,9 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: var(--origam-space-4, 1rem);
-    padding: var(--origam-space-8, 2rem);
-    opacity: 0.35;
+    gap: var(--origam-space---4, 1rem);
+    padding: var(--origam-space---8, 2rem);
+    opacity: 0.25;
     pointer-events: none;
 }
 
@@ -185,25 +226,6 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     max-width: 8rem;
 }
 
-.home-hero__logo {
-    inline-size: 6rem;
-    block-size: 6rem;
-    display: block;
-    margin-block-end: var(--origam-space-2, 0.5rem);
-    filter: drop-shadow(0 4px 24px color-mix(in srgb, var(--origam-color-action-primary-bg, currentColor) 25%, transparent));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .home-hero__logo {
-        animation: home-hero-logo-float 6s ease-in-out infinite;
-    }
-}
-
-@keyframes home-hero-logo-float {
-    0%, 100% { transform: translateY(0) rotate(-2deg); }
-    50% { transform: translateY(-8px) rotate(2deg); }
-}
-
 .home-hero__content {
     position: relative;
     z-index: 1;
@@ -211,23 +233,67 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: var(--origam-space-6, 1.5rem);
-    max-width: 52rem;
+    gap: var(--origam-space---6, 1.5rem);
+    max-width: 56rem;
+}
+
+.home-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--origam-space---2, 0.5rem);
+    padding: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
+    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 30%, transparent);
+    border-radius: var(--origam-radius---full, 9999px);
+}
+
+.home-hero__eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--origam-radius---full, 9999px);
+    background-color: var(--origam-color__feedback--success---bg, #4caf50);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.home-hero__eyebrow-text {
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    font-weight: var(--origam-font__weight---semibold, 600);
+    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+    letter-spacing: 0.04em;
 }
 
 .home-hero__title {
-    font-size: clamp(2rem, 5vw + 1rem, 4rem);
-    font-weight: var(--origam-font-weight-bold, 700);
-    line-height: 1.1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--origam-space---2, 0.5rem);
+    font-size: clamp(2.25rem, 6vw + 0.5rem, 4.5rem);
+    font-weight: var(--origam-font__weight---bold, 700);
+    line-height: var(--origam-font__lineHeight---tight, 1.1);
     letter-spacing: -0.03em;
-    color: var(--origam-color-text-default, currentColor);
     margin: 0;
+}
+
+.home-hero__title-line {
+    color: var(--origam-color__text---primary, #171717);
+}
+
+.home-hero__title-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--origam-color__action--primary---bg, #7c3aed) 0%,
+        var(--origam-color__feedback--info---bg, #2196f3) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .home-hero__subtitle {
     font-size: clamp(1rem, 1.5vw + 0.5rem, 1.25rem);
-    color: var(--origam-color-text-muted, currentColor);
-    line-height: 1.6;
+    color: var(--origam-color__text---secondary, #525252);
+    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
     margin: 0;
     max-width: 40rem;
 }
@@ -235,7 +301,7 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 .home-hero__ctas {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--origam-space-3, 0.75rem);
+    gap: var(--origam-space---3, 0.75rem);
     justify-content: center;
 }
 
@@ -249,16 +315,66 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 .home-hero__install-inner {
     display: flex;
     align-items: center;
-    gap: var(--origam-space-2, 0.5rem);
-    padding: var(--origam-space-3, 0.75rem) var(--origam-space-4, 1rem);
-    background-color: var(--origam-color-surface-subtle, transparent);
-    border: 1px solid var(--origam-color-border-default, transparent);
-    border-radius: var(--origam-rounded-xl, 0.75rem);
+    gap: var(--origam-space---3, 0.75rem);
+    padding: var(--origam-space---3, 0.75rem) var(--origam-space---5, 1.25rem);
+    background-color: var(--origam-color__neutral---900, #171717);
+    border: 1px solid var(--origam-color__neutral---700, #404040);
+    border-radius: var(--origam-radius---xl, 1rem);
+    box-shadow: var(--origam-shadow---lg);
+}
+
+.home-hero__install-live {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.home-hero__live-dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--origam-radius---full, 9999px);
+    background-color: var(--origam-color__feedback--success---bg, #4caf50);
+    animation: pulse-dot 2s ease-in-out infinite;
 }
 
 .home-hero__code {
-    font-family: var(--origam-font-family-mono, monospace);
-    font-size: var(--origam-font-size-sm, 0.875rem);
+    font-family: var(--origam-font__family---mono, monospace);
+    font-size: var(--origam-font__size---md, 0.875rem);
+    color: var(--origam-color__neutral---100, #f5f5f5);
+}
+
+.home-hero__stats {
+    display: flex;
+    align-items: center;
+    gap: var(--origam-space---6, 1.5rem);
+    margin-block-start: var(--origam-space---2, 0.5rem);
+}
+
+.home-hero__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.home-hero__stat-value {
+    font-size: var(--origam-font__size---xl, 1.125rem);
+    font-weight: var(--origam-font__weight---bold, 700);
+    color: var(--origam-color__text---primary, #171717);
+    line-height: 1;
+}
+
+.home-hero__stat-label {
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    color: var(--origam-color__text---secondary, #525252);
+}
+
+.home-hero__stat-divider {
+    width: 1px;
+    height: 2rem;
+    background-color: var(--origam-color__border---subtle, #d4d4d4);
 }
 
 .sr-only {
@@ -274,16 +390,19 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 }
 
 @keyframes hero-float {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(-8px);
-    }
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .home-hero__cell {
+    .home-hero__cell,
+    .home-hero__eyebrow-dot,
+    .home-hero__live-dot {
         animation: none;
     }
 }
@@ -292,6 +411,22 @@ const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
     .home-hero__grid {
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(6, 1fr);
+    }
+
+    .home-hero__stats {
+        gap: var(--origam-space---4, 1rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .home-hero__stats {
+        flex-direction: column;
+        gap: var(--origam-space---3, 0.75rem);
+    }
+
+    .home-hero__stat-divider {
+        width: 2rem;
+        height: 1px;
     }
 }
 </style>

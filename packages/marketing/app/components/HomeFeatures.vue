@@ -11,6 +11,9 @@ const { t } = useI18nFallback()
     >
         <div class="home-features__inner">
             <header class="home-features__header">
+                <div class="home-features__eyebrow">
+                    {{ t('home.features.eyebrow', 'Why choose origam') }}
+                </div>
                 <h2
                     id="features-title"
                     class="home-features__title"
@@ -31,27 +34,24 @@ const { t } = useI18nFallback()
                     :key="feature.id"
                     class="home-features__item"
                 >
-                    <OrigamCard
-                        elevation="3"
-                        rounded="2xl"
+                    <article
                         class="home-features__card"
+                        :class="`home-features__card--${feature.intent}`"
                     >
-                        <OrigamCardText class="home-features__card-body">
-                            <span
-                                class="home-features__icon-wrapper"
-                                :class="`home-features__icon-wrapper--${feature.intent}`"
-                                aria-hidden="true"
-                            >
-                                <OrigamIcon :icon="feature.iconName" />
-                            </span>
-                            <h3 class="home-features__card-title">
-                                {{ t(feature.i18nKey, feature.fallback) }}
-                            </h3>
-                            <p class="home-features__card-desc">
-                                {{ t(feature.descKey, feature.descFallback) }}
-                            </p>
-                        </OrigamCardText>
-                    </OrigamCard>
+                        <div
+                            class="home-features__icon-wrapper"
+                            :class="`home-features__icon-wrapper--${feature.intent}`"
+                            aria-hidden="true"
+                        >
+                            <OrigamIcon :icon="feature.iconName" />
+                        </div>
+                        <h3 class="home-features__card-title">
+                            {{ t(feature.i18nKey, feature.fallback) }}
+                        </h3>
+                        <p class="home-features__card-desc">
+                            {{ t(feature.descKey, feature.descFallback) }}
+                        </p>
+                    </article>
                 </li>
             </ul>
         </div>
@@ -60,9 +60,8 @@ const { t } = useI18nFallback()
 
 <style scoped>
 .home-features {
-    padding-block: var(--origam-space-20, 5rem);
-    padding-inline: var(--origam-space-6, 1.5rem);
-    background-color: var(--origam-color-surface-subtle, transparent);
+    padding-block: var(--origam-space---20, 5rem);
+    padding-inline: var(--origam-space---6, 1.5rem);
     container-type: inline-size;
 }
 
@@ -71,102 +70,140 @@ const { t } = useI18nFallback()
     margin-inline: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space-12, 3rem);
+    gap: var(--origam-space---12, 3rem);
 }
 
 .home-features__header {
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space-3, 0.75rem);
+    align-items: center;
+    gap: var(--origam-space---3, 0.75rem);
+}
+
+.home-features__eyebrow {
+    display: inline-block;
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    font-weight: var(--origam-font__weight---semibold, 600);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+    padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
+    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 8%, transparent);
+    border-radius: var(--origam-radius---full, 9999px);
 }
 
 .home-features__title {
-    font-size: clamp(1.75rem, 3vw + 0.5rem, 2.5rem);
-    font-weight: var(--origam-font-weight-bold, 700);
-    letter-spacing: -0.02em;
-    color: var(--origam-color-text-default, currentColor);
+    font-size: clamp(1.75rem, 3vw + 0.5rem, 2.75rem);
+    font-weight: var(--origam-font__weight---bold, 700);
+    letter-spacing: -0.025em;
+    color: var(--origam-color__text---primary, #171717);
     margin: 0;
 }
 
 .home-features__subtitle {
-    font-size: var(--origam-font-size-lg, 1.125rem);
-    color: var(--origam-color-text-muted, currentColor);
+    font-size: var(--origam-font__size---xl, 1.125rem);
+    color: var(--origam-color__text---secondary, #525252);
     margin: 0;
+    max-width: 40rem;
+    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
 }
 
 .home-features__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--origam-space-6, 1.5rem);
+    gap: var(--origam-space---6, 1.5rem);
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.home-features__card {
-    height: 100%;
+.home-features__item {
+    display: flex;
 }
 
-.home-features__card-body {
+.home-features__card {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space-3, 0.75rem);
-    padding: var(--origam-space-6, 1.5rem);
+    gap: var(--origam-space---3, 0.75rem);
+    padding: var(--origam-space---6, 1.5rem);
+    border-radius: var(--origam-radius---2xl, 1.5rem);
+    border: 1px solid var(--origam-color__border---subtle, #d4d4d4);
+    background-color: var(--origam-color__surface---raised, #ffffff);
+    box-shadow: var(--origam-shadow---md);
+    transition: transform 0.2s var(--origam-motion__easing---standard), box-shadow 0.2s var(--origam-motion__easing---standard);
+    width: 100%;
+}
+
+.home-features__card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--origam-shadow---lg);
 }
 
 .home-features__icon-wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: var(--origam-rounded-lg, 0.75rem);
-    font-size: 1.25rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--origam-radius---xl, 1rem);
+    font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
 .home-features__icon-wrapper--primary {
-    background-color: color-mix(in srgb, var(--origam-color-action-primary-bg, #000) 15%, transparent);
-    color: var(--origam-color-action-primary-bg, currentColor);
+    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent);
+    color: var(--origam-color__action--primary---bg, #7c3aed);
 }
 
 .home-features__icon-wrapper--success {
-    background-color: color-mix(in srgb, var(--origam-color-action-success-bg, #22c55e) 15%, transparent);
-    color: var(--origam-color-action-success-bg, currentColor);
+    background-color: color-mix(in srgb, var(--origam-color__feedback--success---bg, #4caf50) 12%, transparent);
+    color: var(--origam-color__feedback--success---bg, #4caf50);
 }
 
 .home-features__icon-wrapper--secondary {
-    background-color: color-mix(in srgb, var(--origam-color-action-secondary-bg, #a855f7) 15%, transparent);
-    color: var(--origam-color-action-secondary-bg, currentColor);
+    background-color: color-mix(in srgb, var(--origam-color__color__neutral---600, #525252) 12%, transparent);
+    color: var(--origam-color__neutral---600, #525252);
 }
 
 .home-features__icon-wrapper--info {
-    background-color: color-mix(in srgb, var(--origam-color-action-info-bg, #3b82f6) 15%, transparent);
-    color: var(--origam-color-action-info-bg, currentColor);
+    background-color: color-mix(in srgb, var(--origam-color__feedback--info---bg, #2196f3) 12%, transparent);
+    color: var(--origam-color__feedback--info---bg, #2196f3);
 }
 
 .home-features__icon-wrapper--warning {
-    background-color: color-mix(in srgb, var(--origam-color-action-warning-bg, #f59e0b) 15%, transparent);
-    color: var(--origam-color-action-warning-bg, currentColor);
+    background-color: color-mix(in srgb, var(--origam-color__feedback--warning---bg, #fb8c00) 12%, transparent);
+    color: var(--origam-color__feedback--warning---bg, #fb8c00);
 }
 
 .home-features__icon-wrapper--danger {
-    background-color: color-mix(in srgb, var(--origam-color-action-danger-bg, #ef4444) 15%, transparent);
-    color: var(--origam-color-action-danger-bg, currentColor);
+    background-color: color-mix(in srgb, var(--origam-color__feedback--danger---bg, #ef4444) 12%, transparent);
+    color: var(--origam-color__feedback--danger---bg, #ef4444);
 }
 
 .home-features__card-title {
-    font-size: var(--origam-font-size-base, 1rem);
-    font-weight: var(--origam-font-weight-semibold, 600);
-    color: var(--origam-color-text-default, currentColor);
+    font-size: var(--origam-font__size---2xl, 1.25rem);
+    font-weight: var(--origam-font__weight---semibold, 600);
+    color: var(--origam-color__text---primary, #171717);
     margin: 0;
+    line-height: var(--origam-font__lineHeight---snug, 1.375);
 }
 
 .home-features__card-desc {
-    font-size: var(--origam-font-size-sm, 0.875rem);
-    color: var(--origam-color-text-muted, currentColor);
-    line-height: 1.6;
+    font-size: var(--origam-font__size---md, 0.875rem);
+    color: var(--origam-color__text---secondary, #525252);
+    line-height: var(--origam-font__lineHeight---relaxed, 1.625);
     margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-features__card {
+        transition: none;
+    }
+
+    .home-features__card:hover {
+        transform: none;
+    }
 }
 
 @container (max-width: 900px) {
