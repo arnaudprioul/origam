@@ -1,12 +1,5 @@
+import type { II18nLocale } from '~/interfaces/i18n.interface'
 import type { TLocale } from '~/types/locale.type'
-
-export interface II18nLocale {
-    code: TLocale
-    iso: string
-    name: string
-    file: string
-    dir?: 'ltr' | 'rtl'
-}
 
 export const I18N_LOCALES: II18nLocale[] = [
     { code: 'en', iso: 'en-US', name: 'English',  file: 'en.json', dir: 'ltr' },

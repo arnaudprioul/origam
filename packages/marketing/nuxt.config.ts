@@ -171,7 +171,8 @@ export default defineNuxtConfig({
         locales: I18N_LOCALES,
         defaultLocale: 'en',
         strategy: 'prefix_except_default',
-        langDir: 'locales',
+        restructureDir: false,
+        langDir: 'assets/locales',
         lazy: true,
         compilation: { strictMessage: false },
         detectBrowserLanguage: {
