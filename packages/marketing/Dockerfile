@@ -102,6 +102,7 @@ RUN node scripts/parse-changelog.mjs --out=.generated/changelog.json
 # the SSR step OOMs ("Reached heap limit Allocation failed"). 4 GB is
 # comfortable for the current footprint and stays well under Docker
 # Desktop / Coolify host limits.
+#
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
 
 # ---- Stage 2: minimal production image ----

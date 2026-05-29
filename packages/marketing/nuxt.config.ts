@@ -121,6 +121,21 @@ export default defineNuxtConfig({
         routeRules: ROUTE_RULES,
         alias: {
             '~app': new URL('./app', import.meta.url).pathname
+        },
+        // Nitro 2.13.4 + pnpm hoisting copies `vue` and `@vue/server-
+        // renderer` into `.output/server/node_modules/.nitro/` with
+        // their own nested `node_modules/` that symlink back to each
+        // other — vue → @vue/server-renderer → vue → … On Linux
+        // scandir blows up with ELOOP during the post-build stats
+        // pass and `nuxt build` exits 1 (Coolify deploy log). On
+        // macOS APFS the same loop is tolerated so the local docker
+        // build succeeds. Inlining the Vue packages into the server
+        // bundle skips the node_modules copy entirely — no nested
+        // dirs, no symlinks, no loop. Externals.inline accepts regex
+        // so `^vue$|^@vue/` catches `vue`, `@vue/server-renderer`,
+        // `@vue/runtime-dom`, `@vue/shared`, … all in one rule.
+        externals: {
+            inline: [/^vue$/, /^@vue\//]
         }
     },
 
