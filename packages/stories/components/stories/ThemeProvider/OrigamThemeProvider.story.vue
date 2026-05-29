@@ -9,16 +9,17 @@
 		-->
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<{ theme?: string; tag?: string }>({ theme: 'light', tag: 'div' })"
+				:init-state="() => useStoryInitState<{ theme?: string; mode?: string; tag?: string }>({ theme: 'light', mode: 'auto', tag: 'div' })"
 		>
 			<template #default="{ state }">
-				<origam-theme-provider :theme="state.theme" :tag="state.tag" style="padding: 16px; display: block;">
+				<origam-theme-provider :theme="state.theme" :mode="state.mode" :tag="state.tag" style="padding: 16px; display: block;">
 					<origam-btn color="primary" text="Themed button"/>
 					<origam-btn variant="outlined" text="Outlined" style="margin-left: 8px;"/>
 				</origam-theme-provider>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.theme" title="theme" :options="themeList"/>
+				<HstSelect v-model="state.mode"  title="mode"  :options="modeList"/>
 				<HstSelect v-model="state.tag"   title="tag"   :options="tagList"/>
 			</template>
 		</Variant>
@@ -40,6 +41,24 @@
 		<Variant title="Prop — theme (auto)">
 			<origam-theme-provider theme="auto" style="padding: 16px; display: block;">
 				<origam-btn color="primary" text="Auto theme button"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — mode (light)">
+			<origam-theme-provider mode="light" style="padding: 16px; display: block;">
+				<origam-btn color="primary" text="Light mode button"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — mode (dark)">
+			<origam-theme-provider mode="dark" style="padding: 16px; display: block;">
+				<origam-btn color="primary" text="Dark mode button"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — theme + mode">
+			<origam-theme-provider theme="brand-a" mode="dark" style="padding: 16px; display: block;">
+				<origam-btn color="primary" text="brand-a / dark"/>
 			</origam-theme-provider>
 		</Variant>
 
@@ -91,6 +110,12 @@
 		{ label: 'light', value: 'light' },
 		{ label: 'dark',  value: 'dark' },
 		{ label: 'auto',  value: 'auto' },
+	]
+
+	const modeList = [
+		{ label: 'auto',  value: 'auto' },
+		{ label: 'light', value: 'light' },
+		{ label: 'dark',  value: 'dark' },
 	]
 </script>
 
