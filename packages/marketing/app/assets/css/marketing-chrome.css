@@ -824,3 +824,10 @@ html[data-theme][data-mode] {
 [data-theme="geek"] .m-section-pre {
 	text-shadow: 0 0 10px currentColor;
 }
+
+[data-theme="geek"] .home-hero {
+	background-image:
+		linear-gradient(rgba(0, 240, 255, .07) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(199, 125, 255, .07) 1px, transparent 1px);
+	background-size: 40px 40px;
+}

@@ -5,6 +5,12 @@ const { t } = useI18nFallback()
 const config = useRuntimeConfig()
 const { track } = useAnalytics()
 
+const activeTheme = useState<string>('mkt-theme', () => 'sobre')
+const heroTitle = computed(() => t(
+    `home.hero.titleAlt.${activeTheme.value}`,
+    t('home.hero.title', 'The Vue 3 design system that just works.')
+))
+
 const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 
 const isCopied = ref(false)
@@ -34,7 +40,7 @@ function copyInstall (): void {
                 id="hero-title"
                 class="home-hero__title"
             >
-                {{ t('home.hero.title', 'The Vue 3 design system that just works.') }}
+                {{ heroTitle }}
             </h1>
 
             <p class="home-hero__subtitle">
@@ -172,6 +178,7 @@ function copyInstall (): void {
     -webkit-text-fill-color: transparent;
     color: transparent;
     max-inline-size: 22ch;
+    white-space: pre-line;
 }
 
 .home-hero__subtitle {

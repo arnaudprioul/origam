@@ -19,7 +19,7 @@ const { track } = useAnalytics()
 const themeCookie = useCookie('origam_mkt_theme', { default: () => 'sobre' })
 const modeCookie = useCookie<'light' | 'dark'>('origam_mkt_mode', { default: () => 'light' })
 
-const currentTheme = ref(themeCookie.value ?? 'sobre')
+const currentTheme = useState<string>('mkt-theme', () => themeCookie.value ?? 'sobre')
 const currentMode = ref<'light' | 'dark'>(modeCookie.value ?? 'light')
 const isOpen = ref(false)
 
