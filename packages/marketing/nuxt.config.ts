@@ -95,6 +95,9 @@ export default defineNuxtConfig({
                 'data-theme': MARKETING_DEFAULTS.defaultTheme
             },
             link: [
+                { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+                { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+                { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap' },
                 { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },
                 { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath }
             ]
