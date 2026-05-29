@@ -340,6 +340,15 @@ const AVATAR_ITEMS_WITH_REST = [
     flex: 1;
 }
 
+/* Force a visible surface on the neutral tonal chip — origam's
+ * default `--origam-color__action--neutral---bgSubtle` resolves
+ * to `transparent` so without this the "Neutral" pill renders as
+ * plain coloured text without a chip body. */
+.home-showcase__chips :deep(.origam-chip--color-neutral) {
+    background-color: var(--m-surface-2, color-mix(in srgb, var(--m-text, #fafafa) 8%, transparent));
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #a3a3a3));
+}
+
 .home-showcase__table-status {
     display: inline-flex;
     align-items: center;

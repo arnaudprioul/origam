@@ -24,18 +24,35 @@ const compileError = ref<string | null>(null)
 
 const store = shallowRef<ReplStore | null>(null)
 const ReplComponent = shallowRef<object | null>(null)
+const EditorComponent = shallowRef<object | null>(null)
 
 async function initRepl () {
-    const { useStore, Repl, File } = await import('@vue/repl')
+    // @vue/repl@4 requires explicitly passing an editor component to
+    // the `<Repl>` for tree-shaking — without it the Repl crashes
+    // silently and the preview pane stays blank. We pick Monaco
+    // (Volar support + autocomplete) to match the standalone
+    // PlaygroundEditor used elsewhere in the marketing.
+    const [replModule, monacoModule] = await Promise.all([
+        import('@vue/repl'),
+        import('@vue/repl/monaco-editor')
+    ])
+    const { useStore, Repl, File } = replModule
+    const Monaco = (monacoModule as { default: object }).default ?? monacoModule
 
     const replStore = useStore()
 
-    // Replace the default playground file with the consumer code.
-    replStore.files['App.vue'] = new File('App.vue', props.code)
-    replStore.activeFilename = 'App.vue'
+    // @vue/repl v4 requires `init()` to be called before any addFile /
+    // setActive — it sets up the internal compiler / vueVersion refs
+    // that the file watcher needs. Skipping it crashes with
+    // "Cannot set properties of undefined (setting 'name')" when the
+    // store tries to register the file rename event.
+    replStore.init()
+    replStore.addFile(new File('App.vue', props.code))
+    replStore.setActive('App.vue')
 
     store.value = replStore
     ReplComponent.value = Repl
+    EditorComponent.value = Monaco
     isLoading.value = false
 }
 
@@ -56,8 +73,12 @@ watch(() => props.code, async (newCode) => {
     try {
         const { File } = await import('@vue/repl')
         compileError.value = null
-        store.value.files['App.vue'] = new File('App.vue', newCode)
-        store.value.activeFilename = 'App.vue'
+        // Replace the file content via the store API rather than
+        // mutating `files` directly — the latter bypasses the
+        // store's internal watchers and the preview doesn't refresh.
+        store.value.deleteFile('App.vue')
+        store.value.addFile(new File('App.vue', newCode))
+        store.value.setActive('App.vue')
     } catch (err: unknown) {
         compileError.value = err instanceof Error ? err.message : String(err)
     }
@@ -101,10 +122,11 @@ watch(() => props.code, async (newCode) => {
                 <pre class="playground-preview__error-message">{{ compileError }}</pre>
             </div>
         </template>
-        <template v-else-if="ReplComponent && store">
+        <template v-else-if="ReplComponent && store && EditorComponent">
             <component
                 :is="ReplComponent"
                 :store="store"
+                :editor="EditorComponent"
                 :clear-console="false"
                 :show-compile-output="false"
                 :show-import-map="false"

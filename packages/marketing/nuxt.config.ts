@@ -195,7 +195,7 @@ export default defineNuxtConfig({
             }
         },
         optimizeDeps: {
-            include: ['monaco-editor', '@vue/repl']
+            include: ['monaco-editor', '@vue/repl', '@vue/repl/monaco-editor']
         },
         worker: {
             format: 'es' as const
