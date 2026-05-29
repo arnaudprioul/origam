@@ -58,6 +58,31 @@ The picker opens when the user clicks the field. Use `close-on-select` to close 
 </template>
 ```
 
+## Validation
+
+Pass a `rules` array to validate the selected colour. Each rule is a function `(value) => true | string`. The message is rendered by `OrigamMessages` (`.origam-messages`) below the field.
+
+```vue
+<template>
+    <OrigamColorPickerField
+        v-model="color"
+        label="Brand colour"
+        :rules="[v => !!v || 'Color required']"
+        validate-on="blur"
+    />
+</template>
+```
+
+The `validationValue` passed to the underlying `OrigamInput` is always the current colour value (`model.value`). When the field is empty (`null`), validation rules receive `null` — the falsy check `!!v` correctly triggers the error message.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rules` | `Array<(v: any) => true \| string>` | `undefined` | Validation rules. Each function receives the current colour value and must return `true` (valid) or an error string |
+| `errorMessages` | `string \| Array<string>` | `undefined` | Static error messages displayed unconditionally |
+| `validateOn` | `TValidateOn` | `'input'` | When validation runs: `'input'`, `'blur'`, `'submit'`, or `'lazy'` |
+| `error` | `boolean` | `false` | Force the field into error state |
+| `maxErrors` | `number \| string` | `1` | Maximum number of simultaneous error messages shown |
+
 ## Slots
 
 | Slot | Description |

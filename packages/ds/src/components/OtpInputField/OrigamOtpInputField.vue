@@ -125,26 +125,40 @@
 
 			<slot name="default"/>
 		</div>
+
+		<div
+				v-if="hasDetails"
+				class="origam-otp-input-field__details"
+		>
+			<origam-messages
+					:id="messagesId"
+					:active="hasMessages"
+					:messages="validationMessages"
+			/>
+		</div>
 	</div>
-</template><script
+</template>
+
+<script
 		lang="ts"
 		setup
 >
 
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
 	import { OrigamField, OrigamOverlay, OrigamProgress } from "../../components"
+	import { OrigamMessages } from "../../components/Messages"
 
-	import { useDimension, useFocus, useLocale, useProps, useVModel , useStyle} from "../../composables"
+	import { useDimension, useFocus, useLocale, useProps, useValidation, useVModel, useStyle } from "../../composables"
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 
-	import type { IOtpInputFieldProps, IOtpInputFieldSlots} from "../../interfaces"
+	import type { IOtpInputFieldProps, IOtpInputFieldSlots } from "../../interfaces"
 
 	import type { IOtpInputFieldEmits } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
 	import type { TOrigamField } from "../../types"
 
-	import { filterInputAttrs, focusChild, forwardRefs } from "../../utils"
+	import { filterInputAttrs, focusChild, forwardRefs, getUid, wrapInArray } from "../../utils"
 
 	/*********************************************************
 	 * Global
@@ -161,31 +175,31 @@
 
 	defineSlots<IOtpInputFieldSlots>()
 
-	const {filterProps} = useProps<IOtpInputFieldProps>(props)
+	const { filterProps } = useProps<IOtpInputFieldProps>(props)
 
-	const {t} = useLocale()
+	const { t } = useLocale()
 	const attrs = useAttrs()
 	const slots = useSlots()
 
 	/*********************************************************
-	 * Dimension & focus
-	 *
-	 * @description
-	 * dimensionStyles drives width/height CSS vars from props.
-	 * isFocused tracks whether any cell has focus.
+	 * Identity
 	 ********************************************************/
+
+	const uid = getUid()
+	const id = computed(() => props.id || `otp-input-field-${uid}`)
+	const messagesId = computed(() => `${id.value}-messages`)
 
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
 
-	const {dimensionStyles} = useDimension(props)
+	const { dimensionStyles } = useDimension(props)
 
 	/*********************************************************
 	 * Effect
 	 ********************************************************/
 
-	const {isFocused, onFocus: focus, onBlur: blur} = useFocus(props)
+	const { isFocused, onFocus: focus, onBlur: blur } = useFocus(props)
 
 	/*********************************************************
 	 * Value & model
@@ -195,16 +209,12 @@
 	 * length / fields drive the rendered cell count.
 	 ********************************************************/
 
-	/*********************************************************
-	 * Value
-	 ********************************************************/
-
 	const model = useVModel(
-			props,
-			'modelValue',
-			'',
-			(val) => val == null ? [] : String(val).split(''),
-			(val) => val.join('')
+		props,
+		'modelValue',
+		'',
+		(val) => val == null ? [] : String(val).split(''),
+		(val) => val.join('')
 	)
 
 	const length = computed(() => {
@@ -212,6 +222,58 @@
 	})
 	const fields = computed(() => {
 		return Array(length.value).fill(0)
+	})
+
+	const otpStringValue = computed(() => model.value.join(''))
+
+	/*********************************************************
+	 * Validation
+	 *
+	 * @description
+	 * useValidation evaluates `props.rules` against the joined OTP
+	 * string (otpStringValue). A Proxy wraps props so that both
+	 * `modelValue` and `validationValue` accesses transparently
+	 * return the reactive OTP string — without duplicating the
+	 * useVModel wiring that already lives above.
+	 * `validationMessages` mirrors the `messages` computed from
+	 * OrigamInput: errorMessages take precedence, then hint, then
+	 * props.messages.
+	 ********************************************************/
+	const {
+		errorMessages,
+		isPristine,
+		isValid,
+		isValidating,
+		reset: resetValidation,
+		validate,
+		validationClasses
+	} = useValidation(
+		new Proxy(props, {
+			get(target, key) {
+				if (key === 'modelValue' || key === 'validationValue') {
+					return otpStringValue.value
+				}
+				return (target as any)[key]
+			}
+		}),
+		'origam-otp-input-field',
+		id
+	)
+
+	const validationMessages = computed(() => {
+		if (props.errorMessages?.length || (!isPristine.value && errorMessages.value.length)) {
+			return errorMessages.value
+		} else if (props.hint && (props.persistentHint || isFocused.value)) {
+			return wrapInArray(props.hint)
+		}
+		return wrapInArray(props.messages ?? [])
+	})
+
+	const hasMessages = computed(() => validationMessages.value.length > 0)
+	const hasDetails = computed(() => {
+		if (props.hideDetails === true) return false
+		if (props.hideDetails === 'auto') return hasMessages.value
+		return true
 	})
 
 	/*********************************************************
@@ -350,8 +412,11 @@
 	}
 
 	watch(model, (val) => {
-		if (val.length === length.value) emits('finish', val.join(''))
-	}, {deep: true})
+		if (val.length === length.value) {
+			emits('finish', val.join(''))
+			validate()
+		}
+	}, { deep: true })
 
 	watch(focusIndex, (val) => {
 		if (val < 0) return
@@ -378,37 +443,42 @@
 			{
 				'origam-otp-input-field--divided': !!props.divider
 			},
+			validationClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(otpInputFieldStyles)
+	const { id: styleId, css, load, isLoaded, unload } = useStyle(otpInputFieldStyles)
 
 
 	/*********************************************************
 	 * Expose
 	 *
 	 * @description
-	 * Exposes blur, focus, reset, isFocused and filterProps to
+	 * Exposes blur, focus, reset, resetValidation, validate, isValid,
+	 * isValidating, errorMessages, isFocused and filterProps to
 	 * parent ref consumers.
 	 ********************************************************/
 	defineExpose(forwardRefs({
 		blur: () => {
-			inputRef.value?.some(input => {
-				input.blur()
-				return true,
-		css,
-		id,
-		load,
-		unload,
-		isLoaded
-	})
+			inputRef.value?.forEach(input => input.blur())
 		},
 		focus: () => {
 			inputRef.value?.[0]?.focus()
 		},
 		reset,
+		resetValidation,
+		validate,
+		isValid,
+		isValidating,
+		errorMessages,
 		isFocused,
-		filterProps
+		filterProps,
+		css,
+		id,
+		styleId,
+		load,
+		unload,
+		isLoaded
 	}))
 
 </script>
@@ -422,6 +492,7 @@
 
 		align-items: center;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
 		padding: var(--origam-otp-input-field---padding-block, .5rem) 0;
 		position: relative;
@@ -479,6 +550,30 @@
 
 			.origam-progress {
 				position: absolute;
+			}
+		}
+
+		&__details {
+			align-items: flex-end;
+			display: flex;
+			font-size: 0.75rem;
+			font-weight: 400;
+			letter-spacing: 0.0333333333em;
+			line-height: 1;
+			min-height: 22px;
+			padding-top: 6px;
+			overflow: hidden;
+			justify-content: space-between;
+			width: 100%;
+			padding-inline: var(--origam-otp-input-field__details---padding-inline, 4px);
+		}
+
+		&--error {
+			#{$this}__details {
+				> .origam-messages {
+					color: var(--origam-otp-input-field---error-color, var(--origam-color__feedback--danger---fg-subtle));
+					opacity: 1;
+				}
 			}
 		}
 

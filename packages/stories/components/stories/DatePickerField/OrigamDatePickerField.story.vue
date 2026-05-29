@@ -154,6 +154,26 @@
 			/>
 		</Variant>
 
+		<Variant title="Prop — rules">
+			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
+				<origam-date-picker-field
+						v-model="rulesDate"
+						label="Required date (single)"
+						:rules="requiredRule"
+						validate-on="blur"
+						data-cy="datepickerfield-rules-single"
+				/>
+				<origam-date-picker-field
+						v-model="rulesDates"
+						label="Required range"
+						range
+						:rules="requiredRangeRule"
+						validate-on="blur"
+						data-cy="datepickerfield-rules-range"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Prop — closeOnSelect"
 				:init-state="() => useStoryInitState<{ closeOnSelect?: boolean }>({ closeOnSelect: true })"
@@ -342,6 +362,17 @@
 	const colorDate = ref(null)
 	const variantDate = ref(null)
 	const densityDate = ref(null)
+	const rulesDate = ref(null)
+	const rulesDates = ref([])
+
+	const requiredRule = [(v: unknown) => {
+		if (Array.isArray(v)) return v.length > 0 || 'Date required'
+		return !!v || 'Date required'
+	}]
+	const requiredRangeRule = [(v: unknown) => {
+		if (Array.isArray(v)) return v.length >= 2 || 'Select start and end date'
+		return !!v || 'Select start and end date'
+	}]
 </script>
 
 <docs lang="md" src="@docs/components/DatePickerField/OrigamDatePickerField.md"/>

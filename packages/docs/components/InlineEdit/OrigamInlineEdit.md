@@ -48,7 +48,8 @@ buttons are placed inside the field via its `appendInner` slot.
 |--------------------|---------------------------------------------|-------------------|----------------------------------------------------------------|
 | `modelValue`       | `string \| number`                          | required          | v-model target. Numbers round-trip as numbers.                 |
 | `placeholder`      | `string`                                    | `'Click to edit'` | Shown on the input and on the empty display.                   |
-| `validate`         | `(v: string) => true \| string \| Promise<…>` | `undefined`     | Sync or async validator. Returning a string surfaces it as an error and keeps the editor open. |
+| `rules`            | `Array<(v: string) => true \| string \| Promise<…>>` | `undefined` | Array of validation rules — same contract as all DS form fields. Rules are evaluated sequentially; first failure surfaces the error and blocks the commit. Evaluated before `validate`. |
+| `validate`         | `(v: string) => true \| string \| Promise<…>` | `undefined`     | Sync or async validator. Returning a string surfaces it as an error and keeps the editor open. Only runs if all `rules` pass. |
 | `autoFocus`        | `boolean`                                   | `true`            | Auto-focus the input on edit entry.                            |
 | `selectOnFocus`    | `boolean`                                   | `true`            | Select all text after auto-focus.                              |
 | `confirmOnBlur`    | `boolean`                                   | `true`            | Commit on blur. Disable to require an explicit Enter / button. |
@@ -222,6 +223,48 @@ While the Promise is in flight, the component sets `aria-busy="true"`
 on the root and `aria-disabled` on the input. With
 `loadingOnConfirm=true`, an additional CSS hook is exposed so you
 can render a spinner overlay if needed.
+
+### Rules array — standard DS contract
+
+```vue
+<origam-inline-edit
+    v-model="title"
+    :rules="[
+        (v) => v.trim().length > 0 || 'Value cannot be empty',
+        (v) => v.length >= 5   || 'Min 5 characters required',
+    ]"
+/>
+```
+
+Rules follow the same signature as `OrigamTextField` / `OrigamInput`
+rules: a function receiving the current string value and returning
+`true` (pass) or an error message string (fail). Async rules
+(returning a `Promise`) are supported.
+
+### Coexistence of `rules` and `validate`
+
+Both props can be used simultaneously. Evaluation order:
+
+1. `rules` are evaluated first, sequentially. The first failing rule
+   stops evaluation and surfaces its message.
+2. `validate` is only called if all rules pass.
+
+Only the first error message is ever displayed — the editor remains
+open and the commit is blocked until the value satisfies both.
+
+```vue
+<origam-inline-edit
+    v-model="email"
+    :rules="[
+        (v) => v.trim().length > 0 || 'Required',
+        (v) => v.includes('@')     || 'Must contain @',
+    ]"
+    :validate="async (v) => {
+        const taken = await api.checkEmail(v)
+        return taken ? 'Email already in use' : true
+    }"
+/>
+```
 
 ### Error UX
 

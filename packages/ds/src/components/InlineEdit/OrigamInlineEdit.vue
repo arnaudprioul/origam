@@ -224,6 +224,7 @@
 	const props = withDefaults(defineProps<IInlineEditProps>(), {
 		tag: 'span',
 		placeholder: 'Click to edit',
+		rules: undefined,
 		validate: undefined,
 		autoFocus: true,
 		selectOnFocus: true,
@@ -260,6 +261,7 @@
 		cancel,
 		setValue
 	} = useInlineEdit(modelRef, {
+		rules: props.rules,
 		validate: props.validate,
 		trim: props.trim,
 		onConfirm: (value: string) => {

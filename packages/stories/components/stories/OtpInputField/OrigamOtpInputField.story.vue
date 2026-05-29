@@ -206,6 +206,26 @@
 		</Variant>
 
 		<Variant
+				title="Prop — rules"
+				:init-state="() => useStoryInitState<{ length: number }>({ length: 6 })"
+		>
+			<template #default="{ state }">
+				<origam-otp-input-field
+						v-model="rulesModel"
+						:length="state.length"
+						:rules="otpRules"
+						label="Verification code (6 digits required)"
+						validate-on="input"
+						data-cy="otp-rules"
+				/>
+				<div data-cy="otp-rules-status">value = {{ rulesModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider v-model="state.length" title="length" :min="4" :max="10"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — disabled, readonly & error"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
 		>
@@ -401,6 +421,7 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamOtpInputField } from '@origam/components'
+	import { useLocale } from '@origam/composables'
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type { IColorProps, IDensityProps, IOtpInputFieldProps, IOptions } from '@origam/interfaces'
 	import type { TVariantInput } from '@origam/types'
@@ -412,6 +433,8 @@
 		hoverList
 	} from '@stories/const'
 
+	const { t } = useLocale()
+
 	const lengthModel     = ref<string | null>(null)
 	const typeModel       = ref<string | null>(null)
 	const dividerModel    = ref<string | null>(null)
@@ -419,10 +442,15 @@
 	const colorModel      = ref<string | null>(null)
 	const densityModel    = ref<string | null>(null)
 	const statesModel     = ref<string | null>(null)
+	const rulesModel      = ref<string | null>(null)
 	const emitModel        = ref<string | null>(null)
 	const emitClearModel   = ref<string | null>(null)
 	const emitFinishModel  = ref<string | null>(null)
 	const playgroundModel  = ref<string | null>(null)
+
+	const otpRules = [
+		(v: string) => v.length === 6 || t('origam.validation.otp_incomplete', 'Code incomplet (6 chiffres requis)')
+	]
 
 	const otpTypeList: Array<IOptions<string>> = [
 		{ label: 'text',     value: 'text'     },

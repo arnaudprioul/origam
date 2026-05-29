@@ -42,6 +42,39 @@ const date = ref(null)
 | `chipProps` | `IChipProps` | Props forwarded to the chip elements |
 | `closableChips` | `boolean` | Makes chips closable (removes date on close) |
 
+## Validation
+
+`OrigamDatePickerField` forwards `rules`, `errorMessages`, and `validateOn` to the underlying `OrigamTextField` / `OrigamInput`. The value passed to each rule function is the internal date array (`Array<string>`).
+
+- **Single mode** — array is empty (`[]`) when nothing is selected, or contains one ISO date string when a date is chosen.
+- **Range / Multiple mode** — array holds all selected dates; for range, it contains `[startDate, endDate]` once both are picked.
+
+A `required` rule should check `Array.length > 0` (single or multiple) or `Array.length >= 2` (range):
+
+```vue
+<template>
+    <OrigamDatePickerField
+        v-model="date"
+        label="Appointment"
+        :rules="[(v) => (Array.isArray(v) ? v.length > 0 : !!v) || 'Date required']"
+        validate-on="blur"
+    />
+    <OrigamDatePickerField
+        v-model="dates"
+        label="Date range"
+        range
+        :rules="[(v) => (Array.isArray(v) ? v.length >= 2 : false) || 'Select start and end date']"
+        validate-on="blur"
+    />
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rules` | `Array<(v: unknown) => true \| string>` | `undefined` | Validation rules. Receives the date array as value. |
+| `errorMessages` | `Array<string> \| string` | `undefined` | Static error messages to display unconditionally. |
+| `validateOn` | `'input' \| 'blur' \| 'submit' \| 'lazy'` | `'input'` | When validation is triggered. |
+
 ## Menu behaviour
 
 | Prop | Type | Default | Description |

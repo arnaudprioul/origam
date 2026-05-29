@@ -18,7 +18,7 @@ import { expect, test, type Page } from '@playwright/test'
  * HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-inlineedit-origaminlineedit-story-vue'
+const STORY = '/story/components-stories-inlineedit-origaminlineedit-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -126,7 +126,10 @@ test.describe('OrigamInlineEdit — Validator (sync)', () => {
         await expect(error).toBeVisible()
         await expect(error).toHaveAttribute('role', 'alert')
         await expect(error).toContainText(/min 3 chars/i)
-        await expect(input).toHaveAttribute('aria-invalid', 'true')
+        // aria-invalid is set on the OrigamTextField field root (data-cy="origam-inline-edit-input"),
+        // not on the inner native <input> element.
+        const fieldRoot = sandbox.locator('[data-cy="inline-edit-validate-min-host"] [data-cy="origam-inline-edit-input"]').first()
+        await expect(fieldRoot).toHaveAttribute('aria-invalid', 'true')
     })
 
     test('a valid sync value commits and clears the error', async ({ page }) => {
@@ -226,7 +229,7 @@ test.describe('OrigamInlineEdit — Slots', () => {
 
 test.describe('OrigamInlineEdit — Prop showActions=false (default, keyboard only)', () => {
     test('no action buttons are rendered when showActions is false', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions (default false, keyboard only)')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         // The display affordance is present.
@@ -238,7 +241,7 @@ test.describe('OrigamInlineEdit — Prop showActions=false (default, keyboard on
     })
 
     test('keyboard Enter confirms, Escape cancels — showActions=false does not break keyboard', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions (default false, keyboard only)')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         const display = sandbox.locator('[data-cy="inline-edit-show-actions-false-host"] [data-cy="origam-inline-edit-display"]').first()
@@ -248,33 +251,39 @@ test.describe('OrigamInlineEdit — Prop showActions=false (default, keyboard on
         await input.fill('New keyboard value')
         await input.press('Enter')
 
-        const state = sandbox.locator('[data-cy="inline-edit-show-actions-false-state"]').first()
-        await expect(state).toHaveText('New keyboard value')
+        // Editor closes and display shows the new value.
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-false-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-false-host"] [data-cy="origam-inline-edit-display"]').first()).toContainText('New keyboard value')
     })
 })
 
 test.describe('OrigamInlineEdit — Prop showActions=true', () => {
     test('Edit button is visible in display mode', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        // Scope to the showActions=true instance — the variant has 4 OrigamInlineEdit instances.
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        const editBtn = trueHost.locator('[data-cy="origam-inline-edit-action-edit"]').first()
         await expect(editBtn).toBeVisible({ timeout: 8000 })
     })
 
     test('Confirm and Cancel buttons are NOT visible in display mode', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        await expect(sandbox.locator('[data-cy="origam-inline-edit-action-confirm"]')).toHaveCount(0)
-        await expect(sandbox.locator('[data-cy="origam-inline-edit-action-cancel"]')).toHaveCount(0)
+        // Scoped to the true-host instance (none of the instances should have confirm/cancel in display mode).
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        await expect(trueHost.locator('[data-cy="origam-inline-edit-action-confirm"]')).toHaveCount(0)
+        await expect(trueHost.locator('[data-cy="origam-inline-edit-action-cancel"]')).toHaveCount(0)
     })
 
     test('clicking Edit button enters edit mode (OrigamTextField visible with input inside)', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        const editBtn = trueHost.locator('[data-cy="origam-inline-edit-action-edit"]').first()
         await editBtn.click()
 
         const input = inputInField(sandbox, 'inline-edit-show-actions-true-host')
@@ -282,10 +291,12 @@ test.describe('OrigamInlineEdit — Prop showActions=true', () => {
     })
 
     test('Confirm and Cancel buttons are inside the field (appendInner), Edit button is hidden', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        // Scope to the showActions=true host — the variant has multiple instances on the same page.
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        const editBtn = trueHost.locator('[data-cy="origam-inline-edit-action-edit"]').first()
         await editBtn.click()
 
         // Confirm and Cancel are inside the field element.
@@ -293,65 +304,70 @@ test.describe('OrigamInlineEdit — Prop showActions=true', () => {
         await expect(fieldEl.locator('[data-cy="origam-inline-edit-action-confirm"]').first()).toBeVisible()
         await expect(fieldEl.locator('[data-cy="origam-inline-edit-action-cancel"]').first()).toBeVisible()
 
-        // Edit button is gone.
-        await expect(sandbox.locator('[data-cy="origam-inline-edit-action-edit"]')).toHaveCount(0)
+        // Edit button is gone from THIS instance (scoped check — other instances remain).
+        await expect(trueHost.locator('[data-cy="origam-inline-edit-action-edit"]')).toHaveCount(0)
     })
 
     test('clicking Confirm commits the new value and exits edit mode', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        const editBtn = trueHost.locator('[data-cy="origam-inline-edit-action-edit"]').first()
         await editBtn.click()
 
         const input = inputInField(sandbox, 'inline-edit-show-actions-true-host')
         await input.fill('Saved via button')
 
-        const confirmBtn = sandbox.locator('[data-cy="origam-inline-edit-action-confirm"]').first()
+        const confirmBtn = trueHost.locator('[data-cy="origam-inline-edit-action-confirm"]').first()
         await confirmBtn.click()
 
+        // Editor must close — the input disappears (state display not available in this variant).
         await expect(sandbox.locator('[data-cy="inline-edit-show-actions-true-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
-        const state = sandbox.locator('[data-cy="inline-edit-show-actions-true-state"]').first()
-        await expect(state).toHaveText('Saved via button')
+        // Display affordance is back with the committed value.
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-true-host"] [data-cy="origam-inline-edit-display"]').first()).toContainText('Saved via button')
     })
 
     test('clicking Cancel exits edit mode WITHOUT updating the value', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        const editBtn = trueHost.locator('[data-cy="origam-inline-edit-action-edit"]').first()
         await editBtn.click()
 
         const input = inputInField(sandbox, 'inline-edit-show-actions-true-host')
         await input.fill('Discarded change')
 
-        const cancelBtn = sandbox.locator('[data-cy="origam-inline-edit-action-cancel"]').first()
+        const cancelBtn = trueHost.locator('[data-cy="origam-inline-edit-action-cancel"]').first()
         await cancelBtn.click()
 
         await expect(sandbox.locator('[data-cy="inline-edit-show-actions-true-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
-        const state = sandbox.locator('[data-cy="inline-edit-show-actions-true-state"]').first()
-        await expect(state).toHaveText('With action buttons')
+        // The display must show the original value (unchanged).
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-true-host"] [data-cy="origam-inline-edit-display"]').first()).toContainText('With action buttons')
     })
 
     test('keyboard shortcuts still work in parallel with showActions=true (Enter confirms)', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        const trueHost = sandbox.locator('[data-cy="inline-edit-show-actions-true-host"]')
+        const editBtn = trueHost.locator('[data-cy="origam-inline-edit-action-edit"]').first()
         await editBtn.click()
 
         const input = inputInField(sandbox, 'inline-edit-show-actions-true-host')
         await input.fill('Saved via Enter')
         await input.press('Enter')
 
-        const state = sandbox.locator('[data-cy="inline-edit-show-actions-true-state"]').first()
-        await expect(state).toHaveText('Saved via Enter')
+        // Editor closes — the display shows the new value.
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-true-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-true-host"] [data-cy="origam-inline-edit-display"]').first()).toContainText('Saved via Enter')
     })
 })
 
 test.describe('OrigamInlineEdit — Prop showActions=true + multiline', () => {
     test('Edit button is visible in display mode', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true + multiline')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         const editBtn = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-action-edit"]').first()
@@ -359,7 +375,7 @@ test.describe('OrigamInlineEdit — Prop showActions=true + multiline', () => {
     })
 
     test('clicking Edit enters multiline mode — OrigamTextareaField with textarea visible', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true + multiline')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         const editBtn = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-action-edit"]').first()
@@ -370,7 +386,7 @@ test.describe('OrigamInlineEdit — Prop showActions=true + multiline', () => {
     })
 
     test('Confirm and Cancel buttons are inside the OrigamTextareaField (appendInner)', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true + multiline')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         const editBtn = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-action-edit"]').first()
@@ -382,7 +398,7 @@ test.describe('OrigamInlineEdit — Prop showActions=true + multiline', () => {
     })
 
     test('clicking Confirm commits the new value', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true + multiline')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         const editBtn = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-action-edit"]').first()
@@ -395,12 +411,12 @@ test.describe('OrigamInlineEdit — Prop showActions=true + multiline', () => {
         await confirmBtn.click()
 
         await expect(sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
-        const state = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-state"]').first()
-        await expect(state).toHaveText('Saved multiline via button')
+        // Verify the display reflects the committed value.
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-display"]').first()).toContainText('Saved multiline via button')
     })
 
     test('clicking Cancel exits without saving', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true + multiline')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
         const editBtn = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-action-edit"]').first()
@@ -413,17 +429,17 @@ test.describe('OrigamInlineEdit — Prop showActions=true + multiline', () => {
         await cancelBtn.click()
 
         await expect(sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
-        const state = sandbox.locator('[data-cy="inline-edit-show-actions-multiline-state"]').first()
-        await expect(state).toHaveText('Multiline with action buttons')
+        // Display shows the original value (unchanged after cancel).
+        await expect(sandbox.locator('[data-cy="inline-edit-show-actions-multiline-host"] [data-cy="origam-inline-edit-display"]').first()).toContainText('Multiline with action buttons')
     })
 })
 
 test.describe('OrigamInlineEdit — Prop showActions=true + disabled', () => {
     test('Edit button is disabled when the component is disabled', async ({ page }) => {
-        await openVariant(page, 'Prop — showActions=true + disabled')
+        await openVariant(page, 'Prop — showActions')
         const sandbox = sandboxOf(page)
 
-        const editBtn = sandbox.locator('[data-cy="origam-inline-edit-show-actions-disabled-host"] [data-cy="origam-inline-edit-action-edit"]').first()
+        const editBtn = sandbox.locator('[data-cy="inline-edit-show-actions-disabled-host"] [data-cy="origam-inline-edit-action-edit"]').first()
         await expect(editBtn).toBeDisabled({ timeout: 8000 })
     })
 })
@@ -456,5 +472,115 @@ test.describe('OrigamInlineEdit — Emits', () => {
         await input2.press('Enter')
 
         await expect(sandbox.locator('[data-cy="inline-edit-emits-confirm"]').first()).toHaveText('1')
+    })
+})
+
+test.describe('OrigamInlineEdit — Prop rules', () => {
+    test('a failing rule surfaces its message in role=alert and keeps the editor open', async ({ page }) => {
+        await openVariant(page, 'Prop — rules')
+        const sandbox = sandboxOf(page)
+
+        const display = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-display"]').first()
+        await display.click()
+
+        const input = inputInField(sandbox, 'inline-edit-rules-host')
+        // 3 chars — fails the "min 5" rule.
+        await input.fill('abc')
+        await input.press('Enter')
+
+        // Editor must stay open.
+        await expect(input).toBeVisible()
+
+        // Error must appear with role=alert.
+        const error = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-error"]').first()
+        await expect(error).toBeVisible()
+        await expect(error).toHaveAttribute('role', 'alert')
+        await expect(error).toContainText(/min 5/i)
+
+        // aria-invalid is set on the OrigamTextField field root (data-cy="origam-inline-edit-input"),
+        // not on the inner native <input> element.
+        const fieldRootEl = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-input"]').first()
+        await expect(fieldRootEl).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    test('the first failing rule message is displayed (rules are evaluated sequentially)', async ({ page }) => {
+        await openVariant(page, 'Prop — rules')
+        const sandbox = sandboxOf(page)
+
+        const display = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-display"]').first()
+        await display.click()
+
+        const input = inputInField(sandbox, 'inline-edit-rules-host')
+        // Whitespace-only — fails the "non-empty" rule first.
+        await input.fill('   ')
+        await input.press('Enter')
+
+        const error = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-error"]').first()
+        await expect(error).toBeVisible()
+        // The first rule ("cannot be empty") message should appear, not the second.
+        await expect(error).toContainText(/empty/i)
+    })
+
+    test('the error disappears when the user types a valid value and confirms', async ({ page }) => {
+        await openVariant(page, 'Prop — rules')
+        const sandbox = sandboxOf(page)
+
+        const display = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-display"]').first()
+        await display.click()
+
+        const input = inputInField(sandbox, 'inline-edit-rules-host')
+        // Trigger an error first.
+        await input.fill('ab')
+        await input.press('Enter')
+
+        const error = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-error"]').first()
+        await expect(error).toBeVisible()
+
+        // Now fix the value — error should clear immediately on keystroke.
+        await input.fill('Valid value')
+        await expect(sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-error"]')).toHaveCount(0)
+
+        // Confirm — editor exits, state updates.
+        await input.press('Enter')
+        await expect(sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        const state = sandbox.locator('[data-cy="inline-edit-rules-state"]').first()
+        await expect(state).toHaveText('Valid value')
+    })
+
+    test('validate is skipped when a rule fails (rules evaluated before validate)', async ({ page }) => {
+        await openVariant(page, 'Prop — rules')
+        const sandbox = sandboxOf(page)
+
+        const display = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-display"]').first()
+        await display.click()
+
+        const input = inputInField(sandbox, 'inline-edit-rules-host')
+        // 3 chars — fails min-5 rule; validate ("no digits") must NOT run.
+        await input.fill('abc')
+        await input.press('Enter')
+
+        const error = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-error"]').first()
+        await expect(error).toBeVisible()
+        // The message must be from the rule, not from validate.
+        await expect(error).toContainText(/min 5/i)
+        await expect(error).not.toContainText(/digit/i)
+    })
+
+    test('validate runs when rules pass — its error blocks the commit', async ({ page }) => {
+        await openVariant(page, 'Prop — rules')
+        const sandbox = sandboxOf(page)
+
+        const display = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-display"]').first()
+        await display.click()
+
+        const input = inputInField(sandbox, 'inline-edit-rules-host')
+        // "hello9" — rules pass (non-empty, 6 chars) but validate fails (has digit).
+        await input.fill('hello9')
+        await input.press('Enter')
+
+        await expect(input).toBeVisible()
+        const error = sandbox.locator('[data-cy="inline-edit-rules-host"] [data-cy="origam-inline-edit-error"]').first()
+        await expect(error).toBeVisible()
+        await expect(error).toContainText(/digit/i)
     })
 })

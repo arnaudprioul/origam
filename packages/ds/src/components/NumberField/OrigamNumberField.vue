@@ -1,41 +1,59 @@
 <template>
-	<template v-if="compact">
-		<div
-				:class="compactClasses"
-				:style="numberFieldStyles"
-				role="group"
-				:aria-label="label"
-		>
-			<origam-btn
-					:icon="MDI_ICONS.MINUS"
-					:disabled="!canDecrease"
-					size="small"
-					data-cy="numberfield-compact-decrement"
-					aria-label="Decrement"
-					@click="handleCompactDecrement"
-			/>
-			<input
-					v-model="compactInputText"
-					type="text"
-					inputmode="numeric"
-					class="origam-number-field__compact-input"
+	<origam-input
+			v-if="compact"
+			ref="origamCompactInputRef"
+			v-model="model"
+			:validation-value="model"
+			:focused="isFocused"
+			:rules="rules"
+			:error="error"
+			:error-messages="errorMessages"
+			:hide-details="hideDetails"
+			:validate-on="validateOn"
+			:max-errors="maxErrors"
+			:name="name"
+			:disabled="disabled"
+			:readonly="readonly"
+			:class="compactInputWrapperClasses"
+			:style="numberFieldStyles"
+	>
+		<template #default>
+			<div
+					:class="compactClasses"
+					role="group"
 					:aria-label="label"
-					data-cy="numberfield-compact-input"
-					@blur="handleBlur"
-					@focus="handleFocus"
-					@beforeinput="handleBeforeInput"
-					@keydown="handleKeydown"
-			/>
-			<origam-btn
-					:icon="MDI_ICONS.PLUS"
-					:disabled="!canIncrease"
-					size="small"
-					data-cy="numberfield-compact-increment"
-					aria-label="Increment"
-					@click="handleCompactIncrement"
-			/>
-		</div>
-	</template>
+			>
+				<origam-btn
+						:icon="MDI_ICONS.MINUS"
+						:disabled="!canDecrease"
+						size="small"
+						data-cy="numberfield-compact-decrement"
+						aria-label="Decrement"
+						@click="handleCompactDecrement"
+				/>
+				<input
+						v-model="compactInputText"
+						type="text"
+						inputmode="numeric"
+						class="origam-number-field__compact-input"
+						:aria-label="label"
+						data-cy="numberfield-compact-input"
+						@blur="handleBlur"
+						@focus="handleFocus"
+						@beforeinput="handleBeforeInput"
+						@keydown="handleKeydown"
+				/>
+				<origam-btn
+						:icon="MDI_ICONS.PLUS"
+						:disabled="!canIncrease"
+						size="small"
+						data-cy="numberfield-compact-increment"
+						aria-label="Increment"
+						@click="handleCompactIncrement"
+				/>
+			</div>
+		</template>
+	</origam-input>
 	<origam-text-field
 			v-else
 			ref="origamTextFieldRef"
@@ -253,7 +271,7 @@
 		setup
 >
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
-	import { OrigamBtn, OrigamDivider, OrigamTextField } from "../../components"
+	import { OrigamBtn, OrigamDivider, OrigamInput, OrigamTextField } from "../../components"
 
 	import { useAdjacentInner, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
 
@@ -263,7 +281,7 @@
 
 	import type { INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
 
-	import type { TOrigamTextField } from "../../types"
+	import type { TOrigamInput, TOrigamTextField } from "../../types"
 
 	import { clamp, forwardRefs } from "../../utils"
 
@@ -300,6 +318,7 @@
 	const slots = useSlots()
 
 	const origamTextFieldRef = ref<TOrigamTextField>()
+	const origamCompactInputRef = ref<TOrigamInput>()
 
 	/*********************************************************
 	 * Disabled / readonly guard
@@ -675,7 +694,13 @@
 	const compactClasses = computed(() => {
 		return [
 			'origam-number-field',
-			'origam-number-field--compact',
+			'origam-number-field--compact'
+		]
+	})
+
+	const compactInputWrapperClasses = computed(() => {
+		return [
+			'origam-number-field__compact-wrapper',
 			props.class
 		]
 	})
@@ -714,7 +739,7 @@
 		load,
 		unload,
 		isLoaded
-	}, origamTextFieldRef))
+	}, origamTextFieldRef, origamCompactInputRef))
 
 </script>
 
@@ -812,6 +837,15 @@
 				font-family: inherit;
 				outline: none;
 			}
+		}
+	}
+
+	.origam-number-field__compact-wrapper {
+		display: inline-grid;
+		width: fit-content;
+
+		:deep(.origam-input__control) {
+			display: inline-flex;
 		}
 	}
 </style>

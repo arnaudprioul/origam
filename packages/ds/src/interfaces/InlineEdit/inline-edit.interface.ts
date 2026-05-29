@@ -21,6 +21,15 @@ export type TInlineEditValidator = (value: string) =>
     | Promise<true | string>
 
 /**
+ * A single validation rule for `<OrigamInlineEdit>`. Matches the
+ * contract shared by all DS form fields (`IValidationProps.rules`):
+ * a function that receives the current string value and returns
+ * `true` when it passes, or an error message string when it fails.
+ * Async rules (returning a `Promise`) are supported.
+ */
+export type TInlineEditRule = (value: string) => true | string | Promise<true | string>
+
+/**
  * Props for `<OrigamInlineEdit>` — edit-in-place pattern.
  *
  * The component is intentionally headless on the display side: by
@@ -46,12 +55,28 @@ export interface IInlineEditProps extends ICommonsComponentProps, ITagProps {
      */
     placeholder?: string
     /**
+     * Array of validation rules using the standard DS contract
+     * (same as `OrigamTextField` / `OrigamInput` rules). Each rule
+     * is a function receiving the current string value and returning
+     * `true` (pass) or an error message string (fail). Rules are
+     * evaluated sequentially on confirm; the first failure surfaces
+     * as the inline error and blocks the commit.
+     *
+     * When both `rules` and `validate` are provided, `rules` are
+     * evaluated first. If any rule fails, `validate` is skipped.
+     * Only the first error message is displayed.
+     */
+    rules?: Array<TInlineEditRule>
+    /**
      * Validation callback. Returns `true` (or `Promise<true>`) when
      * the draft is acceptable, or an error message string that will
      * be surfaced in a `role="alert"` element near the input.
      *
      * Sync validators run on every Enter / blur. Async validators
      * keep the editor open until the returned Promise settles.
+     *
+     * When both `rules` and `validate` are provided, `rules` are
+     * evaluated first. `validate` only runs if all rules pass.
      */
     validate?: TInlineEditValidator
     /**
@@ -234,6 +259,11 @@ export interface IInlineEditSlots {
  * Options for the `useInlineEdit` composable.
  */
 export interface IUseInlineEditOptions {
+    /**
+     * Array of validation rules — evaluated in order before `validate`.
+     * First failure blocks the commit and surfaces the error message.
+     */
+    rules?: Array<TInlineEditRule>
     /** Sync or async validator — see `TInlineEditValidator`. */
     validate?: TInlineEditValidator
     /**

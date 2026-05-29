@@ -9,6 +9,7 @@ import {
 
 import type {
     IUseInlineEditOptions,
+    TInlineEditRule,
     TInlineEditValidator
 } from '../../interfaces'
 
@@ -125,8 +126,33 @@ export function useInlineEdit (
     }
 
     /**
+     * Run the `rules` array sequentially. Returns the first error
+     * message found, or `null` when all rules pass (or no rules
+     * are provided). Mirrors the evaluation logic of `useValidation`
+     * but without the form-provider lifecycle coupling.
+     */
+    const runRules = async (
+        value: string,
+        rules?: Array<TInlineEditRule>
+    ): Promise<string | null> => {
+        if (!rules || rules.length === 0) return null
+        for (const rule of rules) {
+            const result = await rule(value)
+            if (result === true) continue
+            if (typeof result === 'string') return result
+        }
+        return null
+    }
+
+    /**
      * Validate the draft and, on success, commit it through `onConfirm`
      * (which is wired to `emit('update:modelValue', value)` by the SFC).
+     *
+     * Evaluation order when both `rules` and `validate` are provided:
+     * 1. `rules` are evaluated first (sequential, stops at first failure).
+     * 2. `validate` is only evaluated if all rules pass.
+     * This ensures the declarative contract (`rules`) takes precedence
+     * and the imperative callback (`validate`) is the last gate.
      */
     const confirm = async (): Promise<boolean> => {
         if (!isEditing.value) return false
@@ -135,11 +161,17 @@ export function useInlineEdit (
         const next = normalisedDraft.value
         error.value = null
 
-        if (options.validate) {
+        const hasRules = options.rules && options.rules.length > 0
+        const hasValidate = !!options.validate
+
+        if (hasRules || hasValidate) {
             isPending.value = true
             let verdict: string | null = null
             try {
-                verdict = await runValidator(next, options.validate)
+                verdict = await runRules(next, options.rules)
+                if (verdict === null) {
+                    verdict = await runValidator(next, options.validate)
+                }
             } catch (err) {
                 verdict = err instanceof Error ? err.message : String(err)
             }

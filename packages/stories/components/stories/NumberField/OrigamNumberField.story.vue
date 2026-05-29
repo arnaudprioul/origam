@@ -192,6 +192,28 @@
 		</Variant>
 
 		<Variant
+				title="Prop — rules (compact)"
+				:init-state="() => useStoryInitState<{ min: number, max: number, modelValue: number | null }>({ min: 1, max: 99, modelValue: 0 })"
+		>
+			<template #default="{ state }">
+				<origam-number-field
+						v-model="compactRulesModel"
+						:min="state.min"
+						:max="state.max"
+						:rules="[(v: number | null) => v != null && v >= state.min || `Min ${state.min}`]"
+						compact
+						label="Quantity (min 1)"
+						data-cy="numberfield-compact-rules"
+				/>
+				<div data-cy="numberfield-compact-rules-status">value = {{ compactRulesModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSlider v-model="state.min"  title="min"  :min="0" :max="10"/>
+				<HstSlider v-model="state.max"  title="max"  :min="1" :max="1000"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — disabled, readonly & error"
 				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
 		>
@@ -418,17 +440,18 @@
 	import { useStoryInitState } from '@stories/composables'
 	import { densityList, intentList, variantInputList } from '@stories/const'
 
-	const variantModel    = ref<number | null>(null)
-	const colorModel      = ref<number | null>(null)
-	const densityModel    = ref<number | null>(null)
-	const rangeModel      = ref<number | null>(50)
-	const splitModel      = ref<number | null>(0)
-	const hideCtrlModel   = ref<number | null>(0)
-	const statesModel     = ref<number | null>(0)
-	const emitModel       = ref<number | null>(0)
-	const emitIncModel    = ref<number | null>(0)
-	const compactModel    = ref<number | null>(3)
-	const playgroundModel = ref<number | null>(0)
+	const variantModel       = ref<number | null>(null)
+	const colorModel         = ref<number | null>(null)
+	const densityModel       = ref<number | null>(null)
+	const rangeModel         = ref<number | null>(50)
+	const splitModel         = ref<number | null>(0)
+	const hideCtrlModel      = ref<number | null>(0)
+	const statesModel        = ref<number | null>(0)
+	const emitModel          = ref<number | null>(0)
+	const emitIncModel       = ref<number | null>(0)
+	const compactModel       = ref<number | null>(3)
+	const compactRulesModel  = ref<number | null>(0)
+	const playgroundModel    = ref<number | null>(0)
 </script>
 
 <docs lang="md" src="@docs/components/NumberField/OrigamNumberField.md"/>

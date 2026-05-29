@@ -175,6 +175,30 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Prop — rules"
+				:init-state="() => useStoryInitState<{ validateOn?: TValidateOn }>({ validateOn: 'blur' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; max-width: 400px;">
+					<origam-color-picker-field
+							v-model="rulesColor"
+							label="Required colour"
+							:rules="colorRequiredRule"
+							:validate-on="state.validateOn"
+							data-cy="colorpickerfield-rules"
+							style="max-width: 320px"
+					/>
+					<p style="font-size: 0.875em; color: var(--origam-color-neutral-600, #666);">
+						Choose a colour then clear it (click × when visible) to trigger the error message.
+					</p>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.validateOn" title="validateOn" :options="validateOnList"/>
+			</template>
+		</Variant>
+
 		<!-- ── Slots ─────────────────────────────────────────────── -->
 
 		<Variant title="Slot — append">
@@ -296,8 +320,8 @@
 
 	import { OrigamColorPickerField, OrigamIcon } from '@origam/components'
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
-	import type { IColorProps, IDensityProps } from '@origam/interfaces'
-	import type { TDensity, TVariantInput } from '@origam/types'
+	import type { IColorProps, IDensityProps, IOptions } from '@origam/interfaces'
+	import type { TDensity, TValidateOn, TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
 	import {
@@ -310,6 +334,16 @@
 	const ifaceColor  = ref(null)
 	const variantColor = ref(null)
 	const densityColor = ref(null)
+	const rulesColor   = ref(null)
+
+	const colorRequiredRule = [(v: unknown) => !!v || 'Color required']
+
+	const validateOnList: Array<IOptions<TValidateOn>> = [
+		{ label: 'input', value: 'input' },
+		{ label: 'blur', value: 'blur' },
+		{ label: 'submit', value: 'submit' },
+		{ label: 'lazy', value: 'lazy' },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/ColorPickerField/OrigamColorPickerField.md"/>

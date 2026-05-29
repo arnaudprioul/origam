@@ -158,6 +158,32 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — rules">
+			<div
+					class="story-shell"
+					data-cy="inline-edit-rules"
+			>
+				<p class="hint">
+					Array of rules (DS standard contract). Two rules are
+					applied: non-empty + min 5 chars. Enter a short value
+					to see the error; enter a valid value to confirm.
+					Both `rules` and `validate` coexist — the validate
+					callback only runs if all rules pass.
+				</p>
+				<origam-inline-edit
+						v-model="rulesValue"
+						:rules="rulesValidators"
+						:validate="rulesAndValidateFn"
+						placeholder="Min 5 chars, no digits"
+						data-cy="inline-edit-rules-host"
+				/>
+				<output
+						class="story-state"
+						data-cy="inline-edit-rules-state"
+				>{{ rulesValue }}</output>
+			</div>
+		</Variant>
+
 		<Variant title="Prop — multiline">
 			<div
 					class="story-shell"
@@ -414,6 +440,13 @@
 	const showActionsTrueValue = ref('With action buttons')
 	const showActionsMultilineValue = ref('Multiline with action buttons')
 	const showActionsDisabledValue = ref('Not editable')
+
+	const rulesValue = ref('Hello world')
+	const rulesValidators = [
+		(v: string): true | string => v.trim().length > 0 || 'Value cannot be empty',
+		(v: string): true | string => v.length >= 5 || 'Min 5 characters required'
+	]
+	const rulesAndValidateFn = (v: string): true | string => !/\d/.test(v) || 'No digits allowed'
 
 	const minLengthTitle = ref('Hello')
 	const emailValue = ref('user@example.com')

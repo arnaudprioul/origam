@@ -204,6 +204,10 @@
 		return model.value
 	})
 
+	const validationValue = computed(() => {
+		return model.value
+	})
+
 	const hasSelectedValue = computed(() => {
 		return selectedValue.value !== null
 	})
