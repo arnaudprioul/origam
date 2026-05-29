@@ -14,7 +14,7 @@ const count = ref(0)
   <OrigamBtn
     color="primary"
     variant="flat"
-    rounded="pill"
+    rounded="full"
     prepend-icon="mdi:plus"
     @click="count++"
   >
@@ -96,7 +96,7 @@ const INSTALL_STEPS = [
                             to="/playground?template=btn"
                             color="primary"
                             variant="outlined"
-                            rounded="pill"
+                            rounded="full"
                             prepend-icon="mdi:play-circle-outline"
                         >
                             {{ t('codeDemo.openPlayground', 'Open in playground') }}

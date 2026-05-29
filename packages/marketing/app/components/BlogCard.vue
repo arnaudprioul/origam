@@ -58,7 +58,7 @@ function tagColor (tag: string): string {
                     >
                         <OrigamChip
                             :color="tagColor(tag)"
-                            size="sm"
+                            size="small"
                         >{{ tag }}</OrigamChip>
                     </li>
                 </ul>

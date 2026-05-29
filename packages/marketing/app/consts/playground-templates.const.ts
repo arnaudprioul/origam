@@ -14,7 +14,7 @@ const count = ref(0)
 <template>
     <OrigamBtn
         color="primary"
-        rounded="pill"
+        rounded="full"
         @click="count++"
     >
         Clicked {{ count }} times
@@ -115,7 +115,7 @@ function handleSubmit () {
         <OrigamBtn
             type="submit"
             color="primary"
-            rounded="pill"
+            rounded="full"
         >
             {{ submitted ? 'Sent!' : 'Subscribe' }}
         </OrigamBtn>

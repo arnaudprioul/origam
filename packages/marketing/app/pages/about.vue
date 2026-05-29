@@ -89,7 +89,7 @@ const contactHref = `mailto:${ABOUT_CONTACT_EMAIL}`
                             target="_blank"
                             rel="noopener noreferrer"
                             variant="outlined"
-                            rounded="pill"
+                            rounded="full"
                             :prepend-icon="link.icon"
                             :aria-label="`${link.label} (${t('about.externalLink', 'opens in new tab')})`"
                         >
@@ -135,9 +135,9 @@ const contactHref = `mailto:${ABOUT_CONTACT_EMAIL}`
                     rel="noopener noreferrer"
                     color="primary"
                     variant="flat"
-                    rounded="pill"
+                    rounded="full"
                     prepend-icon="mdi:github"
-                    size="lg"
+                    size="large"
                     :aria-label="t('about.contact.githubLabel', 'View origam on GitHub (opens in new tab)')"
                 >
                     {{ t('about.contact.github', 'View on GitHub') }}

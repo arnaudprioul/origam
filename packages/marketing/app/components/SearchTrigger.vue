@@ -9,7 +9,7 @@ const { open, shortcutLabel } = useSearchHotkey()
     <OrigamBtn
         variant="outlined"
         rounded="md"
-        size="sm"
+        size="small"
         prepend-icon="mdi:magnify"
         :aria-label="t('search.openLabel', 'Open search')"
         @click="open"
@@ -17,7 +17,7 @@ const { open, shortcutLabel } = useSearchHotkey()
         <span class="search-trigger__label">{{ t('search.trigger', 'Search…') }}</span>
         <template #append>
             <OrigamChip
-                size="xs"
+                size="x-small"
                 variant="outlined"
                 class="search-trigger__shortcut"
             >

@@ -29,7 +29,7 @@ const { track } = useAnalytics()
                     variant="flat"
                     rounded="md"
                     append-icon="mdi:arrow-right"
-                    size="lg"
+                    size="large"
                     @click="track('cta:browse-components:click')"
                 >
                     {{ t('ctaBanner.browse', 'Browse components') }}
@@ -39,7 +39,7 @@ const { track } = useAnalytics()
                     variant="outlined"
                     rounded="md"
                     prepend-icon="mdi:code-tags"
-                    size="lg"
+                    size="large"
                     @click="track('cta:docs:click')"
                 >
                     {{ t('ctaBanner.docs', 'Read docs') }}

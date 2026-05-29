@@ -73,7 +73,7 @@ const _ = head
             <OrigamBtn
                 variant="outlined"
                 rounded="md"
-                size="sm"
+                size="small"
                 append-icon="mdi:chevron-down"
                 :aria-label="t('themes.switcherLabel', 'Switch theme')"
                 v-bind="activatorProps"

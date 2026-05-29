@@ -12,7 +12,7 @@ function increment (): void {
     <OrigamBtn
         color="primary"
         variant="flat"
-        rounded="pill"
+        rounded="full"
         prepend-icon="mdi:plus"
         @click="increment"
     >

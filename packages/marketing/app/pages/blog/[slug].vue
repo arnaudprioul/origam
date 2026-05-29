@@ -119,7 +119,7 @@ useBreadcrumbListLd([
                     >
                         <OrigamChip
                             :color="tagColor(tag)"
-                            size="sm"
+                            size="small"
                         >{{ tag }}</OrigamChip>
                     </li>
                 </ul>

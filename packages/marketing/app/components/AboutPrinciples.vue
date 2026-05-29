@@ -33,7 +33,7 @@ const { t } = useI18nFallback()
                     :icon="principle.icon"
                     class="about-principles__icon"
                     aria-hidden="true"
-                    size="xl"
+                    size="x-large"
                     color="primary"
                 />
                 <h3 class="about-principles__title">{{ principle.title }}</h3>

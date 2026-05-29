@@ -132,7 +132,7 @@ const countLabel = computed(() =>
                                     :variant="activeCategory === undefined ? 'tonal' : 'text'"
                                     :color="activeCategory === undefined ? 'primary' : undefined"
                                     rounded="md"
-                                    size="sm"
+                                    size="small"
                                     block
                                     prepend-icon="mdi:apps"
                                     :aria-current="activeCategory === undefined ? 'true' : undefined"
@@ -155,7 +155,7 @@ const countLabel = computed(() =>
                                     :variant="activeCategory === cat.key ? 'tonal' : 'text'"
                                     :color="activeCategory === cat.key ? 'primary' : undefined"
                                     rounded="md"
-                                    size="sm"
+                                    size="small"
                                     block
                                     :prepend-icon="CATEGORY_ICON_MAP[cat.key] || 'mdi:apps'"
                                     :aria-current="activeCategory === cat.key ? 'true' : undefined"
@@ -183,7 +183,7 @@ const countLabel = computed(() =>
                                 <OrigamChip
                                     :color="status.color"
                                     variant="tonal"
-                                    size="sm"
+                                    size="small"
                                     rounded="md"
                                     prepend-icon="mdi:circle-medium"
                                 >
@@ -208,7 +208,7 @@ const countLabel = computed(() =>
                         <OrigamChip
                             color="neutral"
                             variant="outlined"
-                            size="sm"
+                            size="small"
                             rounded="md"
                             append-icon="mdi:chevron-down"
                         >

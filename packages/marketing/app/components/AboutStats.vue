@@ -24,7 +24,7 @@ const { t } = useI18nFallback()
                     :icon="stat.icon"
                     class="about-stats__icon"
                     aria-hidden="true"
-                    size="lg"
+                    size="large"
                 />
                 <dd class="about-stats__value">{{ stat.value }}</dd>
                 <dt class="about-stats__label">{{ t(`about.stats.${stat.label}`, stat.label) }}</dt>

@@ -116,7 +116,7 @@ function handleKeydown (event: KeyboardEvent): void {
                         @keydown="handleKeydown"
                     />
                     <OrigamChip
-                        size="xs"
+                        size="x-small"
                         variant="outlined"
                         class="search-overlay__shortcut"
                     >
@@ -192,15 +192,15 @@ function handleKeydown (event: KeyboardEvent): void {
 
                 <footer class="search-overlay__footer">
                     <span class="search-overlay__hint">
-                        <OrigamChip size="xs" variant="outlined">↑↓</OrigamChip>
+                        <OrigamChip size="x-small" variant="outlined">↑↓</OrigamChip>
                         {{ t('search.navigate', 'navigate') }}
                     </span>
                     <span class="search-overlay__hint">
-                        <OrigamChip size="xs" variant="outlined">↵</OrigamChip>
+                        <OrigamChip size="x-small" variant="outlined">↵</OrigamChip>
                         {{ t('search.select', 'select') }}
                     </span>
                     <span class="search-overlay__hint">
-                        <OrigamChip size="xs" variant="outlined">{{ shortcutLabel }}</OrigamChip>
+                        <OrigamChip size="x-small" variant="outlined">{{ shortcutLabel }}</OrigamChip>
                         {{ t('search.toggle', 'toggle') }}
                     </span>
                 </footer>

@@ -135,10 +135,10 @@ function isActive (href: string): boolean {
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="outlined"
-                    rounded="pill"
+                    rounded="full"
                     prepend-icon="mdi:github"
                     :aria-label="t('nav.githubLabel', 'View on GitHub (opens in new tab)')"
-                    size="sm"
+                    size="small"
                     class="site-nav__github-btn"
                 >
                     4.2k

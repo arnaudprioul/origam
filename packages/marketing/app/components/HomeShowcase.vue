@@ -38,7 +38,7 @@ const AVATAR_ITEMS_WITH_REST = [
                     <OrigamBtn
                         to="/components"
                         variant="outlined"
-                        rounded="pill"
+                        rounded="full"
                         append-icon="mdi:arrow-right"
                     >
                         {{ t('home.showcase.viewAll', 'View all') }}
@@ -53,7 +53,7 @@ const AVATAR_ITEMS_WITH_REST = [
                             {{ t('home.showcase.table.label', 'Data Table') }}
                         </h3>
                         <span class="home-showcase__tile-sub">{{ t('home.showcase.table.sub', 'Sortable · filterable · virtualized') }}</span>
-                        <OrigamChip color="primary" variant="tonal" size="sm" class="home-showcase__tile-tag">
+                        <OrigamChip color="primary" variant="tonal" size="small" class="home-showcase__tile-tag">
                             {{ t('home.showcase.table.tag', 'Data') }}
                         </OrigamChip>
                     </header>
@@ -125,13 +125,13 @@ const AVATAR_ITEMS_WITH_REST = [
                         <span class="home-showcase__tile-sub">{{ t('home.showcase.chips.sub', '6 intents') }}</span>
                     </header>
                     <div class="home-showcase__chips">
-                        <OrigamChip color="primary" variant="tonal" size="sm">
+                        <OrigamChip color="primary" variant="tonal" size="small">
                             {{ t('home.showcase.chips.primary', 'Primary') }}
                         </OrigamChip>
-                        <OrigamChip color="neutral" variant="tonal" size="sm">
+                        <OrigamChip color="neutral" variant="tonal" size="small">
                             {{ t('home.showcase.chips.neutral', 'Neutral') }}
                         </OrigamChip>
-                        <OrigamChip color="success" variant="tonal" size="sm">
+                        <OrigamChip color="success" variant="tonal" size="small">
                             {{ t('home.showcase.chips.success', 'Success') }}
                         </OrigamChip>
                     </div>

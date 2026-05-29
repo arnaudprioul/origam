@@ -80,7 +80,7 @@ useBreadcrumbListLd([
 
             <p class="figma-page__eyebrow">
                 <OrigamChip
-                    size="sm"
+                    size="small"
                     variant="outlined"
                     color="info"
                 >
@@ -106,8 +106,8 @@ useBreadcrumbListLd([
                     target="_blank"
                     rel="noopener noreferrer"
                     color="primary"
-                    rounded="pill"
-                    size="lg"
+                    rounded="full"
+                    size="large"
                     prepend-icon="mdi:download"
                 >
                     {{ t('figma.cta.download', 'Get the plugin') }}
@@ -117,8 +117,8 @@ useBreadcrumbListLd([
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="outlined"
-                    rounded="pill"
-                    size="lg"
+                    rounded="full"
+                    size="large"
                     prepend-icon="mdi:tag-outline"
                 >
                     {{ t('figma.cta.releases', 'View releases') }}

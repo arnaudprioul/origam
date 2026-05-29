@@ -47,7 +47,7 @@ function copyInstall (): void {
                     color="primary"
                     variant="flat"
                     rounded="md"
-                    size="lg"
+                    size="large"
                     append-icon="mdi:arrow-right"
                     @click="track('cta:browse-components:click')"
                 >
@@ -60,7 +60,7 @@ function copyInstall (): void {
                     rel="noopener noreferrer"
                     variant="outlined"
                     rounded="md"
-                    size="lg"
+                    size="large"
                     prepend-icon="mdi:star-outline"
                     :aria-label="t('home.hero.ctaGithubLabel', 'View origam on GitHub (opens in new tab)')"
                     @click="track('cta:github:click')"
@@ -78,7 +78,7 @@ function copyInstall (): void {
                     <code class="home-hero__install-code">npm install <span class="home-hero__install-pkg">origam</span></code>
                     <OrigamBtn
                         variant="text"
-                        size="sm"
+                        size="small"
                         density="compact"
                         :prepend-icon="isCopied ? 'mdi:check' : 'mdi:content-copy'"
                         :aria-label="t('home.hero.copyInstall', 'Copy install command')"

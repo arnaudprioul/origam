@@ -51,7 +51,7 @@ function selectLocale (code: string): void {
                 v-bind="activatorProps"
                 variant="outlined"
                 rounded="md"
-                size="sm"
+                size="small"
                 append-icon="mdi:chevron-down"
                 :aria-label="t('nav.language', 'Choose language')"
             >
