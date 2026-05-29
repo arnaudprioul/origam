@@ -1,9 +1,16 @@
 # useTheme
 
-Reactive handle on the active design-system theme. Wraps a singleton
-`Ref<TTheme>` so every `useTheme()` call across the app reads the same
-state, persists changes to `localStorage`, and applies `data-theme` on
-`<html>` automatically.
+Reactive handle on the two orthogonal theming axes:
+
+- **theme** — the *brand* identity, applied as `data-theme` on `<html>`
+  (`'default'`, `'brand-a'`, …).
+- **mode** — the *color mode*, applied as `data-mode` on `<html>`
+  (`'light'`, `'dark'`, `'auto'`).
+
+Any brand can be rendered in either mode — the two axes never collide.
+`useTheme()` wraps singleton refs so every call across the app reads the
+same state, persists changes to `localStorage`, and applies both
+attributes automatically.
 
 ## Basic usage
 
@@ -11,14 +18,15 @@ state, persists changes to `localStorage`, and applies `data-theme` on
 <script setup lang="ts">
 import { useTheme } from 'origam/composables'
 
-const { theme, resolved, setTheme, toggle } = useTheme()
+const { theme, mode, resolvedMode, setTheme, setMode, toggleMode } = useTheme()
 </script>
 
 <template>
     <div>
-        <p>Current theme: {{ theme }} (effective: {{ resolved }})</p>
-        <OrigamBtn @click="toggle" text="Toggle light/dark" />
-        <OrigamBtn @click="setTheme('auto')" text="Follow system" />
+        <p>Brand: {{ theme }} — mode: {{ mode }} (effective: {{ resolvedMode }})</p>
+        <OrigamBtn @click="toggleMode" text="Toggle light/dark" />
+        <OrigamBtn @click="setMode('auto')" text="Follow system" />
+        <OrigamBtn @click="setTheme('brand-a')" text="Brand A" />
     </div>
 </template>
 ```
@@ -27,49 +35,70 @@ const { theme, resolved, setTheme, toggle } = useTheme()
 
 ```ts
 function useTheme(): {
-    /** Current theme setting. Read-only — call `setTheme` to mutate. */
+    // ── Brand axis (data-theme) ──────────────────────────────────────────
+    /** Current brand setting. Read-only — call `setTheme` to mutate. */
     theme: Readonly<Ref<TTheme>>
 
     /**
-     * Effective theme after resolving `'auto'` against
+     * Effective brand after resolving `'auto'` against
      * `prefers-color-scheme`. Useful when an SVG asset / image needs to
      * mirror the active theme without reading the system query yourself.
      */
     resolved: Readonly<Ref<TThemeResolved>>
 
-    /** Imperative setter. Persists + applies on the document root. */
+    /** Imperative brand setter. Persists + applies `data-theme`. */
     setTheme: (next: TTheme) => void
 
     /**
-     * Convenience: flips `light` ↔ `dark`. Treats `'auto'` and any other
-     * value (e.g. `'brand-a'`) as `light` for the flip.
+     * Convenience: flips the brand `light` ↔ `dark`. Kept for back-compat
+     * with the legacy single-axis API. For light/dark switching prefer
+     * `toggleMode()`.
      */
     toggle: () => void
+
+    // ── Mode axis (data-mode) ────────────────────────────────────────────
+    /** Current color mode. Read-only — call `setMode` to mutate. */
+    mode: Readonly<Ref<TMode>>
+
+    /** Effective mode after resolving `'auto'` against `prefers-color-scheme`. */
+    resolvedMode: Readonly<Ref<TModeResolved>>
+
+    /** Imperative mode setter. Persists + applies `data-mode`. */
+    setMode: (next: TMode) => void
+
+    /** Flips the color mode `light` ↔ `dark` (treats `'auto'` as the current system preference). */
+    toggleMode: () => void
 }
 
 type TTheme = 'auto' | 'light' | 'dark' | (string & {})
 type TThemeResolved = Exclude<TTheme, 'auto'>
+type TMode = 'auto' | 'light' | 'dark'
+type TModeResolved = Exclude<TMode, 'auto'>
 ```
+
+> **Migration note.** Before the 2-axis split, light/dark was carried by
+> the `theme` axis (`setTheme('dark')`). That call still works and still
+> writes `data-theme="dark"` for back-compat, but new code should drive
+> light/dark through `mode` / `setMode` / `toggleMode` and reserve `theme`
+> for the brand.
 
 ## Behaviour
 
-- **SSR-safe**: no `window` / `document` access until the component
-  using `useTheme()` mounts. Server-rendered HTML carries no
-  `data-theme` (browsers honour the `prefers-color-scheme` media
-  query inside the dark token CSS).
-- **Persistence**: every `setTheme(...)` writes to
-  `localStorage['origam-theme']`. The first `useTheme()` call on
-  hydration reads it back — themes survive page reloads without a
-  flash, provided the host app applies the saved value before
-  hydration (see [no-flash plugin](#no-flash-on-load)).
-- **`prefers-color-scheme`**: when `theme === 'auto'`, the composable
-  attaches a `change` listener on
+- **SSR-safe**: no `window` / `document` access until the component using
+  `useTheme()` mounts. Server-rendered HTML carries `data-theme` /
+  `data-mode` only when non-`auto` (see the Nuxt integration for the
+  no-flash SSR path).
+- **Persistence**: `setTheme(...)` writes `localStorage['origam-theme']`,
+  `setMode(...)` writes `localStorage['origam-mode']`. The first
+  `useTheme()` call on hydration reads both back.
+- **`prefers-color-scheme`**: when `mode === 'auto'` (or `theme === 'auto'`),
+  the composable attaches a `change` listener on
   `window.matchMedia('(prefers-color-scheme: dark)')` and updates
-  `resolved` reactively when the OS-level theme changes.
-- **Singleton**: every component shares the same ref, so toggling
-  the theme in a header instantly reflows every consumer.
+  `resolvedMode` / `resolved` reactively when the OS-level theme changes.
+- **Singleton**: every component shares the same refs, so toggling the
+  mode in a header instantly reflows every consumer.
 
-## Custom themes
+## Custom brands
 
 Any string is a valid `TTheme`. Drop a matching CSS file (or a
 `tokens/semantic/<name>.json` regenerated via `npm run tokens:build`)
@@ -77,24 +106,25 @@ and call `setTheme('brand-a')` — the document root grows
 `data-theme="brand-a"` and any rule scoped to that selector takes over.
 
 ```ts
-const { setTheme } = useTheme()
+const { setTheme, setMode } = useTheme()
 setTheme('brand-a')
-// → <html data-theme="brand-a">
+setMode('dark')
+// → <html data-theme="brand-a" data-mode="dark">
 ```
 
 ## Sub-tree overrides
 
-The global `<html data-theme>` is page-wide. To theme a single
-sub-tree (e.g. a marketing card embedded in a neutral admin page),
-use `<OrigamThemeProvider>`:
+The global `<html data-theme>` / `<html data-mode>` are page-wide. To
+theme a single sub-tree (e.g. a marketing card embedded in a neutral
+admin page), use `<OrigamThemeProvider>`:
 
 ```vue
 <template>
     <main>
-        <p>Page chrome — neutral light theme.</p>
+        <p>Page chrome — neutral, follows the document mode.</p>
 
-        <OrigamThemeProvider theme="brand-a">
-            <OrigamCard>Brand-themed card.</OrigamCard>
+        <OrigamThemeProvider theme="brand-a" mode="dark">
+            <OrigamCard>Brand-A card, pinned to dark.</OrigamCard>
         </OrigamThemeProvider>
     </main>
 </template>
@@ -103,9 +133,8 @@ use `<OrigamThemeProvider>`:
 ## No-flash on load
 
 Without it, the first paint shows the default theme briefly before
-JavaScript hydrates and applies the persisted theme. The fix is to
-write `data-theme` synchronously in a small inline script before any
-CSS loads:
+JavaScript hydrates. The fix is to write both attributes synchronously in
+a small inline script before any CSS loads:
 
 ```html
 <script>
@@ -114,44 +143,57 @@ CSS loads:
         if (t && t !== 'auto') {
             document.documentElement.setAttribute('data-theme', t)
         }
+        const m = localStorage.getItem('origam-mode')
+        if (m && m !== 'auto') {
+            document.documentElement.setAttribute('data-mode', m)
+        }
     } catch (_) { /* private mode, etc. */ }
 </script>
 ```
 
-Drop this into your `index.html` head, **before** any stylesheet.
+Drop this into your `index.html` head, **before** any stylesheet. Under
+Nuxt the official `origam/nuxt` module handles this SSR-side — see the
+[Nuxt integration](../integrations/nuxt.md).
 
 ## Imperative helpers
 
 ```ts
-import { applyThemeSync, readPersistedTheme } from 'origam/composables'
+import {
+    applyThemeSync, applyModeSync,
+    readPersistedTheme, readPersistedMode
+} from 'origam/composables'
 
-// Read the persisted value without mounting a component.
-const stored = readPersistedTheme()  // 'auto' | 'light' | 'dark' | string
+// Read the persisted values without mounting a component.
+const brand = readPersistedTheme() // 'auto' | 'light' | 'dark' | string
+const mode  = readPersistedMode()  // 'auto' | 'light' | 'dark'
 
-// Apply a theme synchronously (no Vue lifecycle required).
-applyThemeSync('dark')
+// Apply synchronously (no Vue lifecycle required).
+applyThemeSync('brand-a')
+applyModeSync('dark')
 ```
 
-These power the no-flash plugin pattern above and are exported for
-custom integrations.
+These power the no-flash plugin pattern above and are exported for custom
+integrations.
 
 ## Tests
 
 The composable ships with [`theme.composable.spec.ts`][1] covering:
 
-- Default `'auto'` when no persisted value.
-- Reading from / writing to localStorage.
-- Toggling the `data-theme` attribute on the document root.
-- `toggle()` flipping light ↔ dark from any starting state.
-- `applyThemeSync` writing to `<html>` outside Vue's lifecycle.
+- Default `'auto'` for both axes when no persisted value.
+- Reading from / writing to localStorage (both cookies/keys).
+- Toggling `data-theme` and `data-mode` on the document root.
+- `toggle()` (brand) and `toggleMode()` (mode) flipping light ↔ dark.
+- `applyThemeSync` / `applyModeSync` writing to `<html>` outside Vue's lifecycle.
+- The two axes not interfering (brand + mode applied together).
 - Custom theme strings (`'brand-a'`).
 
 [1]: https://github.com/your-org/origam/blob/main/src/composables/Theme/theme.composable.spec.ts
 
 ## Related
 
-- [`<OrigamThemeProvider>`](../components/ThemeProvider/OrigamThemeProvider.md) — sub-tree theme override.
+- [`<OrigamThemeProvider>`](../components/ThemeProvider/OrigamThemeProvider.md) — sub-tree theme/mode override.
 - [`useCssSupport`](./useCssSupport.md) — feature detection, used together
   with `useTheme` to gate dark-mode-specific CSS features.
-- [Design tokens guide](../guide/design-tokens.md) — how the `data-theme`
-  attribute composes with the generated CSS layers.
+- [Nuxt integration](../integrations/nuxt.md) — SSR no-flash for both axes.
+- [Design tokens guide](../guide/design-tokens.md) — how `data-theme` /
+  `data-mode` compose with the generated CSS layers.

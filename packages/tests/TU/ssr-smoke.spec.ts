@@ -18,7 +18,7 @@ import {
 import { useSnackbarGroup, resetSnackbarGroupForTesting } from '@origam/composables/Snackbar/snackbar-group.composable'
 import { useMask } from '@origam/composables/Mask/mask.composable'
 import { useCode } from '@origam/composables/Code/code.composable'
-import { applyThemeSync, readPersistedTheme } from '@origam/composables/Theme/theme.composable'
+import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Theme/theme.composable'
 
 import { sanitizeHtml } from '@origam/utils/Textarea/sanitize-html.util'
 import { htmlToMarkdown } from '@origam/utils/Textarea/html-to-markdown.util'
@@ -81,6 +81,19 @@ describe('SSR safety — module-level import does not touch DOM', () => {
         enterSSRMode()
         expect(() => applyThemeSync('dark')).not.toThrow()
         expect(() => applyThemeSync('auto')).not.toThrow()
+        exitSSRMode()
+    })
+
+    it('readPersistedMode returns "auto" when localStorage is missing', () => {
+        enterSSRMode()
+        expect(readPersistedMode()).toBe('auto')
+        exitSSRMode()
+    })
+
+    it('applyModeSync does not throw without document', () => {
+        enterSSRMode()
+        expect(() => applyModeSync('dark')).not.toThrow()
+        expect(() => applyModeSync('auto')).not.toThrow()
         exitSSRMode()
     })
 

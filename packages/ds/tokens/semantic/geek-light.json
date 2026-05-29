@@ -90,5 +90,13 @@
       "sans":  { "$type": "fontFamily", "$value": "JetBrains Mono, Fira Code, ui-monospace, monospace" },
       "serif": { "$type": "fontFamily", "$value": "JetBrains Mono, Fira Code, ui-monospace, monospace" }
     }
+  },
+  "shadow": {
+    "none": { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "0px",  "spread": "0px", "color": "rgba(0,0,0,0)" } },
+    "xs":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "4px",  "spread": "0px", "color": "rgba(74,222,128,0.35)" } },
+    "sm":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "8px",  "spread": "0px", "color": "rgba(74,222,128,0.50)" } },
+    "md":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "12px", "spread": "2px", "color": "rgba(74,222,128,0.45)" } },
+    "lg":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "20px", "spread": "4px", "color": "rgba(74,222,128,0.55)" } },
+    "xl":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "32px", "spread": "6px", "color": "rgba(74,222,128,0.60)" } }
   }
 }

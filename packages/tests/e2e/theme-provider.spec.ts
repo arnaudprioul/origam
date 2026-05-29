@@ -23,6 +23,39 @@ test.describe('OrigamThemeProvider', () => {
         await expect(sandbox.locator('[data-theme="dark"]').first()).toBeAttached({ timeout: 5000 })
     })
 
+    test('Mode (light) variant — wrapper has data-mode="light"', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — mode (light)', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('[data-mode="light"]').first()).toBeAttached({ timeout: 5000 })
+    })
+
+    test('Mode (dark) variant — wrapper has data-mode="dark"', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — mode (dark)', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('[data-mode="dark"]').first()).toBeAttached({ timeout: 5000 })
+    })
+
+    test('theme + mode variant — wrapper carries both data-theme and data-mode', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — theme + mode', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const wrapper = sandbox.locator('.origam-theme-provider').first()
+        await expect(wrapper).toBeAttached({ timeout: 5000 })
+        expect(await wrapper.getAttribute('data-theme')).toBe('brand-a')
+        expect(await wrapper.getAttribute('data-mode')).toBe('dark')
+    })
+
     test('Auto (inherits from ancestor) — no data-theme attribute is rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')

@@ -6,9 +6,10 @@ import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { applyThemeSync, readPersistedTheme, useTheme } from '@origam/composables/Theme/theme.composable'
+import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme, useTheme } from '@origam/composables/Theme/theme.composable'
 
 const STORAGE_KEY = 'origam-theme'
+const MODE_STORAGE_KEY = 'origam-mode'
 
 function makeHost (cb: (api: ReturnType<typeof useTheme>) => void) {
     return defineComponent({
@@ -24,6 +25,7 @@ describe('useTheme', () => {
     beforeEach(() => {
         localStorage.clear()
         document.documentElement.removeAttribute('data-theme')
+        document.documentElement.removeAttribute('data-mode')
         // Reset matchMedia to a controllable mock
         const listeners = new Set<(e: MediaQueryListEvent) => void>()
         // @ts-expect-error - jsdom does not implement matchMedia
@@ -41,6 +43,7 @@ describe('useTheme', () => {
 
     afterEach(() => {
         document.documentElement.removeAttribute('data-theme')
+        document.documentElement.removeAttribute('data-mode')
     })
 
     it('defaults to "auto" when no persisted value exists', () => {
@@ -106,5 +109,72 @@ describe('useTheme', () => {
         captured!.setTheme('brand-a')
         await nextTick()
         expect(document.documentElement.getAttribute('data-theme')).toBe('brand-a')
+    })
+
+    // ── Mode axis (data-mode) ──────────────────────────────────────────────
+
+    it('defaults mode to "auto" when no persisted value exists', () => {
+        let captured: ReturnType<typeof useTheme> | null = null
+        mount(makeHost(api => { captured = api }))
+        expect(captured!.mode.value).toBe('auto')
+    })
+
+    it('applies data-mode attribute on setMode()', async () => {
+        let captured: ReturnType<typeof useTheme> | null = null
+        mount(makeHost(api => { captured = api }))
+        captured!.setMode('dark')
+        await nextTick()
+        expect(document.documentElement.getAttribute('data-mode')).toBe('dark')
+    })
+
+    it('removes data-mode when set to "auto"', async () => {
+        let captured: ReturnType<typeof useTheme> | null = null
+        mount(makeHost(api => { captured = api }))
+        captured!.setMode('dark')
+        await nextTick()
+        captured!.setMode('auto')
+        await nextTick()
+        expect(document.documentElement.hasAttribute('data-mode')).toBe(false)
+    })
+
+    it('persists mode changes to localStorage', async () => {
+        let captured: ReturnType<typeof useTheme> | null = null
+        mount(makeHost(api => { captured = api }))
+        captured!.setMode('dark')
+        await nextTick()
+        expect(localStorage.getItem(MODE_STORAGE_KEY)).toBe('dark')
+    })
+
+    it('toggleMode() flips light ↔ dark independently of theme', async () => {
+        let captured: ReturnType<typeof useTheme> | null = null
+        mount(makeHost(api => { captured = api }))
+        captured!.setMode('light')
+        await nextTick()
+        captured!.toggleMode()
+        expect(captured!.mode.value).toBe('dark')
+        captured!.toggleMode()
+        expect(captured!.mode.value).toBe('light')
+    })
+
+    it('theme and mode axes do not interfere', async () => {
+        let captured: ReturnType<typeof useTheme> | null = null
+        mount(makeHost(api => { captured = api }))
+        captured!.setTheme('brand-a')
+        captured!.setMode('dark')
+        await nextTick()
+        expect(document.documentElement.getAttribute('data-theme')).toBe('brand-a')
+        expect(document.documentElement.getAttribute('data-mode')).toBe('dark')
+    })
+
+    it('applyModeSync writes to document without Vue lifecycle', () => {
+        applyModeSync('dark')
+        expect(document.documentElement.getAttribute('data-mode')).toBe('dark')
+        applyModeSync('auto')
+        expect(document.documentElement.hasAttribute('data-mode')).toBe(false)
+    })
+
+    it('readPersistedMode reads from localStorage', () => {
+        localStorage.setItem(MODE_STORAGE_KEY, 'dark')
+        expect(readPersistedMode()).toBe('dark')
     })
 })

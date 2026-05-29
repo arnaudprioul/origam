@@ -61,6 +61,12 @@
   --origam-radius---xl: 0px;
   --origam-radius---2xl: 0px;
   --origam-radius---full: 0px;
+  --origam-shadow---none: 0px 0px 0px 0px rgba(0,0,0,0);
+  --origam-shadow---xs: 0px 0px 0px 0px rgba(0,0,0,0);
+  --origam-shadow---sm: 0px 1px 0px 0px rgba(255,255,255,0.10);
+  --origam-shadow---md: 0px 2px 0px 0px rgba(255,255,255,0.12);
+  --origam-shadow---lg: 0px 3px 0px 0px rgba(255,255,255,0.15);
+  --origam-shadow---xl: 0px 4px 0px 0px rgba(255,255,255,0.18);
   --origam-gradient---sunset: linear-gradient(135deg, #b55149, #9d6f4a);
   --origam-gradient---ocean: linear-gradient(135deg, #134a59, #2f7e90);
   --origam-gradient---forest: linear-gradient(135deg, #0a2b34, #3a6047);
@@ -104,7 +110,7 @@
   --origam-btn---opacity-disabled: 0.5;
   --origam-btn---opacity-plain: 0.7;
   --origam-btn---overlay-opacity-hover: 0.12;
-  --origam-btn---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-btn---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-btn---background-color-tonal: #131313;
   --origam-btn---border-width-outlined: 1px;
   --origam-btn---border-width-ghost: 1px;
@@ -136,9 +142,9 @@
   --origam-card---z-index: 0;
   --origam-card---background: #0e0e0e;
   --origam-card---color: #ffffff;
-  --origam-card---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
-  --origam-card---box-shadow-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
-  --origam-card---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-card---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
+  --origam-card---box-shadow-hover: 0px 3px 0px 0px rgba(255,255,255,0.15);
+  --origam-card---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-card---opacity: 1;
   --origam-card---opacity-disabled: 0.6;
   --origam-card---density: 0px;
@@ -195,7 +201,7 @@
   --origam-card__before---transition: inherit;
   --origam-card__before---opacity: 1;
   --origam-card__before---z-index: -1;
-  --origam-card__before---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-card__before---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-card__after---border-radius: inherit;
   --origam-card__after---bottom: 0px;
   --origam-card__after---content: "";
@@ -208,7 +214,7 @@
   --origam-card__after---transition: inherit;
   --origam-card__after---z-index: 1;
   --origam-card__after---opacity: 0;
-  --origam-card__after---box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+  --origam-card__after---box-shadow: 0px 3px 0px 0px rgba(255,255,255,0.15);
   --origam-chip---background-color: #131313;
   --origam-chip---color: #ffffff;
   --origam-chip---border-color: currentColor;
@@ -284,7 +290,7 @@
   --origam-avatar---border-radius-rounded: 0px;
   --origam-avatar---border-radius-square: 0px;
   --origam-avatar---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
-  --origam-avatar---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-avatar---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-avatar---position: relative;
   --origam-avatar---overflow: hidden;
   --origam-avatar---text-align: center;
@@ -341,7 +347,7 @@
   --origam-avatar-group---position: relative;
   --origam-avatar-group---density: 0px;
   --origam-avatar-group---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
-  --origam-avatar-group---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-avatar-group---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-avatar-group---margin-inline-start: 0px;
   --origam-avatar-group---margin-inline-end: 0px;
   --origam-avatar-group---margin-block-start: 0px;
@@ -399,7 +405,7 @@
   --origam-badge__badge---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --origam-badge__badge---transition-property: all;
   --origam-badge__badge---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
-  --origam-badge__badge---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-badge__badge---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-badge--warning---background-color: #fcd34d;
   --origam-badge--warning---color: #0a0a0a;
   --origam-badge--success---background-color: #6ee7b7;
@@ -431,7 +437,7 @@
   --origam-alert---margin-inline-end: 0px;
   --origam-alert---density: 0px;
   --origam-alert---accent-width: 24px;
-  --origam-alert---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-alert---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-alert__prepend---align-items: center;
   --origam-alert__prepend---margin-inline-start: 0px;
   --origam-alert__prepend---margin-inline-end: 16px;
@@ -591,7 +597,7 @@
   --origam-toolbar---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --origam-toolbar---background: #0a0a0a;
   --origam-toolbar---color: #ffffff;
-  --origam-toolbar---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-toolbar---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-toolbar---border-variant-border-width: 1px;
   --origam-toolbar---border-variant-box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
   --origam-toolbar__rounded---border-radius: 0px;
@@ -664,7 +670,7 @@
   --origam-app-bar---background-color: #0e0e0e;
   --origam-app-bar---color: #ffffff;
   --origam-app-bar---border-color: rgba(255, 255, 255, 0.05);
-  --origam-app-bar---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-app-bar---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-app-bar---height: 64px;
   --origam-app-bar---z-index: 1030;
   --origam-app-bar---transition-duration: 200ms;
@@ -730,7 +736,7 @@
   --origam-drawer---transition-duration: 200ms;
   --origam-drawer---transition-property: box-shadow, transform, visibility, width, height, left, right, top, bottom;
   --origam-drawer---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --origam-drawer__temporary---box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+  --origam-drawer__temporary---box-shadow: 0px 3px 0px 0px rgba(255,255,255,0.15);
   --origam-drawer__sticky---height: auto;
   --origam-drawer__sticky---transition-property: box-shadow, transform, visibility, width, height, left, right;
   --origam-drawer__border---border-width: 1px;
@@ -863,7 +869,7 @@
   --origam-field---transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --origam-field--error---border-color: #fca5a5;
   --origam-field--error---color: #fca5a5;
-  --origam-field---variant-solo-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-field---variant-solo-box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-field---variant-outlined-background-color: rgba(0, 0, 0, 0);
   --origam-field__overlay---background-color: #000000;
   --origam-field__overlay---opacity: 0;
@@ -1366,7 +1372,7 @@
   --origam-dialog---max-width: calc(100% - 48px);
   --origam-dialog---max-height: calc(100% - 48px);
   --origam-dialog---z-index: 1050;
-  --origam-dialog---box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12);
+  --origam-dialog---box-shadow: 0px 4px 0px 0px rgba(255,255,255,0.18);
   --origam-dialog---width-xs: 320px;
   --origam-dialog---width-sm: 400px;
   --origam-dialog---width-md: 720px;
@@ -1403,7 +1409,7 @@
   --origam-menu---background: #0e0e0e;
   --origam-menu---color: #ffffff;
   --origam-menu---border-radius: 0px;
-  --origam-menu---box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+  --origam-menu---box-shadow: 0px 3px 0px 0px rgba(255,255,255,0.15);
   --origam-menu---max-height: calc(100vh - 32px);
   --origam-menu---z-index: 1000;
   --origam-menu---transition-duration: 100ms;
@@ -1444,7 +1450,7 @@
   --origam-pagination--primary---background-color: #a78bfa;
   --origam-pagination--primary---background-color-hover: #c4b5fd;
   --origam-pagination--primary---color: #0a0a0a;
-  --origam-pagination--primary---box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  --origam-pagination--primary---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
   --origam-pagination--info---color: #d4d4d4;
   --origam-pagination--info---font-size: 0.75rem;
   --origam-pagination--info---font-weight: 400;
@@ -1502,7 +1508,7 @@
   --origam-breadcrumb---border-radius: 0px;
   --origam-breadcrumb---border-radius-rounded: 0px;
   --origam-breadcrumb---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
-  --origam-breadcrumb---box-shadow-elevated: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-breadcrumb---box-shadow-elevated: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-breadcrumb---transition-property: transform, color;
   --origam-breadcrumb---transition-duration: 200ms;
   --origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1790,7 +1796,7 @@
   --origam-expansion-panel__shadow---left: 0px;
   --origam-expansion-panel__shadow---width: 100%;
   --origam-expansion-panel__shadow---height: 100%;
-  --origam-expansion-panel__shadow---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-expansion-panel__shadow---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-expansion-panel__shadow---border-radius: inherit;
   --origam-expansion-panel__shadow---z-index: -1;
   --origam-expansion-panel__header---font-size: 0.9375rem;
@@ -1967,7 +1973,7 @@
   --origam-contextual-menu---background: #0e0e0e;
   --origam-contextual-menu---color: #ffffff;
   --origam-contextual-menu---border-radius: 0px;
-  --origam-contextual-menu---box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+  --origam-contextual-menu---box-shadow: 0px 3px 0px 0px rgba(255,255,255,0.15);
   --origam-contextual-menu---z-index: 1000;
   --origam-contextual-menu---max-height: calc(100vh - 32px);
   --origam-contextual-menu---position: fixed;
@@ -1985,7 +1991,7 @@
   --origam-picker---border-color: rgba(255, 255, 255, 0.05);
   --origam-picker---border-width: 1px;
   --origam-picker---border-radius: 0px;
-  --origam-picker---box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+  --origam-picker---box-shadow: 0px 3px 0px 0px rgba(255,255,255,0.15);
   --origam-picker---padding-block: 16px;
   --origam-picker---padding-inline: 16px;
   --origam-picker---min-width: 320px;
@@ -2116,7 +2122,7 @@
   --origam-color-picker__cursor---size: 16px;
   --origam-color-picker__cursor---border-color: #0a0a0a;
   --origam-color-picker__cursor---border-width: 2px;
-  --origam-color-picker__cursor---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-color-picker__cursor---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-color-picker__cursor---border-radius: 0px;
   --origam-color-picker__preview---width: 32px;
   --origam-color-picker__preview---height: 32px;
@@ -2151,7 +2157,7 @@
   --origam-select__list---max-height: 300px;
   --origam-select__list---padding-block: 4px;
   --origam-select__list---padding-inline: 0;
-  --origam-select__list---box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+  --origam-select__list---box-shadow: 0px 3px 0px 0px rgba(255,255,255,0.15);
   --origam-select__list---z-index: 1000;
   --origam-select__item---padding-block: 8px;
   --origam-select__item---padding-inline: 16px;
@@ -2198,7 +2204,7 @@
   --origam-switch__thumb---background-color: #0a0a0a;
   --origam-switch__thumb---background-color-checked: #0a0a0a;
   --origam-switch__thumb---background-color-disabled: #131313;
-  --origam-switch__thumb---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-switch__thumb---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-switch__thumb---border-radius: 0px;
   --origam-switch__thumb---translate-distance: 20px;
   --origam-switch__thumb---transition-duration: 200ms;
@@ -2246,7 +2252,7 @@
   --origam-slider-field__thumb---background-color: #a78bfa;
   --origam-slider-field__thumb---border-color: #0a0a0a;
   --origam-slider-field__thumb---border-width: 2px;
-  --origam-slider-field__thumb---box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
+  --origam-slider-field__thumb---box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.10);
   --origam-slider-field__thumb---scale-hover: 1.25;
   --origam-slider-field__thumb---scale-active: 1.5;
   --origam-slider-field__thumb---focus-ring-color: rgba(167, 139, 250, 0.14);
@@ -2445,7 +2451,7 @@
   --origam-kbd---font-family: 'JetBrains Mono', 'Fira Code', monospace;
   --origam-kbd---font-size: 0.875em;
   --origam-kbd---font-weight: 500;
-  --origam-kbd---box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  --origam-kbd---box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
   --origam-kbd---gap: 4px;
   --origam-kbd---font-size-xs: 0.625rem;
   --origam-kbd---font-size-sm: 0.75rem;
@@ -2569,7 +2575,7 @@
   --origam-snackbar-group__item---background-color: #0a0a0a;
   --origam-snackbar-group__item---border-color: rgba(255, 255, 255, 0.05);
   --origam-snackbar-group__item---color: #ffffff;
-  --origam-snackbar-group__item---box-shadow: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
+  --origam-snackbar-group__item---box-shadow: 0px 2px 0px 0px rgba(255,255,255,0.12);
   --origam-snackbar-group__item---font-size: 0.875rem;
   --origam-snackbar-group__item---content-gap: 8px;
   --origam-snackbar-group__item---prepend-color: currentColor;
@@ -2588,7 +2594,7 @@
   --origam-command-palette---border-color: rgba(255, 255, 255, 0.05);
   --origam-command-palette---border-width: 1px;
   --origam-command-palette---border-radius: 0px;
-  --origam-command-palette---box-shadow: 0px 11px 8px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12);
+  --origam-command-palette---box-shadow: 0px 4px 0px 0px rgba(255,255,255,0.18);
   --origam-command-palette__input---padding: 12px 16px;
   --origam-command-palette__input---font-size: 0.875rem;
   --origam-command-palette__input---border-color: rgba(255, 255, 255, 0.05);

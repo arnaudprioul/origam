@@ -83,5 +83,25 @@
     "sm": { "$type": "dimension", "$value": "12px" },
     "md": { "$type": "dimension", "$value": "16px" },
     "lg": { "$type": "dimension", "$value": "28px" }
+  },
+  "shadow": {
+    "none": { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px",  "blur": "0px",  "spread": "0px",  "color": "rgba(0,0,0,0)" } },
+    "xs":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "1px",  "blur": "2px",  "spread": "0px",  "color": "rgba(0,0,0,0.50)" } },
+    "sm":   { "$type": "shadow", "$value": [
+      { "offsetX": "0px", "offsetY": "1px",  "blur": "2px",  "spread": "0px",  "color": "rgba(0,0,0,0.50)" },
+      { "offsetX": "0px", "offsetY": "1px",  "blur": "3px",  "spread": "1px",  "color": "rgba(0,0,0,0.25)" }
+    ]},
+    "md":   { "$type": "shadow", "$value": [
+      { "offsetX": "0px", "offsetY": "2px",  "blur": "6px",  "spread": "2px",  "color": "rgba(0,0,0,0.25)" },
+      { "offsetX": "0px", "offsetY": "1px",  "blur": "2px",  "spread": "0px",  "color": "rgba(0,0,0,0.50)" }
+    ]},
+    "lg":   { "$type": "shadow", "$value": [
+      { "offsetX": "0px", "offsetY": "4px",  "blur": "8px",  "spread": "3px",  "color": "rgba(0,0,0,0.25)" },
+      { "offsetX": "0px", "offsetY": "1px",  "blur": "3px",  "spread": "0px",  "color": "rgba(0,0,0,0.50)" }
+    ]},
+    "xl":   { "$type": "shadow", "$value": [
+      { "offsetX": "0px", "offsetY": "6px",  "blur": "10px", "spread": "4px",  "color": "rgba(0,0,0,0.25)" },
+      { "offsetX": "0px", "offsetY": "2px",  "blur": "3px",  "spread": "0px",  "color": "rgba(0,0,0,0.50)" }
+    ]}
   }
 }

@@ -89,5 +89,13 @@
       "thin": { "$type": "dimension", "$value": "2.5px" },
       "2":    { "$type": "dimension", "$value": "2.5px" }
     }
+  },
+  "shadow": {
+    "none": { "$type": "shadow", "$value": { "offsetX": "0px",  "offsetY": "0px",  "blur": "0px", "spread": "0px", "color": "rgba(0,0,0,0)" } },
+    "xs":   { "$type": "shadow", "$value": { "offsetX": "2px",  "offsetY": "2px",  "blur": "0px", "spread": "0px", "color": "#171717" } },
+    "sm":   { "$type": "shadow", "$value": { "offsetX": "4px",  "offsetY": "4px",  "blur": "0px", "spread": "0px", "color": "#171717" } },
+    "md":   { "$type": "shadow", "$value": { "offsetX": "4px",  "offsetY": "4px",  "blur": "0px", "spread": "0px", "color": "#171717" } },
+    "lg":   { "$type": "shadow", "$value": { "offsetX": "6px",  "offsetY": "6px",  "blur": "0px", "spread": "0px", "color": "#171717" } },
+    "xl":   { "$type": "shadow", "$value": { "offsetX": "8px",  "offsetY": "8px",  "blur": "0px", "spread": "0px", "color": "#171717" } }
   }
 }

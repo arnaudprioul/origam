@@ -28,7 +28,10 @@ const NUXT_COMPOSABLES_BLOCKLIST = new Set([
 const DEFAULTS: Required<IOrigamNuxtModuleOptions> = {
     themes: ['light', 'dark'],
     defaultTheme: 'auto',
+    modes: ['light', 'dark'],
+    defaultMode: 'auto',
     cookieName: 'origam-theme',
+    modeCookieName: 'origam-mode',
     cookieMaxAge: 60 * 60 * 24 * 365,
     autoImport: true,
     includeUtilities: true,
@@ -49,7 +52,10 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
 
         const themes = options.themes ?? DEFAULTS.themes
         const defaultTheme = options.defaultTheme ?? DEFAULTS.defaultTheme
+        const modes = options.modes ?? DEFAULTS.modes
+        const defaultMode = options.defaultMode ?? DEFAULTS.defaultMode
         const cookieName = options.cookieName ?? DEFAULTS.cookieName
+        const modeCookieName = options.modeCookieName ?? DEFAULTS.modeCookieName
         const cookieMaxAge = options.cookieMaxAge ?? DEFAULTS.cookieMaxAge
         const autoImport = options.autoImport ?? DEFAULTS.autoImport
         const includeUtilities = options.includeUtilities ?? DEFAULTS.includeUtilities
@@ -150,7 +156,10 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
         ;(nuxt.options.runtimeConfig.public as Record<string, unknown>).origam = {
             themes,
             defaultTheme,
+            modes,
+            defaultMode,
             cookieName,
+            modeCookieName,
             cookieMaxAge
         }
     }

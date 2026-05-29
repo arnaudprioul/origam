@@ -2,9 +2,10 @@
 
 origam ships an official Nuxt 3 / Nuxt 4 module that wires the design
 system into a Nuxt application in one line: auto-imports for every
-`Origam*` component and `useXxx` composable, SSR-safe theme resolution
-via cookie + `Sec-CH-Prefers-Color-Scheme`, and automatic injection of
-the token stylesheets in the right order.
+`Origam*` component and `useXxx` composable, SSR-safe resolution of both
+theming axes — the brand `theme` (via cookie) and the color `mode` (via
+cookie + `Sec-CH-Prefers-Color-Scheme`) — and automatic injection of the
+token stylesheets in the right order.
 
 The module is published as a **sub-export of `origam`** — there is no
 separate package to install. You get the components, the tokens, the
@@ -28,8 +29,8 @@ export default defineNuxtConfig({
 
 That is it. Every `Origam*` component and `useXxx` composable is now
 auto-imported, the primitive + light + dark + utilities token sheets are
-loaded, and the active theme is resolved server-side so the first paint
-already matches the user preference (no FOUC).
+loaded, and both the active brand and color mode are resolved server-side
+so the first paint already matches the user preference (no FOUC).
 
 ## Configuration
 
@@ -41,7 +42,10 @@ export default defineNuxtConfig({
     origam: {
         themes: ['light', 'dark', 'brand-x'],
         defaultTheme: 'auto',
+        modes: ['light', 'dark'],
+        defaultMode: 'auto',
         cookieName: 'origam-theme',
+        modeCookieName: 'origam-mode',
         cookieMaxAge: 60 * 60 * 24 * 365,
         autoImport: true,
         includeUtilities: true,
@@ -54,24 +58,34 @@ export default defineNuxtConfig({
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `themes` | `string[]` | `['light', 'dark']` | Theme files to load. Each name must match a generated `origam/tokens/css/{theme}` import. |
-| `defaultTheme` | `string` | `'auto'` | Active theme when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then `'light'`. |
-| `cookieName` | `string` | `'origam-theme'` | Cookie that stores the user's chosen theme. |
-| `cookieMaxAge` | `number` | `31_536_000` (1 year) | Cookie lifetime in seconds. |
+| `themes` | `string[]` | `['light', 'dark']` | Brand theme files to load. Each name must match a generated `origam/tokens/css/{theme}` import. |
+| `defaultTheme` | `string` | `'auto'` | Active brand when no cookie is set. `'auto'` renders no `data-theme` (the default brand). |
+| `modes` | `string[]` | `['light', 'dark']` | Color modes supported by the loaded token sheets. Used to validate the resolved mode. |
+| `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then renders no `data-mode`. |
+| `cookieName` | `string` | `'origam-theme'` | Cookie that stores the user's chosen brand. |
+| `modeCookieName` | `string` | `'origam-mode'` | Cookie that stores the user's chosen color mode. |
+| `cookieMaxAge` | `number` | `31_536_000` (1 year) | Cookie lifetime in seconds (shared by both cookies). |
 | `autoImport` | `boolean` | `true` | Auto-register components and composables as Nuxt auto-imports. |
 | `includeUtilities` | `boolean` | `true` | Inject the utility-classes stylesheet (`origam-utilities.css`). |
 | `prefix` | `string` | `'Origam'` | Reserved for future use. origam components already ship prefixed, so the active prefix is empty. |
 
-## SSR theme resolution
+## SSR theme + mode resolution
 
-The server plugin reads the `origam-theme` cookie before the response is
-rendered and injects the resolved value as `<html data-theme="…">`
-via Nuxt's `useHead()`. If the cookie is absent, it falls back to the
-`Sec-CH-Prefers-Color-Scheme` request header (sent by modern browsers
-when the `Accept-CH` response advertises support). The client plugin
-then picks up the attribute already set by the server, so the hydration
-boundary stays clean — no flash of unstyled / wrong-themed content, no
-hydration mismatch warning.
+The server plugin reads the `origam-theme` and `origam-mode` cookies
+before the response is rendered and injects the resolved values as
+`<html data-theme="…" data-mode="…">` via Nuxt's `useHead()` (attributes
+are omitted when the axis resolves to `'auto'`).
+
+- **Brand (`data-theme`)** is driven by the `origam-theme` cookie, then
+  `defaultTheme`.
+- **Mode (`data-mode`)** is driven by the `origam-mode` cookie, then
+  `defaultMode`, then the `Sec-CH-Prefers-Color-Scheme` request header
+  (sent by modern browsers when the `Accept-CH` response advertises
+  support).
+
+The client plugin then picks up the attributes already set by the server,
+so the hydration boundary stays clean — no flash of unstyled /
+wrong-themed content, no hydration mismatch warning.
 
 To opt-in to client-hint advertising, return `Accept-CH:
 Sec-CH-Prefers-Color-Scheme` from your root response (Nitro middleware

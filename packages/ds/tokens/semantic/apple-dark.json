@@ -89,5 +89,13 @@
     "family": {
       "sans": { "$type": "fontFamily", "$value": "-apple-system, BlinkMacSystemFont, SF Pro Display, Inter, sans-serif" }
     }
+  },
+  "shadow": {
+    "none": { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "0px",  "spread": "0px", "color": "rgba(0,0,0,0)" } },
+    "xs":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "1px", "blur": "4px",  "spread": "0px", "color": "rgba(0,0,0,0.50)" } },
+    "sm":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "2px", "blur": "8px",  "spread": "0px", "color": "rgba(0,0,0,0.50)" } },
+    "md":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "4px", "blur": "16px", "spread": "-1px","color": "rgba(0,0,0,0.55)" } },
+    "lg":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "8px", "blur": "30px", "spread": "-2px","color": "rgba(0,0,0,0.60)" } },
+    "xl":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "14px","blur": "48px", "spread": "-4px","color": "rgba(0,0,0,0.65)" } }
   }
 }

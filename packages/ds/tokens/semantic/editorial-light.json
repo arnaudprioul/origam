@@ -94,5 +94,13 @@
       "sans":  { "$type": "fontFamily", "$value": "Fraunces, Playfair Display, Georgia, serif" },
       "serif": { "$type": "fontFamily", "$value": "Fraunces, Playfair Display, Georgia, serif" }
     }
+  },
+  "shadow": {
+    "none": { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "0px",  "spread": "0px", "color": "rgba(0,0,0,0)" } },
+    "xs":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "0px", "blur": "0px",  "spread": "0px", "color": "rgba(0,0,0,0)" } },
+    "sm":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "1px", "blur": "0px",  "spread": "0px", "color": "rgba(10,10,10,0.15)" } },
+    "md":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "2px", "blur": "0px",  "spread": "0px", "color": "rgba(10,10,10,0.18)" } },
+    "lg":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "3px", "blur": "0px",  "spread": "0px", "color": "rgba(10,10,10,0.22)" } },
+    "xl":   { "$type": "shadow", "$value": { "offsetX": "0px", "offsetY": "4px", "blur": "0px",  "spread": "0px", "color": "rgba(10,10,10,0.25)" } }
   }
 }

@@ -76,7 +76,10 @@ describe.skip('origam/nuxt module', () => {
         expect(module.defaults).toMatchObject({
             themes: ['light', 'dark'],
             defaultTheme: 'auto',
+            modes: ['light', 'dark'],
+            defaultMode: 'auto',
             cookieName: 'origam-theme',
+            modeCookieName: 'origam-mode',
             autoImport: true,
             includeUtilities: true,
             prefix: 'Origam'
@@ -137,14 +140,20 @@ describe.skip('origam/nuxt module', () => {
         module.setup({
             themes: ['light', 'dark', 'brand-x'],
             defaultTheme: 'dark',
+            modes: ['light', 'dark'],
+            defaultMode: 'dark',
             cookieName: 'origam-active-theme',
+            modeCookieName: 'origam-active-mode',
             cookieMaxAge: 12345
         }, nuxt)
 
         const cfg = nuxt.options.runtimeConfig.public.origam as Record<string, unknown>
         expect(cfg.themes).toEqual(['light', 'dark', 'brand-x'])
         expect(cfg.defaultTheme).toBe('dark')
+        expect(cfg.modes).toEqual(['light', 'dark'])
+        expect(cfg.defaultMode).toBe('dark')
         expect(cfg.cookieName).toBe('origam-active-theme')
+        expect(cfg.modeCookieName).toBe('origam-active-mode')
         expect(cfg.cookieMaxAge).toBe(12345)
     })
 
