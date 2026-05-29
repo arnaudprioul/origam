@@ -53,7 +53,7 @@ const TREE_NODES = [
 ]
 const CALENDAR_DAYS = [22, 23, 24, 25, 26, 27, 28]
 const QR_CELLS = [0, 1, 3, 5, 6, 8, 10, 12, 13, 15]
-const PROVIDER_TAGS = ['DefaultsProvider', 'ThemeProvider', 'ClientOnly', 'Lazy', 'Responsive', 'VirtualScroll', 'InfiniteScroll', 'Media']
+const PROVIDER_TAGS = ['DefaultsProvider', 'ThemeProvider', 'ClientOnly', 'VirtualScroll']
 
 function isProvider (n: string): boolean {
     return PROVIDER_TAGS.includes(n)
@@ -66,9 +66,44 @@ function isProvider (n: string): boolean {
 
         <div v-if="name === 'Btn'" class="mp__btn">Click me</div>
 
-        <div v-else-if="name === 'TextField' || name === 'Input' || name === 'Field' || name === 'Label'" class="mp__input">
+        <div v-else-if="name === 'BtnGroup'" class="mp__btngroup">
+            <span>A</span>
+            <span>B</span>
+            <span>C</span>
+        </div>
+
+        <div v-else-if="name === 'BtnToggle'" class="mp__btngroup">
+            <span><OrigamIcon icon="mdi:format-bold" :size="11" /></span>
+            <span class="mp__btngroup-on"><OrigamIcon icon="mdi:format-italic" :size="11" /></span>
+            <span><OrigamIcon icon="mdi:format-underline" :size="11" /></span>
+        </div>
+
+        <div v-else-if="name === 'TextField'" class="mp__input">
             <span class="mp__input-text">arnaud@…</span>
             <span class="mp__input-caret" />
+        </div>
+
+        <div v-else-if="name === 'Field'" class="mp__field">
+            <span class="mp__field-label">Label</span>
+            <div class="mp__field-control">
+                <span class="mp__field-prefix">$</span>
+                <span class="mp__field-slot" />
+                <span class="mp__field-suffix">USD</span>
+            </div>
+        </div>
+
+        <div v-else-if="name === 'Input'" class="mp__input-wrap">
+            <div class="mp__input-struct">
+                <span class="mp__input-prepend"><OrigamIcon icon="mdi:at" :size="11" /></span>
+                <div class="mp__input mp__input-main"><span class="mp__input-text">username</span></div>
+                <span class="mp__input-append"><OrigamIcon icon="mdi:check-circle-outline" :size="11" /></span>
+            </div>
+            <span class="mp__field-hint">hint text</span>
+        </div>
+
+        <div v-else-if="name === 'Label'" class="mp__label">
+            <span>Email</span>
+            <span class="mp__label-req">*</span>
         </div>
 
         <div v-else-if="name === 'PasswordField'" class="mp__col">
@@ -105,15 +140,44 @@ function isProvider (n: string): boolean {
             <span class="mp__switch mp__switch--on"><span class="mp__switch-thumb" /></span>
         </div>
 
-        <div v-else-if="name === 'Checkbox' || name === 'SelectionControl'" class="mp__row">
+        <div v-else-if="name === 'Checkbox'" class="mp__row">
             <span v-for="(c, i) in CHECKBOX_STATES" :key="i" class="mp__check" :class="{ 'mp__check--on': c }">
                 <OrigamIcon v-if="c" icon="mdi:check" :size="11" />
             </span>
         </div>
 
+        <div v-else-if="name === 'SelectionControl'" class="mp__row mp__row--tight">
+            <span class="mp__check mp__check--on"><OrigamIcon icon="mdi:check" :size="11" /></span>
+            <span class="mp__radio mp__radio--on"><span /></span>
+            <span class="mp__switch mp__switch--on"><span class="mp__switch-thumb" /></span>
+        </div>
+
+        <div v-else-if="name === 'CheckboxBtn'" class="mp__row mp__row--tight">
+            <span class="mp__chipbtn">Vue 3</span>
+            <span class="mp__chipbtn mp__chipbtn--on">A11y</span>
+            <span class="mp__chipbtn">CSS</span>
+        </div>
+
         <div v-else-if="name === 'Radio'" class="mp__row">
             <span class="mp__radio mp__radio--on"><span /></span>
             <span class="mp__radio" />
+        </div>
+
+        <div v-else-if="name === 'RadioBtn'" class="mp__row mp__row--tight">
+            <span class="mp__chipbtn mp__chipbtn--on">EUR</span>
+            <span class="mp__chipbtn">USD</span>
+            <span class="mp__chipbtn">GBP</span>
+        </div>
+
+        <div v-else-if="name === 'RadioGroup'" class="mp__col" style="gap:4px">
+            <div class="mp__row mp__row--tight">
+                <span class="mp__radio mp__radio--on"><span /></span>
+                <span class="mp__radiolabel">Option A</span>
+            </div>
+            <div class="mp__row mp__row--tight">
+                <span class="mp__radio" />
+                <span class="mp__radiolabel mp__radiolabel--off">Option B</span>
+            </div>
         </div>
 
         <div v-else-if="name === 'SliderField'" class="mp__slider">
@@ -143,10 +207,33 @@ function isProvider (n: string): boolean {
             <span class="mp__input-text">#7C3AED</span>
         </div>
 
-        <div v-else-if="name === 'DatePicker' || name === 'Calendar'" class="mp__cal">
-            <div class="mp__cal-head">May</div>
-            <div class="mp__cal-grid">
+        <div v-else-if="name === 'Calendar'" class="mp__cal-full">
+            <div class="mp__cal-full-toolbar">
+                <span class="mp__cal-full-nav">&lt;</span>
+                <span class="mp__cal-full-title">May 2026</span>
+                <span class="mp__cal-full-nav">&gt;</span>
+            </div>
+            <div class="mp__cal-full-views">
+                <span class="mp__cal-full-view mp__cal-full-view--on">Month</span>
+                <span class="mp__cal-full-view">Week</span>
+                <span class="mp__cal-full-view">Day</span>
+            </div>
+            <div class="mp__cal-full-grid">
                 <span v-for="d in CALENDAR_DAYS" :key="d" :class="{ 'mp__cal-day--on': d === 25 }">{{ d }}</span>
+            </div>
+        </div>
+
+        <div v-else-if="name === 'DatePicker'" class="mp__datepick">
+            <div class="mp__picker-head">May 25, 2026</div>
+            <div class="mp__cal mp__cal--popover">
+                <div class="mp__cal-head">May</div>
+                <div class="mp__cal-grid">
+                    <span v-for="d in CALENDAR_DAYS" :key="d" :class="{ 'mp__cal-day--on': d === 25 }">{{ d }}</span>
+                </div>
+            </div>
+            <div class="mp__picker-actions">
+                <span>Cancel</span>
+                <span class="mp__picker-ok">OK</span>
             </div>
         </div>
 
@@ -155,9 +242,16 @@ function isProvider (n: string): boolean {
             <span class="mp__input-text">29/05/2026</span>
         </div>
 
-        <div v-else-if="name === 'FileField'" class="mp__input">
-            <OrigamIcon icon="mdi:paperclip" :size="11" />
-            <span class="mp__input-text">report.pdf</span>
+        <div v-else-if="name === 'FileField'" class="mp__filefield">
+            <div class="mp__filefield-zone">
+                <OrigamIcon icon="mdi:cloud-upload-outline" :size="18" />
+                <span class="mp__filefield-hint">Drop or browse</span>
+            </div>
+            <div class="mp__filefield-item">
+                <OrigamIcon icon="mdi:file-document-outline" :size="11" />
+                <span class="mp__filefield-name">report.pdf</span>
+                <span class="mp__filefield-size">142 kB</span>
+            </div>
         </div>
 
         <div v-else-if="name === 'OtpInputField'" class="mp__row mp__row--tight">
@@ -169,8 +263,8 @@ function isProvider (n: string): boolean {
             <OrigamIcon icon="mdi:pencil-outline" :size="11" />
         </div>
 
-        <div v-else-if="name === 'TextMask'" class="mp__input">
-            <span class="mp__input-text mp__mono">__/__/____</span>
+        <div v-else-if="name === 'TextMask'" class="mp__textmask">
+            origam
         </div>
 
         <div v-else-if="name === 'Form'" class="mp__form">
@@ -191,7 +285,9 @@ function isProvider (n: string): boolean {
             <span class="mp__chip mp__chip--success">Success</span>
         </div>
 
-        <div v-else-if="name === 'Avatar'" class="mp__row">
+        <div v-else-if="name === 'Avatar'" class="mp__avatar-solo" style="background: var(--m-accent, #7c3aed)">AP</div>
+
+        <div v-else-if="name === 'AvatarGroup'" class="mp__row">
             <div
                 v-for="(a, i) in AVATARS"
                 :key="i"
@@ -212,20 +308,34 @@ function isProvider (n: string): boolean {
             <span />
         </div>
 
-        <div v-else-if="name === 'List' || name === 'DataList'" class="mp__list">
+        <div v-else-if="name === 'List'" class="mp__list">
             <div v-for="(_, i) in 3" :key="i" class="mp__list-row" :class="{ 'mp__list-row--on': i === 0 }">
                 <span class="mp__bullet" />
                 <span>Item {{ i + 1 }}</span>
             </div>
         </div>
 
-        <div v-else-if="name === 'DataTable' || name === 'Table'" class="mp__table">
+        <div v-else-if="name === 'DataList'" class="mp__dl">
+            <div class="mp__dl-row"><span class="mp__dl-key">Status</span><span class="mp__dl-val">Active</span></div>
+            <div class="mp__dl-row"><span class="mp__dl-key">Owner</span><span class="mp__dl-val">Léa</span></div>
+            <div class="mp__dl-row"><span class="mp__dl-key">Created</span><span class="mp__dl-val">2024-01-15</span></div>
+        </div>
+
+        <div v-else-if="name === 'DataTable'" class="mp__table">
             <div class="mp__table-head">
                 <span>NAME</span><span>OWNER</span><span>STATUS</span>
             </div>
             <div v-for="i in TABLE_ROWS" :key="i" class="mp__table-row">
                 <span>Item {{ i }}</span><span>Léa</span><span class="mp__table-status">● Live</span>
             </div>
+        </div>
+
+        <div v-else-if="name === 'Table'" class="mp__table mp__table--plain">
+            <div class="mp__table-head mp__table-head--plain">
+                <span>Key</span><span>Value</span>
+            </div>
+            <div class="mp__table-row mp__table-row--plain"><span>One</span><span>1</span></div>
+            <div class="mp__table-row mp__table-row--plain"><span>Two</span><span>2</span></div>
         </div>
 
         <div v-else-if="name === 'Timeline'" class="mp__timeline">
@@ -235,10 +345,14 @@ function isProvider (n: string): boolean {
             </div>
         </div>
 
-        <div v-else-if="name === 'Counter'" class="mp__counter">
-            <span class="mp__counter-btn">−</span>
-            <span class="mp__counter-val">5</span>
-            <span class="mp__counter-btn">+</span>
+        <div v-else-if="name === 'Counter'" class="mp__col" style="gap:3px;align-items:stretch">
+            <div class="mp__input">
+                <span class="mp__input-text">Hello…</span>
+                <span class="mp__input-caret" />
+            </div>
+            <div class="mp__counter-inline">
+                <span>42 / 100</span>
+            </div>
         </div>
 
         <div v-else-if="name === 'Stepper'" class="mp__stepper">
@@ -257,9 +371,26 @@ function isProvider (n: string): boolean {
             <span>Heads up!</span>
         </div>
 
-        <div v-else-if="name === 'Snackbar' || name === 'Messages'" class="mp__snackbar">
+        <div v-else-if="name === 'SnackbarGroup'" class="mp__col" style="gap:4px;align-items:stretch">
+            <div class="mp__snackbar">
+                <OrigamIcon icon="mdi:check-circle" :size="11" />
+                <span>Item saved</span>
+            </div>
+            <div class="mp__snackbar">
+                <OrigamIcon icon="mdi:alert-circle" :size="11" />
+                <span>Network slow</span>
+            </div>
+        </div>
+
+        <div v-else-if="name === 'Snackbar'" class="mp__snackbar">
             <span>Saved</span>
             <span class="mp__snackbar-action">UNDO</span>
+        </div>
+
+        <div v-else-if="name === 'Messages'" class="mp__col" style="gap:3px;align-items:flex-start">
+            <span class="mp__field-hint mp__field-hint--err"><OrigamIcon icon="mdi:alert-circle" :size="9" /> This field is required</span>
+            <span class="mp__field-hint mp__field-hint--err"><OrigamIcon icon="mdi:alert-circle" :size="9" /> Must be a valid email</span>
+            <span class="mp__field-hint">At least 8 characters</span>
         </div>
 
         <div v-else-if="name === 'Loader'" class="mp__loader">
@@ -285,8 +416,38 @@ function isProvider (n: string): boolean {
             <span class="mp__app-footer" />
         </div>
 
-        <div v-else-if="name === 'Grid' || name === 'Grids'" class="mp__grid">
+        <div v-else-if="name === 'Grid'" class="mp__grid">
             <span /><span /><span /><span />
+        </div>
+
+        <div v-else-if="name === 'Container'" class="mp__container-mock">
+            <span class="mp__container-rule" />
+            <div class="mp__container-body">
+                <span class="mp__skel mp__skel--80" />
+                <span class="mp__skel mp__skel--60" />
+            </div>
+            <span class="mp__container-rule" />
+        </div>
+
+        <div v-else-if="name === 'Row'" class="mp__rowmock mp__rowmock--row">
+            <span class="mp__rowmock-col">col</span>
+            <span class="mp__rowmock-col">col</span>
+            <span class="mp__rowmock-col">col</span>
+        </div>
+
+        <div v-else-if="name === 'Col'">
+            <div class="mp__colmock-grid">
+                <span /><span /><span /><span /><span /><span /><span /><span /><span /><span /><span /><span />
+            </div>
+            <div class="mp__colmock-span">
+                <span class="mp__colmock-span-bar">cols=8</span>
+            </div>
+        </div>
+
+        <div v-else-if="name === 'Spacer'" class="mp__spacermock">
+            <span class="mp__spacermock-box" />
+            <span class="mp__spacermock-fill">↔</span>
+            <span class="mp__spacermock-box" />
         </div>
 
         <div v-else-if="name === 'Layout'" class="mp__layout">
@@ -297,23 +458,29 @@ function isProvider (n: string): boolean {
             </div>
         </div>
 
-        <div v-else-if="name === 'Main'" class="mp__layout">
-            <span class="mp__layout-aside mp__layout-aside--dim" />
-            <span class="mp__layout-main" />
+        <div v-else-if="name === 'Main'" class="mp__main-mock">
+            <span class="mp__main-offset" />
+            <div class="mp__main-content">
+                <span class="mp__skel mp__skel--80" />
+                <span class="mp__skel mp__skel--60" />
+                <span class="mp__skel mp__skel--40" />
+            </div>
         </div>
 
-        <div v-else-if="name === 'Section'" class="mp__sections">
-            <span /><span /><span />
+        <div v-else-if="name === 'Section'" class="mp__section-stub">
+            <span class="mp__section-stub-label">section</span>
+            <span class="mp__skel mp__skel--80" />
+            <span class="mp__skel mp__skel--60" />
         </div>
 
         <div v-else-if="name === 'Masonry'" class="mp__masonry">
             <span /><span /><span /><span /><span /><span />
         </div>
 
-        <div v-else-if="name === 'Sheet'" class="mp__sheet">
-            <span class="mp__sheet-grip" />
+        <div v-else-if="name === 'Sheet'" class="mp__sheet-generic">
+            <span class="mp__skel mp__skel--title" />
             <span class="mp__skel mp__skel--80" />
-            <span class="mp__skel mp__skel--60" />
+            <span class="mp__skel mp__skel--50" />
         </div>
 
         <div v-else-if="name === 'Drawer'" class="mp__drawer">
@@ -340,11 +507,23 @@ function isProvider (n: string): boolean {
             <span class="mp__watermark-tag">DRAFT</span>
         </div>
 
-        <div v-else-if="name === 'Window'" class="mp__window">
-            <span class="mp__win-dot" />
-            <span class="mp__win-dot" />
-            <span class="mp__win-dot" />
-            <span class="mp__win-title">App.vue</span>
+        <div v-else-if="name === 'Window'" class="mp__windowsw">
+            <div class="mp__windowsw-frame">
+                <span class="mp__skel mp__skel--title" />
+                <span class="mp__skel mp__skel--80" />
+                <span class="mp__skel mp__skel--50" />
+            </div>
+            <div class="mp__windowsw-dots">
+                <span /><span class="mp__windowsw-on" /><span />
+            </div>
+        </div>
+
+        <div v-else-if="name === 'WindowItem'" class="mp__windowsw">
+            <span class="mp__windowsw-tag">Slide 2 of 3</span>
+            <div class="mp__windowsw-frame">
+                <span class="mp__skel mp__skel--80" />
+                <span class="mp__skel mp__skel--50" />
+            </div>
         </div>
 
         <div v-else-if="name === 'Title'" class="mp__heading">Title</div>
@@ -386,10 +565,10 @@ function isProvider (n: string): boolean {
             >{{ t.label }}</span>
         </div>
 
-        <div v-else-if="name === 'ItemGroup'" class="mp__group">
-            <span>A</span>
-            <span class="mp__group-on">B</span>
-            <span>C</span>
+        <div v-else-if="name === 'ItemGroup'" class="mp__itemgroup">
+            <span class="mp__itemgroup-item">A</span>
+            <span class="mp__itemgroup-item mp__itemgroup-item--on">B</span>
+            <span class="mp__itemgroup-item">C</span>
         </div>
 
         <div v-else-if="name === 'Treeview'" class="mp__tree">
@@ -406,9 +585,19 @@ function isProvider (n: string): boolean {
             </div>
         </div>
 
-        <div v-else-if="name === 'Picker'" class="mp__input">
-            <span class="mp__input-text">Pick…</span>
-            <OrigamIcon icon="mdi:menu-down" :size="11" />
+        <div v-else-if="name === 'Picker'" class="mp__picker-shell">
+            <div class="mp__picker-shell-header">
+                <span class="mp__picker-shell-title">Pick a value</span>
+            </div>
+            <div class="mp__picker-shell-body">
+                <div class="mp__picker-shell-grid">
+                    <span /><span /><span /><span /><span /><span />
+                </div>
+            </div>
+            <div class="mp__picker-actions">
+                <span>Cancel</span>
+                <span class="mp__picker-ok">OK</span>
+            </div>
         </div>
 
         <div v-else-if="name === 'CommandPalette'" class="mp__cmdp">
@@ -447,8 +636,15 @@ function isProvider (n: string): boolean {
             <span class="mp__parallax-front" />
         </div>
 
-        <div v-else-if="name === 'Slide'" class="mp__slide">
-            <OrigamIcon icon="mdi:gesture-swipe-horizontal" :size="22" />
+        <div v-else-if="name === 'Slide'" class="mp__slidegroup">
+            <span class="mp__slidegroup-prev"><OrigamIcon icon="mdi:chevron-left" :size="10" /></span>
+            <div class="mp__slidegroup-track">
+                <span class="mp__slidegroup-item mp__slidegroup-item--on">A</span>
+                <span class="mp__slidegroup-item">B</span>
+                <span class="mp__slidegroup-item">C</span>
+                <span class="mp__slidegroup-item">D</span>
+            </div>
+            <span class="mp__slidegroup-next"><OrigamIcon icon="mdi:chevron-right" :size="10" /></span>
         </div>
 
         <!-- ═════════════ OVERLAY / MODAL ═════════════ -->
@@ -467,10 +663,19 @@ function isProvider (n: string): boolean {
             <span class="mp__tooltip-arrow" />
         </div>
 
-        <div v-else-if="name === 'Menu' || name === 'ContextualMenu'" class="mp__menu">
+        <div v-else-if="name === 'Menu'" class="mp__menu">
             <span>Open</span>
             <span>Rename</span>
             <span class="mp__menu-on">Delete</span>
+        </div>
+
+        <div v-else-if="name === 'ContextualMenu'" class="mp__ctxmenu">
+            <OrigamIcon icon="mdi:cursor-default-click-outline" :size="14" />
+            <div class="mp__menu mp__menu--ctx">
+                <span>Copy</span>
+                <span>Paste</span>
+                <span class="mp__menu-on">Delete</span>
+            </div>
         </div>
 
         <div v-else-if="name === 'Overlay'" class="mp__overlay">
@@ -478,19 +683,33 @@ function isProvider (n: string): boolean {
             <span class="mp__overlay-card" />
         </div>
 
-        <div v-else-if="name === 'ConfirmWrapper'" class="mp__dialog">
-            <span class="mp__skel mp__skel--title" />
-            <span>Are you sure?</span>
-            <div class="mp__dialog-actions">
-                <span>No</span>
-                <span class="mp__dialog-danger">Delete</span>
+        <div v-else-if="name === 'ConfirmWrapper'" class="mp__confirm">
+            <div class="mp__input mp__confirm-input">
+                <span class="mp__input-text">arnaud@…</span>
+            </div>
+            <div class="mp__input mp__confirm-input mp__confirm-input--match">
+                <span class="mp__input-text">arnaud@…</span>
+                <OrigamIcon icon="mdi:check-circle" :size="13" />
             </div>
         </div>
 
         <!-- ═════════════ CHARTS ═════════════ -->
 
+        <div v-else-if="name === 'Chart'" class="mp__chartwrap">
+            <svg viewBox="0 0 100 50" class="mp__chart" preserveAspectRatio="none">
+                <path
+                    d="M0,40 L20,30 L40,32 L60,18 L80,22 L100,8"
+                    stroke="var(--m-accent, #7c3aed)"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                />
+            </svg>
+            <span class="mp__chartwrap-tag">line · bar · pie · 29 types</span>
+        </div>
+
         <svg
-            v-else-if="name === 'Chart' || name === 'ChartLine'"
+            v-else-if="name === 'ChartLine'"
             viewBox="0 0 100 50"
             class="mp__chart"
             preserveAspectRatio="none"
@@ -570,12 +789,15 @@ function isProvider (n: string): boolean {
 
         <div v-else-if="name === 'Divider'" class="mp__divider">
             <span />
-            <span>or</span>
             <span />
         </div>
 
         <div v-else-if="name === 'Blockquote'" class="mp__quote">
-            <span>“The Vue 3 DS”</span>
+            <span class="mp__quote-bar" />
+            <div class="mp__quote-body">
+                <span>&ldquo;Great design is invisible.&rdquo;</span>
+                <span class="mp__quote-author">— Origam</span>
+            </div>
         </div>
 
         <div v-else-if="name === 'Icon'" class="mp__big-icon">
@@ -588,14 +810,38 @@ function isProvider (n: string): boolean {
             <span class="mp__kbd">K</span>
         </div>
 
-        <div v-else-if="name === 'Code'" class="mp__code">
-            const x = 42
+        <div v-else-if="name === 'Code'" class="mp__code-block">
+            <div class="mp__code-header">
+                <span class="mp__code-lang">js</span>
+                <span class="mp__code-copy"><OrigamIcon icon="mdi:content-copy" :size="9" /></span>
+            </div>
+            <div class="mp__code">const x = 42</div>
         </div>
 
-        <div v-else-if="name === 'Bracket'" class="mp__bracket">
-            <span>[</span>
-            <OrigamIcon icon="mdi:dots-horizontal" :size="14" />
-            <span>]</span>
+        <div v-else-if="name === 'Transition'" class="mp__transition">
+            <span class="mp__transition-from" />
+            <OrigamIcon icon="mdi:arrow-right" :size="14" />
+            <span class="mp__transition-to" />
+        </div>
+
+        <div v-else-if="name === 'Bracket'" class="mp__bracket-tree">
+            <div class="mp__bracket-round">
+                <div class="mp__bracket-match">
+                    <span class="mp__bracket-name">Team A</span>
+                    <span class="mp__bracket-score mp__bracket-score--win">2</span>
+                </div>
+                <div class="mp__bracket-match mp__bracket-match--dim">
+                    <span class="mp__bracket-name">Team B</span>
+                    <span class="mp__bracket-score">1</span>
+                </div>
+            </div>
+            <span class="mp__bracket-connector" />
+            <div class="mp__bracket-round">
+                <div class="mp__bracket-match mp__bracket-match--final">
+                    <span class="mp__bracket-name mp__bracket-name--winner">Team A</span>
+                    <span class="mp__bracket-score mp__bracket-score--win">3</span>
+                </div>
+            </div>
         </div>
 
         <div v-else-if="name === 'Clipboard'" class="mp__clipboard">
@@ -603,8 +849,38 @@ function isProvider (n: string): boolean {
             <span>Copy</span>
         </div>
 
-        <div v-else-if="name === 'QRCode'" class="mp__qr">
+        <div v-else-if="name === 'QrCode' || name === 'QRCode'" class="mp__qr">
             <span v-for="i in 16" :key="i" :class="{ 'mp__qr-on': QR_CELLS.includes(i - 1) }" />
+        </div>
+
+        <!-- ═════════════ UTILITIES (lazy / responsive / media) ═════════════ -->
+
+        <div v-else-if="name === 'InfiniteScroll'" class="mp__infinitescroll">
+            <div class="mp__infinitescroll-item" />
+            <div class="mp__infinitescroll-item" />
+            <div class="mp__infinitescroll-item mp__infinitescroll-item--dim" />
+            <div class="mp__infinitescroll-loader"><span class="mp__loader"><span /></span></div>
+        </div>
+
+        <div v-else-if="name === 'Responsive'" class="mp__responsive-wrap">
+            <div class="mp__responsive-inner">
+                <span class="mp__responsive-ratio">16:9</span>
+            </div>
+        </div>
+
+        <div v-else-if="name === 'Lazy'" class="mp__lazy">
+            <span class="mp__lazy-bar" />
+            <span class="mp__lazy-bar mp__lazy-bar--mid" />
+            <span class="mp__lazy-icon"><OrigamIcon icon="mdi:image-filter-center-focus" :size="16" /></span>
+        </div>
+
+        <div v-else-if="name === 'Media'" class="mp__mediactl">
+            <span class="mp__mediactl-play"><OrigamIcon icon="mdi:play" :size="10" /></span>
+            <div class="mp__mediactl-track">
+                <span class="mp__mediactl-fill" />
+                <span class="mp__mediactl-thumb" />
+            </div>
+            <span class="mp__mediactl-time">0:42</span>
         </div>
 
         <!-- ═════════════ ABSTRACT / PROVIDER ═════════════ -->
@@ -1907,13 +2183,11 @@ function isProvider (n: string): boolean {
 }
 
 /* ============== QUOTE ============== */
-.mp__quote {
-    padding-inline-start: 8px;
-    border-inline-start: 3px solid var(--m-accent, #7c3aed);
-    color: var(--m-text-soft);
-    font-style: italic;
-    font-size: 11px;
-}
+.mp__quote { display:flex; gap:8px; align-items:flex-start; inline-size:80%; max-inline-size:12rem; }
+.mp__quote-bar { inline-size:3px; align-self:stretch; border-radius:2px; background:var(--m-accent,#7c3aed); flex-shrink:0; }
+.mp__quote-body { display:flex; flex-direction:column; gap:3px; }
+.mp__quote-body > span:first-child { font-style:italic; font-size:11px; color:var(--m-text-soft); }
+.mp__quote-author { font-size:9px; color:var(--m-text-dim); }
 
 /* ============== ICON ============== */
 .mp__big-icon { color: var(--m-accent, #7c3aed); }
@@ -1928,25 +2202,51 @@ function isProvider (n: string): boolean {
 }
 
 /* ============== CODE ============== */
+.mp__code-block { inline-size:80%; max-inline-size:12rem; border-radius:var(--m-radius-sm,6px); border:1px solid var(--m-border,rgba(255,255,255,.08)); background:var(--m-surface,#0e0e0e); overflow:hidden; }
+.mp__code-header { display:flex; justify-content:space-between; align-items:center; padding:3px 8px; border-block-end:1px solid var(--m-border,rgba(255,255,255,.08)); background:var(--m-surface-2,#171717); }
+.mp__code-lang { font-family:var(--m-font-mono,monospace); font-size:8px; text-transform:uppercase; letter-spacing:.08em; color:var(--m-text-soft); }
+.mp__code-copy { color:var(--m-text-soft); }
 .mp__code {
     padding: 4px 8px;
-    border-radius: 4px;
-    background: var(--m-surface, #0e0e0e);
-    border: 1px solid var(--m-border, rgba(255, 255, 255, 0.08));
     color: var(--m-accent-soft, #a78bfa);
     font-family: var(--m-font-mono, monospace);
     font-size: 10px;
 }
 
-/* ============== BRACKET ============== */
-.mp__bracket {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-family: var(--m-font-mono, monospace);
-    font-size: 16px;
-    color: var(--m-accent-soft, #a78bfa);
+/* ============== CONFIRM WRAPPER ============== */
+.mp__confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    inline-size: 80%;
+    max-inline-size: 12rem;
 }
+
+.mp__confirm-input {
+    inline-size: 100%;
+    max-inline-size: none;
+}
+
+.mp__confirm-input--match {
+    border-color: var(--m-success, #6ee7b7);
+    color: var(--m-success, #6ee7b7);
+}
+
+.mp__confirm-input--match :deep(.origam-icon) {
+    color: var(--m-success, #6ee7b7);
+}
+
+/* ============== BRACKET ============== */
+.mp__bracket-tree { display:flex; align-items:center; gap:4px; }
+.mp__bracket-round { display:flex; flex-direction:column; gap:3px; }
+.mp__bracket-match { padding:3px 6px; border-radius:3px; background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); display:flex; justify-content:space-between; gap:6px; min-inline-size:52px; font-size:9px; }
+.mp__bracket-match--dim { opacity:.45; }
+.mp__bracket-match--final { border-color:var(--m-accent-border, var(--m-accent,#7c3aed)); }
+.mp__bracket-name { color:var(--m-text-soft); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mp__bracket-name--winner { color:var(--m-text); font-weight:600; }
+.mp__bracket-score { color:var(--m-text-dim); font-variant-numeric:tabular-nums; font-family:var(--m-font-mono,monospace); }
+.mp__bracket-score--win { color:var(--m-accent); font-weight:700; }
+.mp__bracket-connector { inline-size:6px; block-size:1px; background:var(--m-border,rgba(255,255,255,.08)); align-self:center; }
 
 /* ============== CLIPBOARD ============== */
 .mp__clipboard {
@@ -2002,4 +2302,546 @@ function isProvider (n: string): boolean {
 .mp :deep(.origam-icon) {
     color: inherit;
 }
+
+/* ============== WINDOW (content switcher) ============== */
+.mp__windowsw {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    inline-size: 80%;
+}
+
+.mp__windowsw-frame {
+    inline-size: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--m-border, rgba(255, 255, 255, 0.08));
+    border-radius: 6px;
+    background: var(--m-surface, #0e0e0e);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mp__windowsw-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.mp__windowsw-dots > span {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 999px;
+    background: var(--m-border, rgba(255, 255, 255, 0.18));
+}
+
+.mp__windowsw-dots > span.mp__windowsw-on {
+    background: var(--m-accent, #a78bfa);
+    inline-size: 14px;
+}
+
+/* ============== TEXT MASK (gradient text) ============== */
+.mp__textmask {
+    font-family: var(--m-font-display, var(--m-font-sans, system-ui));
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        135deg,
+        var(--m-accent, #a78bfa) 0%,
+        var(--m-accent-soft, #f472b6) 50%,
+        var(--m-success, #6ee7b7) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ============== AVATAR SOLO ============== */
+.mp__avatar-solo {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+}
+
+/* ============== LAYOUT: CONTAINER ============== */
+.mp__container {
+    inline-size: 80%;
+    block-size: 32px;
+    border: 1px dashed var(--m-border, rgba(255, 255, 255, 0.18));
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mp__container-inner {
+    inline-size: 60%;
+    block-size: 14px;
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 30%, transparent);
+    border-radius: 2px;
+}
+
+/* ============== LAYOUT: ROW MOCK ============== */
+.mp__rowmock {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    inline-size: 80%;
+}
+
+.mp__rowmock > span {
+    flex: 1;
+    block-size: 22px;
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 25%, transparent);
+    border-radius: 3px;
+}
+
+/* ============== LAYOUT: COL MOCK ============== */
+.mp__colmock {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    inline-size: 36%;
+}
+
+.mp__colmock > span {
+    block-size: 8px;
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 25%, transparent);
+    border-radius: 2px;
+}
+
+/* ============== LAYOUT: SPACER ============== */
+.mp__spacermock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    inline-size: 80%;
+}
+
+.mp__spacermock-box {
+    inline-size: 16px;
+    block-size: 16px;
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 35%, transparent);
+    border-radius: 2px;
+}
+
+.mp__spacermock-fill {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-block: 1px dashed var(--m-border, rgba(255, 255, 255, 0.18));
+    color: var(--m-text-soft);
+    font-size: 10px;
+    block-size: 1.25rem;
+}
+
+/* ============== BTN GROUP / TOGGLE ============== */
+.mp__btngroup {
+    display: inline-flex;
+    border: 1px solid var(--m-border, rgba(255, 255, 255, 0.18));
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--m-surface, #0e0e0e);
+}
+
+.mp__btngroup > span {
+    padding: 4px 8px;
+    font-size: 11px;
+    color: var(--m-text-soft);
+    border-inline-end: 1px solid var(--m-border, rgba(255, 255, 255, 0.12));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 1.75rem;
+}
+
+.mp__btngroup > span:last-child { border-inline-end: 0; }
+
+.mp__btngroup > span.mp__btngroup-on {
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 25%, transparent);
+    color: var(--m-text, #fff);
+    font-weight: 600;
+}
+
+/* ============== CHIP BUTTON (Checkbox/RadioBtn) ============== */
+.mp__chipbtn {
+    padding: 3px 8px;
+    border: 1px solid var(--m-border, rgba(255, 255, 255, 0.18));
+    border-radius: 999px;
+    background: transparent;
+    color: var(--m-text-soft);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.mp__chipbtn--on {
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 28%, transparent);
+    border-color: var(--m-accent, #a78bfa);
+    color: var(--m-text, #fff);
+    font-weight: 600;
+}
+
+/* ============== RADIO LABEL ============== */
+.mp__radiolabel {
+    font-size: 11px;
+    color: var(--m-text, #fff);
+}
+
+.mp__radiolabel--off { color: var(--m-text-soft); }
+
+/* ============== FIELD (label + outline + hint) ============== */
+.mp__field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    inline-size: 80%;
+    max-inline-size: 12rem;
+}
+
+.mp__field-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--m-text-soft);
+    font-weight: 600;
+}
+
+.mp__field-control {
+    padding: 6px 8px;
+    border: 1px solid var(--m-border, rgba(255, 255, 255, 0.18));
+    border-radius: 4px;
+    background: var(--m-surface, #0e0e0e);
+    display: flex;
+    align-items: center;
+}
+
+.mp__field-hint {
+    font-size: 9px;
+    color: var(--m-text-soft);
+}
+
+.mp__field-hint--err {
+    color: var(--m-danger, #f87171);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.mp__input--err {
+    border-color: var(--m-danger, #f87171);
+}
+
+/* ============== LABEL (standalone) ============== */
+.mp__label {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+    font-weight: 600;
+    color: var(--m-text, #fff);
+    font-size: 13px;
+}
+
+.mp__label-req {
+    color: var(--m-danger, #f87171);
+    font-weight: 700;
+}
+
+/* ============== COUNTER (char count display) ============== */
+.mp__counter {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    font-family: var(--m-font-mono, monospace);
+}
+
+.mp__counter-val {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--m-text, #fff);
+    font-variant-numeric: tabular-nums;
+}
+
+.mp__counter-sep {
+    font-size: 18px;
+    color: var(--m-text-soft);
+    font-weight: 300;
+}
+
+.mp__counter-max {
+    font-size: 13px;
+    color: var(--m-text-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============== PICKER (shell) ============== */
+.mp__picker-shell { inline-size:80%; max-inline-size:10rem; border-radius:var(--m-radius,10px); background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); overflow:hidden; }
+.mp__picker-shell-header { background:var(--m-accent-bg, color-mix(in srgb, var(--m-accent,#7c3aed) 22%, transparent)); padding:6px 8px; border-block-end:1px solid var(--m-border,rgba(255,255,255,.08)); }
+.mp__picker-shell-title { font-size:9px; font-weight:700; color:var(--m-accent-soft, var(--m-accent,#a78bfa)); text-transform:uppercase; letter-spacing:.06em; }
+.mp__picker-shell-body { padding:6px 8px; }
+.mp__picker-shell-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.mp__picker-shell-grid > span { block-size:10px; border-radius:3px; background:var(--m-surface,#0e0e0e); border:1px solid var(--m-border,rgba(255,255,255,.06)); }
+
+.mp__picker-head {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--m-text, #fff);
+    padding-block-end: 2px;
+    border-block-end: 1px solid var(--m-border, rgba(255, 255, 255, 0.08));
+}
+
+.mp__picker-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-block-start: 2px;
+}
+
+.mp__picker-actions > span {
+    font-size: 9px;
+    color: var(--m-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.mp__picker-actions > .mp__picker-ok {
+    color: var(--m-accent, #a78bfa);
+    font-weight: 700;
+}
+
+/* ============== SLIDE (slidegroup nav) ============== */
+.mp__slidegroup { display:flex; align-items:center; gap:3px; inline-size:80%; max-inline-size:12rem; }
+.mp__slidegroup-prev, .mp__slidegroup-next { flex-shrink:0; color:var(--m-text-soft); display:grid; place-items:center; }
+.mp__slidegroup-track { display:flex; gap:4px; overflow:hidden; flex:1; }
+.mp__slidegroup-item { flex-shrink:0; padding:3px 8px; border-radius:999px; border:1px solid var(--m-border,rgba(255,255,255,.18)); font-size:10px; color:var(--m-text-soft); }
+.mp__slidegroup-item--on { background:color-mix(in srgb, var(--m-accent,#a78bfa) 28%, transparent); border-color:var(--m-accent,#a78bfa); color:var(--m-text,#fff); }
+
+/* ============== DATALIST (dl rows) ============== */
+.mp__dl {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    inline-size: 80%;
+    font-size: 10px;
+}
+
+.mp__dl-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding-block: 2px;
+    border-block-end: 1px dashed var(--m-border, rgba(255, 255, 255, 0.08));
+}
+
+.mp__dl-row:last-child { border-block-end: 0; }
+
+.mp__dl-key {
+    color: var(--m-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.mp__dl-val {
+    color: var(--m-text, #fff);
+    font-weight: 600;
+}
+
+/* ============== TABLE (plain variant) ============== */
+.mp__table--plain { inline-size: 70%; }
+
+.mp__table-head--plain {
+    grid-template-columns: 1fr 1fr;
+}
+
+.mp__table-row--plain {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* ============== CONTEXTUAL MENU ============== */
+.mp__ctxmenu {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 4px;
+    color: var(--m-accent, #a78bfa);
+}
+
+.mp__menu--ctx {
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--m-accent, #7c3aed) 18%, transparent);
+}
+
+/* ============== DATEPICKER (popover wrapper) ============== */
+.mp__datepick {
+    display: inline-block;
+    padding: 4px;
+    border-radius: 6px;
+    background: var(--m-surface-2, #171717);
+    border: 1px solid var(--m-border, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--m-accent, #7c3aed) 12%, transparent);
+}
+
+.mp__cal--popover {
+    border: 0;
+    background: transparent;
+    padding: 0;
+}
+
+/* ============== WINDOW ITEM tag ============== */
+.mp__windowsw-tag {
+    align-self: flex-end;
+    font-size: 9px;
+    color: var(--m-text-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============== COL highlighted ============== */
+.mp__colmock-on {
+    background: var(--m-accent, #a78bfa) !important;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--m-accent, #a78bfa) 50%, transparent);
+}
+
+/* ============== ITEMGROUP wrapper ============== */
+.mp__group {
+    padding: 4px 6px;
+    border: 1px dashed var(--m-border, rgba(255, 255, 255, 0.22));
+    border-radius: 6px;
+}
+
+/* ============== CHART wrap with type hint ============== */
+.mp__chartwrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    inline-size: 80%;
+}
+
+.mp__chartwrap-tag {
+    font-size: 8px;
+    color: var(--m-text-soft);
+    letter-spacing: 0.02em;
+}
+
+/* ============== TRANSITION ============== */
+.mp__transition {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--m-accent, #a78bfa);
+}
+
+.mp__transition-from,
+.mp__transition-to {
+    inline-size: 18px;
+    block-size: 18px;
+    border-radius: 4px;
+}
+
+.mp__transition-from {
+    background: color-mix(in srgb, var(--m-accent, #a78bfa) 25%, transparent);
+}
+
+.mp__transition-to {
+    background: var(--m-accent, #a78bfa);
+}
+
+/* ============== CALENDAR FULL ============== */
+.mp__cal-full { inline-size:85%; max-inline-size:13rem; border-radius:var(--m-radius-sm,6px); background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); overflow:hidden; font-size:9px; }
+.mp__cal-full-toolbar { display:flex; align-items:center; justify-content:space-between; padding:4px 6px 2px; border-block-end:1px solid var(--m-border,rgba(255,255,255,.08)); color:var(--m-text,#fafafa); font-weight:700; }
+.mp__cal-full-nav { color:var(--m-text-soft); font-size:8px; }
+.mp__cal-full-title { font-size:9px; }
+.mp__cal-full-views { display:flex; border-block-end:1px solid var(--m-border,rgba(255,255,255,.08)); }
+.mp__cal-full-view { padding:2px 5px; font-size:8px; color:var(--m-text-soft); border-inline-end:1px solid var(--m-border,rgba(255,255,255,.08)); }
+.mp__cal-full-view--on { background:var(--m-accent-bg, color-mix(in srgb, var(--m-accent,#7c3aed) 18%, transparent)); color:var(--m-accent,#a78bfa); font-weight:600; }
+.mp__cal-full-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; text-align:center; padding:3px; color:var(--m-text-soft); font-family:var(--m-font-mono,monospace); }
+
+/* ============== COUNTER INLINE ============== */
+.mp__counter-inline { display:flex; justify-content:flex-end; font-size:10px; font-family:var(--m-font-mono,monospace); color:var(--m-text-soft); padding-inline-end:2px; }
+
+/* ============== FIELD PREFIX / SUFFIX / SLOT ============== */
+.mp__field-prefix, .mp__field-suffix { font-size:10px; color:var(--m-text-soft); padding-inline:3px; }
+.mp__field-slot { flex:1; block-size:10px; background:var(--m-border,rgba(255,255,255,.08)); border-radius:2px; opacity:.5; }
+
+/* ============== FILE FIELD ============== */
+.mp__filefield { display:flex; flex-direction:column; gap:5px; inline-size:80%; max-inline-size:12rem; }
+.mp__filefield-zone { display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 10px; border:1.5px dashed var(--m-border,rgba(255,255,255,.18)); border-radius:var(--m-radius-sm,6px); color:var(--m-text-soft); font-size:10px; }
+.mp__filefield-hint { font-size:9px; color:var(--m-text-soft); }
+.mp__filefield-item { display:flex; align-items:center; gap:4px; padding:4px 8px; border-radius:4px; background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); font-size:10px; color:var(--m-text-soft); }
+.mp__filefield-name { flex:1; font-family:var(--m-font-mono,monospace); }
+.mp__filefield-size { font-size:9px; opacity:.6; }
+
+/* ============== CONTAINER MOCK ============== */
+.mp__container-mock { display:flex; align-items:stretch; inline-size:80%; block-size:40px; }
+.mp__container-rule { inline-size:6px; background:color-mix(in srgb, var(--m-accent,#a78bfa) 25%, transparent); flex-shrink:0; }
+.mp__container-rule:first-child { border-radius:2px 0 0 2px; }
+.mp__container-rule:last-child { border-radius:0 2px 2px 0; }
+.mp__container-body { flex:1; display:flex; flex-direction:column; justify-content:center; gap:4px; padding-inline:8px; background:var(--m-surface-2,#171717); border-block:1px solid var(--m-border,rgba(255,255,255,.08)); }
+
+/* ============== ROW MOCK ============== */
+.mp__rowmock--row { padding:2px; border:1px solid color-mix(in srgb, var(--m-accent,#a78bfa) 30%, transparent); border-radius:3px; }
+.mp__rowmock-col { flex:1; block-size:22px; background:color-mix(in srgb, var(--m-accent,#a78bfa) 20%, transparent); border-radius:2px; display:grid; place-items:center; font-size:8px; color:var(--m-text-soft); }
+
+/* ============== COL MOCK (12-col grid) ============== */
+.mp__colmock-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:2px; inline-size:80%; }
+.mp__colmock-grid > span { block-size:5px; background:color-mix(in srgb, var(--m-accent,#a78bfa) 18%, transparent); border-radius:1px; }
+.mp__colmock-span { inline-size:80%; display:grid; grid-template-columns:repeat(12,1fr); gap:2px; margin-block-start:3px; }
+.mp__colmock-span-bar { grid-column:span 8; background:var(--m-accent,#a78bfa); border-radius:2px; display:grid; place-items:center; font-size:8px; color:var(--m-accent-fg,#fff); padding-block:2px; }
+
+/* ============== INPUT WRAP / STRUCT ============== */
+.mp__input-wrap { display:flex; flex-direction:column; gap:3px; inline-size:80%; max-inline-size:14rem; }
+.mp__input-struct { display:flex; align-items:center; gap:4px; }
+.mp__input-main { flex:1; inline-size:auto; max-inline-size:none; }
+.mp__input-prepend, .mp__input-append { color:var(--m-text-soft); display:grid; place-items:center; }
+
+/* ============== ITEM GROUP ============== */
+.mp__itemgroup { display:inline-flex; gap:4px; padding:4px; border:1px dashed var(--m-border,rgba(255,255,255,.22)); border-radius:6px; }
+.mp__itemgroup-item { inline-size:24px; block-size:24px; border-radius:4px; background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); display:grid; place-items:center; font-size:10px; color:var(--m-text-soft); }
+.mp__itemgroup-item--on { background:color-mix(in srgb, var(--m-accent,#a78bfa) 25%, transparent); border-color:var(--m-accent,#a78bfa); color:var(--m-text,#fff); font-weight:600; }
+
+/* ============== SECTION STUB ============== */
+.mp__section-stub { display:flex; flex-direction:column; gap:5px; inline-size:80%; max-inline-size:12rem; padding:8px 10px; border:1px dashed var(--m-border,rgba(255,255,255,.22)); border-radius:var(--m-radius-sm,6px); }
+.mp__section-stub-label { font-family:var(--m-font-mono,monospace); font-size:8px; text-transform:uppercase; letter-spacing:.08em; color:var(--m-text-soft); margin-block-end:2px; }
+
+/* ============== SHEET GENERIC ============== */
+.mp__sheet-generic { inline-size:80%; max-inline-size:12rem; padding:10px 12px; border-radius:var(--m-radius,10px); background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); box-shadow:0 4px 16px rgba(0,0,0,.35); display:flex; flex-direction:column; gap:4px; }
+
+/* ============== MAIN MOCK ============== */
+.mp__main-mock { inline-size:80%; max-inline-size:12rem; display:flex; }
+.mp__main-offset { inline-size:10px; background:var(--m-accent-bg, color-mix(in srgb, var(--m-accent,#7c3aed) 14%, transparent)); border-inline-end:2px dashed var(--m-accent,#7c3aed); flex-shrink:0; border-radius:2px 0 0 2px; }
+.mp__main-content { flex:1; padding:8px 10px; background:var(--m-bg,#0a0a0a); border:1px solid var(--m-border,rgba(255,255,255,.08)); border-radius:0 4px 4px 0; display:flex; flex-direction:column; gap:5px; }
+
+/* ============== INFINITE SCROLL ============== */
+.mp__infinitescroll { display:flex; flex-direction:column; gap:3px; inline-size:80%; max-inline-size:12rem; overflow:hidden; border:1px solid var(--m-border,rgba(255,255,255,.08)); border-radius:var(--m-radius-sm,6px); padding:4px; }
+.mp__infinitescroll-item { block-size:10px; background:var(--m-surface-2,#171717); border-radius:3px; }
+.mp__infinitescroll-item--dim { opacity:.4; block-size:7px; }
+.mp__infinitescroll-loader { display:flex; justify-content:center; padding-block:2px; }
+
+/* ============== RESPONSIVE ============== */
+.mp__responsive-wrap { inline-size:70%; max-inline-size:8rem; }
+.mp__responsive-inner { aspect-ratio:16/9; background:var(--m-surface-2,#171717); border:1px dashed var(--m-border,rgba(255,255,255,.18)); border-radius:var(--m-radius-sm,6px); display:grid; place-items:center; }
+.mp__responsive-ratio { font-family:var(--m-font-mono,monospace); font-size:9px; color:var(--m-text-soft); letter-spacing:.06em; }
+
+/* ============== LAZY ============== */
+.mp__lazy { position:relative; inline-size:80%; max-inline-size:10rem; block-size:3.5rem; border:1px dashed var(--m-border,rgba(255,255,255,.18)); border-radius:var(--m-radius-sm,6px); overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; gap:4px; padding:8px; }
+.mp__lazy-bar { block-size:4px; inline-size:70%; border-radius:2px; background:var(--m-text-soft); opacity:.25; }
+.mp__lazy-bar--mid { inline-size:50%; }
+.mp__lazy-icon { position:absolute; inset:0; display:grid; place-items:center; color:var(--m-text-dim,#525252); opacity:.4; }
+
+/* ============== MEDIA CTL ============== */
+.mp__mediactl { display:inline-flex; align-items:center; gap:6px; padding:5px 8px; inline-size:80%; max-inline-size:12rem; background:var(--m-surface-2,#171717); border:1px solid var(--m-border,rgba(255,255,255,.08)); border-radius:999px; }
+.mp__mediactl-play { inline-size:18px; block-size:18px; border-radius:50%; background:var(--m-accent,#7c3aed); color:var(--m-accent-fg,#fff); display:grid; place-items:center; flex-shrink:0; }
+.mp__mediactl-track { flex:1; position:relative; block-size:3px; background:var(--m-border,rgba(255,255,255,.12)); border-radius:2px; }
+.mp__mediactl-fill { position:absolute; inset-block:0; inset-inline-start:0; inline-size:35%; background:var(--m-accent,#7c3aed); border-radius:2px; }
+.mp__mediactl-thumb { position:absolute; inset-block-start:-4px; inset-inline-start:calc(35% - 4px); inline-size:8px; block-size:8px; border-radius:50%; background:var(--m-text,#fafafa); }
+.mp__mediactl-time { font-size:9px; font-family:var(--m-font-mono,monospace); color:var(--m-text-soft); flex-shrink:0; }
 </style>

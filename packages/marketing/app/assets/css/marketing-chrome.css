@@ -48,11 +48,27 @@
      * to the chip border, especially when prepend/append slots eat the
      * inner edge. Bumping each tier by ~4 px gives every chip on the
      * site enough breathing room without re-skinning each one. */
-    --origam-chip---padding-xs: 10px;
-    --origam-chip---padding-sm: 14px;
-    --origam-chip---padding-md: 16px;
-    --origam-chip---padding-lg: 18px;
-    --origam-chip---padding-xl: 22px;
+}
+
+/* Origam's `themes-all.css` defines chip tokens scoped to
+ * `[data-theme=X][data-mode=Y]` (specificity 0,2,0) which beats any
+ * plain `:root { … }` override (0,0,0). To win the cascade we use
+ * `html[data-theme][data-mode]` (specificity 0,2,1) and apply the
+ * chip padding / height bump there. Origam's chip CSS computes
+ * `padding: 0 var(--origam-chip---padding-sm, 10px)` so without
+ * vertical padding the only vertical breathing room comes from
+ * `height` — we bump both axes per tier. */
+html[data-theme][data-mode] {
+    --origam-chip---padding-xs: 12px;
+    --origam-chip---padding-sm: 16px;
+    --origam-chip---padding-md: 18px;
+    --origam-chip---padding-lg: 22px;
+    --origam-chip---padding-xl: 26px;
+    --origam-chip---height-xs: 24px;
+    --origam-chip---height-sm: 30px;
+    --origam-chip---height-md: 38px;
+    --origam-chip---height-lg: 44px;
+    --origam-chip---height-xl: 52px;
 }
 
 [data-theme="geek"] {

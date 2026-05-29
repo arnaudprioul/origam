@@ -26,6 +26,12 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'Circular user picture with image, initials or icon fallback.'
     },
     {
+        name: 'AvatarGroup',
+        slug: 'avatar-group',
+        category: 'media',
+        description: 'Stacked avatars with overlap, max-visible count and rest indicator.'
+    },
+    {
         name: 'Badge',
         slug: 'badge',
         category: 'feedback',
@@ -62,6 +68,18 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'Versatile button with all variants, sizes, icons and loading state.'
     },
     {
+        name: 'BtnGroup',
+        slug: 'btn-group',
+        category: 'utilities',
+        description: 'Visually segmented row of buttons sharing styling and selection.'
+    },
+    {
+        name: 'BtnToggle',
+        slug: 'btn-toggle',
+        category: 'forms',
+        description: 'Multi-state segmented button group acting as a selector input.'
+    },
+    {
         name: 'Calendar',
         slug: 'calendar',
         category: 'forms',
@@ -90,6 +108,12 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         slug: 'checkbox',
         category: 'forms',
         description: 'Accessible checkbox with indeterminate state and custom label.'
+    },
+    {
+        name: 'CheckboxBtn',
+        slug: 'checkbox-btn',
+        category: 'forms',
+        description: 'Checkbox rendered as a toggle button — same data binding, button chrome.'
     },
     {
         name: 'Chip',
@@ -236,10 +260,28 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'CSS-grid row container with configurable columns and gutter.'
     },
     {
-        name: 'Grids',
-        slug: 'grids',
+        name: 'Container',
+        slug: 'container',
         category: 'layout',
-        description: 'Responsive column component — the col counterpart to Grid row.'
+        description: 'Centred max-width wrapper with responsive horizontal padding.'
+    },
+    {
+        name: 'Row',
+        slug: 'row',
+        category: 'layout',
+        description: 'Flex row container — pair with Col to build responsive grids.'
+    },
+    {
+        name: 'Col',
+        slug: 'col',
+        category: 'layout',
+        description: 'Responsive column with span / offset / order across breakpoints.'
+    },
+    {
+        name: 'Spacer',
+        slug: 'spacer',
+        category: 'layout',
+        description: 'Flex spacer that absorbs remaining space inside a Row / flex line.'
     },
     {
         name: 'Icon',
@@ -329,7 +371,7 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         name: 'Media',
         slug: 'media',
         category: 'media',
-        description: 'Responsive media container that maintains any aspect-ratio.'
+        description: 'Audio/video media controller with scrubber, play/pause and volume.'
     },
     {
         name: 'Menu',
@@ -398,7 +440,7 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'Linear or circular progress bar with label and determinate/indeterminate modes.'
     },
     {
-        name: 'QRCode',
+        name: 'QrCode',
         slug: 'qr-code',
         category: 'media',
         description: 'Renders a QR code SVG from any string value with custom colours.'
@@ -410,6 +452,18 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'Accessible radio button with custom label and group binding.'
     },
     {
+        name: 'RadioBtn',
+        slug: 'radio-btn',
+        category: 'forms',
+        description: 'Radio rendered as a toggle button — single-choice in a segmented row.'
+    },
+    {
+        name: 'RadioGroup',
+        slug: 'radio-group',
+        category: 'forms',
+        description: 'Group container that binds multiple Radio inputs to a single model.'
+    },
+    {
         name: 'RatingField',
         slug: 'rating-field',
         category: 'forms',
@@ -419,7 +473,7 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         name: 'Responsive',
         slug: 'responsive',
         category: 'utilities',
-        description: 'Slot-based breakpoint wrapper that renders content for a given viewport.'
+        description: 'Aspect-ratio container that locks its content to a target ratio (16/9, 1/1, …) without JS.'
     },
     {
         name: 'Section',
@@ -443,7 +497,7 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         name: 'Sheet',
         slug: 'sheet',
         category: 'overlay',
-        description: 'Bottom sheet with drag handle, snap points and swipe-to-dismiss.'
+        description: 'Generic chrome surface with full mixin set (border, rounded, elevation, position); base of Card, Dialog and other panel-like components.'
     },
     {
         name: 'Skeleton',
@@ -455,7 +509,7 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         name: 'Slide',
         slug: 'slide',
         category: 'utilities',
-        description: 'Single slide panel for Carousel — handles transitions and lazy media.'
+        description: 'Horizontal (or vertical) overflow scroller with prev/next navigation and keyboard support.'
     },
     {
         name: 'SliderField',
@@ -468,6 +522,12 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         slug: 'snackbar',
         category: 'feedback',
         description: 'Timed toast notification with action button and position variants.'
+    },
+    {
+        name: 'SnackbarGroup',
+        slug: 'snackbar-group',
+        category: 'feedback',
+        description: 'Manager that stacks and animates multiple Snackbars in a single corner.'
     },
     {
         name: 'Stepper',
@@ -514,8 +574,8 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
     {
         name: 'TextMask',
         slug: 'text-mask',
-        category: 'forms',
-        description: 'Input with pattern mask (phone, date, IBAN…) and live formatting.'
+        category: 'utilities',
+        description: 'Typographic display component that clips any gradient or image through text glyphs via background-clip: text — for hero headlines and brand reveals.'
     },
     {
         name: 'ThemeProvider',
@@ -572,9 +632,21 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'Canvas-based watermark overlay with text or image, angle and opacity.'
     },
     {
+        name: 'Transition',
+        slug: 'transition',
+        category: 'utilities',
+        description: 'Reusable enter/leave transition wrapper with timing presets.'
+    },
+    {
         name: 'Window',
         slug: 'window',
-        category: 'overlay',
-        description: 'Draggable, resizable floating window panel for desktop-like UIs.'
+        category: 'navigation',
+        description: 'Content switcher container — pairs with Tabs / Carousel to swap views.'
+    },
+    {
+        name: 'WindowItem',
+        slug: 'window-item',
+        category: 'navigation',
+        description: 'Single view inside a Window — transitions in/out when activated.'
     }
 ] as const

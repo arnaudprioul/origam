@@ -44,6 +44,7 @@ function selectLocale (code: string): void {
         v-model="isOpen"
         :offset="6"
         location="bottom right"
+        min-width="200"
     >
         <template #activator="{ props: activatorProps }">
             <OrigamBtn
@@ -59,29 +60,33 @@ function selectLocale (code: string): void {
             </OrigamBtn>
         </template>
 
-        <OrigamList
-            density="compact"
-            min-width="180"
-        >
-            <OrigamListItem
-                v-for="loc in I18N_LOCALES"
-                :key="loc.code"
-                :active="loc.code === locale"
-                :aria-current="loc.code === locale ? 'true' : undefined"
-                @click="selectLocale(loc.code)"
-            >
-                <template #prepend>
-                    <span class="language-switcher__flag" aria-hidden="true">{{ FLAGS[loc.code] ?? '🌐' }}</span>
-                </template>
-                <OrigamListItemTitle>{{ loc.name }}</OrigamListItemTitle>
-                <template
-                    v-if="loc.code === locale"
-                    #append
+        <div class="language-switcher__menu-content">
+            <OrigamList density="compact">
+                <OrigamListItem
+                    v-for="loc in I18N_LOCALES"
+                    :key="loc.code"
+                    :active="loc.code === locale"
+                    :title="loc.name"
+                    role="option"
+                    :aria-selected="loc.code === locale"
+                    @click="selectLocale(loc.code)"
                 >
-                    <OrigamIcon icon="mdi:check" />
-                </template>
-            </OrigamListItem>
-        </OrigamList>
+                    <template #prepend>
+                        <span class="language-switcher__flag" aria-hidden="true">{{ FLAGS[loc.code] ?? '🌐' }}</span>
+                    </template>
+                    <template
+                        v-if="loc.code === locale"
+                        #append
+                    >
+                        <OrigamIcon
+                            icon="mdi:check"
+                            :size="14"
+                            aria-hidden="true"
+                        />
+                    </template>
+                </OrigamListItem>
+            </OrigamList>
+        </div>
     </OrigamMenu>
 </template>
 
@@ -95,5 +100,9 @@ function selectLocale (code: string): void {
     font-weight: var(--origam-font__weight---semibold, 600);
     letter-spacing: 0.04em;
     font-size: 0.75rem;
+}
+
+.language-switcher__menu-content {
+    padding: var(--origam-space---2, 0.5rem);
 }
 </style>
