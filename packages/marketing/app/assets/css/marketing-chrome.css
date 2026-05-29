@@ -204,6 +204,7 @@ html[data-theme][data-mode] {
 	--m-warning: #FBBF24;
 	--m-danger: #FCA5A5;
 	--m-accent-border: color-mix(in srgb, #4ADE80 32%, transparent);
+	--m-glow-text: linear-gradient(110deg, #00F0FF 0%, #C77DFF 50%, #FF3CAC 100%);
 }
 [data-theme="geek"][data-mode="light"] {
 	--m-bg: #F0FDF4;
@@ -224,6 +225,7 @@ html[data-theme][data-mode] {
 	--m-warning: #D97706;
 	--m-danger: #DC2626;
 	--m-accent-border: color-mix(in srgb, #15803D 32%, transparent);
+	--m-glow-text: linear-gradient(110deg, #0891B2 0%, #A21CAF 55%, #DB2777 100%);
 }
 
 [data-theme="cartoon"] {
