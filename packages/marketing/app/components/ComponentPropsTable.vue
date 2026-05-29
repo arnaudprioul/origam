@@ -40,7 +40,7 @@ const sortedProps = computed(() => {
                         aria-label="required"
                     >*</span>
                 </td>
-                <td class="doc-table__cell">
+                <td class="doc-table__cell doc-table__cell--type">
                     <code class="doc-table__code doc-table__code--type">{{ prop.type }}</code>
                 </td>
                 <td class="doc-table__cell doc-table__cell--bool">
@@ -72,6 +72,13 @@ const sortedProps = computed(() => {
     inline-size: 100%;
     border-collapse: collapse;
     font-size: 0.8125rem;
+    table-layout: auto;
+}
+
+.doc-table tbody td,
+.doc-table thead th {
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .doc-table__caption {
@@ -107,10 +114,22 @@ const sortedProps = computed(() => {
     padding: 0.5rem 0.75rem;
     vertical-align: top;
     color: var(--origam-color-text-primary);
+    word-break: normal;
+    overflow-wrap: anywhere;
 }
 
 .doc-table__cell--name {
     white-space: nowrap;
+}
+
+.doc-table__cell--type {
+    font-family: var(--origam-font-mono, ui-monospace, monospace);
+    font-size: 0.75rem;
+    color: var(--origam-color-text-secondary);
+    min-inline-size: 12rem;
+    max-inline-size: 24rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .doc-table__cell--bool {
@@ -120,7 +139,7 @@ const sortedProps = computed(() => {
 
 .doc-table__cell--desc {
     color: var(--origam-color-text-secondary);
-    min-inline-size: 10rem;
+    min-inline-size: 14rem;
 }
 
 .doc-table__code {

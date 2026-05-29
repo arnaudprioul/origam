@@ -437,7 +437,7 @@ useBreadcrumbListLd([
 .component-detail__layout {
     display: grid;
     grid-template-areas: "story doc";
-    grid-template-columns: 1fr 22rem;
+    grid-template-columns: minmax(0, 1fr) minmax(28rem, 32rem);
     gap: 2rem;
     align-items: start;
 }
