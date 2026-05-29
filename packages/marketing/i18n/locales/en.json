@@ -365,7 +365,19 @@
       "charts": "Chart primitives",
       "chartsDesc": "29 chart types — line, area, bar, donut, …",
       "figma": "Figma plugin",
-      "figmaDesc": "Sync tokens & components both ways."
+      "figmaDesc": "Sync tokens & components both ways.",
+      "categoriesTitle": "Categories",
+      "categoriesLabel": "Browse by category",
+      "category": {
+        "layout": "Layout",
+        "navigation": "Navigation",
+        "forms": "Forms",
+        "data": "Data",
+        "feedback": "Feedback",
+        "overlay": "Overlay",
+        "media": "Media",
+        "utilities": "Utilities"
+      }
     }
   },
   "themes": {

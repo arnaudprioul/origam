@@ -3,6 +3,7 @@ export type TComponentCategory =
     | 'navigation'
     | 'forms'
     | 'data'
+    | 'charts'
     | 'feedback'
     | 'overlay'
     | 'media'

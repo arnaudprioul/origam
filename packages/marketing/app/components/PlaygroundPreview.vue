@@ -3,13 +3,18 @@ import { computed, onMounted, ref, shallowRef, watch } from 'vue'
 import type { ReplStore } from '@vue/repl'
 
 /*
- * @vue/repl@4 API:
- * - `useStore({...})` is a *composable* (NOT a constructor) — calling
- *   `new ReplStore(...)` was the old @vue/repl@2 API. After minification
- *   that became `new i(...)` → "i is not a constructor" runtime crash.
- * - The new store mutates its own `files` ref; updates flow through
- *   `addFile()` / `renameFile()` / direct `store.files['App.vue'] = ...`
- *   on a fresh File instance.
+ * @vue/repl@4 file naming:
+ * - The store's `mainFile` defaults to `"src/App.vue"` (not `"App.vue"`).
+ * - `setDefaultFile()` is called during `useStore()` and populates
+ *   `files["src/App.vue"]` with `template.welcomeSFC`. We override
+ *   `welcomeSFC` to inject the user's code at construction time so the
+ *   preview renders the right content on first mount.
+ * - For subsequent updates, `store.setFiles({ 'App.vue': newCode })`
+ *   is the correct API — it calls `addSrcPrefix` internally, so
+ *   `'App.vue'` is normalized to `'src/App.vue'` before updating the
+ *   reactive `files` map that the preview iframe watches.
+ * - `deleteFile()` must NOT be used for updates — it calls
+ *   `window.confirm()` which blocks the UI.
  */
 
 const props = defineProps<{
@@ -36,19 +41,26 @@ async function initRepl () {
         import('@vue/repl'),
         import('@vue/repl/monaco-editor')
     ])
-    const { useStore, Repl, File } = replModule
+    const { useStore, Repl } = replModule
     const Monaco = (monacoModule as { default: object }).default ?? monacoModule
 
-    const replStore = useStore()
+    // Pass the user's code as `welcomeSFC` so that `setDefaultFile()`
+    // — which runs synchronously inside `useStore()` — populates the
+    // store's mainFile (`src/App.vue`) with the correct content.
+    // Calling `addFile('App.vue', ...)` AFTER init would only create a
+    // second, inactive file keyed as `"App.vue"` while `mainFile` stays
+    // `"src/App.vue"` with the default "Hello World!" content.
+    //
+    // `StoreState` is `ToRefs<{...}>` so `template` expects a `Ref`.
+    const replStore = useStore({
+        template: ref({ welcomeSFC: props.code })
+    })
 
-    // @vue/repl v4 requires `init()` to be called before any addFile /
-    // setActive — it sets up the internal compiler / vueVersion refs
-    // that the file watcher needs. Skipping it crashes with
-    // "Cannot set properties of undefined (setting 'name')" when the
-    // store tries to register the file rename event.
+    // `init()` sets up the internal `watchEffect` that recompiles the
+    // active file whenever its code changes. Call it once after store
+    // creation; calling it before is a no-op, calling it after
+    // `setFiles` is fine — the watcher picks up the current state.
     replStore.init()
-    replStore.addFile(new File('App.vue', props.code))
-    replStore.setActive('App.vue')
 
     store.value = replStore
     ReplComponent.value = Repl
@@ -71,14 +83,14 @@ watch(() => props.code, async (newCode) => {
         return
     }
     try {
-        const { File } = await import('@vue/repl')
         compileError.value = null
-        // Replace the file content via the store API rather than
-        // mutating `files` directly — the latter bypasses the
-        // store's internal watchers and the preview doesn't refresh.
-        store.value.deleteFile('App.vue')
-        store.value.addFile(new File('App.vue', newCode))
-        store.value.setActive('App.vue')
+        // `setFiles` is the correct API for replacing file content:
+        // - it calls `addSrcPrefix` so `'App.vue'` maps to `'src/App.vue'`
+        // - it recompiles all files and pushes errors into `store.errors`
+        // - it calls `setActive(store.mainFile)` so the preview re-renders
+        // Do NOT use `deleteFile` (calls `window.confirm`) or `addFile`
+        // (does not overwrite existing files, adds a duplicate key).
+        await store.value.setFiles({ 'App.vue': newCode })
     } catch (err: unknown) {
         compileError.value = err instanceof Error ? err.message : String(err)
     }

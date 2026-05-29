@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { TComponentCategory } from '~/types/component-category.type'
-import { COMPONENT_CATEGORIES } from '~/consts/component-categories.const'
+import { COMPONENT_LIST } from '~/consts/component-list.const'
 import { useComponentList } from '~/composables/useComponentList'
 import { useDebounce } from '~/composables/useDebounce'
 import { SEO_TWITTER_SITE, SEO_TWITTER_HANDLE } from '~/consts/seo.const'
 
 const { t } = useI18nFallback()
+const route = useRoute()
+const router = useRouter()
 const { total, byCategory, filter } = useComponentList()
 
 useSeoMeta({
@@ -32,9 +34,52 @@ defineOgImageComponent('OgImageTemplate', {
     type: 'component'
 })
 
-const activeCategory = ref<TComponentCategory | undefined>(undefined)
-const rawSearch = ref('')
+const knownCategories = computed<ReadonlyArray<TComponentCategory>>(() => {
+    const seen = new Set<TComponentCategory>()
+    for (const item of COMPONENT_LIST) {
+        seen.add(item.category)
+    }
+    return Array.from(seen) as TComponentCategory[]
+})
+
+const dynamicCategories = computed(() =>
+    knownCategories.value.map((key) => ({
+        key,
+        label: key.charAt(0).toUpperCase() + key.slice(1)
+    }))
+)
+
+function parseQueryCategory (raw: unknown): TComponentCategory | undefined {
+    if (typeof raw !== 'string' || !raw) return undefined
+    return knownCategories.value.includes(raw as TComponentCategory)
+        ? (raw as TComponentCategory)
+        : undefined
+}
+
+function parseQuerySearch (raw: unknown): string {
+    return typeof raw === 'string' ? raw : ''
+}
+
+const activeCategory = ref<TComponentCategory | undefined>(parseQueryCategory(route.query.category))
+const rawSearch = ref<string>(parseQuerySearch(route.query.q))
 const debouncedSearch = useDebounce(rawSearch)
+
+watch(
+    () => route.query,
+    (query) => {
+        activeCategory.value = parseQueryCategory(query.category)
+        rawSearch.value = parseQuerySearch(query.q)
+    }
+)
+
+function syncUrl (): void {
+    const query: Record<string, string> = {}
+    if (activeCategory.value) query.category = activeCategory.value
+    if (rawSearch.value) query.q = rawSearch.value
+    router.replace({ query })
+}
+
+watch([activeCategory, debouncedSearch], syncUrl)
 
 const filteredCount = computed(() =>
     filter(activeCategory.value, debouncedSearch.value).length
@@ -42,7 +87,7 @@ const filteredCount = computed(() =>
 
 const categoryCounts = computed(() => {
     const map: Record<string, number> = {}
-    for (const cat of COMPONENT_CATEGORIES) {
+    for (const cat of dynamicCategories.value) {
         map[cat.key] = byCategory.value[cat.key]?.length ?? 0
     }
     return map
@@ -147,7 +192,7 @@ const countLabel = computed(() =>
                                 </OrigamBtn>
                             </li>
                             <li
-                                v-for="cat in COMPONENT_CATEGORIES"
+                                v-for="cat in dynamicCategories"
                                 :key="cat.key"
                                 class="components-page__category-item"
                             >

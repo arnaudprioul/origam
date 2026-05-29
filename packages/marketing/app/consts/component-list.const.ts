@@ -98,10 +98,178 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
         description: 'Touch-friendly horizontal slider with autoplay, dots and arrow controls.'
     },
     {
-        name: 'Chart',
-        slug: 'chart',
-        category: 'media',
-        description: '29 chart types (bar, line, pie, radar…) built on SVG with design tokens.'
+        name: 'ChartLine',
+        slug: 'chart-line',
+        category: 'charts',
+        description: 'Line chart connecting data points with straight segments over a continuous axis.'
+    },
+    {
+        name: 'ChartArea',
+        slug: 'chart-area',
+        category: 'charts',
+        description: 'Area chart with filled region under the line to emphasise volume over time.'
+    },
+    {
+        name: 'ChartBar',
+        slug: 'chart-bar',
+        category: 'charts',
+        description: 'Horizontal bar chart for comparing discrete categories side by side.'
+    },
+    {
+        name: 'ChartColumn',
+        slug: 'chart-column',
+        category: 'charts',
+        description: 'Vertical column chart for comparing values across categories.'
+    },
+    {
+        name: 'ChartPie',
+        slug: 'chart-pie',
+        category: 'charts',
+        description: 'Pie chart showing proportional composition of a whole.'
+    },
+    {
+        name: 'ChartDonut',
+        slug: 'chart-donut',
+        category: 'charts',
+        description: 'Donut chart — a pie with a hollow centre, ideal for a central KPI label.'
+    },
+    {
+        name: 'ChartScatter',
+        slug: 'chart-scatter',
+        category: 'charts',
+        description: 'Scatter plot mapping two variables as (x, y) data points.'
+    },
+    {
+        name: 'ChartRadar',
+        slug: 'chart-radar',
+        category: 'charts',
+        description: 'Radar / spider chart for multi-dimensional performance comparison.'
+    },
+    {
+        name: 'ChartSpline',
+        slug: 'chart-spline',
+        category: 'charts',
+        description: 'Spline chart — a line chart with smooth Bézier curves between points.'
+    },
+    {
+        name: 'ChartSteppedLine',
+        slug: 'chart-stepped-line',
+        category: 'charts',
+        description: 'Stepped-line chart for visualising discrete state changes over time.'
+    },
+    {
+        name: 'ChartGauge',
+        slug: 'chart-gauge',
+        category: 'charts',
+        description: 'Gauge / dial chart for displaying a single KPI against a target range.'
+    },
+    {
+        name: 'ChartPyramid',
+        slug: 'chart-pyramid',
+        category: 'charts',
+        description: 'Pyramid chart for hierarchical proportion data like demographic funnels.'
+    },
+    {
+        name: 'ChartFunnel',
+        slug: 'chart-funnel',
+        category: 'charts',
+        description: 'Funnel chart for conversion pipelines and sequential drop-off analysis.'
+    },
+    {
+        name: 'ChartHoneycomb',
+        slug: 'chart-honeycomb',
+        category: 'charts',
+        description: 'Honeycomb grid chart representing data as a tiled hexagonal heatmap.'
+    },
+    {
+        name: 'ChartTreemap',
+        slug: 'chart-treemap',
+        category: 'charts',
+        description: 'Treemap chart partitioning area into nested rectangles by value.'
+    },
+    {
+        name: 'ChartSankey',
+        slug: 'chart-sankey',
+        category: 'charts',
+        description: 'Sankey diagram illustrating flow magnitude between nodes in a network.'
+    },
+    {
+        name: 'ChartWordCloud',
+        slug: 'chart-word-cloud',
+        category: 'charts',
+        description: 'Word cloud rendering terms at sizes proportional to their frequency.'
+    },
+    {
+        name: 'ChartHeatmap',
+        slug: 'chart-heatmap',
+        category: 'charts',
+        description: 'Heatmap grid encoding values as colour intensity across two dimensions.'
+    },
+    {
+        name: 'ChartSunburst',
+        slug: 'chart-sunburst',
+        category: 'charts',
+        description: 'Sunburst chart showing hierarchical data as concentric arc rings.'
+    },
+    {
+        name: 'ChartBoxPlot',
+        slug: 'chart-box-plot',
+        category: 'charts',
+        description: 'Box-and-whisker plot summarising distribution with median, quartiles and outliers.'
+    },
+    {
+        name: 'ChartPictorial',
+        slug: 'chart-pictorial',
+        category: 'charts',
+        description: 'Pictorial bar chart replacing plain bars with repeated SVG icons or images.'
+    },
+    {
+        name: 'ChartCandlestick',
+        slug: 'chart-candlestick',
+        category: 'charts',
+        description: 'Candlestick chart for financial OHLC (open, high, low, close) data.'
+    },
+    {
+        name: 'ChartStreamgraph',
+        slug: 'chart-streamgraph',
+        category: 'charts',
+        description: 'Streamgraph — stacked area chart centred on the baseline for trend flow.'
+    },
+    {
+        name: 'ChartVariwide',
+        slug: 'chart-variwide',
+        category: 'charts',
+        description: 'Variwide chart where column widths encode a second variable.'
+    },
+    {
+        name: 'ChartPolarBar',
+        slug: 'chart-polar-bar',
+        category: 'charts',
+        description: 'Polar bar chart drawing columns radially from the centre of a circle.'
+    },
+    {
+        name: 'ChartBullet',
+        slug: 'chart-bullet',
+        category: 'charts',
+        description: 'Bullet chart comparing a primary measure against a target and ranges.'
+    },
+    {
+        name: 'ChartPareto',
+        slug: 'chart-pareto',
+        category: 'charts',
+        description: 'Pareto chart combining a sorted bar series with a cumulative line overlay.'
+    },
+    {
+        name: 'ChartMap',
+        slug: 'chart-map',
+        category: 'charts',
+        description: 'Choropleth / geo map chart colouring regions by data value.'
+    },
+    {
+        name: 'ChartSparkline',
+        slug: 'chart-sparkline',
+        category: 'charts',
+        description: 'Compact inline sparkline for embedding trend context inside a table cell.'
     },
     {
         name: 'Checkbox',
@@ -160,7 +328,7 @@ export const COMPONENT_LIST: ReadonlyArray<IComponentMeta> = [
     {
         name: 'ConfirmWrapper',
         slug: 'confirm-wrapper',
-        category: 'overlay',
+        category: 'forms',
         description: 'Wraps any trigger with an inline confirmation prompt before action.'
     },
     {

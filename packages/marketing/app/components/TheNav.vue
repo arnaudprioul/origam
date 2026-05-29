@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { NAV_LINKS } from '~/consts/nav-links.const'
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+import { COMPONENT_LIST } from '~/consts/component-list.const'
+import type { TComponentCategory } from '~/types/component-category.type'
 
 const { t } = useI18nFallback()
 const config = useRuntimeConfig()
@@ -32,6 +35,18 @@ function handleNavLinkClick (href: string): void {
 function isActive (href: string): boolean {
     return route.path === href || route.path.startsWith(href + '/')
 }
+
+const componentCategoryLinks = computed(() => {
+    const seen = new Set<TComponentCategory>()
+    for (const item of COMPONENT_LIST) {
+        seen.add(item.category)
+    }
+    return Array.from(seen).map((key) => ({
+        key,
+        label: key.charAt(0).toUpperCase() + key.slice(1),
+        href: `/components?category=${key}`
+    }))
+})
 </script>
 
 <template>
@@ -111,6 +126,30 @@ function isActive (href: string): boolean {
                                         </span>
                                     </span>
                                 </NuxtLink>
+                                <nav
+                                    v-if="link.id === 'components'"
+                                    :aria-label="t('nav.componentsItems.categoriesLabel', 'Browse by category')"
+                                    class="site-nav__category-nav"
+                                >
+                                    <p class="site-nav__category-heading">
+                                        {{ t('nav.componentsItems.categoriesTitle', 'Categories') }}
+                                    </p>
+                                    <ul class="site-nav__category-list" role="list">
+                                        <li
+                                            v-for="cat in componentCategoryLinks"
+                                            :key="cat.key"
+                                            class="site-nav__category-item"
+                                        >
+                                            <NuxtLink
+                                                :to="cat.href"
+                                                class="site-nav__category-link"
+                                                @click="handleNavLinkClick(cat.href); setDropdown(null)"
+                                            >
+                                                {{ t(`nav.componentsItems.category.${cat.key}`, cat.label) }}
+                                            </NuxtLink>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
                         </OrigamMenu>
                         <NuxtLink
@@ -348,6 +387,58 @@ function isActive (href: string): boolean {
     font-size: 0.75rem;
     color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
     line-height: 1.4;
+}
+
+.site-nav__category-nav {
+    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
+    margin-block-start: 0.5rem;
+    padding-block-start: 0.5rem;
+}
+
+.site-nav__category-heading {
+    margin: 0 0 0.375rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
+}
+
+.site-nav__category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding-inline: 0.375rem;
+}
+
+.site-nav__category-item {
+    flex: 0 0 auto;
+}
+
+.site-nav__category-link {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--m-radius-sm, var(--origam-radius---sm, 6px));
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.site-nav__category-link:hover {
+    background-color: var(--m-accent-bg, color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 14%, transparent));
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
+}
+
+.site-nav__category-link:focus-visible {
+    outline: 2px solid var(--m-accent, var(--origam-color__border---focus, #7c3aed));
+    outline-offset: 2px;
+    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
 }
 
 .site-nav__actions {

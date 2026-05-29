@@ -695,19 +695,6 @@ function isProvider (n: string): boolean {
 
         <!-- ═════════════ CHARTS ═════════════ -->
 
-        <div v-else-if="name === 'Chart'" class="mp__chartwrap">
-            <svg viewBox="0 0 100 50" class="mp__chart" preserveAspectRatio="none">
-                <path
-                    d="M0,40 L20,30 L40,32 L60,18 L80,22 L100,8"
-                    stroke="var(--m-accent, #7c3aed)"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                />
-            </svg>
-            <span class="mp__chartwrap-tag">line · bar · pie · 29 types</span>
-        </div>
-
         <svg
             v-else-if="name === 'ChartLine'"
             viewBox="0 0 100 50"
@@ -770,6 +757,356 @@ function isProvider (n: string): boolean {
                 stroke-width="6"
                 stroke-dasharray="70 200"
                 transform="rotate(-90 25 25)"
+                stroke-linecap="round"
+            />
+        </svg>
+
+        <div v-else-if="name === 'ChartColumn'" class="mp__bars mp__bars--col">
+            <span v-for="(h, i) in BAR_HEIGHTS" :key="i" :style="{ height: `${h}%`, opacity: 0.4 + i * 0.1 }" />
+        </div>
+
+        <svg
+            v-else-if="name === 'ChartPie'"
+            viewBox="0 0 50 50"
+            class="mp__donut"
+        >
+            <circle cx="25" cy="25" r="20" fill="none" stroke="var(--m-border, rgba(255,255,255,.08))" stroke-width="20" />
+            <circle
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke="var(--m-accent, #7c3aed)"
+                stroke-width="20"
+                stroke-dasharray="50 200"
+                transform="rotate(-90 25 25)"
+            />
+            <circle
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke="var(--m-accent-soft, #a78bfa)"
+                stroke-width="20"
+                stroke-dasharray="35 200"
+                stroke-dashoffset="-50"
+                transform="rotate(-90 25 25)"
+            />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartScatter'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+        >
+            <circle cx="15" cy="38" r="3" fill="var(--m-accent, #7c3aed)" opacity=".9" />
+            <circle cx="28" cy="26" r="3" fill="var(--m-accent, #7c3aed)" opacity=".8" />
+            <circle cx="42" cy="32" r="3" fill="var(--m-accent, #7c3aed)" opacity=".85" />
+            <circle cx="55" cy="14" r="3" fill="var(--m-accent, #7c3aed)" opacity=".9" />
+            <circle cx="68" cy="20" r="3" fill="var(--m-accent, #7c3aed)" opacity=".7" />
+            <circle cx="80" cy="8"  r="3" fill="var(--m-accent, #7c3aed)" opacity=".95" />
+            <circle cx="35" cy="40" r="2" fill="var(--m-accent-soft, #a78bfa)" opacity=".6" />
+            <circle cx="60" cy="35" r="2" fill="var(--m-accent-soft, #a78bfa)" opacity=".6" />
+            <circle cx="72" cy="42" r="2" fill="var(--m-accent-soft, #a78bfa)" opacity=".6" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartRadar'"
+            viewBox="0 0 60 60"
+            class="mp__radar"
+        >
+            <polygon points="30,4 56,20 47,50 13,50 4,20" fill="none" stroke="var(--m-border, rgba(255,255,255,.1))" stroke-width="1" />
+            <polygon points="30,12 48,24 41,44 19,44 12,24" fill="none" stroke="var(--m-border, rgba(255,255,255,.07))" stroke-width="1" />
+            <polygon
+                points="30,8 50,22 43,46 17,46 10,22"
+                fill="color-mix(in srgb, var(--m-accent, #7c3aed) 28%, transparent)"
+                stroke="var(--m-accent, #7c3aed)"
+                stroke-width="1.5"
+            />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartSpline'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+            preserveAspectRatio="none"
+        >
+            <path
+                d="M0,40 C10,38 15,20 25,22 C35,24 38,35 50,28 C62,21 65,10 80,12 C90,13 95,8 100,6"
+                stroke="var(--m-accent, #7c3aed)"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+            />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartSteppedLine'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+            preserveAspectRatio="none"
+        >
+            <polyline
+                points="0,42 20,42 20,30 40,30 40,36 60,36 60,18 80,18 80,24 100,24 100,10"
+                stroke="var(--m-accent, #7c3aed)"
+                stroke-width="2"
+                fill="none"
+                stroke-linejoin="round"
+            />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartGauge'"
+            viewBox="0 0 60 40"
+            class="mp__gauge"
+        >
+            <path d="M8,36 A22,22 0 0 1 52,36" fill="none" stroke="var(--m-border, rgba(255,255,255,.1))" stroke-width="5" stroke-linecap="round" />
+            <path d="M8,36 A22,22 0 0 1 44,14" fill="none" stroke="var(--m-accent, #7c3aed)" stroke-width="5" stroke-linecap="round" />
+            <line x1="30" y1="36" x2="30" y2="16" stroke="var(--m-text, #fafafa)" stroke-width="1.5" stroke-linecap="round" transform="rotate(-30 30 36)" />
+            <circle cx="30" cy="36" r="3" fill="var(--m-accent, #7c3aed)" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartPyramid'"
+            viewBox="0 0 60 50"
+            class="mp__pyramid"
+        >
+            <polygon points="30,4 52,44 8,44" fill="color-mix(in srgb, var(--m-accent, #7c3aed) 28%, transparent)" stroke="var(--m-accent, #7c3aed)" stroke-width="1.5" />
+            <line x1="8" y1="30" x2="52" y2="30" stroke="var(--m-bg, #0a0a0a)" stroke-width="1.5" />
+            <line x1="16" y1="17" x2="44" y2="17" stroke="var(--m-bg, #0a0a0a)" stroke-width="1.5" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartFunnel'"
+            viewBox="0 0 60 50"
+            class="mp__pyramid"
+        >
+            <polygon points="6,6 54,6 44,20 16,20" fill="var(--m-accent, #7c3aed)" opacity=".9" />
+            <polygon points="16,22 44,22 36,36 24,36" fill="var(--m-accent, #7c3aed)" opacity=".65" />
+            <polygon points="24,38 36,38 30,48 30,48" fill="var(--m-accent, #7c3aed)" opacity=".4" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartHoneycomb'"
+            viewBox="0 0 80 50"
+            class="mp__chart"
+        >
+            <polygon points="14,8 22,8 26,15 22,22 14,22 10,15" fill="var(--m-accent, #7c3aed)" opacity=".9" />
+            <polygon points="28,8 36,8 40,15 36,22 28,22 24,15" fill="var(--m-accent, #7c3aed)" opacity=".55" />
+            <polygon points="42,8 50,8 54,15 50,22 42,22 38,15" fill="var(--m-accent, #7c3aed)" opacity=".75" />
+            <polygon points="56,8 64,8 68,15 64,22 56,22 52,15" fill="var(--m-accent, #7c3aed)" opacity=".4" />
+            <polygon points="21,22 29,22 33,29 29,36 21,36 17,29" fill="var(--m-accent, #7c3aed)" opacity=".65" />
+            <polygon points="35,22 43,22 47,29 43,36 35,36 31,29" fill="var(--m-accent, #7c3aed)" opacity=".85" />
+            <polygon points="49,22 57,22 61,29 57,36 49,36 45,29" fill="var(--m-accent, #7c3aed)" opacity=".45" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartTreemap'"
+            viewBox="0 0 70 50"
+            class="mp__chart"
+        >
+            <rect x="1" y="1" width="40" height="30" rx="2" fill="var(--m-accent, #7c3aed)" opacity=".75" />
+            <rect x="43" y="1" width="26" height="30" rx="2" fill="var(--m-accent, #7c3aed)" opacity=".5" />
+            <rect x="1" y="33" width="28" height="16" rx="2" fill="var(--m-accent, #7c3aed)" opacity=".55" />
+            <rect x="31" y="33" width="38" height="16" rx="2" fill="var(--m-accent, #7c3aed)" opacity=".35" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartSankey'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+        >
+            <rect x="2" y="4" width="8" height="18" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".9" />
+            <rect x="2" y="24" width="8" height="22" rx="1" fill="var(--m-accent-soft, #a78bfa)" opacity=".7" />
+            <path d="M10,13 C40,13 60,10 90,10" stroke="var(--m-accent, #7c3aed)" stroke-width="6" fill="none" opacity=".6" />
+            <path d="M10,35 C40,35 60,28 90,24" stroke="var(--m-accent-soft, #a78bfa)" stroke-width="10" fill="none" opacity=".4" />
+            <rect x="90" y="6" width="8" height="12" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".85" />
+            <rect x="90" y="20" width="8" height="18" rx="1" fill="var(--m-accent-soft, #a78bfa)" opacity=".6" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartWordCloud'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+        >
+            <text x="50" y="22" font-size="16" font-weight="700" fill="var(--m-accent, #7c3aed)" text-anchor="middle" opacity=".9">data</text>
+            <text x="22" y="36" font-size="10" font-weight="600" fill="var(--m-accent-soft, #a78bfa)" text-anchor="middle" opacity=".75">chart</text>
+            <text x="76" y="14" font-size="9" fill="var(--m-accent, #7c3aed)" text-anchor="middle" opacity=".6">flow</text>
+            <text x="78" y="38" font-size="8" fill="var(--m-text-soft, #a3a3a3)" text-anchor="middle" opacity=".6">value</text>
+            <text x="14" y="14" font-size="7" fill="var(--m-text-soft, #a3a3a3)" text-anchor="middle" opacity=".5">nodes</text>
+            <text x="55" y="44" font-size="7" fill="var(--m-text-soft, #a3a3a3)" text-anchor="middle" opacity=".5">metric</text>
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartHeatmap'"
+            viewBox="0 0 70 50"
+            class="mp__chart"
+        >
+            <rect x="2" y="2" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".2" />
+            <rect x="16" y="2" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".5" />
+            <rect x="30" y="2" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".8" />
+            <rect x="44" y="2" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".4" />
+            <rect x="58" y="2" width="10" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".9" />
+            <rect x="2" y="14" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".7" />
+            <rect x="16" y="14" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".3" />
+            <rect x="30" y="14" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".6" />
+            <rect x="44" y="14" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".95" />
+            <rect x="58" y="14" width="10" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".25" />
+            <rect x="2" y="26" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".45" />
+            <rect x="16" y="26" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".85" />
+            <rect x="30" y="26" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".55" />
+            <rect x="44" y="26" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".15" />
+            <rect x="58" y="26" width="10" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".7" />
+            <rect x="2" y="38" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".6" />
+            <rect x="16" y="38" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".35" />
+            <rect x="30" y="38" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".75" />
+            <rect x="44" y="38" width="12" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".1" />
+            <rect x="58" y="38" width="10" height="10" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".5" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartSunburst'"
+            viewBox="0 0 60 60"
+            class="mp__radar"
+        >
+            <circle cx="30" cy="30" r="28" fill="none" stroke="var(--m-border, rgba(255,255,255,.08))" stroke-width="1" />
+            <circle cx="30" cy="30" r="22" fill="none" stroke="var(--m-accent, #7c3aed)" stroke-width="10" stroke-dasharray="50 200" stroke-dashoffset="0" transform="rotate(-90 30 30)" opacity=".8" />
+            <circle cx="30" cy="30" r="22" fill="none" stroke="var(--m-accent-soft, #a78bfa)" stroke-width="10" stroke-dasharray="35 200" stroke-dashoffset="-50" transform="rotate(-90 30 30)" opacity=".6" />
+            <circle cx="30" cy="30" r="22" fill="none" stroke="var(--m-success, #6ee7b7)" stroke-width="10" stroke-dasharray="54 200" stroke-dashoffset="-85" transform="rotate(-90 30 30)" opacity=".5" />
+            <circle cx="30" cy="30" r="10" fill="none" stroke="var(--m-accent, #7c3aed)" stroke-width="8" stroke-dasharray="30 200" stroke-dashoffset="0" transform="rotate(-90 30 30)" opacity=".9" />
+            <circle cx="30" cy="30" r="10" fill="none" stroke="var(--m-accent-soft, #a78bfa)" stroke-width="8" stroke-dasharray="32 200" stroke-dashoffset="-30" transform="rotate(-90 30 30)" opacity=".65" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartBoxPlot'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+        >
+            <line x1="18" y1="10" x2="18" y2="44" stroke="var(--m-accent, #7c3aed)" stroke-width="1.5" />
+            <rect x="10" y="18" width="16" height="18" rx="1" fill="color-mix(in srgb, var(--m-accent, #7c3aed) 30%, transparent)" stroke="var(--m-accent, #7c3aed)" stroke-width="1.5" />
+            <line x1="10" y1="26" x2="26" y2="26" stroke="var(--m-accent, #7c3aed)" stroke-width="2" />
+            <line x1="50" y1="6" x2="50" y2="46" stroke="var(--m-accent-soft, #a78bfa)" stroke-width="1.5" />
+            <rect x="40" y="16" width="20" height="22" rx="1" fill="color-mix(in srgb, var(--m-accent-soft, #a78bfa) 30%, transparent)" stroke="var(--m-accent-soft, #a78bfa)" stroke-width="1.5" />
+            <line x1="40" y1="30" x2="60" y2="30" stroke="var(--m-accent-soft, #a78bfa)" stroke-width="2" />
+            <line x1="82" y1="14" x2="82" y2="42" stroke="var(--m-accent, #7c3aed)" stroke-width="1.5" />
+            <rect x="74" y="20" width="16" height="16" rx="1" fill="color-mix(in srgb, var(--m-accent, #7c3aed) 30%, transparent)" stroke="var(--m-accent, #7c3aed)" stroke-width="1.5" />
+            <line x1="74" y1="28" x2="90" y2="28" stroke="var(--m-accent, #7c3aed)" stroke-width="2" />
+        </svg>
+
+        <div v-else-if="name === 'ChartPictorial'" class="mp__bars mp__bars--pictorial">
+            <span v-for="(h, i) in BAR_HEIGHTS" :key="i" class="mp__bars-pictorial-col" :style="{ height: `${h}%` }">
+                <OrigamIcon icon="mdi:account" :size="8" />
+            </span>
+        </div>
+
+        <svg
+            v-else-if="name === 'ChartCandlestick'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+        >
+            <line x1="12" y1="8" x2="12" y2="44" stroke="var(--m-success, #6ee7b7)" stroke-width="1" />
+            <rect x="8" y="14" width="8" height="20" rx="1" fill="var(--m-success, #6ee7b7)" opacity=".8" />
+            <line x1="28" y1="12" x2="28" y2="42" stroke="var(--m-danger, #f87171)" stroke-width="1" />
+            <rect x="24" y="20" width="8" height="16" rx="1" fill="var(--m-danger, #f87171)" opacity=".8" />
+            <line x1="44" y1="10" x2="44" y2="40" stroke="var(--m-success, #6ee7b7)" stroke-width="1" />
+            <rect x="40" y="16" width="8" height="18" rx="1" fill="var(--m-success, #6ee7b7)" opacity=".8" />
+            <line x1="60" y1="14" x2="60" y2="46" stroke="var(--m-danger, #f87171)" stroke-width="1" />
+            <rect x="56" y="22" width="8" height="14" rx="1" fill="var(--m-danger, #f87171)" opacity=".8" />
+            <line x1="76" y1="6" x2="76" y2="38" stroke="var(--m-success, #6ee7b7)" stroke-width="1" />
+            <rect x="72" y="12" width="8" height="20" rx="1" fill="var(--m-success, #6ee7b7)" opacity=".8" />
+            <line x1="92" y1="10" x2="92" y2="44" stroke="var(--m-danger, #f87171)" stroke-width="1" />
+            <rect x="88" y="18" width="8" height="16" rx="1" fill="var(--m-danger, #f87171)" opacity=".8" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartStreamgraph'"
+            viewBox="0 0 100 50"
+            class="mp__chart"
+            preserveAspectRatio="none"
+        >
+            <defs>
+                <linearGradient id="mp-gs1" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="var(--m-accent, #7c3aed)" stop-opacity=".7" />
+                    <stop offset="1" stop-color="var(--m-accent, #7c3aed)" stop-opacity=".4" />
+                </linearGradient>
+                <linearGradient id="mp-gs2" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="var(--m-accent-soft, #a78bfa)" stop-opacity=".6" />
+                    <stop offset="1" stop-color="var(--m-accent-soft, #a78bfa)" stop-opacity=".3" />
+                </linearGradient>
+            </defs>
+            <path d="M0,20 C25,16 50,10 75,14 C90,17 100,18 100,18 L100,32 C90,32 75,36 50,40 C25,44 0,38 0,38 Z" fill="url(#mp-gs1)" />
+            <path d="M0,38 C25,34 50,30 75,32 C90,33 100,34 100,34 L100,44 C90,44 75,46 50,48 C25,50 0,46 0,46 Z" fill="url(#mp-gs2)" />
+            <path d="M0,12 C25,10 50,8 75,10 C90,11 100,12 100,12 L100,20 C90,18 75,16 50,16 C25,16 0,18 0,20 Z" fill="var(--m-success, #6ee7b7)" opacity=".35" />
+        </svg>
+
+        <div v-else-if="name === 'ChartVariwide'" class="mp__bars mp__bars--variwide">
+            <span :style="{ height: '70%', flex: '2', opacity: '0.9' }" />
+            <span :style="{ height: '50%', flex: '1.2', opacity: '0.7' }" />
+            <span :style="{ height: '85%', flex: '1.8', opacity: '0.8' }" />
+            <span :style="{ height: '40%', flex: '0.9', opacity: '0.6' }" />
+        </div>
+
+        <svg
+            v-else-if="name === 'ChartPolarBar'"
+            viewBox="0 0 60 60"
+            class="mp__radar"
+        >
+            <circle cx="30" cy="30" r="24" fill="none" stroke="var(--m-border, rgba(255,255,255,.08))" stroke-width="1" />
+            <path d="M30,30 L54,30 A24,24 0 0 1 42,51.2 Z" fill="var(--m-accent, #7c3aed)" opacity=".85" />
+            <path d="M30,30 L42,51.2 A24,24 0 0 1 8.6,42 Z" fill="var(--m-accent, #7c3aed)" opacity=".6" />
+            <path d="M30,30 L8.6,42 A24,24 0 0 1 6,30 Z" fill="var(--m-accent, #7c3aed)" opacity=".4" />
+            <path d="M30,30 L6,30 A24,24 0 0 1 30,6 Z" fill="var(--m-accent-soft, #a78bfa)" opacity=".65" />
+            <path d="M30,30 L30,6 A24,24 0 0 1 54,30 Z" fill="var(--m-accent-soft, #a78bfa)" opacity=".45" />
+            <circle cx="30" cy="30" r="4" fill="var(--m-bg, #0a0a0a)" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartBullet'"
+            viewBox="0 0 100 30"
+            class="mp__bullet"
+        >
+            <rect x="2" y="8" width="96" height="14" rx="2" fill="var(--m-border, rgba(255,255,255,.06))" />
+            <rect x="2" y="10" width="60" height="10" rx="1" fill="var(--m-border, rgba(255,255,255,.12))" />
+            <rect x="2" y="11" width="72" height="8" rx="1" fill="var(--m-border, rgba(255,255,255,.08))" />
+            <rect x="2" y="12" width="55" height="6" rx="1" fill="var(--m-accent, #7c3aed)" opacity=".85" />
+            <line x1="75" y1="6" x2="75" y2="24" stroke="var(--m-text, #fafafa)" stroke-width="2" stroke-linecap="round" />
+        </svg>
+
+        <div v-else-if="name === 'ChartPareto'" class="mp__bars mp__bars--pareto">
+            <span v-for="(h, i) in BAR_HEIGHTS" :key="i" :style="{ height: `${h}%`, opacity: 0.9 - i * 0.1 }" />
+            <svg class="mp__bars-pareto-line" viewBox="0 0 60 50" preserveAspectRatio="none">
+                <path
+                    d="M5,40 L15,24 L25,16 L35,10 L45,7 L55,5"
+                    stroke="var(--m-warning, #FBBF24)"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                />
+            </svg>
+        </div>
+
+        <svg
+            v-else-if="name === 'ChartMap'"
+            viewBox="0 0 100 60"
+            class="mp__chart"
+        >
+            <rect x="2" y="2" width="96" height="56" rx="4" fill="var(--m-surface-2, #171717)" stroke="var(--m-border, rgba(255,255,255,.08))" stroke-width="1" />
+            <path d="M20,15 C30,10 45,12 50,20 C55,28 48,38 40,40 C32,42 18,38 16,28 C14,20 10,20 20,15 Z" fill="var(--m-accent, #7c3aed)" opacity=".6" />
+            <path d="M55,18 C65,14 78,16 80,26 C82,36 72,42 64,40 C56,38 50,32 52,24 C54,18 48,20 55,18 Z" fill="var(--m-accent, #7c3aed)" opacity=".35" />
+            <path d="M28,42 C34,38 42,42 44,48 C46,54 36,56 30,54 C24,52 22,46 28,42 Z" fill="var(--m-accent-soft, #a78bfa)" opacity=".5" />
+        </svg>
+
+        <svg
+            v-else-if="name === 'ChartSparkline'"
+            viewBox="0 0 100 20"
+            class="mp__sparkline"
+            preserveAspectRatio="none"
+        >
+            <path
+                d="M0,14 L12,12 L24,10 L36,13 L48,6 L60,8 L72,4 L84,6 L100,2"
+                stroke="var(--m-accent, #7c3aed)"
+                stroke-width="1.5"
+                fill="none"
                 stroke-linecap="round"
             />
         </svg>
@@ -2141,9 +2478,76 @@ function isProvider (n: string): boolean {
     border-radius: 2px 2px 0 0;
 }
 
+.mp__bars--col > span {
+    inline-size: 10px;
+}
+
+.mp__bars--variwide {
+    gap: 3px;
+}
+
+.mp__bars--variwide > span {
+    inline-size: auto;
+    background: var(--m-accent, #7c3aed);
+    border-radius: 2px 2px 0 0;
+}
+
+.mp__bars--pareto {
+    position: relative;
+}
+
+.mp__bars-pareto-line {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+}
+
+.mp__bars--pictorial {
+    gap: 5px;
+}
+
+.mp__bars-pictorial-col {
+    inline-size: 10px;
+    background: var(--m-accent, #7c3aed);
+    border-radius: 2px 2px 0 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: var(--m-accent-fg, #fff);
+    overflow: hidden;
+}
+
 .mp__donut {
     inline-size: 50px;
     block-size: 50px;
+}
+
+.mp__radar {
+    inline-size: 60px;
+    block-size: 60px;
+}
+
+.mp__gauge {
+    inline-size: 70px;
+    block-size: 50px;
+}
+
+.mp__pyramid {
+    inline-size: 60px;
+    block-size: 50px;
+}
+
+.mp__bullet {
+    inline-size: 80%;
+    max-inline-size: 12rem;
+    block-size: 30px;
+}
+
+.mp__sparkline {
+    inline-size: 80%;
+    max-inline-size: 12rem;
+    block-size: 20px;
 }
 
 /* ============== EXPANSION ============== */

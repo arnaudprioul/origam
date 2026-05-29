@@ -28,7 +28,7 @@ import { OrigamCard } from 'origam'
 <template>
     <OrigamCard
         elevation="3"
-        rounded="2xl"
+        rounded="xl"
         style="max-width: 20rem;"
     >
         <template #title>
@@ -87,7 +87,7 @@ const items = [
     <OrigamDataTable
         :headers="headers"
         :items="items"
-        rounded="2xl"
+        rounded="xl"
     />
 </template>`
 
@@ -131,16 +131,16 @@ const visible = ref(true)
 
 <template>
     <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 28rem;">
-        <OrigamAlert color="info" rounded="2xl">
+        <OrigamAlert color="info" rounded="xl">
             This is an informational message.
         </OrigamAlert>
-        <OrigamAlert color="success" rounded="2xl">
+        <OrigamAlert color="success" rounded="xl">
             Operation completed successfully.
         </OrigamAlert>
-        <OrigamAlert color="warning" rounded="2xl">
+        <OrigamAlert color="warning" rounded="xl">
             Please review your input before continuing.
         </OrigamAlert>
-        <OrigamAlert color="danger" rounded="2xl" :model-value="visible" @update:model-value="visible = $event">
+        <OrigamAlert color="danger" rounded="xl" :model-value="visible" @update:model-value="visible = $event">
             Dismissible error message.
         </OrigamAlert>
     </div>

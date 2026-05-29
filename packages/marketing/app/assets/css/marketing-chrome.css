@@ -166,25 +166,25 @@ html[data-theme][data-mode] {
     --m-shadow-btn: none;
 }
 
-[data-theme="glass"] {
-    --m-bg: #0F0E1A;
-    --m-surface: rgba(255,255,255,.06);
-    --m-surface-2: rgba(255,255,255,.04);
-    --m-text: #fff;
-    --m-text-soft: #C4B5FD;
-    --m-text-quiet: #A78BFA;
-    --m-text-dim: #6B5FAF;
-    --m-border: rgba(255,255,255,.12);
+/* Glass light — DS tokens cover surface/text/border/accent/radius via --origam-* vars.
+ * Only marketing-specific decorative vars need explicit overrides here. */
+[data-theme="glass"][data-mode="light"] {
+    --m-border-soft: rgba(124,58,237,.06);
+    --m-shadow-card: 0 1px 0 rgba(255,255,255,.6) inset, 0 16px 40px -20px rgba(124,58,237,.25);
+    --m-bg-decor-1: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(124,58,237,.18), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45,212,191,.12), transparent 60%);
+    --m-glow-text: linear-gradient(180deg, var(--origam-color__text---primary), var(--origam-color__text---secondary) 50%, var(--origam-color__action--primary---bg));
+    --m-pre-title-color: var(--origam-color__text---secondary);
+}
+
+/* Glass dark — deep violet background with luminous purple/teal accents. */
+[data-theme="glass"][data-mode="dark"] {
     --m-border-soft: rgba(255,255,255,.06);
-    --m-accent: #A78BFA;
-    --m-accent-soft: #DDD6FE;
-    --m-radius: 16px;
-    --m-radius-lg: 22px;
     --m-shadow-card: 0 1px 0 rgba(255,255,255,.08) inset, 0 16px 40px -20px rgba(167,139,250,.4);
     --m-bg-decor-1: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167,139,250,.3), transparent 60%);
     --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45,212,191,.18), transparent 60%);
-    --m-glow-text: linear-gradient(180deg, #fff, #DDD6FE 50%, #A78BFA);
-    --m-pre-title-color: #DDD6FE;
+    --m-glow-text: linear-gradient(180deg, var(--origam-color__text---primary), var(--origam-color__text---secondary) 50%, var(--origam-color__action--primary---bg));
+    --m-pre-title-color: var(--origam-color__text---secondary);
 }
 
 [data-theme="material"] {

@@ -146,7 +146,7 @@ useBreadcrumbListLd([
                     class="figma-page__feature-item"
                 >
                     <OrigamCard
-                        rounded="2xl"
+                        rounded="xl"
                         elevation="2"
                         class="figma-page__feature-card"
                     >

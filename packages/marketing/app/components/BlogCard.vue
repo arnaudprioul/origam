@@ -26,7 +26,7 @@ function tagColor (tag: string): string {
 <template>
     <article class="blog-card">
         <OrigamCard
-            rounded="2xl"
+            rounded="xl"
             :elevation="2"
             class="blog-card__inner"
             tag="div"
