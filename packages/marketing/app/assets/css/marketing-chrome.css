@@ -785,3 +785,40 @@ html[data-theme][data-mode] {
 [data-theme="editorial"] h2 {
     font-family: var(--m-font-display);
 }
+
+/* ============================================================
+ * GEEK — effects layer (minimal CSS for what tokens can't express:
+ * neon gradient button, title glow, card glow). Colors/radius/font
+ * come from the geek DS tokens. Values mirror the design maquette.
+ * ============================================================ */
+[data-theme="geek"] .home-hero__title {
+	filter: drop-shadow(0 0 18px rgba(0, 240, 255, .35)) drop-shadow(0 0 40px rgba(199, 125, 255, .25));
+}
+[data-theme="geek"][data-mode="light"] .home-hero__title {
+	filter: drop-shadow(0 0 14px rgba(217, 70, 239, .22)) drop-shadow(0 0 30px rgba(8, 145, 178, .16));
+}
+[data-theme="geek"] .origam-btn--variant-flat.origam--color-primary {
+	background-image: linear-gradient(110deg, #00F0FF, #C77DFF 60%, #FF3CAC);
+	color: #0A0612;
+	box-shadow: 0 0 18px -2px rgba(0, 240, 255, .5), 0 0 32px -8px rgba(199, 125, 255, .4);
+}
+[data-theme="geek"][data-mode="light"] .origam-btn--variant-flat.origam--color-primary {
+	background-image: linear-gradient(110deg, #0891B2, #A21CAF 60%, #DB2777);
+	color: #fff;
+	box-shadow: 0 0 18px -4px rgba(217, 70, 239, .5), 0 0 30px -8px rgba(8, 145, 178, .4);
+}
+[data-theme="geek"] .origam-card {
+	background-image: linear-gradient(180deg, rgba(199, 125, 255, .05), rgba(0, 240, 255, .02));
+	box-shadow: inset 0 1px 0 rgba(199, 125, 255, .15), 0 0 24px -6px rgba(0, 240, 255, .25);
+}
+[data-theme="geek"][data-mode="light"] .origam-card {
+	background-image: linear-gradient(180deg, rgba(217, 70, 239, .04), rgba(8, 145, 178, .02));
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 0 0 1px rgba(162, 28, 175, .08);
+}
+[data-theme="geek"] .m-section-pre::before {
+	content: '> ';
+	opacity: .8;
+}
+[data-theme="geek"] .m-section-pre {
+	text-shadow: 0 0 10px currentColor;
+}
