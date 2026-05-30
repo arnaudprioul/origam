@@ -132,7 +132,7 @@ export default defineNuxtPlugin({
         useHead({
             htmlAttrs,
             style: ssrThemeCss
-                ? [{ innerHTML: ssrThemeCss, 'data-origam-theme-ssr': '' }]
+                ? [{ id: 'origam-theme-ssr', key: 'origam-theme-ssr', innerHTML: ssrThemeCss }]
                 : []
         })
 
