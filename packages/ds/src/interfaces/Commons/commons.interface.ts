@@ -1,7 +1,7 @@
 import type { ExtractPropTypes, StyleValue } from 'vue'
 import type * as Components from "../../components"
 import type * as Directives from "../../directives"
-import type { IDateOptions, IDisplayOptions, IGoToOptions, ILocaleOptions, IRtlOptions } from '../../interfaces'
+import type { IDateOptions, IDisplayOptions, IGoToOptions, ILocaleOptions, IOrigamTheme, IRtlOptions } from '../../interfaces'
 
 import { TIconOptions, TOrigamPluginOptionsImport, TSSROptions } from '../../types'
 
@@ -16,6 +16,13 @@ export interface IOrigamOptions {
     goTo?: IGoToOptions
     date?: IDateOptions
     locale?: ILocaleOptions & IRtlOptions
+    /**
+     * Optional runtime theme. When supplied, `createOrigam` resolves it to a
+     * block of `--origam-*` CSS variables and injects it into `<head>` at
+     * install time (browser only — SSR-safe no-op on the server). Accepts a
+     * pre-resolved var map and/or a DTCG-shaped token tree; see `IOrigamTheme`.
+     */
+    theme?: IOrigamTheme
 }
 
 export interface IOrigamPluginOptions {

@@ -6,7 +6,7 @@ import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme, useTheme } from '@origam/composables/Theme/theme.composable'
+import { _resetThemeForTesting, applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme, useTheme } from '@origam/composables/Theme/theme.composable'
 
 const STORAGE_KEY = 'origam-theme'
 const MODE_STORAGE_KEY = 'origam-mode'
@@ -26,6 +26,9 @@ describe('useTheme', () => {
         localStorage.clear()
         document.documentElement.removeAttribute('data-theme')
         document.documentElement.removeAttribute('data-mode')
+        // Clear module-level singletons so each spec re-reads the fresh
+        // matchMedia mock and persisted values from scratch.
+        _resetThemeForTesting()
         // Reset matchMedia to a controllable mock
         const listeners = new Set<(e: MediaQueryListEvent) => void>()
         // @ts-expect-error - jsdom does not implement matchMedia
@@ -127,14 +130,18 @@ describe('useTheme', () => {
         expect(document.documentElement.getAttribute('data-mode')).toBe('dark')
     })
 
-    it('removes data-mode when set to "auto"', async () => {
+    it('keeps data-mode CONCRETE when set to "auto" (resolves via prefers-color-scheme)', async () => {
+        // The token matrix has no mode-less fallback, so `data-mode` must
+        // always carry a concrete value. With the mock reporting
+        // `prefers-color-scheme: dark = false`, "auto" resolves to "light".
         let captured: ReturnType<typeof useTheme> | null = null
         mount(makeHost(api => { captured = api }))
         captured!.setMode('dark')
         await nextTick()
         captured!.setMode('auto')
         await nextTick()
-        expect(document.documentElement.hasAttribute('data-mode')).toBe(false)
+        expect(document.documentElement.getAttribute('data-mode')).toBe('light')
+        expect(captured!.mode.value).toBe('auto')
     })
 
     it('persists mode changes to localStorage', async () => {
@@ -166,11 +173,12 @@ describe('useTheme', () => {
         expect(document.documentElement.getAttribute('data-mode')).toBe('dark')
     })
 
-    it('applyModeSync writes to document without Vue lifecycle', () => {
+    it('applyModeSync writes a CONCRETE data-mode without Vue lifecycle', () => {
         applyModeSync('dark')
         expect(document.documentElement.getAttribute('data-mode')).toBe('dark')
+        // "auto" resolves to a concrete value (light, per the mock) — never removed.
         applyModeSync('auto')
-        expect(document.documentElement.hasAttribute('data-mode')).toBe(false)
+        expect(document.documentElement.getAttribute('data-mode')).toBe('light')
     })
 
     it('readPersistedMode reads from localStorage', () => {

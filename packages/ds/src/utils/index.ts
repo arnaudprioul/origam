@@ -77,3 +77,6 @@ export * from './QrCode/qr-code-adapters.util'
 
 export * from './Chart/path.util'
 export * from './Chart/mercator.util'
+
+export * from './Theme/token-name.util'
+export * from './Theme/apply-theme.util'

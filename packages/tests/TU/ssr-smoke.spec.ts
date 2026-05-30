@@ -20,6 +20,8 @@ import { useMask } from '@origam/composables/Mask/mask.composable'
 import { useCode } from '@origam/composables/Code/code.composable'
 import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Theme/theme.composable'
 
+import { applyTheme, themeToCss } from '@origam/utils/Theme/apply-theme.util'
+
 import { sanitizeHtml } from '@origam/utils/Textarea/sanitize-html.util'
 import { htmlToMarkdown } from '@origam/utils/Textarea/html-to-markdown.util'
 
@@ -94,6 +96,22 @@ describe('SSR safety — module-level import does not touch DOM', () => {
         enterSSRMode()
         expect(() => applyModeSync('dark')).not.toThrow()
         expect(() => applyModeSync('auto')).not.toThrow()
+        exitSSRMode()
+    })
+
+    it('applyTheme is a no-op (returns null) without document', () => {
+        enterSSRMode()
+        let result: string | null = 'unset'
+        expect(() => { result = applyTheme({ name: 'brand-a', vars: { '--origam-radius---md': '0.5rem' } }) }).not.toThrow()
+        expect(result).toBeNull()
+        exitSSRMode()
+    })
+
+    it('themeToCss is pure — serialises without touching the DOM', () => {
+        enterSSRMode()
+        const css = themeToCss({ name: 'brand-a', vars: { '--origam-radius---md': '0.5rem' } })
+        expect(css).toContain('[data-theme="brand-a"]')
+        expect(css).toContain('--origam-radius---md: 0.5rem;')
         exitSSRMode()
     })
 

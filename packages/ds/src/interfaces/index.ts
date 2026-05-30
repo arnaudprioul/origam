@@ -315,6 +315,8 @@ export * from './Mask/mask-options.interface'
 
 export * from './Nuxt/nuxt-module.interface'
 
+export * from './Theme/origam-theme.interface'
+
 export * from './QrCode/qr-code.interface'
 export * from './QrCode/qr-code-logo.interface'
 

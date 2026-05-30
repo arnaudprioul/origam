@@ -84,10 +84,16 @@ type TModeResolved = Exclude<TMode, 'auto'>
 
 ## Behaviour
 
-- **SSR-safe**: no `window` / `document` access until the component using
-  `useTheme()` mounts. Server-rendered HTML carries `data-theme` /
-  `data-mode` only when non-`auto` (see the Nuxt integration for the
-  no-flash SSR path).
+- **`data-mode` is always concrete**: `mode` may be `'auto'` (the user
+  intent), but the `data-mode` attribute on `<html>` ALWAYS carries a
+  concrete `'light'` / `'dark'` (the *resolved* mode). The token sheets are
+  scoped to concrete `[data-mode]` values and have no mode-less fallback,
+  so the attribute is never removed. `data-theme`, by contrast, is removed
+  when the brand is `'auto'` (the default sheet's `:root` rules take over).
+- **SSR-safe**: no `window` / `document` access on the server. The Nuxt
+  module writes a concrete `data-mode` server-side (safe default `'light'`
+  when the user expressed no preference) and the client upgrades it to the
+  real `prefers-color-scheme` at mount — see the Nuxt integration.
 - **Persistence**: `setTheme(...)` writes `localStorage['origam-theme']`,
   `setMode(...)` writes `localStorage['origam-mode']`. The first
   `useTheme()` call on hydration reads both back.

@@ -16,7 +16,7 @@ import * as origamDirectives from './directives'
 
 import type { IOrigamOptions } from './interfaces'
 import type { TIconOptions } from './types'
-import { getUid, mergeDeep } from './utils'
+import { applyTheme, getUid, mergeDeep } from './utils'
 
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -40,6 +40,13 @@ export function createOrigam (origam: IOrigamOptions = {}) {
         const goTo = createGoTo(options.goTo, locale)
 
         const install = (app: App) => {
+            // Runtime theme injection. SSR-safe: `applyTheme` is a no-op when
+            // `document` is unavailable, so the server render is untouched and
+            // the variables land on the first client install instead.
+            if (options.theme) {
+                applyTheme(options.theme)
+            }
+
             for (const key in directives) {
                 app.directive(key, directives[key as keyof typeof directives])
             }

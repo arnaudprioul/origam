@@ -15,6 +15,8 @@ import { readFileSync, writeFileSync, watch, mkdirSync, existsSync } from 'node:
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { tokenPathToCssVarName } from './token-name.mjs'
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = resolve(__dirname, '..')
 const tokensDir = resolve(projectRoot, 'tokens')
@@ -30,119 +32,24 @@ register(StyleDictionary)
 
 // ────────────────────────────────────────────────────────────────────────────
 // Custom transform: token path → origam CSS variable name.
+//
+// The naming grammar lives in `./token-name.mjs` — the single source of truth
+// shared with the runtime util (`src/utils/Theme/token-name.util.ts`) so the
+// names baked into the published CSS sheets never drift from the names a
+// runtime / exported theme emits. See that module for the full grammar.
 // ────────────────────────────────────────────────────────────────────────────
-const INTENT_STATES = new Set([
-    'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info', 'error',
-    'selected', 'outlined', 'elevated', 'filter',
-    'hover', 'active', 'disabled', 'focus'
-])
-
-// Heuristic: any nested key that is NOT an intent/state and IS a "bare word"
-// (no separator characters, no digit prefix) is treated as a BEM child of
-// the component, emitting `--origam-{name}__{child}---{prop}`. Property
-// keys typically contain hyphens (`background-color`, `border-radius`) so
-// they fail this test.
-function isBemChildKey (key) {
-    return /^[a-zA-Z][a-zA-Z]*$/.test(key) && !key.includes('-')
-}
-
 StyleDictionary.registerTransform({
     name: 'origam/name/css',
     type: 'name',
     transform: (token) => {
-        const path = token.path
-
         // The first path segment is the top-level group inside a token file
         // (e.g. "color", "space", "btn", "alert"). Component files use the
         // component name as their top key, so we detect them by checking
         // whether the file path contains "component/".
         const filePath = token.filePath || ''
         const isComponent = filePath.includes('/component/') || filePath.includes('\\component\\')
-        const isPrimitive = filePath.endsWith('/primitive.json') || filePath.endsWith('\\primitive.json')
 
-        if (isComponent) {
-            const [blockName, ...rest] = path
-
-            if (rest.length === 0) {
-                return `origam-${blockName}`
-            }
-
-            // component.{name}.{intent|state}.{prop...} → --origam-{name}--{state}---{prop}
-            if (rest.length > 1 && INTENT_STATES.has(rest[0])) {
-                const [state, ...propParts] = rest
-                return `origam-${blockName}--${state}---${propParts.join('-')}`
-            }
-
-            // component.{name}.{child}.{prop...} where {child} is a BEM
-            // sub-element (single word like "overlay", "wrapper", "content") →
-            // --origam-{name}__{child}---{prop}
-            //
-            // This covers nested sub-element tokens like
-            // `card.overlay.background-color` → `--origam-card__overlay---background-color`,
-            // mirroring the convention `.origam-card__overlay { ... }` used
-            // in component SCSS.
-            if (rest.length > 1 && isBemChildKey(rest[0])) {
-                const [child, ...propParts] = rest
-                // Allow a second-level state inside a BEM child:
-                //   card.overlay.hover.opacity → --origam-card__overlay--hover---opacity
-                if (propParts.length > 1 && INTENT_STATES.has(propParts[0])) {
-                    const [state, ...innerProp] = propParts
-                    return `origam-${blockName}__${child}--${state}---${innerProp.join('-')}`
-                }
-                return `origam-${blockName}__${child}---${propParts.join('-')}`
-            }
-
-            // component.{name}.{prop...} → --origam-{name}---{prop}
-            return `origam-${blockName}---${rest.join('-')}`
-        }
-
-        // ──────────────────────────────────────────────────────────────
-        // Primitive + Semantic naming — unified BEM-style grammar.
-        // Aligns with the component convention so the whole token
-        // namespace reads the same way:
-        //
-        //     --origam-[domain]__[block]--[modifier]---[property|rank]
-        //                       └─ optional ─┘
-        //
-        // Examples of the mapping:
-        //
-        //   PRIMITIVE
-        //     ['color', 'black']               → 'color---black'
-        //     ['color', 'neutral', '500']      → 'color__neutral---500'
-        //     ['space', '4']                   → 'space---4'
-        //     ['radius', 'md']                 → 'radius---md'
-        //     ['shadow', 'sm']                 → 'shadow---sm'
-        //     ['border', 'width', 'thin']      → 'border__width---thin'
-        //     ['font', 'size', 'sm']           → 'font__size---sm'
-        //
-        //   SEMANTIC (no modifier — 3-segment)
-        //     ['color', 'surface', 'default']  → 'color__surface---default'
-        //     ['color', 'text', 'primary']     → 'color__text---primary'
-        //     ['color', 'border', 'subtle']    → 'color__border---subtle'
-        //     ['color', 'overlay', 'scrim']    → 'color__overlay---scrim'
-        //
-        //   SEMANTIC (modifier — 4-segment)
-        //     ['color', 'action', 'primary', 'bg']         → 'color__action--primary---bg'
-        //     ['color', 'action', 'primary', 'fgSubtle']   → 'color__action--primary---fgSubtle'
-        //     ['color', 'feedback', 'success', 'bg']       → 'color__feedback--success---bg'
-        //     ['color', 'feedback', 'warning', 'fgSubtle'] → 'color__feedback--warning---fgSubtle'
-        //
-        // Any deeper / shorter path falls back to the legacy single-dash
-        // join — surfaces a name pattern collision early instead of a
-        // silent emission.
-        // ──────────────────────────────────────────────────────────────
-        if (path.length === 2) {
-            return `origam-${path[0]}---${path[1]}`
-        }
-        if (path.length === 3) {
-            return `origam-${path[0]}__${path[1]}---${path[2]}`
-        }
-        if (path.length === 4) {
-            return `origam-${path[0]}__${path[1]}--${path[2]}---${path[3]}`
-        }
-        // Fallback for unexpected depth (shouldn't happen with current source).
-        return `origam-${path.join('-')}`
+        return tokenPathToCssVarName(token.path, isComponent)
     }
 })
 

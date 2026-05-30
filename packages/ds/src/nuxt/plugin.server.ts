@@ -4,7 +4,6 @@ import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import {
     ORIGAM_MODE_ATTR,
-    ORIGAM_MODE_AUTO,
     ORIGAM_MODE_DARK,
     ORIGAM_MODE_LIGHT,
     ORIGAM_THEME_ATTR,
@@ -33,13 +32,24 @@ function resolveServerTheme (cookieValue: string | null | undefined, config: IOr
 }
 
 /**
- * Resolve the color mode SSR-side. Priority:
+ * Resolve the color mode SSR-side to a CONCRETE value (`'light'` | `'dark'`).
+ *
+ * The token matrix (`themes-all.css` and the per-brand sheets) only emits
+ * compound `[data-theme="X"][data-mode="Y"]` rules — there is NO bare
+ * `[data-theme="X"]` fallback and no `@media (prefers-color-scheme)` block at
+ * that tier. So `data-mode` MUST always be a concrete value, otherwise no
+ * token rule matches and the page renders unthemed (white). We therefore
+ * never return `'auto'` here: when the user expressed no preference we pick a
+ * safe default (`'light'`) for the SSR paint; the client plugin upgrades it
+ * to the real `prefers-color-scheme` at mount.
+ *
+ * Priority:
  * 1. explicit cookie (user choice),
  * 2. configured default (when not `'auto'`),
  * 3. `Sec-CH-Prefers-Color-Scheme` client hint,
- * 4. `'auto'` (no attribute → tokens fall back to `prefers-color-scheme`).
+ * 4. `'light'` (safe SSR default — client upgrades to the system preference).
  */
-function resolveServerMode (cookieValue: string | null | undefined, config: IOrigamNuxtRuntimeConfig, headers: Record<string, string | undefined>): TMode {
+function resolveServerMode (cookieValue: string | null | undefined, config: IOrigamNuxtRuntimeConfig, headers: Record<string, string | undefined>): Exclude<TMode, 'auto'> {
     if (cookieValue === ORIGAM_MODE_LIGHT || cookieValue === ORIGAM_MODE_DARK) {
         return cookieValue
     }
@@ -56,7 +66,7 @@ function resolveServerMode (cookieValue: string | null | undefined, config: IOri
         return ORIGAM_MODE_LIGHT
     }
 
-    return ORIGAM_MODE_AUTO
+    return ORIGAM_MODE_LIGHT
 }
 
 export default defineNuxtPlugin({
@@ -81,12 +91,15 @@ export default defineNuxtPlugin({
         const resolvedTheme = resolveServerTheme(themeCookie.value, config)
         const resolvedMode = resolveServerMode(modeCookie.value, config, headers)
 
-        const htmlAttrs: Record<string, string> = {}
+        // `data-mode` is ALWAYS written (concrete) — the token matrix has no
+        // mode-less fallback (see `resolveServerMode`). `data-theme` is omitted
+        // when the brand resolves to `'auto'`, deferring to the DS default
+        // sheet's `:root` rules.
+        const htmlAttrs: Record<string, string> = {
+            [ORIGAM_MODE_ATTR]: resolvedMode
+        }
         if (resolvedTheme !== ORIGAM_THEME_AUTO) {
             htmlAttrs[ORIGAM_THEME_ATTR] = resolvedTheme
-        }
-        if (resolvedMode !== ORIGAM_MODE_AUTO) {
-            htmlAttrs[ORIGAM_MODE_ATTR] = resolvedMode
         }
         useHead({ htmlAttrs })
 

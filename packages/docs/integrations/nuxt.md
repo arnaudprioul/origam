@@ -61,7 +61,7 @@ export default defineNuxtConfig({
 | `themes` | `string[]` | `['light', 'dark']` | Brand theme files to load. Each name must match a generated `origam/tokens/css/{theme}` import. |
 | `defaultTheme` | `string` | `'auto'` | Active brand when no cookie is set. `'auto'` renders no `data-theme` (the default brand). |
 | `modes` | `string[]` | `['light', 'dark']` | Color modes supported by the loaded token sheets. Used to validate the resolved mode. |
-| `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then renders no `data-mode`. |
+| `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then to a concrete `'light'` SSR default (the client upgrades to the system preference). `data-mode` is always written concrete. |
 | `cookieName` | `string` | `'origam-theme'` | Cookie that stores the user's chosen brand. |
 | `modeCookieName` | `string` | `'origam-mode'` | Cookie that stores the user's chosen color mode. |
 | `cookieMaxAge` | `number` | `31_536_000` (1 year) | Cookie lifetime in seconds (shared by both cookies). |
@@ -73,15 +73,19 @@ export default defineNuxtConfig({
 
 The server plugin reads the `origam-theme` and `origam-mode` cookies
 before the response is rendered and injects the resolved values as
-`<html data-theme="…" data-mode="…">` via Nuxt's `useHead()` (attributes
-are omitted when the axis resolves to `'auto'`).
+`<html data-theme="…" data-mode="…">` via Nuxt's `useHead()`.
 
 - **Brand (`data-theme`)** is driven by the `origam-theme` cookie, then
-  `defaultTheme`.
+  `defaultTheme`. It is omitted when the brand resolves to `'auto'` (the
+  DS default sheet's `:root` rules then apply).
 - **Mode (`data-mode`)** is driven by the `origam-mode` cookie, then
   `defaultMode`, then the `Sec-CH-Prefers-Color-Scheme` request header
   (sent by modern browsers when the `Accept-CH` response advertises
-  support).
+  support). It is **always written as a concrete `'light'` / `'dark'`** —
+  never omitted: the token sheets are scoped to concrete `[data-mode]`
+  values and have no mode-less fallback. When the user expressed no
+  preference, the server writes the safe default `'light'`; the client
+  upgrades it to the real `prefers-color-scheme` at mount.
 
 The client plugin then picks up the attributes already set by the server,
 so the hydration boundary stays clean — no flash of unstyled /

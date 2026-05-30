@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { computed, onMounted, onUnmounted, readonly, ref, watch } from 'vue'
+import { computed, readonly, ref, watch } from 'vue'
 
 import {
     ORIGAM_MODE_ATTR as MODE_ATTR,
@@ -18,9 +18,37 @@ import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types'
  * Two orthogonal axes:
  * - `_theme` → brand identity, applied as `data-theme`.
  * - `_mode`  → light/dark, applied as `data-mode`.
+ *
+ * `_systemPrefersDark` is also a singleton, initialised once in the browser
+ * (NOT tied to a component's `onMounted`) so `resolvedMode` is correct even
+ * when `useTheme()` is first called from a Nuxt plugin — where no component
+ * lifecycle exists to drive `onMounted`.
  */
 let _theme: Ref<TTheme> | null = null
 let _mode: Ref<TMode> | null = null
+let _systemPrefersDark: Ref<boolean> | null = null
+let _mediaInitDone = false
+
+/**
+ * One-time, lifecycle-independent init of the `prefers-color-scheme` watcher.
+ * Safe to call from any context (plugin, component setup); the actual DOM
+ * access is guarded and only runs once in the browser.
+ */
+function ensureSystemPreference (): Ref<boolean> {
+    if (_systemPrefersDark === null) {
+        _systemPrefersDark = ref(false)
+    }
+    if (_mediaInitDone || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+        return _systemPrefersDark
+    }
+    _mediaInitDone = true
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    _systemPrefersDark.value = mq.matches
+    mq.addEventListener?.('change', (e) => {
+        if (_systemPrefersDark) _systemPrefersDark.value = e.matches
+    })
+    return _systemPrefersDark
+}
 
 /*********************************************************
  * Theme (brand) persistence
@@ -70,13 +98,15 @@ function writePersistedMode (mode: TMode) {
     } catch { /* ignore */ }
 }
 
-function applyModeToDocument (mode: TMode) {
+/**
+ * Apply a CONCRETE mode (`'light'` | `'dark'`) to `<html data-mode>`. The
+ * token matrix has no mode-less fallback, so `data-mode` must always carry a
+ * concrete value — we never remove the attribute. Callers pass the *resolved*
+ * mode (`'auto'` already collapsed to light/dark via `prefers-color-scheme`).
+ */
+function applyModeToDocument (resolvedMode: TModeResolved) {
     if (typeof document === 'undefined') return
-    if (mode === 'auto') {
-        document.documentElement.removeAttribute(MODE_ATTR)
-    } else {
-        document.documentElement.setAttribute(MODE_ATTR, mode)
-    }
+    document.documentElement.setAttribute(MODE_ATTR, resolvedMode)
 }
 
 /**
@@ -100,8 +130,10 @@ function applyModeToDocument (mode: TMode) {
  * - `toggleMode()`: flip the color mode light ↔ dark (treats `'auto'` as the
  *   current system preference).
  *
- * The composable does NOT auto-mount a media-query listener at import time
- * (SSR safety). It does so on `onMounted` and cleans up on `onUnmounted`.
+ * The media-query listener is a lazily-initialised SINGLETON (see
+ * `ensureSystemPreference`) rather than an `onMounted` hook, so `resolvedMode`
+ * is correct even when `useTheme()` is first called outside a component (e.g.
+ * a Nuxt plugin). SSR stays safe — the init is a no-op without `window`.
  */
 
 /*********************************************************
@@ -117,7 +149,7 @@ export function useTheme () {
     const theme = _theme
     const mode = _mode
 
-    const systemPrefersDark = ref(false)
+    const systemPrefersDark = ensureSystemPreference()
 
     const resolved = computed<TThemeResolved>(() => {
         if (theme.value === 'auto') return systemPrefersDark.value ? 'dark' : 'light'
@@ -131,31 +163,19 @@ export function useTheme () {
         return mode.value
     })
 
-    let mediaQuery: MediaQueryList | null = null
-    const onSystemChange = (e: MediaQueryListEvent) => {
-        systemPrefersDark.value = e.matches
-    }
-
-    onMounted(() => {
-        if (typeof window === 'undefined') return
-        mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-        systemPrefersDark.value = mediaQuery.matches
-        mediaQuery.addEventListener?.('change', onSystemChange)
-        applyToDocument(theme.value)
-        applyModeToDocument(mode.value)
-    })
-
-    onUnmounted(() => {
-        mediaQuery?.removeEventListener?.('change', onSystemChange)
-    })
-
     watch(theme, (next) => {
         applyToDocument(next)
         writePersisted(next)
-    })
+    }, { immediate: true })
+
+    // The brand attribute follows the raw value (`auto` removes it). The mode
+    // attribute follows the RESOLVED value and stays concrete at all times —
+    // the token matrix has no mode-less fallback.
+    watch(resolvedMode, (next) => {
+        applyModeToDocument(next)
+    }, { immediate: true })
 
     watch(mode, (next) => {
-        applyModeToDocument(next)
         writePersistedMode(next)
     })
 
@@ -202,15 +222,23 @@ export function applyThemeSync (theme: TTheme) {
 }
 
 /**
- * Internal helper for SSR / no-flash plugins: apply a mode (light/dark) to
- * the document synchronously. Bypasses Vue reactivity.
+ * Internal helper for SSR / no-flash plugins: apply a CONCRETE mode to the
+ * document synchronously. Bypasses Vue reactivity. An `'auto'` argument is
+ * resolved against the current `prefers-color-scheme` (falling back to
+ * `'light'` when unavailable) so `data-mode` always ends up concrete — the
+ * token matrix has no mode-less fallback.
  */
 
 /*********************************************************
  * applyModeSync
  ********************************************************/
 export function applyModeSync (mode: TMode) {
-    applyModeToDocument(mode)
+    if (mode === 'light' || mode === 'dark') {
+        applyModeToDocument(mode)
+        return
+    }
+    const prefersDark = ensureSystemPreference().value
+    applyModeToDocument(prefersDark ? 'dark' : 'light')
 }
 
 /**
@@ -235,4 +263,20 @@ export function readPersistedTheme (): TTheme {
  ********************************************************/
 export function readPersistedMode (): TMode {
     return readPersistedModeValue()
+}
+
+/**
+ * Test-only: clear the module-level singletons (theme / mode refs and the
+ * `prefers-color-scheme` cache) so each spec starts from a clean slate. Not
+ * part of the public API.
+ */
+
+/*********************************************************
+ * _resetThemeForTesting
+ ********************************************************/
+export function _resetThemeForTesting () {
+    _theme = null
+    _mode = null
+    _systemPrefersDark = null
+    _mediaInitDone = false
 }
