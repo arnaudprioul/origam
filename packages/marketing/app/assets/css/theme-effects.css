@@ -1,48 +1,26 @@
 /* ============================================================
  * THEME EFFECTS — per-theme CSS that DS tokens cannot express.
- *
- * Allowed only when a token genuinely cannot encode the effect:
- *   - backdrop-filter / saturate (not a CSS token type)
- *   - drop-shadow filter chains (multi-layer glow)
- *   - ::first-letter drop-caps
- *   - text-transform / letter-spacing on a component
- *   - per-instance border-width override (no DS border-width token)
- *   - background-image grids / gradients on a component root
- *
- * Each block states WHY a token cannot do it. Scoped to
- * [data-theme="<brand>"] (and [data-mode] when mode-specific) —
- * this is the ONE file allowed to carry [data-theme] selectors.
- * Colors derive from DS token vars wherever a token exists; raw
- * values survive only inside the inexpressible effect itself
- * (filter/grid colors that have no token slot).
+ * Scoped to [data-theme] (+ [data-mode]) — the ONLY file allowed
+ * to carry [data-theme] selectors. Effects (filters, grids,
+ * backdrop-filter, ::first-letter) have no DTCG token slot.
+ * The --m-* decor variable blocks below are GENERATED from the
+ * per-theme HTML exports (source of truth) — regenerate via
+ * /tmp/gen-themes.mjs, never edit by hand.
  * ============================================================ */
 
-/* ============================================================
- * GEEK — terminal phosphor glow (mono green)
- * Inexpressible: multi-layer drop-shadow filter chain, a CSS
- * grid background-image, and a text-shadow glow — none of which
- * map to a shadow / color token slot.
- * ============================================================ */
-
-/* inexpressible: filter chain layering two green phosphor glows */
+/* GEEK — cyberpunk neon: scanline grid + cyan/violet glow (no token slot) */
 [data-theme="geek"][data-mode="dark"] .home-hero__title {
-    filter: drop-shadow(0 0 16px rgba(34, 197, 94, .45)) drop-shadow(0 0 40px rgba(74, 222, 128, .25));
+    filter: drop-shadow(0 0 16px rgba(0, 240, 255, .35)) drop-shadow(0 0 40px rgba(199, 125, 255, .25));
 }
 [data-theme="geek"][data-mode="light"] .home-hero__title {
-    filter: drop-shadow(0 0 10px rgba(21, 128, 61, .22));
+    filter: drop-shadow(0 0 10px rgba(162, 28, 175, .18));
 }
-
-/* inexpressible: phosphor box-shadow glow on the DS btn surface — not a shadow token shape */
 [data-theme="geek"][data-mode="dark"] .origam-btn--variant-flat.origam--color-primary {
-    box-shadow: 0 0 14px -2px rgba(34, 197, 94, .55), 0 0 28px -8px rgba(74, 222, 128, .4);
+    box-shadow: 0 0 14px -2px rgba(199, 125, 255, .55), 0 0 28px -8px rgba(0, 240, 255, .4);
 }
-
-/* inexpressible: inset scanline glow + outer phosphor halo on the DS card surface */
 [data-theme="geek"][data-mode="dark"] .origam-card {
-    box-shadow: inset 0 1px 0 rgba(124, 247, 168, .12), 0 0 22px -8px rgba(34, 197, 94, .35);
+    box-shadow: inset 0 1px 0 rgba(199, 125, 255, .12), 0 0 22px -8px rgba(0, 240, 255, .3);
 }
-
-/* inexpressible: text-shadow glow + terminal prompt prefix on the pre-title */
 [data-theme="geek"] .m-section-pre::before {
     content: '> ';
     opacity: .85;
@@ -50,36 +28,24 @@
 [data-theme="geek"][data-mode="dark"] .m-section-pre {
     text-shadow: 0 0 10px currentColor;
 }
-
-/* inexpressible: background-image grid (phosphor scanline lattice) on the hero section */
 [data-theme="geek"][data-mode="dark"] .home-hero {
     background-image:
-        linear-gradient(rgba(34, 197, 94, .06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34, 197, 94, .06) 1px, transparent 1px);
+        linear-gradient(rgba(124, 77, 255, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 77, 255, .08) 1px, transparent 1px);
     background-size: 40px 40px;
 }
 [data-theme="geek"][data-mode="light"] .home-hero {
     background-image:
-        linear-gradient(rgba(21, 128, 61, .05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(21, 128, 61, .05) 1px, transparent 1px);
+        linear-gradient(rgba(168, 85, 247, .06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, .06) 1px, transparent 1px);
     background-size: 40px 40px;
 }
 
-/* ============================================================
- * CARTOON — neo-brutalist thick border + hard-offset shadow
- * Inexpressible: the DS btn/card expose no per-instance
- * border-width token, and the hard-offset flat shadow must
- * override the component box-shadow to land the brutalist look.
- * (The shadow scale itself is the hard-offset 0-blur shape, but
- * the thick solid border has no token to drive it.)
- * ============================================================ */
-
-/* inexpressible: DS btn/card have no border-width token to carry 3px */
+/* CARTOON — neo-brutalist thick border + hard-offset shadow (no border-width token) */
 [data-theme="cartoon"] .origam-btn,
 [data-theme="cartoon"] .origam-card {
     border: 3px solid var(--origam-color__border---default);
 }
-
 [data-theme="cartoon"] .origam-btn {
     box-shadow: 4px 4px 0 var(--origam-color__border---default);
     font-weight: 800;
@@ -88,26 +54,13 @@
     box-shadow: 6px 6px 0 var(--origam-color__border---default);
 }
 
-/* ============================================================
- * MATERIAL — M3 full-pill buttons
- * Inexpressible: the pill radius (999px) is wider than the
- * theme's radius scale top rung, so it overrides the radius
- * token on the btn root.
- * ============================================================ */
-
-/* inexpressible: pill override exceeds the radius token surface */
-[data-theme="material"] .origam-btn {
+/* MATERIAL / GLASS — pill buttons wider than the radius token top rung */
+[data-theme="material"] .origam-btn,
+[data-theme="glass"] .origam-btn {
     border-radius: 999px;
 }
 
-/* ============================================================
- * ECOM — gradient uppercase primary CTA
- * Inexpressible: background-image gradient on the DS btn root
- * plus text-transform + letter-spacing — none are token slots.
- * Gradient stops derive from the DS action tokens.
- * ============================================================ */
-
-/* inexpressible: gradient fill + text-transform on the DS btn (not token slots) */
+/* ECOM — gradient uppercase CTA (gradient fill + text-transform, no token slot) */
 [data-theme="ecom"] .origam-btn--variant-flat.origam--color-primary {
     background-image: linear-gradient(180deg, var(--origam-color__action--primary---bg), var(--origam-color__action--primary---bgHover));
     text-transform: uppercase;
@@ -115,30 +68,14 @@
     font-weight: 800;
 }
 
-/* ============================================================
- * GLASS — frosted backdrop blur
- * Inexpressible: backdrop-filter is not a CSS token type (DTCG
- * has no $type for filter functions).
- * ============================================================ */
-
-/* inexpressible: backdrop-filter cannot be encoded as a design token */
+/* GLASS — frosted backdrop blur (backdrop-filter has no token type) */
 [data-theme="glass"] .origam-card,
 [data-theme="glass"] .origam-btn {
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
-/* inexpressible: pill override wider than the radius token top rung */
-[data-theme="glass"] .origam-btn {
-    border-radius: 999px;
-}
-
-/* ============================================================
- * EDITORIAL — serif drop-cap
- * Inexpressible: ::first-letter is a pseudo-element, not a token.
- * ============================================================ */
-
-/* inexpressible: ::first-letter drop-cap is not a token concept */
+/* EDITORIAL — serif drop-cap (::first-letter is not a token concept) */
 [data-theme="editorial"] .m-body--dropcap::first-letter {
     font-family: var(--origam-font__family---serif);
     font-size: 3.5em;
@@ -149,110 +86,13 @@
     color: var(--origam-color__action--primary---bg);
 }
 
-/* ============================================================
- * PER-BRAND MARKETING DECOR — sets the --m-* decor vars the
- * chrome reads (hero gradients, glow-text, display weights,
- * border width). These are pure decor with no DS token slot
- * (gradient fills, multi-stop hue text, fixed-position spots),
- * so they live here scoped to [data-theme], never in
- * marketing-chrome.css. Values come from the HTML mockup.
- * ============================================================ */
-
-/* GLASS — luminous radial veil + multi-stop violet glow text */
-[data-theme="glass"] {
-    --m-bg-decor-1: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167,139,250,.3), transparent 60%);
-    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45,212,191,.18), transparent 60%);
-    --m-glow-text: linear-gradient(180deg, #fff, #DDD6FE 50%, #A78BFA);
-}
-
-/* GEEK — terminal phosphor: mono display, neon halo, scanline grid */
-[data-theme="geek"] {
-    --m-font-display: var(--origam-font__family---mono, 'JetBrains Mono', ui-monospace, monospace);
-    --m-font-body: var(--origam-font__family---mono, 'JetBrains Mono', ui-monospace, monospace);
-    --m-h1-weight: 700;
-    --m-h1-tracking: -.02em;
-    --m-h1-lineh: 1;
-    --m-bg-decor-1: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,222,128,.08), transparent 70%);
-    --m-bg-decor-2: none;
-    --m-glow-text: linear-gradient(180deg, #6EE7B7, #4ADE80, #16A34A);
-}
-
-/* CARTOON — neo-brutalist heavy display + tri-colour glow */
-[data-theme="cartoon"] {
-    --m-h1-weight: 900;
-    --m-h1-tracking: -.04em;
-    --m-border-w: 2.5px;
-    --m-glow-text: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B);
-    --m-pre-title-color: #5B21B6;
-    --m-bg-decor-1: radial-gradient(circle at 10% 10%, #FCD34D 0%, transparent 30%);
-    --m-bg-decor-2: radial-gradient(circle at 90% 10%, #FBCFE8 0%, transparent 30%);
-}
-
-/* EDITORIAL — serif magazine display, no glow, italic h2 */
-[data-theme="editorial"] {
-    --m-font-display: var(--origam-font__family---serif);
-    --m-h1-weight: 400;
-    --m-h1-tracking: -.04em;
-    --m-h1-lineh: .9;
-    --m-h2-weight: 400;
-    --m-h2-style: italic;
-    --m-uppercase-tracking: .15em;
-    --m-glow-text: none;
-    --m-pre-title-color: #A78BFA;
-    --m-bg-decor-1: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167,139,250,.16), transparent 60%);
-    --m-bg-decor-2: none;
-}
-
-/* MATERIAL — M3 brand-tinted decor + tonal glow text */
-[data-theme="material"] {
-    --m-h1-weight: 600;
-    --m-h1-tracking: -.025em;
-    --m-h2-weight: 500;
-    --m-bg-decor-1: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208,188,255,.16), transparent 60%);
-    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(128,206,254,.08), transparent 70%);
-    --m-glow-text: linear-gradient(180deg, #fff 0%, #EADDFF 60%, #D0BCFF 100%);
-    --m-pre-title-color: #D0BCFF;
-}
-
-/* ECOM — warm product gradient decor + hot CTA glow text */
-[data-theme="ecom"] {
-    --m-h1-weight: 800;
-    --m-h2-weight: 700;
-    --m-bg-decor-1: linear-gradient(180deg, #FFEDD5 0%, transparent 40%);
-    --m-bg-decor-2: radial-gradient(ellipse 50% 50% at 90% 20%, rgba(251,146,60,.2), transparent 60%);
-    --m-glow-text: linear-gradient(90deg, #E11D48 0%, #EA580C 50%, #F59E0B 100%);
-    --m-pre-title-color: #BE123C;
-}
-
-/* APPLE — system display font + subtle ink-on-white glow text */
-[data-theme="apple"] {
-    --m-font-display: var(--origam-font__family---sans);
-    --m-h1-weight: 700;
-    --m-h1-tracking: -.045em;
-    --m-h1-lineh: 1;
-    --m-h2-weight: 600;
-    --m-bg-decor-1: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,113,227,.06), transparent 60%);
-    --m-bg-decor-2: none;
-    --m-glow-text: linear-gradient(180deg, #1D1D1F 0%, #515154 100%);
-    --m-pre-title-color: #0071E3;
-}
-
-/* ============================================================
- * CHROME DECOR HOOKS scoped per brand — these select marketing
- * chrome classes (not DS components). They tweak the glow-text
- * fallback (editorial/geek/cartoon paint a solid accent instead
- * of a clipped gradient), the grid backdrop, code-token hues and
- * the serif heading family — none expressible as a DS token.
- * ============================================================ */
-
-/* EDITORIAL — solid ink heading (gradient clip would erase the serif weight) */
+/* CHROME DECOR HOOKS — paint headings/stats with a solid accent where a
+ * clipped gradient would wash out the glyph (serif / mono / heavy). */
 [data-theme="editorial"] .m-h1-display {
     background: none;
     -webkit-text-fill-color: var(--m-text, #fff);
     color: var(--m-text, #fff);
 }
-
-/* EDITORIAL — italic accent stat, serif headings (font family is a token but the italic + clip removal are not) */
 [data-theme="editorial"] .m-stat__num {
     -webkit-text-fill-color: var(--m-accent, #A78BFA);
     color: var(--m-accent, #A78BFA);
@@ -262,35 +102,336 @@
 [data-theme="editorial"] h2 {
     font-family: var(--m-font-display);
 }
-
-/* GEEK / CARTOON — solid accent stat (clipped gradient washes out the mono/heavy glyphs) */
 [data-theme="geek"] .m-stat__num,
 [data-theme="cartoon"] .m-stat__num {
     -webkit-text-fill-color: var(--m-accent);
     color: var(--m-accent);
 }
-
-/* GEEK / APPLE — hide the chrome grid backdrop (clashes with terminal / minimal looks) */
-[data-theme="geek"] .m-decor-grid,
 [data-theme="apple"] .m-decor-grid {
     display: none;
 }
 
-/* GEEK — terminal syntax-highlight palette (phosphor green code tokens, no token slot) */
-[data-theme="geek"] .m-tk-kw  { color: #6EE7B7; }
-[data-theme="geek"] .m-tk-str { color: #FBBF24; }
-[data-theme="geek"] .m-tk-tag { color: #4ADE80; }
-[data-theme="geek"] .m-tk-attr { color: #A3E635; }
+/* GEEK — cyberpunk syntax-highlight palette (cyan/violet/pink, no token slot) */
+[data-theme="geek"] .m-tk-kw  { color: #C77DFF; }
+[data-theme="geek"] .m-tk-str { color: #FFD166; }
+[data-theme="geek"] .m-tk-tag { color: #00F0FF; }
+[data-theme="geek"] .m-tk-attr { color: #FF3CAC; }
 
 /* ============================================================
- * CROSS-THEME CHIP SIZING — uniform ergonomics bump.
- * createOrigam injects each theme as a `[data-theme][data-mode]`
- * block (specificity 0,2,0) that beats a plain `:root` rule. To
- * win the cascade we match the same attribute pair on `html`
- * (0,2,1). This is a brand-agnostic sizing tweak (not a colour
- * override): origam's chip computes `padding: 0 var(--…padding…)`
- * so vertical breathing room comes only from `height` — we bump
- * both axes per tier.
+ * PER-BRAND × MODE MARKETING DECOR — GENERATED from the HTML
+ * exports. Sets the tokenless --m-* decor vars the chrome reads
+ * (hero gradients, glow-text, nav surface, display font/weights).
+ * ============================================================ */
+
+[data-theme="sobre"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,58,237,.18), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(124,58,237,.08), transparent 70%);
+    --m-glow-text: linear-gradient(180deg, #fff 0%, #fff 50%, #A3A3A3 100%);
+    --m-nav-bg: color-mix(in srgb, #FFFFFF 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #6D28D9;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 800;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px -8px rgba(124,58,237,.5);
+    --m-radius-square: 0px;
+}
+[data-theme="sobre"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,58,237,.18), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(124,58,237,.08), transparent 70%);
+    --m-glow-text: linear-gradient(180deg, #fff 0%, #fff 50%, #A3A3A3 100%);
+    --m-nav-bg: color-mix(in srgb, #0A0A0A 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #C4B5FD;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 800;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px -8px rgba(124,58,237,.5);
+    --m-radius-square: 0px;
+}
+[data-theme="glass"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167,139,250,.3), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45,212,191,.18), transparent 60%);
+    --m-glow-text: linear-gradient(180deg, #fff, #DDD6FE 50%, #A78BFA);
+    --m-nav-bg: rgba(255,255,255,.30);
+    --m-nav-blur: saturate(200%) brightness(1.1) blur(26px);
+    --m-pre-title-color: #6D28D9;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 800;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px -8px rgba(124,58,237,.5);
+    --m-radius-square: 0px;
+}
+[data-theme="glass"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167,139,250,.3), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45,212,191,.18), transparent 60%);
+    --m-glow-text: linear-gradient(180deg, #fff, #DDD6FE 50%, #A78BFA);
+    --m-nav-bg: rgba(255,255,255,.06);
+    --m-nav-blur: saturate(200%) brightness(1.1) blur(26px);
+    --m-pre-title-color: #DDD6FE;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 800;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px -8px rgba(124,58,237,.5);
+    --m-radius-square: 0px;
+}
+[data-theme="geek"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,222,128,.08), transparent 70%);
+    --m-bg-decor-2: none;
+    --m-glow-text: linear-gradient(110deg, #0891B2 0%, #A21CAF 55%, #DB2777 100%);
+    --m-nav-bg: rgba(255,255,255,.72);
+    --m-nav-blur: saturate(160%) blur(16px);
+    --m-pre-title-color: #0891B2;
+    --m-font-display: 'JetBrains Mono', ui-monospace, monospace;
+    --m-h1-weight: 700;
+    --m-h1-tracking: -.02em;
+    --m-h1-lineh: 1.05;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 0 16px rgba(74,222,128,.4);
+    --m-radius-square: 0px;
+}
+[data-theme="geek"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,222,128,.08), transparent 70%);
+    --m-bg-decor-2: none;
+    --m-glow-text: linear-gradient(110deg, #00F0FF 0%, #C77DFF 50%, #FF3CAC 100%);
+    --m-nav-bg: rgba(10,6,18,.7);
+    --m-nav-blur: saturate(160%) blur(16px);
+    --m-pre-title-color: #00F0FF;
+    --m-font-display: 'JetBrains Mono', ui-monospace, monospace;
+    --m-h1-weight: 700;
+    --m-h1-tracking: -.02em;
+    --m-h1-lineh: 1.05;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 0 16px rgba(74,222,128,.4);
+    --m-radius-square: 0px;
+}
+[data-theme="cartoon"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(circle at 10% 10%, #FCD34D 0%, transparent 30%);
+    --m-bg-decor-2: radial-gradient(circle at 90% 10%, #FBCFE8 0%, transparent 30%);
+    --m-glow-text: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B);
+    --m-nav-bg: #FFF9F0;
+    --m-nav-blur: none;
+    --m-pre-title-color: #5B21B6;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 900;
+    --m-h1-tracking: -.04em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 3px;
+    --m-shadow-btn: 5px 5px 0 #171717;
+    --m-radius-square: 0px;
+}
+[data-theme="cartoon"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(circle at 10% 10%, #FCD34D 0%, transparent 30%);
+    --m-bg-decor-2: radial-gradient(circle at 90% 10%, #FBCFE8 0%, transparent 30%);
+    --m-glow-text: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B);
+    --m-nav-bg: #1A1A1A;
+    --m-nav-blur: none;
+    --m-pre-title-color: #5B21B6;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 900;
+    --m-h1-tracking: -.04em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 3px;
+    --m-shadow-btn: 5px 5px 0 #171717;
+    --m-radius-square: 0px;
+}
+[data-theme="editorial"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167,139,250,.16), transparent 60%);
+    --m-bg-decor-2: none;
+    --m-glow-text: none;
+    --m-nav-bg: color-mix(in srgb, #FBF7EE 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #A78BFA;
+    --m-font-display: 'Fraunces', 'Playfair Display', Georgia, serif;
+    --m-h1-weight: 400;
+    --m-h1-tracking: -.04em;
+    --m-h1-lineh: .9;
+    --m-h2-weight: 400;
+    --m-h2-style: italic;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .15em;
+    --m-border-w: 1px;
+    --m-shadow-btn: none;
+    --m-radius-square: 0px;
+}
+[data-theme="editorial"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167,139,250,.16), transparent 60%);
+    --m-bg-decor-2: none;
+    --m-glow-text: none;
+    --m-nav-bg: color-mix(in srgb, #0A0A0A 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #A78BFA;
+    --m-font-display: 'Fraunces', 'Playfair Display', Georgia, serif;
+    --m-h1-weight: 400;
+    --m-h1-tracking: -.04em;
+    --m-h1-lineh: .9;
+    --m-h2-weight: 400;
+    --m-h2-style: italic;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .15em;
+    --m-border-w: 1px;
+    --m-shadow-btn: none;
+    --m-radius-square: 0px;
+}
+[data-theme="material"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208,188,255,.16), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(128,206,254,.08), transparent 70%);
+    --m-glow-text: linear-gradient(180deg, #fff 0%, #EADDFF 60%, #D0BCFF 100%);
+    --m-nav-bg: color-mix(in srgb, #FEF7FF 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #D0BCFF;
+    --m-font-display: 'Roboto', 'Inter', -apple-system, sans-serif;
+    --m-h1-weight: 600;
+    --m-h1-tracking: -.025em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 500;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px 2px rgba(208,188,255,.15);
+    --m-radius-square: 0px;
+}
+[data-theme="material"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208,188,255,.16), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(128,206,254,.08), transparent 70%);
+    --m-glow-text: linear-gradient(180deg, #fff 0%, #EADDFF 60%, #D0BCFF 100%);
+    --m-nav-bg: color-mix(in srgb, #1C1B1F 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #D0BCFF;
+    --m-font-display: 'Roboto', 'Inter', -apple-system, sans-serif;
+    --m-h1-weight: 600;
+    --m-h1-tracking: -.025em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 500;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px 2px rgba(208,188,255,.15);
+    --m-radius-square: 0px;
+}
+[data-theme="ecom"][data-mode="light"] {
+    --m-bg-decor-1: linear-gradient(180deg, #FFEDD5 0%, transparent 40%);
+    --m-bg-decor-2: radial-gradient(ellipse 50% 50% at 90% 20%, rgba(251,146,60,.2), transparent 60%);
+    --m-glow-text: linear-gradient(90deg, #E11D48 0%, #EA580C 50%, #F59E0B 100%);
+    --m-nav-bg: color-mix(in srgb, #FFF7F0 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #BE123C;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 800;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 2px 0 rgba(225,29,72,.2), 0 4px 12px -2px rgba(225,29,72,.35);
+    --m-radius-square: 0px;
+}
+[data-theme="ecom"][data-mode="dark"] {
+    --m-bg-decor-1: linear-gradient(180deg, #FFEDD5 0%, transparent 40%);
+    --m-bg-decor-2: radial-gradient(ellipse 50% 50% at 90% 20%, rgba(251,146,60,.2), transparent 60%);
+    --m-glow-text: linear-gradient(90deg, #E11D48 0%, #EA580C 50%, #F59E0B 100%);
+    --m-nav-bg: color-mix(in srgb, #1A0F0A 72%, transparent);
+    --m-nav-blur: saturate(140%) blur(16px);
+    --m-pre-title-color: #BE123C;
+    --m-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --m-h1-weight: 800;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: .95;
+    --m-h2-weight: 700;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 2px 0 rgba(225,29,72,.2), 0 4px 12px -2px rgba(225,29,72,.35);
+    --m-radius-square: 0px;
+}
+[data-theme="apple"][data-mode="light"] {
+    --m-bg-decor-1: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,113,227,.06), transparent 60%);
+    --m-bg-decor-2: none;
+    --m-glow-text: linear-gradient(180deg, #1D1D1F 0%, #515154 100%);
+    --m-nav-bg: color-mix(in srgb, #FFFFFF 80%, transparent);
+    --m-nav-blur: saturate(180%) blur(20px);
+    --m-pre-title-color: #0071E3;
+    --m-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    --m-h1-weight: 700;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: 1;
+    --m-h2-weight: 600;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 2px 8px rgba(0,113,227,.25);
+    --m-radius-square: 0px;
+}
+[data-theme="apple"][data-mode="dark"] {
+    --m-bg-decor-1: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,113,227,.06), transparent 60%);
+    --m-bg-decor-2: none;
+    --m-glow-text: linear-gradient(180deg, #1D1D1F 0%, #515154 100%);
+    --m-nav-bg: color-mix(in srgb, #000000 80%, transparent);
+    --m-nav-blur: saturate(180%) blur(20px);
+    --m-pre-title-color: #0071E3;
+    --m-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    --m-h1-weight: 700;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: 1;
+    --m-h2-weight: 600;
+    --m-h2-style: normal;
+    --m-h2-tracking: -.03em;
+    --m-uppercase-tracking: .08em;
+    --m-border-w: 1px;
+    --m-shadow-btn: 0 2px 8px rgba(0,113,227,.25);
+    --m-radius-square: 0px;
+}
+
+/* ============================================================
+ * CROSS-THEME CHIP SIZING — uniform ergonomics bump (brand-agnostic).
+ * Matches html[data-theme][data-mode] (0,2,1) to beat the injected
+ * theme block (0,2,0).
  * ============================================================ */
 html[data-theme][data-mode] {
     --origam-chip---padding-xs: 12px;

@@ -1,107 +1,259 @@
-import type { IDefault, IOrigamTheme } from 'origam/interfaces'
+import type { IOrigamTheme } from 'origam/interfaces'
 
-const GEEK_MONO = "'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace"
-
-const GEEK_COLORS = {
-    surface: {
-        default: '#050a05',
-        raised: '#0A140A',
-        overlay: '#0E1A0E',
-        sunken: '#050a05',
-        disabled: '#0A140A'
-    },
-    text: {
-        primary: '#4ADE80',
-        secondary: '#16A34A',
-        disabled: '#064E1A',
-        inverse: '#050a05',
-        onColor: '#050a05'
-    },
-    border: {
-        default: 'rgba(74,222,128,0.15)',
-        subtle: 'rgba(74,222,128,0.06)',
-        strong: 'rgba(74,222,128,0.35)',
-        focus: 'rgba(74,222,128,0.4)'
-    },
-    action: {
-        primary: {
-            bg: '#4ADE80',
-            bgHover: '#6EE7B7',
-            bgSubtle: 'rgba(74,222,128,0.1)',
-            bgDisabled: '#0E1A0E',
-            fg: '#050a05',
-            fgSubtle: '#6EE7B7',
-            fgDisabled: '#064E1A'
-        },
-        secondary: {
-            bg: '#0E1A0E',
-            bgHover: '#14271A',
-            bgDisabled: '#0A140A',
-            fg: '#4ADE80',
-            fgDisabled: '#064E1A'
-        },
-        ghost: {
-            bg: 'transparent',
-            bgHover: 'rgba(74,222,128,0.1)',
-            bgDisabled: 'transparent',
-            fg: '#6EE7B7',
-            fgDisabled: '#064E1A'
-        }
-    },
-    feedback: {
-        success: { bg: '#4ADE80', bgSubtle: 'rgba(74,222,128,0.1)', fg: '#050a05', fgSubtle: '#6EE7B7', border: '#4ADE80' },
-        warning: { bg: '#FBBF24', bgSubtle: 'rgba(251,191,36,0.12)', fg: '#050a05', fgSubtle: '#FCD34D', border: '#FBBF24' },
-        danger: { bg: '#F87171', bgSubtle: 'rgba(248,113,113,0.12)', fg: '#050a05', fgSubtle: '#FCA5A5', border: '#F87171' },
-        info: { bg: '#60A5FA', bgSubtle: 'rgba(96,165,250,0.12)', fg: '#050a05', fgSubtle: '#93C5FD', border: '#60A5FA' }
-    },
-    overlay: { scrim: '#000000' }
-}
-
-const GEEK_RADIUS = { none: '0px', xs: '2px', sm: '2px', md: '4px', lg: '4px', xl: '4px', '2xl': '4px', full: '4px' }
-
-const GEEK_TYPOGRAPHY = {
-    family: { sans: GEEK_MONO, serif: GEEK_MONO, mono: GEEK_MONO }
-}
-
-const GEEK_SHADOW = {
-    none: '0 0 0 0 rgba(0,0,0,0)',
-    xs: '0 0 0 1px rgba(74,222,128,0.15)',
-    sm: '0 0 0 1px rgba(74,222,128,0.15)',
-    md: '0 0 16px rgba(74,222,128,0.4)',
-    lg: '0 0 24px rgba(74,222,128,0.4)',
-    xl: '0 0 36px rgba(74,222,128,0.45)'
-}
-
-const GEEK_COMPONENT: IDefault = {
-    'origam-btn': { variant: 'flat', rounded: 'x-small' },
-    'origam-card': { variant: 'outlined', rounded: 'x-small' },
-    'origam-chip': { variant: 'outlined', rounded: 'x-small' }
-}
-
-const GEEK_SWATCH = 'linear-gradient(135deg, #050a05 50%, #4ADE80 50%)'
+// ⛔ GÉNÉRÉ depuis les exports HTML par thème×mode (Desktop, source unique).
+// Light et Dark ont chacun leur PROPRE palette (pas de mode partagé).
+// Ne pas éditer à la main : régénérer via /tmp/gen-themes.mjs.
 
 export const geekLightTheme: IOrigamTheme = {
     name: 'geek',
     mode: 'light',
     label: 'Geek',
-    description: 'Terminal · mono · green',
-    swatch: GEEK_SWATCH,
-    component: { ...GEEK_COMPONENT },
-    colors: GEEK_COLORS,
-    radius: GEEK_RADIUS,
-    typography: GEEK_TYPOGRAPHY,
-    shadow: GEEK_SHADOW
+    description: 'Cyberpunk terminal · mono · neon',
+    swatch: 'linear-gradient(135deg, #F6F0FF 0%, #A21CAF 100%)',
+    component: {
+        'origam-btn': {
+            variant: 'flat',
+            rounded: 'x-small'
+        },
+        'origam-card': {
+            variant: 'outlined',
+            rounded: 'x-small'
+        },
+        'origam-chip': {
+            variant: 'outlined',
+            rounded: 'x-small'
+        }
+    },
+    colors: {
+        surface: {
+            default: '#F6F0FF',
+            raised: '#FFFFFF',
+            overlay: '#FBF5FF',
+            sunken: '#F6F0FF',
+            disabled: '#FBF5FF'
+        },
+        text: {
+            primary: '#1A0F2E',
+            secondary: '#5B3E8C',
+            disabled: '#B5A0D8',
+            inverse: '#FFFFFF',
+            onColor: '#FFFFFF'
+        },
+        border: {
+            default: 'rgba(168,85,247,.28)',
+            subtle: 'rgba(168,85,247,.14)',
+            strong: 'rgba(217,70,239,.55)',
+            focus: 'rgba(217,70,239,.45)'
+        },
+        action: {
+            primary: {
+                bg: '#A21CAF',
+                bgHover: '#0891B2',
+                bgSubtle: 'rgba(162,28,175,.10)',
+                bgDisabled: '#FBF5FF',
+                fg: '#FFFFFF',
+                fgSubtle: '#0891B2',
+                fgDisabled: '#B5A0D8'
+            },
+            secondary: {
+                bg: '#FBF5FF',
+                bgHover: 'rgba(168,85,247,.28)',
+                bgDisabled: '#FFFFFF',
+                fg: '#1A0F2E',
+                fgDisabled: '#B5A0D8'
+            },
+            ghost: {
+                bg: 'rgba(0,0,0,0)',
+                bgHover: 'rgba(162,28,175,.10)',
+                bgDisabled: 'rgba(0,0,0,0)',
+                fg: '#0891B2',
+                fgDisabled: '#B5A0D8'
+            }
+        },
+        feedback: {
+            success: {
+                bg: '#15803D',
+                bgSubtle: '#FBF5FF',
+                fg: '#FFFFFF',
+                fgSubtle: '#15803D',
+                border: '#15803D'
+            },
+            warning: {
+                bg: '#B45309',
+                bgSubtle: '#FBF5FF',
+                fg: '#FFFFFF',
+                fgSubtle: '#B45309',
+                border: '#B45309'
+            },
+            danger: {
+                bg: '#DB2777',
+                bgSubtle: '#FBF5FF',
+                fg: '#FFFFFF',
+                fgSubtle: '#DB2777',
+                border: '#DB2777'
+            },
+            info: {
+                bg: '#2563EB',
+                bgSubtle: '#FBF5FF',
+                fg: '#FFFFFF',
+                fgSubtle: '#2563EB',
+                border: '#2563EB'
+            }
+        },
+        overlay: {
+            scrim: 'rgba(0,0,0,0.5)'
+        }
+    },
+    radius: {
+        none: '0px',
+        xs: '2px',
+        sm: '2px',
+        md: '4px',
+        lg: '4px',
+        xl: '4px',
+        '2xl': '4px',
+        full: '4px'
+    },
+    typography: {
+        family: {
+            sans: '\'JetBrains Mono\', ui-monospace, monospace',
+            serif: '\'JetBrains Mono\', ui-monospace, monospace',
+            mono: '\'JetBrains Mono\', \'Fira Code\', ui-monospace, monospace'
+        }
+    },
+    shadow: {
+        none: '0 0 0 0 rgba(0,0,0,0)',
+        xs: '0 0 16px rgba(74,222,128,.4)',
+        sm: '0 0 0 1px rgba(74,222,128,.15)',
+        md: '0 0 0 1px rgba(74,222,128,.15)',
+        lg: '0 24px 64px -16px rgba(0,0,0,.5)',
+        xl: '0 24px 64px -16px rgba(0,0,0,.5)'
+    }
 }
 
 export const geekDarkTheme: IOrigamTheme = {
     name: 'geek',
     mode: 'dark',
     label: 'Geek',
-    description: 'Terminal · mono · green',
-    swatch: GEEK_SWATCH,
-    component: { ...GEEK_COMPONENT },
-    colors: GEEK_COLORS,
-    radius: GEEK_RADIUS,
-    typography: GEEK_TYPOGRAPHY,
-    shadow: GEEK_SHADOW
+    description: 'Cyberpunk terminal · mono · neon',
+    swatch: 'linear-gradient(135deg, #0A0612 0%, #C77DFF 100%)',
+    component: {
+        'origam-btn': {
+            variant: 'flat',
+            rounded: 'x-small'
+        },
+        'origam-card': {
+            variant: 'outlined',
+            rounded: 'x-small'
+        },
+        'origam-chip': {
+            variant: 'outlined',
+            rounded: 'x-small'
+        }
+    },
+    colors: {
+        surface: {
+            default: '#0A0612',
+            raised: '#140C24',
+            overlay: '#1C1138',
+            sunken: '#0A0612',
+            disabled: '#1C1138'
+        },
+        text: {
+            primary: '#ECE6FF',
+            secondary: '#B4A4E8',
+            disabled: '#4A3D6E',
+            inverse: '#0A0612',
+            onColor: '#0A0612'
+        },
+        border: {
+            default: 'rgba(124,77,255,.28)',
+            subtle: 'rgba(124,77,255,.14)',
+            strong: 'rgba(0,240,255,.5)',
+            focus: 'rgba(0,240,255,.5)'
+        },
+        action: {
+            primary: {
+                bg: '#C77DFF',
+                bgHover: '#00F0FF',
+                bgSubtle: 'rgba(199,125,255,.14)',
+                bgDisabled: '#1C1138',
+                fg: '#0A0612',
+                fgSubtle: '#00F0FF',
+                fgDisabled: '#4A3D6E'
+            },
+            secondary: {
+                bg: '#1C1138',
+                bgHover: 'rgba(124,77,255,.28)',
+                bgDisabled: '#140C24',
+                fg: '#ECE6FF',
+                fgDisabled: '#4A3D6E'
+            },
+            ghost: {
+                bg: 'rgba(0,0,0,0)',
+                bgHover: 'rgba(199,125,255,.14)',
+                bgDisabled: 'rgba(0,0,0,0)',
+                fg: '#00F0FF',
+                fgDisabled: '#4A3D6E'
+            }
+        },
+        feedback: {
+            success: {
+                bg: '#39FF14',
+                bgSubtle: '#1C1138',
+                fg: '#0A0612',
+                fgSubtle: '#39FF14',
+                border: '#39FF14'
+            },
+            warning: {
+                bg: '#FFD166',
+                bgSubtle: '#1C1138',
+                fg: '#0A0612',
+                fgSubtle: '#FFD166',
+                border: '#FFD166'
+            },
+            danger: {
+                bg: '#FF3864',
+                bgSubtle: '#1C1138',
+                fg: '#0A0612',
+                fgSubtle: '#FF3864',
+                border: '#FF3864'
+            },
+            info: {
+                bg: '#60A5FA',
+                bgSubtle: '#1C1138',
+                fg: '#0A0612',
+                fgSubtle: '#60A5FA',
+                border: '#60A5FA'
+            }
+        },
+        overlay: {
+            scrim: 'rgba(0,0,0,0.7)'
+        }
+    },
+    radius: {
+        none: '0px',
+        xs: '4px',
+        sm: '4px',
+        md: '8px',
+        lg: '12px',
+        xl: '12px',
+        '2xl': '12px',
+        full: '4px'
+    },
+    typography: {
+        family: {
+            sans: '\'JetBrains Mono\', ui-monospace, monospace',
+            serif: '\'JetBrains Mono\', ui-monospace, monospace',
+            mono: '\'JetBrains Mono\', \'Fira Code\', ui-monospace, monospace'
+        }
+    },
+    shadow: {
+        none: '0 0 0 0 rgba(0,0,0,0)',
+        xs: '0 0 16px rgba(74,222,128,.4)',
+        sm: '0 0 0 1px rgba(74,222,128,.15)',
+        md: '0 0 0 1px rgba(74,222,128,.15)',
+        lg: '0 24px 64px -16px rgba(0,0,0,.5)',
+        xl: '0 24px 64px -16px rgba(0,0,0,.5)'
+    }
 }

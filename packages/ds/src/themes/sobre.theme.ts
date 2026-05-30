@@ -1,104 +1,124 @@
 import type { IOrigamTheme } from '../interfaces'
 
-// ─────────────────────────────────────────────────────────────────────────────
-// `sobre` — the single theme baked into the design system (ADR-004).
-//
-// ADR-004 pulls all brand themes (glass, geek, cartoon, editorial, material,
-// ecom, apple) OUT of the DS — those now live in the marketing package. The DS
-// ships PURE MECHANICS plus this ONE base theme, `sobre`, which doubles as the
-// implicit default `createOrigam()` installs when the consumer passes no theme.
-//
-// AUTHORING FORMAT (the normal way): plain nested JSON keyed by intention. No
-// `--origam-*` prefixes, no DTCG `$value` ceremony. The DS walks `colors`
-// (and the sibling scales) and derives each CSS-variable name from the leaf
-// path, so this resolves to the EXACT same `--origam-*` names as the published
-// token sheets (parity is asserted in the unit specs).
-//
-//   colors.surface.default     → --origam-color__surface---default
-//   colors.text.secondary      → --origam-color__text---secondary
-//   colors.action.primary.bg   → --origam-color__action--primary---bg
-//   colors.feedback.success.bg → --origam-color__feedback--success---bg
-//
-// A color slot accepts any CSS color OR a gradient (a gradient is an ordinary
-// color value — there is no dedicated `gradient` group anymore).
-//
-// Two orthogonal layers ship together:
-//   - the semantic surface (`colors`, …) — sobre's calm neutral identity,
-//   - `component` — per-component DEFAULT PROPS (dogfood of the `useDefaults`
-//     provider chain), provided by `createOrigam` under `ORIGAM_DEFAULTS_KEY`.
-//
-// `sobreLightTheme` is the canonical origam white (untouched). `sobreDarkTheme`
-// is authored from the HTML marketing mockup's `sobre` palette (#0A0A0A surface
-// stack, violet #8B5CF6 accent, soft feedback). One contrast correction stays
-// applied to light: `colors.text.secondary` is `#737373` (was `#525252`) so
-// secondary text keeps a ≥ 4.5:1 ratio on the default white surface.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const SOBRE_COMPONENT_DEFAULTS = {
-    global: { density: 'comfortable' }
-} as const
+// ⛔ GÉNÉRÉ depuis les exports HTML par thème×mode (Desktop, source unique).
+// Light et Dark ont chacun leur PROPRE palette (pas de mode partagé).
+// Ne pas éditer à la main : régénérer via /tmp/gen-themes.mjs.
 
 export const sobreLightTheme: IOrigamTheme = {
     name: 'sobre',
     mode: 'light',
     label: 'Sobre',
     description: 'The neutral origam base — calm surfaces, a single violet accent.',
-    component: { ...SOBRE_COMPONENT_DEFAULTS },
+    swatch: 'linear-gradient(135deg, #FFFFFF 0%, #7C3AED 100%)',
+    component: {
+        global: {
+            density: 'comfortable'
+        }
+    },
     colors: {
         surface: {
-            default: '#ffffff',
-            raised: '#ffffff',
-            overlay: '#f5f5f5',
-            sunken: '#fafafa',
-            disabled: '#e6e6e6'
+            default: '#FFFFFF',
+            raised: '#FAFAFA',
+            overlay: '#F5F5F5',
+            sunken: '#FFFFFF',
+            disabled: '#F5F5F5'
         },
         text: {
-            primary: '#171717',
-            secondary: '#737373',
-            disabled: '#a3a3a3',
-            inverse: '#ffffff',
-            onColor: '#ffffff'
+            primary: '#0A0A0A',
+            secondary: '#525252',
+            disabled: '#A3A3A3',
+            inverse: '#FFFFFF',
+            onColor: '#FFFFFF'
         },
         border: {
-            default: '#a3a3a3',
-            subtle: '#d4d4d4',
-            strong: '#404040',
-            focus: '#7c3aed'
+            default: 'rgba(0,0,0,0.08)',
+            subtle: 'rgba(0,0,0,0.04)',
+            strong: 'rgba(0,0,0,0.16)',
+            focus: '#7C3AED'
         },
         action: {
             primary: {
-                bg: '#7c3aed',
-                bgHover: '#6d28d9',
-                bgSubtle: '#f5f3ff',
-                bgDisabled: '#e6e6e6',
-                fg: '#ffffff',
-                fgSubtle: '#6d28d9',
-                fgDisabled: '#a3a3a3'
+                bg: '#7C3AED',
+                bgHover: '#6D28D9',
+                bgSubtle: 'rgba(124,58,237,0.10)',
+                bgDisabled: '#F5F5F5',
+                fg: '#FFFFFF',
+                fgSubtle: '#6D28D9',
+                fgDisabled: '#A3A3A3'
             },
             secondary: {
-                bg: '#e6e6e6',
-                bgHover: '#d4d4d4',
-                bgDisabled: '#f5f5f5',
-                fg: '#262626',
-                fgDisabled: '#a3a3a3'
+                bg: '#F5F5F5',
+                bgHover: 'rgba(0,0,0,0.08)',
+                bgDisabled: '#FAFAFA',
+                fg: '#0A0A0A',
+                fgDisabled: '#A3A3A3'
             },
             ghost: {
-                bg: 'rgba(0, 0, 0, 0)',
-                bgHover: '#f5f5f5',
-                bgDisabled: 'rgba(0, 0, 0, 0)',
-                fg: '#7c3aed',
-                fgDisabled: '#a3a3a3'
+                bg: 'rgba(0,0,0,0)',
+                bgHover: 'rgba(124,58,237,0.10)',
+                bgDisabled: 'rgba(0,0,0,0)',
+                fg: '#6D28D9',
+                fgDisabled: '#A3A3A3'
             }
         },
         feedback: {
-            success: { bg: '#4caf50', bgSubtle: '#f0fdf4', fg: '#ffffff', fgSubtle: '#16a34a', border: '#4caf50' },
-            warning: { bg: '#fb8c00', bgSubtle: '#fffbeb', fg: '#ffffff', fgSubtle: '#b45309', border: '#fb8c00' },
-            danger: { bg: '#ef4444', bgSubtle: '#fff1f2', fg: '#ffffff', fgSubtle: '#b91c1c', border: '#cf6679' },
-            info: { bg: '#2196f3', bgSubtle: '#eff6ff', fg: '#ffffff', fgSubtle: '#1e40af', border: '#2196f3' }
+            success: {
+                bg: '#15803D',
+                bgSubtle: '#F5F5F5',
+                fg: '#FFFFFF',
+                fgSubtle: '#15803D',
+                border: '#15803D'
+            },
+            warning: {
+                bg: '#B45309',
+                bgSubtle: '#F5F5F5',
+                fg: '#FFFFFF',
+                fgSubtle: '#B45309',
+                border: '#B45309'
+            },
+            danger: {
+                bg: '#B91C1C',
+                bgSubtle: '#F5F5F5',
+                fg: '#FFFFFF',
+                fgSubtle: '#B91C1C',
+                border: '#B91C1C'
+            },
+            info: {
+                bg: '#2563EB',
+                bgSubtle: '#F5F5F5',
+                fg: '#FFFFFF',
+                fgSubtle: '#2563EB',
+                border: '#2563EB'
+            }
         },
         overlay: {
-            scrim: '#ffffff'
+            scrim: 'rgba(0,0,0,0.5)'
         }
+    },
+    radius: {
+        none: '0px',
+        xs: '6px',
+        sm: '6px',
+        md: '10px',
+        lg: '14px',
+        xl: '14px',
+        '2xl': '14px',
+        full: '999px'
+    },
+    typography: {
+        family: {
+            sans: '\'Inter\', -apple-system, BlinkMacSystemFont, sans-serif',
+            serif: '\'Inter\', -apple-system, BlinkMacSystemFont, sans-serif',
+            mono: '\'JetBrains Mono\', \'Fira Code\', ui-monospace, monospace'
+        }
+    },
+    shadow: {
+        none: '0 0 0 0 rgba(0,0,0,0)',
+        xs: '0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px -8px rgba(124,58,237,.5)',
+        sm: '0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px -16px rgba(0,0,0,.6)',
+        md: '0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px -16px rgba(0,0,0,.6)',
+        lg: '0 24px 64px -16px rgba(0,0,0,.5)',
+        xl: '0 24px 64px -16px rgba(0,0,0,.5)'
     }
 }
 
@@ -107,69 +127,121 @@ export const sobreDarkTheme: IOrigamTheme = {
     mode: 'dark',
     label: 'Sobre',
     description: 'The neutral origam base — calm surfaces, a single violet accent.',
-    component: { ...SOBRE_COMPONENT_DEFAULTS },
+    swatch: 'linear-gradient(135deg, #0A0A0A 0%, #8B5CF6 100%)',
+    component: {
+        global: {
+            density: 'comfortable'
+        }
+    },
     colors: {
         surface: {
-            default: '#0a0a0a',
-            raised: '#0e0e0e',
+            default: '#0A0A0A',
+            raised: '#0E0E0E',
             overlay: '#171717',
-            sunken: '#0a0a0a',
+            sunken: '#0A0A0A',
             disabled: '#171717'
         },
         text: {
-            primary: '#fafafa',
-            secondary: '#a3a3a3',
+            primary: '#FAFAFA',
+            secondary: '#A3A3A3',
             disabled: '#525252',
-            inverse: '#0a0a0a',
-            onColor: '#ffffff'
+            inverse: '#0A0A0A',
+            onColor: '#FFFFFF'
         },
         border: {
             default: 'rgba(255,255,255,0.08)',
             subtle: 'rgba(255,255,255,0.04)',
             strong: 'rgba(255,255,255,0.16)',
-            focus: '#a78bfa'
+            focus: '#A78BFA'
         },
         action: {
             primary: {
-                bg: '#8b5cf6',
-                bgHover: '#c4b5fd',
+                bg: '#8B5CF6',
+                bgHover: '#C4B5FD',
                 bgSubtle: 'rgba(124,58,237,0.14)',
                 bgDisabled: '#171717',
-                fg: '#ffffff',
-                fgSubtle: '#c4b5fd',
+                fg: '#FFFFFF',
+                fgSubtle: '#C4B5FD',
                 fgDisabled: '#525252'
             },
             secondary: {
                 bg: '#171717',
-                bgHover: '#262626',
-                bgDisabled: '#0e0e0e',
-                fg: '#fafafa',
+                bgHover: 'rgba(255,255,255,0.08)',
+                bgDisabled: '#0E0E0E',
+                fg: '#FAFAFA',
                 fgDisabled: '#525252'
             },
             ghost: {
-                bg: 'rgba(0, 0, 0, 0)',
-                bgHover: '#171717',
-                bgDisabled: 'rgba(0, 0, 0, 0)',
-                fg: '#a78bfa',
+                bg: 'rgba(0,0,0,0)',
+                bgHover: 'rgba(124,58,237,0.14)',
+                bgDisabled: 'rgba(0,0,0,0)',
+                fg: '#C4B5FD',
                 fgDisabled: '#525252'
             }
         },
         feedback: {
-            success: { bg: '#6ee7b7', bgSubtle: '#171717', fg: '#0a0a0a', fgSubtle: '#6ee7b7', border: '#6ee7b7' },
-            warning: { bg: '#fbbf24', bgSubtle: '#171717', fg: '#0a0a0a', fgSubtle: '#fbbf24', border: '#fbbf24' },
-            danger: { bg: '#f87171', bgSubtle: '#171717', fg: '#0a0a0a', fgSubtle: '#f87171', border: '#f87171' },
-            info: { bg: '#2196f3', bgSubtle: '#171717', fg: '#ffffff', fgSubtle: '#60a5fa', border: '#2196f3' }
+            success: {
+                bg: '#6EE7B7',
+                bgSubtle: '#171717',
+                fg: '#0A0A0A',
+                fgSubtle: '#6EE7B7',
+                border: '#6EE7B7'
+            },
+            warning: {
+                bg: '#FBBF24',
+                bgSubtle: '#171717',
+                fg: '#0A0A0A',
+                fgSubtle: '#FBBF24',
+                border: '#FBBF24'
+            },
+            danger: {
+                bg: '#F87171',
+                bgSubtle: '#171717',
+                fg: '#0A0A0A',
+                fgSubtle: '#F87171',
+                border: '#F87171'
+            },
+            info: {
+                bg: '#60A5FA',
+                bgSubtle: '#171717',
+                fg: '#0A0A0A',
+                fgSubtle: '#60A5FA',
+                border: '#60A5FA'
+            }
         },
         overlay: {
-            scrim: '#000000'
+            scrim: 'rgba(0,0,0,0.7)'
         }
+    },
+    radius: {
+        none: '0px',
+        xs: '6px',
+        sm: '6px',
+        md: '10px',
+        lg: '14px',
+        xl: '14px',
+        '2xl': '14px',
+        full: '999px'
+    },
+    typography: {
+        family: {
+            sans: '\'Inter\', -apple-system, BlinkMacSystemFont, sans-serif',
+            serif: '\'Inter\', -apple-system, BlinkMacSystemFont, sans-serif',
+            mono: '\'JetBrains Mono\', \'Fira Code\', ui-monospace, monospace'
+        }
+    },
+    shadow: {
+        none: '0 0 0 0 rgba(0,0,0,0)',
+        xs: '0 1px 0 rgba(255,255,255,.2) inset, 0 8px 24px -8px rgba(124,58,237,.5)',
+        sm: '0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px -16px rgba(0,0,0,.6)',
+        md: '0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px -16px rgba(0,0,0,.6)',
+        lg: '0 24px 64px -16px rgba(0,0,0,.5)',
+        xl: '0 24px 64px -16px rgba(0,0,0,.5)'
     }
 }
 
 /**
- * Both `sobre` modes combined — the DS's single built-in theme. `createOrigam`
- * installs this when the consumer supplies no theme of their own, so a bare
- * `app.use(createOrigam())` paints with the neutral origam identity in light
- * and dark.
+ * Both `sobre` modes — the DS's single built-in theme, installed by
+ * `createOrigam` when the consumer supplies none.
  */
 export const sobreTheme: IOrigamTheme[] = [sobreLightTheme, sobreDarkTheme]
