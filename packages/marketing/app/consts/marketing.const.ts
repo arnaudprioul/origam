@@ -8,7 +8,6 @@ export const MARKETING_DEFAULTS: IMarketingDefaults = {
     siteName: 'origam',
     siteDescription: 'The Vue 3 design system that just works — 29 chart primitives, ~95 components, accessibility-first, design tokens.',
     defaultLocale: 'en',
-    defaultTheme: 'light',
     plausibleDomain: '',
     plausibleApiHost: '',
     contactEmail: '',

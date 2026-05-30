@@ -6,10 +6,11 @@ const config = useRuntimeConfig()
 const { track } = useAnalytics()
 
 const { theme } = useTheme()
-const heroTitle = computed(() => t(
-    `home.hero.titleAlt.${theme.value}`,
-    t('home.hero.title', 'The Vue 3 design system that just works.')
-))
+const heroTitle = computed(() => {
+    const genericTitle = t('home.hero.title', 'The Vue 3 design system that just works.')
+    if (theme.value === 'auto') return genericTitle
+    return t(`home.hero.titleAlt.${theme.value}`, genericTitle)
+})
 
 const installSnippet = `npm install ${MARKETING_DEFAULTS.npmPkg}`
 
