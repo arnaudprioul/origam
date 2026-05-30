@@ -148,3 +148,159 @@
     margin-inline-end: .08em;
     color: var(--origam-color__action--primary---bg);
 }
+
+/* ============================================================
+ * PER-BRAND MARKETING DECOR — sets the --m-* decor vars the
+ * chrome reads (hero gradients, glow-text, display weights,
+ * border width). These are pure decor with no DS token slot
+ * (gradient fills, multi-stop hue text, fixed-position spots),
+ * so they live here scoped to [data-theme], never in
+ * marketing-chrome.css. Values come from the HTML mockup.
+ * ============================================================ */
+
+/* GLASS — luminous radial veil + multi-stop violet glow text */
+[data-theme="glass"] {
+    --m-bg-decor-1: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167,139,250,.3), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45,212,191,.18), transparent 60%);
+    --m-glow-text: linear-gradient(180deg, #fff, #DDD6FE 50%, #A78BFA);
+}
+
+/* GEEK — terminal phosphor: mono display, neon halo, scanline grid */
+[data-theme="geek"] {
+    --m-font-display: var(--origam-font__family---mono, 'JetBrains Mono', ui-monospace, monospace);
+    --m-font-body: var(--origam-font__family---mono, 'JetBrains Mono', ui-monospace, monospace);
+    --m-h1-weight: 700;
+    --m-h1-tracking: -.02em;
+    --m-h1-lineh: 1;
+    --m-bg-decor-1: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,222,128,.08), transparent 70%);
+    --m-bg-decor-2: none;
+    --m-glow-text: linear-gradient(180deg, #6EE7B7, #4ADE80, #16A34A);
+}
+
+/* CARTOON — neo-brutalist heavy display + tri-colour glow */
+[data-theme="cartoon"] {
+    --m-h1-weight: 900;
+    --m-h1-tracking: -.04em;
+    --m-border-w: 2.5px;
+    --m-glow-text: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B);
+    --m-pre-title-color: #5B21B6;
+    --m-bg-decor-1: radial-gradient(circle at 10% 10%, #FCD34D 0%, transparent 30%);
+    --m-bg-decor-2: radial-gradient(circle at 90% 10%, #FBCFE8 0%, transparent 30%);
+}
+
+/* EDITORIAL — serif magazine display, no glow, italic h2 */
+[data-theme="editorial"] {
+    --m-font-display: var(--origam-font__family---serif);
+    --m-h1-weight: 400;
+    --m-h1-tracking: -.04em;
+    --m-h1-lineh: .9;
+    --m-h2-weight: 400;
+    --m-h2-style: italic;
+    --m-uppercase-tracking: .15em;
+    --m-glow-text: none;
+    --m-pre-title-color: #A78BFA;
+    --m-bg-decor-1: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167,139,250,.16), transparent 60%);
+    --m-bg-decor-2: none;
+}
+
+/* MATERIAL — M3 brand-tinted decor + tonal glow text */
+[data-theme="material"] {
+    --m-h1-weight: 600;
+    --m-h1-tracking: -.025em;
+    --m-h2-weight: 500;
+    --m-bg-decor-1: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208,188,255,.16), transparent 60%);
+    --m-bg-decor-2: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(128,206,254,.08), transparent 70%);
+    --m-glow-text: linear-gradient(180deg, #fff 0%, #EADDFF 60%, #D0BCFF 100%);
+    --m-pre-title-color: #D0BCFF;
+}
+
+/* ECOM — warm product gradient decor + hot CTA glow text */
+[data-theme="ecom"] {
+    --m-h1-weight: 800;
+    --m-h2-weight: 700;
+    --m-bg-decor-1: linear-gradient(180deg, #FFEDD5 0%, transparent 40%);
+    --m-bg-decor-2: radial-gradient(ellipse 50% 50% at 90% 20%, rgba(251,146,60,.2), transparent 60%);
+    --m-glow-text: linear-gradient(90deg, #E11D48 0%, #EA580C 50%, #F59E0B 100%);
+    --m-pre-title-color: #BE123C;
+}
+
+/* APPLE — system display font + subtle ink-on-white glow text */
+[data-theme="apple"] {
+    --m-font-display: var(--origam-font__family---sans);
+    --m-h1-weight: 700;
+    --m-h1-tracking: -.045em;
+    --m-h1-lineh: 1;
+    --m-h2-weight: 600;
+    --m-bg-decor-1: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,113,227,.06), transparent 60%);
+    --m-bg-decor-2: none;
+    --m-glow-text: linear-gradient(180deg, #1D1D1F 0%, #515154 100%);
+    --m-pre-title-color: #0071E3;
+}
+
+/* ============================================================
+ * CHROME DECOR HOOKS scoped per brand — these select marketing
+ * chrome classes (not DS components). They tweak the glow-text
+ * fallback (editorial/geek/cartoon paint a solid accent instead
+ * of a clipped gradient), the grid backdrop, code-token hues and
+ * the serif heading family — none expressible as a DS token.
+ * ============================================================ */
+
+/* EDITORIAL — solid ink heading (gradient clip would erase the serif weight) */
+[data-theme="editorial"] .m-h1-display {
+    background: none;
+    -webkit-text-fill-color: var(--m-text, #fff);
+    color: var(--m-text, #fff);
+}
+
+/* EDITORIAL — italic accent stat, serif headings (font family is a token but the italic + clip removal are not) */
+[data-theme="editorial"] .m-stat__num {
+    -webkit-text-fill-color: var(--m-accent, #A78BFA);
+    color: var(--m-accent, #A78BFA);
+    font-style: italic;
+}
+[data-theme="editorial"] h1,
+[data-theme="editorial"] h2 {
+    font-family: var(--m-font-display);
+}
+
+/* GEEK / CARTOON — solid accent stat (clipped gradient washes out the mono/heavy glyphs) */
+[data-theme="geek"] .m-stat__num,
+[data-theme="cartoon"] .m-stat__num {
+    -webkit-text-fill-color: var(--m-accent);
+    color: var(--m-accent);
+}
+
+/* GEEK / APPLE — hide the chrome grid backdrop (clashes with terminal / minimal looks) */
+[data-theme="geek"] .m-decor-grid,
+[data-theme="apple"] .m-decor-grid {
+    display: none;
+}
+
+/* GEEK — terminal syntax-highlight palette (phosphor green code tokens, no token slot) */
+[data-theme="geek"] .m-tk-kw  { color: #6EE7B7; }
+[data-theme="geek"] .m-tk-str { color: #FBBF24; }
+[data-theme="geek"] .m-tk-tag { color: #4ADE80; }
+[data-theme="geek"] .m-tk-attr { color: #A3E635; }
+
+/* ============================================================
+ * CROSS-THEME CHIP SIZING — uniform ergonomics bump.
+ * createOrigam injects each theme as a `[data-theme][data-mode]`
+ * block (specificity 0,2,0) that beats a plain `:root` rule. To
+ * win the cascade we match the same attribute pair on `html`
+ * (0,2,1). This is a brand-agnostic sizing tweak (not a colour
+ * override): origam's chip computes `padding: 0 var(--…padding…)`
+ * so vertical breathing room comes only from `height` — we bump
+ * both axes per tier.
+ * ============================================================ */
+html[data-theme][data-mode] {
+    --origam-chip---padding-xs: 12px;
+    --origam-chip---padding-sm: 16px;
+    --origam-chip---padding-md: 18px;
+    --origam-chip---padding-lg: 22px;
+    --origam-chip---padding-xl: 26px;
+    --origam-chip---height-xs: 24px;
+    --origam-chip---height-sm: 30px;
+    --origam-chip---height-md: 38px;
+    --origam-chip---height-lg: 44px;
+    --origam-chip---height-xl: 52px;
+}

@@ -27,10 +27,11 @@ import type { IOrigamTheme } from '../interfaces'
 //   - `component` — per-component DEFAULT PROPS (dogfood of the `useDefaults`
 //     provider chain), provided by `createOrigam` under `ORIGAM_DEFAULTS_KEY`.
 //
-// Values mirror the canonical semantic sources (`tokens/semantic/{light,dark}
-// .json`). One ADR-004 contrast correction stays applied: light-mode
-// `colors.text.secondary` is `#737373` (was `#525252`) so secondary text keeps
-// a ≥ 4.5:1 ratio on the default white surface.
+// `sobreLightTheme` is the canonical origam white (untouched). `sobreDarkTheme`
+// is authored from the HTML marketing mockup's `sobre` palette (#0A0A0A surface
+// stack, violet #8B5CF6 accent, soft feedback). One contrast correction stays
+// applied to light: `colors.text.secondary` is `#737373` (was `#525252`) so
+// secondary text keeps a ≥ 4.5:1 ratio on the default white surface.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SOBRE_COMPONENT_DEFAULTS = {
@@ -110,53 +111,53 @@ export const sobreDarkTheme: IOrigamTheme = {
     colors: {
         surface: {
             default: '#0a0a0a',
-            raised: '#171717',
-            overlay: '#262626',
+            raised: '#0e0e0e',
+            overlay: '#171717',
             sunken: '#0a0a0a',
-            disabled: '#262626'
+            disabled: '#171717'
         },
         text: {
             primary: '#fafafa',
             secondary: '#a3a3a3',
             disabled: '#525252',
-            inverse: '#171717',
+            inverse: '#0a0a0a',
             onColor: '#ffffff'
         },
         border: {
-            default: '#404040',
-            subtle: '#262626',
-            strong: '#a3a3a3',
+            default: 'rgba(255,255,255,0.08)',
+            subtle: 'rgba(255,255,255,0.04)',
+            strong: 'rgba(255,255,255,0.16)',
             focus: '#a78bfa'
         },
         action: {
             primary: {
                 bg: '#8b5cf6',
-                bgHover: '#a78bfa',
-                bgSubtle: '#4c1d95',
-                bgDisabled: '#262626',
+                bgHover: '#c4b5fd',
+                bgSubtle: 'rgba(124,58,237,0.14)',
+                bgDisabled: '#171717',
                 fg: '#ffffff',
                 fgSubtle: '#c4b5fd',
                 fgDisabled: '#525252'
             },
             secondary: {
-                bg: '#262626',
-                bgHover: '#404040',
-                bgDisabled: '#171717',
-                fg: '#f5f5f5',
+                bg: '#171717',
+                bgHover: '#262626',
+                bgDisabled: '#0e0e0e',
+                fg: '#fafafa',
                 fgDisabled: '#525252'
             },
             ghost: {
                 bg: 'rgba(0, 0, 0, 0)',
-                bgHover: '#262626',
+                bgHover: '#171717',
                 bgDisabled: 'rgba(0, 0, 0, 0)',
                 fg: '#a78bfa',
                 fgDisabled: '#525252'
             }
         },
         feedback: {
-            success: { bg: '#4caf50', bgSubtle: '#171717', fg: '#ffffff', fgSubtle: '#4ade80', border: '#4caf50' },
-            warning: { bg: '#fb8c00', bgSubtle: '#171717', fg: '#ffffff', fgSubtle: '#fbbf24', border: '#fb8c00' },
-            danger: { bg: '#ef4444', bgSubtle: '#171717', fg: '#ffffff', fgSubtle: '#cf6679', border: '#cf6679' },
+            success: { bg: '#6ee7b7', bgSubtle: '#171717', fg: '#0a0a0a', fgSubtle: '#6ee7b7', border: '#6ee7b7' },
+            warning: { bg: '#fbbf24', bgSubtle: '#171717', fg: '#0a0a0a', fgSubtle: '#fbbf24', border: '#fbbf24' },
+            danger: { bg: '#f87171', bgSubtle: '#171717', fg: '#0a0a0a', fgSubtle: '#f87171', border: '#f87171' },
             info: { bg: '#2196f3', bgSubtle: '#171717', fg: '#ffffff', fgSubtle: '#60a5fa', border: '#2196f3' }
         },
         overlay: {
