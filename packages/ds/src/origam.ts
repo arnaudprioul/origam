@@ -9,14 +9,15 @@ import {
     ORIGAM_DISPLAY_KEY,
     ORIGAM_GO_TO_KEY,
     ORIGAM_ICONS_KEY,
-    ORIGAM_LOCALE_KEY
+    ORIGAM_LOCALE_KEY,
+    ORIGAM_THEMES_KEY
 } from './consts'
 
 import * as origamDirectives from './directives'
 
 import type { IOrigamOptions } from './interfaces'
 import type { TIconOptions } from './types'
-import { applyTheme, getUid, mergeDeep } from './utils'
+import { applyThemes, getUid, installedThemesFromList, mergeDeep } from './utils'
 
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -31,6 +32,15 @@ export function createOrigam (origam: IOrigamOptions = {}) {
         directives = origamDirectives
     } = options
 
+    // Collect singular `theme` + plural `themes` into one install list. The
+    // installed-brand summary is computed eagerly (pure, SSR-safe) so it can be
+    // provided to the app context on both server and client.
+    const allThemes = [
+        ...(options.theme ? [options.theme] : []),
+        ...(options.themes ?? [])
+    ]
+    const installedThemes = installedThemesFromList(allThemes)
+
     const scope = effectScope()
     return scope.run(() => {
         const icons = createIcons(options.icons)
@@ -40,11 +50,12 @@ export function createOrigam (origam: IOrigamOptions = {}) {
         const goTo = createGoTo(options.goTo, locale)
 
         const install = (app: App) => {
-            // Runtime theme injection. SSR-safe: `applyTheme` is a no-op when
+            // Runtime theme injection. SSR-safe: `applyThemes` is a no-op when
             // `document` is unavailable, so the server render is untouched and
-            // the variables land on the first client install instead.
-            if (options.theme) {
-                applyTheme(options.theme)
+            // the variables land on the first client install instead. Each
+            // theme gets its own name×mode scoped `<style>` block.
+            if (allThemes.length) {
+                applyThemes(allThemes)
             }
 
             for (const key in directives) {
@@ -73,6 +84,7 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             app.provide(ORIGAM_DATE_OPTIONS_KEY, date.options)
             app.provide(ORIGAM_DATE_ADAPTER_KEY, date.instance)
             app.provide(ORIGAM_GO_TO_KEY, goTo)
+            app.provide(ORIGAM_THEMES_KEY, installedThemes)
 
             if (IN_BROWSER && options.ssr) {
                 if (app.$nuxt) {
@@ -119,7 +131,8 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             icons,
             locale,
             date,
-            goTo
+            goTo,
+            themes: installedThemes
         }
     })!
 }

@@ -5,6 +5,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import {
     applyTheme,
+    applyThemes,
+    installedThemesFromList,
     resolveThemeVars,
     themeSelector,
     themeToCss,
@@ -111,5 +113,80 @@ describe('applyTheme — runtime injection', () => {
 
     it('returns null for an empty theme', () => {
         expect(applyTheme({})).toBeNull()
+    })
+
+    it('keys the <style> id by name AND mode (same brand, two modes coexist)', () => {
+        const idLight = applyTheme({ name: 'brand-a', mode: 'light', vars: { '--origam-color__surface---default': '#fff' } })
+        const idDark = applyTheme({ name: 'brand-a', mode: 'dark', vars: { '--origam-color__surface---default': '#000' } })
+        expect(idLight).toBe('origam-theme-brand-a-light')
+        expect(idDark).toBe('origam-theme-brand-a-dark')
+        // Both blocks coexist — the dark one did not overwrite the light one.
+        expect(document.getElementById('origam-theme-brand-a-light')!.textContent).toContain('[data-theme="brand-a"][data-mode="light"]')
+        expect(document.getElementById('origam-theme-brand-a-dark')!.textContent).toContain('[data-theme="brand-a"][data-mode="dark"]')
+    })
+})
+
+describe('applyThemes — plural install', () => {
+    it('injects one scoped block per theme and returns the written ids', () => {
+        const ids = applyThemes([
+            { name: 'brand-a', mode: 'light', vars: { '--origam-color__surface---default': '#fff' } },
+            { name: 'brand-a', mode: 'dark', vars: { '--origam-color__surface---default': '#000' } },
+            { name: 'brand-b', mode: 'light', vars: { '--origam-color__surface---default': '#eee' } }
+        ])
+        expect(ids).toEqual([
+            'origam-theme-brand-a-light',
+            'origam-theme-brand-a-dark',
+            'origam-theme-brand-b-light'
+        ])
+        expect(document.querySelectorAll('style[data-origam-theme]').length).toBe(3)
+    })
+
+    it('skips empty themes (returns a shorter id list)', () => {
+        const ids = applyThemes([
+            { name: 'brand-a', mode: 'light', vars: { '--origam-radius---md': '0.5rem' } },
+            { name: 'brand-empty' }
+        ])
+        expect(ids).toEqual(['origam-theme-brand-a-light'])
+    })
+})
+
+describe('installedThemesFromList — distinct brands + modes', () => {
+    it('collapses same-name themes into one entry listing all modes', () => {
+        const list = installedThemesFromList([
+            { name: 'sobre', mode: 'light', vars: {} },
+            { name: 'sobre', mode: 'dark', vars: {} },
+            { name: 'geek', mode: 'dark', vars: {} }
+        ])
+        expect(list).toEqual([
+            { name: 'sobre', modes: ['light', 'dark'], label: 'sobre' },
+            { name: 'geek', modes: ['dark'], label: 'geek' }
+        ])
+    })
+
+    it('ignores root-scoped (name-less) themes', () => {
+        const list = installedThemesFromList([
+            { vars: { '--origam-radius---md': '0.5rem' } },
+            { name: 'sobre', mode: 'light', vars: {} }
+        ])
+        expect(list).toEqual([{ name: 'sobre', modes: ['light'], label: 'sobre' }])
+    })
+
+    it('surfaces label / description / swatch metadata (first non-empty per brand, label falls back to name)', () => {
+        const list = installedThemesFromList([
+            { name: 'sobre', mode: 'light', label: 'Sobre', description: 'Linear-style', swatch: 'linear-gradient(#000,#fff)', vars: {} },
+            { name: 'sobre', mode: 'dark', vars: {} },
+            { name: 'geek', mode: 'dark', vars: {} }
+        ])
+        expect(list).toEqual([
+            { name: 'sobre', modes: ['light', 'dark'], label: 'Sobre', description: 'Linear-style', swatch: 'linear-gradient(#000,#fff)' },
+            { name: 'geek', modes: ['dark'], label: 'geek' }
+        ])
+    })
+
+    it('is pure — no DOM access (works without document)', () => {
+        const list = installedThemesFromList([{ name: 'sobre', mode: 'light', vars: {} }])
+        expect(list).toHaveLength(1)
+        // No <style> element should have been created.
+        expect(document.querySelectorAll('style[data-origam-theme]').length).toBe(0)
     })
 })

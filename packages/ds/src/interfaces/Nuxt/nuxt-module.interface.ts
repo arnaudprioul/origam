@@ -1,21 +1,35 @@
+import type { IOrigamTheme } from '../Theme/origam-theme.interface'
+
+/**
+ * One entry of the module's `themes` option: a built-in preset **name**
+ * (`'sobre'`), a single **theme object** (`IOrigamTheme`), or an **array** of
+ * theme objects (e.g. the per-brand `sobreTheme` preset, or a Builder export
+ * carrying both modes).
+ */
+export type TOrigamModuleThemeEntry = string | IOrigamTheme | IOrigamTheme[]
+
 /**
  * Options passed by a consumer in `nuxt.config.ts` under the `origam` key.
  *
  * All fields are optional — the module applies sensible defaults (see
- * `DEFAULTS` in `src/nuxt/module.ts`). Themes are auto-injected as CSS
- * imports. Two orthogonal axes are resolved SSR-side to avoid FOUC and
- * hydration mismatches: the brand `theme` (via the theme cookie) and the
- * color `mode` (via the mode cookie + `Sec-CH-Prefers-Color-Scheme` hint).
+ * `DEFAULTS` in `src/nuxt/module.ts`). Themes are installed as runtime objects
+ * (ADR-003): the module resolves the `themes` entries to `IOrigamTheme[]` and
+ * hands them to `createOrigam` in the plugins, which inject each as a name×mode
+ * scoped `--origam-*` block. The theme-invariant `primitive` + `utilities`
+ * sheets are still loaded as CSS. Two orthogonal axes are resolved SSR-side to
+ * avoid FOUC: the brand `theme` (cookie) and the color `mode` (cookie +
+ * `Sec-CH-Prefers-Color-Scheme` hint).
  */
 export interface IOrigamNuxtModuleOptions {
     /**
-     * Theme (brand) names whose CSS file must be loaded. Each name must match
-     * a generated `dist/src/assets/css/tokens/{theme}.css` exposed via
-     * `origam/tokens/css/{theme}`.
+     * Themes to install. Each entry is a built-in preset name (`'sobre'`,
+     * resolved to objects from `origam/themes`), a single `IOrigamTheme`
+     * object, or an array of them. The module injects every resolved theme as
+     * a scoped CSS-var block — no pre-generated per-theme CSS file is loaded.
      *
-     * @default ['light', 'dark']
+     * @default ['origam']
      */
-    themes?: string[]
+    themes?: TOrigamModuleThemeEntry[]
 
     /**
      * Theme (brand) applied when no cookie is set. Use `'auto'` to render no
@@ -94,11 +108,28 @@ export interface IOrigamNuxtModuleOptions {
 
 /**
  * Shape of the public runtime config exposed by the module on
- * `useRuntimeConfig().public.origam`. The plugins read this at boot to
- * resolve the active theme/mode and configure the cookies.
+ * `useRuntimeConfig().public.origam`. The plugins read this at boot to install
+ * the theme objects, resolve the active theme/mode, and configure the cookies.
  */
 export interface IOrigamNuxtRuntimeConfig {
+    /**
+     * Distinct installed brand names, in install order. Lightweight — meant
+     * for a switcher to list the available brands SSR-side.
+     */
     themes: string[]
+    /**
+     * Preset brand names to re-resolve to objects (from `origam/themes`) in the
+     * plugins. Kept separate from `customThemes` so the heavy preset `vars`
+     * maps never bloat the per-page runtime-config payload — only the names
+     * travel; the objects come from the bundled presets.
+     */
+    presetNames: string[]
+    /**
+     * Inline `IOrigamTheme` objects passed directly in the `themes` option
+     * (e.g. a Builder export). These DO travel in the payload — the consumer
+     * opted into that cost by passing objects instead of preset names.
+     */
+    customThemes: IOrigamTheme[]
     defaultTheme: string
     modes: string[]
     defaultMode: string

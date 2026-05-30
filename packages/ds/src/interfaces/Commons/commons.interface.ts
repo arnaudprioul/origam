@@ -23,6 +23,18 @@ export interface IOrigamOptions {
      * pre-resolved var map and/or a DTCG-shaped token tree; see `IOrigamTheme`.
      */
     theme?: IOrigamTheme
+
+    /**
+     * Optional list of runtime themes installed together (the consumer install
+     * path — see ADR-003). Each object is injected as its own name×mode scoped
+     * `--origam-*` block via the same machinery as `theme`. The distinct brand
+     * names are exposed through `useInstalledThemes()` so a switcher can derive
+     * its list from the install rather than a hard-coded const.
+     *
+     * `theme` (singular) and `themes` (plural) may both be supplied; all are
+     * injected. SSR-safe (injection is a no-op without `document`).
+     */
+    themes?: IOrigamTheme[]
 }
 
 export interface IOrigamPluginOptions {

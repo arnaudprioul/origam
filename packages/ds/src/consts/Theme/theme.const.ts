@@ -1,6 +1,16 @@
+import type { InjectionKey } from 'vue'
+
+import type { TInstalledThemes } from '../../types'
+
 export const ORIGAM_THEME_AUTO = 'auto'
 export const ORIGAM_THEME_LIGHT = 'light'
 export const ORIGAM_THEME_DARK = 'dark'
+
+/**
+ * App-level provide key carrying the list of brand themes installed via
+ * `createOrigam({ themes })`. Read it through `useInstalledThemes()`.
+ */
+export const ORIGAM_THEMES_KEY: InjectionKey<TInstalledThemes> = Symbol.for('origam:themes')
 
 export const ORIGAM_THEME_STORAGE_KEY = 'origam-theme'
 export const ORIGAM_THEME_ATTR = 'data-theme'

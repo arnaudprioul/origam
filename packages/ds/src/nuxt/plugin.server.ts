@@ -1,5 +1,9 @@
 import { createOrigam } from '../origam'
 
+import { themeToCss } from '../utils/Theme/apply-theme.util'
+
+import { resolvePresetThemes } from './resolve-themes'
+
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import {
@@ -101,9 +105,38 @@ export default defineNuxtPlugin({
         if (resolvedTheme !== ORIGAM_THEME_AUTO) {
             htmlAttrs[ORIGAM_THEME_ATTR] = resolvedTheme
         }
-        useHead({ htmlAttrs })
 
-        const origam = createOrigam()
+        // Install the configured theme objects (ADR-003). Preset names are
+        // re-resolved from the bundled presets; inline objects pass through.
+        const themes = [
+            ...resolvePresetThemes(config.presetNames ?? []),
+            ...(config.customThemes ?? [])
+        ]
+
+        // SSR no-flash: `applyTheme` (runtime DOM injection) is a no-op on the
+        // server, so we emit the ACTIVE theme×mode block as a real `<style>` in
+        // the SSR HTML via `useHead`. Only the active block is inlined (not all
+        // installed themes) — enough to paint the first frame correctly with
+        // zero flash and zero payload bloat; the client plugin injects every
+        // installed theme at mount so runtime switching works. The active block
+        // is matched on the resolved brand (or `'auto'`/`:root`) AND mode.
+        const activeThemes = themes.filter((theme) => {
+            const brandMatches = resolvedTheme === ORIGAM_THEME_AUTO
+                ? (theme.name === undefined || theme.name === '')
+                : theme.name === resolvedTheme
+            const modeMatches = theme.mode === undefined || theme.mode === resolvedMode
+            return brandMatches && modeMatches
+        })
+        const ssrThemeCss = activeThemes.map(themeToCss).join('\n')
+
+        useHead({
+            htmlAttrs,
+            style: ssrThemeCss
+                ? [{ innerHTML: ssrThemeCss, 'data-origam-theme-ssr': '' }]
+                : []
+        })
+
+        const origam = createOrigam({ themes })
         nuxtApp.vueApp.use(origam)
 
         return {

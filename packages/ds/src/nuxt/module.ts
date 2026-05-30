@@ -5,6 +5,8 @@ import { addComponentsDir, addImports, addPlugin, createResolver, defineNuxtModu
 
 import type { IOrigamNuxtModuleOptions } from '../interfaces'
 
+import { installedThemeNamesFromEntries, partitionThemeEntries } from './theme-entries'
+
 const MODULE_NAME = 'origam-nuxt'
 const CONFIG_KEY = 'origam'
 
@@ -25,10 +27,27 @@ const NUXT_COMPOSABLES_BLOCKLIST = new Set([
     'useHydration'
 ])
 
+// Default installed brand (ADR-003): the `'origam'` base brand preset shipped
+// in `origam/themes`. Light/dark are the MODE axis (`defaultMode`), never
+// themes — a bare install renders the `origam` brand in auto mode.
+const DEFAULT_BRAND = 'origam'
+
+// Default array-valued options. They are NOT placed in `defineNuxtModule`'s
+// `defaults` because Nuxt merges defaults via `defu`, which CONCATENATES
+// arrays — so a consumer passing `themes: ['sobre', …]` would get
+// `['origam', 'sobre', …]` (the default prepended), inflating the installed
+// list. Array options follow OVERRIDE semantics instead: a consumer-provided
+// value replaces the default entirely. We resolve them manually in `setup`.
+const DEFAULT_THEMES: string[] = [DEFAULT_BRAND]
+const DEFAULT_MODES: string[] = ['light', 'dark']
+
+// Only scalar defaults go through `defu` (safe to merge). The full
+// `IOrigamNuxtModuleOptions` defaults (incl. arrays) are still documented via
+// `DEFAULTS` for type-checking and the unit specs.
 const DEFAULTS: Required<IOrigamNuxtModuleOptions> = {
-    themes: ['light', 'dark'],
+    themes: DEFAULT_THEMES,
     defaultTheme: 'auto',
-    modes: ['light', 'dark'],
+    modes: DEFAULT_MODES,
     defaultMode: 'auto',
     cookieName: 'origam-theme',
     modeCookieName: 'origam-mode',
@@ -36,6 +55,17 @@ const DEFAULTS: Required<IOrigamNuxtModuleOptions> = {
     autoImport: true,
     includeUtilities: true,
     prefix: 'Origam'
+}
+
+const SCALAR_DEFAULTS = {
+    defaultTheme: DEFAULTS.defaultTheme,
+    defaultMode: DEFAULTS.defaultMode,
+    cookieName: DEFAULTS.cookieName,
+    modeCookieName: DEFAULTS.modeCookieName,
+    cookieMaxAge: DEFAULTS.cookieMaxAge,
+    autoImport: DEFAULTS.autoImport,
+    includeUtilities: DEFAULTS.includeUtilities,
+    prefix: DEFAULTS.prefix
 }
 
 export default defineNuxtModule<IOrigamNuxtModuleOptions>({
@@ -46,13 +76,16 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
             nuxt: '^3.0.0 || ^4.0.0'
         }
     },
-    defaults: DEFAULTS,
+    defaults: SCALAR_DEFAULTS,
     setup (options, nuxt) {
         const resolver = createResolver(import.meta.url)
 
-        const themes = options.themes ?? DEFAULTS.themes
+        // Array options use OVERRIDE semantics (see DEFAULT_THEMES note): the
+        // consumer's value replaces the default — never merged/concatenated.
+        // `'origam'` is installed ONLY for a bare install (no `themes` given).
+        const themeEntries = options.themes ?? DEFAULT_THEMES
         const defaultTheme = options.defaultTheme ?? DEFAULTS.defaultTheme
-        const modes = options.modes ?? DEFAULTS.modes
+        const modes = options.modes ?? DEFAULT_MODES
         const defaultMode = options.defaultMode ?? DEFAULTS.defaultMode
         const cookieName = options.cookieName ?? DEFAULTS.cookieName
         const modeCookieName = options.modeCookieName ?? DEFAULTS.modeCookieName
@@ -60,15 +93,23 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
         const autoImport = options.autoImport ?? DEFAULTS.autoImport
         const includeUtilities = options.includeUtilities ?? DEFAULTS.includeUtilities
 
+        // ADR-003: themes are installed as runtime OBJECTS, not pre-generated
+        // CSS files. We only load the theme-INVARIANT base sheets (primitive +
+        // utilities) as CSS; the per-brand blocks are injected at runtime by the
+        // plugins via `createOrigam({ themes })`.
+        //
+        // Payload split: preset NAMES travel as strings and are re-resolved to
+        // objects in the plugins (the heavy `vars` come from the bundled
+        // presets, never the per-page payload). Inline objects DO travel.
+        const { presetNames, customThemes } = partitionThemeEntries(themeEntries)
+        // Distinct installed brand names for the switcher — derived WITHOUT
+        // resolving presets to objects, so the module never imports the heavy
+        // `../themes` bundle at setup time.
+        const installedThemeNames = installedThemeNamesFromEntries(themeEntries)
+
         nuxt.options.css = nuxt.options.css || []
         if (!nuxt.options.css.includes('origam/tokens/css/primitive')) {
             nuxt.options.css.unshift('origam/tokens/css/primitive')
-        }
-        for (const theme of themes) {
-            const cssId = `origam/tokens/css/${theme}`
-            if (!nuxt.options.css.includes(cssId)) {
-                nuxt.options.css.push(cssId)
-            }
         }
         if (includeUtilities && !nuxt.options.css.includes('origam/tokens/css/utilities')) {
             nuxt.options.css.push('origam/tokens/css/utilities')
@@ -154,7 +195,12 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
 
         nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
         ;(nuxt.options.runtimeConfig.public as Record<string, unknown>).origam = {
-            themes,
+            // Distinct installed brand names (lightweight — for the switcher).
+            themes: installedThemeNames,
+            // Preset names re-resolved to objects in the plugins (no vars in payload).
+            presetNames,
+            // Inline objects passed directly (these travel in the payload).
+            customThemes,
             defaultTheme,
             modes,
             defaultMode,

@@ -1,4 +1,5 @@
-import type { ITokenTree, TMode, TThemeVars } from '../../types'
+import type { ITokenTree, TThemeVars } from '../../types'
+import type { TMode } from '../../types/Theme/theme.type'
 
 /**
  * Runtime theme object ingested by `createOrigam({ theme })`. At install time
@@ -28,6 +29,25 @@ export interface IOrigamTheme {
      * set without `name`, it becomes `[data-mode="<mode>"]`.
      */
     mode?: TMode
+
+    /**
+     * Human-readable brand label for UI (e.g. a theme switcher). Falls back to
+     * `name` when absent. Surfaced through `useInstalledThemes()`.
+     */
+    label?: string
+
+    /**
+     * Short brand description for UI (e.g. a switcher subtitle). Surfaced
+     * through `useInstalledThemes()`.
+     */
+    description?: string
+
+    /**
+     * CSS background value for a brand swatch preview (a solid color or a
+     * `linear-gradient(...)`). Surfaced through `useInstalledThemes()` so a
+     * switcher can render a preview without a hard-coded metadata map.
+     */
+    swatch?: string
 
     /**
      * Pre-resolved CSS custom-property map. Keys with or without the leading

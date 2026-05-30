@@ -28,9 +28,47 @@ export default defineNuxtConfig({
 ```
 
 That is it. Every `Origam*` component and `useXxx` composable is now
-auto-imported, the primitive + light + dark + utilities token sheets are
-loaded, and both the active brand and color mode are resolved server-side
-so the first paint already matches the user preference (no FOUC).
+auto-imported, the theme-invariant base sheets (primitive + utilities) are
+loaded, the default brand theme is **installed as a runtime object**, and
+both the active brand and color mode are resolved server-side so the first
+paint already matches the user preference (no FOUC).
+
+## Themes are installed as objects (ADR-003)
+
+The module does **not** load a pre-generated CSS file per theme. Instead it
+**installs theme objects** the way an external consumer would: it resolves
+the `themes` option to `IOrigamTheme[]` and hands them to `createOrigam` in
+the plugins, which inject each brand as a `[data-theme="…"][data-mode="…"]`
+scoped `--origam-*` block. Only the theme-invariant `primitive` +
+`utilities` sheets are loaded as CSS.
+
+**No-flash SSR**: the server plugin also emits every configured theme's
+scoped block as a real `<style data-origam-theme-ssr>` in the rendered HTML
+(via `useHead`), so the first paint is already themed — no flash of
+unstyled content, and the page stays themed even if client hydration is
+delayed. The client plugin then re-injects the same blocks (id-keyed per
+`name×mode`, replacing in place) for runtime theme switching.
+
+`themes` entries may be:
+
+- a **built-in preset name** (`'sobre'`, `'geek'`, …) — resolved to objects
+  from `origam/themes`,
+- an **`IOrigamTheme` object** or an **array** of them (e.g. a Theme Builder
+  export, or the per-brand `sobreTheme` preset that bundles both modes).
+
+```ts
+import { geekTheme } from 'origam/themes'
+import { myBrand } from './my-brand-theme' // a Builder export
+
+export default defineNuxtConfig({
+    modules: ['origam/nuxt'],
+    origam: {
+        themes: ['sobre', geekTheme, myBrand],
+        defaultTheme: 'sobre',
+        defaultMode: 'auto'
+    }
+})
+```
 
 ## Configuration
 
@@ -40,8 +78,8 @@ All options are optional. Place them under the top-level `origam` key:
 export default defineNuxtConfig({
     modules: ['origam/nuxt'],
     origam: {
-        themes: ['light', 'dark', 'brand-x'],
-        defaultTheme: 'auto',
+        themes: ['sobre', 'glass', 'geek'],
+        defaultTheme: 'sobre',
         modes: ['light', 'dark'],
         defaultMode: 'auto',
         cookieName: 'origam-theme',
@@ -58,7 +96,7 @@ export default defineNuxtConfig({
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `themes` | `string[]` | `['light', 'dark']` | Brand theme files to load. Each name must match a generated `origam/tokens/css/{theme}` import. |
+| `themes` | `(string \| IOrigamTheme \| IOrigamTheme[])[]` | `['origam']` | Themes to install. Preset names resolve to objects from `origam/themes`; objects/arrays are injected as-is. No per-theme CSS file is loaded. |
 | `defaultTheme` | `string` | `'auto'` | Active brand when no cookie is set. `'auto'` renders no `data-theme` (the default brand). |
 | `modes` | `string[]` | `['light', 'dark']` | Color modes supported by the loaded token sheets. Used to validate the resolved mode. |
 | `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then to a concrete `'light'` SSR default (the client upgrades to the system preference). `data-mode` is always written concrete. |
@@ -113,6 +151,39 @@ Use `useTheme()` — it is auto-imported by the module:
 
 The client plugin watches the composable's `theme` ref and persists
 every change to the configured cookie. No extra wiring needed.
+
+## Deriving a switcher from the installed themes
+
+`useInstalledThemes()` returns the brands that were actually installed,
+so a theme switcher stays in sync with the `themes` option instead of a
+hard-coded list. Each entry carries `name`, `modes`, and the UI metadata
+the installed theme objects provided (`label` — falls back to `name` —
+plus optional `description` and `swatch`):
+
+```vue
+<script setup lang="ts">
+    const installed = useInstalledThemes()
+    // → [{ name: 'sobre', modes: ['light','dark'], label: 'Sobre',
+    //      description: 'Linear-style', swatch: 'linear-gradient(…)' }, …]
+    const { theme, setTheme } = useTheme()
+</script>
+
+<template>
+    <button
+        v-for="brand in installed"
+        :key="brand.name"
+        :aria-pressed="theme === brand.name"
+        @click="setTheme(brand.name)"
+    >
+        <span class="swatch" :style="{ background: brand.swatch }" />
+        {{ brand.label }}
+    </button>
+</template>
+```
+
+The metadata comes from the `label` / `description` / `swatch` fields on
+the installed `IOrigamTheme` objects. The brand-name list is also exposed
+on `useRuntimeConfig().public.origam.themes` (names only) for SSR contexts.
 
 ## Opting out of auto-imports
 

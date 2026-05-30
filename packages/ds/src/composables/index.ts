@@ -88,6 +88,7 @@ export * from './NumberField/hold.composable'
 export * from './PasswordField/passwordStrength.composable'
 
 export * from './Theme/theme.composable'
+export * from './Theme/installed-themes.composable'
 
 export * from './Textarea/textarea-rich.composable'
 

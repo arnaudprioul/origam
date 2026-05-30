@@ -74,7 +74,7 @@ describe.skip('origam/nuxt module', () => {
     it('applies sensible defaults', async () => {
         const module = await loadModule()
         expect(module.defaults).toMatchObject({
-            themes: ['light', 'dark'],
+            themes: ['origam'],
             defaultTheme: 'auto',
             modes: ['light', 'dark'],
             defaultMode: 'auto',
@@ -86,21 +86,22 @@ describe.skip('origam/nuxt module', () => {
         })
     })
 
-    it('injects the primitive + theme CSS imports and the utilities sheet', async () => {
+    it('injects ONLY the theme-invariant base sheets (primitive + utilities), no per-theme CSS', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
-        module.setup({themes: ['light', 'dark'], includeUtilities: true}, nuxt)
+        module.setup({themes: ['sobre', 'geek'], includeUtilities: true}, nuxt)
 
         expect(nuxt.options.css[0]).toBe('origam/tokens/css/primitive')
-        expect(nuxt.options.css).toContain('origam/tokens/css/light')
-        expect(nuxt.options.css).toContain('origam/tokens/css/dark')
         expect(nuxt.options.css).toContain('origam/tokens/css/utilities')
+        // ADR-003: per-theme CSS files are NO LONGER pushed (themes are objects).
+        expect(nuxt.options.css).not.toContain('origam/tokens/css/sobre')
+        expect(nuxt.options.css).not.toContain('origam/tokens/css/geek')
     })
 
     it('skips the utilities sheet when includeUtilities is false', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
-        module.setup({themes: ['light'], includeUtilities: false}, nuxt)
+        module.setup({themes: ['sobre'], includeUtilities: false}, nuxt)
 
         expect(nuxt.options.css).not.toContain('origam/tokens/css/utilities')
     })
@@ -138,8 +139,8 @@ describe.skip('origam/nuxt module', () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
         module.setup({
-            themes: ['light', 'dark', 'brand-x'],
-            defaultTheme: 'dark',
+            themes: ['sobre', 'geek'],
+            defaultTheme: 'sobre',
             modes: ['light', 'dark'],
             defaultMode: 'dark',
             cookieName: 'origam-active-theme',
@@ -148,8 +149,12 @@ describe.skip('origam/nuxt module', () => {
         }, nuxt)
 
         const cfg = nuxt.options.runtimeConfig.public.origam as Record<string, unknown>
-        expect(cfg.themes).toEqual(['light', 'dark', 'brand-x'])
-        expect(cfg.defaultTheme).toBe('dark')
+        // `themes` is now the distinct installed BRAND names (resolved from presets).
+        expect(cfg.themes).toEqual(['sobre', 'geek'])
+        // preset names travel as strings; no inline objects here.
+        expect(cfg.presetNames).toEqual(['sobre', 'geek'])
+        expect(cfg.customThemes).toEqual([])
+        expect(cfg.defaultTheme).toBe('sobre')
         expect(cfg.modes).toEqual(['light', 'dark'])
         expect(cfg.defaultMode).toBe('dark')
         expect(cfg.cookieName).toBe('origam-active-theme')
@@ -157,15 +162,15 @@ describe.skip('origam/nuxt module', () => {
         expect(cfg.cookieMaxAge).toBe(12345)
     })
 
-    it('does not duplicate CSS imports across multiple setups', async () => {
+    it('does not duplicate the base CSS imports across multiple setups', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
-        module.setup({themes: ['light']}, nuxt)
-        module.setup({themes: ['light']}, nuxt)
+        module.setup({themes: ['sobre']}, nuxt)
+        module.setup({themes: ['geek']}, nuxt)
 
         const primitiveCount = nuxt.options.css.filter(c => c === 'origam/tokens/css/primitive').length
-        const lightCount = nuxt.options.css.filter(c => c === 'origam/tokens/css/light').length
+        const utilitiesCount = nuxt.options.css.filter(c => c === 'origam/tokens/css/utilities').length
         expect(primitiveCount).toBe(1)
-        expect(lightCount).toBe(1)
+        expect(utilitiesCount).toBe(1)
     })
 })

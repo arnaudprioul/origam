@@ -82,6 +82,12 @@
     "./tokens/scss/utilities": "./dist/src/assets/scss/tokens/_origam-utilities.scss",
     "./tokens/scss/themes-all": "./dist/src/assets/scss/tokens/_themes-all.scss",
     "./tokens/types": "./dist/src/types/tokens.type.d.ts",
+    "./themes": {
+      "types": "./dist/src/themes/index.d.ts",
+      "import": "./dist/src/themes/index.js",
+      "require": "./dist/src/themes/index.cjs",
+      "default": "./dist/src/themes/index.js"
+    },
     "./origam": "./dist/src/origam.js",
     "./nuxt": {
       "types": "./dist/src/nuxt/module.d.ts",

@@ -1,5 +1,7 @@
 import type { IOrigamTheme, ITokenTree, TTokenLeaf, TThemeVars } from '../../interfaces'
 
+import type { TInstalledThemes, TModeResolved } from '../../types'
+
 import { tokenPathToCssVar } from './token-name.util'
 
 /**
@@ -119,16 +121,77 @@ export function applyTheme (theme: IOrigamTheme): string | null {
     const vars = resolveThemeVars(theme)
     if (Object.keys(vars).length === 0) return null
 
-    const suffix = theme.name ? `-${theme.name}` : ''
-    const id = `${STYLE_ELEMENT_PREFIX}${suffix}`
+    // The id is keyed by BOTH name and mode so a brand installed for several
+    // modes (sobre-light + sobre-dark) gets one `<style>` block per mode
+    // instead of overwriting itself. Re-applying the same name×mode replaces
+    // its block in place.
+    const namePart = theme.name ? `-${theme.name}` : ''
+    const modePart = theme.mode === 'light' || theme.mode === 'dark' ? `-${theme.mode}` : ''
+    const id = `${STYLE_ELEMENT_PREFIX}${namePart}${modePart}`
 
     let style = document.getElementById(id) as HTMLStyleElement | null
     if (!style) {
         style = document.createElement('style')
         style.id = id
         style.setAttribute('data-origam-theme', theme.name ?? 'root')
+        if (modePart) style.setAttribute('data-origam-mode', theme.mode as string)
         document.head.appendChild(style)
     }
     style.textContent = themeToCss(theme)
     return id
+}
+
+/**
+ * Install a list of themes at once: injects each one's scoped block (via
+ * `applyTheme`) and returns the ids that were actually written (SSR / empty
+ * themes are skipped, so the result may be shorter than the input).
+ */
+export function applyThemes (themes: IOrigamTheme[]): string[] {
+    const ids: string[] = []
+    for (const theme of themes) {
+        const id = applyTheme(theme)
+        if (id) ids.push(id)
+    }
+    return ids
+}
+
+/**
+ * Collapse an `IOrigamTheme[]` into the distinct-brand summary exposed to
+ * consumers: one entry per `name`, listing every concrete mode that brand was
+ * installed for, plus the UI metadata (`label` / `description` / `swatch`)
+ * gathered from the objects of that brand (first non-empty value wins; `label`
+ * falls back to `name`). Themes without a `name` (root-scoped) are ignored —
+ * they are not selectable brands. Pure (no DOM access), so it runs SSR-side.
+ */
+export function installedThemesFromList (themes: IOrigamTheme[]): TInstalledThemes {
+    const order: string[] = []
+    const modesByName = new Map<string, Set<TModeResolved>>()
+    const metaByName = new Map<string, { label?: string, description?: string, swatch?: string }>()
+
+    for (const theme of themes) {
+        if (!theme.name) continue
+        if (!modesByName.has(theme.name)) {
+            modesByName.set(theme.name, new Set())
+            metaByName.set(theme.name, {})
+            order.push(theme.name)
+        }
+        if (theme.mode === 'light' || theme.mode === 'dark') {
+            modesByName.get(theme.name)!.add(theme.mode)
+        }
+        const meta = metaByName.get(theme.name)!
+        if (meta.label === undefined && theme.label) meta.label = theme.label
+        if (meta.description === undefined && theme.description) meta.description = theme.description
+        if (meta.swatch === undefined && theme.swatch) meta.swatch = theme.swatch
+    }
+
+    return order.map((name) => {
+        const meta = metaByName.get(name)!
+        return {
+            name,
+            modes: [...modesByName.get(name)!],
+            label: meta.label ?? name,
+            ...(meta.description !== undefined ? { description: meta.description } : {}),
+            ...(meta.swatch !== undefined ? { swatch: meta.swatch } : {})
+        }
+    })
 }

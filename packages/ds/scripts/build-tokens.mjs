@@ -395,7 +395,8 @@ function ensureDirs () {
     for (const dir of [
         'src/assets/css/tokens',
         'src/assets/scss/tokens',
-        'src/types'
+        'src/types',
+        'src/themes'
     ]) {
         const abs = resolve(projectRoot, dir)
         if (!existsSync(abs)) mkdirSync(abs, { recursive: true })
@@ -519,6 +520,218 @@ function buildTypes (allSources) {
             }
         }
     })
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Theme preset generator.
+//
+// Reads the already-emitted brand×mode CSS files, parses the flat
+// `--origam-*: value` declarations out of them, and writes
+// `src/themes/index.ts` — a generated TS module exporting one `IOrigamTheme`
+// per brand×mode (and a grouped `IOrigamTheme[]` per brand).
+//
+// Why parse CSS rather than hook deeper into SD?  The CSS files are the
+// authoritative resolved output of the SD pipeline (aliases expanded, DTCG
+// `$value` unwrapped, shadow arrays serialised).  Parsing them guarantees
+// the preset values are byte-identical to what themes-all.css contains —
+// zero chance of a second resolver producing a subtly different string.
+// ────────────────────────────────────────────────────────────────────────────
+
+/** Brand names that have a `-light` / `-dark` split (all 8 example brands). */
+const BRAND_NAMES = ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+
+/**
+ * Parse a single themed CSS file and return a flat `Record<string, string>`
+ * of `--origam-*` custom-property declarations. The file looks like:
+ *
+ *   [data-theme="cartoon"][data-mode="light"] {
+ *     --origam-color__surface---default: #fffefb;
+ *     …
+ *   }
+ *
+ * Multi-value declarations (e.g. box-shadow layers) are captured verbatim.
+ */
+function parseCssVars (cssText) {
+    const vars = {}
+    // Match every `--origam-…: <value>;` line inside the rule block.
+    // Values may contain commas, spaces, parens — capture until `;`.
+    const re = /^\s*(--origam-[^:]+):\s*(.+?)\s*;$/gm
+    let m
+    while ((m = re.exec(cssText)) !== null) {
+        vars[m[1].trim()] = m[2].trim()
+    }
+    return vars
+}
+
+/**
+ * Convert a camelCase or kebab brand name to a JS-safe camelCase identifier
+ * prefix: `sobre` → `sobre`, `ecom` → `ecom`, all lower-case as-is.
+ * Mode suffix: `light` → `Light`, `dark` → `Dark`.
+ */
+function brandToIdent (brand, mode) {
+    return `${brand}${mode.charAt(0).toUpperCase()}${mode.slice(1)}`
+}
+
+/**
+ * Serialise a flat CSS-var map to an indented TS object literal.  Values that
+ * look like plain CSS strings are single-quoted; numbers are unquoted.
+ */
+function serializeVarsObj (vars, indent = '    ') {
+    const entries = Object.entries(vars)
+    if (entries.length === 0) return '{}'
+    const lines = entries.map(([k, v]) => `${indent}  '${k}': '${v.replace(/'/g, "\\'")}'`)
+    return `{\n${lines.join(',\n')}\n${indent}}`
+}
+
+function buildThemePresets (brandCombos, cssOutDir, projectRoot) {
+    const themesOutDir = resolve(projectRoot, 'src/themes')
+    if (!existsSync(themesOutDir)) mkdirSync(themesOutDir, { recursive: true })
+
+    // Collect parsed vars per brand×mode.
+    const collected = {} // { brand: { light: vars, dark: vars } }
+
+    for (const combo of brandCombos) {
+        const brand = parseBrandTheme(combo)
+        if (!brand || !BRAND_NAMES.includes(brand.brand)) continue
+
+        const cssPath = resolve(cssOutDir, `${combo}.css`)
+        if (!existsSync(cssPath)) {
+            console.warn(`[tokens/presets] missing ${combo}.css — skipping`)
+            continue
+        }
+
+        const vars = parseCssVars(readFileSync(cssPath, 'utf-8'))
+        if (!collected[brand.brand]) collected[brand.brand] = {}
+        collected[brand.brand][brand.mode] = vars
+    }
+
+    const header = [
+        '// AUTO-GENERATED — do not edit.',
+        '// Run `pnpm -F origam tokens:build` to regenerate.',
+        '//',
+        '// Source of truth: packages/ds/tokens/semantic/{brand}-{mode}.json',
+        '// Resolved values mirror the published themes-all.css exactly.',
+        '',
+        "import type { IOrigamTheme } from '../interfaces/Theme/origam-theme.interface'",
+        "import type { TMode } from '../types/Theme/theme.type'",
+        "// TMode = 'auto' | 'light' | 'dark' (origam-theme axis, not MODE enum)",
+        ''
+    ].join('\n')
+
+    const sections = []
+    const brandExports = []    // e.g. `sobreTheme`
+    const perModeExports = []  // e.g. `sobreLightTheme`, `sobreDarkTheme`
+
+    for (const brand of BRAND_NAMES) {
+        const modes = collected[brand]
+        if (!modes) {
+            console.warn(`[tokens/presets] no data for brand "${brand}" — skipping`)
+            continue
+        }
+
+        const lightIdent = brandToIdent(brand, 'light') + 'Theme'
+        const darkIdent  = brandToIdent(brand, 'dark')  + 'Theme'
+        const groupIdent = `${brand}Theme`
+
+        const modeBlocks = []
+
+        for (const mode of ['light', 'dark']) {
+            const vars = modes[mode]
+            if (!vars) {
+                console.warn(`[tokens/presets] no ${mode} data for "${brand}" — skipping`)
+                continue
+            }
+            const ident = brandToIdent(brand, mode) + 'Theme'
+            const varsObj = serializeVarsObj(vars)
+            sections.push(
+                `/** ${brand} / ${mode} — matches [data-theme="${brand}"][data-mode="${mode}"] */`,
+                `export const ${ident}: IOrigamTheme = {`,
+                `    name: '${brand}',`,
+                `    mode: '${mode}' as TMode,`,
+                `    vars: ${varsObj}`,
+                `}`,
+                ''
+            )
+            modeBlocks.push(ident)
+            perModeExports.push(ident)
+        }
+
+        if (modeBlocks.length > 0) {
+            sections.push(
+                `/**`,
+                ` * Both ${brand} modes combined — pass the whole array to \`createOrigam({ themes })\``,
+                ` * to register light + dark in one call.`,
+                ` *`,
+                ` *   createOrigam({ themes: ${groupIdent} })`,
+                ` */`,
+                `export const ${groupIdent}: IOrigamTheme[] = [${modeBlocks.join(', ')}]`,
+                ''
+            )
+            brandExports.push(groupIdent)
+        }
+    }
+
+    // Convenience re-export: all 8 demo brands as a flat array.
+    sections.push(
+        '/**',
+        ' * All built-in demo-brand presets as a flat list. Useful for registering every',
+        ' * brand+mode in a single call:',
+        ' *',
+        ' *   createOrigam({ themes: allThemes })',
+        ' *',
+        ' * Note: does NOT include the base `origamTheme` (neutral DS base).',
+        ' * Add it separately if you want all brands including the base:',
+        ' *   createOrigam({ themes: [...origamTheme, ...allThemes] })',
+        ' */',
+        `export const allThemes: IOrigamTheme[] = [${brandExports.join(', ')}].flat()`,
+        ''
+    )
+
+    // ── origam base brand (neutral DS semantic, no brand file) ────────────
+    // Source: light.css / dark.css (semantic/light.json + semantic/dark.json).
+    // These are scoped to [data-theme="origam"][data-mode="light|dark"] so the
+    // base DS identity activates when `data-theme="origam"` is set (ADR-003
+    // DEFAULTS: ['origam']).
+    for (const mode of ['light', 'dark']) {
+        const srcCss = mode === 'light'
+            ? resolve(cssOutDir, 'light.css')
+            : resolve(cssOutDir, 'dark.css')
+
+        if (!existsSync(srcCss)) {
+            console.warn(`[tokens/presets] missing ${mode}.css for origam base — skipping`)
+            continue
+        }
+
+        const vars = parseCssVars(readFileSync(srcCss, 'utf-8'))
+        const ident = `origam${mode.charAt(0).toUpperCase()}${mode.slice(1)}Theme`
+        const varsObj = serializeVarsObj(vars)
+        sections.push(
+            `/** origam base / ${mode} — the neutral DS semantic palette.`,
+            ` *  Matches [data-theme="origam"][data-mode="${mode}"].`,
+            ` *  Source: packages/ds/tokens/semantic/${mode}.json + component layer. */`,
+            `export const ${ident}: IOrigamTheme = {`,
+            `    name: 'origam',`,
+            `    mode: '${mode}' as TMode,`,
+            `    vars: ${varsObj}`,
+            `}`,
+            ''
+        )
+    }
+
+    sections.push(
+        '/**',
+        ' * Both origam base modes combined. This is the DS default brand.',
+        ' *',
+        ' *   createOrigam({ themes: origamTheme, defaultTheme: \'origam\' })',
+        ' */',
+        `export const origamTheme: IOrigamTheme[] = [origamLightTheme, origamDarkTheme]`,
+        ''
+    )
+
+    const output = header + sections.join('\n')
+    const outPath = resolve(themesOutDir, 'index.ts')
+    writeFileSync(outPath, output, 'utf-8')
+    console.log(`[tokens] built theme presets (${BRAND_NAMES.length} brands × 2 modes + origam base) → src/themes/index.ts`)
 }
 
 async function build () {
@@ -645,6 +858,22 @@ async function build () {
         }
 
         console.log('[tokens] all themes built successfully')
+
+        // ────────────────────────────────────────────────────────────────────
+        // Theme preset objects — `src/themes/index.ts`.
+        //
+        // Parses the already-emitted per-brand CSS files to extract the flat
+        // `--origam-*: value` map and wraps each one into an `IOrigamTheme`
+        // object with `{ name, mode, vars }`.  One object per brand×mode,
+        // plus a grouped array per brand for convenient plural install:
+        //
+        //   import { cartoonTheme }      from 'origam/themes'  // IOrigamTheme[]
+        //   import { cartoonLightTheme } from 'origam/themes'  // IOrigamTheme
+        //
+        // Source of truth = the generated CSS (same pipeline, same resolved
+        // values). Do NOT hand-edit the output file.
+        // ────────────────────────────────────────────────────────────────────
+        buildThemePresets(brandCombos, cssOutDir, projectRoot)
     }
 }
 

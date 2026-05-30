@@ -106,10 +106,10 @@ type TModeResolved = Exclude<TMode, 'auto'>
 
 ## Custom brands
 
-Any string is a valid `TTheme`. Drop a matching CSS file (or a
-`tokens/semantic/<name>.json` regenerated via `npm run tokens:build`)
-and call `setTheme('brand-a')` — the document root grows
-`data-theme="brand-a"` and any rule scoped to that selector takes over.
+Any string is a valid `TTheme`. Install the brand as a runtime object via
+`createOrigam` (see below) — or, for a Histoire/standalone setup, drop a
+matching CSS file — then call `setTheme('brand-a')`: the document root grows
+`data-theme="brand-a"` and the matching scoped block takes over.
 
 ```ts
 const { setTheme, setMode } = useTheme()
@@ -117,6 +117,40 @@ setTheme('brand-a')
 setMode('dark')
 // → <html data-theme="brand-a" data-mode="dark">
 ```
+
+## Installing themes (objects)
+
+Brands are installed as **objects** through `createOrigam({ themes })` — the
+consumer install path (ADR-003). Each `IOrigamTheme` is injected as a
+`[data-theme][data-mode]` scoped `--origam-*` block; no per-theme CSS file is
+needed.
+
+```ts
+import { sobreTheme, geekTheme } from 'origam/themes'
+
+createOrigam({ themes: [sobreTheme, geekTheme] })
+```
+
+Read the installed brands back with [`useInstalledThemes()`](#installed-themes)
+to drive a switcher. Under Nuxt the `origam/nuxt` module does this install for
+you from its `themes` option — see the [Nuxt integration](../integrations/nuxt.md).
+
+## Installed themes
+
+`useInstalledThemes()` returns the distinct brands installed via
+`createOrigam({ themes })` — one entry per `name`, each listing its modes:
+
+```ts
+import { useInstalledThemes } from 'origam/composables'
+
+const installed = useInstalledThemes()
+// → [{ name: 'sobre', modes: ['light', 'dark'], label: 'Sobre', swatch: '…' }, …]
+```
+
+Each entry carries `name`, `modes`, and the UI metadata the installed theme
+objects provided: `label` (falls back to `name`), and optional `description`
+and `swatch`. It returns `[]` when nothing was installed (or outside a
+`createOrigam` app), so a switcher can map over it without a null-guard.
 
 ## Sub-tree overrides
 

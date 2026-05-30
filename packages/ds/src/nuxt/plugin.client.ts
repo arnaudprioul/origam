@@ -6,6 +6,8 @@ import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import { createOrigam } from '../origam'
 
+import { resolvePresetThemes } from './resolve-themes'
+
 import type { TMode, TTheme } from '../types'
 
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
@@ -39,7 +41,15 @@ export default defineNuxtPlugin({
         const initialTheme = (themeFromDom ?? themeCookie.value ?? config.defaultTheme) as TTheme
         const initialMode = (modeCookie.value ?? config.defaultMode) as TMode
 
-        const origam = createOrigam()
+        // Install the configured theme objects (ADR-003): preset names are
+        // re-resolved from the bundled presets, inline objects pass through.
+        // createOrigam injects each one's name×mode scoped `<style>` block and
+        // provides the installed-themes list for `useInstalledThemes()`.
+        const themes = [
+            ...resolvePresetThemes(config.presetNames ?? []),
+            ...(config.customThemes ?? [])
+        ]
+        const origam = createOrigam({ themes })
         nuxtApp.vueApp.use(origam)
 
         // `useTheme()` owns the DOM contract: its internal watchers apply
