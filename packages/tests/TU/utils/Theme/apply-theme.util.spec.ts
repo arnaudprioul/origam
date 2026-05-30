@@ -8,10 +8,14 @@ import {
     applyThemes,
     installedThemesFromList,
     resolveThemeVars,
+    semanticFieldsToVars,
+    semanticTreeToVars,
     themeSelector,
     themeToCss,
     tokenTreeToVars
 } from '@origam/utils/Theme/apply-theme.util'
+
+import { sobreLightTheme } from '@origam/themes/sobre.theme'
 
 afterEach(() => {
     document.querySelectorAll('style[data-origam-theme]').forEach(el => el.remove())
@@ -44,7 +48,57 @@ describe('tokenTreeToVars — DTCG tree → flat var map', () => {
     })
 })
 
-describe('resolveThemeVars — merge vars over tokens', () => {
+describe('semanticTreeToVars — authoring tree → flat var map (with root prefix)', () => {
+    it('prefixes the leaf path with the field root', () => {
+        const vars = semanticTreeToVars({ surface: { default: '#fff' }, text: { secondary: '#737373' } }, ['color'])
+        expect(vars['--origam-color__surface---default']).toBe('#fff')
+        expect(vars['--origam-color__text---secondary']).toBe('#737373')
+    })
+
+    it('resolves a top-level intent leaf (length-2 path)', () => {
+        const vars = semanticTreeToVars({ primary: '#7c3aed' }, ['color'])
+        expect(vars['--origam-color---primary']).toBe('#7c3aed')
+    })
+
+    it('resolves a 4-segment action path, preserving the camelCase property', () => {
+        const vars = semanticTreeToVars({ action: { primary: { bgHover: '#6d28d9' } } }, ['color'])
+        expect(vars['--origam-color__action--primary---bgHover']).toBe('#6d28d9')
+    })
+
+    it('passes a gradient value through verbatim (a gradient is an ordinary color)', () => {
+        const vars = semanticTreeToVars({ surface: { default: 'linear-gradient(135deg, #a, #b)' } }, ['color'])
+        expect(vars['--origam-color__surface---default']).toBe('linear-gradient(135deg, #a, #b)')
+    })
+
+    it('the motion root nests duration/easing children (animation case)', () => {
+        const vars = semanticTreeToVars({ duration: { fast: '100ms' }, easing: { standard: 'cubic-bezier(.4,0,.2,1)' } }, ['motion'])
+        expect(vars['--origam-motion__duration---fast']).toBe('100ms')
+        expect(vars['--origam-motion__easing---standard']).toBe('cubic-bezier(.4,0,.2,1)')
+    })
+})
+
+describe('semanticFieldsToVars — friendly fields → token roots', () => {
+    it('maps each authoring field to its token-path root', () => {
+        const vars = semanticFieldsToVars({
+            colors: { surface: { default: '#fff' } },
+            radius: { md: '0.5rem' },
+            spacing: { 4: '1rem' },
+            typography: { size: { md: '1rem' }, weight: { bold: 700 } },
+            shadow: { md: '0 2px 8px rgba(0,0,0,.12)' },
+            animation: { duration: { fast: '100ms' }, easing: { standard: 'cubic-bezier(.4,0,.2,1)' } }
+        })
+        expect(vars['--origam-color__surface---default']).toBe('#fff')
+        expect(vars['--origam-radius---md']).toBe('0.5rem')
+        expect(vars['--origam-space---4']).toBe('1rem')
+        expect(vars['--origam-font__size---md']).toBe('1rem')
+        expect(vars['--origam-font__weight---bold']).toBe(700)
+        expect(vars['--origam-shadow---md']).toBe('0 2px 8px rgba(0,0,0,.12)')
+        expect(vars['--origam-motion__duration---fast']).toBe('100ms')
+        expect(vars['--origam-motion__easing---standard']).toBe('cubic-bezier(.4,0,.2,1)')
+    })
+})
+
+describe('resolveThemeVars — precedence: semantic < tokens < vars', () => {
     it('normalises var keys (with / without leading --)', () => {
         const vars = resolveThemeVars({ vars: { 'origam-radius---md': '0.5rem', '--origam-radius---lg': '0.75rem' } })
         expect(vars['--origam-radius---md']).toBe('0.5rem')
@@ -57,6 +111,49 @@ describe('resolveThemeVars — merge vars over tokens', () => {
             vars: { '--origam-radius---md': '1rem' }
         })
         expect(vars['--origam-radius---md']).toBe('1rem')
+    })
+
+    it('tokens win over semantic fields on collision; vars win over both', () => {
+        const vars = resolveThemeVars({
+            radius: { md: '0.5rem' },
+            tokens: { radius: { md: '0.6rem' } },
+            vars: { '--origam-radius---md': '0.7rem' }
+        })
+        expect(vars['--origam-radius---md']).toBe('0.7rem')
+    })
+
+    it('resolves the colors field with no vars/tokens escape hatch', () => {
+        const vars = resolveThemeVars({ colors: { action: { primary: { bg: '#7c3aed' } } } })
+        expect(vars['--origam-color__action--primary---bg']).toBe('#7c3aed')
+    })
+})
+
+describe('sobre theme — semantic authoring resolves to the canonical --origam-* names', () => {
+    it('light mode resolves the exact published var names (parity)', () => {
+        const vars = resolveThemeVars(sobreLightTheme)
+        // Surface / text / border
+        expect(vars['--origam-color__surface---default']).toBe('#ffffff')
+        expect(vars['--origam-color__surface---sunken']).toBe('#fafafa')
+        expect(vars['--origam-color__text---primary']).toBe('#171717')
+        // ADR-004 contrast fix preserved.
+        expect(vars['--origam-color__text---secondary']).toBe('#737373')
+        expect(vars['--origam-color__text---onColor']).toBe('#ffffff')
+        expect(vars['--origam-color__border---focus']).toBe('#7c3aed')
+        // Action (4-segment, camelCase property preserved)
+        expect(vars['--origam-color__action--primary---bg']).toBe('#7c3aed')
+        expect(vars['--origam-color__action--primary---bgHover']).toBe('#6d28d9')
+        expect(vars['--origam-color__action--ghost---bg']).toBe('rgba(0, 0, 0, 0)')
+        // Feedback
+        expect(vars['--origam-color__feedback--success---bg']).toBe('#4caf50')
+        expect(vars['--origam-color__feedback--danger---border']).toBe('#cf6679')
+        // Overlay
+        expect(vars['--origam-color__overlay---scrim']).toBe('#ffffff')
+    })
+
+    it('carries NO gradient vars (gradient is not a theme-authoring group)', () => {
+        const vars = resolveThemeVars(sobreLightTheme)
+        const gradientKeys = Object.keys(vars).filter(k => k.startsWith('--origam-gradient'))
+        expect(gradientKeys).toEqual([])
     })
 })
 

@@ -121,15 +121,33 @@ setMode('dark')
 ## Installing themes (objects)
 
 Brands are installed as **objects** through `createOrigam({ themes })` — the
-consumer install path (ADR-003). Each `IOrigamTheme` is injected as a
+consumer install path (ADR-004). Each `IOrigamTheme` is injected as a
 `[data-theme][data-mode]` scoped `--origam-*` block; no per-theme CSS file is
 needed.
 
-```ts
-import { sobreTheme, geekTheme } from 'origam/themes'
+A theme is **plain JSON** authored by intention — `colors`, `radius`,
+`typography`, `shadow`, `spacing`, `animation` — never `--origam-*` strings.
+The DS ships one built-in theme, `sobre`; you write your own brands in the same
+format and pass them in:
 
-createOrigam({ themes: [sobreTheme, geekTheme] })
+```ts
+const myLight = {
+  name: 'mybrand', mode: 'light',
+  colors: {
+    surface: { default: '#ffffff' },
+    text:    { primary: '#171717', secondary: '#737373' },
+    action:  { primary: { bg: '#7c3aed', fg: '#ffffff' } }
+  },
+  radius: { md: '0.5rem' }
+}
+
+createOrigam({ themes: [myLight, /* myDark */] })
 ```
+
+A color slot accepts any CSS color **or a gradient** (there is no dedicated
+gradient group). The full authoring surface and the resolved `--origam-*` names
+are documented in **[Theme authoring](../integrations/theming-authoring.md)**.
+When you supply no theme, `createOrigam` installs `sobre` for you.
 
 Read the installed brands back with [`useInstalledThemes()`](#installed-themes)
 to drive a switcher. Under Nuxt the `origam/nuxt` module does this install for

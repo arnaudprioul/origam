@@ -292,6 +292,7 @@ export * from './Tabs/tab-panel.type'
 export * from './Window/window.type'
 export * from './Theme/theme.type'
 export * from './Theme/token-tree.type'
+export * from './Theme/semantic-tree.type'
 export * from './Theme/installed-theme.type'
 
 export * from './Window/window-item.type'
