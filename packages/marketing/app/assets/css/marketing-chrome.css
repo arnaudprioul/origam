@@ -71,11 +71,12 @@
     --m-pre-title-color: var(--origam-color__action--primary---fgSubtle, #A78BFA);
 }
 
-/* Origam's `themes-all.css` defines chip tokens scoped to
- * `[data-theme=X][data-mode=Y]` (specificity 0,2,0) which beats any
- * plain `:root { … }` override (0,0,0). To win the cascade we use
- * `html[data-theme][data-mode]` (specificity 0,2,1) and apply the
- * chip padding / height bump there. Origam's chip CSS computes
+/* createOrigam injects each installed theme as a
+ * `[data-theme=X][data-mode=Y]` block (specificity 0,2,0) which beats
+ * any plain `:root { … }` override (0,0,0). To win the cascade for the
+ * chip padding ergonomics bump we use `html[data-theme][data-mode]`
+ * (specificity 0,2,1). This is a uniform sizing tweak applied to every
+ * theme (not a per-brand color override). Origam's chip CSS computes
  * `padding: 0 var(--origam-chip---padding-sm, 10px)` so without
  * vertical padding the only vertical breathing room comes from
  * `height` — we bump both axes per tier. */
@@ -98,7 +99,9 @@ html[data-theme][data-mode] {
  * Rule: a block here ONLY sets --m-* vars that have NO DS token
  * equivalent (hero gradients, glow-text, section decors, border-w).
  * Colors, radius, font come from DS tokens via the :root above.
- * Per-mode color differences are handled by themes-all.css.
+ * Per-theme + per-mode color values are injected at runtime by
+ * createOrigam from the installed IOrigamTheme objects (ADR-004) —
+ * no themes-all.css sheet is loaded.
  * ============================================================ */
 
 /* SOBRE — no decor overrides needed; DS tokens cover everything */
@@ -133,13 +136,13 @@ html[data-theme][data-mode] {
     --m-glow-text: linear-gradient(180deg, #6EE7B7, #4ADE80, #16A34A);
 }
 [data-theme="geek"][data-mode="dark"] {
-    /* inexpressible: cyber cyan→violet→pink gradient (multi-hue, no token encoding) */
-    --m-glow-text: linear-gradient(110deg, #00F0FF 0%, #C77DFF 50%, #FF3CAC 100%);
+    /* inexpressible: terminal phosphor gradient (multi-stop green, no token encoding) */
+    --m-glow-text: linear-gradient(110deg, #86EFAC 0%, #4ADE80 50%, #22C55E 100%);
 }
 [data-theme="geek"][data-mode="light"] {
-    --m-bg-decor-1: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(22,101,52,.06), transparent 70%);
-    /* inexpressible: light-mode cyber gradient */
-    --m-glow-text: linear-gradient(110deg, #0891B2 0%, #A21CAF 55%, #DB2777 100%);
+    --m-bg-decor-1: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(21,128,61,.06), transparent 70%);
+    /* inexpressible: light-mode terminal green gradient */
+    --m-glow-text: linear-gradient(110deg, #15803D 0%, #0B5F2B 55%, #14532D 100%);
 }
 
 /* CARTOON — neo-brutalist: wide border, hard offset shadow */

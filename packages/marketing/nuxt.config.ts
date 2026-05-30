@@ -1,6 +1,7 @@
 import { MARKETING_DEFAULTS } from './app/consts/marketing.const'
 import { ROUTE_RULES } from './app/consts/route-rules.const'
 import { I18N_LOCALES } from './app/consts/i18n.const'
+import { MARKETING_THEMES_INSTALLED } from './app/themes'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -32,14 +33,19 @@ export default defineNuxtConfig({
         '@nuxtjs/i18n'
     ],
 
-    // origam/nuxt — install the 8 brand presets via preset names (ADR-003).
-    // Names travel as strings in the runtime config; the plugins re-resolve them
-    // to IOrigamTheme objects from the bundled origam/themes — the heavy vars
-    // map never bloats the Nitro payload. Each brand×mode block is then injected
-    // as a scoped <style id="origam-theme-{name}-{mode}"> at runtime.
-    // No pre-generated themes-all.css is loaded.
+    // origam/nuxt — install theme OBJECTS, the public consumer install path
+    // (ADR-004). The marketing site OWNS its 7 brand themes (glass, geek,
+    // cartoon, editorial, material, ecom, apple) plus a local copy of the
+    // DS base `sobre`; each is authored in plain semantic JSON under
+    // app/themes/ and exported as IOrigamTheme objects. createOrigam (driven
+    // by the plugins) injects each brand×mode as a scoped
+    // <style id="origam-theme-{name}-{mode}"> block at runtime — no
+    // preset-name resolution, no pre-generated themes-all.css. ThemeSwitcher
+    // derives its list from useInstalledThemes(), so the menu lists exactly
+    // these 8 brands. `defaultTheme: 'sobre'` activates the sobre block on
+    // first paint; `defaultMode: 'auto'` follows prefers-color-scheme.
     origam: {
-        themes: ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple'],
+        themes: MARKETING_THEMES_INSTALLED,
         defaultTheme: 'sobre',
         defaultMode: 'auto'
     },

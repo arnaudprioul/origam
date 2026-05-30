@@ -245,7 +245,7 @@ const AVATAR_ITEMS_WITH_REST = [
 }
 
 .home-showcase__tile-sub--success {
-    color: var(--origam-color__feedback--success---fg, #16a34a);
+    color: var(--origam-color__feedback--success---fgSubtle, #16a34a);
 }
 
 .home-showcase__tile-tag {
@@ -357,11 +357,11 @@ const AVATAR_ITEMS_WITH_REST = [
 }
 
 .home-showcase__table-status[data-intent="success"] {
-    color: var(--m-success, var(--origam-color__feedback--success---fg, #6EE7B7));
+    color: var(--origam-color__feedback--success---fgSubtle, #16a34a);
 }
 
 .home-showcase__table-status[data-intent="warning"] {
-    color: var(--m-warning, var(--origam-color__feedback--warning---fg, #FBBF24));
+    color: var(--origam-color__feedback--warning---fgSubtle, #b45309);
 }
 
 .home-showcase__table-status[data-intent="neutral"] {
