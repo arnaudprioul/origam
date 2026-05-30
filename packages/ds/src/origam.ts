@@ -1,11 +1,12 @@
 import * as origamComponents from './components'
 
-import { createDate, createDisplay, createGoTo, createIcons, createLocale } from './composables'
+import { createDate, createDefaults, createDisplay, createGoTo, createIcons, createLocale } from './composables'
 
 import {
     IN_BROWSER,
     ORIGAM_DATE_ADAPTER_KEY,
     ORIGAM_DATE_OPTIONS_KEY,
+    ORIGAM_DEFAULTS_KEY,
     ORIGAM_DISPLAY_KEY,
     ORIGAM_GO_TO_KEY,
     ORIGAM_ICONS_KEY,
@@ -15,9 +16,11 @@ import {
 
 import * as origamDirectives from './directives'
 
-import type { IOrigamOptions } from './interfaces'
-import type { TIconOptions } from './types'
+import type { IDefault, IOrigamOptions, IOrigamTheme } from './interfaces'
+import type { TIconOptions, TModeResolved } from './types'
 import { applyThemes, getUid, installedThemesFromList, mergeDeep } from './utils'
+
+import { sobreTheme } from './themes/sobre.theme'
 
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -35,11 +38,27 @@ export function createOrigam (origam: IOrigamOptions = {}) {
     // Collect singular `theme` + plural `themes` into one install list. The
     // installed-brand summary is computed eagerly (pure, SSR-safe) so it can be
     // provided to the app context on both server and client.
-    const allThemes = [
+    //
+    // ADR-004: the DS ships exactly ONE theme, `sobre`. When the consumer
+    // supplies no theme of their own, `sobre` is the implicit default so a bare
+    // `app.use(createOrigam())` paints with the neutral origam identity and its
+    // component defaults. The 7 brand themes live in the marketing package now.
+    const suppliedThemes = [
         ...(options.theme ? [options.theme] : []),
         ...(options.themes ?? [])
     ]
+    const allThemes: IOrigamTheme[] = suppliedThemes.length ? suppliedThemes : [...sobreTheme]
     const installedThemes = installedThemesFromList(allThemes)
+
+    // Seed the per-component DEFAULT PROPS provider. The active brand×mode
+    // themes' `component` maps are collapsed into one `IDefault` and provided
+    // under `ORIGAM_DEFAULTS_KEY`, so `useDefaults(props)` in components resolves
+    // a missing prop against the theme before falling back to `withDefaults`.
+    // The Nuxt plugins reassign `defaultsRef.value` (a NEW object) whenever the
+    // brand / mode changes — never mutate in place, or the `useDefaults`
+    // computeds won't re-evaluate.
+    const defaultsRef = createDefaults({})
+    defaultsRef.value = activeDefaultsFor(allThemes, allThemes[0]?.name ?? '', undefined)
 
     const scope = effectScope()
     return scope.run(() => {
@@ -85,6 +104,7 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             app.provide(ORIGAM_DATE_ADAPTER_KEY, date.instance)
             app.provide(ORIGAM_GO_TO_KEY, goTo)
             app.provide(ORIGAM_THEMES_KEY, installedThemes)
+            app.provide(ORIGAM_DEFAULTS_KEY, defaultsRef)
 
             if (IN_BROWSER && options.ssr) {
                 if (app.$nuxt) {
@@ -132,9 +152,49 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             locale,
             date,
             goTo,
-            themes: installedThemes
+            themes: installedThemes,
+            // Reactive per-component DEFAULT PROPS map (provided under
+            // ORIGAM_DEFAULTS_KEY). The Nuxt plugins reassign `.value` (a NEW
+            // object) whenever the active brand / mode changes so `useDefaults`
+            // computeds re-run. NEVER mutate it in place.
+            _defaultsRef: defaultsRef,
+            // Re-export the collapse helper so the plugins can recompute the
+            // active defaults from the same install list on a theme switch.
+            _activeDefaultsFor: (brand: string, mode?: TModeResolved): IDefault =>
+                activeDefaultsFor(allThemes, brand, mode)
         }
     })!
+}
+
+/**
+ * Collapse the per-component DEFAULT PROPS (`theme.component`) of the themes
+ * matching the ACTIVE brand×mode into a single `IDefault`. A theme matches when
+ * its `name` equals `brand` AND its `mode` is compatible with the active `mode`:
+ *   - the theme is mode-agnostic (`mode` unset or `'auto'`), OR
+ *   - the active `mode` is unset (match every mode of the brand — used for the
+ *     mode-less install-time seed before the plugins resolve a concrete mode), OR
+ *   - the theme's `mode` equals the active `mode`.
+ * Matching themes are deep-merged in install order (later wins) via the shared
+ * `mergeDeep` util — no hand-rolled merge.
+ *
+ * Pure (no DOM / Vue access) so it runs identically on the server and client.
+ */
+export function activeDefaultsFor (
+    themes: IOrigamTheme[],
+    brand: string,
+    mode?: TModeResolved
+): IDefault {
+    let merged: IDefault = {}
+    for (const theme of themes) {
+        if (!theme.component) continue
+        const brandMatches = (theme.name ?? '') === brand
+        const themeModeAgnostic = theme.mode === undefined || theme.mode === 'auto'
+        const modeMatches = themeModeAgnostic || mode === undefined || theme.mode === mode
+        if (brandMatches && modeMatches) {
+            merged = mergeDeep(merged, theme.component) as IDefault
+        }
+    }
+    return merged
 }
 
 // Vue's inject() can only be used in setup

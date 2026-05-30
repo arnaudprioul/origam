@@ -61,7 +61,7 @@ export function tokenTreeToVars (tree: ITokenTree, component = false): TThemeVar
  * tree (if any) with the explicit `vars` map (which wins on collision).
  */
 export function resolveThemeVars (theme: IOrigamTheme): TThemeVars {
-    const fromTokens = theme.tokens ? tokenTreeToVars(theme.tokens, theme.component) : {}
+    const fromTokens = theme.tokens ? tokenTreeToVars(theme.tokens, theme.componentTokens) : {}
     const fromVars: TThemeVars = {}
     if (theme.vars) {
         for (const key of Object.keys(theme.vars)) {

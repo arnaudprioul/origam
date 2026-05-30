@@ -6,9 +6,7 @@ import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import { createOrigam } from '../origam'
 
-import { resolvePresetThemes } from './resolve-themes'
-
-import type { TMode, TTheme } from '../types'
+import type { TMode, TModeResolved, TTheme } from '../types'
 
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
 
@@ -41,14 +39,11 @@ export default defineNuxtPlugin({
         const initialTheme = (themeFromDom ?? themeCookie.value ?? config.defaultTheme) as TTheme
         const initialMode = (modeCookie.value ?? config.defaultMode) as TMode
 
-        // Install the configured theme objects (ADR-003): preset names are
-        // re-resolved from the bundled presets, inline objects pass through.
-        // createOrigam injects each one's name×mode scoped `<style>` block and
-        // provides the installed-themes list for `useInstalledThemes()`.
-        const themes = [
-            ...resolvePresetThemes(config.presetNames ?? []),
-            ...(config.customThemes ?? [])
-        ]
+        // Install the configured theme OBJECTS (ADR-004 — no preset-name
+        // resolution; the objects travel in the runtime config). createOrigam
+        // injects each one's name×mode scoped `<style>` block and provides the
+        // installed-themes list for `useInstalledThemes()`.
+        const themes = config.themes ?? []
         const origam = createOrigam({ themes })
         nuxtApp.vueApp.use(origam)
 
@@ -61,6 +56,23 @@ export default defineNuxtPlugin({
         const themeApi = useTheme()
         themeApi.setTheme(initialTheme)
         themeApi.setMode(initialMode)
+
+        // Per-component DEFAULT PROPS follow the ACTIVE brand×mode. On every
+        // theme/mode change we REASSIGN `defaultsRef.value` to a NEW object
+        // (recomputed from the install list) so the `useDefaults` computeds in
+        // components re-run. `immediate: true` syncs the client to the live
+        // intent right after install (the server seeded the SSR paint). `auto`
+        // brand maps to '' (the DS `:root` default — no brand component map).
+        watch(
+            [themeApi.theme, themeApi.resolvedMode],
+            ([brand, mode]) => {
+                origam._defaultsRef.value = origam._activeDefaultsFor(
+                    brand === 'auto' ? '' : (brand as string),
+                    mode as TModeResolved
+                )
+            },
+            { immediate: true }
+        )
 
         watch(themeApi.theme, (next) => {
             themeCookie.value = next as string

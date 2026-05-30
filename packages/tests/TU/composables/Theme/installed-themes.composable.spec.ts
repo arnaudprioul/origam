@@ -9,7 +9,7 @@ import { mount } from '@vue/test-utils'
 
 import { createOrigam } from '@origam/origam'
 import { useInstalledThemes } from '@origam/composables/Theme/installed-themes.composable'
-import { resolvePresetThemes } from '@origam/nuxt/resolve-themes'
+import { sobreTheme } from '@origam/themes/sobre.theme'
 
 afterEach(() => {
     document.querySelectorAll('style[data-origam-theme]').forEach(el => el.remove())
@@ -93,38 +93,34 @@ describe('createOrigam({ themes }) — plural install', () => {
     })
 })
 
-describe('install path via real presets (no themes-all.css)', () => {
-    it('renders [data-theme=geek][data-mode=dark] vars from the resolved preset alone', () => {
-        // Mirrors the Nuxt module path: resolve preset names → objects, install
-        // via createOrigam. No CSS matrix is loaded in jsdom — the themed output
-        // comes entirely from the injected block.
-        mountWithOrigam({ themes: resolvePresetThemes(['geek']) }, () => {})
+describe('install path via the built-in sobre theme (no themes-all.css)', () => {
+    it('renders [data-theme=sobre][data-mode=dark] vars from the theme object alone', () => {
+        // The themed output comes entirely from the injected block — no CSS
+        // matrix is loaded in jsdom.
+        mountWithOrigam({ themes: sobreTheme }, () => {})
 
-        const geekDark = document.getElementById('origam-theme-geek-dark')
-        expect(geekDark).not.toBeNull()
-        expect(geekDark!.textContent).toContain('[data-theme="geek"][data-mode="dark"]')
-        expect(geekDark!.textContent).toContain('--origam-color__surface---default')
+        const sobreDark = document.getElementById('origam-theme-sobre-dark')
+        expect(sobreDark).not.toBeNull()
+        expect(sobreDark!.textContent).toContain('[data-theme="sobre"][data-mode="dark"]')
+        expect(sobreDark!.textContent).toContain('--origam-color__surface---default')
     })
 
-    it('bare default brand "origam" resolves + installs (a no-theme install still paints)', () => {
+    it('bare install (no themes) falls back to the built-in sobre theme (still paints)', () => {
+        // ADR-004: createOrigam installs `sobre` implicitly when no theme is
+        // supplied, so a no-theme install still paints (no white).
         let captured: ReturnType<typeof useInstalledThemes> | null = null
-        mountWithOrigam({ themes: resolvePresetThemes(['origam']) }, (themes) => { captured = themes })
+        mountWithOrigam({}, (themes) => { captured = themes })
 
-        expect(captured).toEqual([{ name: 'origam', modes: ['light', 'dark'], label: expect.any(String) }])
-        const light = document.getElementById('origam-theme-origam-light')
+        expect(captured).toEqual([{ name: 'sobre', modes: ['light', 'dark'], label: 'Sobre', description: expect.any(String) }])
+        const light = document.getElementById('origam-theme-sobre-light')
         expect(light).not.toBeNull()
-        expect(light!.textContent).toContain('[data-theme="origam"][data-mode="light"]')
+        expect(light!.textContent).toContain('[data-theme="sobre"][data-mode="light"]')
         // The base surface var is present → the block is renderable (no white).
         expect(light!.textContent).toContain('--origam-color__surface---default: #ffffff;')
     })
 })
 
 describe('useInstalledThemes() — graceful default', () => {
-    it('returns an empty array when no themes were installed', () => {
-        let captured: ReturnType<typeof useInstalledThemes> | null = null
-        mountWithOrigam({}, (themes) => { captured = themes })
-        expect(captured).toEqual([])
-    })
 
     it('returns an empty array outside any createOrigam app', () => {
         let captured: ReturnType<typeof useInstalledThemes> | null = null

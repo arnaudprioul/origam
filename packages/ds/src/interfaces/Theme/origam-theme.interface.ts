@@ -1,5 +1,6 @@
 import type { ITokenTree, TThemeVars } from '../../types'
 import type { TMode } from '../../types/Theme/theme.type'
+import type { IDefault } from '../DefaultProvider/default-provider.interface'
 
 /**
  * Runtime theme object ingested by `createOrigam({ theme })`. At install time
@@ -65,6 +66,29 @@ export interface IOrigamTheme {
     /**
      * Treat `tokens` as component-layer tokens (changes the naming grammar —
      * see `tokenPathToCssVar`). Defaults to `false` (primitive / semantic).
+     *
+     * This flag ONLY routes the `tokens` tree to the component-layer naming
+     * grammar — it has nothing to do with default props (see `component`).
      */
-    component?: boolean
+    componentTokens?: boolean
+
+    /**
+     * Per-component DEFAULT PROPS layer. Keyed by `global` (applies to every
+     * component) or by a component's kebab-case instance name (e.g.
+     * `'origam-btn'`, `'origam-card'`), exactly like `<OrigamDefaultsProvider>`.
+     *
+     * `createOrigam` collapses the `component` maps of the ACTIVE brand×mode
+     * themes into a single `IDefault` and provides it under
+     * `ORIGAM_DEFAULTS_KEY`, so a component rendered with no explicit prop
+     * inherits the theme's default. This is the "look comes from the theme,
+     * not from hard-coded `withDefaults`" mechanism.
+     *
+     * @example
+     * component: {
+     *   global:        { density: 'comfortable' },
+     *   'origam-btn':  { color: 'primary', rounded: 0 },
+     *   'origam-card': { rounded: 'lg', elevation: 2 }
+     * }
+     */
+    component?: IDefault
 }

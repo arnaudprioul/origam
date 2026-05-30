@@ -74,7 +74,7 @@ describe.skip('origam/nuxt module', () => {
     it('applies sensible defaults', async () => {
         const module = await loadModule()
         expect(module.defaults).toMatchObject({
-            themes: ['origam'],
+            themes: [],
             defaultTheme: 'auto',
             modes: ['light', 'dark'],
             defaultMode: 'auto',
@@ -89,11 +89,13 @@ describe.skip('origam/nuxt module', () => {
     it('injects ONLY the theme-invariant base sheets (primitive + utilities), no per-theme CSS', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
-        module.setup({themes: ['sobre', 'geek'], includeUtilities: true}, nuxt)
+        const sobre = { name: 'sobre', mode: 'light' as const, vars: {} }
+        const geek = { name: 'geek', mode: 'dark' as const, vars: {} }
+        module.setup({themes: [sobre, geek], includeUtilities: true}, nuxt)
 
         expect(nuxt.options.css[0]).toBe('origam/tokens/css/primitive')
         expect(nuxt.options.css).toContain('origam/tokens/css/utilities')
-        // ADR-003: per-theme CSS files are NO LONGER pushed (themes are objects).
+        // ADR-004: per-theme CSS files are NO LONGER pushed (themes are objects).
         expect(nuxt.options.css).not.toContain('origam/tokens/css/sobre')
         expect(nuxt.options.css).not.toContain('origam/tokens/css/geek')
     })
@@ -101,7 +103,7 @@ describe.skip('origam/nuxt module', () => {
     it('skips the utilities sheet when includeUtilities is false', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
-        module.setup({themes: ['sobre'], includeUtilities: false}, nuxt)
+        module.setup({themes: [{ name: 'sobre', mode: 'light', vars: {} }], includeUtilities: false}, nuxt)
 
         expect(nuxt.options.css).not.toContain('origam/tokens/css/utilities')
     })
@@ -138,8 +140,10 @@ describe.skip('origam/nuxt module', () => {
     it('exposes module options on the public runtime config', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
+        const sobre = { name: 'sobre', mode: 'light' as const, vars: {} }
+        const geek = { name: 'geek', mode: 'dark' as const, vars: {} }
         module.setup({
-            themes: ['sobre', 'geek'],
+            themes: [sobre, geek],
             defaultTheme: 'sobre',
             modes: ['light', 'dark'],
             defaultMode: 'dark',
@@ -149,11 +153,8 @@ describe.skip('origam/nuxt module', () => {
         }, nuxt)
 
         const cfg = nuxt.options.runtimeConfig.public.origam as Record<string, unknown>
-        // `themes` is now the distinct installed BRAND names (resolved from presets).
-        expect(cfg.themes).toEqual(['sobre', 'geek'])
-        // preset names travel as strings; no inline objects here.
-        expect(cfg.presetNames).toEqual(['sobre', 'geek'])
-        expect(cfg.customThemes).toEqual([])
+        // ADR-004: `themes` carries the installed OBJECTS verbatim (no preset names).
+        expect(cfg.themes).toEqual([sobre, geek])
         expect(cfg.defaultTheme).toBe('sobre')
         expect(cfg.modes).toEqual(['light', 'dark'])
         expect(cfg.defaultMode).toBe('dark')
@@ -165,8 +166,8 @@ describe.skip('origam/nuxt module', () => {
     it('does not duplicate the base CSS imports across multiple setups', async () => {
         const module = await loadModule()
         const nuxt = makeFakeNuxt()
-        module.setup({themes: ['sobre']}, nuxt)
-        module.setup({themes: ['geek']}, nuxt)
+        module.setup({themes: [{ name: 'sobre', mode: 'light', vars: {} }]}, nuxt)
+        module.setup({themes: [{ name: 'geek', mode: 'dark', vars: {} }]}, nuxt)
 
         const primitiveCount = nuxt.options.css.filter(c => c === 'origam/tokens/css/primitive').length
         const utilitiesCount = nuxt.options.css.filter(c => c === 'origam/tokens/css/utilities').length

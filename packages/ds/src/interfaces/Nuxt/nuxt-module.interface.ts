@@ -1,35 +1,30 @@
 import type { IOrigamTheme } from '../Theme/origam-theme.interface'
 
 /**
- * One entry of the module's `themes` option: a built-in preset **name**
- * (`'sobre'`), a single **theme object** (`IOrigamTheme`), or an **array** of
- * theme objects (e.g. the per-brand `sobreTheme` preset, or a Builder export
- * carrying both modes).
- */
-export type TOrigamModuleThemeEntry = string | IOrigamTheme | IOrigamTheme[]
-
-/**
  * Options passed by a consumer in `nuxt.config.ts` under the `origam` key.
  *
  * All fields are optional — the module applies sensible defaults (see
- * `DEFAULTS` in `src/nuxt/module.ts`). Themes are installed as runtime objects
- * (ADR-003): the module resolves the `themes` entries to `IOrigamTheme[]` and
- * hands them to `createOrigam` in the plugins, which inject each as a name×mode
- * scoped `--origam-*` block. The theme-invariant `primitive` + `utilities`
- * sheets are still loaded as CSS. Two orthogonal axes are resolved SSR-side to
- * avoid FOUC: the brand `theme` (cookie) and the color `mode` (cookie +
- * `Sec-CH-Prefers-Color-Scheme` hint).
+ * `DEFAULTS` in `src/nuxt/module.ts`). Themes are installed as runtime OBJECTS
+ * (ADR-004): the module passes the `themes` array straight through to the
+ * runtime config and on to `createOrigam` in the plugins, which inject each as
+ * a name×mode scoped `--origam-*` block. The theme-invariant `primitive` +
+ * `utilities` sheets are still loaded as CSS. Two orthogonal axes are resolved
+ * SSR-side to avoid FOUC: the brand `theme` (cookie) and the color `mode`
+ * (cookie + `Sec-CH-Prefers-Color-Scheme` hint).
+ *
+ * ADR-004: the DS ships exactly ONE theme (`sobre`, its base). Brand themes
+ * (glass, geek, …) live in the consuming app (e.g. the marketing package) and
+ * are passed here as `IOrigamTheme[]` objects — the DS no longer resolves
+ * preset names.
  */
 export interface IOrigamNuxtModuleOptions {
     /**
-     * Themes to install. Each entry is a built-in preset name (`'sobre'`,
-     * resolved to objects from `origam/themes`), a single `IOrigamTheme`
-     * object, or an array of them. The module injects every resolved theme as
-     * a scoped CSS-var block — no pre-generated per-theme CSS file is loaded.
-     *
-     * @default ['origam']
+     * Themes to install, as `IOrigamTheme` objects (one per brand×mode). The
+     * objects are passed verbatim to `createOrigam`, which injects each as a
+     * scoped CSS-var block — no pre-generated per-theme CSS file is loaded.
+     * When omitted, the DS installs its single built-in `sobre` theme.
      */
-    themes?: TOrigamModuleThemeEntry[]
+    themes?: IOrigamTheme[]
 
     /**
      * Theme (brand) applied when no cookie is set. Use `'auto'` to render no
@@ -113,23 +108,12 @@ export interface IOrigamNuxtModuleOptions {
  */
 export interface IOrigamNuxtRuntimeConfig {
     /**
-     * Distinct installed brand names, in install order. Lightweight — meant
-     * for a switcher to list the available brands SSR-side.
+     * Installed `IOrigamTheme` objects, in install order. The plugins pass
+     * these straight to `createOrigam` (no preset-name resolution — ADR-004).
+     * A switcher derives its brand list from `useInstalledThemes()` rather than
+     * from this payload.
      */
-    themes: string[]
-    /**
-     * Preset brand names to re-resolve to objects (from `origam/themes`) in the
-     * plugins. Kept separate from `customThemes` so the heavy preset `vars`
-     * maps never bloat the per-page runtime-config payload — only the names
-     * travel; the objects come from the bundled presets.
-     */
-    presetNames: string[]
-    /**
-     * Inline `IOrigamTheme` objects passed directly in the `themes` option
-     * (e.g. a Builder export). These DO travel in the payload — the consumer
-     * opted into that cost by passing objects instead of preset names.
-     */
-    customThemes: IOrigamTheme[]
+    themes: IOrigamTheme[]
     defaultTheme: string
     modes: string[]
     defaultMode: string

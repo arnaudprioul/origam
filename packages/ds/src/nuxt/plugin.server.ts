@@ -2,8 +2,6 @@ import { createOrigam } from '../origam'
 
 import { themeToCss } from '../utils/Theme/apply-theme.util'
 
-import { resolvePresetThemes } from './resolve-themes'
-
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import {
@@ -106,12 +104,9 @@ export default defineNuxtPlugin({
             htmlAttrs[ORIGAM_THEME_ATTR] = resolvedTheme
         }
 
-        // Install the configured theme objects (ADR-003). Preset names are
-        // re-resolved from the bundled presets; inline objects pass through.
-        const themes = [
-            ...resolvePresetThemes(config.presetNames ?? []),
-            ...(config.customThemes ?? [])
-        ]
+        // Install the configured theme OBJECTS (ADR-004 — no preset-name
+        // resolution; the objects travel in the runtime config).
+        const themes = config.themes ?? []
 
         // SSR no-flash: `applyTheme` (runtime DOM injection) is a no-op on the
         // server, so we emit the ACTIVE theme×mode block as a real `<style>` in
@@ -137,6 +132,16 @@ export default defineNuxtPlugin({
         })
 
         const origam = createOrigam({ themes })
+
+        // Seed the per-component DEFAULT PROPS for the ACTIVE brand×mode BEFORE
+        // the render so SSR markup already reflects the theme defaults — no flash
+        // of withDefaults values at hydration (mirrors the inlined SSR theme CSS).
+        // `auto` brand maps to '' (the DS `:root` default — no brand component map).
+        origam._defaultsRef.value = origam._activeDefaultsFor(
+            resolvedTheme === ORIGAM_THEME_AUTO ? '' : resolvedTheme,
+            resolvedMode
+        )
+
         nuxtApp.vueApp.use(origam)
 
         return {
