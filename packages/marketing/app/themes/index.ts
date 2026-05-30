@@ -7,7 +7,10 @@ import { editorialDarkTheme, editorialLightTheme } from './editorial.theme'
 import { geekDarkTheme, geekLightTheme } from './geek.theme'
 import { glassDarkTheme, glassLightTheme } from './glass.theme'
 import { materialDarkTheme, materialLightTheme } from './material.theme'
-import { sobreDarkTheme, sobreLightTheme } from './sobre.theme'
+
+// ADR-004: `sobre` is the DS-owned default brand — imported from `origam`, NOT
+// re-authored here. The marketing project owns only the 7 demo brands above.
+import { sobreDarkTheme, sobreLightTheme } from 'origam/themes'
 
 export {
     appleDarkTheme,

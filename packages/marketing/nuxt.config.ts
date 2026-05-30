@@ -221,7 +221,8 @@ export default defineNuxtConfig({
                 'origam/utils': new URL('../ds/src/utils', import.meta.url).pathname,
                 'origam/types': new URL('../ds/src/types', import.meta.url).pathname,
                 'origam/interfaces': new URL('../ds/src/interfaces', import.meta.url).pathname,
-                'origam/services': new URL('../ds/src/services', import.meta.url).pathname
+                'origam/services': new URL('../ds/src/services', import.meta.url).pathname,
+                'origam/themes': new URL('../ds/src/themes', import.meta.url).pathname
             }
         },
         optimizeDeps: {
