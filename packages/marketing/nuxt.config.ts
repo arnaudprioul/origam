@@ -32,6 +32,17 @@ export default defineNuxtConfig({
         '@nuxtjs/i18n'
     ],
 
+    // origam/nuxt — the DS owns both theming axes (brand + mode) and resolves
+    // them SSR-side (no-flash) from the origam-theme / origam-mode cookies.
+    // `defaultTheme` is the base BRAND (not a mode); `defaultMode: 'auto'`
+    // resolves to a concrete light/dark client-side via prefers-color-scheme.
+    // The 8-brand token matrix is loaded via the explicit themes-all import
+    // in `css:` below, so `themes` here only feeds the SSR brand validation.
+    origam: {
+        defaultTheme: 'sobre',
+        defaultMode: 'auto'
+    },
+
     // Nuxt's default component auto-import prefixes nested directories
     // (e.g. `app/components/icons/MarketingIcon.vue` becomes
     // `<IconsMarketingIcon>`). Our marketing templates use `<MarketingIcon>`
@@ -65,6 +76,7 @@ export default defineNuxtConfig({
         'origam/tokens/css/themes-all',
         '~/assets/css/base.css',
         '~/assets/css/marketing-chrome.css',
+        '~/assets/css/theme-effects.css',
         '~/assets/css/view-transitions.css'
     ],
 
@@ -91,8 +103,7 @@ export default defineNuxtConfig({
         head: {
             titleTemplate: `%s · ${MARKETING_DEFAULTS.siteName}`,
             htmlAttrs: {
-                lang: MARKETING_DEFAULTS.defaultLocale,
-                'data-theme': MARKETING_DEFAULTS.defaultTheme
+                lang: MARKETING_DEFAULTS.defaultLocale
             },
             link: [
                 { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

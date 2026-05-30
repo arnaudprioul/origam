@@ -5,9 +5,9 @@ const { t } = useI18nFallback()
 const config = useRuntimeConfig()
 const { track } = useAnalytics()
 
-const activeTheme = useState<string>('mkt-theme', () => 'sobre')
+const { theme } = useTheme()
 const heroTitle = computed(() => t(
-    `home.hero.titleAlt.${activeTheme.value}`,
+    `home.hero.titleAlt.${theme.value}`,
     t('home.hero.title', 'The Vue 3 design system that just works.')
 ))
 

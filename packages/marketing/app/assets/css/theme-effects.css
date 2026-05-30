@@ -1,0 +1,153 @@
+/* ============================================================
+ * THEME EFFECTS — per-theme CSS that tokens cannot express.
+ *
+ * Allowed only when a token genuinely cannot encode the effect:
+ *   - multi-stop hue-shift gradients on components
+ *   - backdrop-filter / saturate (not a CSS token type)
+ *   - drop-shadow filter chains (multi-layer glow)
+ *   - ::first-letter drop-caps
+ *   - background-image overrides on DS component roots
+ *
+ * Each block carries a comment stating WHY a token cannot do it.
+ * Colors and radius MUST use DS token vars, not hardcoded hex.
+ * ============================================================ */
+
+/* ============================================================
+ * GEEK — neon glow effects
+ * Inexpressible: multi-step drop-shadow filter, gradient on DS
+ * component background (not a shadow/color token), CSS grid bg.
+ * ============================================================ */
+
+/* inexpressible: filter chain combining cyan + violet drop-shadows */
+[data-theme="geek"] .home-hero__title {
+    filter: drop-shadow(0 0 18px rgba(0, 240, 255, .35)) drop-shadow(0 0 40px rgba(199, 125, 255, .25));
+}
+[data-theme="geek"][data-mode="light"] .home-hero__title {
+    filter: drop-shadow(0 0 14px rgba(217, 70, 239, .22)) drop-shadow(0 0 30px rgba(8, 145, 178, .16));
+}
+
+/* inexpressible: background-image gradient on DS btn root — not a token surface */
+[data-theme="geek"] .origam-btn--variant-flat.origam--color-primary {
+    background-image: linear-gradient(110deg, #00F0FF, #C77DFF 60%, #FF3CAC);
+    color: var(--origam-color__action--primary---fg, #050A05);
+    box-shadow: 0 0 18px -2px rgba(0, 240, 255, .5), 0 0 32px -8px rgba(199, 125, 255, .4);
+}
+[data-theme="geek"][data-mode="light"] .origam-btn--variant-flat.origam--color-primary {
+    background-image: linear-gradient(110deg, #0891B2, #A21CAF 60%, #DB2777);
+    color: var(--origam-color__text---inverse, #fff);
+    box-shadow: 0 0 18px -4px rgba(217, 70, 239, .5), 0 0 30px -8px rgba(8, 145, 178, .4);
+}
+
+/* inexpressible: gradient overlay on DS card surface + inset glow */
+[data-theme="geek"] .origam-card {
+    background-image: linear-gradient(180deg, rgba(199, 125, 255, .05), rgba(0, 240, 255, .02));
+    box-shadow: inset 0 1px 0 rgba(199, 125, 255, .15), 0 0 24px -6px rgba(0, 240, 255, .25);
+}
+[data-theme="geek"][data-mode="light"] .origam-card {
+    background-image: linear-gradient(180deg, rgba(217, 70, 239, .04), rgba(8, 145, 178, .02));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 0 0 1px rgba(162, 28, 175, .08);
+}
+
+/* inexpressible: text-shadow glow on pre-title — not a token property */
+[data-theme="geek"] .m-section-pre::before {
+    content: '> ';
+    opacity: .8;
+}
+[data-theme="geek"] .m-section-pre {
+    text-shadow: 0 0 10px currentColor;
+}
+
+/* inexpressible: bg-image grid on hero section (cyan + violet lines) */
+[data-theme="geek"] .home-hero {
+    background-image:
+        linear-gradient(rgba(0, 240, 255, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(199, 125, 255, .07) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* ============================================================
+ * CARTOON — neo-brutalist hard shadow + thick border
+ * Inexpressible: component border-width override (DS btn/card
+ * do not expose a per-instance border-width token), and the
+ * specific hard-offset shadow must override the box-shadow on
+ * the component root to achieve the neo-brutalist look.
+ * ============================================================ */
+
+/* inexpressible: DS btn/card don't have a border-width token */
+[data-theme="cartoon"] .origam-btn,
+[data-theme="cartoon"] .origam-card {
+    border: var(--origam-border__width---2, 2.5px) solid var(--origam-color__border---default);
+}
+
+/* inexpressible: hard-offset flat shadow — not a box-shadow token shape */
+[data-theme="cartoon"] .origam-btn {
+    box-shadow: 4px 4px 0 var(--origam-color__border---default);
+    font-weight: 800;
+}
+[data-theme="cartoon"] .origam-card {
+    box-shadow: 6px 6px 0 var(--origam-color__border---default);
+}
+
+/* ============================================================
+ * MATERIAL — pill buttons + M3 elevation, extra-rounded cards
+ * Inexpressible: border-radius on btn/card overrides the
+ * component-level token (pill = 999px, card = 24px) which
+ * are broader than the theme's base radius scale.
+ * ============================================================ */
+
+/* inexpressible: pill override on btn exceeds the radius token surface */
+[data-theme="material"] .origam-btn {
+    border-radius: 999px;
+}
+[data-theme="material"] .origam-card {
+    border-radius: 24px;
+}
+
+/* ============================================================
+ * ECOM — gradient uppercase primary button
+ * Inexpressible: background-image gradient on DS btn root
+ * and text-transform + letter-spacing override on the btn.
+ * ============================================================ */
+
+/* inexpressible: gradient on DS btn surface; text-transform not a token */
+[data-theme="ecom"] .origam-btn--variant-flat.origam--color-primary {
+    background-image: linear-gradient(180deg, var(--origam-color__action--primary---bg), var(--origam-color__action--primary---bgHover));
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 800;
+}
+
+/* ============================================================
+ * GLASS — frosted backdrop-filter on DS components
+ * Inexpressible: backdrop-filter is not a CSS token type
+ * (no $type in DTCG supports filter functions).
+ * ============================================================ */
+
+/* inexpressible: backdrop-filter is not encodable as a design token */
+[data-theme="glass"] .origam-card,
+[data-theme="glass"] .origam-btn {
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+/* inexpressible: pill override on glass btn — wider than the radius token */
+[data-theme="glass"] .origam-btn {
+    border-radius: 999px;
+}
+
+/* ============================================================
+ * EDITORIAL — serif drop-cap
+ * Inexpressible: ::first-letter pseudo-element cannot be
+ * expressed as a design token.
+ * ============================================================ */
+
+/* inexpressible: ::first-letter drop-cap is not a token concept */
+[data-theme="editorial"] .m-body--dropcap::first-letter {
+    font-family: var(--origam-font__family---serif);
+    font-size: 3.5em;
+    font-weight: 400;
+    line-height: .8;
+    float: left;
+    margin-inline-end: .08em;
+    color: var(--origam-color__action--primary---bg);
+}

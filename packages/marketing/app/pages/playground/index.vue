@@ -25,8 +25,7 @@ defineOgImageComponent('OgImageTemplate', {
     type: 'page'
 })
 
-const themeCookie = useCookie<string>('origam_mkt_theme', { default: () => 'sobre' })
-const activeThemeId = computed(() => themeCookie.value ?? 'sobre')
+const { theme: activeThemeId } = useTheme()
 
 const { code: urlCode, template: urlTemplate } = parseInitialCode()
 

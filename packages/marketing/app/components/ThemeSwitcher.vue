@@ -16,50 +16,30 @@ const emit = defineEmits<{
 const { t } = useI18nFallback()
 const { track } = useAnalytics()
 
-const themeCookie = useCookie('origam_mkt_theme', { default: () => 'sobre' })
-const modeCookie = useCookie<'light' | 'dark'>('origam_mkt_mode', { default: () => 'light' })
+const { theme, mode, setTheme, setMode, resolvedMode } = useTheme()
 
-const currentTheme = useState<string>('mkt-theme', () => themeCookie.value ?? 'sobre')
-const currentMode = ref<'light' | 'dark'>(modeCookie.value ?? 'light')
 const isOpen = ref(false)
 
-const head = useHead({
-    htmlAttrs: {
-        'data-theme': computed(() => currentTheme.value),
-        'data-mode': computed(() => currentMode.value)
-    }
-})
-
-onMounted(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    if (!modeCookie.value) {
-        currentMode.value = prefersDark ? 'dark' : 'light'
-    }
-})
-
 const isDark = computed({
-    get: () => currentMode.value === 'dark',
+    get: () => resolvedMode.value === 'dark',
     set: (value: boolean) => {
-        currentMode.value = value ? 'dark' : 'light'
-        modeCookie.value = currentMode.value
-        track('mode:switch', { theme: currentTheme.value, mode: currentMode.value })
-        emit('change', { theme: currentTheme.value, mode: currentMode.value })
+        const next = value ? 'dark' : 'light'
+        setMode(next)
+        track('mode:switch', { theme: theme.value, mode: next })
+        emit('change', { theme: theme.value, mode: next })
     }
 })
 
 function applyTheme (themeId: string): void {
-    currentTheme.value = themeId
-    themeCookie.value = themeId
+    setTheme(themeId)
     isOpen.value = false
-    track('theme:switch', { theme: themeId, mode: currentMode.value })
-    emit('change', { theme: themeId, mode: currentMode.value })
+    track('theme:switch', { theme: themeId, mode: mode.value })
+    emit('change', { theme: themeId, mode: mode.value })
 }
 
 const currentThemeData = computed(() =>
-    MARKETING_THEMES.find(th => th.id === currentTheme.value) ?? MARKETING_THEMES[0]
+    MARKETING_THEMES.find(th => th.id === theme.value) ?? MARKETING_THEMES[0]
 )
-
-const _ = head
 </script>
 
 <template>
@@ -108,25 +88,25 @@ const _ = head
 
             <OrigamList density="compact">
                 <OrigamListItem
-                    v-for="theme in MARKETING_THEMES"
-                    :key="theme.id"
-                    :active="theme.id === currentTheme"
-                    :title="theme.label"
-                    :subtitle="theme.desc"
+                    v-for="th in MARKETING_THEMES"
+                    :key="th.id"
+                    :active="th.id === theme"
+                    :title="th.label"
+                    :subtitle="th.desc"
                     role="option"
-                    :aria-selected="theme.id === currentTheme"
-                    @click="applyTheme(theme.id)"
+                    :aria-selected="th.id === theme"
+                    @click="applyTheme(th.id)"
                 >
                     <template #prepend>
                         <span
                             class="theme-switcher__item-swatch"
-                            :style="{ background: theme.swatch }"
+                            :style="{ background: th.swatch }"
                             aria-hidden="true"
                         />
                     </template>
                     <template #append>
                         <OrigamIcon
-                            v-if="theme.id === currentTheme"
+                            v-if="th.id === theme"
                             icon="mdi:check"
                             :size="14"
                             aria-hidden="true"
