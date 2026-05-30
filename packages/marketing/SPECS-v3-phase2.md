@@ -16,6 +16,16 @@
 3. **`/docs` & `/stories` = proxy/iframe** to the existing VitePress and
    Histoire builds. No reimplementation in the marketing app.
 
+## Theming model (ADR-003 — install via `createOrigam`)
+
+The showcase **dogfoods the public install path**: themes are configured
+as preset objects through `createOrigam` / the `origam/nuxt` module, NOT
+imported as the pre-generated CSS matrix. The 8 example brands ship from
+the DS as `origam/themes` (`IOrigamTheme[]`, generated from `ds/tokens/`).
+The `ThemeSwitcher` list derives from the installed themes.
+`themes-all.css` is demoted to a build/preview artifact. Contrast / broken
+themes are DS findings, fixed in tokens. See ADR-003.
+
 ## Delivery cadence (user decision)
 
 Ship **in validated stages**. **Stage 2 (Theme Builder) starts only once
@@ -43,6 +53,31 @@ assignment happen at Stage-2 kickoff.
 per the mockup PDF, switched through `useTheme()` only, with zero parallel
 theming layer remaining.
 
+### Stage 1bis — install-via-`createOrigam` re-plan (ADR-003 pivot)
+
+T-DS3 already shipped the runtime-injection core (`IOrigamTheme`,
+`resolveThemeVars`, `tokenTreeToVars`, `themeSelector`, `applyTheme`,
+`tokenPathToCssVar`, singular `createOrigam({ theme })`). The pivot adds:
+
+| Ticket | Scope | Owner | Depends on |
+|---|---|---|---|
+| T-DS4 | **Generate `origam/themes` presets** — emit one `IOrigamTheme` per brand×mode (or per brand carrying both modes) from `ds/tokens/` via the existing build pipeline; add the `./themes` package export. | tokens-dev | T2 |
+| T-DS5 | **`createOrigam({ themes: IOrigamTheme[] })`** (plural) — inject each theme's scoped block via `applyTheme`; expose the installed theme names through the app provide/runtime config. | fe-lead | T-DS3 |
+| T-DS6 | **Nuxt module installs objects, not CSS** — `themes` option accepts `IOrigamTheme[]` (or preset names → objects); stop pushing `origam/tokens/css/${theme}`; hand objects to `createOrigam` in both plugins; keep primitive+utilities CSS. DEFAULTS → `themes: ['origam']`. Expose installed list to runtime. Update docs (`integrations/nuxt.md`, `useTheme.md`). | fe-lead | T-DS5, T-DS4 |
+| T-MKT8 | **Marketing installs presets** — `nuxt.config` `origam.themes: [sobreTheme, …]` from `origam/themes`; remove `themes-all.css` import; `ThemeSwitcher` derives its list from the installed themes (drop the hard-coded `MARKETING_THEMES`). | fe-dev | T-DS6 |
+| T-MKT9 | **Dogfood contrast pass** — run the 8 themes × light/dark, log every contrast/readability failure (esp. geek) as a DS finding; fix in `ds/tokens/semantic/*`, re-verify. | qa + tokens-dev | T-MKT8 |
+
+This re-plan **does not invalidate** T1/T4/T5/T7: `useTheme`,
+`OrigamThemeProvider`, the 2-axis attributes, and the removed parallel
+layer all stay. Only the **source** of the CSS variables changes —
+install-time injection (T-DS4/5/6 → T-MKT8) instead of the pre-generated
+matrix import. T5's token migration is the input that feeds the generated
+presets (T-DS4).
+
+**Revised Stage-1 gate:** the 8 themes render per the mockups **and** are
+driven by `createOrigam`-installed presets (no `themes-all.css` dependency
+in marketing), contrast findings logged/fixed in the DS.
+
 ---
 
 ## Stage 2 — Theme Builder (`/themes/builder`)
@@ -61,9 +96,10 @@ shared DS function; `ITheme` is DTCG-shaped). Preview is scoped through
 | 7e (#14) | `useThemeExport` JSON/TS/CSS + integration snippet (**two variants behind a flag** per A1) | 7a, T-DS3 | ✅ |
 | 7f (#15) | `BuilderExportDialog` + `themes/builder.vue` assembly (CSS Grid `360px 1fr`, sticky preview) | 7b+7c+7d+7e | final |
 
-Export snippet variants (A1, team-lead trancha avec le user):
-- (a) `import { myTheme } from './my-theme'; createOrigam({ theme: myTheme })` — if `createOrigam({theme})` lands (T-DS3).
-- (b) `import './my-theme.css'` + `<html data-theme="my-theme">` — fallback.
+Export snippet (A1 resolved by ADR-003 — install via `createOrigam` is the
+canonical model): the primary snippet is
+`import { myTheme } from './my-theme'; createOrigam({ themes: [myTheme] })`.
+A `.css` + `data-theme` variant stays documented as a no-build fallback.
 
 File layout (marketing conventions): components in `app/components/builder/`,
 composables `use*`, interfaces `I*` in `app/interfaces/`, types `T*`,

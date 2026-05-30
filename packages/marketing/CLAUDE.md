@@ -8,29 +8,47 @@ here is silent, the parent conventions apply (structure-by-feature,
 their own folders, semantic HTML, CSS-first, no logic/comments in
 templates, `props.` banned in `<template>`, i18n everywhere).
 
-See `packages/docs/internal/adr-001-two-axis-theming.md` for the theming
-decision these rules enforce.
+See `packages/docs/internal/adr-001-two-axis-theming.md` (two axes) and
+`adr-003-themes-installed-via-createorigam.md` (install model) for the
+theming decisions these rules enforce.
 
 ---
 
-## 1. Zero parallel theming layer
+## 1. Themes are INSTALLED, not imported as a CSS matrix
 
-**Theming is the DS, and only the DS**: tokens (`origam/tokens/css/*`) +
-`useTheme()` + `OrigamThemeProvider`. The marketing site never invents its
-own theme system.
+**The marketing site dogfoods the public install path.** Themes are
+configured through `createOrigam` / the `origam/nuxt` module in
+`nuxt.config.ts`, exactly as an external consumer would:
+
+```ts
+origam: {
+  themes: [sobreTheme, glassTheme, geekTheme, /* … */],  // from 'origam/themes'
+  defaultTheme: 'sobre',
+  defaultMode: 'auto'
+}
+```
 
 Forbidden:
 
+- Importing the pre-generated `origam/tokens/css/themes-all` (or per-theme
+  CSS sheets) in the marketing app. That matrix is a build/preview
+  artifact; the site gets its variables from install-time injection.
 - Redefining theme-scoped variables in marketing CSS
   (`[data-theme="…"] { --foo: … }`).
 - Setting `data-theme` / `data-mode` by hand anywhere except through
   `useTheme()` (or `OrigamThemeProvider` for a scoped sub-tree).
+- A hard-coded theme list in marketing — the `ThemeSwitcher` list derives
+  from the **installed** themes exposed at runtime.
 - A `--m-*` (or equivalent) variable set that mirrors the DS token surface
   per theme.
 
 `--m-*` may survive **only** for marketing-chrome decor that has no DS
 token equivalent (hero gradients, section dividers), and each such
 variable must derive from a DS token: `--m-foo: var(--origam-…)`.
+
+Anything the dogfood reveals (contrast failures, an unreadable theme) is a
+**DS finding** — fix it in `ds/tokens/semantic/*`, never with a marketing
+override.
 
 ## 2. Look comes from tokens first
 

@@ -32,11 +32,11 @@ const MINI_THEMES = [
 
                 <ul class="home-themes__pills" role="list">
                     <li
-                        v-for="theme in MARKETING_THEMES"
-                        :key="theme.id"
+                        v-for="(meta, name) in MARKETING_THEMES"
+                        :key="name"
                     >
                         <span class="m-pill m-pill--neutral">
-                            {{ t(`themes.${theme.id}.label`, theme.label) }}
+                            {{ t(`themes.${name}.label`, meta.label) }}
                         </span>
                     </li>
                 </ul>

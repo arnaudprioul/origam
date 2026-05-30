@@ -32,13 +32,14 @@ export default defineNuxtConfig({
         '@nuxtjs/i18n'
     ],
 
-    // origam/nuxt — the DS owns both theming axes (brand + mode) and resolves
-    // them SSR-side (no-flash) from the origam-theme / origam-mode cookies.
-    // `defaultTheme` is the base BRAND (not a mode); `defaultMode: 'auto'`
-    // resolves to a concrete light/dark client-side via prefers-color-scheme.
-    // The 8-brand token matrix is loaded via the explicit themes-all import
-    // in `css:` below, so `themes` here only feeds the SSR brand validation.
+    // origam/nuxt — install the 8 brand presets via preset names (ADR-003).
+    // Names travel as strings in the runtime config; the plugins re-resolve them
+    // to IOrigamTheme objects from the bundled origam/themes — the heavy vars
+    // map never bloats the Nitro payload. Each brand×mode block is then injected
+    // as a scoped <style id="origam-theme-{name}-{mode}"> at runtime.
+    // No pre-generated themes-all.css is loaded.
     origam: {
+        themes: ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple'],
         defaultTheme: 'sobre',
         defaultMode: 'auto'
     },
@@ -67,13 +68,6 @@ export default defineNuxtConfig({
     // at `dist/src/assets/css/main.css` which is a 0-byte file (the real
     // entry is `main.scss`, never compiled by unbuild). Removed.
     css: [
-        // origam's 16-brand theme matrix (sobre/glass/geek/cartoon/editorial/
-        // material/ecom/apple × light/dark). Each combo is scoped to
-        // `[data-theme="X"][data-mode="Y"]` so the marketing site simply
-        // toggles those two data-attributes on <html> to swap the entire
-        // visual identity at runtime — no remount, no flicker. Generated
-        // by `pnpm -F origam tokens:build`.
-        'origam/tokens/css/themes-all',
         '~/assets/css/base.css',
         '~/assets/css/marketing-chrome.css',
         '~/assets/css/theme-effects.css',

@@ -17,6 +17,7 @@ const { t } = useI18nFallback()
 const { track } = useAnalytics()
 
 const { theme, mode, setTheme, setMode, resolvedMode } = useTheme()
+const installedThemes = useInstalledThemes()
 
 const isOpen = ref(false)
 
@@ -30,16 +31,24 @@ const isDark = computed({
     }
 })
 
-function applyTheme (themeId: string): void {
-    setTheme(themeId)
+function applyTheme (name: string): void {
+    setTheme(name)
     isOpen.value = false
-    track('theme:switch', { theme: themeId, mode: mode.value })
-    emit('change', { theme: themeId, mode: mode.value })
+    track('theme:switch', { theme: name, mode: mode.value })
+    emit('change', { theme: name, mode: mode.value })
 }
 
-const currentThemeData = computed(() =>
-    MARKETING_THEMES.find(th => th.id === theme.value) ?? MARKETING_THEMES[0]
-)
+function getThemeMeta (name: string) {
+    return MARKETING_THEMES[name] ?? {
+        label: name.charAt(0).toUpperCase() + name.slice(1),
+        desc: '',
+        swatch: 'currentColor'
+    }
+}
+
+const themeNames = computed(() => installedThemes.map(t => t.name))
+
+const currentThemeMeta = computed(() => getThemeMeta(theme.value))
 </script>
 
 <template>
@@ -60,11 +69,11 @@ const currentThemeData = computed(() =>
             >
                 <span
                     class="theme-switcher__swatch"
-                    :style="{ background: currentThemeData.swatch }"
+                    :style="{ background: currentThemeMeta.swatch }"
                     aria-hidden="true"
                 />
                 <span class="theme-switcher__label">
-                    {{ t('themes.label', 'Theme') }}: <strong>{{ currentThemeData.label }}</strong>
+                    {{ t('themes.label', 'Theme') }}: <strong>{{ currentThemeMeta.label }}</strong>
                 </span>
             </OrigamBtn>
         </template>
@@ -88,25 +97,25 @@ const currentThemeData = computed(() =>
 
             <OrigamList density="compact">
                 <OrigamListItem
-                    v-for="th in MARKETING_THEMES"
-                    :key="th.id"
-                    :active="th.id === theme"
-                    :title="th.label"
-                    :subtitle="th.desc"
+                    v-for="name in themeNames"
+                    :key="name"
+                    :active="name === theme"
+                    :title="getThemeMeta(name).label"
+                    :subtitle="getThemeMeta(name).desc"
                     role="option"
-                    :aria-selected="th.id === theme"
-                    @click="applyTheme(th.id)"
+                    :aria-selected="name === theme"
+                    @click="applyTheme(name)"
                 >
                     <template #prepend>
                         <span
                             class="theme-switcher__item-swatch"
-                            :style="{ background: th.swatch }"
+                            :style="{ background: getThemeMeta(name).swatch }"
                             aria-hidden="true"
                         />
                     </template>
                     <template #append>
                         <OrigamIcon
-                            v-if="th.id === theme"
+                            v-if="name === theme"
                             icon="mdi:check"
                             :size="14"
                             aria-hidden="true"
