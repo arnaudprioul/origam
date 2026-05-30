@@ -99,11 +99,16 @@ RUN node scripts/parse-changelog.mjs --out=.generated/changelog.json
 # Nuxt production build → .output/
 # Bump V8 heap: the Nitro SSR build pulls in the whole origam lib + all
 # server routes + prerendered components-meta. With ~2 GB default heap
-# the SSR step OOMs ("Reached heap limit Allocation failed"). 4 GB is
-# comfortable for the current footprint and stays well under Docker
+# the SSR step OOMs ("Reached heap limit Allocation failed").
+#
+# 6 GB (was 4 GB): the install-via-createOrigam theme model (ADR-003)
+# adds the resolved theme registry (origam/themes → dist/src/themes/
+# index.js, ~2.8 MB of inlined IOrigamTheme token trees) to the Nitro
+# server graph. That extra payload pushed the node-server build past the
+# previous 4 GB ceiling. 6 GB restores headroom and stays under Docker
 # Desktop / Coolify host limits.
 #
-RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
+RUN NODE_OPTIONS="--max-old-space-size=6144" pnpm run build
 
 # ---- Stage 2: minimal production image ----
 FROM node:22-alpine AS runner
