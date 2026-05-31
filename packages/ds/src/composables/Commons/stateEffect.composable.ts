@@ -83,7 +83,13 @@ import type { TBgFgRole, TColor } from '../../types'
  * bgHover).
  */
 function pickEffective<T> (
-    rest: T | undefined,
+    // The RESTING value is passed as a GETTER, not an eager value: reading
+    // `props.color` at the call site would capture the value at setup time and
+    // the `return rest` default branch would never see later prop changes — so
+    // changing `color` / `bgColor` / … at runtime (controls, v-model, parent
+    // re-render) silently did nothing. A getter keeps the default branch
+    // reactive on the underlying prop.
+    rest: () => T | undefined,
     isHover: Ref<boolean> | ComputedRef<boolean>,
     isActive: Ref<boolean> | ComputedRef<boolean>,
     hoverState: ComputedRef<IHoverState | undefined>,
@@ -97,7 +103,7 @@ function pickEffective<T> (
         if (isHover.value && hoverState.value?.[key] != null) {
             return hoverState.value[key] as unknown as T
         }
-        return rest
+        return rest()
     })
 }
 
@@ -132,15 +138,15 @@ export function useStateEffect (
     flat: Ref<boolean> | ComputedRef<boolean> = noopRef,
 ) {
     // ── Effective per-axis values (computed, swap on state) ──────────
-    const color    = pickEffective<TColor>(props.color, isHover, isActive, hoverState, activeState, 'color')
-    const bgColor  = pickEffective<TColor>(props.bgColor, isHover, isActive, hoverState, activeState, 'bgColor')
-    const border   = pickEffective(props.border, isHover, isActive, hoverState, activeState, 'border')
-    const rounded  = pickEffective(props.rounded, isHover, isActive, hoverState, activeState, 'rounded')
-    const elevation = pickEffective(props.elevation, isHover, isActive, hoverState, activeState, 'elevation')
-    const padding  = pickEffective(props.padding, isHover, isActive, hoverState, activeState, 'padding')
-    const margin   = pickEffective(props.margin, isHover, isActive, hoverState, activeState, 'margin')
+    const color    = pickEffective<TColor>(() => props.color, isHover, isActive, hoverState, activeState, 'color')
+    const bgColor  = pickEffective<TColor>(() => props.bgColor, isHover, isActive, hoverState, activeState, 'bgColor')
+    const border   = pickEffective(() => props.border, isHover, isActive, hoverState, activeState, 'border')
+    const rounded  = pickEffective(() => props.rounded, isHover, isActive, hoverState, activeState, 'rounded')
+    const elevation = pickEffective(() => props.elevation, isHover, isActive, hoverState, activeState, 'elevation')
+    const padding  = pickEffective(() => props.padding, isHover, isActive, hoverState, activeState, 'padding')
+    const margin   = pickEffective(() => props.margin, isHover, isActive, hoverState, activeState, 'margin')
     const gap      = pickEffective<boolean | number | string>(
-        (props as any).gap, isHover, isActive, hoverState, activeState, 'gap',
+        () => (props as any).gap, isHover, isActive, hoverState, activeState, 'gap',
     )
 
     // ── Color axis (preserved verbatim from useColorEffect) ──────────
