@@ -1,6 +1,6 @@
-import type { IOrigamTheme, ITokenTree, TTokenLeaf, TThemeVars } from '../../interfaces'
+import type { IOrigamTheme } from '../../interfaces'
 
-import type { ISemanticTree, TInstalledThemes, TModeResolved, TSemanticLeaf } from '../../types'
+import type { ISemanticTree, IThemeVars, ITokenTree, TInstalledThemes, TModeResolved, TSemanticLeaf, TThemeVars, TTokenLeaf } from '../../types'
 
 import { tokenPathToCssVar } from './token-name.util'
 
@@ -75,6 +75,23 @@ const SEMANTIC_FIELD_ROOTS: Record<string, ReadonlyArray<string>> = {
     animation: ['motion']
 }
 
+/**
+ * Friendly `vars` token GROUP → token-path root. `vars` is the normal authoring
+ * bucket (see `IThemeVars`): each group's tree is prefixed with its root so a
+ * leaf at `vars.color.surface.default` resolves to
+ * `--origam-color__surface---default`, and `vars.rounded.md` →
+ * `--origam-radius---md`, `vars.typo.family.sans` → `--origam-font__family---sans`.
+ */
+const VARS_GROUP_ROOTS: Record<string, ReadonlyArray<string>> = {
+    color: ['color'],
+    rounded: ['radius'],
+    border: ['border'],
+    typo: ['font'],
+    shadow: ['shadow'],
+    spacing: ['space'],
+    motion: ['motion']
+}
+
 function isSemanticLeaf (node: TSemanticLeaf | ISemanticTree): node is TSemanticLeaf {
     const t = typeof node
     return t === 'string' || t === 'number'
@@ -122,22 +139,41 @@ export function semanticFieldsToVars (theme: IOrigamTheme): TThemeVars {
 }
 
 /**
+ * Collapse the structured `vars` token bucket (the normal authoring path) into a
+ * flat CSS-var map. Each group (`color` / `rounded` / `border` / `typo` /
+ * `shadow` / `spacing` / `motion`) is walked under its `--origam-*` root path.
+ */
+export function themeVarsToVars (vars: IThemeVars): TThemeVars {
+    let out: TThemeVars = {}
+    for (const group of Object.keys(VARS_GROUP_ROOTS)) {
+        const tree = (vars as Record<string, unknown>)[group] as ISemanticTree | undefined
+        if (!tree) continue
+        out = { ...out, ...semanticTreeToVars(tree, VARS_GROUP_ROOTS[group]) }
+    }
+    return out
+}
+
+/**
  * Resolve an `IOrigamTheme` to its flat CSS-var map.
  *
- * Precedence (low → high): hand-authored semantic fields, then the `tokens`
- * escape hatch, then the `vars` escape hatch. So an explicit `vars` entry always
- * wins, and a raw `tokens` path overrides a semantic field on collision.
+ * Precedence (low → high):
+ *   1. legacy root semantic fields (`colors` / `radius` / … — deprecated, kept
+ *      for back-compat while themes migrate to `vars`),
+ *   2. the structured `vars` token bucket (the normal authoring path),
+ *   3. the `tokens` DTCG escape hatch,
+ *   4. the `cssVars` raw `--origam-*` escape hatch (always wins).
  */
 export function resolveThemeVars (theme: IOrigamTheme): TThemeVars {
     const fromSemantic = semanticFieldsToVars(theme)
+    const fromVars = theme.vars ? themeVarsToVars(theme.vars) : {}
     const fromTokens = theme.tokens ? tokenTreeToVars(theme.tokens, theme.componentTokens) : {}
-    const fromVars: TThemeVars = {}
-    if (theme.vars) {
-        for (const key of Object.keys(theme.vars)) {
-            fromVars[normaliseVarName(key)] = theme.vars[key]
+    const fromCssVars: TThemeVars = {}
+    if (theme.cssVars) {
+        for (const key of Object.keys(theme.cssVars)) {
+            fromCssVars[normaliseVarName(key)] = theme.cssVars[key]
         }
     }
-    return { ...fromSemantic, ...fromTokens, ...fromVars }
+    return { ...fromSemantic, ...fromVars, ...fromTokens, ...fromCssVars }
 }
 
 /**

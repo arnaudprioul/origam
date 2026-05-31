@@ -1,4 +1,4 @@
-import type { ISemanticTree, ITokenTree, TThemeVars } from '../../types'
+import type { ISemanticTree, IThemeVars, ITokenTree, TThemeVars } from '../../types'
 import type { TMode } from '../../types/Theme/theme.type'
 import type { IDefault } from '../DefaultProvider/default-provider.interface'
 
@@ -135,15 +135,30 @@ export interface IOrigamTheme {
     animation?: ISemanticTree
 
     /**
-     * ESCAPE HATCH (advanced) — pre-resolved CSS custom-property map. Keys with
-     * or without the leading `--` are accepted. Use this ONLY for vars that have
-     * no semantic-tree slot; the normal authoring path is `colors` / `radius` /
-     * `typography` / `shadow` / `spacing` / `animation`. Wins over every other
-     * field on key collision.
+     * THE token-configuration bucket — the normal way to author a theme's
+     * global design tokens. A structured JSON keyed by token GROUP
+     * (`color` / `rounded` / `border` / `typo` / `shadow` / `spacing` /
+     * `motion`); each group's nested tree resolves to the matching
+     * `--origam-*` namespace via the shared naming grammar (see `IThemeVars`).
      *
-     *   vars: { '--origam-some-unmapped-var': '...' }
+     *   vars: {
+     *     color:   { surface: { default: '#fff' }, text: { primary: '#171717' } },
+     *     rounded: { md: '10px', lg: '14px' },
+     *     typo:    { family: { sans: 'Inter, sans-serif' } },
+     *     shadow:  { md: '0 2px 8px rgba(0,0,0,.12)' }
+     *   }
      */
-    vars?: TThemeVars
+    vars?: IThemeVars
+
+    /**
+     * ESCAPE HATCH (advanced) — pre-resolved CSS custom-property map. Keys with
+     * or without the leading `--` are accepted. Use ONLY for a raw `--origam-*`
+     * that has no group slot in `vars`. Wins over every other field on
+     * key collision.
+     *
+     *   cssVars: { '--origam-some-unmapped-var': '...' }
+     */
+    cssVars?: TThemeVars
 
     /**
      * ESCAPE HATCH (advanced) — raw DTCG-shaped token tree (supports `$value`
