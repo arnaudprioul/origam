@@ -9,7 +9,6 @@ import { mount } from '@vue/test-utils'
 
 import { createOrigam } from '@origam/origam'
 import { useInstalledThemes } from '@origam/composables/Theme/installed-themes.composable'
-import { sobreTheme } from '@origam/themes/sobre.theme'
 
 afterEach(() => {
     document.querySelectorAll('style[data-origam-theme]').forEach(el => el.remove())
@@ -29,9 +28,9 @@ describe('createOrigam({ themes }) — plural install', () => {
     it('injects one scoped <style> block per theme object', () => {
         mountWithOrigam({
             themes: [
-                { name: 'sobre', mode: 'light', vars: { '--origam-color__surface---default': '#fff' } },
-                { name: 'sobre', mode: 'dark', vars: { '--origam-color__surface---default': '#000' } },
-                { name: 'geek', mode: 'dark', vars: { '--origam-color__surface---default': '#050a05' } }
+                { name: 'sobre', mode: 'light', cssVars: { '--origam-color__surface---default': '#fff' } },
+                { name: 'sobre', mode: 'dark', cssVars: { '--origam-color__surface---default': '#000' } },
+                { name: 'geek', mode: 'dark', cssVars: { '--origam-color__surface---default': '#050a05' } }
             ]
         }, () => {})
 
@@ -46,9 +45,9 @@ describe('createOrigam({ themes }) — plural install', () => {
         let captured: ReturnType<typeof useInstalledThemes> | null = null
         mountWithOrigam({
             themes: [
-                { name: 'sobre', mode: 'light', vars: { '--origam-radius---md': '0.5rem' } },
-                { name: 'sobre', mode: 'dark', vars: { '--origam-radius---md': '0.5rem' } },
-                { name: 'geek', mode: 'dark', vars: { '--origam-radius---md': '0.25rem' } }
+                { name: 'sobre', mode: 'light', cssVars: { '--origam-radius---md': '0.5rem' } },
+                { name: 'sobre', mode: 'dark', cssVars: { '--origam-radius---md': '0.5rem' } },
+                { name: 'geek', mode: 'dark', cssVars: { '--origam-radius---md': '0.25rem' } }
             ]
         }, (themes) => { captured = themes })
 
@@ -62,8 +61,8 @@ describe('createOrigam({ themes }) — plural install', () => {
         let captured: ReturnType<typeof useInstalledThemes> | null = null
         mountWithOrigam({
             themes: [
-                { name: 'sobre', mode: 'light', label: 'Sobre', swatch: 'linear-gradient(#000,#8b5cf6)', vars: { '--origam-radius---md': '0.5rem' } },
-                { name: 'sobre', mode: 'dark', vars: { '--origam-radius---md': '0.5rem' } }
+                { name: 'sobre', mode: 'light', label: 'Sobre', swatch: 'linear-gradient(#000,#8b5cf6)', cssVars: { '--origam-radius---md': '0.5rem' } },
+                { name: 'sobre', mode: 'dark', cssVars: { '--origam-radius---md': '0.5rem' } }
             ]
         }, (themes) => { captured = themes })
 
@@ -75,8 +74,8 @@ describe('createOrigam({ themes }) — plural install', () => {
     it('merges singular `theme` and plural `themes`', () => {
         let captured: ReturnType<typeof useInstalledThemes> | null = null
         mountWithOrigam({
-            theme: { name: 'sobre', mode: 'light', vars: { '--origam-radius---md': '0.5rem' } },
-            themes: [{ name: 'geek', mode: 'dark', vars: { '--origam-radius---md': '0.25rem' } }]
+            theme: { name: 'sobre', mode: 'light', cssVars: { '--origam-radius---md': '0.5rem' } },
+            themes: [{ name: 'geek', mode: 'dark', cssVars: { '--origam-radius---md': '0.25rem' } }]
         }, (themes) => { captured = themes })
 
         expect(captured).toEqual([
@@ -87,36 +86,42 @@ describe('createOrigam({ themes }) — plural install', () => {
 
     it('exposes the installed list on the returned instance', () => {
         const origam = createOrigam({
-            themes: [{ name: 'sobre', mode: 'light', vars: { '--origam-radius---md': '0.5rem' } }]
+            themes: [{ name: 'sobre', mode: 'light', cssVars: { '--origam-radius---md': '0.5rem' } }]
         })
         expect(origam.themes).toEqual([{ name: 'sobre', modes: ['light'], label: 'sobre' }])
     })
 })
 
-describe('install path via the built-in sobre theme (no themes-all.css)', () => {
-    it('renders [data-theme=sobre][data-mode=dark] vars from the theme object alone', () => {
-        // The themed output comes entirely from the injected block — no CSS
+describe('built-in origam baseline (always injected, root-scoped)', () => {
+    it('a bare install injects the root-scoped origam default (:root + [data-mode=dark])', () => {
+        // The default identity comes entirely from the injected blocks — no CSS
         // matrix is loaded in jsdom.
-        mountWithOrigam({ themes: sobreTheme }, () => {})
+        mountWithOrigam({}, () => {})
 
-        const sobreDark = document.getElementById('origam-theme-sobre-dark')
-        expect(sobreDark).not.toBeNull()
-        expect(sobreDark!.textContent).toContain('[data-theme="sobre"][data-mode="dark"]')
-        expect(sobreDark!.textContent).toContain('--origam-color__surface---default')
+        // origamLight has no name and no mode → :root, id `origam-theme`.
+        const light = document.getElementById('origam-theme')
+        expect(light).not.toBeNull()
+        expect(light!.textContent).toContain(':root {')
+        expect(light!.textContent).toContain('--origam-color__surface---default: #FFFFFF;')
+
+        // origamDark has no name but mode 'dark' → [data-mode="dark"], id `origam-theme-dark`.
+        const dark = document.getElementById('origam-theme-dark')
+        expect(dark).not.toBeNull()
+        expect(dark!.textContent).toContain('[data-mode="dark"]')
     })
 
-    it('bare install (no themes) falls back to the built-in sobre theme (still paints)', () => {
-        // ADR-004: createOrigam installs `sobre` implicitly when no theme is
-        // supplied, so a no-theme install still paints (no white).
+    it('the origam baseline is NOT a selectable brand (name-less → not listed)', () => {
         let captured: ReturnType<typeof useInstalledThemes> | null = null
         mountWithOrigam({}, (themes) => { captured = themes })
+        // No named brand supplied → the switcher list is empty; origam is the
+        // implicit baseline, not a data-theme option.
+        expect(captured).toEqual([])
+    })
 
-        expect(captured).toEqual([{ name: 'sobre', modes: ['light', 'dark'], label: 'Sobre', description: expect.any(String) }])
-        const light = document.getElementById('origam-theme-sobre-light')
-        expect(light).not.toBeNull()
-        expect(light!.textContent).toContain('[data-theme="sobre"][data-mode="light"]')
-        // The base surface var is present → the block is renderable (no white).
-        expect(light!.textContent).toContain('--origam-color__surface---default: #ffffff;')
+    it('keeps the origam baseline injected even when brands are supplied', () => {
+        mountWithOrigam({ themes: [{ name: 'sobre', mode: 'light', cssVars: { '--origam-color__surface---default': '#fff' } }] }, () => {})
+        expect(document.getElementById('origam-theme')).not.toBeNull()
+        expect(document.getElementById('origam-theme-sobre-light')).not.toBeNull()
     })
 })
 
