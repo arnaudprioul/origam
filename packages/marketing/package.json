@@ -3,35 +3,22 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "description": "origam \u2014 Nuxt 4 marketing site (landing, components showcase, playground, blog, hub for docs + stories).",
+  "description": "origam — Nuxt 4 marketing site. Phase 1: landing page on the origam default theme.",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm run changelog:build && pnpm run meta:build && nuxt dev",
+    "dev": "nuxt dev",
     "build": "nuxt build",
-    "build:with-search": "nuxt build && nuxt generate && pagefind --site .output/public --output-subdir pagefind",
     "preview": "nuxt preview",
-    "generate": "nuxt generate && pagefind --site .output/public --output-subdir pagefind",
     "postinstall": "nuxt prepare",
-    "changelog:build": "node scripts/parse-changelog.mjs --out=.generated/changelog.json",
-    "meta:build": "node scripts/extract-component-meta.mjs --out=.generated/components-meta.json",
-    "assets:build": "node scripts/build-static-assets.mjs",
-    "assets:check": "node scripts/build-static-assets.mjs --check",
-    "search:build": "pagefind --site .output/public --output-subdir pagefind",
-    "build:full": "pnpm -F origam build && pnpm -F @origam/stories build && pnpm -F @origam/docs build && pnpm run changelog:build && pnpm run meta:build && pnpm run assets:build && nuxt generate && pnpm run search:build",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
-    "typecheck": "nuxt typecheck",
-    "test:unit": "vitest"
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@nuxt/content": "^3.0.0",
-    "@nuxt/image": "^1.8.0",
     "@nuxtjs/i18n": "^9.0.0",
-    "@nuxtjs/plausible": "^1.0.0",
     "@nuxtjs/seo": "^2.0.0",
     "@vue/repl": "^4.4.0",
-    "monaco-editor": "^0.52.0",
     "nuxt": "^4.0.0",
     "origam": "workspace:*",
     "vue": "^3.5.0",
@@ -39,10 +26,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "better-sqlite3": "^11.3.0",
-    "pagefind": "^1.1.0",
     "typescript": "^5.8.0",
-    "vitest": "^3.0.0",
     "vue-tsc": "^3.0.0"
   }
 }

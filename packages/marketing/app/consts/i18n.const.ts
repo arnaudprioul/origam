@@ -1,10 +1,12 @@
-import type { II18nLocale } from '~/interfaces/i18n.interface'
-import type { TLocale } from '~/types/locale.type'
+import type { LocaleObject } from '@nuxtjs/i18n'
 
-export const I18N_LOCALES: II18nLocale[] = [
-    { code: 'en', iso: 'en-US', name: 'English',  file: 'en.json', dir: 'ltr' },
-    { code: 'fr', iso: 'fr-FR', name: 'Français', file: 'fr.json', dir: 'ltr' }
+export const I18N_LOCALES: LocaleObject[] = [
+    {
+        code: 'en',
+        language: 'en-US',
+        name: 'English',
+        file: 'en.json'
+    }
 ]
 
 export const I18N_COOKIE_KEY = 'origam_locale'
-export const I18N_DEFAULT_LOCALE: TLocale = 'en'

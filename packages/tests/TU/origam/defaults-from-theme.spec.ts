@@ -22,7 +22,7 @@ afterEach(() => {
 // passed by the parent — exactly the OrigamBtn case. Its instance name is set
 // so `useDefaults` reads `defaults['origam-btn']`.
 const FakeBtn = defineComponent({
-    name: 'origam-btn',
+    name: 'OrigamBtn',
     props: { color: { type: String, default: 'neutral' } },
     setup (props) {
         const resolved = useDefaults(props, 'origam-btn')

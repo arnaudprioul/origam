@@ -116,7 +116,10 @@ test.describe('A · Vérif finale install model', () => {
                 await page.goto('/')
                 await applyTheme(page, brand, 'dark')
                 const ssrStyle = await page.evaluate(() => {
-                    const el = document.head.querySelector('style[data-origam-theme-ssr]')
+                    // Le plugin.server.ts injecte via useHead({ style: [{ innerHTML, 'data-origam-theme-ssr': '' }] })
+                    // Nuxt sérialise l'attribut data-hid et assigne id= au tag.
+                    // Le sélecteur cible l'id produit par Nuxt OU l'attribut brut selon la version.
+                    const el = document.head.querySelector('style[id="origam-theme-ssr"], style[data-origam-theme-ssr], style[data-hid="origam-theme-ssr"]')
                     return el ? (el.textContent?.trim() ?? '') : null
                 })
                 expect(ssrStyle, `${brand}/dark — pas de <style data-origam-theme-ssr>`).not.toBeNull()
@@ -140,24 +143,32 @@ test.describe('A · Vérif finale install model', () => {
     test.describe('A5 · ThemeSwitcher — 8 brands installedThemes', () => {
         test('8 options [role=option] dans le menu', async ({ page }) => {
             await page.goto('/')
-            // Ouvrir le menu ThemeSwitcher via le bouton activateur
-            const activatorBtn = page.locator('.theme-switcher__label').first()
-            await activatorBtn.click()
-            await page.waitForTimeout(400)
+            await page.waitForLoadState('networkidle')
 
-            // OrigamMenu téléporte le contenu dans le body — chercher dans toute la page
+            // Le ThemeSwitcher rend un OrigamBtn qui contient .theme-switcher__label.
+            // On cible le bouton parent du span — le span seul ne déclenche pas le menu.
+            const activatorBtn = page.locator('button:has(.theme-switcher__label)').first()
+            await activatorBtn.click()
+            await page.waitForTimeout(600)
+
+            // OrigamMenu téléporte le contenu dans le body via un <div role="menu" ...>
+            // Les OrigamListItem portent role="option".
             const options = page.locator('[role="option"]')
+            await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
             const count = await options.count()
+
             expect(count, `ThemeSwitcher: ${count} options, attendu 8`).toBe(8)
         })
 
         test("aucune option ne porte le label 'origam'", async ({ page }) => {
             await page.goto('/')
-            const activatorBtn = page.locator('.theme-switcher__label').first()
+            await page.waitForLoadState('networkidle')
+            const activatorBtn = page.locator('button:has(.theme-switcher__label)').first()
             await activatorBtn.click()
-            await page.waitForTimeout(400)
+            await page.waitForTimeout(600)
 
             const options = page.locator('[role="option"]')
+            await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
             const labels = await options.allTextContents()
             for (const label of labels) {
                 expect(label.toLowerCase()).not.toContain('origam')

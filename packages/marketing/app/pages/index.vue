@@ -1,48 +1,57 @@
 <script setup lang="ts">
-import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-import { SEO_TWITTER_SITE, SEO_TWITTER_HANDLE } from '~/consts/seo.const'
-import { useSoftwareApplicationLd, useWebsiteLd } from '~/composables/useStructuredData'
+import { useT } from '~/composables/useT'
 
-const { t } = useI18nFallback()
+const { t } = useT()
 
 useSeoMeta({
-    title: t('home.meta.title', 'origam · Vue 3 design system'),
-    description: t('home.meta.description', MARKETING_DEFAULTS.siteDescription),
-    ogTitle: t('home.meta.title', 'origam · Vue 3 design system'),
-    ogDescription: t('home.meta.description', MARKETING_DEFAULTS.siteDescription),
-    ogImageAlt: t('home.meta.ogImageAlt', 'origam — The Vue 3 design system that just works'),
-    twitterCard: 'summary_large_image',
-    twitterSite: SEO_TWITTER_SITE,
-    twitterCreator: SEO_TWITTER_HANDLE
+    title: () => t('home.meta.title', 'origam · Vue 3 design system'),
+    description: () => t('home.meta.description', 'Build your entire Vue 3 design system in minutes.'),
+    ogTitle: () => t('home.meta.title', 'origam · Vue 3 design system'),
+    ogDescription: () => t('home.meta.description', 'Build your entire Vue 3 design system in minutes.')
 })
-
-defineOgImageComponent('OgImageTemplate', {
-    title: t('home.meta.ogTitle', 'The Vue 3 design system that just works'),
-    description: t('home.meta.description', MARKETING_DEFAULTS.siteDescription),
-    type: 'home'
-})
-
-useSoftwareApplicationLd()
-useWebsiteLd()
 </script>
 
 <template>
-    <article
-        class="home-page"
-        data-pagefind-filter="type:page"
-    >
-        <HomeHero />
-        <HomeStats />
-        <HomeFeatures />
-        <HomePlayground />
-        <HomeShowcase />
-        <HomeThemes />
-        <HomeCtaBanner />
+    <article class="home">
+        <HomeHero
+            id="hero"
+            data-cy="section-hero"
+        />
+
+        <HomeKpis
+            id="kpis"
+            data-cy="section-kpis"
+        />
+
+        <HomeFeatures
+            id="features"
+            data-cy="section-features"
+        />
+
+        <HomePlayground
+            id="playground"
+            data-cy="section-playground"
+        />
+
+        <HomeShowcase
+            id="showcase"
+            data-cy="section-showcase"
+        />
+
+        <HomeThemes
+            id="themes"
+            data-cy="section-themes"
+        />
+
+        <HomeCta
+            id="cta"
+            data-cy="section-cta"
+        />
     </article>
 </template>
 
 <style scoped>
-.home-page {
+.home {
     display: flex;
     flex-direction: column;
 }

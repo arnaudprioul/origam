@@ -1,18 +1,12 @@
 export interface INavLink {
-    readonly id: string
-    readonly labelKey: string
-    readonly labelFallback: string
-    readonly href: string
-    readonly external?: boolean
-    readonly descKey?: string
-    readonly descFallback?: string
-    readonly icon?: string
-    readonly children?: ReadonlyArray<INavLink>
+    i18nKey: string
+    i18nFallback: string
+    href: string
+    external?: boolean
 }
 
-export interface IFooterSection {
-    readonly id: string
-    readonly titleKey: string
-    readonly titleFallback: string
-    readonly links: ReadonlyArray<INavLink>
+export interface IFooterColumn {
+    titleKey: string
+    titleFallback: string
+    links: INavLink[]
 }

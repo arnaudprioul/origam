@@ -1,601 +1,195 @@
 {
+  "brand": {
+    "name": "origam",
+    "tagline": "The Vue 3 design system that just works."
+  },
   "a11y": {
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "toggleTheme": "Toggle light and dark mode",
+    "search": "Search the documentation",
+    "starCount": "GitHub stars"
   },
-  "about": {
-    "changelogLink": "Changelog",
-    "contact": {
-      "body": "For anything that doesn't fit a GitHub issue:",
-      "github": "View on GitHub",
-      "githubLabel": "View origam on GitHub (opens in new tab)",
-      "public": "For public questions, prefer",
-      "searchable": "so the answer is searchable.",
-      "title": "Contact"
-    },
-    "content": {
-      "regionLabel": "Full story"
-    },
-    "externalLink": "opens in new tab",
-    "getInvolved": {
-      "title": "Get involved"
-    },
-    "hero": {
-      "subtitle": "Why we built it, what's inside, and who's behind it.",
-      "title": "About origam"
-    },
-    "lastUpdated": "Last updated",
-    "meta": {
-      "description": "Why we built origam, what's inside, who's behind it.",
-      "ogImageAlt": "About origam",
-      "ogTitle": "About origam",
-      "title": "About · origam"
-    },
-    "principles": {
-      "heading": "Philosophy",
-      "headingId": "principles-heading"
-    },
-    "stack": {
-      "heading": "Stack we use",
-      "headingId": "stack-heading",
-      "opensNewTab": "opens in new tab"
-    },
-    "stats": {
-      "regionLabel": "Key figures"
-    }
+  "chrome": {
+    "version": "v2.5.1",
+    "searchPlaceholder": "Search…",
+    "searchShortcut": "⌘K",
+    "starCount": "4.2k",
+    "theme": "Theme: Sobre"
   },
-  "blog": {
-    "breadcrumbLabel": "Breadcrumb",
-    "editOnGithub": "Edit on GitHub",
-    "editOnGithubLabel": "Edit this article on GitHub (opens in new tab)",
-    "heading": "Blog",
-    "meta": {
-      "ogImageAlt": "origam Blog"
-    },
-    "nextPage": "Next",
-    "nextPageLabel": "Next page",
-    "notFound": "Article not found",
-    "pageDescription": "Releases, philosophy, tutorials.",
-    "pageInfo": "Page {current} of {total}",
-    "pageTitle": "Blog · origam",
-    "paginationLabel": "Blog pagination",
-    "postsLabel": "Blog posts",
-    "prevPage": "Previous",
-    "prevPageLabel": "Previous page",
-    "readArticle": "Read article",
-    "readArticleLabel": "Read article: {title}",
-    "readingTime": "{n} min read",
-    "relatedArticles": "Related articles",
-    "subtitle": "Releases, philosophy, tutorials.",
-    "tagsLabel": "Article tags"
-  },
-  "changelog": {
-    "comingSoon": "Coming soon",
-    "empty": "No changes match the selected filters",
-    "filtersLabel": "Filter by change type",
-    "heading": "Changelog",
-    "meta": {
-      "description": "Every release, every change.",
-      "ogImageAlt": "origam Changelog",
-      "title": "Changelog · origam"
-    },
-    "releasesLabel": "Releases",
-    "subtitle": "Every release, every change.",
-    "unreleased": "Unreleased",
-    "viewOnGithub": "View on GitHub",
-    "viewOnGithubAriaLabel": "View CHANGELOG.md on GitHub"
-  },
-  "codeDemo": {
-    "clickedTimes": "Clicked",
-    "copyLabel": "Copy code snippet",
-    "heading": "Quick start",
-    "openPlayground": "Open in playground",
-    "previewLabel": "Live component preview",
-    "snippetCaption": "Vue SFC usage example",
-    "subtitle": "Drop origam components into your Vue 3 project in seconds.",
-    "times": "times"
-  },
-  "common": {
-    "loading": "Loading…"
-  },
-  "components": {
-    "card": {
-      "linkLabel": "View {name} component"
-    },
-    "detail": {
-      "backToComponents": "Back to components",
-      "breadcrumbNav": "Breadcrumb",
-      "fullStory": "Open story fullscreen",
-      "githubSource": "Source on GitHub",
-      "noData": "No data available.",
-      "notFound": "Component not found.",
-      "seoDescriptionFallback": "{name} component — origam Vue 3 design system.",
-      "seoTitle": "{name} · origam",
-      "storyRegion": "Live story preview",
-      "storyTitle": "{name} story preview",
-      "tabEmits": "Emits",
-      "tabExamples": "Examples",
-      "tabNav": "Component documentation tabs",
-      "tabOverview": "Overview",
-      "tabProps": "Props",
-      "tabSlots": "Slots",
-      "viewInDocs": "View in docs"
-    },
-    "grid": {
-      "empty": "No components match this filter.",
-      "region": "Components list"
-    },
-    "index": {
-      "allCategories": "All",
-      "categoriesTitle": "Categories",
-      "categories": {
-        "layout": "Layout",
-        "navigation": "Navigation",
-        "forms": "Forms",
-        "data": "Data display",
-        "feedback": "Feedback",
-        "overlay": "Overlay",
-        "media": "Media",
-        "utilities": "Utilities"
-      },
-      "count": "Showing {filteredCount} of {total} components",
-      "eyebrow": "BROWSE",
-      "filterNav": "Filter by category",
-      "heading": "Components",
-      "mainRegion": "Components gallery",
-      "meta": {
-        "ogImageAlt": "origam Components"
-      },
-      "searchLabel": "Search components",
-      "searchPlaceholder": "Search components…",
-      "seoDescription": "~95 components, 29 charts, filter by category.",
-      "seoTitle": "Components · origam",
-      "sort": "Sort: A → Z",
-      "statusTitle": "Status",
-      "status": {
-        "stable": "Stable",
-        "beta": "Beta",
-        "experimental": "Experimental"
-      },
-      "subtitle": "~95 components and 29 chart primitives — accessible, typed, token-driven."
-    }
-  },
-  "ctaBanner": {
-    "badge": "Start now — it's free",
-    "browse": "Browse components",
-    "copyLabel": "Copy install command",
-    "docs": "Read docs",
-    "github": "GitHub",
-    "githubLabel": "View on GitHub (opens in new tab)",
-    "installCaption": "Install origam via npm",
-    "socialProof": "Joined by teams shipping faster",
-    "subtitle": "Spin up your Vue 3 project with origam in 30 seconds.",
-    "title": "Ready to ship faster?"
-  },
-  "features": {
-    "a11y": {
-      "desc": "Automated axe-core tests on every component.",
-      "title": "WCAG 2.1 AA"
-    },
-    "charts": {
-      "desc": "Highcharts-tier coverage in your bundle.",
-      "title": "29 chart primitives"
-    },
-    "css": {
-      "desc": ":has(), container queries, color-mix, prefers-reduced-motion.",
-      "title": "CSS-first"
-    },
-    "figma": {
-      "desc": "Sync tokens & components both ways via Origam DS Sync.",
-      "title": "Figma plugin"
-    },
-    "heading": "Why origam",
-    "subtitle": "Production-ready, accessible, and developer-friendly.",
-    "tokens": {
-      "desc": "Multi-theme (light/dark/brand) via Tokens Studio.",
-      "title": "Design tokens"
-    },
-    "typescript": {
-      "desc": "Strict mode, complete types, ergonomic APIs.",
-      "title": "TypeScript first"
-    },
-    "vue": {
-      "desc": "Composition API, script setup, SFC, no jank.",
-      "title": "Vue 3 native"
-    }
+  "nav": {
+    "components": "Components",
+    "playground": "Playground",
+    "docs": "Docs",
+    "stories": "Stories",
+    "blog": "Blog",
+    "changelog": "Changelog",
+    "github": "GitHub"
   },
   "footer": {
-    "community": "Community",
-    "contact": "Contact",
-    "copyright": "© 2026 origam · MIT",
-    "github": "GitHub",
-    "integrations": "Integrations",
-    "license": "MIT License",
-    "madeWith": "Made with",
-    "npm": "npm package",
-    "product": "Product",
-    "resources": "Resources",
     "tagline": "The Vue 3 design system that just works.",
-    "tokensStudio": "Tokens Studio",
-    "signature": "Made with origam, by humans.",
-    "cols": {
-      "product": { "title": "Product" },
-      "resources": { "title": "Resources" },
-      "community": { "title": "Community" },
-      "legal": { "title": "Legal" }
-    }
+    "product": {
+      "title": "Product",
+      "charts": "Charts",
+      "themes": "Themes"
+    },
+    "resources": {
+      "title": "Resources",
+      "github": "GitHub",
+      "community": "Community",
+      "discord": "Discord",
+      "discussions": "Discussions",
+      "twitter": "Twitter",
+      "rss": "RSS"
+    },
+    "legal": {
+      "title": "Legal",
+      "license": "MIT License",
+      "privacy": "Privacy",
+      "contact": "Contact"
+    },
+    "copyright": "© 2026 origam · MIT",
+    "madeWith": "Made with origam, by humans."
   },
   "home": {
+    "meta": {
+      "title": "origam · Vue 3 design system",
+      "description": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX."
+    },
     "hero": {
-      "announce": "v2.5.0 — 29 charts shipped, WCAG 2.1 AA pass",
-      "copy": "Copy",
-      "copyInstall": "Copy install command",
-      "ctaBrowse": "Browse components",
-      "ctaGithub": "GitHub",
-      "ctaGithubLabel": "View origam on GitHub (opens in new tab)",
-      "ctaPrimary": "Browse components",
-      "ctaSecondary": "Star on GitHub",
-      "eyebrow": "Vue 3 · TypeScript · Open Source",
-      "installCaption": "Install origam via npm",
-      "installCmd": "npm install origam",
-      "statsA11y": "accessibility",
-      "statsCharts": "chart primitives",
-      "statsComponents": "components",
-      "subtitle": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
-      "title": "The Vue 3 design system that just works.",
+      "badge": "v2.5.0 — 29 charts shipped, WCAG 2.1 AA pass",
       "titleLine1": "The Vue 3 design system",
       "titleLine2": "that just works.",
-      "titleAlt": {
-        "editorial": "The Vue 3 DS — built like you'd write it.",
-        "geek": "Build for developers,\nby developers."
-      }
+      "subtitle": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
+      "ctaComponents": "Browse components",
+      "ctaGithub": "Star on GitHub",
+      "install": "npm install origam",
+      "copy": "Copy",
+      "copied": "Copied"
     },
-    "stats": {
-      "components": { "value": "95", "label": "Components" },
-      "charts": { "value": "29", "label": "Chart primitives" },
-      "a11y": { "value": "100%", "label": "WCAG 2.1 AA" },
-      "size": { "value": "<50kb", "label": "Tree-shakable" },
-      "license": { "value": "MIT", "label": "Open source" },
-      "regionLabel": "Key figures"
+    "kpis": {
+      "title": "origam by the numbers",
+      "componentsValue": "95",
+      "componentsLabel": "Components",
+      "chartsValue": "29",
+      "chartsLabel": "Chart primitives",
+      "a11yValue": "100%",
+      "a11yLabel": "WCAG 2.1 AA",
+      "sizeValue": "<50kb",
+      "sizeLabel": "Tree-shakable",
+      "licenseValue": "MIT",
+      "licenseLabel": "Open source"
     },
     "features": {
       "eyebrow": "WHAT'S INSIDE",
-      "title": "Everything you'd expect.",
-      "titleSecondary": "Nothing you wouldn't.",
-      "body": "A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.",
-      "items": {
-        "1": { "title": "29 chart primitives", "desc": "Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license." },
-        "2": { "title": "WCAG 2.1 AA verified", "desc": "Each component ships with axe-core + Playwright a11y tests. Keyboard, screen-readers, motion: covered." },
-        "3": { "title": "Design tokens", "desc": "Multi-theme via Tokens Studio. Switch between light, dark, or your own brand at runtime with zero remount." },
-        "4": { "title": "TypeScript first", "desc": "Strict mode, full type inference, generics on Data Table/List. Your IDE will thank you." },
-        "5": { "title": "CSS-first", "desc": "Container queries, :has(), color-mix(), view-transition-name. We use modern CSS so you don't reinvent it." },
-        "6": { "title": "Composition API", "desc": "Built on script setup + Composition API. Headless composables exposed when you need to go low-level." }
+      "title": "Everything you'd expect. Nothing you wouldn't.",
+      "charts": {
+        "title": "29 chart primitives",
+        "description": "Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license."
+      },
+      "a11y": {
+        "title": "WCAG 2.1 AA verified",
+        "description": "Each component ships with axe-core + Playwright a11y tests. Keyboard, screen-readers, motion: covered."
+      },
+      "tokens": {
+        "title": "Design tokens",
+        "description": "Multi-theme via Tokens Studio. Switch between light, dark, or your own brand at runtime with zero remount."
+      },
+      "typescript": {
+        "title": "TypeScript first",
+        "description": "Strict mode, full type inference, generics on Data Table/List. Your IDE will thank you."
+      },
+      "css": {
+        "title": "CSS-first",
+        "description": "Container queries, :has(), color-mix(), view-transition-name. We use modern CSS so you don't reinvent it."
+      },
+      "composition": {
+        "title": "Composition API",
+        "description": "Built on script setup + Composition API. Headless composables exposed when you need to go low-level."
       }
     },
     "playground": {
       "eyebrow": "LIVE PLAYGROUND",
       "title": "Try before you ship.",
-      "codeRegionLabel": "Code editor",
-      "codeCaption": "Vue SFC example",
-      "previewRegionLabel": "Live preview",
-      "tabs": {
-        "share": "SHARE",
-        "open": "OPEN"
-      },
-      "preview": {
-        "title": "Hello Origam",
-        "body": "The Vue 3 design system that just works. Try a component live.",
-        "cta": "Get started"
-      }
+      "file": "App.vue",
+      "share": "SHARE",
+      "open": "OPEN",
+      "caption": "The Vue 3 design system that just works. Try a component live."
     },
     "showcase": {
       "eyebrow": "SHOWCASE",
-      "title": "95 components.",
-      "titleSub": "One vibe.",
+      "title": "95 components. One vibe.",
       "viewAll": "View all",
-      "table": { "label": "Data Table", "sub": "Sortable · filterable · virtualized", "tag": "Data" },
-      "chart": { "label": "Chart Line", "sub": "+12.4% this month" },
-      "switch": { "label": "Switch", "sub": "inset · flat · default" },
-      "chips": { "label": "Chips", "sub": "6 intents" },
-      "avatars": { "label": "Avatar Group", "sub": "+24 members" }
+      "dataTable": {
+        "title": "Data Table",
+        "caption": "Sortable · filterable · virtualized",
+        "colName": "Name",
+        "colOwner": "Owner",
+        "colStatus": "Status",
+        "row1Name": "Aurora release",
+        "row1Owner": "Arnaud",
+        "row1Status": "Shipped",
+        "row2Name": "Tokens v2",
+        "row2Owner": "Léa",
+        "row2Status": "In review",
+        "row3Name": "A11y audit",
+        "row3Owner": "Jade",
+        "row3Status": "In progress",
+        "row4Name": "Chart engine",
+        "row4Owner": "Marc",
+        "row4Status": "Draft",
+        "row5Name": "New theme",
+        "row5Owner": "Romi",
+        "row5Status": "Draft"
+      },
+      "chartLine": {
+        "title": "Chart Line",
+        "caption": "+12.4% this month"
+      },
+      "switch": {
+        "title": "Switch",
+        "caption": "inset · flat · default"
+      },
+      "chips": {
+        "title": "Chips",
+        "caption": "6 intents",
+        "primary": "Primary",
+        "neutral": "Neutral",
+        "success": "Success",
+        "warning": "Warning",
+        "danger": "Danger",
+        "info": "Info"
+      },
+      "avatarGroup": {
+        "title": "Avatar Group",
+        "caption": "+24 members"
+      }
     },
     "themes": {
       "eyebrow": "THEMING",
-      "title": "One design system.",
-      "titleSub": "Every brand.",
-      "body": "DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.",
-      "compat": "→ tokens.studio compatible · → Style Dictionary v4"
+      "title": "One design system. Every brand.",
+      "chipGlass": "Glass",
+      "chipGeek": "Geek",
+      "chipCartoon": "Cartoon",
+      "chipEditorial": "Editorial",
+      "chipMaterial": "Material",
+      "chipEcom": "Ecom",
+      "chipApple": "Apple",
+      "tokensStudio": "tokens.studio compatible",
+      "styleDictionary": "Style Dictionary v4",
+      "previewLight": "light",
+      "previewDark": "dark",
+      "previewBrandA": "brand-a",
+      "previewBrandB": "brand-b",
+      "previewButton": "Button",
+      "previewJson": ".json"
     },
     "cta": {
       "title": "Ready to ship faster?",
-      "body": "Spin up your Vue 3 project with origam in 30 seconds.",
-      "primary": "Get started",
-      "secondary": "Read docs"
-    },
-    "codeDemo": {
-      "eyebrow": "Get started fast",
-      "livePreview": "Live preview",
-      "step1": "Install the package",
-      "step2": "Import the Nuxt module",
-      "step3": "Use any component"
-    },
-    "meta": {
-      "description": "29 chart primitives, ~95 components, full a11y, design tokens. The Vue 3 design system that just works.",
-      "ogImageAlt": "origam — The Vue 3 design system that just works",
-      "ogTitle": "The Vue 3 design system that just works",
-      "title": "origam · Vue 3 design system"
+      "description": "Spin up your Vue 3 project with origam in 30 seconds.",
+      "ctaDocs": "Read docs",
+      "install": "npm install origam",
+      "copy": "Copy",
+      "copied": "Copied"
     }
-  },
-  "nav": {
-    "about": "About",
-    "blog": "Blog",
-    "changelog": "Changelog",
-    "closeMenu": "Close menu",
-    "components": "Components",
-    "docs": "Docs",
-    "figma": "Figma plugin",
-    "github": "GitHub",
-    "githubLabel": "View on GitHub (opens in new tab)",
-    "home": "Home",
-    "logoLabel": "origam — home",
-    "mainLabel": "Main",
-    "openMenu": "Open menu",
-    "playground": "Playground",
-    "search": "Search…",
-    "searchHint": "⌘K",
-    "stories": "Stories",
-    "switchToDark": "Switch to dark theme",
-    "switchToLight": "Switch to light theme",
-    "docsItems": {
-      "gettingStarted": "Getting started",
-      "gettingStartedDesc": "Install origam in a Vue 3 app in 30 seconds.",
-      "why": "Why origam",
-      "whyDesc": "95 components, 29 charts, full a11y, CSS-first.",
-      "installation": "Installation",
-      "installationDesc": "npm, pnpm, yarn, Nuxt module.",
-      "theming": "Theming",
-      "themingDesc": "Design tokens, multi-theme, brand variants.",
-      "migration": "Migration",
-      "migrationDesc": "Upgrade from v1 to v2."
-    },
-    "componentsItems": {
-      "browse": "Browse all",
-      "browseDesc": "95 components, filterable by category.",
-      "stories": "Stories",
-      "storiesDesc": "Histoire interactive playgrounds for every component.",
-      "charts": "Chart primitives",
-      "chartsDesc": "29 chart types — line, area, bar, donut, …",
-      "figma": "Figma plugin",
-      "figmaDesc": "Sync tokens & components both ways.",
-      "categoriesTitle": "Categories",
-      "categoriesLabel": "Browse by category",
-      "category": {
-        "layout": "Layout",
-        "navigation": "Navigation",
-        "forms": "Forms",
-        "data": "Data",
-        "feedback": "Feedback",
-        "overlay": "Overlay",
-        "media": "Media",
-        "utilities": "Utilities"
-      }
-    }
-  },
-  "themes": {
-    "label": "Theme",
-    "mode": "Mode",
-    "light": "Light",
-    "dark": "Dark",
-    "switcherLabel": "Switch theme",
-    "sobre": { "label": "Sobre", "desc": "Linear · Vercel-style" },
-    "glass": { "label": "Glass", "desc": "Frosted · luminous" },
-    "geek": { "label": "Geek", "desc": "Terminal · mono · green" },
-    "cartoon": { "label": "Cartoon", "desc": "daisyUI · neo-brutalist" },
-    "editorial": { "label": "Editorial", "desc": "Magazine · serif" },
-    "material": { "label": "Material", "desc": "Google Material 3" },
-    "ecom": { "label": "Ecom", "desc": "AliExpress · Amazon vibe" },
-    "apple": { "label": "Apple", "desc": "Premium · minimal · clean" }
-  },
-  "figma": {
-    "meta": {
-      "title": "Figma plugin · origam",
-      "description": "Origam DS Sync — the official Figma plugin that syncs origam tokens and components into your design files.",
-      "ogTitle": "Figma plugin",
-      "ogAlt": "Origam DS Sync — Figma plugin"
-    },
-    "breadcrumb": {
-      "label": "Breadcrumb",
-      "integrations": "Integrations",
-      "figma": "Figma plugin"
-    },
-    "eyebrow": "Integration",
-    "tagline": "Bridge your origam design system and Figma. Sync tokens, generate component sets, export back to the repo — no manual copy-paste.",
-    "cta": {
-      "download": "Get the plugin",
-      "releases": "View releases"
-    },
-    "features": {
-      "title": "What it does",
-      "componentSets": {
-        "title": "14 component sets",
-        "body": "The most-used origam components rendered as native Figma COMPONENT_SETs — variants, states, sizes ready to drop in a frame."
-      },
-      "tokensStudio": {
-        "title": "Tokens Studio round-trip",
-        "body": "Export your design changes back to the repo as Tokens Studio JSON. No manual copy/paste, no token drift."
-      },
-      "scssExport": {
-        "title": "SCSS export",
-        "body": "Generate origam-compatible SCSS variables from your Figma file — same naming convention as the runtime tokens."
-      },
-      "variables": {
-        "title": "Figma Variables aware",
-        "body": "Consumes Tokens Studio variables already imported in your file — does not duplicate or override them."
-      }
-    },
-    "requirements": {
-      "title": "Requirements",
-      "desktop": "Figma desktop app (web client cannot load local plugins)",
-      "tokensStudio": "Tokens Studio for Figma plugin (free)",
-      "node": "Node 22+ for building the plugin from source"
-    },
-    "downloads": {
-      "title": "Get the source",
-      "note": "The plugin lives in the same monorepo as the origam library. Clone, build, and load it as a Figma development plugin."
-    },
-    "download": {
-      "source": "Source on GitHub",
-      "readme": "Installation guide",
-      "changelog": "Plugin changelog"
-    },
-    "install": {
-      "title": "Install in 4 steps",
-      "step1": "Clone the repo and cd into figma-plugin/",
-      "step2": "Run npm install && npm run build to produce dist/code.js + dist/ui.html",
-      "step3": "Open Figma desktop → Plugins → Development → Import plugin from manifest → pick figma-plugin/manifest.json",
-      "step4": "Run the plugin from any Figma file with Tokens Studio variables loaded"
-    }
-  },
-  "playground": {
-    "eyebrow": "LIVE PLAYGROUND",
-    "title": "Try origam in your browser",
-    "theme": "Theme:",
-    "loadPrefix": "LOAD →",
-    "templatesNav": "Load template",
-    "lines": "{n} lines",
-    "live": "LIVE",
-    "compiled": "Compiled in 84ms",
-    "bundle": "Bundle: 12.4kb gzip",
-    "console": {
-      "title": "Console",
-      "compiled": "Compiled successfully",
-      "loaded": "Loaded 4 components from origam",
-      "theme": "Theme:",
-      "a11y": "0 a11y warnings"
-    },
-    "tip": {
-      "title": "Pro tip",
-      "bodyPrefix": "Try changing ",
-      "bodyMid": " to "
-    },
-    "editor": {
-      "label": "Vue SFC code editor",
-      "loading": "Loading editor…"
-    },
-    "meta": {
-      "description": "Try origam components in your browser. No install required.",
-      "ogImageAlt": "origam Playground",
-      "ogTitle": "Playground",
-      "title": "Playground · origam"
-    },
-    "preview": {
-      "errorLabel": "Compilation error",
-      "errorTitle": "Compilation error",
-      "loading": "Compiling preview…",
-      "loadingBrowser": "Preview renders in the browser",
-      "ssr": "Preview renders in the browser"
-    },
-    "share": {
-      "copied": "Link copied!",
-      "fallback": "Copy this URL: "
-    },
-    "split": {
-      "label": "Code editor and preview",
-      "codeRegion": "Code editor",
-      "previewRegion": "Live preview"
-    },
-    "tabs": {
-      "code": "Code",
-      "label": "Editor and preview tabs",
-      "preview": "Preview"
-    },
-    "toolbar": {
-      "copied": "Link copied!",
-      "navLabel": "Playground actions",
-      "reset": "Reset",
-      "resetLabel": "Reset to default template",
-      "share": "Share link",
-      "shareLabel": "Copy share link to clipboard",
-      "stories": "Open in stories",
-      "storiesLabel": "Open matching story in Histoire",
-      "templateLabel": "Template"
-    }
-  },
-  "search": {
-    "dialogLabel": "Site search",
-    "empty": "Try searching for a component, blog post, or doc page.",
-    "errorDev": "Search index not available. Run `npm run build` first.",
-    "escape": "Esc",
-    "inputLabel": "Search",
-    "loading": "Searching…",
-    "navigate": "navigate",
-    "noResults": "No results for",
-    "openLabel": "Open search",
-    "placeholder": "Search components, posts, docs…",
-    "select": "select",
-    "toggle": "toggle",
-    "trigger": "Search…"
-  },
-  "showcase": {
-    "alert": {
-      "info": "WCAG 2.1 AA on every component.",
-      "label": "Alerts",
-      "success": "Strict TypeScript throughout.",
-      "warning": "Zero dependencies outside Vue."
-    },
-    "avatars": {
-      "label": "Avatar group"
-    },
-    "badge": {
-      "alerts": "Alerts",
-      "inbox": "Inbox",
-      "label": "Badges",
-      "status": "Status"
-    },
-    "btn": {
-      "danger": "Danger",
-      "flat": "Primary",
-      "icon": "With icon",
-      "label": "Button variants",
-      "outlined": "Outlined",
-      "success": "Success",
-      "text": "Text",
-      "tonal": "Tonal",
-      "warning": "Warning"
-    },
-    "alertSuccess": {
-      "label": "Alert success"
-    },
-    "avatar": {
-      "label": "Avatar group"
-    },
-    "btnOutline": {
-      "label": "Outlined button"
-    },
-    "card": {
-      "label": "Card with badge"
-    },
-    "carouselLabel": "Component showcase carousel",
-    "chip": {
-      "label": "Chips"
-    },
-    "chips": {
-      "a11y": "A11y",
-      "css": "CSS-first",
-      "label": "Chip group",
-      "openSource": "Open Source",
-      "tokens": "Tokens",
-      "ts": "TypeScript",
-      "vue3": "Vue 3"
-    },
-    "cta": "View all components",
-    "ctaPlayground": "Try the playground",
-    "heading": "See it in action",
-    "progress": {
-      "label": "Progress",
-      "primary": "Primary",
-      "success": "Success",
-      "warning": "Warning"
-    },
-    "subtitle": "Every component ships accessible, themed, and production-ready."
   }
 }

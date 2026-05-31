@@ -20,7 +20,7 @@ import type { IDefault, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved } from './types'
 import { applyThemes, getUid, installedThemesFromList, mergeDeep } from './utils'
 
-import { sobreTheme } from './themes/sobre.theme'
+import { origamTheme } from './themes/origam.theme'
 
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -39,15 +39,19 @@ export function createOrigam (origam: IOrigamOptions = {}) {
     // installed-brand summary is computed eagerly (pure, SSR-safe) so it can be
     // provided to the app context on both server and client.
     //
-    // ADR-004: the DS ships exactly ONE theme, `sobre`. When the consumer
-    // supplies no theme of their own, `sobre` is the implicit default so a bare
-    // `app.use(createOrigam())` paints with the neutral origam identity and its
-    // component defaults. The 7 brand themes live in the marketing package now.
+    // ADR-004 + the two-axis model: the DS ships ONE default identity, `origam`,
+    // ROOT-scoped (no `name`: light at `:root`, dark at `[data-mode="dark"]`). It
+    // is ALWAYS injected first as the zero-config baseline, so every component has
+    // a complete token surface even when no brand is selected. Consumer brands
+    // (named, e.g. marketing's `sobre` / `glass` / …) are layered ON TOP and
+    // override via `[data-theme="<brand>"]`. A bare `app.use(createOrigam())`
+    // therefore paints with the neutral origam identity; the 7 brand themes live
+    // in the marketing package.
     const suppliedThemes = [
         ...(options.theme ? [options.theme] : []),
         ...(options.themes ?? [])
     ]
-    const allThemes: IOrigamTheme[] = suppliedThemes.length ? suppliedThemes : [...sobreTheme]
+    const allThemes: IOrigamTheme[] = [...origamTheme, ...suppliedThemes]
     const installedThemes = installedThemesFromList(allThemes)
 
     // Seed the per-component DEFAULT PROPS provider. The active brand×mode
@@ -187,7 +191,9 @@ export function activeDefaultsFor (
     let merged: IDefault = {}
     for (const theme of themes) {
         if (!theme.component) continue
-        const brandMatches = (theme.name ?? '') === brand
+        // A name-less theme is the ROOT baseline (`origam`) — its component
+        // defaults ALWAYS apply; the active brand is layered on top.
+        const brandMatches = !theme.name || theme.name === brand
         const themeModeAgnostic = theme.mode === undefined || theme.mode === 'auto'
         const modeMatches = themeModeAgnostic || mode === undefined || theme.mode === mode
         if (brandMatches && modeMatches) {

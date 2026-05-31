@@ -1,0 +1,55 @@
+import type { IFooterColumn, INavLink } from '../interfaces/nav.interface'
+
+import { MARKETING_DEFAULTS } from './marketing.const'
+
+export const NAV_LINKS: INavLink[] = [
+    { i18nKey: 'nav.components', i18nFallback: 'Components', href: '/components' },
+    { i18nKey: 'nav.playground', i18nFallback: 'Playground', href: '/playground' },
+    { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs' },
+    { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories' },
+    { i18nKey: 'nav.blog', i18nFallback: 'Blog', href: '/blog' },
+    { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
+]
+
+export const GITHUB_LINK: INavLink = {
+    i18nKey: 'nav.github',
+    i18nFallback: 'GitHub',
+    href: MARKETING_DEFAULTS.githubRepo,
+    external: true
+}
+
+export const DISCORD_LINK = 'https://discord.gg/origam'
+export const TWITTER_LINK = 'https://twitter.com/origam'
+export const RSS_LINK = '/rss.xml'
+
+export const FOOTER_COLUMNS: IFooterColumn[] = [
+    {
+        titleKey: 'footer.product.title',
+        titleFallback: 'Product',
+        links: [
+            { i18nKey: 'footer.product.charts', i18nFallback: 'Charts', href: '/components#charts' },
+            { i18nKey: 'footer.product.themes', i18nFallback: 'Themes', href: '/#themes' }
+        ]
+    },
+    {
+        titleKey: 'footer.resources.title',
+        titleFallback: 'Resources',
+        links: [
+            { i18nKey: 'footer.resources.github', i18nFallback: 'GitHub', href: MARKETING_DEFAULTS.githubRepo, external: true },
+            { i18nKey: 'footer.resources.community', i18nFallback: 'Community', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
+            { i18nKey: 'footer.resources.discord', i18nFallback: 'Discord', href: DISCORD_LINK, external: true },
+            { i18nKey: 'footer.resources.discussions', i18nFallback: 'Discussions', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
+            { i18nKey: 'footer.resources.twitter', i18nFallback: 'Twitter', href: TWITTER_LINK, external: true },
+            { i18nKey: 'footer.resources.rss', i18nFallback: 'RSS', href: RSS_LINK }
+        ]
+    },
+    {
+        titleKey: 'footer.legal.title',
+        titleFallback: 'Legal',
+        links: [
+            { i18nKey: 'footer.legal.license', i18nFallback: 'MIT License', href: `${MARKETING_DEFAULTS.githubRepo}/blob/main/LICENSE`, external: true },
+            { i18nKey: 'footer.legal.privacy', i18nFallback: 'Privacy', href: '/privacy' },
+            { i18nKey: 'footer.legal.contact', i18nFallback: 'Contact', href: '/contact' }
+        ]
+    }
+]

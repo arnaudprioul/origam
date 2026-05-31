@@ -14,7 +14,7 @@ import {
     themeVarsToVars
 } from '@origam/utils/Theme/apply-theme.util'
 
-import { sobreLightTheme } from '@origam/themes/sobre.theme'
+import { origamLightTheme } from '@origam/themes/origam.theme'
 
 afterEach(() => {
     document.querySelectorAll('style[data-origam-theme]').forEach(el => el.remove())
@@ -94,30 +94,38 @@ describe('resolveThemeVars — precedence: vars < cssVars', () => {
     })
 })
 
-describe('sobre theme — vars authoring resolves to the canonical --origam-* names', () => {
-    it('light mode resolves the exact published var names (parity)', () => {
-        const vars = resolveThemeVars(sobreLightTheme)
-        // Surface / text / border
-        expect(vars['--origam-color__surface---default']).toBe('#FFFFFF')
-        expect(vars['--origam-color__surface---raised']).toBe('#FAFAFA')
-        expect(vars['--origam-color__text---primary']).toBe('#0A0A0A')
+describe('origam theme — cssVars carries the full canonical --origam-* set', () => {
+    it('light mode resolves the exact published var names + values (parity with the token sheets)', () => {
+        const vars = resolveThemeVars(origamLightTheme)
+        // Surface / text / border — values are the raw declarations from
+        // packages/ds/dist/src/assets/css/tokens/light.css (verbatim, lowercase).
+        expect(vars['--origam-color__surface---default']).toBe('#ffffff')
+        expect(vars['--origam-color__surface---raised']).toBe('#ffffff')
+        expect(vars['--origam-color__text---primary']).toBe('#171717')
         expect(vars['--origam-color__text---secondary']).toBe('#525252')
-        expect(vars['--origam-color__text---onColor']).toBe('#FFFFFF')
-        expect(vars['--origam-color__border---focus']).toBe('#7C3AED')
+        expect(vars['--origam-color__text---onColor']).toBe('#ffffff')
+        expect(vars['--origam-color__border---focus']).toBe('#7c3aed')
         // Action (4-segment, camelCase property preserved)
-        expect(vars['--origam-color__action--primary---bg']).toBe('#7C3AED')
-        expect(vars['--origam-color__action--primary---bgHover']).toBe('#6D28D9')
-        expect(vars['--origam-color__action--ghost---bg']).toBe('rgba(0,0,0,0)')
+        expect(vars['--origam-color__action--primary---bg']).toBe('#7c3aed')
+        expect(vars['--origam-color__action--primary---bgHover']).toBe('#6d28d9')
+        expect(vars['--origam-color__action--ghost---bg']).toBe('rgba(0, 0, 0, 0)')
         // Feedback
-        expect(vars['--origam-color__feedback--success---bg']).toBe('#15803D')
-        // Radius (rounded group → radius root)
-        expect(vars['--origam-radius---md']).toBe('10px')
+        expect(vars['--origam-color__feedback--success---bg']).toBe('#4caf50')
     })
 
-    it('carries NO gradient vars (gradient is not a theme-authoring group)', () => {
-        const vars = resolveThemeVars(sobreLightTheme)
+    it('carries the component tier — a bare createOrigam no longer leaves component vars undefined', () => {
+        const vars = resolveThemeVars(origamLightTheme)
+        // Regression guard for SPEC-021: the component tier (~2700 vars) must be
+        // present, not just the semantic colour tier.
+        expect(vars['--origam-btn---height']).toBe('36px')
+        expect(vars['--origam-toolbar__wrapper---align-items']).toBe('flex-start')
+    })
+
+    it('carries the published gradient primitives (part of the canonical sheet)', () => {
+        const vars = resolveThemeVars(origamLightTheme)
         const gradientKeys = Object.keys(vars).filter(k => k.startsWith('--origam-gradient'))
-        expect(gradientKeys).toEqual([])
+        expect(gradientKeys).toContain('--origam-gradient---sunset')
+        expect(vars['--origam-gradient---sunset']).toBe('linear-gradient(135deg, #ff7e5f, #feb47b)')
     })
 })
 
