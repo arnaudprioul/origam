@@ -569,7 +569,7 @@
 		font-size: 16px;
 		letter-spacing: 0.009375em;
 		max-width: 100%;
-		border-radius: var(--origam-field---rounded);
+		border-radius: var(--origam-field---border-radius, 8px);
 		contain: layout;
 		flex: 1 0;
 		grid-area: control;
@@ -579,7 +579,7 @@
 		&__skeleton {
 			width: 100%;
 			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 36px));
-			border-radius: var(--origam-field---rounded);
+			border-radius: var(--origam-field---border-radius, 8px);
 			grid-column: 1 / -1;
 			grid-row: 1;
 		}
@@ -937,7 +937,7 @@
 
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
-				border-radius: var(--origam-field---rounded) var(--origam-field---rounded) 0 0;
+				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
 				--origam-field__input---padding-top: 20px;
 
 				#{$this}__outlines {
@@ -993,10 +993,10 @@
 						border-bottom-width: var(--origam-field---border-width);
 						border-inline-start-width: var(--origam-field---border-width);
 						border-inline-end-width: 0;
-						border-start-start-radius: var(--origam-field---rounded);
+						border-start-start-radius: var(--origam-field---border-radius, 8px);
 						border-start-end-radius: 0;
 						border-end-end-radius: 0;
-						border-end-start-radius: var(--origam-field---rounded);
+						border-end-start-radius: var(--origam-field---border-radius, 8px);
 					}
 
 					&--end {
@@ -1005,8 +1005,8 @@
 						border-inline-end-width: var(--origam-field---border-width);
 						border-inline-start-width: 0;
 						border-start-start-radius: 0;
-						border-start-end-radius: var(--origam-field---rounded);
-						border-end-end-radius: var(--origam-field---rounded);
+						border-start-end-radius: var(--origam-field---border-radius, 8px);
+						border-end-end-radius: var(--origam-field---border-radius, 8px);
 						border-end-start-radius: 0;
 					}
 

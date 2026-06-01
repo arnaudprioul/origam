@@ -9,7 +9,7 @@
 
     "font-size":              { "$type": "dimension",    "$value": "16px",                         "$description": "Base font-size of the field" },
     "letter-spacing":         { "$type": "dimension",    "$value": "{font.letterSpacing.wide}",     "$description": "Letter-spacing applied to the field root and input" },
-    "border-radius":          { "$type": "dimension",    "$value": "{radius.sm}",                  "$description": "Controlled via --origam-field---rounded CSS custom property set by useRounded" },
+    "border-radius":          { "$type": "dimension",    "$value": "{radius.sm}",                  "$description": "Field corner radius; consumed directly by the SCSS and per-theme overridable. The rounded prop overrides it at instance level via an inline border-radius from useRounded" },
 
     "border-color":           { "$type": "color",        "$value": "{color.border.default}",       "$description": "Default outline/underline border color" },
     "border-width":           { "$type": "dimension",    "$value": "{border.width.thin}",          "$description": "Default border width for outlined/underlined variants" },

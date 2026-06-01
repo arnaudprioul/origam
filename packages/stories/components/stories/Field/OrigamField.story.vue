@@ -90,6 +90,36 @@
 		</Variant>
 
 		<Variant
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'md' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+					<origam-field
+							label="Default radius (themed)"
+							data-cy="field-rounded-default"
+					>
+						<template #default="{ id, onFocus, onBlur }">
+							<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+						</template>
+					</origam-field>
+					<origam-field
+							:rounded="state.rounded"
+							label="Rounded prop"
+							data-cy="field-rounded-prop"
+					>
+						<template #default="{ id, onFocus, onBlur }">
+							<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+						</template>
+					</origam-field>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — color"
 				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
@@ -325,11 +355,11 @@
 
 	import { OrigamField, OrigamIcon } from '@origam/components'
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
-	import type { IColorProps, IDensityProps, IFieldProps } from '@origam/interfaces'
+	import type { IColorProps, IDensityProps, IFieldProps, IRoundedProps } from '@origam/interfaces'
 	import type { TVariantInput } from '@origam/types'
 
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, variantInputList } from '@stories/const'
+	import { densityList, intentList, roundedList, variantInputList } from '@stories/const'
 
 	/** Full list for the showcase — no "(none)" entry. */
 	const variantInputShowcaseList = variantInputList.filter(v => v.value !== undefined)
