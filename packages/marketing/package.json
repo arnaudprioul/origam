@@ -28,7 +28,7 @@
     "@nuxt/content": "^3.0.0",
     "@nuxt/image": "^1.8.0",
     "@nuxtjs/i18n": "^9.0.0",
-    "@nuxtjs/plausible": "^1.0.0",
+    "@nuxtjs/plausible": "^3.0.2",
     "@nuxtjs/seo": "^2.0.0",
     "@vue/repl": "^4.4.0",
     "monaco-editor": "^0.52.0",
