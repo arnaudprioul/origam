@@ -9,7 +9,7 @@ test('DEBUG itemgroup — multiple/tiles take 1/4 of available width', async ({ 
     await page.waitForLoadState('networkidle')
 
     // Pick the "Multiple — tiles (checkbox)" variant
-    await page.getByText('Multiple — tiles (checkbox)', { exact: true }).last().click({ timeout: 10_000 })
+    await page.getByText('Prop — multiple (checkbox-style tiles)', { exact: true }).last().click({ timeout: 10_000 })
     await page.waitForTimeout(1500)
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

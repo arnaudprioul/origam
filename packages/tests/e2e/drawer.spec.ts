@@ -6,7 +6,7 @@ test.describe('OrigamDrawer', () => {
 	test('Default (permanent) — drawer is visible in layout', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default (permanent)', { exact: true }).first().click()
+		await page.getByText('Prop — permanent', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -18,7 +18,7 @@ test.describe('OrigamDrawer', () => {
 	test('Temporary — activator button is visible', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Temporary', { exact: true }).first().click()
+		await page.getByText('Prop — temporary', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamDrawer', () => {
 	test('Rail — drawer is visible in rail mode', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Rail', { exact: true }).first().click()
+		await page.getByText('Prop — rail (collapsed permanent)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -42,7 +42,7 @@ test.describe('OrigamDrawer', () => {
 	test('Location — drawer shows location text', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Location', { exact: true }).first().click()
+		await page.getByText('Prop — location (left / right / top / bottom)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -53,7 +53,7 @@ test.describe('OrigamDrawer', () => {
 	test('Slot — prepend — prepend area renders above body', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — prepend', { exact: true }).first().click()
+		await page.getByText('Slot — prepend (header)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -66,7 +66,7 @@ test.describe('OrigamDrawer', () => {
 	test('Slot — append — append area renders below body', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — append', { exact: true }).first().click()
+		await page.getByText('Slot — append (footer)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

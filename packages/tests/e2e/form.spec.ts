@@ -6,7 +6,7 @@ test.describe('OrigamForm', () => {
     test('Basic wiring — form with TextField and NumberField renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic wiring (TextField + NumberField)', { exact: true }).first().click()
+        await page.getByText('Prop — basic wiring (TextField + NumberField)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -18,7 +18,7 @@ test.describe('OrigamForm', () => {
     test('Basic wiring — submit button fires submit handler', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic wiring (TextField + NumberField)', { exact: true }).first().click()
+        await page.getByText('Prop — basic wiring (TextField + NumberField)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -31,7 +31,7 @@ test.describe('OrigamForm', () => {
     test('Validate on — field renders with validation strategy', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Validate on', { exact: true }).first().click()
+        await page.getByText('Prop — validateOn', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -42,7 +42,7 @@ test.describe('OrigamForm', () => {
     test('Disabled — form fields appear disabled', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Disabled', { exact: true }).first().click()
+        await page.getByText('Prop — disabled', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -52,7 +52,7 @@ test.describe('OrigamForm', () => {
     test('Fast fail — form renders with multiple fields', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Fast fail', { exact: true }).first().click()
+        await page.getByText('Prop — fastFail', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

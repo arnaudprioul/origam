@@ -46,7 +46,7 @@ test.describe('OrigamSwitch', () => {
         // runtime without relying on programmatic HstSelect interaction.
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         // Fixture 1: color="primary" only → label + thumb tinted, track stays grey.
@@ -115,7 +115,7 @@ test.describe('OrigamSwitch', () => {
     test('Slot track.true / track.false — custom track content renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — track.true / track.false', { exact: true }).first().click()
+        await page.getByText('Slot — track.true', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -6,7 +6,7 @@ test.describe('OrigamRadio', () => {
     test('Color variant — renders radio with label', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +17,7 @@ test.describe('OrigamRadio', () => {
     test('Density variant — radio renders with density class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Density', { exact: true }).first().click()
+        await page.getByText('Prop — density', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -27,7 +27,7 @@ test.describe('OrigamRadio', () => {
     test('States — disabled and readonly render without throw', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled & readonly', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

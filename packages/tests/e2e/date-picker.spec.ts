@@ -6,7 +6,7 @@ test.describe('OrigamDatePicker', () => {
     test('Single date variant — calendar grid is visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single date', { exact: true }).first().click()
+        await page.getByText('Prop — modelValue (single date)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -16,7 +16,7 @@ test.describe('OrigamDatePicker', () => {
     test('Range variant — picker renders in range mode', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Range', { exact: true }).first().click()
+        await page.getByText('Prop — range', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -26,7 +26,7 @@ test.describe('OrigamDatePicker', () => {
     test('Multiple variant — picker renders in multiple mode', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Multiple', { exact: true }).first().click()
+        await page.getByText('Prop — multiple', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -36,7 +36,7 @@ test.describe('OrigamDatePicker', () => {
     test('Constraints variant — picker renders with min/max', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Constraints (min / max)', { exact: true }).first().click()
+        await page.getByText('Prop — min & max (date constraints)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -46,7 +46,7 @@ test.describe('OrigamDatePicker', () => {
     test('Show week numbers — picker has show-week class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Show week numbers', { exact: true }).first().click()
+        await page.getByText('Prop — showWeek', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

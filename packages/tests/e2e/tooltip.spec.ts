@@ -42,7 +42,7 @@ test.describe('OrigamTooltip', () => {
 	test('Default — tooltip appears on hover with declared text', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default (hover)', { exact: true }).first().click()
+		await page.getByText('Default', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -53,7 +53,7 @@ test.describe('OrigamTooltip', () => {
 	test('Text — tooltip text matches the `text` prop', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Text', { exact: true }).first().click()
+		await page.getByText('Prop — text', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -65,7 +65,7 @@ test.describe('OrigamTooltip', () => {
 	test('Open on click — tooltip does NOT appear on hover, DOES on click', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Open on click', { exact: true }).first().click()
+		await page.getByText('Prop — openOnClick', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -90,7 +90,7 @@ test.describe('OrigamTooltip', () => {
 	test('Slot — default — rich custom markup renders inside the popup', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — default', { exact: true }).first().click()
+		await page.getByText('Slot — default (rich content)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -109,7 +109,7 @@ test.describe('OrigamTooltip', () => {
 	test('Location — top: popup sits ABOVE the activator', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Location', { exact: true }).first().click()
+		await page.getByText('Prop — location', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -125,7 +125,7 @@ test.describe('OrigamTooltip', () => {
 	test('Offset — popup is repositioned (anchor-origin computed) when offset changes', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Offset', { exact: true }).first().click()
+		await page.getByText('Prop — offset', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

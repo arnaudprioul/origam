@@ -40,7 +40,7 @@ test.describe('OrigamApp', () => {
 	test('With Drawer — drawer toggle button renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('With Drawer', { exact: true }).first().click()
+		await page.getByText('Prop — drawer (with Drawer child)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -51,7 +51,7 @@ test.describe('OrigamApp', () => {
 	test('With Drawer — navigation drawer renders inside app', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('With Drawer', { exact: true }).first().click()
+		await page.getByText('Prop — drawer (with Drawer child)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -62,7 +62,7 @@ test.describe('OrigamApp', () => {
 	test('Full height — app renders with fullHeight control', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Full height', { exact: true }).first().click()
+		await page.getByText('Prop — fullHeight', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

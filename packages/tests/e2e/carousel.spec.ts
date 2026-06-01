@@ -6,7 +6,7 @@ test.describe('OrigamCarousel', () => {
     test('Basic variant — carousel renders with slides visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -16,7 +16,7 @@ test.describe('OrigamCarousel', () => {
     test('Basic variant — delimiter controls are visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -26,7 +26,7 @@ test.describe('OrigamCarousel', () => {
     test('Auto-play variant — carousel renders (auto-play disabled at frame 0)', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Auto-play', { exact: true }).first().click()
+        await page.getByText('Prop — cycle (auto-play)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -36,7 +36,7 @@ test.describe('OrigamCarousel', () => {
     test('Delimiters variant — renders with delimiter controls', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Delimiters', { exact: true }).first().click()
+        await page.getByText('Prop — hideDelimiters & progress', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -46,7 +46,7 @@ test.describe('OrigamCarousel', () => {
     test('Height variant — carousel renders with custom height', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Height', { exact: true }).first().click()
+        await page.getByText('Prop — height', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

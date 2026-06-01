@@ -1,12 +1,13 @@
 import { expect, test } from '@playwright/test'
 
 const STORY_PATH = '/story/components-stories-sliderfield-origamsliderfield-story-vue'
+const EMITS_PATH = '/story/components-stories-sliderfield-origamsliderfield-emits-story-vue'
 
 test.describe('OrigamSliderField', () => {
     test('Color variant — renders slider track', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +18,7 @@ test.describe('OrigamSliderField', () => {
     test('Range — renders two thumbs', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Range (two-thumb)', { exact: true }).first().click()
+        await page.getByText('Prop — range', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +30,7 @@ test.describe('OrigamSliderField', () => {
     test('Step — slider renders with step config', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Step', { exact: true }).first().click()
+        await page.getByText('Prop — step', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -39,7 +40,7 @@ test.describe('OrigamSliderField', () => {
     test('Ticks — tick marks render on track', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Ticks', { exact: true }).first().click()
+        await page.getByText('Prop — ticks', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -49,7 +50,7 @@ test.describe('OrigamSliderField', () => {
     test('Direction — vertical slider renders in container', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Direction', { exact: true }).first().click()
+        await page.getByText('Prop — direction', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -59,7 +60,7 @@ test.describe('OrigamSliderField', () => {
     test('States — disabled slider is visible but not interactive', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, readonly & error', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -67,7 +68,7 @@ test.describe('OrigamSliderField', () => {
     })
 
     test('Emit update:modelValue — status div shows value', async ({ page }) => {
-        await page.goto(STORY_PATH)
+        await page.goto(EMITS_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
         await page.waitForTimeout(800)
@@ -108,7 +109,7 @@ test.describe('OrigamSliderField', () => {
         test.beforeEach(async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('States', { exact: true }).first().click()
+            await page.getByText('Prop — disabled, readonly & error', { exact: true }).first().click()
             await page.waitForTimeout(800)
         })
 

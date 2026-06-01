@@ -18,7 +18,7 @@ test.describe('OrigamSkeleton', () => {
 	test('variant="circular" produces border-radius: 50% computed style', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Variants', { exact: true }).first().click({ timeout: 5000 })
+		await page.getByText('Prop — variant', { exact: true }).first().click({ timeout: 5000 })
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -36,7 +36,7 @@ test.describe('OrigamSkeleton', () => {
 	test('variant="card" renders 3 nested .origam-skeleton elements', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Variants', { exact: true }).first().click({ timeout: 5000 })
+		await page.getByText('Prop — variant', { exact: true }).first().click({ timeout: 5000 })
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -50,7 +50,7 @@ test.describe('OrigamSkeleton', () => {
 	test('pulse=true adds class origam-skeleton--pulse', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Pulse animation', { exact: true }).first().click({ timeout: 5000 })
+		await page.getByText('Prop — pulse', { exact: true }).first().click({ timeout: 5000 })
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -62,7 +62,7 @@ test.describe('OrigamSkeleton', () => {
 	test('loading=false does NOT render skeleton — renders slot fallback instead', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Loading toggle', { exact: true }).first().click({ timeout: 5000 })
+		await page.getByText('Prop — loading', { exact: true }).first().click({ timeout: 5000 })
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -78,7 +78,7 @@ test.describe('OrigamSkeleton', () => {
 	test('variant="list-item" renders a circular avatar + 2 text lines', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Variants', { exact: true }).first().click({ timeout: 5000 })
+		await page.getByText('Prop — variant', { exact: true }).first().click({ timeout: 5000 })
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

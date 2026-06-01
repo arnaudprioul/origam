@@ -24,7 +24,7 @@ test.describe('OrigamSnackbar', () => {
 	test('Location — trigger button renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Location', { exact: true }).first().click()
+		await page.getByText('Prop — location', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -35,7 +35,7 @@ test.describe('OrigamSnackbar', () => {
 	test('Timeout — trigger button renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Timeout', { exact: true }).first().click()
+		await page.getByText('Prop — timeout', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -46,7 +46,7 @@ test.describe('OrigamSnackbar', () => {
 	test('Timer bar — trigger renders and snackbar with timer class appears', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Timer bar', { exact: true }).first().click()
+		await page.getByText('Prop — timer', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -63,7 +63,7 @@ test.describe('OrigamSnackbar', () => {
 	test('Multi-line — trigger renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Multi-line', { exact: true }).first().click()
+		await page.getByText('Prop — multiLine', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -74,7 +74,7 @@ test.describe('OrigamSnackbar', () => {
 	test('Status — trigger renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Status', { exact: true }).first().click()
+		await page.getByText('Prop — status', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

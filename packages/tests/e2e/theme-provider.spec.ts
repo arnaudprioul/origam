@@ -6,7 +6,7 @@ test.describe('OrigamThemeProvider', () => {
     test('Light theme variant — wrapper has data-theme="light"', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Light theme', { exact: true }).first().click()
+        await page.getByText('Prop — theme (light)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -16,7 +16,7 @@ test.describe('OrigamThemeProvider', () => {
     test('Dark theme variant — wrapper has data-theme="dark"', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Dark theme', { exact: true }).first().click()
+        await page.getByText('Prop — theme (dark)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -59,7 +59,7 @@ test.describe('OrigamThemeProvider', () => {
     test('Auto (inherits from ancestor) — no data-theme attribute is rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Auto (inherits from ancestor)', { exact: true }).first().click()
+        await page.getByText('Prop — theme (auto)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -73,7 +73,7 @@ test.describe('OrigamThemeProvider', () => {
     test('Nested providers — both light and dark data-theme attributes coexist', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Nested providers', { exact: true }).first().click()
+        await page.getByText('Prop — nested providers', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -84,7 +84,7 @@ test.describe('OrigamThemeProvider', () => {
     test('Tag variant — wrapper renders as the specified tag', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Tag', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -14,7 +14,7 @@ test.describe('OrigamDivider', () => {
     test('horizontal direction renders with border-top-width', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Direction', { exact: true }).first().click()
+        await page.getByText('Prop — direction', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamDivider', () => {
     test('vertical direction renders with border-right-width', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Direction', { exact: true }).first().click()
+        await page.getByText('Prop — direction', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -48,7 +48,7 @@ test.describe('OrigamDivider', () => {
     test('thickness prop sets border-top-width via CSS variable', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Thickness', { exact: true }).first().click()
+        await page.getByText('Prop — thickness', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -64,7 +64,7 @@ test.describe('OrigamDivider', () => {
     test('length prop constrains max-width via CSS variable', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Length', { exact: true }).first().click()
+        await page.getByText('Prop — length', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -80,7 +80,7 @@ test.describe('OrigamDivider', () => {
     test('inset class adds left margin offset', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Direction', { exact: true }).first().click()
+        await page.getByText('Prop — direction', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -99,7 +99,7 @@ test.describe('OrigamDivider', () => {
     test('color prop applies border-color via useBothColor', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Direction', { exact: true }).first().click()
+        await page.getByText('Prop — direction', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

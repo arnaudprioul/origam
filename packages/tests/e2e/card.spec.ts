@@ -13,7 +13,7 @@ test.describe('OrigamCard', () => {
 	test('Basic — card renders with title and text', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Basic', { exact: true }).first().click()
+		await page.getByText('Prop — title, subtitle & text', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamCard', () => {
 		// corresponding side and 0 elsewhere.
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -53,7 +53,7 @@ test.describe('OrigamCard', () => {
 	test('Rounded showcase — rounded={true} sets border-radius', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Rounded', { exact: true }).first().click()
+		await page.getByText('Prop — rounded', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -83,7 +83,7 @@ test.describe('OrigamCard', () => {
 		await page.waitForLoadState('networkidle')
 		// Use `.last()` — "Color" is also a sidebar entry name in some
 		// configurations, so `.first()` may match the wrong element.
-		await page.getByText('Color', { exact: true }).last().click({ timeout: 5000 })
+		await page.getByText('Prop — color & bgColor', { exact: true }).last().click({ timeout: 5000 })
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -105,7 +105,7 @@ test.describe('OrigamCard', () => {
 	test('Elevation — card element is visible and receives elevation class', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Elevation', { exact: true }).first().click()
+		await page.getByText('Prop — elevation & flat', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -118,7 +118,7 @@ test.describe('OrigamCard', () => {
 	test('Rounded — card receives rounded class', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Rounded', { exact: true }).first().click()
+		await page.getByText('Prop — rounded', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -129,7 +129,7 @@ test.describe('OrigamCard', () => {
 	test('Border — card element is visible', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -140,7 +140,7 @@ test.describe('OrigamCard', () => {
 	test('Density — card density class changes with control', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Density', { exact: true }).first().click()
+		await page.getByText('Prop — density', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -151,7 +151,7 @@ test.describe('OrigamCard', () => {
 	test('Header (adjacent) — card renders with header area', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Header (adjacent)', { exact: true }).first().click()
+		await page.getByText('Prop — title, subtitle & text', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -162,7 +162,7 @@ test.describe('OrigamCard', () => {
 	test('States — disabled card has disabled class', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('States', { exact: true }).first().click()
+		await page.getByText('Prop — disabled, hover & loading', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -173,7 +173,7 @@ test.describe('OrigamCard', () => {
 	test('Image — card renders with asset region', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Image', { exact: true }).first().click()
+		await page.getByText('Prop — image', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -267,7 +267,7 @@ test.describe('OrigamCard', () => {
 		test('loading=true → default kind line (linear) progress present', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -280,7 +280,7 @@ test.describe('OrigamCard', () => {
 		test('loading=42 → determinate linear progress mounted', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -293,7 +293,7 @@ test.describe('OrigamCard', () => {
 		test('loading={ type: "line" } → explicit linear renderer mounted', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -305,7 +305,7 @@ test.describe('OrigamCard', () => {
 		test('loading={ type: "circular", size: 16 } → circular progress overrides line default', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -318,7 +318,7 @@ test.describe('OrigamCard', () => {
 		test('loading={ type: "skeleton" } → skeleton mounted, header/asset/footer absent', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Loading shapes', { exact: true }).first().click()
+			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -345,7 +345,7 @@ test.describe('OrigamCard', () => {
 		test('shaped — TL and BR are rounded, TR and BL are 0', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Rounded', { exact: true }).first().click()
+			await page.getByText('Prop — rounded', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -371,7 +371,7 @@ test.describe('OrigamCard', () => {
 		test('shaped-invert — TR and BL are rounded, TL and BR are 0', async ({ page }) => {
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Rounded', { exact: true }).first().click()
+			await page.getByText('Prop — rounded', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

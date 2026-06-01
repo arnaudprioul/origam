@@ -6,7 +6,7 @@ test.describe('OrigamLazy', () => {
     test('Basic — scroll to reveal variant renders wrapper', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic — scroll to reveal', { exact: true }).first().click()
+        await page.getByText('Prop — height (scroll to reveal)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -16,7 +16,7 @@ test.describe('OrigamLazy', () => {
     test('Controlled (v-model) — content hidden initially, shown after toggle', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Controlled (v-model)', { exact: true }).first().click()
+        await page.getByText('Prop — modelValue (controlled)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -31,7 +31,7 @@ test.describe('OrigamLazy', () => {
     test('With intersection options variant — wrapper renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('With intersection options', { exact: true }).first().click()
+        await page.getByText('Prop — options (intersection margin)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

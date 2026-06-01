@@ -6,7 +6,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('Default — right-click zone renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default (right-click)', { exact: true }).first().click()
+		await page.getByText('Prop — items (right-click a zone)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +17,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('Default — right-click opens contextual menu', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default (right-click)', { exact: true }).first().click()
+		await page.getByText('Prop — items (right-click a zone)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -34,7 +34,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('With title — right-click zone renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('With title', { exact: true }).first().click()
+		await page.getByText('Prop — title', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -45,7 +45,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('Rich items (icons) — right-click zone renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Rich items (icons)', { exact: true }).first().click()
+		await page.getByText('Prop — items with icons', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -56,7 +56,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('Slot — default — right-click zone renders for custom content', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — default', { exact: true }).first().click()
+		await page.getByText('Slot — default (custom content)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

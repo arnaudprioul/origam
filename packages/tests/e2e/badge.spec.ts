@@ -16,7 +16,7 @@ test.describe('OrigamBadge', () => {
 	test('Color showcase — bgColor paints each intent on the badge body', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Color', { exact: true }).last().click({ timeout: 5000 })
+		await page.getByText('Prop — color & bgColor', { exact: true }).last().click({ timeout: 5000 })
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

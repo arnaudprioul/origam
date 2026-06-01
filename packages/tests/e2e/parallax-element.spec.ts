@@ -15,7 +15,7 @@ test.describe('OrigamParallaxElement', () => {
     test('element renders inside parallax host', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Type', { exact: true }).first().click()
+        await page.getByText('Prop — type', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -26,7 +26,7 @@ test.describe('OrigamParallaxElement', () => {
     test('transition-property is set to transform', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Type', { exact: true }).first().click()
+        await page.getByText('Prop — type', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -41,7 +41,7 @@ test.describe('OrigamParallaxElement', () => {
     test('border class wires to computed border-width', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Type', { exact: true }).first().click()
+        await page.getByText('Prop — type', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -59,7 +59,7 @@ test.describe('OrigamParallaxElement', () => {
     test('padding class wires to computed padding', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Type', { exact: true }).first().click()
+        await page.getByText('Prop — type', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -76,7 +76,7 @@ test.describe('OrigamParallaxElement', () => {
     test('strength prop is consumed — element has transform style', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Strength', { exact: true }).first().click()
+        await page.getByText('Prop — strength', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

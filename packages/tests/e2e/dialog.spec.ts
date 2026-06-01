@@ -24,7 +24,7 @@ test.describe('OrigamDialog', () => {
 	test('Fullscreen — activator renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Fullscreen', { exact: true }).first().click()
+		await page.getByText('Prop — fullscreen', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -35,7 +35,7 @@ test.describe('OrigamDialog', () => {
 	test('Scrollable — activator renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Scrollable', { exact: true }).first().click()
+		await page.getByText('Prop — scrollable', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -46,7 +46,7 @@ test.describe('OrigamDialog', () => {
 	test('Persistent — activator renders and dialog stays open after outside click', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Persistent', { exact: true }).first().click()
+		await page.getByText('Prop — persistent', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -57,7 +57,7 @@ test.describe('OrigamDialog', () => {
 	test('Status — activator renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Status', { exact: true }).first().click()
+		await page.getByText('Prop — status', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -139,7 +139,7 @@ test.describe('OrigamDialog', () => {
 			await page.setViewportSize({ width: 1600, height: 900 })
 			await page.goto(STORY_PATH)
 			await page.waitForLoadState('networkidle')
-			await page.getByText('Sizes', { exact: true }).first().click()
+			await page.getByText('Prop — size', { exact: true }).first().click()
 			await page.waitForTimeout(800)
 
 			const sandboxSrc = await page.locator('iframe[src*="__sandbox"]').getAttribute('src')

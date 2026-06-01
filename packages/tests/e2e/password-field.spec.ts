@@ -194,7 +194,7 @@ test.describe('OrigamPasswordField — legacy variants', () => {
     test('Show/hide icons — toggle button visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Show / hide icons', { exact: true }).first().click()
+        await page.getByText('Prop — onIcon & offIcon', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -205,7 +205,7 @@ test.describe('OrigamPasswordField — legacy variants', () => {
     test('Show/hide — initial input type is password', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Show / hide icons', { exact: true }).first().click()
+        await page.getByText('Prop — onIcon & offIcon', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -216,7 +216,7 @@ test.describe('OrigamPasswordField — legacy variants', () => {
     test('Strength requirements — popup variant still mounts', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Strength requirements', { exact: true }).first().click()
+        await page.getByText('Prop — requirements', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -226,7 +226,7 @@ test.describe('OrigamPasswordField — legacy variants', () => {
     test('States — disabled password field visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, readonly & error', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

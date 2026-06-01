@@ -21,7 +21,7 @@ test.describe('OrigamTextField', () => {
     test('Color — field renders with color token (not inline hex)', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -144,7 +144,7 @@ test.describe('OrigamTextField', () => {
     test('Slot prependInner / appendInner — icons visible inside field', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — prependInner / appendInner', { exact: true }).first().click()
+        await page.getByText('Slot — prependInner', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -62,12 +62,7 @@ test.describe('OrigamMenu', () => {
 	test('Title — subheader renders inside popup', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		// `getByText('Title', { exact: true })` is ambiguous: the sidebar
-		// has a group "Title" (containing OrigamTitle), and the variant
-		// tab is also called "Title". `.first()` would expand the sidebar
-		// group and never select the variant. Use `.last()` since the
-		// variant tab sits after the sidebar entry in DOM order.
-		await page.getByText('Title', { exact: true }).last().click()
+		await page.getByText('Prop — title', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -84,7 +79,7 @@ test.describe('OrigamMenu', () => {
 	test('Open on hover — popup opens on hover, without click', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Open on hover', { exact: true }).first().click()
+		await page.getByText('Prop — openOnHover', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -115,7 +110,7 @@ test.describe('OrigamMenu', () => {
 	test('Offset — popup opens, location strategy emits anchor-origin token', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Offset', { exact: true }).first().click()
+		await page.getByText('Prop — offset', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

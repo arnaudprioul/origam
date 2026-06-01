@@ -36,7 +36,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Size variant — .origam-icon is visible', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Size', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -47,7 +47,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('All sizes — five origam-icon elements visible side by side', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All sizes — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -58,7 +58,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('All intents — five origam-icon elements visible', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All intents — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -69,7 +69,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Color — primary intent sets a non-transparent color', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All intents — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -111,7 +111,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Dispatch SVG path — renders .origam-icon--svg', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Dispatch — SVG path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (SVG path dispatch)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -122,7 +122,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Dispatch SVG path — contains an inner <svg> element', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Dispatch — SVG path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (SVG path dispatch)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -149,7 +149,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Icon variant — .origam-icon is visible', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (class string)', { exact: true }).first().click()
+        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -160,7 +160,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Icon class string — MDI class applied to element', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (class string)', { exact: true }).first().click()
+        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -175,7 +175,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('All sizes — five icons rendered side by side', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All sizes — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -186,7 +186,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Size variant — size class applied to element', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Size', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -198,7 +198,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Numeric size — four icons at distinct pixel sizes', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Numeric size override', { exact: true }).first().click()
+        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -222,7 +222,7 @@ test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
     test('Icon variant — .origam-icon--component is visible', async ({ page }) => {
         await page.goto(COMPONENT_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (Vue component)', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -233,7 +233,7 @@ test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
     test('Icon variant — inner SVG is rendered inside the wrapper', async ({ page }) => {
         await page.goto(COMPONENT_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (Vue component)', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -244,7 +244,7 @@ test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
     test('All sizes — five icons rendered side by side', async ({ page }) => {
         await page.goto(COMPONENT_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All sizes — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -255,7 +255,7 @@ test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
     test('Numeric size — four icons at distinct pixel sizes', async ({ page }) => {
         await page.goto(COMPONENT_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Numeric size override', { exact: true }).first().click()
+        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -292,7 +292,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Icon variant — .origam-icon--ligature is visible', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -303,7 +303,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Icon text content — ligature name renders as text fallback', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -315,7 +315,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('All sizes — five icons rendered side by side', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All sizes — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -326,7 +326,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Numeric size — four icons at distinct font sizes', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Numeric size override', { exact: true }).first().click()
+        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -344,7 +344,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Common ligature names — eight icons rendered', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Common ligature names', { exact: true }).first().click()
+        await page.getByText('Prop — icon (common ligature names showcase)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -355,7 +355,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Font family — Material Icons or Material Symbols applied', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -375,7 +375,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Single path — .origam-icon--svg and inner svg are visible', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -388,7 +388,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Single path — inner svg contains exactly one <path> element', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -402,7 +402,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Multi-path (array) — inner svg contains multiple <path> elements', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Multi-path (array)', { exact: true }).first().click()
+        await page.getByText('Prop — icon (multi-path array)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -416,7 +416,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Multi-path with opacity tuples — fill-opacity attribute set on path', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Multi-path with opacity tuples', { exact: true }).first().click()
+        await page.getByText('Prop — icon (multi-path with opacity tuples)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -429,7 +429,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('All sizes — five svg icons rendered side by side', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('All sizes — side by side', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -440,7 +440,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Numeric size — four icons at distinct widths', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Numeric size override', { exact: true }).first().click()
+        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -458,7 +458,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG element — aria-hidden and role="img" present', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -470,7 +470,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG element — viewBox is "0 0 24 24"', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -481,7 +481,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG fill — path inherits currentColor (fill not hardcoded hex)', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -497,7 +497,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
         // commit the .png, then remove this fixme.
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single path', { exact: true }).first().click()
+        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
         await page.waitForTimeout(600)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

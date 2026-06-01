@@ -14,7 +14,7 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     test('event="move" — mouse movement translates the element', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Event — Move', { exact: true }).first().click()
+        await page.getByText('Emit — move', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -48,7 +48,7 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     test('event="scroll" — window scroll translates the element', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Event — Scroll', { exact: true }).first().click()
+        await page.getByText('Emit — scroll', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -77,7 +77,7 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     test('event="orientation" — deviceorientation translates the element', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Event — Orientation', { exact: true }).first().click()
+        await page.getByText('Emit — orientation', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

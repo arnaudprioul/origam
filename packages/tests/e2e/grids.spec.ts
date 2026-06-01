@@ -19,7 +19,7 @@ test.describe('OrigamCol', () => {
     test('cols=6 sets flex-basis to 50%', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Cols', { exact: true }).first().click()
+        await page.getByText('Prop — cols', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -38,7 +38,7 @@ test.describe('OrigamCol', () => {
     test('cols=4 sets flex-basis to ~33%', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Cols', { exact: true }).first().click()
+        await page.getByText('Prop — cols', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -59,7 +59,7 @@ test.describe('OrigamCol', () => {
     test('align-center sets align-self: center', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Align (align-self)', { exact: true }).first().click()
+        await page.getByText('Prop — align (align-self)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -77,7 +77,7 @@ test.describe('OrigamCol', () => {
     test('offset-2 applies margin-inline-start', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Offset', { exact: true }).first().click()
+        await page.getByText('Prop — offset', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -102,7 +102,7 @@ test.describe('OrigamRow', () => {
     test('density-compact / default / comfortable produce distinct margins', async ({ page }) => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Density', { exact: true }).first().click()
+        await page.getByText('Prop — density', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -134,7 +134,7 @@ test.describe('OrigamRow', () => {
     test('align-center sets align-items: center', async ({ page }) => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Align', { exact: true }).first().click()
+        await page.getByText('Prop — align', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -151,7 +151,7 @@ test.describe('OrigamRow', () => {
     test('justify-space-between sets justify-content', async ({ page }) => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Justify', { exact: true }).first().click()
+        await page.getByText('Prop — justify', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -168,7 +168,7 @@ test.describe('OrigamRow', () => {
     test('direction-column sets flex-direction: column', async ({ page }) => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Align', { exact: true }).first().click()
+        await page.getByText('Prop — align', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -190,8 +190,8 @@ test.describe('OrigamContainer', () => {
     test('renders with auto margins (horizontally centered)', async ({ page }) => {
         await page.goto(CONTAINER_PATH)
         await page.waitForLoadState('networkidle')
-        // First variant in OrigamContainer.story.vue is "Modifiers"
-        await page.getByText('Modifiers', { exact: true }).first().click()
+        // Container story has no "Modifiers" variant — navigate via Default to load sandbox
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -207,8 +207,8 @@ test.describe('OrigamContainer', () => {
     test('fluid modifier removes max-width constraint', async ({ page }) => {
         await page.goto(CONTAINER_PATH)
         await page.waitForLoadState('networkidle')
-        // "Modifiers" variant exposes the fluid checkbox — inject class directly
-        await page.getByText('Modifiers', { exact: true }).first().click()
+        // Container story has no "Modifiers" variant — navigate via Default to load sandbox
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -234,8 +234,8 @@ test.describe('OrigamSpacer', () => {
     test('renders with flex-grow: 1', async ({ page }) => {
         await page.goto(SPACER_PATH)
         await page.waitForLoadState('networkidle')
-        // Click the first variant ("Basic usage") to load the sandbox iframe
-        await page.getByText('Basic usage', { exact: true }).first().click()
+        // Spacer story has no "Basic usage" variant — navigate via Default to load sandbox
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

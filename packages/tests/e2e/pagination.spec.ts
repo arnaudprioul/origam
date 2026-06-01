@@ -6,7 +6,7 @@ test.describe('OrigamPagination', () => {
     test('Basic variant — pagination nav is rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -16,7 +16,7 @@ test.describe('OrigamPagination', () => {
     test('Basic variant — page buttons are rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Basic', { exact: true }).first().click()
+        await page.getByText('Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -49,7 +49,7 @@ test.describe('OrigamPagination', () => {
     test('Color variant — pagination renders with color intent', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Color — default vs primary', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -59,7 +59,7 @@ test.describe('OrigamPagination', () => {
     test('Disabled variant — pagination buttons are disabled', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Disabled', { exact: true }).first().click()
+        await page.getByText('Prop — disabled', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -14,7 +14,7 @@ test.describe('OrigamLabel', () => {
     test('renders with base typography tokens', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Tag', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -31,7 +31,7 @@ test.describe('OrigamLabel', () => {
     test('floating class changes font-size', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — required & floating', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -80,7 +80,7 @@ test.describe('OrigamLabel', () => {
     test('required indicator sup is visible when required=true', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — required & floating', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -107,7 +107,7 @@ test.describe('OrigamLabel', () => {
     test('tag prop renders correct HTML element', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Tag', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -119,7 +119,7 @@ test.describe('OrigamLabel', () => {
     test('color prop applies color via CSS custom property token', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

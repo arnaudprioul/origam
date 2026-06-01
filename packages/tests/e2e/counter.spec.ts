@@ -17,7 +17,7 @@ test.describe('OrigamCounter', () => {
     test('Color showcase — color prop tints the counter root', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).last().click({ timeout: 5000 })
+        await page.getByText('Prop — color & bgColor', { exact: true }).last().click({ timeout: 5000 })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -32,7 +32,7 @@ test.describe('OrigamCounter', () => {
     test('Value & max — renders formatted value/max text', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Value & max', { exact: true }).first().click()
+        await page.getByText('Prop — value & max', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -45,7 +45,7 @@ test.describe('OrigamCounter', () => {
     test('Active — counter changes visual state when active', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Active', { exact: true }).first().click()
+        await page.getByText('Prop — active', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -56,7 +56,7 @@ test.describe('OrigamCounter', () => {
     test('Disabled — counter renders disabled', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Disabled', { exact: true }).first().click()
+        await page.getByText('Prop — disabled', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -66,7 +66,7 @@ test.describe('OrigamCounter', () => {
     test('Overflow — counter shows value > max without throwing', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Overflow (value > max)', { exact: true }).first().click()
+        await page.getByText('Prop — value (overflow)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

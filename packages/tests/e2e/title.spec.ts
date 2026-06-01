@@ -15,7 +15,7 @@ test.describe('OrigamTitle', () => {
     test('renders with base typography tokens', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Tag', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -30,7 +30,7 @@ test.describe('OrigamTitle', () => {
     test('density-compact / default / comfortable produce different font-sizes', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Tag', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -63,7 +63,7 @@ test.describe('OrigamTitle', () => {
     test('color prop applies inline color style', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -81,7 +81,7 @@ test.describe('OrigamTitle', () => {
     test('tag prop renders correct HTML element', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Tag', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

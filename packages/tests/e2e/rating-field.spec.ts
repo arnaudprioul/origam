@@ -6,7 +6,7 @@ test.describe('OrigamRatingField', () => {
     test('Length variant — renders correct number of rating items', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Length', { exact: true }).first().click()
+        await page.getByText('Prop — length', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -16,7 +16,7 @@ test.describe('OrigamRatingField', () => {
     test('Half increments variant — field renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Half increments', { exact: true }).first().click()
+        await page.getByText('Prop — halfIncrements', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -26,7 +26,7 @@ test.describe('OrigamRatingField', () => {
     test('Hover preview variant — field has hover class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Hover preview', { exact: true }).first().click()
+        await page.getByText('Prop — hover', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -36,7 +36,7 @@ test.describe('OrigamRatingField', () => {
     test('States — readonly field has pointer-events none', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, readonly & clearable', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -46,7 +46,7 @@ test.describe('OrigamRatingField', () => {
     test('Size variant — field renders with size control', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Size', { exact: true }).first().click()
+        await page.getByText('Prop — size', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -56,7 +56,7 @@ test.describe('OrigamRatingField', () => {
     test('Item labels variant — labels are rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Item labels', { exact: true }).first().click()
+        await page.getByText('Prop — itemLabels', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -106,7 +106,7 @@ test.describe('OrigamRatingField', () => {
     test('clearable: clear button appears when value > 0 and resets the model', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, readonly & clearable', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         // Toggle clearable on via the controls panel
@@ -137,7 +137,7 @@ test.describe('OrigamRatingField', () => {
     test('rating buttons render with text variant — no background, no shadow', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Length', { exact: true }).first().click()
+        await page.getByText('Prop — length', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

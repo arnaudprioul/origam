@@ -9,7 +9,7 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
     await page.waitForLoadState('networkidle')
 
     // ── Sizes Variant ───────────────────────────────────────────────
-    await page.getByText('Sizes — small · default · large (stacked rows)', { exact: true })
+    await page.getByText('Prop — size (small / default / large)', { exact: true })
         .last()
         .click({ timeout: 10_000 })
     await page.waitForTimeout(1500)

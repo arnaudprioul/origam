@@ -6,7 +6,7 @@ test.describe('OrigamSelect', () => {
     test('Items string list — renders select with label', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Items — string list', { exact: true }).first().click()
+        await page.getByText('Prop — items (string list)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +17,7 @@ test.describe('OrigamSelect', () => {
     test('Items object list — renders with item-title/value mapping', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Items — object list', { exact: true }).first().click()
+        await page.getByText('Prop — items (object list)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -27,7 +27,7 @@ test.describe('OrigamSelect', () => {
     test('Multiple — multiple selection field renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Multiple', { exact: true }).first().click()
+        await page.getByText('Prop — multiple', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -37,7 +37,7 @@ test.describe('OrigamSelect', () => {
     test('Chips — chips mode renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Chips', { exact: true }).first().click()
+        await page.getByText('Prop — chips & closableChips', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -47,7 +47,7 @@ test.describe('OrigamSelect', () => {
     test('Autocomplete — filter input renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Autocomplete', { exact: true }).first().click()
+        await page.getByText('Prop — autocomplete', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -57,7 +57,7 @@ test.describe('OrigamSelect', () => {
     test('States — disabled select renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, readonly & error', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -106,7 +106,7 @@ test.describe('OrigamSelect', () => {
     test('No data — no data text visible when items is empty', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('No data', { exact: true }).first().click()
+        await page.getByText('Prop — noDataText (empty items)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -143,7 +143,7 @@ test.describe('OrigamSelect', () => {
         test('menu width matches activator width', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -180,7 +180,7 @@ test.describe('OrigamSelect', () => {
         test('dropdown is flush with activator (no top/left gap)', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -227,7 +227,7 @@ test.describe('OrigamSelect', () => {
         test('autocomplete: input stays flush-left after picking', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.getByText('Prop — autocomplete', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -279,7 +279,7 @@ test.describe('OrigamSelect', () => {
         test('selection is not duplicated after re-focus', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -346,7 +346,7 @@ test.describe('OrigamSelect', () => {
         test('autocomplete-single: mouse re-click also selects-all', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.getByText('Prop — autocomplete', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -381,7 +381,7 @@ test.describe('OrigamSelect', () => {
         test('autocomplete-single: re-focus selects-all so typing replaces', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.getByText('Prop — autocomplete', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -419,7 +419,7 @@ test.describe('OrigamSelect', () => {
         test('text alignment is consistent across all field states', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Autocomplete', { exact: true }).first().click()
+            await page.getByText('Prop — autocomplete', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -456,7 +456,7 @@ test.describe('OrigamSelect', () => {
         test('dropdown list items use the 48px menu height', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -474,7 +474,7 @@ test.describe('OrigamSelect', () => {
         test('list items show cursor:pointer (clickable affordance)', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -503,7 +503,7 @@ test.describe('OrigamSelect', () => {
         test('list items have a visible hover state layer', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -548,7 +548,7 @@ test.describe('OrigamSelect', () => {
             async function goToVariant(page: Parameters<Parameters<typeof test>[1]>[0]) {
                 await page.goto(STORY_PATH)
                 await page.waitForLoadState('networkidle')
-                await page.getByText('Loading shapes', { exact: true }).first().click()
+                await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
                 await page.waitForTimeout(800)
             }
 
@@ -605,7 +605,7 @@ test.describe('OrigamSelect', () => {
         test('open animation uses OrigamExpandY transition', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
-            await page.getByText('Items — string list', { exact: true }).first().click()
+            await page.getByText('Prop — items (string list)', { exact: true }).first().click()
             await page.waitForTimeout(800)
 
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

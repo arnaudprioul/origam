@@ -6,7 +6,7 @@ test.describe('OrigamCheckbox', () => {
     test('Color variant — renders a checkbox with label', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +17,7 @@ test.describe('OrigamCheckbox', () => {
     test('Density variant — checkbox renders at configured density', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Density', { exact: true }).first().click()
+        await page.getByText('Prop — density', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -28,7 +28,7 @@ test.describe('OrigamCheckbox', () => {
     test('States — disabled prevents interaction', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, readonly & indeterminate', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -42,7 +42,7 @@ test.describe('OrigamCheckbox', () => {
     test('Error variant — error message visible when error=true', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Error & validation', { exact: true }).first().click()
+        await page.getByText('Prop — error & errorMessages', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
