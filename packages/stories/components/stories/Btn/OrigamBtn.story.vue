@@ -237,6 +237,33 @@
 		</Variant>
 
 		<Variant
+				title="Prop — borderColor & borderStyle"
+				:init-state="() => useStoryInitState<IBorderProps>({ borderColor: 'rebeccapurple', borderStyle: 'dashed' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+					<origam-btn
+							variant="outlined"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							text="Outlined custom border"
+							data-cy="btn-border-custom"
+					/>
+
+					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; gap: 12px;">
+						<origam-btn variant="outlined" text="default outlined"                                   data-cy="btn-border-outlined-default"/>
+						<origam-btn variant="outlined" border-color="tomato"       text="borderColor"             data-cy="btn-border-color"/>
+						<origam-btn variant="outlined" border-style="dotted"       text="borderStyle"             data-cy="btn-border-style"/>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<HstText v-model="state.borderColor" title="borderColor"/>
+				<HstSelect v-model="state.borderStyle" title="borderStyle" :options="borderStyleList"/>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Prop — prependIcon & appendIcon"
 				:init-state="() => useStoryInitState<IAdjacentProps & { text?: string }>({ text: 'Button' })"
 		>
@@ -463,6 +490,7 @@
 	import {
 		activeList,
 		borderList,
+		borderStyleList,
 		densityList,
 		elevationList,
 		hoverList,

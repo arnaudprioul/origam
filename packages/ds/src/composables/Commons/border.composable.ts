@@ -74,6 +74,19 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
             styles.push(`border-width: ${convertToUnit(border)}`)
         }
 
+        // Additive surface for the standalone `borderColor` / `borderStyle`
+        // props declared on `IBorderProps`. The Ref overload only carries
+        // the `border` shorthand value, so these are only consulted when
+        // `props` is the props object (not a Ref). Each is emitted only
+        // when the consumer supplied a non-empty value, so components that
+        // never pass them keep their existing output untouched.
+        if (!isRef(props)) {
+            const {borderColor, borderStyle} = props
+
+            if (!isEmpty(borderColor)) styles.push(`border-color: ${borderColor}`)
+            if (!isEmpty(borderStyle)) styles.push(`border-style: ${borderStyle}`)
+        }
+
         return styles
     })
 

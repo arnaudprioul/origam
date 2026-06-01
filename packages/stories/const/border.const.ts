@@ -10,10 +10,11 @@ import type { IOptions } from '@origam/interfaces'
  *   • free-form CSS string     → `'4px dashed red'`, `'2px solid var(--origam-color__action--primary---bg)'`, …
  *   • raw number (px width)    → `2`
  *
- * Everything (width, style, color, position) is therefore routed
- * through this one prop — no separate `borderStyle` / `borderColor`
- * controls. The free-form strings below showcase the variety of inputs
- * the composable supports.
+ * Width, style, color and position can all be routed through this one
+ * prop via the free-form strings below. Standalone `borderColor` /
+ * `borderStyle` props also exist (see `borderStyleList`) for components
+ * that need to override only the colour or the style — handy for the
+ * outlined Btn variant whose width is theme-driven.
  */
 export const borderList: Array<IOptions<boolean | number | string | undefined>> = [
     // ── Off / boolean ───────────────────────────────────────────
@@ -47,4 +48,19 @@ export const borderList: Array<IOptions<boolean | number | string | undefined>> 
     { label: 'Position — left',   value: 'left' },
     { label: 'Position — block (top + bottom)',  value: 'block' },
     { label: 'Position — inline (left + right)', value: 'inline' },
+]
+
+/**
+ * Choices for the standalone `borderStyle` prop (CSS `border-style`
+ * line-style keywords). Consumed alongside `borderColor` when a
+ * component needs to tweak only the style without re-stating the
+ * shorthand.
+ */
+export const borderStyleList: Array<IOptions<string>> = [
+    { label: 'solid', value: 'solid' },
+    { label: 'dashed', value: 'dashed' },
+    { label: 'dotted', value: 'dotted' },
+    { label: 'double', value: 'double' },
+    { label: 'groove', value: 'groove' },
+    { label: 'ridge', value: 'ridge' },
 ]

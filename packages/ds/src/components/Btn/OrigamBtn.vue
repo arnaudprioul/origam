@@ -669,7 +669,7 @@
 			background-color: transparent !important;
 			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			border-style: solid;
-			border-color: currentColor;
+			border-color: var(--origam-btn---border-color, currentColor);
 			box-shadow: none;
 		}
 

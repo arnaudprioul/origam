@@ -242,7 +242,19 @@ export function useStateEffect (
     void intentBgExpr
 
     // ── Other axes — delegate to existing composables via Ref overloads
-    const { borderClasses, borderStyles }       = useBorder(border)
+    // Border goes through the props-object overload (not the bare Ref) so
+    // the standalone `borderColor` / `borderStyle` props are honoured in
+    // addition to the state-resolved `border` shorthand. The shorthand
+    // stays state-aware via the reactive getter (same pattern as
+    // padding / margin); `borderColor` / `borderStyle` are not
+    // state-swappable, so they read straight from the base props.
+    const { borderClasses, borderStyles }       = useBorder(
+        reactive({
+            get border () { return border.value },
+            get borderColor () { return props.borderColor },
+            get borderStyle () { return props.borderStyle },
+        }) as IBorderProps,
+    )
     const { roundedClasses, roundedStyles }     = useRounded(rounded)
     const { elevationClasses, elevationStyles } = useElevation(
         elevation as Ref<number | string | undefined>,
