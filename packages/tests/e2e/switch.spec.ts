@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-switch-origamswitch-story-vue'
+const STORY_PATH = '/story/components-stories-switch-origamswitch-story-vue'
 
 test.describe('OrigamSwitch', () => {
     // ─── Color/bgColor strict separation contract ────────────────────────

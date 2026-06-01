@@ -23,11 +23,11 @@ import { expect, test } from '@playwright/test'
 
 // ─── Story URL helpers ───────────────────────────────────────────────────────
 
-const ICON_STORY          = '/story/stories-components-stories-icon-origamicon-story-vue'
-const CLASS_ICON_STORY    = '/story/stories-components-stories-icon-origamclassicon-story-vue'
-const COMPONENT_ICON_STORY= '/story/stories-components-stories-icon-origamcomponenticon-story-vue'
-const LIGATURE_ICON_STORY = '/story/stories-components-stories-icon-origamligatureicon-story-vue'
-const SVG_ICON_STORY      = '/story/stories-components-stories-icon-origamsvgicon-story-vue'
+const ICON_STORY          = '/story/components-stories-icon-origamicon-story-vue'
+const CLASS_ICON_STORY    = '/story/components-stories-icon-origamclassicon-story-vue'
+const COMPONENT_ICON_STORY= '/story/components-stories-icon-origamcomponenticon-story-vue'
+const LIGATURE_ICON_STORY = '/story/components-stories-icon-origamligatureicon-story-vue'
+const SVG_ICON_STORY      = '/story/components-stories-icon-origamsvgicon-story-vue'
 
 // ─── OrigamIcon (dispatcher) ─────────────────────────────────────────────────
 

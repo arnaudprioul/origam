@@ -3,13 +3,13 @@ import { expect, test, type Page } from '@playwright/test'
 /**
  * OrigamSelectionControlGroup — runtime assertions per story Variant.
  *
- * Story URL: /story/stories-components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue
+ * Story URL: /story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page: Page, variant: string) => {
-    await page.goto('/story/stories-components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue')
+    await page.goto('/story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue')
     await page.waitForLoadState('networkidle')
     await page.getByText(variant, { exact: true }).first().click()
     await page.waitForTimeout(800)

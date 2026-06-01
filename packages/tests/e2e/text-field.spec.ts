@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-textfield-origamtextfield-story-vue'
+const STORY_PATH = '/story/components-stories-textfield-origamtextfield-story-vue'
 
 test.describe('OrigamTextField', () => {
     test('Variant — default variant emits origam-field--variant-outlined class', async ({ page }) => {

@@ -21,7 +21,7 @@ const openVariant = async (page: import('@playwright/test').Page, storyPath: str
 
 // ─── OrigamWindow ──────────────────────────────────────────────────────────
 
-const WINDOW_PATH = '/story/stories-components-stories-window-origamwindow-story-vue'
+const WINDOW_PATH = '/story/components-stories-window-origamwindow-story-vue'
 
 test.describe('OrigamWindow', () => {
 
@@ -49,7 +49,7 @@ test.describe('OrigamWindow', () => {
 
 // ─── OrigamWindowItem ──────────────────────────────────────────────────────
 
-const WINDOW_ITEM_PATH = '/story/stories-components-stories-window-origamwindowitem-story-vue'
+const WINDOW_ITEM_PATH = '/story/components-stories-window-origamwindowitem-story-vue'
 
 test.describe('OrigamWindowItem', () => {
 
@@ -71,7 +71,7 @@ test.describe('OrigamWindowItem', () => {
 
 // ─── OrigamSlideGroup ──────────────────────────────────────────────────────
 
-const SLIDE_GROUP_PATH = '/story/stories-components-stories-slide-origamslidegroup-story-vue'
+const SLIDE_GROUP_PATH = '/story/components-stories-slide-origamslidegroup-story-vue'
 
 test.describe('OrigamSlideGroup', () => {
 
@@ -128,7 +128,7 @@ test.describe('OrigamSlideGroup', () => {
 
 // ─── OrigamVirtualScroll ───────────────────────────────────────────────────
 
-const VS_PATH = '/story/stories-components-stories-virtualscroll-origamvirtualscroll-story-vue'
+const VS_PATH = '/story/components-stories-virtualscroll-origamvirtualscroll-story-vue'
 
 test.describe('OrigamVirtualScroll', () => {
 
@@ -189,7 +189,7 @@ test.describe('OrigamVirtualScroll', () => {
 
 // ─── OrigamVirtualScrollItem ───────────────────────────────────────────────
 
-const VS_ITEM_PATH = '/story/stories-components-stories-virtualscroll-origamvirtualscrollitem-story-vue'
+const VS_ITEM_PATH = '/story/components-stories-virtualscroll-origamvirtualscrollitem-story-vue'
 
 test.describe('OrigamVirtualScrollItem', () => {
 

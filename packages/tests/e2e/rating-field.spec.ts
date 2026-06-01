@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-ratingfield-origamratingfield-story-vue'
+const STORY_PATH = '/story/components-stories-ratingfield-origamratingfield-story-vue'
 
 test.describe('OrigamRatingField', () => {
     test('Length variant — renders correct number of rating items', async ({ page }) => {

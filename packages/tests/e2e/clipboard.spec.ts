@@ -11,7 +11,7 @@ import { expect, test, type Page } from '@playwright/test'
  * exact payload written.
  */
 
-const STORY = '/story/stories-components-stories-clipboard-origamclipboard-story-vue'
+const STORY = '/story/components-stories-clipboard-origamclipboard-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-treeview-origamtreeview-story-vue'
+const STORY_PATH = '/story/components-stories-treeview-origamtreeview-story-vue'
 
 test.describe('OrigamTreeview', () => {
 	test('Default variant renders root-level nodes', async ({ page }) => {

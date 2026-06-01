@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-passwordfield-origampasswordfield-story-vue'
+const STORY_PATH = '/story/components-stories-passwordfield-origampasswordfield-story-vue'
 
 // Helper — switch to a Variant via its sidebar link. We use
 // `getByRole('link', { name, exact })` (CLAUDE.md rule) instead of the

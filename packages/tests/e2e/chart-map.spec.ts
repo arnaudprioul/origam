@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - ARIA attributes (role="figure", role="img", title, desc) are present.
  */
 
-const MAP_STORY = '/story/stories-components-stories-chart-origamchartmap-story-vue'
+const MAP_STORY = '/story/components-stories-chart-origamchartmap-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

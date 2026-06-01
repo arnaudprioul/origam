@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-carousel-origamcarousel-story-vue'
+const STORY_PATH = '/story/components-stories-carousel-origamcarousel-story-vue'
 
 test.describe('OrigamCarousel', () => {
     test('Basic variant — carousel renders with slides visible', async ({ page }) => {

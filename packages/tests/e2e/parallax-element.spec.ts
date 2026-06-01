@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-parallax-origamparallaxelement-story-vue'
+const STORY_PATH = '/story/components-stories-parallax-origamparallaxelement-story-vue'
 
 /**
  * OrigamParallaxElement — runtime behaviour specs.

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-defaultsprovider-origamdefaultsprovider-story-vue'
+const STORY_PATH = '/story/components-stories-defaultsprovider-origamdefaultsprovider-story-vue'
 
 test.describe('OrigamDefaultsProvider', () => {
     test('Global defaults — buttons receive density from global defaults', async ({ page }) => {

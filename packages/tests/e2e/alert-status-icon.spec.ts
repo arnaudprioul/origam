@@ -29,7 +29,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-alert-origamalert-story-vue'
+const STORY = '/story/components-stories-alert-origamalert-story-vue'
 
 test.describe('OrigamAlert — title line-height aligns with prepend icon', () => {
     test('title vertical centre is within 3px of the prepend-icon vertical centre', async ({ page }) => {

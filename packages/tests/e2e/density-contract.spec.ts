@@ -53,9 +53,9 @@ const measureHeightAtDensity = async (
     return box?.height ?? 0
 }
 
-const ALERT_STORY = '/story/stories-components-stories-alert-origamalert-story-vue'
-const BTN_GROUP_STORY = '/story/stories-components-stories-btn-origambtngroup-story-vue'
-const BREADCRUMB_STORY = '/story/stories-components-stories-breadcrumb-origambreadcrumb-story-vue'
+const ALERT_STORY = '/story/components-stories-alert-origamalert-story-vue'
+const BTN_GROUP_STORY = '/story/components-stories-btn-origambtngroup-story-vue'
+const BREADCRUMB_STORY = '/story/components-stories-breadcrumb-origambreadcrumb-story-vue'
 
 test('OrigamAlert — comfortable height > compact height', async ({ page }) => {
     const compact = await measureHeightAtDensity(page, ALERT_STORY, 'Default', 'compact', '.origam-alert')

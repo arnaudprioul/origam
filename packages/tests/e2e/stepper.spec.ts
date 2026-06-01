@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-stepper-origamstepper-story-vue'
+const STORY_PATH = '/story/components-stories-stepper-origamstepper-story-vue'
 
 test.describe('OrigamStepper', () => {
 	test('Default variant renders 4 step items', async ({ page }) => {

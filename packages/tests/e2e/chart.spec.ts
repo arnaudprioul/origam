@@ -8,7 +8,7 @@ import { expect, test, type Page } from '@playwright/test'
  * `<circle>`) rather than CSS-class assertions.
  */
 
-const STORY = '/story/stories-components-stories-chart-origamchart-story-vue'
+const STORY = '/story/components-stories-chart-origamchart-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

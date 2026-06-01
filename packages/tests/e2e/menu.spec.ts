@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-menu-origammenu-story-vue'
+const STORY_PATH = '/story/components-stories-menu-origammenu-story-vue'
 
 /**
  * OrigamMenu — runtime behavioural specs.

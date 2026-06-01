@@ -30,7 +30,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(400)
 }
 
-const STORY = '/story/stories-components-stories-grid-origamgrid-story-vue'
+const STORY = '/story/components-stories-grid-origamgrid-story-vue'
 
 test.describe('OrigamGrid — Default (smoke + defaults)', () => {
     test('mounts as display: grid and resolves the default gap token', async ({ page }) => {

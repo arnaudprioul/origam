@@ -10,7 +10,7 @@ import { expect, test, type Page } from '@playwright/test'
  * focuses on the DOM contract instead.
  */
 
-const STORY = '/story/stories-components-stories-video-origamvideo-story-vue'
+const STORY = '/story/components-stories-video-origamvideo-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-badge-origambadge-story-vue'
+const STORY_PATH = '/story/components-stories-badge-origambadge-story-vue'
 
 // Badge uses `useColorEffect` which emits the `bgHover` rung at rest
 // for action intents (primary maps to `#6d28d9` / rgb(109, 40, 217)).

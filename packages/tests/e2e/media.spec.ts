@@ -13,10 +13,10 @@ import { expect, test } from '@playwright/test'
  *     bug — fix the SCSS / token, don't paper over it here.
  */
 
-const IMG_PATH = '/story/stories-components-stories-img-origamimg-story-vue'
-const AVATAR_PATH = '/story/stories-components-stories-avatar-origamavatar-story-vue'
-const AVATAR_GROUP_PATH = '/story/stories-components-stories-avatar-origamavatargroup-story-vue'
-const BADGE_PATH = '/story/stories-components-stories-badge-origambadge-story-vue'
+const IMG_PATH = '/story/components-stories-img-origamimg-story-vue'
+const AVATAR_PATH = '/story/components-stories-avatar-origamavatar-story-vue'
+const AVATAR_GROUP_PATH = '/story/components-stories-avatar-origamavatargroup-story-vue'
+const BADGE_PATH = '/story/components-stories-badge-origambadge-story-vue'
 
 // ─── OrigamImg ───────────────────────────────────────────────────────────────
 

@@ -15,7 +15,7 @@ import { expect, test, type Page } from '@playwright/test'
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
-const STORY = '/story/stories-components-stories-itemgroup-origamitemgroup-story-vue'
+const STORY = '/story/components-stories-itemgroup-origamitemgroup-story-vue'
 
 const open = async (page: Page, variant: string) => {
     await page.goto(STORY)

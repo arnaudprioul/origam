@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-datalist-origamdatalist-story-vue'
+const STORY_PATH = '/story/components-stories-datalist-origamdatalist-story-vue'
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 

@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-btn-origambtn-story-vue'
+const STORY_PATH = '/story/components-stories-btn-origambtn-story-vue'
 
 test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', async ({ page }) => {
     await page.goto(STORY_PATH)

@@ -17,16 +17,16 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
 // ─── Story URL map ────────────────────────────────────────────────────────────
 
 const STORIES = {
-    btn:         '/story/stories-components-stories-btn-origambtn-story-vue',
-    card:        '/story/stories-components-stories-card-origamcard-story-vue',
-    alert:       '/story/stories-components-stories-alert-origamalert-story-vue',
-    badge:       '/story/stories-components-stories-badge-origambadge-story-vue',
-    sliderField: '/story/stories-components-stories-sliderfield-origamsliderfield-story-vue',
-    snackbar:    '/story/stories-components-stories-snackbar-origamsnackbar-story-vue',
-    tooltip:     '/story/stories-components-stories-tooltip-origamtooltip-story-vue',
-    menu:        '/story/stories-components-stories-menu-origammenu-story-vue',
-    sheet:       '/story/stories-components-stories-sheet-origamsheet-story-vue',
-    drawer:      '/story/stories-components-stories-drawer-origamdrawer-story-vue',
+    btn:         '/story/components-stories-btn-origambtn-story-vue',
+    card:        '/story/components-stories-card-origamcard-story-vue',
+    alert:       '/story/components-stories-alert-origamalert-story-vue',
+    badge:       '/story/components-stories-badge-origambadge-story-vue',
+    sliderField: '/story/components-stories-sliderfield-origamsliderfield-story-vue',
+    snackbar:    '/story/components-stories-snackbar-origamsnackbar-story-vue',
+    tooltip:     '/story/components-stories-tooltip-origamtooltip-story-vue',
+    menu:        '/story/components-stories-menu-origammenu-story-vue',
+    sheet:       '/story/components-stories-sheet-origamsheet-story-vue',
+    drawer:      '/story/components-stories-drawer-origamdrawer-story-vue',
 } as const
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

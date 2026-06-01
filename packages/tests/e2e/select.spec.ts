@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-select-origamselect-story-vue'
+const STORY_PATH = '/story/components-stories-select-origamselect-story-vue'
 
 test.describe('OrigamSelect', () => {
     test('Items string list — renders select with label', async ({ page }) => {

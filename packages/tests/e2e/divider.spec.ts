@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-divider-origamdivider-story-vue'
+const STORY_PATH = '/story/components-stories-divider-origamdivider-story-vue'
 
 /**
  * OrigamDivider — runtime behaviour specs.

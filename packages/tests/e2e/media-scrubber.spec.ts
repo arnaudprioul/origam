@@ -7,7 +7,7 @@ import { expect, test, type Page } from '@playwright/test'
  * titles — never via the HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-mediascrubber-origammediascrubber-story-vue'
+const STORY = '/story/components-stories-mediascrubber-origammediascrubber-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

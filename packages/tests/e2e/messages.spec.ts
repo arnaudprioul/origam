@@ -24,7 +24,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-messages-origammessages-story-vue'
+const STORY = '/story/components-stories-messages-origammessages-story-vue'
 
 // ─── Default ────────────────────────────────────────────────────────────────
 

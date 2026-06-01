@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-label-origamlabel-story-vue'
+const STORY_PATH = '/story/components-stories-label-origamlabel-story-vue'
 
 /**
  * OrigamLabel — runtime behaviour specs.

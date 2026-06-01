@@ -28,7 +28,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-colorgradient-origamcolorgradient-story-vue'
+const STORY = '/story/components-stories-colorgradient-origamcolorgradient-story-vue'
 
 // ─── Format 1 — raw CSS gradient string ─────────────────────────────────────
 

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-snackbar-origamsnackbar-story-vue'
+const STORY_PATH = '/story/components-stories-snackbar-origamsnackbar-story-vue'
 
 test.describe('OrigamSnackbar', () => {
 	test('Default — trigger button renders and snackbar shows on click', async ({ page }) => {

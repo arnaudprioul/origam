@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-datepicker-origamdatepicker-story-vue'
+const STORY_PATH = '/story/components-stories-datepicker-origamdatepicker-story-vue'
 
 test.describe('OrigamDatePicker', () => {
     test('Single date variant — calendar grid is visible', async ({ page }) => {

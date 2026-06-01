@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test'
  * Histoire upgrades.
  */
 
-const STORY = '/story/stories-components-stories-calendar-origamcalendar-story-vue'
+const STORY = '/story/components-stories-calendar-origamcalendar-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

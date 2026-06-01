@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-const COL_PATH = '/story/stories-components-stories-grids-origamcol-story-vue'
-const ROW_PATH = '/story/stories-components-stories-grids-origamrow-story-vue'
-const CONTAINER_PATH = '/story/stories-components-stories-grids-origamcontainer-story-vue'
-const SPACER_PATH = '/story/stories-components-stories-grids-origamspacer-story-vue'
+const COL_PATH = '/story/components-stories-grids-origamcol-story-vue'
+const ROW_PATH = '/story/components-stories-grids-origamrow-story-vue'
+const CONTAINER_PATH = '/story/components-stories-grids-origamcontainer-story-vue'
+const SPACER_PATH = '/story/components-stories-grids-origamspacer-story-vue'
 
 /**
  * Grids — OrigamCol / OrigamRow / OrigamContainer / OrigamSpacer runtime specs.

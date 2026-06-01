@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-counter-origamcounter-story-vue'
+const STORY_PATH = '/story/components-stories-counter-origamcounter-story-vue'
 
 const EXPECTED_INTENT_FG: Record<string, string> = {
     // Counter applies `color` (foreground) — `useTextColor` maps

@@ -20,7 +20,7 @@ import { expect, test, type Page } from '@playwright/test'
  * is false, which is the headless default.
  */
 
-const STORY = '/story/stories-components-stories-audio-origamaudio-story-vue'
+const STORY = '/story/components-stories-audio-origamaudio-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -27,8 +27,8 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  *     the scrim to the host.
  */
 
-const PICKER_BASE       = '/story/stories-components-stories-picker-'
-const OVERLAY_BASE      = '/story/stories-components-stories-overlay-'
+const PICKER_BASE       = '/story/components-stories-picker-'
+const OVERLAY_BASE      = '/story/components-stories-overlay-'
 
 const STORIES = {
     picker:        `${PICKER_BASE}origampicker-story-vue`,

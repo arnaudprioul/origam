@@ -10,7 +10,7 @@ import { expect, test, type Page } from '@playwright/test'
  * - The side-by-side Variant is visible and both charts are present.
  */
 
-const STORY = '/story/stories-components-stories-chart-origamchartcartesian-story-vue'
+const STORY = '/story/components-stories-chart-origamchartcartesian-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  *    present for screen-reader support.
  */
 
-const BULLET_STORY = '/story/stories-components-stories-chart-origamchartbullet-story-vue'
+const BULLET_STORY = '/story/components-stories-chart-origamchartbullet-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -13,7 +13,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - Each cell has role="button", non-empty aria-label, tabindex="0".
  */
 
-const HEATMAP_STORY = '/story/stories-components-stories-chart-origamchartheatmap-story-vue'
+const HEATMAP_STORY = '/story/components-stories-chart-origamchartheatmap-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

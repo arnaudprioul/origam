@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-form-origamform-story-vue'
+const STORY_PATH = '/story/components-stories-form-origamform-story-vue'
 
 test.describe('OrigamForm', () => {
     test('Basic wiring — form with TextField and NumberField renders', async ({ page }) => {

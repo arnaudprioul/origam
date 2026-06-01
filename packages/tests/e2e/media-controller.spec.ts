@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test'
  * HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-mediacontroller-origammediacontroller-story-vue'
+const STORY = '/story/components-stories-mediacontroller-origammediacontroller-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

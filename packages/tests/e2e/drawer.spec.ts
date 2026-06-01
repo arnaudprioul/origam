@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-drawer-origamdrawer-story-vue'
+const STORY_PATH = '/story/components-stories-drawer-origamdrawer-story-vue'
 
 test.describe('OrigamDrawer', () => {
 	test('Default (permanent) — drawer is visible in layout', async ({ page }) => {

@@ -12,7 +12,7 @@ import { expect, test, type Page } from '@playwright/test'
  * resolves visible behaviour.
  */
 
-const STORY = '/story/stories-components-stories-watermark-origamwatermark-story-vue'
+const STORY = '/story/components-stories-watermark-origamwatermark-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

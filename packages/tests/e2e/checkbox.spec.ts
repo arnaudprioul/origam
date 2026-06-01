@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-checkbox-origamcheckbox-story-vue'
+const STORY_PATH = '/story/components-stories-checkbox-origamcheckbox-story-vue'
 
 test.describe('OrigamCheckbox', () => {
     test('Color variant — renders a checkbox with label', async ({ page }) => {

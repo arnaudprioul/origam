@@ -1,6 +1,6 @@
 import { expect, FrameLocator, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-tooltip-origamtooltip-story-vue'
+const STORY_PATH = '/story/components-stories-tooltip-origamtooltip-story-vue'
 
 /**
  * OrigamTooltip — runtime behavioural specs.

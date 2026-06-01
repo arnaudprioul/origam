@@ -1,6 +1,6 @@
 import { expect, FrameLocator, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-toolbar-origamtoolbar-story-vue'
+const STORY_PATH = '/story/components-stories-toolbar-origamtoolbar-story-vue'
 
 test.describe('OrigamToolbar', () => {
 	test('Basic — toolbar renders with title', async ({ page }) => {

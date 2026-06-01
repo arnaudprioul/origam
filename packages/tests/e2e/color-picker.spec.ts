@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-colorpicker-origamcolorpicker-story-vue'
+const STORY_PATH = '/story/components-stories-colorpicker-origamcolorpicker-story-vue'
 
 test.describe('OrigamColorPicker', () => {
     test('Canvas variant — picker renders with canvas area', async ({ page }) => {

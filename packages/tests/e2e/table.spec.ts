@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-table-origamtable-story-vue'
+const STORY_PATH = '/story/components-stories-table-origamtable-story-vue'
 
 /**
  * OrigamTable — runtime behaviour specs.

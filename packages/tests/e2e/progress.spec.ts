@@ -24,10 +24,10 @@ import { expect, test, type Page, type FrameLocator } from '@playwright/test'
 // ─── Story URL helpers ───────────────────────────────────────────────────────
 
 const STORIES = {
-    loader:    '/story/stories-components-stories-loader-origamloader-story-vue',
-    progress:  '/story/stories-components-stories-progress-origamprogress-story-vue',
-    circular:  '/story/stories-components-stories-progress-origamprogresscircular-story-vue',
-    linear:    '/story/stories-components-stories-progress-origamprogresslinear-story-vue',
+    loader:    '/story/components-stories-loader-origamloader-story-vue',
+    progress:  '/story/components-stories-progress-origamprogress-story-vue',
+    circular:  '/story/components-stories-progress-origamprogresscircular-story-vue',
+    linear:    '/story/components-stories-progress-origamprogresslinear-story-vue',
 } as const
 
 async function gotoVariant (page: Page, story: string, variantTitle: string) {

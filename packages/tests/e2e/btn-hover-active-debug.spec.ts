@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-btn-origambtn-story-vue'
+const STORY_PATH = '/story/components-stories-btn-origambtn-story-vue'
 
 test.setTimeout(180_000)
 

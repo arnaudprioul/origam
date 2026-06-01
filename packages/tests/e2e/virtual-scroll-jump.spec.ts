@@ -24,7 +24,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(900)
 }
 
-const VS_PATH = '/story/stories-components-stories-virtualscroll-origamvirtualscroll-story-vue'
+const VS_PATH = '/story/components-stories-virtualscroll-origamvirtualscroll-story-vue'
 
 test('jumpTo(500) animates scrollTop instead of teleporting', async ({ page }) => {
     test.setTimeout(30_000)

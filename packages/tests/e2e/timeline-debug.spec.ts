@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-timeline-origamtimeline-story-vue'
+const STORY_PATH = '/story/components-stories-timeline-origamtimeline-story-vue'
 
 test.setTimeout(180_000)
 

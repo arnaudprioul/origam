@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 const sandboxOf = (page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page, variant) => {
-    await page.goto('/story/stories-components-stories-bottomnav-origambottomnav-story-vue')
+    await page.goto('/story/components-stories-bottomnav-origambottomnav-story-vue')
     await page.waitForLoadState('networkidle')
     await page.getByText(variant, { exact: true }).first().click()
     await page.waitForTimeout(800)

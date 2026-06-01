@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-app-origamapp-story-vue'
+const STORY_PATH = '/story/components-stories-app-origamapp-story-vue'
 
 test.describe('OrigamApp', () => {
 	test('Default — app shell renders with toolbar and main', async ({ page }) => {

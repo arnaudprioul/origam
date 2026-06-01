@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-skeleton-origamskeleton-story-vue'
+const STORY_PATH = '/story/components-stories-skeleton-origamskeleton-story-vue'
 
 test.describe('OrigamSkeleton', () => {
 	test('Default variant renders an .origam-skeleton element', async ({ page }) => {

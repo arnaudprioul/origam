@@ -24,7 +24,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(400)
 }
 
-const STORY = '/story/stories-components-stories-emptystate-origamemptystate-story-vue'
+const STORY = '/story/components-stories-emptystate-origamemptystate-story-vue'
 
 test.describe('OrigamEmptyState — Default (smoke + ARIA)', () => {
     test('mounts and exposes role=status + aria-live=polite on the root', async ({ page }) => {

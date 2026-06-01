@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-dialog-origamdialog-story-vue'
+const STORY_PATH = '/story/components-stories-dialog-origamdialog-story-vue'
 
 test.describe('OrigamDialog', () => {
 	test('Default — activator button renders and dialog opens on click', async ({ page }) => {

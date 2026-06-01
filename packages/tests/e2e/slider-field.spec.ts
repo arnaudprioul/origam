@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-sliderfield-origamsliderfield-story-vue'
+const STORY_PATH = '/story/components-stories-sliderfield-origamsliderfield-story-vue'
 
 test.describe('OrigamSliderField', () => {
     test('Color variant — renders slider track', async ({ page }) => {

@@ -16,7 +16,7 @@ import { expect, test, type Page } from '@playwright/test'
  *   "Size", "Rounded", "Border", "Separator", "Slot — default", "Default"
  */
 
-const STORY = '/story/stories-components-stories-kbd-origamkbd-story-vue'
+const STORY = '/story/components-stories-kbd-origamkbd-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

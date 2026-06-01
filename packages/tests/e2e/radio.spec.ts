@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-radio-origamradio-story-vue'
+const STORY_PATH = '/story/components-stories-radio-origamradio-story-vue'
 
 test.describe('OrigamRadio', () => {
     test('Color variant — renders radio with label', async ({ page }) => {

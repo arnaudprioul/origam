@@ -78,7 +78,7 @@ const borderRadiusAt = async (
 // OrigamBtn — ALREADY PASSING (regression guard)
 // ──────────────────────────────────────────────────────────────────────────────
 
-const BTN_STORY = '/story/stories-components-stories-btn-origambtn-story-vue'
+const BTN_STORY = '/story/components-stories-btn-origambtn-story-vue'
 
 test.describe('OrigamBtn — rounded rungs', () => {
     test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
@@ -98,7 +98,7 @@ test.describe('OrigamBtn — rounded rungs', () => {
 // OrigamSheet — ALREADY PASSING (regression guard)
 // ──────────────────────────────────────────────────────────────────────────────
 
-const SHEET_STORY = '/story/stories-components-stories-sheet-origamsheet-story-vue'
+const SHEET_STORY = '/story/components-stories-sheet-origamsheet-story-vue'
 
 test.describe('OrigamSheet — rounded rungs', () => {
     test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
@@ -118,7 +118,7 @@ test.describe('OrigamSheet — rounded rungs', () => {
 // OrigamChip — BUG: no &--rounded / &--rounded-{rung} rules at all
 // ──────────────────────────────────────────────────────────────────────────────
 
-const CHIP_STORY = '/story/stories-components-stories-chip-origamchip-story-vue'
+const CHIP_STORY = '/story/components-stories-chip-origamchip-story-vue'
 
 test.describe('OrigamChip — rounded rungs', () => {
     test('boolean true should set non-pill radius; rungs should produce distinct values', async ({ page }) => {
@@ -151,7 +151,7 @@ test.describe('OrigamChip — rounded rungs', () => {
 // OrigamAlert — BUG: has &--rounded (bool) but no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const ALERT_STORY = '/story/stories-components-stories-alert-origamalert-story-vue'
+const ALERT_STORY = '/story/components-stories-alert-origamalert-story-vue'
 
 test.describe('OrigamAlert — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -171,7 +171,7 @@ test.describe('OrigamAlert — rounded rungs', () => {
 // OrigamBtnGroup — BUG: has &--rounded (bool) but no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const BTN_GROUP_STORY = '/story/stories-components-stories-btn-origambtngroup-story-vue'
+const BTN_GROUP_STORY = '/story/components-stories-btn-origambtngroup-story-vue'
 
 test.describe('OrigamBtnGroup — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -191,7 +191,7 @@ test.describe('OrigamBtnGroup — rounded rungs', () => {
 // OrigamBottomNav — BUG: has &--rounded (bool) but no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const BOTTOM_NAV_STORY = '/story/stories-components-stories-bottomnav-origambottomnav-story-vue'
+const BOTTOM_NAV_STORY = '/story/components-stories-bottomnav-origambottomnav-story-vue'
 
 test.describe('OrigamBottomNav — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -211,7 +211,7 @@ test.describe('OrigamBottomNav — rounded rungs', () => {
 // OrigamBreadcrumb — BUG: has &--rounded (bool) but no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const BREADCRUMB_STORY = '/story/stories-components-stories-breadcrumb-origambreadcrumb-story-vue'
+const BREADCRUMB_STORY = '/story/components-stories-breadcrumb-origambreadcrumb-story-vue'
 
 test.describe('OrigamBreadcrumb — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -231,7 +231,7 @@ test.describe('OrigamBreadcrumb — rounded rungs', () => {
 // OrigamList — BUG: has &--rounded (bool) but no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const LIST_STORY = '/story/stories-components-stories-list-origamlist-story-vue'
+const LIST_STORY = '/story/components-stories-list-origamlist-story-vue'
 
 test.describe('OrigamList — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -251,7 +251,7 @@ test.describe('OrigamList — rounded rungs', () => {
 // OrigamExpansionPanels — BUG: useRounded is called but NO border-radius CSS rule on root
 // ──────────────────────────────────────────────────────────────────────────────
 
-const EXPANSION_STORY = '/story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue'
+const EXPANSION_STORY = '/story/components-stories-expansionpanel-origamexpansionpanels-story-vue'
 
 test.describe('OrigamExpansionPanels — rounded rungs', () => {
     test('rungs produce distinct border-radius values on root', async ({ page }) => {
@@ -271,7 +271,7 @@ test.describe('OrigamExpansionPanels — rounded rungs', () => {
 // OrigamSystemBar — BUG: has &--rounded (bool) at 0px, no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const SYSTEM_BAR_STORY = '/story/stories-components-stories-systembar-origamsystembar-story-vue'
+const SYSTEM_BAR_STORY = '/story/components-stories-systembar-origamsystembar-story-vue'
 
 test.describe('OrigamSystemBar — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -291,7 +291,7 @@ test.describe('OrigamSystemBar — rounded rungs', () => {
 // OrigamImg — BUG: has &--rounded (bool) but no rung rules
 // ──────────────────────────────────────────────────────────────────────────────
 
-const IMG_STORY = '/story/stories-components-stories-img-origamimg-story-vue'
+const IMG_STORY = '/story/components-stories-img-origamimg-story-vue'
 
 test.describe('OrigamImg — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
@@ -311,7 +311,7 @@ test.describe('OrigamImg — rounded rungs', () => {
 // OrigamAvatar — ALREADY PASSING (regression guard)
 // ──────────────────────────────────────────────────────────────────────────────
 
-const AVATAR_STORY = '/story/stories-components-stories-avatar-origamavatar-story-vue'
+const AVATAR_STORY = '/story/components-stories-avatar-origamavatar-story-vue'
 
 test.describe('OrigamAvatar — rounded rungs', () => {
     test('OK: rungs produce distinct border-radius values', async ({ page }) => {
@@ -331,7 +331,7 @@ test.describe('OrigamAvatar — rounded rungs', () => {
 // OrigamTable — ALREADY PASSING (regression guard)
 // ──────────────────────────────────────────────────────────────────────────────
 
-const TABLE_STORY = '/story/stories-components-stories-table-origamtable-story-vue'
+const TABLE_STORY = '/story/components-stories-table-origamtable-story-vue'
 
 test.describe('OrigamTable — rounded rungs', () => {
     test('OK: rungs produce distinct border-radius values', async ({ page }) => {

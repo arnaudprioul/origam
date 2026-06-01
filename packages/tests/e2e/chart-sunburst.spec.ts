@@ -13,7 +13,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - innerRadius=0 vs 0.4 produce distinct arc `d` paths.
  */
 
-const SUNBURST_STORY = '/story/stories-components-stories-chart-origamchartsunburst-story-vue'
+const SUNBURST_STORY = '/story/components-stories-chart-origamchartsunburst-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -3,13 +3,13 @@ import { expect, test, type Page } from '@playwright/test'
 /**
  * OrigamExpansionPanels — runtime assertions per story Variant.
  *
- * Story URL: /story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue
+ * Story URL: /story/components-stories-expansionpanel-origamexpansionpanels-story-vue
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page: Page, variant: string) => {
-    await page.goto('/story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue')
+    await page.goto('/story/components-stories-expansionpanel-origamexpansionpanels-story-vue')
     await page.waitForLoadState('networkidle')
     await page.getByText(variant, { exact: true }).first().click()
     await page.waitForTimeout(800)
@@ -96,7 +96,7 @@ test.describe('OrigamExpansionPanels — Icons', () => {
 
 test.describe('OrigamExpansionPanels — Layout', () => {
     test('layout variant renders 3 panels', async ({ page }) => {
-        await page.goto('/story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue')
+        await page.goto('/story/components-stories-expansionpanel-origamexpansionpanels-story-vue')
         await page.waitForLoadState('networkidle')
         // Click the sidebar variant item that is exact "Layout" within the story nav
         await page.locator('.histoire-story-variant-link, [class*="variant"]').getByText('Layout', { exact: true }).first().click()

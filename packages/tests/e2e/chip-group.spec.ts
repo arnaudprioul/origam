@@ -23,7 +23,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-chip-origamchipgroup-story-vue'
+const STORY = '/story/components-stories-chip-origamchipgroup-story-vue'
 
 // ─── Default ────────────────────────────────────────────────────────────────
 

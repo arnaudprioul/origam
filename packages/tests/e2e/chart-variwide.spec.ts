@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - point-click emit variant shows the event log after clicking a bar.
  */
 
-const VARIWIDE_STORY = '/story/stories-components-stories-chart-origamchartvariwide-story-vue'
+const VARIWIDE_STORY = '/story/components-stories-chart-origamchartvariwide-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

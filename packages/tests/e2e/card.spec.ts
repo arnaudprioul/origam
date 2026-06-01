@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-card-origamcard-story-vue'
+const STORY_PATH = '/story/components-stories-card-origamcard-story-vue'
 
 const EXPECTED_INTENT_BG: Record<string, string> = {
 	primary: 'rgb(124, 58, 237)',

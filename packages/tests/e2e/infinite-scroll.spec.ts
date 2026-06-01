@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-infinitescroll-origaminfinitescroll-story-vue'
+const STORY_PATH = '/story/components-stories-infinitescroll-origaminfinitescroll-story-vue'
 
 test.describe('OrigamInfiniteScroll', () => {
     test('Basic — end side variant renders with initial items', async ({ page }) => {

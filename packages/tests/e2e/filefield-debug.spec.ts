@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-filefield-origamfilefield-story-vue'
+const STORY_PATH = '/story/components-stories-filefield-origamfilefield-story-vue'
 
 test.setTimeout(180_000)
 

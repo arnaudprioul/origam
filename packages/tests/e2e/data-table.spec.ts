@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-datatable-origamdatatable-story-vue'
+const STORY_PATH = '/story/components-stories-datatable-origamdatatable-story-vue'
 
 test.describe('OrigamDataTable', () => {
     test('Basic variant — table renders with header and body', async ({ page }) => {

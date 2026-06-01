@@ -26,7 +26,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(500)
 }
 
-const STORY = '/story/stories-components-stories-masonry-origammasonry-story-vue'
+const STORY = '/story/components-stories-masonry-origammasonry-story-vue'
 
 test.describe('OrigamMasonry — Default (smoke + ARIA)', () => {
     test('mounts the masonry root with role="list"', async ({ page }) => {

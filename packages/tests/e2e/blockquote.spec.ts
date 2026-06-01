@@ -24,7 +24,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(400)
 }
 
-const STORY = '/story/stories-components-stories-blockquote-origamblockquote-story-vue'
+const STORY = '/story/components-stories-blockquote-origamblockquote-story-vue'
 
 test.describe('OrigamBlockquote — Default (smoke + ARIA)', () => {
     test('mounts as a native <blockquote> element', async ({ page }) => {

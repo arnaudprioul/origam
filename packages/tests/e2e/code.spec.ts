@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-code-origamcode-story-vue'
+const STORY_PATH = '/story/components-stories-code-origamcode-story-vue'
 
 /**
  * Probe spec for OrigamCode runtime behaviour. Covers the shiki
