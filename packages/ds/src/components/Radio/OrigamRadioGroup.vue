@@ -133,7 +133,7 @@
 		return origamSelectionControlGroupRef.value?.filterProps(props, ['modelValue', 'id', 'style', 'class', 'readonly', 'disabled', 'type', 'multiple', 'items'])
 	})
 	const radioProps = computed(() => {
-		return origamRadioRef.value.filterProps(props)
+		return origamRadioRef.value?.filterProps(props)
 	})
 
 	const items = computed(() => {

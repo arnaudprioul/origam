@@ -94,9 +94,12 @@ export function useStyle (styles: ComputedRef, uniq = undefined, name = getCurre
     })
 
     const customCss = computed(() => {
-        const stylesArray = styles.value
+        const raw = styles.value
+        const normalized: any[] = Array.isArray(raw) ? raw : [raw]
+
+        const stylesArray = normalized
             .map((value: any) => {
-                if (typeof value === 'object' && !Array.isArray(value)) {
+                if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
                     return Object.keys(value)
                         .filter((key) => typeof value[key] !== 'undefined')
                         .map((key) => `${key}: ${value[key]}`)
@@ -105,8 +108,7 @@ export function useStyle (styles: ComputedRef, uniq = undefined, name = getCurre
                 return value
             })
             .flat()
-            // @ts-expect-error value is a union of string and string[] after flat; `.length` is valid on both
-            .filter((value) => value.length > 0)
+            .filter((value) => value != null && String(value).length > 0)
 
         return `#${id.value} {${stylesArray.join(';')}}`
     })
