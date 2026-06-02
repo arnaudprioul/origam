@@ -41,6 +41,15 @@ export default defineConfig({
             }
         },
         server: {
+            // pnpm stores @mdi/font under node_modules/@mdi/.ignored_font;
+            // its webfont files (materialdesignicons-webfont.woff2/woff/ttf)
+            // live outside Vite's default fs.allow root, so the dev server
+            // returned 403 for them and every `.mdi` glyph rendered as an
+            // empty box (font-family fell back to the body font). Allow the
+            // monorepo root so the font binaries are served.
+            fs: {
+                allow: [resolve(__dirname, '..', '..')]
+            },
             watch: {
                 // `.claude/worktrees/<agent-id>` holds throwaway git
                 // worktrees spawned by parallel agents — each carries a
