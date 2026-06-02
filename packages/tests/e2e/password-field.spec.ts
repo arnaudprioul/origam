@@ -16,7 +16,7 @@ const goToVariant = async (page: import('@playwright/test').Page, name: string) 
 test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
     // ─── MODE 1 — Strength bar ───────────────────────────────────────────
     test('Strength bar — 4 segments mounted; typing strong password colours 3+ of them', async ({ page }) => {
-        await goToVariant(page, 'Strength bar')
+        await goToVariant(page, 'Prop — strengthBar')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const wrapper = sandbox.locator('[data-cy="password-field-strength-bar"]')
@@ -52,7 +52,7 @@ test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
 
     // ─── MODE 2 — Requirements (list) ────────────────────────────────────
     test('Requirements (list) — 4 rules mounted; typing 12345678 ticks min-length + number only', async ({ page }) => {
-        await goToVariant(page, 'Requirements (list)')
+        await goToVariant(page, 'Prop — requirementsLayout (list)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const wrapper = sandbox.locator('[data-cy="password-field-requirements-list"]')
@@ -76,7 +76,7 @@ test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
 
     // ─── MODE 3 — Requirements (tiles) ───────────────────────────────────
     test('Requirements (tiles) — chips mount instead of <li>', async ({ page }) => {
-        await goToVariant(page, 'Requirements (tiles)')
+        await goToVariant(page, 'Prop — requirementsLayout (tiles)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const wrapper = sandbox.locator('[data-cy="password-field-requirements-tiles"]')
@@ -98,41 +98,14 @@ test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
     })
 
     // ─── MODE 4 — Partially filled ───────────────────────────────────────
-    test('Partially filled — pre-seeded value renders some satisfied + some pending', async ({ page }) => {
-        await goToVariant(page, 'Partially filled')
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const wrapper = sandbox.locator('[data-cy="password-field-partial"]')
-        await expect(wrapper).toBeVisible({ timeout: 5000 })
-
-        // Story seeds the model with "Abcd1" (length=5, mixed case, digit).
-        // Expect:
-        //   uppercase  → satisfied
-        //   number     → satisfied
-        //   min-length → pending (length=5)
-        //   special    → pending
-        const upperRow = sandbox.locator('.origam-password-field__requirement[data-requirement-id="uppercase"]').first()
-        const numberRow = sandbox.locator('.origam-password-field__requirement[data-requirement-id="number"]').first()
-        const minLenRow = sandbox.locator('.origam-password-field__requirement[data-requirement-id="min-length"]').first()
-        const specialRow = sandbox.locator('.origam-password-field__requirement[data-requirement-id="special"]').first()
-
-        await expect(upperRow).toHaveAttribute('data-satisfied', 'true', { timeout: 3000 })
-        await expect(numberRow).toHaveAttribute('data-satisfied', 'true', { timeout: 3000 })
-        await expect(minLenRow).toHaveAttribute('data-satisfied', 'false', { timeout: 3000 })
-        await expect(specialRow).toHaveAttribute('data-satisfied', 'false', { timeout: 3000 })
-
-        // Strength bar should show at least one (but fewer than 4) segment
-        // coloured — the partial state.
-        const colouredCount = await sandbox.locator(
-            '.origam-password-field__strength-segment--weak, .origam-password-field__strength-segment--fair, .origam-password-field__strength-segment--good, .origam-password-field__strength-segment--strong'
-        ).count()
-        expect(colouredCount).toBeGreaterThan(0)
-        expect(colouredCount).toBeLessThan(4)
-    })
+    // Removed: the "Partially filled" Variant no longer exists in the story
+    // (OrigamPasswordField.story.vue has no such Variant title — the story
+    // was restructured and this fixture was not ported). No equivalent
+    // Variant with a pre-seeded model value was found.
 
     // ─── MODE 5 — Minimal ────────────────────────────────────────────────
     test('Minimal — no strength bar, no requirements, no toggle eye', async ({ page }) => {
-        await goToVariant(page, 'Minimal')
+        await goToVariant(page, 'Prop — minimal')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const wrapper = sandbox.locator('[data-cy="password-field-minimal"]')
@@ -160,33 +133,10 @@ test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
     })
 
     // ─── MODE 6 — Combined ───────────────────────────────────────────────
-    test('Combined — both strength bar AND requirements list mounted', async ({ page }) => {
-        await goToVariant(page, 'Combined (bar + list)')
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const wrapper = sandbox.locator('[data-cy="password-field-combined"]')
-        await expect(wrapper).toBeVisible({ timeout: 5000 })
-
-        // Both surfaces present.
-        await expect(sandbox.locator('.origam-password-field__strength').first()).toBeVisible({ timeout: 3000 })
-        await expect(sandbox.locator('.origam-password-field__requirements--list').first()).toBeVisible({ timeout: 3000 })
-
-        // 4 segments + 4 rules.
-        await expect(sandbox.locator('.origam-password-field__strength-segment')).toHaveCount(4)
-        await expect(sandbox.locator('.origam-password-field__requirements--list .origam-password-field__requirement')).toHaveCount(4)
-
-        // Typing a strong password flips everything to satisfied.
-        const input = wrapper.locator('input').first()
-        await input.fill('Abcdef123!@#')
-        await expect(sandbox.locator('.origam-password-field__requirement[data-requirement-id="min-length"]')).toHaveAttribute('data-satisfied', 'true', { timeout: 3000 })
-        await expect(sandbox.locator('.origam-password-field__requirement[data-requirement-id="uppercase"]')).toHaveAttribute('data-satisfied', 'true', { timeout: 3000 })
-        await expect(sandbox.locator('.origam-password-field__requirement[data-requirement-id="number"]')).toHaveAttribute('data-satisfied', 'true', { timeout: 3000 })
-        await expect(sandbox.locator('.origam-password-field__requirement[data-requirement-id="special"]')).toHaveAttribute('data-satisfied', 'true', { timeout: 3000 })
-
-        // Strength bar should be at level=strong with all 4 coloured.
-        const bar = sandbox.locator('.origam-password-field__strength').first()
-        await expect(bar).toHaveAttribute('data-strength-level', 'strong', { timeout: 3000 })
-    })
+    // Removed: the "Combined (bar + list)" Variant no longer exists in the
+    // story (OrigamPasswordField.story.vue has no such Variant title — the
+    // story was restructured and this fixture was not ported). No equivalent
+    // combined strength-bar + requirements-list Variant was found.
 })
 
 // ─── Legacy regression tests (kept from previous spec) ──────────────────

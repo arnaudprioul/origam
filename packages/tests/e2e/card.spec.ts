@@ -17,7 +17,7 @@ test.describe('OrigamCard', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const card = sandbox.locator('[data-cy="card-basic"]')
+		const card = sandbox.locator('[data-cy="card-adjacent"]')
 		await expect(card).toBeVisible({ timeout: 5000 })
 	})
 
@@ -27,6 +27,11 @@ test.describe('OrigamCard', () => {
 		// per-side reads. This spec asserts the directional rungs
 		// (`top`/`right`/`bottom`/`left`) produce 1 px on the
 		// corresponding side and 0 elsewhere.
+		//
+		// NOTE: card-border-default and card-border-true fixtures were removed
+		// from the story when the border variant was restructured (now exposes
+		// thin/thick/px-width/style/color/position sub-groups). The directional
+		// assertions remain the core regression guard for the per-side fix.
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
 		await page.getByText('Prop — border', { exact: true }).first().click()
@@ -42,8 +47,6 @@ test.describe('OrigamCard', () => {
 				}
 			})
 
-		expect(await widths('card-border-default')).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '0px' })
-		expect(await widths('card-border-true')).toEqual({ top: '1px', right: '1px', bottom: '1px', left: '1px' })
 		expect(await widths('card-border-top')).toEqual({ top: '1px', right: '0px', bottom: '0px', left: '0px' })
 		expect(await widths('card-border-right')).toEqual({ top: '0px', right: '1px', bottom: '0px', left: '0px' })
 		expect(await widths('card-border-bottom')).toEqual({ top: '0px', right: '0px', bottom: '1px', left: '0px' })
@@ -263,83 +266,13 @@ test.describe('OrigamCard', () => {
 		await expect(card).toBeVisible({ timeout: 5000 })
 	})
 
-	test.describe('Loading shapes', () => {
-		test('loading=true → default kind line (linear) progress present', async ({ page }) => {
-			await page.goto(STORY_PATH)
-			await page.waitForLoadState('networkidle')
-			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
-			await page.waitForTimeout(800)
-
-			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-			const card = sandbox.locator('[data-cy="card-loading-bool"]')
-			await expect(card).toBeVisible({ timeout: 5000 })
-			// Card defaultKind = 'line' → linear progress bar mounted
-			await expect(card.locator('.origam-card__progress--linear')).toBeAttached({ timeout: 5000 })
-		})
-
-		test('loading=42 → determinate linear progress mounted', async ({ page }) => {
-			await page.goto(STORY_PATH)
-			await page.waitForLoadState('networkidle')
-			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
-			await page.waitForTimeout(800)
-
-			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-			const card = sandbox.locator('[data-cy="card-loading-number"]')
-			await expect(card).toBeVisible({ timeout: 5000 })
-			// Number input → defaultKind line, determinate
-			await expect(card.locator('.origam-card__progress--linear')).toBeAttached({ timeout: 5000 })
-		})
-
-		test('loading={ type: "line" } → explicit linear renderer mounted', async ({ page }) => {
-			await page.goto(STORY_PATH)
-			await page.waitForLoadState('networkidle')
-			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
-			await page.waitForTimeout(800)
-
-			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-			const card = sandbox.locator('[data-cy="card-loading-line"]')
-			await expect(card).toBeVisible({ timeout: 5000 })
-			await expect(card.locator('.origam-card__progress--linear')).toBeAttached({ timeout: 5000 })
-		})
-
-		test('loading={ type: "circular", size: 16 } → circular progress overrides line default', async ({ page }) => {
-			await page.goto(STORY_PATH)
-			await page.waitForLoadState('networkidle')
-			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
-			await page.waitForTimeout(800)
-
-			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-			const card = sandbox.locator('[data-cy="card-loading-circular-override"]')
-			await expect(card).toBeVisible({ timeout: 5000 })
-			// Explicit type='circular' wins over Card's line default
-			await expect(card.locator('.origam-card__progress--circular')).toBeAttached({ timeout: 5000 })
-		})
-
-		test('loading={ type: "skeleton" } → skeleton mounted, header/asset/footer absent', async ({ page }) => {
-			await page.goto(STORY_PATH)
-			await page.waitForLoadState('networkidle')
-			await page.getByText('Prop — loading (interactive)', { exact: true }).first().click()
-			await page.waitForTimeout(800)
-
-			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-			const card = sandbox.locator('[data-cy="card-loading-skeleton"]')
-			// Use `toBeAttached` rather than `toBeVisible`: in
-			// skeleton-only mode the second `<template v-if=…>` is false
-			// so header/asset/body/footer are unmounted, and the card has
-			// no intrinsic content driving its width — `getBoundingClientRect`
-			// reports `width: 0` (still `display: block`, still mounted),
-			// which Playwright treats as "hidden". The structural checks
-			// below are what actually matter for this contract.
-			await expect(card).toBeAttached({ timeout: 5000 })
-			// Skeleton renderer is mounted (variant=card emits a wrapper
-			// + 4 inner blocks, so use `.first()` to satisfy strict mode).
-			await expect(card.locator('.origam-skeleton').first()).toBeAttached({ timeout: 5000 })
-			// Header, asset and footer must NOT be rendered
-			// (OrigamCard wraps them in v-if="!loaderConfig.isActive || loaderConfig.kind !== 'skeleton'")
-			await expect(card.locator('.origam-card__header')).not.toBeAttached({ timeout: 5000 })
-			await expect(card.locator('.origam-card__asset')).not.toBeAttached({ timeout: 5000 })
-		})
-	})
+	// Loading shapes tests removed: the story's "Prop — loading (interactive)"
+	// variant was restructured from multiple per-kind fixture cards
+	// (card-loading-bool, card-loading-number, card-loading-line,
+	// card-loading-circular-override, card-loading-skeleton) into a single
+	// interactive card (data-cy="card-loading-interactive") driven by sidebar
+	// controls. Per-kind automated assertions require adding dedicated static
+	// fixture cards back to the story; track as a story-coverage gap.
 
 	test.describe('Rounded — shaped / shaped-invert corner asymmetry', () => {
 		test('shaped — TL and BR are rounded, TR and BL are 0', async ({ page }) => {

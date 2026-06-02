@@ -60,6 +60,7 @@ test.describe('OrigamChartWordCloud — Default', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
         const firstText = await words.first().textContent()
@@ -72,6 +73,7 @@ test.describe('OrigamChartWordCloud — accessibility', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
         for (let i = 0; i < Math.min(count, 5); i++) {
@@ -85,6 +87,7 @@ test.describe('OrigamChartWordCloud — accessibility', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         for (let i = 0; i < Math.min(count, 5); i++) {
             await expect(words.nth(i)).toHaveAttribute('tabindex', '0')
@@ -119,6 +122,7 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
         await page.screenshot({ path: '/tmp/chart-word-cloud-rotation.png', fullPage: false })
 
         const words = sandbox.locator('[data-cy="word-cloud-rotation-none"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
     })
@@ -127,6 +131,7 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-rotation-random"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
     })
@@ -135,6 +140,7 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-rotation-orthogonal"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
     })
@@ -143,6 +149,7 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-rotation-none"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
 
@@ -157,6 +164,7 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
         await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="word-cloud-rotation-orthogonal"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThanOrEqual(2)
 

@@ -34,7 +34,8 @@ test.describe('OrigamItemGroup — Default (single selection)', () => {
     })
 
     test('clicking another card shifts the active state', async ({ page }) => {
-        await open(page, 'Default')
+        // "Prop — default (single selection)" carries data-cy="ig-default-status"
+        await open(page, 'Prop — default (single selection)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
@@ -53,7 +54,8 @@ test.describe('OrigamItemGroup — Default (single selection)', () => {
 
 test.describe('OrigamItemGroup — Multiple', () => {
     test('clicking adds to the array', async ({ page }) => {
-        await open(page, 'Multiple')
+        // "Prop — multiple (checkbox-style, many selected)" carries data-cy="ig-multiple-status"
+        await open(page, 'Prop — multiple (checkbox-style, many selected)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
@@ -70,7 +72,8 @@ test.describe('OrigamItemGroup — Multiple', () => {
     })
 
     test('clicking a selected item removes it from the array', async ({ page }) => {
-        await open(page, 'Multiple')
+        // "Prop — multiple (checkbox-style, many selected)" carries data-cy="ig-multiple-status"
+        await open(page, 'Prop — multiple (checkbox-style, many selected)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
@@ -87,7 +90,8 @@ test.describe('OrigamItemGroup — Multiple', () => {
 
 test.describe('OrigamItemGroup — Mandatory', () => {
     test('clicking the active item does NOT deselect it', async ({ page }) => {
-        await open(page, 'Mandatory')
+        // "Prop — mandatory (always keeps one selected)" is the current variant title
+        await open(page, 'Prop — mandatory (always keeps one selected)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
@@ -103,7 +107,8 @@ test.describe('OrigamItemGroup — Mandatory', () => {
 
 test.describe('OrigamItemGroup — Custom selectedClass', () => {
     test('the custom class lands on active items in addition to the default origam-item--selected', async ({ page }) => {
-        await open(page, 'Custom selectedClass')
+        // "Prop — selectedClass (custom active class)" is the current variant title
+        await open(page, 'Prop — selectedClass (custom active class)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 

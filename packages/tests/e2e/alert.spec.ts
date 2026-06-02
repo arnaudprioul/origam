@@ -34,7 +34,7 @@ test.describe('OrigamAlert — default', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const alert = sandbox.locator('[data-cy="alert-default"]').first()
+        const alert = sandbox.locator('[data-cy="alert-playground"]').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
 
         const cls = await alert.evaluate(el => el.className)
@@ -61,7 +61,7 @@ const EXPECTED_ALERT_BG: Record<string, string> = {
 
 test.describe('OrigamAlert — color showcase', () => {
     test('bgColor prop paints each intent on the alert root', async ({ page }) => {
-        await openVariant(page, STORY, 'Color')
+        await openVariant(page, STORY, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
 
         for (const [intent, expected] of Object.entries(EXPECTED_ALERT_BG)) {
@@ -77,7 +77,7 @@ test.describe('OrigamAlert — color showcase', () => {
 
 test.describe('OrigamAlert — status', () => {
     test('info status emits --info modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Status')
+        await openVariant(page, STORY, 'Prop — status')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-status"]').first()
@@ -92,7 +92,7 @@ test.describe('OrigamAlert — status', () => {
 
 test.describe('OrigamAlert — closable', () => {
     test('clicking close hides the alert and updates status', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
+        await openVariant(page, STORY, 'Prop — closable')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-closable"]').first()
@@ -109,7 +109,7 @@ test.describe('OrigamAlert — closable', () => {
     })
 
     test('reset button restores the alert visibility', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
+        await openVariant(page, STORY, 'Prop — closable')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-closable"]').first()
@@ -130,7 +130,7 @@ test.describe('OrigamAlert — closable', () => {
 
 test.describe('OrigamAlert — title', () => {
     test('title prop renders the title span', async ({ page }) => {
-        await openVariant(page, STORY, 'Title prop')
+        await openVariant(page, STORY, 'Prop — title')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-title"]').first()
@@ -146,7 +146,7 @@ test.describe('OrigamAlert — title', () => {
 
 test.describe('OrigamAlert — text', () => {
     test('text prop renders the body content', async ({ page }) => {
-        await openVariant(page, STORY, 'Text prop')
+        await openVariant(page, STORY, 'Prop — text')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-text"]').first()
@@ -159,7 +159,7 @@ test.describe('OrigamAlert — text', () => {
 
 test.describe('OrigamAlert — prominent', () => {
     test('prominent=true emits the --prominent modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Prominent')
+        await openVariant(page, STORY, 'Prop — prominent')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-prominent"]').first()
@@ -174,7 +174,7 @@ test.describe('OrigamAlert — prominent', () => {
 
 test.describe('OrigamAlert — density', () => {
     test('default density emits --density-default modifier', async ({ page }) => {
-        await openVariant(page, STORY, 'Density')
+        await openVariant(page, STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-density"]').first()
@@ -189,7 +189,7 @@ test.describe('OrigamAlert — density', () => {
 
 test.describe('OrigamAlert — color', () => {
     test('color prop renders the alert with the expected class structure', async ({ page }) => {
-        await openVariant(page, STORY, 'Color (intent)')
+        await openVariant(page, STORY, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
 
         const alert = sandbox.locator('[data-cy="alert-color"]').first()

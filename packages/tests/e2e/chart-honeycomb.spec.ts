@@ -164,7 +164,7 @@ test.describe('OrigamChartHoneycomb — empty state', () => {
 
 test.describe('OrigamChart shell — honeycomb dispatch', () => {
     test('honeycomb tile in 14-primitives grid renders 9 tiles', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Prop — type (14 primitives)')
+        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
 
         const tiles = sandbox.locator('[data-cy="chart-type-honeycomb"] [data-cy^="origam-chart-honeycomb-tile-"]')

@@ -36,7 +36,7 @@ const SELECTED_CLASS = 'origam-btn--active'
 
 test.describe('OrigamBtnToggle — single selection', () => {
     test('initial v-model puts the matching item in the active class', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
+        await openVariant(page, STORY, 'Prop — modelValue (single selection)')
         const sandbox = sandboxOf(page)
 
         const toggle = sandbox.locator('.origam-btn-toggle').first()
@@ -51,7 +51,7 @@ test.describe('OrigamBtnToggle — single selection', () => {
     })
 
     test('clicking another button moves the selection there', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
+        await openVariant(page, STORY, 'Prop — modelValue (single selection)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -70,7 +70,7 @@ test.describe('OrigamBtnToggle — single selection', () => {
 
 test.describe('OrigamBtnToggle — multiple selection', () => {
     test('clicking a second item appends to the v-model array', async ({ page }) => {
-        await openVariant(page, STORY, 'Multiple')
+        await openVariant(page, STORY, 'Prop — multiple')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -91,7 +91,7 @@ test.describe('OrigamBtnToggle — multiple selection', () => {
     })
 
     test('clicking a selected item removes it from the array', async ({ page }) => {
-        await openVariant(page, STORY, 'Multiple')
+        await openVariant(page, STORY, 'Prop — multiple')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -110,7 +110,7 @@ test.describe('OrigamBtnToggle — multiple selection', () => {
 
 test.describe('OrigamBtnToggle — mandatory', () => {
     test('clicking the active item does NOT deselect it', async ({ page }) => {
-        await openVariant(page, STORY, 'Mandatory')
+        await openVariant(page, STORY, 'Prop — mandatory')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -129,7 +129,7 @@ test.describe('OrigamBtnToggle — mandatory', () => {
 
 test.describe('OrigamBtnToggle — disabled', () => {
     test('clicks on disabled buttons do not change the selection', async ({ page }) => {
-        await openVariant(page, STORY, 'Disabled')
+        await openVariant(page, STORY, 'Prop — disabled')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -149,7 +149,7 @@ test.describe('OrigamBtnToggle — disabled', () => {
 
 test.describe('OrigamBtnToggle — forwards density to the underlying group', () => {
     test('the toggle renders a btn-group with the selected density modifier', async ({ page }) => {
-        await openVariant(page, STORY, 'Density')
+        await openVariant(page, STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 

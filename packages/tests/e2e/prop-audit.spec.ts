@@ -82,7 +82,7 @@ const BTN_STORY = '/story/components-stories-btn-origambtn-story-vue'
 
 test.describe('OrigamBtn — rounded rungs', () => {
     test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
-        await openVariant(page, BTN_STORY, 'Rounded')
+        await openVariant(page, BTN_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('.origam-btn').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -102,7 +102,7 @@ const SHEET_STORY = '/story/components-stories-sheet-origamsheet-story-vue'
 
 test.describe('OrigamSheet — rounded rungs', () => {
     test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
-        await openVariant(page, SHEET_STORY, 'Rounded')
+        await openVariant(page, SHEET_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const sheet = sandbox.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 8000 })
@@ -122,7 +122,7 @@ const CHIP_STORY = '/story/components-stories-chip-origamchip-story-vue'
 
 test.describe('OrigamChip — rounded rungs', () => {
     test('boolean true should set non-pill radius; rungs should produce distinct values', async ({ page }) => {
-        await openVariant(page, CHIP_STORY, 'Default')
+        await openVariant(page, CHIP_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const chip = sandbox.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 8000 })
@@ -155,7 +155,7 @@ const ALERT_STORY = '/story/components-stories-alert-origamalert-story-vue'
 
 test.describe('OrigamAlert — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, ALERT_STORY, 'Default')
+        await openVariant(page, ALERT_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const alert = sandbox.locator('.origam-alert').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
@@ -175,7 +175,7 @@ const BTN_GROUP_STORY = '/story/components-stories-btn-origambtngroup-story-vue'
 
 test.describe('OrigamBtnGroup — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, BTN_GROUP_STORY, 'Rounded')
+        await openVariant(page, BTN_GROUP_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
@@ -195,7 +195,7 @@ const BOTTOM_NAV_STORY = '/story/components-stories-bottomnav-origambottomnav-st
 
 test.describe('OrigamBottomNav — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, BOTTOM_NAV_STORY, 'Rounded')
+        await openVariant(page, BOTTOM_NAV_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('.origam-bottom-nav').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -215,7 +215,7 @@ const BREADCRUMB_STORY = '/story/components-stories-breadcrumb-origambreadcrumb-
 
 test.describe('OrigamBreadcrumb — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, BREADCRUMB_STORY, 'Rounded')
+        await openVariant(page, BREADCRUMB_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const bc = sandbox.locator('.origam-breadcrumb').first()
         await expect(bc).toBeVisible({ timeout: 8000 })
@@ -235,7 +235,7 @@ const LIST_STORY = '/story/components-stories-list-origamlist-story-vue'
 
 test.describe('OrigamList — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, LIST_STORY, 'Rounded')
+        await openVariant(page, LIST_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const list = sandbox.locator('.origam-list').first()
         await expect(list).toBeVisible({ timeout: 8000 })
@@ -255,7 +255,7 @@ const EXPANSION_STORY = '/story/components-stories-expansionpanel-origamexpansio
 
 test.describe('OrigamExpansionPanels — rounded rungs', () => {
     test('rungs produce distinct border-radius values on root', async ({ page }) => {
-        await openVariant(page, EXPANSION_STORY, 'Rounded')
+        await openVariant(page, EXPANSION_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const panels = sandbox.locator('.origam-expansion-panels').first()
         await expect(panels).toBeVisible({ timeout: 8000 })
@@ -275,7 +275,7 @@ const SYSTEM_BAR_STORY = '/story/components-stories-systembar-origamsystembar-st
 
 test.describe('OrigamSystemBar — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, SYSTEM_BAR_STORY, 'Rounded')
+        await openVariant(page, SYSTEM_BAR_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const bar = sandbox.locator('.origam-system-bar').first()
         await expect(bar).toBeVisible({ timeout: 8000 })
@@ -295,7 +295,7 @@ const IMG_STORY = '/story/components-stories-img-origamimg-story-vue'
 
 test.describe('OrigamImg — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, IMG_STORY, 'Rounded')
+        await openVariant(page, IMG_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const img = sandbox.locator('.origam-img').first()
         await expect(img).toBeVisible({ timeout: 8000 })
@@ -315,7 +315,7 @@ const AVATAR_STORY = '/story/components-stories-avatar-origamavatar-story-vue'
 
 test.describe('OrigamAvatar — rounded rungs', () => {
     test('OK: rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, AVATAR_STORY, 'Rounded')
+        await openVariant(page, AVATAR_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 8000 })
@@ -335,7 +335,7 @@ const TABLE_STORY = '/story/components-stories-table-origamtable-story-vue'
 
 test.describe('OrigamTable — rounded rungs', () => {
     test('OK: rungs produce distinct border-radius values', async ({ page }) => {
-        await openVariant(page, TABLE_STORY, 'Rounded')
+        await openVariant(page, TABLE_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const table = sandbox.locator('.origam-table').first()
         await expect(table).toBeVisible({ timeout: 8000 })
@@ -408,7 +408,7 @@ test.describe('OrigamAlert — density', () => {
 
 test.describe('OrigamBtnGroup — density', () => {
     test('comfortable height > compact height', async ({ page }) => {
-        await openVariant(page, BTN_GROUP_STORY, 'Density')
+        await openVariant(page, BTN_GROUP_STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
@@ -434,7 +434,7 @@ test.describe('OrigamBtnGroup — density', () => {
 
 test.describe('OrigamSheet — elevation', () => {
     test('elevation=0 → no shadow token; elevation=4 → non-none shadow token', async ({ page }) => {
-        await openVariant(page, SHEET_STORY, 'Elevation')
+        await openVariant(page, SHEET_STORY, 'Prop — elevation')
         const sandbox = sandboxOf(page)
         const sheet = sandbox.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 8000 })
@@ -465,7 +465,7 @@ test.describe('OrigamSheet — elevation', () => {
 
 test.describe('OrigamSheet — border', () => {
     test('default → 0px border-width; --border → 1px border-width', async ({ page }) => {
-        await openVariant(page, SHEET_STORY, 'Modifiers')
+        await openVariant(page, SHEET_STORY, 'Prop — border & rounded (modifiers)')
         const sandbox = sandboxOf(page)
         const sheet = sandbox.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 8000 })

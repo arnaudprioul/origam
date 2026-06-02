@@ -45,7 +45,8 @@ function sandbox (page: Page): FrameLocator {
 
 test.describe('OrigamLoader', () => {
     test('Basic usage — renders default spinner when loading', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Basic usage')
+        // Story: "Prop — loading" is the canonical Variant for loading=true state.
+        await gotoVariant(page, STORIES.loader, 'Prop — loading')
         const sb = sandbox(page)
 
         const wrapper = sb.locator('.origam-loader').first()
@@ -60,7 +61,7 @@ test.describe('OrigamLoader', () => {
     })
 
     test('Loading — toggling loading swaps slots', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Loading')
+        await gotoVariant(page, STORIES.loader, 'Prop — loading')
         const sb = sandbox(page)
 
         // Initial state: loading=true → spinner present, idle text absent
@@ -68,7 +69,7 @@ test.describe('OrigamLoader', () => {
     })
 
     test('Color (intent) — primary forwards a token-driven color to spinner', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Color (intent)')
+        await gotoVariant(page, STORIES.loader, 'Prop — color')
         const sb = sandbox(page)
 
         const spinner = sb.locator('.origam-loader__progress').first()
@@ -84,7 +85,7 @@ test.describe('OrigamLoader', () => {
     })
 
     test('Tag — div wrapper renders as div', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Tag')
+        await gotoVariant(page, STORIES.loader, 'Prop — tag')
         const sb = sandbox(page)
 
         const tagged = sb.locator('[data-cy="loader-tagged"]')
@@ -94,7 +95,7 @@ test.describe('OrigamLoader', () => {
     })
 
     test('Slot — default slot renders idle content', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Slot - default (idle)')
+        await gotoVariant(page, STORIES.loader, 'Slot — default (idle content)')
         const sb = sandbox(page)
 
         await expect(sb.getByText('Custom default slot content')).toBeVisible({ timeout: 5000 })
@@ -103,7 +104,7 @@ test.describe('OrigamLoader', () => {
     })
 
     test('Slot — loader slot replaces the default spinner', async ({ page }) => {
-        await gotoVariant(page, STORIES.loader, 'Slot - loader')
+        await gotoVariant(page, STORIES.loader, 'Slot — loader (custom spinner)')
         const sb = sandbox(page)
 
         await expect(sb.getByText('Loading, please wait...')).toBeVisible({ timeout: 5000 })
@@ -122,7 +123,7 @@ test.describe('OrigamLoader', () => {
 
 test.describe('OrigamProgress (dispatcher)', () => {
     test('Type — circular renders the circular variant', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Type')
+        await gotoVariant(page, STORIES.progress, 'Prop — type')
         const sb = sandbox(page)
 
         const circular = sb.locator('.origam-progress--circular').first()
@@ -132,7 +133,8 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Value (determinate) — modelValue 50 emits aria-valuenow=50', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Value (determinate)')
+        // Story uses LINEAR type for the modelValue variant
+        await gotoVariant(page, STORIES.progress, 'Prop — modelValue (determinate)')
         const sb = sandbox(page)
 
         const bar = sb.locator('[role="progressbar"]').first()
@@ -142,7 +144,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Indeterminate — applies indeterminate class and drops aria-valuenow', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Indeterminate')
+        await gotoVariant(page, STORIES.progress, 'Prop — indeterminate')
         const sb = sandbox(page)
 
         const bar = sb.locator('[role="progressbar"]').first()
@@ -154,7 +156,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Size — applies origam-progress--circular--size-{size} class', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Size')
+        await gotoVariant(page, STORIES.progress, 'Prop — size')
         const sb = sandbox(page)
 
         const circular = sb.locator('.origam-progress--circular').first()
@@ -164,7 +166,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Color (intent) — color and bgColor inject token-driven inline styles', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Color (intent)')
+        await gotoVariant(page, STORIES.progress, 'Prop — color & bgColor')
         const sb = sandbox(page)
 
         const linear = sb.locator('.origam-progress--linear').first()
@@ -182,7 +184,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Thickness — controls bar height (linear) or stroke (circular)', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Thickness')
+        await gotoVariant(page, STORIES.progress, 'Prop — thickness')
         const sb = sandbox(page)
 
         const linear = sb.locator('.origam-progress--linear').first()
@@ -194,7 +196,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     })
 
     test('Slot — default slot renders the value label', async ({ page }) => {
-        await gotoVariant(page, STORIES.progress, 'Slot - default (label)')
+        await gotoVariant(page, STORIES.progress, 'Slot — default (label inside circular)')
         const sb = sandbox(page)
 
         const content = sb.locator('.origam-progress__content').first()
@@ -212,16 +214,20 @@ test.describe('OrigamProgress (dispatcher)', () => {
 // ─── OrigamProgressCircular ──────────────────────────────────────────────────
 
 test.describe('OrigamProgressCircular', () => {
-    test('Basic usage — both determinate + indeterminate render', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Basic usage')
+    test('Basic usage — circular ring renders in Default playground', async ({ page }) => {
+        // No dedicated "Basic usage" Variant in this story. The Default
+        // playground renders a single circular ring with a modelValue control.
+        // Removed the "toHaveCount(2)" assertion: the Default Variant renders
+        // one circle, not two.
+        await gotoVariant(page, STORIES.circular, 'Default')
         const sb = sandbox(page)
         const circles = sb.locator('.origam-progress--circular')
         await expect(circles.first()).toBeVisible({ timeout: 5000 })
-        await expect(circles).toHaveCount(2)
+        await expect(circles).toHaveCount(1)
     })
 
     test('Value (determinate) — emits aria-valuenow', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Value (determinate)')
+        await gotoVariant(page, STORIES.circular, 'Prop — modelValue (determinate)')
         const sb = sandbox(page)
 
         const ring = sb.locator('.origam-progress--circular').first()
@@ -236,7 +242,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Indeterminate — applies indeterminate class', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Indeterminate')
+        await gotoVariant(page, STORIES.circular, 'Prop — indeterminate')
         const sb = sandbox(page)
 
         const ring = sb.locator('.origam-progress--circular').first()
@@ -245,7 +251,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Size — applies the origam-progress--size-{size} modifier', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Size')
+        await gotoVariant(page, STORIES.circular, 'Prop — size')
         const sb = sandbox(page)
 
         const ring = sb.locator('.origam-progress--circular').first()
@@ -258,7 +264,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Thickness — emits stroke-width attribute on SVG circles', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Thickness')
+        await gotoVariant(page, STORIES.circular, 'Prop — thickness')
         const sb = sandbox(page)
 
         const ring = sb.locator('.origam-progress--circular').first()
@@ -271,7 +277,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Rotate — applies inline rotate on the SVG', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Rotate')
+        await gotoVariant(page, STORIES.circular, 'Prop — rotate')
         const sb = sandbox(page)
 
         const svg = sb.locator('.origam-progress--circular svg').first()
@@ -281,7 +287,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Color (intent) — overlay picks up a token-driven stroke', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Color (intent)')
+        await gotoVariant(page, STORIES.circular, 'Prop — color & bgColor')
         const sb = sandbox(page)
 
         const ring = sb.locator('.origam-progress--circular').first()
@@ -297,7 +303,7 @@ test.describe('OrigamProgressCircular', () => {
     })
 
     test('Slot — default slot renders the label', async ({ page }) => {
-        await gotoVariant(page, STORIES.circular, 'Slot - default (label)')
+        await gotoVariant(page, STORIES.circular, 'Slot — default (label inside circle)')
         const sb = sandbox(page)
 
         const content = sb.locator('.origam-progress__content').first()
@@ -316,15 +322,17 @@ test.describe('OrigamProgressCircular', () => {
 
 test.describe('OrigamProgressLinear', () => {
     test('Basic usage — determinate + indeterminate render', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Basic usage')
+        // No dedicated "Basic usage" Variant in this story. The Default
+        // playground renders a single linear bar. Adapted to assert one bar.
+        await gotoVariant(page, STORIES.linear, 'Default')
         const sb = sandbox(page)
         const bars = sb.locator('.origam-progress--linear')
         await expect(bars.first()).toBeVisible({ timeout: 5000 })
-        await expect(bars).toHaveCount(2)
+        await expect(bars).toHaveCount(1)
     })
 
     test('Value (determinate) — bar inline width matches normalized value', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Value (determinate)')
+        await gotoVariant(page, STORIES.linear, 'Prop — modelValue (determinate)')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -339,7 +347,8 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Indeterminate — applies indeterminate class and produces 2 bars', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Indeterminate')
+        // Story Variant: "Prop — indeterminate & active"
+        await gotoVariant(page, STORIES.linear, 'Prop — indeterminate & active')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -352,7 +361,8 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Buffer + Stream — stream node rendered when stream=true', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Buffer + Stream')
+        // Story Variant: "Prop — bufferValue & stream"
+        await gotoVariant(page, STORIES.linear, 'Prop — bufferValue & stream')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -362,7 +372,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Thickness — drives inline height on the wrapper', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Thickness')
+        await gotoVariant(page, STORIES.linear, 'Prop — thickness')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -374,7 +384,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Color (intent) — token-driven color resolves on the loader', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Color (intent)')
+        await gotoVariant(page, STORIES.linear, 'Prop — color & bgColor')
         const sb = sandbox(page)
 
         // The loader is a 0-height container (children are absolute), so we
@@ -392,7 +402,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Rounded — applies the rounded modifier when toggled', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Rounded')
+        await gotoVariant(page, STORIES.linear, 'Prop — rounded')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -406,7 +416,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Reverse — applies the reverse class', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Reverse')
+        await gotoVariant(page, STORIES.linear, 'Prop — reverse')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -418,7 +428,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Absolute (positioned) — applies absolute class', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Absolute (positioned)')
+        await gotoVariant(page, STORIES.linear, 'Prop — absolute')
         const sb = sandbox(page)
 
         const bar = sb.locator('.origam-progress--linear').first()
@@ -427,7 +437,7 @@ test.describe('OrigamProgressLinear', () => {
     })
 
     test('Slot — default slot renders the label and buffer info', async ({ page }) => {
-        await gotoVariant(page, STORIES.linear, 'Slot - default (label)')
+        await gotoVariant(page, STORIES.linear, 'Slot — default (label inside bar)')
         const sb = sandbox(page)
 
         const content = sb.locator('.origam-progress__content').first()

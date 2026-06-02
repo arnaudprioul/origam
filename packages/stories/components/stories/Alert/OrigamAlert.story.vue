@@ -108,7 +108,7 @@
 					<span class="story-status" data-cy="alert-closable-status">
 						visible = <strong>{{ state.visible }}</strong>
 					</span>
-					<origam-btn size="small" text="Reset" @click="state.visible = true"/>
+					<origam-btn size="small" text="Reset" data-cy="alert-closable-reset" @click="state.visible = true"/>
 				</div>
 			</template>
 		</Variant>

@@ -12,8 +12,10 @@ import { expect, test, type Page } from '@playwright/test'
  *   - slot default override takes precedence over the text prop
  *
  * Current Variant titles in OrigamKbd.story.vue:
- *   "Basic usage", "Showcase — Keyboard shortcuts", "Variant", "Color",
- *   "Size", "Rounded", "Border", "Separator", "Slot — default", "Default"
+ *   "Default", "Prop — text & combination (showcase)", "Prop — variant",
+ *   "Prop — color & bgColor", "Prop — hover", "Prop — active",
+ *   "Prop — size", "Prop — rounded", "Prop — border", "Prop — separator",
+ *   "Slot — default (icon child)"
  */
 
 const STORY = '/story/components-stories-kbd-origamkbd-story-vue'
@@ -29,11 +31,11 @@ const openVariant = async (page: Page, variant: string) => {
 }
 
 // ─── Default (single key) ────────────────────────────────────────────────────
-// Maps to "Basic usage" variant, data-cy="kbd-basic-single"
+// Maps to "Prop — text & combination (showcase)" variant, data-cy="kbd-basic-single"
 
 test.describe('OrigamKbd — default', () => {
     test('renders a <kbd> element with the origam-kbd class', async ({ page }) => {
-        await openVariant(page, 'Basic usage')
+        await openVariant(page, 'Prop — text & combination (showcase)')
         const sandbox = sandboxOf(page)
 
         const kbd = sandbox.locator('[data-cy="kbd-basic-single"]').first()
@@ -47,7 +49,7 @@ test.describe('OrigamKbd — default', () => {
     })
 
     test('renders the text prop content', async ({ page }) => {
-        await openVariant(page, 'Basic usage')
+        await openVariant(page, 'Prop — text & combination (showcase)')
         const sandbox = sandboxOf(page)
 
         const kbd = sandbox.locator('[data-cy="kbd-basic-single"]').first()
@@ -57,11 +59,11 @@ test.describe('OrigamKbd — default', () => {
 })
 
 // ─── Combination ─────────────────────────────────────────────────────────────
-// Maps to "Basic usage" variant, data-cy="kbd-basic-combination"
+// Maps to "Prop — text & combination (showcase)" variant, data-cy="kbd-basic-combination"
 
 test.describe('OrigamKbd — combination', () => {
     test('renders multiple nested <kbd> elements joined by separator', async ({ page }) => {
-        await openVariant(page, 'Basic usage')
+        await openVariant(page, 'Prop — text & combination (showcase)')
         const sandbox = sandboxOf(page)
 
         const parent = sandbox.locator('[data-cy="kbd-basic-combination"]').first()
@@ -87,7 +89,7 @@ test.describe('OrigamKbd — combination', () => {
 
 test.describe('OrigamKbd — variant', () => {
     test('variant="outlined" adds the --variant-outlined modifier class', async ({ page }) => {
-        await openVariant(page, 'Variant')
+        await openVariant(page, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
         const kbd = sandbox.locator('[data-cy="kbd-variant-outlined"]').first()
@@ -98,7 +100,7 @@ test.describe('OrigamKbd — variant', () => {
     })
 
     test('variant="filled" adds the --variant-filled modifier class and key box-shadow', async ({ page }) => {
-        await openVariant(page, 'Variant')
+        await openVariant(page, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
         const kbd = sandbox.locator('[data-cy="kbd-variant-filled"]').first()
@@ -117,7 +119,7 @@ test.describe('OrigamKbd — variant', () => {
     })
 
     test('variant="tonal" adds the --variant-tonal modifier class', async ({ page }) => {
-        await openVariant(page, 'Variant')
+        await openVariant(page, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
         const kbd = sandbox.locator('[data-cy="kbd-variant-tonal"]').first()
@@ -132,7 +134,7 @@ test.describe('OrigamKbd — variant', () => {
 
 test.describe('OrigamKbd — size', () => {
     test('size="x-small" emits --size-x-small class and produces smaller font than size="x-large"', async ({ page }) => {
-        await openVariant(page, 'Size')
+        await openVariant(page, 'Prop — size')
         const sandbox = sandboxOf(page)
 
         const xsmall = sandbox.locator('[data-cy="kbd-size-xs"]').first()
@@ -157,7 +159,7 @@ test.describe('OrigamKbd — size', () => {
 
 test.describe('OrigamKbd — slot override', () => {
     test('default slot content takes precedence over the text prop', async ({ page }) => {
-        await openVariant(page, 'Slot — default')
+        await openVariant(page, 'Slot — default (icon child)')
         const sandbox = sandboxOf(page)
 
         const kbd = sandbox.locator('[data-cy="kbd-slot-default"]').first()

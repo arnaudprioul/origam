@@ -10,7 +10,9 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const drawer = sandbox.locator('[data-cy="drawer-default"]')
+		// The story renders <origam-drawer permanent> — no data-cy on the drawer.
+		// Locate the first rendered drawer element by its root CSS class.
+		const drawer = sandbox.locator('.origam-drawer').first()
 		await expect(drawer).toBeVisible({ timeout: 5000 })
 		await expect(drawer).toHaveClass(/origam-drawer/)
 	})
@@ -22,7 +24,9 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const activator = sandbox.locator('[data-cy="drawer-temporary-activator"]')
+		// The story renders <origam-btn aria-label="Toggle"> as the activator.
+		// No data-cy is present; locate via aria-label.
+		const activator = sandbox.locator('[aria-label="Toggle"]').first()
 		await expect(activator).toBeVisible({ timeout: 5000 })
 	})
 
@@ -33,7 +37,9 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const drawer = sandbox.locator('[data-cy="drawer-rail"]')
+		// The story renders <origam-drawer :rail="state.rail" permanent> (rail starts true).
+		// No data-cy on the drawer; locate by root class.
+		const drawer = sandbox.locator('.origam-drawer').first()
 		await expect(drawer).toBeVisible({ timeout: 5000 })
 		// Rail mode should add the rail class
 		await expect(drawer).toHaveClass(/origam-drawer--rail/)
@@ -46,7 +52,9 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const drawer = sandbox.locator('[data-cy="drawer-location"]')
+		// The story renders <origam-drawer :location="state.location" permanent>.
+		// No data-cy; locate by root class.
+		const drawer = sandbox.locator('.origam-drawer').first()
 		await expect(drawer).toBeVisible({ timeout: 5000 })
 	})
 
@@ -57,8 +65,10 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const drawer = sandbox.locator('[data-cy="drawer-slot-prepend"]')
+		// No data-cy on the drawer in this variant; locate by root class.
+		const drawer = sandbox.locator('.origam-drawer').first()
 		await expect(drawer).toBeVisible({ timeout: 5000 })
+		// The prepend slot is wrapped by the component in .origam-drawer__prepend.
 		const prepend = sandbox.locator('.origam-drawer__prepend')
 		await expect(prepend).toBeVisible({ timeout: 5000 })
 	})
@@ -70,8 +80,10 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const drawer = sandbox.locator('[data-cy="drawer-slot-append"]')
+		// No data-cy on the drawer in this variant; locate by root class.
+		const drawer = sandbox.locator('.origam-drawer').first()
 		await expect(drawer).toBeVisible({ timeout: 5000 })
+		// The append slot is wrapped by the component in .origam-drawer__append.
 		const appendArea = sandbox.locator('.origam-drawer__append')
 		await expect(appendArea).toBeVisible({ timeout: 5000 })
 	})
@@ -83,7 +95,10 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const state = sandbox.locator('[data-cy="drawer-emit-state"]')
+		// The story shows a log area with a "Last events emitted:" label and a
+		// fallback paragraph "Click ≡ to toggle the drawer." when no events yet.
+		// No data-cy is present; locate by the stable "Last events emitted:" text.
+		const state = sandbox.getByText('Last events emitted:')
 		await expect(state).toBeVisible({ timeout: 5000 })
 	})
 
@@ -94,7 +109,13 @@ test.describe('OrigamDrawer', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const drawer = sandbox.locator('[data-cy="drawer-playground"]')
+		// The story wraps the playground in <div data-cy="drawer-playground">.
+		// That outer div is the layout container, not the drawer itself.
+		const playgroundWrapper = sandbox.locator('[data-cy="drawer-playground"]')
+		await expect(playgroundWrapper).toBeVisible({ timeout: 5000 })
+		// OrigamDrawer uses <teleport> internally — the rendered .origam-drawer
+		// may be mounted outside the wrapper div. Search the full sandbox frame.
+		const drawer = sandbox.locator('.origam-drawer').first()
 		await expect(drawer).toBeVisible({ timeout: 5000 })
 		await expect(drawer).toHaveClass(/origam-drawer/)
 	})

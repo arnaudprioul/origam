@@ -35,7 +35,8 @@ test.describe('OrigamChip — default', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const chip = sandbox.locator('[data-cy="chip-default"]').first()
+        // Story "Default" variant renders the playground chip with data-cy="chip-playground"
+        const chip = sandbox.locator('[data-cy="chip-playground"]').first()
         await expect(chip).toBeVisible({ timeout: 8000 })
 
         const cls = await chip.evaluate(el => el.className)
@@ -47,7 +48,7 @@ test.describe('OrigamChip — default', () => {
 
 test.describe('OrigamChip — closable', () => {
     test('chip hides after close button click and status updates', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
+        await openVariant(page, STORY, 'Prop — closable')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-closable"]').first()
@@ -67,7 +68,7 @@ test.describe('OrigamChip — closable', () => {
     })
 
     test('reset button makes chip visible again', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
+        await openVariant(page, STORY, 'Prop — closable')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-closable"]').first()
@@ -90,7 +91,7 @@ test.describe('OrigamChip — closable', () => {
     // text) and a small negative `margin-inline-end` to compensate the
     // close-circle glyph's intrinsic whitespace.
     test('close button has visible breathing room from the chip content', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
+        await openVariant(page, STORY, 'Prop — closable')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-closable"]').first()
@@ -130,7 +131,7 @@ const EXPECTED_INTENT_BG: Record<string, string> = {
 
 test.describe('OrigamChip — color showcase', () => {
     test('bgColor prop paints each intent on the chip root', async ({ page }) => {
-        await openVariant(page, STORY, 'Color')
+        await openVariant(page, STORY, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
 
         for (const [intent, expected] of Object.entries(EXPECTED_INTENT_BG)) {
@@ -146,7 +147,7 @@ test.describe('OrigamChip — color showcase', () => {
 
 test.describe('OrigamChip — pill', () => {
     test('pill=true emits the --pill modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Pill')
+        await openVariant(page, STORY, 'Prop — pill')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-pill"]').first()
@@ -161,7 +162,7 @@ test.describe('OrigamChip — pill', () => {
 
 test.describe('OrigamChip — label', () => {
     test('label=true emits the --label modifier class with rectangular border-radius', async ({ page }) => {
-        await openVariant(page, STORY, 'Label shape')
+        await openVariant(page, STORY, 'Prop — label')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-label"]').first()
@@ -176,7 +177,7 @@ test.describe('OrigamChip — label', () => {
 
 test.describe('OrigamChip — size', () => {
     test('default variant renders the chip visible', async ({ page }) => {
-        await openVariant(page, STORY, 'Size')
+        await openVariant(page, STORY, 'Prop — size')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-size"]').first()
@@ -192,7 +193,7 @@ test.describe('OrigamChip — size', () => {
 
 test.describe('OrigamChip — density', () => {
     test('default density emits --density-default class', async ({ page }) => {
-        await openVariant(page, STORY, 'Density')
+        await openVariant(page, STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-density"]').first()
@@ -207,7 +208,8 @@ test.describe('OrigamChip — density', () => {
 
 test.describe('OrigamChip — color', () => {
     test('color prop applies style to chip root', async ({ page }) => {
-        await openVariant(page, STORY, 'Color (intent)')
+        // "Prop — color & bgColor" variant renders chip-color with bgColor="primary" by default
+        await openVariant(page, STORY, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-color"]').first()
@@ -224,7 +226,7 @@ test.describe('OrigamChip — color', () => {
 
 test.describe('OrigamChip — adjacent', () => {
     test('prependIcon renders the prepend area with an icon', async ({ page }) => {
-        await openVariant(page, STORY, 'Adjacent')
+        await openVariant(page, STORY, 'Prop — adjacent (prependIcon / appendIcon)')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-adjacent"]').first()
@@ -239,7 +241,7 @@ test.describe('OrigamChip — adjacent', () => {
 
 test.describe('OrigamChip — draggable', () => {
     test('draggable=true sets the draggable attribute', async ({ page }) => {
-        await openVariant(page, STORY, 'Draggable')
+        await openVariant(page, STORY, 'Prop — draggable')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-draggable"]').first()
@@ -252,7 +254,7 @@ test.describe('OrigamChip — draggable', () => {
 
 test.describe('OrigamChip — rounded shaped / shaped-invert', () => {
     test('shaped — TL and BR are rounded, TR and BL are 0', async ({ page }) => {
-        await openVariant(page, STORY, 'Rounded')
+        await openVariant(page, STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-rounded-shaped"]')
@@ -275,7 +277,7 @@ test.describe('OrigamChip — rounded shaped / shaped-invert', () => {
     })
 
     test('shaped-invert — TR and BL are rounded, TL and BR are 0', async ({ page }) => {
-        await openVariant(page, STORY, 'Rounded')
+        await openVariant(page, STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
 
         const chip = sandbox.locator('[data-cy="chip-rounded-shaped-invert"]')

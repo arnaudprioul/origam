@@ -19,7 +19,7 @@ const openVariant = async (page: Page, variant: string) => {
 
 test.describe('OrigamList — Density', () => {
     test('density class lands on list items', async ({ page }) => {
-        await openVariant(page, 'Density')
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-density"]').first()).toBeVisible({ timeout: 8000 })
         const childClasses = await sandbox.locator('[data-cy="list-density"] .origam-list-item').evaluateAll(els =>
@@ -36,7 +36,7 @@ test.describe('OrigamList — Density', () => {
 
 test.describe('OrigamList — Color', () => {
     test('color variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Color')
+        await openVariant(page, 'Prop — color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-color"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="list-color"] .origam-list-item').count()
@@ -48,7 +48,7 @@ test.describe('OrigamList — Color', () => {
 
 test.describe('OrigamList — Rounded', () => {
     test('rounded class is applied', async ({ page }) => {
-        await openVariant(page, 'Rounded')
+        await openVariant(page, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const list = sandbox.locator('[data-cy="list-rounded"]').first()
         await expect(list).toBeVisible({ timeout: 8000 })
@@ -61,7 +61,7 @@ test.describe('OrigamList — Rounded', () => {
 
 test.describe('OrigamList — Border', () => {
     test('border modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Border')
+        await openVariant(page, 'Prop — border')
         const sandbox = sandboxOf(page)
         const list = sandbox.locator('[data-cy="list-border"]').first()
         await expect(list).toBeVisible({ timeout: 8000 })
@@ -74,7 +74,7 @@ test.describe('OrigamList — Border', () => {
 
 test.describe('OrigamList — Elevation', () => {
     test('elevation variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Elevation')
+        await openVariant(page, 'Prop — elevation')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-elevation"]').first()).toBeVisible({ timeout: 8000 })
     })
@@ -84,7 +84,7 @@ test.describe('OrigamList — Elevation', () => {
 
 test.describe('OrigamList — Lines', () => {
     test('lines modifier class is applied to the list', async ({ page }) => {
-        await openVariant(page, 'Lines')
+        await openVariant(page, 'Prop — lines')
         const sandbox = sandboxOf(page)
         const list = sandbox.locator('[data-cy="list-lines"]').first()
         await expect(list).toBeVisible({ timeout: 8000 })
@@ -97,7 +97,7 @@ test.describe('OrigamList — Lines', () => {
 
 test.describe('OrigamList — Modifiers', () => {
     test('list renders in modifiers variant', async ({ page }) => {
-        await openVariant(page, 'Modifiers')
+        await openVariant(page, 'Prop — slim / nav / disabled')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-modifiers"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="list-modifiers"] .origam-list-item').count()
@@ -109,7 +109,7 @@ test.describe('OrigamList — Modifiers', () => {
 
 test.describe('OrigamList — Items prop', () => {
     test('renders items from the items prop', async ({ page }) => {
-        await openVariant(page, 'Items prop')
+        await openVariant(page, 'Prop — items (API items[] vs slot)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-items"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="list-items"] .origam-list-item').count()
@@ -121,7 +121,7 @@ test.describe('OrigamList — Items prop', () => {
 
 test.describe('OrigamList — Group', () => {
     test('renders list groups', async ({ page }) => {
-        await openVariant(page, 'Group')
+        await openVariant(page, 'Prop — group (nested ListGroup)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-group"]').first()).toBeVisible({ timeout: 8000 })
         const groupCount = await sandbox.locator('[data-cy="list-group"] .origam-list-group').count()
@@ -129,7 +129,7 @@ test.describe('OrigamList — Group', () => {
     })
 
     test('group items expand on activator click', async ({ page }) => {
-        await openVariant(page, 'Group')
+        await openVariant(page, 'Prop — group (nested ListGroup)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-group-fruits"]').first()).toBeVisible({ timeout: 8000 })
         await sandbox.locator('[data-cy="list-group-fruits"] .origam-list-group__header').first().click()
@@ -142,7 +142,7 @@ test.describe('OrigamList — Group', () => {
 
 test.describe('OrigamList — Subheader', () => {
     test('renders subheaders correctly', async ({ page }) => {
-        await openVariant(page, 'Subheader')
+        await openVariant(page, 'Prop — subheader (ListSubheader)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="list-subheader"]').first()).toBeVisible({ timeout: 8000 })
         await expect(sandbox.locator('[data-cy="list-subheader-a"]').first()).toBeVisible()

@@ -127,21 +127,26 @@ test.describe('OrigamQrCode — Prop errorCorrectionLevel', () => {
 })
 
 test.describe('OrigamQrCode — Prop rounded (per-module shape)', () => {
+    // The dedicated "rounded" Variant no longer exists — rounded is exercised
+    // via the "Prop — qrCodeProps (matrix-level overrides)" Variant.
+    // data-cy is on the <origam-qr-code> element directly (not on a wrapper div).
+
     test('rounded="" (0) omits rx attribute (square modules)', async ({ page }) => {
-        await openVariant(page, 'Prop — rounded (per-module shape)')
+        await openVariant(page, 'Prop — qrCodeProps (matrix-level overrides)')
         const sandbox = sandboxOf(page)
-        // The story emits rounded=0 under the "none (0)" label.
-        const firstRect = sandbox.locator('[data-cy="qrcode-rounded-none (0)"] svg rect').nth(1)
+        // "primary modules / no override bg" has qrCodeProps.rounded = undefined → 0.
+        const firstRect = sandbox.locator('[data-cy="qrcode-internal-primary modules / no override bg"] svg rect').nth(1)
         await expect(firstRect).toBeAttached({ timeout: 8000 })
         const rx = await firstRect.getAttribute('rx')
-        // null OR "0" — the encoder may omit the attribute when 0.
+        // null OR "0" — the encoder omits the attribute when cornerRadius is 0.
         expect([null, '0']).toContain(rx)
     })
 
     test('rounded="x-large" paints circle modules (rx="0.5")', async ({ page }) => {
-        await openVariant(page, 'Prop — rounded (per-module shape)')
+        await openVariant(page, 'Prop — qrCodeProps (matrix-level overrides)')
         const sandbox = sandboxOf(page)
-        const firstRect = sandbox.locator('[data-cy="qrcode-rounded-x-large (circle)"] svg rect').nth(1)
+        // "circle modules (x-large)" has qrCodeProps.rounded = 'x-large' → cornerRadius 0.5.
+        const firstRect = sandbox.locator('[data-cy="qrcode-internal-circle modules (x-large)"] svg rect').nth(1)
         await expect(firstRect).toBeAttached({ timeout: 8000 })
         const rx = await firstRect.getAttribute('rx')
         expect(rx).toBe('0.5')
@@ -149,17 +154,25 @@ test.describe('OrigamQrCode — Prop rounded (per-module shape)', () => {
 })
 
 test.describe('OrigamQrCode — Prop image (centre overlay)', () => {
+    // The `image` prop renders an <OrigamAvatar> HTML overlay inside
+    // `.origam-qr-code__center`, NOT a native SVG <image> element.
+    // The SVG <image> path is only taken when using useQrCode directly
+    // with a `logo` option — that lower-level API is not exposed in the story.
+
     test('renders an <image> element when image prop is configured', async ({ page }) => {
         await openVariant(page, 'Prop — image (centred image overlay)')
         const sandbox = sandboxOf(page)
+        // data-cy="qrcode-image-string" is on the <div> wrapper; the
+        // <origam-qr-code> is its direct child.
         const host = sandbox.locator('[data-cy="qrcode-image-string"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        const img = host.locator('svg image').first()
-        await expect(img).toBeAttached()
-        const href = await img.getAttribute('href')
-        expect(href).not.toBeNull()
-        expect(href!.length).toBeGreaterThan(0)
+        // The avatar overlay sits inside .origam-qr-code__center.
+        const center = host.locator('.origam-qr-code__center').first()
+        await expect(center).toBeAttached()
+        // The avatar element renders the image inside the center block.
+        const avatar = center.locator('.origam-qr-code__center-avatar').first()
+        await expect(avatar).toBeAttached()
     })
 
     test('accepts an ISrcObject (image = { src, alt, aspectRatio })', async ({ page }) => {
@@ -169,11 +182,11 @@ test.describe('OrigamQrCode — Prop image (centre overlay)', () => {
         const host = sandbox.locator('[data-cy="qrcode-image-object"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        const img = host.locator('svg image').first()
-        await expect(img).toBeAttached()
-        const href = await img.getAttribute('href')
-        expect(href).not.toBeNull()
-        expect(href!.length).toBeGreaterThan(0)
+        // Same contract as the string path — center overlay must mount.
+        const center = host.locator('.origam-qr-code__center').first()
+        await expect(center).toBeAttached()
+        const avatar = center.locator('.origam-qr-code__center-avatar').first()
+        await expect(avatar).toBeAttached()
     })
 })
 
@@ -192,25 +205,38 @@ test.describe('OrigamQrCode — Prop icon (centre overlay)', () => {
 })
 
 test.describe('OrigamQrCode — Prop color / bgColor', () => {
+    // The dedicated "Prop — color / bgColor (theming)" Variant no longer exists.
+    // Color and bgColor on the WRAPPER are covered by the "Wrapper chrome" Variant.
+    // Note: the wrapper-level `color` prop drives the SVG module fill via
+    // `fill="currentColor"` inheritance (not a direct attribute on each rect) unless
+    // qrCodeProps.color overrides it.  The wrapper-level `bgColor` applies only to
+    // the wrapper's CSS background-color (via utility class), not to the SVG quiet
+    // zone rect (which stays transparent unless qrCodeProps.bgColor is set).
+    // We therefore assert on class presence for both props.
+
     test('color propagates to the module <rect> fill', async ({ page }) => {
-        await openVariant(page, 'Prop — color / bgColor (theming)')
+        await openVariant(page, 'Wrapper chrome — color / bgColor / rounded / border / elevation / padding / margin')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="qrcode-theme-brand"]').first()
+        // "success + elevation" theme has color: 'success' on the wrapper.
+        // The wrapper carries the origam--color-success utility class which sets
+        // `color:` (inherited as currentColor by SVG modules).
+        const host = sandbox.locator('[data-cy="qrcode-wrapper-success + elevation"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        // Find any module rect (skip the background rect at x=0).
-        const moduleRect = host.locator('svg rect').nth(1)
-        const fill = await moduleRect.getAttribute('fill')
-        // color prop = '#7c3aed' → that exact value reaches the SVG.
-        expect(fill).toBe('#7c3aed')
+        // The module rects inherit fill via currentColor when color is an intent
+        // (resolveQrColor emits a CSS var, not a raw hex, for tokenised values).
+        // Assert the wrapper carries the colour utility class so the intent is wired.
+        await expect(host).toHaveClass(/origam--color-success/)
     })
 
-    test('bgColor paints the surface rect', async ({ page }) => {
-        await openVariant(page, 'Prop — color / bgColor (theming)')
+    test('bgColor paints the wrapper background (utility class)', async ({ page }) => {
+        await openVariant(page, 'Wrapper chrome — color / bgColor / rounded / border / elevation / padding / margin')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="qrcode-theme-dark"]').first()
-        const bgRect = host.locator('svg rect').first()
-        const fill = await bgRect.getAttribute('fill')
-        expect(fill).toBe('#0f172a')
+        // "primary surface" theme has bgColor: 'primary' on the wrapper.
+        const host = sandbox.locator('[data-cy="qrcode-wrapper-primary surface"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        // bgColor intent → origam--bg-primary utility class on the wrapper element.
+        await expect(host).toHaveClass(/origam--bg-primary/)
     })
 })

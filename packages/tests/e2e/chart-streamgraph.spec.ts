@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * E2E spec — OrigamChartStreamgraph
@@ -7,22 +7,24 @@ import { expect, test } from '@playwright/test'
  * every prop / behaviour produces a distinct, observable runtime
  * change in the rendered SVG.
  *
+ * URL scheme: /story/components-stories-chart-origamchartstreamgraph-story-vue
+ * Component is rendered inside Histoire's sandbox iframe — all locators
+ * go through sandboxOf(page) = page.frameLocator('iframe[src*="__sandbox"]').
+ *
  * Base URL: http://localhost:6006
- * Story path: Chart/OrigamChartStreamgraph
  */
 
-const BASE = 'http://localhost:6006'
-const STORY_ID = 'chart-origamchartstreamgraph'
+const STORY = '/story/components-stories-chart-origamchartstreamgraph-story-vue'
 
-const variantUrl = (title: string) =>
-	`${ BASE }/?storyId=${ STORY_ID }&variantId=${ STORY_ID }--${ title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') }`
+const sandboxOf = (page: Page) =>
+	page.frameLocator('iframe[src*="__sandbox"]')
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-const getRibbons = (page: ReturnType<typeof test.extend>) =>
-	page.locator('[data-cy="origam-chart-streamgraph-svg"] .origam-chart-streamgraph__ribbon')
+const openVariant = async (page: Page, variant: string) => {
+	await page.goto(STORY)
+	await page.waitForLoadState('networkidle')
+	await page.getByText(variant, { exact: true }).first().click()
+	await page.waitForTimeout(500)
+}
 
 // ---------------------------------------------------------------------------
 // Default / Playground
@@ -30,36 +32,46 @@ const getRibbons = (page: ReturnType<typeof test.extend>) =>
 
 test.describe('OrigamChartStreamgraph — Default variant', () => {
 	test('renders the SVG with at least one ribbon', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-svg"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="origam-chart-streamgraph-svg"] .origam-chart-streamgraph__ribbon')
+		const svg = sandbox.locator('[data-cy="origam-chart-streamgraph-svg"]').first()
+		await expect(svg).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="origam-chart-streamgraph-svg"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).not.toHaveCount(0)
 	})
 
 	test('renders 5 ribbons for the music fixture (5 series)', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-svg"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="origam-chart-streamgraph-svg"] .origam-chart-streamgraph__ribbon')
+		const svg = sandbox.locator('[data-cy="origam-chart-streamgraph-svg"]').first()
+		await expect(svg).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="origam-chart-streamgraph-svg"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).toHaveCount(5)
 	})
 
 	test('each ribbon has a non-empty d attribute (path data)', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		const ribbon = sandbox.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]').first()
+		await expect(ribbon).toBeVisible({ timeout: 8000 })
+
 		const d = await ribbon.getAttribute('d')
 		expect(d).toBeTruthy()
 		expect(d!.length).toBeGreaterThan(10)
 	})
 
 	test('each ribbon has an inline fill style (not a fill attribute)', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		const ribbon = sandbox.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]').first()
+		await expect(ribbon).toBeVisible({ timeout: 8000 })
+
 		const style = await ribbon.getAttribute('style')
 		expect(style).toMatch(/fill\s*:/)
 		const fillAttr = await ribbon.getAttribute('fill')
@@ -67,35 +79,45 @@ test.describe('OrigamChartStreamgraph — Default variant', () => {
 	})
 
 	test('SVG title element contains chart title text', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-svg"] title')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const titleText = await page.locator('[data-cy="origam-chart-streamgraph-svg"] title').textContent()
+		const titleEl = sandbox.locator('[data-cy="origam-chart-streamgraph-svg"] title').first()
+		await expect(titleEl).toBeAttached({ timeout: 8000 })
+
+		const titleText = await titleEl.textContent()
 		expect(titleText).toBeTruthy()
 	})
 
 	test('legend renders with 5 items for 5 series', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-svg"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const legendItems = page.locator('.origam-chart__legend-item')
+		const svg = sandbox.locator('[data-cy="origam-chart-streamgraph-svg"]').first()
+		await expect(svg).toBeVisible({ timeout: 8000 })
+
+		const legendItems = sandbox.locator('.origam-chart__legend-item')
 		await expect(legendItems).toHaveCount(5)
 	})
 
 	test('ribbons are keyboard focusable (tabindex=0)', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		const ribbon = sandbox.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]').first()
+		await expect(ribbon).toBeVisible({ timeout: 8000 })
+
 		const tabindex = await ribbon.getAttribute('tabindex')
 		expect(tabindex).toBe('0')
 	})
 
 	test('ribbons have role=button for accessibility', async ({ page }) => {
-		await page.goto(variantUrl('Default'))
-		await page.waitForSelector('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		await openVariant(page, 'Default')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]')
+		const ribbon = sandbox.locator('[data-cy="origam-chart-streamgraph-ribbon-0"]').first()
+		await expect(ribbon).toBeVisible({ timeout: 8000 })
+
 		await expect(ribbon).toHaveAttribute('role', 'button')
 	})
 })
@@ -106,59 +128,74 @@ test.describe('OrigamChartStreamgraph — Default variant', () => {
 
 test.describe('OrigamChartStreamgraph — Prop offsetMode', () => {
 	test('renders 4 charts in the offsetMode variant', async ({ page }) => {
-		await page.goto(variantUrl('Prop — offsetMode (wiggle / silhouette / expand / zero)'))
-		await page.waitForSelector('[data-cy="streamgraph-offset-wiggle"]')
+		await openVariant(page, 'Prop — offsetMode (wiggle / silhouette / expand / zero)')
+		const sandbox = sandboxOf(page)
 
-		const charts = page.locator('[data-cy^="streamgraph-offset-"]')
+		const wiggle = sandbox.locator('[data-cy="streamgraph-offset-wiggle"]').first()
+		await expect(wiggle).toBeVisible({ timeout: 8000 })
+
+		// Use the class selector to target only chart roots (not the outer shell div
+		// which also has data-cy="streamgraph-offset-mode" matching the prefix).
+		const charts = sandbox.locator('[data-cy^="streamgraph-offset-"].origam-chart-streamgraph')
 		await expect(charts).toHaveCount(4)
 	})
 
 	test('wiggle chart renders visible ribbons', async ({ page }) => {
-		await page.goto(variantUrl('Prop — offsetMode (wiggle / silhouette / expand / zero)'))
-		await page.waitForSelector('[data-cy="streamgraph-offset-wiggle"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — offsetMode (wiggle / silhouette / expand / zero)')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="streamgraph-offset-wiggle"] .origam-chart-streamgraph__ribbon')
+		const wiggle = sandbox.locator('[data-cy="streamgraph-offset-wiggle"]').first()
+		await expect(wiggle).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="streamgraph-offset-wiggle"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).not.toHaveCount(0)
 	})
 
 	test('silhouette chart renders visible ribbons', async ({ page }) => {
-		await page.goto(variantUrl('Prop — offsetMode (wiggle / silhouette / expand / zero)'))
-		await page.waitForSelector('[data-cy="streamgraph-offset-silhouette"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — offsetMode (wiggle / silhouette / expand / zero)')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="streamgraph-offset-silhouette"] .origam-chart-streamgraph__ribbon')
+		const silhouette = sandbox.locator('[data-cy="streamgraph-offset-silhouette"]').first()
+		await expect(silhouette).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="streamgraph-offset-silhouette"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).not.toHaveCount(0)
 	})
 
 	test('expand chart renders visible ribbons', async ({ page }) => {
-		await page.goto(variantUrl('Prop — offsetMode (wiggle / silhouette / expand / zero)'))
-		await page.waitForSelector('[data-cy="streamgraph-offset-expand"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — offsetMode (wiggle / silhouette / expand / zero)')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="streamgraph-offset-expand"] .origam-chart-streamgraph__ribbon')
+		const expand = sandbox.locator('[data-cy="streamgraph-offset-expand"]').first()
+		await expect(expand).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="streamgraph-offset-expand"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).not.toHaveCount(0)
 	})
 
 	test('zero chart renders visible ribbons', async ({ page }) => {
-		await page.goto(variantUrl('Prop — offsetMode (wiggle / silhouette / expand / zero)'))
-		await page.waitForSelector('[data-cy="streamgraph-offset-zero"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — offsetMode (wiggle / silhouette / expand / zero)')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="streamgraph-offset-zero"] .origam-chart-streamgraph__ribbon')
+		const zero = sandbox.locator('[data-cy="streamgraph-offset-zero"]').first()
+		await expect(zero).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="streamgraph-offset-zero"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).not.toHaveCount(0)
 	})
 
 	test('wiggle and zero path data differ (different baselines)', async ({ page }) => {
-		await page.goto(variantUrl('Prop — offsetMode (wiggle / silhouette / expand / zero)'))
-		await page.waitForSelector('[data-cy="streamgraph-offset-wiggle"] .origam-chart-streamgraph__ribbon')
-		await page.waitForSelector('[data-cy="streamgraph-offset-zero"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — offsetMode (wiggle / silhouette / expand / zero)')
+		const sandbox = sandboxOf(page)
 
-		const wiggleD = await page
-			.locator('[data-cy="streamgraph-offset-wiggle"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('d')
+		const wiggleRibbon = sandbox.locator('[data-cy="streamgraph-offset-wiggle"] .origam-chart-streamgraph__ribbon').first()
+		await expect(wiggleRibbon).toBeVisible({ timeout: 8000 })
 
-		const zeroD = await page
-			.locator('[data-cy="streamgraph-offset-zero"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('d')
+		const zeroRibbon = sandbox.locator('[data-cy="streamgraph-offset-zero"] .origam-chart-streamgraph__ribbon').first()
+		await expect(zeroRibbon).toBeVisible({ timeout: 8000 })
+
+		const wiggleD = await wiggleRibbon.getAttribute('d')
+		const zeroD = await zeroRibbon.getAttribute('d')
 
 		expect(wiggleD).not.toBe(zeroD)
 	})
@@ -170,27 +207,28 @@ test.describe('OrigamChartStreamgraph — Prop offsetMode', () => {
 
 test.describe('OrigamChartStreamgraph — Prop smoothing', () => {
 	test('renders 2 charts in the smoothing variant', async ({ page }) => {
-		await page.goto(variantUrl('Prop — smoothing (none vs curve)'))
-		await page.waitForSelector('[data-cy="streamgraph-smoothing-none"]')
+		await openVariant(page, 'Prop — smoothing (none vs curve)')
+		const sandbox = sandboxOf(page)
 
-		const charts = page.locator('[data-cy^="streamgraph-smoothing-"]')
+		const none = sandbox.locator('[data-cy="streamgraph-smoothing-none"]').first()
+		await expect(none).toBeVisible({ timeout: 8000 })
+
+		const charts = sandbox.locator('[data-cy^="streamgraph-smoothing-"]')
 		await expect(charts).toHaveCount(2)
 	})
 
 	test('none and curve path data differ (C vs L commands)', async ({ page }) => {
-		await page.goto(variantUrl('Prop — smoothing (none vs curve)'))
-		await page.waitForSelector('[data-cy="streamgraph-smoothing-none"] .origam-chart-streamgraph__ribbon')
-		await page.waitForSelector('[data-cy="streamgraph-smoothing-curve"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — smoothing (none vs curve)')
+		const sandbox = sandboxOf(page)
 
-		const noneD = await page
-			.locator('[data-cy="streamgraph-smoothing-none"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('d')
+		const noneRibbon = sandbox.locator('[data-cy="streamgraph-smoothing-none"] .origam-chart-streamgraph__ribbon').first()
+		await expect(noneRibbon).toBeVisible({ timeout: 8000 })
 
-		const curveD = await page
-			.locator('[data-cy="streamgraph-smoothing-curve"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('d')
+		const curveRibbon = sandbox.locator('[data-cy="streamgraph-smoothing-curve"] .origam-chart-streamgraph__ribbon').first()
+		await expect(curveRibbon).toBeVisible({ timeout: 8000 })
+
+		const noneD = await noneRibbon.getAttribute('d')
+		const curveD = await curveRibbon.getAttribute('d')
 
 		expect(noneD).not.toBeNull()
 		expect(curveD).not.toBeNull()
@@ -206,38 +244,41 @@ test.describe('OrigamChartStreamgraph — Prop smoothing', () => {
 
 test.describe('OrigamChartStreamgraph — Prop colorScheme', () => {
 	test('renders 3 charts in the colorScheme variant', async ({ page }) => {
-		await page.goto(variantUrl('Prop — colorScheme'))
-		await page.waitForSelector('[data-cy="streamgraph-color-default"]')
+		await openVariant(page, 'Prop — colorScheme')
+		const sandbox = sandboxOf(page)
 
-		const charts = page.locator('[data-cy^="streamgraph-color-"]')
+		const def = sandbox.locator('[data-cy="streamgraph-color-default"]').first()
+		await expect(def).toBeVisible({ timeout: 8000 })
+
+		// Use the class selector to target only chart roots (not the outer shell div
+		// which also has data-cy="streamgraph-color-scheme" matching the prefix).
+		const charts = sandbox.locator('[data-cy^="streamgraph-color-"].origam-chart-streamgraph')
 		await expect(charts).toHaveCount(3)
 	})
 
 	test('warm chart first ribbon has warm fill color', async ({ page }) => {
-		await page.goto(variantUrl('Prop — colorScheme'))
-		await page.waitForSelector('[data-cy="streamgraph-color-warm"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — colorScheme')
+		const sandbox = sandboxOf(page)
 
-		const style = await page
-			.locator('[data-cy="streamgraph-color-warm"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('style')
+		const warmRibbon = sandbox.locator('[data-cy="streamgraph-color-warm"] .origam-chart-streamgraph__ribbon').first()
+		await expect(warmRibbon).toBeVisible({ timeout: 8000 })
+
+		const style = await warmRibbon.getAttribute('style')
 		expect(style).toMatch(/fill\s*:/)
 	})
 
 	test('default and warm charts have different ribbon fill colors', async ({ page }) => {
-		await page.goto(variantUrl('Prop — colorScheme'))
-		await page.waitForSelector('[data-cy="streamgraph-color-default"] .origam-chart-streamgraph__ribbon')
-		await page.waitForSelector('[data-cy="streamgraph-color-warm"] .origam-chart-streamgraph__ribbon')
+		await openVariant(page, 'Prop — colorScheme')
+		const sandbox = sandboxOf(page)
 
-		const defaultStyle = await page
-			.locator('[data-cy="streamgraph-color-default"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('style')
+		const defaultRibbon = sandbox.locator('[data-cy="streamgraph-color-default"] .origam-chart-streamgraph__ribbon').first()
+		await expect(defaultRibbon).toBeVisible({ timeout: 8000 })
 
-		const warmStyle = await page
-			.locator('[data-cy="streamgraph-color-warm"] .origam-chart-streamgraph__ribbon')
-			.first()
-			.getAttribute('style')
+		const warmRibbon = sandbox.locator('[data-cy="streamgraph-color-warm"] .origam-chart-streamgraph__ribbon').first()
+		await expect(warmRibbon).toBeVisible({ timeout: 8000 })
+
+		const defaultStyle = await defaultRibbon.getAttribute('style')
+		const warmStyle = await warmRibbon.getAttribute('style')
 
 		expect(defaultStyle).not.toBe(warmStyle)
 	})
@@ -249,27 +290,33 @@ test.describe('OrigamChartStreamgraph — Prop colorScheme', () => {
 
 test.describe('OrigamChartStreamgraph — Slot tooltip', () => {
 	test('custom tooltip slot renders on ribbon hover', async ({ page }) => {
-		await page.goto(variantUrl('Slot — tooltip'))
-		await page.waitForSelector('[data-cy="streamgraph-slot-tooltip-chart"]')
+		await openVariant(page, 'Slot — tooltip')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="streamgraph-slot-tooltip-chart"] .origam-chart-streamgraph__ribbon').first()
+		const chart = sandbox.locator('[data-cy="streamgraph-slot-tooltip-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
+
+		const ribbon = sandbox.locator('[data-cy="streamgraph-slot-tooltip-chart"] .origam-chart-streamgraph__ribbon').first()
 		await ribbon.hover()
 
-		const tooltip = page.locator('.custom-tooltip')
+		const tooltip = sandbox.locator('.custom-tooltip')
 		await expect(tooltip).toBeVisible()
 	})
 
 	test('custom tooltip shows all series rows on hover', async ({ page }) => {
-		await page.goto(variantUrl('Slot — tooltip'))
-		await page.waitForSelector('[data-cy="streamgraph-slot-tooltip-chart"]')
+		await openVariant(page, 'Slot — tooltip')
+		const sandbox = sandboxOf(page)
 
-		const svg = page.locator('[data-cy="streamgraph-slot-tooltip-chart"] svg')
-		const box = await svg.boundingBox()
-		if (!box) throw new Error('SVG bounding box not found')
+		const chart = sandbox.locator('[data-cy="streamgraph-slot-tooltip-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
 
-		await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+		// Hovering a ribbon sets hoveredSeriesIndex (via onRibbonEnter) and
+		// hoveredXIndex (via onSvgMouseMove fired as the pointer crosses the SVG).
+		// Both must be non-null for the tooltip to render.
+		const ribbon = sandbox.locator('[data-cy="streamgraph-slot-tooltip-chart"] .origam-chart-streamgraph__ribbon').first()
+		await ribbon.hover()
 
-		const rows = page.locator('.custom-tooltip__row')
+		const rows = sandbox.locator('.custom-tooltip__row')
 		await expect(rows).not.toHaveCount(0)
 	})
 })
@@ -280,18 +327,24 @@ test.describe('OrigamChartStreamgraph — Slot tooltip', () => {
 
 test.describe('OrigamChartStreamgraph — Slot empty', () => {
 	test('renders the custom empty slot when series is empty', async ({ page }) => {
-		await page.goto(variantUrl('Slot — empty'))
-		await page.waitForSelector('[data-cy="streamgraph-slot-empty-chart"]')
+		await openVariant(page, 'Slot — empty')
+		const sandbox = sandboxOf(page)
 
-		const emptyEl = page.locator('.custom-empty')
+		const chart = sandbox.locator('[data-cy="streamgraph-slot-empty-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
+
+		const emptyEl = sandbox.locator('.custom-empty')
 		await expect(emptyEl).toBeVisible()
 	})
 
 	test('no ribbon paths are rendered when series is empty', async ({ page }) => {
-		await page.goto(variantUrl('Slot — empty'))
-		await page.waitForSelector('[data-cy="streamgraph-slot-empty-chart"]')
+		await openVariant(page, 'Slot — empty')
+		const sandbox = sandboxOf(page)
 
-		const ribbons = page.locator('[data-cy="streamgraph-slot-empty-chart"] .origam-chart-streamgraph__ribbon')
+		const chart = sandbox.locator('[data-cy="streamgraph-slot-empty-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
+
+		const ribbons = sandbox.locator('[data-cy="streamgraph-slot-empty-chart"] .origam-chart-streamgraph__ribbon')
 		await expect(ribbons).toHaveCount(0)
 	})
 })
@@ -302,38 +355,47 @@ test.describe('OrigamChartStreamgraph — Slot empty', () => {
 
 test.describe('OrigamChartStreamgraph — Emit point-click', () => {
 	test('clicking a ribbon fires point-click and logs to pre', async ({ page }) => {
-		await page.goto(variantUrl('Emit — point-click on ribbon'))
-		await page.waitForSelector('[data-cy="streamgraph-emit-chart"]')
+		await openVariant(page, 'Emit — point-click on ribbon')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="streamgraph-emit-chart"] .origam-chart-streamgraph__ribbon').first()
+		const chart = sandbox.locator('[data-cy="streamgraph-emit-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
+
+		const ribbon = sandbox.locator('[data-cy="streamgraph-emit-chart"] .origam-chart-streamgraph__ribbon').first()
 		await ribbon.click()
 
-		const log = page.locator('[data-cy="streamgraph-emit-log"]')
+		const log = sandbox.locator('[data-cy="streamgraph-emit-log"]')
 		const text = await log.textContent()
 		expect(text).toMatch(/point-click/)
 	})
 
 	test('keyboard Enter on a ribbon fires point-click', async ({ page }) => {
-		await page.goto(variantUrl('Emit — point-click on ribbon'))
-		await page.waitForSelector('[data-cy="streamgraph-emit-chart"]')
+		await openVariant(page, 'Emit — point-click on ribbon')
+		const sandbox = sandboxOf(page)
 
-		const ribbon = page.locator('[data-cy="streamgraph-emit-chart"] .origam-chart-streamgraph__ribbon').first()
+		const chart = sandbox.locator('[data-cy="streamgraph-emit-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
+
+		const ribbon = sandbox.locator('[data-cy="streamgraph-emit-chart"] .origam-chart-streamgraph__ribbon').first()
 		await ribbon.focus()
 		await ribbon.press('Enter')
 
-		const log = page.locator('[data-cy="streamgraph-emit-log"]')
+		const log = sandbox.locator('[data-cy="streamgraph-emit-log"]')
 		const text = await log.textContent()
 		expect(text).toMatch(/point-click/)
 	})
 
 	test('legend toggle fires series-toggle event', async ({ page }) => {
-		await page.goto(variantUrl('Emit — point-click on ribbon'))
-		await page.waitForSelector('[data-cy="streamgraph-emit-chart"]')
+		await openVariant(page, 'Emit — point-click on ribbon')
+		const sandbox = sandboxOf(page)
 
-		const legendItem = page.locator('.origam-chart__legend-item').first()
+		const chart = sandbox.locator('[data-cy="streamgraph-emit-chart"]').first()
+		await expect(chart).toBeVisible({ timeout: 8000 })
+
+		const legendItem = sandbox.locator('.origam-chart__legend-item').first()
 		await legendItem.click()
 
-		const log = page.locator('[data-cy="streamgraph-emit-log"]')
+		const log = sandbox.locator('[data-cy="streamgraph-emit-log"]')
 		const text = await log.textContent()
 		expect(text).toMatch(/series-toggle/)
 	})

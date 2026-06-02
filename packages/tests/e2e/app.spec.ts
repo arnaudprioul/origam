@@ -10,7 +10,7 @@ test.describe('OrigamApp', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const app = sandbox.locator('[data-cy="app-default-inner"]')
+		const app = sandbox.locator('[data-cy="app-playground"]')
 		await expect(app).toBeVisible({ timeout: 5000 })
 		await expect(app).toHaveClass(/origam-app/)
 	})
@@ -22,7 +22,7 @@ test.describe('OrigamApp', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const toolbar = sandbox.locator('[data-cy="app-default-toolbar"]')
+		const toolbar = sandbox.locator('[data-cy="app-playground-toolbar"]')
 		await expect(toolbar).toBeVisible({ timeout: 5000 })
 	})
 
@@ -33,7 +33,7 @@ test.describe('OrigamApp', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const main = sandbox.locator('[data-cy="app-default-main"]')
+		const main = sandbox.locator('[data-cy="app-playground-main"]')
 		await expect(main).toBeVisible({ timeout: 5000 })
 	})
 

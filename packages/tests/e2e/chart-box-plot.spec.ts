@@ -70,9 +70,12 @@ test.describe('OrigamChartBoxPlot — Default (pre-aggregated)', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
+        // SVG <line> elements have zero-area bounding boxes (height=0 for horizontal lines),
+        // so toBeVisible() times out. Use toBeAttached() + attribute check instead.
         for (let i = 0; i < 5; i++) {
             const median = sandbox.locator(`[data-cy="origam-chart-box-median-${ i }"]`)
-            await expect(median).toBeVisible({ timeout: 6000 })
+            await expect(median).toBeAttached({ timeout: 6000 })
+            await expect(median).toHaveAttribute('x1')
         }
     })
 
@@ -80,9 +83,15 @@ test.describe('OrigamChartBoxPlot — Default (pre-aggregated)', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
+        // SVG <line> elements (vertical whiskers) have zero-width bounding boxes.
+        // Use toBeAttached() + coordinate attribute check instead of toBeVisible().
         for (let i = 0; i < 5; i++) {
-            await expect(sandbox.locator(`[data-cy="origam-chart-box-whisker-upper-${ i }"]`)).toBeVisible({ timeout: 6000 })
-            await expect(sandbox.locator(`[data-cy="origam-chart-box-whisker-lower-${ i }"]`)).toBeVisible({ timeout: 6000 })
+            const upper = sandbox.locator(`[data-cy="origam-chart-box-whisker-upper-${ i }"]`)
+            const lower = sandbox.locator(`[data-cy="origam-chart-box-whisker-lower-${ i }"]`)
+            await expect(upper).toBeAttached({ timeout: 6000 })
+            await expect(upper).toHaveAttribute('y1')
+            await expect(lower).toBeAttached({ timeout: 6000 })
+            await expect(lower).toHaveAttribute('y1')
         }
     })
 })
@@ -102,8 +111,12 @@ test.describe('OrigamChartBoxPlot — raw samples', () => {
         const sandbox = sandboxOf(page)
 
         for (let i = 0; i < 3; i++) {
+            // <rect> has area — toBeVisible works. <line> is zero-height horizontal,
+            // toBeVisible times out; use toBeAttached() + coordinate attribute instead.
             await expect(sandbox.locator(`[data-cy="origam-chart-box-rect-${ i }"]`)).toBeVisible({ timeout: 6000 })
-            await expect(sandbox.locator(`[data-cy="origam-chart-box-median-${ i }"]`)).toBeVisible({ timeout: 6000 })
+            const median = sandbox.locator(`[data-cy="origam-chart-box-median-${ i }"]`)
+            await expect(median).toBeAttached({ timeout: 6000 })
+            await expect(median).toHaveAttribute('x1')
         }
     })
 })
@@ -149,10 +162,11 @@ test.describe('OrigamChartBoxPlot — accessibility', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const boxes = sandbox.locator('[data-cy="box-plot-playground-chart"] [data-cy^="origam-chart-box-group-"]')
-        const count = await boxes.count()
-        expect(count).toBe(5)
+        // Use Playwright's auto-retrying toHaveCount instead of synchronous boxes.count()
+        // to guarantee the DOM is settled before we iterate.
+        await expect(boxes).toHaveCount(5, { timeout: 6000 })
 
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < 5; i++) {
             await expect(boxes.nth(i)).toHaveAttribute('role', 'button')
             const label = await boxes.nth(i).getAttribute('aria-label')
             expect(label).toBeTruthy()
@@ -187,8 +201,12 @@ test.describe('OrigamChartBoxPlot — emit', () => {
         const sandbox = sandboxOf(page)
 
         const firstBox = sandbox.locator('[data-cy="box-plot-emit-chart"] [data-cy="origam-chart-box-group-0"]')
-        await expect(firstBox).toBeVisible({ timeout: 6000 })
-        await firstBox.click()
+        // SVG <g> elements may have zero-area bounding boxes in Playwright's visibility model
+        // when children are zero-height lines; use toBeAttached() then force-click the rect child.
+        await expect(firstBox).toBeAttached({ timeout: 6000 })
+        const boxRect = sandbox.locator('[data-cy="box-plot-emit-chart"] [data-cy="origam-chart-box-rect-0"]')
+        await expect(boxRect).toBeVisible({ timeout: 6000 })
+        await boxRect.click()
         await page.waitForTimeout(300)
 
         const log = sandbox.locator('[data-cy="box-plot-emit-log"]')

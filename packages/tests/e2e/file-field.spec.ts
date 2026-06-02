@@ -5,17 +5,17 @@ import { expect, test } from '@playwright/test'
  *
  * The 11 modes (variant titles in the Histoire sidebar) — these MUST stay
  * in sync with `OrigamFileField.story.vue`:
- *   1.  Single + paperclip      (default)
- *   2.  Empty                   (no value, placeholder + paperclip)
- *   3.  Multiple chips          (display="chips")
- *   4.  Multiple counter        (display="counter")
- *   5.  Dropzone empty          (dropzone=true, no value)
- *   6.  Dropzone dragging       (synthetic dragenter event)
- *   7.  Dropzone single         (dropzone + 1 file)
- *   8.  Dropzone multiple       (dropzone + multiple files)
- *   9.  Dropzone error          (error="…")
- *   10. Disabled and readonly   (disabled=true)
- *   11. Show size               (showSize=true → "(2.4 MB)")
+ *   1.  Prop — single + paperclip  (default)
+ *   2.  Prop — empty state         (no value, placeholder + paperclip)
+ *   3.  Prop — multiple (chips)    (display="chips")
+ *   4.  Prop — multiple (counter)  (display="counter")
+ *   5.  Prop — dropzone (empty)    (dropzone=true, no value)
+ *   6.  Prop — dropzone (empty)    (same variant, tests synthetic dragenter)
+ *   7.  Prop — dropzone (single file)  (dropzone + 1 file)
+ *   8.  Prop — dropzone (multiple files) (dropzone + multiple files)
+ *   9.  Prop — dropzone (error)    (error="…")
+ *   10. Prop — disabled & readonly (disabled=true)
+ *   11. Prop — showSize            (showSize=true → "(2.4 MB)")
  *
  * Conventions:
  *   - `getByRole('link', { name, exact })` for variant nav (NOT getByText).
@@ -37,7 +37,7 @@ const navigateToVariant = async (page: import('@playwright/test').Page, name: st
 
 test.describe('OrigamFileField — PDF P3 11 modes', () => {
     test('Mode 1 — Single + paperclip: file input + paperclip prepend', async ({ page }) => {
-        await navigateToVariant(page, 'Single + paperclip')
+        await navigateToVariant(page, 'Prop — single + paperclip')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-single-paperclip"]')
@@ -49,7 +49,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 2 — Empty: placeholder text visible, no files', async ({ page }) => {
-        await navigateToVariant(page, 'Empty')
+        await navigateToVariant(page, 'Prop — empty state')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-empty"]')
@@ -65,7 +65,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 3 — Multiple chips: each file is a closable chip', async ({ page }) => {
-        await navigateToVariant(page, 'Multiple chips')
+        await navigateToVariant(page, 'Prop — multiple (chips)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-chips"]')
@@ -87,7 +87,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 4 — Multiple counter: counter pill + "{n} files" text', async ({ page }) => {
-        await navigateToVariant(page, 'Multiple counter')
+        await navigateToVariant(page, 'Prop — multiple (counter)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-counter"]')
@@ -121,7 +121,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 5 — Dropzone empty: dropzone mounted, no --dragging', async ({ page }) => {
-        await navigateToVariant(page, 'Dropzone empty')
+        await navigateToVariant(page, 'Prop — dropzone (empty)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-dropzone-empty"]')
@@ -133,10 +133,12 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 6 — Dropzone dragging: dragenter toggles --dragging', async ({ page }) => {
-        await navigateToVariant(page, 'Dropzone dragging')
+        // The story has no dedicated "dragging" variant — we reuse the empty
+        // dropzone variant and fire a synthetic dragenter to trigger the state.
+        await navigateToVariant(page, 'Prop — dropzone (empty)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const root = sandbox.locator('[data-cy="file-field-dropzone-dragging"]')
+        const root = sandbox.locator('[data-cy="file-field-dropzone-empty"]')
         const zone = root.locator('.origam-file-field__dropzone')
 
         await expect(zone).toBeVisible({ timeout: 5000 })
@@ -153,7 +155,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 7 — Dropzone single: collapsed card preview', async ({ page }) => {
-        await navigateToVariant(page, 'Dropzone single')
+        await navigateToVariant(page, 'Prop — dropzone (single file)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-dropzone-single"]')
@@ -168,7 +170,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 8 — Dropzone multiple: file cards stacked', async ({ page }) => {
-        await navigateToVariant(page, 'Dropzone multiple')
+        await navigateToVariant(page, 'Prop — dropzone (multiple files)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-dropzone-multiple"]')
@@ -183,7 +185,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 9 — Dropzone error: --error class + message visible', async ({ page }) => {
-        await navigateToVariant(page, 'Dropzone error')
+        await navigateToVariant(page, 'Prop — dropzone (error)')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-dropzone-error"]')
@@ -199,7 +201,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 10 — Disabled: input disabled + dropzone has pointer-events:none', async ({ page }) => {
-        await navigateToVariant(page, 'Disabled and readonly')
+        await navigateToVariant(page, 'Prop — disabled & readonly')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-disabled"]')
@@ -218,7 +220,7 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
     })
 
     test('Mode 11 — Show size: filename + size suffix visible', async ({ page }) => {
-        await navigateToVariant(page, 'Show size')
+        await navigateToVariant(page, 'Prop — showSize')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('[data-cy="file-field-show-size"]')

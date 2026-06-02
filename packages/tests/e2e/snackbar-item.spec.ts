@@ -25,7 +25,7 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/components-stories-snackbaritem-origamsnackbaritem-story-vue'
+const STORY = '/story/components-stories-snackbar-origamsnackbaritem-story-vue'
 
 test.describe('OrigamSnackbarItem — Prop: intent', () => {
     test('each intent renders the correct modifier class', async ({ page }) => {

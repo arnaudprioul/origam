@@ -57,7 +57,7 @@ const readContainerMetrics = async (
 
 test.describe('OrigamSlideGroup arrows — single-click step', () => {
     test('one click on "next" advances scrollLeft by ~one container width', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Show arrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -93,7 +93,7 @@ test.describe('OrigamSlideGroup arrows — single-click step', () => {
 
 test.describe('OrigamSlideGroup arrows — progressive walk', () => {
     test('repeated "next" clicks walk scrollLeft forward without skipping', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Show arrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -140,7 +140,7 @@ test.describe('OrigamSlideGroup arrows — progressive walk', () => {
 
 test.describe('OrigamSlideGroup arrows — boundary states', () => {
     test('"next" affix disables once the end of the scroll is reached', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Show arrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -165,7 +165,7 @@ test.describe('OrigamSlideGroup arrows — boundary states', () => {
     })
 
     test('"prev" walks scrollLeft back to 0 after several "next" clicks', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Show arrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()

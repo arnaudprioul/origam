@@ -19,7 +19,7 @@ const openVariant = async (page: Page, variant: string) => {
 
 test.describe('OrigamBottomNav — Color', () => {
     test('color intent is propagated to btn children', async ({ page }) => {
-        await openVariant(page, 'Color')
+        await openVariant(page, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('[data-cy="bottom-nav-color"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -48,7 +48,7 @@ test.describe('OrigamBottomNav — Color', () => {
 
 test.describe('OrigamBottomNav — Density', () => {
     test('density class lands on btn children', async ({ page }) => {
-        await openVariant(page, 'Density')
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="bottom-nav-density"]').first()).toBeVisible({ timeout: 8000 })
         const childClasses = await sandbox.locator('[data-cy="bottom-nav-density"] .origam-btn').evaluateAll(els =>
@@ -65,7 +65,7 @@ test.describe('OrigamBottomNav — Density', () => {
 
 test.describe('OrigamBottomNav — Rounded', () => {
     test('border-radius is applied when rounded=true', async ({ page }) => {
-        await openVariant(page, 'Rounded')
+        await openVariant(page, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('[data-cy="bottom-nav-rounded"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -78,7 +78,7 @@ test.describe('OrigamBottomNav — Rounded', () => {
 
 test.describe('OrigamBottomNav — Border', () => {
     test('border modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Border')
+        await openVariant(page, 'Prop — border')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('[data-cy="bottom-nav-border"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -91,7 +91,7 @@ test.describe('OrigamBottomNav — Border', () => {
 
 test.describe('OrigamBottomNav — Elevation', () => {
     test('elevation variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Elevation')
+        await openVariant(page, 'Prop — elevation')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="bottom-nav-elevation"]').first()).toBeVisible({ timeout: 8000 })
     })
@@ -101,7 +101,7 @@ test.describe('OrigamBottomNav — Elevation', () => {
 
 test.describe('OrigamBottomNav — Grow', () => {
     test('grow modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Grow')
+        await openVariant(page, 'Prop — grow')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('[data-cy="bottom-nav-grow"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -114,7 +114,7 @@ test.describe('OrigamBottomNav — Grow', () => {
 
 test.describe('OrigamBottomNav — Mode', () => {
     test('mode class is applied to the nav', async ({ page }) => {
-        await openVariant(page, 'Mode')
+        await openVariant(page, 'Prop — mode')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('[data-cy="bottom-nav-mode"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -127,7 +127,7 @@ test.describe('OrigamBottomNav — Mode', () => {
 
 test.describe('OrigamBottomNav — Items prop', () => {
     test('renders one btn per item entry (3)', async ({ page }) => {
-        await openVariant(page, 'Items prop')
+        await openVariant(page, 'Prop — items')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('[data-cy="bottom-nav-items"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -140,7 +140,7 @@ test.describe('OrigamBottomNav — Items prop', () => {
 
 test.describe('OrigamBottomNav — Visible', () => {
     test('nav is visible when modelValue=true', async ({ page }) => {
-        await openVariant(page, 'Visible (modelValue)')
+        await openVariant(page, 'Prop — modelValue (visible)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="bottom-nav-visible"]').first()).toBeVisible({ timeout: 8000 })
     })

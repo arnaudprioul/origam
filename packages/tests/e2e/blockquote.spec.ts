@@ -158,7 +158,7 @@ test.describe('OrigamBlockquote — Prop lang (decorative background glyph)', ()
 
 test.describe('OrigamBlockquote — variant quoted background glyph styling', () => {
     test('opening glyph is rendered and close glyph is absent', async ({ page }) => {
-        await openVariant(page, STORY, 'Variant — quoted')
+        await openVariant(page, STORY, 'Prop — variant (quoted deep dive)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy=”blockquote-quoted-default”]').first()
@@ -173,7 +173,7 @@ test.describe('OrigamBlockquote — variant quoted background glyph styling', ()
     })
 
     test('background glyph has position: absolute', async ({ page }) => {
-        await openVariant(page, STORY, 'Variant — quoted')
+        await openVariant(page, STORY, 'Prop — variant (quoted deep dive)')
         const sandbox = sandboxOf(page)
 
         const bgMark = sandbox.locator('[data-cy=”blockquote-quoted-default”] .origam-blockquote__mark--bg').first()
@@ -184,7 +184,7 @@ test.describe('OrigamBlockquote — variant quoted background glyph styling', ()
     })
 
     test('background glyph has opacity in the range [0.05, 0.15]', async ({ page }) => {
-        await openVariant(page, STORY, 'Variant — quoted')
+        await openVariant(page, STORY, 'Prop — variant (quoted deep dive)')
         const sandbox = sandboxOf(page)
 
         const bgMark = sandbox.locator('[data-cy=”blockquote-quoted-default”] .origam-blockquote__mark--bg').first()
@@ -196,7 +196,7 @@ test.describe('OrigamBlockquote — variant quoted background glyph styling', ()
     })
 
     test('background glyph has font-size >= 5rem (80px)', async ({ page }) => {
-        await openVariant(page, STORY, 'Variant — quoted')
+        await openVariant(page, STORY, 'Prop — variant (quoted deep dive)')
         const sandbox = sandboxOf(page)
 
         const bgMark = sandbox.locator('[data-cy=”blockquote-quoted-default”] .origam-blockquote__mark--bg').first()
@@ -207,7 +207,7 @@ test.describe('OrigamBlockquote — variant quoted background glyph styling', ()
     })
 
     test('background glyph z-index is lower than the body z-index', async ({ page }) => {
-        await openVariant(page, STORY, 'Variant — quoted')
+        await openVariant(page, STORY, 'Prop — variant (quoted deep dive)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy=”blockquote-quoted-default”]').first()
@@ -223,7 +223,7 @@ test.describe('OrigamBlockquote — variant quoted background glyph styling', ()
     })
 
     test('different intent colors produce different glyph colors', async ({ page }) => {
-        await openVariant(page, STORY, 'Variant — quoted')
+        await openVariant(page, STORY, 'Prop — variant (quoted deep dive)')
         const sandbox = sandboxOf(page)
 
         const readGlyphColor = async (selector: string): Promise<string> => {

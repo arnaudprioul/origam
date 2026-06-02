@@ -67,7 +67,7 @@ test.describe('OrigamBtnGroup — default', () => {
 
 test.describe('OrigamBtnGroup — items prop', () => {
     test('renders one btn per items entry (3)', async ({ page }) => {
-        await openVariant(page, STORY, 'Items prop')
+        await openVariant(page, STORY, 'Prop — items')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="btn-group-items"]').first()
@@ -87,7 +87,7 @@ test.describe('OrigamBtnGroup — items prop', () => {
 
 test.describe('OrigamBtnGroup — density', () => {
     test('default density emits the --density-default modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Density')
+        await openVariant(page, STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('.origam-btn-group').first()
@@ -102,7 +102,7 @@ test.describe('OrigamBtnGroup — density', () => {
 
 test.describe('OrigamBtnGroup — divided', () => {
     test('divided=true emits the --divided modifier', async ({ page }) => {
-        await openVariant(page, STORY, 'Divided')
+        await openVariant(page, STORY, 'Prop — divided')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="btn-group-divided"]').first()
@@ -117,7 +117,7 @@ test.describe('OrigamBtnGroup — divided', () => {
 
 test.describe('OrigamBtnGroup — rounded', () => {
     test('outer border-radius is applied', async ({ page }) => {
-        await openVariant(page, STORY, 'Rounded')
+        await openVariant(page, STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="btn-group-rounded"]').first()
@@ -134,7 +134,7 @@ test.describe('OrigamBtnGroup — rounded', () => {
 
 test.describe('OrigamBtnGroup — item slot', () => {
     test('the item slot is invoked per items entry', async ({ page }) => {
-        await openVariant(page, STORY, 'Item slot (custom render)')
+        await openVariant(page, STORY, 'Slot — item (custom render)')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="btn-group-item-slot"]').first()
@@ -143,8 +143,10 @@ test.describe('OrigamBtnGroup — item slot', () => {
         const children = await group.locator('.origam-btn').count()
         expect(children).toBe(3)
 
-        // Each cell should now ALSO have a chevron-right append icon.
-        const chevrons = await group.locator('.origam-btn i.mdi-chevron-right').count()
+        // Each cell should have a chevron-right append icon.
+        // The icon enum value is 'mdi:mdi-chevron-right' which becomes a CSS class
+        // on the <i> element. The colon makes it an attribute-contains selector.
+        const chevrons = await group.locator('.origam-btn i[class*="mdi-chevron-right"]').count()
         expect(chevrons).toBe(3)
     })
 })
@@ -153,7 +155,7 @@ test.describe('OrigamBtnGroup — item slot', () => {
 
 test.describe('OrigamBtnGroup — color (intent)', () => {
     test('group-level color forwards to children buttons', async ({ page }) => {
-        await openVariant(page, STORY, 'Color (intent)')
+        await openVariant(page, STORY, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="btn-group-color"]').first()

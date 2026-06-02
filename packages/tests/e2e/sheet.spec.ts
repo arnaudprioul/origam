@@ -43,7 +43,7 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Sanity — variant mounts and the swipe-handle pill is visible.
     // ────────────────────────────────────────────────────────────────────
     test('Bottom — swipeable — handle pill is mounted with non-zero dimensions', async ({ page }) => {
-        await gotoVariant(page, 'Bottom — swipeable')
+        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
         const sb = sandbox(page)
 
         const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
@@ -65,7 +65,7 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Initial render — sheet height matches the requested defaultSnap.
     // ────────────────────────────────────────────────────────────────────
     test('Initial render — peek snap → sheet height is ~120px (token)', async ({ page }) => {
-        await gotoVariant(page, 'Bottom — swipeable')
+        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
         const sb = sandbox(page)
 
         const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
@@ -87,7 +87,7 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // height actually grows when the snap changes.
     // ────────────────────────────────────────────────────────────────────
     test('snapTo("full") — sheet height grows toward the largest snap', async ({ page }) => {
-        await gotoVariant(page, 'Bottom — swipeable')
+        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
         const sb = sandbox(page)
 
         const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
@@ -118,7 +118,7 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Programmatic snap-down — full → peek
     // ────────────────────────────────────────────────────────────────────
     test('snapTo("peek") — sheet height shrinks toward the bottom snap', async ({ page }) => {
-        await gotoVariant(page, 'Bottom — swipeable')
+        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
         const sb = sandbox(page)
         const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
         await expect(sheet).toBeVisible({ timeout: 5000 })
@@ -145,7 +145,7 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // the handle. We assert direction-of-change, not exact pixel snap.
     // ────────────────────────────────────────────────────────────────────
     test('Synthetic pointer drag UP on handle — sheet grows', async ({ page }) => {
-        await gotoVariant(page, 'Bottom — swipeable')
+        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
         const sb = sandbox(page)
         const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
         const handle = sb.locator('[data-cy="sheet-bottom-handle"]')
@@ -178,7 +178,7 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Persistent — dragging past closed snaps back to peek (not 0).
     // ────────────────────────────────────────────────────────────────────
     test('Persistent — dismiss() does NOT collapse height to 0', async ({ page }) => {
-        await gotoVariant(page, 'Bottom — swipeable')
+        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
         const sb = sandbox(page)
 
         // Toggle the persistent control — find the HstCheckbox by its

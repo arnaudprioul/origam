@@ -19,7 +19,7 @@ const openVariant = async (page: Page, variant: string) => {
 
 test.describe('OrigamBreadcrumb — Color', () => {
     test('color variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Color')
+        await openVariant(page, 'Prop — color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-color"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="breadcrumb-color"] .origam-breadcrumb-item').count()
@@ -31,7 +31,7 @@ test.describe('OrigamBreadcrumb — Color', () => {
 
 test.describe('OrigamBreadcrumb — Density', () => {
     test('density class lands on breadcrumb items', async ({ page }) => {
-        await openVariant(page, 'Density')
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-density"]').first()).toBeVisible({ timeout: 8000 })
         const childClasses = await sandbox.locator('[data-cy="breadcrumb-density"] .origam-breadcrumb-item').evaluateAll(els =>
@@ -48,7 +48,7 @@ test.describe('OrigamBreadcrumb — Density', () => {
 
 test.describe('OrigamBreadcrumb — Rounded', () => {
     test('rounded class is applied', async ({ page }) => {
-        await openVariant(page, 'Rounded')
+        await openVariant(page, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const bc = sandbox.locator('[data-cy="breadcrumb-rounded"]').first()
         await expect(bc).toBeVisible({ timeout: 8000 })
@@ -61,7 +61,7 @@ test.describe('OrigamBreadcrumb — Rounded', () => {
 
 test.describe('OrigamBreadcrumb — Border', () => {
     test('border modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Border')
+        await openVariant(page, 'Prop — border')
         const sandbox = sandboxOf(page)
         const bc = sandbox.locator('[data-cy="breadcrumb-border"]').first()
         await expect(bc).toBeVisible({ timeout: 8000 })
@@ -74,7 +74,7 @@ test.describe('OrigamBreadcrumb — Border', () => {
 
 test.describe('OrigamBreadcrumb — Elevation', () => {
     test('elevation variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Elevation')
+        await openVariant(page, 'Prop — elevation')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-elevation"]').first()).toBeVisible({ timeout: 8000 })
     })
@@ -84,7 +84,7 @@ test.describe('OrigamBreadcrumb — Elevation', () => {
 
 test.describe('OrigamBreadcrumb — Divider (string)', () => {
     test('custom divider string renders between items', async ({ page }) => {
-        await openVariant(page, 'Divider (string)')
+        await openVariant(page, 'Prop — divider (string)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-divider-string"]').first()).toBeVisible({ timeout: 8000 })
         const dividers = await sandbox.locator('[data-cy="breadcrumb-divider-string"] .origam-breadcrumb-divider').count()
@@ -96,7 +96,7 @@ test.describe('OrigamBreadcrumb — Divider (string)', () => {
 
 test.describe('OrigamBreadcrumb — Divider (icon)', () => {
     test('icon divider renders between items', async ({ page }) => {
-        await openVariant(page, 'Divider (icon)')
+        await openVariant(page, 'Prop — divider (icon)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-divider-icon"]').first()).toBeVisible({ timeout: 8000 })
         const dividers = await sandbox.locator('[data-cy="breadcrumb-divider-icon"] .origam-breadcrumb-divider').count()
@@ -108,7 +108,7 @@ test.describe('OrigamBreadcrumb — Divider (icon)', () => {
 
 test.describe('OrigamBreadcrumb — Disabled', () => {
     test('disabled breadcrumb renders without errors', async ({ page }) => {
-        await openVariant(page, 'Disabled')
+        await openVariant(page, 'Prop — disabled')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="breadcrumb-disabled"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="breadcrumb-disabled"] .origam-breadcrumb-item').count()

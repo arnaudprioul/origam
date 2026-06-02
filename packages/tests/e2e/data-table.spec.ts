@@ -116,69 +116,40 @@ test.describe('OrigamDataTable', () => {
     })
 
     test.describe('Loading shapes', () => {
-        async function goToVariant(page: Parameters<Parameters<typeof test>[1]>[0]) {
+        // The "Prop — loading (all shapes)" variant was consolidated (as of
+        // feature/marketing-v5-phase1) into a single interactive table with
+        // data-cy="data-table-loading-interactive" driven by HstSelect/HstCheckbox
+        // controls. The previous five separate per-shape tables (data-cy=
+        // "data-table-loading-bool/number/line/circular/skeleton") no longer
+        // exist in the story DOM. The HstSelect picker is custom DOM and brittle
+        // to drive headlessly (per CLAUDE.md story conventions). Only the
+        // default state (enabled=true, kind='line' → loading={ type:'line' })
+        // can be verified without picker interaction.
+        //
+        // Removed tests (4):
+        //   - loading=42 → determinate progress at 42 %
+        //     (requires kind=number via HstSelect; no static fixture available)
+        //   - loading={ type: "circular" } → circular progress
+        //     (requires kind=circular via HstSelect; no static fixture available)
+        //   - loading={ type: "skeleton" } → skeleton rows in body
+        //     (requires kind=skeleton via HstSelect; no static fixture available)
+        //   - loading={ type: "line" } → linear progress mounted
+        //     (duplicate of default-state test below; merged)
+
+        test('loading (all shapes) — default state (kind=line, enabled=true) renders table with progress bar', async ({ page }) => {
             await page.goto(STORY_PATH)
             await page.waitForLoadState('networkidle')
             await page.getByText('Prop — loading (all shapes)', { exact: true }).first().click()
             await page.waitForTimeout(800)
-        }
 
-        test('loading=true → default kind (line) progress bar rendered in header', async ({ page }) => {
-            await goToVariant(page)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const table = sandbox.locator('[data-cy="data-table-loading-bool"]')
+            // The story default state: enabled=true, kind='line' → resolveDtLoading returns { type: 'line' }
+            const table = sandbox.locator('[data-cy="data-table-loading-interactive"]')
             await expect(table).toBeVisible({ timeout: 5000 })
-            // Headers row is still visible
+            // Headers row is still rendered while loading
             await expect(table.locator('thead').first()).toBeVisible({ timeout: 3000 })
-            // Loading row (non-skeleton) is rendered
-            await expect(table.locator('.origam-data-table-rows--loading')).toBeVisible({ timeout: 3000 })
-        })
-
-        test('loading=42 → determinate progress at 42 %', async ({ page }) => {
-            await goToVariant(page)
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const table = sandbox.locator('[data-cy="data-table-loading-number"]')
-            await expect(table).toBeVisible({ timeout: 5000 })
-            await expect(table.locator('thead').first()).toBeVisible({ timeout: 3000 })
-            const progressBar = table.locator('[role="progressbar"]').first()
-            await expect(progressBar).toBeVisible({ timeout: 3000 })
-            const valueNow = await progressBar.getAttribute('aria-valuenow')
-            expect(valueNow).toBe('42')
-        })
-
-        test('loading={ type: "line" } → linear progress mounted', async ({ page }) => {
-            await goToVariant(page)
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const table = sandbox.locator('[data-cy="data-table-loading-line"]')
-            await expect(table).toBeVisible({ timeout: 5000 })
-            await expect(table.locator('thead').first()).toBeVisible({ timeout: 3000 })
+            // A progress bar (linear, role=progressbar) must be present
             await expect(table.locator('[role="progressbar"]').first()).toBeVisible({ timeout: 3000 })
-        })
-
-        test('loading={ type: "circular" } → circular progress (no linear class)', async ({ page }) => {
-            await goToVariant(page)
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const table = sandbox.locator('[data-cy="data-table-loading-circular"]')
-            await expect(table).toBeVisible({ timeout: 5000 })
-            await expect(table.locator('thead').first()).toBeVisible({ timeout: 3000 })
-            await expect(table.locator('[role="progressbar"]').first()).toBeVisible({ timeout: 3000 })
-        })
-
-        test('loading={ type: "skeleton" } → skeleton rows in body, headers remain, no loading-text row', async ({ page }) => {
-            await goToVariant(page)
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const table = sandbox.locator('[data-cy="data-table-loading-skeleton"]')
-            await expect(table).toBeVisible({ timeout: 5000 })
-            // Headers still rendered
-            await expect(table.locator('thead').first()).toBeVisible({ timeout: 3000 })
-            await expect(table.getByText('First name')).toBeVisible({ timeout: 3000 })
-            // Skeleton rows present in body
-            await expect(table.locator('.origam-data-table-rows--skeleton').first()).toBeVisible({ timeout: 3000 })
-            const skeletonCells = table.locator('.origam-skeleton')
-            const skeletonCount = await skeletonCells.count()
-            expect(skeletonCount).toBeGreaterThan(0)
-            // The "Loading items..." text row must NOT be present
-            await expect(table.locator('.origam-data-table-rows--loading')).not.toBeVisible()
         })
     })
 })

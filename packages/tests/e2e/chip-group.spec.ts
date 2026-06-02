@@ -32,7 +32,7 @@ test.describe('OrigamChipGroup — default', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('[data-cy="chip-group-default"]').first()
+        const group = sandbox.locator('[data-cy="chip-group-playground"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
         const chips = await group.locator('.origam-chip').count()
@@ -43,13 +43,13 @@ test.describe('OrigamChipGroup — default', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const chip1 = sandbox.locator('[data-cy="chip-group-default-1"]').first()
+        const chip1 = sandbox.locator('[data-cy="chip-group-playground-1"]').first()
         await expect(chip1).toBeVisible({ timeout: 8000 })
         await chip1.click()
         await page.waitForTimeout(300)
 
         // Status display should show the selected value (1)
-        const status = sandbox.locator('[data-cy="chip-group-default-status"]').first()
+        const status = sandbox.locator('[data-cy="chip-group-playground-status"]').first()
         await expect(status).toContainText('1')
     })
 })
@@ -58,7 +58,7 @@ test.describe('OrigamChipGroup — default', () => {
 
 test.describe('OrigamChipGroup — multiple', () => {
     test('multiple chips can be selected simultaneously', async ({ page }) => {
-        await openVariant(page, STORY, 'Multiple')
+        await openVariant(page, STORY, 'Prop — multiple (checkbox-style selection)')
         const sandbox = sandboxOf(page)
 
         const chipA = sandbox.locator('[data-cy="chip-group-multiple-a"]').first()
@@ -82,7 +82,7 @@ test.describe('OrigamChipGroup — multiple', () => {
 
 test.describe('OrigamChipGroup — mandatory', () => {
     test('mandatory mode keeps at least one chip selected', async ({ page }) => {
-        await openVariant(page, STORY, 'Mandatory')
+        await openVariant(page, STORY, 'Prop — mandatory (always one selected)')
         const sandbox = sandboxOf(page)
 
         // Initial selection is 'grid'
@@ -104,7 +104,7 @@ test.describe('OrigamChipGroup — mandatory', () => {
 
 test.describe('OrigamChipGroup — filter', () => {
     test('filter group renders chips and selecting one shows filter icon', async ({ page }) => {
-        await openVariant(page, STORY, 'Filter')
+        await openVariant(page, STORY, 'Prop — filter (check icon when selected)')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="chip-group-filter"]').first()
@@ -124,7 +124,7 @@ test.describe('OrigamChipGroup — filter', () => {
 
 test.describe('OrigamChipGroup — column', () => {
     test('column=true emits --column modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Column')
+        await openVariant(page, STORY, 'Prop — column (wraps chips to new lines)')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="chip-group-column"]').first()
@@ -139,7 +139,7 @@ test.describe('OrigamChipGroup — column', () => {
 
 test.describe('OrigamChipGroup — color', () => {
     test('color prop is passed down and group renders child chips', async ({ page }) => {
-        await openVariant(page, STORY, 'Color (intent)')
+        await openVariant(page, STORY, 'Prop — color (applies to selected chip)')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('[data-cy="chip-group-color"]').first()
