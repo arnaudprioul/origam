@@ -167,20 +167,14 @@ test.describe('OrigamAvatar', () => {
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const avatar = sandbox.locator('.origam-avatar').first()
+        // Use the statically-rendered size="large" avatar (data-cy hook added to story).
+        // Forcing a class override on a scoped-CSS component is unreliable because the
+        // SCSS rules carry a `data-v-XXXXX` attribute selector — only Vue-rendered
+        // elements match. Instead we measure the avatar that Vue rendered with the prop.
+        const avatar = sandbox.locator('[data-cy="avatar-size-large"]')
         await expect(avatar).toBeVisible({ timeout: 5000 })
 
-        // Force size-large class — the SCSS bumps --origam-avatar---width to 48px.
-        const width = await avatar.evaluate((el) => {
-            el.classList.remove(
-                'origam-avatar--size-x-small',
-                'origam-avatar--size-small',
-                'origam-avatar--size-default',
-                'origam-avatar--size-x-large'
-            )
-            el.classList.add('origam-avatar--size-large')
-            return getComputedStyle(el).width
-        })
+        const width = await avatar.evaluate((el) => getComputedStyle(el).width)
         expect(width).toBe('48px')
     })
 

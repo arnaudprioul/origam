@@ -91,14 +91,18 @@ test.describe('OrigamSnackbarGroup — Prop: location', () => {
 
         for (const loc of locations) {
             const trigger = sandbox.locator(`[data-cy="snackbar-group-location-${loc}"]`).first()
+            await expect(trigger).toBeVisible({ timeout: 8000 })
             await trigger.click()
         }
 
         await page.waitForTimeout(300)
 
         for (const loc of locations) {
-            const host = sandbox.locator(`.origam-snackbar-group--${loc}`).first()
-            await expect(host).toBeVisible({ timeout: 5000 })
+            // The group is teleported to body — locate it by the DOM id the
+            // component emits: `id="origam-snackbar-group-location-${loc}"`.
+            // The location variant passes `:id="\`location-${loc}\`"` to each
+            // group → rendered DOM id = `origam-snackbar-group-location-${loc}`.
+            const host = sandbox.locator(`#origam-snackbar-group-location-${loc}`).first()
 
             // At least one OrigamSnackbarItem should live in the matching host.
             const items = host.locator('.origam-snackbar-item')
@@ -117,7 +121,9 @@ test.describe('OrigamSnackbarGroup — Prop: max', () => {
         await trigger.click()
         await page.waitForTimeout(500)
 
-        const host = sandbox.locator('[data-cy="snackbar-group-max-host"]').first()
+        // The group is teleported to body and the component emits
+        // id="origam-snackbar-group-max-test" (story passes id="max-test").
+        const host = sandbox.locator('#origam-snackbar-group-max-test').first()
         const items = host.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(5, { timeout: 5000 })
     })
@@ -128,13 +134,17 @@ test.describe('OrigamSnackbarGroup — Prop: intent', () => {
         await openVariant(page, 'Prop — intent')
         const sandbox = sandboxOf(page)
 
+        // The group is teleported to body — data-cy attrs on <origam-snackbar-group>
+        // are NOT forwarded through the teleport. Locate the host by its DOM id:
+        // story passes id="intent-stack" → resolvedDomId = "origam-snackbar-group-intent-stack".
+        const host = sandbox.locator('#origam-snackbar-group-intent-stack').first()
+
         for (const intent of ['success', 'warning', 'danger', 'info'] as const) {
             const trigger = sandbox.locator(`[data-cy="snackbar-group-intent-${intent}"]`).first()
             await trigger.click()
             await page.waitForTimeout(150)
 
-            const intentItem = sandbox
-                .locator('[data-cy="snackbar-group-intent-host"]')
+            const intentItem = host
                 .locator(`.origam-snackbar-item--intent-${intent}`)
                 .first()
 
@@ -165,7 +175,10 @@ test.describe('OrigamSnackbarGroup — Emits + dismiss + actions', () => {
         await trigger.click()
         await page.waitForTimeout(200)
 
-        const host = sandbox.locator('[data-cy="snackbar-group-emit-host"]').first()
+        // The group is teleported to body — data-cy is not forwarded through
+        // the teleport. Locate by DOM id: story passes id="emit-stack" →
+        // resolvedDomId = "origam-snackbar-group-emit-stack".
+        const host = sandbox.locator('#origam-snackbar-group-emit-stack').first()
         const dismissBtn = host
             .locator('.origam-snackbar-item__dismiss')
             .first()
@@ -186,6 +199,7 @@ test.describe('OrigamSnackbarGroup — Emits + dismiss + actions', () => {
         const sandbox = sandboxOf(page)
 
         const trigger = sandbox.locator('[data-cy="snackbar-group-emit-action"]').first()
+        await expect(trigger).toBeVisible({ timeout: 8000 })
         await trigger.click()
         await page.waitForTimeout(200)
 
@@ -213,7 +227,9 @@ test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
         await sandbox.locator('[data-cy="snackbar-group-max-burst"]').first().click()
         await page.waitForTimeout(6_000)
 
-        const host = sandbox.locator('[data-cy="snackbar-group-max-host"]').first()
+        // The group is teleported to body — data-cy is not forwarded.
+        // Story passes id="max-test" → resolvedDomId = "origam-snackbar-group-max-test".
+        const host = sandbox.locator('#origam-snackbar-group-max-test').first()
         const items = host.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(5)
     })
@@ -224,10 +240,12 @@ test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
 
         // Intent spawns use `duration: 4000`. We assert the item is
         // still there at 1s and gone after the full 4.5s.
+        // The group is teleported to body — data-cy is not forwarded.
+        // Story passes id="intent-stack" → resolvedDomId = "origam-snackbar-group-intent-stack".
         await sandbox.locator('[data-cy="snackbar-group-intent-success"]').first().click()
         await page.waitForTimeout(1_000)
 
-        const host = sandbox.locator('[data-cy="snackbar-group-intent-host"]').first()
+        const host = sandbox.locator('#origam-snackbar-group-intent-stack').first()
         const item = host.locator('.origam-snackbar-item--intent-success').first()
         await expect(item).toBeVisible()
 
@@ -241,8 +259,19 @@ test.describe('OrigamSnackbarGroup — ARIA region', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const root = sandbox.locator('[data-cy="snackbar-group-playground-host"]').first()
-        await expect(root).toBeVisible({ timeout: 8000 })
+        // The group is teleported to body — data-cy attrs passed to
+        // <origam-snackbar-group> are not forwarded through the teleport.
+        // Locate via DOM id: story passes id="playground" →
+        // resolvedDomId = "origam-snackbar-group-playground".
+        // Trigger a notify first so the root becomes visible (it is always
+        // rendered but may have zero size before items are present).
+        const trigger = sandbox.locator('[data-cy="snackbar-group-playground-trigger"]').first()
+        await expect(trigger).toBeVisible({ timeout: 8000 })
+        await trigger.click()
+        await page.waitForTimeout(300)
+
+        const root = sandbox.locator('#origam-snackbar-group-playground').first()
+        await expect(root).toBeVisible({ timeout: 5000 })
         await expect(root).toHaveAttribute('role', 'region')
         await expect(root).toHaveAttribute('aria-label', 'Notifications')
     })

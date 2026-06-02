@@ -37,11 +37,24 @@ const openVariant = async (page: Page, path: string, variant: string) => {
 const RUNGS = ['x-small', 'small', 'default', 'medium', 'large', 'x-large'] as const
 const RUNG_PX = { 'x-small': 2, small: 4, default: 8, medium: 12, large: 16, 'x-large': 24 }
 
+/** Utility rounded classes emitted by useRounded when rounded=xs|sm|md|lg|xl|none|full.
+ *  These must also be stripped in borderRadiusAt so the cascade doesn't let
+ *  `.origam--rounded-sm { border-radius: ... }` (spec 0,1,0) bleed through when
+ *  the component's scoped rule resolves to an unset custom property.
+ */
+const UTILITY_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full'] as const
+
 /** Swap a modifier class on el and return computed borderRadius.
  *  Disables transitions before the class swap to get the final computed value
  *  immediately (avoids mid-transition reads when the component has
  *  `transition: all` or `transition-property: border-radius`).
+ *
+ *  Neutralises both the ID-scoped style tag injected by useStyle (spec 1,0,0)
+ *  AND any utility rounded class (origam--rounded-xs/sm/md/lg/xl, spec 0,1,0)
+ *  left on the node from the story init-state, so the component-local scoped
+ *  rung rule (spec 0,2,0) is the only remaining source for border-radius.
  */
+
 const borderRadiusAt = async (
     page: Page,
     selector: string,
@@ -50,14 +63,35 @@ const borderRadiusAt = async (
 ): Promise<number> => {
     const sandbox = sandboxOf(page)
     const el = sandbox.locator(selector).first()
-    const r = await el.evaluate((node, { prefix, rungs, rung }) => {
+    const r = await el.evaluate((node, { prefix, rungs, utilityRungs, rung }) => {
+        // 0. Strip any border-radius injected by useStyle into a <style> tag
+        //    in the document head. The rule looks like:
+        //    `#origam-btn-3 { border-radius: var(--origam-radius---sm, 4px); }`
+        //    It has ID specificity (1,0,0) and wins over any class rule.
+        //    We blank the border-radius declaration inside that rule so the class
+        //    swap below can be observed by getComputedStyle().
+        const elId = node.id
+        if (elId) {
+            document.querySelectorAll<HTMLStyleElement>('head style').forEach((st) => {
+                const content = st.textContent ?? ''
+                if (content.includes(`#${elId}`) && content.includes('border-radius')) {
+                    st.textContent = content.replace(/border-radius\s*:[^;]+;?\s*/g, '')
+                }
+            })
+        }
+
         // 1. Disable all transitions on the node so getComputedStyle()
         //    returns the final value, not the mid-animation interpolated one.
         const prev = node.style.transition
         node.style.setProperty('transition', 'none', 'important')
 
-        // 2. Swap classes
+        // 2. Swap classes — remove both component-local rung classes AND the global
+        //    utility rounded classes (origam--rounded-xs, origam--rounded-sm, etc.)
+        //    so neither interferes with the class we're about to inject.
         rungs.forEach(r => node.classList.remove(`${prefix}--rounded-${r}`, `${prefix}--rounded`))
+        utilityRungs.forEach(u => node.classList.remove(`origam--rounded-${u}`))
+        // Also strip any inline border-radius so it cannot override the class-driven value.
+        node.style.removeProperty('border-radius')
         if (rung) node.classList.add(`${prefix}--rounded-${rung}`)
 
         // 3. Force layout recalc
@@ -70,7 +104,7 @@ const borderRadiusAt = async (
         node.style.transition = prev
 
         return radius
-    }, { prefix, rungs: [...RUNGS], rung })
+    }, { prefix, rungs: [...RUNGS], utilityRungs: [...UTILITY_RUNGS], rung })
     return r
 }
 

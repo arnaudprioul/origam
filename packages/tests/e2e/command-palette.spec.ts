@@ -79,7 +79,11 @@ test.describe('OrigamCommandPalette — global hotkey', () => {
         // owns the keyboard focus.
         await sandbox.locator('[data-cy="command-palette-playground"]').click()
 
-        await page.keyboard.press('Meta+K')
+        // useHotkey attaches its listener on `window` of the sandbox iframe —
+        // page.keyboard.press() dispatches into the top-level frame and never
+        // reaches that listener. We must dispatch inside the iframe by pressing
+        // on a locator that belongs to the sandbox frame.
+        await sandbox.locator('[data-cy="command-palette-playground"]').press('Meta+K')
 
         await expect(sandbox.locator('[role="dialog"]')).toBeVisible({ timeout: 4000 })
     })

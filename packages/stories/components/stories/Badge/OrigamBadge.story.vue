@@ -167,10 +167,10 @@
 					<origam-badge :model-value="true" :content="1" v-bind="state">
 						<origam-avatar text="AP"/>
 					</origam-badge>
-					<origam-badge :model-value="true" :content="1" bg-color="primary"><origam-avatar text="P"/></origam-badge>
-					<origam-badge :model-value="true" :content="2" bg-color="success"><origam-avatar text="S"/></origam-badge>
-					<origam-badge :model-value="true" :content="3" bg-color="warning"><origam-avatar text="W"/></origam-badge>
-					<origam-badge :model-value="true" :content="4" bg-color="danger"> <origam-avatar text="D"/></origam-badge>
+					<origam-badge data-cy="badge-color-primary" :model-value="true" :content="1" bg-color="primary"><origam-avatar text="P"/></origam-badge>
+					<origam-badge data-cy="badge-color-success" :model-value="true" :content="2" bg-color="success"><origam-avatar text="S"/></origam-badge>
+					<origam-badge data-cy="badge-color-warning" :model-value="true" :content="3" bg-color="warning"><origam-avatar text="W"/></origam-badge>
+					<origam-badge data-cy="badge-color-danger"  :model-value="true" :content="4" bg-color="danger"> <origam-avatar text="D"/></origam-badge>
 				</div>
 			</template>
 			<template #controls="{ state }">

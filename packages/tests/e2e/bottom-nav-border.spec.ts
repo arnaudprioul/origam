@@ -10,11 +10,9 @@ const openVariant = async (page, variant) => {
 }
 
 test('Default variant: BottomNav has NO visible border by default', async ({ page }) => {
-    // BottomNav story exposes Color/Density/Rounded/Border/… (no
-    // "Default" variant). Use Color, which renders the nav without
-    // toggling the `border` prop — `border` defaults to false so the
-    // computed border-widths must be 0.
-    await openVariant(page, 'Color')
+    // The "Default" variant initialises border: false explicitly — border-widths
+    // must resolve to 0 via CSS variable fallback.
+    await openVariant(page, 'Default')
     const sandbox = sandboxOf(page)
     const nav = sandbox.locator('.origam-bottom-nav').first()
     await expect(nav).toBeVisible({ timeout: 8000 })
@@ -36,7 +34,7 @@ test('Default variant: BottomNav has NO visible border by default', async ({ pag
 })
 
 test('Border variant: enabling `border` prop produces a visible 1px border', async ({ page }) => {
-    await openVariant(page, 'Border')
+    await openVariant(page, 'Prop — border')
     const sandbox = sandboxOf(page)
     const nav = sandbox.locator('.origam-bottom-nav').first()
     await expect(nav).toBeVisible({ timeout: 8000 })

@@ -39,6 +39,7 @@ test.describe('OrigamChartCartesian — stacking (normal vs percent)', () => {
         const sandbox = sandboxOf(page)
 
         const rects = sandbox.locator('[data-cy="cartesian-stacking-normal"] rect.origam-chart__bar')
+        await expect(rects.first()).toBeVisible({ timeout: 8000 })
         const count = await rects.count()
         expect(count).toBeGreaterThan(0)
     })
@@ -68,20 +69,25 @@ test.describe('OrigamChartCartesian — stacking (normal vs percent)', () => {
         await expect(svg).toBeVisible()
 
         const rects = svg.locator('rect.origam-chart__bar')
+        await expect(rects.first()).toBeVisible({ timeout: 8000 })
         const count = await rects.count()
         expect(count).toBeGreaterThan(0)
 
-        const heights: Record<string, number> = {}
-        const SERIES_COUNT = 5
+        // Rects are emitted series-by-series in the DOM (all dataIdx for
+        // series 0, then all dataIdx for series 1, …). Group by the rounded
+        // x-attribute value so that all bars sharing the same column slot
+        // are accumulated regardless of DOM ordering.
+        const heightByX: Record<string, number> = {}
         for (let i = 0; i < count; i++) {
             const rect = rects.nth(i)
+            const x = parseFloat((await rect.getAttribute('x')) ?? '0')
             const y = parseFloat((await rect.getAttribute('y')) ?? '0')
             const h = parseFloat((await rect.getAttribute('height')) ?? '0')
-            const colIndex = Math.floor(i / SERIES_COUNT)
-            heights[colIndex] = (heights[colIndex] ?? 0) + h + y
+            const xKey = Math.round(x).toString()
+            heightByX[xKey] = (heightByX[xKey] ?? 0) + h + y
         }
 
-        const totalHeights = Object.values(heights).filter(Boolean)
+        const totalHeights = Object.values(heightByX).filter(Boolean)
         if (totalHeights.length > 1) {
             const first = totalHeights[0]
             for (const h of totalHeights.slice(1)) {

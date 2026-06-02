@@ -62,8 +62,14 @@ test.describe('OrigamChartBullet — Default', () => {
             const bar = sandbox.locator(`[data-cy="origam-chart-bullet-bar-${ i }"]`)
             await expect(bar).toBeVisible()
 
+            // SVG <line> elements with stroke defined via CSS variable may be considered
+            // "hidden" by Playwright's visibility check even when rendered with non-zero
+            // coordinates. Assert presence + non-zero span instead.
             const target = sandbox.locator(`[data-cy="origam-chart-bullet-target-${ i }"]`)
-            await expect(target).toBeVisible()
+            await expect(target).toBeAttached()
+            const y1 = await target.getAttribute('y1')
+            const y2 = await target.getAttribute('y2')
+            expect(Math.abs(Number(y2) - Number(y1))).toBeGreaterThan(0)
 
             const range0 = sandbox.locator(`[data-cy="origam-chart-bullet-range-${ i }-0"]`)
             await expect(range0).toBeVisible()

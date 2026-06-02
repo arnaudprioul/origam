@@ -142,7 +142,7 @@
 		</Variant>
 
 		<Variant title="Mode — multi-layer (scroll-driven)">
-			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL">
+			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL" :easing="PARALLAX_EASING.SPRING">
 				<origam-parallax-layer :speed="0.2">
 					<div :style="layerBg">Background — speed 0.2</div>
 				</origam-parallax-layer>
@@ -161,7 +161,7 @@
 				:init-state="() => useStoryInitState<{ direction?: TParallaxDirection }>({ direction: PARALLAX_DIRECTION.VERTICAL })"
 		>
 			<template #default="{ state }">
-				<origam-parallax :direction="state.direction" :style="hostStyleTall">
+				<origam-parallax :direction="state.direction" :style="hostStyleTall" :easing="PARALLAX_EASING.SPRING">
 					<origam-parallax-layer :speed="0.3">
 						<div :style="layerBg">Background</div>
 					</origam-parallax-layer>
@@ -246,6 +246,7 @@
 		<Variant title="Emit — @scroll-progress">
 			<origam-parallax
 					:style="hostStyleTall"
+					:easing="PARALLAX_EASING.SPRING"
 					@scroll-progress="(p) => emitState.progress = p"
 			>
 				<origam-parallax-layer :speed="0.5">

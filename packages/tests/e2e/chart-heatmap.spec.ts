@@ -49,14 +49,14 @@ test.describe('OrigamChartHeatmap — Default (activity grid)', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-heatmap-default.png', fullPage: false })
 
-        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] rect[data-cy^="origam-chart-heatmap-cell-"]')
+        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
         await expect(cells).toHaveCount(168, { timeout: 8000 })
     })
 
     test('each cell rect has non-zero width and height', async ({ page }) => {
         await openVariant(page, HEATMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] rect[data-cy^="origam-chart-heatmap-cell-"]')
+        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
         const count = await cells.count()
         expect(count).toBeGreaterThan(0)
 
@@ -79,8 +79,8 @@ test.describe('OrigamChartHeatmap — colorRange variant', () => {
         await expect(chartA).toBeVisible({ timeout: 8000 })
         await expect(chartB).toBeVisible({ timeout: 8000 })
 
-        const cellsA = chartA.locator('rect[data-cy^="origam-chart-heatmap-cell-"]')
-        const cellsB = chartB.locator('rect[data-cy^="origam-chart-heatmap-cell-"]')
+        const cellsA = chartA.locator('[data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
+        const cellsB = chartB.locator('[data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
         await expect(cellsA).toHaveCount(25, { timeout: 6000 })
         await expect(cellsB).toHaveCount(25, { timeout: 6000 })
 
@@ -102,8 +102,8 @@ test.describe('OrigamChartHeatmap — cellGap variant', () => {
         await expect(compact).toBeVisible({ timeout: 8000 })
         await expect(spaced).toBeVisible({ timeout: 8000 })
 
-        const compactCells = compact.locator('rect[data-cy^="origam-chart-heatmap-cell-"]')
-        const spacedCells = spaced.locator('rect[data-cy^="origam-chart-heatmap-cell-"]')
+        const compactCells = compact.locator('[data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
+        const spacedCells = spaced.locator('[data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
         await expect(compactCells).toHaveCount(168, { timeout: 6000 })
         await expect(spacedCells).toHaveCount(168, { timeout: 6000 })
 
@@ -145,7 +145,7 @@ test.describe('OrigamChartHeatmap — accessibility', () => {
     test('each cell has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, HEATMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] rect[data-cy^="origam-chart-heatmap-cell-"]')
+        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
         const count = await cells.count()
         expect(count).toBeGreaterThan(0)
 
@@ -160,7 +160,7 @@ test.describe('OrigamChartHeatmap — accessibility', () => {
     test('each cell is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, HEATMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] rect[data-cy^="origam-chart-heatmap-cell-"]')
+        const cells = sandbox.locator('[data-cy="heatmap-playground-chart"] [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])')
         const count = await cells.count()
 
         for (let i = 0; i < Math.min(count, 5); i++) {
@@ -174,7 +174,7 @@ test.describe('OrigamChartHeatmap — emit', () => {
         await openVariant(page, HEATMAP_STORY, 'Emit — point-click on cell')
         const sandbox = sandboxOf(page)
 
-        const firstCell = sandbox.locator('[data-cy="heatmap-emit-chart"] rect[data-cy^="origam-chart-heatmap-cell-"]').first()
+        const firstCell = sandbox.locator('[data-cy="heatmap-emit-chart"] [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])').first()
         await expect(firstCell).toBeVisible({ timeout: 8000 })
         await firstCell.click()
 

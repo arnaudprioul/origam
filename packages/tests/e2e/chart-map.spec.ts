@@ -50,6 +50,8 @@ test.describe('OrigamChartMap — Default (choropleth)', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-map-default.png', fullPage: false })
 
+        // Wait for at least one country path to appear before counting
+        await expect(sandbox.locator('[data-cy^="origam-chart-map-country-"]').first()).toBeVisible({ timeout: 10000 })
         const countries = sandbox.locator('[data-cy="map-playground-chart"] [data-cy^="origam-chart-map-country-"]')
         const count = await countries.count()
         expect(count).toBeGreaterThan(20)
@@ -58,6 +60,8 @@ test.describe('OrigamChartMap — Default (choropleth)', () => {
     test('each country path has a non-empty d attribute', async ({ page }) => {
         await openVariant(page, MAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
+        // Wait for at least one country path to appear before reading attributes
+        await expect(sandbox.locator('[data-cy^="origam-chart-map-country-"]').first()).toBeVisible({ timeout: 10000 })
         const countries = sandbox.locator('[data-cy="map-playground-chart"] [data-cy^="origam-chart-map-country-"]')
         const count = await countries.count()
         expect(count).toBeGreaterThan(0)

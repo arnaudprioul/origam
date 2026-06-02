@@ -20,7 +20,7 @@
 			<template #default="{ state }">
 				<origam-skeleton
 						v-bind="state"
-						data-cy="skeleton-playground"
+						data-cy="skeleton-default"
 				>
 					<p>Content loaded</p>
 				</origam-skeleton>

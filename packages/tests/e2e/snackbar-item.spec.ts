@@ -137,7 +137,7 @@ test.describe('OrigamSnackbarItem — Slot: prepend', () => {
         const sandbox = sandboxOf(page)
 
         const prepend = sandbox
-            .locator('[data-cy="snackbar-item-prepend"]')
+            .locator('[data-cy="snackbar-item-prepend-host"]')
             .locator('.origam-snackbar-item__prepend')
         await expect(prepend).toBeVisible({ timeout: 5000 })
     })

@@ -47,7 +47,10 @@ test.describe('OrigamChart — type matrix', () => {
     test('line chart renders one path per series', async ({ page }) => {
         await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
-        const paths = sandbox.locator('[data-cy="chart-type-line"] path[data-cy="origam-chart-path"]')
+        // OrigamChart computes data-cy="origam-chart origam-chart--<type>" on its cartesian root;
+        // the story-level data-cy="chart-type-line" is lost because OrigamChart has multiple roots
+        // (v-if/v-else-if) and does not forward $attrs.
+        const paths = sandbox.locator('[data-cy="origam-chart origam-chart--line"] path[data-cy="origam-chart-path"]')
         // 2 series → 2 line paths
         const count = await paths.count()
         expect(count).toBeGreaterThanOrEqual(2)
@@ -56,7 +59,8 @@ test.describe('OrigamChart — type matrix', () => {
     test('area chart renders area + line paths', async ({ page }) => {
         await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
-        const paths = sandbox.locator('[data-cy="chart-type-area"] path[data-cy="origam-chart-path"]')
+        // Same root data-cy pattern: "origam-chart origam-chart--area"
+        const paths = sandbox.locator('[data-cy="origam-chart origam-chart--area"] path[data-cy="origam-chart-path"]')
         // 2 series × (area + line) = 4 paths.
         const count = await paths.count()
         expect(count).toBeGreaterThanOrEqual(4)

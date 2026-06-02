@@ -11,6 +11,10 @@ const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 const openVariant = async (page: Page, variant: string) => {
     await page.goto('/story/components-stories-bottomnav-origambottomnav-story-vue')
     await page.waitForLoadState('networkidle')
+    // Wait for Histoire to hydrate and render the variant list before clicking.
+    // `networkidle` fires before Vue has mounted the sidebar items, which makes
+    // the subsequent getByText call race against the render cycle.
+    await page.getByText('Default', { exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
     await page.getByText(variant, { exact: true }).first().click()
     await page.waitForTimeout(800)
 }

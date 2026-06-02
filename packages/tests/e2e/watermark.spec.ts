@@ -28,7 +28,11 @@ const getDecodedBackground = async (locator: ReturnType<Page['locator']>): Promi
     const handle = await locator.elementHandle()
     if (!handle) throw new Error('could not resolve element handle for layer')
     const raw = await handle.evaluate((node) => (node as HTMLElement).style.backgroundImage)
-    const match = raw.match(/url\(["']?data:image\/svg\+xml,(.+?)["']?\)/)
+    // The browser may return the url() value with the SVG partially decoded (e.g. ")" restored
+    // inside rotate() transforms). The lazy (.+?) regex stops prematurely at the first ")"
+    // it encounters inside the SVG body. Using a greedy (.+) with a required closing double-quote
+    // ensures we capture everything up to the actual end of the quoted URL string.
+    const match = raw.match(/url\("data:image\/svg\+xml,(.+)"\)/)
     if (!match) throw new Error(`unexpected backgroundImage shape: ${raw}`)
     return decodeURIComponent(match[1])
 }

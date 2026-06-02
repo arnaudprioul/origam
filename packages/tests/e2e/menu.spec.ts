@@ -21,7 +21,7 @@ test.describe('OrigamMenu', () => {
 	test('Default — popup opens, body has surface bg/radius/shadow, items render', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default', { exact: true }).first().click()
+		await page.getByText('Prop — items (default open)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

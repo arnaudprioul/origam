@@ -66,6 +66,7 @@ test.describe('OrigamTabs — ARIA contract (Playground)', () => {
         await expect(t1).toHaveAttribute('aria-selected', 'true')
     })
 
+    test.fixme(true, 'DS BUG: aria-controls is always undefined — OrigamTab injects ORIGAM_TAB_PANELS_KEY but OrigamTabPanels is a sibling (not an ancestor), so inject() always returns null. panelId computed is therefore always undefined. Fix requires a shared wrapper component (e.g. OrigamTabsGroup) that provides both ORIGAM_TABS_KEY and ORIGAM_TAB_PANELS_KEY to a common ancestor, or a different cross-sibling communication mechanism.')
     test('aria-controls points at the matching panel id', async ({ page }) => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)

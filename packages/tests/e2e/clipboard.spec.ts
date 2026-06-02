@@ -81,7 +81,7 @@ test.describe('OrigamClipboard — Default', () => {
 
 test.describe('OrigamClipboard — default trigger label flip', () => {
     test('label span appears next to the icon when copied (and only then)', async ({ page }) => {
-        await openVariant(page, 'Default — no slot (auto-rendered icon button)')
+        await openVariant(page, 'Slot — default (auto-rendered icon button)')
         await stubClipboard(page)
         const sandbox = sandboxOf(page)
 
@@ -98,7 +98,7 @@ test.describe('OrigamClipboard — default trigger label flip', () => {
     })
 
     test('label disappears after feedbackDuration ms', async ({ page }) => {
-        await openVariant(page, 'Default — no slot (auto-rendered icon button)')
+        await openVariant(page, 'Slot — default (auto-rendered icon button)')
         await stubClipboard(page)
         const sandbox = sandboxOf(page)
 
@@ -106,7 +106,7 @@ test.describe('OrigamClipboard — default trigger label flip', () => {
         await host.locator('[data-cy="origam-clipboard-default-trigger"]').click()
         await expect(host.locator('.origam-clipboard__default-label')).toBeVisible()
 
-        // Default feedbackDuration in the playground/no-slot variant is 2000 ms.
+        // Default feedbackDuration in the no-slot variant is 2000 ms (component default).
         await page.waitForTimeout(2200)
         await expect(host.locator('.origam-clipboard__default-label')).toHaveCount(0)
     })
@@ -158,7 +158,12 @@ test.describe('OrigamClipboard — emits', () => {
 
         const message = sandbox.locator('[data-cy="clipboard-emit-error-message"]').first()
         await expect(message).not.toHaveText('no error yet')
-        await expect(message).toContainText(/denial|simulated/i)
+        // DS NOTE: writeToClipboard swallows the original rejection from
+        // navigator.clipboard.writeText and falls back to execCommand (also
+        // disabled by armErrorMode). The composable then emits its own generic
+        // error message rather than the original "Simulated denial" string.
+        // The assertion verifies that *some* error is propagated to the parent.
+        await expect(message).toContainText(/clipboard write failed|denial|simulated/i)
     })
 })
 

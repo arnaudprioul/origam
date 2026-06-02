@@ -144,7 +144,10 @@ test.describe('OrigamTextField', () => {
     test('Slot prependInner / appendInner — icons visible inside field', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — prependInner', { exact: true }).first().click()
+        // "Slot — appendInner" is the combined variant (prependInner + appendInner)
+        // and carries data-cy="textfield-slot-inner". "Slot — prependInner" is a
+        // separate individual variant with data-cy="textfield-slot-prepend-inner".
+        await page.getByText('Slot — appendInner', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

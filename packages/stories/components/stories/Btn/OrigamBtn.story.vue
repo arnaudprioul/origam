@@ -366,6 +366,14 @@
 							data-cy="btn-loading-interactive"
 					/>
 					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeLoading(state) }}</pre>
+
+					<div style="border-top: 1px dashed #ccc; margin-top: 24px; padding-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+						<origam-btn :loading="{ type: 'line' }" text="line" color="primary" data-cy="btn-loading-line"/>
+						<origam-btn :loading="{ type: 'line' }" text="line primary" color="primary" variant="elevated" data-cy="btn-loading-line-primary"/>
+						<origam-btn :loading="{ type: 'circular', size: 16 }" text="circular override" color="primary" data-cy="btn-loading-circular-override"/>
+						<origam-btn :loading="{ type: 'circular' }" text="circular success" color="success" data-cy="btn-loading-circular-success"/>
+						<origam-btn :loading="{ type: 'skeleton' }" text="skeleton" color="primary" data-cy="btn-loading-skeleton"/>
+					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">

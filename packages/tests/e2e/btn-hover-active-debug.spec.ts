@@ -8,64 +8,51 @@ test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary int
     await page.goto(STORY_PATH)
     await page.waitForLoadState('networkidle')
 
-    // Land on any variant that renders a primary btn
-    const candidates = ['Default', 'Variants', 'Default', 'Sizes']
-    for (const title of candidates) {
-        const loc = page.getByText(title, { exact: true }).last()
-        if (await loc.count().catch(() => 0)) {
-            await loc.click({ timeout: 5_000 }).catch(() => {})
-            break
-        }
-    }
+    // Navigate to the Variant that renders btns with bgColor="primary".
+    // "Prop — color & bgColor" has data-cy="btn-color-primary" with
+    // bg-color="primary" — this is the only Variant where colorStyles
+    // emits an inline background-color that changes per state
+    // (rest / hover / active via tokenStylesForIntent + bgRole).
+    const variantLink = page.getByText('Prop — color & bgColor', { exact: true }).last()
+    await variantLink.click({ timeout: 10_000 })
     await page.waitForTimeout(2000)
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-    // Find a primary-fill btn. Try several selectors that the design system uses.
-    const candidates2 = [
-        '.origam-btn--colored',
-        '.origam-btn.origam--bg-primary',
-        '.origam-btn',
-    ]
-    let btn: any = null
-    for (const sel of candidates2) {
-        const found = sandbox.locator(sel).first()
-        if (await found.count().catch(() => 0)) {
-            btn = found
-            break
-        }
-    }
-    if (!btn) {
-         
-        console.log('No btn found in any variant — skipping')
+
+    // Target the primary btn that has bg-color="primary" applied.
+    // This btn has a data-cy attribute set directly in the story.
+    const btn = sandbox.locator('[data-cy="btn-color-primary"]')
+    const btnCount = await btn.count().catch(() => 0)
+    if (!btnCount) {
+        console.log('btn-color-primary not found — story may have changed')
         return
     }
 
-    // Read resting bg, then hover, then active (mousedown)
+    // Read resting background-color (inline style from colorStyles when resting).
     const rest = await btn.evaluate((el: HTMLElement) => getComputedStyle(el).backgroundColor)
 
+    // Hover: trigger mouseenter on the btn element inside the iframe.
     await btn.hover({ force: true })
-    await page.waitForTimeout(150)
+    await page.waitForTimeout(200)
     const hovered = await btn.evaluate((el: HTMLElement) => getComputedStyle(el).backgroundColor)
 
-    // For active, we simulate mousedown without releasing
-    const box = await btn.boundingBox()
-    if (!box) return
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
-    await page.mouse.down()
-    await page.waitForTimeout(150)
+    // Active: simulate mousedown via dispatchEvent inside the iframe so that
+    // coordinates stay relative to the sandbox frame (page.mouse.down() would
+    // target coordinates in the outer page frame and miss the element).
+    await btn.dispatchEvent('mousedown', { bubbles: true, cancelable: true })
+    await page.waitForTimeout(200)
     const active = await btn.evaluate((el: HTMLElement) => getComputedStyle(el).backgroundColor)
-    await page.mouse.up()
+    await btn.dispatchEvent('mouseup', { bubbles: true, cancelable: true })
 
-     
     console.log('=== btn bg progression ===')
-     
     console.log(JSON.stringify({ rest, hovered, active }, null, 2))
 
     await btn.screenshot({ path: '/tmp/btn-progression.png' })
 
-    // Assertions: at minimum, rest / hover / active must differ from each other
-    // (the regression we fixed was hover === active because the JS collapsed
-    // isActive into the 'hover' role).
+    // Assertions: at minimum, rest / hover / active must differ from each other.
+    // The regression being guarded here was hover === active because the JS collapsed
+    // isActive into the 'hover' role in useStateEffect (bgRole stayed 'hover' even
+    // during mousedown because isActive was not flipping to true).
     if (rest && hovered) expect(hovered).not.toBe(rest)
     if (rest && active) expect(active).not.toBe(rest)
     if (hovered && active) expect(active).not.toBe(hovered)

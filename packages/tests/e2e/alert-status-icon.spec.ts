@@ -39,7 +39,7 @@ test.describe('OrigamAlert — title line-height aligns with prepend icon', () =
         // icon's centre. Reduced to `tight` (1.25) → ~30px title height,
         // matches the icon ~28px and the flex `align-items: center`
         // produces a clean baseline.
-        await openVariant(page, STORY, 'Status')
+        await openVariant(page, STORY, 'Prop — status')
         const sandbox = sandboxOf(page)
         const alert = sandbox.locator('[data-cy="alert-status"]').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
@@ -63,7 +63,7 @@ test.describe('OrigamAlert — title line-height aligns with prepend icon', () =
 
 test.describe('OrigamAlert — status icon: single render, no duplicate, no empty placeholder', () => {
     test('status="info" renders exactly ONE icon (prepend) — no duplicate, no empty header placeholder', async ({ page }) => {
-        await openVariant(page, STORY, 'Status')
+        await openVariant(page, STORY, 'Prop — status')
         const sandbox = sandboxOf(page)
         const alert = sandbox.locator('[data-cy="alert-status"]').first()
         await expect(alert).toBeVisible({ timeout: 8000 })

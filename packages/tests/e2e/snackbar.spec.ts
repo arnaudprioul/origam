@@ -10,15 +10,15 @@ test.describe('OrigamSnackbar', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const trigger = sandbox.locator('[data-cy="snackbar-default-trigger"]')
+		const trigger = sandbox.locator('[data-cy="snackbar-playground-trigger"]')
 		await expect(trigger).toBeVisible({ timeout: 5000 })
 
 		await trigger.click()
 		await page.waitForTimeout(600)
 
-		const snackbar = sandbox.locator('[data-cy="snackbar-default"]')
+		const snackbar = sandbox.locator('[data-cy="snackbar-playground"]')
 		await expect(snackbar).toBeVisible({ timeout: 5000 })
-		await expect(snackbar).toHaveClass(/origam-snackbar--active/)
+		await expect(snackbar).toHaveClass(/origam-overlay--active/)
 	})
 
 	test('Location — trigger button renders', async ({ page }) => {
@@ -56,8 +56,8 @@ test.describe('OrigamSnackbar', () => {
 		await trigger.click()
 		await page.waitForTimeout(600)
 
-		const snackbar = sandbox.locator('[data-cy="snackbar-timer"]')
-		await expect(snackbar).toHaveClass(/origam-snackbar--timer/, { timeout: 5000 })
+		const timerBar = sandbox.locator('.origam-snackbar__timer')
+		await expect(timerBar).toBeVisible({ timeout: 5000 })
 	})
 
 	test('Multi-line — trigger renders', async ({ page }) => {

@@ -41,19 +41,23 @@ test.describe('OrigamAlert — default', () => {
         expect(cls).toContain('origam-alert')
 
         const role = await alert.evaluate(el => el.getAttribute('role'))
-        expect(role).toBe('alert')
+        // Without a `status` prop, the component defaults to role="status"
+        // (non-urgent live region). role="alert" is only emitted for
+        // status="warning" or status="error" (assertive ARIA region).
+        expect(role).toBe('status')
     })
 })
 
 // ─── Color showcase ─────────────────────────────────────────────────────────
 
-// Alert renders with `useColorEffect` which sometimes emits the
-// `bgHover` rung at rest depending on the elevation/state — `primary`
-// resolves to `rgb(109, 40, 217)` (= `#6d28d9`, primary's bgHover)
-// rather than the canonical `#7c3aed`. The other intents map to their
-// `bg` token. Probe-confirmed; not a bug.
+// Alert renders background via useStyle (injected <style> tag #id { background-color: … }).
+// Values resolve from light.css tokens:
+//   primary → --origam-color__action--primary---bg  = #7c3aed = rgb(124, 58, 237)
+//   success → --origam-color__feedback--success---bg = #4caf50 = rgb(76, 175, 80)
+//   warning → --origam-color__feedback--warning---bg = #fb8c00 = rgb(251, 140, 0)
+//   danger  → --origam-color__feedback--danger---bg  = #ef4444 = rgb(239, 68, 68)
 const EXPECTED_ALERT_BG: Record<string, string> = {
-    primary: 'rgb(109, 40, 217)',
+    primary: 'rgb(124, 58, 237)',
     success: 'rgb(76, 175, 80)',
     warning: 'rgb(251, 140, 0)',
     danger:  'rgb(239, 68, 68)'

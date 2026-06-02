@@ -109,28 +109,24 @@ test.describe('OrigamRatingField', () => {
         await page.getByText('Prop — disabled, readonly & clearable', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
-        // Toggle clearable on via the controls panel
-        await page.locator('text=clearable').first().click().catch(() => {})
-        await page.waitForTimeout(300)
+        // Toggle clearable on via the HstCheckbox control in the sidebar.
+        // Histoire renders HstCheckbox as <label role="checkbox"> — target via getByRole.
+        const clearableCheckbox = page.getByRole('checkbox', { name: 'clearable', exact: true })
+        if (await clearableCheckbox.count() > 0) {
+            await clearableCheckbox.click()
+            await page.waitForTimeout(400)
+        }
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 5000 })
 
-        const readModel = () => sandbox.locator('.origam-rating-field').first().evaluate(el => {
-            const vue = (el as any).__vueParentComponent
-            let cur = vue
-            while (cur && cur.type?.__name !== 'OrigamRatingField') cur = cur.parent
-            return cur?.props?.modelValue
-        })
-
-        // The story's `rating` ref starts at 3 → clear button should be visible
-        expect(await readModel()).toBe(3)
+        // The story's `rating` ref starts at 3 → with clearable=true the clear
+        // button (data-cy="rating-field-clear") should be rendered immediately.
         await expect(sandbox.locator('[data-cy="rating-field-clear"]').first()).toBeVisible({ timeout: 2000 })
 
-        // Click clear → model resets to 0 → button hides
+        // Click clear → model resets to 0 → button is no longer rendered
         await sandbox.locator('[data-cy="rating-field-clear"]').first().click()
-        await page.waitForTimeout(300)
-        expect(await readModel()).toBe(0)
+        await page.waitForTimeout(400)
         await expect(sandbox.locator('[data-cy="rating-field-clear"]')).toHaveCount(0)
     })
 

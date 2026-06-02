@@ -10,7 +10,7 @@ test.describe('OrigamStepper', () => {
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const stepper = sandbox.locator('[data-cy="stepper-default"]')
+		const stepper = sandbox.locator('[data-cy="stepper-playground"]')
 		await expect(stepper).toBeVisible({ timeout: 5000 })
 
 		const items = stepper.locator('.origam-stepper-item')
@@ -50,7 +50,7 @@ test.describe('OrigamStepper', () => {
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const stepper = sandbox.locator('[data-cy="stepper-default"]')
+		const stepper = sandbox.locator('[data-cy="stepper-playground"]')
 		await expect(stepper).toBeVisible({ timeout: 5000 })
 
 		const activeIndicator = stepper.locator('.origam-stepper-item__indicator--active').first()
@@ -92,7 +92,7 @@ test.describe('OrigamStepper', () => {
 		await page.waitForTimeout(600)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const stepper = sandbox.locator('[data-cy="stepper-default"]')
+		const stepper = sandbox.locator('[data-cy="stepper-playground"]')
 		await expect(stepper).toBeVisible({ timeout: 5000 })
 
 		// 4 items → 3 connectors

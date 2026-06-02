@@ -6,7 +6,7 @@ test.describe('OrigamDialog', () => {
 	test('Default — activator button renders and dialog opens on click', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default', { exact: true }).first().click()
+		await page.getByText('Prop — title (default)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

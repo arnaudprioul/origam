@@ -20,8 +20,11 @@ const sandboxOf = (page: Page) =>
 const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.goto(storyPath)
     await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
-    await page.waitForTimeout(400)
+    await page.getByText(variant, { exact: true }).last().click()
+    // Wait for the sandbox iframe to finish loading the selected Variant.
+    // 400 ms was too short — the iframe src is set asynchronously by Histoire
+    // after the click and the Vue component hydrates afterward.
+    await page.waitForTimeout(1500)
 }
 
 const STORY = '/story/components-stories-blockquote-origamblockquote-story-vue'

@@ -28,7 +28,7 @@ const VS_PATH = '/story/components-stories-virtualscroll-origamvirtualscroll-sto
 
 test('jumpTo(500) animates scrollTop instead of teleporting', async ({ page }) => {
     test.setTimeout(30_000)
-    await openVariant(page, VS_PATH, 'scrollToIndex')
+    await openVariant(page, VS_PATH, 'Prop — scrollToIndex (method)')
     const sandbox = sandboxOf(page)
 
     const container = sandbox.locator('.origam-virtual-scroll').first()
@@ -82,7 +82,7 @@ test('jumpTo(500) animates scrollTop instead of teleporting', async ({ page }) =
 
 test('jumpTo(0) animates back to the top after a forward jump', async ({ page }) => {
     test.setTimeout(30_000)
-    await openVariant(page, VS_PATH, 'scrollToIndex')
+    await openVariant(page, VS_PATH, 'Prop — scrollToIndex (method)')
     const sandbox = sandboxOf(page)
     const container = sandbox.locator('.origam-virtual-scroll').first()
     await expect(container).toBeVisible({ timeout: 8000 })

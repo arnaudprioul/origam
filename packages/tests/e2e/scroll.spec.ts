@@ -180,7 +180,7 @@ test.describe('OrigamVirtualScroll', () => {
     test('item height variant mounts without throwing', async ({ page }) => {
         const errors: string[] = []
         page.on('pageerror', err => errors.push(err.message))
-        await openVariant(page, VS_PATH, 'Item height')
+        await openVariant(page, VS_PATH, 'Prop — itemHeight')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-virtual-scroll').first()).toBeVisible({ timeout: 8000 })
         expect(errors).toEqual([])
@@ -204,7 +204,7 @@ test.describe('OrigamVirtualScrollItem', () => {
     test('renderless variant mounts without throwing', async ({ page }) => {
         const errors: string[] = []
         page.on('pageerror', err => errors.push(err.message))
-        await openVariant(page, VS_ITEM_PATH, 'Renderless')
+        await openVariant(page, VS_ITEM_PATH, 'Slot — renderless')
         // No assertion on a specific class — renderless = no wrapper.
         // Just confirm no runtime error.
         await page.waitForTimeout(500)

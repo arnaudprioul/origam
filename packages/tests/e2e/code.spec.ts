@@ -86,74 +86,87 @@ test.describe('OrigamCode — runtime', () => {
 
         await expect(code).toBeVisible({ timeout: 5000 })
 
-        // shiki css-variables theme emits spans with style="color: var(--shiki-token-*)"
-        // We assert that at least one such span exists (smoke-test that highlighting ran)
-        // and that NO hardcoded hex colour is baked into a style attribute.
-        const styledSpanCount = await code.locator('span[style*="color"]').count()
+        // shiki dual-theme mode emits spans with style="--shiki-light:#X;--shiki-dark:#Y"
+        // (no inline color: declaration — the colour is resolved by the SCSS cascade).
+        // We assert that at least one such span exists (smoke-test that highlighting ran).
+        const styledSpanCount = await code.locator('span[style*="--shiki-light"]').count()
         expect(styledSpanCount).toBeGreaterThan(0)
 
-        // Verify spans use CSS variables, not hardcoded hex colours.
-        // A hardcoded colour would look like style="color:#D73A49" or style="color:rgb(…)".
-        // A CSS-variable colour looks like style="color:var(--shiki-token-keyword)".
-        const hasHardcodedHex = await code.evaluate((el) => {
-            const spans = Array.from(el.querySelectorAll('span[style*="color"]'))
+        // Verify spans use the shiki dual-theme custom properties, not a bare color: inline style.
+        // A correct span: style="--shiki-light:#X;--shiki-dark:#Y" → style.color === ''
+        // A broken span (css-variables theme, not dual-theme): style="color:var(--shiki-token-*)"
+        const hasBareColorStyle = await code.evaluate((el) => {
+            const spans = Array.from(el.querySelectorAll('span[style]'))
             return spans.some((span) => {
-                const style = (span as HTMLElement).style.color
-                // Hardcoded = starts with # or rgb( — CSS var = contains "var("
-                return style.startsWith('#') || style.startsWith('rgb(') || style.startsWith('rgba(')
+                const raw = (span as HTMLElement).getAttribute('style') ?? ''
+                // Presence of "color:" (not "--shiki-light"/"--shiki-dark") would indicate
+                // the wrong shiki theme mode is active.
+                return raw.includes('color:') && !raw.includes('--shiki-')
             })
         })
-        expect(hasHardcodedHex).toBe(false)
+        expect(hasBareColorStyle).toBe(false)
     })
 
     test('syntax tokens use CSS variables from origam design tokens', async ({ page }) => {
-        await gotoVariant(page, 'Syntax — CSS variables theming')
+        await gotoVariant(page, 'CSS variables theming')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('.origam-code').first()
 
         await expect(host).toBeVisible({ timeout: 5000 })
         await page.waitForTimeout(400)
 
-        // The .origam-code root must expose --shiki-token-keyword mapped to our token.
-        // getPropertyValue returns the raw value of the custom property.
-        const shikiKeywordVar = await host.evaluate((el) => {
-            return window.getComputedStyle(el).getPropertyValue('--shiki-token-keyword').trim()
+        // shiki dual-theme mode: token spans carry --shiki-light and --shiki-dark
+        // as inline custom properties; no --shiki-token-* mapping is used.
+        // Verify that at least one token span is present and that it carries
+        // both light and dark custom properties (dual-theme pipeline is active).
+        const dualThemeCount = await host.evaluate((el) => {
+            const spans = Array.from(el.querySelectorAll('.origam-code__code span[style]'))
+            return spans.filter((s) => {
+                const raw = (s as HTMLElement).getAttribute('style') ?? ''
+                return raw.includes('--shiki-light') && raw.includes('--shiki-dark')
+            }).length
         })
-        // The CSS var must be non-empty (the SCSS mapping is wired).
-        expect(shikiKeywordVar).not.toBe('')
-        // It must reference a CSS variable (not be a hardcoded colour).
-        expect(shikiKeywordVar).toContain('var(')
+        // At least one dual-theme token span must be present — confirms that the
+        // shiki highlight pipeline ran and dual-theme CSS vars are wired.
+        expect(dualThemeCount).toBeGreaterThan(0)
     })
 
     test('theme switch updates syntax colours via CSS cascade (no JS re-render)', async ({ page }) => {
-        await gotoVariant(page, 'Syntax — CSS variables theming')
+        await gotoVariant(page, 'CSS variables theming')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('.origam-code').first()
 
         await expect(host).toBeVisible({ timeout: 5000 })
         await page.waitForTimeout(400)
 
-        // Capture --shiki-token-keyword resolved value under light theme.
-        const lightKeywordColor = await sandbox.locator('html').evaluate((html, selector) => {
+        // shiki dual-theme: token spans store --shiki-light and --shiki-dark as
+        // inline custom properties. The SCSS resolves color: var(--shiki-light)
+        // for light themes and color: var(--shiki-dark) for dark themes via
+        // html[data-theme="dark"] selector. Switching data-theme is a pure CSS
+        // cascade — no JS re-render of the highlight pipeline occurs.
+        //
+        // We pick the first token span with both custom props, capture its
+        // computed color under light and dark, and assert they differ.
+        const lightColor = await sandbox.locator('html').evaluate((html, selector) => {
             html.setAttribute('data-theme', 'light')
-            const el = html.querySelector(selector) as HTMLElement | null
-            if (!el) return null
-            return window.getComputedStyle(el).getPropertyValue('--origam-code__syntax---keyword').trim()
+            const span = html.querySelector(`${selector} .origam-code__code span[style*="--shiki-light"]`) as HTMLElement | null
+            if (!span) return null
+            return window.getComputedStyle(span).color
         }, '.origam-code')
 
-        // Switch to dark theme and capture again.
-        const darkKeywordColor = await sandbox.locator('html').evaluate((html, selector) => {
+        const darkColor = await sandbox.locator('html').evaluate((html, selector) => {
             html.setAttribute('data-theme', 'dark')
-            const el = html.querySelector(selector) as HTMLElement | null
-            if (!el) return null
-            return window.getComputedStyle(el).getPropertyValue('--origam-code__syntax---keyword').trim()
+            const span = html.querySelector(`${selector} .origam-code__code span[style*="--shiki-dark"]`) as HTMLElement | null
+            if (!span) return null
+            return window.getComputedStyle(span).color
         }, '.origam-code')
 
-        // The two computed values should differ between light and dark themes,
-        // confirming the token resolution follows data-theme without any JS re-render.
-        expect(lightKeywordColor).not.toBe('')
-        expect(darkKeywordColor).not.toBe('')
-        expect(lightKeywordColor).not.toBe(darkKeywordColor)
+        // Both modes must resolve a colour (pipeline ran and SCSS mapping is active).
+        expect(lightColor).not.toBeNull()
+        expect(darkColor).not.toBeNull()
+        // Light and dark must produce distinct computed colours — confirming the
+        // data-theme CSS cascade is wired without a JS re-render.
+        expect(lightColor).not.toBe(darkColor)
     })
 
     test('switching lang re-tokenises the DOM (different markup vs plaintext)', async ({ page }) => {

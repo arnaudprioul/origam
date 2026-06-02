@@ -206,7 +206,7 @@ test.describe('OrigamChart shell — pyramid / funnel dispatch', () => {
     })
 
     test('funnel chart in 13-primitives grid renders 5 slices', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Prop — type (13 primitives)')
+        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
 
         const slices = sandbox.locator('[data-cy="chart-type-funnel"] [data-cy^="origam-chart-pyramid-slice-"]')
@@ -214,7 +214,7 @@ test.describe('OrigamChart shell — pyramid / funnel dispatch', () => {
     })
 
     test('pyramid chart in 13-primitives grid renders 5 slices', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Prop — type (13 primitives)')
+        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
 
         const slices = sandbox.locator('[data-cy="chart-type-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')

@@ -67,7 +67,14 @@
 				:init-state="() => useStoryInitState<ISizeProps>({})"
 		>
 			<template #default="{ state }">
-				<origam-avatar :size="state.size" text="AP"/>
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-avatar size="x-small" text="XS" data-cy="avatar-size-x-small"/>
+					<origam-avatar size="small"   text="S"  data-cy="avatar-size-small"/>
+					<origam-avatar size="default" text="D"  data-cy="avatar-size-default"/>
+					<origam-avatar size="large"   text="L"  data-cy="avatar-size-large"/>
+					<origam-avatar size="x-large" text="XL" data-cy="avatar-size-x-large"/>
+					<origam-avatar :size="state.size" text="AP"/>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
@@ -82,10 +89,10 @@
 				<div style="display: flex; flex-direction: column; gap: 16px;">
 					<origam-avatar v-bind="state" text="A" data-cy="avatar-color"/>
 					<div style="display: flex; gap: 12px;">
-						<origam-avatar bg-color="primary" text="P"/>
-						<origam-avatar bg-color="success" text="S"/>
-						<origam-avatar bg-color="warning" text="W"/>
-						<origam-avatar bg-color="danger"  text="D"/>
+						<origam-avatar bg-color="primary" text="P" data-cy="avatar-color-primary"/>
+						<origam-avatar bg-color="success" text="S" data-cy="avatar-color-success"/>
+						<origam-avatar bg-color="warning" text="W" data-cy="avatar-color-warning"/>
+						<origam-avatar bg-color="danger"  text="D" data-cy="avatar-color-danger"/>
 					</div>
 				</div>
 			</template>
