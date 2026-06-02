@@ -34,7 +34,7 @@
 
 		<origam-transition :transition="transition">
 			<div
-					:key="daysInMonth[0].date?.toString()"
+					:key="daysInMonth?.[0]?.date?.toString()"
 					ref="daysRef"
 					class="origam-date-picker-month__days"
 			>
@@ -169,7 +169,7 @@
 	})
 
 	watch(daysInMonth, (val, oldVal) => {
-		if (!oldVal) return
+		if (!val?.[0]?.date || !oldVal?.[0]?.date) return
 
 		isReverse.value = adapter.isBefore(val[0].date, oldVal[0].date)
 	}, {
