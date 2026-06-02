@@ -3,12 +3,104 @@
 			group="components"
 			title="Transition/OrigamWindowXTranslate"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<ITransitionProps>({
+					name: 'origam-transition--window-x-translate',
+					mode: TRANSITION_MODE.OUT_IN,
+					origin: ''
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-design" @click="toggleDesign = !toggleDesign">Toggle</button>
+					<div class="story-window">
+						<origam-window-x-translate
+								:name="state.name"
+								:mode="state.mode"
+								:origin="state.origin || undefined"
+						>
+							<div v-if="toggleDesign" class="story-target" data-cy="target-design">Animation content</div>
+						</origam-window-x-translate>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Animation">
+					<HstText   v-model="state.name"   title="Name"/>
+					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText   v-model="state.origin" title="Origin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<ITransitionProps>({
+					disabled: false,
+					group: false,
+					hideOnLeave: false,
+					leaveAbsolute: false
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-functional" @click="toggleFunctional = !toggleFunctional">Toggle</button>
+					<div class="story-window">
+						<origam-window-x-translate
+								:disabled="state.disabled"
+								:group="state.group"
+								:hide-on-leave="state.hideOnLeave"
+								:leave-absolute="state.leaveAbsolute"
+						>
+							<div v-if="toggleFunctional" class="story-target" data-cy="target-functional">Functional content</div>
+						</origam-window-x-translate>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.group"         title="Group"/>
+					<HstCheckbox v-model="state.hideOnLeave"   title="Hide On Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
+				<div class="story-window">
+					<origam-window-x-translate>
+						<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
+							<strong>Custom slot content</strong>
+						</div>
+					</origam-window-x-translate>
+				</div>
+			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--window-x-translate',
+					mode: TRANSITION_MODE.OUT_IN,
+					origin: '',
 					disabled: false,
-					group: false
+					group: false,
+					hideOnLeave: false,
+					leaveAbsolute: false
 				})"
 		>
 			<template #default="{ state }">
@@ -22,39 +114,18 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.name"     title="name"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<StoryGroup title="Design">
+					<HstText   v-model="state.name"   title="Name"/>
+					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText   v-model="state.origin" title="Origin"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.group"         title="Group"/>
+					<HstCheckbox v-model="state.hideOnLeave"   title="Hide On Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — disabled (animation off)">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<div class="story-window">
-						<origam-window-x-translate disabled>
-							<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
-						</origam-window-x-translate>
-					</div>
-				</div>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div class="story-shell">
-				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
-				<div class="story-window">
-					<origam-window-x-translate>
-						<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
-							<span>Custom slot content</span>
-						</div>
-					</origam-window-x-translate>
-				</div>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -64,14 +135,24 @@
 		setup
 >
 	import { ref } from 'vue'
+
 	import { OrigamWindowXTranslate } from '@origam/components'
+	import { TRANSITION_MODE } from '@origam/enums'
 	import type { ITransitionProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDisabled = ref(false)
-	const togglePlayground = ref(false)
+	const toggleDesign = ref(false)
+	const toggleFunctional = ref(false)
 	const toggleSlotDefault = ref(false)
+	const togglePlayground = ref(false)
+
+	const TRANSITION_MODE_OPTIONS = [
+		{ label: 'out-in', value: TRANSITION_MODE.OUT_IN },
+		{ label: 'in-out', value: TRANSITION_MODE.IN_OUT },
+		{ label: 'default', value: TRANSITION_MODE.DEFAULT }
+	]
 </script>
 
 <style scoped>

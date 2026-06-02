@@ -3,17 +3,122 @@
 			group="components"
 			title="Responsive/OrigamResponsive"
 	>
-		<!--
-			Playground — first by convention. Exposes every IResponsiveProps knob.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IResponsiveProps>>({
+					aspectRatio: '16/9',
+					maxWidth: 480
+				})"
+		>
+			<template #default="{ state }">
+				<origam-responsive
+						:aspect-ratio="state.aspectRatio"
+						:rounded="state.rounded"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height"
+						:max-width="state.maxWidth"
+						:min-width="state.minWidth"
+						:max-height="state.maxHeight"
+						:min-height="state.minHeight"
+						:padding="state.padding"
+						:margin="state.margin"
+				>
+					<div class="demo-fill">preview</div>
+				</origam-responsive>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Aspect Ratio">
+					<HstSelect v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IResponsiveProps>>({
+					aspectRatio: '16/9',
+					inline: false
+				})"
+		>
+			<template #default="{ state }">
+				<p>
+					Embedded
+					<origam-responsive
+							:inline="state.inline"
+							:aspect-ratio="state.aspectRatio"
+							:content-class="state.contentClass"
+							:width="state.inline ? 40 : undefined"
+							:height="state.inline ? 40 : undefined"
+					>
+						<div class="demo-fill"/>
+					</origam-responsive>
+					inside a sentence — <code>inline</code> toggles between block and inline-flex.
+				</p>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.inline" title="Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstSelect v-model="state.aspectRatio"  title="Aspect Ratio"  :options="ASPECT_RATIO_OPTIONS"/>
+					<HstText   v-model="state.contentClass" title="Content Class"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-responsive aspect-ratio="16/9" :max-width="480">
+				<div class="demo-fill">
+					<strong>Default slot content</strong>
+				</div>
+			</origam-responsive>
+		</Variant>
+
+		<Variant title="Slots - Additional">
+			<origam-responsive aspect-ratio="16/9" :max-width="480">
+				<div class="demo-fill">main media</div>
+				<template #additional>
+					<span class="demo-badge">LIVE</span>
+				</template>
+			</origam-responsive>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IResponsiveProps>({
 					aspectRatio: '16/9',
-					inline: false,
-					maxWidth: 480,
-					rounded: undefined,
-					border: undefined
+					maxWidth: 480
 				})"
 		>
 			<template #default="{ state }">
@@ -22,126 +127,22 @@
 				</origam-responsive>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect   v-model="state.aspectRatio" title="aspectRatio" :options="aspectRatioList"/>
-				<HstCheckbox v-model="state.inline"      title="inline"/>
-				<HstNumber   v-model="state.maxWidth"    title="maxWidth"/>
-				<HstNumber   v-model="state.minWidth"    title="minWidth"/>
-				<HstNumber   v-model="state.width"       title="width"/>
-				<HstNumber   v-model="state.height"      title="height"/>
-				<HstCheckbox v-model="state.rounded"     title="rounded"/>
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.contentClass" title="Content Class"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
+					<HstSelect v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.maxWidth"    title="Max Width"/>
+					<HstText   v-model="state.minWidth"    title="Min Width"/>
+					<HstText   v-model="state.width"       title="Width"/>
+					<HstText   v-model="state.height"      title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.inline" title="Inline"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — aspectRatio"
-				:init-state="() => useStoryInitState<{ aspectRatio?: string | number }>({ aspectRatio: '16/9' })"
-		>
-			<template #default="{ state }">
-				<origam-responsive :aspect-ratio="state.aspectRatio" style="max-width: 480px;">
-					<div class="demo-fill">{{ state.aspectRatio }}</div>
-				</origam-responsive>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.aspectRatio"
-						title="aspectRatio"
-						:options="aspectRatioList"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — inline"
-				:init-state="() => useStoryInitState<{ inline?: boolean }>({ inline: true })"
-		>
-			<template #default="{ state }">
-				<p>
-					Embedded
-					<origam-responsive
-							:inline="state.inline"
-							aspect-ratio="1/1"
-							:width="40"
-							:height="40"
-							style="vertical-align: middle;"
-					>
-						<div class="demo-fill" style="background: var(--origam-color__action--primary---bg, #1d4ed8);"/>
-					</origam-responsive>
-					inside a sentence — `inline` toggles between block and inline-flex.
-				</p>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.inline" title="inline"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — dimensions (width / height / maxWidth)"
-				:init-state="() => useStoryInitState<IDimensionProps & { aspectRatio?: string }>({
-					aspectRatio: '16/9',
-					maxWidth: 360
-				})"
-		>
-			<template #default="{ state }">
-				<origam-responsive v-bind="state">
-					<div class="demo-fill">maxWidth={{ state.maxWidth }}</div>
-				</origam-responsive>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.aspectRatio" title="aspectRatio" :options="aspectRatioList"/>
-				<HstNumber v-model="state.maxWidth"   title="maxWidth"/>
-				<HstNumber v-model="state.minWidth"   title="minWidth"/>
-				<HstNumber v-model="state.width"      title="width"/>
-				<HstNumber v-model="state.height"     title="height"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded & border"
-				:init-state="() => useStoryInitState<{
-					rounded?: boolean
-					border?: boolean
-					aspectRatio?: string
-				}>({ aspectRatio: '16/9' })"
-		>
-			<template #default="{ state }">
-				<origam-responsive
-						:rounded="state.rounded"
-						:border="state.border"
-						:aspect-ratio="state.aspectRatio"
-						style="max-width: 360px;"
-				>
-					<div class="demo-fill">modifiers</div>
-				</origam-responsive>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.rounded" title="rounded"/>
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.aspectRatio" title="aspectRatio" :options="aspectRatioList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-responsive aspect-ratio="16/9" style="max-width: 480px;">
-				<div class="demo-fill">
-					<strong>Default slot content</strong>
-				</div>
-			</origam-responsive>
-		</Variant>
-
-		<Variant title="Slot — additional (overlay)">
-			<origam-responsive aspect-ratio="16/9" style="max-width: 480px; position: relative;">
-				<div class="demo-fill">main media</div>
-				<template #additional>
-					<span style="position: absolute; top: 8px; left: 8px; padding: 4px 8px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 0.75rem; border-radius: 4px;">
-						LIVE
-					</span>
-				</template>
-			</origam-responsive>
 		</Variant>
 	</Story>
 </template>
@@ -151,19 +152,19 @@
 		setup
 >
 	import { OrigamResponsive } from '@origam/components'
-	import type {
-		IDimensionProps,
-		IOptions,
-		IResponsiveProps
-	} from '@origam/interfaces'
+	import type { IOptions, IResponsiveProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
-	// Local-only — `aspectRatio` shortcuts; not promoted to `/stories/const`
-	// since `<OrigamResponsive>` is currently the only consumer.
-	const aspectRatioList: Array<IOptions<string | number>> = [
+	const ASPECT_RATIO_OPTIONS: Array<IOptions<string | number | undefined>> = [
 		{ label: '(none)', value: undefined },
-		{ label: '16/9 (default)', value: '16/9' },
+		{ label: '16/9', value: '16/9' },
 		{ label: '4/3', value: '4/3' },
 		{ label: '1/1 (square)', value: '1/1' },
 		{ label: '3/4 (portrait)', value: '3/4' },
@@ -182,6 +183,17 @@
 		border: 1px solid var(--origam-color__border---default, #e5e5e5);
 		color: var(--origam-color__text---primary, #111);
 		font-weight: 500;
+	}
+
+	.demo-badge {
+		position: absolute;
+		top: 8px;
+		left: 8px;
+		padding: 4px 8px;
+		background: rgba(0, 0, 0, 0.6);
+		color: var(--origam-color__text---on-dark, #fff);
+		font-size: 0.75rem;
+		border-radius: 4px;
 	}
 </style>
 

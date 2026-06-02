@@ -3,106 +3,109 @@
 			group="components"
 			title="Messages/OrigamMessages"
 	>
-		<!--
-			Playground — first by convention. Exposes every IMessagesProps knob.
-		-->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IMessagesProps>({
-					messages: ['Hint message.'],
-					active: true,
-					color: undefined,
-					density: DENSITY.DEFAULT,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-messages v-bind="state" data-cy="messages-playground"/>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.messages"  title="messages (first)"/>
-				<HstCheckbox v-model="state.active"    title="active"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<{ active: boolean }>({ active: false })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IMessagesProps>>({ messages: ['Hint message.'], active: true })"
 		>
 			<template #default="{ state }">
 				<origam-messages
+						:messages="state.messages"
 						:active="state.active"
-						:messages="['Active = ' + state.active]"
-						data-cy="messages-active"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active" title="active"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<{ color?: string }>({ color: 'danger' })"
-		>
-			<template #default="{ state }">
-				<origam-messages
 						:color="state.color"
-						:messages="['Invalid value.']"
-						data-cy="messages-color"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:padding="state.padding"
+						:margin="state.margin"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstText   v-model="state.elevation" title="Elevation"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
 		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IMessagesProps>>({ messages: ['First message.', 'Second message.'], active: true, tag: 'div' })"
 		>
 			<template #default="{ state }">
 				<origam-messages
-						:density="state.density"
-						:messages="['Density message']"
-						data-cy="messages-density"
+						:messages="state.messages"
+						:active="state.active"
+						:tag="state.tag"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.active" title="Active"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstText v-model="state.messages" title="Messages (first)"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Slot — default (custom render)">
-			<origam-messages
-					:messages="['Custom rendered message']"
-					data-cy="messages-slot-default"
-			>
+		<Variant title="Slots - Default">
+			<origam-messages :messages="['Custom rendered message']" active>
 				<template #default="{ message }">
-					<span class="custom-message" data-cy="messages-slot-custom">{{ message }}</span>
+					<span style="color: var(--origam-color__feedback--danger---fg, #b00020); font-weight: 600;">{{ message }}</span>
 				</template>
 			</origam-messages>
 		</Variant>
 
-		<!-- ── Functional ───────────────────────────────────────────── -->
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
-		<Variant title="Dynamic (append & clear)">
-			<div class="story-shell" data-cy="messages-dynamic-shell">
-				<origam-messages
-						active
-						:messages="dynamicMessages"
-						data-cy="messages-dynamic"
-				/>
-				<div style="display:flex; gap: 8px;">
-					<origam-btn size="small" text="Add"   data-cy="messages-dynamic-add"   @click="addMessage"/>
-					<origam-btn size="small" text="Clear" data-cy="messages-dynamic-clear" @click="dynamicMessages = []"/>
-				</div>
-			</div>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IMessagesProps>({ messages: ['Hint message.'], active: true })"
+		>
+			<template #default="{ state }">
+				<origam-messages v-bind="state"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.messages" title="Messages (first)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.active" title="Active"/>
+					<HstSelect   v-model="state.tag"    title="Tag"    :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -111,27 +114,19 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { OrigamMessages } from '@origam/components'
+	import type { IMessagesProps } from '@origam/interfaces'
 
-	import { OrigamBtn, OrigamMessages } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
-	import type { IDensityProps, IMessagesProps } from '@origam/interfaces'
-
-	import { densityList, intentList } from '@stories/const'
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-
-	const dynamicMessages = ref<Array<string>>(['First message'])
-	let counter = 1
-
-	const addMessage = () => {
-		counter++
-		dynamicMessages.value.push(`Message ${counter}`)
-	}
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 </script>
-
-<style scoped>
-	.story-shell { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-	.custom-message { color: var(--origam-color__feedback--danger---fg, #b00020); font-weight: 600; }
-</style>
 
 <docs lang="md" src="@docs/components/Messages/OrigamMessages.md"/>

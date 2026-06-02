@@ -3,178 +3,166 @@
 			group="components"
 			title="Chart/OrigamChartMap"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartMapProps>>({
 					mode: 'choropleth',
-					height: 400,
-					animated: true,
-					showLegend: true,
-					showTooltip: true,
-					legendPosition: 'bottom',
+					colorRange: ['info', 'danger'],
+					defaultCountryFill: 'rgba(0,0,0,0.08)',
+					borderColor: 'rgba(0,0,0,0.2)',
+					lineColor: 'primary',
+					nodeRadius: 4,
 					routeCurvature: 0.3,
-					nodeRadius: 4
+					title: 'World Map',
+					subtitle: 'Origam Design System',
+					height: '400px'
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="map-playground"
-				>
+				<div class="story-shell">
 					<origam-chart-map
 							:mode="state.mode"
 							:series="state.mode === 'choropleth' ? FIXTURE_GDP : FIXTURE_ROUTES"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:legend-position="state.legendPosition"
-							:route-curvature="Number(state.routeCurvature)"
-							:node-radius="Number(state.nodeRadius)"
-							title="World Map"
-							subtitle="Origam Design System"
-							data-cy="map-playground-chart"
-							@point-click="onPointClick"
+							:color-range="state.colorRange"
+							:default-country-fill="state.defaultCountryFill"
+							:border-color="state.borderColor"
+							:line-color="state.lineColor"
+							:node-radius="state.nodeRadius"
+							:route-curvature="state.routeCurvature"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							:height="state.height"
+							:bg-color="state.bgColor"
+							:elevation="state.elevation"
+							:rounded="state.rounded"
 					/>
-					<pre
-							class="story-log"
-							data-cy="map-playground-log"
-					>{{ logLines.join('\n') }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.mode"
-						title="mode"
-						:options="MODE_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstNumber
-						v-model="state.routeCurvature"
-						title="routeCurvature [0..1]"
-				/>
-				<HstNumber
-						v-model="state.nodeRadius"
-						title="nodeRadius (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode" title="Mode" :options="MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor"    title="Bg Color"              :options="COLOR_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color (stroke)"/>
+					<HstText   v-model="state.lineColor"   title="Line Color (routes)"/>
+				</StoryGroup>
+				<StoryGroup title="Color Range (choropleth)">
+					<HstText v-model="state.colorRange[0]" title="Range Start"/>
+					<HstText v-model="state.colorRange[1]" title="Range End"/>
+					<HstText v-model="state.defaultCountryFill" title="No-Data Fill"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Routes">
+					<HstNumber v-model="state.routeCurvature" title="Route Curvature [0..1]" :min="0" :max="1" :step="0.05"/>
+					<HstNumber v-model="state.nodeRadius"     title="Node Radius (px)"       :min="1" :max="16" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Title">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.height" title="Height"/>
+					<HstText v-model="state.width"  title="Width"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — mode (choropleth vs flight-routes)">
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartMapProps>>({
+					mode: 'choropleth',
+					showLegend: true,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					aspectRatio: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-chart-map
+							:mode="state.mode"
+							:series="state.mode === 'choropleth' ? FIXTURE_GDP : FIXTURE_ROUTES"
+							:show-legend="state.showLegend"
+							:legend-position="state.legendPosition"
+							:show-tooltip="state.showTooltip"
+							:animated="state.animated"
+							:animation-duration="state.animationDuration"
+							:aspect-ratio="state.aspectRatio || undefined"
+							:height="state.aspectRatio ? undefined : 380"
+							title="Functional Controls"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode" title="Mode" :options="MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"   title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tooltip">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstText v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - point-click">
 			<div
 					class="story-shell"
-					data-cy="map-mode"
+					data-cy="map-emit"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>choropleth (GDP by country)</strong>
-						<origam-chart-map
-								mode="choropleth"
-								:series="FIXTURE_GDP"
-								:height="320"
-								title="GDP by Country"
-								subtitle="Approximate trillions USD"
-								data-cy="map-mode-choropleth"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>flight-routes (routes from GB)</strong>
-						<origam-chart-map
-								mode="flight-routes"
-								:series="FIXTURE_ROUTES"
-								:height="320"
-								:show-legend="false"
-								title="Routes from GB"
-								data-cy="map-mode-routes"
-						/>
-					</div>
-				</div>
+				<origam-chart-map
+						mode="choropleth"
+						:series="FIXTURE_GDP"
+						:height="360"
+						title="Click a coloured country"
+						data-cy="map-emit-chart"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorRange (info→danger vs primary→success)">
-			<div
-					class="story-shell"
-					data-cy="map-color-range"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>info → danger (default)</strong>
-						<origam-chart-map
-								mode="choropleth"
-								:series="FIXTURE_GDP"
-								:color-range="['info', 'danger']"
-								:height="300"
-								data-cy="map-color-range-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>primary → success</strong>
-						<origam-chart-map
-								mode="choropleth"
-								:series="FIXTURE_GDP"
-								:color-range="['primary', 'success']"
-								:height="300"
-								data-cy="map-color-range-alt"
-						/>
-					</div>
-				</div>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Title">
+			<div class="story-shell">
+				<origam-chart-map
+						mode="choropleth"
+						:series="FIXTURE_GDP"
+						:height="340"
+						data-cy="map-slot-title"
+				>
+					<template #title>
+						<div class="custom-title">
+							<strong>Custom Title Slot</strong>
+							<span>via #title</span>
+						</div>
+					</template>
+				</origam-chart-map>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — routeCurvature (0 straight vs 0.5 arc)">
-			<div
-					class="story-shell"
-					data-cy="map-curvature"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>routeCurvature=0 (straight)</strong>
-						<origam-chart-map
-								mode="flight-routes"
-								:series="FIXTURE_ROUTES"
-								:route-curvature="0"
-								:show-legend="false"
-								:height="300"
-								data-cy="map-curvature-straight"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>routeCurvature=0.5 (arc)</strong>
-						<origam-chart-map
-								mode="flight-routes"
-								:series="FIXTURE_ROUTES"
-								:route-curvature="0.5"
-								:show-legend="false"
-								:height="300"
-								data-cy="map-curvature-arc"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — tooltip">
+		<Variant title="Slots - Tooltip">
 			<div
 					class="story-shell"
 					data-cy="map-slot-tooltip"
@@ -196,7 +184,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
+		<Variant title="Slots - Empty">
 			<div
 					class="story-shell"
 					data-cy="map-slot-empty"
@@ -217,24 +205,86 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click">
-			<div
-					class="story-shell"
-					data-cy="map-emit"
-			>
-				<origam-chart-map
-						mode="choropleth"
-						:series="FIXTURE_GDP"
-						:height="360"
-						title="Click a coloured country"
-						data-cy="map-emit-chart"
-						@point-click="onPointClick"
-				/>
-				<pre
-						class="story-log"
-						data-cy="map-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IChartMapProps>>({
+					mode: 'choropleth',
+					title: 'World Map',
+					subtitle: 'Origam Design System',
+					showLegend: true,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					colorRange: ['info', 'danger'],
+					defaultCountryFill: 'rgba(0,0,0,0.08)',
+					borderColor: 'rgba(0,0,0,0.2)',
+					lineColor: 'primary',
+					nodeRadius: 4,
+					routeCurvature: 0.3,
+					height: '400px'
+				})"
+		>
+			<template #default="{ state }">
+				<div
+						class="story-shell"
+						data-cy="map-playground"
+				>
+					<origam-chart-map
+							:mode="state.mode"
+							:series="state.mode === 'choropleth' ? FIXTURE_GDP : FIXTURE_ROUTES"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							:show-legend="state.showLegend"
+							:legend-position="state.legendPosition"
+							:show-tooltip="state.showTooltip"
+							:animated="state.animated"
+							:animation-duration="state.animationDuration"
+							:color-range="state.colorRange"
+							:default-country-fill="state.defaultCountryFill"
+							:border-color="state.borderColor"
+							:line-color="state.lineColor"
+							:node-radius="state.nodeRadius"
+							:route-curvature="state.routeCurvature"
+							:bg-color="state.bgColor"
+							:elevation="state.elevation"
+							:rounded="state.rounded"
+							:height="state.height"
+							:width="state.width"
+							data-cy="map-playground-chart"
+							@point-click="logEvent('point-click', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+					<HstSelect v-model="state.mode" title="Mode" :options="MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.bgColor"   title="Bg Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation"   :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"     :options="ROUNDED_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstText   v-model="state.lineColor"   title="Line Color"/>
+					<HstText   v-model="state.colorRange[0]" title="Color Range Start"/>
+					<HstText   v-model="state.colorRange[1]" title="Color Range End"/>
+					<HstNumber v-model="state.routeCurvature" title="Route Curvature" :min="0" :max="1" :step="0.05"/>
+					<HstNumber v-model="state.nodeRadius"     title="Node Radius"     :min="1" :max="16" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showLegend"      title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition"  title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showTooltip"     title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"        title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation Duration (ms)" :min="100" :max="2000" :step="100"/>
+					<HstText     v-model="state.height"          title="Height"/>
+					<HstText     v-model="state.width"           title="Width"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -243,15 +293,24 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import OrigamChartMap from '@origam/components/Chart/OrigamChartMap.vue'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
+	import type {
+		IChartMapChoroplethDatum,
+		IChartMapProps,
+		IChartMapRouteDatum
+	} from '@origam/interfaces/Chart/chart-map.interface'
+	import type { IChartSeries } from '@origam/interfaces'
 
-	import type { IChartMapChoroplethDatum, IChartMapRouteDatum } from '@origam/interfaces/Chart/chart-map.interface'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const MODE_OPTIONS = [
 		{ value: 'choropleth', label: 'choropleth' },
@@ -306,16 +365,6 @@
 	const FIXTURE_ROUTES: Array<IChartSeries> = [
 		{ name: 'Routes from GB', data: ROUTES_DATA as any }
 	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
 </script>
 
 <style scoped>
@@ -326,35 +375,10 @@
 		padding: 16px;
 	}
 
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
+	.custom-title {
 		display: flex;
 		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
+		gap: 2px;
 	}
 
 	.custom-tooltip {
@@ -369,3 +393,8 @@
 		font-style: italic;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartMap.md"
+/>

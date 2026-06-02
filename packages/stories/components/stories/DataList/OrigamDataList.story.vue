@@ -3,100 +3,107 @@
 			group="components"
 			title="DataList/OrigamDataList"
 	>
-		<!--
-			Playground — first by convention. All main props wired via
-			sidebar controls so the consumer can exercise the full API.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IDensityProps & IAdjacentProps & IBorderProps & IRoundedProps>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataListProps>>({
+					color: undefined,
+					bgColor: undefined,
 					density: undefined,
-					prependIcon: undefined,
-					appendIcon: undefined,
+					rounded: undefined,
+					elevation: undefined,
 					border: false,
-					rounded: undefined
+					borderColor: undefined,
+					borderStyle: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<origam-data-list :items="basicItems" v-bind="state" data-cy="data-list-playground"/>
+				<origam-data-list
+						:items="basicItems"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"     title="density"     :options="densityList"/>
-				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
-				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — items (basic)">
-			<origam-data-list :items="basicItems" data-cy="data-list-basic"/>
-		</Variant>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-data-list :items="basicItems" :density="state.density" data-cy="data-list-density"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — prependIcon & appendIcon"
-				:init-state="() => useStoryInitState<IAdjacentProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-data-list :items="basicItems" v-bind="state" data-cy="data-list-adjacent"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
-				<HstSelect v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — border & rounded"
-				:init-state="() => useStoryInitState<IBorderProps & IRoundedProps>({ border: false, rounded: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-data-list :items="basicItems" v-bind="state" data-cy="data-list-border"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — mode (kv vs avatar)"
-				:init-state="() => useStoryInitState<{ mode: 'avatar' | 'kv' }>({ mode: 'kv' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDataListProps>>({
+					mode: 'avatar',
+					prependIcon: undefined,
+					appendIcon: undefined,
+					prependAvatar: undefined,
+					appendAvatar: undefined,
+					padding: undefined,
+					margin: undefined
+				})"
 		>
 			<template #default="{ state }">
 				<origam-data-list
-						:mode="state.mode"
 						:items="state.mode === 'kv' ? kvBasicItems : basicItems"
-						data-cy="data-list-kv-toggle"
+						:mode="state.mode"
+						:prepend-icon="state.prependIcon || undefined"
+						:append-icon="state.appendIcon || undefined"
+						:prepend-avatar="state.prependAvatar || undefined"
+						:append-avatar="state.appendAvatar || undefined"
+						:padding="state.padding"
+						:margin="state.margin"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.mode"
-						title="mode"
-						:options="[{ label: 'avatar', value: 'avatar' }, { label: 'kv', value: 'kv' }]"
-				/>
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode" title="Mode" :options="DATA_LIST_MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon"   title="Prepend Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"    title="Append Icon"    :options="ICON_OPTIONS"/>
+					<HstText   v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
+					<HstText   v-model="state.appendAvatar"  title="Append Avatar (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Slot — item">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item">
+		<Variant title="Slots - Default">
+			<origam-data-list :items="basicItems">
+				<span>Custom default slot content</span>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Item">
+			<origam-data-list :items="basicItems">
 				<template #item="{ item }">
 					<div style="display: flex; justify-content: space-between; padding: 4px 0;">
 						<strong>{{ item.title?.text }}</strong>
@@ -106,22 +113,68 @@
 			</origam-data-list>
 		</Variant>
 
-		<Variant title="Slot — item.title">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title">
+		<Variant title="Slots - Item.title">
+			<origam-data-list :items="basicItems">
 				<template #item.title="props">
-					<em>{{ text }}</em>
+					<em>{{ props }}</em>
 				</template>
 			</origam-data-list>
 		</Variant>
 
-		<Variant title="Slot — value (KV mode custom cell)">
-			<!-- The KV mode `value` slot lets you override any cell by key. -->
-			<origam-data-list mode="kv" :items="kvBasicItems" data-cy="data-list-kv-slot">
+		<Variant title="Slots - Item.title.prepend">
+			<origam-data-list :items="basicItems">
+				<template #item.title.prepend>
+					<span>•</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Item.title.append">
+			<origam-data-list :items="basicItems">
+				<template #item.title.append>
+					<span>*</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Item.text">
+			<origam-data-list :items="basicItems">
+				<template #item.text="{ item }">
+					<em>{{ item.text?.[0]?.text }}</em>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Item.text.prepend">
+			<origam-data-list :items="basicItems">
+				<template #item.text.prepend>
+					<span>→</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Item.text.append">
+			<origam-data-list :items="basicItems">
+				<template #item.text.append>
+					<span>↗</span>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Key (KV mode)">
+			<origam-data-list mode="kv" :items="kvBasicItems">
+				<template #key="{ key }">
+					<strong>{{ key }}</strong>
+				</template>
+			</origam-data-list>
+		</Variant>
+
+		<Variant title="Slots - Value (KV mode)">
+			<origam-data-list mode="kv" :items="kvBasicItems">
 				<template #value="{ key, value }">
 					<a
 							v-if="key === 'Owner'"
 							href="#owner-profile"
-							data-cy="kv-slot-owner-link"
 					>
 						{{ value }}
 					</a>
@@ -130,87 +183,79 @@
 			</origam-data-list>
 		</Variant>
 
-		<Variant title="KV — mixed value types (component cells)">
-			<!--
-				Demonstrates component-value cells: Status and Priority use
-				an OrigamChip component instance as their value.
-			-->
-			<origam-data-list mode="kv" :items="kvMixedItems" data-cy="data-list-kv-mixed"/>
+		<Variant title="Slots - KV component-value cells">
+			<origam-data-list mode="kv" :items="kvMixedItems"/>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-default">
-				<span>Custom slot content</span>
-			</origam-data-list>
-		</Variant>
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
-		<Variant title="Slot — item.text">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-text">
-				<template #item.text="{ item }">
-					<em>{{ item.text?.[0]?.text }}</em>
-				</template>
-			</origam-data-list>
-		</Variant>
-
-		<Variant title="Slot — item.text.append">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-text-append">
-				<template #item.text.append>
-					<span>↗</span>
-				</template>
-			</origam-data-list>
-		</Variant>
-
-		<Variant title="Slot — item.text.prepend">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-text-prepend">
-				<template #item.text.prepend>
-					<span>→</span>
-				</template>
-			</origam-data-list>
-		</Variant>
-
-		<Variant title="Slot — item.title.append">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title-append">
-				<template #item.title.append>
-					<span>*</span>
-				</template>
-			</origam-data-list>
-		</Variant>
-
-		<Variant title="Slot — item.title.prepend">
-			<origam-data-list :items="basicItems" data-cy="data-list-slot-item-title-prepend">
-				<template #item.title.prepend>
-					<span>•</span>
-				</template>
-			</origam-data-list>
-		</Variant>
-
-		<Variant title="Slot — key">
-			<origam-data-list mode="kv" :items="kvBasicItems" data-cy="data-list-slot-key">
-				<template #key="{ key }">
-					<strong>{{ key }}</strong>
-				</template>
-			</origam-data-list>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IDataListProps>>({
+					mode: 'avatar',
+					color: undefined,
+					bgColor: undefined,
+					density: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					border: false,
+					prependIcon: undefined,
+					appendIcon: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-data-list
+						:items="state.mode === 'kv' ? kvBasicItems : basicItems"
+						v-bind="state"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstSelect v-model="state.mode" title="Mode" :options="DATA_LIST_MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
-</template><script
+</template>
+
+<script
 		lang="ts"
 		setup
 >
 	import { markRaw } from 'vue'
 
 	import { OrigamChip, OrigamDataList } from '@origam/components'
-	import type { IAdjacentProps, IBorderProps, IDataListKVItem, IDensityProps, IRoundedProps } from '@origam/interfaces'
+	import type { IDataListKVItem, IDataListProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		borderList,
-		densityList, iconList, roundedList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS
 	} from '@stories/const'
 
-	// Vue's reactive proxy would otherwise wrap the imported component
-	// definitions when they're stored inside an `items` array bound via
-	// `:items`. `markRaw` keeps the component objects intact and silences
-	// the dev-mode warning.
+	const DATA_LIST_MODE_OPTIONS = [
+		{ label: 'avatar (default)', value: 'avatar' },
+		{ label: 'kv', value: 'kv' }
+	]
+
 	const RawChip = markRaw(OrigamChip)
 
 	const basicItems = [

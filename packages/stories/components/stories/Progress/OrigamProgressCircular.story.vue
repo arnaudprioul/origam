@@ -3,144 +3,97 @@
 			group="components"
 			title="Progress/OrigamProgressCircular"
 	>
-		<!--
-			Playground — first by convention. Exposes every IProgressCircularProps knob.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IProgressCircularProps>({
-					modelValue: 42,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IProgressCircularProps> & IBgColorProps>({
+					color: 'primary',
+					bgColor: undefined,
+					size: 'large',
+					modelValue: 60,
 					max: 100,
 					thickness: 4,
-					indeterminate: false,
 					rotate: 0,
-					size: 'large',
-					color: 'primary',
 				})"
-		>
-			<template #default="{ state }">
-				<origam-progress-circular v-bind="state"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber   v-model="state.modelValue"    title="modelValue"/>
-				<HstNumber   v-model="state.max"           title="max"/>
-				<HstNumber   v-model="state.thickness"     title="thickness"/>
-				<HstNumber   v-model="state.rotate"        title="rotate (deg)"/>
-				<HstSelect   v-model="state.size"          title="size"          :options="sizeList"/>
-				<HstSelect   v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — modelValue (determinate)"
-				:init-state="() => useStoryInitState<{ modelValue?: number, max?: number }>({
-					modelValue: 50,
-					max: 100,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-progress-circular
-						:model-value="state.modelValue"
-						:max="state.max"
-						color="primary"
-						size="x-large"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.modelValue" title="modelValue"/>
-				<HstNumber v-model="state.max"        title="max"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — indeterminate"
-				:init-state="() => useStoryInitState<{ indeterminate?: boolean }>({ indeterminate: true })"
-		>
-			<template #default="{ state }">
-				<origam-progress-circular
-						:indeterminate="state.indeterminate"
-						color="primary"
-						size="large"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: 'default' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; gap: 16px; align-items: center;">
-					<origam-progress-circular :size="state.size" indeterminate color="primary"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — thickness"
-				:init-state="() => useStoryInitState<{ thickness?: number }>({ thickness: 4 })"
-		>
-			<template #default="{ state }">
-				<origam-progress-circular
-						:thickness="state.thickness"
-						indeterminate
-						color="primary"
-						size="large"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.thickness" title="thickness"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rotate"
-				:init-state="() => useStoryInitState<{ rotate?: number }>({ rotate: 0 })"
-		>
-			<template #default="{ state }">
-				<origam-progress-circular
-						:rotate="state.rotate"
-						:model-value="35"
-						color="primary"
-						size="large"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.rotate" title="rotate (deg)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-progress-circular
 						:color="state.color"
 						:bg-color="state.bgColor"
-						:model-value="60"
+						:size="state.size"
+						:model-value="state.modelValue"
+						:max="state.max"
+						:thickness="state.thickness"
+						:rotate="state.rotate"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstNumber v-model="state.thickness" title="Thickness" :min="1" :max="20" :step="1"/>
+					<HstNumber v-model="state.rotate"    title="Rotate (deg)" :min="-360" :max="360" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.modelValue" title="Value"  :min="0" :max="100" :step="1"/>
+					<HstNumber v-model="state.max"        title="Max"    :min="1" :max="1000" :step="1"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IProgressCircularProps>>({
+					indeterminate: false,
+					active: true,
+					absolute: false,
+					striped: false,
+					modelValue: 42,
+					max: 100,
+					tag: 'div',
+				})"
+		>
+			<template #default="{ state }">
+				<origam-progress-circular
+						:indeterminate="state.indeterminate"
+						:active="state.active"
+						:absolute="state.absolute"
+						:striped="state.striped"
+						:model-value="state.modelValue"
+						:max="state.max"
+						:tag="state.tag"
+						color="primary"
 						size="large"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.indeterminate" title="Indeterminate"/>
+					<HstCheckbox v-model="state.active"        title="Active"/>
+					<HstCheckbox v-model="state.absolute"      title="Absolute"/>
+					<HstCheckbox v-model="state.striped"       title="Striped"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.modelValue" title="Value" :min="0" :max="100" :step="1"/>
+					<HstNumber v-model="state.max"        title="Max"   :min="1" :max="1000" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Slot — default (label inside circle)">
+		<Variant title="Slots - Default">
 			<origam-progress-circular
 					:model-value="73"
 					size="x-large"
@@ -151,6 +104,42 @@
 				</template>
 			</origam-progress-circular>
 		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IProgressCircularProps> & IBgColorProps>({
+					modelValue: 42,
+					max: 100,
+					thickness: 4,
+					indeterminate: false,
+					rotate: 0,
+					size: 'large',
+					color: 'primary',
+					bgColor: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-progress-circular v-bind="state"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"    title="Size"     :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstNumber v-model="state.thickness" title="Thickness"   :min="1" :max="20"   :step="1"/>
+					<HstNumber v-model="state.rotate"    title="Rotate (deg)" :min="-360" :max="360" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.indeterminate" title="Indeterminate"/>
+					<HstNumber   v-model="state.modelValue"    title="Value" :min="0" :max="100" :step="1"/>
+					<HstNumber   v-model="state.max"           title="Max"   :min="1" :max="1000" :step="1"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -159,10 +148,15 @@
 		setup
 >
 	import { OrigamProgressCircular } from '@origam/components'
-	import type { IColorProps, IProgressCircularProps, ISizeProps } from '@origam/interfaces'
+	import type { IBgColorProps, IProgressCircularProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList, sizeList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		SIZE_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/Progress/OrigamProgressCircular.md"/>

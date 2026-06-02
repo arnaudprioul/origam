@@ -3,98 +3,91 @@
 			group="components"
 			title="Stepper/OrigamStepperItem"
 	>
-
-		<!--
-			Note: <origam-stepper-item> consumes parent context from
-			<origam-stepper> (model value, orientation, clickable). Each
-			Variant wraps it in a stepper for a realistic preview.
-		-->
-
-		<Variant title="Default (within stepper items prop)">
-			<origam-stepper :items="defaultItems" :model-value="1" data-cy="stepper-item-default-parent"/>
-		</Variant>
-
-		<Variant title="With icons">
-			<origam-stepper data-cy="stepper-item-icon-parent">
-				<origam-stepper-item index="0" title="Account" subtitle="Email"     :icon="MDI_ICONS.ACCOUNT_OUTLINE" status="done"/>
-				<origam-stepper-item index="1" title="Profile" subtitle="Personal"  :icon="MDI_ICONS.CARD_ACCOUNT_DETAILS_OUTLINE" status="active"/>
-				<origam-stepper-item index="2" title="Plan"    subtitle="Choose"    :icon="MDI_ICONS.STAR_OUTLINE" status="pending"/>
-			</origam-stepper>
-		</Variant>
-
-		<Variant title="Status mix">
-			<origam-stepper data-cy="stepper-item-status-mix">
-				<origam-stepper-item index="0" title="Account" subtitle="Done"   status="done"/>
-				<origam-stepper-item index="1" title="Profile" subtitle="Active" status="active"/>
-				<origam-stepper-item index="2" title="Plan"    subtitle="Error"  status="error"/>
-				<origam-stepper-item index="3" title="Confirm" subtitle="Idle"   status="pending"/>
-			</origam-stepper>
-		</Variant>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Clickable"
-				:init-state="() => useStoryInitState<{ step: number }>({ step: 0 })"
-		>
-			<template #default="{ state }">
-				<origam-stepper v-model="state.step" :items="defaultItems" :clickable="true" data-cy="stepper-item-clickable"/>
-				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); padding: 8px;">
-					Active step: {{ state.step }}
-				</p>
-			</template>
-			<template #controls="{ state }">
-				<HstSlider v-model="state.step" title="step (v-model)" :min="0" :max="3" :step="1"/>
-			</template>
-		</Variant>
-
-		<Variant title="Vertical orientation">
-			<origam-stepper :items="defaultItems" :model-value="1" orientation="vertical" data-cy="stepper-item-vertical"/>
-		</Variant>
-
-		<Variant
-				title="Default"
+				title="Functional"
 				:init-state="() => useStoryInitState<IStepperItemProps>({
+					index: 0,
 					title: 'Step',
 					subtitle: 'Subtitle',
 					icon: undefined,
 					status: undefined,
 					clickable: false,
-					index: 0,
 				})"
 		>
 			<template #default="{ state }">
-				<origam-stepper data-cy="stepper-item-playground-parent">
-					<origam-stepper-item v-bind="state" data-cy="stepper-item-playground"/>
+				<origam-stepper>
+					<origam-stepper-item
+							:index="state.index"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							:icon="state.icon || undefined"
+							:status="state.status"
+							:clickable="state.clickable"
+					/>
 				</origam-stepper>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.title"     title="title"/>
-				<HstText     v-model="state.subtitle"  title="subtitle"/>
-				<HstSelect   v-model="state.icon"      title="icon"     :options="iconList"/>
-				<HstSelect   v-model="state.status"    title="status"   :options="[
-					{ label: '(none)', value: undefined },
-					{ label: 'pending', value: 'pending' },
-					{ label: 'active',  value: 'active'  },
-					{ label: 'done',    value: 'done'    },
-					{ label: 'error',   value: 'error'   },
-				]"/>
-				<HstCheckbox v-model="state.clickable" title="clickable"/>
-				<HstNumber   v-model="state.index"     title="index" :min="0"/>
+				<StoryGroup title="Content">
+					<HstText   v-model="state.title"    title="Title"/>
+					<HstText   v-model="state.subtitle" title="Subtitle"/>
+					<HstNumber v-model="state.index"    title="Index" :min="0"/>
+				</StoryGroup>
+				<StoryGroup title="Status">
+					<HstSelect v-model="state.status" title="Status" :options="STEPPER_ITEM_STATUS_OPTIONS"/>
+					<HstSelect v-model="state.icon"   title="Icon"   :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.clickable" title="Clickable"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Emits ─────────────────────────────────────────────── -->
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
-		<Variant title="Emit — click">
-			<origam-stepper data-cy="stepper-item-emit-click-parent">
+		<Variant title="Events - click">
+			<origam-stepper>
 				<origam-stepper-item
-						index="0"
-						title="Clickable step"
+						:index="0"
+						title="Clickable Step"
 						subtitle="Click me"
 						:clickable="true"
-						data-cy="stepper-item-emit-click"
 						@click="logEvent('click', $event)"
 				/>
 			</origam-stepper>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IStepperItemProps>({
+					index: 0,
+					title: 'Step',
+					subtitle: 'Subtitle',
+					icon: undefined,
+					status: undefined,
+					clickable: false,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-stepper>
+					<origam-stepper-item v-bind="state" @click="logEvent('click', $event)"/>
+				</origam-stepper>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.title"    title="Title"/>
+					<HstText   v-model="state.subtitle" title="Subtitle"/>
+					<HstNumber v-model="state.index"    title="Index" :min="0"/>
+					<HstSelect v-model="state.icon"     title="Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.status"    title="Status"    :options="STEPPER_ITEM_STATUS_OPTIONS"/>
+					<HstCheckbox v-model="state.clickable" title="Clickable"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -106,17 +99,20 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamStepper, OrigamStepperItem } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
 	import type { IStepperItemProps } from '@origam/interfaces'
+	import type { TStepperItemStatus } from '@origam/types'
+	import type { IOptions } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { iconList } from '@stories/const'
+	import { ICON_OPTIONS } from '@stories/const'
 
-	const defaultItems = [
-		{ title: 'Account', subtitle: 'Email & password' },
-		{ title: 'Profile', subtitle: 'Personal info' },
-		{ title: 'Plan',    subtitle: 'Choose plan' },
-		{ title: 'Confirm', subtitle: 'Review & submit' },
+	const STEPPER_ITEM_STATUS_OPTIONS: Array<IOptions<TStepperItemStatus | undefined>> = [
+		{ label: '(none)',   value: undefined  },
+		{ label: 'Pending',  value: 'pending'  },
+		{ label: 'Active',   value: 'active'   },
+		{ label: 'Done',     value: 'done'     },
+		{ label: 'Error',    value: 'error'    },
 	]
 </script>
 

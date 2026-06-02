@@ -3,14 +3,192 @@
 			group="components"
 			title="Radio/OrigamRadioBtn"
 	>
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IRadioBtnProps>>({
+					color: 'primary',
+					bgColor: undefined,
+					density: 'default',
+					trueIcon: MDI_ICONS.RADIOBOX_MARKED,
+					falseIcon: MDI_ICONS.RADIOBOX_BLANK,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-radio-btn
+						v-model="designModel"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:density="state.density"
+						:true-icon="state.trueIcon || undefined"
+						:false-icon="state.falseIcon || undefined"
+						value="design"
+						label="Radio button"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.trueIcon"  title="True Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.falseIcon" title="False Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════ ÉTAT ══════════════════ -->
+
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & { color?: string }>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-radio-btn
+						v-model="stateModel"
+						:color="state.color"
+						:hover="state.hover"
+						:active="state.active"
+						value="state"
+						label="Radio button"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IRadioBtnProps>>({
+					label: 'Radio button',
+					value: 'option-a',
+					disabled: false,
+					readonly: false,
+					error: false,
+					required: false,
+					inline: false,
+					multiple: false,
+					name: '',
+					trueValue: undefined,
+					falseValue: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-radio-btn
+						v-model="functionalModel"
+						:label="state.label"
+						:value="state.value"
+						:disabled="state.disabled"
+						:readonly="state.readonly"
+						:error="state.error"
+						:required="state.required"
+						:inline="state.inline"
+						:multiple="state.multiple"
+						:name="state.name || undefined"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstText v-model="state.label" title="Label"/>
+					<HstText v-model="state.value" title="Value"/>
+					<HstText v-model="state.name"  title="Name (group)"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstCheckbox v-model="state.error"    title="Error"/>
+					<HstCheckbox v-model="state.required" title="Required"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.inline"   title="Inline"/>
+					<HstCheckbox v-model="state.multiple" title="Multiple"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:modelValue">
+			<origam-radio-btn
+					v-model="emitModel"
+					value="emitted"
+					label="Toggle me"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - click:label">
+			<origam-radio-btn
+					v-model="emitModel"
+					value="emitted"
+					label="Click the label"
+					@click:label="logEvent('click:label', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:focused">
+			<origam-radio-btn
+					v-model="emitModel"
+					value="emitted"
+					label="Focus / blur to trigger"
+					@update:focused="logEvent('update:focused', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-radio-btn v-model="slotModel" value="custom">
+				<strong>Custom</strong> slot content
+			</origam-radio-btn>
+		</Variant>
+
+		<Variant title="Slots - Label">
+			<origam-radio-btn v-model="slotModel" value="custom-label">
+				<template #label>
+					<strong>Custom label</strong>
+					<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">rendered via slot</small>
+				</template>
+			</origam-radio-btn>
+		</Variant>
+
+		<Variant title="Slots - Input">
+			<origam-radio-btn v-model="slotModel" value="custom-input" label="Custom input">
+				<template #input="{ props: inputProps, icon }">
+					<div
+							v-bind="inputProps"
+							style="width: 20px; height: 20px; border: 2px solid var(--origam-color__action--primary---bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+					>
+						<origam-icon v-if="icon" :icon="icon"/>
+					</div>
+				</template>
+			</origam-radio-btn>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IRadioBtnProps>({
-					value: 'play',
 					label: 'Toggle me',
-					density: DENSITY.DEFAULT,
-					color: undefined,
+					value: 'play',
+					color: 'primary',
+					bgColor: undefined,
+					density: 'default',
 					disabled: false,
 					readonly: false,
 					error: false,
@@ -19,252 +197,30 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<origam-radio-btn
-							v-model="playgroundModel"
-							v-bind="state"
-							data-cy="radio-btn-playground"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"     title="label"/>
-				<HstText     v-model="state.value"     title="value"/>
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.readonly"  title="readonly"/>
-				<HstCheckbox v-model="state.error"     title="error"/>
-				<HstSelect   v-model="state.trueIcon"  title="trueIcon"  :options="iconList"/>
-				<HstSelect   v-model="state.falseIcon" title="falseIcon" :options="iconList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ─────────────────────────────────────────────── -->
-
-		<Variant title="Prop — modelValue (group)">
-			<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-radio-btn v-model="groupModel" value="cat"  label="Cat"  data-cy="radio-btn-group-cat"/>
-				<origam-radio-btn v-model="groupModel" value="dog"  label="Dog"  data-cy="radio-btn-group-dog"/>
-				<origam-radio-btn v-model="groupModel" value="fish" label="Fish" data-cy="radio-btn-group-fish"/>
-				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary);" data-cy="radio-btn-group-status">
-					selected = {{ groupModel || '(none)' }}
-				</p>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled, readonly & error"
-				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-					<origam-radio-btn
-							v-model="statesModel"
-							v-bind="state"
-							value="enabled"
-							label="Stateful radio"
-							data-cy="radio-btn-states"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstCheckbox v-model="state.error"    title="error"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-					<origam-radio-btn
-							v-model="colorModel"
-							v-bind="state"
-							value="picked"
-							label="Tinted radio"
-							data-cy="radio-btn-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-					<origam-radio-btn
-							v-model="colorModel"
-							v-bind="state"
-							value="picked"
-							label="Tinted radio"
-							data-cy="radio-btn-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-					<origam-radio-btn
-							v-model="colorModel"
-							v-bind="state"
-							value="picked"
-							label="Tinted radio"
-							data-cy="radio-btn-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-					<origam-radio-btn v-model="densityModel" :density="state.density" value="x" label="Density-aware" data-cy="radio-btn-density"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — trueIcon & falseIcon">
-			<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
 				<origam-radio-btn
-						v-model="iconsModel"
-						value="liked"
-						label="Star / outlined star"
-						:true-icon="MDI_ICONS.STAR"
-						:false-icon="MDI_ICONS.STAR_OUTLINE"
-						data-cy="radio-btn-icons"
-				/>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div style="padding: 24px;">
-				<origam-radio-btn v-model="slotModel" value="custom" data-cy="radio-btn-slot-default">
-					<span>Custom slot content</span>
-				</origam-radio-btn>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — input">
-			<div style="padding: 24px;">
-				<origam-radio-btn v-model="slotModel" value="custom-input" label="Custom input" data-cy="radio-btn-slot-input">
-					<template #input="{ props: inputProps, icon }">
-						<div
-								v-bind="inputProps"
-								style="width: 20px; height: 20px; border: 2px solid var(--origam-color__action--primary---bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"
-						>
-							<origam-icon v-if="icon" :icon="icon"/>
-						</div>
-					</template>
-				</origam-radio-btn>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — label">
-			<div style="padding: 24px;">
-				<origam-radio-btn
-						v-model="slotModel"
-						value="custom"
-						data-cy="radio-btn-slot-label"
-				>
-					<template #label>
-						<strong>Custom label</strong>
-						<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">
-							rendered via slot
-						</small>
-					</template>
-				</origam-radio-btn>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click:label">
-			<div style="padding: 24px;">
-				<origam-radio-btn
-						v-model="emitModel"
-						value="emitted"
-						label="Click the label"
-						data-cy="radio-btn-emit-click-label"
-						@click:label="logEvent('click:label', $event)"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — update:focused">
-			<div style="padding: 24px;">
-				<origam-radio-btn
-						v-model="emitModel"
-						value="emitted"
-						label="Focus/blur to trigger"
-						data-cy="radio-btn-emit-update-focused"
-						@update:focused="logEvent('update:focused', $event)"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<div style="padding: 24px;">
-				<origam-radio-btn
-						v-model="emitModel"
-						value="emitted"
-						label="Toggle me"
-						data-cy="radio-btn-emit-update-model-value"
+						v-model="playgroundModel"
+						v-bind="state"
 						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue & click:label">
-			<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-radio-btn
-						v-model="emitModel"
-						value="emitted"
-						label="Watch logs"
-						data-cy="radio-btn-emit"
-						@update:model-value="logEvent('update:modelValue', $event)"
-						@click:label="logEvent('click:label', $event)"
-				/>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.label" title="Label"/>
+					<HstText   v-model="state.value" title="Value"/>
+					<HstSelect v-model="state.trueIcon"  title="True Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.falseIcon" title="False Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstCheckbox v-model="state.error"    title="Error"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -277,23 +233,28 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamRadioBtn } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
-	import type { IColorProps, IDensityProps, IRadioBtnProps } from '@origam/interfaces'
+	import { MDI_ICONS } from '@origam/enums'
+	import type {
+		IActiveProps,
+		IHoverProps,
+		IRadioBtnProps
+	} from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		densityList, iconList, intentList,
-		hoverList
+		ACTIVE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		HOVER_OPTIONS,
+		ICON_OPTIONS
 	} from '@stories/const'
 
-	const groupModel      = ref()
-	const statesModel     = ref()
-	const colorModel      = ref()
-	const densityModel    = ref()
-	const iconsModel      = ref()
-	const slotModel       = ref()
-	const emitModel       = ref()
+	const designModel    = ref()
+	const stateModel     = ref()
+	const functionalModel = ref()
+	const emitModel      = ref()
+	const slotModel      = ref()
 	const playgroundModel = ref()
 </script>
 

@@ -3,242 +3,204 @@
 			group="components"
 			title="DatePicker/OrigamDatePicker"
 	>
-		<!--
-			Playground — first by convention. All main props wired via
-			sidebar controls.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:landscape="state.landscape"
+						:hide-header="state.hideHeader"
+						:show-week="state.showWeek"
+						:hide-weekdays="state.hideWeekdays"
+						:show-adjacent-months="state.showAdjacentMonths"
+						:first-day-of-week="state.firstDayOfWeek"
+						:density="state.density"
+						:title="state.title || undefined"
+						:weeks-in-month="state.weeksInMonth"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.landscape"   title="Landscape"/>
+					<HstCheckbox v-model="state.hideHeader"  title="Hide Header"/>
+				</StoryGroup>
+				<StoryGroup title="Calendar">
+					<HstCheckbox v-model="state.showWeek"           title="Show Week"/>
+					<HstCheckbox v-model="state.hideWeekdays"       title="Hide Weekdays"/>
+					<HstCheckbox v-model="state.showAdjacentMonths" title="Show Adjacent Months"/>
+					<HstNumber   v-model="state.firstDayOfWeek"     title="First Day Of Week" :min="0" :max="6" :step="1"/>
+					<HstSelect   v-model="state.weeksInMonth"       title="Weeks In Month" :options="WEEKS_IN_MONTH_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Header">
+					<HstText v-model="state.title"  title="Title"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ viewMode: 'month' })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker
+						v-model="date"
+						:multiple="state.multiple"
+						:range="state.range"
+						:min="state.min || undefined"
+						:max="state.max || undefined"
+						:disabled="state.disabled"
+						:disabled-month="state.disabledMonth"
+						:disabled-year="state.disabledYear"
+						:disabled-next="state.disabledNext"
+						:disabled-prev="state.disabledPrev"
+						:view-mode="state.viewMode"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.disabledMonth" title="Disabled Month Btn"/>
+					<HstCheckbox v-model="state.disabledYear"  title="Disabled Year Btn"/>
+					<HstCheckbox v-model="state.disabledNext"  title="Disabled Next Btn"/>
+					<HstCheckbox v-model="state.disabledPrev"  title="Disabled Prev Btn"/>
+				</StoryGroup>
+				<StoryGroup title="Selection">
+					<HstCheckbox v-model="state.multiple" title="Multiple"/>
+					<HstCheckbox v-model="state.range"    title="Range"/>
+				</StoryGroup>
+				<StoryGroup title="Constraints">
+					<HstText v-model="state.min" title="Min (ISO 8601)"/>
+					<HstText v-model="state.max" title="Max (ISO 8601)"/>
+				</StoryGroup>
+				<StoryGroup title="View">
+					<HstSelect v-model="state.viewMode" title="View Mode" :options="VIEW_MODE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:modelValue">
+			<origam-date-picker
+					v-model="date"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:month">
+			<origam-date-picker
+					v-model="date"
+					@update:month="logEvent('update:month', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:year">
+			<origam-date-picker
+					v-model="date"
+					@update:year="logEvent('update:year', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:viewMode">
+			<origam-date-picker
+					v-model="date"
+					@update:view-mode="logEvent('update:viewMode', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-date-picker v-model="date">
+				<strong>Custom slot content</strong>
+			</origam-date-picker>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<origam-date-picker v-model="date">
+				<template #title>
+					<strong>Pick a date</strong>
+				</template>
+			</origam-date-picker>
+		</Variant>
+
+		<Variant title="Slots - Header">
+			<origam-date-picker v-model="date">
+				<template #header>
+					<span>Custom header</span>
+				</template>
+			</origam-date-picker>
+		</Variant>
+
+		<Variant title="Slots - Actions">
+			<origam-date-picker v-model="date">
+				<template #actions>
+					<origam-btn color="primary" text="OK" size="small"/>
+					<origam-btn text="Cancel" size="small"/>
+				</template>
+			</origam-date-picker>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<{
-					multiple?: boolean
-					range?: boolean
-					showWeek?: boolean
-					min?: string
-					max?: string
-				}>({
-					multiple: false,
-					range: false,
-					showWeek: false,
-					min: undefined,
-					max: undefined
-				})"
+				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ bgColor: 'primary', viewMode: 'month' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-date-picker
-							v-model="date"
-							:multiple="state.multiple"
-							:range="state.range"
-							:show-week="state.showWeek"
-							:min="state.min"
-							:max="state.max"
-							data-cy="date-picker-playground"
-					/>
-				</div>
+				<origam-date-picker
+						v-model="date"
+						v-bind="state"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.multiple"  title="multiple"/>
-				<HstCheckbox v-model="state.range"     title="range"/>
-				<HstCheckbox v-model="state.showWeek"  title="showWeek"/>
-				<HstText     v-model="state.min"        title="min (ISO 8601)"/>
-				<HstText     v-model="state.max"        title="max (ISO 8601)"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — modelValue (single date)">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="date" data-cy="date-picker-single"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — range">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="dates" range data-cy="date-picker-range"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — multiple">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="dates" multiple data-cy="date-picker-multiple"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — min & max (date constraints)"
-				:init-state="() => useStoryInitState<{ min?: string; max?: string }>({ min: minDefault, max: maxDefault })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-date-picker
-							v-model="date"
-							:min="state.min"
-							:max="state.max"
-							data-cy="date-picker-constraints"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.min" title="min (ISO 8601)"/>
-				<HstText v-model="state.max" title="max (ISO 8601)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — showWeek"
-				:init-state="() => useStoryInitState<{ showWeek?: boolean }>({ showWeek: true })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-date-picker v-model="date" :show-week="state.showWeek" data-cy="date-picker-show-week"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.showWeek" title="showWeek"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="date" data-cy="date-picker-slot-default">
-					<span>Custom slot content</span>
-				</origam-date-picker>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — header">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="date" data-cy="date-picker-slot-header">
-					<template #header>
-						<span style="font-weight: 600; padding: 8px 16px;">Custom header</span>
-					</template>
-				</origam-date-picker>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — title">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="date" data-cy="date-picker-slot-title">
-					<template #title>
-						<strong>Pick a date</strong>
-					</template>
-				</origam-date-picker>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — actions">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="date" data-cy="date-picker-slot-actions">
-					<template #actions>
-						<origam-btn color="primary" text="OK" size="small"/>
-						<origam-btn text="Cancel" size="small"/>
-					</template>
-				</origam-date-picker>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Emit — update:modelValue"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<div style="display: flex; justify-content: center;">
-						<origam-date-picker
-								v-model="date"
-								data-cy="date-picker-emit-model-value"
-								@update:model-value="(v: unknown) => {
-									state.log = [`update:modelValue → ${JSON.stringify(v)}`, ...state.log].slice(0, 6)
-								}"
-						/>
-					</div>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Click a day to see the event fire.
-					</p>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — update:month"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<div style="display: flex; justify-content: center;">
-						<origam-date-picker
-								v-model="date"
-								data-cy="date-picker-emit-month"
-								@update:month="(v: number) => {
-									state.log = [`update:month → ${v}`, ...state.log].slice(0, 6)
-								}"
-						/>
-					</div>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Use the arrow navigation to change month.
-					</p>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — update:viewMode"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<div style="display: flex; justify-content: center;">
-						<origam-date-picker
-								v-model="date"
-								data-cy="date-picker-emit-view-mode"
-								@update:view-mode="(v: string) => {
-									state.log = [`update:viewMode → ${v}`, ...state.log].slice(0, 6)
-								}"
-						/>
-					</div>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Click the year/month heading to toggle view mode.
-					</p>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — update:year"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<div style="display: flex; justify-content: center;">
-						<origam-date-picker
-								v-model="date"
-								data-cy="date-picker-emit-year"
-								@update:year="(v: number) => {
-									state.log = [`update:year → ${v}`, ...state.log].slice(0, 6)
-								}"
-						/>
-					</div>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Navigate to a different year using the year toggle.
-					</p>
-				</div>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.multiple"    title="Multiple"/>
+					<HstCheckbox v-model="state.range"       title="Range"/>
+					<HstCheckbox v-model="state.showWeek"    title="Show Week"/>
+					<HstCheckbox v-model="state.landscape"   title="Landscape"/>
+					<HstCheckbox v-model="state.hideHeader"  title="Hide Header"/>
+					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
+					<HstText     v-model="state.min"         title="Min (ISO 8601)"/>
+					<HstText     v-model="state.max"         title="Max (ISO 8601)"/>
+					<HstSelect   v-model="state.viewMode"    title="View Mode" :options="VIEW_MODE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -250,16 +212,35 @@
 >
 	import { ref } from 'vue'
 
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBtn, OrigamDatePicker } from '@origam/components'
+	import { DATE_MODE, CALENDAR_STRATEGY } from '@origam/enums'
+	import type { IDatePickerProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
-	const date = ref(null)
-	const dates = ref([])
+	const date = ref<string | null>(null)
 
-	const today = new Date()
-	const minDefault = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10)
-	const maxDefault = new Date(today.getFullYear(), today.getMonth() + 3, 0).toISOString().slice(0, 10)
+	const VIEW_MODE_OPTIONS = [
+		{ label: 'Month', value: DATE_MODE.MONTH },
+		{ label: 'Months', value: DATE_MODE.MONTHS },
+		{ label: 'Years', value: DATE_MODE.YEARS }
+	]
+
+	const WEEKS_IN_MONTH_OPTIONS = [
+		{ label: 'Static', value: CALENDAR_STRATEGY.STATIC },
+		{ label: 'Dynamic', value: CALENDAR_STRATEGY.DYNAMIC }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/DatePicker/OrigamDatePicker.md"/>

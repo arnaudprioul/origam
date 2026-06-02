@@ -3,75 +3,58 @@
 			group="components"
 			title="Grids/OrigamSpacer"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			ISpacerProps knob via the sidebar controls.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<ISpacerProps>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<div class="demo-flex-row">
+					<span class="demo-cell">left</span>
+					<origam-spacer :tag="state.tag"/>
+					<span class="demo-cell">right</span>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<div class="demo-flex-row">
+				<span class="demo-cell">left</span>
+				<origam-spacer>
+					<span class="demo-slot-content">spacer with content</span>
+				</origam-spacer>
+				<span class="demo-cell">right</span>
+			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISpacerProps>({ tag: 'div' })"
 		>
 			<template #default="{ state }">
 				<div class="demo-flex-row">
-					<span class="demo-cell">left</span>
-					<origam-spacer v-bind="state"/>
-					<span class="demo-cell">right</span>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — tag">
-			<div class="demo-flex-row">
-				<span class="demo-cell">left</span>
-				<origam-spacer/>
-				<span class="demo-cell">right</span>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — flex-grow (CSS var override)"
-				:init-state="() => useStoryInitState<{ growA?: number, growB?: number }>({ growA: 1, growB: 2 })"
-		>
-			<template #default="{ state }">
-				<div class="demo-flex-row">
 					<span class="demo-cell">A</span>
-					<origam-spacer :style="{ '--origam-spacer---flex-grow': state.growA }"/>
+					<origam-spacer v-bind="state"/>
 					<span class="demo-cell">B</span>
-					<origam-spacer :style="{ '--origam-spacer---flex-grow': state.growB }"/>
+					<origam-spacer :style="{ '--origam-spacer---flex-grow': 2 }"/>
 					<span class="demo-cell">C</span>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber v-model="state.growA" title="grow (first spacer)"/>
-				<HstNumber v-model="state.growB" title="grow (second spacer)"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Prop — multiple spacers">
-			<div class="demo-flex-row">
-				<span class="demo-cell">A</span>
-				<origam-spacer/>
-				<span class="demo-cell">B</span>
-				<origam-spacer/>
-				<span class="demo-cell">C</span>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default (rare)">
-			<div class="demo-flex-row">
-				<span class="demo-cell">left</span>
-				<origam-spacer>
-					<span style="opacity: 0.5; padding: 0 8px;">spacer with slot</span>
-				</origam-spacer>
-				<span class="demo-cell">right</span>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -83,8 +66,9 @@
 	import { OrigamSpacer } from '@origam/components'
 	import type { ISpacerProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { tagList } from '@stories/const'
+	import { TAG_OPTIONS } from '@stories/const'
 </script>
 
 <style scoped>
@@ -102,6 +86,11 @@
 		background: var(--origam-color__surface---default, #fff);
 		border: 1px solid var(--origam-color__border---default, #e5e5e5);
 		border-radius: 4px;
+	}
+
+	.demo-slot-content {
+		padding: 0 8px;
+		opacity: 0.5;
 	}
 </style>
 

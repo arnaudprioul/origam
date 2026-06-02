@@ -3,6 +3,125 @@
 			group="components"
 			title="Clipboard/OrigamClipboard"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IClipboardProps>>({ value: 'arnaud@example.com' })"
+		>
+			<template #default="{ state }">
+				<origam-clipboard
+						:value="state.value ?? 'arnaud@example.com'"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:rounded="state.rounded"
+						:tag="state.tag"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IClipboardProps>>({
+					value: 'arnaud@example.com',
+					feedbackDuration: 2000,
+					feedbackText: 'Copied!',
+					disabled: false
+				})"
+		>
+			<template #default="{ state }">
+				<origam-clipboard
+						:value="state.value ?? 'arnaud@example.com'"
+						:feedback-duration="state.feedbackDuration"
+						:feedback-text="state.feedbackText"
+						:success-text="state.successText"
+						:disabled="state.disabled"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstText v-model="state.value"       title="Value"/>
+					<HstText v-model="state.feedbackText" title="Feedback Text"/>
+					<HstText v-model="state.successText"  title="Success Text"/>
+				</StoryGroup>
+				<StoryGroup title="Timing">
+					<HstNumber v-model="state.feedbackDuration" title="Feedback Duration (ms)" :min="500" :max="10000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - copy">
+			<origam-clipboard
+					value="counter-payload"
+					@copy="logEvent('copy', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - error">
+			<div class="story-shell">
+				<button
+						type="button"
+						class="story-arm"
+						@click="armErrorMode"
+				>
+					Block clipboard API
+				</button>
+				<origam-clipboard
+						value="never-copied"
+						@error="logEvent('error', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-clipboard value="my-api-key-12345">
+				<template #default="{ copy, copied }">
+					<origam-btn @click="copy">
+						{{ copied ? 'Copied!' : 'Copy API key' }}
+					</origam-btn>
+				</template>
+			</origam-clipboard>
+		</Variant>
+
+		<Variant title="Slots - Feedback">
+			<origam-clipboard value="hello-from-origam">
+				<template #feedback="{ copied }">
+					<span>{{ copied ? 'Done!' : '' }}</span>
+				</template>
+			</origam-clipboard>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IClipboardProps>({
@@ -13,146 +132,32 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="clipboard-playground"
-				>
-					<origam-clipboard
-							v-bind="state"
-							data-cy="clipboard-playground-host"
-					/>
-				</div>
+				<origam-clipboard
+						v-bind="state"
+						@copy="logEvent('copy', $event)"
+						@error="logEvent('error', $event)"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstText
-						v-model="state.value"
-						title="value"
-				/>
-				<HstNumber
-						v-model="state.feedbackDuration"
-						title="feedbackDuration"
-				/>
-				<HstText
-						v-model="state.feedbackText"
-						title="feedbackText"
-				/>
-				<HstCheckbox
-						v-model="state.disabled"
-						title="disabled"
-				/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.value"        title="Value"/>
+					<HstText v-model="state.feedbackText" title="Feedback Text"/>
+					<HstText v-model="state.successText"  title="Success Text"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"       title="Color"        :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"     title="Bg Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+					<HstSelect v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.tag"         title="Tag"          :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstNumber   v-model="state.feedbackDuration" title="Feedback Duration (ms)" :min="500" :max="10000" :step="100"/>
+					<HstCheckbox v-model="state.disabled"         title="Disabled"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Slot — default (auto-rendered icon button)">
-			<div
-					class="story-shell"
-					data-cy="clipboard-default"
-			>
-				<p class="hint">
-					When no slot is provided, the component renders a
-					default icon button with `mdi:mdi-content-copy`. The
-					built-in label flips to the feedback text while
-					`copied` is true.
-				</p>
-				<origam-clipboard
-						value="hello-from-origam"
-						data-cy="clipboard-default-host"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default scoped (custom button)">
-			<div
-					class="story-shell"
-					data-cy="clipboard-slot-default"
-			>
-				<p class="hint">
-					The scoped default slot exposes `{ copy, copied, error }`.
-					Wire the trigger of your choice — here a `OrigamBtn`
-					whose label flips while the feedback window is open.
-				</p>
-				<origam-clipboard
-						value="my-api-key-12345"
-						data-cy="clipboard-slot-default-host"
-				>
-					<template #default="{ copy, copied }">
-						<origam-btn
-								data-cy="clipboard-slot-default-trigger"
-								@click="copy"
-						>
-							{{ copied ? 'Copied!' : 'Copy API key' }}
-						</origam-btn>
-					</template>
-				</origam-clipboard>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — @copy (counter)">
-			<div
-					class="story-shell"
-					data-cy="clipboard-emit-copy"
-			>
-				<p class="hint">
-					Counts the number of successful copies. The component
-					emits `@copy(value)` after every successful write.
-				</p>
-				<origam-clipboard
-						value="counter-payload"
-						data-cy="clipboard-emit-copy-host"
-						@copy="onCopySuccess"
-				/>
-				<output
-						class="story-counter"
-						data-cy="clipboard-emit-copy-counter"
-				>{{ copyCount }}</output>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — @error (simulated)">
-			<div
-					class="story-shell"
-					data-cy="clipboard-emit-error"
-			>
-				<p class="hint">
-					This Variant patches `navigator.clipboard` and
-					`document.execCommand` so every write fails. The
-					component re-emits the error to the parent.
-				</p>
-				<button
-						type="button"
-						class="story-arm"
-						data-cy="clipboard-emit-error-arm"
-						@click="armErrorMode"
-				>
-					Block clipboard API
-				</button>
-				<origam-clipboard
-						value="never-copied"
-						data-cy="clipboard-emit-error-host"
-						@error="onCopyError"
-				/>
-				<output
-						class="story-counter"
-						data-cy="clipboard-emit-error-message"
-				>{{ lastError ?? 'no error yet' }}</output>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — disabled">
-			<div
-					class="story-shell"
-					data-cy="clipboard-disabled"
-			>
-				<p class="hint">
-					Disabled state — the trigger is `disabled` and the
-					copy pipeline short-circuits.
-				</p>
-				<origam-clipboard
-						value="never-copied"
-						disabled
-						data-cy="clipboard-disabled-host"
-				/>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -161,24 +166,20 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamBtn, OrigamClipboard } from '@origam/components'
-
 	import type { IClipboardProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-
-	const copyCount = ref(0)
-	const lastError = ref<string | null>(null)
-
-	const onCopySuccess = () => {
-		copyCount.value += 1
-	}
-
-	const onCopyError = (err: Error) => {
-		lastError.value = err.message
-	}
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
 	const armErrorMode = () => {
 		Object.defineProperty(navigator, 'clipboard', {
@@ -198,21 +199,6 @@
 		gap: 16px;
 		padding: 16px;
 		max-width: 540px;
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
-	.story-counter {
-		display: inline-flex;
-		padding: 4px 8px;
-		border-radius: 4px;
-		background: var(--origam-color__surface---raised, #f5f5f5);
-		font: 600 0.75rem/1 ui-monospace, monospace;
-		color: var(--origam-color__text---primary, #171717);
 	}
 
 	.story-arm {

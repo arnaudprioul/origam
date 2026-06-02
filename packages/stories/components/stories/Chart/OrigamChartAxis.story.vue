@@ -3,53 +3,41 @@
 			group="components"
 			title="Chart/OrigamChartAxis"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartAxisProps>>({
 					showAxis: true,
-					showGrid: true,
-					tickCount: 5
+					showGrid: true
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="axis-playground"
-				>
-					<p class="hint">
-						OrigamChartAxis renders inside an SVG context. It is a cartesian sub-component that receives pre-computed
-						ticks and plot corners from useChart. Each variant below wraps the component in a host SVG to visualise it standalone.
-					</p>
+				<div class="story-shell">
 					<svg
 							viewBox="0 0 600 360"
 							class="story-svg"
-							aria-label="Axis playground"
-							data-cy="axis-playground-svg"
+							aria-label="Axis design preview"
+							data-cy="axis-design-svg"
 					>
 						<origam-chart-axis
 								:plot="PLOT_DEFAULT"
-								:ticks="ticksFor(Number(state.tickCount))"
-								:show-axis="Boolean(state.showAxis)"
-								:show-grid="Boolean(state.showGrid)"
+								:ticks="ticksFor(5)"
+								:show-axis="state.showAxis"
+								:show-grid="state.showGrid"
 						/>
 					</svg>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.tickCount"
-						title="tick count"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
-				<HstCheckbox
-						v-model="state.showGrid"
-						title="showGrid"
-				/>
+				<StoryGroup title="Axis Visibility">
+					<HstCheckbox v-model="state.showAxis" title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid" title="Show Grid"/>
+				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!-- ════════════════════════ FONCTIONNEL ════════════════════════ -->
 
 		<Variant title="Prop — ticks (5 / 10 / 20 ticks per axis)">
 			<div
@@ -109,7 +97,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — formatX (date / number / category)">
+		<Variant title="Prop — xAxisFormat (date / number / category)">
 			<div
 					class="story-shell"
 					data-cy="axis-format-x"
@@ -169,7 +157,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — formatY (currency / percent / SI)">
+		<Variant title="Prop — yAxisFormat (currency / percent / SI)">
 			<div
 					class="story-shell"
 					data-cy="axis-format-y"
@@ -230,7 +218,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — showGrid">
+		<Variant title="Prop — showGrid (true / false)">
 			<div
 					class="story-shell"
 					data-cy="axis-show-grid"
@@ -271,6 +259,84 @@
 				</div>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — secondaryYTicks (dual-axis)">
+			<div
+					class="story-shell"
+					data-cy="axis-secondary-y"
+			>
+				<div class="story-grid story-grid--2">
+					<div class="story-col">
+						<strong>without secondary Y</strong>
+						<svg
+								viewBox="0 0 600 360"
+								class="story-svg"
+								aria-label="No secondary Y axis"
+								data-cy="axis-secondary-off"
+						>
+							<origam-chart-axis
+									:plot="PLOT_DEFAULT"
+									:ticks="ticksFor(5)"
+									:show-axis="true"
+									:show-grid="true"
+							/>
+						</svg>
+					</div>
+					<div class="story-col">
+						<strong>with secondary Y (right axis)</strong>
+						<svg
+								viewBox="0 0 600 360"
+								class="story-svg"
+								aria-label="With secondary Y axis"
+								data-cy="axis-secondary-on"
+						>
+							<origam-chart-axis
+									:plot="PLOT_DEFAULT"
+									:ticks="ticksFor(5)"
+									:secondary-y-ticks="secondaryYTicksFor(5)"
+									:show-axis="true"
+									:show-grid="true"
+									:secondary-y-axis-format="formatCurrency"
+							/>
+						</svg>
+					</div>
+				</div>
+			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IChartAxisProps>>({
+					showAxis: true,
+					showGrid: true
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<svg
+							viewBox="0 0 600 360"
+							class="story-svg"
+							aria-label="Axis playground"
+							data-cy="axis-playground-svg"
+					>
+						<origam-chart-axis
+								:plot="PLOT_DEFAULT"
+								:ticks="ticksFor(5)"
+								:show-axis="state.showAxis"
+								:show-grid="state.showGrid"
+						/>
+					</svg>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.showAxis" title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid" title="Show Grid"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -279,7 +345,9 @@
 		setup
 >
 	import { OrigamChartAxis } from '@origam/components'
+	import type { IChartAxisProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
 	const PLOT_DEFAULT = {
@@ -322,6 +390,14 @@
 			value: label
 		}))
 		return { x, y }
+	}
+
+	const secondaryYTicksFor = (count: number) => {
+		const step = (PLOT_DEFAULT.y1 - PLOT_DEFAULT.y0) / (count - 1)
+		return Array.from({ length: count }, (_, i) => ({
+			position: PLOT_DEFAULT.y1 - i * step,
+			value: i * 500
+		}))
 	}
 
 	const DATES = ['Jan 1', 'Jan 8', 'Jan 15', 'Jan 22', 'Jan 29', 'Feb 5']
@@ -402,10 +478,9 @@
 		border-radius: 6px;
 		background-color: var(--origam-color-surface-default, #ffffff);
 	}
-
-	.hint {
-		margin: 0;
-		font-size: 0.875rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartAxis.md"
+/>

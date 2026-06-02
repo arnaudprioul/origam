@@ -3,24 +3,19 @@
 			group="components"
 			title="InfiniteScroll/OrigamInfiniteScrollIntersect"
 	>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<!--
-			<origam-infinite-scroll-intersect> is a sentinel: an empty
-			element observed by IntersectionObserver. When it scrolls
-			into view inside its `rootRef`, it emits `intersect`. Used
-			by <origam-infinite-scroll> to trigger more loads. Stories
-			below show the parent in action; the sentinel itself has
-			no visible chrome.
-		-->
-
-		<!-- ── Playground ─────────────────────────────────────────────── -->
-
-		<Variant title="Default">
-			<div style="padding: 24px;">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IInfiniteScrollIntersectProps>>({ side: 'end', margin: '' })"
+		>
+			<template #default="{ state }">
 				<origam-infinite-scroll
+						:side="state.side"
+						:margin="state.margin || undefined"
 						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
 						@load="handleLoad"
-						data-cy="infinite-scroll-intersect-default"
+						data-cy="infinite-scroll-intersect-functional"
 				>
 					<div
 							v-for="(item, i) in items"
@@ -31,86 +26,67 @@
 					</div>
 				</origam-infinite-scroll>
 				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
-					Scroll to the bottom of the box; the intersect sentinel
-					triggers a load and appends 10 more items.
+					Scroll to the bottom — the sentinel triggers a load and appends 10 more items.
 				</p>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Behaviour">
+					<HstSelect v-model="state.side" title="Side" :options="SIDE_OPTIONS"/>
+					<HstText   v-model="state.margin" title="Margin (IntersectionObserver rootMargin)"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Props ──────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
-		<Variant title="Prop — side='both' (intersect at top + bottom)">
-			<div style="padding: 24px;">
-				<origam-infinite-scroll
-						side="both"
-						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
-						@load="handleLoad"
-						data-cy="infinite-scroll-intersect-both"
+		<Variant title="Events - intersect">
+			<origam-infinite-scroll
+					style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
+					data-cy="infinite-scroll-intersect-emit"
+					@load="handleEmitLoad"
+			>
+				<div
+						v-for="(item, i) in emitItems"
+						:key="i"
+						style="padding: 8px 16px; border-bottom: 1px solid var(--origam-color__border---subtle);"
 				>
-					<div v-for="(item, i) in items" :key="i" style="padding: 8px 16px;">
-						{{ i + 1 }}. {{ item }}
-					</div>
-				</origam-infinite-scroll>
-			</div>
+					Item #{{ i + 1 }} — {{ item }}
+				</div>
+			</origam-infinite-scroll>
+			<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+				The internal sentinel emits <code>intersect</code> when scrolled into view — check the Histoire event log.
+			</p>
 		</Variant>
 
-		<Variant title="Prop — mode='manual' (load button instead of auto)">
-			<div style="padding: 24px;">
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IInfiniteScrollIntersectProps>>({ side: 'end', margin: '' })"
+		>
+			<template #default="{ state }">
 				<origam-infinite-scroll
-						mode="manual"
-						load-more-text="Load more rows"
+						:side="state.side"
+						:margin="state.margin || undefined"
 						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
-						@load="handleLoad"
-						data-cy="infinite-scroll-intersect-manual"
-				>
-					<div v-for="(item, i) in items" :key="i" style="padding: 8px 16px;">
-						{{ i + 1 }}. {{ item }}
-					</div>
-				</origam-infinite-scroll>
-			</div>
-		</Variant>
-
-		<!-- ── Notes ─────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — note (usage guidance)">
-			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
-				<p>
-					<code>&lt;origam-infinite-scroll-intersect&gt;</code> is normally
-					rendered by the parent <code>OrigamInfiniteScroll</code> at
-					each end of the scrollable area. It needs a <code>rootRef</code>
-					prop pointing at the scroll viewport — without that, the
-					IntersectionObserver has nothing to observe.
-				</p>
-				<p>
-					Probing this component standalone in Histoire is rarely
-					useful, so the Variants above showcase it through its
-					parent.
-				</p>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — intersect">
-			<div style="padding: 24px;">
-				<origam-infinite-scroll
-						style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
-						data-cy="infinite-scroll-intersect-emit"
-						@load="handleEmitLoad"
+						@load="handlePlaygroundLoad"
+						data-cy="infinite-scroll-intersect-playground"
 				>
 					<div
-							v-for="(item, i) in emitItems"
+							v-for="(item, i) in playgroundItems"
 							:key="i"
 							style="padding: 8px 16px; border-bottom: 1px solid var(--origam-color__border---subtle);"
 					>
 						Item #{{ i + 1 }} — {{ item }}
 					</div>
 				</origam-infinite-scroll>
-				<p style="margin-top: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
-					The internal sentinel emits <code>intersect</code> when scrolled into view,
-					triggering the parent <code>load</code> event. Check the Histoire event log.
-				</p>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.side"   title="Side"   :options="SIDE_OPTIONS"/>
+					<HstText   v-model="state.margin" title="Margin (rootMargin)"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -122,7 +98,18 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamInfiniteScroll, OrigamInfiniteScrollIntersect } from '@origam/components'
+	import { OrigamInfiniteScroll } from '@origam/components'
+	import { INFINITE_SCROLL_SIDE } from '@origam/enums'
+	import type { IInfiniteScrollIntersectProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
+
+	const SIDE_OPTIONS = [
+		{ label: 'end',   value: INFINITE_SCROLL_SIDE.END },
+		{ label: 'start', value: INFINITE_SCROLL_SIDE.START },
+		{ label: 'both',  value: INFINITE_SCROLL_SIDE.BOTH }
+	]
 
 	const items = ref(Array.from({ length: 20 }, (_, i) => `lorem ipsum ${i + 1}`))
 	let nextId = items.value.length
@@ -133,7 +120,7 @@
 				nextId += 1
 				items.value.push(`appended row ${nextId}`)
 			}
-			done?.('ok')
+			done('ok')
 		}, 600)
 	}
 
@@ -141,13 +128,26 @@
 	let emitNextId = emitItems.value.length
 
 	const handleEmitLoad = ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
-		logEvent('intersect', { side: 'end' })
+		logEvent('intersect', { side: 'end', isIntersecting: true })
 		setTimeout(() => {
 			for (let i = 0; i < 10; i++) {
 				emitNextId += 1
 				emitItems.value.push(`emit row ${emitNextId}`)
 			}
-			done?.('ok')
+			done('ok')
+		}, 600)
+	}
+
+	const playgroundItems = ref(Array.from({ length: 20 }, (_, i) => `item ${i + 1}`))
+	let playgroundNextId = playgroundItems.value.length
+
+	const handlePlaygroundLoad = ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
+		setTimeout(() => {
+			for (let i = 0; i < 10; i++) {
+				playgroundNextId += 1
+				playgroundItems.value.push(`item ${playgroundNextId}`)
+			}
+			done('ok')
 		}, 600)
 	}
 </script>

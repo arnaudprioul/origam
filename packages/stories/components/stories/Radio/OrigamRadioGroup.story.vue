@@ -3,217 +3,271 @@
 			group="components"
 			title="Radio/OrigamRadioGroup"
 	>
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IRadioGroupProps>>({
+					label: 'Pick one',
+					color: 'primary',
+					density: 'default',
+					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
+					direction: 'vertical',
+					width: undefined,
+					height: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-radio-group
+						v-model="designModel"
+						:label="state.label"
+						:color="state.color"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:direction="state.direction"
+						:width="state.width"
+						:height="state.height"
+						:items="defaultItems"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density"  title="Density"   :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════ ÉTAT ══════════════════ -->
+
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IRadioGroupProps>>({
+					color: 'primary',
+					hover: undefined,
+					active: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-radio-group
+						v-model="stateModel"
+						:color="state.color"
+						:hover="state.hover"
+						:active="state.active"
+						label="State demo"
+						:items="defaultItems"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IRadioGroupProps>>({
+					disabled: false,
+					readonly: false,
+					required: false,
+					error: false,
+					errorMessages: [],
+					hint: '',
+					persistentHint: false,
+					hideDetails: false,
+					inline: false,
+					name: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-radio-group
+						v-model="functionalModel"
+						:disabled="state.disabled"
+						:readonly="state.readonly"
+						:required="state.required"
+						:error="state.error"
+						:error-messages="state.errorMessages"
+						:hint="state.hint"
+						:persistent-hint="state.persistentHint"
+						:hide-details="state.hideDetails"
+						:inline="state.inline"
+						:name="state.name"
+						label="Functional group"
+						:items="defaultItems"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstCheckbox v-model="state.required" title="Required"/>
+				</StoryGroup>
+				<StoryGroup title="Validation">
+					<HstCheckbox v-model="state.error"          title="Error"/>
+					<HstText     v-model="state.hint"           title="Hint"/>
+					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
+					<HstCheckbox v-model="state.hideDetails"    title="Hide Details"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.inline" title="Inline"/>
+					<HstText     v-model="state.name"   title="Name"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:modelValue">
+			<origam-radio-group
+					v-model="eventModel"
+					label="Pick one"
+					:items="defaultItems"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-radio-group
+					v-model="defaultSlotModel"
+					label="Custom default slot"
+			>
+				<template #default>
+					<span>Custom slot content</span>
+				</template>
+			</origam-radio-group>
+		</Variant>
+
+		<Variant title="Slots - Label">
+			<origam-radio-group
+					v-model="slotLabelModel"
+					:items="defaultItems"
+					required
+			>
+				<template #label="{ label, required }">
+					<strong>Custom label</strong>
+					<span v-if="required" style="color: var(--origam-color__feedback--danger---bg);"> *</span>
+					<small style="display: block; color: var(--origam-color__text---secondary);">
+						{{ label }}
+					</small>
+				</template>
+			</origam-radio-group>
+		</Variant>
+
+		<Variant title="Slots - Item">
+			<origam-radio-group
+					v-model="slotItemModel"
+					label="Custom-rendered options"
+					:items="defaultItems"
+			>
+				<template #item="{ id }">
+					<origam-radio
+							v-model="slotItemModel"
+							value="alpha"
+							label="Alpha (slot)"
+							:aria-describedby="id"
+					/>
+					<origam-radio
+							v-model="slotItemModel"
+							value="bravo"
+							label="Bravo (slot)"
+							:aria-describedby="id"
+					/>
+					<origam-radio
+							v-model="slotItemModel"
+							value="charlie"
+							label="Charlie (slot)"
+							:aria-describedby="id"
+					/>
+				</template>
+			</origam-radio-group>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IRadioGroupProps>({
+				:init-state="() => useStoryInitState<Partial<IRadioGroupProps>>({
 					label: 'Pick one',
-					density: DENSITY.DEFAULT,
-					direction: DIRECTION.VERTICAL,
+					color: 'primary',
+					density: 'default',
+					direction: 'vertical',
 					disabled: false,
 					readonly: false,
 					required: false,
 					error: false,
 					hint: '',
-					color: undefined,
+					persistentHint: false,
+					inline: false,
+					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 500px;">
-					<origam-radio-group
-							v-model="playgroundModel"
-							v-bind="state"
-							:items="defaultItems"
-							data-cy="radio-group-playground"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"     title="label"/>
-				<HstText     v-model="state.hint"      title="hint"/>
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.direction" title="direction" :options="[
-					{ label: 'vertical', value: DIRECTION.VERTICAL },
-					{ label: 'horizontal', value: DIRECTION.HORIZONTAL },
-				]"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstCheckbox v-model="state.required"  title="required"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.readonly"  title="readonly"/>
-				<HstCheckbox v-model="state.error"     title="error"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ─────────────────────────────────────────────── -->
-
-		<Variant title="Prop — items">
-			<div style="padding: 24px; max-width: 400px;">
 				<origam-radio-group
-						v-model="defaultModel"
-						label="Pick one"
+						v-model="playgroundModel"
+						v-bind="state"
 						:items="defaultItems"
-						data-cy="radio-group-default"
+						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — direction (horizontal)">
-			<div style="padding: 24px; max-width: 600px;">
-				<origam-radio-group
-						v-model="horizontalModel"
-						label="Tier"
-						:items="planItems"
-						:direction="DIRECTION.HORIZONTAL"
-						data-cy="radio-group-horizontal"
-				/>
-				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;" data-cy="radio-group-horizontal-status">
-					selected = {{ horizontalModel || '(none)' }}
-				</p>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled, readonly & error"
-				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean, error: boolean }>({ disabled: false, readonly: false, error: false })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 400px;">
-					<origam-radio-group
-							v-model="statesModel"
-							v-bind="state"
-							label="Stateful group"
-							:items="defaultItems"
-							:error-messages="state.error ? ['Pick something to continue'] : []"
-							data-cy="radio-group-states"
-					/>
-				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstCheckbox v-model="state.error"    title="error"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.label" title="Label"/>
+					<HstText v-model="state.hint"  title="Hint"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect   v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"     title="Readonly"/>
+					<HstCheckbox v-model="state.required"     title="Required"/>
+					<HstCheckbox v-model="state.error"        title="Error"/>
+					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
+					<HstCheckbox v-model="state.inline"       title="Inline"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 400px;">
-					<origam-radio-group
-							v-model="colorModel"
-							v-bind="state"
-							label="Tinted group"
-							:items="defaultItems"
-							data-cy="radio-group-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 400px;">
-					<origam-radio-group
-							v-model="densityModel"
-							:density="state.density"
-							label="Density-aware"
-							:items="defaultItems"
-							data-cy="radio-group-density"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — hint & persistentHint">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-radio-group
-						v-model="hintModel"
-						label="Newsletter frequency"
-						hint="You can change this later in account settings."
-						persistent-hint
-						:items="frequencyItems"
-						data-cy="radio-group-hint"
-				/>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-radio-group
-						v-model="defaultSlotModel"
-						label="Custom default slot"
-						data-cy="radio-group-slot-default"
-				>
-					<template #default>
-						<span>Custom slot content</span>
-					</template>
-				</origam-radio-group>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — label">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-radio-group
-						v-model="slotModel"
-						:items="defaultItems"
-						data-cy="radio-group-slot-label"
-				>
-					<template #label="{ label, required }">
-						<strong>Custom label</strong>
-						<span v-if="required" style="color: var(--origam-color__feedback--danger---bg);"> *</span>
-						<small style="display: block; color: var(--origam-color__text---secondary);">
-							{{ label }}
-						</small>
-					</template>
-				</origam-radio-group>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — item (custom radio render)">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-radio-group
-						v-model="slotItemModel"
-						label="Custom-rendered options"
-						:items="defaultItems"
-						data-cy="radio-group-slot-item"
-				>
-					<template #item="{ id }">
-						<origam-radio
-								v-model="slotItemModel"
-								value="alpha"
-								label="Alpha (slot)"
-								:aria-describedby="id"
-						/>
-						<origam-radio
-								v-model="slotItemModel"
-								value="bravo"
-								label="Bravo (slot)"
-								:aria-describedby="id"
-						/>
-						<origam-radio
-								v-model="slotItemModel"
-								value="charlie"
-								label="Charlie (slot)"
-								:aria-describedby="id"
-						/>
-					</template>
-				</origam-radio-group>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -224,43 +278,44 @@
 >
 	import { ref } from 'vue'
 
-	import { OrigamRadio, OrigamRadioGroup } from '@origam/components'
-	import { DENSITY, DIRECTION } from '@origam/enums'
-	import type { IColorProps, IDensityProps, IRadioGroupProps } from '@origam/interfaces'
+	import { logEvent } from 'histoire/client'
 
+	import { OrigamRadio, OrigamRadioGroup } from '@origam/components'
+	import { DIRECTION } from '@origam/enums'
+	import type { IRadioGroupProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList } from '@stories/const'
+	import {
+		ACTIVE_OPTIONS,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
+
+	const DIRECTION_OPTIONS = [
+		{ label: 'Vertical',   value: DIRECTION.VERTICAL },
+		{ label: 'Horizontal', value: DIRECTION.HORIZONTAL }
+	]
 
 	const defaultItems = [
 		{ value: 'alpha',   label: 'Alpha'   },
 		{ value: 'bravo',   label: 'Bravo'   },
-		{ value: 'charlie', label: 'Charlie' },
+		{ value: 'charlie', label: 'Charlie' }
 	]
 
-	const planItems = [
-		{ value: 'free',    label: 'Free'    },
-		{ value: 'pro',     label: 'Pro'     },
-		{ value: 'team',    label: 'Team'    },
-		{ value: 'enterprise', label: 'Enterprise' },
-	]
-
-	const frequencyItems = [
-		{ value: 'daily',   label: 'Daily'   },
-		{ value: 'weekly',  label: 'Weekly'  },
-		{ value: 'monthly', label: 'Monthly' },
-		{ value: 'never',   label: 'Never'   },
-	]
-
-	const defaultModel    = ref()
-	const horizontalModel = ref('pro')
-	const statesModel     = ref()
-	const colorModel      = ref()
-	const densityModel    = ref()
-	const hintModel       = ref()
+	const designModel      = ref()
+	const stateModel       = ref()
+	const functionalModel  = ref()
+	const eventModel       = ref()
 	const defaultSlotModel = ref()
-	const slotModel       = ref()
-	const slotItemModel   = ref()
-	const playgroundModel = ref()
+	const slotLabelModel   = ref()
+	const slotItemModel    = ref()
+	const playgroundModel  = ref()
 </script>
 
 <docs lang="md" src="@docs/components/Radio/OrigamRadioGroup.md"/>

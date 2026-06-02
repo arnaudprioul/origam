@@ -3,96 +3,77 @@
 			group="components"
 			title="ThemeProvider/OrigamThemeProvider"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			OrigamThemeProvider knob via the sidebar controls.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<{ theme?: string; mode?: string }>({ theme: 'light', mode: 'auto' })"
+		>
+			<template #default="{ state }">
+				<origam-theme-provider :theme="state.theme" :mode="state.mode">
+					<origam-btn color="primary" text="Themed button"/>
+					<origam-btn variant="outlined" text="Outlined"/>
+				</origam-theme-provider>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Theme">
+					<HstSelect v-model="state.theme" title="Theme" :options="THEME_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode" title="Mode" :options="MODE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-theme-provider :tag="state.tag" theme="light">
+					<origam-btn color="primary" text="Button"/>
+				</origam-theme-provider>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-theme-provider theme="dark">
+				<template #default>
+					<origam-btn text="From default slot" color="primary"/>
+				</template>
+			</origam-theme-provider>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<{ theme?: string; mode?: string; tag?: string }>({ theme: 'light', mode: 'auto', tag: 'div' })"
 		>
 			<template #default="{ state }">
-				<origam-theme-provider :theme="state.theme" :mode="state.mode" :tag="state.tag" style="padding: 16px; display: block;">
+				<origam-theme-provider :theme="state.theme" :mode="state.mode" :tag="state.tag">
 					<origam-btn color="primary" text="Themed button"/>
-					<origam-btn variant="outlined" text="Outlined" style="margin-left: 8px;"/>
+					<origam-btn variant="outlined" text="Outlined"/>
 				</origam-theme-provider>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.theme" title="theme" :options="themeList"/>
-				<HstSelect v-model="state.mode"  title="mode"  :options="modeList"/>
-				<HstSelect v-model="state.tag"   title="tag"   :options="tagList"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.theme" title="Theme" :options="THEME_OPTIONS"/>
+					<HstSelect v-model="state.mode"  title="Mode"  :options="MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — theme (light)">
-			<origam-theme-provider theme="light" style="padding: 16px; display: block;">
-				<origam-btn color="primary" text="Light theme button"/>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant title="Prop — theme (dark)">
-			<origam-theme-provider theme="dark" style="padding: 16px; display: block;">
-				<origam-btn color="primary" text="Dark theme button"/>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant title="Prop — theme (auto)">
-			<origam-theme-provider theme="auto" style="padding: 16px; display: block;">
-				<origam-btn color="primary" text="Auto theme button"/>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant title="Prop — mode (light)">
-			<origam-theme-provider mode="light" style="padding: 16px; display: block;">
-				<origam-btn color="primary" text="Light mode button"/>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant title="Prop — mode (dark)">
-			<origam-theme-provider mode="dark" style="padding: 16px; display: block;">
-				<origam-btn color="primary" text="Dark mode button"/>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant title="Prop — theme + mode">
-			<origam-theme-provider theme="brand-a" mode="dark" style="padding: 16px; display: block;">
-				<origam-btn color="primary" text="brand-a / dark"/>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant title="Prop — nested providers">
-			<origam-theme-provider theme="light" style="padding: 16px; display: block;">
-				<origam-btn text="Light" color="primary" style="margin-bottom: 8px; display: block;"/>
-				<origam-theme-provider theme="dark" style="padding: 16px; display: block;">
-					<origam-btn text="Dark (nested)" color="primary"/>
-				</origam-theme-provider>
-			</origam-theme-provider>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'section' })"
-		>
-			<template #default="{ state }">
-				<origam-theme-provider :tag="state.tag" theme="light" style="padding: 16px; display: block;">
-					<origam-btn text="Button" color="primary"/>
-				</origam-theme-provider>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-theme-provider theme="dark" style="padding: 16px; display: block;">
-				<template #default>
-					<origam-btn text="From slot" color="primary"/>
-				</template>
-			</origam-theme-provider>
 		</Variant>
 	</Story>
 </template>
@@ -103,16 +84,18 @@
 >
 	import { OrigamBtn, OrigamThemeProvider } from '@origam/components'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { tagList } from '@stories/const'
+	import { TAG_OPTIONS } from '@stories/const'
 
-	const themeList = [
-		{ label: 'light', value: 'light' },
-		{ label: 'dark',  value: 'dark' },
-		{ label: 'auto',  value: 'auto' },
+	const THEME_OPTIONS = [
+		{ label: 'auto',    value: 'auto' },
+		{ label: 'light',   value: 'light' },
+		{ label: 'dark',    value: 'dark' },
+		{ label: 'brand-a', value: 'brand-a' },
 	]
 
-	const modeList = [
+	const MODE_OPTIONS = [
 		{ label: 'auto',  value: 'auto' },
 		{ label: 'light', value: 'light' },
 		{ label: 'dark',  value: 'dark' },

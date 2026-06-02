@@ -3,206 +3,150 @@
 			group="components"
 			title="Chart/OrigamChartLegend"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					position: 'bottom'
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<IChartLegendProps>({ items: ITEMS_3, position: 'bottom' })"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="legend-playground"
-				>
+				<div class="story-shell">
 					<div
 							class="legend-host"
 							:class="`legend-host--${state.position}`"
 					>
 						<origam-chart-legend
-								:items="ITEMS_3"
+								:items="state.items"
 								:position="state.position"
-								data-cy="legend-playground-legend"
-								@legend-click="onLegendClick"
-								@series-toggle="onSeriesToggle"
 						/>
 					</div>
-					<pre
-							class="story-log"
-							data-cy="legend-playground-log"
-					>{{ logLines.join('\n') }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.position"
-						title="position"
-						:options="POSITION_OPTIONS"
-				/>
+				<StoryGroup title="Layout">
+					<HstSelect
+							v-model="state.position"
+							title="Position"
+							:options="CHART_LEGEND_POSITION_OPTIONS"
+					/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — position (top / bottom / left / right)">
-			<div
-					class="story-shell"
-					data-cy="legend-position"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>top</strong>
-						<div class="legend-host legend-host--top">
-							<origam-chart-legend
-									:items="ITEMS_3"
-									position="top"
-									data-cy="legend-position-top"
-							/>
-						</div>
-					</div>
-					<div class="story-col">
-						<strong>bottom</strong>
-						<div class="legend-host legend-host--bottom">
-							<origam-chart-legend
-									:items="ITEMS_3"
-									position="bottom"
-									data-cy="legend-position-bottom"
-							/>
-						</div>
-					</div>
-					<div class="story-col">
-						<strong>left</strong>
-						<div class="legend-host legend-host--left">
-							<origam-chart-legend
-									:items="ITEMS_3"
-									position="left"
-									data-cy="legend-position-left"
-							/>
-						</div>
-					</div>
-					<div class="story-col">
-						<strong>right</strong>
-						<div class="legend-host legend-host--right">
-							<origam-chart-legend
-									:items="ITEMS_3"
-									position="right"
-									data-cy="legend-position-right"
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</Variant>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — items (1 / 3 / 7 series)">
-			<div
-					class="story-shell"
-					data-cy="legend-items-count"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>1 item</strong>
-						<div class="legend-host legend-host--bottom">
-							<origam-chart-legend
-									:items="ITEMS_1"
-									position="bottom"
-									data-cy="legend-items-1"
-							/>
-						</div>
-					</div>
-					<div class="story-col">
-						<strong>3 items</strong>
-						<div class="legend-host legend-host--bottom">
-							<origam-chart-legend
-									:items="ITEMS_3"
-									position="bottom"
-									data-cy="legend-items-3"
-							/>
-						</div>
-					</div>
-					<div class="story-col">
-						<strong>7 items</strong>
-						<div class="legend-host legend-host--bottom">
-							<origam-chart-legend
-									:items="ITEMS_7"
-									position="bottom"
-									data-cy="legend-items-7"
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — legend-item">
-			<div
-					class="story-shell"
-					data-cy="legend-slot-item"
-			>
-				<p class="hint">Custom legend-item slot: displays colour chip, series name, and a metadata badge.</p>
-				<div class="legend-host legend-host--bottom">
-					<origam-chart-legend
-							:items="ITEMS_3"
-							position="bottom"
-							data-cy="legend-slot-item-legend"
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IChartLegendProps>({ items: ITEMS_3, position: 'bottom' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<div
+							class="legend-host"
+							:class="`legend-host--${state.position}`"
 					>
-						<template #legend-item="{ series, visible, index }">
-							<div class="custom-legend-item">
-								<span
-										class="custom-legend-item__swatch"
-										:style="{ backgroundColor: COLORS[index] ?? '#9ca3af', opacity: visible ? 1 : 0.4 }"
-								/>
-								<span
-										class="custom-legend-item__name"
-										:class="{ 'custom-legend-item__name--hidden': !visible }"
-								>
-									{{ series.name }}
-								</span>
-								<span class="custom-legend-item__badge">{{ index + 1 }}</span>
-							</div>
-						</template>
-					</origam-chart-legend>
+						<origam-chart-legend
+								:items="state.items"
+								:position="state.position"
+						/>
+					</div>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstSelect
+							v-model="state.items"
+							title="Items"
+							:options="ITEMS_OPTIONS"
+					/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect
+							v-model="state.position"
+							title="Position"
+							:options="CHART_LEGEND_POSITION_OPTIONS"
+					/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Emit — legend-click">
-			<div
-					class="story-shell"
-					data-cy="legend-emit-click"
-			>
-				<p class="hint">Click any legend item — the legend-click emit fires with the series and its index.</p>
-				<div class="legend-host legend-host--bottom">
-					<origam-chart-legend
-							:items="ITEMS_3"
-							position="bottom"
-							data-cy="legend-emit-click-legend"
-							@legend-click="onLegendClick"
-					/>
-				</div>
-				<pre
-						class="story-log"
-						data-cy="legend-emit-click-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - legend-click">
+			<origam-chart-legend
+					:items="ITEMS_3"
+					position="bottom"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
 		</Variant>
 
-		<Variant title="Emit — series-toggle">
-			<div
-					class="story-shell"
-					data-cy="legend-emit-toggle"
+		<Variant title="Events - series-toggle">
+			<origam-chart-legend
+					:items="ITEMS_3"
+					position="bottom"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - legend-item">
+			<origam-chart-legend
+					:items="ITEMS_3"
+					position="bottom"
 			>
-				<p class="hint">Click to toggle visibility — series-toggle fires with the resulting boolean.</p>
-				<div class="legend-host legend-host--bottom">
-					<origam-chart-legend
-							:items="ITEMS_3"
-							position="bottom"
-							data-cy="legend-emit-toggle-legend"
-							@series-toggle="onSeriesToggle"
-					/>
+				<template #legend-item="{ series, visible, index }">
+					<span
+							class="custom-legend-item"
+							:style="{ opacity: visible ? 1 : 0.4 }"
+					>
+						<span
+								class="custom-legend-item__swatch"
+								:style="{ backgroundColor: COLORS[index] ?? '#9ca3af' }"
+						/>
+						<span class="custom-legend-item__name">{{ series.name }}</span>
+						<span class="custom-legend-item__badge">{{ index + 1 }}</span>
+					</span>
+				</template>
+			</origam-chart-legend>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartLegendProps>({ items: ITEMS_3, position: 'bottom' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<div
+							class="legend-host"
+							:class="`legend-host--${state.position}`"
+					>
+						<origam-chart-legend
+								v-bind="state"
+								@legend-click="logEvent('legend-click', $event)"
+								@series-toggle="logEvent('series-toggle', $event)"
+						/>
+					</div>
 				</div>
-				<pre
-						class="story-log"
-						data-cy="legend-emit-toggle-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstSelect
+							v-model="state.items"
+							title="Items"
+							:options="ITEMS_OPTIONS"
+					/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect
+							v-model="state.position"
+							title="Position"
+							:options="CHART_LEGEND_POSITION_OPTIONS"
+					/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -211,19 +155,23 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartLegend } from '@origam/components'
+	import type {
+		IChartLegendItem,
+		IChartLegendProps,
+		IChartSeries
+	} from '@origam/interfaces'
 
-	import type { IChartLegendItem, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
-		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+	const CHART_LEGEND_POSITION_OPTIONS = [
+		{ label: 'top', value: 'top' },
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'left', value: 'left' },
+		{ label: 'right', value: 'right' }
 	]
 
 	const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316']
@@ -250,17 +198,11 @@
 		{ series: makeSeries('Product G'), index: 6, color: COLORS[6], visible: true }
 	]
 
-	const logLines = ref<Array<string>>([])
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → "${series.name}" (index ${index})`)
-	}
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → "${series.name}" now ${visible ? 'visible' : 'hidden'}`)
-	}
+	const ITEMS_OPTIONS = [
+		{ label: '1 item', value: ITEMS_1 },
+		{ label: '3 items', value: ITEMS_3 },
+		{ label: '7 items', value: ITEMS_7 }
+	]
 </script>
 
 <style scoped>
@@ -269,48 +211,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-
-	.hint {
-		margin: 0;
-		font-size: 0.875rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-
-	.story-log {
-		margin: 0;
-		padding: 8px 12px;
-		background-color: rgba(0, 0, 0, 0.04);
-		border-radius: 6px;
-		font-size: 0.75rem;
-		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		white-space: pre-wrap;
-		min-height: 80px;
 	}
 
 	.legend-host {
@@ -358,11 +258,6 @@
 		font-weight: 500;
 	}
 
-	.custom-legend-item__name--hidden {
-		opacity: 0.4;
-		text-decoration: line-through;
-	}
-
 	.custom-legend-item__badge {
 		font-size: 0.625rem;
 		padding: 1px 5px;
@@ -371,3 +266,8 @@
 		font-weight: 600;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartLegend.md"
+/>

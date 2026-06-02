@@ -3,249 +3,169 @@
 			group="components"
 			title="Chart/OrigamChartPyramid"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					type: 'pyramid',
-					height: 400,
-					animated: true,
-					showLegend: true,
-					showTooltip: true,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartPyramidProps>>({
+					type: 'funnel',
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					colorScheme: undefined,
+					aspectRatio: undefined,
 					legendPosition: 'bottom',
-					labelPlacement: 'auto'
+					width: undefined,
+					height: 360
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="pyramid-playground"
-				>
-					<origam-chart-pyramid
-							:type="state.type"
-							:series="FIXTURE_FUNNEL"
-							:categories="FIXTURE_FUNNEL_CATEGORIES"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:legend-position="state.legendPosition"
-							:label-placement="state.labelPlacement"
-							title="Conversion pyramid"
-							subtitle="Q1 2026"
-							data-cy="pyramid-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="pyramid-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-pyramid
+						:type="state.type"
+						:series="FIXTURE_FUNNEL"
+						:categories="FIXTURE_FUNNEL_CATEGORIES"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:color-scheme="state.colorScheme || undefined"
+						:aspect-ratio="state.aspectRatio"
+						:legend-position="state.legendPosition"
+						:width="state.width"
+						:height="state.height"
+						title="Conversion pyramid"
+						subtitle="Q1 2026"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.type"
-						title="type"
-						:options="TYPE_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstSelect
-						v-model="state.labelPlacement"
-						title="labelPlacement"
-						:options="LABEL_PLACEMENT_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
+				<StoryGroup title="Type">
+					<HstSelect v-model="state.type" title="Type" :options="TYPE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText   v-model="state.width"       title="Width"/>
+					<HstNumber v-model="state.height"      title="Height (px)"/>
+					<HstText   v-model="state.aspectRatio" title="Aspect Ratio"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — type (funnel / pyramid side by side)">
-			<div
-					class="story-shell"
-					data-cy="pyramid-types"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>funnel (widest at top)</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								:height="360"
-								title="Funnel"
-								data-cy="pyramid-type-funnel"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>pyramid (widest at bottom)</strong>
-						<origam-chart-pyramid
-								type="pyramid"
-								:series="FIXTURE_FUNNEL"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								:height="360"
-								title="Pyramid"
-								data-cy="pyramid-type-pyramid"
-						/>
-					</div>
-				</div>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartPyramidProps>>({
+					type: 'funnel',
+					title: 'Conversion pyramid',
+					subtitle: 'Q1 2026',
+					showLegend: true,
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					labelPlacement: 'auto',
+					sliceGap: 0,
+					height: 360
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-pyramid
+						:type="state.type"
+						:series="FIXTURE_FUNNEL"
+						:categories="FIXTURE_FUNNEL_CATEGORIES"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:show-legend="state.showLegend"
+						:show-tooltip="state.showTooltip"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:label-placement="state.labelPlacement"
+						:slice-gap="state.sliceGap"
+						:height="state.height"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Type">
+					<HstSelect v-model="state.type" title="Type" :options="TYPE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Labels">
+					<HstSelect v-model="state.labelPlacement" title="Label Placement" :options="LABEL_PLACEMENT_OPTIONS"/>
+					<HstNumber v-model="state.sliceGap" title="Slice Gap (px)" :min="0" :max="20" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Legend & Tooltip">
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Metadata">
+					<HstText   v-model="state.title"    title="Title"/>
+					<HstText   v-model="state.subtitle" title="Subtitle"/>
+					<HstNumber v-model="state.height"   title="Height (px)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - point-click">
+			<div class="story-shell">
+				<origam-chart-pyramid
+						type="funnel"
+						:series="FIXTURE_FUNNEL"
+						:categories="FIXTURE_FUNNEL_CATEGORIES"
+						:height="360"
+						title="Click a slice"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — series (3 / 5 / 8 slices)">
-			<div
-					class="story-shell"
-					data-cy="pyramid-series"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>3 slices</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL_3"
-								:categories="FIXTURE_FUNNEL_CATEGORIES_3"
-								:height="280"
-								data-cy="pyramid-series-3"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>5 slices</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								:height="280"
-								data-cy="pyramid-series-5"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>8 slices</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL_8"
-								:categories="FIXTURE_FUNNEL_CATEGORIES_8"
-								:height="280"
-								data-cy="pyramid-series-8"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - legend-click">
+			<div class="story-shell">
+				<origam-chart-pyramid
+						type="funnel"
+						:series="FIXTURE_FUNNEL"
+						:categories="FIXTURE_FUNNEL_CATEGORIES"
+						:height="360"
+						title="Click a legend entry"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorScheme (intent cycle / custom / single-series color)">
-			<div
-					class="story-shell"
-					data-cy="pyramid-color-scheme"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>default palette (intent cycle)</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL_NO_COLOR"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								:height="280"
-								data-cy="pyramid-color-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS colors</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL_NO_COLOR"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								:color-scheme="['#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']"
-								:height="280"
-								data-cy="pyramid-color-custom"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>series.color = 'success'</strong>
-						<origam-chart-pyramid
-								type="pyramid"
-								:series="FIXTURE_FUNNEL_SUCCESS"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								:height="280"
-								data-cy="pyramid-color-series"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - series-toggle">
+			<div class="story-shell">
+				<origam-chart-pyramid
+						type="funnel"
+						:series="FIXTURE_FUNNEL"
+						:categories="FIXTURE_FUNNEL_CATEGORIES"
+						:height="360"
+						title="Toggle a series via legend"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — labelPlacement (auto / inside / outside)">
-			<div
-					class="story-shell"
-					data-cy="pyramid-label-placement"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>auto (default)</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								label-placement="auto"
-								:height="280"
-								data-cy="pyramid-label-auto"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>inside</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								label-placement="inside"
-								:height="280"
-								data-cy="pyramid-label-inside"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>outside</strong>
-						<origam-chart-pyramid
-								type="funnel"
-								:series="FIXTURE_FUNNEL"
-								:categories="FIXTURE_FUNNEL_CATEGORIES"
-								label-placement="outside"
-								:height="280"
-								data-cy="pyramid-label-outside"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Slot — tooltip">
-			<div
-					class="story-shell"
-					data-cy="pyramid-slot-tooltip"
-			>
+		<Variant title="Slots - Tooltip">
+			<div class="story-shell">
 				<origam-chart-pyramid
 						type="funnel"
 						:series="FIXTURE_FUNNEL"
 						:categories="FIXTURE_FUNNEL_CATEGORIES"
 						:height="360"
 						title="Custom tooltip"
-						data-cy="pyramid-slot-tooltip-chart"
 				>
 					<template #tooltip="{ point, category }">
 						<div class="custom-tooltip">
@@ -257,18 +177,14 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — legend-item">
-			<div
-					class="story-shell"
-					data-cy="pyramid-slot-legend-item"
-			>
+		<Variant title="Slots - Legend-item">
+			<div class="story-shell">
 				<origam-chart-pyramid
 						type="funnel"
 						:series="FIXTURE_FUNNEL"
 						:categories="FIXTURE_FUNNEL_CATEGORIES"
 						:height="360"
 						title="Custom legend"
-						data-cy="pyramid-slot-legend-item-chart"
 				>
 					<template #legend-item="{ series, visible }">
 						<span
@@ -282,17 +198,13 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — title">
-			<div
-					class="story-shell"
-					data-cy="pyramid-slot-title"
-			>
+		<Variant title="Slots - Title">
+			<div class="story-shell">
 				<origam-chart-pyramid
 						type="funnel"
 						:series="FIXTURE_FUNNEL"
 						:categories="FIXTURE_FUNNEL_CATEGORIES"
 						:height="380"
-						data-cy="pyramid-slot-title-chart"
 				>
 					<template #title>
 						<div class="custom-title">
@@ -304,18 +216,14 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="pyramid-slot-empty"
-			>
+		<Variant title="Slots - Empty">
+			<div class="story-shell">
 				<origam-chart-pyramid
 						type="funnel"
 						:series="[]"
 						:categories="[]"
 						:height="320"
 						title="Empty state"
-						data-cy="pyramid-slot-empty-chart"
 				>
 					<template #empty>
 						<div class="custom-empty">
@@ -326,27 +234,75 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click / legend-click / series-toggle">
-			<div
-					class="story-shell"
-					data-cy="pyramid-emit"
-			>
+		<Variant title="Slots - Slice-label">
+			<div class="story-shell">
 				<origam-chart-pyramid
 						type="funnel"
 						:series="FIXTURE_FUNNEL"
 						:categories="FIXTURE_FUNNEL_CATEGORIES"
 						:height="360"
-						title="Interact with the chart"
-						data-cy="pyramid-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="pyramid-emit-log"
-				>{{ logLines.join('\n') }}</pre>
+						title="Custom slice label"
+				>
+					<template #slice-label="{ category, value, formatted, color, index, visible }">
+						<tspan
+								v-if="visible"
+								:fill="color"
+						>{{ index + 1 }}. {{ category }} ({{ formatted }})</tspan>
+					</template>
+				</origam-chart-pyramid>
 			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartPyramidProps>({
+					type: 'funnel',
+					series: FIXTURE_FUNNEL,
+					categories: FIXTURE_FUNNEL_CATEGORIES,
+					title: 'Conversion pyramid',
+					subtitle: 'Q1 2026',
+					showLegend: true,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					labelPlacement: 'auto',
+					sliceGap: 0,
+					height: 360
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-pyramid
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.type"           title="Type"           :options="TYPE_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"        title="Bg Color"       :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"        title="Rounded"        :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"      title="Elevation"      :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstNumber v-model="state.height"         title="Height (px)"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.labelPlacement"    title="Label Placement"  :options="LABEL_PLACEMENT_OPTIONS"/>
+					<HstNumber   v-model="state.sliceGap"          title="Slice Gap (px)"   :min="0" :max="20" :step="1"/>
+					<HstCheckbox v-model="state.showLegend"        title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip"       title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)"    :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -355,29 +311,38 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartPyramid } from '@origam/components'
+	import { CHART_PYRAMID_KIND } from '@origam/enums'
+	import type {
+		IChartPyramidProps,
+		IChartSeries
+	} from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const TYPE_OPTIONS = [
-		{ value: 'funnel', label: 'funnel' },
-		{ value: 'pyramid', label: 'pyramid' }
+		{ value: CHART_PYRAMID_KIND.FUNNEL,  label: 'funnel' },
+		{ value: CHART_PYRAMID_KIND.PYRAMID, label: 'pyramid' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
+		{ value: 'top',    label: 'top' },
 		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+		{ value: 'left',   label: 'left' },
+		{ value: 'right',  label: 'right' }
 	]
 
 	const LABEL_PLACEMENT_OPTIONS = [
-		{ value: 'auto', label: 'auto' },
-		{ value: 'inside', label: 'inside' },
+		{ value: 'auto',    label: 'auto (default)' },
+		{ value: 'inside',  label: 'inside' },
 		{ value: 'outside', label: 'outside' }
 	]
 
@@ -386,47 +351,6 @@
 	const FIXTURE_FUNNEL: Array<IChartSeries> = [
 		{ name: 'Pipeline', data: [1000, 600, 200, 80, 50] }
 	]
-
-	const FIXTURE_FUNNEL_NO_COLOR: Array<IChartSeries> = [
-		{ name: 'Pipeline', data: [1000, 600, 200, 80, 50] }
-	]
-
-	const FIXTURE_FUNNEL_SUCCESS: Array<IChartSeries> = [
-		{ name: 'Pipeline', data: [1000, 600, 200, 80, 50], color: 'success' }
-	]
-
-	const FIXTURE_FUNNEL_CATEGORIES_3 = ['Awareness', 'Consideration', 'Conversion']
-
-	const FIXTURE_FUNNEL_3: Array<IChartSeries> = [
-		{ name: 'Sales', data: [2000, 800, 300] }
-	]
-
-	const FIXTURE_FUNNEL_CATEGORIES_8 = [
-		'Impressions', 'Clicks', 'Sessions', 'Sign-ups',
-		'Activations', 'Engagements', 'Purchases', 'Loyalists'
-	]
-
-	const FIXTURE_FUNNEL_8: Array<IChartSeries> = [
-		{ name: 'Full pipeline', data: [50000, 12000, 6000, 2400, 1200, 600, 200, 80] }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -435,41 +359,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -496,3 +385,8 @@
 		font-style: italic;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartPyramid.md"
+/>

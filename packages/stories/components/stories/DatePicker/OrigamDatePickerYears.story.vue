@@ -3,114 +3,110 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerYears"
 	>
-		<!--
-			Playground — the scrollable year grid shown behind the year
-			heading. Can be embedded in the parent picker or used
-			standalone.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDatePickerYearsProps>>({ year: 2026, color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-years
+						:year="state.year ?? 2026"
+						:color="state.color"
+						:height="state.height"
+						:width="state.width"
+						:min-height="state.minHeight"
+						:min-width="state.minWidth"
+						:max-height="state.maxHeight"
+						:max-width="state.maxWidth"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDatePickerYearsProps>>({ year: 2026, min: '2020-01-01', max: '2030-12-31' })"
+		>
+			<template #default="{ state }">
+				<origam-date-picker-years
+						:year="state.year ?? 2026"
+						:min="state.min"
+						:max="state.max"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.year" title="Year" :min="1900" :max="2100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Bounds">
+					<HstText v-model="state.min" title="Min (YYYY-MM-DD)"/>
+					<HstText v-model="state.max" title="Max (YYYY-MM-DD)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:year">
+			<origam-date-picker-years
+					:year="2026"
+					@update:year="logEvent('update:year', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - year">
+			<origam-date-picker-years :year="2026">
+				<template #year="{ year, isSelected }">
+					<strong :style="isSelected ? 'color: var(--origam-color__action--primary---bg);' : ''">
+						{{ year }}
+					</strong>
+				</template>
+			</origam-date-picker-years>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<{ color: string; min: string; max: string }>({
-					color: 'primary',
-					min: '2020-01-01',
-					max: '2030-12-31',
-				})"
+				:init-state="() => useStoryInitState<IDatePickerYearsProps>({ year: 2026, color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-					<origam-date-picker-years
-							:year="2026"
-							:color="state.color"
-							:min="state.min"
-							:max="state.max"
-							data-cy="dp-years-playground"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-				<HstText   v-model="state.min"   title="min (YYYY-MM-DD)"/>
-				<HstText   v-model="state.max"   title="max (YYYY-MM-DD)"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — realistic wiring (embedded in DatePicker, year view)">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="defaultValue" view-mode="year" data-cy="dp-years-default"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — year (standalone, centred on 2026)">
-			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-				<origam-date-picker-years :year="2026" data-cy="dp-years-standalone"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — min & max (bounds disable out-of-range years)"
-				:init-state="() => useStoryInitState<{ min: string; max: string }>({ min: '2020-01-01', max: '2030-12-31' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-					<origam-date-picker-years
-							:year="2026"
-							:min="state.min"
-							:max="state.max"
-							data-cy="dp-years-bounds"
-					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
-						Years outside [min .. max] render disabled.
-					</p>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.min" title="min (YYYY-MM-DD)"/>
-				<HstText v-model="state.max" title="max (YYYY-MM-DD)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-					<origam-date-picker-years
-							:year="2026"
-							:color="state.color"
-							data-cy="dp-years-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — year">
-			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-				<origam-date-picker-years :year="2026" data-cy="dp-years-slot-year">
-					<template #year="{ year, isSelected }">
-						<span :style="isSelected ? 'font-weight: 700; color: var(--origam-color__action--primary---bg);' : ''">{{ year }}</span>
-					</template>
-				</origam-date-picker-years>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:year">
-			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 				<origam-date-picker-years
-						:year="2026"
-						data-cy="dp-years-emit-year"
+						v-bind="state"
 						@update:year="logEvent('update:year', $event)"
 				/>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstNumber v-model="state.year" title="Year" :min="1900" :max="2100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"    title="Color"      :options="COLOR_OPTIONS"/>
+					<HstText   v-model="state.height"   title="Height"/>
+					<HstText   v-model="state.width"    title="Width"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstText v-model="state.min" title="Min (YYYY-MM-DD)"/>
+					<HstText v-model="state.max" title="Max (YYYY-MM-DD)"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -119,15 +115,14 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamDatePicker, OrigamDatePickerYears } from '@origam/components'
+	import { OrigamDatePickerYears } from '@origam/components'
+	import type { IDatePickerYearsProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList } from '@stories/const'
-
-	const defaultValue = ref('2026-05-08')
+	import { COLOR_OPTIONS } from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/DatePicker/OrigamDatePickerYears.md"/>

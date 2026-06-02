@@ -3,9 +3,210 @@
 			group="components"
 			title="Chart/OrigamChartPareto"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartParetoProps>>({
+					height: 400,
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					barColor: 'primary',
+					lineColor: 'danger',
+					barGap: 4,
+					showAxis: true,
+					showGrid: true,
+					showLabel: false,
+					showLine: true,
+					legendPosition: 'bottom',
+					showLegend: true,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-pareto
+						:series="FIXTURE_DEFECTS"
+						:height="state.height"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:bar-color="state.barColor"
+						:line-color="state.lineColor"
+						:bar-gap="state.barGap"
+						:show-axis="state.showAxis"
+						:show-grid="state.showGrid"
+						:show-label="state.showLabel"
+						:show-line="state.showLine"
+						:legend-position="state.legendPosition"
+						:show-legend="state.showLegend"
+						title="Defect Causes — Pareto Analysis"
+						subtitle="Sorted by frequency (descending)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstText   v-model="state.barColor"  title="Bar Color"/>
+					<HstText   v-model="state.lineColor" title="Line Color"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height"  title="Height (px)" :min="100" :max="800" :step="20"/>
+					<HstNumber v-model="state.barGap"  title="Bar Gap (px)" :min="0" :max="20" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Chart Display">
+					<HstCheckbox v-model="state.showAxis"   title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"   title="Show Grid"/>
+					<HstCheckbox v-model="state.showLine"   title="Show Line"/>
+					<HstCheckbox v-model="state.showLabel"  title="Show Label"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"     title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartParetoProps>>({
+					animated: true,
+					showTooltip: true,
+					animationDuration: 600,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-pareto
+						:series="FIXTURE_DEFECTS"
+						:height="360"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-tooltip="state.showTooltip"
+						title="Functional props"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="100" :max="3000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - point-click">
+			<origam-chart-pareto
+					:series="FIXTURE_DEFECTS"
+					:height="320"
+					title="Click a column"
+					@point-click="logEvent('point-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - legend-click">
+			<origam-chart-pareto
+					:series="FIXTURE_DEFECTS"
+					:height="320"
+					title="Click a legend entry"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - series-toggle">
+			<origam-chart-pareto
+					:series="FIXTURE_DEFECTS"
+					:height="320"
+					title="Toggle series visibility via legend"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Tooltip">
+			<origam-chart-pareto
+					:series="FIXTURE_DEFECTS"
+					:height="380"
+					title="Custom tooltip — hover a column"
+			>
+				<template #tooltip="{ category, value, share, cumulative, color }">
+					<div class="custom-tooltip">
+						<div
+								class="custom-tooltip__swatch"
+								:style="{ background: color }"
+						></div>
+						<div class="custom-tooltip__content">
+							<strong class="custom-tooltip__title">{{ category }}</strong>
+							<dl class="custom-tooltip__data">
+								<dt>Count</dt>
+								<dd>{{ value }}</dd>
+								<dt>Share</dt>
+								<dd>{{ Math.round(share * 100) }}%</dd>
+								<dt>Cumulative</dt>
+								<dd>{{ Math.round(cumulative * 100) }}%</dd>
+							</dl>
+						</div>
+					</div>
+				</template>
+			</origam-chart-pareto>
+		</Variant>
+
+		<Variant title="Slots - Empty">
+			<origam-chart-pareto
+					:series="[]"
+					:height="300"
+					title="Empty state"
+			>
+				<template #empty>
+					<div class="custom-empty">
+						No defect data available for the selected period.
+					</div>
+				</template>
+			</origam-chart-pareto>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<origam-chart-pareto
+					:series="FIXTURE_DEFECTS"
+					:height="340"
+			>
+				<template #title>
+					<div class="custom-title">
+						<strong>Custom Title Block</strong>
+						<em> — injected via slot</em>
+					</div>
+				</template>
+			</origam-chart-pareto>
+		</Variant>
+
+		<Variant title="Slots - Legend Item">
+			<origam-chart-pareto
+					:series="FIXTURE_DEFECTS"
+					:height="340"
+					title="Custom legend items"
+			>
+				<template #legend-item="{ series, index, visible }">
+					<span :style="{ opacity: visible ? 1 : 0.4, fontStyle: 'italic', fontSize: '0.8125rem' }">
+						{{ index + 1 }}. {{ series.name }}
+					</span>
+				</template>
+			</origam-chart-pareto>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				:init-state="() => useStoryInitState<Partial<IChartParetoProps>>({
 					height: 400,
 					animated: true,
 					showLegend: true,
@@ -17,270 +218,43 @@
 					legendPosition: 'bottom',
 					barGap: 4,
 					barColor: 'primary',
-					lineColor: 'danger'
+					lineColor: 'danger',
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="pareto-playground"
-				>
-					<origam-chart-pareto
-							:series="FIXTURE_DEFECTS"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-axis="Boolean(state.showAxis)"
-							:show-grid="Boolean(state.showGrid)"
-							:show-line="Boolean(state.showLine)"
-							:show-label="Boolean(state.showLabel)"
-							:legend-position="state.legendPosition"
-							:bar-gap="Number(state.barGap)"
-							:bar-color="state.barColor"
-							:line-color="state.lineColor"
-							title="Defect Causes — Pareto Analysis"
-							subtitle="Sorted by frequency (descending)"
-							data-cy="pareto-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="pareto-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-pareto
+						v-bind="state"
+						:series="FIXTURE_DEFECTS"
+						title="Defect Causes — Pareto Analysis"
+						subtitle="Sorted by frequency (descending)"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstNumber
-						v-model="state.barGap"
-						title="barGap (px)"
-				/>
-				<HstText
-						v-model="state.barColor"
-						title="barColor"
-				/>
-				<HstText
-						v-model="state.lineColor"
-						title="lineColor"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLine"
-						title="showLine"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
-				<HstCheckbox
-						v-model="state.showGrid"
-						title="showGrid"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
+				<StoryGroup title="Content">
+					<HstText   v-model="state.barColor"  title="Bar Color"/>
+					<HstText   v-model="state.lineColor" title="Line Color"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.bgColor"        title="Bg Color"        :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"        title="Rounded"         :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"      title="Elevation"       :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstNumber v-model="state.height"         title="Height (px)"     :min="100" :max="800" :step="20"/>
+					<HstNumber v-model="state.barGap"         title="Bar Gap (px)"    :min="0"   :max="20"  :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.animated"     title="Animated"/>
+					<HstCheckbox v-model="state.showTooltip"  title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showLegend"   title="Show Legend"/>
+					<HstCheckbox v-model="state.showAxis"     title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"     title="Show Grid"/>
+					<HstCheckbox v-model="state.showLine"     title="Show Line"/>
+					<HstCheckbox v-model="state.showLabel"    title="Show Label"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Prop — showLine (on/off)">
-			<div
-					class="story-shell"
-					data-cy="pareto-showline"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>showLine = true (default)</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_DEFECTS"
-								:show-line="true"
-								:height="300"
-								title="showLine = true"
-								data-cy="pareto-showline-on"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showLine = false (columns only)</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_DEFECTS"
-								:show-line="false"
-								:height="300"
-								title="showLine = false"
-								data-cy="pareto-showline-off"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — barColor / lineColor (DS intents vs custom hex)">
-			<div
-					class="story-shell"
-					data-cy="pareto-colors"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>intent: primary / danger (default)</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_SALES"
-								bar-color="primary"
-								line-color="danger"
-								:height="260"
-								title="primary / danger"
-								data-cy="pareto-colors-intent"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>intent: success / warning</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_SALES"
-								bar-color="success"
-								line-color="warning"
-								:height="260"
-								title="success / warning"
-								data-cy="pareto-colors-success"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom hex: #6366f1 / #f59e0b</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_SALES"
-								bar-color="#6366f1"
-								line-color="#f59e0b"
-								:height="260"
-								title="custom hex"
-								data-cy="pareto-colors-custom"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — showLabel">
-			<div
-					class="story-shell"
-					data-cy="pareto-showlabel"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>showLabel = false (default)</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_DEFECTS"
-								:show-label="false"
-								:height="300"
-								title="showLabel = false"
-								data-cy="pareto-label-off"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showLabel = true</strong>
-						<origam-chart-pareto
-								:series="FIXTURE_DEFECTS"
-								:show-label="true"
-								:height="300"
-								title="showLabel = true"
-								data-cy="pareto-label-on"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — tooltip (custom card showing share + cumulative)">
-			<div
-					class="story-shell"
-					data-cy="pareto-slot-tooltip"
-			>
-				<origam-chart-pareto
-						:series="FIXTURE_DEFECTS"
-						:height="380"
-						title="Custom tooltip — hover a column"
-						data-cy="pareto-slot-tooltip-chart"
-				>
-					<template #tooltip="{ category, value, share, cumulative, color }">
-						<div class="custom-tooltip">
-							<div
-									class="custom-tooltip__swatch"
-									:style="{ background: color }"
-							></div>
-							<div class="custom-tooltip__content">
-								<strong class="custom-tooltip__title">{{ category }}</strong>
-								<dl class="custom-tooltip__data">
-									<dt>Count</dt>
-									<dd>{{ value }}</dd>
-									<dt>Share</dt>
-									<dd>{{ Math.round(share * 100) }}%</dd>
-									<dt>Cumulative</dt>
-									<dd>{{ Math.round(cumulative * 100) }}%</dd>
-								</dl>
-							</div>
-						</div>
-					</template>
-				</origam-chart-pareto>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="pareto-slot-empty"
-			>
-				<origam-chart-pareto
-						:series="[]"
-						:height="300"
-						title="Empty state"
-						data-cy="pareto-slot-empty-chart"
-				>
-					<template #empty>
-						<div class="custom-empty">
-							No defect data available for the selected period.
-						</div>
-					</template>
-				</origam-chart-pareto>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — point-click on column">
-			<div
-					class="story-shell"
-					data-cy="pareto-emit"
-			>
-				<origam-chart-pareto
-						:series="FIXTURE_DEFECTS"
-						:height="360"
-						title="Click a column to emit point-click"
-						data-cy="pareto-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="pareto-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -289,21 +263,30 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
-	import OrigamChartPareto from '@origam/components/Chart/OrigamChartPareto.vue'
-
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import { OrigamChartPareto } from '@origam/components'
+	import type {
+		IChartParetoProps,
+		IChartSeries
+	} from '@origam/interfaces'
 	import type { IChartParetoDatum } from '@origam/interfaces/Chart/chart-pareto.interface'
+	import type { TChartLegendPosition } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
+	import type { IOptions } from '@origam/interfaces'
 
-	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
-		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+	const LEGEND_POSITION_OPTIONS: Array<IOptions<TChartLegendPosition>> = [
+		{ label: 'Top', value: 'top' },
+		{ label: 'Bottom', value: 'bottom' },
+		{ label: 'Left', value: 'left' },
+		{ label: 'Right', value: 'right' }
 	]
 
 	const DEFECT_DATA: Array<IChartParetoDatum> = [
@@ -319,85 +302,12 @@
 		{ category: 'Other', value: 4 }
 	]
 
-	const SALES_DATA: Array<IChartParetoDatum> = [
-		{ category: 'North America', value: 480 },
-		{ category: 'Europe', value: 320 },
-		{ category: 'Asia', value: 210 },
-		{ category: 'Latin America', value: 95 },
-		{ category: 'Middle East', value: 60 },
-		{ category: 'Africa', value: 35 }
-	]
-
 	const FIXTURE_DEFECTS: Array<IChartSeries> = [
 		{ name: 'Defect causes', data: DEFECT_DATA as unknown as Array<number> }
 	]
-
-	const FIXTURE_SALES: Array<IChartSeries> = [
-		{ name: 'Sales by region', data: SALES_DATA as unknown as Array<number> }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
-	.story-shell {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-
 	.custom-tooltip {
 		display: flex;
 		gap: 10px;
@@ -444,4 +354,13 @@
 		color: var(--origam-color-text-secondary, #6b7280);
 		font-style: italic;
 	}
+
+	.custom-title {
+		font-size: 1rem;
+	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartPareto.md"
+/>

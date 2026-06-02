@@ -3,132 +3,163 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerControls"
 	>
-		<!--
-			Playground — navigation strip (today / arrows / month-year
-			toggle). Full wiring only works inside OrigamDatePicker; the
-			standalone variant shows the chrome in isolation.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{ disabled: boolean; disabledNext: boolean; disabledPrev: boolean; disabledYear: boolean }>({
-					disabled: false,
-					disabledNext: false,
-					disabledPrev: false,
-					disabledYear: false,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May 2026' })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
 					<origam-date-picker-controls
 							:active="['date']"
-							v-bind="state"
-							data-cy="dp-controls-playground"
+							:text="state.text"
+							:next-icon="state.nextIcon || undefined"
+							:prev-icon="state.prevIcon || undefined"
+							:mode-icon="state.modeIcon || undefined"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled"     title="disabled (all)"/>
-				<HstCheckbox v-model="state.disabledNext" title="disabledNext"/>
-				<HstCheckbox v-model="state.disabledPrev" title="disabledPrev"/>
-				<HstCheckbox v-model="state.disabledYear" title="disabledYear"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.nextIcon" title="Next Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.prevIcon" title="Prev Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.modeIcon" title="Mode Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — realistic wiring (embedded in DatePicker)">
-			<!--
-				The controls are automatically wired when inside the parent
-				picker — arrows fire month navigation, the heading toggles the
-				year/month grid.
-			-->
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="defaultValue" data-cy="dp-controls-default"/>
-			</div>
-		</Variant>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Prop — disabled (standalone)"
-				:init-state="() => useStoryInitState<{ disabled: boolean; disabledNext: boolean; disabledPrev: boolean }>({ disabled: false, disabledNext: false, disabledPrev: false })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ disabled: false, disabledMonth: false, disabledYear: false, disabledNext: false, disabledPrev: false, viewMode: 'month' })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
 					<origam-date-picker-controls
 							:active="['date']"
 							:disabled="state.disabled"
+							:disabled-month="state.disabledMonth"
+							:disabled-year="state.disabledYear"
 							:disabled-next="state.disabledNext"
 							:disabled-prev="state.disabledPrev"
-							data-cy="dp-controls-disabled"
+							:view-mode="state.viewMode"
+							text="May 2026"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled"     title="disabled (all)"/>
-				<HstCheckbox v-model="state.disabledNext" title="disabledNext"/>
-				<HstCheckbox v-model="state.disabledPrev" title="disabledPrev"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"      title="Disabled (all)"/>
+					<HstCheckbox v-model="state.disabledMonth" title="Disabled Month"/>
+					<HstCheckbox v-model="state.disabledYear"  title="Disabled Year"/>
+					<HstCheckbox v-model="state.disabledNext"  title="Disabled Next"/>
+					<HstCheckbox v-model="state.disabledPrev"  title="Disabled Prev"/>
+				</StoryGroup>
+				<StoryGroup title="View">
+					<HstSelect v-model="state.viewMode" title="View Mode" :options="DATE_MODE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — disabledYear (pin to month view)">
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - click:month">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
 						:active="['date']"
-						disabled-year
-						data-cy="dp-controls-disabled-year"
-				/>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click:month">
-			<div style="padding: 24px;">
-				<origam-date-picker-controls
-						:active="['date']"
+						text="May 2026"
 						data-cy="dp-controls-emit-month"
 						@click:month="logEvent('click:month', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Emit — click:next">
+		<Variant title="Events - click:year">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
 						:active="['date']"
-						data-cy="dp-controls-emit-next"
-						@click:next="logEvent('click:next', $event)"
+						text="May 2026"
+						data-cy="dp-controls-emit-year"
+						@click:year="logEvent('click:year', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Emit — click:prev">
+		<Variant title="Events - click:prev">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
 						:active="['date']"
+						text="May 2026"
 						data-cy="dp-controls-emit-prev"
 						@click:prev="logEvent('click:prev', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Emit — click:text">
+		<Variant title="Events - click:next">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
 						:active="['date']"
+						text="May 2026"
+						data-cy="dp-controls-emit-next"
+						@click:next="logEvent('click:next', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - click:text">
+			<div style="padding: 24px;">
+				<origam-date-picker-controls
+						:active="['date']"
+						text="May 2026"
 						data-cy="dp-controls-emit-text"
 						@click:text="logEvent('click:text', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Emit — click:year">
-			<div style="padding: 24px;">
-				<origam-date-picker-controls
-						:active="['date']"
-						data-cy="dp-controls-emit-year"
-						@click:year="logEvent('click:year', $event)"
-				/>
-			</div>
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May 2026', disabled: false, disabledMonth: false, disabledYear: false, disabledNext: false, disabledPrev: false, viewMode: 'month' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-date-picker-controls
+							:active="['date']"
+							v-bind="state"
+							@click:month="logEvent('click:month', $event)"
+							@click:year="logEvent('click:year', $event)"
+							@click:prev="logEvent('click:prev', $event)"
+							@click:next="logEvent('click:next', $event)"
+							@click:text="logEvent('click:text', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.nextIcon" title="Next Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.prevIcon" title="Prev Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.modeIcon" title="Mode Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.viewMode"      title="View Mode"      :options="DATE_MODE_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled"      title="Disabled (all)"/>
+					<HstCheckbox v-model="state.disabledMonth" title="Disabled Month"/>
+					<HstCheckbox v-model="state.disabledYear"  title="Disabled Year"/>
+					<HstCheckbox v-model="state.disabledNext"  title="Disabled Next"/>
+					<HstCheckbox v-model="state.disabledPrev"  title="Disabled Prev"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -137,14 +168,21 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamDatePicker, OrigamDatePickerControls } from '@origam/components'
+	import { OrigamDatePickerControls } from '@origam/components'
+	import { DATE_MODE } from '@origam/enums'
+	import type { IDatePickerControlsProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { ICON_OPTIONS } from '@stories/const'
 
-	const defaultValue = ref('2026-05-08')
+	const DATE_MODE_OPTIONS = [
+		{ label: 'Month', value: DATE_MODE.MONTH },
+		{ label: 'Months', value: DATE_MODE.MONTHS },
+		{ label: 'Years', value: DATE_MODE.YEARS }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/DatePicker/OrigamDatePickerControls.md"/>

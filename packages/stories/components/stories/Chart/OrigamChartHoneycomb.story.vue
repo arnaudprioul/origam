@@ -3,232 +3,165 @@
 			group="components"
 			title="Chart/OrigamChartHoneycomb"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartHoneycombProps>>({
 					orientation: 'pointy-top',
 					colorMode: 'categorical',
+					tileSize: 30,
+					tileGap: 2,
+					title: 'Hex tile grid',
+					subtitle: '3×3 categorical'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-chart-honeycomb
+							:orientation="state.orientation"
+							:color-mode="state.colorMode"
+							:heatmap-color-range="state.colorMode === 'heatmap' ? ['info', 'danger'] : undefined"
+							:tile-size="state.tileSize"
+							:tile-gap="state.tileGap"
+							:series="FIXTURE_HEATMAP"
+							:height="360"
+							:bg-color="state.bgColor"
+							:elevation="state.elevation"
+							:rounded="state.rounded"
+							:aspect-ratio="state.aspectRatio"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							:show-label="true"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Orientation">
+					<HstSelect v-model="state.orientation" title="Orientation" :options="ORIENTATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor"   title="Bg Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.colorMode" title="Color Mode" :options="COLOR_MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tile Sizing">
+					<HstNumber v-model="state.tileSize" title="Tile Size" :min="10" :max="80" :step="5"/>
+					<HstNumber v-model="state.tileGap"  title="Tile Gap"  :min="0"  :max="20" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Labels">
+					<HstText v-model="state.title"      title="Title"/>
+					<HstText v-model="state.subtitle"   title="Subtitle"/>
+					<HstText v-model="state.aspectRatio" title="Aspect Ratio"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartHoneycombProps>>({
 					showLabel: true,
 					showLegend: true,
 					legendPosition: 'bottom',
 					showTooltip: true,
 					animated: true,
-					tileSize: 30,
-					tileGap: 2
+					animationDuration: 600
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="honeycomb-playground"
-				>
+				<div class="story-shell">
 					<origam-chart-honeycomb
-							:orientation="state.orientation"
-							:color-mode="state.colorMode"
 							:series="FIXTURE_3X3"
-							:height="Number(state.height) || 400"
-							:tile-size="Number(state.tileSize)"
-							:tile-gap="Number(state.tileGap)"
-							:show-label="Boolean(state.showLabel)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
+							:height="360"
+							:show-label="state.showLabel"
+							:show-legend="state.showLegend"
 							:legend-position="state.legendPosition"
-							:animated="Boolean(state.animated)"
-							title="Hex tile grid"
-							subtitle="3×3 categorical"
-							data-cy="honeycomb-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
+							:show-tooltip="state.showTooltip"
+							:animated="state.animated"
+							:animation-duration="state.animationDuration"
+							title="Functional controls"
 					/>
-					<pre
-							class="story-log"
-							data-cy="honeycomb-playground-log"
-					>{{ logLines.join('\n') }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.orientation"
-						title="orientation"
-						:options="ORIENTATION_OPTIONS"
-				/>
-				<HstSelect
-						v-model="state.colorMode"
-						title="colorMode"
-						:options="COLOR_MODE_OPTIONS"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.tileSize"
-						title="tileSize"
-				/>
-				<HstNumber
-						v-model="state.tileGap"
-						title="tileGap"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — orientation (pointy-top vs flat-top side by side)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-orientation"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>pointy-top (default)</strong>
-						<origam-chart-honeycomb
-								orientation="pointy-top"
-								:series="FIXTURE_3X3"
-								:height="360"
-								title="Pointy-top"
-								data-cy="honeycomb-orientation-pointy"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>flat-top</strong>
-						<origam-chart-honeycomb
-								orientation="flat-top"
-								:series="FIXTURE_3X3"
-								:height="360"
-								title="Flat-top"
-								data-cy="honeycomb-orientation-flat"
-						/>
-					</div>
-				</div>
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - point-click">
+			<div class="story-shell">
+				<origam-chart-honeycomb
+						:series="FIXTURE_3X3"
+						:height="360"
+						title="Click on a tile"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorMode (categorical vs heatmap side by side)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-color-mode"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>categorical</strong>
-						<origam-chart-honeycomb
-								color-mode="categorical"
-								:series="FIXTURE_HEATMAP"
-								:height="360"
-								:show-label="true"
-								title="Categorical"
-								data-cy="honeycomb-color-mode-categorical"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>heatmap</strong>
-						<origam-chart-honeycomb
-								color-mode="heatmap"
-								:series="FIXTURE_HEATMAP"
-								:heatmap-color-range="['info', 'danger']"
-								:height="360"
-								:show-label="true"
-								title="Heatmap"
-								data-cy="honeycomb-color-mode-heatmap"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - legend-click">
+			<div class="story-shell">
+				<origam-chart-honeycomb
+						:series="FIXTURE_3X3"
+						:height="360"
+						title="Click on a legend entry"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorScheme (DS intents vs custom palette)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-color-scheme"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>DS intent cycle</strong>
-						<origam-chart-honeycomb
-								color-mode="categorical"
-								:series="FIXTURE_3X3_NO_COLOR"
-								:height="300"
-								title="Intent cycle"
-								data-cy="honeycomb-color-scheme-intents"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS palette</strong>
-						<origam-chart-honeycomb
-								color-mode="categorical"
-								:series="FIXTURE_3X3_NO_COLOR"
-								:color-scheme="['#6366f1', '#8b5cf6', '#a78bfa', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#14b8a6']"
-								:height="300"
-								title="Custom palette"
-								data-cy="honeycomb-color-scheme-custom"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - series-toggle">
+			<div class="story-shell">
+				<origam-chart-honeycomb
+						:series="FIXTURE_3X3"
+						:height="360"
+						title="Toggle a series via the legend"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — tileSize / tileGap (compact vs spaced)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-tile-sizing"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>compact (size=20, gap=1)</strong>
-						<origam-chart-honeycomb
-								:tile-size="20"
-								:tile-gap="1"
-								:series="FIXTURE_US_STATES"
-								:height="300"
-								:show-label="true"
-								title="Compact US states"
-								data-cy="honeycomb-tile-compact"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>spaced (size=40, gap=6)</strong>
-						<origam-chart-honeycomb
-								:tile-size="40"
-								:tile-gap="6"
-								:series="FIXTURE_3X3"
-								:height="300"
-								:show-label="true"
-								title="Spaced 3×3"
-								data-cy="honeycomb-tile-spaced"
-						/>
-					</div>
-				</div>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Title">
+			<div class="story-shell">
+				<origam-chart-honeycomb
+						:series="FIXTURE_3X3"
+						:height="360"
+				>
+					<template #title>
+						<strong>Custom title</strong>
+						<em> — overriding the default header</em>
+					</template>
+				</origam-chart-honeycomb>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — tooltip (custom card)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-slot-tooltip"
-			>
+		<Variant title="Slots - Tooltip">
+			<div class="story-shell">
 				<origam-chart-honeycomb
 						:series="FIXTURE_HEATMAP"
 						color-mode="heatmap"
 						:height="360"
 						title="Custom tooltip"
-						data-cy="honeycomb-slot-tooltip-chart"
 				>
 					<template #tooltip="{ point, category }">
 						<div class="custom-tooltip">
@@ -240,16 +173,12 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — legend-item (custom render)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-slot-legend-item"
-			>
+		<Variant title="Slots - Legend-Item">
+			<div class="story-shell">
 				<origam-chart-honeycomb
 						:series="FIXTURE_3X3"
 						:height="360"
-						title="Custom legend"
-						data-cy="honeycomb-slot-legend-item-chart"
+						title="Custom legend items"
 				>
 					<template #legend-item="{ series, visible }">
 						<span
@@ -263,16 +192,12 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty (custom CTA)">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-slot-empty"
-			>
+		<Variant title="Slots - Empty">
+			<div class="story-shell">
 				<origam-chart-honeycomb
 						:series="[]"
 						:height="320"
 						title="Empty state"
-						data-cy="honeycomb-slot-empty-chart"
 				>
 					<template #empty>
 						<div class="custom-empty">
@@ -283,25 +208,90 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click / legend-click / series-toggle">
-			<div
-					class="story-shell"
-					data-cy="honeycomb-emit"
-			>
+		<Variant title="Slots - Tile-Label">
+			<div class="story-shell">
 				<origam-chart-honeycomb
 						:series="FIXTURE_3X3"
 						:height="360"
-						title="Interact with tiles"
-						data-cy="honeycomb-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="honeycomb-emit-log"
-				>{{ logLines.join('\n') }}</pre>
+						:show-label="true"
+						title="Custom tile label"
+				>
+					<template #tile-label="{ name, value, x, y }">
+						<tspan
+								text-anchor="middle"
+								dominant-baseline="middle"
+								style="font-size: 0.5rem; font-weight: 700;"
+						>{{ name || `${x},${y}` }}{{ value !== undefined ? ` (${value})` : '' }}</tspan>
+					</template>
+				</origam-chart-honeycomb>
 			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IChartHoneycombProps>>({
+					orientation: 'pointy-top',
+					colorMode: 'categorical',
+					showLabel: true,
+					showLegend: true,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					tileSize: 30,
+					tileGap: 2,
+					title: 'Hex tile grid',
+					subtitle: '3×3 categorical'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-chart-honeycomb
+							:orientation="state.orientation"
+							:color-mode="state.colorMode"
+							:series="FIXTURE_3X3"
+							:height="400"
+							:tile-size="state.tileSize"
+							:tile-gap="state.tileGap"
+							:show-label="state.showLabel"
+							:show-legend="state.showLegend"
+							:show-tooltip="state.showTooltip"
+							:legend-position="state.legendPosition"
+							:animated="state.animated"
+							:bg-color="state.bgColor"
+							:elevation="state.elevation"
+							:rounded="state.rounded"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							@point-click="logEvent('point-click', $event)"
+							@legend-click="logEvent('legend-click', $event)"
+							@series-toggle="logEvent('series-toggle', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.orientation" title="Orientation" :options="ORIENTATION_OPTIONS"/>
+					<HstSelect   v-model="state.colorMode"   title="Color Mode"  :options="COLOR_MODE_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"     title="Bg Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"   title="Elevation"   :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"     title="Rounded"     :options="ROUNDED_OPTIONS"/>
+					<HstNumber   v-model="state.tileSize"    title="Tile Size"   :min="10" :max="80" :step="5"/>
+					<HstNumber   v-model="state.tileGap"     title="Tile Gap"    :min="0"  :max="20" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showLabel"    title="Show Label"/>
+					<HstCheckbox v-model="state.showLegend"   title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip"  title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"     title="Animated"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -310,29 +300,35 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartHoneycomb } from '@origam/components'
+	import { CHART_HONEYCOMB_COLOR_MODE, CHART_HONEYCOMB_ORIENTATION } from '@origam/enums'
+	import type { IChartHoneycombProps, IChartSeries } from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const ORIENTATION_OPTIONS = [
-		{ value: 'pointy-top', label: 'pointy-top' },
-		{ value: 'flat-top', label: 'flat-top' }
+		{ value: CHART_HONEYCOMB_ORIENTATION.POINTY_TOP, label: 'pointy-top' },
+		{ value: CHART_HONEYCOMB_ORIENTATION.FLAT_TOP,   label: 'flat-top' }
 	]
 
 	const COLOR_MODE_OPTIONS = [
-		{ value: 'categorical', label: 'categorical' },
-		{ value: 'heatmap', label: 'heatmap' }
+		{ value: CHART_HONEYCOMB_COLOR_MODE.CATEGORICAL, label: 'categorical' },
+		{ value: CHART_HONEYCOMB_COLOR_MODE.HEATMAP,     label: 'heatmap' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
+		{ value: 'top',    label: 'top' },
 		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+		{ value: 'left',   label: 'left' },
+		{ value: 'right',  label: 'right' }
 	]
 
 	const FIXTURE_3X3: Array<IChartSeries> = [
@@ -348,23 +344,6 @@
 				{ x: 0, y: 2, name: 'C1', color: 'ghost' },
 				{ x: 1, y: 2, name: 'C2', color: 'primary' },
 				{ x: 2, y: 2, name: 'C3', color: 'success' }
-			]
-		}
-	]
-
-	const FIXTURE_3X3_NO_COLOR: Array<IChartSeries> = [
-		{
-			name: 'Grid 3x3',
-			data: [
-				{ x: 0, y: 0, name: 'A1' },
-				{ x: 1, y: 0, name: 'A2' },
-				{ x: 2, y: 0, name: 'A3' },
-				{ x: 0, y: 1, name: 'B1' },
-				{ x: 1, y: 1, name: 'B2' },
-				{ x: 2, y: 1, name: 'B3' },
-				{ x: 0, y: 2, name: 'C1' },
-				{ x: 1, y: 2, name: 'C2' },
-				{ x: 2, y: 2, name: 'C3' }
 			]
 		}
 	]
@@ -388,56 +367,6 @@
 			]
 		}
 	]
-
-	const FIXTURE_US_STATES: Array<IChartSeries> = [
-		{
-			name: 'US States',
-			data: [
-				{ x: 0, y: 0, name: 'WA', value: 7.6 },
-				{ x: 1, y: 0, name: 'MT', value: 1.1 },
-				{ x: 2, y: 0, name: 'ND', value: 0.8 },
-				{ x: 3, y: 0, name: 'MN', value: 5.7 },
-				{ x: 4, y: 0, name: 'MI', value: 10.0 },
-				{ x: 0, y: 1, name: 'OR', value: 4.2 },
-				{ x: 1, y: 1, name: 'ID', value: 1.9 },
-				{ x: 2, y: 1, name: 'SD', value: 0.9 },
-				{ x: 3, y: 1, name: 'WI', value: 5.9 },
-				{ x: 4, y: 1, name: 'NY', value: 19.5 },
-				{ x: 0, y: 2, name: 'CA', value: 39.5 },
-				{ x: 1, y: 2, name: 'NV', value: 3.1 },
-				{ x: 2, y: 2, name: 'NE', value: 2.0 },
-				{ x: 3, y: 2, name: 'IA', value: 3.2 },
-				{ x: 4, y: 2, name: 'OH', value: 11.8 },
-				{ x: 0, y: 3, name: 'AZ', value: 7.5 },
-				{ x: 1, y: 3, name: 'CO', value: 5.8 },
-				{ x: 2, y: 3, name: 'KS', value: 2.9 },
-				{ x: 3, y: 3, name: 'MO', value: 6.2 },
-				{ x: 4, y: 3, name: 'PA', value: 13.0 },
-				{ x: 0, y: 4, name: 'TX', value: 29.0 },
-				{ x: 1, y: 4, name: 'OK', value: 4.0 },
-				{ x: 2, y: 4, name: 'AR', value: 3.0 },
-				{ x: 3, y: 4, name: 'TN', value: 6.9 }
-			]
-		}
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x=${ point.x } y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -446,37 +375,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -497,3 +395,8 @@
 		font-style: italic;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartHoneycomb.md"
+/>

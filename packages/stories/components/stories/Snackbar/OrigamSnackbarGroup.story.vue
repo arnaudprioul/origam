@@ -3,147 +3,120 @@
 			group="components"
 			title="Snackbar/OrigamSnackbarGroup"
 	>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					location: TSnackbarGroupLocation
-					max: number
-					defaultDuration: number
-					intent: TIntent
-					dismissible: boolean
-				}>({
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ISnackbarGroupProps> & IFunctionalState>({
+					id: 'functional',
 					location: 'bottom-right',
 					max: 5,
 					defaultDuration: 5000,
+					spacing: '12px',
+					direction: undefined,
+					tag: 'div',
 					intent: 'info',
 					dismissible: true
 				})"
 		>
 			<template #default="{ state }">
-				<div class="story-shell" data-cy="snackbar-group-playground">
+				<div class="story-shell">
 					<div class="story-row">
 						<origam-btn
 								text="Notify"
-								data-cy="snackbar-group-playground-trigger"
-								@click="playgroundNotify(state.intent, state.dismissible)"
+								@click="functionalNotify(state)"
 						/>
 						<origam-btn
 								text="Dismiss all"
-								data-cy="snackbar-group-playground-dismiss-all"
-								@click="playgroundDismissAll"
+								@click="functionalDismissAll(state.id)"
 						/>
 					</div>
-
 					<origam-snackbar-group
-							id="playground"
+							:id="state.id"
 							:location="state.location"
 							:max="state.max"
 							:default-duration="state.defaultDuration"
-							data-cy="snackbar-group-playground-host"
+							:spacing="state.spacing"
+							:direction="state.direction || undefined"
+							:tag="state.tag"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.location"
-						title="location"
-						:options="locationOptions"
-				/>
-				<HstNumber v-model="state.max"             title="max"/>
-				<HstNumber v-model="state.defaultDuration" title="defaultDuration (ms)"/>
-				<HstSelect
-						v-model="state.intent"
-						title="intent"
-						:options="intentOptions"
-				/>
-				<HstCheckbox v-model="state.dismissible" title="dismissible"/>
+				<StoryGroup title="Stack">
+					<HstText   v-model="state.id"              title="id"/>
+					<HstNumber v-model="state.max"             title="max" :min="1" :max="20" :step="1"/>
+					<HstNumber v-model="state.defaultDuration" title="defaultDuration (ms)" :min="0" :max="30000" :step="500"/>
+					<HstText   v-model="state.spacing"         title="spacing"/>
+				</StoryGroup>
+				<StoryGroup title="Position">
+					<HstSelect v-model="state.location"  title="location"  :options="LOCATION_OPTIONS"/>
+					<HstSelect v-model="state.direction" title="direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.tag" title="tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Notification">
+					<HstSelect   v-model="state.intent"      title="intent"      :options="INTENT_OPTIONS"/>
+					<HstCheckbox v-model="state.dismissible" title="dismissible"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — location">
-			<div class="story-shell" data-cy="snackbar-group-location">
-				<div class="story-row">
-					<origam-btn
-							v-for="loc in SNACKBAR_GROUP_LOCATIONS"
-							:key="loc"
-							:text="loc"
-							:data-cy="`snackbar-group-location-${loc}`"
-							@click="spawnInLocation(loc)"
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<ISnackbarGroupProps> & IPlaygroundState>({
+					id: 'playground',
+					location: 'bottom-right',
+					max: 5,
+					defaultDuration: 5000,
+					spacing: '12px',
+					direction: undefined,
+					tag: 'div',
+					intent: 'info',
+					dismissible: true
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<div class="story-row">
+						<origam-btn
+								text="Notify"
+								@click="playgroundNotify(state)"
+						/>
+						<origam-btn
+								text="Dismiss all"
+								@click="playgroundDismissAll(state.id)"
+						/>
+					</div>
+					<origam-snackbar-group
+							:id="state.id"
+							:location="state.location"
+							:max="state.max"
+							:default-duration="state.defaultDuration"
+							:spacing="state.spacing"
+							:direction="state.direction || undefined"
+							:tag="state.tag"
 					/>
 				</div>
-				<origam-snackbar-group
-						v-for="loc in SNACKBAR_GROUP_LOCATIONS"
-						:key="`stack-${loc}`"
-						:id="`location-${loc}`"
-						:location="loc"
-						:data-cy="`snackbar-group-location-host-${loc}`"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — max">
-			<div class="story-shell" data-cy="snackbar-group-max">
-				<origam-btn
-						text="Burst 10 toasts (max=5)"
-						data-cy="snackbar-group-max-burst"
-						@click="burstMax"
-				/>
-				<origam-snackbar-group
-						id="max-test"
-						:max="5"
-						location="bottom-right"
-						data-cy="snackbar-group-max-host"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — intent">
-			<div class="story-shell" data-cy="snackbar-group-intent">
-				<div class="story-row">
-					<origam-btn text="Success" data-cy="snackbar-group-intent-success" @click="spawnIntent('success')"/>
-					<origam-btn text="Warning" data-cy="snackbar-group-intent-warning" @click="spawnIntent('warning')"/>
-					<origam-btn text="Danger"  data-cy="snackbar-group-intent-danger"  @click="spawnIntent('danger')"/>
-					<origam-btn text="Info"    data-cy="snackbar-group-intent-info"    @click="spawnIntent('info')"/>
-				</div>
-				<origam-snackbar-group
-						id="intent-stack"
-						location="bottom-right"
-						data-cy="snackbar-group-intent-host"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — none (composable-driven)">
-			<div class="story-shell" data-cy="snackbar-group-slot-none">
-				<div class="story-status">
-					This component is composable-driven and does not expose a default
-					slot. Each item is created via <code>useSnackbarGroup().notify()</code>
-					— configure title, message, intent, icon, actions on the call site.
-				</div>
-				<origam-btn text="Notify with title + message" data-cy="snackbar-group-slot-trigger" @click="spawnRich"/>
-				<origam-snackbar-group
-						id="rich"
-						location="bottom-right"
-						data-cy="snackbar-group-slot-host"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — onDismiss">
-			<div class="story-shell" data-cy="snackbar-group-emit">
-				<div class="story-row">
-					<origam-btn text="Notify with onDismiss" data-cy="snackbar-group-emit-trigger" @click="spawnEmit"/>
-					<origam-btn text="With Action" data-cy="snackbar-group-emit-action" @click="spawnEmitAction"/>
-				</div>
-				<div class="story-status" data-cy="snackbar-group-emit-counter">
-					Dismissed: <strong>{{ dismissCount }}</strong> — Action clicks: <strong>{{ actionCount }}</strong>
-				</div>
-				<origam-snackbar-group
-						id="emit-stack"
-						location="bottom-right"
-						data-cy="snackbar-group-emit-host"
-				/>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstSelect   v-model="state.intent"      title="intent"      :options="INTENT_OPTIONS"/>
+					<HstCheckbox v-model="state.dismissible" title="dismissible"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstText   v-model="state.id"              title="id"/>
+					<HstNumber v-model="state.max"             title="max" :min="1" :max="20" :step="1"/>
+					<HstNumber v-model="state.defaultDuration" title="defaultDuration (ms)" :min="0" :max="30000" :step="500"/>
+					<HstText   v-model="state.spacing"         title="spacing"/>
+					<HstSelect v-model="state.location"        title="location"  :options="LOCATION_OPTIONS"/>
+					<HstSelect v-model="state.direction"       title="direction" :options="DIRECTION_OPTIONS"/>
+					<HstSelect v-model="state.tag"             title="tag"       :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -153,129 +126,75 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
-	import { ref } from 'vue'
 
 	import { OrigamBtn, OrigamSnackbarGroup } from '@origam/components'
 
 	import { useSnackbarGroup } from '@origam/composables'
 
-	import { SNACKBAR_GROUP_LOCATIONS } from '@origam/consts'
+	import { SNACKBAR_GROUP_LOCATIONS, SNACKBAR_GROUP_DIRECTIONS } from '@origam/consts'
 
-	import type { IOptions } from '@origam/interfaces'
+	import type { IOptions, ISnackbarGroupProps } from '@origam/interfaces'
 
-	import type { TIntent, TSnackbarGroupLocation } from '@origam/types'
+	import type { TIntent, TSnackbarGroupDirection, TSnackbarGroupLocation } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { INTENT_OPTIONS, TAG_OPTIONS } from '@stories/const'
 
-	const intentOptions: Array<IOptions<TIntent>> = [
-		{label: 'primary',   value: 'primary'},
-		{label: 'success',   value: 'success'},
-		{label: 'warning',   value: 'warning'},
-		{label: 'danger',    value: 'danger'},
-		{label: 'info',      value: 'info'},
-		{label: 'neutral',   value: 'neutral'},
-		{label: 'secondary', value: 'secondary'},
-		{label: 'ghost',     value: 'ghost'}
+	interface IFunctionalState {
+		intent: TIntent
+		dismissible: boolean
+	}
+
+	interface IPlaygroundState {
+		intent: TIntent
+		dismissible: boolean
+	}
+
+	const LOCATION_OPTIONS: Array<IOptions<TSnackbarGroupLocation | undefined>> = [
+		{ label: '(auto)', value: undefined },
+		...SNACKBAR_GROUP_LOCATIONS.map(loc => ({ label: loc, value: loc }))
 	]
 
-	const locationOptions: Array<IOptions<TSnackbarGroupLocation>> = SNACKBAR_GROUP_LOCATIONS.map(loc => ({
-		label: loc,
-		value: loc
-	}))
+	const DIRECTION_OPTIONS: Array<IOptions<TSnackbarGroupDirection | undefined>> = [
+		{ label: '(auto)', value: undefined },
+		...SNACKBAR_GROUP_DIRECTIONS.map(dir => ({ label: dir, value: dir }))
+	]
 
-	const dismissCount = ref<number>(0)
-	const actionCount = ref<number>(0)
+	const functionalNotify = (state: Partial<ISnackbarGroupProps> & IFunctionalState) => {
+		const stack = useSnackbarGroup({ id: state.id ?? 'functional' })
 
-	const playgroundStack = useSnackbarGroup({id: 'playground'})
-
-	const playgroundNotify = (intent: TIntent, dismissible: boolean) => {
-		playgroundStack.notify({
+		stack.notify({
 			title: 'Notification',
-			message: `An ${intent} toast spawned from the playground.`,
-			intent,
-			dismissible
+			message: `A ${state.intent} toast from Functional.`,
+			intent: state.intent,
+			dismissible: state.dismissible
+		})
+
+		logEvent('notify', { intent: state.intent, dismissible: state.dismissible })
+	}
+
+	const functionalDismissAll = (id: string | undefined) => {
+		const stack = useSnackbarGroup({ id: id ?? 'functional' })
+
+		stack.dismissAll()
+	}
+
+	const playgroundNotify = (state: Partial<ISnackbarGroupProps> & IPlaygroundState) => {
+		const stack = useSnackbarGroup({ id: state.id ?? 'playground' })
+
+		stack.notify({
+			title: 'Notification',
+			message: `A ${state.intent} toast from Default.`,
+			intent: state.intent,
+			dismissible: state.dismissible
 		})
 	}
 
-	const playgroundDismissAll = () => {
-		playgroundStack.dismissAll()
-	}
+	const playgroundDismissAll = (id: string | undefined) => {
+		const stack = useSnackbarGroup({ id: id ?? 'playground' })
 
-	const spawnInLocation = (loc: TSnackbarGroupLocation) => {
-		const stack = useSnackbarGroup({id: `location-${loc}`})
-		stack.notify({title: loc, message: `Toast at ${loc}.`, intent: 'info', duration: 3000})
-	}
-
-	const maxStack = useSnackbarGroup({id: 'max-test'})
-
-	const burstMax = () => {
-		for (let i = 1; i <= 10; i++) {
-			maxStack.notify({
-				title: `Toast #${i}`,
-				message: 'Burst — only the latest 5 stay.',
-				duration: 0
-			})
-		}
-	}
-
-	const intentStack = useSnackbarGroup({id: 'intent-stack'})
-
-	const spawnIntent = (intent: TIntent) => {
-		intentStack.notify({
-			title: intent.charAt(0).toUpperCase() + intent.slice(1),
-			message: `${intent} flavoured toast.`,
-			intent,
-			duration: 4000
-		})
-	}
-
-	const richStack = useSnackbarGroup({id: 'rich'})
-
-	const spawnRich = () => {
-		richStack.notify({
-			title: 'Profile saved',
-			message: 'Your changes have been applied to your account.',
-			intent: 'success',
-			duration: 4000
-		})
-	}
-
-	const emitStack = useSnackbarGroup({id: 'emit-stack'})
-
-	const spawnEmit = () => {
-		emitStack.notify({
-			title: 'Dismiss me',
-			message: 'Click X or wait — the counter increments on dismiss.',
-			intent: 'info',
-			duration: 3000,
-			onDismiss: () => {
-				dismissCount.value += 1
-				logEvent('onDismiss', dismissCount.value)
-			}
-		})
-	}
-
-	const spawnEmitAction = () => {
-		emitStack.notify({
-			title: 'Item deleted',
-			message: 'A row was removed from your list.',
-			intent: 'warning',
-			duration: 6000,
-			actions: [
-				{
-					label: 'Undo',
-					intent: 'primary',
-					handler: () => {
-						actionCount.value += 1
-						logEvent('action', 'undo')
-					}
-				}
-			],
-			onDismiss: () => {
-				dismissCount.value += 1
-				logEvent('onDismiss', dismissCount.value)
-			}
-		})
+		stack.dismissAll()
 	}
 </script>
 
@@ -293,11 +212,6 @@
 		gap: 12px;
 		align-items: center;
 		flex-wrap: wrap;
-	}
-
-	.story-status {
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66));
 	}
 </style>
 
