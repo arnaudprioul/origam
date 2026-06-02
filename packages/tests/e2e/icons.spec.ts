@@ -466,10 +466,11 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
         }
     })
 
-    // DS BUG: OrigamSvgIcon renders aria-hidden="true" on the inner <svg> but does NOT
-    // set role="img". The W3C pattern for a decorative-yet-labelled SVG requires both.
-    // Fix: add role="img" to the <svg> element in OrigamSvgIcon.vue.
-    test.fixme('SVG element — aria-hidden and role="img" present', async ({ page }) => {
+    // Decorative-icon semantics (W3C "No ARIA is better than bad ARIA"):
+    // OrigamSvgIcon is presentational, so the <svg> carries aria-hidden="true"
+    // and MUST NOT carry role="img". A meaningful icon is labelled on its host
+    // (e.g. aria-label on an icon-only button), never by exposing the hidden svg.
+    test('SVG element — decorative: aria-hidden="true" and no role', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
@@ -478,7 +479,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const svgEl = sandbox.locator('.origam-icon__svg').first()
         await expect(svgEl).toHaveAttribute('aria-hidden', 'true')
-        await expect(svgEl).toHaveAttribute('role', 'img')
+        await expect(svgEl).not.toHaveAttribute('role', /.*/)
     })
 
     test('SVG element — viewBox is "0 0 24 24"', async ({ page }) => {
