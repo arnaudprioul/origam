@@ -52,7 +52,7 @@
 						:multi-sort="state.multiSort"
 						:disable-sort="state.disableSort"
 						:sticky="state.sticky"
-						sort-by="commits"
+						:sort-by="[{ key: 'commits', order: 'asc' }]"
 				/>
 			</template>
 			<template #controls="{ state }">

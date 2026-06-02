@@ -93,7 +93,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IDatePickerMonthProps>({ color: 'primary', month: currentMonth, year: currentYear })"
+				:init-state="() => useStoryInitState<IDatePickerMonthProps>({ color: 'primary', month: currentMonth, year: currentYear, weekdays: [0, 1, 2, 3, 4, 5, 6] })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker-month

@@ -158,9 +158,9 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Mode">
-					<HstCheckbox v-model="state.permanent"  title="Permanent"/>
-					<HstCheckbox v-model="state.temporary"  title="Temporary"/>
-					<HstCheckbox v-model="state.modelValue" title="Open (modelValue)"/>
+					<HstCheckbox v-model="state.permanent" title="Permanent"/>
+					<HstCheckbox v-model="state.temporary" title="Temporary"/>
+					<HstCheckbox v-model="state.open"      title="Open (modelValue)"/>
 				</StoryGroup>
 				<StoryGroup title="Rail">
 					<HstCheckbox v-model="state.rail"      title="Rail"/>
@@ -343,11 +343,11 @@
 					open: true,
 					permanent: true,
 					temporary: false,
-					modelValue: true,
 					rail: false,
 					railWidth: 56,
 					floating: false,
 					scrim: true,
+					expandOnHover: false,
 					width: 256,
 					location: 'left',
 					push: null,
@@ -355,7 +355,9 @@
 					color: undefined,
 					bgColor: undefined,
 					elevation: undefined,
-					rounded: undefined
+					rounded: undefined,
+					border: undefined,
+					density: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -371,8 +373,24 @@
 							</template>
 						</origam-app-bar>
 						<origam-drawer
-								v-bind="state"
 								:model-value="state.open"
+								:permanent="state.permanent"
+								:temporary="state.temporary"
+								:rail="state.rail"
+								:rail-width="state.railWidth"
+								:floating="state.floating"
+								:scrim="state.scrim"
+								:expand-on-hover="state.expandOnHover"
+								:width="state.width"
+								:location="state.location"
+								:push="state.push"
+								:clipped="state.clipped"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:elevation="state.elevation"
+								:rounded="state.rounded"
+								:border="state.border"
+								:density="state.density"
 								@update:model-value="(v: boolean) => state.open = v"
 								@update:rail="(v: boolean) => logEvent('update:rail', v)"
 						>

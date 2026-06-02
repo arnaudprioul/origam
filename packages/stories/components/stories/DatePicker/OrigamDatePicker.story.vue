@@ -7,7 +7,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ bgColor: 'primary', viewMode: DATE_MODE.MONTH })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker
@@ -27,6 +27,7 @@
 						:density="state.density"
 						:title="state.title || undefined"
 						:weeks-in-month="state.weeksInMonth"
+						:view-mode="state.viewMode"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -67,7 +68,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ viewMode: 'month' })"
+				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ viewMode: DATE_MODE.MONTH })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker
@@ -173,7 +174,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ bgColor: 'primary', viewMode: 'month' })"
+				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ bgColor: 'primary', viewMode: DATE_MODE.MONTH })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker
@@ -229,7 +230,8 @@
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 
-	const date = ref<string | null>(null)
+	const today = new Date().toISOString().slice(0, 10)
+	const date = ref<string>(today)
 
 	const VIEW_MODE_OPTIONS = [
 		{ label: 'Month', value: DATE_MODE.MONTH },

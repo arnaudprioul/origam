@@ -19,7 +19,16 @@
 					rowGap: undefined,
 					autoColumns: undefined,
 					autoRows: undefined,
-					areas: undefined
+					areas: undefined,
+					bgColor: undefined,
+					color: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					width: undefined,
+					height: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -68,9 +77,9 @@
 					<HstText   v-model="state.rowGap"    title="Row Gap (override)"/>
 				</StoryGroup>
 				<StoryGroup title="Align">
-					<HstSelect v-model="state.alignItems"    title="Align Items"    :options="GRID_PLACE_ITEMS_OPTIONS"/>
-					<HstSelect v-model="state.justifyItems"  title="Justify Items"  :options="GRID_PLACE_ITEMS_OPTIONS"/>
-					<HstSelect v-model="state.alignContent"  title="Align Content"  :options="GRID_PLACE_CONTENT_OPTIONS"/>
+					<HstSelect v-model="state.alignItems"     title="Align Items"     :options="GRID_PLACE_ITEMS_OPTIONS"/>
+					<HstSelect v-model="state.justifyItems"   title="Justify Items"   :options="GRID_PLACE_ITEMS_OPTIONS"/>
+					<HstSelect v-model="state.alignContent"   title="Align Content"   :options="GRID_PLACE_CONTENT_OPTIONS"/>
 					<HstSelect v-model="state.justifyContent" title="Justify Content" :options="GRID_PLACE_CONTENT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
@@ -163,7 +172,7 @@
 		<Variant title="Prop — columns">
 			<div class="story-shell">
 				<div class="story-col">
-					<strong>number = 3 (repeat(3, 1fr))</strong>
+					<p class="story-label">number = 3 (repeat(3, 1fr))</p>
 					<origam-grid
 							:columns="3"
 							gap="sm"
@@ -180,7 +189,7 @@
 				</div>
 
 				<div class="story-col">
-					<strong>number = 12 (repeat(12, 1fr))</strong>
+					<p class="story-label">number = 12 (repeat(12, 1fr))</p>
 					<origam-grid
 							:columns="12"
 							gap="sm"
@@ -197,7 +206,7 @@
 				</div>
 
 				<div class="story-col">
-					<strong>string = '1fr 2fr 1fr'</strong>
+					<p class="story-label">string = '1fr 2fr 1fr'</p>
 					<origam-grid
 							columns="1fr 2fr 1fr"
 							gap="sm"
@@ -210,7 +219,7 @@
 				</div>
 
 				<div class="story-col">
-					<strong>array = ['200px', '1fr', '200px']</strong>
+					<p class="story-label">array = ['200px', '1fr', '200px']</p>
 					<origam-grid
 							:columns="['200px', '1fr', '200px']"
 							gap="sm"
@@ -274,7 +283,7 @@
 						:key="size"
 						class="story-col"
 				>
-					<strong>gap = {{ size }}</strong>
+					<p class="story-label">gap = {{ size }}</p>
 					<origam-grid
 							:columns="4"
 							:gap="size"
@@ -295,7 +304,7 @@
 		<Variant title="Prop — autoFlow">
 			<div class="story-shell">
 				<div class="story-col">
-					<strong>autoFlow = row</strong>
+					<p class="story-label">autoFlow = row</p>
 					<origam-grid
 							:columns="3"
 							auto-flow="row"
@@ -313,7 +322,7 @@
 				</div>
 
 				<div class="story-col">
-					<strong>autoFlow = column</strong>
+					<p class="story-label">autoFlow = column</p>
 					<origam-grid
 							:rows="3"
 							auto-flow="column"
@@ -331,7 +340,7 @@
 				</div>
 
 				<div class="story-col">
-					<strong>autoFlow = row dense</strong>
+					<p class="story-label">autoFlow = row dense</p>
 					<origam-grid
 							:columns="4"
 							auto-flow="row dense"
@@ -370,7 +379,7 @@
 			<template #default="{ state }">
 				<div class="story-shell">
 					<div class="story-col">
-						<strong>column span (object syntax)</strong>
+						<p class="story-label">column span (object syntax)</p>
 						<origam-grid
 								:columns="6"
 								gap="sm"
@@ -406,7 +415,7 @@
 					</div>
 
 					<div class="story-col">
-						<strong>area-named (parent grid declares areas)</strong>
+						<p class="story-label">area-named (parent grid declares areas)</p>
 						<origam-grid
 								:areas="HOLY_GRAIL_AREAS"
 								columns="200px 1fr 200px"
@@ -460,14 +469,19 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IGridProps>({
+				:init-state="() => useStoryInitState<Partial<IGridProps>>({
 					columns: 4,
 					rows: 'auto',
 					gap: 'md',
 					autoFlow: 'row',
 					alignItems: 'stretch',
 					justifyItems: 'stretch',
-					inline: false
+					inline: false,
+					tag: 'div',
+					bgColor: undefined,
+					color: undefined,
+					rounded: undefined,
+					elevation: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -488,10 +502,10 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Layout">
-					<HstNumber v-model="state.columns" title="Columns (number)" :min="1" :max="12"/>
-					<HstText   v-model="state.rows"    title="Rows"/>
-					<HstSelect v-model="state.autoFlow" title="Auto Flow" :options="GRID_AUTO_FLOW_OPTIONS"/>
-					<HstCheckbox v-model="state.inline" title="Inline (inline-grid)"/>
+					<HstNumber   v-model="state.columns"   title="Columns (number)" :min="1" :max="12"/>
+					<HstText     v-model="state.rows"      title="Rows"/>
+					<HstSelect   v-model="state.autoFlow"  title="Auto Flow"        :options="GRID_AUTO_FLOW_OPTIONS"/>
+					<HstCheckbox v-model="state.inline"    title="Inline (inline-grid)"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.gap"          title="Gap"           :options="GRID_GAP_OPTIONS"/>
@@ -549,7 +563,7 @@
 		...GRID_PLACE_SELF.map(v => ({ label: v, value: v as TGridPlaceSelf }))
 	]
 
-	const HOLY_GRAIL_AREAS = [
+	const HOLY_GRAIL_AREAS: ReadonlyArray<string> = [
 		'header header header',
 		'sidebar main aside',
 		'footer footer footer'
@@ -568,6 +582,12 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
+	}
+
+	.story-label {
+		margin: 0;
+		font: 0.8125rem/1.4 system-ui, sans-serif;
+		color: var(--origam-color__text---secondary, #666);
 	}
 
 	.grid-host {

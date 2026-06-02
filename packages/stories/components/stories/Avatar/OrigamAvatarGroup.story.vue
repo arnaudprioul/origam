@@ -170,8 +170,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IAvatarGroupProps>({
-					items: people,
+				:init-state="() => useStoryInitState<Omit<IAvatarGroupProps, 'items'>>({
 					max: 4,
 					direction: 'horizontal',
 					expandOnHover: false,
@@ -180,7 +179,20 @@
 				})"
 		>
 			<template #default="{ state }">
-				<origam-avatar-group v-bind="state"/>
+				<origam-avatar-group
+						:items="people"
+						:max="state.max"
+						:direction="state.direction"
+						:expand-on-hover="state.expandOnHover"
+						:expand-on-click="state.expandOnClick"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:size="state.size"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
