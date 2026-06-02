@@ -3,99 +3,103 @@
 			group="components"
 			title="Divider/OrigamDivider"
 	>
-		<!--
-			Playground — first by convention. Exposes every IDividerProps knob.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDividerProps>>({ direction: 'horizontal' })"
+		>
+			<template #default="{ state }">
+				<div
+						v-if="state.direction === 'vertical'"
+						style="display: flex; gap: 12px; align-items: center; height: 64px;"
+				>
+					<span>Left</span>
+					<origam-divider
+							:direction="state.direction"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:length="state.length"
+							:thickness="state.thickness"
+							:inset="state.inset"
+							:margin="state.margin"
+					/>
+					<span>Right</span>
+				</div>
+				<div
+						v-else
+						style="display: flex; flex-direction: column; gap: 12px;"
+				>
+					<span>Top</span>
+					<origam-divider
+							:direction="state.direction"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:length="state.length"
+							:thickness="state.thickness"
+							:inset="state.inset"
+							:margin="state.margin"
+					/>
+					<span>Bottom</span>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Direction">
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstCheckbox v-model="state.inset" title="Inset"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.length"    title="Length (px or CSS)"/>
+					<HstText v-model="state.thickness" title="Thickness (px or CSS)"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.margin" title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IDividerProps>({
-					direction: undefined,
-					length: undefined,
-					thickness: undefined
-				})"
+				:init-state="() => useStoryInitState<IDividerProps>({ direction: 'horizontal' })"
 		>
 			<template #default="{ state }">
-				<div v-if="state.direction === 'vertical'" style="display: flex; gap: 12px; align-items: center; height: 64px;">
+				<div
+						v-if="state.direction === 'vertical'"
+						style="display: flex; gap: 12px; align-items: center; height: 64px;"
+				>
 					<span>Left</span>
 					<origam-divider v-bind="state"/>
 					<span>Right</span>
 				</div>
-				<div v-else style="display: flex; flex-direction: column; gap: 12px;">
+				<div
+						v-else
+						style="display: flex; flex-direction: column; gap: 12px;"
+				>
 					<span>Top</span>
 					<origam-divider v-bind="state"/>
 					<span>Bottom</span>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
-				<HstNumber v-model="state.length"    title="length (px)"/>
-				<HstNumber v-model="state.thickness" title="thickness (px)"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — direction"
-				:init-state="() => useStoryInitState<{ direction?: TDirection }>({ direction: undefined })"
-		>
-			<template #default="{ state }">
-				<div v-if="state.direction === 'vertical'" style="display: flex; gap: 12px; align-items: center; height: 32px;">
-					<span>Left</span>
-					<origam-divider :direction="state.direction"/>
-					<span>Right</span>
-				</div>
-				<div v-else style="display: flex; flex-direction: column; gap: 12px;">
-					<span>Top</span>
-					<origam-divider :direction="state.direction"/>
-					<span>Bottom</span>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — length"
-				:init-state="() => useStoryInitState<{ length?: number | string }>({ length: 120 })"
-		>
-			<template #default="{ state }">
-				<origam-divider :length="state.length"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.length" title="length (px)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — thickness"
-				:init-state="() => useStoryInitState<{ thickness?: number | string }>({ thickness: 2 })"
-		>
-			<template #default="{ state }">
-				<origam-divider :thickness="state.thickness"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.thickness" title="thickness (px)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 8px;">
-					<origam-divider v-bind="state" data-cy="divider-color"/>
-					<origam-divider color="primary" data-cy="divider-color-primary"/>
-					<origam-divider color="success" data-cy="divider-color-success"/>
-					<origam-divider color="warning" data-cy="divider-color-warning"/>
-					<origam-divider color="danger"  data-cy="divider-color-danger"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+					<HstCheckbox v-model="state.inset"   title="Inset"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstText v-model="state.length"    title="Length"/>
+					<HstText v-model="state.thickness" title="Thickness"/>
+					<HstText v-model="state.margin"    title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -107,21 +111,14 @@
 >
 	import { OrigamDivider } from '@origam/components'
 	import { DIRECTION } from '@origam/enums'
-	import type {
-		IColorProps,
-		IDividerProps,
-		IOptions
-	} from '@origam/interfaces'
+	import type { IDividerProps, IOptions } from '@origam/interfaces'
 	import type { TDirection } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList } from '@stories/const'
+	import { COLOR_OPTIONS } from '@stories/const'
 
-	/**
-	 * Divider direction options. Inlined here because the divider is the
-	 * only component currently consuming this enum at story level.
-	 */
-	const directionList: Array<IOptions<TDirection>> = [
+	const DIRECTION_OPTIONS: Array<IOptions<TDirection | undefined>> = [
 		{ label: '(default — horizontal)', value: undefined },
 		{ label: 'Horizontal', value: DIRECTION.HORIZONTAL },
 		{ label: 'Vertical', value: DIRECTION.VERTICAL },

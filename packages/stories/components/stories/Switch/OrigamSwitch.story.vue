@@ -3,231 +3,151 @@
 			group="components"
 			title="Switch/OrigamSwitch"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-switch
-							v-model="colorModel"
-							v-bind="state"
-							label="Colored switch (interactive)"
-							data-cy="switch-color"
-					/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-switch :model-value="true" color="primary"
-						               label='color="primary" only'
-						               data-cy="switch-color-fixture-color-only"/>
-						<origam-switch :model-value="true" bg-color="success"
-						               label='bg-color="success" only'
-						               data-cy="switch-color-fixture-bg-only"/>
-						<origam-switch :model-value="true" color="warning" bg-color="primary"
-						               label='color="warning" + bg-color="primary"'
-						               data-cy="switch-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-switch
-							v-model="colorModel"
-							v-bind="state"
-							label="Colored switch (interactive)"
-							data-cy="switch-color"
-					/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-switch :model-value="true" color="primary"
-						               label='color="primary" only'
-						               data-cy="switch-color-fixture-color-only"/>
-						<origam-switch :model-value="true" bg-color="success"
-						               label='bg-color="success" only'
-						               data-cy="switch-color-fixture-bg-only"/>
-						<origam-switch :model-value="true" color="warning" bg-color="primary"
-						               label='color="warning" + bg-color="primary"'
-						               data-cy="switch-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-switch
-							v-model="colorModel"
-							v-bind="state"
-							label="Colored switch (interactive)"
-							data-cy="switch-color"
-					/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-switch :model-value="true" color="primary"
-						               label='color="primary" only'
-						               data-cy="switch-color-fixture-color-only"/>
-						<origam-switch :model-value="true" bg-color="success"
-						               label='bg-color="success" only'
-						               data-cy="switch-color-fixture-bg-only"/>
-						<origam-switch :model-value="true" color="warning" bg-color="primary"
-						               label='color="warning" + bg-color="primary"'
-						               data-cy="switch-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ISwitchProps>>({ color: 'primary', label: 'Switch' })"
 		>
 			<template #default="{ state }">
 				<origam-switch
-						v-model="densityModel"
+						:model-value="false"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:size="state.size"
 						:density="state.density"
-						label="Density switch"
-						data-cy="switch-density"
-				/>
-				<div data-cy="switch-density-status">value = {{ densityModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Inset & flat"
-				:init-state="() => useStoryInitState<{ inset: boolean, flat: boolean }>({ inset: false, flat: false })"
-		>
-			<template #default="{ state }">
-				<origam-switch
-						v-model="insetModel"
-						:inset="state.inset"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
 						:flat="state.flat"
-						label="Inset / flat switch"
-						data-cy="switch-inset"
-				/>
-				<div data-cy="switch-inset-status">value = {{ insetModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.inset" title="inset"/>
-				<HstCheckbox v-model="state.flat"  title="flat"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Indeterminate"
-				:init-state="() => useStoryInitState<{ indeterminate: boolean }>({ indeterminate: true })"
-		>
-			<template #default="{ state }">
-				<origam-switch
-						v-model="indeterminateModel"
-						:indeterminate="state.indeterminate"
-						label="Indeterminate switch"
-						data-cy="switch-indeterminate"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:inset="state.inset"
+						:label="state.label"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.flat"      title="Flat"/>
+					<HstCheckbox v-model="state.inset"     title="Inset"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.label" title="Label"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
+		<!-- ══════════════════ ÉTAT ══════════════════ -->
+
 		<Variant
-				title="States"
-				:init-state="() => useStoryInitState<{ disabled: boolean, readonly: boolean }>({ disabled: false, readonly: false })"
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & IActiveProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-switch
-						v-model="statesModel"
+						:model-value="false"
+						:bg-color="state.bgColor"
+						:hover="state.hover"
+						:active="state.active"
+						label="Switch"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ISwitchProps> & ILoadingState>({
+					label: 'Switch',
+					enabled: false,
+					kind: 'bool',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<origam-switch
+						v-model="functionalModel"
+						:label="state.label"
 						:disabled="state.disabled"
 						:readonly="state.readonly"
-						label="Stateful switch"
-						data-cy="switch-states"
+						:loading="resolveLoading(state)"
+						:indeterminate="state.indeterminate"
+						:required="state.required"
+						:multiple="state.multiple"
+						:inline="state.inline"
+						:error="state.error"
+						:name="state.name"
+						:tag="state.tag"
 				/>
-				<div data-cy="switch-states-status">value = {{ statesModel }}</div>
+				<div>value = {{ functionalModel }}</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
+				<StoryGroup title="Content">
+					<HstText   v-model="state.label" title="Label"/>
+					<HstText   v-model="state.name"  title="Name"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"      title="Readonly"/>
+					<HstCheckbox v-model="state.indeterminate" title="Indeterminate"/>
+					<HstCheckbox v-model="state.required"      title="Required"/>
+					<HstCheckbox v-model="state.error"         title="Error"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.multiple" title="Multiple"/>
+					<HstCheckbox v-model="state.inline"   title="Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.enabled"      title="Loading"/>
+					<HstSelect   v-model="state.kind"         title="Loading Kind" :options="LOADING_KIND_OPTIONS"/>
+					<HstNumber   v-model="state.progress"     title="Progress (number)"  :min="0"  :max="100" :step="1"/>
+					<HstNumber   v-model="state.circularSize" title="Size (circular)"    :min="12" :max="64"  :step="2"/>
+				</StoryGroup>
+				<StoryGroup title="Link">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ─────────────────────────────────────────────── -->
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
-		<Variant title="Slot — loader">
-			<origam-switch :model-value="false" loading label="Loading switch" data-cy="switch-slot-loader">
-				<template #loader>
-					<span>Loading...</span>
-				</template>
-			</origam-switch>
-		</Variant>
-
-		<Variant title="Slot — track.false">
-			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track-false">
-				<template #track.false>
-					<span style="font-size: 10px; color: #fff;">OFF</span>
-				</template>
-			</origam-switch>
-		</Variant>
-
-		<Variant title="Slot — track.true">
-			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track">
-				<template #track.true>
-					<span style="font-size: 10px; color: #fff;">ON</span>
-				</template>
-				<template #track.false>
-					<span style="font-size: 10px; color: #fff;">OFF</span>
-				</template>
-			</origam-switch>
-			<div data-cy="switch-slot-track-status">value = {{ slotTrackModel }}</div>
-		</Variant>
-
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click:label">
+		<Variant title="Events - update:modelValue">
 			<origam-switch
-					v-model="emitClickLabelModel"
-					label="Click the label"
-					data-cy="switch-emit-click-label"
-					@click:label="logEvent('click:label', $event)"
+					v-model="emitModel"
+					label="Toggle me"
+					data-cy="switch-emit-update"
+					@update:model-value="logEvent('update:modelValue', $event)"
 			/>
+			<div>value = {{ emitModel }}</div>
 		</Variant>
 
-		<Variant title="Emit — update:focused">
+		<Variant title="Events - update:focused">
 			<origam-switch
 					v-model="emitFocusedModel"
 					label="Focus me"
@@ -236,7 +156,7 @@
 			/>
 		</Variant>
 
-		<Variant title="Emit — update:indeterminate">
+		<Variant title="Events - update:indeterminate">
 			<origam-switch
 					v-model="emitIndeterminateModel"
 					:indeterminate="true"
@@ -246,17 +166,16 @@
 			/>
 		</Variant>
 
-		<Variant title="Emit — update:modelValue">
+		<Variant title="Events - click:label">
 			<origam-switch
-					v-model="emitModel"
-					label="Toggle me"
-					data-cy="switch-emit-update"
-					@update:model-value="logEvent('update:modelValue', $event)"
+					v-model="emitClickLabelModel"
+					label="Click the label"
+					data-cy="switch-emit-click-label"
+					@click:label="logEvent('click:label', $event)"
 			/>
-			<div data-cy="switch-emit-status">value = {{ emitModel }}</div>
 		</Variant>
 
-		<Variant title="Emit — focus / blur">
+		<Variant title="Events - focus / blur">
 			<origam-switch
 					v-model="emitFocusModel"
 					label="Focus & blur me"
@@ -266,81 +185,48 @@
 			/>
 		</Variant>
 
-		<Variant
-				title="Loading — interactive"
-				:init-state="() => useStoryInitState({
-					enabled: true,
-					kind: 'bool',
-					progress: 42,
-					circularSize: 24
-				})"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; max-width: 480px;">
-					<origam-switch
-							:model-value="false"
-							disabled
-							:loading="resolveSwitchLoading(state)"
-							label="Demo switch"
-							data-cy="switch-loading-interactive"
-					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeSwitchLoading(state) }}</pre>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
-				<HstSelect
-						v-model="state.kind"
-						title="kind"
-						:options="[
-							{ label: 'true (default)', value: 'bool' },
-							{ label: 'number', value: 'number' },
-							{ label: '{ type: line }', value: 'line' },
-							{ label: '{ type: circular }', value: 'circular' },
-							{ label: '{ type: skeleton }', value: 'skeleton' }
-						]"
-				/>
-				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
-				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
-			</template>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Loader">
+			<origam-switch :model-value="false" loading label="Loading switch" data-cy="switch-slot-loader">
+				<template #loader>
+					<span>Loading...</span>
+				</template>
+			</origam-switch>
 		</Variant>
 
-		<Variant title="Loading shapes">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 560px;">
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={true}</code>
-					<origam-switch :model-value="false" loading disabled label="Bool" data-cy="switch-loading-bool"/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code style="min-width: 240px;">loading={42}</code>
-					<origam-switch :model-value="false" :loading="42" disabled label="42%" data-cy="switch-loading-number"/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code v-pre style="min-width: 240px;">loading={{ type: 'line' }}</code>
-					<origam-switch :model-value="false" :loading="{ type: 'line' }" disabled label="Line loader" data-cy="switch-loading-line"/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code v-pre style="min-width: 240px;">loading={{ type: 'circular', size: 16 }}</code>
-					<origam-switch :model-value="false" :loading="{ type: 'circular', size: 16 }" disabled label="Small spinner" data-cy="switch-loading-circular-override"/>
-				</div>
-				<div style="display: flex; align-items: center; gap: 12px;">
-					<code v-pre style="min-width: 240px;">loading={{ type: 'skeleton' }}</code>
-					<origam-switch :model-value="false" :loading="{ type: 'skeleton' }" disabled label="Skeleton mode" data-cy="switch-loading-skeleton"/>
-				</div>
-			</div>
+		<Variant title="Slots - Track False">
+			<origam-switch v-model="slotTrackModel" label="Custom track false" data-cy="switch-slot-track-false">
+				<template #track.false>
+					<span style="font-size: 10px; color: #fff;">OFF</span>
+				</template>
+			</origam-switch>
 		</Variant>
+
+		<Variant title="Slots - Track True">
+			<origam-switch v-model="slotTrackModel" label="Custom track" data-cy="switch-slot-track">
+				<template #track.true>
+					<span style="font-size: 10px; color: #fff;">ON</span>
+				</template>
+				<template #track.false>
+					<span style="font-size: 10px; color: #fff;">OFF</span>
+				</template>
+			</origam-switch>
+			<div>value = {{ slotTrackModel }}</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISwitchProps>({
 					label: 'Enable feature',
 					color: 'primary',
-					density: undefined,
 					inset: false,
 					flat: false,
 					indeterminate: false,
 					disabled: false,
-					readonly: false,
+					readonly: false
 				})"
 		>
 			<template #default="{ state }">
@@ -348,18 +234,29 @@
 						v-model="playgroundModel"
 						v-bind="state"
 						data-cy="switch-playground"
+						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
-				<div data-cy="switch-playground-status">value = {{ playgroundModel }}</div>
+				<div>value = {{ playgroundModel }}</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.label"         title="label"/>
-				<HstSelect   v-model="state.color"         title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.density"       title="density" :options="densityList"/>
-				<HstCheckbox v-model="state.inset"         title="inset"/>
-				<HstCheckbox v-model="state.flat"          title="flat"/>
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.readonly"      title="readonly"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.label" title="Label"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.size"      title="Size"      :options="SIZE_OPTIONS"/>
+					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.flat"      title="Flat"/>
+					<HstCheckbox v-model="state.inset"     title="Inset"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.indeterminate" title="Indeterminate"/>
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"      title="Readonly"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -373,15 +270,27 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamSwitch } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
-	import type { IColorProps, IDensityProps, ISwitchProps } from '@origam/interfaces'
+	import type {
+		IActiveProps,
+		IBgColorProps,
+		IHoverProps,
+		ISwitchProps
+	} from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		densityList, intentList,
-		hoverList
+		ACTIVE_OPTIONS,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
 	interface ILoadingState {
@@ -391,33 +300,33 @@
 		circularSize: number
 	}
 
-	const resolveSwitchLoading = (state: ILoadingState): TLoadingValue => {
+	const LOADING_KIND_OPTIONS = [
+		{ label: 'true (default)', value: 'bool' },
+		{ label: 'number', value: 'number' },
+		{ label: '{ type: line }', value: 'line' },
+		{ label: '{ type: circular }', value: 'circular' },
+		{ label: '{ type: skeleton }', value: 'skeleton' }
+	]
+
+	const resolveLoading = (state: ILoadingState): TLoadingValue => {
 		if (!state.enabled) return false
 		if (state.kind === 'bool') return true
 		if (state.kind === 'number') return state.progress
 		if (state.kind === 'line') return { type: 'line' }
 		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
 		if (state.kind === 'skeleton') return { type: 'skeleton' }
+
 		return false
 	}
 
-	const describeSwitchLoading = (state: ILoadingState): string => {
-		const v = resolveSwitchLoading(state)
-		return JSON.stringify(v, null, 2)
-	}
-
-	const colorModel              = ref(false)
-	const densityModel            = ref(false)
-	const insetModel              = ref(false)
-	const indeterminateModel      = ref(false)
-	const statesModel             = ref(false)
-	const slotTrackModel          = ref(false)
-	const emitClickLabelModel     = ref(false)
-	const emitFocusedModel        = ref(false)
-	const emitIndeterminateModel  = ref(false)
-	const emitModel               = ref(false)
-	const emitFocusModel          = ref(false)
-	const playgroundModel         = ref(false)
+	const functionalModel        = ref(false)
+	const emitModel              = ref(false)
+	const emitFocusedModel       = ref(false)
+	const emitIndeterminateModel = ref(false)
+	const emitClickLabelModel    = ref(false)
+	const emitFocusModel         = ref(false)
+	const slotTrackModel         = ref(false)
+	const playgroundModel        = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Switch/OrigamSwitch.md"/>

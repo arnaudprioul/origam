@@ -3,101 +3,164 @@
 			group="components"
 			title="SliderField/OrigamSliderFieldTrack"
 	>
-
-		<!--
-			<origam-slider-field-track> is the rail behind the slider's
-			thumb. The `start` / `stop` props express the filled segment in
-			percent (0-100). Realistic usage is via <origam-slider-field>.
-		-->
-
-		<Variant title="Default (full track)">
-			<div style="padding: 24px;">
-				<origam-slider-field-track :start="0" :stop="100" data-cy="slider-track-full"/>
-			</div>
-		</Variant>
-
-		<Variant title="Filled segment 0–60">
-			<div style="padding: 24px;">
-				<origam-slider-field-track :start="0" :stop="60" data-cy="slider-track-half"/>
-			</div>
-		</Variant>
-
-		<Variant title="Range segment 25–75">
-			<div style="padding: 24px;">
-				<origam-slider-field-track :start="25" :stop="75" data-cy="slider-track-range"/>
-			</div>
-		</Variant>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ISliderFieldTrackProps>>({ start: 25, stop: 75, size: 4 })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
-					<origam-slider-field-track :start="0" :stop="60" v-bind="state" data-cy="slider-track-color"/>
+					<origam-slider-field-track
+							:start="state.start"
+							:stop="state.stop"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:size="state.size"
+							:rounded="state.rounded"
+					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstNumber v-model="state.size" title="Size (px)" :min="1" :max="24" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Track">
+					<HstNumber v-model="state.start" title="Start (%)" :min="0" :max="100" :step="1"/>
+					<HstNumber v-model="state.stop"  title="Stop (%)"  :min="0" :max="100" :step="1"/>
+				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: SIZES.DEFAULT })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ISliderFieldTrackProps>>({
+					start: 25,
+					stop: 75,
+					disabled: false,
+					error: false,
+					isVertical: false,
+					indexFromEnd: false,
+					showTicks: false,
+					tickSize: 2,
+					min: 0,
+					max: 100,
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<origam-slider-field-track :start="0" :stop="60" :size="state.size" data-cy="slider-track-size"/>
+				<div style="padding: 24px; height: 200px; display: flex; align-items: center;">
+					<origam-slider-field-track
+							:start="state.start"
+							:stop="state.stop"
+							:disabled="state.disabled"
+							:error="state.error"
+							:is-vertical="state.isVertical"
+							:index-from-end="state.indexFromEnd"
+							:show-ticks="state.showTicks"
+							:tick-size="state.tickSize"
+							:min="state.min"
+							:max="state.max"
+							:ticks="state.isVertical ? verticalTicks : horizontalTicks"
+					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.error"    title="Error"/>
+				</StoryGroup>
+				<StoryGroup title="Orientation">
+					<HstCheckbox v-model="state.isVertical"   title="Vertical"/>
+					<HstCheckbox v-model="state.indexFromEnd" title="Index From End"/>
+				</StoryGroup>
+				<StoryGroup title="Ticks">
+					<HstSelect   v-model="state.showTicks" title="Show Ticks" :options="SHOW_TICKS_OPTIONS"/>
+					<HstNumber   v-model="state.tickSize"  title="Tick Size"  :min="1" :max="12" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Bounds">
+					<HstNumber v-model="state.min"   title="Min"          :min="0"   :max="100" :step="1"/>
+					<HstNumber v-model="state.max"   title="Max"          :min="0"   :max="100" :step="1"/>
+					<HstNumber v-model="state.start" title="Start (%)"    :min="0"   :max="100" :step="1"/>
+					<HstNumber v-model="state.stop"  title="Stop (%)"     :min="0"   :max="100" :step="1"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Disabled">
-			<div style="padding: 24px;">
-				<origam-slider-field-track :start="0" :stop="60" disabled data-cy="slider-track-disabled"/>
-			</div>
-		</Variant>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — item">
+		<Variant title="Slots - item">
 			<div style="padding: 24px;">
-				<origam-slider-field-track :start="0" :stop="60" data-cy="slider-track-slot-item">
-					<template #item="{ position }">
+				<origam-slider-field-track
+						:start="0"
+						:stop="60"
+						:show-ticks="true"
+						:ticks="horizontalTicks"
+						data-cy="slider-track-slot-item"
+				>
+					<template #item="{ tick }">
 						<span
-								style="position: absolute; width: 2px; height: 12px; background: currentColor; top: 50%; transform: translateY(-50%);"
-								:style="{ left: position + '%' }"
+								style="position: absolute; width: 2px; height: 12px; background: currentColor; top: 50%; transform: translate(-50%, -50%);"
+								:style="{ left: tick.position + '%' }"
 						/>
 					</template>
 				</origam-slider-field-track>
 			</div>
 		</Variant>
 
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISliderFieldTrackProps>({
 					start: 25,
 					stop: 75,
+					size: 4,
 					disabled: false,
-					color: undefined,
+					error: false,
+					isVertical: false,
+					indexFromEnd: false,
+					showTicks: false,
+					tickSize: 2,
+					min: 0,
+					max: 100,
 				})"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
-					<origam-slider-field-track v-bind="state" data-cy="slider-track-playground"/>
+					<origam-slider-field-track
+							v-bind="state"
+							:ticks="state.showTicks ? horizontalTicks : undefined"
+					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSlider   v-model="state.start"    title="start"    :min="0" :max="100"/>
-				<HstSlider   v-model="state.stop"     title="stop"     :min="0" :max="100"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstSelect   v-model="state.color"    title="color"    :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"  title="bgColor"  :options="intentList"/>
+				<StoryGroup title="Track">
+					<HstNumber v-model="state.start" title="Start (%)" :min="0" :max="100" :step="1"/>
+					<HstNumber v-model="state.stop"  title="Stop (%)"  :min="0" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstNumber v-model="state.size"    title="Size (px)" :min="1" :max="24" :step="1"/>
+					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
+					<HstCheckbox v-model="state.error"        title="Error"/>
+					<HstCheckbox v-model="state.isVertical"   title="Vertical"/>
+					<HstCheckbox v-model="state.indexFromEnd" title="Index From End"/>
+					<HstSelect   v-model="state.showTicks"    title="Show Ticks" :options="SHOW_TICKS_OPTIONS"/>
+					<HstNumber   v-model="state.tickSize"     title="Tick Size"  :min="1" :max="12" :step="1"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -108,11 +171,37 @@
 		setup
 >
 	import { OrigamSliderFieldTrack } from '@origam/components'
-	import { SIZES } from '@origam/enums'
-	import type { IColorProps, ISizeProps, ISliderFieldTrackProps } from '@origam/interfaces'
+	import type { ISliderFieldTrackProps } from '@origam/interfaces'
+	import type { TAlways, TTick } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList, sizeList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
+
+	const SHOW_TICKS_OPTIONS: Array<{ label: string; value: TAlways }> = [
+		{ label: 'false (hidden)', value: false },
+		{ label: 'true (visible on hover)', value: true },
+		{ label: 'always', value: 'always' }
+	]
+
+	const horizontalTicks: Array<TTick> = [
+		{ value: 0,   position: 0 },
+		{ value: 25,  position: 25 },
+		{ value: 50,  position: 50 },
+		{ value: 75,  position: 75 },
+		{ value: 100, position: 100 }
+	]
+
+	const verticalTicks: Array<TTick> = [
+		{ value: 0,   position: 100 },
+		{ value: 25,  position: 75 },
+		{ value: 50,  position: 50 },
+		{ value: 75,  position: 25 },
+		{ value: 100, position: 0 }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/SliderField/OrigamSliderFieldTrack.md"/>

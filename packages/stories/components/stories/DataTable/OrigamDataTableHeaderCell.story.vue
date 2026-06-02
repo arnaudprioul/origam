@@ -3,40 +3,101 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeaderCell"
 	>
-		<!--
-			Playground — shows a single header cell (sortable + aligned)
-			via the parent table. OrigamDataTableHeaderCell is internal;
-			customise via the `header.{key}` slot.
-		-->
-		<Variant title="Default">
-			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="header-cell-default"/>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataTableHeaderCellProps>>({ color: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:color="state.color"
+						:headers="sortableHeaders"
+						:items="items"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — sortable (sort indicator)">
-			<origam-data-table :headers="sortableHeaders" :items="items" data-cy="header-cell-sortable"/>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDataTableHeaderCellProps>>({ disableSort: false, multiSort: false, sticky: false, sortAscIcon: MDI_ICONS.ARROW_UP, sortDescIcon: MDI_ICONS.ARROW_DOWN })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:disable-sort="state.disableSort"
+						:multi-sort="state.multiSort"
+						:sticky="state.sticky"
+						:sort-asc-icon="state.sortAscIcon"
+						:sort-desc-icon="state.sortDescIcon"
+						:headers="sortableHeaders"
+						:items="items"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sort">
+					<HstCheckbox v-model="state.disableSort" title="Disable Sort"/>
+					<HstCheckbox v-model="state.multiSort"   title="Multi Sort"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.sticky" title="Sticky"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.sortAscIcon"  title="Sort Asc Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.sortDescIcon" title="Sort Desc Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — align (start / center / end)">
-			<origam-data-table :headers="alignedHeaders" :items="items" data-cy="header-cell-aligned"/>
-		</Variant>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — header.{key} (per-column override)">
-			<!--
-				Override a specific column header via `header.{key}` on the
-				parent table — here the `commits` column gets an icon prefix.
-			-->
-			<origam-data-table :headers="headers" :items="items" data-cy="header-cell-slot">
+		<Variant title="Slots - Header">
+			<origam-data-table :headers="headers" :items="items">
 				<template #header.commits>
-					<span style="display: inline-flex; align-items: center; gap: 4px;">
+					<span>
 						<origam-icon :icon="MDI_ICONS.STAR" :size="12"/>
 						<strong>Total commits</strong>
 					</span>
 				</template>
 			</origam-data-table>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IDataTableHeaderCellProps>>({ color: undefined, disableSort: false, multiSort: false, sticky: false, sortAscIcon: MDI_ICONS.ARROW_UP, sortDescIcon: MDI_ICONS.ARROW_DOWN })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:color="state.color"
+						:disable-sort="state.disableSort"
+						:multi-sort="state.multiSort"
+						:sticky="state.sticky"
+						:sort-asc-icon="state.sortAscIcon"
+						:sort-desc-icon="state.sortDescIcon"
+						:headers="sortableHeaders"
+						:items="items"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disableSort" title="Disable Sort"/>
+					<HstCheckbox v-model="state.multiSort"   title="Multi Sort"/>
+					<HstCheckbox v-model="state.sticky"      title="Sticky"/>
+					<HstSelect   v-model="state.sortAscIcon"  title="Sort Asc Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect   v-model="state.sortDescIcon" title="Sort Desc Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -47,6 +108,14 @@
 >
 	import { OrigamDataTable, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
+	import type { IDataTableHeaderCellProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ICON_OPTIONS
+	} from '@stories/const'
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },
@@ -55,12 +124,6 @@
 	]
 
 	const sortableHeaders = headers.map((h) => ({ ...h, sortable: true }))
-
-	const alignedHeaders = [
-		{ title: 'Start',  key: 'name',    align: 'start' },
-		{ title: 'Center', key: 'team',    align: 'center' },
-		{ title: 'End',    key: 'commits', align: 'end' },
-	]
 
 	const items = [
 		{ name: 'Alice', team: 'Frontend', commits: 142 },

@@ -94,36 +94,10 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════ PROP — cols ════════════════════ -->
+		<!-- ════════════════════════ FONCTIONNEL ════════════════════════ -->
 
 		<Variant
-				title="Prop — cols"
-				:init-state="() => useStoryInitState<{ cols?: TCols }>({ cols: '6' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col
-								v-for="n in (Number(state.cols) > 0 ? Math.floor(12 / Number(state.cols)) : 3)"
-								:key="n"
-								:cols="state.cols"
-						>
-							<div class="demo-cell">cols={{ state.cols }} ({{ n }})</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Grid">
-					<HstSelect v-model="state.cols" title="Cols" :options="COLS_OPTIONS"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<!-- ════════════════ PROP — breakpoints ════════════════ -->
-
-		<Variant
-				title="Prop — sm, md, lg (breakpoints)"
+				title="Functional"
 				:init-state="() => useStoryInitState<{
 					cols?: TCols
 					sm?: TCols
@@ -131,7 +105,24 @@
 					lg?: TCols
 					xl?: TCols
 					xxl?: TCols
-				}>({ cols: '12', sm: '6', md: '4', lg: '3' })"
+					offset?: TCols
+					offsetSm?: TCols
+					offsetMd?: TCols
+					offsetLg?: TCols
+					offsetXl?: TCols
+					offsetXxl?: TCols
+					order?: number
+					orderSm?: number
+					orderMd?: number
+					orderLg?: number
+					orderXl?: number
+					orderXxl?: number
+					alignSm?: TAlign
+					alignMd?: TAlign
+					alignLg?: TAlign
+					alignXl?: TAlign
+					alignXxl?: TAlign
+				}>({ cols: '4', sm: '6', md: '4', lg: '3' })"
 		>
 			<template #default="{ state }">
 				<origam-container>
@@ -143,8 +134,25 @@
 								:lg="state.lg"
 								:xl="state.xl"
 								:xxl="state.xxl"
+								:offset="state.offset"
+								:offset-sm="state.offsetSm"
+								:offset-md="state.offsetMd"
+								:offset-lg="state.offsetLg"
+								:offset-xl="state.offsetXl"
+								:offset-xxl="state.offsetXxl"
+								:order="state.order"
+								:order-sm="state.orderSm"
+								:order-md="state.orderMd"
+								:order-lg="state.orderLg"
+								:order-xl="state.orderXl"
+								:order-xxl="state.orderXxl"
+								:align-sm="state.alignSm"
+								:align-md="state.alignMd"
+								:align-lg="state.alignLg"
+								:align-xl="state.alignXl"
+								:align-xxl="state.alignXxl"
 						>
-							<div class="demo-cell">card</div>
+							<div class="demo-cell">col A</div>
 						</origam-col>
 						<origam-col
 								:cols="state.cols"
@@ -153,8 +161,25 @@
 								:lg="state.lg"
 								:xl="state.xl"
 								:xxl="state.xxl"
+								:offset="state.offset"
+								:offset-sm="state.offsetSm"
+								:offset-md="state.offsetMd"
+								:offset-lg="state.offsetLg"
+								:offset-xl="state.offsetXl"
+								:offset-xxl="state.offsetXxl"
+								:order="state.order"
+								:order-sm="state.orderSm"
+								:order-md="state.orderMd"
+								:order-lg="state.orderLg"
+								:order-xl="state.orderXl"
+								:order-xxl="state.orderXxl"
+								:align-sm="state.alignSm"
+								:align-md="state.alignMd"
+								:align-lg="state.alignLg"
+								:align-xl="state.alignXl"
+								:align-xxl="state.alignXxl"
 						>
-							<div class="demo-cell">card</div>
+							<div class="demo-cell">col B</div>
 						</origam-col>
 						<origam-col
 								:cols="state.cols"
@@ -163,14 +188,31 @@
 								:lg="state.lg"
 								:xl="state.xl"
 								:xxl="state.xxl"
+								:offset="state.offset"
+								:offset-sm="state.offsetSm"
+								:offset-md="state.offsetMd"
+								:offset-lg="state.offsetLg"
+								:offset-xl="state.offsetXl"
+								:offset-xxl="state.offsetXxl"
+								:order="state.order"
+								:order-sm="state.orderSm"
+								:order-md="state.orderMd"
+								:order-lg="state.orderLg"
+								:order-xl="state.orderXl"
+								:order-xxl="state.orderXxl"
+								:align-sm="state.alignSm"
+								:align-md="state.alignMd"
+								:align-lg="state.alignLg"
+								:align-xl="state.alignXl"
+								:align-xxl="state.alignXxl"
 						>
-							<div class="demo-cell">card</div>
+							<div class="demo-cell">col C</div>
 						</origam-col>
 					</origam-row>
 				</origam-container>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Grid">
+				<StoryGroup title="Breakpoints">
 					<HstSelect v-model="state.cols" title="Cols (default)" :options="COLS_OPTIONS"/>
 					<HstSelect v-model="state.sm"   title="sm (≥600px)"   :options="COLS_OPTIONS"/>
 					<HstSelect v-model="state.md"   title="md (≥960px)"   :options="COLS_OPTIONS"/>
@@ -178,82 +220,28 @@
 					<HstSelect v-model="state.xl"   title="xl (≥1920px)"  :options="COLS_OPTIONS"/>
 					<HstSelect v-model="state.xxl"  title="xxl (≥2560px)" :options="COLS_OPTIONS"/>
 				</StoryGroup>
-			</template>
-		</Variant>
-
-		<!-- ════════════════════ PROP — offset ═════════════════ -->
-
-		<Variant
-				title="Prop — offset"
-				:init-state="() => useStoryInitState<{ cols?: TCols; offset?: Omit<TCols, '12'> }>({ cols: '4', offset: '2' as Omit<TCols, '12'> })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col :cols="state.cols" :offset="state.offset">
-							<div class="demo-cell">offset={{ state.offset ?? '(unset)' }}</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Grid">
-					<HstSelect v-model="state.cols"   title="Cols"   :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offset" title="Offset" :options="COLS_OPTIONS"/>
+				<StoryGroup title="Offset">
+					<HstSelect v-model="state.offset"    title="Offset (default)"  :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetSm"  title="Offset sm"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetMd"  title="Offset md"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetLg"  title="Offset lg"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetXl"  title="Offset xl"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetXxl" title="Offset xxl"        :options="COLS_OPTIONS"/>
 				</StoryGroup>
-			</template>
-		</Variant>
-
-		<!-- ════════════════════ PROP — order ══════════════════ -->
-
-		<Variant
-				title="Prop — order"
-				:init-state="() => useStoryInitState<{ orderA?: number; orderB?: number }>({ orderA: 2, orderB: 1 })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col cols="6" :order="state.orderA">
-							<div class="demo-cell">A (order={{ state.orderA }})</div>
-						</origam-col>
-						<origam-col cols="6" :order="state.orderB">
-							<div class="demo-cell">B (order={{ state.orderB }})</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Grid">
-					<HstNumber v-model="state.orderA" title="Order A" :min="0" :max="12" :step="1"/>
-					<HstNumber v-model="state.orderB" title="Order B" :min="0" :max="12" :step="1"/>
+				<StoryGroup title="Order">
+					<HstNumber v-model="state.order"    title="Order (default)" :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderSm"  title="Order sm"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderMd"  title="Order md"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderLg"  title="Order lg"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderXl"  title="Order xl"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderXxl" title="Order xxl"       :min="0" :max="12" :step="1"/>
 				</StoryGroup>
-			</template>
-		</Variant>
-
-		<!-- ════════════════════ PROP — align ══════════════════ -->
-
-		<Variant
-				title="Prop — align"
-				:init-state="() => useStoryInitState<IAlignProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row align="start" style="min-height: 120px; background: var(--origam-color__surface---overlay, #ececec);">
-						<origam-col cols="4">
-							<div class="demo-cell">parent (align=start)</div>
-						</origam-col>
-						<origam-col cols="4" :align="state.align">
-							<div class="demo-cell">align={{ state.align ?? '(unset)' }}</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">parent</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Align">
-					<HstSelect v-model="state.align" title="Align (self)" :options="ALIGN_OPTIONS"/>
+				<StoryGroup title="Align (responsive)">
+					<HstSelect v-model="state.alignSm"  title="Align sm"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignMd"  title="Align md"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignLg"  title="Align lg"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignXl"  title="Align xl"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignXxl" title="Align xxl" :options="ALIGN_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -322,11 +310,11 @@
 					<HstNumber v-model="state.order"  title="Order" :min="0" :max="12" :step="1"/>
 					<HstSelect v-model="state.align"  title="Align (self)"    :options="ALIGN_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Color">
+				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Tag">
+				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -339,8 +327,8 @@
 		setup
 >
 	import { OrigamCol, OrigamContainer, OrigamRow } from '@origam/components'
-	import type { IAlignProps, IColProps } from '@origam/interfaces'
-	import type { TCols } from '@origam/types'
+	import type { IColProps } from '@origam/interfaces'
+	import type { TAlign, TCols } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

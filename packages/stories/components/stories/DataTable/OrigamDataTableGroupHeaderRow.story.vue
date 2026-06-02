@@ -3,23 +3,36 @@
 			group="components"
 			title="DataTable/OrigamDataTableGroupHeaderRow"
 	>
-		<!--
-			Playground — shows collapsible group headers via the parent
-			table's `group-by` prop. OrigamDataTableGroupHeaderRow is
-			internal; customise via the `group-header` slot.
-		-->
-		<Variant title="Default">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					:group-by="[{ key: 'team', order: 'asc' }]"
-					data-cy="group-header-default"
-			/>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataTableGroupHeaderRowDesignState>>({})"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="headers"
+						:items="items"
+						:group-by="[{ key: 'team', order: 'asc' }]"
+						:style="buildGroupHeaderRowStyle(state)"
+						data-cy="group-header-design"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding"       title="Padding"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — groupBy (single column)">
+		<Variant title="Functional">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
@@ -28,7 +41,7 @@
 			/>
 		</Variant>
 
-		<Variant title="Prop — groupBy (multiple columns, nested)">
+		<Variant title="Functional - groupBy nested">
 			<origam-data-table
 					:headers="extendedHeaders"
 					:items="extendedItems"
@@ -37,25 +50,35 @@
 			/>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<Variant title="Functional - showSelect">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					:group-by="[{ key: 'team', order: 'asc' }]"
+					show-select
+					data-cy="group-header-show-select"
+			/>
+		</Variant>
 
-		<Variant title="Slot — data-table-group">
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - data-table-group">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
 					:group-by="[{ key: 'team', order: 'asc' }]"
 					data-cy="group-header-slot-data-table-group"
 			>
-				<template #data-table-group="{ item, count, props: groupProps }">
-					<td colspan="3" style="padding: 8px 12px; background: var(--origam-color__surface---overlay);">
+				<template #data-table-group="{ item, count }">
+					<td colspan="3">
 						<strong>{{ item.value }}</strong>
-						<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">{{ count }} row(s)</small>
+						<small>{{ count }} row(s)</small>
 					</td>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — data-table-select">
+		<Variant title="Slots - data-table-select">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
@@ -64,35 +87,56 @@
 					data-cy="group-header-slot-data-table-select"
 			>
 				<template #data-table-select="{ props: selectProps }">
-					<td style="padding: 8px 12px;">
-						<input type="checkbox" v-bind="selectProps" style="cursor: pointer;"/>
+					<td>
+						<input type="checkbox" v-bind="selectProps"/>
 					</td>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — group-header (custom group row)">
-			<!--
-				The group-header scoped slot receives group, items, isOpen
-				and toggleGroup — enough to build a fully custom header row.
-			-->
+		<Variant title="Slots - group-header">
 			<origam-data-table
 					:headers="headers"
 					:items="items"
 					:group-by="[{ key: 'team', order: 'asc' }]"
-					data-cy="group-header-slot"
+					data-cy="group-header-slot-group-header"
 			>
 				<template #group-header="{ group, items: groupItems, isOpen, toggleGroup }">
-					<tr @click="toggleGroup(group)" style="cursor: pointer; background: var(--origam-color__surface---overlay);">
-						<td colspan="3" style="padding: 8px 12px;">
+					<tr @click="toggleGroup(group)">
+						<td colspan="3">
 							<strong>{{ group }}</strong>
-							<small style="margin-inline-start: 8px; color: var(--origam-color__text---secondary);">
-								{{ groupItems.length }} member(s) — {{ isOpen ? '▼' : '▶' }}
-							</small>
+							<small>{{ groupItems.length }} member(s) — {{ isOpen ? '▼' : '▶' }}</small>
 						</td>
 					</tr>
 				</template>
 			</origam-data-table>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IDataTableGroupHeaderRowPlaygroundState>({ groupMode: 'single' })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="resolveHeaders(state.groupMode)"
+						:items="resolveItems(state.groupMode)"
+						:group-by="resolveGroupBy(state.groupMode)"
+						:show-select="state.showSelect"
+						:style="buildGroupHeaderRowStyle(state)"
+						data-cy="group-header-default"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.groupMode"  title="Group Mode"   :options="GROUP_MODE_OPTIONS"/>
+					<HstCheckbox v-model="state.showSelect" title="Show Select"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -102,32 +146,74 @@
 		setup
 >
 	import { OrigamDataTable } from '@origam/components'
+	import type { IColorProps, IPaddingProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
+	import { COLOR_OPTIONS } from '@stories/const'
+
+	interface IDataTableGroupHeaderRowDesignState extends IColorProps, IPaddingProps {}
+
+	interface IDataTableGroupHeaderRowPlaygroundState extends IColorProps {
+		groupMode: 'single' | 'nested'
+		showSelect: boolean
+	}
+
+	const GROUP_MODE_OPTIONS = [
+		{ label: 'Single column', value: 'single' },
+		{ label: 'Nested (2 columns)', value: 'nested' }
+	]
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },
 		{ title: 'Team',    key: 'team'    },
-		{ title: 'Commits', key: 'commits', align: 'end' },
+		{ title: 'Commits', key: 'commits', align: 'end' }
 	]
 
 	const extendedHeaders = [
 		{ title: 'Name',    key: 'name'    },
 		{ title: 'Team',    key: 'team'    },
 		{ title: 'Role',    key: 'role'    },
-		{ title: 'Commits', key: 'commits', align: 'end' },
+		{ title: 'Commits', key: 'commits', align: 'end' }
 	]
 
 	const items = [
-		{ name: 'Alice',   team: 'Frontend', commits: 142 },
-		{ name: 'Bob',     team: 'Backend',  commits: 98  },
-		{ name: 'Carol',   team: 'Design',   commits: 31  },
-		{ name: 'Dan',     team: 'Frontend', commits: 87  },
-		{ name: 'Eve',     team: 'Backend',  commits: 64  },
+		{ name: 'Alice', team: 'Frontend', commits: 142 },
+		{ name: 'Bob',   team: 'Backend',  commits: 98  },
+		{ name: 'Carol', team: 'Design',   commits: 31  },
+		{ name: 'Dan',   team: 'Frontend', commits: 87  },
+		{ name: 'Eve',   team: 'Backend',  commits: 64  }
 	]
 
 	const extendedItems = items.map((it, idx) => ({
 		...it,
-		role: ['lead', 'staff', 'senior', 'lead', 'senior'][idx] ?? 'staff',
+		role: ['lead', 'staff', 'senior', 'lead', 'senior'][idx] ?? 'staff'
 	}))
+
+	const resolveHeaders = (mode: 'single' | 'nested') => {
+		return mode === 'nested' ? extendedHeaders : headers
+	}
+
+	const resolveItems = (mode: 'single' | 'nested') => {
+		return mode === 'nested' ? extendedItems : items
+	}
+
+	const resolveGroupBy = (mode: 'single' | 'nested') => {
+		if (mode === 'nested') {
+			return [{ key: 'team', order: 'asc' }, { key: 'role', order: 'asc' }]
+		}
+
+		return [{ key: 'team', order: 'asc' }]
+	}
+
+	const buildGroupHeaderRowStyle = (state: Partial<IDataTableGroupHeaderRowDesignState>) => {
+		return {
+			...(state.color      ? { '--origam-data-table-group-header-row---color':            `var(--origam-color--${state.color})` } : {}),
+			...(state.padding      ? { '--origam-data-table-group-header-row---padding':         state.padding      } : {}),
+			...(state.paddingInline ? { '--origam-data-table-group-header-row---padding-inline': state.paddingInline } : {}),
+			...(state.paddingBlock  ? { '--origam-data-table-group-header-row---padding-block':  state.paddingBlock  } : {})
+		}
+	}
 </script>
 
 <docs lang="md" src="@docs/components/DataTable/OrigamDataTableGroupHeaderRow.md"/>

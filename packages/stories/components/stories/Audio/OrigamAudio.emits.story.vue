@@ -3,160 +3,482 @@
 			group="components"
 			title="Audio/OrigamAudio (emits)"
 	>
-		<Variant title="Emit — play / pause / ended / update:playbackRate">
-			<div
-					class="story-shell"
-					data-cy="audio-emit-transport"
-			>
-				<p class="hint">
-					Counters increment on each emit. Use the transport
-					row to drive them; <code>update:playbackRate</code>
-					fires when picking a value from the cog menu.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						title="Emit demo"
-						artist="Origam"
-						class="story-audio"
-						data-cy="audio-emit-transport-player"
-						@play="counters.play++"
-						@pause="counters.pause++"
-						@ended="counters.ended++"
-						@update:playback-rate="counters.playbackRate++"
-				/>
-				<dl class="story-counters">
-					<div>
-						<dt>play</dt>
-						<dd data-cy="audio-emit-count-play">{{ counters.play }}</dd>
-					</div>
-					<div>
-						<dt>pause</dt>
-						<dd data-cy="audio-emit-count-pause">{{ counters.pause }}</dd>
-					</div>
-					<div>
-						<dt>ended</dt>
-						<dd data-cy="audio-emit-count-ended">{{ counters.ended }}</dd>
-					</div>
-					<div>
-						<dt>update:playbackRate</dt>
-						<dd data-cy="audio-emit-count-playbackrate">{{ counters.playbackRate }}</dd>
-					</div>
-				</dl>
-			</div>
-		</Variant>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
-		<Variant title="Emit — previous / next">
-			<div
-					class="story-shell"
-					data-cy="audio-emit-nav"
-			>
-				<p class="hint">
-					Click the <code>⏮</code> / <code>⏭</code> buttons.
-					The component ALSO skips ±10 s on the current track
-					internally so an isolated player keeps working without
-					a playlist controller bound to it.
-				</p>
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IAudioProps>>({
+					src: SOUND_HELIX_TRACK,
+					title: 'Daydream',
+					artist: 'Origam DS Cast',
+					album: 'Season 3',
+					cover: PICSUM_COVER,
+					variant: 'expanded',
+					coverPosition: 'left',
+					color: 'primary',
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
+					position: 'relative'
+				})"
+		>
+			<template #default="{ state }">
 				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						title="Playlist demo"
-						artist="Origam"
-						class="story-audio"
-						data-cy="audio-emit-nav-player"
-						@previous="counters.previous++"
-						@next="counters.next++"
-				/>
-				<dl class="story-counters">
-					<div>
-						<dt>previous</dt>
-						<dd data-cy="audio-emit-count-previous">{{ counters.previous }}</dd>
-					</div>
-					<div>
-						<dt>next</dt>
-						<dd data-cy="audio-emit-count-next">{{ counters.next }}</dd>
-					</div>
-				</dl>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — timeupdate / volumechange / loadedmetadata">
-			<div
-					class="story-shell"
-					data-cy="audio-emit-native"
-			>
-				<p class="hint">
-					Native DOM events forwarded verbatim. Last 8 entries
-					logged in chronological order.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						title="Native emit relay"
-						artist="Origam"
-						class="story-audio"
-						data-cy="audio-emit-native-player"
-						@timeupdate="logEmit('timeupdate', state.currentTime)"
-						@volumechange="logEmit('volumechange', state.volume)"
-						@loadedmetadata="logEmit('loadedmetadata', state.duration)"
-				/>
-				<pre
-						class="story-log"
-						data-cy="audio-emit-native-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — waveform peaks (logs 200 values)">
-			<div
-					class="story-shell"
-					data-cy="audio-emit-waveform"
-			>
-				<p class="hint">
-					Fires once per recomputation (typically on
-					<code>src</code> change). Payload is the downsampled
-					peaks array (0..1 amplitudes) — handy for analytics
-					or forwarding to an external visualiser.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
+						:src="state.src as string"
+						:title="state.title"
+						:artist="state.artist"
+						:album="state.album"
+						:cover="(state.cover as string) || undefined"
+						:variant="state.variant"
+						:cover-position="state.coverPosition"
+						:color="state.color || undefined"
+						:bg-color="state.bgColor || undefined"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:position="state.position"
 						:waveform="true"
-						title="Listen to the waveform emit"
-						data-cy="audio-emit-waveform-player"
-						@waveform="onWaveform"
+						class="story-audio"
 				/>
-				<div
-						class="story-log"
-						data-cy="audio-emit-waveform-log"
-				>
-					<strong>Last peaks emitted ({{ waveformLogCount }} recomputations) :</strong>
-					<code v-if="waveformLastPeaks.length === 0">— waiting for first decode —</code>
-					<code v-else>[{{ waveformLastPeaks.slice(0, 10).map(v => v.toFixed(2)).join(', ') }}, … +{{ waveformLastPeaks.length - 10 }} more]</code>
-				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Variant">
+					<HstSelect v-model="state.variant"       title="Variant"        :options="AUDIO_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.coverPosition" title="Cover Position" :options="COVER_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Position">
+					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Metadata">
+					<HstText v-model="state.title"  title="Title"/>
+					<HstText v-model="state.artist" title="Artist"/>
+					<HstText v-model="state.album"  title="Album"/>
+					<HstText v-model="state.cover"  title="Cover URL"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Emit — download (URL payload)">
-			<div
-					class="story-shell"
-					data-cy="audio-emit-download"
-			>
-				<p class="hint">
-					Set <code>downloadable</code> and open the cog menu.
-					Click Download — the URL is emitted alongside the
-					native download dialog.
-				</p>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IAudioProps>>({
+					src: SOUND_HELIX_TRACK,
+					controls: 'custom',
+					preload: 'metadata',
+					playbackRate: 1,
+					autoplay: false,
+					muted: false,
+					loop: false,
+					loopMode: 'none',
+					shuffle: false,
+					waveform: false,
+					downloadable: false,
+					downloadFilename: '',
+					allowRemotePlayback: false
+				})"
+		>
+			<template #default="{ state }">
 				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						:downloadable="true"
-						title="Download emit demo"
+						:src="state.src as string"
+						title="Functional demo"
 						artist="Origam"
+						:controls="state.controls"
+						:preload="state.preload"
+						:playback-rate="state.playbackRate"
+						:autoplay="state.autoplay"
+						:muted="state.muted"
+						:loop="state.loop"
+						:loop-mode="state.loopMode"
+						:shuffle="state.shuffle"
+						:waveform="state.waveform"
+						:downloadable="state.downloadable"
+						:download-filename="state.downloadFilename || undefined"
+						:allow-remote-playback="state.allowRemotePlayback"
 						class="story-audio"
-						data-cy="audio-emit-download-player"
-						@download="logEmit('download', $event)"
 				/>
-				<pre
-						class="story-log"
-						data-cy="audio-emit-download-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Controls">
+					<HstSelect v-model="state.controls" title="Controls" :options="AUDIO_CONTROLS_OPTIONS"/>
+					<HstSelect v-model="state.preload"  title="Preload"  :options="PRELOAD_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Playback">
+					<HstNumber   v-model="state.playbackRate" title="Playback Rate" :min="0.25" :max="4" :step="0.25"/>
+					<HstSelect   v-model="state.loopMode"     title="Loop Mode"     :options="AUDIO_LOOP_MODE_OPTIONS"/>
+					<HstCheckbox v-model="state.loop"         title="Loop (legacy)"/>
+					<HstCheckbox v-model="state.shuffle"      title="Shuffle"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.autoplay"           title="Autoplay"/>
+					<HstCheckbox v-model="state.muted"              title="Muted"/>
+					<HstCheckbox v-model="state.waveform"           title="Waveform"/>
+					<HstCheckbox v-model="state.downloadable"       title="Downloadable"/>
+					<HstCheckbox v-model="state.allowRemotePlayback" title="Allow Remote Playback"/>
+				</StoryGroup>
+				<StoryGroup title="Download">
+					<HstText v-model="state.downloadFilename" title="Download Filename"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - play">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Play emit demo"
+					artist="Origam"
+					class="story-audio"
+					@play="logEvent('play', undefined)"
+			/>
+		</Variant>
+
+		<Variant title="Events - pause">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Pause emit demo"
+					artist="Origam"
+					class="story-audio"
+					@pause="logEvent('pause', undefined)"
+			/>
+		</Variant>
+
+		<Variant title="Events - ended">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Ended emit demo"
+					artist="Origam"
+					class="story-audio"
+					@ended="logEvent('ended', undefined)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:playbackRate">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Playback rate emit demo"
+					artist="Origam"
+					class="story-audio"
+					@update:playback-rate="logEvent('update:playbackRate', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - previous">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Previous emit demo"
+					artist="Origam"
+					class="story-audio"
+					@previous="logEvent('previous', undefined)"
+			/>
+		</Variant>
+
+		<Variant title="Events - next">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Next emit demo"
+					artist="Origam"
+					class="story-audio"
+					@next="logEvent('next', undefined)"
+			/>
+		</Variant>
+
+		<Variant title="Events - timeupdate">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Timeupdate emit demo"
+					artist="Origam"
+					class="story-audio"
+					@timeupdate="logEvent('timeupdate', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - volumechange">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Volumechange emit demo"
+					artist="Origam"
+					class="story-audio"
+					@volumechange="logEvent('volumechange', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - loadedmetadata">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Loadedmetadata emit demo"
+					artist="Origam"
+					class="story-audio"
+					@loadedmetadata="logEvent('loadedmetadata', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - waveform">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					:waveform="true"
+					title="Waveform emit demo"
+					artist="Origam"
+					class="story-audio"
+					@waveform="logEvent('waveform', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - download">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					:downloadable="true"
+					title="Download emit demo"
+					artist="Origam"
+					class="story-audio"
+					@download="logEvent('download', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - error">
+			<origam-audio
+					src="https://example.com/this-track-does-not-exist.mp3"
+					title="Error emit demo"
+					artist="Origam"
+					class="story-audio"
+					@error="logEvent('error', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:currentTrackIndex">
+			<origam-audio
+					:playlist="DEMO_PLAYLIST"
+					class="story-audio"
+					@update:current-track-index="logEvent('update:currentTrackIndex', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:loopMode">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Loop mode emit demo"
+					artist="Origam"
+					class="story-audio"
+					@update:loop-mode="logEvent('update:loopMode', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:shuffle">
+			<origam-audio
+					:playlist="DEMO_PLAYLIST"
+					class="story-audio"
+					@update:shuffle="logEvent('update:shuffle', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - track-change">
+			<origam-audio
+					:playlist="DEMO_PLAYLIST"
+					class="story-audio"
+					@track-change="logEvent('track-change', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Metadata">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Original title"
+					artist="Original artist"
+					:cover="PICSUM_COVER"
+					class="story-audio"
+			>
+				<template #metadata>
+					<strong>Custom metadata via slot</strong>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<Variant title="Slots - Cover">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Custom cover"
+					artist="Origam"
+					class="story-audio"
+			>
+				<template #cover>
+					<div class="story-custom-cover">
+						<span>🎵</span>
+					</div>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Default title"
+					artist="Stays default"
+					:cover="PICSUM_COVER"
+					class="story-audio"
+			>
+				<template #title>
+					<em>Custom title via slot</em>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<Variant title="Slots - Waveform">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					:waveform="true"
+					title="Custom waveform"
+					artist="Origam"
+					class="story-audio"
+			>
+				<template #waveform="{ peaks, currentTime, duration }">
+					<div class="story-waveform">
+						<div
+								v-for="(peak, i) in peaks"
+								:key="i"
+								class="story-waveform__bar"
+								:class="{ 'story-waveform__bar--played': duration > 0 && (i / peaks.length) <= (currentTime / duration) }"
+								:style="{ height: Math.max(2, peak * 100) + '%' }"
+						/>
+					</div>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<Variant title="Slots - Controls">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Custom controls"
+					artist="Origam"
+					class="story-audio"
+			>
+				<template #controls="{ playing, methods }">
+					<div class="story-custom-controls">
+						<button
+								type="button"
+								:aria-label="playing ? 'Pause' : 'Play'"
+								@click="playing ? methods.pause() : void methods.play()"
+						>{{ playing ? 'Pause' : 'Play' }}</button>
+					</div>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<Variant title="Slots - Loading">
+			<origam-audio
+					:src="SOUND_HELIX_TRACK"
+					title="Loading slot"
+					artist="Origam"
+					class="story-audio"
+			>
+				<template #loading>
+					<span>Loading audio…</span>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<Variant title="Slots - Error">
+			<origam-audio
+					src="https://example.com/this-track-does-not-exist.mp3"
+					title="Error slot"
+					artist="Origam"
+					class="story-audio"
+			>
+				<template #error="{ error }">
+					<strong>Error: {{ ('message' in error && error.message) || 'Playback error' }}</strong>
+				</template>
+			</origam-audio>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IAudioProps>>({
+					src: SOUND_HELIX_TRACK,
+					title: 'Daydream',
+					artist: 'Origam DS Cast',
+					album: 'Season 3',
+					cover: PICSUM_COVER,
+					variant: 'expanded',
+					coverPosition: 'left',
+					color: undefined,
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					controls: 'custom',
+					preload: 'metadata',
+					playbackRate: 1,
+					autoplay: false,
+					muted: false,
+					loop: false,
+					loopMode: 'none',
+					shuffle: false,
+					waveform: true,
+					downloadable: false,
+					allowRemotePlayback: false
+				})"
+		>
+			<template #default="{ state }">
+				<origam-audio
+						v-bind="state"
+						class="story-audio"
+						@play="logEvent('play', undefined)"
+						@pause="logEvent('pause', undefined)"
+						@ended="logEvent('ended', undefined)"
+						@update:playback-rate="logEvent('update:playbackRate', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.src"    title="Src (URL)"/>
+					<HstText v-model="state.title"  title="Title"/>
+					<HstText v-model="state.artist" title="Artist"/>
+					<HstText v-model="state.album"  title="Album"/>
+					<HstText v-model="state.cover"  title="Cover URL"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.variant"       title="Variant"        :options="AUDIO_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.coverPosition" title="Cover Position" :options="COVER_POSITION_OPTIONS"/>
+					<HstSelect v-model="state.color"         title="Color"          :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"       title="Bg Color"       :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"       title="Rounded"        :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"     title="Elevation"      :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.controls"          title="Controls"             :options="AUDIO_CONTROLS_OPTIONS"/>
+					<HstSelect   v-model="state.preload"           title="Preload"              :options="PRELOAD_OPTIONS"/>
+					<HstSelect   v-model="state.loopMode"          title="Loop Mode"            :options="AUDIO_LOOP_MODE_OPTIONS"/>
+					<HstNumber   v-model="state.playbackRate"      title="Playback Rate"        :min="0.25" :max="4" :step="0.25"/>
+					<HstCheckbox v-model="state.autoplay"          title="Autoplay"/>
+					<HstCheckbox v-model="state.muted"             title="Muted"/>
+					<HstCheckbox v-model="state.loop"              title="Loop (legacy)"/>
+					<HstCheckbox v-model="state.shuffle"           title="Shuffle"/>
+					<HstCheckbox v-model="state.waveform"          title="Waveform"/>
+					<HstCheckbox v-model="state.downloadable"      title="Downloadable"/>
+					<HstCheckbox v-model="state.allowRemotePlayback" title="Allow Remote Playback"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -165,98 +487,131 @@
 		lang="ts"
 		setup
 >
-	import { reactive, ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamAudio } from '@origam/components'
+	import { AUDIO_LOOP_MODE, AUDIO_VARIANT, COVER_POSITION } from '@origam/enums'
+	import type { IAudioProps, IAudioTrack } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		POSITION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const SOUND_HELIX_TRACK = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+	const PICSUM_COVER = 'https://picsum.photos/seed/origam-audio/256/256'
 
-	const state = reactive({
-		currentTime: 0,
-		volume: 1,
-		duration: 0
-	})
+	const DEMO_PLAYLIST: ReadonlyArray<IAudioTrack> = [
+		{
+			id: 'sh-1',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+			title: 'Daydream',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-1/96',
+			duration: 372
+		},
+		{
+			id: 'sh-2',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+			title: 'Liftoff',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-2/96',
+			duration: 422
+		},
+		{
+			id: 'sh-3',
+			src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+			title: 'Submerged',
+			artist: 'SoundHelix',
+			album: 'Examples',
+			cover: 'https://picsum.photos/seed/audio-3/96',
+			duration: 366
+		}
+	]
 
-	const counters = reactive({
-		play: 0,
-		pause: 0,
-		ended: 0,
-		playbackRate: 0,
-		previous: 0,
-		next: 0
-	})
+	const AUDIO_VARIANT_OPTIONS = [
+		{ label: 'expanded', value: AUDIO_VARIANT.EXPANDED },
+		{ label: 'compact', value: AUDIO_VARIANT.COMPACT }
+	]
 
-	const logLines = ref<Array<string>>([])
-	const waveformLastPeaks = ref<Array<number>>([])
-	const waveformLogCount = ref(0)
+	const COVER_POSITION_OPTIONS = [
+		{ label: 'left', value: COVER_POSITION.LEFT },
+		{ label: 'right', value: COVER_POSITION.RIGHT }
+	]
 
-	function logEmit (name: string, payload: unknown): void {
-		const safe = typeof payload === 'string' || typeof payload === 'number'
-			? String(payload)
-			: JSON.stringify(payload)
-		logLines.value = [`${ name } → ${ safe }`, ...logLines.value].slice(0, 8)
-	}
+	const AUDIO_CONTROLS_OPTIONS = [
+		{ label: 'custom', value: 'custom' },
+		{ label: 'native', value: 'native' }
+	]
 
-	function onWaveform (peaks: Array<number>): void {
-		waveformLastPeaks.value = peaks
-		waveformLogCount.value += 1
-	}
+	const AUDIO_LOOP_MODE_OPTIONS = [
+		{ label: 'none', value: AUDIO_LOOP_MODE.NONE },
+		{ label: 'all', value: AUDIO_LOOP_MODE.ALL },
+		{ label: 'one', value: AUDIO_LOOP_MODE.ONE }
+	]
+
+	const PRELOAD_OPTIONS = [
+		{ label: 'none', value: 'none' },
+		{ label: 'metadata', value: 'metadata' },
+		{ label: 'auto', value: 'auto' }
+	]
 </script>
 
 <style scoped>
-	.story-shell {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-		padding: 16px;
-		max-width: 720px;
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
 	.story-audio {
 		width: 100%;
 		max-width: 640px;
 	}
 
-	.story-counters {
+	.story-custom-cover {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 16px;
-		margin: 0;
-		padding: 12px;
+		align-items: center;
+		justify-content: center;
+		width: var(--origam-audio__cover---size, 96px);
+		height: var(--origam-audio__cover---size, 96px);
+		background: var(--origam-color__surface---raised, #f3f4f6);
+		border-radius: 8px;
+		font-size: 2rem;
+	}
+
+	.story-custom-controls {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 8px 12px;
 		background: var(--origam-color__surface---raised, #f3f4f6);
 		border-radius: 8px;
 	}
 
-	.story-counters > div {
+	.story-waveform {
 		display: flex;
-		flex-direction: column;
+		align-items: center;
 		gap: 2px;
+		width: 100%;
+		height: 56px;
 	}
 
-	.story-counters dt {
-		font: 0.75rem/1.2 ui-monospace, monospace;
-		color: var(--origam-color__text---secondary, #555);
+	.story-waveform__bar {
+		flex: 1 1 auto;
+		min-width: 2px;
+		background: color-mix(in srgb, currentColor 30%, transparent);
+		border-radius: 1px;
 	}
 
-	.story-counters dd {
-		margin: 0;
-		font: 600 1rem/1.2 system-ui, sans-serif;
-	}
-
-	.story-log {
-		margin: 0;
-		padding: 8px 12px;
-		background-color: rgba(0, 0, 0, 0.04);
-		border-radius: 6px;
-		font-size: 0.75rem;
-		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		white-space: pre-wrap;
-		min-height: 60px;
+	.story-waveform__bar--played {
+		background: var(--origam-color__accent---base, currentColor);
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Audio/OrigamAudio.md"
+/>

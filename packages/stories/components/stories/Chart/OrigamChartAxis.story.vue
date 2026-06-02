@@ -30,19 +30,19 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Axis Visibility">
+				<StoryGroup title="Visibility">
 					<HstCheckbox v-model="state.showAxis" title="Show Axis"/>
 					<HstCheckbox v-model="state.showGrid" title="Show Grid"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ FONCTIONNEL ════════════════════════ -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — ticks (5 / 10 / 20 ticks per axis)">
+		<Variant title="Functional">
 			<div
 					class="story-shell"
-					data-cy="axis-tick-count"
+					data-cy="axis-functional"
 			>
 				<div class="story-grid story-grid--3">
 					<div class="story-col">
@@ -94,17 +94,10 @@
 						</svg>
 					</div>
 				</div>
-			</div>
-		</Variant>
 
-		<Variant title="Prop — xAxisFormat (date / number / category)">
-			<div
-					class="story-shell"
-					data-cy="axis-format-x"
-			>
 				<div class="story-grid story-grid--3">
 					<div class="story-col">
-						<strong>date format</strong>
+						<strong>xAxisFormat — date</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -121,7 +114,7 @@
 						</svg>
 					</div>
 					<div class="story-col">
-						<strong>number format</strong>
+						<strong>xAxisFormat — number</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -138,7 +131,7 @@
 						</svg>
 					</div>
 					<div class="story-col">
-						<strong>category label</strong>
+						<strong>xAxisFormat — category</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -154,17 +147,10 @@
 						</svg>
 					</div>
 				</div>
-			</div>
-		</Variant>
 
-		<Variant title="Prop — yAxisFormat (currency / percent / SI)">
-			<div
-					class="story-shell"
-					data-cy="axis-format-y"
-			>
 				<div class="story-grid story-grid--3">
 					<div class="story-col">
-						<strong>currency ($)</strong>
+						<strong>yAxisFormat — currency ($)</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -181,7 +167,7 @@
 						</svg>
 					</div>
 					<div class="story-col">
-						<strong>percent (%)</strong>
+						<strong>yAxisFormat — percent (%)</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -198,7 +184,7 @@
 						</svg>
 					</div>
 					<div class="story-col">
-						<strong>SI prefix (k / M)</strong>
+						<strong>yAxisFormat — SI prefix (k / M)</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -215,59 +201,10 @@
 						</svg>
 					</div>
 				</div>
-			</div>
-		</Variant>
 
-		<Variant title="Prop — showGrid (true / false)">
-			<div
-					class="story-shell"
-					data-cy="axis-show-grid"
-			>
 				<div class="story-grid story-grid--2">
 					<div class="story-col">
-						<strong>showGrid = true</strong>
-						<svg
-								viewBox="0 0 600 360"
-								class="story-svg"
-								aria-label="Grid visible"
-								data-cy="axis-grid-on"
-						>
-							<origam-chart-axis
-									:plot="PLOT_DEFAULT"
-									:ticks="ticksFor(5)"
-									:show-axis="true"
-									:show-grid="true"
-							/>
-						</svg>
-					</div>
-					<div class="story-col">
-						<strong>showGrid = false</strong>
-						<svg
-								viewBox="0 0 600 360"
-								class="story-svg"
-								aria-label="Grid hidden"
-								data-cy="axis-grid-off"
-						>
-							<origam-chart-axis
-									:plot="PLOT_DEFAULT"
-									:ticks="ticksFor(5)"
-									:show-axis="true"
-									:show-grid="false"
-							/>
-						</svg>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — secondaryYTicks (dual-axis)">
-			<div
-					class="story-shell"
-					data-cy="axis-secondary-y"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>without secondary Y</strong>
+						<strong>secondaryYTicks — absent</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -283,7 +220,7 @@
 						</svg>
 					</div>
 					<div class="story-col">
-						<strong>with secondary Y (right axis)</strong>
+						<strong>secondaryYTicks — dual axis (right)</strong>
 						<svg
 								viewBox="0 0 600 360"
 								class="story-svg"
@@ -331,7 +268,7 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Visibility">
+				<StoryGroup title="Design">
 					<HstCheckbox v-model="state.showAxis" title="Show Axis"/>
 					<HstCheckbox v-model="state.showGrid" title="Show Grid"/>
 				</StoryGroup>

@@ -3,169 +3,142 @@
 			group="components"
 			title="ColorPicker/OrigamColorPicker"
 	>
-		<!--
-			Playground — first by convention. All props wired via sidebar
-			controls so the consumer can exercise the full API in one place.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					hideCanvas?: boolean
-					hideSliders?: boolean
-					hideInputs?: boolean
-					showSwatches?: boolean
-					mode?: TColorModes
-					canvasHeight?: number
-					swatchesMaxHeight?: number
-				}>({
-					hideCanvas: false,
-					hideSliders: false,
-					hideInputs: false,
-					showSwatches: false,
-					mode: COLOR_MODES_NAMES.RGBA,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IColorPickerProps>>({
 					canvasHeight: 150,
-					swatchesMaxHeight: 150
+					canvasWidth: '100%'
 				})"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px; display: flex; justify-content: center;">
 					<origam-color-picker
 							v-model="color"
-							v-bind="state"
-							data-cy="color-picker-playground"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:title="state.title"
+							:landscape="state.landscape"
+							:hide-header="state.hideHeader"
+							:canvas-height="state.canvasHeight"
+							:canvas-width="state.canvasWidth"
+							:width="state.width"
+							:height="state.height"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.hideCanvas"        title="hideCanvas"/>
-				<HstCheckbox v-model="state.hideSliders"       title="hideSliders"/>
-				<HstCheckbox v-model="state.hideInputs"        title="hideInputs"/>
-				<HstCheckbox v-model="state.showSwatches"      title="showSwatches"/>
-				<HstSelect   v-model="state.mode"              title="mode" :options="colorModeList"/>
-				<HstNumber   v-model="state.canvasHeight"      title="canvasHeight"/>
-				<HstNumber   v-model="state.swatchesMaxHeight" title="swatchesMaxHeight"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Header">
+					<HstText     v-model="state.title"      title="Title"/>
+					<HstCheckbox v-model="state.landscape"  title="Landscape"/>
+					<HstCheckbox v-model="state.hideHeader" title="Hide Header"/>
+				</StoryGroup>
+				<StoryGroup title="Canvas">
+					<HstNumber v-model="state.canvasHeight" title="Canvas Height" :min="50" :max="400"/>
+					<HstText   v-model="state.canvasWidth"  title="Canvas Width"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Prop — hideCanvas"
-				:init-state="() => useStoryInitState<{ hideCanvas: boolean }>({ hideCanvas: false })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IColorPickerProps>>({
+					hideCanvas: false,
+					hideSliders: false,
+					hideInputs: false,
+					showSwatches: false,
+					mode: COLOR_MODES_NAMES.RGBA,
+					swatchesMaxHeight: 150,
+					disabled: false
+				})"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px; display: flex; justify-content: center;">
 					<origam-color-picker
 							v-model="color"
 							:hide-canvas="state.hideCanvas"
-							data-cy="color-picker-hide-canvas"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.hideCanvas" title="hideCanvas"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — canvasHeight"
-				:init-state="() => useStoryInitState<{ canvasHeight: number }>({ canvasHeight: 150 })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-color-picker
-							v-model="color"
-							:canvas-height="state.canvasHeight"
-							data-cy="color-picker-canvas-height"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.canvasHeight" title="canvasHeight" :min="50" :max="400"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — mode"
-				:init-state="() => useStoryInitState<{ mode: TColorModes }>({ mode: COLOR_MODES_NAMES.RGBA })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-color-picker
-							v-model="color"
-							:mode="state.mode"
-							data-cy="color-picker-mode"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.mode" title="mode" :options="colorModeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hideSliders & hideInputs"
-				:init-state="() => useStoryInitState<{ hideSliders: boolean; hideInputs: boolean }>({ hideSliders: false, hideInputs: false })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-color-picker
-							v-model="color"
 							:hide-sliders="state.hideSliders"
 							:hide-inputs="state.hideInputs"
-							data-cy="color-picker-hide-sliders-inputs"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.hideSliders" title="hideSliders"/>
-				<HstCheckbox v-model="state.hideInputs"  title="hideInputs"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — showSwatches & swatchesMaxHeight"
-				:init-state="() => useStoryInitState<{ showSwatches: boolean; swatchesMaxHeight: number }>({ showSwatches: true, swatchesMaxHeight: 150 })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-color-picker
-							v-model="color"
 							:show-swatches="state.showSwatches"
 							:swatches-max-height="state.swatchesMaxHeight"
-							data-cy="color-picker-swatches"
+							:mode="state.mode"
+							:disabled="state.disabled"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.showSwatches"     title="showSwatches"/>
-				<HstNumber   v-model="state.swatchesMaxHeight" title="swatchesMaxHeight"/>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.hideCanvas"  title="Hide Canvas"/>
+					<HstCheckbox v-model="state.hideSliders" title="Hide Sliders"/>
+					<HstCheckbox v-model="state.hideInputs"  title="Hide Inputs"/>
+					<HstCheckbox v-model="state.showSwatches" title="Show Swatches"/>
+				</StoryGroup>
+				<StoryGroup title="Swatches">
+					<HstNumber v-model="state.swatchesMaxHeight" title="Swatches Max Height" :min="50" :max="400"/>
+				</StoryGroup>
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode" title="Mode" :options="COLOR_MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
-		<Variant title="Slot — default">
+		<Variant title="Events - update:modelValue">
+			<origam-color-picker
+					v-model="color"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:mode">
+			<origam-color-picker
+					v-model="color"
+					@update:mode="logEvent('update:mode', $event)"
+			/>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
 			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-color-picker v-model="color" data-cy="color-picker-slot-default">
-					<span>Custom slot content</span>
+				<origam-color-picker v-model="color">
+					<strong>Custom canvas area</strong>
 				</origam-color-picker>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header">
+		<Variant title="Slots - Title">
 			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-color-picker v-model="color" data-cy="color-picker-slot-header">
-					<template #header>
-						<span style="font-weight: 600; padding: 8px 16px; display: block;">Custom header</span>
-					</template>
-				</origam-color-picker>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — title">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-color-picker v-model="color" data-cy="color-picker-slot-title">
+				<origam-color-picker v-model="color">
 					<template #title>
 						<strong>Pick a colour</strong>
 					</template>
@@ -173,9 +146,19 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — actions">
+		<Variant title="Slots - Header">
 			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-color-picker v-model="color" data-cy="color-picker-slot-actions">
+				<origam-color-picker v-model="color">
+					<template #header>
+						<span style="font-weight: 600; padding: 8px 16px; display: block;">Custom header</span>
+					</template>
+				</origam-color-picker>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Actions">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color">
 					<template #actions>
 						<origam-btn color="primary" text="Apply" size="small"/>
 						<origam-btn text="Cancel" size="small"/>
@@ -184,55 +167,52 @@
 			</div>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
-				title="Emit — update:modelValue"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IColorPickerProps>>({
+					canvasHeight: 150,
+					canvasWidth: '100%',
+					hideCanvas: false,
+					hideSliders: false,
+					hideInputs: false,
+					showSwatches: false,
+					mode: COLOR_MODES_NAMES.RGBA,
+					swatchesMaxHeight: 150
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<div style="display: flex; justify-content: center;">
-						<origam-color-picker
-								v-model="color"
-								data-cy="color-picker-emit-model-value"
-								@update:model-value="(v: string) => {
-									state.log = [`update:modelValue → ${v}`, ...state.log].slice(0, 6)
-								}"
-						/>
-					</div>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Move the canvas or click a swatch to see events.
-					</p>
+				<div style="padding: 24px; display: flex; justify-content: center;">
+					<origam-color-picker
+							v-model="color"
+							v-bind="state"
+							@update:model-value="logEvent('update:modelValue', $event)"
+							@update:mode="logEvent('update:mode', $event)"
+					/>
 				</div>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — update:mode"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px;">
-					<div style="display: flex; justify-content: center;">
-						<origam-color-picker
-								v-model="color"
-								data-cy="color-picker-emit-mode"
-								@update:mode="(v: string) => {
-									state.log = [`update:mode → ${v}`, ...state.log].slice(0, 6)
-								}"
-						/>
-					</div>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Click the mode toggle button to see events.
-					</p>
-				</div>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstText   v-model="state.title"     title="Title"/>
+					<HstNumber v-model="state.canvasHeight" title="Canvas Height" :min="50" :max="400"/>
+					<HstText   v-model="state.canvasWidth"  title="Canvas Width"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.hideCanvas"       title="Hide Canvas"/>
+					<HstCheckbox v-model="state.hideSliders"      title="Hide Sliders"/>
+					<HstCheckbox v-model="state.hideInputs"       title="Hide Inputs"/>
+					<HstCheckbox v-model="state.showSwatches"     title="Show Swatches"/>
+					<HstCheckbox v-model="state.landscape"        title="Landscape"/>
+					<HstCheckbox v-model="state.hideHeader"       title="Hide Header"/>
+					<HstCheckbox v-model="state.disabled"         title="Disabled"/>
+					<HstSelect   v-model="state.mode"             title="Mode"              :options="COLOR_MODE_OPTIONS"/>
+					<HstNumber   v-model="state.swatchesMaxHeight" title="Swatches Max Height" :min="50" :max="400"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -244,15 +224,26 @@
 >
 	import { ref } from 'vue'
 
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBtn, OrigamColorPicker } from '@origam/components'
 	import { COLOR_MODES_NAMES } from '@origam/enums'
+	import type { IColorPickerProps } from '@origam/interfaces'
 	import type { TColorModes } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const color = ref('#42a5f5')
 
-	const colorModeList = [
+	const COLOR_MODE_OPTIONS: Array<{ label: string; value: TColorModes }> = [
 		{ label: 'RGB',  value: COLOR_MODES_NAMES.RGB },
 		{ label: 'RGBA', value: COLOR_MODES_NAMES.RGBA },
 		{ label: 'HSL',  value: COLOR_MODES_NAMES.HSL },

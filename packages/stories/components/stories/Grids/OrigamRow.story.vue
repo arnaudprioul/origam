@@ -3,19 +3,169 @@
 			group="components"
 			title="Grids/OrigamRow"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			IRowProps knob via the sidebar controls.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IRowProps>>({ color: undefined, density: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row
+							:color="state.color"
+							:density="state.density"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:align="state.align"
+							:align-sm="state.alignSm"
+							:align-md="state.alignMd"
+							:align-lg="state.alignLg"
+							:align-xl="state.alignXl"
+							:align-xxl="state.alignXxl"
+							:justify="state.justify"
+							:justify-sm="state.justifySm"
+							:justify-md="state.justifyMd"
+							:justify-lg="state.justifyLg"
+							:justify-xl="state.justifyXl"
+							:justify-xxl="state.justifyXxl"
+							:direction="state.direction"
+					>
+						<origam-col cols="4">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">B</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Align">
+					<HstSelect v-model="state.align"    title="Align"    :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignSm"  title="Align Sm" :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignMd"  title="Align Md" :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignLg"  title="Align Lg" :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignXl"  title="Align Xl" :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignXxl" title="Align Xxl" :options="ALIGN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Justify">
+					<HstSelect v-model="state.justify"    title="Justify"    :options="JUSTIFY_OPTIONS"/>
+					<HstSelect v-model="state.justifySm"  title="Justify Sm" :options="JUSTIFY_OPTIONS"/>
+					<HstSelect v-model="state.justifyMd"  title="Justify Md" :options="JUSTIFY_OPTIONS"/>
+					<HstSelect v-model="state.justifyLg"  title="Justify Lg" :options="JUSTIFY_OPTIONS"/>
+					<HstSelect v-model="state.justifyXl"  title="Justify Xl" :options="JUSTIFY_OPTIONS"/>
+					<HstSelect v-model="state.justifyXxl" title="Justify Xxl" :options="JUSTIFY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Direction">
+					<HstSelect v-model="state.direction" title="Direction" :options="FLEX_DIRECTION_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IRowProps>>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row
+							:tag="state.tag"
+							:gutters="state.gutters"
+							:padding="state.padding"
+							:padding-top="state.paddingTop"
+							:padding-bottom="state.paddingBottom"
+							:padding-left="state.paddingLeft"
+							:padding-right="state.paddingRight"
+							:padding-block="state.paddingBlock"
+							:padding-inline="state.paddingInline"
+							:margin="state.margin"
+							:margin-top="state.marginTop"
+							:margin-bottom="state.marginBottom"
+							:margin-left="state.marginLeft"
+							:margin-right="state.marginRight"
+							:margin-block="state.marginBlock"
+							:margin-inline="state.marginInline"
+					>
+						<origam-col cols="4">
+							<div class="demo-cell">A</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">B</div>
+						</origam-col>
+						<origam-col cols="4">
+							<div class="demo-cell">C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Gutters">
+					<HstText v-model="state.gutters" title="Gutters"/>
+				</StoryGroup>
+				<StoryGroup title="Padding">
+					<HstText v-model="state.padding"       title="Padding"/>
+					<HstText v-model="state.paddingTop"    title="Padding Top"/>
+					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
+					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
+					<HstText v-model="state.paddingRight"  title="Padding Right"/>
+					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Margin">
+					<HstText v-model="state.margin"       title="Margin"/>
+					<HstText v-model="state.marginTop"    title="Margin Top"/>
+					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
+					<HstText v-model="state.marginLeft"   title="Margin Left"/>
+					<HstText v-model="state.marginRight"  title="Margin Right"/>
+					<HstText v-model="state.marginBlock"  title="Margin Block"/>
+					<HstText v-model="state.marginInline" title="Margin Inline"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-container>
+				<origam-row>
+					<origam-col cols="4">
+						<div class="demo-cell"><strong>Custom</strong> slot A</div>
+					</origam-col>
+					<origam-col cols="4">
+						<div class="demo-cell"><strong>Custom</strong> slot B</div>
+					</origam-col>
+					<origam-col cols="4">
+						<div class="demo-cell"><strong>Custom</strong> slot C</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IRowProps>({
-					align: undefined,
-					justify: undefined,
-					density: undefined,
-					direction: undefined,
-					tag: 'div'
-				})"
+				:init-state="() => useStoryInitState<IRowProps>({ tag: 'div' })"
 		>
 			<template #default="{ state }">
 				<origam-container>
@@ -33,150 +183,19 @@
 				</origam-container>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.align"     title="align"     :options="alignList"/>
-				<HstSelect v-model="state.justify"   title="justify"   :options="justifyList"/>
-				<HstSelect v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect v-model="state.direction" title="direction" :options="directionList"/>
-				<HstSelect v-model="state.tag"       title="tag"       :options="tagList"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.align"     title="Align"     :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.justify"   title="Justify"   :options="JUSTIFY_OPTIONS"/>
+					<HstSelect v-model="state.direction" title="Direction" :options="FLEX_DIRECTION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag"     title="Tag"     :options="TAG_OPTIONS"/>
+					<HstText   v-model="state.gutters" title="Gutters"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — align"
-				:init-state="() => useStoryInitState<IAlignProps>({ align: 'center' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :align="state.align" style="min-height: 120px; background: var(--origam-color__surface---overlay, #ececec);">
-						<origam-col cols="4">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell" style="padding: 32px 12px;">B (taller)</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.align" title="align" :options="alignList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — justify"
-				:init-state="() => useStoryInitState<IJustifyProps>({ justify: 'space-between' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :justify="state.justify">
-						<origam-col cols="3">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="3">
-							<div class="demo-cell">B</div>
-						</origam-col>
-						<origam-col cols="3">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.justify" title="justify" :options="justifyList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :density="state.density">
-						<origam-col cols="4">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">B</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — direction"
-				:init-state="() => useStoryInitState<{ direction?: TFlexDirection }>({ direction: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :direction="state.direction">
-						<origam-col cols="4">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">B</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">C</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.direction"
-						title="direction"
-						:options="directionList"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :tag="state.tag">
-						<origam-col cols="6">
-							<div class="demo-cell">A</div>
-						</origam-col>
-						<origam-col cols="6">
-							<div class="demo-cell">B</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-container>
-				<origam-row>
-					<origam-col cols="6">
-						<div class="demo-cell">slot child A</div>
-					</origam-col>
-					<origam-col cols="6">
-						<div class="demo-cell">slot child B</div>
-					</origam-col>
-				</origam-row>
-			</origam-container>
 		</Variant>
 	</Story>
 </template>
@@ -187,31 +206,27 @@
 >
 	import { OrigamCol, OrigamContainer, OrigamRow } from '@origam/components'
 	import { FLEX_DIRECTION } from '@origam/enums'
-	import type {
-		IAlignProps,
-		IDensityProps,
-		IJustifyProps,
-		IOptions,
-		IRowProps
-	} from '@origam/interfaces'
+	import type { IOptions, IRowProps } from '@origam/interfaces'
 	import type { TFlexDirection } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		alignList,
-		densityList,
-		justifyList,
-		tagList
+		ALIGN_OPTIONS,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		JUSTIFY_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
-	// Local-only list — `direction` is unique to <OrigamRow>; doesn't justify
-	// promoting to /stories/const yet (only one consumer).
-	const directionList: Array<IOptions<TFlexDirection>> = [
+	const FLEX_DIRECTION_OPTIONS: Array<IOptions<TFlexDirection | undefined>> = [
 		{ label: '(none)', value: undefined },
 		{ label: 'row', value: FLEX_DIRECTION.ROW },
 		{ label: 'row-reverse', value: FLEX_DIRECTION.ROW_REVERSE },
 		{ label: 'column', value: FLEX_DIRECTION.COLUMN },
-		{ label: 'column-reverse', value: FLEX_DIRECTION.COLUMN_REVERSE },
+		{ label: 'column-reverse', value: FLEX_DIRECTION.COLUMN_REVERSE }
 	]
 </script>
 

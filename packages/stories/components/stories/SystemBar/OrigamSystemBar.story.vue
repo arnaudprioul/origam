@@ -3,10 +3,130 @@
 			group="components"
 			title="SystemBar/OrigamSystemBar"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			ISystemBarProps knob via the sidebar controls.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ISystemBarProps>>({
+					color: undefined,
+					bgColor: undefined,
+					elevation: undefined,
+					rounded: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
+					width: undefined,
+					height: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<div class="system-bar-story-wrapper">
+					<origam-layout>
+						<origam-system-bar
+								name="systembar-design"
+								order="0"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:elevation="state.elevation"
+								:rounded="state.rounded"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:width="state.width"
+								:height="state.height"
+						>
+							<span>SystemBar — design preview</span>
+						</origam-system-bar>
+						<origam-main>
+							<p class="system-bar-story-content">Main content</p>
+						</origam-main>
+					</origam-layout>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ISystemBarProps>>({
+					window: false,
+					absolute: false,
+					tag: 'div',
+					name: 'systembar-functional',
+					order: '0'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="system-bar-story-wrapper">
+					<origam-layout>
+						<origam-system-bar
+								:window="state.window"
+								:absolute="state.absolute"
+								:tag="state.tag"
+								:name="state.name"
+								:order="state.order"
+						>
+							<span>window={{ state.window }} — absolute={{ state.absolute }} — tag={{ state.tag }}</span>
+						</origam-system-bar>
+						<origam-main>
+							<p class="system-bar-story-content">Main content (pushed by the bar)</p>
+						</origam-main>
+					</origam-layout>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Window">
+					<HstCheckbox v-model="state.window" title="Window (32px height)"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.absolute" title="Absolute"/>
+					<HstText     v-model="state.name"     title="Name (layout id)"/>
+					<HstText     v-model="state.order"    title="Order"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<div class="system-bar-story-wrapper">
+				<origam-layout>
+					<origam-system-bar window name="systembar-slot" order="0">
+						<strong>App name</strong>
+						<span class="system-bar-story-slot-hint">— v1.0.0</span>
+					</origam-system-bar>
+					<origam-main>
+						<p class="system-bar-story-content">Main content</p>
+					</origam-main>
+				</origam-layout>
+			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISystemBarProps>({
@@ -15,162 +135,43 @@
 					bgColor: undefined,
 					elevation: undefined,
 					rounded: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
 					absolute: false,
 					tag: 'div',
-					name: 'systembar',
+					name: 'systembar-playground',
 					order: '0'
 				})"
 		>
 			<template #default="{ state }">
-				<origam-layout style="height: 200px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar v-bind="state">
-						<span>SystemBar playground</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main</div>
-					</origam-main>
-				</origam-layout>
+				<div class="system-bar-story-wrapper">
+					<origam-layout>
+						<origam-system-bar v-bind="state">
+							<span>SystemBar playground</span>
+						</origam-system-bar>
+						<origam-main>
+							<p class="system-bar-story-content">Main content</p>
+						</origam-main>
+					</origam-layout>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.window"    title="window"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstCheckbox v-model="state.absolute"  title="absolute"/>
-				<HstSelect   v-model="state.tag"       title="tag"       :options="tagList"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"       title="Color"        :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"     title="Bg Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"   title="Elevation"    :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.window"   title="Window (32px)"/>
+					<HstCheckbox v-model="state.absolute" title="Absolute"/>
+					<HstSelect   v-model="state.tag"      title="Tag"          :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — window"
-				:init-state="() => useStoryInitState<{ window?: boolean }>({ window: false })"
-		>
-			<template #default="{ state }">
-				<origam-layout style="height: 200px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar :window="state.window" name="systembar" order="0">
-						<span>window={{ state.window }} (32px when true)</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main content (pushed by the bar)</div>
-					</origam-main>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.window" title="window (32px)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar v-bind="state" name="systembar" order="0">
-						<span>color={{ state.color ?? '(unset)' }}, bgColor={{ state.bgColor ?? '(unset)' }}</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main</div>
-					</origam-main>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — elevation"
-				:init-state="() => useStoryInitState<IElevationProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar :elevation="state.elevation" name="systembar" order="0">
-						<span>elevation={{ state.elevation ?? '(unset)' }}</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main</div>
-					</origam-main>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar :rounded="state.rounded" name="systembar" order="0">
-						<span>rounded={{ state.rounded ?? '(unset)' }}</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main</div>
-					</origam-main>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — absolute"
-				:init-state="() => useStoryInitState<{ absolute?: boolean }>({ absolute: false })"
-		>
-			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar :absolute="state.absolute" name="systembar" order="0">
-						<span>absolute={{ state.absolute }}</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main (overlapped when absolute)</div>
-					</origam-main>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.absolute" title="absolute"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<origam-system-bar :tag="state.tag" name="systembar" order="0">
-						<span>tag={{ state.tag }}</span>
-					</origam-system-bar>
-					<origam-main>
-						<div class="demo-content">main</div>
-					</origam-main>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-layout style="height: 180px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-				<origam-system-bar window name="systembar" order="0">
-					<strong>App name</strong>
-					<span style="opacity: 0.7; margin-inline-start: 12px;">— ready</span>
-				</origam-system-bar>
-				<origam-main>
-					<div class="demo-content">main</div>
-				</origam-main>
-			</origam-layout>
 		</Variant>
 	</Story>
 </template>
@@ -180,26 +181,34 @@
 		setup
 >
 	import { OrigamLayout, OrigamMain, OrigamSystemBar } from '@origam/components'
-	import type {
-		IColorProps,
-		IElevationProps,
-		IRoundedProps,
-		ISystemBarProps
-	} from '@origam/interfaces'
+	import type { ISystemBarProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		elevationList,
-		intentList,
-		roundedList,
-		tagList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 </script>
 
 <style scoped>
-	.demo-content {
+	.system-bar-story-wrapper {
+		height: 200px;
+		border: 1px dashed var(--origam-color__border---default, #ccc);
+		overflow: hidden;
+	}
+
+	.system-bar-story-content {
 		padding: 12px;
-		background: var(--origam-color__surface---default, #fff);
+	}
+
+	.system-bar-story-slot-hint {
+		opacity: 0.7;
+		margin-inline-start: 8px;
 	}
 </style>
 

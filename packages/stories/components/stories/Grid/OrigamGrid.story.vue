@@ -3,33 +3,54 @@
 			group="components"
 			title="Grid/OrigamGrid"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IGridProps>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IGridProps>>({
 					columns: 4,
 					rows: 'auto',
 					gap: 'md',
-					autoFlow: 'row',
 					alignItems: 'stretch',
 					justifyItems: 'stretch',
-					inline: false
+					alignContent: undefined,
+					justifyContent: undefined,
+					columnGap: undefined,
+					rowGap: undefined,
+					autoColumns: undefined,
+					autoRows: undefined,
+					areas: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="grid-playground"
-				>
+				<div class="story-shell">
 					<origam-grid
-							v-bind="state"
+							:columns="state.columns"
+							:rows="state.rows"
+							:gap="state.gap"
+							:column-gap="state.columnGap"
+							:row-gap="state.rowGap"
+							:align-items="state.alignItems"
+							:justify-items="state.justifyItems"
+							:align-content="state.alignContent"
+							:justify-content="state.justifyContent"
+							:auto-columns="state.autoColumns"
+							:auto-rows="state.autoRows"
+							:bg-color="state.bgColor"
+							:color="state.color"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:width="state.width"
+							:height="state.height"
 							class="grid-host"
-							data-cy="grid-playground-host"
 					>
 						<div
 								v-for="n in 8"
 								:key="n"
 								class="cell"
-								data-cy="grid-playground-cell"
 						>
 							{{ n }}
 						</div>
@@ -37,51 +58,116 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.gap"
-						title="gap"
-						:options="gridGapList"
-				/>
-				<HstSelect
-						v-model="state.autoFlow"
-						title="autoFlow"
-						:options="gridAutoFlowList"
-				/>
-				<HstSelect
-						v-model="state.alignItems"
-						title="alignItems"
-						:options="gridPlaceItemsList"
-				/>
-				<HstSelect
-						v-model="state.justifyItems"
-						title="justifyItems"
-						:options="gridPlaceItemsList"
-				/>
-				<HstNumber
-						v-model="state.columns"
-						title="columns (number)"
-						:min="1"
-						:max="12"
-				/>
-				<HstCheckbox
-						v-model="state.inline"
-						title="inline"
-				/>
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.columns" title="Columns (number)" :min="1" :max="12"/>
+					<HstText   v-model="state.rows"    title="Rows"/>
+				</StoryGroup>
+				<StoryGroup title="Gap">
+					<HstSelect v-model="state.gap"       title="Gap"        :options="GRID_GAP_OPTIONS"/>
+					<HstText   v-model="state.columnGap" title="Column Gap (override)"/>
+					<HstText   v-model="state.rowGap"    title="Row Gap (override)"/>
+				</StoryGroup>
+				<StoryGroup title="Align">
+					<HstSelect v-model="state.alignItems"    title="Align Items"    :options="GRID_PLACE_ITEMS_OPTIONS"/>
+					<HstSelect v-model="state.justifyItems"  title="Justify Items"  :options="GRID_PLACE_ITEMS_OPTIONS"/>
+					<HstSelect v-model="state.alignContent"  title="Align Content"  :options="GRID_PLACE_CONTENT_OPTIONS"/>
+					<HstSelect v-model="state.justifyContent" title="Justify Content" :options="GRID_PLACE_CONTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Implicit Tracks">
+					<HstText v-model="state.autoColumns" title="Auto Columns"/>
+					<HstText v-model="state.autoRows"    title="Auto Rows"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IGridProps>>({
+					autoFlow: 'row',
+					inline: false,
+					tag: 'div',
+					columns: 4,
+					gap: 'md'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-grid
+							:columns="state.columns"
+							:gap="state.gap"
+							:auto-flow="state.autoFlow"
+							:inline="state.inline"
+							:tag="state.tag"
+							class="grid-host"
+					>
+						<div
+								v-for="n in 8"
+								:key="n"
+								class="cell"
+						>
+							{{ n }}
+						</div>
+					</origam-grid>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Flow">
+					<HstSelect v-model="state.autoFlow" title="Auto Flow" :options="GRID_AUTO_FLOW_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.inline" title="Inline (inline-grid)"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<origam-grid
+						:columns="3"
+						gap="sm"
+						class="grid-host"
+				>
+					<div class="cell cell--span">First</div>
+					<div class="cell cell--span">Second</div>
+					<div class="cell cell--span">Third</div>
+				</origam-grid>
+			</div>
+		</Variant>
+
+		<!-- ════════════════ PROP VARIANTS (démonstrations) ════════════════ -->
+
 		<Variant title="Prop — columns">
-			<div
-					class="story-shell"
-					data-cy="grid-columns"
-			>
+			<div class="story-shell">
 				<div class="story-col">
 					<strong>number = 3 (repeat(3, 1fr))</strong>
 					<origam-grid
 							:columns="3"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-columns-number-3"
 					>
 						<div
 								v-for="n in 6"
@@ -99,7 +185,6 @@
 							:columns="12"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-columns-number-12"
 					>
 						<div
 								v-for="n in 12"
@@ -117,7 +202,6 @@
 							columns="1fr 2fr 1fr"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-columns-string"
 					>
 						<div class="cell">1fr</div>
 						<div class="cell">2fr</div>
@@ -131,7 +215,6 @@
 							:columns="['200px', '1fr', '200px']"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-columns-array"
 					>
 						<div class="cell">200px</div>
 						<div class="cell">1fr</div>
@@ -142,50 +225,41 @@
 		</Variant>
 
 		<Variant title="Prop — areas">
-			<div
-					class="story-shell"
-					data-cy="grid-areas"
-			>
+			<div class="story-shell">
 				<origam-grid
 						:areas="HOLY_GRAIL_AREAS"
 						columns="200px 1fr 200px"
 						rows="auto 1fr auto"
 						gap="sm"
 						class="grid-host grid-host--areas"
-						data-cy="grid-areas-host"
 				>
 					<div
 							class="cell cell--area"
 							style="grid-area: header"
-							data-cy="grid-areas-header"
 					>
 						header
 					</div>
 					<div
 							class="cell cell--area"
 							style="grid-area: sidebar"
-							data-cy="grid-areas-sidebar"
 					>
 						sidebar
 					</div>
 					<div
 							class="cell cell--area"
 							style="grid-area: main"
-							data-cy="grid-areas-main"
 					>
 						main
 					</div>
 					<div
 							class="cell cell--area"
 							style="grid-area: aside"
-							data-cy="grid-areas-aside"
 					>
 						aside
 					</div>
 					<div
 							class="cell cell--area"
 							style="grid-area: footer"
-							data-cy="grid-areas-footer"
 					>
 						footer
 					</div>
@@ -194,12 +268,9 @@
 		</Variant>
 
 		<Variant title="Prop — gap">
-			<div
-					class="story-shell"
-					data-cy="grid-gap"
-			>
+			<div class="story-shell">
 				<div
-						v-for="size in gridGapSizes"
+						v-for="size in GRID_GAP_SIZES"
 						:key="size"
 						class="story-col"
 				>
@@ -208,7 +279,6 @@
 							:columns="4"
 							:gap="size"
 							class="grid-host"
-							:data-cy="`grid-gap-${size}`"
 					>
 						<div
 								v-for="n in 4"
@@ -223,18 +293,14 @@
 		</Variant>
 
 		<Variant title="Prop — autoFlow">
-			<div
-					class="story-shell"
-					data-cy="grid-flow"
-			>
+			<div class="story-shell">
 				<div class="story-col">
 					<strong>autoFlow = row</strong>
 					<origam-grid
 							:columns="3"
-							autoFlow="row"
+							auto-flow="row"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-flow-row"
 					>
 						<div
 								v-for="n in 5"
@@ -250,10 +316,9 @@
 					<strong>autoFlow = column</strong>
 					<origam-grid
 							:rows="3"
-							autoFlow="column"
+							auto-flow="column"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-flow-column"
 					>
 						<div
 								v-for="n in 5"
@@ -269,10 +334,9 @@
 					<strong>autoFlow = row dense</strong>
 					<origam-grid
 							:columns="4"
-							autoFlow="row dense"
+							auto-flow="row dense"
 							gap="sm"
 							class="grid-host"
-							data-cy="grid-flow-dense"
 					>
 						<div
 								class="cell"
@@ -294,98 +358,154 @@
 			</div>
 		</Variant>
 
-		<Variant title="Sub-component — OrigamGridItem">
-			<div
-					class="story-shell"
-					data-cy="grid-item"
-			>
-				<div class="story-col">
-					<strong>column span (object syntax)</strong>
-					<origam-grid
-							:columns="6"
-							gap="sm"
-							class="grid-host"
-							data-cy="grid-item-span-host"
-					>
-						<origam-grid-item
-								:column="{ start: 1, end: 4 }"
-								class="cell cell--span"
-								data-cy="grid-item-span-1-to-4"
-						>
-							start: 1, end: 4
-						</origam-grid-item>
-						<origam-grid-item
-								:column="{ start: 4, span: 3 }"
-								class="cell cell--span"
-								data-cy="grid-item-span-4-span-3"
-						>
-							start: 4, span: 3
-						</origam-grid-item>
-						<origam-grid-item
-								:column="{ span: 2 }"
-								class="cell cell--span"
-								data-cy="grid-item-span-2"
-						>
-							span: 2
-						</origam-grid-item>
-						<origam-grid-item
-								column="span 4"
-								class="cell cell--span"
-								data-cy="grid-item-span-raw"
-						>
-							raw: span 4
-						</origam-grid-item>
-					</origam-grid>
-				</div>
+		<!-- ════════════════ SUB-COMPOSANT OrigamGridItem ════════════════ -->
 
-				<div class="story-col">
-					<strong>area-named (parent grid declares `areas`)</strong>
+		<Variant
+				title="Sub-component — OrigamGridItem"
+				:init-state="() => useStoryInitState<Partial<IGridItemProps>>({
+					alignSelf: undefined,
+					justifySelf: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<div class="story-col">
+						<strong>column span (object syntax)</strong>
+						<origam-grid
+								:columns="6"
+								gap="sm"
+								class="grid-host"
+						>
+							<origam-grid-item
+									:column="{ start: 1, end: 4 }"
+									:align-self="state.alignSelf"
+									:justify-self="state.justifySelf"
+									class="cell cell--span"
+							>
+								start: 1, end: 4
+							</origam-grid-item>
+							<origam-grid-item
+									:column="{ start: 4, span: 3 }"
+									class="cell cell--span"
+							>
+								start: 4, span: 3
+							</origam-grid-item>
+							<origam-grid-item
+									:column="{ span: 2 }"
+									class="cell cell--span"
+							>
+								span: 2
+							</origam-grid-item>
+							<origam-grid-item
+									column="span 4"
+									class="cell cell--span"
+							>
+								raw: span 4
+							</origam-grid-item>
+						</origam-grid>
+					</div>
+
+					<div class="story-col">
+						<strong>area-named (parent grid declares areas)</strong>
+						<origam-grid
+								:areas="HOLY_GRAIL_AREAS"
+								columns="200px 1fr 200px"
+								rows="auto 1fr auto"
+								gap="sm"
+								class="grid-host grid-host--areas"
+						>
+							<origam-grid-item
+									area="header"
+									class="cell cell--area"
+							>
+								header
+							</origam-grid-item>
+							<origam-grid-item
+									area="sidebar"
+									class="cell cell--area"
+							>
+								sidebar
+							</origam-grid-item>
+							<origam-grid-item
+									area="main"
+									class="cell cell--area"
+							>
+								main
+							</origam-grid-item>
+							<origam-grid-item
+									area="aside"
+									class="cell cell--area"
+							>
+								aside
+							</origam-grid-item>
+							<origam-grid-item
+									area="footer"
+									class="cell cell--area"
+							>
+								footer
+							</origam-grid-item>
+						</origam-grid>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Self-alignment (first item)">
+					<HstSelect v-model="state.alignSelf"   title="Align Self"   :options="GRID_PLACE_SELF_OPTIONS"/>
+					<HstSelect v-model="state.justifySelf" title="Justify Self" :options="GRID_PLACE_SELF_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IGridProps>({
+					columns: 4,
+					rows: 'auto',
+					gap: 'md',
+					autoFlow: 'row',
+					alignItems: 'stretch',
+					justifyItems: 'stretch',
+					inline: false
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
 					<origam-grid
-							:areas="HOLY_GRAIL_AREAS"
-							columns="200px 1fr 200px"
-							rows="auto 1fr auto"
-							gap="sm"
-							class="grid-host grid-host--areas"
-							data-cy="grid-item-area-host"
+							v-bind="state"
+							class="grid-host"
 					>
-						<origam-grid-item
-								area="header"
-								class="cell cell--area"
-								data-cy="grid-item-area-header"
+						<div
+								v-for="n in 8"
+								:key="n"
+								class="cell"
 						>
-							header
-						</origam-grid-item>
-						<origam-grid-item
-								area="sidebar"
-								class="cell cell--area"
-								data-cy="grid-item-area-sidebar"
-						>
-							sidebar
-						</origam-grid-item>
-						<origam-grid-item
-								area="main"
-								class="cell cell--area"
-								data-cy="grid-item-area-main"
-						>
-							main
-						</origam-grid-item>
-						<origam-grid-item
-								area="aside"
-								class="cell cell--area"
-								data-cy="grid-item-area-aside"
-						>
-							aside
-						</origam-grid-item>
-						<origam-grid-item
-								area="footer"
-								class="cell cell--area"
-								data-cy="grid-item-area-footer"
-						>
-							footer
-						</origam-grid-item>
+							{{ n }}
+						</div>
 					</origam-grid>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.columns" title="Columns (number)" :min="1" :max="12"/>
+					<HstText   v-model="state.rows"    title="Rows"/>
+					<HstSelect v-model="state.autoFlow" title="Auto Flow" :options="GRID_AUTO_FLOW_OPTIONS"/>
+					<HstCheckbox v-model="state.inline" title="Inline (inline-grid)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.gap"          title="Gap"           :options="GRID_GAP_OPTIONS"/>
+					<HstSelect v-model="state.alignItems"   title="Align Items"   :options="GRID_PLACE_ITEMS_OPTIONS"/>
+					<HstSelect v-model="state.justifyItems" title="Justify Items" :options="GRID_PLACE_ITEMS_OPTIONS"/>
+					<HstSelect v-model="state.rounded"      title="Rounded"       :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"    title="Elevation"     :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"      title="Bg Color"      :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color"        title="Color"         :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -396,19 +516,38 @@
 >
 	import { OrigamGrid, OrigamGridItem } from '@origam/components'
 
-	import { GRID_AUTO_FLOWS, GRID_GAP_SIZES, GRID_PLACE_ITEMS } from '@origam/consts'
+	import { GRID_AUTO_FLOWS, GRID_GAP_SIZES, GRID_PLACE_CONTENT, GRID_PLACE_ITEMS, GRID_PLACE_SELF } from '@origam/consts'
 
-	import type { IGridProps, IOptions } from '@origam/interfaces'
+	import type { IGridItemProps, IGridProps, IOptions } from '@origam/interfaces'
 
-	import type { TGridAutoFlow, TGridGapSize, TGridPlaceItems } from '@origam/types'
+	import type { TGridAutoFlow, TGridGapSize, TGridPlaceContent, TGridPlaceItems, TGridPlaceSelf } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	const gridGapList: Array<IOptions<TGridGapSize>> = GRID_GAP_SIZES.map(v => ({label: v, value: v}))
-	const gridAutoFlowList: Array<IOptions<TGridAutoFlow>> = GRID_AUTO_FLOWS.map(v => ({label: v, value: v}))
-	const gridPlaceItemsList: Array<IOptions<TGridPlaceItems>> = GRID_PLACE_ITEMS.map(v => ({label: v, value: v}))
+	const GRID_GAP_OPTIONS: Array<IOptions<TGridGapSize>> = GRID_GAP_SIZES.map(v => ({ label: v, value: v }))
 
-	const gridGapSizes: ReadonlyArray<TGridGapSize> = GRID_GAP_SIZES
+	const GRID_AUTO_FLOW_OPTIONS: Array<IOptions<TGridAutoFlow>> = GRID_AUTO_FLOWS.map(v => ({ label: v, value: v }))
+
+	const GRID_PLACE_ITEMS_OPTIONS: Array<IOptions<TGridPlaceItems>> = GRID_PLACE_ITEMS.map(v => ({ label: v, value: v }))
+
+	const GRID_PLACE_CONTENT_OPTIONS: Array<IOptions<TGridPlaceContent | undefined>> = [
+		{ label: '(none)', value: undefined },
+		...GRID_PLACE_CONTENT.map(v => ({ label: v, value: v as TGridPlaceContent }))
+	]
+
+	const GRID_PLACE_SELF_OPTIONS: Array<IOptions<TGridPlaceSelf | undefined>> = [
+		{ label: '(none)', value: undefined },
+		...GRID_PLACE_SELF.map(v => ({ label: v, value: v as TGridPlaceSelf }))
+	]
 
 	const HOLY_GRAIL_AREAS = [
 		'header header header',

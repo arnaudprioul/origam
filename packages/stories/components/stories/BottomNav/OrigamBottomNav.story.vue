@@ -3,50 +3,11 @@
 			group="components"
 			title="BottomNav/OrigamBottomNav"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			IBottomNavProps knob via the sidebar controls.
-		-->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IBottomNavProps>({
-					density: DENSITY.DEFAULT,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					border: false,
-					elevation: undefined,
-					grow: false,
-					mode: MODE.VERTICAL,
-				})"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
-							v-bind="state"
-							:items="navItems"
-							data-cy="bottom-nav-playground"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstCheckbox v-model="state.grow"      title="grow"/>
-				<HstSelect   v-model="state.mode"      title="mode"      :options="modeList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ color: 'primary' })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IBottomNavProps>>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<div class="story-bottom-nav-shell">
@@ -54,183 +15,111 @@
 							:model-value="true"
 							:color="state.color"
 							:bg-color="state.bgColor"
-							:items="navItems"
-							data-cy="bottom-nav-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"        :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"      :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
-							:color="state.color"
-							:bg-color="state.bgColor"
-							:items="navItems"
-							data-cy="bottom-nav-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
-							:color="state.color"
-							:bg-color="state.bgColor"
-							:items="navItems"
-							data-cy="bottom-nav-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
 							:density="state.density"
-							:items="navItems"
-							data-cy="bottom-nav-density"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ rounded: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
 							:rounded="state.rounded"
-							:items="navItems"
-							data-cy="bottom-nav-rounded"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — border"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ border: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
-							:border="state.border"
-							:items="navItems"
-							data-cy="bottom-nav-border"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — elevation"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ elevation: 8 })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
 							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:width="state.width"
+							:height="state.height"
 							:items="navItems"
-							data-cy="bottom-nav-elevation"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
+		<!-- ══════════════════ ÉTAT (design + fonctionnel) ══════════════════ -->
+
 		<Variant
-				title="Prop — grow"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ grow: true })"
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IBottomNavProps>>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<div class="story-bottom-nav-shell">
 					<origam-bottom-nav
 							:model-value="true"
+							:bg-color="state.bgColor"
+							:hover="state.hover"
+							:items="navItems"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IBottomNavProps> & { visible: boolean }>({ visible: true, grow: false, mode: MODE.VERTICAL })"
+		>
+			<template #default="{ state }">
+				<div class="story-bottom-nav-shell">
+					<origam-bottom-nav
+							:model-value="state.visible"
 							:grow="state.grow"
-							:items="navItems"
-							data-cy="bottom-nav-grow"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.grow" title="grow"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — mode"
-				:init-state="() => useStoryInitState<IBottomNavProps>({ mode: MODE.VERTICAL })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
-							:model-value="true"
 							:mode="state.mode"
+							:disabled="state.disabled"
+							:multiple="state.multiple"
+							:mandatory="state.mandatory"
+							:tag="state.tag"
 							:items="navItems"
-							data-cy="bottom-nav-mode"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.mode" title="mode" :options="modeList"/>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.visible" title="Model Value (visible)"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.grow" title="Grow"/>
+					<HstSelect   v-model="state.mode" title="Mode" :options="MODE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Group">
+					<HstCheckbox v-model="state.disabled"  title="Disabled"/>
+					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
 		<Variant
-				title="Prop — modelValue (visible)"
+				title="Events - update:modelValue"
 				:init-state="() => useStoryInitState<{ visible: boolean }>({ visible: true })"
 		>
 			<template #default="{ state }">
@@ -238,107 +127,92 @@
 					<origam-bottom-nav
 							:model-value="state.visible"
 							:items="navItems"
-							data-cy="bottom-nav-visible"
+							@update:model-value="logEvent('update:modelValue', $event)"
 					/>
 				</div>
 			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.visible" title="visible (modelValue)"/>
-			</template>
 		</Variant>
 
-		<Variant title="Prop — items">
+		<Variant title="Events - update:active">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav
 						:model-value="true"
 						:items="navItems"
-						data-cy="bottom-nav-items"
+						@update:active="logEvent('update:active', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
+		<Variant title="Events - update:hover">
 			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav :model-value="true" data-cy="bottom-nav-slot-default">
-					<origam-btn :prepend-icon="MDI_ICONS.HOME"    text="Home"    data-cy="bottom-nav-slot-home"/>
-					<origam-btn :prepend-icon="MDI_ICONS.MAGNIFY" text="Search"  data-cy="bottom-nav-slot-search"/>
-					<origam-btn :prepend-icon="MDI_ICONS.ACCOUNT" text="Profile" data-cy="bottom-nav-slot-profile"/>
+				<origam-bottom-nav
+						:model-value="true"
+						:items="navItems"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<div class="story-bottom-nav-shell">
+				<origam-bottom-nav :model-value="true">
+					<origam-btn :prepend-icon="MDI_ICONS.HOME"    text="Home"/>
+					<origam-btn :prepend-icon="MDI_ICONS.MAGNIFY" text="Search"/>
+					<origam-btn :prepend-icon="MDI_ICONS.ACCOUNT" text="Profile"/>
 				</origam-bottom-nav>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — item">
+		<Variant title="Slots - Item">
 			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav :model-value="true" :items="navItems" data-cy="bottom-nav-slot-item">
+				<origam-bottom-nav :model-value="true" :items="navItems">
 					<template #item="{ props: itemProps, index }">
 						<origam-btn
 								v-bind="itemProps"
 								:prepend-icon="MDI_ICONS.STAR"
-								:data-cy="`bottom-nav-slot-item-${index}`"
+								:data-cy="`slot-item-${index}`"
 						/>
 					</template>
 				</origam-bottom-nav>
 			</div>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
-				title="Emit — update:modelValue"
-				:init-state="() => useStoryInitState<{ visible: boolean, log: string[] }>({ visible: true, log: [] })"
+				title="Default"
+				:init-state="() => useStoryInitState<IBottomNavProps>({ bgColor: 'primary', mode: MODE.VERTICAL, grow: false })"
 		>
 			<template #default="{ state }">
 				<div class="story-bottom-nav-shell">
 					<origam-bottom-nav
-							:model-value="state.visible"
-							:items="navItems"
-							data-cy="bottom-nav-emit-model"
-							@update:model-value="(v: boolean) => {
-								state.visible = v
-								state.log = [`update:modelValue → ${v}`, ...state.log].slice(0, 4)
-							}"
-					/>
-				</div>
-				<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
-					<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-				</ul>
-				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Events will appear here.</p>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — update:active"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div class="story-bottom-nav-shell">
-					<origam-bottom-nav
+							v-bind="state"
 							:model-value="true"
 							:items="navItems"
-							data-cy="bottom-nav-emit-active"
-							@update:active="(v: any) => {
-								state.log = [`update:active → ${v}`, ...state.log].slice(0, 4)
-							}"
+							@update:model-value="logEvent('update:modelValue', $event)"
+							@update:active="logEvent('update:active', $event)"
 					/>
 				</div>
-				<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
-					<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-				</ul>
-				<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Click a nav item to fire the event.</p>
 			</template>
-		</Variant>
-
-		<Variant title="Emit — update:hover">
-			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav
-						:model-value="true"
-						:items="navItems"
-						data-cy="bottom-nav-emit-hover"
-						@update:hover="logEvent('update:hover', $event)"
-				/>
-			</div>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.grow"      title="Grow"/>
+					<HstSelect   v-model="state.mode"      title="Mode"     :options="MODE_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled"  title="Disabled"/>
+					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -350,22 +224,24 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
-	import { DENSITY, MDI_ICONS, MODE } from '@origam/enums'
-	import type {
-		IBottomNavProps,
-		IOptions
-	} from '@origam/interfaces'
+	import { MDI_ICONS, MODE } from '@origam/enums'
+	import type { IBottomNavProps, IOptions } from '@origam/interfaces'
 	import type { TMode } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		borderList,
-		densityList, elevationList, intentList, roundedList,
-		hoverList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
-	const modeList: Array<IOptions<TMode>> = [
+	const MODE_OPTIONS: Array<IOptions<TMode>> = [
 		{ label: 'vertical',   value: MODE.VERTICAL   },
 		{ label: 'horizontal', value: MODE.HORIZONTAL },
 		{ label: 'shift',      value: MODE.SHIFT      },

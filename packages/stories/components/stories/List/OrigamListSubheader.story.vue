@@ -3,130 +3,126 @@
 			group="components"
 			title="List/OrigamListSubheader"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IListSubheader>({
-					title: 'Subheader',
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					inset: false,
-					sticky: false,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IListSubheader>>({ title: 'Subheader', color: undefined, bgColor: undefined, rounded: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-list>
-					<origam-list-subheader v-bind="state" data-cy="list-subheader-playground"/>
+					<origam-list-subheader
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:rounded="state.rounded"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:padding="state.padding"
+							:padding-inline="state.paddingInline"
+							:margin="state.margin"
+							:tag="state.tag"
+							:title="state.title"
+					/>
 					<origam-list-item title="Item one"/>
 					<origam-list-item title="Item two"/>
 					<origam-list-item title="Item three"/>
 				</origam-list>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.title"   title="title"/>
-				<HstSelect   v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect   v-model="state.bgColor" title="bgColor" :options="intentList"/>
-				<HstSelect   v-model="state.rounded" title="rounded" :options="roundedList"/>
-				<HstCheckbox v-model="state.inset"   title="inset"/>
-				<HstCheckbox v-model="state.sticky"  title="sticky"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding"       title="Padding"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+					<HstText v-model="state.margin"        title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Prop — title"
-				:init-state="() => useStoryInitState<{ title?: string }>({ title: 'Section Title' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IListSubheader>>({ title: 'Subheader', inset: false, sticky: false })"
 		>
 			<template #default="{ state }">
-				<origam-list>
-					<origam-list-subheader :title="state.title" data-cy="list-subheader-title"/>
-					<origam-list-item title="Item one"/>
-					<origam-list-item title="Item two"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.title" title="title"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-subheader v-bind="state" title="Colored Subheader" data-cy="list-subheader-color"/>
-					<origam-list-item title="Item one"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-subheader :rounded="state.rounded" title="Rounded Subheader" data-cy="list-subheader-rounded"/>
-					<origam-list-item title="Item one"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — inset"
-				:init-state="() => useStoryInitState<{ inset: boolean }>({ inset: true })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-subheader :inset="state.inset" title="Inset Subheader" data-cy="list-subheader-inset"/>
-					<origam-list-item title="Item one" :prepend-icon="MDI_ICONS.ACCOUNT"/>
-					<origam-list-item title="Item two" :prepend-icon="MDI_ICONS.STAR"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.inset" title="inset"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — sticky"
-				:init-state="() => useStoryInitState<{ sticky: boolean }>({ sticky: true })"
-		>
-			<template #default="{ state }">
-				<origam-list style="max-height: 150px; overflow-y: auto;">
-					<origam-list-subheader :sticky="state.sticky" title="Sticky Section" data-cy="list-subheader-sticky"/>
+				<origam-list style="max-height: 200px; overflow-y: auto;">
+					<origam-list-subheader
+							:title="state.title"
+							:inset="state.inset"
+							:sticky="state.sticky"
+					/>
 					<origam-list-item v-for="n in 8" :key="n" :title="`Item ${n}`"/>
 				</origam-list>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.sticky" title="sticky"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.inset"  title="Inset"/>
+					<HstCheckbox v-model="state.sticky" title="Sticky"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Slot — default">
+		<Variant title="Slots - Default">
 			<origam-list>
-				<origam-list-subheader data-cy="list-subheader-slot-default">
+				<origam-list-subheader>
 					<template #default>
-						<span style="font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">Custom Slot Title</span>
+						<strong style="letter-spacing: 0.1em; text-transform: uppercase;">Custom Slot Title</strong>
 					</template>
 				</origam-list-subheader>
 				<origam-list-item title="Item one"/>
+				<origam-list-item title="Item two"/>
 			</origam-list>
 		</Variant>
 
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IListSubheader>({ title: 'Subheader', inset: false, sticky: false })"
+		>
+			<template #default="{ state }">
+				<origam-list style="max-height: 200px; overflow-y: auto;">
+					<origam-list-subheader v-bind="state"/>
+					<origam-list-item v-for="n in 6" :key="n" :title="`Item ${n}`"/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.tag"     title="Tag"      :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.inset"  title="Inset"/>
+					<HstCheckbox v-model="state.sticky" title="Sticky"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -135,9 +131,15 @@
 		setup
 >
 	import { OrigamList, OrigamListItem, OrigamListSubheader } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
-	import type { IColorProps, IListSubheader, IRoundedProps } from '@origam/interfaces'
+	import type { IListSubheader } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList, roundedList } from '@stories/const'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 </script>

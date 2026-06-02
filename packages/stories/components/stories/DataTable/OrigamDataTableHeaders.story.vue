@@ -3,101 +3,127 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeaders"
 	>
-		<!--
-			Playground — shows the header row container via the parent
-			table with sortable columns and multiSort toggle.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{ multiSort: boolean; showSelect: boolean }>({ multiSort: false, showSelect: false })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataTableHeadersProps>>({ color: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="sortableHeaders"
+						:items="items"
+						:color="state.color"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDataTableHeadersProps>>({ multiSort: false, disableSort: false, sticky: false })"
 		>
 			<template #default="{ state }">
 				<origam-data-table
 						:headers="sortableHeaders"
 						:items="items"
 						:multi-sort="state.multiSort"
-						:show-select="state.showSelect"
-						data-cy="headers-playground"
+						:disable-sort="state.disableSort"
+						:sticky="state.sticky"
+						:loading="state.loading"
+						:loading-text="state.loadingText"
+						:mobile-breakpoint="state.mobileBreakpoint"
+						:sort-asc-icon="state.sortAscIcon || undefined"
+						:sort-desc-icon="state.sortDescIcon || undefined"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.multiSort"   title="multiSort"/>
-				<HstCheckbox v-model="state.showSelect"  title="showSelect"/>
+				<StoryGroup title="Sort">
+					<HstCheckbox v-model="state.multiSort"   title="Multi Sort"/>
+					<HstCheckbox v-model="state.disableSort" title="Disable Sort"/>
+					<HstSelect   v-model="state.sortAscIcon"  title="Sort Asc Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect   v-model="state.sortDescIcon" title="Sort Desc Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.sticky" title="Sticky"/>
+					<HstSelect   v-model="state.mobileBreakpoint" title="Mobile Breakpoint" :options="MOBILE_BREAKPOINT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.loading"     title="Loading"/>
+					<HstText     v-model="state.loadingText" title="Loading Text"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Prop — headers (default non-sortable)">
-			<origam-data-table :headers="headers" :items="items" data-cy="headers-default"/>
-		</Variant>
-
-		<Variant
-				title="Prop — multiSort (click column to add secondary sort)"
-				:init-state="() => useStoryInitState<{ multiSort: boolean }>({ multiSort: false })"
-		>
-			<template #default="{ state }">
-				<origam-data-table
-						:headers="sortableHeaders"
-						:items="items"
-						:multi-sort="state.multiSort"
-						data-cy="headers-sortable"
-				/>
-				<p style="padding: 8px; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
-					Click a column title to sort. Hold shift to add a secondary sort if multiSort is on.
-				</p>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.multiSort" title="multiSort"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — showSelect (master checkbox in header)">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					show-select
-					data-cy="headers-select"
-			/>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-data-table :headers="headers" :items="items" data-cy="headers-slot-default">
+		<Variant title="Slots - Default">
+			<origam-data-table :headers="headers" :items="items">
 				<template #default>
-					<span>Custom slot content</span>
+					<span>Custom default slot content</span>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — headers (fully custom header row, hide default)">
-			<origam-data-table :headers="headers" :items="items" hide-default-header data-cy="headers-hide-default">
+		<Variant title="Slots - Headers">
+			<origam-data-table :headers="headers" :items="items" hide-default-header>
 				<template #headers>
-					<tr style="background: var(--origam-color__action--primary---bg); color: var(--origam-color__action--primary---fg);">
-						<th style="padding: 12px; text-align: start;">Custom team roster</th>
-						<th style="padding: 12px; text-align: end;" :colspan="2">{{ items.length }} members</th>
+					<tr>
+						<th style="padding: 12px; text-align: start; background: var(--origam-color__action--primary---bg); color: var(--origam-color__action--primary---fg);">Custom team roster</th>
+						<th style="padding: 12px; text-align: end; background: var(--origam-color__action--primary---bg); color: var(--origam-color__action--primary---fg);" :colspan="2">{{ items.length }} members</th>
 					</tr>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — loader">
-			<origam-data-table :headers="headers" :items="items" loading data-cy="headers-slot-loader">
+		<Variant title="Slots - Loader">
+			<origam-data-table :headers="headers" :items="items" loading>
 				<template #loader>
 					<span>Loading...</span>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — mobile">
+		<Variant title="Slots - Mobile">
 			<div style="max-width: 360px;">
-				<origam-data-table :headers="headers" :items="items" mobile data-cy="headers-slot-mobile">
+				<origam-data-table :headers="headers" :items="items" mobile>
 					<template #mobile>
 						<span>Custom mobile header</span>
 					</template>
 				</origam-data-table>
 			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IDataTableHeadersProps>>({ multiSort: false })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="sortableHeaders"
+						:items="items"
+						v-bind="state"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.multiSort"   title="Multi Sort"/>
+					<HstCheckbox v-model="state.disableSort" title="Disable Sort"/>
+					<HstCheckbox v-model="state.sticky"      title="Sticky"/>
+					<HstCheckbox v-model="state.loading"     title="Loading"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -107,8 +133,25 @@
 		setup
 >
 	import { OrigamDataTable } from '@origam/components'
+	import { BREAKPOINTS } from '@origam/enums'
+	import type { IDataTableHeadersProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ICON_OPTIONS
+	} from '@stories/const'
+
+	const MOBILE_BREAKPOINT_OPTIONS = [
+		{ label: '(none)',    value: undefined },
+		{ label: 'xs (0px)', value: BREAKPOINTS.XS },
+		{ label: 'sm',       value: BREAKPOINTS.SM },
+		{ label: 'md',       value: BREAKPOINTS.MD },
+		{ label: 'lg',       value: BREAKPOINTS.LG },
+		{ label: 'xl',       value: BREAKPOINTS.XL },
+		{ label: 'xxl',      value: BREAKPOINTS.XXL },
+	]
 
 	const headers = [
 		{ title: 'Name',    key: 'name'    },

@@ -3,297 +3,220 @@
 			group="components"
 			title="List/OrigamList"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IListProps>({
-					density: DENSITY.DEFAULT,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					border: false,
-					elevation: undefined,
-					lines: undefined,
-					slim: false,
-					nav: false,
-					disabled: false,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IListProps>>({ color: undefined, bgColor: undefined, density: 'default', rounded: undefined, elevation: undefined, lines: 'one' })"
 		>
 			<template #default="{ state }">
-				<origam-list v-bind="state" data-cy="list-playground">
-					<origam-list-item title="Item one"   data-cy="list-playground-1"/>
-					<origam-list-item title="Item two"   subtitle="With subtitle" data-cy="list-playground-2"/>
-					<origam-list-item title="Item three" :prepend-icon="MDI_ICONS.STAR" data-cy="list-playground-3"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect   v-model="state.lines"     title="lines"     :options="linesList"/>
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstCheckbox v-model="state.slim"      title="slim"/>
-				<HstCheckbox v-model="state.nav"       title="nav"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-list :density="state.density" data-cy="list-density">
-					<origam-list-item title="Item one"   data-cy="list-density-1"/>
-					<origam-list-item title="Item two"   data-cy="list-density-2"/>
-					<origam-list-item title="Item three" data-cy="list-density-3"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-list :color="state.color" :bg-color="state.bgColor" data-cy="list-color">
+				<origam-list
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:lines="state.lines"
+						:width="state.width"
+						:height="state.height"
+				>
 					<origam-list-item title="Item one"/>
-					<origam-list-item title="Item two"/>
+					<origam-list-item title="Item two" subtitle="With subtitle"/>
+					<origam-list-item title="Item three" :prepend-icon="preIcon"/>
 				</origam-list>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border" title="Border" :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Lines">
+					<HstSelect v-model="state.lines" title="Lines" :options="LINES_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IListProps>>({ slim: false, nav: false, disabled: false, selectStrategy: SELECT_STRATEGY.SINGLE_LEAF, openStrategy: OPEN_STRATEGY.LIST, tag: 'div' })"
 		>
 			<template #default="{ state }">
-				<origam-list :rounded="state.rounded" data-cy="list-rounded">
-					<origam-list-item title="Item one"/>
-					<origam-list-item title="Item two"/>
-				</origam-list>
+				<origam-list
+						:slim="state.slim"
+						:nav="state.nav"
+						:disabled="state.disabled"
+						:select-strategy="state.selectStrategy"
+						:open-strategy="state.openStrategy"
+						:tag="state.tag"
+						:items="selectableItems"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.slim" title="Slim"/>
+					<HstCheckbox v-model="state.nav"  title="Nav"/>
+				</StoryGroup>
+				<StoryGroup title="Nested">
+					<HstSelect v-model="state.selectStrategy" title="Select Strategy" :options="SELECT_STRATEGY_OPTIONS"/>
+					<HstSelect v-model="state.openStrategy"   title="Open Strategy"   :options="OPEN_STRATEGY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant
-				title="Prop — border"
-				:init-state="() => useStoryInitState<IBorderProps>({ border: true })"
-		>
-			<template #default="{ state }">
-				<origam-list :border="state.border" data-cy="list-border">
-					<origam-list-item title="Item one"/>
-					<origam-list-item title="Item two"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-			</template>
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:selected">
+			<origam-list
+					:items="selectableItems"
+					@update:selected="logEvent('update:selected', $event)"
+			/>
 		</Variant>
 
-		<Variant
-				title="Prop — elevation"
-				:init-state="() => useStoryInitState<IElevationProps>({ elevation: 4 })"
-		>
-			<template #default="{ state }">
-				<origam-list :elevation="state.elevation" data-cy="list-elevation">
-					<origam-list-item title="Item one"/>
-					<origam-list-item title="Item two"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-			</template>
+		<Variant title="Events - click:select">
+			<origam-list
+					:items="selectableItems"
+					@click:select="logEvent('click:select', $event)"
+			/>
 		</Variant>
 
-		<Variant
-				title="Prop — lines"
-				:init-state="() => useStoryInitState<{ lines?: TLines }>({ lines: LINES.ONE })"
-		>
-			<template #default="{ state }">
-				<origam-list :lines="state.lines" data-cy="list-lines">
-					<origam-list-item title="One-line item"/>
-					<origam-list-item title="Two-line" subtitle="With subtitle"/>
-					<origam-list-item title="Three-line" subtitle="Extra detail here, very long text to force clamp"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.lines" title="lines" :options="linesList"/>
-			</template>
+		<Variant title="Events - click:open">
+			<origam-list
+					:items="groupedItems"
+					@click:open="logEvent('click:open', $event)"
+			/>
 		</Variant>
 
-		<Variant
-				title="Prop — slim / nav / disabled"
-				:init-state="() => useStoryInitState<{ slim: boolean, nav: boolean, disabled: boolean }>({ slim: false, nav: false, disabled: false })"
-		>
-			<template #default="{ state }">
-				<origam-list :slim="state.slim" :nav="state.nav" :disabled="state.disabled" data-cy="list-modifiers">
-					<origam-list-item title="Dashboard"  :prepend-icon="MDI_ICONS.HOME"/>
-					<origam-list-item title="Settings"   :prepend-icon="MDI_ICONS.COG"/>
-					<origam-list-item title="Profile"    :prepend-icon="MDI_ICONS.ACCOUNT"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.slim"     title="slim"/>
-				<HstCheckbox v-model="state.nav"      title="nav"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-			</template>
+		<Variant title="Events - update:opened">
+			<origam-list
+					:items="groupedItems"
+					@update:opened="logEvent('update:opened', $event)"
+			/>
 		</Variant>
 
-		<Variant title="Prop — items (API items[] vs slot)">
-			<origam-list :items="listItems" data-cy="list-items"/>
-		</Variant>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — group (nested ListGroup)">
-			<origam-list data-cy="list-group">
-				<origam-list-group title="Fruits" data-cy="list-group-fruits">
-					<template #items>
-						<origam-list-item title="Apple"  data-cy="list-group-apple"/>
-						<origam-list-item title="Banana" data-cy="list-group-banana"/>
-						<origam-list-item title="Cherry" data-cy="list-group-cherry"/>
-					</template>
-				</origam-list-group>
-				<origam-list-group title="Vegetables" data-cy="list-group-vegetables">
-					<template #items>
-						<origam-list-item title="Carrot" data-cy="list-group-carrot"/>
-						<origam-list-item title="Potato" data-cy="list-group-potato"/>
-					</template>
-				</origam-list-group>
-			</origam-list>
-		</Variant>
-
-		<Variant title="Prop — subheader (ListSubheader)">
-			<origam-list data-cy="list-subheader">
-				<origam-list-subheader title="Section A" data-cy="list-subheader-a"/>
-				<origam-list-item title="Alpha" subtitle="First item"/>
-				<origam-list-item title="Beta"  subtitle="Second item"/>
-				<origam-list-subheader title="Section B" data-cy="list-subheader-b"/>
+		<Variant title="Slots - Default">
+			<origam-list>
+				<origam-list-item title="Alpha"/>
+				<origam-list-item title="Beta" subtitle="With subtitle"/>
 				<origam-list-item title="Gamma"/>
-				<origam-list-item title="Delta"/>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — childrenItem">
-			<origam-list :items="listItemsWithGroup" data-cy="list-slot-children-item">
+		<Variant title="Slots - ChildrenItem">
+			<origam-list :items="groupedItems">
 				<template #childrenItem="{ item, index }">
 					<origam-list-item
 							:title="item.title"
-							:prepend-icon="MDI_ICONS.CHEVRON_RIGHT"
-							:data-cy="`list-slot-children-item-${index}`"
+							:prepend-icon="preIcon"
+							:data-cy="`children-item-${index}`"
 					/>
 				</template>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-list data-cy="list-slot-default">
-				<origam-list-item title="Alpha"   data-cy="list-slot-alpha"/>
-				<origam-list-item title="Beta"    subtitle="With subtitle" data-cy="list-slot-beta"/>
-				<origam-list-item title="Gamma"   data-cy="list-slot-gamma"/>
-			</origam-list>
-		</Variant>
-
-		<Variant title="Slot — divider">
-			<origam-list :items="listItemsWithDivider" data-cy="list-slot-divider">
+		<Variant title="Slots - Divider">
+			<origam-list :items="itemsWithDivider">
 				<template #divider>
 					<hr style="border-color: var(--origam-color__action--primary---bg); margin: 4px 0;"/>
 				</template>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — group">
-			<origam-list :items="listItemsWithGroup" data-cy="list-slot-group">
-				<template #group>
-					<span style="font-style: italic; opacity: 0.6;">Custom slot content</span>
+		<Variant title="Slots - Subheader">
+			<origam-list :items="itemsWithSubheader">
+				<template #subheader="{ title }">
+					<origam-list-subheader :title="`★ ${title}`"/>
 				</template>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — groupActivator">
-			<origam-list :items="listItemsWithGroup" data-cy="list-slot-group-activator">
+		<Variant title="Slots - Group">
+			<origam-list :items="groupedItems">
+				<template #group>
+					<span style="font-style: italic; opacity: 0.6;">Custom group content</span>
+				</template>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slots - GroupActivator">
+			<origam-list :items="groupedItems">
 				<template #groupActivator="{ props, isOpen, events, toggleIcon }">
 					<origam-list-item
 							v-bind="props"
 							v-on="events"
 							:append-icon="toggleIcon"
-							:prepend-icon="MDI_ICONS.FOLDER"
+							:prepend-icon="folderIcon"
 							title="Custom Activator"
-							data-cy="list-slot-group-activator-custom"
 					/>
 				</template>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — item">
-			<origam-list :items="listItems" data-cy="list-slot-item">
+		<Variant title="Slots - Item">
+			<origam-list :items="selectableItems">
 				<template #item="{ itemProps }">
 					<origam-list-item
 							v-bind="itemProps"
-							:prepend-icon="MDI_ICONS.STAR"
-							data-cy="list-slot-item-custom"
+							:prepend-icon="preIcon"
 					/>
 				</template>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — subheader">
-			<origam-list :items="listItemsWithSubheader" data-cy="list-slot-subheader">
-				<template #subheader="{ title }">
-					<origam-list-subheader :title="`★ ${title}`" data-cy="list-slot-subheader-custom"/>
-				</template>
-			</origam-list>
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IListProps>({ density: 'default', lines: 'one', slim: false, nav: false, disabled: false })"
+		>
+			<template #default="{ state }">
+				<origam-list v-bind="state" @update:selected="logEvent('update:selected', $event)">
+					<origam-list-item title="Item one"/>
+					<origam-list-item title="Item two" subtitle="With subtitle"/>
+					<origam-list-item title="Item three" :prepend-icon="preIcon"/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.lines"     title="Lines"     :options="LINES_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.slim"     title="Slim"/>
+					<HstCheckbox v-model="state.nav"      title="Nav"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+			</template>
 		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:selected">
-			<origam-list
-					:items="selectableItems"
-					data-cy="list-emit-selected"
-					@update:selected="logEvent('update:selected', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — click:select">
-			<origam-list
-					:items="selectableItems"
-					data-cy="list-emit-click-select"
-					@click:select="logEvent('click:select', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — click:open">
-			<origam-list
-					:items="listItemsWithGroup"
-					data-cy="list-emit-click-open"
-					@click:open="logEvent('click:open', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:opened">
-			<origam-list
-					:items="listItemsWithGroup"
-					data-cy="list-emit-opened"
-					@update:opened="logEvent('update:opened', $event)"
-			/>
-		</Variant>
-
 	</Story>
 </template>
 
@@ -305,78 +228,85 @@
 
 	import {
 		OrigamList,
-		OrigamListGroup,
 		OrigamListItem,
 		OrigamListSubheader
 	} from '@origam/components'
-	import { DENSITY, LINES, MDI_ICONS } from '@origam/enums'
-	import type {
-		IBorderProps,
-		IColorProps,
-		IDensityProps,
-		IElevationProps,
-		IListProps,
-		IOptions,
-		IRoundedProps
-	} from '@origam/interfaces'
+	import { LINES, MDI_ICONS, OPEN_STRATEGY, SELECT_STRATEGY } from '@origam/enums'
+	import type { IListProps, IOptions } from '@origam/interfaces'
 	import type { TLines } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		borderList,
-		densityList, elevationList, intentList, roundedList
+		BORDER_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
-	const linesList: Array<IOptions<TLines | undefined>> = [
-		{ label: '(none)', value: undefined    },
+	const preIcon = MDI_ICONS.STAR
+	const folderIcon = MDI_ICONS.FOLDER
+
+	const LINES_OPTIONS: Array<IOptions<TLines | undefined>> = [
+		{ label: '(none)',  value: undefined    },
 		{ label: 'One',    value: LINES.ONE    },
 		{ label: 'Two',    value: LINES.TWO    },
-		{ label: 'Three',  value: LINES.THREE  },
+		{ label: 'Three',  value: LINES.THREE  }
 	]
 
-	const listItems = [
-		{ type: 'item', title: 'Item Alpha', subtitle: 'subtitle A' },
-		{ type: 'item', title: 'Item Beta',  subtitle: 'subtitle B' },
-		{ type: 'item', title: 'Item Gamma'                         },
+	const SELECT_STRATEGY_OPTIONS: Array<IOptions<string>> = [
+		{ label: 'single-leaf',        value: SELECT_STRATEGY.SINGLE_LEAF        },
+		{ label: 'leaf',               value: SELECT_STRATEGY.LEAF               },
+		{ label: 'independent',        value: SELECT_STRATEGY.INDEPENDENT        },
+		{ label: 'single-independent', value: SELECT_STRATEGY.SINGLE_INDEPENDENT },
+		{ label: 'classic',            value: SELECT_STRATEGY.CLASSIC            }
 	]
 
-	const listItemsWithSubheader = [
-		{ type: 'subheader', title: 'Fruits'      },
-		{ type: 'item',      title: 'Apple'        },
-		{ type: 'item',      title: 'Banana'       },
-		{ type: 'subheader', title: 'Vegetables'   },
-		{ type: 'item',      title: 'Carrot'       },
+	const OPEN_STRATEGY_OPTIONS: Array<IOptions<string>> = [
+		{ label: 'list',     value: OPEN_STRATEGY.LIST     },
+		{ label: 'single',   value: OPEN_STRATEGY.SINGLE   },
+		{ label: 'multiple', value: OPEN_STRATEGY.MULTIPLE }
 	]
 
-	const listItemsWithGroup = [
+	const selectableItems = [
+		{ type: 'item', title: 'Option one',   value: 'one'   },
+		{ type: 'item', title: 'Option two',   value: 'two'   },
+		{ type: 'item', title: 'Option three', value: 'three' }
+	]
+
+	const groupedItems = [
 		{
 			type: 'group',
 			title: 'Category A',
 			children: [
 				{ title: 'Item A-1' },
-				{ title: 'Item A-2' },
+				{ title: 'Item A-2' }
 			]
 		},
 		{
 			type: 'group',
 			title: 'Category B',
 			children: [
-				{ title: 'Item B-1' },
+				{ title: 'Item B-1' }
 			]
-		},
+		}
 	]
 
-	const selectableItems = [
-		{ type: 'item', title: 'Option one',   value: 'one'   },
-		{ type: 'item', title: 'Option two',   value: 'two'   },
-		{ type: 'item', title: 'Option three', value: 'three' },
+	const itemsWithSubheader = [
+		{ type: 'subheader', title: 'Fruits'    },
+		{ type: 'item',      title: 'Apple'     },
+		{ type: 'item',      title: 'Banana'    },
+		{ type: 'subheader', title: 'Vegetables' },
+		{ type: 'item',      title: 'Carrot'    }
 	]
 
-	const listItemsWithDivider = [
+	const itemsWithDivider = [
 		{ type: 'item',    title: 'Item Alpha' },
 		{ type: 'divider'                      },
 		{ type: 'item',    title: 'Item Beta'  },
 		{ type: 'divider'                      },
-		{ type: 'item',    title: 'Item Gamma' },
+		{ type: 'item',    title: 'Item Gamma' }
 	]
 </script>

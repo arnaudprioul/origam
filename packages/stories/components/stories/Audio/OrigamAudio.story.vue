@@ -3,9 +3,11 @@
 			group="components"
 			title="Audio/OrigamAudio"
 	>
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IAudioProps>>({
 					src: SOUND_HELIX_TRACK,
 					title: 'Daydream',
 					artist: 'Origam DS Cast',
@@ -13,281 +15,198 @@
 					cover: PICSUM_COVER,
 					variant: 'expanded',
 					coverPosition: 'left',
-					position: 'relative',
-					color: '',
-					bgColor: '',
-					autoplay: false,
-					muted: false,
-					loop: false,
-					controls: 'custom',
-					preload: 'metadata',
-					playbackRate: 1,
-					downloadable: false,
-					downloadFilename: '',
-					allowRemotePlayback: false,
 					waveform: true
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="audio-default"
-				>
-					<p class="hint">
-						Stemtracks studio strip playground. Toggle the variant
-						(expanded vs compact), flip the cover side, drag both
-						scrubbers (waveform mini + inline timer), and exercise
-						every prop from the controls panel.
-					</p>
+				<div class="story-shell">
 					<origam-audio
-							:src="state.src as string"
-							:title="(state.title as string) || undefined"
-							:artist="(state.artist as string) || undefined"
-							:album="(state.album as string) || undefined"
-							:cover="(state.cover as string) || undefined"
-							:variant="state.variant as 'expanded' | 'compact'"
-							:cover-position="state.coverPosition as 'left' | 'right'"
-							:position="state.position as 'relative' | 'static' | 'absolute' | 'fixed' | 'sticky'"
-							:color="(state.color as string) || undefined"
-							:bg-color="(state.bgColor as string) || undefined"
-							:autoplay="Boolean(state.autoplay)"
-							:muted="Boolean(state.muted)"
-							:loop="Boolean(state.loop)"
-							:controls="state.controls as 'custom' | 'native'"
-							:preload="state.preload as 'none' | 'metadata' | 'auto'"
-							:playback-rate="Number(state.playbackRate)"
-							:downloadable="Boolean(state.downloadable)"
-							:download-filename="(state.downloadFilename as string) || undefined"
-							:allow-remote-playback="Boolean(state.allowRemotePlayback)"
-							:waveform="Boolean(state.waveform)"
+							:src="state.src"
+							:title="state.title || undefined"
+							:artist="state.artist || undefined"
+							:album="state.album || undefined"
+							:cover="state.cover || undefined"
+							:variant="state.variant"
+							:cover-position="state.coverPosition"
+							:color="state.color || undefined"
+							:bg-color="state.bgColor || undefined"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:waveform="state.waveform"
+							:waveform-color="state.waveformColor || undefined"
 							class="story-audio"
-							data-cy="audio-default-player"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.variant"
-						title="variant"
-						:options="variantOptions"
-				/>
-				<HstSelect
-						v-model="state.coverPosition"
-						title="coverPosition"
-						:options="coverPositionOptions"
-				/>
-				<HstSelect
-						v-model="state.position"
-						title="position"
-						:options="positionOptions"
-				/>
-				<HstSelect
-						v-model="state.color"
-						title="color"
-						:options="intentOptions"
-				/>
-				<HstSelect
-						v-model="state.bgColor"
-						title="bgColor"
-						:options="intentOptions"
-				/>
-				<HstText
-						v-model="state.src"
-						title="src"
-				/>
-				<HstText
-						v-model="state.title"
-						title="title"
-				/>
-				<HstText
-						v-model="state.artist"
-						title="artist"
-				/>
-				<HstText
-						v-model="state.album"
-						title="album"
-				/>
-				<HstText
-						v-model="state.cover"
-						title="cover (URL)"
-				/>
-				<HstSelect
-						v-model="state.controls"
-						title="controls"
-						:options="controlsOptions"
-				/>
-				<HstSelect
-						v-model="state.preload"
-						title="preload"
-						:options="preloadOptions"
-				/>
-				<HstNumber
-						v-model="state.playbackRate"
-						title="playbackRate"
-				/>
-				<HstText
-						v-model="state.downloadFilename"
-						title="downloadFilename"
-				/>
-				<HstCheckbox
-						v-model="state.autoplay"
-						title="autoplay"
-				/>
-				<HstCheckbox
-						v-model="state.muted"
-						title="muted"
-				/>
-				<HstCheckbox
-						v-model="state.loop"
-						title="loop"
-				/>
-				<HstCheckbox
-						v-model="state.downloadable"
-						title="downloadable"
-				/>
-				<HstCheckbox
-						v-model="state.allowRemotePlayback"
-						title="allowRemotePlayback"
-				/>
-				<HstCheckbox
-						v-model="state.waveform"
-						title="waveform"
-				/>
+				<StoryGroup title="Variant">
+					<HstSelect v-model="state.variant"       title="Variant"        :options="AUDIO_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.coverPosition" title="Cover Position" :options="COVER_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Waveform">
+					<HstCheckbox v-model="state.waveform"      title="Waveform"/>
+					<HstText     v-model="state.waveformColor" title="Waveform Color"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — variant (expanded)">
-			<div
-					class="story-shell"
-					data-cy="audio-expanded"
-			>
-				<p class="hint">
-					The default Stemtracks studio strip: 96 px cover, full
-					title / artist / album header, waveform mini scrubber
-					above the transport row.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						variant="expanded"
-						title="Daydream"
-						artist="Origam DS Cast"
-						album="Season 3"
-						:cover="PICSUM_COVER"
-						:waveform="true"
-						data-cy="audio-expanded-player"
-				/>
-			</div>
-		</Variant>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — variant (compact)">
-			<div
-					class="story-shell"
-					data-cy="audio-compact"
-			>
-				<p class="hint">
-					Compact transport dock: 48 px cover, inline metadata,
-					no waveform, transport row only. Use for sticky
-					bottom docks and mini-players.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						variant="compact"
-						title="Daydream"
-						artist="Origam DS Cast"
-						:cover="PICSUM_COVER"
-						data-cy="audio-compact-player"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — coverPosition (right edge)">
-			<div
-					class="story-shell"
-					data-cy="audio-cover-right"
-			>
-				<p class="hint">
-					Flip the album cover to the right edge so the body
-					column sits against the page's left rail.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						cover-position="right"
-						title="Right cover"
-						artist="Origam"
-						album="Layout"
-						:cover="PICSUM_COVER"
-						:waveform="true"
-						data-cy="audio-cover-right-player"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — position (sticky docked bottom)">
-			<div
-					class="story-shell story-shell--tall"
-					data-cy="audio-docked"
-			>
-				<p class="hint">
-					<code>position="sticky"</code> + <code>bottom="0"</code> pin
-					the compact dock to the bottom of the scrollable shell.
-				</p>
-				<div class="story-scroll" data-cy="audio-docked-scroll">
-					<p
-							v-for="n in 12"
-							:key="n"
-							class="story-filler"
-					>Filler line {{ n }} — scroll within this card.</p>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IAudioProps>>({
+					src: SOUND_HELIX_TRACK,
+					title: 'Daydream',
+					artist: 'Origam DS Cast',
+					album: 'Season 3',
+					cover: PICSUM_COVER,
+					controls: 'custom',
+					preload: 'metadata',
+					playbackRate: 1,
+					loopMode: 'none',
+					autoplay: false,
+					muted: false,
+					loop: false,
+					shuffle: false,
+					downloadable: false,
+					allowRemotePlayback: false
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
 					<origam-audio
-							:src="SOUND_HELIX_TRACK"
-							variant="compact"
-							position="sticky"
-							bottom="0"
-							title="Pinned"
-							artist="Origam"
-							:cover="PICSUM_COVER"
-							data-cy="audio-docked-player"
+							:src="state.src"
+							:title="state.title || undefined"
+							:artist="state.artist || undefined"
+							:album="state.album || undefined"
+							:cover="state.cover || undefined"
+							:controls="state.controls"
+							:preload="state.preload"
+							:playback-rate="state.playbackRate"
+							:loop-mode="state.loopMode"
+							:autoplay="state.autoplay"
+							:muted="state.muted"
+							:loop="state.loop"
+							:shuffle="state.shuffle"
+							:downloadable="state.downloadable"
+							:download-filename="state.downloadFilename || undefined"
+							:allow-remote-playback="state.allowRemotePlayback"
+							:crossorigin="state.crossorigin || undefined"
+							:tag="state.tag"
+							class="story-audio"
 					/>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Metadata">
+					<HstText v-model="state.src"    title="Src"/>
+					<HstText v-model="state.title"  title="Title"/>
+					<HstText v-model="state.artist" title="Artist"/>
+					<HstText v-model="state.album"  title="Album"/>
+					<HstText v-model="state.cover"  title="Cover (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Playback">
+					<HstSelect v-model="state.controls"     title="Controls"      :options="AUDIO_CONTROLS_OPTIONS"/>
+					<HstSelect v-model="state.preload"      title="Preload"       :options="AUDIO_PRELOAD_OPTIONS"/>
+					<HstSelect v-model="state.loopMode"     title="Loop Mode"     :options="AUDIO_LOOP_MODE_OPTIONS"/>
+					<HstNumber v-model="state.playbackRate" title="Playback Rate" :min="0.25" :max="3" :step="0.25"/>
+				</StoryGroup>
+				<StoryGroup title="Flags">
+					<HstCheckbox v-model="state.autoplay"            title="Autoplay"/>
+					<HstCheckbox v-model="state.muted"               title="Muted"/>
+					<HstCheckbox v-model="state.loop"                title="Loop (legacy)"/>
+					<HstCheckbox v-model="state.shuffle"             title="Shuffle"/>
+					<HstCheckbox v-model="state.downloadable"        title="Downloadable"/>
+					<HstCheckbox v-model="state.allowRemotePlayback" title="Allow Remote Playback"/>
+				</StoryGroup>
+				<StoryGroup title="Download">
+					<HstText v-model="state.downloadFilename" title="Download Filename"/>
+				</StoryGroup>
+				<StoryGroup title="Link">
+					<HstSelect v-model="state.tag"        title="Tag"        :options="TAG_OPTIONS"/>
+					<HstText   v-model="state.crossorigin" title="Crossorigin"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — controls (custom / native)">
-			<div
-					class="story-shell"
-					data-cy="audio-native"
-			>
-				<p class="hint">
-					Falls back to the browser's built-in audio bar. No
-					transport <code>&lt;nav&gt;</code> is mounted.
-				</p>
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - play">
+			<div class="story-shell">
 				<origam-audio
 						:src="SOUND_HELIX_TRACK"
-						controls="native"
-						title="Native controls"
-						artist="Browser default"
+						title="Daydream"
+						artist="Origam DS Cast"
 						class="story-audio"
-						data-cy="audio-native-player"
+						@play="logEvent('play', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — downloadable + downloadFilename">
-			<div
-					class="story-shell"
-					data-cy="audio-downloadable"
-			>
-				<p class="hint">
-					Setting <code>downloadable</code> adds a Download row to
-					the cog menu. The MediaController detects same-origin
-					vs cross-origin and routes accordingly — for cross-origin
-					URLs (this demo) it fetches the file as a blob and
-					triggers the save-to-disk flow on a same-origin blob URL,
-					so the <code>download</code> attribute is actually
-					honoured (instead of the browser navigating to the file).
-					Demo uses a CORS-enabled sample so the round-trip
-					succeeds; without CORS the controller falls back to
-					opening the URL in a new tab.
-				</p>
+		<Variant title="Events - pause">
+			<div class="story-shell">
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						title="Daydream"
+						artist="Origam DS Cast"
+						class="story-audio"
+						@pause="logEvent('pause', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - ended">
+			<div class="story-shell">
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						title="Daydream"
+						artist="Origam DS Cast"
+						class="story-audio"
+						@ended="logEvent('ended', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - timeupdate">
+			<div class="story-shell">
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						title="Daydream"
+						artist="Origam DS Cast"
+						class="story-audio"
+						@timeupdate="logEvent('timeupdate', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - volumechange">
+			<div class="story-shell">
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						title="Daydream"
+						artist="Origam DS Cast"
+						class="story-audio"
+						@volumechange="logEvent('volumechange', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - download">
+			<div class="story-shell">
 				<origam-audio
 						:src="SAMPLELIB_MP3"
 						:downloadable="true"
@@ -295,156 +214,188 @@
 						title="Downloadable Track"
 						artist="SampleLib"
 						class="story-audio"
-						data-cy="audio-downloadable-player"
-						@download="logEmit('download', $event)"
-				/>
-				<pre
-						class="story-log"
-						data-cy="audio-downloadable-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — src (array form, codec fallback)">
-			<div
-					class="story-shell"
-					data-cy="audio-multi"
-			>
-				<p class="hint">
-					<code>src</code> as an array lets the browser pick the
-					first decodable codec.
-				</p>
-				<origam-audio
-						:src="MULTI_SOURCES"
-						title="Sample Track"
-						artist="SoundHelix"
-						class="story-audio"
-						data-cy="audio-multi-player"
+						@download="logEvent('download', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — bgColor (auto-contrast)">
-			<div
-					class="story-shell"
-					data-cy="audio-brand"
-			>
-				<p class="hint">
-					Repaint the surface via the DS intent system — passing only
-					<code>bgColor="primary"</code> auto-pairs the foreground with
-					the intent's WCAG-validated <em>fg</em> token (white on the
-					primary purple). The scrubber adopts the same paired colour
-					so progress stays visible on the branded surface.
-				</p>
+		<Variant title="Events - track-change">
+			<div class="story-shell">
 				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						bg-color="primary"
-						title="Auto-contrast"
-						artist="Origam DS"
-						album="bgColor=primary, no color"
-						:cover="PICSUM_COVER"
-						class="story-audio"
-						data-cy="audio-brand-player"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — color (scrubber follows color)">
-			<div
-					class="story-shell"
-					data-cy="audio-color"
-			>
-				<p class="hint">
-					Setting <code>color="primary"</code> alone tints the text AND
-					the scrubber accent — the bg stays neutral so the contrast is
-					controlled by the surface, not the intent.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						color="primary"
-						title="Tinted text"
-						artist="Origam DS"
-						album="color=primary"
-						:cover="PICSUM_COVER"
-						class="story-audio"
-						data-cy="audio-color-player"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — color + bgColor (paired intents)">
-			<div
-					class="story-shell"
-					data-cy="audio-paired"
-			>
-				<p class="hint">
-					Two distinct intents — <code>bgColor="success"</code> paired
-					with <code>color="warning"</code> — let the consumer override
-					the auto-pair when they want a deliberate accent contrast.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						bg-color="success"
-						color="warning"
-						title="Paired intents"
-						artist="Origam DS"
-						album="success bg, warning fg"
-						:cover="PICSUM_COVER"
-						class="story-audio"
-						data-cy="audio-paired-player"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — src (single track, no metadata)">
-			<div
-					class="story-shell"
-					data-cy="audio-single"
-			>
-				<p class="hint">
-					Bare <code>&lt;origam-audio&gt;</code> with just an
-					<code>src</code>. The metadata strip stays hidden when
-					title / artist / cover are absent.
-				</p>
-				<origam-audio
-						:src="SOUND_HELIX_TRACK"
-						class="story-audio"
-						data-cy="audio-single-player"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — src (playlist, multi-track)">
-			<div
-					class="story-shell"
-					data-cy="audio-playlist"
-			>
-				<p class="hint">
-					Pass a <code>playlist</code> to enable track navigation —
-					prev / next jump tracks (instead of skipping 10 s), the
-					cover / metadata strip swap, and a clickable list renders
-					below the transport. The loop button cycles
-					<strong>none → all → one</strong> (icon swaps to a "loop
-					once" glyph on the third state). The shuffle button (only
-					shown when a playlist is active) flips the navigation
-					order to a deterministic Fisher-Yates shuffle.
-				</p>
-				<origam-audio
-						v-model:current-track-index="playlistIndex"
-						v-model:loop-mode="playlistLoopMode"
-						v-model:shuffle="playlistShuffle"
 						:playlist="DEMO_PLAYLIST"
 						class="story-audio"
-						data-cy="audio-playlist-player"
-						@track-change="(track, idx) => logEmit('track-change', `${ idx } · ${ track.title }`)"
-						@update:loop-mode="(m) => logEmit('update:loopMode', m)"
-						@update:shuffle="(s) => logEmit('update:shuffle', String(s))"
+						@track-change="(track, idx) => logEvent('track-change', `${idx} · ${track.title}`)"
 				/>
-				<pre
-						class="story-log"
-						data-cy="audio-playlist-log"
-				>{{ logLines.join('\n') }}</pre>
 			</div>
+		</Variant>
+
+		<Variant title="Events - update:loopMode">
+			<div class="story-shell">
+				<origam-audio
+						:src="SOUND_HELIX_TRACK"
+						title="Daydream"
+						artist="Origam DS Cast"
+						class="story-audio"
+						@update:loop-mode="logEvent('update:loopMode', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - update:shuffle">
+			<div class="story-shell">
+				<origam-audio
+						:playlist="DEMO_PLAYLIST"
+						class="story-audio"
+						@update:shuffle="logEvent('update:shuffle', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - metadata">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" class="story-audio">
+					<template #metadata>
+						<div class="story-slot-badge">Custom metadata slot</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - cover">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" title="Custom Cover" class="story-audio">
+					<template #cover>
+						<div class="story-slot-cover">🎵</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - title">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" artist="Origam DS Cast" class="story-audio">
+					<template #title>
+						<strong>Custom Title Slot</strong>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - waveform">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" title="Daydream" :waveform="true" class="story-audio">
+					<template #waveform="{ peaks, currentTime, duration }">
+						<div class="story-slot-waveform">
+							Custom waveform — {{ peaks.length }} peaks, {{ currentTime.toFixed(1) }}s / {{ duration.toFixed(1) }}s
+						</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - controls">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" title="Custom Controls" class="story-audio">
+					<template #controls="{ playing, methods }">
+						<div class="story-slot-controls">
+							<button type="button" @click="playing ? methods.pause() : methods.play()">
+								{{ playing ? 'Pause' : 'Play' }}
+							</button>
+						</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - loading">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" title="Loading state" class="story-audio">
+					<template #loading>
+						<div class="story-slot-badge">Loading…</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - error">
+			<div class="story-shell">
+				<origam-audio src="invalid://bad-url" title="Error state" class="story-audio">
+					<template #error="{ error }">
+						<div class="story-slot-badge">Error: {{ error.message }}</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IAudioProps>({
+					src: SOUND_HELIX_TRACK,
+					title: 'Daydream',
+					artist: 'Origam DS Cast',
+					album: 'Season 3',
+					cover: PICSUM_COVER,
+					variant: 'expanded',
+					coverPosition: 'left',
+					controls: 'custom',
+					preload: 'metadata',
+					playbackRate: 1,
+					loopMode: 'none',
+					waveform: true,
+					autoplay: false,
+					muted: false,
+					loop: false,
+					shuffle: false,
+					downloadable: false,
+					allowRemotePlayback: false
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-audio
+							v-bind="state"
+							class="story-audio"
+							@play="logEvent('play', $event)"
+							@pause="logEvent('pause', $event)"
+							@ended="logEvent('ended', $event)"
+							@download="logEvent('download', $event)"
+							@track-change="(track, idx) => logEvent('track-change', `${idx} · ${track.title}`)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.src"    title="Src"/>
+					<HstText v-model="state.title"  title="Title"/>
+					<HstText v-model="state.artist" title="Artist"/>
+					<HstText v-model="state.album"  title="Album"/>
+					<HstText v-model="state.cover"  title="Cover (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.variant"       title="Variant"        :options="AUDIO_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.coverPosition" title="Cover Position" :options="COVER_POSITION_OPTIONS"/>
+					<HstSelect v-model="state.color"         title="Color"          :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"       title="Bg Color"       :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"       title="Rounded"        :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"     title="Elevation"      :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.waveform"    title="Waveform"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.controls"          title="Controls"       :options="AUDIO_CONTROLS_OPTIONS"/>
+					<HstSelect   v-model="state.preload"           title="Preload"        :options="AUDIO_PRELOAD_OPTIONS"/>
+					<HstSelect   v-model="state.loopMode"          title="Loop Mode"      :options="AUDIO_LOOP_MODE_OPTIONS"/>
+					<HstNumber   v-model="state.playbackRate"      title="Playback Rate"  :min="0.25" :max="3" :step="0.25"/>
+					<HstCheckbox v-model="state.autoplay"          title="Autoplay"/>
+					<HstCheckbox v-model="state.muted"             title="Muted"/>
+					<HstCheckbox v-model="state.shuffle"           title="Shuffle"/>
+					<HstCheckbox v-model="state.downloadable"      title="Downloadable"/>
+					<HstCheckbox v-model="state.allowRemotePlayback" title="Allow Remote Playback"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -453,27 +404,26 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamAudio } from '@origam/components'
+	import { AUDIO_LOOP_MODE, AUDIO_VARIANT, COVER_POSITION } from '@origam/enums'
+	import type { IAudioProps, IAudioTrack } from '@origam/interfaces'
 
-	import type { IAudioSource, IAudioTrack } from '@origam/interfaces'
-	import type { TAudioLoopMode } from '@origam/types'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
 	const SOUND_HELIX_TRACK = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-	// CORS-enabled MP3 (Access-Control-Allow-Origin: *) used by the
-	// downloadable variant so the cog-menu Download row can actually
-	// fetch + blob the file on cross-origin without falling back to
-	// "open in new tab".
 	const SAMPLELIB_MP3 = 'https://samplelib.com/mp3/sample-3s.mp3'
 	const PICSUM_COVER = 'https://picsum.photos/seed/origam-audio/256/256'
-
-	const MULTI_SOURCES: Array<IAudioSource> = [
-		{ src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', type: 'audio/mpeg' },
-		{ src: 'https://www.soundhelix.com/examples/ogg/SoundHelix-Song-1.ogg', type: 'audio/ogg' }
-	]
 
 	const DEMO_PLAYLIST: ReadonlyArray<IAudioTrack> = [
 		{
@@ -514,58 +464,32 @@
 		}
 	]
 
-	const playlistIndex = ref(0)
-	const playlistLoopMode = ref<TAudioLoopMode>('none')
-	const playlistShuffle = ref(false)
-
-	const controlsOptions = [
-		{ value: 'custom', label: 'custom' },
-		{ value: 'native', label: 'native' }
+	const AUDIO_VARIANT_OPTIONS = [
+		{ label: 'Expanded', value: AUDIO_VARIANT.EXPANDED },
+		{ label: 'Compact', value: AUDIO_VARIANT.COMPACT }
 	]
 
-	const preloadOptions = [
-		{ value: 'none', label: 'none' },
-		{ value: 'metadata', label: 'metadata' },
-		{ value: 'auto', label: 'auto' }
+	const COVER_POSITION_OPTIONS = [
+		{ label: 'Left', value: COVER_POSITION.LEFT },
+		{ label: 'Right', value: COVER_POSITION.RIGHT }
 	]
 
-	const variantOptions = [
-		{ value: 'expanded', label: 'expanded' },
-		{ value: 'compact', label: 'compact' }
+	const AUDIO_CONTROLS_OPTIONS = [
+		{ label: 'Custom', value: 'custom' },
+		{ label: 'Native', value: 'native' }
 	]
 
-	const coverPositionOptions = [
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+	const AUDIO_PRELOAD_OPTIONS = [
+		{ label: 'None', value: 'none' },
+		{ label: 'Metadata', value: 'metadata' },
+		{ label: 'Auto', value: 'auto' }
 	]
 
-	const positionOptions = [
-		{ value: 'static', label: 'static' },
-		{ value: 'relative', label: 'relative' },
-		{ value: 'absolute', label: 'absolute' },
-		{ value: 'fixed', label: 'fixed' },
-		{ value: 'sticky', label: 'sticky' }
+	const AUDIO_LOOP_MODE_OPTIONS = [
+		{ label: 'None', value: AUDIO_LOOP_MODE.NONE },
+		{ label: 'All', value: AUDIO_LOOP_MODE.ALL },
+		{ label: 'One', value: AUDIO_LOOP_MODE.ONE }
 	]
-
-	const intentOptions = [
-		{ value: '', label: '— (none)' },
-		{ value: 'primary', label: 'primary' },
-		{ value: 'secondary', label: 'secondary' },
-		{ value: 'success', label: 'success' },
-		{ value: 'warning', label: 'warning' },
-		{ value: 'danger', label: 'danger' },
-		{ value: 'info', label: 'info' },
-		{ value: 'surface', label: 'surface' }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	function logEmit (name: string, payload: unknown): void {
-		const safe = typeof payload === 'string' || typeof payload === 'number'
-			? String(payload)
-			: JSON.stringify(payload)
-		logLines.value = [`${ name } → ${ safe }`, ...logLines.value].slice(0, 8)
-	}
 </script>
 
 <style scoped>
@@ -577,47 +501,44 @@
 		max-width: 720px;
 	}
 
-	.story-shell--tall {
-		max-width: 720px;
-	}
-
-	.story-scroll {
-		position: relative;
-		max-height: 320px;
-		overflow-y: auto;
-		border: 1px solid var(--origam-color__border---default, #d4d4d8);
-		border-radius: 12px;
-		padding: 12px;
-	}
-
-	.story-filler {
-		margin: 0 0 12px;
-		padding: 12px;
-		border-radius: 8px;
-		background: var(--origam-color__surface---raised, #f3f4f6);
-		font: 0.85rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
 	.story-audio {
 		width: 100%;
 		max-width: 640px;
 	}
 
-	.story-log {
-		margin: 0;
+	.story-slot-badge {
 		padding: 8px 12px;
-		background-color: rgba(0, 0, 0, 0.04);
+		background-color: var(--origam-color__surface---raised, #f3f4f6);
 		border-radius: 6px;
-		font-size: 0.75rem;
-		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		white-space: pre-wrap;
-		min-height: 60px;
+		font: 0.875rem/1.4 system-ui, sans-serif;
+	}
+
+	.story-slot-cover {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 96px;
+		height: 96px;
+		background-color: var(--origam-color__surface---raised, #f3f4f6);
+		border-radius: 8px;
+		font-size: 2rem;
+	}
+
+	.story-slot-waveform {
+		padding: 8px 12px;
+		background-color: var(--origam-color__surface---raised, #f3f4f6);
+		border-radius: 6px;
+		font: 0.75rem/1.4 ui-monospace, monospace;
+	}
+
+	.story-slot-controls {
+		display: flex;
+		gap: 8px;
+		padding: 8px;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Audio/OrigamAudio.md"
+/>

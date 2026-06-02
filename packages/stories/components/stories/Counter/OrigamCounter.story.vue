@@ -3,174 +3,113 @@
 			group="components"
 			title="Counter/OrigamCounter"
 	>
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<ICounterProps>({
-					value: 50,
-					max: 100,
-					active: true,
-					disabled: false,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-counter
-						v-bind="state"
-						data-cy="counter-playground"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSlider   v-model="state.value"    title="value"    :min="0"  :max="200"/>
-				<HstSlider   v-model="state.max"      title="max"      :min="1"  :max="500"/>
-				<HstCheckbox v-model="state.active"   title="active"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ─────────────────────────────────────────────── -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-counter :value="50" :max="100" :active="true" v-bind="state" data-cy="counter-color"/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-						<origam-counter :value="10" :max="100" :active="true" color="primary" data-cy="counter-color-primary"/>
-						<origam-counter :value="20" :max="100" :active="true" color="success" data-cy="counter-color-success"/>
-						<origam-counter :value="30" :max="100" :active="true" color="warning" data-cy="counter-color-warning"/>
-						<origam-counter :value="40" :max="100" :active="true" color="danger"  data-cy="counter-color-danger"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-counter :value="50" :max="100" :active="true" v-bind="state" data-cy="counter-color"/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-						<origam-counter :value="10" :max="100" :active="true" color="primary" data-cy="counter-color-primary"/>
-						<origam-counter :value="20" :max="100" :active="true" color="success" data-cy="counter-color-success"/>
-						<origam-counter :value="30" :max="100" :active="true" color="warning" data-cy="counter-color-warning"/>
-						<origam-counter :value="40" :max="100" :active="true" color="danger"  data-cy="counter-color-danger"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-					<origam-counter :value="50" :max="100" :active="true" v-bind="state" data-cy="counter-color"/>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-						<origam-counter :value="10" :max="100" :active="true" color="primary" data-cy="counter-color-primary"/>
-						<origam-counter :value="20" :max="100" :active="true" color="success" data-cy="counter-color-success"/>
-						<origam-counter :value="30" :max="100" :active="true" color="warning" data-cy="counter-color-warning"/>
-						<origam-counter :value="40" :max="100" :active="true" color="danger"  data-cy="counter-color-danger"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — value & max"
-				:init-state="() => useStoryInitState<{ value: number, max: number }>({ value: 42, max: 100 })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ICounterProps>>({ value: 50, max: 100, active: true, color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-counter
 						:value="state.value"
 						:max="state.max"
-						:active="true"
-						data-cy="counter-value"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSlider v-model="state.value" title="value" :min="0" :max="state.max"/>
-				<HstSlider v-model="state.max"   title="max"   :min="1" :max="500"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<{ active: boolean }>({ active: true })"
-		>
-			<template #default="{ state }">
-				<origam-counter
-						:value="30"
-						:max="100"
 						:active="state.active"
-						data-cy="counter-active"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active" title="active"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
 		<Variant
-				title="Prop — disabled"
-				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ICounterProps>>({ value: 50, max: 100, active: true })"
 		>
 			<template #default="{ state }">
 				<origam-counter
-						:value="10"
-						:max="50"
-						:active="true"
+						:value="state.value"
+						:max="state.max"
+						:active="state.active"
 						:disabled="state.disabled"
-						data-cy="counter-disabled"
+						:tag="state.tag"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.active"   title="Active (visible)"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.value" title="Value" :min="0"  :max="999" :step="1"/>
+					<HstNumber v-model="state.max"   title="Max"   :min="1"  :max="999" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — value (overflow)">
-			<origam-counter
-					:value="150"
-					:max="100"
-					:active="true"
-					data-cy="counter-overflow"
-			/>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-counter :value="42" :max="100" :active="true">
+				<template #default="{ counter }">
+					<strong>{{ counter }}</strong> items
+				</template>
+			</origam-counter>
 		</Variant>
 
-		<!-- ── Slots ─────────────────────────────────────────────── -->
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
-		<Variant title="Slot — default">
-			<origam-counter :value="42" :max="100" :active="true" data-cy="counter-slot-default">
-				<span>Custom slot content</span>
-			</origam-counter>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<ICounterProps>({ value: 50, max: 100, active: true })"
+		>
+			<template #default="{ state }">
+				<origam-counter v-bind="state"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstNumber v-model="state.value" title="Value" :min="0"  :max="999" :step="1"/>
+					<HstNumber v-model="state.max"   title="Max"   :min="1"  :max="999" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.active"   title="Active"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -180,13 +119,18 @@
 		setup
 >
 	import { OrigamCounter } from '@origam/components'
-	import type { IColorProps, ICounterProps } from '@origam/interfaces'
+	import type { ICounterProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		hoverList,
-		intentList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 </script>
 

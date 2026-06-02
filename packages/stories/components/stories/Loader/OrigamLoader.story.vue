@@ -3,17 +3,74 @@
 			group="components"
 			title="Loader/OrigamLoader"
 	>
-		<!--
-			Playground — first by convention. Exposes every ILoaderProps knob.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ILoaderProps>>({ loading: true, color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-loader
+						:loading="state.loading"
+						:color="state.color"
+				>
+					<span>Idle content</span>
+				</origam-loader>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ILoaderProps>>({ loading: true, tag: 'span', loadingText: '' })"
+		>
+			<template #default="{ state }">
+				<origam-loader
+						:loading="state.loading"
+						:loading-text="state.loadingText"
+						:tag="state.tag"
+				>
+					<span>Idle content</span>
+				</origam-loader>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.loading"     title="Loading"/>
+					<HstText     v-model="state.loadingText" title="Loading Text"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
+			<origam-loader>
+				<span style="font-style: italic;">Custom idle content</span>
+			</origam-loader>
+		</Variant>
+
+		<Variant title="Slots - Loader">
+			<origam-loader loading>
+				<template #loader>
+					<span style="font-weight: 600;">Loading, please wait...</span>
+				</template>
+			</origam-loader>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ILoaderProps>({
-					loading: true,
-					color: 'primary',
-					tag: 'span',
-					loadingText: ''
-				})"
+				:init-state="() => useStoryInitState<ILoaderProps>({ loading: true, color: 'primary', tag: 'span', loadingText: '' })"
 		>
 			<template #default="{ state }">
 				<origam-loader v-bind="state">
@@ -21,67 +78,15 @@
 				</origam-loader>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.loading"     title="loading"/>
-				<HstSelect   v-model="state.color"       title="color"  :options="intentList"/>
-				<HstSelect   v-model="state.tag"         title="tag"    :options="tagList"/>
-				<HstText     v-model="state.loadingText" title="loadingText"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.loading"     title="Loading"/>
+					<HstText     v-model="state.loadingText" title="Loading Text"/>
+					<HstSelect   v-model="state.tag"         title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — loading"
-				:init-state="() => useStoryInitState<{ loading?: boolean }>({ loading: true })"
-		>
-			<template #default="{ state }">
-				<origam-loader :loading="state.loading">
-					<span>Idle content</span>
-				</origam-loader>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.loading" title="loading"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-loader loading :color="state.color"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-loader loading :tag="state.tag" data-cy="loader-tagged"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default (idle content)">
-			<origam-loader>
-				<span style="font-style: italic;">Custom default slot content</span>
-			</origam-loader>
-		</Variant>
-
-		<Variant title="Slot — loader (custom spinner)">
-			<origam-loader loading>
-				<template #loader>
-					<span style="font-weight: 600;">Loading, please wait...</span>
-				</template>
-			</origam-loader>
 		</Variant>
 	</Story>
 </template>
@@ -91,10 +96,14 @@
 		setup
 >
 	import { OrigamLoader } from '@origam/components'
-	import type { IColorProps, ILoaderProps } from '@origam/interfaces'
+	import type { ILoaderProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList, tagList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/Loader/OrigamLoader.md"/>

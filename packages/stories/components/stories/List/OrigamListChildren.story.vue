@@ -4,42 +4,66 @@
 			title="List/OrigamListChildren"
 	>
 
-		<!--
-			<origam-list-children> renders a recursive items array. The
-			parent <origam-list> uses it internally to traverse nested
-			children. Probing it standalone is useful for flat tests;
-			the realistic flow drives it through the parent list.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
-		<!-- ── Playground ───────────────────────────────────────────────── -->
-
-		<Variant title="Default">
-			<!-- ListChildren is driven by items from the parent list context; this variant shows the realistic integration -->
-			<origam-list :items="nestedItems" data-cy="list-children-playground"/>
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<IListItemChildren>({ items: flatItems, returnObject: false })"
+		>
+			<template #default="{ state }">
+				<origam-list>
+					<origam-list-children
+							:items="state.items"
+							:return-object="state.returnObject"
+					/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstSelect
+							v-model="state.items"
+							title="Items preset"
+							:options="ITEMS_PRESET_OPTIONS"
+					/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.returnObject" title="Return Object"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────────── -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — items (flat list)">
-			<origam-list data-cy="list-children-flat">
-				<origam-list-children :items="flatItems" return-object/>
-			</origam-list>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IListItemChildren>({ items: nestedItems, returnObject: false })"
+		>
+			<template #default="{ state }">
+				<origam-list>
+					<origam-list-children
+							:items="state.items"
+							:return-object="state.returnObject"
+					/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstSelect
+							v-model="state.items"
+							title="Items preset"
+							:options="ITEMS_PRESET_OPTIONS"
+					/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.returnObject" title="Return Object"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — items (nested groups, recursive)">
-			<origam-list data-cy="list-children-nested">
-				<origam-list-children :items="nestedItems"/>
-			</origam-list>
-		</Variant>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant title="Prop — items (via parent List)">
-			<origam-list :items="nestedItems" data-cy="list-children-embedded"/>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — children">
-			<origam-list data-cy="list-children-slot-children">
+		<Variant title="Slots - Children">
+			<origam-list>
 				<origam-list-children :items="flatItems" return-object>
 					<template #children="{ item }">
 						<span>Custom child: {{ item.title }}</span>
@@ -48,16 +72,16 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-list data-cy="list-children-slot-default">
+		<Variant title="Slots - Default">
+			<origam-list>
 				<origam-list-children :items="flatItems" return-object>
 					<span>Custom slot content</span>
 				</origam-list-children>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — divider">
-			<origam-list data-cy="list-children-slot-divider">
+		<Variant title="Slots - Divider">
+			<origam-list>
 				<origam-list-children :items="flatItems" return-object>
 					<template #divider>
 						<hr style="border-color: var(--origam-color__border---subtle); margin: 4px 0;"/>
@@ -66,8 +90,8 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — group">
-			<origam-list data-cy="list-children-slot-group">
+		<Variant title="Slots - Group">
+			<origam-list>
 				<origam-list-children :items="nestedItems">
 					<template #group="{ item }">
 						<span style="font-weight: 600;">{{ item.title }}</span>
@@ -76,8 +100,8 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — groupActivator">
-			<origam-list data-cy="list-children-slot-group-activator">
+		<Variant title="Slots - GroupActivator">
+			<origam-list>
 				<origam-list-children :items="nestedItems">
 					<template #groupActivator="{ item }">
 						<span>Open: {{ item.title }}</span>
@@ -86,18 +110,18 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — item">
-			<origam-list data-cy="list-children-slot-item">
+		<Variant title="Slots - Item">
+			<origam-list>
 				<origam-list-children :items="flatItems" return-object>
 					<template #item="{ item }">
-						<origam-list-item :title="item.title" :prepend-icon="item.prependIcon" data-cy="list-children-slot-item-row"/>
+						<origam-list-item :title="item.title" :prepend-icon="item.prependIcon"/>
 					</template>
 				</origam-list-children>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — subheader">
-			<origam-list data-cy="list-children-slot-subheader">
+		<Variant title="Slots - Subheader">
+			<origam-list>
 				<origam-list-children :items="flatItems" return-object>
 					<template #subheader>
 						<span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; padding: 4px 16px;">Custom subheader</span>
@@ -106,8 +130,8 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — subheaderTitle">
-			<origam-list data-cy="list-children-slot-subheader-title">
+		<Variant title="Slots - SubheaderTitle">
+			<origam-list>
 				<origam-list-children :items="flatItems" return-object>
 					<template #subheaderTitle>
 						<span>Custom subheader title</span>
@@ -116,22 +140,29 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — note (usage guidance)">
-			<div style="padding: 24px; max-width: 600px; font-size: 0.875rem; line-height: 1.5;">
-				<p>
-					<code>&lt;origam-list-children&gt;</code> is the recursive
-					internal renderer for <code>OrigamList</code>'s items
-					tree. It rarely needs to be used standalone — passing
-					<code>items</code> directly to <code>&lt;origam-list&gt;</code>
-					yields the same render and exposes a richer prop surface.
-				</p>
-				<p>
-					Use this component when you need to render a sub-tree of
-					list items inside a custom container, while still
-					inheriting the parent list's group / select / activator
-					context.
-				</p>
-			</div>
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IListItemChildren>({ items: nestedItems, returnObject: false })"
+		>
+			<template #default="{ state }">
+				<origam-list>
+					<origam-list-children v-bind="state"/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstSelect
+							v-model="state.items"
+							title="Items preset"
+							:options="ITEMS_PRESET_OPTIONS"
+					/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.returnObject" title="Return Object"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -142,6 +173,10 @@
 >
 	import { OrigamList, OrigamListChildren, OrigamListItem } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
+	import type { IListItemChildren } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
 
 	const flatItems = [
 		{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
@@ -169,6 +204,11 @@
 			],
 		},
 		{ title: 'Settings', prependIcon: MDI_ICONS.COG_OUTLINE },
+	]
+
+	const ITEMS_PRESET_OPTIONS = [
+		{ label: 'Flat list',    value: flatItems },
+		{ label: 'Nested items', value: nestedItems },
 	]
 </script>
 

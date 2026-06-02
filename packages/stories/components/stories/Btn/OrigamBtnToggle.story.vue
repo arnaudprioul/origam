@@ -3,190 +3,169 @@
 			group="components"
 			title="Btn/OrigamBtnToggle"
 	>
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IBtnToggleProps>({
-					density: DENSITY.DEFAULT,
-					divided: false,
-					rounded: undefined,
-					mandatory: false,
-					multiple: false,
-					disabled: false,
-					color: undefined,
-					bgColor: undefined,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IBtnToggleProps>>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<div class="story-shell" data-cy="btn-toggle-playground">
-					<origam-btn-toggle v-bind="state" v-model="playgroundValue">
-						<origam-btn :value="1" text="One"   data-cy="bt-playground-1"/>
-						<origam-btn :value="2" text="Two"   data-cy="bt-playground-2"/>
-						<origam-btn :value="3" text="Three" data-cy="bt-playground-3"/>
+				<div class="story-shell">
+					<origam-btn-toggle
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:density="state.density"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:divided="state.divided"
+							:tag="state.tag"
+					>
+						<origam-btn :value="1" text="One"/>
+						<origam-btn :value="2" text="Two"/>
+						<origam-btn :value="3" text="Three"/>
 					</origam-btn-toggle>
-					<div class="story-status" data-cy="bt-playground-status">selected = <strong>{{ JSON.stringify(playgroundValue) }}</strong></div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect   v-model="state.density"   title="density"   :options="densityList"/>
-				<HstCheckbox v-model="state.divided"   title="divided"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstCheckbox v-model="state.mandatory" title="mandatory"/>
-				<HstCheckbox v-model="state.multiple"  title="multiple"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.divided" title="Divided"/>
+					<HstSelect   v-model="state.tag"     title="Tag"     :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ─────────────────────────────────────────────── -->
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
-		<Variant title="Prop — modelValue (single selection)">
-			<div class="story-shell" data-cy="btn-toggle-default">
-				<origam-btn-toggle v-model="defaultValue">
-					<origam-btn :value="'left'"   text="Left"   data-cy="bt-default-left"/>
-					<origam-btn :value="'center'" text="Center" data-cy="bt-default-center"/>
-					<origam-btn :value="'right'"  text="Right"  data-cy="bt-default-right"/>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IBtnToggleProps>>({ multiple: false, mandatory: false, disabled: false })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-btn-toggle
+							v-model="functionalValue"
+							:multiple="state.multiple"
+							:mandatory="state.mandatory"
+							:disabled="state.disabled"
+							:max="state.max"
+							:selected-class="state.selectedClass"
+					>
+						<origam-btn :value="1" text="One"/>
+						<origam-btn :value="2" text="Two"/>
+						<origam-btn :value="3" text="Three"/>
+					</origam-btn-toggle>
+					<div class="story-status">selected = <strong>{{ JSON.stringify(functionalValue) }}</strong></div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Selection">
+					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+					<HstNumber   v-model="state.max"       title="Max" :min="0" :max="10" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Style">
+					<HstText v-model="state.selectedClass" title="Selected Class"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:modelValue">
+			<div class="story-shell">
+				<origam-btn-toggle
+						v-model="emitValue"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				>
+					<origam-btn :value="1" text="One"/>
+					<origam-btn :value="2" text="Two"/>
+					<origam-btn :value="3" text="Three"/>
 				</origam-btn-toggle>
-				<div class="story-status" data-cy="bt-default-status">selected = <strong>{{ defaultValue }}</strong></div>
+				<div class="story-status">selected = <strong>{{ JSON.stringify(emitValue) }}</strong></div>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — multiple">
-			<div class="story-shell" data-cy="btn-toggle-multiple">
-				<origam-btn-toggle v-model="multipleValue" multiple>
-					<origam-btn :value="'bold'"      text="B" data-cy="bt-multiple-bold"/>
-					<origam-btn :value="'italic'"    text="I" data-cy="bt-multiple-italic"/>
-					<origam-btn :value="'underline'" text="U" data-cy="bt-multiple-underline"/>
-				</origam-btn-toggle>
-				<div class="story-status" data-cy="bt-multiple-status">selected = <strong>{{ multipleValue.join(', ') || '(empty)' }}</strong></div>
-			</div>
-		</Variant>
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
-		<Variant
-				title="Prop — mandatory"
-				:init-state="() => useStoryInitState<{ mandatory: boolean }>({ mandatory: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="btn-toggle-mandatory">
-					<origam-btn-toggle v-model="mandatoryValue" :mandatory="state.mandatory">
-						<origam-btn :value="'compact'"     text="Compact"     data-cy="bt-mandatory-compact"/>
-						<origam-btn :value="'default'"     text="Default"     data-cy="bt-mandatory-default"/>
-						<origam-btn :value="'comfortable'" text="Comfortable" data-cy="bt-mandatory-comfortable"/>
-					</origam-btn-toggle>
-					<div class="story-status" data-cy="bt-mandatory-status">selected = <strong>{{ mandatoryValue }}</strong></div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.mandatory" title="mandatory"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled"
-				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell" data-cy="btn-toggle-disabled">
-					<origam-btn-toggle v-model="disabledValue" :disabled="state.disabled">
-						<origam-btn :value="'a'" text="A" data-cy="bt-disabled-a"/>
-						<origam-btn :value="'b'" text="B" data-cy="bt-disabled-b"/>
-					</origam-btn-toggle>
-					<div class="story-status" data-cy="bt-disabled-status">selected = <strong>{{ disabledValue ?? '(empty)' }}</strong></div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<{ density?: TDensity }>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-btn-toggle v-model="densityValue" :density="state.density" data-cy="btn-toggle-density">
-					<origam-btn :value="1" text="One"   data-cy="bt-density-1"/>
-					<origam-btn :value="2" text="Two"   data-cy="bt-density-2"/>
-					<origam-btn :value="3" text="Three" data-cy="bt-density-3"/>
-				</origam-btn-toggle>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<{ rounded?: boolean | string }>({ rounded: true })"
-		>
-			<template #default="{ state }">
-				<origam-btn-toggle v-model="roundedValue" :rounded="state.rounded" data-cy="btn-toggle-rounded">
-					<origam-btn :value="'grid'" text="Grid" data-cy="bt-rounded-grid"/>
-					<origam-btn :value="'list'" text="List" data-cy="bt-rounded-list"/>
-				</origam-btn-toggle>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-btn-toggle v-bind="state" v-model="colorValue" data-cy="btn-toggle-color">
-					<origam-btn :value="'grid'" text="Grid" data-cy="bt-color-grid"/>
-					<origam-btn :value="'list'" text="List" data-cy="bt-color-list"/>
-				</origam-btn-toggle>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div class="story-shell" data-cy="btn-toggle-slot-default">
-				<origam-btn-toggle v-model="slotDefaultValue" data-cy="bt-slot-default-host">
-					<template #default>
-						<origam-btn :value="'a'" text="Custom A" data-cy="bt-slot-default-a"/>
-						<origam-btn :value="'b'" text="Custom B" data-cy="bt-slot-default-b"/>
-					</template>
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<origam-btn-toggle v-model="slotDefaultValue">
+					<origam-btn :value="'a'" text="Custom A"/>
+					<origam-btn :value="'b'" text="Custom B"/>
+					<origam-btn :value="'c'" text="Custom C"/>
 				</origam-btn-toggle>
 				<div class="story-status">selected = <strong>{{ slotDefaultValue ?? '(empty)' }}</strong></div>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — item">
-			<div class="story-shell" data-cy="btn-toggle-slot-item">
-				<origam-btn-toggle v-model="slotItemValue" :items="['X', 'Y', 'Z']" data-cy="bt-slot-item-host">
+		<Variant title="Slots - Item">
+			<div class="story-shell">
+				<origam-btn-toggle v-model="slotItemValue" :items="slotItems">
 					<template #item="{ item }">
-						<origam-btn :value="item" :text="`[${item}]`"/>
+						<origam-btn :value="item" :text="`[ ${item} ]`"/>
 					</template>
 				</origam-btn-toggle>
 				<div class="story-status">selected = <strong>{{ slotItemValue ?? '(empty)' }}</strong></div>
 			</div>
 		</Variant>
 
-		<!-- ── Emits ─────────────────────────────────────────────── -->
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
-		<Variant title="Emit — update:modelValue">
-			<div class="story-shell" data-cy="btn-toggle-emit-update">
-				<origam-btn-toggle
-						v-model="emitValue"
-						data-cy="bt-emit-host"
-						@update:model-value="logEvent('update:modelValue', $event)"
-				>
-					<origam-btn :value="1" text="One"   data-cy="bt-emit-1"/>
-					<origam-btn :value="2" text="Two"   data-cy="bt-emit-2"/>
-					<origam-btn :value="3" text="Three" data-cy="bt-emit-3"/>
-				</origam-btn-toggle>
-				<div class="story-status">selected = <strong>{{ JSON.stringify(emitValue) }}</strong></div>
-			</div>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IBtnToggleProps>>({ color: 'primary', multiple: false, mandatory: false, disabled: false })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-btn-toggle
+							v-bind="state"
+							v-model="playgroundValue"
+							@update:model-value="logEvent('update:modelValue', $event)"
+					>
+						<origam-btn :value="1" text="One"/>
+						<origam-btn :value="2" text="Two"/>
+						<origam-btn :value="3" text="Three"/>
+					</origam-btn-toggle>
+					<div class="story-status">selected = <strong>{{ JSON.stringify(playgroundValue) }}</strong></div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.color"       title="Color"        :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"     title="Bg Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.density"     title="Density"      :options="DENSITY_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"   title="Elevation"    :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.divided"     title="Divided"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+					<HstCheckbox v-model="state.disabled"  title="Disabled"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -199,24 +178,27 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamBtn, OrigamBtnToggle } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
-	import type { IBtnToggleProps, IColorProps } from '@origam/interfaces'
-	import type { TDensity } from '@origam/types'
+	import type { IBtnToggleProps } from '@origam/interfaces'
 
-	import { densityList, intentList, roundedList } from '@stories/const'
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	const defaultValue    = ref<'left' | 'center' | 'right'>('center')
-	const multipleValue   = ref<Array<string>>(['bold'])
-	const mandatoryValue  = ref<'compact' | 'default' | 'comfortable'>('default')
-	const disabledValue   = ref<'a' | 'b' | undefined>(undefined)
-	const densityValue    = ref<number>(2)
-	const roundedValue    = ref<'grid' | 'list'>('grid')
-	const colorValue      = ref<'grid' | 'list'>('grid')
-	const playgroundValue = ref<number | Array<number> | undefined>(1)
+	const slotItems: Array<string> = ['X', 'Y', 'Z']
+
+	const functionalValue  = ref<number | Array<number> | undefined>(1)
+	const emitValue        = ref<number | undefined>(undefined)
 	const slotDefaultValue = ref<string | undefined>(undefined)
 	const slotItemValue    = ref<string | undefined>(undefined)
-	const emitValue        = ref<number | undefined>(undefined)
+	const playgroundValue  = ref<number | Array<number> | undefined>(1)
 </script>
 
 <style scoped>

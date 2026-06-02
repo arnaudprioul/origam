@@ -3,9 +3,252 @@
 			group="components"
 			title="Overlay/OrigamOverlay"
 	>
-		<!--
-			Playground — first by convention. Exposes every IOverlayProps knob.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IOverlayProps>>({ scrim: true, transition: true })"
+		>
+			<template #default="{ state }">
+				<div class="story-host">
+					<origam-overlay v-model="designOpen" :scrim="state.scrim" :transition="state.transition">
+						<template #activator="{ props: activator }">
+							<origam-btn v-bind="activator" text="Open (design)"/>
+						</template>
+						<origam-sheet rounded elevation="8" style="padding: 24px;">
+							Design variant.
+							<origam-btn text="Close" @click="designOpen = false"/>
+						</origam-sheet>
+					</origam-overlay>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Scrim">
+					<HstSelect v-model="state.scrim" title="Scrim" :options="SCRIM_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstCheckbox v-model="state.transition" title="Transition"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IOverlayProps>>({
+					modelValue: false,
+					persistent: false,
+					disabled: false,
+					contained: false,
+					closeOnBack: true,
+					noClickAnimation: false,
+					disableGlobalStack: false,
+					absolute: false,
+					eager: false,
+					closeOnContentClick: false,
+					openOnClick: true,
+					openOnHover: false,
+					openOnFocus: false,
+					openOnContextMenu: false,
+					zIndex: 2000,
+					locationStrategy: 'static',
+					scrollStrategy: 'block',
+					location: 'bottom',
+					origin: 'auto',
+					offset: undefined,
+					viewportMargin: 12
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-host story-host--functional">
+					<origam-overlay
+							v-model="functionalOpen"
+							:persistent="state.persistent"
+							:disabled="state.disabled"
+							:contained="state.contained"
+							:close-on-back="state.closeOnBack"
+							:no-click-animation="state.noClickAnimation"
+							:disable-global-stack="state.disableGlobalStack"
+							:absolute="state.absolute"
+							:eager="state.eager"
+							:close-on-content-click="state.closeOnContentClick"
+							:open-on-click="state.openOnClick"
+							:open-on-hover="state.openOnHover"
+							:open-on-focus="state.openOnFocus"
+							:open-on-context-menu="state.openOnContextMenu"
+							:z-index="state.zIndex"
+							:location-strategy="state.locationStrategy"
+							:scroll-strategy="state.scrollStrategy"
+							:location="state.location"
+							:origin="state.origin"
+							:offset="state.offset"
+							:viewport-margin="state.viewportMargin"
+					>
+						<template #activator="{ props: activator }">
+							<origam-btn v-bind="activator" text="Open (functional)"/>
+						</template>
+						<origam-sheet rounded elevation="8" style="padding: 24px;">
+							Functional content.
+							<origam-btn text="Close" @click="functionalOpen = false"/>
+						</origam-sheet>
+					</origam-overlay>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"   title="Disabled"/>
+					<HstCheckbox v-model="state.persistent" title="Persistent"/>
+					<HstCheckbox v-model="state.contained"  title="Contained"/>
+					<HstCheckbox v-model="state.absolute"   title="Absolute"/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.closeOnBack"        title="Close On Back"/>
+					<HstCheckbox v-model="state.noClickAnimation"   title="No Click Animation"/>
+					<HstCheckbox v-model="state.disableGlobalStack" title="Disable Global Stack"/>
+					<HstCheckbox v-model="state.eager"              title="Eager"/>
+					<HstCheckbox v-model="state.closeOnContentClick" title="Close On Content Click"/>
+				</StoryGroup>
+				<StoryGroup title="Open Triggers">
+					<HstCheckbox v-model="state.openOnClick"       title="Open On Click"/>
+					<HstCheckbox v-model="state.openOnHover"       title="Open On Hover"/>
+					<HstCheckbox v-model="state.openOnFocus"       title="Open On Focus"/>
+					<HstCheckbox v-model="state.openOnContextMenu" title="Open On Context Menu"/>
+				</StoryGroup>
+				<StoryGroup title="Z-Index">
+					<HstNumber v-model="state.zIndex" title="Z-Index" :min="0" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Location">
+					<HstSelect v-model="state.locationStrategy" title="Location Strategy" :options="LOCATION_STRATEGY_OPTIONS"/>
+					<HstSelect v-model="state.scrollStrategy"   title="Scroll Strategy"   :options="SCROLL_STRATEGY_OPTIONS"/>
+					<HstSelect v-model="state.location"         title="Location"           :options="ANCHOR_OPTIONS"/>
+					<HstSelect v-model="state.origin"           title="Origin"             :options="ORIGIN_OPTIONS"/>
+					<HstNumber v-model="state.viewportMargin"   title="Viewport Margin"    :min="0" :step="4"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
+
+		<Variant title="Events - update:modelValue">
+			<div class="story-host">
+				<origam-overlay
+						v-model="emitUpdateOpen"
+						@update:modelValue="logEvent('update:modelValue', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (update:modelValue)"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;">
+						<origam-btn text="Close" @click="emitUpdateOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Events - afterEnter">
+			<div class="story-host">
+				<origam-overlay
+						v-model="emitAfterEnterOpen"
+						@afterEnter="logEvent('afterEnter', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (afterEnter)"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;">
+						<origam-btn text="Close" @click="emitAfterEnterOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Events - afterLeave">
+			<div class="story-host">
+				<origam-overlay
+						v-model="emitAfterLeaveOpen"
+						@afterLeave="logEvent('afterLeave', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (afterLeave)"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;">
+						<origam-btn text="Close" @click="emitAfterLeaveOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Events - click:outside">
+			<div class="story-host">
+				<origam-overlay
+						v-model="emitClickOutsideOpen"
+						@click:outside="logEvent('click:outside', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (click:outside)"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;">
+						Click outside to trigger the emit.
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Events - keydown">
+			<div class="story-host">
+				<origam-overlay
+						v-model="emitKeydownOpen"
+						@keydown="logEvent('keydown', $event)"
+				>
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open (keydown)"/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;">
+						Press any key inside the overlay.
+						<origam-btn text="Close" @click="emitKeydownOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Activator">
+			<div class="story-host">
+				<origam-overlay v-model="slotActivatorOpen">
+					<template #activator="{ props: activator, isActive }">
+						<origam-btn
+								v-bind="activator"
+								:color="isActive ? 'success' : 'primary'"
+								:text="isActive ? 'Opened' : 'Custom activator slot'"
+						/>
+					</template>
+					<origam-sheet rounded elevation="8" style="padding: 24px;">
+						<span>Custom activator slot — the button colour changes when open.</span>
+						<origam-btn text="Close" @click="slotActivatorOpen = false"/>
+					</origam-sheet>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div class="story-host">
+				<origam-overlay v-model="slotDefaultOpen">
+					<template #activator="{ props: activator }">
+						<origam-btn v-bind="activator" text="Open default slot"/>
+					</template>
+					<template #default>
+						<origam-sheet rounded elevation="8" style="padding: 24px;">
+							<strong>Custom default slot</strong> content rendered inside the overlay.
+							<origam-btn text="Close" @click="slotDefaultOpen = false"/>
+						</origam-sheet>
+					</template>
+				</origam-overlay>
+			</div>
+		</Variant>
+
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IOverlayProps>({
@@ -14,365 +257,43 @@
 					persistent: false,
 					disabled: false,
 					contained: false,
+					closeOnBack: true,
+					noClickAnimation: false,
+					eager: false,
 					zIndex: 2000
 				})"
 		>
 			<template #default="{ state }">
-				<div class="story-host" data-cy="overlay-playground-host">
-					<origam-overlay v-bind="state" v-model="playgroundOpen">
-						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Open playground"
-									data-cy="overlay-playground-activator"
-							/>
-						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-playground-content"
-						>
-							Floating content.
-							<origam-btn
-									text="Close"
-									data-cy="overlay-playground-close"
-									@click="playgroundOpen = false"
-							/>
-						</origam-sheet>
-					</origam-overlay>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.scrim"      title="scrim"/>
-				<HstCheckbox v-model="state.persistent" title="persistent"/>
-				<HstCheckbox v-model="state.disabled"   title="disabled"/>
-				<HstCheckbox v-model="state.contained"  title="contained"/>
-				<HstNumber   v-model="state.zIndex"     title="zIndex"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — scrim"
-				:init-state="() => useStoryInitState<{ scrim: boolean | string }>({ scrim: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="overlay-scrim-host">
-					<origam-overlay v-model="scrimOpen" :scrim="state.scrim">
-						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Open scrim variant"
-									data-cy="overlay-scrim-activator"
-							/>
-						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-scrim-content"
-						>
-							scrim={{ String(state.scrim) }}
-							<origam-btn
-									text="Close"
-									data-cy="overlay-scrim-close"
-									@click="scrimOpen = false"
-							/>
-						</origam-sheet>
-					</origam-overlay>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.scrim"
-						title="scrim"
-						:options="scrimList"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — persistent"
-				:init-state="() => useStoryInitState<{ persistent: boolean }>({ persistent: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="overlay-persistent-host">
+				<div class="story-host">
 					<origam-overlay
-							v-model="persistentOpen"
-							:persistent="state.persistent"
+							v-model="playgroundOpen"
+							v-bind="state"
+							@update:modelValue="logEvent('update:modelValue', $event)"
 					>
 						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Open persistent"
-									data-cy="overlay-persistent-activator"
-							/>
+							<origam-btn v-bind="activator" text="Open playground"/>
 						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-persistent-content"
-						>
-							persistent={{ state.persistent }} — outside-clicks bounce back.
-							<origam-btn
-									text="Close"
-									data-cy="overlay-persistent-close"
-									@click="persistentOpen = false"
-							/>
+						<origam-sheet rounded elevation="8" style="padding: 24px;">
+							Playground content.
+							<origam-btn text="Close" @click="playgroundOpen = false"/>
 						</origam-sheet>
 					</origam-overlay>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.persistent" title="persistent"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.scrim" title="Scrim" :options="SCRIM_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.persistent"    title="Persistent"/>
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.contained"     title="Contained"/>
+					<HstCheckbox v-model="state.closeOnBack"   title="Close On Back"/>
+					<HstCheckbox v-model="state.noClickAnimation" title="No Click Animation"/>
+					<HstCheckbox v-model="state.eager"         title="Eager"/>
+					<HstNumber   v-model="state.zIndex"        title="Z-Index" :min="0" :step="100"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled"
-				:init-state="() => useStoryInitState<{ disabled: boolean }>({ disabled: true })"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="overlay-disabled-host">
-					<origam-overlay
-							v-model="disabledOpen"
-							:disabled="state.disabled"
-					>
-						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Try open (disabled)"
-									data-cy="overlay-disabled-activator"
-							/>
-						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-disabled-content"
-						>
-							You should not see this when disabled is true.
-						</origam-sheet>
-					</origam-overlay>
-					<span data-cy="overlay-disabled-state">open={{ disabledOpen }}</span>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — contained"
-				:init-state="() => useStoryInitState<{ contained: boolean }>({ contained: true })"
-		>
-			<template #default="{ state }">
-				<div
-						class="story-host story-host--bounded"
-						data-cy="overlay-contained-host"
-						style="position: relative; height: 280px; border: 1px dashed var(--origam-color__border---subtle, #ccc);"
-				>
-					<origam-overlay
-							v-model="containedOpen"
-							:contained="state.contained"
-					>
-						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Open contained"
-									data-cy="overlay-contained-activator"
-							/>
-						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-contained-content"
-						>
-							contained={{ state.contained }}
-							<origam-btn
-									text="Close"
-									data-cy="overlay-contained-close"
-									@click="containedOpen = false"
-							/>
-						</origam-sheet>
-					</origam-overlay>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.contained" title="contained"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — zIndex"
-				:init-state="() => useStoryInitState<{ zIndex: number }>({ zIndex: 2000 })"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="overlay-zindex-host">
-					<origam-overlay
-							v-model="zIndexOpen"
-							:z-index="state.zIndex"
-					>
-						<template #activator="{ props: activator }">
-							<origam-btn
-									v-bind="activator"
-									text="Open z-index"
-									data-cy="overlay-zindex-activator"
-							/>
-						</template>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-zindex-content"
-						>
-							z-index={{ state.zIndex }}
-							<origam-btn
-									text="Close"
-									data-cy="overlay-zindex-close"
-									@click="zIndexOpen = false"
-							/>
-						</origam-sheet>
-					</origam-overlay>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.zIndex" title="zIndex"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — activator">
-			<div class="story-host" data-cy="overlay-slot-activator-host">
-				<origam-overlay v-model="slotActivatorOpen">
-					<template #activator="{ props: activator }">
-						<origam-btn
-								v-bind="activator"
-								color="primary"
-								text="Custom activator slot"
-								data-cy="overlay-slot-activator-btn"
-						/>
-					</template>
-					<origam-sheet
-							rounded
-							elevation="8"
-							style="padding: 24px;"
-							data-cy="overlay-slot-activator-content"
-					>
-						<span>Custom slot content</span>
-						<origam-btn text="Close" @click="slotActivatorOpen = false"/>
-					</origam-sheet>
-				</origam-overlay>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<div class="story-host" data-cy="overlay-slot-default-host">
-				<origam-overlay v-model="slotDefaultOpen">
-					<template #activator="{ props: activator }">
-						<origam-btn v-bind="activator" text="Open default slot" data-cy="overlay-slot-default-activator"/>
-					</template>
-					<template #default>
-						<origam-sheet
-								rounded
-								elevation="8"
-								style="padding: 24px;"
-								data-cy="overlay-slot-default-content"
-						>
-							<span>Custom slot content</span>
-							<origam-btn text="Close" @click="slotDefaultOpen = false"/>
-						</origam-sheet>
-					</template>
-				</origam-overlay>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — afterEnter">
-			<div class="story-host" data-cy="overlay-emit-after-enter-host">
-				<origam-overlay
-						v-model="emitAfterEnterOpen"
-						@afterEnter="logEvent('afterEnter', $event)"
-				>
-					<template #activator="{ props: activator }">
-						<origam-btn v-bind="activator" text="Open (afterEnter)" data-cy="overlay-emit-after-enter-activator"/>
-					</template>
-					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-after-enter-content">
-						<origam-btn text="Close" @click="emitAfterEnterOpen = false"/>
-					</origam-sheet>
-				</origam-overlay>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — afterLeave">
-			<div class="story-host" data-cy="overlay-emit-after-leave-host">
-				<origam-overlay
-						v-model="emitAfterLeaveOpen"
-						@afterLeave="logEvent('afterLeave', $event)"
-				>
-					<template #activator="{ props: activator }">
-						<origam-btn v-bind="activator" text="Open (afterLeave)" data-cy="overlay-emit-after-leave-activator"/>
-					</template>
-					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-after-leave-content">
-						<origam-btn text="Close" @click="emitAfterLeaveOpen = false"/>
-					</origam-sheet>
-				</origam-overlay>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — click:outside">
-			<div class="story-host" data-cy="overlay-emit-click-outside-host">
-				<origam-overlay
-						v-model="emitClickOutsideOpen"
-						@click:outside="logEvent('click:outside', $event)"
-				>
-					<template #activator="{ props: activator }">
-						<origam-btn v-bind="activator" text="Open (click outside)" data-cy="overlay-emit-click-outside-activator"/>
-					</template>
-					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-click-outside-content">
-						Click outside to trigger the emit.
-					</origam-sheet>
-				</origam-overlay>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — keydown">
-			<div class="story-host" data-cy="overlay-emit-keydown-host">
-				<origam-overlay
-						v-model="emitKeydownOpen"
-						@keydown="logEvent('keydown', $event)"
-				>
-					<template #activator="{ props: activator }">
-						<origam-btn v-bind="activator" text="Open (keydown)" data-cy="overlay-emit-keydown-activator"/>
-					</template>
-					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-keydown-content">
-						Press any key inside the overlay.
-						<origam-btn text="Close" @click="emitKeydownOpen = false"/>
-					</origam-sheet>
-				</origam-overlay>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<div class="story-host" data-cy="overlay-emit-update-host">
-				<origam-overlay
-						v-model="emitUpdateOpen"
-						@update:modelValue="logEvent('update:modelValue', $event)"
-				>
-					<template #activator="{ props: activator }">
-						<origam-btn v-bind="activator" text="Open (update:modelValue)" data-cy="overlay-emit-update-activator"/>
-					</template>
-					<origam-sheet rounded elevation="8" style="padding: 24px;" data-cy="overlay-emit-update-content">
-						<origam-btn text="Close" @click="emitUpdateOpen = false"/>
-					</origam-sheet>
-				</origam-overlay>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -386,27 +307,62 @@
 
 	import { OrigamBtn, OrigamOverlay, OrigamSheet } from '@origam/components'
 	import type { IOverlayProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const scrimOpen = ref(false)
-	const persistentOpen = ref(false)
-	const disabledOpen = ref(false)
-	const containedOpen = ref(false)
-	const zIndexOpen = ref(false)
+	const designOpen = ref(false)
+	const functionalOpen = ref(false)
 	const playgroundOpen = ref(false)
 	const slotActivatorOpen = ref(false)
 	const slotDefaultOpen = ref(false)
+	const emitUpdateOpen = ref(false)
 	const emitAfterEnterOpen = ref(false)
 	const emitAfterLeaveOpen = ref(false)
 	const emitClickOutsideOpen = ref(false)
 	const emitKeydownOpen = ref(false)
-	const emitUpdateOpen = ref(false)
 
-	const scrimList = [
-		{ label: 'true (default)', value: true },
-		{ label: 'false (no scrim)', value: false },
+	const SCRIM_OPTIONS = [
+		{ label: 'true (default backdrop)', value: true },
+		{ label: 'false (no backdrop)', value: false },
 		{ label: 'primary', value: 'primary' },
 		{ label: 'rgba red', value: 'rgba(255, 0, 80, .4)' }
+	]
+
+	const LOCATION_STRATEGY_OPTIONS = [
+		{ label: 'static', value: 'static' },
+		{ label: 'connected', value: 'connected' }
+	]
+
+	const SCROLL_STRATEGY_OPTIONS = [
+		{ label: 'none', value: 'none' },
+		{ label: 'close', value: 'close' },
+		{ label: 'block', value: 'block' },
+		{ label: 'reposition', value: 'reposition' }
+	]
+
+	const ANCHOR_OPTIONS = [
+		{ label: 'top', value: 'top' },
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'left', value: 'left' },
+		{ label: 'right', value: 'right' },
+		{ label: 'center', value: 'center' },
+		{ label: 'start', value: 'start' },
+		{ label: 'end', value: 'end' },
+		{ label: 'top start', value: 'top start' },
+		{ label: 'top end', value: 'top end' },
+		{ label: 'bottom start', value: 'bottom start' },
+		{ label: 'bottom end', value: 'bottom end' }
+	]
+
+	const ORIGIN_OPTIONS = [
+		{ label: 'auto', value: 'auto' },
+		{ label: 'overlap', value: 'overlap' },
+		{ label: 'top', value: 'top' },
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'left', value: 'left' },
+		{ label: 'right', value: 'right' },
+		{ label: 'center', value: 'center' }
 	]
 </script>
 
@@ -416,8 +372,10 @@
 		gap: 12px;
 		padding: 16px;
 	}
-	.story-host--bounded {
-		display: block;
+
+	.story-host--functional {
+		position: relative;
+		min-height: 280px;
 	}
 </style>
 

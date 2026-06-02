@@ -3,255 +3,236 @@
 			group="components"
 			title="Sheet/OrigamSheet"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			ISheetProps knob via the sidebar controls.
-		-->
+		<!-- ════════════════════════ DESIGN ════════════════════════ -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<ISheetProps>({
-					color: undefined,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ISheetProps>>({
 					bgColor: undefined,
+					color: undefined,
 					elevation: undefined,
 					rounded: undefined,
-					position: undefined,
-					width: undefined,
-					height: undefined,
-					tag: 'div'
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
+					width: '240',
+					height: '120',
+					position: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<origam-sheet v-bind="state" style="padding: 16px;">
-					Playground sheet
+				<origam-sheet
+						:bg-color="state.bgColor"
+						:color="state.color"
+						:elevation="state.elevation"
+						:rounded="state.rounded"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height"
+						:position="state.position"
+						style="padding: 16px;"
+				>
+					Sheet content
 				</origam-sheet>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect   v-model="state.color"     title="color"     :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"   title="bgColor"   :options="intentList"/>
-				<HstSelect   v-model="state.elevation" title="elevation" :options="elevationList"/>
-				<HstSelect   v-model="state.rounded"   title="rounded"   :options="roundedList"/>
-				<HstSelect   v-model="state.position"  title="position"  :options="positionList"/>
-				<HstNumber   v-model="state.width"     title="width"/>
-				<HstNumber   v-model="state.height"    title="height"/>
-				<HstSelect   v-model="state.tag"       title="tag"       :options="tagList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Position">
+					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
+		<!-- ══════════════════ ÉTAT ══════════════════ -->
 
 		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({})"
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & { bgColor?: string }>({ bgColor: undefined })"
 		>
 			<template #default="{ state }">
-				<origam-sheet v-bind="state" style="padding: 16px;">
-					color={{ state.color ?? '(unset)' }}, bgColor={{ state.bgColor ?? '(unset)' }}
+				<origam-sheet
+						:bg-color="state.bgColor"
+						:hover="state.hover"
+						:active="state.active"
+						border
+						style="padding: 16px;"
+				>
+					Hover / active state
 				</origam-sheet>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant
-				title="Prop — elevation"
-				:init-state="() => useStoryInitState<IElevationProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-sheet :elevation="state.elevation" style="padding: 16px;">
-					elevation={{ state.elevation ?? '(unset)' }}
-				</origam-sheet>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-			</template>
-		</Variant>
+		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ISheetProps>>({
+					tag: 'div',
+					side: undefined,
+					swipeable: false,
+					defaultSnap: 'half',
+					open: undefined,
+					disabled: false,
+					persistent: false
+				})"
 		>
 			<template #default="{ state }">
-				<origam-sheet :rounded="state.rounded" border style="padding: 16px;">
-					rounded={{ state.rounded ?? '(unset)' }}
-				</origam-sheet>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — position"
-				:init-state="() => useStoryInitState<{ position?: TPosition }>({ position: undefined })"
-		>
-			<template #default="{ state }">
-				<div style="position: relative; height: 160px; background: var(--origam-color__surface---overlay, #ececec); border-radius: 4px;">
+				<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
 					<origam-sheet
-							:position="state.position"
-							:top="0"
-							:right="0"
-							border
-							style="padding: 12px; width: 160px;"
-					>
-						position={{ state.position ?? '(unset)' }}
-					</origam-sheet>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.position" title="position" :options="positionList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — width & height"
-				:init-state="() => useStoryInitState<IDimensionProps>({ width: 240, height: 120 })"
-		>
-			<template #default="{ state }">
-				<origam-sheet v-bind="state" border style="padding: 16px;">
-					{{ state.width }}×{{ state.height }}
-				</origam-sheet>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.width"     title="width"/>
-				<HstNumber v-model="state.height"    title="height"/>
-				<HstNumber v-model="state.minWidth"  title="minWidth"/>
-				<HstNumber v-model="state.maxWidth"  title="maxWidth"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — border & rounded (modifiers)"
-				:init-state="() => useStoryInitState<{
-					border?: boolean
-					rounded?: boolean
-				}>({})"
-		>
-			<template #default="{ state }">
-				<origam-sheet v-bind="state" style="padding: 16px;">
-					border={{ state.border ?? false }}, rounded={{ state.rounded ?? false }}
-				</origam-sheet>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstCheckbox v-model="state.rounded" title="rounded"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-sheet :tag="state.tag" border style="padding: 16px;">
-					tag={{ state.tag }}
-				</origam-sheet>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — swipeable (bottom sheet)"
-				:init-state="() => useStoryInitState<{
-					defaultSnap: 'closed' | 'peek' | 'half' | 'full'
-					persistent: boolean
-				}>({ defaultSnap: 'peek', persistent: false })"
-		>
-			<template #default="{ state }">
-				<div style="position: relative; height: 480px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
-					<div style="padding: 16px;">
-						<strong>Page content</strong>
-						<p style="font-size: 12px; color: var(--origam-color__text---secondary);">
-							Drag the pill at the top of the sheet to expand or dismiss.
-						</p>
-					</div>
-					<origam-sheet
-							:swipeable="true"
-							side="bottom"
+							:tag="state.tag"
+							:side="state.side"
+							:swipeable="state.swipeable"
 							:default-snap="state.defaultSnap"
+							:open="state.open"
+							:disabled="state.disabled"
 							:persistent="state.persistent"
 							elevation="lg"
-							style="background: var(--origam-color__surface---default);"
-							data-cy="sheet-bottom-swipeable"
+							style="background: var(--origam-color__surface---default); padding: 16px;"
 					>
-						<template #default>
-							<div style="padding: 0 16px 16px;">
-								<h3 style="margin: 4px 0 12px; font-size: 14px; font-weight: 600;">Choose a destination</h3>
-								<ul style="list-style: none; padding: 0; margin: 0;">
-									<li v-for="i in 16" :key="i" style="padding: 12px 0; border-bottom: 1px solid var(--origam-color__border---subtle, #ddd);">
-										Item {{ i }} — Lorem ipsum dolor sit amet
-									</li>
-								</ul>
-							</div>
-						</template>
+						Functional sheet — swipeable={{ state.swipeable }}, side={{ state.side ?? '(unset)' }}
 					</origam-sheet>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.defaultSnap"
-						title="defaultSnap"
-						:options="snapList"
-				/>
-				<HstCheckbox
-						v-model="state.persistent"
-						title="persistent"
-				/>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Swipe">
+					<HstSelect   v-model="state.side"        title="Side"          :options="SIDE_OPTIONS"/>
+					<HstCheckbox v-model="state.swipeable"   title="Swipeable"/>
+					<HstSelect   v-model="state.defaultSnap" title="Default Snap"  :options="SNAP_OPTIONS"/>
+					<HstCheckbox v-model="state.open"        title="Open"/>
+					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
+					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
-		<Variant title="Slot — default">
+		<Variant title="Events - update:open">
+			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<origam-sheet
+						:swipeable="true"
+						side="bottom"
+						default-snap="peek"
+						elevation="lg"
+						style="background: var(--origam-color__surface---default);"
+						@update:open="logEvent('update:open', $event)"
+				>
+					<div style="padding: 16px;">
+						<p>Drag to open/close — watch the log</p>
+					</div>
+				</origam-sheet>
+			</div>
+		</Variant>
+
+		<Variant title="Events - update:snap">
+			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<origam-sheet
+						:swipeable="true"
+						side="bottom"
+						default-snap="peek"
+						elevation="lg"
+						style="background: var(--origam-color__surface---default);"
+						@update:snap="logEvent('update:snap', $event)"
+				>
+					<div style="padding: 16px;">
+						<p>Drag to change snap — watch the log</p>
+					</div>
+				</origam-sheet>
+			</div>
+		</Variant>
+
+		<!-- ════════════════════════ SLOTS ════════════════════════ -->
+
+		<Variant title="Slots - Default">
 			<origam-sheet border rounded style="padding: 16px;">
 				<strong>Custom default slot</strong>
 				<p>Anything goes inside a sheet.</p>
 			</origam-sheet>
 		</Variant>
 
-		<!-- ── Emits ─────────────────────────────────────────────── -->
+		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
-		<Variant title="Emit — update:open">
-			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<ISheetProps>({
+					tag: 'div',
+					bgColor: undefined,
+					color: undefined,
+					elevation: undefined,
+					rounded: undefined,
+					border: undefined,
+					position: undefined,
+					width: undefined,
+					height: undefined,
+					swipeable: false,
+					side: undefined,
+					defaultSnap: 'half',
+					disabled: false,
+					persistent: false
+				})"
+		>
+			<template #default="{ state }">
 				<origam-sheet
-						:swipeable="true"
-						side="bottom"
-						default-snap="peek"
-						elevation="lg"
-						style="background: var(--origam-color__surface---default);"
-						data-cy="sheet-emit-update-open"
+						v-bind="state"
+						style="padding: 16px;"
 						@update:open="logEvent('update:open', $event)"
-				>
-					<template #default>
-						<div style="padding: 16px;">
-							<p>Drag to open/close — watch the log</p>
-						</div>
-					</template>
-				</origam-sheet>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — update:snap">
-			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
-				<origam-sheet
-						:swipeable="true"
-						side="bottom"
-						default-snap="peek"
-						elevation="lg"
-						style="background: var(--origam-color__surface---default);"
-						data-cy="sheet-emit-update-snap"
 						@update:snap="logEvent('update:snap', $event)"
 				>
-					<template #default>
-						<div style="padding: 16px;">
-							<p>Drag to change snap — watch the log</p>
-						</div>
-					</template>
+					Playground sheet
 				</origam-sheet>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.bgColor"    title="Bg Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color"      title="Color"      :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.elevation"  title="Elevation"  :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"    title="Rounded"    :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.border"     title="Border"     :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.position"   title="Position"   :options="POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.tag"         title="Tag"          :options="TAG_OPTIONS"/>
+					<HstSelect   v-model="state.side"        title="Side"         :options="SIDE_OPTIONS"/>
+					<HstCheckbox v-model="state.swipeable"   title="Swipeable"/>
+					<HstSelect   v-model="state.defaultSnap" title="Default Snap" :options="SNAP_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
+					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -264,28 +245,34 @@
 
 	import { OrigamSheet } from '@origam/components'
 	import type {
-		IColorProps,
-		IDimensionProps,
-		IElevationProps,
-		IRoundedProps,
+		IActiveProps,
+		IHoverProps,
 		ISheetProps
 	} from '@origam/interfaces'
-	import type { TPosition } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		borderList,
-		elevationList,
-		intentList,
-		positionList,
-		roundedList,
-		tagList
+		ACTIVE_OPTIONS,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		POSITION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
-	// Local list — Sheet is the only consumer of TSheetSnapId today, so
-	// there's no upside to promoting this to `@stories/const`. Promote
-	// the day a second component needs the same dropdown.
-	const snapList = [
+	const SIDE_OPTIONS = [
+		{ label: '(none)', value: undefined },
+		{ label: 'top',    value: 'top' },
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'left',   value: 'left' },
+		{ label: 'right',  value: 'right' }
+	]
+
+	const SNAP_OPTIONS = [
 		{ label: 'closed', value: 'closed' },
 		{ label: 'peek',   value: 'peek' },
 		{ label: 'half',   value: 'half' },
