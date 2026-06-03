@@ -91,14 +91,16 @@
 								:bg-color="state.bgColor"
 								:hover="resolveHoverState(state.hover)"
 								:active="resolveActiveState(state.active)"
+								scroll-behavior="active"
+								scroll-target=".origam-main"
 								data-cy="app-bar-state"
 						>
 							<template #prepend>
 								<origam-btn :icon="menuIcon" aria-label="Navigation menu"/>
 							</template>
 						</origam-app-bar>
-						<origam-main>
-							<p class="app-bar-story-content">Main content</p>
+						<origam-main style="height: 280px; overflow-y: auto;">
+							<p class="app-bar-story-content" style="height: 1200px;">Hover the bar to test <code>hover</code>; scroll this area to engage <code>active</code> (the chosen Active design is applied on scroll).</p>
 						</origam-main>
 					</origam-app>
 				</div>
