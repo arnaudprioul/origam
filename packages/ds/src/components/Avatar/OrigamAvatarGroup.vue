@@ -19,7 +19,6 @@
 				>
 					<origam-avatar
 							:id="`avatar-${index}`"
-							ref="origamAvatarRef"
 							class="origam-avatar-group__item"
 							v-bind="avatarProps(item)"
 					/>
@@ -32,7 +31,6 @@
 						v-bind="{rest: restItems, length: restItems.length}"
 				>
 					<origam-avatar
-							ref="origamAvatarRef"
 							class="origam-avatar-group__rest"
 							v-bind="avatarProps()"
 					>
@@ -59,7 +57,6 @@
 	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
 
 	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
-	import type { TOrigamAvatar } from '../../types'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
@@ -147,12 +144,14 @@
 	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
 	const {activeClasses, activeState, isActive, onActive} = useActive(props)
 
-	const origamAvatarRef = ref<TOrigamAvatar>()
+	// Avatars inherit the group's density / size / color / bgColor through the
+	// `<origam-defaults-provider :defaults="slotDefaults">` wrapper, so we must
+	// NOT re-derive them here by reading the children's own refs: doing so read
+	// `origamAvatarRef` during the parent render to build the children's props,
+	// which (because `filterProps` returns a fresh object every call) retriggered
+	// the render endlessly — "Maximum recursive updates in OrigamDefaultsProvider".
 	const avatarProps = (item: IAvatarProps = {}) => {
-		const ignoreProps = ['margin', 'marginLeft', 'marginTop', 'marginRight', 'marginBottom', 'padding', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom']
-		const avatarDefaultProps = origamAvatarRef.value?.[0]?.filterProps(props, ignoreProps) || origamAvatarRef.value?.filterProps(props, ignoreProps)
-
-		return mergeProps(item as VNodeProps, avatarDefaultProps, {hover: isHover.value, active: isActive.value})
+		return mergeProps(item as VNodeProps, {hover: isHover.value, active: isActive.value})
 	}
 
 	/*********************************************************
