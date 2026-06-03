@@ -15,6 +15,7 @@ import {
 } from './consts'
 
 import * as origamDirectives from './directives'
+import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
 import type { IDefault, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved } from './types'
@@ -71,6 +72,8 @@ export function createOrigam (origam: IOrigamOptions = {}) {
         const locale = createLocale(options.locale)
         const date = createDate(options.date, locale)
         const goTo = createGoTo(options.goTo, locale)
+
+        setContrastConfig(options.contrast)
 
         const install = (app: App) => {
             // Runtime theme injection. SSR-safe: `applyThemes` is a no-op when

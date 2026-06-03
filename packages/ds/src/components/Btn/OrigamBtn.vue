@@ -3,6 +3,7 @@
 			:is="link.tag"
 			:id="id"
 			v-ripple="isRipple"
+			v-contrast
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
 			:aria-disabled="link.tag === 'a' && isDisabled ? 'true' : undefined"
@@ -158,7 +159,7 @@
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 

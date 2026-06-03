@@ -5,6 +5,16 @@ import type { IDateOptions, IDisplayOptions, IGoToOptions, ILocaleOptions, IOrig
 
 import { TIconOptions, TOrigamPluginOptionsImport, TSSROptions } from '../../types'
 
+/**
+ * Runtime text-contrast guard config (consumed by the `v-contrast` directive).
+ * `enabled` toggles the whole feature; `threshold` is the minimum acceptable
+ * WCAG contrast ratio (default 4.5:1 — AA for normal text).
+ */
+export interface IContrastOptions {
+    enabled?: boolean
+    threshold?: number
+}
+
 export interface IOrigamOptions {
     aliases?: any
     blueprint?: IBlueprint
@@ -16,6 +26,12 @@ export interface IOrigamOptions {
     goTo?: IGoToOptions
     date?: IDateOptions
     locale?: ILocaleOptions & IRtlOptions
+    /**
+     * Runtime text-contrast guard. `true` (default) enables the WCAG check
+     * that auto-corrects illegible text colours and warns; `false` disables
+     * it. Pass an object to tune the threshold.
+     */
+    contrast?: boolean | IContrastOptions
     /**
      * Optional runtime theme. When supplied, `createOrigam` resolves it to a
      * block of `--origam-*` CSS variables and injects it into `<head>` at
