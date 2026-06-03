@@ -409,12 +409,6 @@
 		margin: 0;
 	}
 
-	:deep(.origam-app-bar--active) {
-		background-color: var(--origam-color__action--primary---bg, #1976d2);
-		color: var(--origam-color__action--primary---fg, #fff);
-		transition: background-color 0.2s ease, color 0.2s ease;
-	}
-
 	.app-bar-story-img-gradient {
 		position: absolute;
 		inset: 0;

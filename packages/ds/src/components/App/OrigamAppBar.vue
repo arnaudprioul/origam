@@ -53,13 +53,13 @@
 	import { OrigamImg, OrigamToolbar } from '../../components'
 
 	import {
-	useActive,
 	useLayoutItem,
 	useProps,
 	useScroll,
 	useSsrBoot,
 	useStyle,
-	useToggleScope
+	useToggleScope,
+	useVModel
 } from '../../composables'
 
 	import { BLOCK, DENSITY } from '../../enums'
@@ -126,7 +126,12 @@
 	 * Effect
 	 ********************************************************/
 
-	const {isActive} = useActive(props, 'modelValue')
+	// Visibility (show / hide on scroll) is a WRITABLE state — the hide
+	// behaviour assigns it. `useActive` only exposed a readonly computed, so
+	// the previous `isActive.value = …` writes silently failed and hide /
+	// inverted never worked. `useVModel` keeps the `modelValue` v-model contract
+	// (controlled) AND an internal ref fallback (uncontrolled), both writable.
+	const visible = useVModel(props, 'modelValue')
 
 	/*********************************************************
 	 * Scroll
@@ -162,7 +167,7 @@
 				behavior.elevate ||
 				behavior.active ||
 				behavior.fadeImage ||
-				!isActive.value
+				!visible.value
 		)
 	})
 
@@ -176,12 +181,12 @@
 		watchEffect(() => {
 			if (scrollBehavior.value.hide) {
 				if (scrollBehavior.value.inverted) {
-					isActive.value = currentScroll.value > scrollThreshold.value
+					visible.value = currentScroll.value > scrollThreshold.value
 				} else {
-					isActive.value = isScrollingUp.value || (currentScroll.value < scrollThreshold.value)
+					visible.value = isScrollingUp.value || (currentScroll.value < scrollThreshold.value)
 				}
 			} else {
-				isActive.value = true
+				visible.value = true
 			}
 		})
 	})
@@ -203,13 +208,15 @@
 		return isScrollActive.value ? ['origam-app-bar--active'] : []
 	})
 
-	// Forwarded `active` for the Toolbar surface. With the `active` behaviour,
-	// force the state on while scrolled (merging any consumer override object so
-	// `:active="{ bgColor: 'surface' }"` paints on scroll); off at the top.
+	// Forwarded `active` for the Toolbar surface. The Toolbar's own design is
+	// only engaged on scroll when the consumer PROVIDED an override object
+	// (`:active="{ bgColor: 'surface' }"`). With no override we leave the
+	// surface untouched — `--active` (the class) is the only signal, so the
+	// consumer styles it however they want and nothing is imposed by default.
 	const toolbarActive = computed(() => {
-		if (!scrollBehavior.value.active) return props.active
+		const override = props.active && typeof props.active === 'object' ? props.active : undefined
 
-		const override = props.active && typeof props.active === 'object' ? props.active : {}
+		if (!scrollBehavior.value.active || !override) return props.active
 
 		return isScrollActive.value ? { ...override, enabled: true } : false
 	})
@@ -256,7 +263,7 @@
 		position: toRef(props, 'location'),
 		layoutSize: height,
 		elementSize: shallowRef(undefined),
-		active: isActive as unknown as ComputedRef,
+		active: visible as unknown as ComputedRef,
 		absolute: toRef(props, 'absolute')
 	})
 

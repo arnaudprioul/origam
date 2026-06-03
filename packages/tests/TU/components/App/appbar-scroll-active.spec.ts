@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { OrigamAppBar } from '@origam/components'
 import { createOrigam } from '@origam/origam'
@@ -39,6 +39,21 @@ describe('OrigamAppBar — scroll-behavior="active"', () => {
         const wrapper = mountBar({ modelValue: true })
 
         expect(wrapper.find('.origam-app-bar').classes()).not.toContain('origam-app-bar--active')
+        wrapper.unmount()
+    })
+
+    it('scroll-behavior="hide" assigns visibility WITHOUT a readonly-computed warning', () => {
+        // Regression: visibility was a readonly `isActive` computed, so the hide
+        // behaviour's `isActive.value = …` writes failed → hide/inverted dead.
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        const wrapper = mountBar({ scrollBehavior: 'hide' })
+
+        const readonlyWarn = warn.mock.calls
+            .map(c => String(c[0]))
+            .filter(m => /computed value is readonly/i.test(m))
+
+        expect(readonlyWarn, readonlyWarn[0] ?? 'none').toHaveLength(0)
         wrapper.unmount()
     })
 })
