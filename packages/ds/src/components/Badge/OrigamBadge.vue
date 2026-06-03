@@ -13,6 +13,7 @@
 			<origam-transition :transition="transition">
         <span
 		        v-show="modelValue"
+		        v-contrast
 		        :id="id"
 		        :aria-label="t(label, content)"
 		        :class="badgeContentClasses"
@@ -79,6 +80,8 @@
 
 	import type { IBadgeProps } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
+
+	import { vContrast } from '../../directives'
 
 	import { omit, pick } from '../../utils'
 

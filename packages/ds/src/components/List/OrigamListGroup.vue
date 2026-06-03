@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="listGroupClasses"
 			:style="listGroupStyles"
 	>
@@ -58,6 +59,8 @@
 		useStateEffect,
 		useStyle
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { MDI_ICONS } from "../../enums"
 

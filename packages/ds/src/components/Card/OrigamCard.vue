@@ -2,6 +2,7 @@
 	<component
 			:is="link.tag"
 			v-ripple="isClickable && ripple"
+			v-contrast
 			:class="cardClasses"
 			:href="link.href"
 			:style="cardStyles"
@@ -158,7 +159,7 @@
 		useStyle
 } from '../../composables'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { DENSITY, PROGRESS_TYPE } from '../../enums'
 

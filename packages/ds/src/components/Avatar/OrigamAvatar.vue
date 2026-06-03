@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			v-contrast
 			:class="avatarClasses"
 			@click="handleClick"
 			@mouseenter="handleMouseenter"
@@ -50,6 +51,8 @@
 		setup
 >
 	import { OrigamIcon, OrigamImg } from '../../components'
+
+	import { vContrast } from '../../directives'
 
 	import {
 		useActive,

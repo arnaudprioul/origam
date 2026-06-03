@@ -1,5 +1,6 @@
 <template>
 	<dd
+			v-contrast
 			:class="dataTextClasses"
 			:style="dataTextStyles"
 	>
@@ -65,6 +66,7 @@
 
 	import { OrigamAvatar, OrigamIcon } from "../../components"
 	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
+	import { vContrast } from "../../directives"
 
 	import type { IDataTextProps } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"

@@ -3,6 +3,7 @@
 			:is="link.tag"
 			:id="props.id"
 			v-ripple="isClickable && ripple"
+			v-contrast
 			:class="listItemClasses"
 			:href="link.href.value"
 			:style="listItemStyles"
@@ -130,7 +131,7 @@
 		useStyle
 } from '../../composables'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { KEYBOARD_VALUES } from '../../enums'
 

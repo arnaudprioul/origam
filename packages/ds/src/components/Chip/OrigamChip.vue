@@ -2,6 +2,7 @@
 	<component
 			:is="link.tag"
 			v-ripple="rippleProps"
+			v-contrast
 			:class="chipClasses"
 			:disabled="disabled"
 			:draggable="draggable"
@@ -143,7 +144,7 @@
 
 	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
 

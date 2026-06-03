@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			v-contrast
 			:class="barClasses"
 	>
 		<slot name="default">
@@ -52,6 +53,8 @@
 		useStateEffect,
 		useStyle
 	} from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { DENSITY } from '../../enums'
 

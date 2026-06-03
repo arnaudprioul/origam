@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="systemBarClasses"
 			:style="systemBarStyles"
 	>
@@ -23,6 +24,8 @@
 		useRounded,
 		useSsrBoot
 	, useStyle} from "../../composables"
+
+	import { vContrast } from "../../directives"
 
 	import type { ISystemBarProps } from "../../interfaces"
 

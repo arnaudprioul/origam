@@ -1,6 +1,7 @@
 <template>
 	<nav
 			:id="id"
+			v-contrast
 			:class="stepperClasses"
 			aria-label="Progress steps"
 	>
@@ -38,6 +39,7 @@
 	import { OrigamStepperItem } from '../../components'
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
+	import { vContrast } from '../../directives'
 	import {
 		useDensity,
 		useDimension,

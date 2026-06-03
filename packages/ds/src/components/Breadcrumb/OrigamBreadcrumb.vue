@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			v-contrast
 			:aria-label="t('origam.breadcrumb.ariaLabel', 'Breadcrumb')"
 			:class="breadcrumbClasses"
 	>
@@ -63,6 +64,8 @@
 		useStateEffect,
 		useStyle
 	} from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { DENSITY } from '../../enums'
 

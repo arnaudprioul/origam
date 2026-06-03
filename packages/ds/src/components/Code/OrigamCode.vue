@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="codeClasses"
 			:style="codeStyles"
 	>
@@ -73,6 +74,8 @@
 		usePadding,
 		useRounded
 	} from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { CODE_DEFAULTS } from '../../consts'
 	import { CODE_LANG } from '../../enums'

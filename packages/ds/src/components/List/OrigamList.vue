@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			v-contrast
 			:class="listClasses"
 			:style="listStyles"
 			:tabindex="tabIndex"
@@ -90,6 +91,8 @@
 >
 	import { computed, ref, shallowRef, StyleValue, toRef, useSlots } from 'vue'
 	import { OrigamDefaultsProvider, OrigamListChildren } from '../../components'
+
+	import { vContrast } from '../../directives'
 
 	import {
 		useBorder,

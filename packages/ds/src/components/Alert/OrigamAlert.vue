@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			v-contrast
 			:class="alertClasses"
 			:role="props.status === 'warning' || props.status === 'error' ? 'alert' : 'status'"
 			:aria-live="props.status === 'warning' || props.status === 'error' ? 'assertive' : 'polite'"
@@ -117,6 +118,8 @@
 	import type { ComputedRef, StyleValue } from 'vue'
 	import { computed, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamBtn, OrigamIcon } from '../../components'
+
+	import { vContrast } from '../../directives'
 
 	import {
 		useActive,

@@ -1,5 +1,6 @@
 <template>
 	<div
+			v-contrast
 			:class="inputClasses"
 			:style="inputStyles"
 	>
@@ -97,6 +98,7 @@
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 	import { OrigamAvatar, OrigamIcon } from '../../components'
 	import { OrigamMessages } from '../../components/Messages'
+	import { vContrast } from '../../directives'
 
 	import {
 		useAdjacent,

@@ -24,6 +24,7 @@
 
 		<template #default>
 			<div
+					v-contrast
 					:class="tooltipContentClasses"
 					:style="colorStyles"
 			>
@@ -49,6 +50,8 @@
 	useStyle,
 	useVModel
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="titleClasses"
 			:style="titleStyles"
 	>
@@ -27,6 +28,8 @@
 	useProps,
 	useStyle
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import type { ITitleProps } from '../../interfaces'
 

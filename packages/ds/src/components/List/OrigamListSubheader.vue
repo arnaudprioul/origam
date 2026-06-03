@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="listSubheaderClasses"
 			:style="listSubheaderStyles"
 	>
@@ -32,6 +33,8 @@
 	useRounded,
 	useStyle
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import type { IListSubheader } from '../../interfaces'
 

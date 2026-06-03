@@ -9,6 +9,7 @@
 			@click="handleClick"
 	>
 		<span
+				v-contrast
 				:class="indicatorClasses"
 				aria-hidden="true"
 		>
@@ -49,6 +50,7 @@
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { MDI_ICONS } from '../../enums'
 	import { useProps } from '../../composables'
+	import { vContrast } from '../../directives'
 
 	import type { IStepperItemProps } from '../../interfaces'
 

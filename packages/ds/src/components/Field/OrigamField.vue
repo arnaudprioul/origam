@@ -1,5 +1,6 @@
 <template>
 	<div
+			v-contrast
 			:class="fieldClasses"
 			:style="fieldStyles"
 			v-bind="attrs"
@@ -185,6 +186,8 @@
 		useStyle,
 		useVariant
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 

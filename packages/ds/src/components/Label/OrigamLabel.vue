@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			v-contrast
 			:class="labelClasses"
 			:style="labelStyles"
 			:name="name"
@@ -28,6 +29,8 @@
 	useRounded,
 	useStyle
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import type { ILabelProps, ILabelSlots} from '../../interfaces'
 

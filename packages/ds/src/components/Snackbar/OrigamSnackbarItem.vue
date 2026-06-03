@@ -2,6 +2,7 @@
   <div
     :aria-atomic="true"
     :aria-live="resolvedAriaLive"
+    v-contrast
     :class="itemClasses"
     :data-cy="dataCy"
     :role="resolvedRole"
@@ -81,6 +82,8 @@
   import { OrigamIcon } from '../../components'
 
   import { useProps } from '../../composables'
+
+  import { vContrast } from '../../directives'
 
   import { MDI_ICONS } from '../../enums'
 

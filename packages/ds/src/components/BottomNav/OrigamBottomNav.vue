@@ -4,6 +4,7 @@
 				:is="tag"
 				v-if="isActive"
 				:id="id"
+				v-contrast
 				:class="bottomNavClasses"
 				aria-label="Bottom navigation"
 				@mouseenter="handleMouseenter"
@@ -44,6 +45,9 @@
 		setup
 >
 	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
+
+	import { vContrast } from '../../directives'
+
 	import {
 		useActive,
 		useDensity,
