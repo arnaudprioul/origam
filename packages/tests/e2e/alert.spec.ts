@@ -9,7 +9,6 @@ import { expect, test, type Page } from '@playwright/test'
  *   - status emits the matching CSS status class + icon
  *   - closable alert hides on close click (modelValue → false)
  *   - title renders the title span
- *   - prominent emits --prominent modifier
  *   - density emits --density-{x} modifier
  *   - color forwards style to alert root
  *   - slot — prepend renders custom prepend content
@@ -156,21 +155,6 @@ test.describe('OrigamAlert — text', () => {
         const alert = sandbox.locator('[data-cy="alert-text"]').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
         await expect(alert).toContainText('Alert body text.')
-    })
-})
-
-// ─── Prominent ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamAlert — prominent', () => {
-    test('prominent=true emits the --prominent modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — prominent')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-prominent"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        const cls = await alert.evaluate(el => el.className)
-        expect(cls).toContain('origam-alert--prominent')
     })
 })
 

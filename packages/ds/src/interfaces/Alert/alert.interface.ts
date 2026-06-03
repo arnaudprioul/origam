@@ -27,7 +27,6 @@ export interface IAlertProps extends ICommonsComponentProps, ITagProps, IColorPr
     closeIcon?: TIcon
     closeLabel?: string
     modelValue?: boolean
-    prominent?: boolean
     title?: string
     text?: string
 }

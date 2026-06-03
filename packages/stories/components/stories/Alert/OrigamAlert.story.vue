@@ -83,7 +83,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IAlertProps>>({ text: 'Alert message.', title: '', modelValue: true, closable: false, prominent: false })"
+				:init-state="() => useStoryInitState<Partial<IAlertProps>>({ text: 'Alert message.', title: '', modelValue: true, closable: false })"
 		>
 			<template #default="{ state }">
 				<origam-alert
@@ -92,7 +92,6 @@
 						:model-value="state.modelValue"
 						:closable="state.closable"
 						:close-icon="state.closeIcon || undefined"
-						:prominent="state.prominent"
 						:tag="state.tag"
 						@click:close="state.modelValue = false"
 						@update:model-value="state.modelValue = $event"
@@ -106,7 +105,6 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
 					<HstCheckbox v-model="state.closable"   title="Closable"/>
-					<HstCheckbox v-model="state.prominent"  title="Prominent"/>
 				</StoryGroup>
 				<StoryGroup title="Close">
 					<HstSelect v-model="state.closeIcon" title="Close Icon" :options="ICON_OPTIONS"/>
@@ -224,7 +222,6 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.closable"   title="Closable"/>
-					<HstCheckbox v-model="state.prominent"  title="Prominent"/>
 					<HstCheckbox v-model="state.modelValue" title="Visible (modelValue)"/>
 				</StoryGroup>
 			</template>

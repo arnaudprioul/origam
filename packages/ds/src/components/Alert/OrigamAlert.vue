@@ -224,9 +224,7 @@
 
 		emits('click:close', e)
 	}
-	const size = computed(() => {
-		return props.prominent ? 44 : 28
-	})
+	const size = 28
 
 	const hasIcon = computed(() => {
 		// Pre-fix: `!!(props.icon || props.status)` returned true as soon
@@ -276,9 +274,6 @@
 	const alertClasses = computed(() => {
 		return [
 			'origam-alert',
-			{
-				'origam-alert--prominent': props.prominent
-			},
 			hoverClasses.value,
 			activeClasses.value,
 			statusClasses.value,
@@ -462,14 +457,6 @@
 
 		&--relative {
 			--origam-alert---position: relative;
-		}
-
-		&--prominent {
-			grid-template-areas: "prepend content append close" "prepend content . .";
-
-			#{$this}__prepend {
-				--origam-alert__prepend---align-self: center;
-			}
 		}
 
 		&__close {

@@ -14,7 +14,7 @@
  * Total: 1 + 4 + 2 = 7 variant frames.
  *
  * Component Properties (apply to ALL variants):
- *   Boolean      : closable, withIcon, withActions, prominent
+ *   Boolean      : closable, withIcon, withActions
  *   Text         : title (default "Alert title"), message (default "Alert message")
  *   InstanceSwap : iconSlot, actionsSlot
  *
@@ -235,7 +235,6 @@ export async function buildAlert(opts: BuildOpts): Promise<ComponentSetNode> {
   addBooleanProperty(set, 'closable',    false)
   addBooleanProperty(set, 'withIcon',    true)
   addBooleanProperty(set, 'withActions', false)
-  addBooleanProperty(set, 'prominent',   false)
 
   addTextProperty(set, 'title',   'Alert title')
   addTextProperty(set, 'message', 'Alert message')
