@@ -17,7 +17,6 @@
 					border: undefined,
 					borderColor: undefined,
 					borderStyle: undefined,
-					width: undefined,
 					height: undefined
 				})"
 		>
@@ -35,7 +34,6 @@
 								:border="state.border"
 								:border-color="state.borderColor"
 								:border-style="state.borderStyle"
-								:width="state.width"
 								:height="state.height"
 								data-cy="app-bar-design"
 						>
@@ -73,7 +71,6 @@
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
-					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
 				</StoryGroup>
 			</template>

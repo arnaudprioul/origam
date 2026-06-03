@@ -105,7 +105,7 @@
 	 ********************************************************/
 
 	const toolbarProps = computed(() => {
-		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat'])
+		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat', 'width', 'minWidth', 'maxWidth'])
 	})
 
 	const hasImage = computed(() => {
