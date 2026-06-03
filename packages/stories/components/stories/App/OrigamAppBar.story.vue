@@ -128,7 +128,11 @@
 					flat: false,
 					floating: false,
 					modelValue: true,
-					scrollBehavior: undefined,
+					scrollHide: false,
+					scrollInverted: false,
+					scrollCollapse: false,
+					scrollElevate: false,
+					scrollActive: false,
 					scrollThreshold: 300,
 					scrollTarget: '.origam-main',
 					location: 'top',
@@ -146,7 +150,7 @@
 								:flat="state.flat"
 								:floating="state.floating"
 								:model-value="state.modelValue"
-								:scroll-behavior="state.scrollBehavior || undefined"
+								:scroll-behavior="composeScrollBehavior(state)"
 								:scroll-threshold="state.scrollThreshold"
 								:scroll-target="state.scrollTarget || undefined"
 								:location="state.location"
@@ -171,10 +175,14 @@
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
 					<HstCheckbox v-model="state.absolute"  title="Absolute"/>
 				</StoryGroup>
-				<StoryGroup title="Scroll">
-					<HstSelect v-model="state.scrollBehavior" title="Scroll Behavior" :options="SCROLL_BEHAVIOR_OPTIONS"/>
-					<HstNumber v-model="state.scrollThreshold" title="Scroll Threshold" :min="0" :max="1000" :step="50"/>
-					<HstText   v-model="state.scrollTarget"   title="Scroll Target"/>
+				<StoryGroup title="Scroll behavior (combine freely)">
+					<HstCheckbox v-model="state.scrollHide"     title="hide"/>
+					<HstCheckbox v-model="state.scrollInverted" title="inverted (modifies hide / collapse / elevate)"/>
+					<HstCheckbox v-model="state.scrollCollapse" title="collapse"/>
+					<HstCheckbox v-model="state.scrollElevate"  title="elevate"/>
+					<HstCheckbox v-model="state.scrollActive"   title="active (paint on scroll)"/>
+					<HstNumber   v-model="state.scrollThreshold" title="Scroll Threshold" :min="0" :max="1000" :step="50"/>
+					<HstText     v-model="state.scrollTarget"   title="Scroll Target"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
@@ -360,7 +368,6 @@
 	import { MDI_ICONS, SCROLL_BEHAVIOR } from '@origam/enums'
 	import type { IAppBarProps } from '@origam/interfaces'
 	import type { IOptions } from '@origam/interfaces'
-	import type { TScrollBehavior } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -381,14 +388,20 @@
 	const moreIcon    = MDI_ICONS.DOTS_VERTICAL
 	const accountIcon = MDI_ICONS.ACCOUNT
 
-	const SCROLL_BEHAVIOR_OPTIONS: Array<IOptions<TScrollBehavior | undefined>> = [
-		{ label: '(none)',    value: undefined },
-		{ label: 'hide',      value: SCROLL_BEHAVIOR.HIDE },
-		{ label: 'inverted',  value: SCROLL_BEHAVIOR.INVERTED },
-		{ label: 'collapse',  value: SCROLL_BEHAVIOR.COLLAPSE },
-		{ label: 'elevate',   value: SCROLL_BEHAVIOR.ELEVATED },
-		{ label: 'active (paint on scroll)', value: SCROLL_BEHAVIOR.ACTIVE }
-	]
+	// `scrollBehavior` is a space-separated token list. `inverted` is a MODIFIER
+	// (it flips the trigger of hide / collapse / elevate) — it does nothing on
+	// its own, which is why the controls are checkboxes that compose here.
+	const composeScrollBehavior = (s: Record<string, unknown>): string | undefined => {
+		const tokens = [
+			s.scrollHide && SCROLL_BEHAVIOR.HIDE,
+			s.scrollInverted && SCROLL_BEHAVIOR.INVERTED,
+			s.scrollCollapse && SCROLL_BEHAVIOR.COLLAPSE,
+			s.scrollElevate && SCROLL_BEHAVIOR.ELEVATED,
+			s.scrollActive && SCROLL_BEHAVIOR.ACTIVE
+		].filter(Boolean)
+
+		return tokens.length ? tokens.join(' ') : undefined
+	}
 
 	const LOCATION_OPTIONS: Array<IOptions<'top' | 'bottom'>> = [
 		{ label: 'top',    value: 'top' },
