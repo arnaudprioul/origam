@@ -30,4 +30,15 @@ describe('OrigamAppBar — scroll-behavior="active"', () => {
         expect(wrapper.find('.origam-app-bar').exists()).toBe(true)
         wrapper.unmount()
     })
+
+    it('WITHOUT the active behaviour, a visible bar is NOT --active (modelValue must not force it)', () => {
+        // Regression: `--active` used to be emitted from modelValue/visibility,
+        // so a default bar (modelValue=true) was permanently `--active` and any
+        // `.origam-app-bar--active` CSS painted it always — even with no scroll
+        // behaviour configured.
+        const wrapper = mountBar({ modelValue: true })
+
+        expect(wrapper.find('.origam-app-bar').classes()).not.toContain('origam-app-bar--active')
+        wrapper.unmount()
+    })
 })

@@ -126,7 +126,7 @@
 	 * Effect
 	 ********************************************************/
 
-	const {isActive, activeClasses} = useActive(props, 'modelValue')
+	const {isActive} = useActive(props, 'modelValue')
 
 	/*********************************************************
 	 * Scroll
@@ -194,14 +194,13 @@
 
 	const isScrollActive = computed(() => scrollBehavior.value.active && isScrolled.value)
 
-	// When the `active` behaviour is on, `--active` reflects the scroll state
-	// (not visibility). Otherwise keep the legacy visibility-driven class.
+	// `--active` is emitted ONLY for the `active` scroll-behaviour (engaged on
+	// scroll). It is intentionally NOT tied to `modelValue`/visibility — the bar
+	// being shown is not an "active" design-state, and binding the class to
+	// visibility painted the bar permanently (modelValue defaults to true).
+	// Visibility is handled by the layout transform, no class required.
 	const barActiveClasses = computed(() => {
-		if (scrollBehavior.value.active) {
-			return isScrollActive.value ? ['origam-app-bar--active'] : []
-		}
-
-		return activeClasses.value
+		return isScrollActive.value ? ['origam-app-bar--active'] : []
 	})
 
 	// Forwarded `active` for the Toolbar surface. With the `active` behaviour,

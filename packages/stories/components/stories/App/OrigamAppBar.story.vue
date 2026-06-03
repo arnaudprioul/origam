@@ -128,7 +128,7 @@
 					flat: false,
 					floating: false,
 					modelValue: true,
-					scrollBehavior: 'active',
+					scrollBehavior: undefined,
 					scrollThreshold: 300,
 					scrollTarget: '.origam-main',
 					location: 'top',
