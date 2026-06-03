@@ -73,8 +73,8 @@
 				<origam-checkbox
 						v-model="stateModel"
 						:color="state.color"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						label="Checkbox"
 				/>
 			</template>
@@ -271,12 +271,14 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'

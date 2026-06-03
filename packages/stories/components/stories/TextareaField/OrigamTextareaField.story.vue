@@ -75,7 +75,7 @@
 				<origam-textarea-field
 						v-model="stateModel"
 						:bg-color="state.bgColor"
-						:hover="state.hover"
+						:hover="resolveHoverState(state.hover)"
 						label="State textarea"
 				/>
 			</template>
@@ -454,6 +454,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		VARIANT_INPUT_OPTIONS

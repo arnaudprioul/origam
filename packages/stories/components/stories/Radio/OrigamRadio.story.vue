@@ -66,8 +66,8 @@
 				<origam-radio
 						v-model="stateModel"
 						:color="state.color"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						label="Radio option"
 						value="opt"
 				/>
@@ -297,12 +297,14 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS
 	} from '@stories/const'

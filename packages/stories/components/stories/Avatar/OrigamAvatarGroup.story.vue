@@ -65,8 +65,8 @@
 						:items="people"
 						:max="4"
 						:bg-color="state.bgColor"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -239,11 +239,13 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
 		TAG_OPTIONS

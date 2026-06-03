@@ -113,3 +113,53 @@ export const activeList: Array<IOptions<IActiveState>> = [
     { label: 'enabled + bgColor success',                    value: { enabled: true, bgColor: 'success' } },
     { label: 'enabled + rounded + border',                   value: { enabled: true, rounded: 'full', border: 'thick' } },
 ]
+
+/**
+ * String-keyed option sets for the `hover` / `active` Histoire controls,
+ * plus the resolvers that turn a key back into the real `IHoverState` /
+ * `IActiveState` object inside a story's `#default`.
+ *
+ * WHY STRINGS INSTEAD OF BINDING THE OBJECTS DIRECTLY:
+ * Histoire syncs control state from the panel into the sandbox iframe via
+ * `applyState` (`@histoire/shared`):
+ *
+ *   if (typeof target[key] === 'object' && !Array.isArray(target[key]))
+ *       Object.assign(target[key], state[key])   // MERGE
+ *   else
+ *       target[key] = state[key]                 // REPLACE
+ *
+ * So when `state.hover` already holds an object, a new selection is
+ * `Object.assign`-MERGED into it ({ bgColor } then { border } →
+ * { bgColor, border }) instead of replacing it — the exact bug seen in the
+ * State variants. A primitive string can never be merged, so the control
+ * stores the option's label as a key; the story resolves it to the object
+ * at render time. Every other select works already because its values are
+ * primitives (color, size, variant…).
+ */
+export const HOVER_OPTIONS: Array<IOptions<string>> = hoverList.map((option) => ({
+    label: option.label,
+    value: option.label
+}))
+
+export const ACTIVE_OPTIONS: Array<IOptions<string>> = activeList.map((option) => ({
+    label: option.label,
+    value: option.label
+}))
+
+const HOVER_STATE_BY_KEY: Record<string, IHoverState | undefined> =
+    Object.fromEntries(hoverList.map((option) => [option.label, option.value]))
+
+const ACTIVE_STATE_BY_KEY: Record<string, IActiveState | undefined> =
+    Object.fromEntries(activeList.map((option) => [option.label, option.value]))
+
+export function resolveHoverState (key: string | boolean | undefined): IHoverState | boolean | undefined {
+    if (key == null || typeof key === 'boolean') return key
+
+    return HOVER_STATE_BY_KEY[key]
+}
+
+export function resolveActiveState (key: string | boolean | undefined): IActiveState | boolean | undefined {
+    if (key == null || typeof key === 'boolean') return key
+
+    return ACTIVE_STATE_BY_KEY[key]
+}

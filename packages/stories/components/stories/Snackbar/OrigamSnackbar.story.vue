@@ -77,7 +77,7 @@
 					<origam-snackbar
 							v-model="stateOpen"
 							:bg-color="state.bgColor"
-							:hover="state.hover"
+							:hover="resolveHoverState(state.hover)"
 							:timeout="-1"
 							text="State demo"
 					/>
@@ -267,6 +267,7 @@
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		POSITION_OPTIONS,
 		ROUNDED_OPTIONS,
 		STATUS_OPTIONS,

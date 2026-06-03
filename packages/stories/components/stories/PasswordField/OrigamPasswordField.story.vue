@@ -85,7 +85,7 @@
 						v-model="stateModel"
 						label="Password"
 						:color="state.color"
-						:hover="state.hover"
+						:hover="resolveHoverState(state.hover)"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -428,6 +428,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

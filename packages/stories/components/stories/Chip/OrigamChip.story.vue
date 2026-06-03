@@ -64,7 +64,7 @@
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<IBgColorProps>>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-chip :bg-color="state.bgColor" :hover="state.hover" :active="state.active" text="Chip"/>
+				<origam-chip :bg-color="state.bgColor" :hover="resolveHoverState(state.hover)" :active="resolveActiveState(state.active)" text="Chip"/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
@@ -280,12 +280,14 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

@@ -82,8 +82,8 @@
 				<origam-otp-input-field
 						v-model="stateModel"
 						:color="state.color"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						:length="4"
 						label="State"
 				/>
@@ -353,10 +353,12 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

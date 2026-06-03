@@ -62,8 +62,8 @@
 				<origam-switch
 						:model-value="false"
 						:bg-color="state.bgColor"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						label="Switch"
 				/>
 			</template>
@@ -282,12 +282,14 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
 		TAG_OPTIONS

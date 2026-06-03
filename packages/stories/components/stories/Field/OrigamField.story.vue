@@ -67,7 +67,7 @@
 			<template #default="{ state }">
 				<origam-field
 						:color="state.color"
-						:active="state.active"
+						:active="resolveActiveState(state.active)"
 						:focused="state.focused"
 						:label="state.label"
 				>
@@ -349,6 +349,7 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,

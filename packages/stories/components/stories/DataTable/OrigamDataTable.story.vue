@@ -72,7 +72,7 @@
 						:headers="sortableHeaders"
 						:items="items"
 						:color="state.color"
-						:hover="state.hover"
+						:hover="resolveHoverState(state.hover)"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -404,6 +404,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

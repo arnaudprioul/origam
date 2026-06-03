@@ -50,8 +50,8 @@
 						:model-value="true"
 						label="Checkbox Button"
 						:color="state.color"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -243,9 +243,11 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS
 	} from '@stories/const'
 

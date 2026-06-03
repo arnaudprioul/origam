@@ -70,8 +70,8 @@
 			<template #default="{ state }">
 				<origam-sheet
 						:bg-color="state.bgColor"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						border
 						style="padding: 16px;"
 				>
@@ -254,11 +254,13 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		POSITION_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS

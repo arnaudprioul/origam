@@ -72,7 +72,7 @@
 					<origam-badge
 							:model-value="state.modelValue"
 							:bg-color="state.bgColor"
-							:hover="state.hover"
+							:hover="resolveHoverState(state.hover)"
 							:content="3"
 					>
 						<origam-avatar text="AP"/>
@@ -255,6 +255,7 @@
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		STATUS_OPTIONS,

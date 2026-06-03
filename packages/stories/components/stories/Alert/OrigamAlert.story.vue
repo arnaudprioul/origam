@@ -67,7 +67,7 @@
 				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps>({ bgColor: 'info' })"
 		>
 			<template #default="{ state }">
-				<origam-alert :bg-color="state.bgColor" :hover="state.hover" text="Hover over this alert."/>
+				<origam-alert :bg-color="state.bgColor" :hover="resolveHoverState(state.hover)" text="Hover over this alert."/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
@@ -255,6 +255,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		STATUS_OPTIONS,

@@ -62,7 +62,7 @@
 					<origam-bottom-nav
 							:model-value="true"
 							:bg-color="state.bgColor"
-							:hover="state.hover"
+							:hover="resolveHoverState(state.hover)"
 							:items="navItems"
 					/>
 				</div>
@@ -237,6 +237,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

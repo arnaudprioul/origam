@@ -63,8 +63,8 @@
 			<template #default="{ state }">
 				<origam-toolbar
 						:bg-color="state.bgColor"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						title="Toolbar"
 				/>
 			</template>
@@ -202,12 +202,14 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		POSITION_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS

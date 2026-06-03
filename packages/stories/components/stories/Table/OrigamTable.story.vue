@@ -70,7 +70,7 @@
 				:init-state="() => useStoryInitState<IHoverProps>({})"
 		>
 			<template #default="{ state }">
-				<origam-table :hover="state.hover" border>
+				<origam-table :hover="resolveHoverState(state.hover)" border>
 					<thead>
 						<tr>
 							<th>Name</th>
@@ -265,6 +265,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

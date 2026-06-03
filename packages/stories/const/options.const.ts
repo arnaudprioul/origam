@@ -19,7 +19,6 @@ export { elevationList as ELEVATION_OPTIONS } from './elevation.const'
 export { iconList as ICON_OPTIONS } from './icon.const'
 export { tagList as TAG_OPTIONS } from './tag.const'
 export { borderList as BORDER_OPTIONS, borderStyleList as BORDER_STYLE_OPTIONS } from './border.const'
-export { hoverList as HOVER_OPTIONS, activeList as ACTIVE_OPTIONS } from './state-effect.const'
 
 export { alignList as ALIGN_OPTIONS } from './align.const'
 export { colsList as COLS_OPTIONS } from './cols.const'

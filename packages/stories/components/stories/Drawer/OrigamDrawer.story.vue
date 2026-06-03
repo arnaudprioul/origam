@@ -70,8 +70,8 @@
 						<origam-drawer
 								permanent
 								:bg-color="state.bgColor"
-								:hover="state.hover"
-								:active="state.active"
+								:hover="resolveHoverState(state.hover)"
+								:active="resolveActiveState(state.active)"
 						>
 							<div style="padding: 16px;">Drawer content</div>
 						</origam-drawer>
@@ -458,12 +458,14 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

@@ -71,8 +71,8 @@
 			<template #default="{ state }">
 				<origam-expansion-panels
 						:bg-color="state.bgColor"
-						:hover="state.hover"
-						:active="state.active"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 				>
 					<origam-expansion-panel title="Panel 1" content="Content 1"/>
 					<origam-expansion-panel title="Panel 2" content="Content 2"/>
@@ -336,11 +336,13 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
