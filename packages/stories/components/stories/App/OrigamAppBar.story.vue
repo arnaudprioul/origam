@@ -135,8 +135,7 @@
 					scrollThreshold: 300,
 					scrollTarget: '.origam-main',
 					location: 'top',
-					order: 0,
-					absolute: false
+					order: 0
 				})"
 		>
 			<template #default="{ state }">
@@ -152,7 +151,6 @@
 								:scroll-threshold="state.scrollThreshold"
 								:scroll-target="state.scrollTarget || undefined"
 								:location="state.location"
-								:absolute="state.absolute"
 								data-cy="app-bar-functional"
 						>
 							<template #prepend>
@@ -170,7 +168,6 @@
 					<HstCheckbox v-model="state.collapse"  title="Collapse"/>
 					<HstCheckbox v-model="state.flat"      title="Flat"/>
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
-					<HstCheckbox v-model="state.absolute"  title="Absolute"/>
 				</StoryGroup>
 				<StoryGroup title="Scroll behavior (combine freely)">
 					<HstCheckbox v-model="state.scrollHide"     title="hide"/>

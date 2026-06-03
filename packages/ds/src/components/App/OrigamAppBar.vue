@@ -264,7 +264,10 @@
 		layoutSize: height,
 		elementSize: shallowRef(undefined),
 		active: visible as unknown as ComputedRef,
-		absolute: toRef(props, 'absolute')
+		// `absolute` is not part of the AppBar surface (it only toggles
+		// absolute↔fixed and never scrolls the bar away). The layout defaults
+		// to fixed for the root bar.
+		absolute: shallowRef(undefined)
 	})
 
 	/*********************************************************

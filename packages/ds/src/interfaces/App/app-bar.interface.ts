@@ -12,9 +12,15 @@ import type { TBlock } from "../../types"
  * `floating` is also omitted: it sets `display: inline-flex` on the Toolbar to
  * shrink-wrap its content, but the layout forces the docked bar to full width
  * (`calc(100% - …)`), neutralising it. It only makes sense on a standalone
- * `OrigamToolbar`. `absolute` stays — it's a real fixed↔contained toggle.
+ * `OrigamToolbar`.
+ *
+ * `absolute` is omitted too: it only toggles `position: absolute` ↔ `fixed`
+ * (both keep the bar pinned at `top: 0`; it does NOT make the bar scroll away —
+ * that's `scroll-behavior="hide"`). The difference only shows in a contained /
+ * non-full-viewport layout, which is a niche the `OrigamLayout` primitive still
+ * covers. `height` stays — it defines the bar's reserved thickness.
  */
-export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' | 'maxWidth' | 'floating'>, ILayoutItemProps, IScrollProps {
+export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' | 'maxWidth' | 'floating'>, Omit<ILayoutItemProps, 'absolute'>, IScrollProps {
     location?: TBlock
     image?: IImgProps
 }
