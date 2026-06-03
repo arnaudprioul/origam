@@ -4,6 +4,7 @@
 			:class="appBarClasses"
 			:collapse="isCollapsed"
 			:flat="isFlat"
+			:active="toolbarActive"
 			:style="appBarStyles"
 			v-bind="toolbarProps"
 	>
@@ -105,7 +106,7 @@
 	 ********************************************************/
 
 	const toolbarProps = computed(() => {
-		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat', 'width', 'minWidth', 'maxWidth'])
+		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat', 'active', 'width', 'minWidth', 'maxWidth'])
 	})
 
 	const hasImage = computed(() => {
@@ -143,6 +144,10 @@
 			inverted: behavior.has('inverted'),
 			collapse: behavior.has('collapse'),
 			elevate: behavior.has('elevate'),
+			// Engage the bar's `active` design-state once the page is scrolled
+			// (transparent at the top → painted/`--active` on scroll). Opt-in,
+			// like every other behaviour token.
+			active: behavior.has('active'),
 			fadeImage: behavior.has('fade-image')
 			// shrink: behavior.has('shrink'),
 		}
@@ -155,6 +160,7 @@
 				behavior.inverted ||
 				behavior.collapse ||
 				behavior.elevate ||
+				behavior.active ||
 				behavior.fadeImage ||
 				!isActive.value
 		)
@@ -178,6 +184,35 @@
 				isActive.value = true
 			}
 		})
+	})
+
+	// `active` scroll-behaviour: the bar engages its `active` design-state as
+	// soon as the page is scrolled away from the top. Drives the
+	// `origam-app-bar--active` class (consumer CSS hook) AND forwards a forced
+	// `active` to the inner Toolbar so its surface paints (see `toolbarActive`).
+	const isScrolled = computed(() => currentScroll.value > 0)
+
+	const isScrollActive = computed(() => scrollBehavior.value.active && isScrolled.value)
+
+	// When the `active` behaviour is on, `--active` reflects the scroll state
+	// (not visibility). Otherwise keep the legacy visibility-driven class.
+	const barActiveClasses = computed(() => {
+		if (scrollBehavior.value.active) {
+			return isScrollActive.value ? ['origam-app-bar--active'] : []
+		}
+
+		return activeClasses.value
+	})
+
+	// Forwarded `active` for the Toolbar surface. With the `active` behaviour,
+	// force the state on while scrolled (merging any consumer override object so
+	// `:active="{ bgColor: 'surface' }"` paints on scroll); off at the top.
+	const toolbarActive = computed(() => {
+		if (!scrollBehavior.value.active) return props.active
+
+		const override = props.active && typeof props.active === 'object' ? props.active : {}
+
+		return isScrollActive.value ? { ...override, enabled: true } : false
 	})
 
 	const isCollapsed = computed(() => props.collapse || (
@@ -243,7 +278,7 @@
 		return [
 			'origam-app-bar',
 			`origam-app-bar--${props.location}`,
-			activeClasses.value,
+			barActiveClasses.value,
 			props.class
 		]
 	})

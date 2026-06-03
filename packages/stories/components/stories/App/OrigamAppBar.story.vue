@@ -382,7 +382,8 @@
 		{ label: 'hide',      value: SCROLL_BEHAVIOR.HIDE },
 		{ label: 'inverted',  value: SCROLL_BEHAVIOR.INVERTED },
 		{ label: 'collapse',  value: SCROLL_BEHAVIOR.COLLAPSE },
-		{ label: 'elevate',   value: SCROLL_BEHAVIOR.ELEVATED }
+		{ label: 'elevate',   value: SCROLL_BEHAVIOR.ELEVATED },
+		{ label: 'active (paint on scroll)', value: SCROLL_BEHAVIOR.ACTIVE }
 	]
 
 	const LOCATION_OPTIONS: Array<IOptions<'top' | 'bottom'>> = [

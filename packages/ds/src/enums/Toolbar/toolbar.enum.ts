@@ -3,4 +3,5 @@ export enum SCROLL_BEHAVIOR {
     INVERTED = 'inverted',
     COLLAPSE = 'collapse',
     ELEVATED = 'elevate',
+    ACTIVE = 'active',
 }
