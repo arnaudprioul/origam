@@ -126,7 +126,7 @@
 					modelValue: true,
 					scrollBehavior: 'active',
 					scrollThreshold: 300,
-					scrollTarget: '.app-bar-story-scroll',
+					scrollTarget: '.origam-main',
 					location: 'top',
 					order: 0,
 					absolute: false
@@ -153,12 +153,8 @@
 								<origam-btn :icon="menuIcon" aria-label="Navigation menu"/>
 							</template>
 						</origam-app-bar>
-						<origam-main>
-							<div class="app-bar-story-scroll">
-								<p class="app-bar-story-content">Scroll this area — with <code>scroll-behavior="active"</code> the bar engages its active state (<code>origam-app-bar--active</code>) once scrolled past the top.</p>
-								<div class="app-bar-story-filler"></div>
-								<p class="app-bar-story-content">Bottom of the scroll region.</p>
-							</div>
+						<origam-main style="height: 280px; overflow-y: auto;">
+							<p class="app-bar-story-content" style="height: 1200px;">Scroll this area — with <code>scroll-behavior="active"</code> the bar engages its active state (<code>origam-app-bar--active</code>) once scrolled past the top.</p>
 						</origam-main>
 					</origam-app>
 				</div>
@@ -407,15 +403,6 @@
 	.app-bar-story-content {
 		padding: 12px;
 		margin: 0;
-	}
-
-	.app-bar-story-scroll {
-		height: 280px;
-		overflow-y: auto;
-	}
-
-	.app-bar-story-filler {
-		height: 900px;
 	}
 
 	:deep(.origam-app-bar--active) {
