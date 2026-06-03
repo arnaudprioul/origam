@@ -126,7 +126,6 @@
 					title: 'My Application',
 					collapse: false,
 					flat: false,
-					floating: false,
 					modelValue: true,
 					scrollHide: false,
 					scrollInverted: false,
@@ -148,7 +147,6 @@
 								:title="state.title"
 								:collapse="state.collapse"
 								:flat="state.flat"
-								:floating="state.floating"
 								:model-value="state.modelValue"
 								:scroll-behavior="composeScrollBehavior(state)"
 								:scroll-threshold="state.scrollThreshold"
@@ -171,7 +169,6 @@
 				<StoryGroup title="Modifiers">
 					<HstCheckbox v-model="state.collapse"  title="Collapse"/>
 					<HstCheckbox v-model="state.flat"      title="Flat"/>
-					<HstCheckbox v-model="state.floating"  title="Floating"/>
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
 					<HstCheckbox v-model="state.absolute"  title="Absolute"/>
 				</StoryGroup>
@@ -309,7 +306,6 @@
 					title: 'My Application',
 					collapse: false,
 					flat: false,
-					floating: false,
 					modelValue: true
 				})"
 		>
@@ -349,7 +345,6 @@
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.collapse"   title="Collapse"/>
 					<HstCheckbox v-model="state.flat"       title="Flat"/>
-					<HstCheckbox v-model="state.floating"   title="Floating"/>
 					<HstCheckbox v-model="state.modelValue" title="Visible"/>
 				</StoryGroup>
 			</template>

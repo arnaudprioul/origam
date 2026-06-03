@@ -8,8 +8,13 @@ import type { TBlock } from "../../types"
  * so `main` / drawers offset correctly. Exposing `width` / `minWidth` /
  * `maxWidth` would be a lie (the layout overrides them), so they're omitted
  * from the surface. `height` stays: it defines the bar's reserved thickness.
+ *
+ * `floating` is also omitted: it sets `display: inline-flex` on the Toolbar to
+ * shrink-wrap its content, but the layout forces the docked bar to full width
+ * (`calc(100% - …)`), neutralising it. It only makes sense on a standalone
+ * `OrigamToolbar`. `absolute` stays — it's a real fixed↔contained toggle.
  */
-export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' | 'maxWidth'>, ILayoutItemProps, IScrollProps {
+export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' | 'maxWidth' | 'floating'>, ILayoutItemProps, IScrollProps {
     location?: TBlock
     image?: IImgProps
 }
