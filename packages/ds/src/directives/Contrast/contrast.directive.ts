@@ -25,18 +25,66 @@ export function setContrastConfig (value: boolean | IContrastOptions | undefined
     }
 }
 
-const TRANSPARENT = new Set(['transparent', 'rgba(0, 0, 0, 0)', ''])
+let normCtx: CanvasRenderingContext2D | null | undefined
+
+/**
+ * Convert the modern `color(srgb r g b [/ a])` function (0–1 channels) to a
+ * legacy `rgb()/rgba()` string. Chromium keeps `color(srgb …)` verbatim even
+ * through a canvas round-trip, and `getContrast`/`parseColor` can't read it —
+ * design tokens resolve to exactly this form in several themes.
+ */
+function srgbToRgb (color: string): string | null {
+    const m = color.match(/color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/i)
+    if (!m) return null
+    const ch = (v: string) => Math.round(Math.min(1, Math.max(0, parseFloat(v))) * 255)
+    const r = ch(m[1]), g = ch(m[2]), b = ch(m[3])
+    const a = m[4] !== undefined ? parseFloat(m[4]) : 1
+    return a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`
+}
+
+/**
+ * Normalise any CSS colour string — `color(srgb …)`, `color-mix(…)`, named
+ * colours, hsl(), etc. — to a plain `rgb()/#hex` the WCAG maths can parse.
+ */
+function toRgb (color: string | null | undefined): string | null {
+    if (!color) return null
+
+    const direct = srgbToRgb(color)
+    if (direct) return direct
+
+    if (typeof document === 'undefined') return color
+    if (normCtx === undefined) normCtx = document.createElement('canvas').getContext('2d')
+    if (!normCtx) return color
+
+    // Canvas resolves named / hsl / color-mix; it may still emit color(srgb …)
+    // for wide-gamut inputs, so feed the result back through srgbToRgb.
+    normCtx.fillStyle = '#000'
+    normCtx.fillStyle = color
+    const onBlack = normCtx.fillStyle
+    normCtx.fillStyle = '#fff'
+    normCtx.fillStyle = color
+    const onWhite = normCtx.fillStyle
+
+    if (onBlack !== onWhite) return null
+    return srgbToRgb(onBlack) ?? onBlack
+}
+
+function isTransparent (rgb: string | null): boolean {
+    if (!rgb) return true
+    const alpha = rgb.match(/rgba?\([^)]*,\s*([\d.]+)\s*\)/)
+    return alpha ? Number(alpha[1]) === 0 : false
+}
 
 /**
  * Walk up to the nearest ancestor that actually paints a background, so a
  * text element with a transparent background is checked against the surface
- * it visually sits on.
+ * it visually sits on. Returns a normalised rgb string.
  */
 function resolvePaintedBackground (el: HTMLElement): string | null {
     let node: HTMLElement | null = el
     while (node) {
-        const bg = getComputedStyle(node).backgroundColor
-        if (bg && !TRANSPARENT.has(bg)) return bg
+        const bg = toRgb(getComputedStyle(node).backgroundColor)
+        if (bg && !isTransparent(bg)) return bg
         node = node.parentElement
     }
     return null
@@ -49,24 +97,30 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
 
     if (!enabled || typeof window === 'undefined') return
 
-    // Always clear a previous override first so a fresh Vue patch (e.g. the
-    // user changing colours via controls) is evaluated on its real value.
-    el.style.removeProperty('color')
+    // NOTE: we do NOT clear our previous override here. Vue re-applies the
+    // consumer's colour via `el.style.color = …` on every patch (which strips
+    // our `!important`), so by the time this runs in rAF the element already
+    // reflects the real, current colour — we just re-measure and re-fix.
 
     const bg = resolvePaintedBackground(el)
     if (!bg) return
 
-    const fg = getComputedStyle(el).color
+    const fg = toRgb(getComputedStyle(el).color)
     if (!fg) return
 
-    const ratio = getContrast(fg, bg)
+    let ratio: number
+    try {
+        ratio = getContrast(fg, bg)
+    } catch {
+        return
+    }
     if (ratio >= config.threshold) return
 
     const better = getForeground(bg)
     el.style.setProperty('color', better, 'important')
     el.dataset.origamContrastFixed = 'true'
 
-    // eslint-disable-next-line no-console
+     
     console.warn(
         `[origam] Low text contrast (${ratio.toFixed(2)}:1 < ${config.threshold}:1): ` +
         `text ${fg} on background ${bg}. Overriding text colour to ${better} for legibility. ` +
