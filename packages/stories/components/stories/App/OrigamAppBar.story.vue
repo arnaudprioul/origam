@@ -124,9 +124,9 @@
 					flat: false,
 					floating: false,
 					modelValue: true,
-					scrollBehavior: undefined,
+					scrollBehavior: 'active',
 					scrollThreshold: 300,
-					scrollTarget: undefined,
+					scrollTarget: '.origam-main__scroller',
 					location: 'top',
 					order: 0,
 					absolute: false
@@ -153,8 +153,10 @@
 								<origam-btn :icon="menuIcon" aria-label="Navigation menu"/>
 							</template>
 						</origam-app-bar>
-						<origam-main>
-							<p class="app-bar-story-content">Main content</p>
+						<origam-main scrollable>
+							<p class="app-bar-story-content">Scroll this area — with <code>scroll-behavior="active"</code> the bar engages its active state (<code>origam-app-bar--active</code>) once scrolled past the top.</p>
+							<div class="app-bar-story-filler"></div>
+							<p class="app-bar-story-content">Bottom of the scroll region.</p>
 						</origam-main>
 					</origam-app>
 				</div>
@@ -396,13 +398,23 @@
 
 <style scoped>
 	.app-bar-story-wrapper {
-		height: 160px;
+		height: 360px;
 		border: 1px solid var(--origam-color__border---subtle, #ccc);
 	}
 
 	.app-bar-story-content {
 		padding: 12px;
 		margin: 0;
+	}
+
+	.app-bar-story-filler {
+		height: 900px;
+	}
+
+	:deep(.origam-app-bar--active) {
+		background-color: var(--origam-color__action--primary---bg, #1976d2);
+		color: var(--origam-color__action--primary---fg, #fff);
+		transition: background-color 0.2s ease, color 0.2s ease;
 	}
 
 	.app-bar-story-img-gradient {
