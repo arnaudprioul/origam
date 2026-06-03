@@ -43,7 +43,6 @@
 	import { OrigamTitle } from "../../components"
 	import {
 		useActive,
-		useBothColor,
 		useDensity,
 		useDimension,
 		useHover,
@@ -110,23 +109,19 @@
 
 	const {isHover, hoverState} = useHover(props)
 	const {isActive, activeState} = useActive(props)
+	// `colorClasses` / `colorStyles` MUST come from `useStateEffect` so the
+	// surface follows `hover` / `active` — e.g. a transparent sticky AppBar
+	// that paints a background once `active` engages on scroll. A plain
+	// `useBothColor` here would resolve only the RESTING bgColor/color and
+	// silently ignore the state overrides (the bug this replaced).
 	const {
+		colorClasses, colorStyles,
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
 		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, isActive, hoverState, activeState, undefined, toRef(props, 'flat'))
-	// Phase 3 (Vague C) — class-first companion alongside inline styles.
-	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
-	// for tokenised intents on the toolbar root; `colorStyles` keeps the
-	// legacy raw-color fallback in parallel.
-
-	/*********************************************************
-	 * Color
-	 ********************************************************/
-
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {positionStyles, positionClasses} = usePosition(props)
