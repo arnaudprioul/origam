@@ -1,5 +1,6 @@
 export * from './Alert/alert.interface'
 
+export * from './App/app.interface'
 export * from './App/app-bar.interface'
 
 export * from './Avatar/avatar.interface'
