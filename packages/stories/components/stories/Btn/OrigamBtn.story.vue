@@ -72,18 +72,29 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<Record<string, unknown>>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-btn :bg-color="state.bgColor" :hover="state.hover" :active="state.active" text="Button"/>
+				<origam-btn
+						:bg-color="state.bgColor"
+						:hover="toEffectState(state.hoverOn, state.hoverBgColor, state.hoverColor)"
+						:active="toEffectState(state.activeOn, state.activeBgColor, state.activeColor)"
+						text="Button"
+				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
-					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				<StoryGroup title="Hover">
+					<HstCheckbox v-model="state.hoverOn"      title="Force hover"/>
+					<HstSelect   v-model="state.hoverBgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.hoverColor"   title="Color"    :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Active">
+					<HstCheckbox v-model="state.activeOn"      title="Force active"/>
+					<HstSelect   v-model="state.activeBgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.activeColor"   title="Color"    :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -252,23 +263,17 @@
 
 	import { OrigamBtn, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type {
-		IBgColorProps,
-		IBtnProps,
-		IHoverProps
-	} from '@origam/interfaces'
+	import type { IBtnProps } from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
-	import { useStoryInitState } from '@stories/composables'
+	import { toEffectState, useStoryInitState } from '@stories/composables'
 	import {
-		ACTIVE_OPTIONS,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
