@@ -137,9 +137,30 @@ export function useStateEffect (
      */
     flat: Ref<boolean> | ComputedRef<boolean> = noopRef,
 ) {
+    // ── Status overrides color/bgColor (non-overridable by props) ────
+    // A `status` ('success' | 'info' | 'warning' | 'error') carries its
+    // own semantic surface: it forces the matching feedback intent on the
+    // color axis and WINS over any `color` / `bgColor` the consumer passed
+    // — otherwise the status would be cosmetically pointless. `error` maps
+    // to the `danger` intent (TStatus uses `error`, TIntent uses `danger`).
+    const statusToIntent: Record<string, TColor> = {
+        success: 'success',
+        info: 'info',
+        warning: 'warning',
+        error: 'danger'
+    }
+    const statusIntent = computed<TColor | undefined>(() => {
+        const status = (props as TStateEffectProps & { status?: string }).status
+        return status ? (statusToIntent[status] ?? (status as TColor)) : undefined
+    })
+
     // ── Effective per-axis values (computed, swap on state) ──────────
-    const color    = pickEffective<TColor>(() => props.color, isHover, isActive, hoverState, activeState, 'color')
-    const bgColor  = pickEffective<TColor>(() => props.bgColor, isHover, isActive, hoverState, activeState, 'bgColor')
+    const baseColor   = pickEffective<TColor>(() => props.color, isHover, isActive, hoverState, activeState, 'color')
+    const baseBgColor = pickEffective<TColor>(() => props.bgColor, isHover, isActive, hoverState, activeState, 'bgColor')
+    // When a status is active, drop the consumer's foreground so the bg
+    // intent auto-pairs its own contrasting text, and force the bg intent.
+    const color    = computed<TColor | undefined>(() => statusIntent.value ? undefined : baseColor.value)
+    const bgColor  = computed<TColor | undefined>(() => statusIntent.value ?? baseBgColor.value)
     const border   = pickEffective(() => props.border, isHover, isActive, hoverState, activeState, 'border')
     const rounded  = pickEffective(() => props.rounded, isHover, isActive, hoverState, activeState, 'rounded')
     const elevation = pickEffective(() => props.elevation, isHover, isActive, hoverState, activeState, 'elevation')

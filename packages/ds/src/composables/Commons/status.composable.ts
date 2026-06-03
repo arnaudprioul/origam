@@ -1,7 +1,18 @@
 import { STATUS_POSITION } from "../../enums"
 import type { IAdjacentProps, IStatusProps } from "../../interfaces"
+import type { TColor } from "../../types"
 import { getCurrentInstanceName } from '../../utils'
 import { computed } from 'vue'
+
+// A `status` carries its own semantic surface colour. It maps to the
+// matching feedback intent — `error` becomes the `danger` intent
+// (TStatus uses `error`, TIntent uses `danger`); the others map 1:1.
+const STATUS_TO_INTENT: Record<string, TColor> = {
+    success: 'success',
+    info: 'info',
+    warning: 'warning',
+    error: 'danger'
+}
 
 /*********************************************************
  * useStatus
@@ -9,6 +20,13 @@ import { computed } from 'vue'
 export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurrentInstanceName()) {
     const statusIcon = computed(() => {
         return `$${props.status}`
+    })
+
+    // Intent forced by `status`, overriding any `color` / `bgColor` the
+    // consumer passed (status colours are NOT overridable — otherwise the
+    // status would be pointless). Undefined when no status is set.
+    const statusIntent = computed<TColor | undefined>(() => {
+        return props.status ? (STATUS_TO_INTENT[props.status] ?? (props.status as TColor)) : undefined
     })
 
     // Default position when `statusIconPosition` is unset: PREPEND.
@@ -48,5 +66,5 @@ export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurre
         return classes
     })
 
-    return {icon, appendIcon, prependIcon, statusClasses}
+    return {icon, appendIcon, prependIcon, statusClasses, statusIntent}
 }
