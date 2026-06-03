@@ -210,7 +210,11 @@ export function activeDefaultsFor (
 function inject (this: ComponentPublicInstance, key: InjectionKey<any> | string) {
     const vm = this.$
 
-    const provides = vm.parent?.provides ?? vm.vnode.appContext?.provides
+    // `provides` is a runtime property of ComponentInternalInstance that Vue's
+    // public types don't expose — cast to read it (appContext.provides is public).
+    const parentProvides = (vm.parent as { provides?: Record<string | symbol, unknown> } | null)?.provides
+
+    const provides = parentProvides ?? vm.vnode.appContext?.provides
 
     if (provides && (key as any) in provides) {
         return provides[(key as string)]
