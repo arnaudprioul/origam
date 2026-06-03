@@ -88,6 +88,7 @@
 						<origam-app-bar
 								:order="0"
 								:title="state.title"
+								:color="state.color"
 								:bg-color="state.bgColor"
 								:hover="resolveHoverState(state.hover)"
 								:active="resolveActiveState(state.active)"
@@ -107,6 +108,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
