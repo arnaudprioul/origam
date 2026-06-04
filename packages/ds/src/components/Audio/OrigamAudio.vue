@@ -594,6 +594,18 @@
 	}, { immediate: true })
 
 	/*********************************************************
+	 * Reactive autoplay — the native `autoplay` attribute only acts at load
+	 * time, so flipping the prop after the element mounted (e.g. ticking the
+	 * control) would do nothing. React to `resolvedAutoplay` going truthy and
+	 * actually start playback. It plays muted (`resolvedMuted`, browser policy)
+	 * and stays suppressed under `prefers-reduced-motion` (a11y) since
+	 * `resolvedAutoplay` already accounts for it.
+	 ********************************************************/
+	watch(resolvedAutoplay, (on) => {
+		if (on) void methods.play()
+	})
+
+	/*********************************************************
 	 * Native event handlers — forward to the parent emit pipeline.
 	 ********************************************************/
 	function onTimeUpdate (event: Event): void {

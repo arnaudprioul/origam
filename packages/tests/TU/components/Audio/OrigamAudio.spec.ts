@@ -4,7 +4,7 @@
 // OrigamMediaController.spec.ts.
 
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
 
 import OrigamAudio from '@origam/components/Audio/OrigamAudio.vue'
@@ -326,5 +326,35 @@ describe('OrigamAudio — dimension props', () => {
         const style = wrapper.find('[data-cy="origam-audio"]').attributes('style') ?? ''
 
         expect(style).toMatch(/max-width:\s*480px/)
+    })
+})
+
+describe('OrigamAudio — reactive autoplay', () => {
+    it('toggling autoplay on after mount actually starts playback (calls play)', async () => {
+        // The global afterEach(restoreAllMocks) wipes the setup's matchMedia
+        // mock after the first test, so prefersReducedMotion() (read by
+        // resolvedAutoplay) would throw. Reinstate a plain stub.
+        ;(window as any).matchMedia = (query: string) => ({
+            matches: false, media: query, addEventListener () {}, removeEventListener () {}
+        })
+
+        // jsdom does not implement media playback — stub play().
+        const play = vi.fn().mockResolvedValue(undefined)
+        const original = (window.HTMLMediaElement.prototype as any).play
+        ;(window.HTMLMediaElement.prototype as any).play = play
+
+        try {
+            const wrapper = mountAudio({ props: { autoplay: false } })
+            play.mockClear()
+
+            await wrapper.setProps({ autoplay: true })
+            await wrapper.vm.$nextTick()
+            await Promise.resolve()
+
+            expect(play).toHaveBeenCalled()
+            wrapper.unmount()
+        } finally {
+            ;(window.HTMLMediaElement.prototype as any).play = original
+        }
     })
 })
