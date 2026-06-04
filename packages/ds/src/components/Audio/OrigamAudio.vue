@@ -994,6 +994,13 @@
 			flex: 1 1 auto;
 			min-height: 0;
 
+			:deep(.origam-media-controller__progress-row) {
+				flex: 1 1 auto;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
 			:deep(.origam-media-controller__buttons-row) {
 				margin-block-start: auto;
 			}
