@@ -58,7 +58,11 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IBgColorProps>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<{ bgColor?: string, hover?: string, active?: string }>({
+					bgColor: 'primary',
+					hover: 'bgColor → success',
+					active: 'bgColor → danger'
+				})"
 		>
 			<template #default="{ state }">
 				<origam-avatar-group
@@ -228,9 +232,6 @@
 	import type {
 		IAvatarGroupProps,
 		IAvatarProps,
-		IBgColorProps,
-		IHoverProps,
-		IActiveProps,
 		IOptions
 	} from '@origam/interfaces'
 	import type { TDirection } from '@origam/types'

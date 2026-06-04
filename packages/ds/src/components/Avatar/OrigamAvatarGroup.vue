@@ -155,8 +155,22 @@
 	// `origamAvatarRef` during the parent render to build the children's props,
 	// which (because `filterProps` returns a fresh object every call) retriggered
 	// the render endlessly — "Maximum recursive updates in OrigamDefaultsProvider".
+	// Forward the group's hover / active STATE — not just a boolean — to every
+	// child avatar, so the group's interaction (or a forced hover / active
+	// prop) actually changes each avatar's surface. A configured state object
+	// (e.g. `{ bgColor: 'success' }`) is forwarded with `enabled` synced to the
+	// group's live hover / active, so it switches the avatars on group hover /
+	// click and reverts on leave; a bare boolean is forwarded as-is.
+	const forwardState = (state: unknown, isOn: boolean) => {
+		return state && typeof state === 'object'
+			? {...(state as Record<string, unknown>), enabled: isOn}
+			: isOn
+	}
 	const avatarProps = (item: IAvatarProps = {}) => {
-		return mergeProps(item as VNodeProps, {hover: isHover.value, active: isActive.value})
+		return mergeProps(item as VNodeProps, {
+			hover: forwardState(props.hover, isHover.value),
+			active: forwardState(props.active, isActive.value)
+		} as VNodeProps)
 	}
 
 	/*********************************************************
