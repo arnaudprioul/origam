@@ -4,9 +4,9 @@
 			:class="avatarGroupClasses"
 			:style="avatarGroupStyles"
 			role="group"
-			@click="handleClick"
-			@mouseenter="handleMouseEnter"
-			@mouseleave="handleMouseLeave"
+			@click="onActive"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<origam-defaults-provider :defaults="slotDefaults">
 			<template
@@ -59,7 +59,7 @@
 	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
-	import { computed, mergeProps, ref } from "vue"
+	import { computed, mergeProps } from "vue"
 
 	/*********************************************************
 	 * Global
@@ -102,20 +102,33 @@
 	const {isRtl} = useRtl()
 
 	/*********************************************************
+	 * Effect
+	 *
+	 * @description
+	 * Hover / active state. Drives both the per-avatar hover/active
+	 * propagation (via `avatarProps`) AND the expand (fan-out)
+	 * behaviour (via `isExpanded`).
+	 ********************************************************/
+	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
+	const {activeClasses, activeState, isActive, onActive} = useActive(props)
+
+	/*********************************************************
 	 * Group items
 	 *
 	 * @description
 	 * Computes which items to display and which overflow
 	 * into the rest (+N) chip based on the `max` prop.
 	 *
-	 * `isExpanded` is the orthogonal toggle driven by
-	 * `expandOnHover` / `expandOnClick` — when true the visible
-	 * list shows EVERY item (effectiveMax = items.length). The
-	 * earlier implementation used a `ref(props.max)` which froze
-	 * the value at mount and never re-tracked the prop — user
-	 * report: "la prop max ne fonctionne pas".
+	 * `isExpanded` is derived from the hover / active state gated by
+	 * the `expandOnHover` / `expandOnClick` opt-ins. Both a real
+	 * pointer interaction (mouseenter / click) AND a forced `hover`
+	 * / `active` prop flip it — so the fan-out is reproducible from
+	 * story controls, not only from a live pointer. When expanded the
+	 * visible list shows EVERY item (effectiveMax = items.length).
 	 ********************************************************/
-	const isExpanded = ref(false)
+	const isExpanded = computed(() => {
+		return (Boolean(props.expandOnHover) && isHover.value) || (Boolean(props.expandOnClick) && isActive.value)
+	})
 	const effectiveMax = computed(() => {
 		return isExpanded.value ? props.items.length : props.max
 	})
@@ -139,16 +152,6 @@
 		return props.items
 	})
 
-	/*********************************************************
-	 * Effect
-	 *
-	 * @description
-	 * Hover / active state with optional expand-on-hover and
-	 * expand-on-click behaviour.
-	 ********************************************************/
-	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
-	const {activeClasses, activeState, isActive, onActive} = useActive(props)
-
 	// Avatars inherit the group's density / size / color / bgColor through the
 	// `<origam-defaults-provider :defaults="slotDefaults">` wrapper, so we must
 	// NOT re-derive them here by reading the children's own refs: doing so read
@@ -157,33 +160,6 @@
 	// the render endlessly — "Maximum recursive updates in OrigamDefaultsProvider".
 	const avatarProps = (item: IAvatarProps = {}) => {
 		return mergeProps(item as VNodeProps, {hover: isHover.value, active: isActive.value})
-	}
-
-	/*********************************************************
-	 * Event handlers
-	 ********************************************************/
-
-	const handleMouseEnter = () => {
-		if (props.expandOnHover) {
-			isExpanded.value = true
-		}
-
-		onMouseenter()
-	}
-	const handleMouseLeave = () => {
-		if (props.expandOnHover) {
-			isExpanded.value = false
-		}
-
-		onMouseleave()
-	}
-
-	const handleClick = () => {
-		if (props.expandOnClick) {
-			isExpanded.value = !isActive.value
-		}
-
-		onActive()
 	}
 
 	/*********************************************************
@@ -312,6 +288,8 @@
 
 			&#{$this}--expand-on-hover:hover #{$this}__item:not(:first-child),
 			&#{$this}--expand-on-hover:hover #{$this}__rest:not(:first-child),
+			&#{$this}--expand-on-hover#{$this}--hovered #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-hover#{$this}--hovered #{$this}__rest:not(:first-child),
 			&#{$this}--expand-on-click#{$this}--active #{$this}__item:not(:first-child),
 			&#{$this}--expand-on-click#{$this}--active #{$this}__rest:not(:first-child) {
 				margin-inline-start: 0;
@@ -328,6 +306,8 @@
 
 			&#{$this}--expand-on-hover:hover #{$this}__item:not(:first-child),
 			&#{$this}--expand-on-hover:hover #{$this}__rest:not(:first-child),
+			&#{$this}--expand-on-hover#{$this}--hovered #{$this}__item:not(:first-child),
+			&#{$this}--expand-on-hover#{$this}--hovered #{$this}__rest:not(:first-child),
 			&#{$this}--expand-on-click#{$this}--active #{$this}__item:not(:first-child),
 			&#{$this}--expand-on-click#{$this}--active #{$this}__rest:not(:first-child) {
 				margin-block-start: 0;
