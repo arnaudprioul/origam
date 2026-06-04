@@ -597,8 +597,7 @@
 		}
 
 		&:hover,
-		&:focus-visible,
-		&:focus {
+		&:focus-visible {
 			> #{$this}__overlay {
 				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
 			}
@@ -611,8 +610,7 @@
 			}
 
 			&:hover,
-			&:focus-visible,
-			&:focus {
+			&:focus-visible {
 				> #{$this}__overlay {
 					--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-active-hover, 0.28);
 				}
