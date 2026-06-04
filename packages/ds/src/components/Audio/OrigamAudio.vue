@@ -1043,6 +1043,13 @@
 				inset 0 0 0 1px rgba(0, 0, 0, 0.4);
 
 			/*
+			 * Vinyl body fallback — a fixed dark disc behind the album art so a
+			 * transparent / not-yet-loaded image never lets the surface colour
+			 * bleed through the record.
+			 */
+			background: var(--origam-audio__cover---background, #18181b);
+
+			/*
 			 * Spindle hole — a real transparent dot punched THROUGH the
 			 * whole disc (image + grooves + label) so the audio shell
 			 * background (or whatever is rendered behind it) shows
@@ -1590,7 +1597,14 @@
 			--origam-audio---position: relative;
 			overflow: hidden;
 
-			#{$this}__cover-img {
+			/*
+			 * Size the DISC (not the inner image) for compact. Sizing only
+			 * `__cover-img` left the disc at its base 96px with a 48px image
+			 * centred inside, so the exposed outer ring rendered as a large
+			 * "floating grooves" disc (and bled the surface colour through).
+			 * The image fills the disc via its base `width/height: 100%`.
+			 */
+			#{$this}__cover {
 				width: var(--origam-audio--compact__cover---size, 48px);
 				height: var(--origam-audio--compact__cover---size, 48px);
 			}
