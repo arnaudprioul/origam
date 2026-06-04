@@ -102,7 +102,6 @@
 							:muted="state.muted"
 							:loop="state.loop"
 							:shuffle="state.shuffle"
-							:playlist="DEMO_PLAYLIST"
 							:downloadable="state.downloadable"
 							:download-filename="state.downloadFilename || undefined"
 							:allow-remote-playback="state.allowRemotePlayback"
@@ -351,7 +350,6 @@
 					muted: false,
 					loop: false,
 					shuffle: false,
-					playlist: DEMO_PLAYLIST,
 					downloadable: false,
 					allowRemotePlayback: false
 				})"
