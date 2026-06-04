@@ -82,7 +82,12 @@
 			density: props.density,
 			size: props.size,
 			color: props.color,
-			bgColor: props.bgColor
+			bgColor: props.bgColor,
+			rounded: props.rounded,
+			elevation: props.elevation,
+			border: props.border,
+			borderColor: props.borderColor,
+			borderStyle: props.borderStyle
 		}
 	}))
 
