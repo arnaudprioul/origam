@@ -247,6 +247,7 @@
 	import {
 		useBorder,
 		useColorEffect,
+		useDimension,
 		useElevation,
 		useLocale,
 		useMargin,
@@ -890,6 +891,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { elevationClasses, elevationStyles } = useElevation(props)
 	const { positionClasses, positionStyles } = usePosition(props)
+	const { dimensionStyles } = useDimension(props)
 
 	/*********************************************************
 	 * Class & Style — Strategy A: classes win for tokenised values,
@@ -933,6 +935,7 @@
 		paddingStyles.value,
 		marginStyles.value,
 		elevationStyles.value,
+		dimensionStyles.value,
 		props.style
 	] as StyleValue)
 

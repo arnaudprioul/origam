@@ -310,3 +310,21 @@ describe('OrigamAudio — slot overrides', () => {
         expect(wrapper.find('[data-cy="origam-audio-title"]').exists()).toBe(false)
     })
 })
+
+describe('OrigamAudio — dimension props', () => {
+    it('width / height are applied to the root surface (via useDimension)', () => {
+        const wrapper = mountAudio({ props: { width: 320, height: '200px' } })
+        const root = wrapper.find('[data-cy="origam-audio"]')
+        const style = root.attributes('style') ?? ''
+
+        expect(style).toMatch(/width:\s*320px/)
+        expect(style).toMatch(/height:\s*200px/)
+    })
+
+    it('maxWidth is honoured on the root surface', () => {
+        const wrapper = mountAudio({ props: { maxWidth: '480px' } })
+        const style = wrapper.find('[data-cy="origam-audio"]').attributes('style') ?? ''
+
+        expect(style).toMatch(/max-width:\s*480px/)
+    })
+})
