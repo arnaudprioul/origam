@@ -34,10 +34,6 @@
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Layout">
-					<HstCheckbox v-model="state.start" title="Start"/>
-					<HstCheckbox v-model="state.end"   title="End"/>
-				</StoryGroup>
 			</template>
 		</Variant>
 
@@ -164,9 +160,7 @@
 					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstSelect   v-model="state.tag"   title="Tag"   :options="TAG_OPTIONS"/>
-					<HstCheckbox v-model="state.start" title="Start"/>
-					<HstCheckbox v-model="state.end"   title="End"/>
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -223,9 +217,7 @@
 		elevation: s.elevation,
 		border: s.border,
 		borderColor: s.borderColor,
-		borderStyle: s.borderStyle,
-		start: s.start,
-		end: s.end
+		borderStyle: s.borderStyle
 	})
 </script>
 
