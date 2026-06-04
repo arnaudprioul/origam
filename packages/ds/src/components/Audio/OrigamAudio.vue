@@ -965,7 +965,8 @@
 	.origam-audio {
 		$this: &;
 
-		display: block;
+		display: flex;
+		flex-direction: column;
 		position: var(--origam-audio---position, static);
 		padding: var(--origam-audio---padding, 16px);
 		border-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
@@ -987,6 +988,15 @@
 			border-start-end-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
 			border-end-start-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
 			border-end-end-radius: 0;
+		}
+
+		&__controller {
+			flex: 1 1 auto;
+			min-height: 0;
+
+			:deep(.origam-media-controller__buttons-row) {
+				margin-block-start: auto;
+			}
 		}
 
 		:deep(.origam-slider-field--bare) {
