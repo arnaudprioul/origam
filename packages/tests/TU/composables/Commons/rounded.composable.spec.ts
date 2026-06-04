@@ -36,9 +36,17 @@ describe('useRounded — classes-first', () => {
         (value) => {
             const { api } = mountWith(value)
             expect(api().roundedClasses.value).toContain(`origam--rounded-${value}`)
-            expect(api().roundedStyles.value.some(d => d.includes(`var(--origam-radius---${value})`))).toBe(true)
+            // The `var()` carries a fallback (e.g. `none` → `, 0`) so a missing
+            // token never drops the declaration; match the var ref loosely.
+            expect(api().roundedStyles.value.some(d => d.includes(`var(--origam-radius---${value}`))).toBe(true)
         }
     )
+
+    it('utility "none" → emits a fallback of 0 so it overrides a component default radius', () => {
+        const { api } = mountWith('none')
+
+        expect(api().roundedStyles.value.some(d => /border-radius:\s*var\(--origam-radius---none,\s*0\)/.test(d))).toBe(true)
+    })
 
     // Legacy enum (`'small'|'large'|…`) still emits its component-local
     // class AND the matching primitive radius token as inline style.

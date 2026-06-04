@@ -972,6 +972,20 @@
 		border: var(--origam-audio---border-width, 1px) solid var(--origam-audio---border-color, var(--origam-color__border---subtle));
 		box-shadow: var(--origam-audio---box-shadow, 0px 1px 3px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px -1px rgba(0, 0, 0, 0.06));
 
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+			border-end-start-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+			border-end-end-radius: 0;
+		}
+
 		:deep(.origam-slider-field--bare) {
 			color: inherit !important;
 		}
