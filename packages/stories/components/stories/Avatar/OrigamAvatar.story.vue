@@ -7,32 +7,16 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IAvatarProps>>({ text: 'AP', bgColor: 'primary', color: 'white' })"
+				:init-state="() => useStoryInitState<Partial<IAvatarProps>>({ bgColor: 'primary', color: 'white' })"
 		>
 			<template #default="{ state }">
-				<origam-avatar
-						:text="state.text"
-						:image="state.image"
-						:icon="state.icon || undefined"
-						:color="state.color"
-						:bg-color="state.bgColor"
-						:size="state.size"
-						:density="state.density"
-						:rounded="state.rounded"
-						:elevation="state.elevation"
-						:border="state.border"
-						:border-color="state.borderColor"
-						:border-style="state.borderStyle"
-						:start="state.start"
-						:end="state.end"
-				/>
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-avatar v-bind="sharedAvatarProps(state)" text="AP"/>
+					<origam-avatar v-bind="sharedAvatarProps(state)" :image="DEMO_AVATAR_IMAGE"/>
+					<origam-avatar v-bind="sharedAvatarProps(state)" :icon="accountIcon"/>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Content">
-					<HstText   v-model="state.text"  title="Text"/>
-					<HstText   v-model="state.image" title="Image (URL)"/>
-					<HstSelect v-model="state.icon"  title="Icon" :options="ICON_OPTIONS"/>
-				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
@@ -224,6 +208,25 @@
 
 	const accountIcon = MDI_ICONS.ACCOUNT
 	const heartIcon = MDI_ICONS.HEART
+
+	const DEMO_AVATAR_IMAGE = 'https://i.pravatar.cc/150?img=12'
+
+	// The Design variant renders three avatars (text / image / icon) that share
+	// every design prop — only the content differs. This returns the shared
+	// design slice so the bindings aren't repeated three times.
+	const sharedAvatarProps = (s: Record<string, unknown>): Record<string, unknown> => ({
+		color: s.color,
+		bgColor: s.bgColor,
+		size: s.size,
+		density: s.density,
+		rounded: s.rounded,
+		elevation: s.elevation,
+		border: s.border,
+		borderColor: s.borderColor,
+		borderStyle: s.borderStyle,
+		start: s.start,
+		end: s.end
+	})
 </script>
 
 <docs lang="md" src="@docs/components/Avatar/OrigamAvatar.md"/>
