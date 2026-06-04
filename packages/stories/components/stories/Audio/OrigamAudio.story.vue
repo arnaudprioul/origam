@@ -82,7 +82,6 @@
 					muted: false,
 					loop: false,
 					shuffle: false,
-					usePlaylist: true,
 					downloadable: false,
 					allowRemotePlayback: false
 				})"
@@ -103,7 +102,7 @@
 							:muted="state.muted"
 							:loop="state.loop"
 							:shuffle="state.shuffle"
-							:playlist="state.usePlaylist ? DEMO_PLAYLIST : undefined"
+							:playlist="DEMO_PLAYLIST"
 							:downloadable="state.downloadable"
 							:download-filename="state.downloadFilename || undefined"
 							:allow-remote-playback="state.allowRemotePlayback"
@@ -131,7 +130,6 @@
 					<HstCheckbox v-model="state.autoplay"            title="Autoplay"/>
 					<HstCheckbox v-model="state.muted"               title="Muted"/>
 					<HstCheckbox v-model="state.loop"                title="Loop (legacy)"/>
-					<HstCheckbox v-model="state.usePlaylist"         title="Playlist (shows shuffle / prev / next)"/>
 					<HstCheckbox v-model="state.shuffle"             title="Shuffle"/>
 					<HstCheckbox v-model="state.downloadable"        title="Downloadable"/>
 					<HstCheckbox v-model="state.allowRemotePlayback" title="Allow Remote Playback"/>
