@@ -82,7 +82,7 @@
 					muted: false,
 					loop: false,
 					shuffle: false,
-					usePlaylist: false,
+					usePlaylist: true,
 					downloadable: false,
 					allowRemotePlayback: false
 				})"
@@ -353,6 +353,7 @@
 					muted: false,
 					loop: false,
 					shuffle: false,
+					playlist: DEMO_PLAYLIST,
 					downloadable: false,
 					allowRemotePlayback: false
 				})"
