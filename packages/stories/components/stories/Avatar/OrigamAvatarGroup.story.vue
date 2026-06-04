@@ -58,19 +58,13 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<Partial<IAvatarGroupProps>>({
-					bgColor: 'primary',
-					expandOnHover: true,
-					expandOnClick: true
-				})"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IBgColorProps>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-avatar-group
 						:items="people"
 						:max="4"
 						:bg-color="state.bgColor"
-						:expand-on-hover="state.expandOnHover"
-						:expand-on-click="state.expandOnClick"
 						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 				/>
@@ -78,10 +72,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Expand">
-					<HstCheckbox v-model="state.expandOnHover" title="Expand on Hover"/>
-					<HstCheckbox v-model="state.expandOnClick" title="Expand on Click"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
 					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
@@ -238,6 +228,9 @@
 	import type {
 		IAvatarGroupProps,
 		IAvatarProps,
+		IBgColorProps,
+		IHoverProps,
+		IActiveProps,
 		IOptions
 	} from '@origam/interfaces'
 	import type { TDirection } from '@origam/types'
