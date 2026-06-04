@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-click-outside="clickOutsideArgs"
 			:class="avatarGroupClasses"
 			:style="avatarGroupStyles"
 			role="group"
@@ -53,6 +54,7 @@
 
 	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
 	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
+	import { vClickOutside } from "../../directives"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
 
@@ -198,6 +200,21 @@
 		}
 
 		onActive()
+	}
+
+	// Click-to-expand groups collapse when the pointer lands outside the group.
+	// `closeConditional` gates the handler so it only fires while expand-on-click
+	// is active AND the group is currently open.
+	const handleClickOutside = () => {
+		isExpanded.value = false
+
+		if (isActive.value) {
+			onActive()
+		}
+	}
+	const clickOutsideArgs = {
+		handler: handleClickOutside,
+		closeConditional: () => Boolean(props.expandOnClick) && isActive.value
 	}
 
 	/*********************************************************
