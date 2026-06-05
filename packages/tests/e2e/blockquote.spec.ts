@@ -99,7 +99,7 @@ test.describe('OrigamBlockquote — Prop variant', () => {
         expect(widths.bottom).not.toBe('0px')
     })
 
-    test('variant=minimal has no accent border', async ({ page }) => {
+    test('variant=minimal carries a thin accent border (bgColor-driven)', async ({ page }) => {
         await openVariant(page, STORY, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
@@ -110,8 +110,8 @@ test.describe('OrigamBlockquote — Prop variant', () => {
             getComputedStyle(el).borderInlineStartWidth ||
             getComputedStyle(el).borderLeftWidth
         )
-        // No accent for minimal → 0px.
-        expect(borderLeftWidth).toBe('0px')
+        // Every variant now carries a bgColor-driven accent bar → non-zero.
+        expect(borderLeftWidth).not.toBe('0px')
     })
 })
 

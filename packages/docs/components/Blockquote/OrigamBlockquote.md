@@ -69,9 +69,9 @@ of the rendered element (visible to assistive tech, not painted).
 | Variant   | When to reach for it                                                                                                               |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------|
 | `default` | Left accent bar, comfortable padding. Neutral rhythm, fits most prose contexts.                                                    |
-| `elegant` | Serif italic with extra breathing room. Editorial long-form content (essays, articles, hero quotes inside marketing pages).       |
+| `elegant` | Serif italic with extra breathing room + a left accent bar. Editorial long-form content (essays, articles, hero quotes inside marketing pages). |
 | `quoted`  | Single oversized opening glyph rendered as a background watermark (absolute, behind the text). Locale-aware glyph — see [I18n quotes](#i18n-quotes). |
-| `minimal` | Bare italic with a small inline indent. Inline citations inside technical documentation where the visual should stay quiet.        |
+| `minimal` | Bare italic with a small inline indent + a thin left accent bar. Inline citations inside technical documentation where the visual should stay quiet. |
 | `pull`    | Pull quote — large body type, top + bottom rules, centred by default. Use sparingly (one per article maximum).                    |
 
 Each variant materialises through a `.origam-blockquote--variant-{name}`

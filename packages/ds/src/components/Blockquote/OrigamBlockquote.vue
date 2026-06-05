@@ -329,6 +329,8 @@
 		font-style: var(--origam-blockquote__elegant---font-style, italic);
 		line-height: var(--origam-blockquote__elegant---line-height, 2);
 		padding-block: var(--origam-blockquote__elegant---padding-block, 24px);
+		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
+		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
 	}
 
 	.origam-blockquote--variant-quoted {
@@ -350,6 +352,8 @@
 		font-style: var(--origam-blockquote__minimal---font-style, italic);
 		padding-inline: var(--origam-blockquote__minimal---padding-inline, 12px);
 		padding-block: 0;
+		border-inline-start: var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
+		padding-inline-start: calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px));
 	}
 
 	.origam-blockquote--variant-pull {
