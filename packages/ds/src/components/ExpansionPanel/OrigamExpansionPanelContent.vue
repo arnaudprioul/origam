@@ -3,8 +3,8 @@
 		<component
 				:is="tag"
 				v-show="isSelected"
-				v-contrast
 				:id="`expansion-panel-content-${expansionPanel.id}`"
+				v-contrast
 				:aria-labelledby="`expansion-panel-header-${expansionPanel.id}`"
 				:class="expansionPanelContentClasses"
 				:style="expansionPanelContentStyles"

@@ -12,7 +12,7 @@ const { t } = useT()
     >
         <h2
             id="kpis-title"
-            class="home-kpis__title"
+            class="home-kpis__title sr-only"
         >
             {{ t('home.kpis.title', 'origam by the numbers') }}
         </h2>
@@ -35,29 +35,33 @@ const { t } = useT()
 </template>
 
 <style scoped>
+/*
+ * Tokens locaux — valeurs maquette sans équivalent DS exact.
+ * Source : PIXEL-SPEC.md § Section 3 KPIs.
+ *   --home-kpis--border-color  : rgba(0,0,0,0.08) — maquette `--m-border`
+ *   --home-kpis--value-size    : 2.5rem / 40px — aucun token DS à 40px
+ *   --home-kpis--value-weight  : 800 — `--origam-font__weight---bold` = 700 insuffisant
+ *   --home-kpis--value-tracking: -0.045em / -1.8px — aucun token letter-spacing
+ */
 .home-kpis {
-    padding: var(--origam-space---20, 5rem) var(--origam-space---6, 1.5rem);
-    text-align: center;
-    border-top: var(--origam-border__width---thin, 1px) var(--origam-border__style---solid, solid) var(--origam-color__border---subtle, #d4d4d4);
-    border-bottom: var(--origam-border__width---thin, 1px) var(--origam-border__style---solid, solid) var(--origam-color__border---subtle, #d4d4d4);
-}
+    --home-kpis--border-color: rgba(0, 0, 0, 0.08);
+    --home-kpis--value-size: 2.5rem;
+    --home-kpis--value-weight: 800;
+    --home-kpis--value-tracking: -0.045em;
 
-.home-kpis__title {
-    margin: 0 0 var(--origam-space---12, 3rem);
-    font-size: var(--origam-font__size---xl, 1.125rem);
-    font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---secondary, #525252);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    padding-block: var(--origam-space---10, 2.5rem);
+    padding-inline: var(--origam-space---6, 1.5rem);
+    border-top: var(--origam-border__width---thin, 1px) var(--origam-border__style---solid, solid) var(--home-kpis--border-color);
+    border-bottom: var(--origam-border__width---thin, 1px) var(--origam-border__style---solid, solid) var(--home-kpis--border-color);
 }
 
 .home-kpis__list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--origam-space---8, 2rem) var(--origam-space---16, 4rem);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--origam-space---8, 2rem);
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 
 .home-kpis__item {
@@ -65,21 +69,46 @@ const { t } = useT()
     flex-direction: column;
     align-items: center;
     gap: var(--origam-space---2, 0.5rem);
-    min-width: 8rem;
 }
 
 .home-kpis__value {
     margin: 0;
-    font-size: var(--origam-font__size---5xl, 2.25rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    color: var(--origam-color__text---primary, #171717);
+    font-size: var(--home-kpis--value-size, 2.5rem);
+    font-weight: var(--home-kpis--value-weight, 800);
+    color: var(--origam-color__action--primary---bg, #7c3aed);
     line-height: 1;
+    letter-spacing: var(--home-kpis--value-tracking, -0.045em);
 }
 
 .home-kpis__label {
     margin: 0;
-    font-size: var(--origam-font__size---md, 0.875rem);
-    font-weight: var(--origam-font__weight---regular, 400);
+    font-size: var(--origam-font__size---sm, 0.75rem);
+    font-weight: var(--origam-font__weight---medium, 500);
     color: var(--origam-color__text---secondary, #525252);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 640px) {
+    .home-kpis__list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--origam-space---6, 1.5rem);
+    }
+
+    .home-kpis__item:last-child {
+        grid-column: 1 / -1;
+    }
 }
 </style>

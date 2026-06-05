@@ -1,8 +1,8 @@
 <template>
   <div
+    v-contrast
     :aria-atomic="true"
     :aria-live="resolvedAriaLive"
-    v-contrast
     :class="itemClasses"
     :data-cy="dataCy"
     :role="resolvedRole"

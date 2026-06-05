@@ -15,7 +15,7 @@ import type {
  * `currentDate` so the parent can sync with router state or persist
  * across page reloads without owning a watcher.
  */
-export interface ICalendarProps extends ICommonsComponentProps {
+export interface ICalendarComponentProps extends ICommonsComponentProps {
     /** Active view mode. v-model:view. */
     view?: TCalendarView
     /** Anchor date. v-model:currentDate. */

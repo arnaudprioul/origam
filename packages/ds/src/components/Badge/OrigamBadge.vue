@@ -13,8 +13,8 @@
 			<origam-transition :transition="transition">
         <span
 		        v-show="modelValue"
-		        v-contrast
 		        :id="id"
+		        v-contrast
 		        :aria-label="t(label, content)"
 		        :class="badgeContentClasses"
 		        aria-atomic="true"

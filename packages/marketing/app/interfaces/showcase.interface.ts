@@ -5,6 +5,7 @@ export interface IShowcaseTableRow {
     ownerFallback: string
     statusKey: string
     statusFallback: string
+    statusIntent: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'ghost'
 }
 
 export interface IShowcaseChipItem {

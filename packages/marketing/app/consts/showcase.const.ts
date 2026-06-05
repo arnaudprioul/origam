@@ -8,6 +8,7 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerFallback: 'Arnaud',
         statusKey: 'home.showcase.dataTable.row1Status',
         statusFallback: 'Shipped',
+        statusIntent: 'success',
     },
     {
         nameKey: 'home.showcase.dataTable.row2Name',
@@ -16,6 +17,7 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerFallback: 'Léa',
         statusKey: 'home.showcase.dataTable.row2Status',
         statusFallback: 'In review',
+        statusIntent: 'warning',
     },
     {
         nameKey: 'home.showcase.dataTable.row3Name',
@@ -24,6 +26,7 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerFallback: 'Jade',
         statusKey: 'home.showcase.dataTable.row3Status',
         statusFallback: 'In progress',
+        statusIntent: 'info',
     },
     {
         nameKey: 'home.showcase.dataTable.row4Name',
@@ -32,6 +35,7 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerFallback: 'Marc',
         statusKey: 'home.showcase.dataTable.row4Status',
         statusFallback: 'Draft',
+        statusIntent: 'neutral',
     },
     {
         nameKey: 'home.showcase.dataTable.row5Name',
@@ -40,6 +44,7 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerFallback: 'Romi',
         statusKey: 'home.showcase.dataTable.row5Status',
         statusFallback: 'Draft',
+        statusIntent: 'neutral',
     },
 ]
 
@@ -80,7 +85,7 @@ export const SHOWCASE_CHIP_ITEMS: IShowcaseChipItem[] = [
 
 export const SHOWCASE_AVATAR_ITEMS = [
     { text: 'AR', bgColor: 'primary' },
-    { text: 'LB', bgColor: 'success' },
+    { text: 'LB', bgColor: 'info'    },
     { text: 'JD', bgColor: 'warning' },
-    { text: 'MC', bgColor: 'danger' },
+    { text: 'MC', bgColor: 'danger'  },
 ]
