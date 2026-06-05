@@ -9,7 +9,8 @@
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IBlockquoteProps>>({
 					variant: 'default',
-					color: 'primary',
+					color: undefined,
+					bgColor: 'primary',
 					align: 'left',
 					lang: 'auto'
 				})"
@@ -18,6 +19,14 @@
 				<origam-blockquote
 						:variant="state.variant"
 						:color="state.color"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:padding="state.padding"
+						:margin="state.margin"
 						:align="state.align"
 						:lang="state.lang"
 						author="Linus Torvalds"
@@ -30,15 +39,25 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Variant">
 					<HstSelect v-model="state.variant" title="Variant" :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.align"   title="Align"   :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.lang"    title="Lang"    :options="BLOCKQUOTE_LANG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
-					<HstSelect v-model="state.color" title="Color" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.color"   title="Color (text)"      :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color (accent)" :options="INTENT_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Align">
-					<HstSelect v-model="state.align" title="Align" :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Language">
-					<HstSelect v-model="state.lang" title="Lang" :options="BLOCKQUOTE_LANG_OPTIONS"/>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -126,7 +145,8 @@
 				title="Default"
 				:init-state="() => useStoryInitState<IBlockquoteProps>({
 					variant: 'default',
-					color: 'primary',
+					color: undefined,
+					bgColor: 'primary',
 					align: 'left',
 					lang: 'auto',
 					author: 'Linus Torvalds',
@@ -147,10 +167,14 @@
 					<HstText v-model="state.cite"   title="Cite (URL)"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect v-model="state.variant" title="Variant" :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
-					<HstSelect v-model="state.color"   title="Color"   :options="INTENT_OPTIONS"/>
-					<HstSelect v-model="state.align"   title="Align"   :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
-					<HstSelect v-model="state.lang"    title="Lang"    :options="BLOCKQUOTE_LANG_OPTIONS"/>
+					<HstSelect v-model="state.variant"   title="Variant"           :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.color"     title="Color (text)"      :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color (accent)" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"           :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation"         :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"            :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.align"     title="Align"             :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.lang"      title="Lang"              :options="BLOCKQUOTE_LANG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -175,7 +199,11 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		ELEVATION_OPTIONS,
 		INTENT_OPTIONS,
+		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 
