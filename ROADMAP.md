@@ -318,6 +318,90 @@ Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité busine
 | A | **Gradient support** | M | Étendre `useColor` / `useBackgroundColor` pour accepter `color="gradient(...)"` ou `color={ from: 'primary', to: 'success', direction: 135 }`. Generate `background: linear-gradient(135deg, var(--from), var(--to))`. Compatible avec les tokens (intents) ET les valeurs custom (hex). |
 | B | **Text-mask (transparent reveal)** | M | Mode `mask="text"` qui pose `background-clip: text` + `color: transparent` sur le texte, avec un background animé derrière (gradient + animation, ou image, ou video selon prop). Useful pour les headlines marketing. |
 
+### Intent `ghost` — premier-plan transparent transversal **(XL, spec)**
+
+> Spec née d'un besoin produit (juin 2026). Objectif : faire de `ghost` un
+> véritable effet **transparent**, côté surface ET côté premier-plan, cohérent
+> sur tout le DS — pas un bricolage par composant. **Statut : standby** tant que
+> le périmètre n'est pas cadré (cf. livrable n°1).
+
+**Contexte / constat**
+
+- `ghost` est un `TIntent` (`types/Commons/intent.type.ts`) mais **volontairement
+  exclu** des utility intents (`COLOR_UTILITY_INTENTS`, `consts/Commons/color.const.ts`) :
+  aucune classe `.origam--bg-ghost` / `.origam--color-ghost` n'est shippée →
+  résolution par inline-style uniquement.
+- Côté **surface** : `bgColor="ghost"` rend déjà **transparent** (`intentBgExpr`
+  → `var(--origam-color__action--ghost---bg)` = `rgba(0,0,0,0)`). Comportement
+  voulu (« ghost = transparent »).
+- Côté **premier-plan** : `color` n'est PAS « le texte d'un bouton ». C'est un
+  intent transversal consommé par de **nombreuses** surfaces :
+  - texte (Btn, Card, Input, Label…) ;
+  - icônes via `currentColor` (`OrigamIcon` : `color: var(--origam-icon---color, currentColor)`, `OrigamSvgIcon` : `fill: currentColor`) ;
+  - remplissages de contrôles (barre/jauge du Slider/Progress, Audio…) ;
+  - bordures / accents qui suivent `currentColor`.
+  → Un `color="ghost"` « transparent / masque » doit s'appliquer de façon
+  **cohérente partout** → géré au niveau du **système de couleur**
+  (`useColor` / `useColorEffect` / `useTextColor`, `color.composable.ts`) et
+  honoré par chaque consommateur.
+
+**Vision produit (formulée par le mainteneur)**
+
+- `bgColor="ghost"` → surface transparente (déjà OK).
+- `color="ghost"` → premier-plan « masque » : les glyphes / traits laissent voir
+  **ce qu'il y a derrière l'élément** (pas le fond de l'élément). Sens plein sur
+  un élément à fond opaque (ex. `bgColor="primary" color="ghost"`).
+
+**Contrainte technique établie (POC juin 2026)**
+
+- `mix-blend-mode` **ne peut pas** produire ce knockout : il mélange des
+  *couleurs*, il ne **soustrait pas l'alpha** d'un fond opaque. `destination-out`
+  **n'existe pas** en CSS (c'est du Canvas `globalCompositeOperation`).
+- Un vrai « reveal de la page à travers le texte » sur fond arbitraire exige soit
+  **CSS `mask`** (image-masque en forme de texte), soit **SVG `<text>`** en
+  masque. Difficulté : aligner le masque sur le texte HTML rendu (police,
+  kerning, centrage).
+
+**Approches candidates (à arbitrer)**
+
+| Clé | Approche | Portée | Coût | Tradeoff |
+|---|---|---|---|---|
+| A | **SVG `<text>` masque** sur le fill | Reveal réel au-dessus de tout (image, motif) | XL | Label devient graphique → a11y (`aria-label` requis), métriques police à gérer, par composant |
+| B | **Texte = couleur de surface** (`var(--origam-color__surface---default)`) | Approximation « knockout » sur fonds **unis** (≈ 99 % des cas) | S | Vrai texte (a11y OK), simple ; ne révèle pas une image/motif derrière |
+| C | **Token `currentColor` transparent** pour les consommateurs `currentColor` (icônes, traits) | Cohérence icônes / fills | M | À combiner avec A ou B pour le texte |
+
+**Livrables**
+
+1. **Cartographie de propagation de `color`** (préalable bloquant) — matrice
+   « composant × surface impactée × mécanisme (classe / inline / `currentColor`) »,
+   en partant de : `useColor`, `useColorEffect`, `useTextColor`, `useBothColor` ;
+   consommateurs `currentColor` (icônes, SVG, traits) ; composants à fill piloté
+   par `color` (Slider, Progress, Audio…) ; texte de conteneurs (Card, Input, Label).
+2. Décision A / B / C (ou combinaison) sur la base de la cartographie.
+3. Implémentation sur composants pivots (Btn, Card, Input, Icon, Slider/Audio),
+   story + doc + e2e + VRT.
+4. Généralisation.
+
+**Critères d'acceptation**
+
+- `color="ghost"` produit un rendu **cohérent et documenté** sur les composants
+  pivots, démontré sur fond contrasté.
+- a11y : approche A → `aria-label` / texte alternatif systématique ; approche B →
+  contraste WCAG conservé (la directive `v-contrast` ne doit pas le casser).
+- TU + e2e + **VRT** verts ; **zéro régression** sur les autres intents.
+
+**Risques**
+
+- Blast radius : `color` touche le rendu de quasiment tous les composants →
+  **VRT obligatoire** avant généralisation (cf. ci-dessous).
+- a11y de l'approche SVG (texte non sélectionnable / lecteurs d'écran).
+- Divergence inter-thèmes : la « surface » derrière varie selon `data-theme`.
+
+**Dépendances** : Visual regression testing (ci-dessous) ; idéalement après
+l'**API audit pré-v3** pour figer la sémantique `color` vs `bgColor`. Même
+famille technique que l'item B « Text-mask (transparent reveal) » ci-dessus,
+besoin distinct.
+
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
   Lost-Pixel. Baseline sur main, diff bloquant sur PR.
