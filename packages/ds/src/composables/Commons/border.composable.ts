@@ -71,7 +71,14 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
                 })
             }
         } else if (typeof border === 'number') {
+            // A bare numeric width paints nothing: `border-style` defaults to
+            // `none`, so `border-width: 4px` alone is invisible. Mirror the
+            // string path's defaults (solid / currentColor) so a numeric border
+            // actually renders. The standalone `borderStyle` / `borderColor`
+            // props below still override these (pushed after).
             styles.push(`border-width: ${convertToUnit(border)}`)
+            styles.push('border-style: solid')
+            styles.push('border-color: currentColor')
         }
 
         // Additive surface for the standalone `borderColor` / `borderStyle`

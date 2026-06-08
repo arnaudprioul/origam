@@ -100,10 +100,12 @@ describe('useBorder — standalone borderColor / borderStyle props', () => {
         expect(styles).toContain('border-style: dotted')
     })
 
-    it('empty / unset borderColor and borderStyle → no extra declarations (additive, non-breaking)', () => {
+    it('empty / unset borderColor and borderStyle → only the numeric defaults (additive, non-breaking)', () => {
         const { api } = mountWithProps({ border: 2, borderColor: '', borderStyle: undefined })
         const styles = api().borderStyles.value
-        expect(styles).toEqual(['border-width: 2px'])
+        // A numeric width carries its own solid / currentColor defaults so it
+        // actually renders; the unset borderColor / borderStyle add nothing.
+        expect(styles).toEqual(['border-width: 2px', 'border-style: solid', 'border-color: currentColor'])
     })
 
     it('Ref overload carries only the border value — borderColor / borderStyle are not read', () => {
@@ -120,6 +122,6 @@ describe('useBorder — standalone borderColor / borderStyle props', () => {
 
         mount(Host)
         const styles = api.borderStyles.value
-        expect(styles).toEqual(['border-width: 2px'])
+        expect(styles).toEqual(['border-width: 2px', 'border-style: solid', 'border-color: currentColor'])
     })
 })
