@@ -35,9 +35,11 @@ describe('OrigamBlockquote — color = text, bgColor = accent', () => {
         expect(cls).toMatch(/origam-blockquote--accent-success/)
     })
 
-    it('a custom color value falls back to an inline text-colour var (no class)', () => {
+    it('a custom color value falls back to inline text + source colour vars (no class)', () => {
         expect(rootClass({ color: '#ff0080' })).not.toMatch(/origam-blockquote--color-/)
-        expect(rootStyle({ color: '#ff0080' })).toMatch(/--origam-blockquote---color:\s*#ff0080/)
+        const style = rootStyle({ color: '#ff0080' })
+        expect(style).toMatch(/--origam-blockquote---color:\s*#ff0080/)
+        expect(style).toMatch(/--origam-blockquote__source---color:\s*#ff0080/)
     })
 
     it('a custom bgColor value falls back to inline accent vars (no class)', () => {

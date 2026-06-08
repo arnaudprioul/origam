@@ -179,6 +179,7 @@
 
 		if (props.color && !colorIsIntent.value) {
 			styles['--origam-blockquote---color'] = String(props.color)
+			styles['--origam-blockquote__source---color'] = String(props.color)
 		}
 
 		if (props.bgColor && !accentIsIntent.value) {
@@ -417,33 +418,41 @@
 
 	.origam-blockquote--color-primary {
 		--origam-blockquote---color: var(--origam-color__action--primary---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__action--primary---fgSubtle);
 	}
 
 	.origam-blockquote--color-secondary {
 		--origam-blockquote---color: var(--origam-color__action--secondary---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__action--secondary---fgSubtle);
 	}
 
 	.origam-blockquote--color-success {
 		--origam-blockquote---color: var(--origam-color__feedback--success---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--success---fgSubtle);
 	}
 
 	.origam-blockquote--color-warning {
 		--origam-blockquote---color: var(--origam-color__feedback--warning---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--warning---fgSubtle);
 	}
 
 	.origam-blockquote--color-danger {
 		--origam-blockquote---color: var(--origam-color__feedback--danger---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--danger---fgSubtle);
 	}
 
 	.origam-blockquote--color-info {
 		--origam-blockquote---color: var(--origam-color__feedback--info---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--info---fgSubtle);
 	}
 
 	.origam-blockquote--color-neutral {
 		--origam-blockquote---color: var(--origam-color__text---primary);
+		--origam-blockquote__source---color: var(--origam-color__text---secondary);
 	}
 
 	.origam-blockquote--color-ghost {
 		--origam-blockquote---color: var(--origam-color__action--ghost---fg);
+		--origam-blockquote__source---color: var(--origam-color__action--ghost---fg);
 	}
 </style>
