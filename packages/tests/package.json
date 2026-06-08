@@ -29,7 +29,7 @@
     "axe-core": "^4.11.4",
     "happy-dom": "^15.11.7",
     "jsdom": "^25.0.1",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.8"
   }
 }
