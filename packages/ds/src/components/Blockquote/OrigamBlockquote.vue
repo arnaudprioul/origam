@@ -320,7 +320,6 @@
 	}
 
 	.origam-blockquote--variant-default {
-		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
 		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
 	}
 
@@ -330,7 +329,6 @@
 		font-style: var(--origam-blockquote__elegant---font-style, italic);
 		line-height: var(--origam-blockquote__elegant---line-height, 2);
 		padding-block: var(--origam-blockquote__elegant---padding-block, 24px);
-		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
 		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
 	}
 
@@ -353,7 +351,6 @@
 		font-style: var(--origam-blockquote__minimal---font-style, italic);
 		padding-inline: var(--origam-blockquote__minimal---padding-inline, 12px);
 		padding-block: 0;
-		border-inline-start: var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
 		padding-inline-start: calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px));
 	}
 
@@ -364,8 +361,40 @@
 		line-height: var(--origam-blockquote__pull---line-height, 1.375);
 		padding-block: var(--origam-blockquote__pull---padding-block, 24px);
 		padding-inline: var(--origam-blockquote---resolved-padding-inline);
-		border-block-start: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
-		border-block-end: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
+	}
+
+	.origam-blockquote--variant-default::before,
+	.origam-blockquote--variant-elegant::before,
+	.origam-blockquote--variant-minimal::before {
+		content: "";
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 0;
+		width: var(--origam-blockquote__accent---width, 4px);
+		background-color: var(--origam-blockquote---resolved-accent-color);
+		pointer-events: none;
+	}
+
+	.origam-blockquote--variant-minimal::before {
+		width: var(--origam-blockquote--minimal---accent-width, 2px);
+	}
+
+	.origam-blockquote--variant-pull::before,
+	.origam-blockquote--variant-pull::after {
+		content: "";
+		position: absolute;
+		inset-inline: 0;
+		height: var(--origam-blockquote__pull---rule-width, 2px);
+		background-color: var(--origam-blockquote---resolved-accent-color);
+		pointer-events: none;
+	}
+
+	.origam-blockquote--variant-pull::before {
+		inset-block-start: 0;
+	}
+
+	.origam-blockquote--variant-pull::after {
+		inset-block-end: 0;
 	}
 
 	.origam-blockquote--accent-primary {
