@@ -403,6 +403,47 @@ l'**API audit pré-v3** pour figer la sémantique `color` vs `bgColor`. Même
 famille technique que l'item B « Text-mask (transparent reveal) » ci-dessus,
 besoin distinct.
 
+### Composants : `variant` = preconfig de props **(L, spec)**
+
+> Spec née du redesign Blockquote (juin 2026). **Statut : planifié, non
+> implémenté** (demande explicite : prévoir, pas coder maintenant).
+
+**Constat**
+- Les `variant` (Blockquote : default / elegant / quoted / minimal / pull) sont
+  aujourd'hui des traitements visuels **hardcodés en SCSS** (typo, padding, et
+  surtout la barre d'accent gauche / les règles `pull`).
+- Le mainteneur veut que **chaque `variant` soit un preset des vrais props**
+  (transparent, overridable), et que les décorations (barre, règles) passent par
+  les **props configurables appliqués SUR LE BLOC** — **PAS** par des
+  pseudo-éléments `::before`/`::after` (approche essayée puis **rejetée/revertée**
+  en juin 2026 : les bordures doivent être de vraies bordures sur le bloc).
+
+**Principe cible**
+- Un const `{COMPONENT}_VARIANT_PRESETS` : `variant → Partial<IProps>` (`border`,
+  `padding`, `rounded`, `color`, `bgColor`, `elevation`, tokens typo…).
+- Résolution : `prop explicite` > `preset du variant` > défaut de base. Le
+  `variant` n'est qu'un **bundle de défauts** que l'utilisateur peut écraser.
+- La barre / les règles d'un variant = le prop **`border`** (directionnel) preset,
+  rendu sur le bloc et coloré par `bgColor`. Aucun pseudo.
+
+**Décision ouverte (à trancher au lancement)**
+- **A** — la barre d'accent EST le `border` (un seul border par bloc ; l'override
+  reshape/supprime la barre). Le plus simple, colle à « configurable ».
+- **B** — barre d'accent et `border` (box) **indépendants** → prop dédié
+  (`accent` / `bar`) configurable, séparé de `border`.
+
+**Portée** : Blockquote en pilote ; si concluant, généraliser le pattern
+« variant = preset » aux autres composants à variants (Btn, Tabs, Card…).
+
+**Pré-requis / liens** : s'appuie sur le fix border numérique (juin 2026) et le
+modèle couleur deux-axes (`color` = texte + source, `bgColor` = accent). La story
+devra exposer le preset résolu ET permettre l'override (tester les deux). **VRT
+obligatoire** (touche le rendu de toutes les variantes).
+
+**État intermédiaire (en attendant)** : la barre d'accent reste en
+`border-inline-start` (SCSS, sur le bloc) ; conflit connu avec le prop `border`
+(box) assumé temporairement, résolu par cette évolution.
+
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
   Lost-Pixel. Baseline sur main, diff bloquant sur PR.
