@@ -68,49 +68,50 @@ test.describe('OrigamBlockquote — Default (smoke + ARIA)', () => {
 })
 
 test.describe('OrigamBlockquote — Prop variant', () => {
-    test('variant=default paints a left accent bar (::before, bgColor-driven)', async ({ page }) => {
+    test('variant=default paints a non-zero left accent border', async ({ page }) => {
         await openVariant(page, STORY, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="blockquote-variant-default"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        // The accent bar is a `::before` pseudo (decoupled from the `border`
-        // prop), so we measure its width — not a real border.
-        const barWidth = await host.evaluate((el) =>
-            getComputedStyle(el, '::before').width
+        // CSS Logical: `border-inline-start-width` in LTR maps to left.
+        const borderLeftWidth = await host.evaluate((el) =>
+            getComputedStyle(el).borderInlineStartWidth ||
+            getComputedStyle(el).borderLeftWidth
         )
-        expect(barWidth).not.toBe('')
-        expect(barWidth).not.toBe('0px')
+        expect(borderLeftWidth).not.toBe('')
+        expect(borderLeftWidth).not.toBe('0px')
     })
 
-    test('variant=pull paints top + bottom rules (::before / ::after)', async ({ page }) => {
+    test('variant=pull paints top + bottom borders', async ({ page }) => {
         await openVariant(page, STORY, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="blockquote-variant-pull"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        const heights = await host.evaluate((el) => ({
-            top: getComputedStyle(el, '::before').height,
-            bottom: getComputedStyle(el, '::after').height
+        const widths = await host.evaluate((el) => ({
+            top: getComputedStyle(el).borderBlockStartWidth || getComputedStyle(el).borderTopWidth,
+            bottom: getComputedStyle(el).borderBlockEndWidth || getComputedStyle(el).borderBottomWidth
         }))
-        expect(heights.top).not.toBe('0px')
-        expect(heights.bottom).not.toBe('0px')
+        expect(widths.top).not.toBe('0px')
+        expect(widths.bottom).not.toBe('0px')
     })
 
-    test('variant=minimal carries a thin accent bar (::before, bgColor-driven)', async ({ page }) => {
+    test('variant=minimal carries a thin accent border (bgColor-driven)', async ({ page }) => {
         await openVariant(page, STORY, 'Prop — variant')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="blockquote-variant-minimal"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
-        const barWidth = await host.evaluate((el) =>
-            getComputedStyle(el, '::before').width
+        const borderLeftWidth = await host.evaluate((el) =>
+            getComputedStyle(el).borderInlineStartWidth ||
+            getComputedStyle(el).borderLeftWidth
         )
         // Every variant now carries a bgColor-driven accent bar → non-zero.
-        expect(barWidth).not.toBe('0px')
+        expect(borderLeftWidth).not.toBe('0px')
     })
 })
 
