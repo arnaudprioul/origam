@@ -7,7 +7,6 @@
 		<Variant
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IBracketProps>>({
-					rounds: SINGLE_ELIM_4,
 					variant: BRACKET_VARIANT.SINGLE_ELIMINATION,
 					direction: DIRECTION.HORIZONTAL,
 					color: 'primary',
@@ -18,7 +17,7 @@
 		>
 			<template #default="{ state }">
 				<origam-bracket
-						:rounds="state.rounds ?? SINGLE_ELIM_4"
+						:rounds="roundsFor(state.variant)"
 						:padding="state.padding"
 						:margin="state.margin"
 						:variant="state.variant"
@@ -203,7 +202,6 @@
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IBracketProps>>({
-					rounds: SINGLE_ELIM_8,
 					variant: BRACKET_VARIANT.SINGLE_ELIMINATION,
 					direction: DIRECTION.HORIZONTAL,
 					density: DENSITY.DEFAULT,
@@ -217,7 +215,7 @@
 			<template #default="{ state }">
 				<div class="story-shell" data-cy="bracket-playground">
 					<origam-bracket
-							:rounds="state.rounds ?? SINGLE_ELIM_8"
+							:rounds="roundsFor(state.variant, true)"
 							:variant="state.variant"
 							:direction="state.direction"
 							:density="state.density"
@@ -527,6 +525,13 @@
 			]
 		}
 	]
+
+	const roundsFor = (variant: TBracketVariant | undefined, bigSingle = false): IBracketRound[] => {
+		if (variant === BRACKET_VARIANT.DOUBLE_ELIMINATION) return DOUBLE_ELIM_4
+		if (variant === BRACKET_VARIANT.ROUND_ROBIN) return ROUND_ROBIN_4
+
+		return bigSingle ? SINGLE_ELIM_8 : SINGLE_ELIM_4
+	}
 </script>
 
 <style scoped>
