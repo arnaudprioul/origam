@@ -53,11 +53,13 @@
 	import { computed, StyleValue } from 'vue'
 
 	import {
+		useActive,
 		useBorder,
 		useColorEffect,
 		useDensity,
 		useDimension,
 		useElevation,
+		useHover,
 		useMargin,
 		usePadding,
 		useProps,
@@ -132,6 +134,11 @@
 		emit('click', event)
 	}
 
+	// Interaction state — `hover` / `active` paint the hover / active
+	// surface (a darken overlay), forced from the props for previews.
+	const {isHover} = useHover(props)
+	const {isActive} = useActive(props)
+
 	// Cross-cutting surfaces — reuse the Commons composables rather than
 	// re-implementing. `bgColor` paints the row, `color` sets its text;
 	// both optional, so in-bracket the row stays transparent and inherits
@@ -175,7 +182,9 @@
 				'origam-bracket-competitor--winner': props.isWinner,
 				'origam-bracket-competitor--loser': props.isLoser,
 				'origam-bracket-competitor--tbd': isTbd.value,
-				'origam-bracket-competitor--interactive': props.interactive
+				'origam-bracket-competitor--interactive': props.interactive,
+				'origam-bracket-competitor--hover': isHover.value,
+				'origam-bracket-competitor--active': isActive.value
 			},
 			colorClasses.value,
 			roundedClasses.value,
@@ -292,6 +301,14 @@
 			color: var(--origam-bracket-competitor--pending---color, currentColor);
 			opacity: var(--origam-bracket-competitor--pending---opacity, 0.7);
 			font-style: var(--origam-bracket-competitor--pending---font-style, italic);
+		}
+
+		&--hover {
+			background-color: var(--origam-bracket-competitor--hover---background-color, rgba(0, 0, 0, 0.04));
+		}
+
+		&--active {
+			background-color: var(--origam-bracket-competitor--active---background-color, rgba(0, 0, 0, 0.08));
 		}
 
 		&--density-compact {

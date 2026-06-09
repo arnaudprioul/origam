@@ -84,7 +84,7 @@
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
-	import { useDensity, useDimension, useMargin, usePadding, useProps } from '../../composables'
+	import { useActive, useDensity, useDimension, useHover, useMargin, usePadding, useProps } from '../../composables'
 
 	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
@@ -205,6 +205,14 @@
 	 ********************************************************/
 	const matchRef = ref<HTMLElement | null>(null)
 
+	// Interaction state — `hover` paints the hover surface; `active` (or a
+	// `live` match, which IS the active state) paints the active surface.
+	const {isHover} = useHover(props)
+	const {isActive} = useActive(props)
+
+	const isLive = computed<boolean>(() => resolvedStatus.value === 'live')
+	const isActiveOrLive = computed<boolean>(() => isActive.value || isLive.value)
+
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {dimensionStyles} = useDimension(props)
@@ -272,6 +280,8 @@
 			{
 				'origam-bracket-match--final': props.isFinal,
 				'origam-bracket-match--interactive': props.interactive,
+				'origam-bracket-match--hover': isHover.value,
+				'origam-bracket-match--active': isActiveOrLive.value,
 				[`origam-bracket-match--status-${resolvedStatus.value}`]: !!resolvedStatus.value
 			},
 			densityClasses.value,
@@ -367,6 +377,14 @@
 
 		&--status-completed {
 			opacity: 0.95;
+		}
+
+		&--hover {
+			filter: brightness(0.96);
+		}
+
+		&--active {
+			filter: brightness(0.92);
 		}
 
 		&--density-compact {

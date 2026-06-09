@@ -60,6 +60,14 @@ status drives the meta header: `live` pulses, `completed` greys out,
 |--------------|---------------------------------------------|--------------------------|
 | `competitor` | `{ competitor, match, isWinner, side }`     | Replace a competitor row |
 
+## Interaction state
+
+`hover` paints the hover surface; `active` paints the active surface. A
+**`live` match IS the active state** — `status="live"` applies the active
+surface automatically (no need to also pass `active`). Both `hover` and
+`active` accept a boolean to force the state for previews; live mouse
+hover is handled by `:hover` when `interactive`.
+
 ## Notes
 
 - The card surface, border (width / style / colour), radius and elevation

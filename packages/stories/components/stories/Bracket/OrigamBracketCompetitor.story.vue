@@ -66,14 +66,32 @@
 			</template>
 		</Variant>
 
-		<Variant title="State">
-			<div class="story-competitor-shell">
-				<origam-bracket-competitor :competitor="COMPETITOR" :score="2" :is-winner="true"/>
-				<origam-bracket-competitor :competitor="COMPETITOR_B" :score="0" :is-loser="true"/>
-				<origam-bracket-competitor :competitor="COMPETITOR" :score="1" :advantage-rounds="1"/>
-				<origam-bracket-competitor :competitor="COMPETITOR_AVATAR" :score="3"/>
-				<origam-bracket-competitor :competitor="null"/>
-			</div>
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IBracketCompetitorProps>>({ bgColor: 'primary', hover: false, active: false })"
+		>
+			<template #default="{ state }">
+				<div class="story-competitor-shell">
+					<origam-bracket-competitor
+							:competitor="COMPETITOR"
+							:score="2"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:hover="state.hover"
+							:active="state.active"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstCheckbox v-model="state.hover"  title="Hover"/>
+					<HstCheckbox v-model="state.active" title="Active"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
 		<Variant
@@ -116,7 +134,7 @@
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBracketCompetitorProps>({
-					competitor: COMPETITOR,
+					competitor: COMPETITOR_AVATAR,
 					score: 2,
 					color: 'primary',
 					bgColor: undefined,
@@ -183,7 +201,6 @@
 	} from '@stories/const'
 
 	const COMPETITOR: IBracketCompetitor = { id: 't1', name: 'T1', seed: 1 }
-	const COMPETITOR_B: IBracketCompetitor = { id: 'g2', name: 'G2', seed: 4 }
 	const COMPETITOR_AVATAR: IBracketCompetitor = {
 		id: 'tl',
 		name: 'Team Liquid',

@@ -1,4 +1,5 @@
 import type {
+    IActiveProps,
     IBgColorProps,
     IBorderProps,
     IColorProps,
@@ -6,6 +7,7 @@ import type {
     IDensityProps,
     IDimensionProps,
     IElevationProps,
+    IHoverProps,
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
@@ -22,7 +24,7 @@ import type { IBracketCompetitor } from './bracket-competitor.interface'
  * dimension, padding, margin) so a standalone row behaves like any
  * other origam component.
  */
-export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps {
+export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IHoverProps, IActiveProps, IRoundedProps, IElevationProps, IBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps {
     /**
      * The competitor payload. `null` renders a "TBD" placeholder — used
      * when the match's participant is not yet determined (winner of an

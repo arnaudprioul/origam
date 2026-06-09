@@ -28,6 +28,7 @@
 							:height="state.height"
 							:padding="state.padding"
 							:margin="state.margin"
+							:status="state.status"
 							:show-scores="state.showScores"
 							:show-seed="state.showSeed"
 					/>
@@ -37,6 +38,9 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Status">
+					<HstSelect v-model="state.status" title="Status" :options="STATUS_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
@@ -67,24 +71,32 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<Partial<IBracketMatchProps>>({ status: BRACKET_MATCH_STATUS.LIVE })"
+				:init-state="() => useStoryInitState<Partial<IBracketMatchProps>>({ bgColor: 'primary', hover: false, active: false })"
 		>
 			<template #default="{ state }">
 				<div class="story-match-grid">
 					<div class="story-match-shell">
-						<origam-bracket-match :match="MATCH_COMPLETED" :status="state.status"/>
+						<origam-bracket-match
+								:match="MATCH_COMPLETED"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:hover="state.hover"
+								:active="state.active"
+						/>
 					</div>
 					<div class="story-match-shell">
-						<origam-bracket-match :match="MATCH_ADVANTAGE"/>
-					</div>
-					<div class="story-match-shell">
-						<origam-bracket-match :match="MATCH_PENDING"/>
+						<origam-bracket-match :match="MATCH_COMPLETED" :bg-color="state.bgColor" status="live"/>
 					</div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Status">
-					<HstSelect v-model="state.status" title="Status (left card)" :options="STATUS_OPTIONS"/>
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstCheckbox v-model="state.hover"  title="Hover"/>
+					<HstCheckbox v-model="state.active" title="Active"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -240,20 +252,6 @@
 		status: 'completed'
 	}
 
-	const MATCH_ADVANTAGE: IBracketMatch = {
-		id: 'm2',
-		competitorA: { id: 't1', name: 'T1' },
-		competitorB: { id: 'tl', name: 'Team Liquid' },
-		status: 'pending',
-		advantage: { competitorId: 't1', rounds: 1 }
-	}
-
-	const MATCH_PENDING: IBracketMatch = {
-		id: 'm3',
-		competitorA: { id: 't1', name: 'T1' },
-		competitorB: null,
-		status: 'pending'
-	}
 </script>
 
 <style scoped>
