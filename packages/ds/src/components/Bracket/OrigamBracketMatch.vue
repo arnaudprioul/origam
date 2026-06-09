@@ -8,6 +8,8 @@
 			:style="matchStyles"
 			role="group"
 			@click="handleMatchClick"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<div
 				v-if="match.scheduledAt || resolvedStatus"
@@ -176,6 +178,8 @@
 	})
 
 	const handleMatchClick = (event: MouseEvent) => {
+		onActive(event)
+
 		const target = event.target as HTMLElement | null
 		if (target?.closest('.origam-bracket-competitor')) return
 
@@ -205,13 +209,25 @@
 	 ********************************************************/
 	const matchRef = ref<HTMLElement | null>(null)
 
-	// Interaction state — `hover` paints the hover surface; `active` (or a
-	// `live` match, which IS the active state) paints the active surface.
-	const {isHover} = useHover(props)
-	const {isActive} = useActive(props)
+	// Interaction state — `hover` / `active` paint the card surface from the
+	// hover / active state objects (same as everywhere). A `live` match IS
+	// the active state, so it picks up the active surface automatically.
+	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive} = useActive(props)
 
 	const isLive = computed<boolean>(() => resolvedStatus.value === 'live')
 	const isActiveOrLive = computed<boolean>(() => isActive.value || isLive.value)
+
+	// Effective surface props: hover / active (incl. live) state objects
+	// override the resting props, then everything flows through the shared
+	// `bracketSurfaceVars` so the card repaints on state — exactly like a
+	// `useStateEffect`-driven component, but through the bracket's vars.
+	const surfaceInput = computed(() => {
+		if (isActiveOrLive.value && activeState.value) return {...props, ...activeState.value}
+		if (isHover.value && hoverState.value) return {...props, ...hoverState.value}
+
+		return props
+	})
 
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -254,7 +270,7 @@
 		contrastTimer = setTimeout(measureContrast, 200)
 	}
 
-	watch([() => props.bgColor, () => props.match], scheduleContrast, {flush: 'post'})
+	watch([() => props.bgColor, () => props.match, isHover, isActiveOrLive], scheduleContrast, {flush: 'post'})
 	onMounted(scheduleContrast)
 	onBeforeUnmount(() => {
 		if (contrastTimer) clearTimeout(contrastTimer)
@@ -265,7 +281,7 @@
 		const textColor = autoTextColor.value ?? resolveBracketForeground(props.color)
 
 		return [
-			bracketSurfaceVars(props),
+			bracketSurfaceVars(surfaceInput.value),
 			textColor ? {'--origam-bracket---color': textColor, color: textColor} : {},
 			paddingStyles.value,
 			marginStyles.value,
@@ -280,10 +296,10 @@
 			{
 				'origam-bracket-match--final': props.isFinal,
 				'origam-bracket-match--interactive': props.interactive,
-				'origam-bracket-match--hover': isHover.value,
-				'origam-bracket-match--active': isActiveOrLive.value,
 				[`origam-bracket-match--status-${resolvedStatus.value}`]: !!resolvedStatus.value
 			},
+			hoverClasses.value,
+			activeClasses.value,
 			densityClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
@@ -377,14 +393,6 @@
 
 		&--status-completed {
 			opacity: 0.95;
-		}
-
-		&--hover {
-			filter: brightness(0.96);
-		}
-
-		&--active {
-			filter: brightness(0.92);
 		}
 
 		&--density-compact {

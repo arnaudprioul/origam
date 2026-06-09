@@ -9,6 +9,8 @@
 			:tabindex="interactive ? 0 : undefined"
 			@click="handleClick"
 			@keydown="handleKeydown"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<span
 				v-if="showSeed && competitor?.seed != null"
@@ -50,20 +52,15 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, ComputedRef, StyleValue } from 'vue'
 
 	import {
 		useActive,
-		useBorder,
-		useColorEffect,
 		useDensity,
 		useDimension,
-		useElevation,
 		useHover,
-		useMargin,
-		usePadding,
 		useProps,
-		useRounded
+		useStateEffect
 	} from '../../composables'
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
@@ -123,6 +120,7 @@
 	const handleClick = (event: MouseEvent) => {
 		if (!props.interactive) return
 
+		onActive(event)
 		emit('click', event)
 	}
 
@@ -134,27 +132,29 @@
 		emit('click', event)
 	}
 
-	// Interaction state — `hover` / `active` paint the hover / active
-	// surface (a darken overlay), forced from the props for previews.
-	const {isHover} = useHover(props)
-	const {isActive} = useActive(props)
+	// Interaction + cross-cutting surface — same pattern as every other
+	// component: useHover / useActive drive useStateEffect, which paints the
+	// resting AND hover / active surface (color, bgColor, border, rounded,
+	// elevation, padding, margin) from the props and the hover / active
+	// state objects. `bgColor` unset → transparent row inheriting the
+	// bracket's auto-contrast colour through `currentColor`.
+	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive} = useActive(props)
 
-	// Cross-cutting surfaces — reuse the Commons composables rather than
-	// re-implementing. `bgColor` paints the row, `color` sets its text;
-	// both optional, so in-bracket the row stays transparent and inherits
-	// the bracket's auto-contrast colour through `currentColor`.
-	const {colorClasses, colorStyles} = useColorEffect(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
+	const {
+		colorClasses, colorStyles,
+		borderClasses, borderStyles,
+		roundedClasses, roundedStyles,
+		elevationClasses, elevationStyles,
+		paddingClasses, paddingStyles,
+		marginClasses, marginStyles
+	} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
 	const {dimensionStyles} = useDimension(props)
 	const {densityClasses} = useDensity(props, 'origam-bracket-competitor')
 
-	// `useBorder` emits the raw `borderColor` value, which is invalid for an
-	// intent keyword — resolve intents to their token here so the prop works
-	// with `'danger'` etc. (custom CSS colors fall through to useBorder).
+	// `useBorder` (via useStateEffect) emits the raw `borderColor` value,
+	// invalid for an intent keyword — resolve intents to their token here.
 	const borderColorStyle = computed<string[]>(() => {
 		const value = props.borderColor
 
@@ -164,10 +164,10 @@
 	const rowStyles = computed<StyleValue>(() => {
 		return [
 			colorStyles.value,
-			roundedStyles.value,
-			elevationStyles.value,
 			borderStyles.value,
 			borderColorStyle.value,
+			roundedStyles.value,
+			elevationStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
 			dimensionStyles.value,
@@ -182,14 +182,14 @@
 				'origam-bracket-competitor--winner': props.isWinner,
 				'origam-bracket-competitor--loser': props.isLoser,
 				'origam-bracket-competitor--tbd': isTbd.value,
-				'origam-bracket-competitor--interactive': props.interactive,
-				'origam-bracket-competitor--hover': isHover.value,
-				'origam-bracket-competitor--active': isActive.value
+				'origam-bracket-competitor--interactive': props.interactive
 			},
 			colorClasses.value,
+			hoverClasses.value,
+			activeClasses.value,
+			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
-			borderClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			densityClasses.value,
@@ -301,14 +301,6 @@
 			color: var(--origam-bracket-competitor--pending---color, currentColor);
 			opacity: var(--origam-bracket-competitor--pending---opacity, 0.7);
 			font-style: var(--origam-bracket-competitor--pending---font-style, italic);
-		}
-
-		&--hover {
-			background-color: var(--origam-bracket-competitor--hover---background-color, rgba(0, 0, 0, 0.04));
-		}
-
-		&--active {
-			background-color: var(--origam-bracket-competitor--active---background-color, rgba(0, 0, 0, 0.08));
 		}
 
 		&--density-compact {
