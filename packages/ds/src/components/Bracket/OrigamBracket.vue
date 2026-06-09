@@ -947,11 +947,27 @@
 		const shadow = resolveShadow(props.elevation)
 		if (shadow) vars['--origam-bracket-match---box-shadow'] = shadow
 
-		// Per-match border — colour also drives the connector links.
+		// Per-match border — width, style AND colour all carry over to the
+		// connector links so the trait between matches matches the cards.
+		// Connector stroke-width follows the match border-width. We set the
+		// connector var explicitly (not just via the SCSS fallback) because
+		// a global `:root` default for it would otherwise always win.
 		const borderWidth = resolveBorderWidth(props.border)
-		if (borderWidth) vars['--origam-bracket-match---border-width'] = borderWidth
+		if (borderWidth) {
+			vars['--origam-bracket-match---border-width'] = borderWidth
+			vars['--origam-bracket-connector---stroke-width'] = borderWidth
+		}
 
-		if (props.borderStyle) vars['--origam-bracket-match---border-style'] = props.borderStyle
+		if (props.borderStyle) {
+			vars['--origam-bracket-match---border-style'] = props.borderStyle
+
+			if (props.borderStyle === 'dashed') {
+				vars['--origam-bracket-connector---stroke-dasharray'] = '8 5'
+			} else if (props.borderStyle === 'dotted') {
+				vars['--origam-bracket-connector---stroke-dasharray'] = '1 5'
+				vars['--origam-bracket-connector---stroke-linecap'] = 'round'
+			}
+		}
 
 		const borderColor = resolveBorderColor(props.borderColor)
 		if (borderColor) {
@@ -1146,11 +1162,13 @@
 
 		&__connector {
 			stroke: var(--origam-bracket-connector---stroke-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
-			stroke-width: var(--origam-bracket-connector---stroke-width, 1px);
+			stroke-width: var(--origam-bracket-connector---stroke-width, var(--origam-bracket-match---border-width, 1px));
+			stroke-dasharray: var(--origam-bracket-connector---stroke-dasharray, none);
+			stroke-linecap: var(--origam-bracket-connector---stroke-linecap, butt);
 
 			&--winner {
 				stroke: var(--origam-bracket-connector---stroke-color-winner, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
-				stroke-width: calc(var(--origam-bracket-connector---stroke-width, 1px) + 1px);
+				stroke-width: var(--origam-bracket-connector---stroke-width, var(--origam-bracket-match---border-width, 1px));
 			}
 		}
 
