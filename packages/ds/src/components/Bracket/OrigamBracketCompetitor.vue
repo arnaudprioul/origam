@@ -31,6 +31,13 @@
 		</span>
 
 		<span
+				v-if="forfeit"
+				class="origam-bracket-competitor__forfeit"
+		>
+			{{ forfeitLabel }}
+		</span>
+
+		<span
 				v-if="hasAdvantage"
 				:aria-label="advantageAriaLabel"
 				:title="advantageAriaLabel"
@@ -96,6 +103,8 @@
 
 		return props.score
 	})
+
+	const forfeitLabel = 'forfeit'
 
 	const hasAdvantage = computed<boolean>(() => (props.advantageRounds ?? 0) > 0)
 
@@ -186,6 +195,7 @@
 				'origam-bracket-competitor--winner': props.isWinner,
 				'origam-bracket-competitor--loser': props.isLoser,
 				'origam-bracket-competitor--tbd': isTbd.value,
+				'origam-bracket-competitor--forfeit': props.forfeit,
 				'origam-bracket-competitor--interactive': props.interactive
 			},
 			colorClasses.value,
@@ -262,6 +272,26 @@
 			color: var(--origam-bracket-advantage---color, var(--origam-color__action--primary---fg, #fff));
 			background-color: var(--origam-bracket-advantage---background-color, var(--origam-color__action--primary---bg, #1976d2));
 			border-radius: var(--origam-bracket-advantage---border-radius, 9999px);
+		}
+
+		&__forfeit {
+			flex: 0 0 auto;
+			padding-block: 1px;
+			padding-inline: 6px;
+			font-size: 0.625rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			color: var(--origam-color__feedback--warning---bg, #ed6c02);
+			border: 1px solid currentColor;
+			border-radius: 4px;
+		}
+
+		&--forfeit {
+			.origam-bracket-competitor__name {
+				text-decoration: line-through;
+				opacity: 0.7;
+			}
 		}
 
 		&__score {

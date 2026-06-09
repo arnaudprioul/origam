@@ -23,6 +23,7 @@ optional `avatar`). `null` renders a "TBD" placeholder.
 | `isWinner`        | `boolean`                     | `false`     |
 | `isLoser`         | `boolean`                     | `false`     |
 | `advantageRounds` | `number`                      | — (no badge)|
+| `forfeit`         | `boolean`                     | `false`     |
 | `showScore`       | `boolean`                     | `true`      |
 | `showSeed`        | `boolean`                     | `false`     |
 | `interactive`     | `boolean`                     | `true`      |

@@ -20,6 +20,7 @@ highlight), `status`, and `advantage` (`{ competitorId, rounds }` → a
 |---------------|----------------------------------------------------------|-------------|
 | `match`       | `IBracketMatch`                                          | — (required)|
 | `status`      | `'pending' \| 'live' \| 'completed' \| 'forfeited'`      | `match.status` |
+| `to`          | `string` (URL)                                           | — (live only) |
 | `isFinal`     | `boolean`                                                | `false`     |
 | `showScores`  | `boolean`                                                | `true`      |
 | `showSeed`    | `boolean`                                                | `false`     |
@@ -42,9 +43,13 @@ the card; the text auto-contrasts (black / white) against the painted
 surface, just like inside `OrigamBracket`. `borderColor` accepts an intent
 and also drives the connector links when the card is in a tree.
 
-`status` overrides `match.status` — handy to preview a `live` badge. The
-status drives the meta header: `live` pulses, `completed` greys out,
-`forfeited` warns.
+`status` overrides `match.status`. Each status shows a distinct coloured
+dot in the meta header: **pending** a grey static dot, **live** a red
+*blinking* dot (with a ping halo), **completed** a green dot, **forfeited**
+an orange dot. When the match is `live` and `to` is set, a red
+**"Watch live ↗"** link is rendered (opens the URL in a new tab). On a
+**forfeited** match the losing side is struck through and tagged
+`FORFEIT` (see `OrigamBracketCompetitor.forfeit`).
 
 ## Events
 

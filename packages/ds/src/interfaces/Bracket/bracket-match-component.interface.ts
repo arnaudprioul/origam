@@ -35,6 +35,12 @@ export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, I
      */
     status?: TBracketMatchStatus
     /**
+     * Destination of the "Watch live" link, shown in the meta header only
+     * when the match is `live`. A URL (rendered as an `<a>` opening in a
+     * new tab). Omit to hide the link.
+     */
+    to?: string
+    /**
      * Hoists the match into the "final" visual treatment — bigger
      * card, shadow, and rounded corners.
      *

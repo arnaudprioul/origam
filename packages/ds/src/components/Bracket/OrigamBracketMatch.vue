@@ -21,6 +21,15 @@
 			>
 				{{ statusLabel }}
 			</span>
+			<a
+					v-if="isLive && to"
+					:href="to"
+					class="origam-bracket-match__watch"
+					rel="noopener noreferrer"
+					target="_blank"
+			>
+				{{ watchLabel }}
+			</a>
 			<span
 					v-if="match.scheduledAt"
 					class="origam-bracket-match__schedule"
@@ -39,6 +48,7 @@
 			>
 				<origam-bracket-competitor
 						:advantage-rounds="advantageA"
+						:forfeit="isForfeitA"
 						:competitor="match.competitorA"
 						:interactive="interactive"
 						:is-loser="isLoserA"
@@ -62,6 +72,7 @@
 			>
 				<origam-bracket-competitor
 						:advantage-rounds="advantageB"
+						:forfeit="isForfeitB"
 						:competitor="match.competitorB"
 						:interactive="interactive"
 						:is-loser="isLoserB"
@@ -124,6 +135,8 @@
 		return STATUS_LABELS[resolvedStatus.value] ?? resolvedStatus.value
 	})
 
+	const watchLabel = 'Watch live'
+
 	const statusClasses = computed(() => {
 		return [
 			'origam-bracket-match__status',
@@ -158,6 +171,11 @@
 
 		return props.match.competitorB.id !== props.match.winnerId
 	})
+
+	// On a forfeited match the LOSER (the side that didn't advance) is the
+	// one that forfeited — flag it so the row can show it.
+	const isForfeitA = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserA.value)
+	const isForfeitB = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserB.value)
 
 	const advantageFor = (competitor: IBracketCompetitor | null): number | undefined => {
 		const advantage = props.match.advantage
@@ -344,33 +362,58 @@
 		}
 
 		&__status {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
 			text-transform: uppercase;
 			font-weight: 600;
 			letter-spacing: 0.04em;
 
+			&::before {
+				content: '';
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: currentColor;
+				flex: 0 0 auto;
+			}
+
+			&--pending {
+				color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+			}
+
 			&--live {
-				color: var(--origam-color__feedback--danger---fg, #d32f2f);
-				display: inline-flex;
-				align-items: center;
-				gap: 4px;
+				color: var(--origam-color__feedback--danger---bg, #d32f2f);
 
 				&::before {
-					content: '';
-					width: 6px;
-					height: 6px;
-					border-radius: 50%;
-					background: currentColor;
-					animation: origam-bracket-pulse 1.2s infinite;
+					box-shadow: 0 0 0 0 currentColor;
+					animation: origam-bracket-blink 1s steps(1, end) infinite, origam-bracket-ping 1.4s ease-out infinite;
 				}
 			}
 
 			&--completed {
-				color: var(--origam-bracket-match-status--completed---color, currentColor);
-				opacity: var(--origam-bracket-match-status--completed---opacity, 0.6);
+				color: var(--origam-color__feedback--success---bg, #2e7d32);
 			}
 
 			&--forfeited {
-				color: var(--origam-color__feedback--warning---fg, #ed6c02);
+				color: var(--origam-color__feedback--warning---bg, #ed6c02);
+			}
+		}
+
+		&__watch {
+			display: inline-flex;
+			align-items: center;
+			gap: 2px;
+			color: var(--origam-color__feedback--danger---bg, #d32f2f);
+			font-weight: 600;
+			text-decoration: none;
+
+			&::after {
+				content: '↗';
+			}
+
+			&:hover {
+				text-decoration: underline;
 			}
 		}
 
@@ -410,20 +453,22 @@
 		}
 	}
 
-	@keyframes origam-bracket-pulse {
-		0%, 100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.5;
-			transform: scale(1.4);
-		}
+	@keyframes origam-bracket-blink {
+		0%, 50% { opacity: 1; }
+		51%, 100% { opacity: 0.2; }
+	}
+
+	@keyframes origam-bracket-ping {
+		0% { box-shadow: 0 0 0 0 currentColor; }
+		70%, 100% { box-shadow: 0 0 0 5px transparent; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		@keyframes origam-bracket-pulse {
+		@keyframes origam-bracket-blink {
 			0%, 100% { opacity: 1; }
+		}
+		@keyframes origam-bracket-ping {
+			0%, 100% { box-shadow: none; }
 		}
 	}
 </style>

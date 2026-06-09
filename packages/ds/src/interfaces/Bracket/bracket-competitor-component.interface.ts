@@ -72,4 +72,9 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
      * — used for the Winner Bracket champion's Grand Final advantage.
      */
     advantageRounds?: number
+    /**
+     * Marks this competitor as the one that FORFEITED the match — the
+     * name is struck through and a "forfeit" tag is shown.
+     */
+    forfeit?: boolean
 }

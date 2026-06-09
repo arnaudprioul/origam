@@ -29,6 +29,7 @@
 							:padding="state.padding"
 							:margin="state.margin"
 							:status="state.status"
+							:to="state.to"
 							:show-scores="state.showScores"
 							:show-seed="state.showSeed"
 					/>
@@ -40,7 +41,8 @@
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Status">
-					<HstSelect v-model="state.status" title="Status" :options="STATUS_OPTIONS"/>
+					<HstSelect v-model="state.status" title="Status"           :options="STATUS_OPTIONS"/>
+					<HstText   v-model="state.to"     title="Live URL (to)"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
