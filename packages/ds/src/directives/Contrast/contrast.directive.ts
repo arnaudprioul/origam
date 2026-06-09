@@ -1,7 +1,6 @@
 import type { Directive, DirectiveBinding } from 'vue'
 
 import type { IContrastOptions } from '../../interfaces'
-import { getContrast, getForeground } from '../../utils'
 
 /**
  * Module-level contrast config, set once by `createOrigam({ contrast })`.
@@ -69,26 +68,93 @@ function toRgb (color: string | null | undefined): string | null {
     return srgbToRgb(onBlack) ?? onBlack
 }
 
-function isTransparent (rgb: string | null): boolean {
-    if (!rgb) return true
-    const alpha = rgb.match(/rgba?\([^)]*,\s*([\d.]+)\s*\)/)
-    return alpha ? Number(alpha[1]) === 0 : false
+type TRgba = { r: number; g: number; b: number; a: number }
+
+function rgbaParts (rgb: string | null): TRgba | null {
+    if (!rgb) return null
+    const m = rgb.match(/rgba?\(([^)]+)\)/i)
+    if (!m) return null
+    const p = m[1].split(',').map(s => parseFloat(s.trim()))
+    if (p.length < 3 || p.slice(0, 3).some(Number.isNaN)) return null
+    return { r: p[0], g: p[1], b: p[2], a: p[3] == null || Number.isNaN(p[3]) ? 1 : p[3] }
+}
+
+/** Alpha-composite `top` over an opaque `bottom` (source-over). */
+function over (top: TRgba, bottom: TRgba): TRgba {
+    const a = top.a
+    return {
+        r: top.r * a + bottom.r * (1 - a),
+        g: top.g * a + bottom.g * (1 - a),
+        b: top.b * a + bottom.b * (1 - a),
+        a: 1
+    }
 }
 
 /**
- * Walk up to the nearest ancestor that actually paints a background, so a
- * text element with a transparent background is checked against the surface
- * it visually sits on. Returns a normalised rgb string.
+ * Resolve the EFFECTIVE background a text element sits on. Walks up
+ * collecting every painted layer (skipping fully transparent ones) until
+ * it reaches an opaque base, then alpha-composites the translucent layers
+ * back down. This makes a translucent state tint (e.g. a hover / selected
+ * overlay at 8 % alpha) measure against the real surface beneath it instead
+ * of being mistaken for an opaque colour — the bug that forced white text
+ * onto a light fill. Returns a normalised opaque rgb string.
  */
 function resolvePaintedBackground (el: HTMLElement): string | null {
+    const layers: TRgba[] = []
     let node: HTMLElement | null = el
+
     while (node) {
-        const bg = toRgb(getComputedStyle(node).backgroundColor)
-        if (bg && !isTransparent(bg)) return bg
+        const parts = rgbaParts(toRgb(getComputedStyle(node).backgroundColor))
+        if (parts && parts.a > 0) {
+            layers.push(parts)
+            if (parts.a >= 1) break
+        }
         node = node.parentElement
     }
-    return null
+
+    if (!layers.length) return null
+
+    const deepest = layers[layers.length - 1]
+    let acc: TRgba = deepest.a >= 1 ? layers.pop()! : { r: 255, g: 255, b: 255, a: 1 }
+
+    for (let i = layers.length - 1; i >= 0; i -= 1) {
+        acc = over(layers[i], acc)
+    }
+
+    return `rgb(${Math.round(acc.r)}, ${Math.round(acc.g)}, ${Math.round(acc.b)})`
 }
+
+function channelsOf (rgb: string | null): [number, number, number] | null {
+    if (!rgb) return null
+    const p = (rgb.match(/[\d.]+/g) ?? []).map(Number)
+    return p.length >= 3 && p.slice(0, 3).every(n => !Number.isNaN(n)) ? [p[0], p[1], p[2]] : null
+}
+
+/**
+ * Gamma-corrected sRGB relative luminance (WCAG 2.x). The project's
+ * `getLuma` is APCA-flavoured and over-rates mid-tones, which made the
+ * directive force WHITE onto light intents (danger / warning / success)
+ * where it still failed AA — so the maths lives here, exact to the spec.
+ */
+function relativeLuminance ([r, g, b]: [number, number, number]): number {
+    const channel = (c: number): number => {
+        const s = c / 255
+
+        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
+    }
+
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+}
+
+function wcagRatio (a: [number, number, number], b: [number, number, number]): number {
+    const la = relativeLuminance(a)
+    const lb = relativeLuminance(b)
+
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05)
+}
+
+const WHITE: [number, number, number] = [255, 255, 255]
+const BLACK: [number, number, number] = [0, 0, 0]
 
 function enforceContrast (el: HTMLElement, enabled: boolean): void {
     // The directive's own per-binding override flag prevents the `updated`
@@ -109,28 +175,26 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
     // our `!important`), so by the time this runs in rAF the element already
     // reflects the real, current colour — we just re-measure and re-fix.
 
-    const bg = resolvePaintedBackground(el)
+    const bg = channelsOf(resolvePaintedBackground(el))
     if (!bg) return
 
-    const fg = toRgb(getComputedStyle(el).color)
+    const fg = channelsOf(toRgb(getComputedStyle(el).color))
     if (!fg) return
 
-    let ratio: number
-    try {
-        ratio = getContrast(fg, bg)
-    } catch {
-        return
-    }
+    const ratio = wcagRatio(fg, bg)
     if (ratio >= config.threshold) return
 
-    const better = getForeground(bg)
+    // Force the black / white that maximises the WCAG ratio against the
+    // surface — white only wins on dark fills, black wins on light ones.
+    const better = wcagRatio(WHITE, bg) >= wcagRatio(BLACK, bg) ? '#fff' : '#000'
     el.style.setProperty('color', better, 'important')
     el.dataset.origamContrastFixed = 'true'
 
-     
+
     console.warn(
         `[origam] Low text contrast (${ratio.toFixed(2)}:1 < ${config.threshold}:1): ` +
-        `text ${fg} on background ${bg}. Overriding text colour to ${better} for legibility. ` +
+        `text rgb(${fg.join(', ')}) on background rgb(${bg.join(', ')}). ` +
+        `Overriding text colour to ${better} for legibility. ` +
         `Disable with createOrigam({ contrast: false }).`,
         el
     )
@@ -146,14 +210,32 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
  * globally via `createOrigam({ contrast: false })`, or per-element with
  * `v-contrast="false"`.
  */
+/*
+ * Measure twice: once on the next animation frame (covers the common
+ * case where colour / background apply instantly), and once after a
+ * short settle delay. The second pass is essential — components animate
+ * their surface (`transition: background-color …`), so an rAF-only read
+ * sees the mid-transition frame, measures a transient high contrast and
+ * wrongly bails, leaving the settled (low-contrast) state unfixed. The
+ * delay clears any typical token transition (≤ 200 ms).
+ */
+const SETTLE_MS = 250
+
+function schedule (el: HTMLElement, enabled: boolean): void {
+    if (typeof requestAnimationFrame !== 'undefined') {
+        requestAnimationFrame(() => enforceContrast(el, enabled))
+    }
+    if (typeof setTimeout !== 'undefined') {
+        setTimeout(() => enforceContrast(el, enabled), SETTLE_MS)
+    }
+}
+
 const vContrast: Directive<HTMLElement, boolean | undefined> = {
     mounted (el: HTMLElement, binding: DirectiveBinding<boolean | undefined>) {
-        const enabled = config.enabled && binding.value !== false
-        requestAnimationFrame(() => enforceContrast(el, enabled))
+        schedule(el, config.enabled && binding.value !== false)
     },
     updated (el: HTMLElement, binding: DirectiveBinding<boolean | undefined>) {
-        const enabled = config.enabled && binding.value !== false
-        requestAnimationFrame(() => enforceContrast(el, enabled))
+        schedule(el, config.enabled && binding.value !== false)
     }
 }
 
