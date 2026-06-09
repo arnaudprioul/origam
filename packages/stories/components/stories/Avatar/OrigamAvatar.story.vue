@@ -34,6 +34,10 @@
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
@@ -217,7 +221,9 @@
 		elevation: s.elevation,
 		border: s.border,
 		borderColor: s.borderColor,
-		borderStyle: s.borderStyle
+		borderStyle: s.borderStyle,
+		padding: s.padding,
+		margin: s.margin
 	})
 </script>
 
