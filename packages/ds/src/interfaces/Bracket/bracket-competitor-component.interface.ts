@@ -1,6 +1,4 @@
-import type { ICommonsComponentProps, ITagProps } from '../../interfaces'
-
-import type { TIntent } from '../../types'
+import type { IBgColorProps, IColorProps, ICommonsComponentProps, ITagProps } from '../../interfaces'
 
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 
@@ -9,7 +7,7 @@ import type { IBracketCompetitor } from './bracket-competitor.interface'
  * Exported so consumers can render a competitor row standalone (e.g.
  * inside a custom match slot).
  */
-export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps {
+export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps {
     /**
      * The competitor payload. `null` renders a "TBD" placeholder — used
      * when the match's participant is not yet determined (winner of an
@@ -51,8 +49,6 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
      * @default true
      */
     interactive?: boolean
-    /** Intent color driving the winner highlight. */
-    color?: TIntent
     /**
      * Head-start carried into the match by this competitor, in rounds /
      * sets. When set (`> 0`), a `+N` badge is rendered next to the name

@@ -36,7 +36,6 @@
 			>
 				<origam-bracket-competitor
 						:advantage-rounds="advantageA"
-						:color="color"
 						:competitor="match.competitorA"
 						:interactive="interactive"
 						:is-loser="isLoserA"
@@ -60,7 +59,6 @@
 			>
 				<origam-bracket-competitor
 						:advantage-rounds="advantageB"
-						:color="color"
 						:competitor="match.competitorB"
 						:interactive="interactive"
 						:is-loser="isLoserB"

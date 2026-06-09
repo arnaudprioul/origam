@@ -52,7 +52,7 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import { useProps } from '../../composables'
+	import { useColorEffect, useProps } from '../../composables'
 
 	import type { IBracketCompetitorProps } from '../../interfaces'
 
@@ -62,8 +62,7 @@
 		isLoser: false,
 		showScore: true,
 		showSeed: false,
-		interactive: true,
-		color: 'primary'
+		interactive: true
 	})
 
 	const emit = defineEmits<{
@@ -121,20 +120,25 @@
 		emit('click', event)
 	}
 
+	// `bgColor` paints the row, `color` sets its text — both optional. When
+	// unset (the in-bracket case) the row stays transparent and inherits
+	// the bracket's auto-contrast text colour through `currentColor`.
+	const {colorClasses, colorStyles} = useColorEffect(props)
+
 	const rowStyles = computed<StyleValue>(() => {
-		return [props.style] as StyleValue
+		return [colorStyles.value, props.style] as StyleValue
 	})
 
 	const rowClasses = computed(() => {
 		return [
 			'origam-bracket-competitor',
-			`origam-bracket-competitor--color-${props.color}`,
 			{
 				'origam-bracket-competitor--winner': props.isWinner,
 				'origam-bracket-competitor--loser': props.isLoser,
 				'origam-bracket-competitor--tbd': isTbd.value,
 				'origam-bracket-competitor--interactive': props.interactive
 			},
+			colorClasses.value,
 			props.class
 		]
 	})
