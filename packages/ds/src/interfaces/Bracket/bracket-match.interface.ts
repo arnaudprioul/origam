@@ -2,6 +2,23 @@ import type { TBracketMatchStatus } from '../../types'
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 
 /**
+ * Head-start carried into a match by one competitor — the classic
+ * double-elimination Grand Final advantage, where the Winner Bracket
+ * champion starts the (single) Grand Final already up by one round /
+ * set.
+ */
+export interface IBracketMatchAdvantage {
+    /** Id of the competitor that starts ahead. */
+    competitorId: string | number
+    /**
+     * Size of the head start, in rounds / sets.
+     *
+     * @default 1
+     */
+    rounds?: number
+}
+
+/**
  * A single match between two competitors.
  *
  * `competitorA` / `competitorB` are nullable so the bracket can render
@@ -45,6 +62,12 @@ export interface IBracketMatch {
      * mapping is used.
      */
     nextMatchId?: string | number
+    /**
+     * Optional head-start for one competitor — the Winner Bracket
+     * champion's one-round advantage in a double-elimination Grand
+     * Final. Rendered as a `+N` badge on the favoured competitor row.
+     */
+    advantage?: IBracketMatchAdvantage
     /** ISO date string — informative only, displayed when present. */
     scheduledAt?: string
     /** Free-form payload — never read by the component. */

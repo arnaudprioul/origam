@@ -198,16 +198,15 @@ For `double-elimination`:
   with the Grand Final column (`side: 'grand-final'`) on the right,
   vertically centred across both. Each tree carries a heading
   (`winnersLabel` / `losersLabel`).
-- The Grand Final models the Winner Bracket champion's one-match
-  advantage as a **conditional reset match**: provide two
-  `grand-final` rounds (the Grand Final and a "Grand Final (reset)"),
-  wired with `nextMatchId`. The reset is only meaningful when the Loser
-  Bracket champion wins the first Grand Final.
+- The Grand Final is a **single match**. The Winner Bracket champion's
+  one-round advantage is expressed on that match via `advantage`
+  (`{ competitorId, rounds }`, default `rounds: 1`) — rendered as a
+  `+N` badge on the favoured competitor row, signalling the head start
+  that competitor carries into the series.
 - Connectors are driven **purely by `nextMatchId`** (no positional
   fallback): every match that declares a downstream id draws a measured
-  link to that card wherever it lands, so Winner-final → Grand Final,
-  Loser-final → Grand Final and Grand Final → reset all resolve across
-  the two trees.
+  link to that card wherever it lands, so Winner-final → Grand Final and
+  Loser-final → Grand Final both resolve across the two trees.
 
 For `round-robin`:
 

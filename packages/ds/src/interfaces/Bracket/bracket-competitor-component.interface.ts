@@ -53,4 +53,10 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
     interactive?: boolean
     /** Intent color driving the winner highlight. */
     color?: TIntent
+    /**
+     * Head-start carried into the match by this competitor, in rounds /
+     * sets. When set (`> 0`), a `+N` badge is rendered next to the name
+     * — used for the Winner Bracket champion's Grand Final advantage.
+     */
+    advantageRounds?: number
 }

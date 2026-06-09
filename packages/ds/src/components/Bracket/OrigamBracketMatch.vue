@@ -35,6 +35,7 @@
 					:side="'A'"
 			>
 				<origam-bracket-competitor
+						:advantage-rounds="advantageA"
 						:color="color"
 						:competitor="match.competitorA"
 						:interactive="interactive"
@@ -58,6 +59,7 @@
 					:side="'B'"
 			>
 				<origam-bracket-competitor
+						:advantage-rounds="advantageB"
 						:color="color"
 						:competitor="match.competitorB"
 						:interactive="interactive"
@@ -152,6 +154,17 @@
 
 		return props.match.competitorB.id !== props.match.winnerId
 	})
+
+	const advantageFor = (competitor: IBracketCompetitor | null): number | undefined => {
+		const advantage = props.match.advantage
+		if (!advantage || !competitor) return undefined
+		if (advantage.competitorId !== competitor.id) return undefined
+
+		return advantage.rounds ?? 1
+	}
+
+	const advantageA = computed<number | undefined>(() => advantageFor(props.match.competitorA))
+	const advantageB = computed<number | undefined>(() => advantageFor(props.match.competitorB))
 
 	const ariaLabel = computed<string>(() => {
 		const a = props.match.competitorA?.name ?? 'TBD'

@@ -29,6 +29,15 @@
 		</span>
 
 		<span
+				v-if="hasAdvantage"
+				:aria-label="advantageAriaLabel"
+				:title="advantageAriaLabel"
+				class="origam-bracket-competitor__advantage"
+		>
+			{{ advantageLabel }}
+		</span>
+
+		<span
 				v-if="showScore"
 				class="origam-bracket-competitor__score"
 		>
@@ -76,6 +85,16 @@
 		if (typeof props.score === 'number') return String(props.score)
 
 		return props.score
+	})
+
+	const hasAdvantage = computed<boolean>(() => (props.advantageRounds ?? 0) > 0)
+
+	const advantageLabel = computed<string>(() => `+${props.advantageRounds ?? 0}`)
+
+	const advantageAriaLabel = computed<string>(() => {
+		const rounds = props.advantageRounds ?? 0
+
+		return `${rounds}-round head start`
 	})
 
 	const ariaLabel = computed<string>(() => {
@@ -168,6 +187,18 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+		}
+
+		&__advantage {
+			flex: 0 0 auto;
+			padding-block: var(--origam-bracket-advantage---padding-block, 1px);
+			padding-inline: var(--origam-bracket-advantage---padding-inline, 6px);
+			font-size: var(--origam-bracket-advantage---font-size, 0.6875rem);
+			font-weight: var(--origam-bracket-advantage---font-weight, 700);
+			line-height: 1.4;
+			color: var(--origam-bracket-advantage---color, var(--origam-color__action--primary---fg, #fff));
+			background-color: var(--origam-bracket-advantage---background-color, var(--origam-color__action--primary---bg, #1976d2));
+			border-radius: var(--origam-bracket-advantage---border-radius, 9999px);
 		}
 
 		&__score {

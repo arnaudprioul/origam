@@ -328,10 +328,11 @@
 	 * @description
 	 * A real double-elimination is two independent trees — the
 	 * Winner Bracket and the Loser Bracket — that converge on a
-	 * Grand Final (plus a conditional reset match: the WB champion
-	 * carries a one-match advantage, so the LB champion must win
-	 * twice). Each section is rendered as its own tree; empty
-	 * sections are dropped.
+	 * single Grand Final. The Winner Bracket champion carries a
+	 * one-round head start into that match (set via the match's
+	 * `advantage`, rendered as a `+N` badge on its competitor row).
+	 * Each section is rendered as its own tree; empty sections are
+	 * dropped.
 	 ********************************************************/
 	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'winner' || r.side === undefined))
 	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'loser'))
@@ -535,7 +536,7 @@
 	 * so connectors are driven purely by `nextMatchId`: every match
 	 * that declares a downstream id draws a link to it, wherever that
 	 * card lands. Measured against the whole double-elim container so
-	 * WB-final → GF, LB-final → GF and GF → GF-reset all resolve.
+	 * WB-final → GF and LB-final → GF both resolve across the trees.
 	 ********************************************************/
 	const measureDoubleConnectors = (): void => {
 		const rootEl = doubleRef.value

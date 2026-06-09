@@ -491,7 +491,7 @@
 			]
 		},
 		{
-			id: 'gf-r',
+			id: 'gf',
 			title: 'Grand Final',
 			side: 'grand-final',
 			matches: [
@@ -499,21 +499,8 @@
 					id: 'gf',
 					competitorA: { id: 't1', name: 'T1' },
 					competitorB: { id: 'tl', name: 'Team Liquid' },
-					scoreA: 2, scoreB: 3, winnerId: 'tl',
-					status: 'completed', nextMatchId: 'gfr'
-				}
-			]
-		},
-		{
-			id: 'gf-reset',
-			title: 'Grand Final (reset)',
-			side: 'grand-final',
-			matches: [
-				{
-					id: 'gfr',
-					competitorA: { id: 't1', name: 'T1' },
-					competitorB: { id: 'tl', name: 'Team Liquid' },
-					status: 'pending'
+					status: 'pending',
+					advantage: { competitorId: 't1', rounds: 1 }
 				}
 			]
 		}
