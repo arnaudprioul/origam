@@ -52,7 +52,19 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import { useColorEffect, useProps } from '../../composables'
+	import {
+		useBorder,
+		useColorEffect,
+		useDensity,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded
+	} from '../../composables'
+
+	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
 
 	import type { IBracketCompetitorProps } from '../../interfaces'
 
@@ -120,13 +132,40 @@
 		emit('click', event)
 	}
 
-	// `bgColor` paints the row, `color` sets its text — both optional. When
-	// unset (the in-bracket case) the row stays transparent and inherits
-	// the bracket's auto-contrast text colour through `currentColor`.
+	// Cross-cutting surfaces — reuse the Commons composables rather than
+	// re-implementing. `bgColor` paints the row, `color` sets its text;
+	// both optional, so in-bracket the row stays transparent and inherits
+	// the bracket's auto-contrast colour through `currentColor`.
 	const {colorClasses, colorStyles} = useColorEffect(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {dimensionStyles} = useDimension(props)
+	const {densityClasses} = useDensity(props, 'origam-bracket-competitor')
+
+	// `useBorder` emits the raw `borderColor` value, which is invalid for an
+	// intent keyword — resolve intents to their token here so the prop works
+	// with `'danger'` etc. (custom CSS colors fall through to useBorder).
+	const borderColorStyle = computed<string[]>(() => {
+		const value = props.borderColor
+
+		return value && isIntent(value as string) ? [`border-color: ${tokenForegroundForIntent(value as string)}`] : []
+	})
 
 	const rowStyles = computed<StyleValue>(() => {
-		return [colorStyles.value, props.style] as StyleValue
+		return [
+			colorStyles.value,
+			roundedStyles.value,
+			elevationStyles.value,
+			borderStyles.value,
+			borderColorStyle.value,
+			paddingStyles.value,
+			marginStyles.value,
+			dimensionStyles.value,
+			props.style
+		] as StyleValue
 	})
 
 	const rowClasses = computed(() => {
@@ -139,6 +178,12 @@
 				'origam-bracket-competitor--interactive': props.interactive
 			},
 			colorClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			borderClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
+			densityClasses.value,
 			props.class
 		]
 	})
@@ -164,7 +209,7 @@
 		font-weight: var(--origam-bracket-competitor---font-weight, 400);
 		color: var(--origam-bracket-competitor---color, currentColor);
 		background-color: var(--origam-bracket-competitor---background-color, transparent);
-		border: 0;
+		appearance: none;
 		transition: background-color 120ms ease, color 120ms ease;
 		user-select: none;
 
@@ -247,6 +292,17 @@
 			color: var(--origam-bracket-competitor--pending---color, currentColor);
 			opacity: var(--origam-bracket-competitor--pending---opacity, 0.7);
 			font-style: var(--origam-bracket-competitor--pending---font-style, italic);
+		}
+
+		&--density-compact {
+			--origam-bracket-competitor---height: 28px;
+			--origam-bracket-competitor---padding-block: 2px;
+			--origam-bracket-competitor---font-size: 0.8125rem;
+		}
+
+		&--density-comfortable {
+			--origam-bracket-competitor---height: 44px;
+			--origam-bracket-competitor---padding-block: 8px;
 		}
 	}
 </style>

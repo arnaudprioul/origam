@@ -26,8 +26,19 @@ optional `avatar`). `null` renders a "TBD" placeholder.
 | `showScore`       | `boolean`                     | `true`      |
 | `showSeed`        | `boolean`                     | `false`     |
 | `interactive`     | `boolean`                     | `true`      |
-| `color`           | `TIntent`                     | `'primary'` |
+| `rounded`         | `TRounded \| number \| string \| boolean` | — |
+| `elevation`       | `number` / shadow rung        | —           |
+| `border`          | `'thin' \| 'thick' \| number \| string \| boolean` | — |
+| `borderColor`     | `TIntent \| <css-color>`      | — (currentColor) |
+| `borderStyle`     | `'solid' \| 'dashed' \| …`    | —           |
+| `density`         | `'default' \| 'compact' \| 'comfortable'` | — |
+| `width` / `height` / `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | `number \| string` | — |
+| `padding*` / `margin*` | `number \| string`       | —           |
 | `tag`             | `string`                      | `'div'`     |
+
+The full cross-cutting surface (rounded, elevation, border, density,
+dimension, padding, margin) is supported via the standard Commons
+composables, so a standalone row behaves like any other origam component.
 
 - `isWinner` bolds the row + tints its background; `isLoser` de-emphasises
   it (lower opacity). `null` competitor → italic "TBD".

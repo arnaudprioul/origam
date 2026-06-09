@@ -1,13 +1,28 @@
-import type { IBgColorProps, IColorProps, ICommonsComponentProps, ITagProps } from '../../interfaces'
+import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
+    ICommonsComponentProps,
+    IDensityProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITagProps
+} from '../../interfaces'
 
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 
 /**
  * Props for `<OrigamBracketCompetitor>` — a single competitor row.
  * Exported so consumers can render a competitor row standalone (e.g.
- * inside a custom match slot).
+ * inside a custom match slot). Carries the full cross-cutting prop
+ * surface (color, bgColor, rounded, elevation, border, density,
+ * dimension, padding, margin) so a standalone row behaves like any
+ * other origam component.
  */
-export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps {
+export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps {
     /**
      * The competitor payload. `null` renders a "TBD" placeholder — used
      * when the match's participant is not yet determined (winner of an
