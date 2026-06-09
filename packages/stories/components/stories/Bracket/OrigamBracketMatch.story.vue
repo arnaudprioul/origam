@@ -81,6 +81,7 @@
 							:bg-color="state.bgColor"
 							:hover="resolveHoverState(state.hover)"
 							:active="resolveActiveState(state.active)"
+              :status="BRACKET_MATCH_STATUS.LIVE"
 					/>
 				</div>
 			</template>

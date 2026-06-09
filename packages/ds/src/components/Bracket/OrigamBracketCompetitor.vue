@@ -141,6 +141,10 @@
 	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
 	const {activeClasses, isActive, activeState, onActive} = useActive(props)
 
+	// Hover wins over active: while hovering, suppress the active flag so the
+	// hover surface takes precedence (active → hover cascade).
+	const activeNotHover = computed<boolean>(() => Boolean((isActive as unknown as { value: boolean }).value) && !isHover.value)
+
 	const {
 		colorClasses, colorStyles,
 		borderClasses, borderStyles,
@@ -148,7 +152,7 @@
 		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles
-	} = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	} = useStateEffect(props, isHover, activeNotHover as unknown as ComputedRef<boolean>, hoverState, activeState)
 
 	const {dimensionStyles} = useDimension(props)
 	const {densityClasses} = useDensity(props, 'origam-bracket-competitor')

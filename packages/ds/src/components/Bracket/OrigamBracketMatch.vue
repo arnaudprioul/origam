@@ -223,8 +223,10 @@
 	// `bracketSurfaceVars` so the card repaints on state — exactly like a
 	// `useStateEffect`-driven component, but through the bracket's vars.
 	const surfaceInput = computed(() => {
-		if (isActiveOrLive.value && activeState.value) return {...props, ...activeState.value}
+		// Hover wins over active (incl. live) — hovering a live match shows
+		// the hover surface. Mirrors useStateEffect's hover-first precedence.
 		if (isHover.value && hoverState.value) return {...props, ...hoverState.value}
+		if (isActiveOrLive.value && activeState.value) return {...props, ...activeState.value}
 
 		return props
 	})
