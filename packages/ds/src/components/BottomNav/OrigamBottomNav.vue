@@ -87,6 +87,7 @@
 		modelValue: true,
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
+		position: 'start',
 		items: () => [] as Array<TOrigamBtn>,
 		// Default transition — slide up from the bottom of the viewport.
 		// Passed as a component descriptor (not just a name string) so the
@@ -231,6 +232,7 @@
 		return [
 			'origam-bottom-nav',
 			`origam-bottom-nav--${props.mode}`,
+			`origam-bottom-nav--position-${props.position}`,
 			{
 				'origam-bottom-nav--grow': props.grow
 			},
@@ -341,6 +343,22 @@
 
 		&--elevated {
 			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
+		}
+
+		&--position-start {
+			left: 0;
+			right: auto;
+		}
+
+		&--position-center {
+			left: 0;
+			right: 0;
+			margin-inline: auto;
+		}
+
+		&--position-end {
+			left: auto;
+			right: 0;
 		}
 
 		&--border {

@@ -25,6 +25,7 @@
 							:border-style="state.borderStyle"
 							:width="state.width"
 							:height="state.height"
+							:position="state.position"
 							:items="navItems"
 					/>
 				</div>
@@ -47,8 +48,9 @@
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
-					<HstText v-model="state.width"  title="Width"/>
-					<HstText v-model="state.height" title="Height"/>
+					<HstText   v-model="state.width"    title="Width"/>
+					<HstText   v-model="state.height"   title="Height"/>
+					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
@@ -230,9 +232,9 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
-	import { MDI_ICONS, MODE } from '@origam/enums'
+	import { BOTTOM_NAV_POSITION, MDI_ICONS, MODE } from '@origam/enums'
 	import type { IBottomNavProps, IOptions } from '@origam/interfaces'
-	import type { TMode } from '@origam/types'
+	import type { TBottomNavPosition, TMode } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -252,6 +254,12 @@
 		{ label: 'vertical',   value: MODE.VERTICAL   },
 		{ label: 'horizontal', value: MODE.HORIZONTAL },
 		{ label: 'shift',      value: MODE.SHIFT      },
+	]
+
+	const POSITION_OPTIONS: Array<IOptions<TBottomNavPosition>> = [
+		{ label: 'start',  value: BOTTOM_NAV_POSITION.START  },
+		{ label: 'center', value: BOTTOM_NAV_POSITION.CENTER },
+		{ label: 'end',    value: BOTTOM_NAV_POSITION.END    },
 	]
 
 	const navItems: Array<IBottomNavProps['items'][number]> = [

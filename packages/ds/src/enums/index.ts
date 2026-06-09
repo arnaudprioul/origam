@@ -71,6 +71,8 @@ export * from './Blockquote/blockquote-variant.enum'
 export * from './Blockquote/blockquote-lang.enum'
 
 export * from './Bracket/bracket-variant.enum'
+
+export * from './BottomNav/bottom-nav-position.enum'
 export * from './Bracket/bracket-match-status.enum'
 
 export * from './Card/card.enum'
