@@ -168,7 +168,8 @@
 			min-width: var(--origam-bracket-seed---min-width, 20px);
 			font-size: var(--origam-bracket-seed---font-size, 0.75rem);
 			font-weight: var(--origam-bracket-seed---font-weight, 500);
-			color: var(--origam-bracket-seed---color, var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5)));
+			color: var(--origam-bracket-seed---color, currentColor);
+			opacity: var(--origam-bracket-seed---opacity, 0.7);
 			text-align: end;
 			flex: 0 0 auto;
 		}

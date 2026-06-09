@@ -141,18 +141,28 @@ diagonal. The diagonal cells are inert.
 | `interactive`     | `boolean`                                                     | `true`                |
 | `color`           | `TIntent \| <css-color>`                                     | `'primary'`           |
 | `bgColor`         | `TIntent \| <css-color>`                                     | — (none)              |
+| `rounded`         | `TRounded \| number \| string \| boolean`                    | — (match default 6px) |
+| `elevation`       | `number` (0–24, bucketised to the shadow ladder)             | — (match default)     |
+| `border`          | `'thin' \| 'thick' \| number \| boolean`                     | — (match default 1px) |
+| `borderColor`     | `TIntent \| <css-color>`                                     | — (subtle)            |
+| `borderStyle`     | `'solid' \| 'dashed' \| 'dotted' \| …`                       | `'solid'`             |
 | `winnersLabel`    | `string`                                                      | `'Winners bracket'`   |
 | `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
 
 > **`bgColor`** paints the surface of **every match card** (including
 > hover). When a surface is painted, the match text is automatically set
 > to the black / white that passes WCAG against the rendered colour — so
-> the bracket stays legible whatever the intent. With no `bgColor`,
-> **`color`** drives the match text on the neutral surface. Both accept a
-> tokenised intent (theme-aware) or a raw CSS color.
+> the bracket stays legible whatever the intent (seeds, scores and names
+> included). With no `bgColor`, **`color`** drives the match text on the
+> neutral surface. Both accept a tokenised intent or a raw CSS color.
 >
-> The **connector links between matches always follow the match border
-> colour** (not `color`), so the tree and its links read as one.
+> **`rounded`, `elevation` and `border*` apply to each match card**, not
+> the bracket root — every card is shaped / elevated / bordered. The
+> **connector links between matches follow the match border colour**
+> (`borderColor`, or the subtle default), so the tree and its links read
+> as one. `border` here is the match border *width* (`thin` / `thick` /
+> a number); set the colour via `borderColor` and the line style via
+> `borderStyle`.
 >
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.

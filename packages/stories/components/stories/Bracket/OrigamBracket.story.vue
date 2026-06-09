@@ -27,6 +27,9 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
 						:show-round-titles="state.showRoundTitles"
 						:show-scores="state.showScores"
 						:show-seed="state.showSeed"
@@ -55,6 +58,11 @@
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderColor" title="Border Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showRoundTitles" title="Show Round Titles"/>
@@ -282,6 +290,8 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,

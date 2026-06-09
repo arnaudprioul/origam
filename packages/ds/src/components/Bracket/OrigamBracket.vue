@@ -251,11 +251,9 @@
 
 	import {
 		useDimension,
-		useElevation,
 		useMargin,
 		usePadding,
-		useProps,
-		useRounded
+		useProps
 	} from '../../composables'
 
 	import {
@@ -268,6 +266,7 @@
 	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
 
 	import { isCssColor, isIntent, tokenForegroundForIntent, tokenStylesForIntent } from '../../utils/Commons/color.util'
+	import { convertToUnit } from '../../utils'
 
 	import type {
 		IBracketCompetitor,
@@ -811,6 +810,78 @@
 		return null
 	}
 
+	/*********************************************************
+	 * Per-match shape / depth / border resolvers
+	 *
+	 * @description
+	 * `rounded`, `elevation` and `border*` apply to EACH match card (not
+	 * the bracket root), driven through the match's own CSS custom
+	 * properties. Tokenised rungs resolve to the generated theme vars;
+	 * custom numbers / CSS values pass through `convertToUnit`. The border
+	 * colour also feeds the connector stroke so the links match the cards.
+	 ********************************************************/
+	const ROUNDED_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full']
+	const SHADOW_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
+	const NAMED_RADIUS_VARS: Record<string, string> = {
+		'x-small': 'var(--origam-radius---xs)',
+		'small':   'var(--origam-radius---sm)',
+		'default': 'var(--origam-radius---md)',
+		'medium':  'var(--origam-radius---lg)',
+		'large':   'var(--origam-radius---xl)',
+		'x-large': 'var(--origam-radius---2xl)'
+	}
+	const BORDER_WIDTH_VARS: Record<string, string> = {
+		none: 'var(--origam-border__width---0)',
+		thin: 'var(--origam-border__width---thin)',
+		thick: 'var(--origam-border__width---2)'
+	}
+
+	const resolveRadius = (value: IBracketProps['rounded']): string | null => {
+		if (value == null || value === false) return null
+		if (typeof value === 'string') {
+			if (value in NAMED_RADIUS_VARS) return NAMED_RADIUS_VARS[value]
+			if (ROUNDED_RUNGS.includes(value)) return `var(--origam-radius---${value})`
+			if (value === '') return 'var(--origam-radius---md)'
+
+			// Free-form CSS border-radius (`'9999px'`, `'0 4px 0 4px'`, …).
+			return value.includes(' ') ? value : (convertToUnit(value) ?? value)
+		}
+		if (value === true) return 'var(--origam-radius---md)'
+
+		return convertToUnit(value as number) ?? null
+	}
+
+	const resolveShadow = (value: IBracketProps['elevation']): string | null => {
+		if (value == null || value === false) return null
+		if (typeof value === 'number') {
+			const rung = value <= 0 ? 'none' : value <= 2 ? 'xs' : value <= 4 ? 'sm' : value <= 8 ? 'md' : value <= 16 ? 'lg' : 'xl'
+
+			return `var(--origam-shadow---${rung})`
+		}
+		if (typeof value === 'string' && SHADOW_RUNGS.includes(value)) return `var(--origam-shadow---${value})`
+		if (value === true) return 'var(--origam-shadow---md)'
+
+		return typeof value === 'string' ? value : null
+	}
+
+	const resolveBorderWidth = (value: IBracketProps['border']): string | null => {
+		if (value == null || value === false) return null
+		if (typeof value === 'string' && value in BORDER_WIDTH_VARS) return BORDER_WIDTH_VARS[value]
+		if (value === true || value === '') return 'var(--origam-border__width---thin)'
+		if (typeof value === 'number') return convertToUnit(value) ?? null
+
+		// Free-form / positional `border` encodings aren't a plain width.
+		return null
+	}
+
+	const resolveBorderColor = (value: IBracketProps['borderColor']): string | null => {
+		if (!value) return null
+		if (isIntent(value as string)) return tokenForegroundForIntent(value as string)
+		if (typeof value === 'string' && isCssColor(value)) return value
+
+		return null
+	}
+
 	// Legible text for a painted surface. The intent → foreground tokens
 	// always pair white, which only contrasts a *dark* fill; on a light
 	// intent (warning, success, …) white is unreadable. Since the surface
@@ -869,6 +940,26 @@
 		const foreground = autoTextColor.value ?? resolveForeground(props.color)
 		if (foreground) vars['--origam-bracket---color'] = foreground
 
+		// Per-match shape / depth.
+		const radius = resolveRadius(props.rounded)
+		if (radius) vars['--origam-bracket-match---border-radius'] = radius
+
+		const shadow = resolveShadow(props.elevation)
+		if (shadow) vars['--origam-bracket-match---box-shadow'] = shadow
+
+		// Per-match border — colour also drives the connector links.
+		const borderWidth = resolveBorderWidth(props.border)
+		if (borderWidth) vars['--origam-bracket-match---border-width'] = borderWidth
+
+		if (props.borderStyle) vars['--origam-bracket-match---border-style'] = props.borderStyle
+
+		const borderColor = resolveBorderColor(props.borderColor)
+		if (borderColor) {
+			vars['--origam-bracket-match---border-color'] = borderColor
+			vars['--origam-bracket-connector---stroke-color'] = borderColor
+			vars['--origam-bracket-connector---stroke-color-winner'] = borderColor
+		}
+
 		return vars
 	})
 
@@ -901,18 +992,19 @@
 
 	/*********************************************************
 	 * Class & Style
+	 *
+	 * @description
+	 * `rounded`, `elevation` and `border*` are applied PER-MATCH via
+	 * `colorVars` (CSS custom properties the match cards consume), not on
+	 * the bracket root — so each card is shaped / elevated / bordered.
 	 ********************************************************/
-	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 
 	const rootStyles = computed<StyleValue>(() => {
 		return [
-			roundedStyles.value,
 			dimensionStyles.value,
-			elevationStyles.value,
 			marginStyles.value,
 			paddingStyles.value,
 			{
@@ -931,8 +1023,6 @@
 			`origam-bracket--direction-${props.direction}`,
 			`origam-bracket--density-${props.density ?? 'default'}`,
 			`origam-bracket--color-${props.color}`,
-			roundedClasses.value,
-			elevationClasses.value,
 			marginClasses.value,
 			paddingClasses.value,
 			props.class
