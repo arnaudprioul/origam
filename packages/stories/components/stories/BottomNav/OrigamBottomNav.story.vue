@@ -71,6 +71,7 @@
 							:model-value="true"
 							:bg-color="state.bgColor"
 							:hover="resolveHoverState(state.hover)"
+							:active="resolveActiveState(state.active)"
 							:items="navItems"
 					/>
 				</div>
@@ -80,7 +81,8 @@
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -240,11 +242,13 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		BORDER_OPTIONS,
+		ACTIVE_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
+		resolveActiveState,
 		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS

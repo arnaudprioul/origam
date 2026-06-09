@@ -1,5 +1,6 @@
 import type {
     IActiveEmits,
+    IActiveProps,
     IBorderProps,
     IBtnProps,
     IBgColorProps,
@@ -22,7 +23,7 @@ import type {
 
 import type { TBottomNavPosition, TMode } from '../../types'
 
-export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IBorderProps, IElevationProps, IMarginProps, IDimensionProps, IDensityProps, IRoundedProps, ILayoutItemProps, IGroupProps, IHoverProps, ITransitionComponentProps {
+export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IBorderProps, IElevationProps, IMarginProps, IDimensionProps, IDensityProps, IRoundedProps, ILayoutItemProps, IGroupProps, IHoverProps, IActiveProps, ITransitionComponentProps {
     grow?: boolean
     mode?: TMode
     items?: Array<IBtnProps>
