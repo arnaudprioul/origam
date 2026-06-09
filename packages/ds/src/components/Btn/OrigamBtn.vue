@@ -4,6 +4,7 @@
 			:id="id"
 			v-ripple="isRipple"
 			v-contrast
+			:data-origam-color-locked="colorLocked"
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
 			:aria-disabled="link.tag === 'a' && isDisabled ? 'true' : undefined"
@@ -190,6 +191,10 @@
 	// only the `items` prop path was honoured (and even that flipped the
 	// override semantics: parent `??` item, instead of item-wins).
 	const props = useDefaults(_props)
+
+	// When the consumer explicitly picks a foreground `color`, mark the element
+	// so `v-contrast` doesn't override that intentional colour for legibility.
+	const colorLocked = computed(() => (props.color ? 'true' : undefined))
 
 	defineEmits<IBtnEmits>()
 

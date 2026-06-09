@@ -97,6 +97,13 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
 
     if (!enabled || typeof window === 'undefined') return
 
+    // The consumer EXPLICITLY chose a foreground colour (`color="danger"`,
+    // etc.) — respect it. Auto-contrast must never override an intentional
+    // colour, only fix legibility when no colour was asked for. Components
+    // with a controllable `color` prop set `data-origam-color-locked` when it
+    // is provided.
+    if (el.dataset.origamColorLocked === 'true') return
+
     // NOTE: we do NOT clear our previous override here. Vue re-applies the
     // consumer's colour via `el.style.color = …` on every patch (which strips
     // our `!important`), so by the time this runs in rAF the element already

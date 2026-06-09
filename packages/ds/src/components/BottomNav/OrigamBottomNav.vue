@@ -5,6 +5,7 @@
 				v-if="isActive"
 				:id="id"
 				v-contrast
+				:data-origam-color-locked="colorLocked"
 				:class="bottomNavClasses"
 				aria-label="Bottom navigation"
 				@mouseenter="handleMouseenter"
@@ -98,6 +99,10 @@
 	defineEmits<IBottomNavEmits>()
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
+
+	// When `color` is explicitly set, mark the element so `v-contrast` keeps
+	// the chosen foreground instead of forcing black/white for legibility.
+	const colorLocked = computed(() => (props.color ? 'true' : undefined))
 
 	// Push visual-token props down to every descendant `<origam-btn>` (the
 	// bottom-nav button children) as DEFAULTS — items that pass their own
