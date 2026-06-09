@@ -788,7 +788,8 @@
 	 *   - `--origam-bracket-match---background-color`  ← bgColor
 	 *   - `--origam-bracket---color`                   ← color (text,
 	 *     inherited as `currentColor` by competitor rows / scores)
-	 *   - `--origam-bracket-connector---stroke-color`(+ `-winner`) ← color
+	 * The connector links deliberately follow the match BORDER colour
+	 * (handled in SCSS), not `color`, so trees and links read as one.
 	 * Tokenised intents resolve to theme vars; custom CSS colors pass
 	 * through untouched.
 	 ********************************************************/
@@ -810,24 +811,92 @@
 		return null
 	}
 
+	// Legible text for a painted surface. The intent → foreground tokens
+	// always pair white, which only contrasts a *dark* fill; on a light
+	// intent (warning, success, …) white is unreadable. Since the surface
+	// resolves to a theme var we cannot WCAG-test it in JS — so we measure
+	// the painted match card at runtime and pick the better of black /
+	// white. Reactive: re-measured on mount, on bgColor / variant change.
+	const autoTextColor = ref<string | null>(null)
+
+	const measureContrast = (): void => {
+		if (!props.bgColor) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const card = connectorContainer()?.querySelector<HTMLElement>('.origam-bracket-match')
+		if (!card) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const channels = getComputedStyle(card).backgroundColor.match(/\d+(?:\.\d+)?/g)
+		if (!channels || channels.length < 3) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		// Pick the black / white that maximises the WCAG ratio against the
+		// rendered surface. Crossover is at a gamma-corrected relative
+		// luminance of ~0.179: darker fills (primary) take white, lighter
+		// ones (warning, success, info) take black.
+		const linear = (channel: number): number => {
+			const c = channel / 255
+
+			return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+		}
+		const luminance = 0.2126 * linear(+channels[0]) + 0.7152 * linear(+channels[1]) + 0.0722 * linear(+channels[2])
+
+		autoTextColor.value = luminance < 0.179 ? '#ffffff' : '#000000'
+	}
+
 	const colorVars = computed<Record<string, string>>(() => {
 		const vars: Record<string, string> = {}
 
 		const surface = resolveSurface(props.bgColor)
 		if (surface) {
 			vars['--origam-bracket-match---background-color'] = surface
-			vars['--origam-bracket-match--final---background-color'] = surface
 			vars['--origam-bracket-match--hover---background-color'] = surface
 		}
 
-		const foreground = resolveForeground(props.color)
-		if (foreground) {
-			vars['--origam-bracket---color'] = foreground
-			vars['--origam-bracket-connector---stroke-color'] = foreground
-			vars['--origam-bracket-connector---stroke-color-winner'] = foreground
-		}
+		// Text foreground: a painted surface (`bgColor`) takes the measured
+		// black / white that actually passes WCAG against it; with no
+		// surface, `color` drives the text on the neutral background.
+		const foreground = autoTextColor.value ?? resolveForeground(props.color)
+		if (foreground) vars['--origam-bracket---color'] = foreground
 
 		return vars
+	})
+
+	// Read the SETTLED surface: the match card animates its background
+	// (`transition: background-color 120ms`), so an immediate read sees the
+	// mid-transition colour and locks the wrong black / white. Wait past
+	// the transition before measuring.
+	const CONTRAST_SETTLE_MS = 200
+	let contrastTimer: ReturnType<typeof setTimeout> | null = null
+
+	const scheduleContrast = (): void => {
+		if (typeof window === 'undefined') return
+		if (contrastTimer) clearTimeout(contrastTimer)
+
+		contrastTimer = setTimeout(measureContrast, CONTRAST_SETTLE_MS)
+	}
+
+	watch(
+		[() => props.bgColor, () => props.variant, displayRounds],
+		scheduleContrast,
+		{flush: 'post'}
+	)
+
+	onMounted(scheduleContrast)
+
+	onBeforeUnmount(() => {
+		if (contrastTimer) clearTimeout(contrastTimer)
+		contrastTimer = null
 	})
 
 	/*********************************************************
@@ -986,11 +1055,11 @@
 		}
 
 		&__connector {
-			stroke: var(--origam-bracket-connector---stroke-color, var(--origam-color__border---default, rgba(0, 0, 0, 0.24)));
+			stroke: var(--origam-bracket-connector---stroke-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
 			stroke-width: var(--origam-bracket-connector---stroke-width, 1px);
 
 			&--winner {
-				stroke: var(--origam-bracket-connector---stroke-color-winner, var(--origam-color__action--primary---bg, #1976d2));
+				stroke: var(--origam-bracket-connector---stroke-color-winner, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
 				stroke-width: calc(var(--origam-bracket-connector---stroke-width, 1px) + 1px);
 			}
 		}

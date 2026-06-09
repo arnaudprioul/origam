@@ -145,11 +145,14 @@ diagonal. The diagonal cells are inert.
 | `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
 
 > **`bgColor`** paints the surface of **every match card** (including
-> the final and hover states). **`color`** drives the **match text and
-> the connector links** between matches (and the winner-row highlight).
-> Both accept a tokenised intent (theme-aware) or a raw CSS color. They
-> are foreground/background-independent — set both for a coloured
-> surface with legible text.
+> hover). When a surface is painted, the match text is automatically set
+> to the black / white that passes WCAG against the rendered colour — so
+> the bracket stays legible whatever the intent. With no `bgColor`,
+> **`color`** drives the match text on the neutral surface. Both accept a
+> tokenised intent (theme-aware) or a raw CSS color.
+>
+> The **connector links between matches always follow the match border
+> colour** (not `color`), so the tree and its links read as one.
 >
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.

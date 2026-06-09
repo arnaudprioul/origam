@@ -263,7 +263,8 @@
 			}
 
 			&--completed {
-				color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+				color: var(--origam-bracket-match-status--completed---color, currentColor);
+				opacity: var(--origam-bracket-match-status--completed---opacity, 0.6);
 			}
 
 			&--forfeited {
@@ -293,12 +294,6 @@
 				background-color: var(--origam-bracket-match--hover---background-color, var(--origam-color__surface---elevated, #fafafa));
 				border-color: var(--origam-bracket-match--hover---border-color, var(--origam-color__border---default, rgba(0, 0, 0, 0.24)));
 			}
-		}
-
-		&--final {
-			background-color: var(--origam-bracket-match--final---background-color, var(--origam-color__surface---elevated, #fafafa));
-			border-color: var(--origam-bracket-match--final---border-color, var(--origam-color__action--primary---bg, #1976d2));
-			box-shadow: var(--origam-bracket-match--final---box-shadow, 0 4px 12px rgba(0, 0, 0, 0.12));
 		}
 
 		&--status-completed {

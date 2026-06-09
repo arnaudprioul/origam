@@ -229,17 +229,18 @@
 			font-weight: var(--origam-bracket-competitor--winner---font-weight, 600);
 
 			.origam-bracket-competitor__score {
-				color: var(--origam-bracket-competitor--winner---color, var(--origam-color__action--primary---bg, #1976d2));
+				color: var(--origam-bracket-competitor--winner---color, currentColor);
 			}
 		}
 
 		&--loser {
-			color: var(--origam-bracket-competitor--loser---color, var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5)));
-			opacity: var(--origam-bracket-competitor--loser---opacity, 0.75);
+			color: var(--origam-bracket-competitor--loser---color, currentColor);
+			opacity: var(--origam-bracket-competitor--loser---opacity, 0.85);
 		}
 
 		&--tbd {
-			color: var(--origam-bracket-competitor--pending---color, var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5)));
+			color: var(--origam-bracket-competitor--pending---color, currentColor);
+			opacity: var(--origam-bracket-competitor--pending---opacity, 0.7);
 			font-style: var(--origam-bracket-competitor--pending---font-style, italic);
 		}
 	}
