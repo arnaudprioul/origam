@@ -3,7 +3,6 @@
 			group="components"
 			title="List/OrigamListGroup"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -75,8 +74,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<IBgColorProps>>({ bgColor: 'primary' })"
@@ -106,8 +103,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -146,8 +141,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:activator">
 			<origam-list>
 				<origam-list-group
@@ -161,8 +154,6 @@
 				</origam-list-group>
 			</origam-list>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-list>
@@ -202,8 +193,6 @@
 				</origam-list-group>
 			</origam-list>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

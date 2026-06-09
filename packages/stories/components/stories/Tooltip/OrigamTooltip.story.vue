@@ -3,7 +3,6 @@
 			group="components"
 			title="Tooltip/OrigamTooltip"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -60,8 +59,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -137,8 +134,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div class="tooltip-story-host">
 				<origam-tooltip
@@ -152,8 +147,6 @@
 				</origam-tooltip>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Activator">
 			<div class="tooltip-story-host">
@@ -175,8 +168,6 @@
 				</origam-tooltip>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

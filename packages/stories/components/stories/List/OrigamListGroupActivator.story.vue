@@ -4,8 +4,6 @@
 			title="List/OrigamListGroupActivator"
 	>
 
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
-
 		<Variant
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IListActivatorProps>>({ tag: 'div' })"
@@ -33,8 +31,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-list>
 				<origam-list-group>
@@ -48,8 +44,6 @@
 				</origam-list-group>
 			</origam-list>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

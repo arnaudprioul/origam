@@ -3,7 +3,6 @@
 			group="components"
 			title="InfiniteScroll/OrigamInfiniteScrollIntersect"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -37,8 +36,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - intersect">
 			<origam-infinite-scroll
 					style="height: 300px; border: 1px solid var(--origam-color__border---subtle); border-radius: 8px;"
@@ -57,8 +54,6 @@
 				The internal sentinel emits <code>intersect</code> when scrolled into view — check the Histoire event log.
 			</p>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

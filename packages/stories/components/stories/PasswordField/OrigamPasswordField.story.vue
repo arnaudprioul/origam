@@ -3,7 +3,6 @@
 			group="components"
 			title="PasswordField/OrigamPasswordField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -74,8 +73,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IColorProps>({ color: 'primary' })"
@@ -97,8 +94,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -166,8 +161,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-password-field
 					v-model="emitUpdateModel"
@@ -212,8 +205,6 @@
 					@update:strength="logEvent('update:strength', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-password-field label="Password">
@@ -348,8 +339,6 @@
 				</template>
 			</origam-password-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

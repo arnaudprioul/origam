@@ -3,7 +3,6 @@
 			group="components"
 			title="Loader/OrigamLoader"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -23,8 +22,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -50,8 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-loader>
 				<span style="font-style: italic;">Custom idle content</span>
@@ -65,8 +60,6 @@
 				</template>
 			</origam-loader>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

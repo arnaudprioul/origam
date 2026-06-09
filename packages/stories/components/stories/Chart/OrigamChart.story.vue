@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChart"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -63,8 +62,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -149,8 +146,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<origam-chart
 					type="column"
@@ -180,8 +175,6 @@
 					@series-toggle="logEvent('series-toggle', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Tooltip">
 			<origam-chart
@@ -253,8 +246,6 @@
 				</template>
 			</origam-chart>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

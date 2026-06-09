@@ -3,7 +3,6 @@
 			group="components"
 			title="Label/OrigamLabel"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -42,8 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ILabelProps>>({ tag: 'label', text: 'OrigamLabel' })"
@@ -72,8 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click">
 			<origam-label
 					text="Click me"
@@ -81,15 +76,11 @@
 			/>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-label>
 				Email <em style="opacity: .6;">(optional)</em>
 			</origam-label>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

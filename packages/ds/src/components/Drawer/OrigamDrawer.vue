@@ -4,14 +4,6 @@
 			:to="teleportDrawer"
 			defer
 	>
-		<!--
-			`<origam-transition>` wraps the conditional <component v-if>
-			so the drawer animates on mount/unmount instead of popping
-			in / out. Default transition is `origam-transition--slide-x`
-			(horizontal slide keyframes shipped by OrigamSlideX). The
-			teleport itself stays mounted so transition events fire on
-			the inner element.
-		-->
 		<origam-transition :transition="transition">
 			<component
 					:is="tag"

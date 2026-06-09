@@ -3,7 +3,6 @@
 			group="components"
 			title="Kbd/OrigamKbd"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -40,8 +39,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IKbdProps>>({ text: '⌘', combination: undefined, separator: '+' })"
@@ -61,15 +58,11 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-kbd>
 				<origam-icon :icon="MDI_ICONS.APPLE_KEYBOARD_COMMAND" size="x-small"/>
 			</origam-kbd>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

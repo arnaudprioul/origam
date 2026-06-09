@@ -3,7 +3,6 @@
 			group="components"
 			title="DataList/OrigamDataList"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -51,8 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDataListProps>>({
@@ -93,8 +90,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-data-list :items="basicItems">
@@ -186,8 +181,6 @@
 		<Variant title="Slots - KV component-value cells">
 			<origam-data-list mode="kv" :items="kvMixedItems"/>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

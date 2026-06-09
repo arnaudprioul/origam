@@ -3,7 +3,6 @@
 			group="components"
 			title="Snackbar/OrigamSnackbarItem"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -31,8 +30,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -73,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - dismiss">
 			<origam-snackbar-item
 					intent="danger"
@@ -93,8 +88,6 @@
 					@action="logEvent('action', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Prepend">
 			<origam-snackbar-item
@@ -128,8 +121,6 @@
 				</template>
 			</origam-snackbar-item>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

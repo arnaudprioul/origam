@@ -3,7 +3,6 @@
 			group="components"
 			title="Overlay/OrigamOverlay"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -31,8 +30,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -128,8 +125,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div class="story-host">
 				<origam-overlay
@@ -211,8 +206,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Activator">
 			<div class="story-host">
 				<origam-overlay v-model="slotActivatorOpen">
@@ -246,8 +239,6 @@
 				</origam-overlay>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

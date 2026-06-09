@@ -3,7 +3,6 @@
 			group="components"
 			title="Transition/OrigamScaleRotate"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -37,8 +36,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -96,8 +93,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="story-shell">
 				<button
@@ -112,8 +107,6 @@
 				</origam-scale-rotate>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

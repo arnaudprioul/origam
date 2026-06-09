@@ -3,7 +3,6 @@
 			group="components"
 			title="Toolbar/OrigamToolbar"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -54,8 +53,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT (design + fonctionnel) ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IBgColorProps>({ bgColor: 'primary' })"
@@ -78,8 +75,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -111,8 +106,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-toolbar title="With Default Slot">
@@ -153,8 +146,6 @@
 				</template>
 			</origam-toolbar>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

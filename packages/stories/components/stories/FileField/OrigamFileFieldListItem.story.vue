@@ -3,7 +3,6 @@
 			group="components"
 			title="FileField/OrigamFileFieldListItem"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -35,8 +34,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ progress: 0, disabled: false, readonly: false, showSize: true })"
@@ -67,8 +64,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:remove">
 			<div style="padding: 24px; max-width: 480px;">
 				<origam-file-field-list-item
@@ -78,8 +73,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="padding: 24px; max-width: 480px;">
@@ -91,8 +84,6 @@
 				</origam-file-field-list-item>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

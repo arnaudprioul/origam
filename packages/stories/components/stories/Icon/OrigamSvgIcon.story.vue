@@ -3,7 +3,6 @@
 			group="components"
 			title="Icon/OrigamSvgIcon"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -46,8 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ tag: 'div', disabled: false })"
@@ -68,8 +65,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

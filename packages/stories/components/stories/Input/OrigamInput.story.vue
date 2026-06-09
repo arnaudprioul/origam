@@ -3,7 +3,6 @@
 			group="components"
 			title="Input/OrigamInput"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -82,8 +81,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IInputProps>>({
@@ -144,8 +141,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - update:modelValue">
 			<origam-input
@@ -216,8 +211,6 @@
 				</template>
 			</origam-input>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-input v-model="slotDefaultModel" label="Custom default slot">
@@ -322,8 +315,6 @@
 				</template>
 			</origam-input>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

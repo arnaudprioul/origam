@@ -3,7 +3,6 @@
 			group="components"
 			title="Dialog/OrigamDialog"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -71,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDialogProps>>({
@@ -124,8 +121,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div style="padding: 16px;">
 				<origam-dialog
@@ -176,8 +171,6 @@
 				</origam-dialog>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Activator">
 			<div style="padding: 16px;">
@@ -375,8 +368,6 @@
 				</origam-dialog>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

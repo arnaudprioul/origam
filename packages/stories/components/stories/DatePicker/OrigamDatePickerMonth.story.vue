@@ -3,7 +3,6 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerMonth"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -39,8 +38,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDatePickerMonthProps>>({ month: currentMonth, year: currentYear, date: [today] })"
@@ -72,8 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Days">
 			<origam-date-picker-month
 					:month="currentMonth"
@@ -88,8 +83,6 @@
 				</template>
 			</origam-date-picker-month>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Snackbar/OrigamSnackbar"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -71,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps>({ bgColor: 'primary' })"
@@ -98,8 +95,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -143,8 +138,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div style="padding: 16px; position: relative; min-height: 120px;">
 				<origam-btn text="Show (watch Events)" @click="emitOpen = true"/>
@@ -155,8 +148,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="padding: 16px; position: relative; min-height: 120px;">
@@ -203,8 +194,6 @@
 				</origam-snackbar>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

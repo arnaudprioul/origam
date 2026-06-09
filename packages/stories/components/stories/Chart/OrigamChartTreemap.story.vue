@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartTreemap"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -79,8 +78,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IChartTreemapProps>>({
@@ -132,8 +129,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<div
 					class="story-shell"
@@ -178,8 +173,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Tooltip">
 			<div
@@ -279,8 +272,6 @@
 				</origam-chart-treemap>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="InfiniteScroll/OrigamInfiniteScroll"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -56,8 +55,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IInfiniteScrollProps>>({
@@ -102,8 +99,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - load">
 			<origam-infinite-scroll
 					height="300px"
@@ -120,8 +115,6 @@
 				</div>
 			</origam-infinite-scroll>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-infinite-scroll
@@ -201,8 +194,6 @@
 				</template>
 			</origam-infinite-scroll>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

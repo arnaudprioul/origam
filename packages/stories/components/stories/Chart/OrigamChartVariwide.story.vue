@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartVariwide"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -74,8 +73,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IChartVariwideProps>>({
@@ -113,8 +110,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<origam-chart-variwide
 					:series="FIXTURE_GDP_POP"
@@ -143,8 +138,6 @@
 					@series-toggle="logEvent('series-toggle', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - tooltip">
 			<origam-chart-variwide
@@ -214,8 +207,6 @@
 				</template>
 			</origam-chart-variwide>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

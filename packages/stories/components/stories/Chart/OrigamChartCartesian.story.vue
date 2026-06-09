@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartCartesian"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -67,8 +66,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -139,8 +136,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - point-click">
 			<div class="story-shell">
@@ -218,8 +213,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Tooltip">
 			<div class="story-shell">
@@ -302,8 +295,6 @@
 				</origam-chart-cartesian>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

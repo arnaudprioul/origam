@@ -3,7 +3,6 @@
 			group="components"
 			title="Card/OrigamCard"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -84,8 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT (design + fonctionnel) ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
@@ -109,8 +106,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -160,8 +155,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:prepend">
 			<origam-card
 					title="Prepend click"
@@ -193,8 +186,6 @@
 					@update:hover="logEvent('update:hover', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-card>
@@ -295,8 +286,6 @@
 				</template>
 			</origam-card>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

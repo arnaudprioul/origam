@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartSparkline"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -69,8 +68,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IChartSparklineProps>>({
@@ -120,8 +117,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<figure class="story-shell">
 				<p class="story-hint">Click a data point on the sparkline to fire the event.</p>
@@ -137,8 +132,6 @@
 				/>
 			</figure>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Tooltip">
 			<figure class="story-shell">
@@ -177,8 +170,6 @@
 				</origam-chart-sparkline>
 			</figure>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

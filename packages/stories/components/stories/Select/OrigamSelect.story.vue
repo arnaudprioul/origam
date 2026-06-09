@@ -3,7 +3,6 @@
 			group="components"
 			title="Select/OrigamSelect"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -85,8 +84,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ISelectProps> & ILoadingState>({
@@ -157,8 +154,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - update:modelValue">
 			<origam-select
@@ -257,8 +252,6 @@
 					@update:focused="logEvent('update:focused', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Prepend">
 			<origam-select
@@ -468,8 +461,6 @@
 				</template>
 			</origam-select>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

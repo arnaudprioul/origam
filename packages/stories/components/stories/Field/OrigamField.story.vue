@@ -3,7 +3,6 @@
 			group="components"
 			title="Field/OrigamField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -58,8 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ color: 'primary', label: 'Field label' })"
@@ -86,8 +83,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -138,8 +133,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - focus">
 			<origam-field
 					label="Focus & blur events"
@@ -187,8 +180,6 @@
 				</template>
 			</origam-field>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-field label="Default slot">
@@ -285,8 +276,6 @@
 				</template>
 			</origam-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

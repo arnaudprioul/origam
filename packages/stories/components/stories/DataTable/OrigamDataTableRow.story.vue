@@ -3,7 +3,6 @@
 			group="components"
 			title="DataTable/OrigamDataTableRow"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -22,8 +21,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -50,8 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - expand">
 			<origam-data-table
 					:headers="headers"
@@ -70,8 +65,6 @@
 					@select="logEvent('select', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - item.data-table-select">
 			<origam-data-table :headers="headers" :items="items" show-select>
@@ -110,8 +103,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Img/OrigamImg"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -75,8 +74,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IImgProps>>({
@@ -126,8 +123,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - load">
 			<origam-img
 					:aspect-ratio="16 / 9"
@@ -162,8 +157,6 @@
 					@error="logEvent('error', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Placeholder">
 			<origam-img
@@ -210,8 +203,6 @@
 				</template>
 			</origam-img>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

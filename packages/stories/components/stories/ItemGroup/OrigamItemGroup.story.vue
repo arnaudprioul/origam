@@ -3,7 +3,6 @@
 			group="components"
 			title="ItemGroup/OrigamItemGroup"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -56,8 +55,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div class="ig-row">
 				<origam-item-group
@@ -81,8 +78,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="ig-row">
 				<origam-item-group v-model="slotModel">
@@ -102,8 +97,6 @@
 				<div class="ig-status">selected = <strong>{{ slotModel }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

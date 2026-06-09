@@ -3,7 +3,6 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerYears"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -36,8 +35,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDatePickerYearsProps>>({ year: 2026, min: '2020-01-01', max: '2030-12-31' })"
@@ -60,16 +57,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:year">
 			<origam-date-picker-years
 					:year="2026"
 					@update:year="logEvent('update:year', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - year">
 			<origam-date-picker-years :year="2026">
@@ -80,8 +73,6 @@
 				</template>
 			</origam-date-picker-years>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Treeview/OrigamTreeviewNode"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -34,8 +33,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ITreeviewProps>>({ selectMode: 'none', selectableNodes: 'leaf', expandOnClick: false })"
@@ -59,8 +56,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - node">
 			<origam-treeview :items="nestedItems">
 				<template #node="{ node }">
@@ -70,8 +65,6 @@
 				</template>
 			</origam-treeview>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

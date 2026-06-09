@@ -3,7 +3,6 @@
 			group="components"
 			title="Pagination/OrigamPagination"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -58,8 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IPaginationProps>>({
@@ -106,8 +103,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-pagination
 					v-model="page"
@@ -149,8 +144,6 @@
 					@last="logEvent('last', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - First">
 			<origam-pagination v-model="page" :length="10" show-first-last-page>
@@ -199,8 +192,6 @@
 				</template>
 			</origam-pagination>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

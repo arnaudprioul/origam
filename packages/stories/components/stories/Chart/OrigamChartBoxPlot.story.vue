@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartBoxPlot"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -54,8 +53,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -118,8 +115,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<origam-chart-box-plot
 					:series="FIXTURE_API_SERIES"
@@ -148,8 +143,6 @@
 					@series-toggle="logEvent('series-toggle', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Tooltip">
 			<origam-chart-box-plot
@@ -219,8 +212,6 @@
 				</template>
 			</origam-chart-box-plot>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

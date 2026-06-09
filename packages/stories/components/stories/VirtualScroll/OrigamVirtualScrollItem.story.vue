@@ -3,7 +3,6 @@
 			group="components"
 			title="VirtualScroll/OrigamVirtualScrollItem"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -48,8 +47,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:height">
 			<div class="story-shell">
 				<origam-virtual-scroll-item
@@ -60,8 +57,6 @@
 				</origam-virtual-scroll-item>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div class="story-shell">
@@ -90,8 +85,6 @@
 				<div class="story-status">Height: <strong>{{ heights['slot-renderless'] ?? 'pending' }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

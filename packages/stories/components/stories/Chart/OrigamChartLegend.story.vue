@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartLegend"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -32,8 +31,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -70,8 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - legend-click">
 			<origam-chart-legend
 					:items="ITEMS_3"
@@ -87,8 +82,6 @@
 					@series-toggle="logEvent('series-toggle', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - legend-item">
 			<origam-chart-legend
@@ -110,8 +103,6 @@
 				</template>
 			</origam-chart-legend>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

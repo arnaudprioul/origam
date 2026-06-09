@@ -3,7 +3,6 @@
 			group="components"
 			title="Timeline/OrigamTimelineItem"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -51,8 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ITimelineItemProps> & { description: string }>({ title: 'Step', subtitle: 'Subtitle', description: 'Description text', isLast: false, truncateLine: false, index: 0 })"
@@ -95,8 +92,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-timeline>
@@ -145,8 +140,6 @@
 				</origam-timeline-item>
 			</origam-timeline>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

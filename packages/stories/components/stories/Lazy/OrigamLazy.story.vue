@@ -3,7 +3,6 @@
 			group="components"
 			title="Lazy/OrigamLazy"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -37,8 +36,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -74,8 +71,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div style="height: 400px; overflow-y: auto; border: 1px solid var(--origam-color__border---default); padding: 16px; border-radius: 4px;">
 				<p style="margin-bottom: 200px; opacity: 0.5;">Scroll down to trigger the emit.</p>
@@ -90,8 +85,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-lazy model-value height="120">
 				<div style="padding: 16px; border-radius: 4px; border: 2px dashed var(--origam-color__border---default);">
@@ -99,8 +92,6 @@
 				</div>
 			</origam-lazy>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

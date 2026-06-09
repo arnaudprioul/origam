@@ -3,7 +3,6 @@
 			group="components"
 			title="Masonry/OrigamMasonry"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -84,8 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IMasonryProps>>({ columns: 3, gap: 'md', animated: true, align: 'top' })"
@@ -134,8 +131,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="story-shell">
 				<origam-masonry
@@ -155,8 +150,6 @@
 				</origam-masonry>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

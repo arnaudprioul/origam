@@ -3,7 +3,6 @@
 			group="components"
 			title="Chip/OrigamChipGroup"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -48,8 +47,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -101,8 +98,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-chip-group
 					v-model="emitModel"
@@ -114,8 +109,6 @@
 			</origam-chip-group>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-chip-group v-model="slotModel">
 				<origam-chip :value="1" link text="One"/>
@@ -123,8 +116,6 @@
 				<origam-chip :value="3" link text="Three"/>
 			</origam-chip-group>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

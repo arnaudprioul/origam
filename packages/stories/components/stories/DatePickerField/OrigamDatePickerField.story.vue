@@ -3,7 +3,6 @@
 			group="components"
 			title="DatePickerField/OrigamDatePickerField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -84,8 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
@@ -110,8 +107,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -196,8 +191,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-date-picker-field
 					v-model="emitDate"
@@ -265,8 +258,6 @@
 					@click:prepend-inner="logEvent('click:prependInner', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Prepend">
 			<origam-date-picker-field label="Date" style="max-width: 320px">
@@ -371,8 +362,6 @@
 				</template>
 			</origam-date-picker-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

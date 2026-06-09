@@ -3,7 +3,6 @@
 			group="components"
 			title="Counter/OrigamCounter"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -50,8 +49,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ICounterProps>>({ value: 50, max: 100, active: true })"
@@ -80,8 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-counter :value="42" :max="100" :active="true">
 				<template #default="{ counter }">
@@ -89,8 +84,6 @@
 				</template>
 			</origam-counter>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

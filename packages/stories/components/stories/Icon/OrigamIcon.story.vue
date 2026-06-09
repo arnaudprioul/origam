@@ -3,7 +3,6 @@
 			group="components"
 			title="Icon/OrigamIcon"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -55,8 +54,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: MDI_ICONS.HOME })"
@@ -78,8 +75,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click">
 			<origam-icon
 					:icon="MDI_ICONS.CLOSE"
@@ -88,13 +83,9 @@
 			/>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-icon>mdi-heart</origam-icon>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

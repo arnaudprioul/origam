@@ -3,7 +3,6 @@
 			group="components"
 			title="Window/OrigamWindow"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -62,8 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IWindowProps> & { step: number }>({
@@ -112,8 +109,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div class="story-shell">
 				<origam-window
@@ -129,8 +124,6 @@
 				<div class="story-status">Active: <strong>{{ emitStep }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div class="story-shell">
@@ -199,8 +192,6 @@
 				</origam-window>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

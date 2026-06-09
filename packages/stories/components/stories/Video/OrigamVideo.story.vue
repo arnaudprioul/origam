@@ -3,7 +3,6 @@
 			group="components"
 			title="Video/OrigamVideo"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -73,8 +72,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -156,8 +153,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - play / pause / ended">
 			<div class="story-shell">
@@ -285,8 +280,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Controls">
 			<div class="story-shell">
 				<origam-video
@@ -359,8 +352,6 @@
 				</origam-video>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

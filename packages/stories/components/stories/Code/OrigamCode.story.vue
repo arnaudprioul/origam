@@ -3,7 +3,6 @@
 			group="components"
 			title="Code/OrigamCode"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -70,8 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ICodeProps>>({
@@ -121,8 +118,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - copy">
 			<origam-code
 					:lang="CODE_LANG.TS"
@@ -132,8 +127,6 @@
 					@copy="logEvent('copy', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-code :lang="CODE_LANG.TS">{{ shortSnippet }}</origam-code>
@@ -164,8 +157,6 @@
 				</template>
 			</origam-code>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Responsive/OrigamResponsive"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -58,8 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IResponsiveProps>>({
@@ -93,8 +90,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-responsive aspect-ratio="16/9" :max-width="480">
 				<div class="demo-fill">
@@ -111,8 +106,6 @@
 				</template>
 			</origam-responsive>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="DataTable/OrigamDataTableGroupHeaderRow"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -29,8 +28,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant title="Functional">
 			<origam-data-table
@@ -59,8 +56,6 @@
 					data-cy="group-header-show-select"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - data-table-group">
 			<origam-data-table
@@ -111,8 +106,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

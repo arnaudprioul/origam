@@ -3,7 +3,6 @@
 			group="components"
 			title="Switch/OrigamSwitchTrack"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -32,8 +31,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -69,8 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click">
 			<div style="padding: 24px;">
 				<origam-switch-track
@@ -79,8 +74,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - track.true">
 			<div style="padding: 24px;">
@@ -111,8 +104,6 @@
 				</origam-switch-track>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

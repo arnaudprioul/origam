@@ -3,7 +3,6 @@
 			group="components"
 			title="SliderField/OrigamSliderField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -93,8 +92,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ISliderFieldProps>>({
@@ -143,8 +140,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - end">
 			<origam-slider-field
 					v-model="emitEndModel"
@@ -189,8 +184,6 @@
 			/>
 			<div data-cy="slider-emit-status">value = {{ emitUpdateModel }}</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-slider-field v-model="slotModel" :min="0" :max="100" label="Volume">
@@ -257,8 +250,6 @@
 				</template>
 			</origam-slider-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

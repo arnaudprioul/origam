@@ -3,7 +3,6 @@
 			group="components"
 			title="Calendar/OrigamCalendar"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -59,8 +58,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ICalendarProps>>({
@@ -103,8 +100,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - event-click">
 			<div class="story-shell" data-cy="cal-emit-event-click">
@@ -194,8 +189,6 @@
 				</div>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Header">
 			<div class="story-shell" data-cy="cal-slot-header">
@@ -289,8 +282,6 @@
 				</origam-calendar>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Stepper/OrigamStepperItem"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -44,8 +43,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click">
 			<origam-stepper>
 				<origam-stepper-item
@@ -57,8 +54,6 @@
 				/>
 			</origam-stepper>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

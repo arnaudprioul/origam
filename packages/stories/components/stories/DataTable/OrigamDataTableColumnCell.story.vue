@@ -3,7 +3,6 @@
 			group="components"
 			title="DataTable/OrigamDataTableColumnCell"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -60,8 +59,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDataTableColumnProps>>({ tag: 'td', fixed: false, lastFixed: false, nowrap: false })"
@@ -98,8 +95,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<table>
 				<tbody>
@@ -111,8 +106,6 @@
 				</tbody>
 			</table>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="DefaultsProvider/OrigamDefaultsProvider"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -79,8 +78,6 @@
 			</origam-defaults-provider>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-defaults-provider :defaults="{ global: { size: 'small' } }">
 				<template #default>
@@ -88,8 +85,6 @@
 				</template>
 			</origam-defaults-provider>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

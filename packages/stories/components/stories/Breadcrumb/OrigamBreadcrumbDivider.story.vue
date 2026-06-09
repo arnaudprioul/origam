@@ -3,7 +3,6 @@
 			group="components"
 			title="Breadcrumb/OrigamBreadcrumbDivider"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -45,8 +44,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div style="display: flex; align-items: center; gap: 8px;">
 				<span>Segment A</span>
@@ -58,8 +55,6 @@
 				<span>Segment B</span>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

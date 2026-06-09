@@ -3,7 +3,6 @@
 			group="components"
 			title="Icon/OrigamComponentIcon"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -46,8 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ tag: 'div' })"
@@ -79,8 +76,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-component-icon>
 				<svg viewBox="0 0 24 24" style="width:1em;height:1em;fill:currentColor;" aria-hidden="true">
@@ -88,8 +83,6 @@
 				</svg>
 			</origam-component-icon>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

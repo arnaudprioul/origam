@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartGauge"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -64,8 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IChartGaugeProps>>({
@@ -105,8 +102,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<origam-chart-gauge
 					:series="[{ name: 'CPU', data: [72], color: 'primary' }]"
@@ -144,8 +139,6 @@
 					@series-toggle="logEvent('series-toggle', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - title">
 			<origam-chart-gauge
@@ -231,8 +224,6 @@
 				</template>
 			</origam-chart-gauge>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

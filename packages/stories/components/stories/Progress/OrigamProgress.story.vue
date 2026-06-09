@@ -3,7 +3,6 @@
 			group="components"
 			title="Progress/OrigamProgress"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -49,8 +48,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ ÉTAT ══════════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<Partial<IProgressProps>>({ type: 'circular', color: 'primary', active: true, indeterminate: false })"
@@ -75,8 +72,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -123,8 +118,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-progress
 					type="circular"
@@ -137,8 +130,6 @@
 				</template>
 			</origam-progress>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

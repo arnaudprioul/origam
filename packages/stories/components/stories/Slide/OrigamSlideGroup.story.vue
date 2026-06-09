@@ -3,7 +3,6 @@
 			group="components"
 			title="Slide/OrigamSlideGroup"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -78,8 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ISlideGroupProps>>({
@@ -133,8 +130,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div class="story-shell">
 				<origam-slide-group
@@ -151,8 +146,6 @@
 				<p class="story-status">modelValue = {{ emitModel }}</p>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div class="story-shell">
@@ -183,8 +176,6 @@
 				</origam-slide-group>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

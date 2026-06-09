@@ -3,7 +3,6 @@
 			group="components"
 			title="TextareaField/OrigamTextareaField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -71,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & { bgColor?: string }>({ bgColor: 'primary' })"
@@ -94,8 +91,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -160,8 +155,6 @@
 			</template>
 		</Variant>
 
-		<!-- ═══════════════════ FONCTIONNEL — Rich mode ═══════════════════ -->
-
 		<Variant
 				title="Functional - Rich Mode"
 				:init-state="() => useStoryInitState<{ mode: TTextareaMode, output: TTextareaOutput, toolbarPosition: TTextareaToolbarPosition, disabled: boolean, readonly: boolean }>({
@@ -197,8 +190,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - update:modelValue">
 			<origam-textarea-field
@@ -256,8 +247,6 @@
 					@format="logEvent('format', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-textarea-field label="Default slot" data-cy="textarea-slot-default">
@@ -388,8 +377,6 @@
 				</template>
 			</origam-textarea-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Chip/OrigamChip"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -63,8 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<IBgColorProps>>({ bgColor: 'primary' })"
@@ -82,8 +79,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -128,8 +123,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - click">
 			<origam-chip link bg-color="primary" text="Click me" @click="logEvent('click', $event)"/>
@@ -184,8 +177,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-chip>
 				<span style="font-style: italic;">Custom slot content</span>
@@ -228,8 +219,6 @@
 				</origam-chip-group>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

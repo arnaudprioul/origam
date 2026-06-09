@@ -3,7 +3,6 @@
 			group="components"
 			title="SliderField/OrigamSliderField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -48,8 +47,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -116,8 +113,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-slider-field
 					v-model="emitModelValue"
@@ -158,8 +153,6 @@
 					@update:focused="logEvent('update:focused', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Prepend">
 			<origam-slider-field v-model="slotModel" :min="0" :max="100" label="Volume">
@@ -214,8 +207,6 @@
 				</template>
 			</origam-slider-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

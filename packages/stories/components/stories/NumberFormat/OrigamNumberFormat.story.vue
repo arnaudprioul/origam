@@ -3,7 +3,6 @@
 			group="components"
 			title="NumberFormat/OrigamNumberFormat"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -84,8 +83,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="story-shell">
 				<p class="hint">
@@ -109,8 +106,6 @@
 				</origam-number-format>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

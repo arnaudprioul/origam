@@ -3,7 +3,6 @@
 			group="components"
 			title="Sheet/OrigamSheet"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -67,8 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & { bgColor?: string }>({ bgColor: undefined })"
@@ -94,8 +91,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -141,8 +136,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:open">
 			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
 				<origam-sheet
@@ -177,16 +170,12 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-sheet border rounded style="padding: 16px;">
 				<strong>Custom default slot</strong>
 				<p>Anything goes inside a sheet.</p>
 			</origam-sheet>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

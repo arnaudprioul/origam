@@ -3,7 +3,6 @@
 			group="components"
 			title="Card/OrigamCardHeader"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -67,8 +66,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ICardHeaderProps>>({ tag: 'div', title: 'Card Title', subtitle: 'Card Subtitle' })"
@@ -93,8 +90,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:append">
 			<origam-card style="max-width: 400px; margin: 24px auto;">
 				<origam-card-header
@@ -114,8 +109,6 @@
 				/>
 			</origam-card>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-card style="max-width: 400px; margin: 24px auto;">
@@ -176,8 +169,6 @@
 				</origam-card-header>
 			</origam-card>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

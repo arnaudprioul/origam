@@ -3,7 +3,6 @@
 			group="components"
 			title="Chart/OrigamChartWordCloud"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -60,8 +59,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IChartWordCloudProps>>({
@@ -104,8 +101,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - point-click">
 			<div class="story-shell" data-cy="word-cloud-emit-point-click">
 				<origam-chart-word-cloud
@@ -143,8 +138,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Tooltip">
 			<div class="story-shell" data-cy="word-cloud-slot-tooltip">
@@ -215,8 +208,6 @@
 				</origam-chart-word-cloud>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

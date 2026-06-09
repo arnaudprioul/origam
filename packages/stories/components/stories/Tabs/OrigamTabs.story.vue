@@ -3,7 +3,6 @@
 			group="components"
 			title="Tabs/OrigamTabs"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -44,8 +43,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ITabsProps>>({ mandatory: true, disabled: false, fixed: false, centered: false, multiple: false })"
@@ -78,8 +75,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-tabs
 					v-model="emitValue"
@@ -92,8 +87,6 @@
 			<div class="story-status">selected = <strong>{{ emitValue }}</strong></div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-tabs v-model="slotDefaultValue">
 				<origam-tab :value="'inbox'">
@@ -105,8 +98,6 @@
 				<origam-tab :value="'spam'">Spam</origam-tab>
 			</origam-tabs>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="BottomNav/OrigamBottomNav"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -59,8 +58,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT (design + fonctionnel) ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<Partial<IBottomNavProps>>({ bgColor: 'primary' })"
@@ -86,8 +83,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -126,8 +121,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant
 				title="Events - update:modelValue"
 				:init-state="() => useStoryInitState<{ visible: boolean }>({ visible: true })"
@@ -163,8 +156,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav :model-value="true">
@@ -188,8 +179,6 @@
 				</origam-bottom-nav>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

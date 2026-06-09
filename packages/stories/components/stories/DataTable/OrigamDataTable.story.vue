@@ -3,7 +3,6 @@
 			group="components"
 			title="DataTable/OrigamDataTable"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -61,8 +60,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined })"
@@ -84,8 +81,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -165,8 +160,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:currentItems">
 			<origam-data-table
 					:headers="headers"
@@ -236,8 +229,6 @@
 					@update:sort-by="logEvent('update:sortBy', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Top">
 			<origam-data-table :headers="headers" :items="items">
@@ -337,8 +328,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

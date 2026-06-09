@@ -3,7 +3,6 @@
 			group="components"
 			title="Parallax/OrigamParallax"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -52,8 +51,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -114,8 +111,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - enter">
 			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL" @enter="logEvent('enter', $event)">
 				<origam-parallax-layer :speed="0.4">
@@ -148,8 +143,6 @@
 			<div :style="scrollFiller"></div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-parallax :style="hostStyle">
 				<origam-parallax-element :strength="15" type="translate">
@@ -160,8 +153,6 @@
 				</origam-parallax-element>
 			</origam-parallax>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

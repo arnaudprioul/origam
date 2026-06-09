@@ -3,7 +3,6 @@
 			group="components"
 			title="RatingField/OrigamRatingFieldItem"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -69,8 +68,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IRatingFieldItemProps>>({
@@ -135,8 +132,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click">
 			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
 				<origam-rating-field-item
@@ -182,8 +177,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Item (via RatingField)">
 			<div style="padding: 24px;">
 				<origam-rating-field :model-value="slotValue" :length="5">
@@ -196,8 +189,6 @@
 				</origam-rating-field>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

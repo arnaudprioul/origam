@@ -3,7 +3,6 @@
 			group="components"
 			title="ExpansionPanel/OrigamExpansionPanelContent"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -57,8 +56,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IExpansionPanelContentProps>>({
@@ -100,8 +97,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-expansion-panels>
 				<origam-expansion-panel>
@@ -130,8 +125,6 @@
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="DatePicker/OrigamDatePicker"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -70,8 +69,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDatePickerProps>>({ viewMode: DATE_MODE.MONTH })"
@@ -113,8 +110,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-date-picker
 					v-model="date"
@@ -142,8 +137,6 @@
 					@update:view-mode="logEvent('update:viewMode', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-date-picker v-model="date">
@@ -175,8 +168,6 @@
 				</template>
 			</origam-date-picker>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="DataList/OrigamDataTitle"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -41,8 +40,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -94,8 +91,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:prepend">
 			<dl style="margin: 24px;">
 				<origam-data-title
@@ -115,8 +110,6 @@
 				/>
 			</dl>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<dl style="margin: 24px;">
@@ -149,8 +142,6 @@
 				</origam-data-title>
 			</dl>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

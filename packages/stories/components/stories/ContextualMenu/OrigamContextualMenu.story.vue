@@ -3,7 +3,6 @@
 			group="components"
 			title="ContextualMenu/OrigamContextualMenu"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -60,8 +59,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -138,8 +135,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
 				<div
@@ -167,8 +162,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
@@ -203,8 +196,6 @@
 				</origam-contextual-menu>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

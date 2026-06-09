@@ -3,7 +3,6 @@
 			group="components"
 			title="List/OrigamList"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -57,8 +56,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IListProps>>({ slim: false, nav: false, disabled: false, selectStrategy: SELECT_STRATEGY.SINGLE_LEAF, openStrategy: OPEN_STRATEGY.LIST, tag: 'div' })"
@@ -92,8 +89,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:selected">
 			<origam-list
 					:items="selectableItems"
@@ -121,8 +116,6 @@
 					@update:opened="logEvent('update:opened', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-list>
@@ -192,8 +185,6 @@
 				</template>
 			</origam-list>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

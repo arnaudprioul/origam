@@ -3,7 +3,6 @@
 			group="components"
 			title="ThemeProvider/OrigamThemeProvider"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -25,8 +24,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
@@ -43,8 +40,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-theme-provider theme="dark">
 				<template #default>
@@ -52,8 +47,6 @@
 				</template>
 			</origam-theme-provider>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

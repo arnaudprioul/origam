@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorPickerField/OrigamColorPickerField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -87,8 +86,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IColorProps & { active?: boolean | object }>({ color: 'primary' })"
@@ -113,8 +110,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -157,8 +152,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-color-picker-field
 					v-model="emitColor"
@@ -176,8 +169,6 @@
 					@update:menu="logEvent('update:menu', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Prepend">
 			<origam-color-picker-field v-model="slotColor" label="Colour" style="max-width: 320px">
@@ -266,8 +257,6 @@
 				</template>
 			</origam-color-picker-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

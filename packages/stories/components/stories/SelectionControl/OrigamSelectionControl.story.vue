@@ -3,7 +3,6 @@
 			group="components"
 			title="SelectionControl/OrigamSelectionControl"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -41,8 +40,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT (design + fonctionnel) ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IColorProps>({ color: 'primary' })"
@@ -68,8 +65,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -116,8 +111,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:label">
 			<origam-selection-control-group v-model="emitModel" type="checkbox">
 				<origam-selection-control
@@ -127,8 +120,6 @@
 				/>
 			</origam-selection-control-group>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-selection-control-group v-model="slotDefaultModel" type="checkbox">
@@ -170,8 +161,6 @@
 				</origam-selection-control>
 			</origam-selection-control-group>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

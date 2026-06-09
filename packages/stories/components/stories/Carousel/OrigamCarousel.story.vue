@@ -3,7 +3,6 @@
 			group="components"
 			title="Carousel/OrigamCarousel"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -71,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ICarouselProps>>({
@@ -134,8 +131,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-carousel
 					style="max-width: 600px"
@@ -151,8 +146,6 @@
 				</origam-carousel-item>
 			</origam-carousel>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-carousel style="max-width: 600px">
@@ -269,8 +262,6 @@
 				</template>
 			</origam-carousel>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Grids/OrigamSpacer"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -23,8 +22,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="demo-flex-row">
 				<span class="demo-cell">left</span>
@@ -34,8 +31,6 @@
 				<span class="demo-cell">right</span>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

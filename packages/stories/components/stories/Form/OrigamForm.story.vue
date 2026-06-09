@@ -3,7 +3,6 @@
 			group="components"
 			title="Form/OrigamForm"
 	>
-		<!-- ════════════════════════ FONCTIONNEL ════════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -54,8 +53,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - submit">
 			<origam-form data-cy="form-emit-submit" @submit.prevent="logEvent('submit', $event)">
 				<origam-text-field v-model="emitSubmitName" label="Name" data-cy="form-emit-submit-field"/>
@@ -69,8 +66,6 @@
 				<origam-btn type="reset" text="Reset" variant="outlined" data-cy="form-emit-reset-btn"/>
 			</origam-form>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-form data-cy="form-slot-default">
@@ -115,8 +110,6 @@
 				</template>
 			</origam-form>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

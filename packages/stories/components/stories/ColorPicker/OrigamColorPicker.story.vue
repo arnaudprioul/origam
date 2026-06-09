@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorPicker/OrigamColorPicker"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -69,8 +68,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IColorPickerProps>>({
@@ -116,8 +113,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-color-picker
 					v-model="color"
@@ -131,8 +126,6 @@
 					@update:mode="logEvent('update:mode', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="padding: 24px; display: flex; justify-content: center;">
@@ -172,8 +165,6 @@
 				</origam-color-picker>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

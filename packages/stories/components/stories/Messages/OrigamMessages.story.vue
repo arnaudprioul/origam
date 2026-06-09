@@ -3,7 +3,6 @@
 			group="components"
 			title="Messages/OrigamMessages"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -47,8 +46,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IMessagesProps>>({ messages: ['First message.', 'Second message.'], active: true, tag: 'div' })"
@@ -73,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-messages :messages="['Custom rendered message']" active>
 				<template #default="{ message }">
@@ -82,8 +77,6 @@
 				</template>
 			</origam-messages>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

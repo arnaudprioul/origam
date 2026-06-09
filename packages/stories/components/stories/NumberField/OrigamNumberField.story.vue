@@ -3,7 +3,6 @@
 			group="components"
 			title="NumberField/OrigamNumberField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -100,8 +99,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<INumberFieldProps>>({
@@ -187,8 +184,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-number-field
 					v-model="emitModel"
@@ -250,8 +245,6 @@
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-number-field v-model="slotModel" label="Quantity">
@@ -386,8 +379,6 @@
 				</template>
 			</origam-number-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

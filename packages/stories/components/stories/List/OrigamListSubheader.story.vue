@@ -3,7 +3,6 @@
 			group="components"
 			title="List/OrigamListSubheader"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -53,8 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IListSubheader>>({ title: 'Subheader', inset: false, sticky: false })"
@@ -80,8 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-list>
 				<origam-list-subheader>
@@ -93,8 +88,6 @@
 				<origam-list-item title="Item two"/>
 			</origam-list>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

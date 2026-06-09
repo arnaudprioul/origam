@@ -3,7 +3,6 @@
 			group="components"
 			title="Bracket/OrigamBracket"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -76,8 +75,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IBracketProps>>({
@@ -102,8 +99,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - match-click">
 			<div class="story-shell" data-cy="bracket-emit-match-click">
@@ -134,8 +129,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Match">
 			<div class="story-shell" data-cy="bracket-slot-match">
@@ -206,8 +199,6 @@
 				</origam-bracket>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

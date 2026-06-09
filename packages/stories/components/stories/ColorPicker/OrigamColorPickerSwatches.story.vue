@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorPicker/OrigamColorPickerSwatches"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -33,8 +32,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IColorPickerSwatchesProps>>({ disabled: false })"
@@ -53,8 +50,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:colorHsv">
 			<origam-color-picker-swatches
 					:color-hsv="defaultColor"
@@ -62,8 +57,6 @@
 					@update:color-hsv="logEvent('update:colorHsv', $event)"
 			/>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

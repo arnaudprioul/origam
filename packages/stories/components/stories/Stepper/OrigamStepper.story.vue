@@ -3,7 +3,6 @@
 			group="components"
 			title="Stepper/OrigamStepper"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -65,8 +64,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IStepperProps>>({ modelValue: 1, orientation: 'horizontal', clickable: false, showConnectors: true })"
@@ -95,8 +92,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-stepper
 					:items="defaultItems"
@@ -106,15 +101,11 @@
 			/>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-stepper :items="defaultItems" :model-value="1">
 				<span>Custom slot content</span>
 			</origam-stepper>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

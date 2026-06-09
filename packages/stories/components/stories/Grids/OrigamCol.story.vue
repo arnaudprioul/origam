@@ -3,7 +3,6 @@
 			group="components"
 			title="Grids/OrigamCol"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -93,8 +92,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ FONCTIONNEL ════════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -246,8 +243,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-container>
 				<origam-row>
@@ -260,8 +255,6 @@
 				</origam-row>
 			</origam-container>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

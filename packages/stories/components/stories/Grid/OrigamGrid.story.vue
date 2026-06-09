@@ -3,7 +3,6 @@
 			group="components"
 			title="Grid/OrigamGrid"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -112,8 +111,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IGridProps>>({
@@ -157,8 +154,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div class="story-shell">
 				<origam-grid
@@ -172,8 +167,6 @@
 				</origam-grid>
 			</div>
 		</Variant>
-
-		<!-- ════════════════ PROP VARIANTS (démonstrations) ════════════════ -->
 
 		<Variant title="Prop — columns">
 			<div class="story-shell">
@@ -373,8 +366,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════ SUB-COMPOSANT OrigamGridItem ════════════════ -->
-
 		<Variant
 				title="Sub-component — OrigamGridItem"
 				:init-state="() => useStoryInitState<Partial<IGridItemProps>>({
@@ -470,8 +461,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

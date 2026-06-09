@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorGradient/OrigamColorGradient"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant title="Design - Raw CSS string">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
@@ -109,8 +108,6 @@
 			</div>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<IFunctionalState>({
@@ -152,8 +149,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

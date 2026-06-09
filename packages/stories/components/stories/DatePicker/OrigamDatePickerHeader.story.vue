@@ -3,7 +3,6 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerHeader"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -46,8 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<IDatePickerHeaderProps & { transitionName: string; transitionMode: string }>({
@@ -76,8 +73,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click">
 			<div style="padding: 24px; max-width: 360px;">
 				<origam-date-picker-header
@@ -87,8 +82,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="padding: 24px; max-width: 360px;">
@@ -117,8 +110,6 @@
 				</origam-date-picker-header>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

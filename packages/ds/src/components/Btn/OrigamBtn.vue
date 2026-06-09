@@ -24,13 +24,6 @@
 				class="origam-btn__underlay"
 		/>
 
-		<!--
-			Overlay loaders (line / circular) — rendered as direct children
-			of the btn root so they can be absolutely positioned relative
-			to the btn box. Putting them INSIDE the OrigamLoader's
-			default-slot grid would make them claim a `prepend`-slot cell
-			and shove the label off-centre.
-		-->
 		<origam-progress
 				v-if="isOverlayLoading"
 				ref="origamProgressRef"

@@ -4,8 +4,6 @@
 			title="List/OrigamListChildren"
 	>
 
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
-
 		<Variant
 				title="Design"
 				:init-state="() => useStoryInitState<IListItemChildren>({ items: flatItems, returnObject: false })"
@@ -32,8 +30,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<IListItemChildren>({ items: nestedItems, returnObject: false })"
@@ -59,8 +55,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Children">
 			<origam-list>
@@ -139,8 +133,6 @@
 				</origam-list-children>
 			</origam-list>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

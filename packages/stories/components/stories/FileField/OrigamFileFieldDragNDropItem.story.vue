@@ -3,7 +3,6 @@
 			group="components"
 			title="FileField/OrigamFileFieldDragNDropItem"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -28,8 +27,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -59,8 +56,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:remove">
 			<origam-file-field-drag-n-drop-item
 					:file="mockFile('removable.pdf', 'application/pdf', 32768)"
@@ -68,8 +63,6 @@
 					@click:remove="logEvent('click:remove', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-file-field-drag-n-drop-item
@@ -79,8 +72,6 @@
 				<span>Custom slot content</span>
 			</origam-file-field-drag-n-drop-item>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

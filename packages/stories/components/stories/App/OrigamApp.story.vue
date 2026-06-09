@@ -3,7 +3,6 @@
 			group="components"
 			title="App/OrigamApp"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -31,8 +30,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IAppProps>>({ fullHeight: true })"
@@ -57,8 +54,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="true">
@@ -69,8 +64,6 @@
 				</origam-app>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

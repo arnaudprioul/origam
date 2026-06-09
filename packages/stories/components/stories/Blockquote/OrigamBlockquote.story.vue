@@ -3,7 +3,6 @@
 			group="components"
 			title="Blockquote/OrigamBlockquote"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -62,8 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IBlockquoteProps>>({
@@ -96,8 +93,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-blockquote variant="default" author="Linus Torvalds" source="LKML, 2003">
@@ -138,8 +133,6 @@
 				</template>
 			</origam-blockquote>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

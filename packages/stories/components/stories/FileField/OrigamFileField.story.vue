@@ -3,7 +3,6 @@
 			group="components"
 			title="FileField/OrigamFileField"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -113,8 +112,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IFileFieldProps>>({
@@ -204,8 +201,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - click:control">
 			<origam-file-field
 					v-model="emitFiles"
@@ -274,8 +269,6 @@
 					@error:max-size="logEvent('error:max-size', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-file-field
@@ -541,8 +534,6 @@
 				</template>
 			</origam-file-field>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

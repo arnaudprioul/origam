@@ -3,7 +3,6 @@
 			group="components"
 			title="Checkbox/OrigamCheckboxBtn"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -39,8 +38,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════════ ÉTAT ══════════════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<IColorProps>>({ color: 'primary' })"
@@ -64,8 +61,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -124,8 +119,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-checkbox-btn
 					v-model="emitUpdateModel"
@@ -154,8 +147,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-checkbox-btn v-model="slotDefaultModel">
 				<strong>Custom slot content</strong>
@@ -181,8 +172,6 @@
 				</template>
 			</origam-checkbox-btn>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

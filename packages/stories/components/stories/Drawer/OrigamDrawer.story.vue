@@ -3,7 +3,6 @@
 			group="components"
 			title="Drawer/OrigamDrawer"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -64,8 +63,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<Partial<IDrawerProps>>({ bgColor: undefined })"
@@ -97,8 +94,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -205,8 +200,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant
 				title="Events - update:modelValue"
 				:init-state="() => useStoryInitState<{ open: boolean }>({ open: false })"
@@ -266,8 +259,6 @@
 				</div>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
@@ -340,8 +331,6 @@
 				</origam-app>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

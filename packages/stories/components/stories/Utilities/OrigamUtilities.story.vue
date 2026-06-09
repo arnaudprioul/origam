@@ -5,15 +5,6 @@
 			:layout="{ type: 'single', iframe: true }"
 	>
 
-		<!--
-			Utilities story: showcase of the global utility classes
-			emitted by Style Dictionary. There are no props, slots, or
-			emits — each Variant is one family of classes. We keep a
-			Playground first (the full kitchen-sink view) followed by
-			per-family Variants so consumers can drill into a single
-			axis at a time.
-		-->
-
 		<Variant title="Default">
 			<template #default>
 				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
@@ -44,8 +35,6 @@
 				</div>
 			</template>
 		</Variant>
-
-		<!-- ── Per-utility-family showcases ─────────────────────────── -->
 
 		<Variant title="Foreground color (.origam--color-*)">
 			<template #default>

@@ -3,7 +3,6 @@
 			group="components"
 			title="Avatar/OrigamAvatar"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -41,8 +40,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IBgColorProps>({ bgColor: 'primary' })"
@@ -61,8 +58,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IAvatarProps>>({ tag: 'div' })"
@@ -76,8 +71,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - update:active">
 			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
@@ -102,8 +95,6 @@
 				<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Hover — watch the Events panel.</p>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-avatar bg-color="primary">
@@ -134,8 +125,6 @@
 				</template>
 			</origam-avatar>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

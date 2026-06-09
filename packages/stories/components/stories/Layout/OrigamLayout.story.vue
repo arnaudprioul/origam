@@ -3,7 +3,6 @@
 			group="components"
 			title="Layout/OrigamLayout"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -62,8 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ILayoutProps> & { overlapsRaw: string }>({ fullHeight: false, overlaps: [], overlapsRaw: '' })"
@@ -93,15 +90,11 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-layout style="height: 240px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 				<div class="demo-main">Custom slot content</div>
 			</origam-layout>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

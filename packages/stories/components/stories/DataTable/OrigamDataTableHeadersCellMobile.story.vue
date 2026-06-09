@@ -3,7 +3,6 @@
 			group="components"
 			title="DataTable/OrigamDataTableHeadersCellMobile"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -27,8 +26,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -54,8 +51,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
 
 		<Variant title="Events - click:append">
 			<origam-data-table
@@ -86,8 +81,6 @@
 					@click:clear="logEvent('click:clear', $event)"
 			/>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - chip:append">
 			<origam-data-table :headers="sortableHeaders" :items="items" mobile-breakpoint="xl">
@@ -340,8 +333,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

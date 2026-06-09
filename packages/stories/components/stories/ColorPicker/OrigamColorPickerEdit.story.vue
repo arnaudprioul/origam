@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorPicker/OrigamColorPickerEdit"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -31,8 +30,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -65,8 +62,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:colorHsv">
 			<origam-color-picker-edit
 					:color-hsv="defaultColor"
@@ -80,8 +75,6 @@
 					@update:mode="logEvent('update:mode', $event)"
 			/>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

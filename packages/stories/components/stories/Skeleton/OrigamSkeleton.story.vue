@@ -3,7 +3,6 @@
 			group="components"
 			title="Skeleton/OrigamSkeleton"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -42,8 +41,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ISkeletonProps>>({ loading: true, pulse: true, variant: 'text', width: '200' })"
@@ -70,15 +67,11 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-skeleton :loading="false" variant="text" width="200">
 				<span>Custom slot content visible when not loading</span>
 			</origam-skeleton>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

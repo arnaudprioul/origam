@@ -3,7 +3,6 @@
 			group="components"
 			title="Clipboard/OrigamClipboard"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -46,8 +45,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IClipboardProps>>({
@@ -81,8 +78,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - copy">
 			<origam-clipboard
 					value="counter-payload"
@@ -106,8 +101,6 @@
 			</div>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-clipboard value="my-api-key-12345">
 				<template #default="{ copy, copied }">
@@ -125,8 +118,6 @@
 				</template>
 			</origam-clipboard>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

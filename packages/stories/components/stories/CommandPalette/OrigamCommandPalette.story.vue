@@ -3,7 +3,6 @@
 			group="components"
 			title="CommandPalette/OrigamCommandPalette"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -62,8 +61,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - select">
 			<div class="story-shell">
 				<origam-btn
@@ -116,8 +113,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Item">
 			<div class="story-shell">
@@ -180,8 +175,6 @@
 				</origam-command-palette>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

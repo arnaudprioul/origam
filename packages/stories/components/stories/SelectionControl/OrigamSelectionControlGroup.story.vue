@@ -3,7 +3,6 @@
 			group="components"
 			title="SelectionControl/OrigamSelectionControlGroup"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -45,8 +44,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ type: 'checkbox', multiple: false, disabled: false, readonly: false, error: false, name: undefined })"
@@ -82,8 +79,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-selection-control-group
 					v-model="emitModel"
@@ -94,8 +89,6 @@
 				<origam-selection-control value="b" label="Option B"/>
 			</origam-selection-control-group>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-selection-control-group
@@ -122,8 +115,6 @@
 				</template>
 			</origam-selection-control-group>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

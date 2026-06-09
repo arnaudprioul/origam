@@ -3,7 +3,6 @@
 			group="components"
 			title="Parallax/OrigamParallaxElement"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -59,8 +58,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -128,8 +125,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-parallax :style="hostStyle">
 				<origam-parallax-element :strength="30">
@@ -137,8 +132,6 @@
 				</origam-parallax-element>
 			</origam-parallax>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

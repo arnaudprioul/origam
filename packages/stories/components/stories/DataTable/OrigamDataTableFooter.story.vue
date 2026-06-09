@@ -3,7 +3,6 @@
 			group="components"
 			title="DataTable/OrigamDataTableFooter"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -61,8 +60,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDataTableFooterProps>>({ showCurrentPage: true, itemsPerPageText: 'origam.dataFooter.itemsPerPageText', pageText: 'origam.dataFooter.pageText' })"
@@ -103,8 +100,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Prepend">
 			<origam-data-table
 					:headers="headers"
@@ -138,8 +133,6 @@
 				</template>
 			</origam-data-table>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

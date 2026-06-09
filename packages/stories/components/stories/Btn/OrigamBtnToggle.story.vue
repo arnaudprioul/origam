@@ -3,7 +3,6 @@
 			group="components"
 			title="Btn/OrigamBtnToggle"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -53,8 +52,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IBtnToggleProps>>({ multiple: false, mandatory: false, disabled: false })"
@@ -91,8 +88,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<div class="story-shell">
 				<origam-btn-toggle
@@ -106,8 +101,6 @@
 				<div class="story-status">selected = <strong>{{ JSON.stringify(emitValue) }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div class="story-shell">
@@ -130,8 +123,6 @@
 				<div class="story-status">selected = <strong>{{ slotItemValue ?? '(empty)' }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

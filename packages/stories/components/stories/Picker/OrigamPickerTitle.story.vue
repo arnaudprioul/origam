@@ -3,7 +3,6 @@
 			group="components"
 			title="Picker/OrigamPickerTitle"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -28,8 +27,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IPickerTitleProps>>({ title: 'Custom title', tag: 'div' })"
@@ -50,15 +47,11 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-picker-title>
 				Custom <strong>rich</strong> content
 			</origam-picker-title>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

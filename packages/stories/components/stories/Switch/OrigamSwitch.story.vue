@@ -3,7 +3,6 @@
 			group="components"
 			title="Switch/OrigamSwitch"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -58,8 +57,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & IActiveProps>({ bgColor: 'primary' })"
@@ -83,8 +80,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -141,8 +136,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-switch
 					v-model="emitModel"
@@ -191,8 +184,6 @@
 			/>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Loader">
 			<origam-switch :model-value="false" loading label="Loading switch" data-cy="switch-slot-loader">
 				<template #loader>
@@ -220,8 +211,6 @@
 			</origam-switch>
 			<div>value = {{ slotTrackModel }}</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

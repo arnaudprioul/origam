@@ -3,7 +3,6 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerMonths"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -43,8 +42,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDatePickerMonthsProps>>({
@@ -76,8 +73,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:month">
 			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 				<origam-date-picker-months
@@ -88,8 +83,6 @@
 				<p style="margin-top: 8px; font-size: 0.75rem;">month = {{ emitMonth }}</p>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - month">
 			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
@@ -105,8 +98,6 @@
 				</origam-date-picker-months>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

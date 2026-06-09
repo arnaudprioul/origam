@@ -3,7 +3,6 @@
 			group="components"
 			title="ExpansionPanel/OrigamExpansionPanels"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -68,8 +67,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════ ÉTAT ══════════════════ -->
-
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IBgColorProps>({ bgColor: 'primary' })"
@@ -94,8 +91,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -138,8 +133,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:modelValue">
 			<origam-expansion-panels @update:model-value="logEvent('update:modelValue', $event)">
 				<origam-expansion-panel title="Panel 1" content="Click to fire emit"/>
@@ -161,8 +154,6 @@
 				/>
 			</origam-expansion-panels>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-expansion-panels>
@@ -262,8 +253,6 @@
 				</template>
 			</origam-expansion-panels>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

@@ -3,7 +3,6 @@
 			group="components"
 			title="Dialog/OrigamDialogConfirmation"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -78,8 +77,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDialogConfirmationProps>>({
@@ -126,8 +123,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - validate">
 			<div style="padding: 24px;">
 				<origam-btn text="Open" @click="emitValidateOpen = true"/>
@@ -151,8 +146,6 @@
 				/>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div style="padding: 24px;">
@@ -343,8 +336,6 @@
 				</origam-dialog-confirmation>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

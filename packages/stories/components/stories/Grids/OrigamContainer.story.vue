@@ -3,7 +3,6 @@
 			group="components"
 			title="Grids/OrigamContainer"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -73,8 +72,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IContainerProps>>({ tag: 'div', fluid: false, fullscreen: false })"
@@ -99,8 +96,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<origam-container>
 				<origam-row>
@@ -113,8 +108,6 @@
 				</origam-row>
 			</origam-container>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

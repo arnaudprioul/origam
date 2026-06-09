@@ -3,7 +3,6 @@
 			group="components"
 			title="ItemGroup/OrigamItem"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -71,8 +70,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant
 				title="Events - update:modelValue"
 				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
@@ -110,8 +107,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div style="padding: 24px;">
 				<origam-item-group v-model="slotModel" data-cy="item-slot-group">
@@ -138,8 +133,6 @@
 				</p>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

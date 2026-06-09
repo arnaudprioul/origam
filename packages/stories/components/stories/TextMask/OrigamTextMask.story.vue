@@ -3,7 +3,6 @@
 			group="components"
 			title="TextMask/OrigamTextMask"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -52,8 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ITextMaskProps>>({
@@ -93,8 +90,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
-
 		<Variant title="Slots - Default">
 			<div style="padding: 32px; text-align: center; background: var(--origam-color__surface---default);">
 				<origam-text-mask
@@ -107,8 +102,6 @@
 				</origam-text-mask>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

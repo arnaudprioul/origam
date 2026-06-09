@@ -3,7 +3,6 @@
 			group="components"
 			title="Breadcrumb/OrigamBreadcrumb"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -52,8 +51,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IBreadcrumbProps>>({ disabled: false, activeClass: undefined, tag: 'nav' })"
@@ -78,8 +75,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<origam-breadcrumb>
@@ -129,8 +124,6 @@
 				</template>
 			</origam-breadcrumb>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

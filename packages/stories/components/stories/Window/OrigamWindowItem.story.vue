@@ -3,7 +3,6 @@
 			group="components"
 			title="Window/OrigamWindowItem"
 	>
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
 
 		<Variant
 				title="Functional"
@@ -50,8 +49,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ TRANSITION ══════════════════════ -->
-
 		<Variant
 				title="Functional - Transition"
 				:init-state="() => useStoryInitState<{ value: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ value: 1, transition: undefined, reverseTransition: undefined })"
@@ -83,8 +80,6 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - group:selected">
 			<div class="story-shell">
 				<origam-window :model-value="emitStep" show-arrows :style="hostStyle">
@@ -100,8 +95,6 @@
 				<div class="story-status">Active: <strong>{{ emitStep }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ════════════════════════ SLOTS ════════════════════════ -->
 
 		<Variant title="Slots - Default">
 			<div class="story-shell">
@@ -123,8 +116,6 @@
 				<div class="story-status">Active: <strong>{{ slotStep }}</strong></div>
 			</div>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

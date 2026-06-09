@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorPicker/OrigamColorPickerCanvas"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -36,8 +35,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IColorPickerCanvasProps>>({ disabled: false, ariaLabel: '' })"
@@ -59,16 +56,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:colorHsv">
 			<origam-color-picker-canvas
 					:color-hsv="defaultColor"
 					@update:color-hsv="logEvent('update:colorHsv', $event)"
 			/>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"

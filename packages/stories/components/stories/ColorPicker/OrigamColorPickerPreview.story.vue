@@ -3,7 +3,6 @@
 			group="components"
 			title="ColorPicker/OrigamColorPickerPreview"
 	>
-		<!-- ════════════════════════ DESIGN ════════════════════════ -->
 
 		<Variant
 				title="Design"
@@ -32,8 +31,6 @@
 			</template>
 		</Variant>
 
-		<!-- ══════════════════════ FONCTIONNEL ══════════════════════ -->
-
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IColorPickerPreviewProps>>({ colorHsv: { h: 210, s: 0.7, v: 0.8, a: 0.6 }, disabled: false, hideAlpha: false })"
@@ -55,16 +52,12 @@
 			</template>
 		</Variant>
 
-		<!-- ════════════════════════ EMITS ════════════════════════ -->
-
 		<Variant title="Events - update:colorHsv">
 			<origam-color-picker-preview
 					:color-hsv="{ h: 210, s: 0.7, v: 0.8, a: 0.6 }"
 					@update:color-hsv="logEvent('update:colorHsv', $event)"
 			/>
 		</Variant>
-
-		<!-- ══════════════════════ PLAYGROUND ══════════════════════ -->
 
 		<Variant
 				title="Default"
