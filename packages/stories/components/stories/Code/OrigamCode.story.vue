@@ -24,6 +24,8 @@
 			<template #default="{ state }">
 				<origam-code
 						:lang="state.lang"
+						:padding="state.padding"
+						:margin="state.margin"
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:rounded="state.rounded"
@@ -60,6 +62,10 @@
 					<HstText v-model="state.width"     title="Width"/>
 					<HstText v-model="state.height"    title="Height"/>
 					<HstText v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

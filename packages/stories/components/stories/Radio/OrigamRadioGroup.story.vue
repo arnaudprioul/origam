@@ -25,6 +25,8 @@
 				<origam-radio-group
 						v-model="designModel"
 						:label="state.label"
+						:padding="state.padding"
+						:margin="state.margin"
 						:color="state.color"
 						:density="state.density"
 						:rounded="state.rounded"
@@ -60,6 +62,10 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

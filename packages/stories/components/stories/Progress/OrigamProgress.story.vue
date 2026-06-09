@@ -12,6 +12,8 @@
 			<template #default="{ state }">
 				<origam-progress
 						:type="state.type"
+						:padding="state.padding"
+						:margin="state.margin"
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:size="state.size"
@@ -39,6 +41,10 @@
 				</StoryGroup>
 				<StoryGroup title="Value">
 					<HstNumber v-model="state.modelValue" title="Value" :min="0" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

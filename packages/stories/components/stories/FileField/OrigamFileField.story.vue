@@ -37,6 +37,8 @@
 				<origam-file-field
 						v-model="designFiles"
 						:label="state.label"
+						:padding="state.padding"
+						:margin="state.margin"
 						:variant="state.variant"
 						:color="state.color"
 						:bg-color="state.bgColor"
@@ -103,6 +105,10 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

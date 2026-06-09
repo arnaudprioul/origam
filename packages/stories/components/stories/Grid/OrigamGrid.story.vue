@@ -35,6 +35,8 @@
 				<div class="story-shell">
 					<origam-grid
 							:columns="state.columns"
+							:padding="state.padding"
+							:margin="state.margin"
 							:rows="state.rows"
 							:gap="state.gap"
 							:column-gap="state.columnGap"
@@ -102,6 +104,10 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

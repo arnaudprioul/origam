@@ -23,6 +23,8 @@
 			<template #default="{ state }">
 				<origam-expansion-panels
 						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:density="state.density"
 						:rounded="state.rounded"
@@ -58,6 +60,10 @@
 					<HstSelect   v-model="state.expandIcon"   title="Expand Icon"   :options="ICON_OPTIONS"/>
 					<HstSelect   v-model="state.collapseIcon" title="Collapse Icon" :options="ICON_OPTIONS"/>
 					<HstCheckbox v-model="state.hideActions"  title="Hide Actions"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

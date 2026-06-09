@@ -23,6 +23,8 @@
 						:items="people"
 						:max="4"
 						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
@@ -50,6 +52,10 @@
 				</StoryGroup>
 				<StoryGroup title="Direction">
 					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

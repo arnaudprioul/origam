@@ -27,6 +27,8 @@
 				<div class="story-shell">
 					<origam-video
 							:src="state.src"
+							:padding="state.padding"
+							:margin="state.margin"
 							:poster="state.poster"
 							:aspect-ratio="state.aspectRatio"
 							:inset="state.inset"
@@ -64,6 +66,10 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

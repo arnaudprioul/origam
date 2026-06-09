@@ -35,6 +35,8 @@
 			<template #default="{ state }">
 				<origam-text-field
 						:label="state.label"
+						:padding="state.padding"
+						:margin="state.margin"
 						:variant="state.variant"
 						:color="state.color"
 						:size="state.size"
@@ -95,6 +97,10 @@
 					<HstCheckbox v-model="state.singleLine"   title="Single Line"/>
 					<HstCheckbox v-model="state.reverse"      title="Reverse"/>
 					<HstCheckbox v-model="state.centerAffix"  title="Center Affix"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

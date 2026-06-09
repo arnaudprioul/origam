@@ -27,6 +27,8 @@
 				<origam-expansion-panels>
 					<origam-expansion-panel
 							:color="state.color"
+							:padding="state.padding"
+							:margin="state.margin"
 							:bg-color="state.bgColor"
 							:density="state.density"
 							:rounded="state.rounded"
@@ -69,6 +71,10 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

@@ -23,6 +23,8 @@
 				<origam-slider-field
 						v-model="designModel"
 						:variant="state.variant"
+						:padding="state.padding"
+						:margin="state.margin"
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:density="state.density"
@@ -67,6 +69,10 @@
 					<HstCheckbox v-model="state.inset"                title="Inset"/>
 					<HstCheckbox v-model="state.showThumbOnHoverOnly" title="Show Thumb On Hover Only"/>
 					<HstCheckbox v-model="state.showHoverTooltip"     title="Show Hover Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

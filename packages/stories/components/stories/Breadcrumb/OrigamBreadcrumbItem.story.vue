@@ -15,6 +15,8 @@
 						<li class="origam-breadcrumb__item">
 							<origam-breadcrumb-item
 									:color="state.color"
+									:padding="state.padding"
+									:margin="state.margin"
 									:bg-color="state.bgColor"
 									:density="state.density"
 									:rounded="state.rounded"
@@ -53,6 +55,10 @@
 					<HstSelect v-model="state.appendIcon"    title="Append Icon"    :options="ICON_OPTIONS"/>
 					<HstText   v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
 					<HstText   v-model="state.appendAvatar"  title="Append Avatar (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

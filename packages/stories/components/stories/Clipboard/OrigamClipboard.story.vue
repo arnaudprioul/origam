@@ -12,6 +12,8 @@
 			<template #default="{ state }">
 				<origam-clipboard
 						:value="state.value ?? 'arnaud@example.com'"
+						:padding="state.padding"
+						:margin="state.margin"
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:border="state.border"
@@ -36,6 +38,10 @@
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

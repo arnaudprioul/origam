@@ -23,6 +23,8 @@
 			<template #default="{ state }">
 				<origam-chart
 						:type="state.type"
+						:padding="state.padding"
+						:margin="state.margin"
 						:series="FIXTURE_SALES_SERIES"
 						:categories="FIXTURE_MONTHS"
 						:height="state.height"
@@ -54,6 +56,10 @@
 				<StoryGroup title="Labels">
 					<HstText v-model="state.title"    title="Title"/>
 					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

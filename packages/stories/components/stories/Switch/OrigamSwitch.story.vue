@@ -13,6 +13,8 @@
 				<origam-switch
 						:model-value="false"
 						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
@@ -48,6 +50,10 @@
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstText v-model="state.label" title="Label"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

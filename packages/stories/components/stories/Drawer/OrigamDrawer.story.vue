@@ -22,6 +22,8 @@
 						<origam-drawer
 								permanent
 								:color="state.color"
+								:padding="state.padding"
+								:margin="state.margin"
 								:bg-color="state.bgColor"
 								:elevation="state.elevation"
 								:rounded="state.rounded"
@@ -54,6 +56,10 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

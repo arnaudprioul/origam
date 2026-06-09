@@ -12,6 +12,8 @@
 			<template #default="{ state }">
 				<origam-chip
 						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
@@ -53,6 +55,10 @@
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

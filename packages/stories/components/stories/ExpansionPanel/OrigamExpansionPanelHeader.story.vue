@@ -27,6 +27,8 @@
 					<origam-expansion-panel>
 						<origam-expansion-panel-header
 								:title="state.title"
+								:padding="state.padding"
+								:margin="state.margin"
 								:color="state.color"
 								:bg-color="state.bgColor"
 								:density="state.density"
@@ -67,6 +69,10 @@
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstText v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

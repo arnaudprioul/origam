@@ -13,6 +13,8 @@
 				<origam-checkbox
 						v-model="designModel"
 						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:density="state.density"
 						:rounded="state.rounded"
@@ -59,6 +61,10 @@
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.inline" title="Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

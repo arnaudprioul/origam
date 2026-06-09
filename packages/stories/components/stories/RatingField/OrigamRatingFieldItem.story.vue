@@ -21,6 +21,8 @@
 				<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
 					<origam-rating-field-item
 							:value="state.value ?? 3"
+							:padding="state.padding"
+							:margin="state.margin"
 							:index="state.index"
 							:name="state.name"
 							:label="state.label"
@@ -59,6 +61,10 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.fullIcon"  title="Full Icon"  :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.emptyIcon" title="Empty Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

@@ -17,6 +17,8 @@
 					<origam-color-picker
 							v-model="color"
 							:color="state.color"
+							:padding="state.padding"
+							:margin="state.margin"
 							:bg-color="state.bgColor"
 							:border="state.border"
 							:border-color="state.borderColor"
@@ -59,6 +61,10 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

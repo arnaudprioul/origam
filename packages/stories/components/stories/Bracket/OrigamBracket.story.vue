@@ -20,6 +20,8 @@
 			<template #default="{ state }">
 				<origam-bracket
 						:rounds="state.rounds ?? SINGLE_ELIM_4"
+						:padding="state.padding"
+						:margin="state.margin"
 						:variant="state.variant"
 						:direction="state.direction"
 						:color="state.color"
@@ -66,6 +68,10 @@
 					<HstText v-model="state.maxWidth"  title="Max Width"/>
 					<HstText v-model="state.minHeight" title="Min Height"/>
 					<HstText v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

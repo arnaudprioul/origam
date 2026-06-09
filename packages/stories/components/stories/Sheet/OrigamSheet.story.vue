@@ -23,6 +23,8 @@
 			<template #default="{ state }">
 				<origam-sheet
 						:bg-color="state.bgColor"
+						:padding="state.padding"
+						:margin="state.margin"
 						:color="state.color"
 						:elevation="state.elevation"
 						:rounded="state.rounded"
@@ -57,6 +59,10 @@
 				</StoryGroup>
 				<StoryGroup title="Position">
 					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

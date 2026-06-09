@@ -12,6 +12,8 @@
 			<template #default="{ state }">
 				<origam-date-picker
 						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:border="state.border"
 						:border-color="state.borderColor"
@@ -60,6 +62,10 @@
 				</StoryGroup>
 				<StoryGroup title="Header">
 					<HstText v-model="state.title"  title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

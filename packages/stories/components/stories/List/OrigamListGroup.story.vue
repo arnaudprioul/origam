@@ -25,6 +25,8 @@
 				<origam-list>
 					<origam-list-group
 							:title="state.title"
+							:padding="state.padding"
+							:margin="state.margin"
 							:color="state.color"
 							:bg-color="state.bgColor"
 							:rounded="state.rounded"
@@ -65,6 +67,10 @@
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstText v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>
