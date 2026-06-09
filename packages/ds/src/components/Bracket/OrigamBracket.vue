@@ -65,6 +65,7 @@
 
 		<template v-else>
 			<div
+					ref="treeRef"
 					:class="treeClasses"
 					data-cy="origam-bracket-tree"
 			>
@@ -149,7 +150,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, nextTick, onBeforeUnmount, onMounted, ref, StyleValue, watch } from 'vue'
 
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
@@ -352,7 +353,6 @@
 	 * connectors aligned with the cards while shrinking the layout.
 	 ********************************************************/
 	const verticalRoundThickness = 120
-	const roundThickness = computed<number>(() => isHorizontal.value ? matchWidth : verticalRoundThickness)
 
 	const showConnectors = computed<boolean>(() => {
 		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) return false
@@ -374,19 +374,8 @@
 		return maxMatchesInRound.value * (matchHeight + baseGap)
 	})
 
-	const totalWidth = computed<number>(() => {
-		const n = displayRounds.value.length
-
-		return n * roundThickness.value + (n - 1) * roundGap
-	})
-
-	const connectorViewBox = computed<string>(() => {
-		if (isHorizontal.value) {
-			return `0 0 ${totalWidth.value} ${totalHeight.value}`
-		}
-
-		return `0 0 ${totalHeight.value} ${totalWidth.value}`
-	})
+	const treeRef = ref<HTMLElement | null>(null)
+	const connectorViewBox = ref<string>('0 0 0 0')
 
 	type TConnectorPath = {
 		key: string
@@ -396,73 +385,135 @@
 		winner: boolean
 	}
 
-	const matchYCenter = (_roundIndex: number, matchIndex: number, roundMatchCount: number): number => {
-		// Each round is vertically centered. Matches share the available
-		// height evenly.
-		const slot = totalHeight.value / roundMatchCount
+	/*********************************************************
+	 * Connector measurement (real DOM positions)
+	 *
+	 * @description
+	 * Connectors are drawn from the *measured* centre of each
+	 * match card rather than a computed grid. The flex layout
+	 * (space-around + gap) and the per-round title offset move
+	 * cards away from any formula-predicted position, so a
+	 * formula produced visibly off-centre, unbalanced links.
+	 * Measuring the live rects keeps every link anchored to the
+	 * exact middle of the card it leaves / enters, whatever the
+	 * title, density, scores or gap.
+	 ********************************************************/
+	const connectorPaths = ref<TConnectorPath[]>([])
 
-		return slot * matchIndex + slot / 2
-	}
+	const measureConnectors = (): void => {
+		const treeEl = treeRef.value
 
-	const matchXCenter = (roundIndex: number): number => {
-		const t = roundThickness.value
-		return roundIndex * (t + roundGap) + t / 2
-	}
+		if (!treeEl || !showConnectors.value) {
+			connectorPaths.value = []
 
-	const connectorPaths = computed<TConnectorPath[]>(() => {
-		if (!showConnectors.value) return []
+			return
+		}
 
+		const treeRect = treeEl.getBoundingClientRect()
+
+		connectorViewBox.value = `0 0 ${treeRect.width} ${treeRect.height}`
+
+		const roundEls = Array.from(treeEl.querySelectorAll<HTMLElement>('.origam-bracket__round'))
+		const cardsPerRound = roundEls.map((roundEl) => {
+			const matchesEl = roundEl.querySelector('.origam-bracket-round__matches')
+
+			return matchesEl
+				? Array.from(matchesEl.children).map(card => card.getBoundingClientRect())
+				: []
+		})
+
+		const horiz = isHorizontal.value
 		const paths: TConnectorPath[] = []
 
 		for (let r = 0; r < displayRounds.value.length - 1; r += 1) {
 			const round = displayRounds.value[r]
 			const nextRound = displayRounds.value[r + 1]
+			const fromCards = cardsPerRound[r] ?? []
+			const toCards = cardsPerRound[r + 1] ?? []
 
 			for (let i = 0; i < round.matches.length; i += 1) {
 				const match = round.matches[i]
-				let nextIndex = -1
-				let nextMatch: IBracketMatch | undefined
 
+				let nextIndex = -1
 				if (match.nextMatchId != null) {
 					nextIndex = nextRound.matches.findIndex(m => m.id === match.nextMatchId)
-					if (nextIndex !== -1) nextMatch = nextRound.matches[nextIndex]
 				}
+				if (nextIndex === -1) nextIndex = Math.floor(i / 2)
 
-				if (nextIndex === -1) {
-					// Positional fallback: i -> floor(i / 2)
-					nextIndex = Math.floor(i / 2)
-					nextMatch = nextRound.matches[nextIndex]
+				const nextMatch = nextRound.matches[nextIndex]
+				const fromRect = fromCards[i]
+				const toRect = toCards[nextIndex]
+
+				if (!nextMatch || !fromRect || !toRect) continue
+
+				const fromCenterX = (fromRect.left - treeRect.left) + fromRect.width / 2
+				const fromCenterY = (fromRect.top - treeRect.top) + fromRect.height / 2
+				const toCenterX = (toRect.left - treeRect.left) + toRect.width / 2
+				const toCenterY = (toRect.top - treeRect.top) + toRect.height / 2
+
+				let d: string
+				let from: TConnectorPath['from']
+				let to: TConnectorPath['to']
+
+				if (horiz) {
+					const startX = fromRect.right - treeRect.left
+					const endX = toRect.left - treeRect.left
+					const midX = (startX + endX) / 2
+
+					d = `M ${startX},${fromCenterY} L ${midX},${fromCenterY} L ${midX},${toCenterY} L ${endX},${toCenterY}`
+					from = {matchId: match.id, x: startX, y: fromCenterY}
+					to = {matchId: nextMatch.id, x: endX, y: toCenterY}
+				} else {
+					const startY = fromRect.bottom - treeRect.top
+					const endY = toRect.top - treeRect.top
+					const midY = (startY + endY) / 2
+
+					d = `M ${fromCenterX},${startY} L ${fromCenterX},${midY} L ${toCenterX},${midY} L ${toCenterX},${endY}`
+					from = {matchId: match.id, x: fromCenterX, y: startY}
+					to = {matchId: nextMatch.id, x: toCenterX, y: endY}
 				}
-
-				if (!nextMatch) continue
-
-				const fromXCenter = matchXCenter(r)
-				const toXCenter = matchXCenter(r + 1)
-				const fromX = fromXCenter + roundThickness.value / 2
-				const toX = toXCenter - roundThickness.value / 2
-				const fromY = matchYCenter(r, i, round.matches.length)
-				const toY = matchYCenter(r + 1, nextIndex, nextRound.matches.length)
-				const midX = (fromX + toX) / 2
-
-				const isWinnerPath = match.winnerId != null
-
-				const horiz = isHorizontal.value
-				const d = horiz
-					? `M ${fromX},${fromY} L ${midX},${fromY} L ${midX},${toY} L ${toX},${toY}`
-					: `M ${fromY},${fromX} L ${fromY},${midX} L ${toY},${midX} L ${toY},${toX}`
 
 				paths.push({
 					key: `${match.id}-${nextMatch.id}`,
 					d,
-					from: {matchId: match.id, x: fromX, y: fromY},
-					to: {matchId: nextMatch.id, x: toX, y: toY},
-					winner: isWinnerPath
+					from,
+					to,
+					winner: match.winnerId != null
 				})
 			}
 		}
 
-		return paths
+		connectorPaths.value = paths
+	}
+
+	let connectorResizeObserver: ResizeObserver | null = null
+
+	onMounted(() => {
+		nextTick(measureConnectors)
+
+		if (typeof ResizeObserver !== 'undefined' && treeRef.value) {
+			connectorResizeObserver = new ResizeObserver(() => measureConnectors())
+			connectorResizeObserver.observe(treeRef.value)
+		}
 	})
+
+	onBeforeUnmount(() => {
+		connectorResizeObserver?.disconnect()
+		connectorResizeObserver = null
+	})
+
+	watch(
+		[
+			displayRounds,
+			isHorizontal,
+			() => props.showScores,
+			() => props.showSeed,
+			() => props.density,
+			() => props.showRoundTitles
+		],
+		() => nextTick(measureConnectors),
+		{flush: 'post'}
+	)
 
 	const roundStyleFor = (_index: number): StyleValue => {
 		const minHeight = `${totalHeight.value}px`
