@@ -140,6 +140,12 @@ diagonal. The diagonal cells are inert.
 | `showSeed`        | `boolean`                                                     | `false`               |
 | `interactive`     | `boolean`                                                     | `true`                |
 | `color`           | `TIntent`                                                     | `'primary'`           |
+| `winnersLabel`    | `string`                                                      | `'Winners bracket'`   |
+| `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
+
+> `winnersLabel` / `losersLabel` are only rendered in the
+> `double-elimination` layout, as the heading above each bracket tree.
+> Pre-translate them — the component never calls `useT`.
 
 ## Events
 
@@ -160,7 +166,7 @@ diagonal. The diagonal cells are inert.
 
 ## Layout strategy
 
-For tree variants (`single-elimination`, `double-elimination`):
+For `single-elimination`:
 
 - Each round is laid out as a flex column (in horizontal mode) or row
   (in vertical mode).
@@ -171,12 +177,37 @@ For tree variants (`single-elimination`, `double-elimination`):
   whose `viewBox` matches the tree dimensions. Each connector is a
   three-segment polyline: exit the source match horizontally to the
   half-way x, drop to the target match y, then enter horizontally.
+- Endpoints are **measured from the live DOM** (each match card's
+  `getBoundingClientRect`) rather than computed from a grid formula, so
+  every link stays anchored to the exact centre of the card it leaves /
+  enters regardless of round title, density, score visibility or gap.
+  Re-measured on mount, on `ResizeObserver`, and when the relevant props
+  change.
 - `nextMatchId` on `IBracketMatch` drives explicit linking; if absent,
   the layout falls back to positional mapping (match `i` of round `n`
   connects to match `floor(i / 2)` of round `n + 1`).
 - The connector path automatically receives the
   `origam-bracket__connector--winner` modifier class when the source
   match has a declared `winnerId`.
+
+For `double-elimination`:
+
+- Rounds are grouped by `IBracketRound.side` into **two independent
+  trees** — the Winner Bracket (`side: 'winner'`, or `undefined`) on top
+  and the Loser Bracket (`side: 'loser'`) below — laid out on a CSS grid,
+  with the Grand Final column (`side: 'grand-final'`) on the right,
+  vertically centred across both. Each tree carries a heading
+  (`winnersLabel` / `losersLabel`).
+- The Grand Final models the Winner Bracket champion's one-match
+  advantage as a **conditional reset match**: provide two
+  `grand-final` rounds (the Grand Final and a "Grand Final (reset)"),
+  wired with `nextMatchId`. The reset is only meaningful when the Loser
+  Bracket champion wins the first Grand Final.
+- Connectors are driven **purely by `nextMatchId`** (no positional
+  fallback): every match that declares a downstream id draws a measured
+  link to that card wherever it lands, so Winner-final → Grand Final,
+  Loser-final → Grand Final and Grand Final → reset all resolve across
+  the two trees.
 
 For `round-robin`:
 

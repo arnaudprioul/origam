@@ -75,4 +75,19 @@ export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensi
      * @default true
      */
     interactive?: boolean
+    /**
+     * Heading shown above the winner-bracket tree in a
+     * double-elimination layout. Pre-translate before passing — the
+     * component never calls `useT`.
+     *
+     * @default 'Winners bracket'
+     */
+    winnersLabel?: string
+    /**
+     * Heading shown above the loser-bracket tree in a
+     * double-elimination layout.
+     *
+     * @default 'Losers bracket'
+     */
+    losersLabel?: string
 }

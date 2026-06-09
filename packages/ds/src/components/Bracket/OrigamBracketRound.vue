@@ -33,6 +33,7 @@
 						:key="match.id"
 						:color="color"
 						:data-cy="`origam-bracket-match-${match.id}`"
+						:data-match-id="match.id"
 						:interactive="interactive"
 						:is-final="isFinalRound && matchIndex === 0 && round.matches.length === 1"
 						:match="match"

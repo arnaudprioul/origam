@@ -63,6 +63,101 @@
 			</div>
 		</template>
 
+		<template v-else-if="variant === BRACKET_VARIANT.DOUBLE_ELIMINATION">
+			<div
+					ref="doubleRef"
+					class="origam-bracket__double"
+					data-cy="origam-bracket-double"
+			>
+				<svg
+						v-if="showConnectors"
+						:viewBox="connectorViewBox"
+						aria-hidden="true"
+						class="origam-bracket__connectors"
+						preserveAspectRatio="none"
+				>
+					<template
+							v-for="path in connectorPaths"
+							:key="path.key"
+					>
+						<slot
+								name="connector"
+								:from="path.from"
+								:to="path.to"
+						>
+							<path
+									:class="['origam-bracket__connector', { 'origam-bracket__connector--winner': path.winner }]"
+									:d="path.d"
+									fill="none"
+							/>
+						</slot>
+					</template>
+				</svg>
+
+				<section
+						v-for="section in doubleSections"
+						:key="section.key"
+						:class="['origam-bracket__de-section', `origam-bracket__de-section--${section.key}`]"
+						:data-cy="`origam-bracket-de-${section.key}`"
+				>
+					<h2
+							v-if="section.label"
+							class="origam-bracket__de-label"
+					>
+						{{ section.label }}
+					</h2>
+					<div class="origam-bracket__de-tree">
+						<origam-bracket-round
+								v-for="(round, index) in section.rounds"
+								:key="round.id"
+								:color="color"
+								:data-cy="`origam-bracket-${section.key}-round-${index}`"
+								:direction="DIRECTION.HORIZONTAL"
+								:index="index"
+								:interactive="interactive"
+								:round="round"
+								:show-round-title="showRoundTitles"
+								:show-scores="showScores"
+								:show-seed="showSeed"
+								:total-rounds="section.rounds.length"
+								class="origam-bracket__round"
+								@competitor-click="onCompetitorClick"
+								@match-click="onMatchClick"
+								@winner-click="onWinnerClick"
+						>
+							<template
+									v-if="$slots['round-title']"
+									#round-title="scope"
+							>
+								<slot
+										name="round-title"
+										v-bind="scope"
+								/>
+							</template>
+							<template
+									v-if="$slots.match"
+									#match="scope"
+							>
+								<slot
+										name="match"
+										v-bind="scope"
+								/>
+							</template>
+							<template
+									v-if="$slots.competitor"
+									#competitor="scope"
+							>
+								<slot
+										name="competitor"
+										v-bind="scope"
+								/>
+							</template>
+						</origam-bracket-round>
+					</div>
+				</section>
+			</div>
+		</template>
+
 		<template v-else>
 			<div
 					ref="treeRef"
@@ -192,7 +287,9 @@
 		showScores: true,
 		showSeed: false,
 		interactive: true,
-		color: 'primary'
+		color: 'primary',
+		winnersLabel: 'Winners bracket',
+		losersLabel: 'Losers bracket'
 	})
 
 	const emit = defineEmits<{
@@ -223,6 +320,35 @@
 		const grandFinals = props.rounds.filter(r => r.side === 'grand-final')
 
 		return [...winners, ...losers, ...grandFinals]
+	})
+
+	/*********************************************************
+	 * Double-elimination sections
+	 *
+	 * @description
+	 * A real double-elimination is two independent trees — the
+	 * Winner Bracket and the Loser Bracket — that converge on a
+	 * Grand Final (plus a conditional reset match: the WB champion
+	 * carries a one-match advantage, so the LB champion must win
+	 * twice). Each section is rendered as its own tree; empty
+	 * sections are dropped.
+	 ********************************************************/
+	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'winner' || r.side === undefined))
+	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'loser'))
+	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'grand-final'))
+
+	type TDoubleSection = {
+		key: 'winners' | 'losers' | 'grand-final'
+		label: string
+		rounds: IBracketRound[]
+	}
+
+	const doubleSections = computed<TDoubleSection[]>(() => {
+		return [
+			{key: 'winners', label: props.winnersLabel, rounds: winnerRounds.value},
+			{key: 'losers', label: props.losersLabel, rounds: loserRounds.value},
+			{key: 'grand-final', label: '', rounds: grandFinalRounds.value}
+		].filter(section => section.rounds.length > 0)
 	})
 
 	/*********************************************************
@@ -375,6 +501,7 @@
 	})
 
 	const treeRef = ref<HTMLElement | null>(null)
+	const doubleRef = ref<HTMLElement | null>(null)
 	const connectorViewBox = ref<string>('0 0 0 0')
 
 	type TConnectorPath = {
@@ -400,7 +527,65 @@
 	 ********************************************************/
 	const connectorPaths = ref<TConnectorPath[]>([])
 
-	const measureConnectors = (): void => {
+	/*********************************************************
+	 * Double-elimination connectors (id-driven)
+	 *
+	 * @description
+	 * The two trees + grand final converge in arbitrary positions,
+	 * so connectors are driven purely by `nextMatchId`: every match
+	 * that declares a downstream id draws a link to it, wherever that
+	 * card lands. Measured against the whole double-elim container so
+	 * WB-final → GF, LB-final → GF and GF → GF-reset all resolve.
+	 ********************************************************/
+	const measureDoubleConnectors = (): void => {
+		const rootEl = doubleRef.value
+
+		if (!rootEl || !showConnectors.value) {
+			connectorPaths.value = []
+
+			return
+		}
+
+		const rootRect = rootEl.getBoundingClientRect()
+
+		connectorViewBox.value = `0 0 ${rootRect.width} ${rootRect.height}`
+
+		const rectById = new Map<string, DOMRect>()
+		rootEl.querySelectorAll<HTMLElement>('[data-match-id]').forEach((card) => {
+			rectById.set(String(card.dataset.matchId), card.getBoundingClientRect())
+		})
+
+		const paths: TConnectorPath[] = []
+
+		for (const round of props.rounds) {
+			for (const match of round.matches) {
+				if (match.nextMatchId == null) continue
+
+				const fromRect = rectById.get(String(match.id))
+				const toRect = rectById.get(String(match.nextMatchId))
+
+				if (!fromRect || !toRect) continue
+
+				const fromCenterY = (fromRect.top - rootRect.top) + fromRect.height / 2
+				const toCenterY = (toRect.top - rootRect.top) + toRect.height / 2
+				const startX = fromRect.right - rootRect.left
+				const endX = toRect.left - rootRect.left
+				const midX = (startX + endX) / 2
+
+				paths.push({
+					key: `${match.id}-${match.nextMatchId}`,
+					d: `M ${startX},${fromCenterY} L ${midX},${fromCenterY} L ${midX},${toCenterY} L ${endX},${toCenterY}`,
+					from: {matchId: match.id, x: startX, y: fromCenterY},
+					to: {matchId: match.nextMatchId, x: endX, y: toCenterY},
+					winner: match.winnerId != null
+				})
+			}
+		}
+
+		connectorPaths.value = paths
+	}
+
+	const measureSingleConnectors = (): void => {
 		const treeEl = treeRef.value
 
 		if (!treeEl || !showConnectors.value) {
@@ -486,21 +671,59 @@
 		connectorPaths.value = paths
 	}
 
+	const measureConnectors = (): void => {
+		if (props.variant === BRACKET_VARIANT.DOUBLE_ELIMINATION) {
+			measureDoubleConnectors()
+
+			return
+		}
+
+		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) {
+			connectorPaths.value = []
+
+			return
+		}
+
+		measureSingleConnectors()
+	}
+
+	const connectorContainer = (): HTMLElement | null => {
+		return props.variant === BRACKET_VARIANT.DOUBLE_ELIMINATION ? doubleRef.value : treeRef.value
+	}
+
 	let connectorResizeObserver: ResizeObserver | null = null
 
-	onMounted(() => {
-		nextTick(measureConnectors)
+	const attachConnectorObserver = (): void => {
+		connectorResizeObserver?.disconnect()
 
-		if (typeof ResizeObserver !== 'undefined' && treeRef.value) {
+		const el = connectorContainer()
+
+		if (typeof ResizeObserver !== 'undefined' && el) {
 			connectorResizeObserver = new ResizeObserver(() => measureConnectors())
-			connectorResizeObserver.observe(treeRef.value)
+			connectorResizeObserver.observe(el)
 		}
+	}
+
+	onMounted(() => {
+		nextTick(() => {
+			attachConnectorObserver()
+			measureConnectors()
+		})
 	})
 
 	onBeforeUnmount(() => {
 		connectorResizeObserver?.disconnect()
 		connectorResizeObserver = null
 	})
+
+	watch(
+		() => props.variant,
+		() => nextTick(() => {
+			attachConnectorObserver()
+			measureConnectors()
+		}),
+		{flush: 'post'}
+	)
 
 	watch(
 		[
@@ -651,6 +874,54 @@
 		&__round {
 			position: relative;
 			z-index: 1;
+		}
+
+		&__double {
+			display: grid;
+			position: relative;
+			grid-template-columns: max-content max-content;
+			grid-template-areas:
+				"winners grand-final"
+				"losers  grand-final";
+			column-gap: var(--origam-bracket---round-gap, 48px);
+			row-gap: var(--origam-bracket-double---section-gap, 40px);
+			width: max-content;
+		}
+
+		&__de-section {
+			position: relative;
+			z-index: 1;
+
+			&--winners {
+				grid-area: winners;
+			}
+
+			&--losers {
+				grid-area: losers;
+			}
+
+			&--grand-final {
+				grid-area: grand-final;
+				align-self: center;
+			}
+		}
+
+		&__de-label {
+			margin: 0 0 var(--origam-bracket-double-label---margin-block-end, 12px);
+			color: var(--origam-bracket-double-label---color, var(--origam-color__text---primary, #1a1a1a));
+			font-size: var(--origam-bracket-double-label---font-size, 0.75rem);
+			font-weight: var(--origam-bracket-double-label---font-weight, 700);
+			letter-spacing: var(--origam-bracket-double-label---letter-spacing, 0.08em);
+			text-transform: var(--origam-bracket-double-label---text-transform, uppercase);
+		}
+
+		&__de-tree {
+			display: flex;
+			position: relative;
+			flex-direction: row;
+			align-items: stretch;
+			gap: var(--origam-bracket---round-gap, 48px);
+			width: max-content;
 		}
 
 		&__connectors {

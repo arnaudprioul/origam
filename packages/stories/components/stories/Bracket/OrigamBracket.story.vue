@@ -30,6 +30,8 @@
 						:show-round-titles="state.showRoundTitles"
 						:show-scores="state.showScores"
 						:show-seed="state.showSeed"
+						:winners-label="state.winnersLabel"
+						:losers-label="state.losersLabel"
 						:width="state.width"
 						:height="state.height"
 						:min-width="state.minWidth"
@@ -58,6 +60,10 @@
 					<HstCheckbox v-model="state.showRoundTitles" title="Show Round Titles"/>
 					<HstCheckbox v-model="state.showScores"      title="Show Scores"/>
 					<HstCheckbox v-model="state.showSeed"        title="Show Seed"/>
+				</StoryGroup>
+				<StoryGroup title="Double elimination">
+					<HstText v-model="state.winnersLabel" title="Winners Label"/>
+					<HstText v-model="state.losersLabel"  title="Losers Label"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"     title="Width"/>
@@ -430,13 +436,15 @@
 					id: 'wsf1',
 					competitorA: { id: 't1', name: 'T1' },
 					competitorB: { id: 'g2', name: 'G2' },
-					scoreA: 2, scoreB: 0, winnerId: 't1'
+					scoreA: 2, scoreB: 0, winnerId: 't1',
+					status: 'completed', nextMatchId: 'wf'
 				},
 				{
 					id: 'wsf2',
 					competitorA: { id: 'fnc', name: 'FNATIC' },
 					competitorB: { id: 'tl', name: 'Team Liquid' },
-					scoreA: 1, scoreB: 2, winnerId: 'tl'
+					scoreA: 1, scoreB: 2, winnerId: 'tl',
+					status: 'completed', nextMatchId: 'wf'
 				}
 			]
 		},
@@ -449,30 +457,60 @@
 					id: 'wf',
 					competitorA: { id: 't1', name: 'T1' },
 					competitorB: { id: 'tl', name: 'Team Liquid' },
-					scoreA: 2, scoreB: 1, winnerId: 't1'
+					scoreA: 2, scoreB: 1, winnerId: 't1',
+					status: 'completed', nextMatchId: 'gf'
+				}
+			]
+		},
+		{
+			id: 'lb-r1',
+			title: 'Losers round 1',
+			side: 'loser',
+			matches: [
+				{
+					id: 'lr1',
+					competitorA: { id: 'g2', name: 'G2' },
+					competitorB: { id: 'fnc', name: 'FNATIC' },
+					scoreA: 2, scoreB: 1, winnerId: 'g2',
+					status: 'completed', nextMatchId: 'lf'
 				}
 			]
 		},
 		{
 			id: 'lb-f',
-			title: 'Loser final',
+			title: 'Losers final',
 			side: 'loser',
 			matches: [
 				{
 					id: 'lf',
 					competitorA: { id: 'g2', name: 'G2' },
-					competitorB: { id: 'fnc', name: 'FNATIC' },
-					scoreA: 2, scoreB: 0, winnerId: 'g2'
+					competitorB: { id: 'tl', name: 'Team Liquid' },
+					scoreA: 1, scoreB: 2, winnerId: 'tl',
+					status: 'completed', nextMatchId: 'gf'
 				}
 			]
 		},
 		{
-			id: 'gf',
-			title: 'Grand final',
+			id: 'gf-r',
+			title: 'Grand Final',
 			side: 'grand-final',
 			matches: [
 				{
 					id: 'gf',
+					competitorA: { id: 't1', name: 'T1' },
+					competitorB: { id: 'tl', name: 'Team Liquid' },
+					scoreA: 2, scoreB: 3, winnerId: 'tl',
+					status: 'completed', nextMatchId: 'gfr'
+				}
+			]
+		},
+		{
+			id: 'gf-reset',
+			title: 'Grand Final (reset)',
+			side: 'grand-final',
+			matches: [
+				{
+					id: 'gfr',
 					competitorA: { id: 't1', name: 'T1' },
 					competitorB: { id: 'tl', name: 'Team Liquid' },
 					status: 'pending'
