@@ -250,14 +250,12 @@
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
 	import {
-		useBackgroundColor,
 		useDimension,
 		useElevation,
 		useMargin,
 		usePadding,
 		useProps,
-		useRounded,
-		useTextColor
+		useRounded
 	} from '../../composables'
 
 	import {
@@ -268,6 +266,8 @@
 	} from '../../consts'
 
 	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
+
+	import { isCssColor, isIntent, tokenForegroundForIntent, tokenStylesForIntent } from '../../utils/Commons/color.util'
 
 	import type {
 		IBracketCompetitor,
@@ -776,11 +776,64 @@
 	}
 
 	/*********************************************************
+	 * Color → CSS custom properties
+	 *
+	 * @description
+	 * `bgColor` paints the surface of every match card, `color`
+	 * drives the match text AND the connector links between matches.
+	 * Rather than colouring the root (which the per-match surfaces and
+	 * per-link strokes override), we resolve each value once and expose
+	 * it as a custom property the children already read through their
+	 * fallback chains:
+	 *   - `--origam-bracket-match---background-color`  ← bgColor
+	 *   - `--origam-bracket---color`                   ← color (text,
+	 *     inherited as `currentColor` by competitor rows / scores)
+	 *   - `--origam-bracket-connector---stroke-color`(+ `-winner`) ← color
+	 * Tokenised intents resolve to theme vars; custom CSS colors pass
+	 * through untouched.
+	 ********************************************************/
+	const resolveSurface = (value: IBracketProps['bgColor']): string | null => {
+		if (!value) return null
+		if (isIntent(value as string)) return tokenStylesForIntent(value as string, 'default')['background-color']
+		if (value === 'transparent') return 'transparent'
+		if (typeof value === 'string' && isCssColor(value)) return value
+
+		return null
+	}
+
+	const resolveForeground = (value: IBracketProps['color']): string | null => {
+		if (!value) return null
+		if (isIntent(value as string)) return tokenForegroundForIntent(value as string)
+		if (value === 'transparent') return 'transparent'
+		if (typeof value === 'string' && isCssColor(value)) return value
+
+		return null
+	}
+
+	const colorVars = computed<Record<string, string>>(() => {
+		const vars: Record<string, string> = {}
+
+		const surface = resolveSurface(props.bgColor)
+		if (surface) {
+			vars['--origam-bracket-match---background-color'] = surface
+			vars['--origam-bracket-match--final---background-color'] = surface
+			vars['--origam-bracket-match--hover---background-color'] = surface
+		}
+
+		const foreground = resolveForeground(props.color)
+		if (foreground) {
+			vars['--origam-bracket---color'] = foreground
+			vars['--origam-bracket-connector---stroke-color'] = foreground
+			vars['--origam-bracket-connector---stroke-color-winner'] = foreground
+		}
+
+		return vars
+	})
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(props, 'bgColor')
-	const {textColorClasses, textColorStyles} = useTextColor(props, 'color')
 	const {dimensionStyles} = useDimension(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -789,15 +842,14 @@
 	const rootStyles = computed<StyleValue>(() => {
 		return [
 			roundedStyles.value,
-			backgroundColorStyles.value,
-			textColorStyles.value,
 			dimensionStyles.value,
 			elevationStyles.value,
 			marginStyles.value,
 			paddingStyles.value,
 			{
 				'--origam-bracket---round-gap': `${roundGap}px`,
-				'--origam-bracket---match-gap': `${baseGap}px`
+				'--origam-bracket---match-gap': `${baseGap}px`,
+				...colorVars.value
 			},
 			props.style
 		] as StyleValue
@@ -811,8 +863,6 @@
 			`origam-bracket--density-${props.density ?? 'default'}`,
 			`origam-bracket--color-${props.color}`,
 			roundedClasses.value,
-			backgroundColorClasses.value,
-			textColorClasses.value,
 			elevationClasses.value,
 			marginClasses.value,
 			paddingClasses.value,

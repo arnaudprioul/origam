@@ -139,10 +139,18 @@ diagonal. The diagonal cells are inert.
 | `showScores`      | `boolean`                                                     | `true`                |
 | `showSeed`        | `boolean`                                                     | `false`               |
 | `interactive`     | `boolean`                                                     | `true`                |
-| `color`           | `TIntent`                                                     | `'primary'`           |
+| `color`           | `TIntent \| <css-color>`                                     | `'primary'`           |
+| `bgColor`         | `TIntent \| <css-color>`                                     | — (none)              |
 | `winnersLabel`    | `string`                                                      | `'Winners bracket'`   |
 | `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
 
+> **`bgColor`** paints the surface of **every match card** (including
+> the final and hover states). **`color`** drives the **match text and
+> the connector links** between matches (and the winner-row highlight).
+> Both accept a tokenised intent (theme-aware) or a raw CSS color. They
+> are foreground/background-independent — set both for a coloured
+> surface with legible text.
+>
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.
 > Pre-translate them — the component never calls `useT`.
