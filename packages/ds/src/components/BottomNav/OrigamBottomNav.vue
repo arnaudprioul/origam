@@ -52,6 +52,7 @@
 	import {
 		useActive,
 		useDensity,
+		useDimension,
 		useGroup,
 		useHover,
 		useLayoutItem,
@@ -206,8 +207,13 @@
 	 * and spacing classes/styles onto the root element.
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
 	const bottomNavStyles = computed(() => {
 		return [
+			// All dimension props (width / minWidth / maxWidth / minHeight /
+			// maxHeight / height). The custom `height` below overrides the
+			// plain height with the density-aware value.
+			dimensionStyles.value,
 			{
 				height: props.height ? convertToUnit(height.value) : undefined
 			},
@@ -279,7 +285,7 @@
 		transition: var(--origam-bottom-bar---transition);
 
 		max-width: var(--origam-bottom-bar---max-width);
-		height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
+		min-height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
 
 		background-color: var(--origam-bottom-bar---background);
 		box-shadow: var(--origam-bottom-bar---box-shadow);
