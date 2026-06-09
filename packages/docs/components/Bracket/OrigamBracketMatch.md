@@ -24,8 +24,23 @@ highlight), `status`, and `advantage` (`{ competitorId, rounds }` → a
 | `showScores`  | `boolean`                                                | `true`      |
 | `showSeed`    | `boolean`                                                | `false`     |
 | `interactive` | `boolean`                                                | `true`      |
-| `color`       | `TIntent`                                                | `'primary'` |
+| `color`       | `TIntent \| <css-color>`                                 | `'primary'` |
+| `bgColor`     | `TIntent \| <css-color>`                                 | — (surface) |
+| `rounded`     | `TRounded \| number \| string \| boolean`                | — (6px)     |
+| `elevation`   | `number` / shadow rung                                   | —           |
+| `border`      | `'thin' \| 'thick' \| number \| boolean`                 | — (1px)     |
+| `borderColor` | `TIntent \| <css-color>`                                 | — (subtle)  |
+| `borderStyle` | `'solid' \| 'dashed' \| 'dotted' \| …`                   | `'solid'`   |
+| `density`     | `'default' \| 'compact' \| 'comfortable'`                | —           |
+| `width`/`height`/min/max | `number \| string`                            | —           |
+| `padding*` / `margin*` | `number \| string`                              | —           |
 | `tag`         | `string`                                                 | `'div'`     |
+
+The card carries the full cross-cutting surface (color, bgColor, rounded,
+elevation, border, density, dimension, padding, margin). `bgColor` paints
+the card; the text auto-contrasts (black / white) against the painted
+surface, just like inside `OrigamBracket`. `borderColor` accepts an intent
+and also drives the connector links when the card is in a tree.
 
 `status` overrides `match.status` — handy to preview a `live` badge. The
 status drives the meta header: `live` pulses, `completed` greys out,

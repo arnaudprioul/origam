@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			ref="matchRef"
 			:aria-label="ariaLabel"
 			:class="matchClasses"
 			:style="matchStyles"
@@ -78,12 +79,14 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, watch } from 'vue'
 
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
-	import { useProps } from '../../composables'
+	import { useDensity, useDimension, useMargin, usePadding, useProps } from '../../composables'
+
+	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
 	import type { IBracketCompetitor, IBracketMatch, IBracketMatchProps } from '../../interfaces'
 
@@ -189,19 +192,91 @@
 		}
 	}
 
+	/*********************************************************
+	 * Cross-cutting surface — shared resolvers + composables
+	 *
+	 * @description
+	 * `bgColor` / `rounded` / `elevation` / `border*` paint the card through
+	 * the shared `bracketSurfaceVars` (same source of truth as OrigamBracket);
+	 * `density` / `dimension` / `padding` / `margin` ride the Commons
+	 * composables. `color` sets the card text — auto-contrast against the
+	 * painted surface wins when `bgColor` is set, so a standalone card stays
+	 * legible like it does inside a bracket.
+	 ********************************************************/
+	const matchRef = ref<HTMLElement | null>(null)
+
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {dimensionStyles} = useDimension(props)
+	const {densityClasses} = useDensity(props, 'origam-bracket-match')
+
+	const autoTextColor = ref<string | null>(null)
+
+	const measureContrast = (): void => {
+		const el = matchRef.value
+		if (!props.bgColor || !el) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const channels = getComputedStyle(el).backgroundColor.match(/\d+(?:\.\d+)?/g)
+		if (!channels || channels.length < 3) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const linear = (channel: number): number => {
+			const c = channel / 255
+
+			return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+		}
+		const luminance = 0.2126 * linear(+channels[0]) + 0.7152 * linear(+channels[1]) + 0.0722 * linear(+channels[2])
+
+		autoTextColor.value = luminance < 0.179 ? '#ffffff' : '#000000'
+	}
+
+	let contrastTimer: ReturnType<typeof setTimeout> | null = null
+
+	const scheduleContrast = (): void => {
+		if (typeof window === 'undefined') return
+		if (contrastTimer) clearTimeout(contrastTimer)
+
+		contrastTimer = setTimeout(measureContrast, 200)
+	}
+
+	watch([() => props.bgColor, () => props.match], scheduleContrast, {flush: 'post'})
+	onMounted(scheduleContrast)
+	onBeforeUnmount(() => {
+		if (contrastTimer) clearTimeout(contrastTimer)
+		contrastTimer = null
+	})
+
 	const matchStyles = computed<StyleValue>(() => {
-		return [props.style] as StyleValue
+		const textColor = autoTextColor.value ?? resolveBracketForeground(props.color)
+
+		return [
+			bracketSurfaceVars(props),
+			textColor ? {'--origam-bracket---color': textColor, color: textColor} : {},
+			paddingStyles.value,
+			marginStyles.value,
+			dimensionStyles.value,
+			props.style
+		] as StyleValue
 	})
 
 	const matchClasses = computed(() => {
 		return [
 			'origam-bracket-match',
-			`origam-bracket-match--color-${props.color}`,
 			{
 				'origam-bracket-match--final': props.isFinal,
 				'origam-bracket-match--interactive': props.interactive,
 				[`origam-bracket-match--status-${resolvedStatus.value}`]: !!resolvedStatus.value
 			},
+			densityClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
@@ -292,6 +367,18 @@
 
 		&--status-completed {
 			opacity: 0.95;
+		}
+
+		&--density-compact {
+			--origam-bracket-match---min-height: 56px;
+			--origam-bracket-competitor---height: 28px;
+			--origam-bracket-competitor---padding-block: 2px;
+		}
+
+		&--density-comfortable {
+			--origam-bracket-match---min-height: 88px;
+			--origam-bracket-competitor---height: 44px;
+			--origam-bracket-competitor---padding-block: 8px;
 		}
 	}
 

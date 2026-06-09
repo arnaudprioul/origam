@@ -265,8 +265,13 @@
 
 	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
 
-	import { isCssColor, isIntent, tokenForegroundForIntent, tokenStylesForIntent } from '../../utils/Commons/color.util'
-	import { convertToUnit } from '../../utils'
+	import {
+		bracketDashArray,
+		bracketSurfaceVars,
+		resolveBracketBorderColor,
+		resolveBracketBorderWidth,
+		resolveBracketForeground
+	} from '../../utils/Bracket/bracket-surface.util'
 
 	import type {
 		IBracketCompetitor,
@@ -774,114 +779,6 @@
 		emit('competitor-click', competitor, match, event)
 	}
 
-	/*********************************************************
-	 * Color → CSS custom properties
-	 *
-	 * @description
-	 * `bgColor` paints the surface of every match card, `color`
-	 * drives the match text AND the connector links between matches.
-	 * Rather than colouring the root (which the per-match surfaces and
-	 * per-link strokes override), we resolve each value once and expose
-	 * it as a custom property the children already read through their
-	 * fallback chains:
-	 *   - `--origam-bracket-match---background-color`  ← bgColor
-	 *   - `--origam-bracket---color`                   ← color (text,
-	 *     inherited as `currentColor` by competitor rows / scores)
-	 * The connector links deliberately follow the match BORDER colour
-	 * (handled in SCSS), not `color`, so trees and links read as one.
-	 * Tokenised intents resolve to theme vars; custom CSS colors pass
-	 * through untouched.
-	 ********************************************************/
-	const resolveSurface = (value: IBracketProps['bgColor']): string | null => {
-		if (!value) return null
-		if (isIntent(value as string)) return tokenStylesForIntent(value as string, 'default')['background-color']
-		if (value === 'transparent') return 'transparent'
-		if (typeof value === 'string' && isCssColor(value)) return value
-
-		return null
-	}
-
-	const resolveForeground = (value: IBracketProps['color']): string | null => {
-		if (!value) return null
-		if (isIntent(value as string)) return tokenForegroundForIntent(value as string)
-		if (value === 'transparent') return 'transparent'
-		if (typeof value === 'string' && isCssColor(value)) return value
-
-		return null
-	}
-
-	/*********************************************************
-	 * Per-match shape / depth / border resolvers
-	 *
-	 * @description
-	 * `rounded`, `elevation` and `border*` apply to EACH match card (not
-	 * the bracket root), driven through the match's own CSS custom
-	 * properties. Tokenised rungs resolve to the generated theme vars;
-	 * custom numbers / CSS values pass through `convertToUnit`. The border
-	 * colour also feeds the connector stroke so the links match the cards.
-	 ********************************************************/
-	const ROUNDED_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full']
-	const SHADOW_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
-	const NAMED_RADIUS_VARS: Record<string, string> = {
-		'x-small': 'var(--origam-radius---xs)',
-		'small':   'var(--origam-radius---sm)',
-		'default': 'var(--origam-radius---md)',
-		'medium':  'var(--origam-radius---lg)',
-		'large':   'var(--origam-radius---xl)',
-		'x-large': 'var(--origam-radius---2xl)'
-	}
-	const BORDER_WIDTH_VARS: Record<string, string> = {
-		none: 'var(--origam-border__width---0)',
-		thin: 'var(--origam-border__width---thin)',
-		thick: 'var(--origam-border__width---2)'
-	}
-
-	const resolveRadius = (value: IBracketProps['rounded']): string | null => {
-		if (value == null || value === false) return null
-		if (typeof value === 'string') {
-			if (value in NAMED_RADIUS_VARS) return NAMED_RADIUS_VARS[value]
-			if (ROUNDED_RUNGS.includes(value)) return `var(--origam-radius---${value})`
-			if (value === '') return 'var(--origam-radius---md)'
-
-			// Free-form CSS border-radius (`'9999px'`, `'0 4px 0 4px'`, …).
-			return value.includes(' ') ? value : (convertToUnit(value) ?? value)
-		}
-		if (value === true) return 'var(--origam-radius---md)'
-
-		return convertToUnit(value as number) ?? null
-	}
-
-	const resolveShadow = (value: IBracketProps['elevation']): string | null => {
-		if (value == null || value === false) return null
-		if (typeof value === 'number') {
-			const rung = value <= 0 ? 'none' : value <= 2 ? 'xs' : value <= 4 ? 'sm' : value <= 8 ? 'md' : value <= 16 ? 'lg' : 'xl'
-
-			return `var(--origam-shadow---${rung})`
-		}
-		if (typeof value === 'string' && SHADOW_RUNGS.includes(value)) return `var(--origam-shadow---${value})`
-		if (value === true) return 'var(--origam-shadow---md)'
-
-		return typeof value === 'string' ? value : null
-	}
-
-	const resolveBorderWidth = (value: IBracketProps['border']): string | null => {
-		if (value == null || value === false) return null
-		if (typeof value === 'string' && value in BORDER_WIDTH_VARS) return BORDER_WIDTH_VARS[value]
-		if (value === true || value === '') return 'var(--origam-border__width---thin)'
-		if (typeof value === 'number') return convertToUnit(value) ?? null
-
-		// Free-form / positional `border` encodings aren't a plain width.
-		return null
-	}
-
-	const resolveBorderColor = (value: IBracketProps['borderColor']): string | null => {
-		if (!value) return null
-		if (isIntent(value as string)) return tokenForegroundForIntent(value as string)
-		if (typeof value === 'string' && isCssColor(value)) return value
-
-		return null
-	}
-
 	// Legible text for a painted surface. The intent → foreground tokens
 	// always pair white, which only contrasts a *dark* fill; on a light
 	// intent (warning, success, …) white is unreadable. Since the surface
@@ -925,56 +822,40 @@
 		autoTextColor.value = luminance < 0.179 ? '#ffffff' : '#000000'
 	}
 
+	/*********************************************************
+	 * Color / shape / border → CSS custom properties
+	 *
+	 * @description
+	 * `bgColor` / `rounded` / `elevation` / `border*` paint EACH match via
+	 * the shared `bracketSurfaceVars` resolver (single source of truth with
+	 * OrigamBracketMatch). `color` drives the match text (auto-contrast wins
+	 * when a surface is painted). The connector links follow the match
+	 * border (width + style + colour) so trees and links read as one.
+	 ********************************************************/
 	const colorVars = computed<Record<string, string>>(() => {
-		const vars: Record<string, string> = {}
-
-		const surface = resolveSurface(props.bgColor)
-		if (surface) {
-			vars['--origam-bracket-match---background-color'] = surface
-			vars['--origam-bracket-match--hover---background-color'] = surface
-		}
+		const vars: Record<string, string> = bracketSurfaceVars(props)
 
 		// Text foreground: a painted surface (`bgColor`) takes the measured
 		// black / white that actually passes WCAG against it; with no
 		// surface, `color` drives the text on the neutral background.
-		const foreground = autoTextColor.value ?? resolveForeground(props.color)
+		const foreground = autoTextColor.value ?? resolveBracketForeground(props.color)
 		if (foreground) vars['--origam-bracket---color'] = foreground
 
-		// Per-match shape / depth.
-		const radius = resolveRadius(props.rounded)
-		if (radius) vars['--origam-bracket-match---border-radius'] = radius
-
-		const shadow = resolveShadow(props.elevation)
-		if (shadow) vars['--origam-bracket-match---box-shadow'] = shadow
-
-		// Per-match border — width, style AND colour all carry over to the
-		// connector links so the trait between matches matches the cards.
-		// Connector stroke-width follows the match border-width. We set the
-		// connector var explicitly (not just via the SCSS fallback) because
-		// a global `:root` default for it would otherwise always win.
-		const borderWidth = resolveBorderWidth(props.border)
-		if (borderWidth) {
-			vars['--origam-bracket-match---border-width'] = borderWidth
-			vars['--origam-bracket-connector---stroke-width'] = borderWidth
-		}
-
-		if (props.borderStyle) {
-			vars['--origam-bracket-match---border-style'] = props.borderStyle
-
-			if (props.borderStyle === 'dashed') {
-				vars['--origam-bracket-connector---stroke-dasharray'] = '8 5'
-			} else if (props.borderStyle === 'dotted') {
-				vars['--origam-bracket-connector---stroke-dasharray'] = '1 5'
-				vars['--origam-bracket-connector---stroke-linecap'] = 'round'
-			}
-		}
-
-		const borderColor = resolveBorderColor(props.borderColor)
+		// Connector links mirror the match border. stroke-width is set
+		// explicitly (not just via the SCSS fallback) because a global
+		// `:root` default for it would otherwise always win.
+		const borderColor = resolveBracketBorderColor(props.borderColor)
 		if (borderColor) {
-			vars['--origam-bracket-match---border-color'] = borderColor
 			vars['--origam-bracket-connector---stroke-color'] = borderColor
 			vars['--origam-bracket-connector---stroke-color-winner'] = borderColor
 		}
+
+		const borderWidth = resolveBracketBorderWidth(props.border)
+		if (borderWidth) vars['--origam-bracket-connector---stroke-width'] = borderWidth
+
+		const dash = bracketDashArray(props.borderStyle)
+		if (dash.dasharray) vars['--origam-bracket-connector---stroke-dasharray'] = dash.dasharray
+		if (dash.linecap) vars['--origam-bracket-connector---stroke-linecap'] = dash.linecap
 
 		return vars
 	})

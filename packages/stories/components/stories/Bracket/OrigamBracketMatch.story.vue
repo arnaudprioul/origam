@@ -17,6 +17,17 @@
 					<origam-bracket-match
 							:match="MATCH_COMPLETED"
 							:color="state.color"
+							:bg-color="state.bgColor"
+							:density="state.density"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:width="state.width"
+							:height="state.height"
+							:padding="state.padding"
+							:margin="state.margin"
 							:show-scores="state.showScores"
 							:show-seed="state.showSeed"
 					/>
@@ -24,7 +35,28 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
-					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderColor" title="Border Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showScores" title="Show Scores"/>
@@ -181,7 +213,15 @@
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { COLOR_OPTIONS, TAG_OPTIONS } from '@stories/const'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
 	const STATUS_OPTIONS: Array<IOptions<TBracketMatchStatus>> = [
 		{ label: 'pending',   value: BRACKET_MATCH_STATUS.PENDING   },
