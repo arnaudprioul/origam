@@ -48,7 +48,7 @@
 				/>
 			</slot>
 
-			<div class="origam-bracket-match__divider"/>
+			<origam-divider class="origam-bracket-match__divider"/>
 
 			<slot
 					name="competitor"
@@ -81,6 +81,7 @@
 	import { computed, StyleValue } from 'vue'
 
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
 	import { useProps } from '../../composables'
 
@@ -278,11 +279,6 @@
 			display: flex;
 			flex-direction: column;
 			flex: 1 1 auto;
-		}
-
-		&__divider {
-			height: 1px;
-			background: var(--origam-color__border---subtle, rgba(0, 0, 0, 0.08));
 		}
 
 		&--interactive {
