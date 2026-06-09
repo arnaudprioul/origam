@@ -100,6 +100,7 @@
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IBracketMatchProps>>({
+					status: BRACKET_MATCH_STATUS.LIVE,
 					isFinal: false,
 					interactive: true,
 					tag: 'div'
@@ -109,6 +110,7 @@
 				<div class="story-match-shell">
 					<origam-bracket-match
 							:match="MATCH_COMPLETED"
+							:status="state.status"
 							:is-final="state.isFinal"
 							:interactive="state.interactive"
 							:tag="state.tag"
@@ -117,6 +119,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
+					<HstSelect   v-model="state.status"      title="Status" :options="STATUS_OPTIONS"/>
 					<HstCheckbox v-model="state.isFinal"     title="Is Final"/>
 					<HstCheckbox v-model="state.interactive" title="Interactive"/>
 				</StoryGroup>
@@ -257,13 +260,6 @@
 <style scoped>
 	.story-match-shell {
 		width: 260px;
-	}
-
-	.story-match-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 24px;
-		align-items: flex-start;
 	}
 
 	.custom-competitor {
