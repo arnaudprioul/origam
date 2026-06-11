@@ -6,6 +6,12 @@ export const I18N_LOCALES: LocaleObject[] = [
         language: 'en-US',
         name: 'English',
         file: 'en.json'
+    },
+    {
+        code: 'fr',
+        language: 'fr-FR',
+        name: 'Français',
+        file: 'fr.json'
     }
 ]
 

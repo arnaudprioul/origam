@@ -7,7 +7,8 @@
     "skipToContent": "Skip to content",
     "toggleTheme": "Toggle light and dark mode",
     "search": "Search the documentation",
-    "starCount": "GitHub stars"
+    "starCount": "GitHub stars",
+    "language": "Change language"
   },
   "chrome": {
     "version": "v2.5.1",

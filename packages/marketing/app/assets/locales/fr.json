@@ -1,0 +1,198 @@
+{
+  "brand": {
+    "name": "origam",
+    "tagline": "Le design system Vue 3 qui marche, tout simplement."
+  },
+  "a11y": {
+    "skipToContent": "Aller au contenu",
+    "toggleTheme": "Basculer entre thème clair et sombre",
+    "search": "Rechercher dans la documentation",
+    "starCount": "Étoiles GitHub",
+    "language": "Changer de langue"
+  },
+  "chrome": {
+    "version": "v2.5.1",
+    "searchPlaceholder": "Rechercher…",
+    "searchShortcut": "⌘K",
+    "starCount": "4.2k",
+    "theme": "Thème : Sobre"
+  },
+  "nav": {
+    "components": "Composants",
+    "playground": "Playground",
+    "docs": "Docs",
+    "stories": "Stories",
+    "blog": "Blog",
+    "changelog": "Journal",
+    "github": "GitHub"
+  },
+  "footer": {
+    "tagline": "Le design system Vue 3 qui marche, tout simplement.",
+    "product": {
+      "title": "Produit",
+      "charts": "Graphiques",
+      "themes": "Thèmes"
+    },
+    "resources": {
+      "title": "Ressources",
+      "github": "GitHub",
+      "community": "Communauté",
+      "discord": "Discord",
+      "discussions": "Discussions",
+      "twitter": "Twitter",
+      "rss": "RSS"
+    },
+    "legal": {
+      "title": "Mentions légales",
+      "license": "Licence MIT",
+      "privacy": "Confidentialité",
+      "contact": "Contact"
+    },
+    "copyright": "© 2026 origam · MIT",
+    "madeWith": "Fait avec origam, par des humains."
+  },
+  "home": {
+    "meta": {
+      "title": "origam · design system Vue 3",
+      "description": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first."
+    },
+    "hero": {
+      "badge": "v2.5.0 — 29 graphiques livrés, conforme WCAG 2.1 AA",
+      "titleLine1": "Le design system Vue 3",
+      "titleLine2": "qui marche, tout simplement.",
+      "subtitle": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first.",
+      "ctaComponents": "Parcourir les composants",
+      "ctaGithub": "Star sur GitHub",
+      "install": "npm install origam",
+      "copy": "Copier",
+      "copied": "Copié",
+      "ctasLabel": "Appels à l'action du hero"
+    },
+    "kpis": {
+      "title": "origam en chiffres",
+      "componentsValue": "95",
+      "componentsLabel": "Composants",
+      "chartsValue": "29",
+      "chartsLabel": "Primitives de graphiques",
+      "a11yValue": "100%",
+      "a11yLabel": "WCAG 2.1 AA",
+      "sizeValue": "<50ko",
+      "sizeLabel": "Tree-shakable",
+      "licenseValue": "MIT",
+      "licenseLabel": "Open source"
+    },
+    "features": {
+      "eyebrow": "CE QU'IL Y A DEDANS",
+      "title": "Tout ce que vous attendez. Rien de superflu.",
+      "charts": {
+        "title": "29 primitives de graphiques",
+        "description": "Ligne, aire, barre, donut, chandelier, heatmap — une couverture digne de Highcharts, sans la licence."
+      },
+      "a11y": {
+        "title": "Vérifié WCAG 2.1 AA",
+        "description": "Chaque composant est livré avec des tests d'accessibilité axe-core + Playwright. Clavier, lecteurs d'écran, mouvement : couverts."
+      },
+      "tokens": {
+        "title": "Design tokens",
+        "description": "Multi-thème via Tokens Studio. Basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
+      },
+      "typescript": {
+        "title": "TypeScript d'abord",
+        "description": "Mode strict, inférence de types complète, génériques sur Data Table/List. Votre IDE vous remerciera."
+      },
+      "css": {
+        "title": "CSS d'abord",
+        "description": "Container queries, :has(), color-mix(), view-transition-name. On utilise le CSS moderne pour que vous n'ayez pas à le réinventer."
+      },
+      "composition": {
+        "title": "Composition API",
+        "description": "Construit sur script setup + Composition API. Composables headless exposés quand vous devez descendre au bas niveau."
+      }
+    },
+    "playground": {
+      "eyebrow": "PLAYGROUND EN DIRECT",
+      "title": "Essayez avant de livrer.",
+      "file": "App.vue",
+      "share": "PARTAGER",
+      "open": "OUVRIR",
+      "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct."
+    },
+    "showcase": {
+      "eyebrow": "VITRINE",
+      "title": "95 composants. Une seule âme.",
+      "viewAll": "Voir tout",
+      "dataTable": {
+        "title": "Data Table",
+        "caption": "Triable · filtrable · virtualisé",
+        "colName": "Nom",
+        "colOwner": "Responsable",
+        "colStatus": "Statut",
+        "row1Name": "Version Aurora",
+        "row1Owner": "Arnaud",
+        "row1Status": "Livré",
+        "row2Name": "Tokens v2",
+        "row2Owner": "Léa",
+        "row2Status": "En revue",
+        "row3Name": "Audit a11y",
+        "row3Owner": "Jade",
+        "row3Status": "En cours",
+        "row4Name": "Moteur de graphiques",
+        "row4Owner": "Marc",
+        "row4Status": "Brouillon",
+        "row5Name": "Nouveau thème",
+        "row5Owner": "Romi",
+        "row5Status": "Brouillon"
+      },
+      "chartLine": {
+        "title": "Chart Line",
+        "caption": "+12,4 % ce mois-ci"
+      },
+      "switch": {
+        "title": "Switch",
+        "caption": "inset · plat · défaut"
+      },
+      "chips": {
+        "title": "Chips",
+        "caption": "6 intentions",
+        "primary": "Primaire",
+        "neutral": "Neutre",
+        "success": "Succès",
+        "warning": "Avertissement",
+        "danger": "Danger",
+        "info": "Info"
+      },
+      "avatarGroup": {
+        "title": "Groupe d'avatars",
+        "caption": "+24 membres"
+      }
+    },
+    "themes": {
+      "eyebrow": "THÉMATISATION",
+      "title": "Un design system. Toutes les marques.",
+      "chipGlass": "Glass",
+      "chipGeek": "Geek",
+      "chipCartoon": "Cartoon",
+      "chipEditorial": "Editorial",
+      "chipMaterial": "Material",
+      "chipEcom": "Ecom",
+      "chipApple": "Apple",
+      "tokensStudio": "compatible tokens.studio",
+      "styleDictionary": "Style Dictionary v4",
+      "previewLight": "light.json",
+      "previewDark": "dark.json",
+      "previewEditorial": "editorial.json",
+      "previewEcom": "ecom.json",
+      "previewButton": "Bouton",
+      "previewJson": ".json"
+    },
+    "cta": {
+      "title": "Prêt à livrer plus vite ?",
+      "description": "Démarrez votre projet Vue 3 avec origam en 30 secondes.",
+      "ctaDocs": "Lire la doc",
+      "actionsLabel": "Commencer",
+      "install": "npm install origam",
+      "copy": "Copier",
+      "copied": "Copié"
+    }
+  }
+}

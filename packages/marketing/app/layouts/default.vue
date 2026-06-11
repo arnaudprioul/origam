@@ -1,5 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import type { LocaleObject } from '@nuxtjs/i18n'
   import { useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
 
@@ -11,6 +13,13 @@
 
   const { t } = useT()
   const { resolvedMode, toggleMode } = useTheme()
+
+  const { locale, locales, setLocale } = useI18n()
+  const availableLocales = computed(() => locales.value as LocaleObject[])
+  const currentLocale = computed(() => availableLocales.value.find(l => l.code === locale.value))
+  const currentLocaleLabel = computed(() => currentLocale.value?.code.toUpperCase() ?? locale.value.toUpperCase())
+  const languageAriaLabel = computed(() => t('a11y.language', 'Change language'))
+  const changeLocale = (code: string) => setLocale(code as typeof locale.value)
 
   const themeIcon = computed(() => (resolvedMode.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'))
   const brandName = computed(() => t('brand.name', 'origam'))
@@ -108,6 +117,33 @@
             :aria-label="themeAriaLabel"
             @click="toggleMode"
           />
+
+          <origam-menu>
+            <template #activator="{ props }">
+              <origam-btn
+                class="appbar-actions__btn appbar-actions__btn--lang"
+                variant="outlined"
+                :aria-label="languageAriaLabel"
+                :prepend-icon="MDI_ICONS.TRANSLATE"
+                :text="currentLocaleLabel"
+                :append-icon="MDI_ICONS.CHEVRON_DOWN"
+                v-bind="props"
+              />
+            </template>
+
+            <template #default>
+              <origam-list nav>
+                <origam-list-item
+                  v-for="loc in availableLocales"
+                  :key="loc.code"
+                  :title="loc.name"
+                  :active="loc.code === locale"
+                  data-cy="locale-option"
+                  @click="changeLocale(loc.code)"
+                />
+              </origam-list>
+            </template>
+          </origam-menu>
 
           <origam-menu>
             <template #activator="{ props }">
