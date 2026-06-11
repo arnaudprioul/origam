@@ -1,4 +1,53 @@
+import type { CSSProperties } from 'vue'
 import type { IFeature } from '~/interfaces/feature.interface'
+
+/**
+ * Track template forwarded verbatim to <OrigamGrid columns>.
+ *
+ * `auto-fit` + `minmax` is CSS-first responsive: the 3 feature columns
+ * collapse to 2 then 1 on narrow viewports with no media query and no
+ * `!important` override of the grid's `--origam-grid---template-columns`.
+ */
+export const FEATURES_GRID_COLUMNS = 'repeat(auto-fit, minmax(280px, 1fr))'
+
+/**
+ * Per-instance OrigamCard padding override (maquette = 32px on all sides).
+ *
+ * OrigamCard's `padding` prop (IPaddingProps) only accepts numeric+unit
+ * literals (PADDING_REGEX rejects `var(...)`), so it can't carry the
+ * `--origam-space---8` token. To keep the value tokenised (project rule:
+ * spacing via `var(--origam-…)`, never a raw literal), we drive the card's
+ * public per-instance padding custom-props with the space token instead —
+ * the documented escape hatch, same pattern as HERO_BTN_VARS.
+ */
+export const FEATURE_CARD_VARS: CSSProperties = {
+    '--origam-card---padding-block-start': 'var(--origam-space---8, 2rem)',
+    '--origam-card---padding-block-end': 'var(--origam-space---8, 2rem)',
+    '--origam-card---padding-inline-start': 'var(--origam-space---8, 2rem)',
+    '--origam-card---padding-inline-end': 'var(--origam-space---8, 2rem)',
+    '--origam-card---background': 'var(--origam-color__surface---raised, #fafafa)'
+} as CSSProperties
+
+/**
+ * Per-instance OrigamSheet override for the feature icon tile.
+ *
+ * `bgColor`/`color` warn + deprecate when handed a raw `var(...)` (they
+ * expect a TIntent), and `rounded`'s BORDER_RADIUS_REGEX rejects `var(...)`
+ * too. `surface`/`action-primary` token surfaces are NOT intents, so — per
+ * the project color policy ("one-off custom colors via :style custom-prop")
+ * — we paint the sheet's public bg + radius custom-props with the sobre
+ * tokens directly. Border colour/width still ride the Sheet's typed props
+ * (borderColor passthrough does not deprecate).
+ */
+export const FEATURE_ICON_TILE_VARS: CSSProperties = {
+    '--origam-sheet---background': 'var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1))',
+    '--origam-sheet---border-radius': 'var(--origam-radius---card, 10px)'
+} as CSSProperties
+
+/** Icon tint = sobre action-primary fgSubtle, via the icon's bg/colour token. */
+export const FEATURE_ICON_VARS: CSSProperties = {
+    '--origam-icon---color': 'var(--origam-color__action--primary---fgSubtle, #6d28d9)'
+} as CSSProperties
 
 export const FEATURES: IFeature[] = [
     {

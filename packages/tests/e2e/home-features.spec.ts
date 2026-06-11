@@ -25,13 +25,15 @@ test.describe('HomeFeatures section', () => {
 
     // ── 1. Section presence & labelling ───────────────────────────────────
 
-    test('section has aria-labelledby pointing to h2#features-title', async ({ page }) => {
+    test('section has aria-labelledby pointing to #features-title', async ({ page }) => {
         const section = page.locator('section.home-features')
         await expect(section).toBeVisible()
         await expect(section).toHaveAttribute('aria-labelledby', 'features-title')
 
-        const h2 = page.locator('#features-title')
-        await expect(h2).toBeVisible()
+        // OrigamTitle drops its own id (known DS gap) — the aria target is a
+        // <span id> we control inside the rendered <h2>.
+        const target = page.locator('h2 #features-title')
+        await expect(target).toBeVisible()
     })
 
     // ── 2. Eyebrow ─────────────────────────────────────────────────────────
@@ -45,10 +47,64 @@ test.describe('HomeFeatures section', () => {
     // ── 3. H2 title ────────────────────────────────────────────────────────
 
     test('h2 title is a non-empty <h2> element', async ({ page }) => {
-        const title = page.locator('section.home-features h2#features-title')
+        const title = page.locator('section.home-features h2')
         await expect(title).toBeVisible()
         const text = await title.textContent()
         expect(text?.trim().length).toBeGreaterThan(0)
+    })
+
+    // ── Sobre computed-style assertions (≥3) ───────────────────────────────
+
+    test('Sobre — eyebrow violet (action-primary fgSubtle)', async ({ page }) => {
+        const eyebrow = page.locator('section.home-features p.home-features__eyebrow')
+        const color = await eyebrow.evaluate(el => getComputedStyle(el).color)
+        // sobre action--primary---fgSubtle = #6D28D9 = rgb(109, 40, 217)
+        expect(color).toBe('rgb(109, 40, 217)')
+    })
+
+    test('Sobre — carte feature = surface raised #FAFAFA, plat (sans ombre)', async ({ page }) => {
+        const card = page.locator('section.home-features .origam-card').first()
+        const styles = await card.evaluate(el => {
+            const s = getComputedStyle(el)
+            return { bg: s.backgroundColor, shadow: s.boxShadow }
+        })
+        // sobre surface---raised = #FAFAFA = rgb(250, 250, 250)
+        expect(styles.bg).toBe('rgb(250, 250, 250)')
+        // flat card => no box-shadow
+        expect(styles.shadow === 'none' || styles.shadow === '').toBe(true)
+    })
+
+    test('Sobre — carte feature à angles droits + padding 32px', async ({ page }) => {
+        const card = page.locator('section.home-features .origam-card').first()
+        const styles = await card.evaluate(el => {
+            const s = getComputedStyle(el)
+            return {
+                radius: s.borderTopLeftRadius,
+                pad: s.paddingTop
+            }
+        })
+        // rounded="0" by default (flat, square)
+        expect(styles.radius).toBe('0px')
+        // padding 32px (--origam-space---8 = 2rem)
+        expect(styles.pad).toBe('32px')
+    })
+
+    test('Sobre — tuile icône bordée violet, 44×44, radius 10px', async ({ page }) => {
+        const tile = page.locator('section.home-features .home-features__icon-tile').first()
+        const styles = await tile.evaluate(el => {
+            const s = getComputedStyle(el)
+            return {
+                w: s.width,
+                h: s.height,
+                radius: s.borderTopLeftRadius,
+                borderColor: s.borderTopColor
+            }
+        })
+        expect(styles.w).toBe('44px')
+        expect(styles.h).toBe('44px')
+        expect(styles.radius).toBe('10px')
+        // border colour = sobre action--primary---bg = #7C3AED = rgb(124, 58, 237)
+        expect(styles.borderColor).toBe('rgb(124, 58, 237)')
     })
 
     // ── 4. Exactly 6 feature cards ─────────────────────────────────────────

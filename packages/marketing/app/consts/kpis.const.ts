@@ -1,5 +1,14 @@
 import type { IKpi } from '~/interfaces/kpi.interface'
 
+/**
+ * Track template forwarded verbatim to <OrigamGrid columns>.
+ *
+ * `auto-fit` + `minmax` is CSS-first responsive: the 5 KPI columns collapse
+ * to fewer per row on narrow viewports with no media query and no
+ * `!important` override of the grid's `--origam-grid---template-columns`.
+ */
+export const KPIS_GRID_COLUMNS = 'repeat(auto-fit, minmax(140px, 1fr))'
+
 export const KPIS: IKpi[] = [
     {
         valueKey: 'home.kpis.componentsValue',

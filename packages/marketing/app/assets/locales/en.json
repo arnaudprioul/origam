@@ -188,6 +188,7 @@
       "title": "Ready to ship faster?",
       "description": "Spin up your Vue 3 project with origam in 30 seconds.",
       "ctaDocs": "Read docs",
+      "actionsLabel": "Get started",
       "install": "npm install origam",
       "copy": "Copy",
       "copied": "Copied"

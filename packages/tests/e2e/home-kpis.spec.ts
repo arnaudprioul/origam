@@ -73,6 +73,44 @@ test.describe('HomeKpis — T2', () => {
         })
     }
 
+    test('règles haut/bas rendues par OrigamDivider (<hr>)', async ({ page }) => {
+        const rules = page.locator('#kpis hr.origam-divider')
+        await expect(rules).toHaveCount(2)
+        await expect(page.locator('[data-cy="kpis-rule-top"]')).toBeAttached()
+        await expect(page.locator('[data-cy="kpis-rule-bottom"]')).toBeAttached()
+    })
+
+    test('la liste est rendue par OrigamGrid (tag dl, .origam-grid)', async ({ page }) => {
+        const grid = page.locator('#kpis dl.origam-grid')
+        await expect(grid).toBeAttached()
+    })
+
+    // ── Sobre computed-style assertions (≥3) ───────────────────────────────
+
+    test('Sobre — le nombre KPI est peint en violet action-primary', async ({ page }) => {
+        const value = page.locator('#kpis dd.home-kpis__value').first()
+        const color = await value.evaluate(el => getComputedStyle(el).color)
+        // sobre action--primary---bg = #7C3AED = rgb(124, 58, 237)
+        expect(color).toBe('rgb(124, 58, 237)')
+    })
+
+    test('Sobre — le label KPI est uppercase + gris secondaire', async ({ page }) => {
+        const label = page.locator('#kpis dt.home-kpis__label').first()
+        const styles = await label.evaluate(el => {
+            const s = getComputedStyle(el)
+            return { transform: s.textTransform, color: s.color }
+        })
+        expect(styles.transform).toBe('uppercase')
+        // sobre text---secondary = #525252 = rgb(82, 82, 82)
+        expect(styles.color).toBe('rgb(82, 82, 82)')
+    })
+
+    test('Sobre — la règle (divider) lit le token border à pleine opacité', async ({ page }) => {
+        const rule = page.locator('[data-cy="kpis-rule-top"]')
+        const opacity = await rule.evaluate(el => getComputedStyle(el).opacity)
+        expect(opacity).toBe('1')
+    })
+
     test('a11y — pas de violation axe-core critique sur la section kpis', async ({ page }) => {
         const results = await new AxeBuilder({ page })
             .include('#kpis')
