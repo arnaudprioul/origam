@@ -22,6 +22,8 @@ export const DISCORD_LINK = 'https://discord.gg/origam'
 export const TWITTER_LINK = 'https://twitter.com/origam'
 export const RSS_LINK = '/rss.xml'
 
+export const FOOTER_GRID_COLUMNS = '2fr 1fr 1fr 1fr'
+
 export const FOOTER_COLUMNS: IFooterColumn[] = [
     {
         titleKey: 'footer.product.title',
