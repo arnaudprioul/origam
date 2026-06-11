@@ -1,3 +1,17 @@
+import { CUSTOM_BORDER_RADIUS_REGEX } from '../../consts'
+
+/**
+ * Whether a string is a free-form custom `border-radius` value (a
+ * `var(...)` / `calc(...)` reference or a single CSS length outside the
+ * literal `BORDER_RADIUS_REGEX` whitelist) that should be emitted verbatim
+ * as an inline `border-radius` declaration.
+ *
+ * @param value …
+ */
+export function isCustomBorderRadius (value: string): boolean {
+    return CUSTOM_BORDER_RADIUS_REGEX.test(value.trim())
+}
+
 /**
  * Format rounded styles var.
  *

@@ -131,7 +131,13 @@ export default defineNuxtPlugin({
                 : []
         })
 
-        const origam = createOrigam({ themes })
+        // `ssr: true` keeps the server display state seeded from width 0 (no
+        // window) so the SSR markup matches the client's first (hydration)
+        // render — see the matching note in `plugin.client.ts`. On the server
+        // `IN_BROWSER` is already false so widths are 0 regardless, but passing
+        // the flag keeps both plugins symmetric and future-proofs any
+        // server-side display branching.
+        const origam = createOrigam({ themes, ssr: true })
 
         // Seed the per-component DEFAULT PROPS for the ACTIVE brand×mode BEFORE
         // the render so SSR markup already reflects the theme defaults — no flash

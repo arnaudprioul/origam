@@ -295,7 +295,7 @@
 			--origam-sheet---border-right-width: var(--origam-border__width---thin, 1px);
 			--origam-sheet---border-bottom-width: var(--origam-border__width---thin, 1px);
 			--origam-sheet---border-left-width: var(--origam-border__width---thin, 1px);
-			box-shadow: var(--origam-sheet--border---box-shadow);
+			box-shadow: var(--origam-sheet--border---box-shadow, var(--origam-sheet---box-shadow));
 		}
 
 		&--rounded {

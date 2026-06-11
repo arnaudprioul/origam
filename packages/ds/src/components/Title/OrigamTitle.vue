@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-contrast
 			:class="titleClasses"
 			:style="titleStyles"
@@ -91,7 +92,12 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(titleStyles)
+	// NOTE: `useStyle` returns its own generated `id` (the injected
+	// <style> element id). It MUST be aliased — leaving it named `id`
+	// shadows the `id` PROP in the template, so `:id="id"` on the root
+	// would bind the style-sheet id (undefined during SSR) instead of the
+	// consumer's `id`, silently dropping `id` / breaking `aria-labelledby`.
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(titleStyles)
 
 
 	/*********************************************************
@@ -103,7 +109,7 @@
 	defineExpose({
 		filterProps,
 		css,
-		id,
+		id: styleId,
 		load,
 		unload,
 		isLoaded

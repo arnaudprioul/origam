@@ -99,31 +99,30 @@
 							:class="getSwitchThumbClasses(icon)"
 					>
 						<origam-translate-scale>
-							<template v-if="!loaderConfig.isActive">
-								<origam-icon
-										v-if="icon"
-										:icon="icon"
-										size="x-small"
-								/>
-							</template>
-
-							<template v-if="hasCircularLoading">
+							<div
+									v-if="hasCircularLoading"
+									class="origam-switch__loader"
+							>
 								<slot name="loader">
-									<div class="origam-switch__loader">
-										<origam-progress
-												:active="loaderConfig.isActive"
-												:color="color"
-												:indeterminate="loaderConfig.indeterminate"
-												:model-value="loaderConfig.modelValue"
-												:size="SIZES.X_SMALL"
-												:type="PROGRESS_TYPE.CIRCULAR"
-												class="origam-switch__progress origam-switch__progress--circular"
-												thickness="2"
-												v-bind="loaderConfig.overrides"
-										/>
-									</div>
+									<origam-progress
+											:active="loaderConfig.isActive"
+											:color="color"
+											:indeterminate="loaderConfig.indeterminate"
+											:model-value="loaderConfig.modelValue"
+											:size="SIZES.X_SMALL"
+											:type="PROGRESS_TYPE.CIRCULAR"
+											class="origam-switch__progress origam-switch__progress--circular"
+											thickness="2"
+											v-bind="loaderConfig.overrides"
+									/>
 								</slot>
-							</template>
+							</div>
+
+							<origam-icon
+									v-else-if="icon"
+									:icon="icon"
+									size="x-small"
+							/>
 						</origam-translate-scale>
 					</div>
 				</template>

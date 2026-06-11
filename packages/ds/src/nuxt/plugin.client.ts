@@ -43,8 +43,17 @@ export default defineNuxtPlugin({
         // resolution; the objects travel in the runtime config). createOrigam
         // injects each one's name×mode scoped `<style>` block and provides the
         // installed-themes list for `useInstalledThemes()`.
+        // `ssr: true` is REQUIRED for hydration safety. Without it, the client
+        // seeds `useDisplay().mobile` from the real `window.innerWidth` during
+        // the FIRST (hydration) render, while the server seeded it from width 0
+        // (SSR has no window) → `mobile` differs → components keyed on it
+        // (OrigamSlideGroup/OrigamChipGroup emit `--mobile`, breakpoint-aware
+        // layouts, …) produce a hydration mismatch. With `ssr: true`, the client
+        // ALSO starts at width 0 (matching the server markup) and `createOrigam`
+        // defers `display.update()` to `app:suspense:resolve` (post-hydration),
+        // flipping to real viewport metrics only once the DOM is stable.
         const themes = config.themes ?? []
-        const origam = createOrigam({ themes })
+        const origam = createOrigam({ themes, ssr: true })
         nuxtApp.vueApp.use(origam)
 
         // `useTheme()` owns the DOM contract: its internal watchers apply
