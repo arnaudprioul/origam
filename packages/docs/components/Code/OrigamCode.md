@@ -46,6 +46,8 @@ automatic theme integration with the origam design system.
 | `format` | `boolean` | `false` | **Stub in v2.x.** Currently normalises whitespace only. Prettier is intentionally not bundled at runtime (size cost). |
 | `wrap` | `boolean` | `false` | Wrap long lines instead of scrolling horizontally. |
 | `filename` | `string` | `undefined` | Display a header bar with the filename. The copy button moves into the header when this is set. |
+| `compact` | `boolean` | `false` | Render a single-line **pill** instead of a multi-line surface — ideal for an install command. Suppresses header / filename / line-numbers, shrinks vertical padding to one line, and collapses the copy control to a small inline icon button at the end of the row. `<figure><pre><code>` semantics are preserved. |
+| `prompt` | `string` | `undefined` | Decorative prompt prefix rendered before the code (e.g. `'$'`). Purely visual — it is NOT part of the highlighted code and is NEVER included in the clipboard copy. Most useful with `compact`. |
 
 ## Events
 
@@ -78,6 +80,31 @@ automatic theme integration with the origam design system.
 
 Adding a language requires re-bundling the shiki highlighter — see the
 composable for the loaded subset.
+
+## Compact mode (install pill)
+
+`compact` turns the block into a single-line pill — the canonical use case
+is a copyable install command:
+
+```vue
+<template>
+    <OrigamCode compact prompt="$" lang="bash" :code="'npm install origam'"/>
+</template>
+```
+
+In compact mode:
+
+- the header, filename and line-numbers are suppressed (one row only);
+- vertical padding shrinks to a single line and the surface stays themed
+  by the `--origam-code---*` tokens;
+- the copy control collapses to a small **icon** button anchored inline at
+  the end of the row (it swaps to a check mark during the copied feedback
+  window so the pill never reflows);
+- `prompt` renders a decorative prefix (`$`) that is `aria-hidden` and is
+  **never** part of the clipboard copy — only `code` is copied.
+
+The `<figure><pre><code>` semantics are preserved, so the snippet stays
+screen-reader-readable and W3C-valid.
 
 ## Theme integration
 

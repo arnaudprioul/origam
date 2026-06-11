@@ -72,6 +72,23 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      * top-right corner of the code surface.
      */
     filename?: string
+    /**
+     * Render the block as a single-line **pill** instead of a multi-line
+     * surface — ideal for a copyable install command (`npm install origam`).
+     * In compact mode the header, filename and line-numbers are suppressed,
+     * vertical padding shrinks to one line, the surface keeps its themed
+     * tokens, and the copy control collapses to a small icon button anchored
+     * inline at the end of the row (not a floating text "Copy"). The `<figure>
+     * <pre><code>` semantics are preserved.
+     */
+    compact?: boolean
+    /**
+     * Decorative prompt prefix rendered BEFORE the code (e.g. `'$'` for a
+     * shell command). Purely visual: it is NOT part of the highlighted code
+     * and is NEVER included in the clipboard copy (only `code` is copied).
+     * Most useful paired with `compact` for an install-command pill.
+     */
+    prompt?: string
 }
 
 /**

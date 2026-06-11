@@ -118,6 +118,33 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Functional - Compact (install pill)"
+				:init-state="() => useStoryInitState<Partial<ICodeProps>>({
+					lang: CODE_LANG.BASH,
+					prompt: '$',
+					copyable: true
+				})"
+		>
+			<template #default="{ state }">
+				<origam-code
+						compact
+						:lang="state.lang"
+						:prompt="state.prompt"
+						:copyable="state.copyable"
+						:code="installSnippet"
+						@copy="logEvent('copy', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Compact">
+					<HstSelect   v-model="state.lang"     title="Lang"     :options="CODE_LANG_OPTIONS"/>
+					<HstText     v-model="state.prompt"   title="Prompt (decorative, not copied)"/>
+					<HstCheckbox v-model="state.copyable" title="Copyable"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Events - copy">
 			<origam-code
 					:lang="CODE_LANG.TS"
@@ -168,6 +195,8 @@
 					maxHeight: undefined,
 					wrap: false,
 					format: false,
+					compact: false,
+					prompt: undefined,
 					filename: 'App.ts'
 				})"
 		>
@@ -193,6 +222,8 @@
 					<HstCheckbox v-model="state.copyable"    title="Copyable"/>
 					<HstCheckbox v-model="state.wrap"        title="Wrap"/>
 					<HstCheckbox v-model="state.format"      title="Format (v3 stub)"/>
+					<HstCheckbox v-model="state.compact"     title="Compact (pill)"/>
+					<HstText     v-model="state.prompt"      title="Prompt (decorative)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -245,6 +276,8 @@
 }
 
 console.log(greet('origam'))`
+
+	const installSnippet = 'npm install origam'
 
 	const shortSnippet = `import { ref, computed } from 'vue'
 

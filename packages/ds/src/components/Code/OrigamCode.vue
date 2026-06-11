@@ -30,7 +30,7 @@
 		</component>
 
 		<origam-btn
-				v-if="copyable && !showHeader"
+				v-if="copyable && !showHeader && !compact"
 				variant="text"
 				class="origam-code__copy origam-code__copy--floating"
 				:text="copyButtonLabel"
@@ -41,6 +41,8 @@
 				@click="handleCopy"
 		/>
 
+		<span v-if="compact && prompt" class="origam-code__prompt" aria-hidden="true" data-cy="origam-code-prompt">{{ prompt }}</span>
+
 		<div class="origam-code__scroller" :style="scrollerStyles">
 			<pre class="origam-code__pre" :class="preClasses"><code
 					ref="codeRef"
@@ -48,6 +50,18 @@
 					:data-lang="lang"
 			></code></pre>
 		</div>
+
+		<origam-btn
+				v-if="copyable && compact"
+				variant="text"
+				size="x-small"
+				class="origam-code__copy origam-code__copy--compact"
+				:icon="compactCopyIcon"
+				:aria-label="copyAriaLabel"
+				aria-live="polite"
+				data-cy="origam-code-copy"
+				@click="handleCopy"
+		/>
 
 		<footer v-if="$slots.footer" class="origam-code__footer">
 			<slot name="footer"/>
@@ -112,6 +126,8 @@
 		copyable: true,
 		wrap: false,
 		format: false,
+		compact: false,
+		prompt: undefined,
 		code: undefined,
 		highlightLines: null,
 		filename: undefined
@@ -303,7 +319,14 @@
 	/*********************************************************
 	 * Class & Style.
 	 ********************************************************/
-	const showHeader = computed(() => !!props.filename || !!slots.header)
+	const showHeader = computed(() => !props.compact && (!!props.filename || !!slots.header))
+
+	/**
+	 * Compact-mode copy control is an icon button, not a text "Copy". It swaps
+	 * to a check mark while the "copied" feedback window is open so the inline
+	 * pill never grows / reflows (a text label would).
+	 */
+	const compactCopyIcon = computed(() => copied.value ? 'mdi-check' : 'mdi-content-copy')
 
 	/**
 	 * `<figcaption>` is only valid as a child of `<figure>` (W3C HTML5 Living
@@ -317,7 +340,8 @@
 		'origam-code',
 		`origam-code--lang-${props.lang}`,
 		{
-			'origam-code--line-numbers': props.lineNumbers,
+			'origam-code--compact': props.compact,
+			'origam-code--line-numbers': props.lineNumbers && !props.compact,
 			'origam-code--wrap': props.wrap,
 			'origam-code--has-header': showHeader.value,
 			'origam-code--copyable': props.copyable,
@@ -369,6 +393,51 @@
 		line-height: var(--origam-code---line-height);
 		overflow: hidden;
 
+	}
+
+	.origam-code--compact {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--origam-code__compact---gap);
+		padding: var(--origam-code__compact---padding-block) var(--origam-code__compact---padding-inline);
+		line-height: var(--origam-code__compact---line-height);
+		max-inline-size: 100%;
+	}
+
+	.origam-code--compact .origam-code__scroller {
+		overflow: hidden;
+		min-inline-size: 0;
+	}
+
+	.origam-code--compact .origam-code__pre,
+	.origam-code--compact .origam-code__code,
+	.origam-code--compact .origam-code__row {
+		min-height: 0;
+		white-space: nowrap;
+	}
+
+	.origam-code__prompt {
+		flex: none;
+		color: var(--origam-code__prompt---color);
+		user-select: none;
+	}
+
+	.origam-code__copy--compact {
+		flex: none;
+		--origam-btn---min-height: 0;
+		--origam-btn---min-width: 0;
+		--origam-btn---height: auto;
+		--origam-btn---padding-block: var(--origam-code__compact-copy---padding-block);
+		--origam-btn---padding-inline: var(--origam-code__compact-copy---padding-inline);
+		--origam-btn---border-radius: var(--origam-code__compact-copy---border-radius);
+		--origam-btn---font-size: var(--origam-code__compact-copy---font-size);
+		--origam-btn---color: var(--origam-code__copy---color);
+		--origam-btn---background-color: var(--origam-code__compact-copy---background-color);
+	}
+
+	.origam-code__copy--compact:hover {
+		--origam-btn---color: var(--origam-code__copy---color-hover);
+		background-color: var(--origam-code__copy---background-color-hover) !important;
 	}
 
 
