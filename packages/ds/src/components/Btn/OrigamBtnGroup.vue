@@ -161,6 +161,7 @@
 	.origam-btn-group {
 		display: inline-flex;
 		flex-wrap: nowrap;
+		align-items: center;
 		overflow: hidden;
 		vertical-align: middle;
 
@@ -221,7 +222,6 @@
 		}
 
 		:deep(.origam-btn) {
-			border-radius: 0;
 			border-color: inherit;
 
 			&:not(:last-child) {
@@ -231,6 +231,18 @@
 			&:not(:first-child) {
 				border-inline-start: none;
 			}
+		}
+
+		// The GROUP owns the rounding (outer corners, via its own
+		// border-radius + overflow:hidden) and the elevation (a single
+		// shadow around the whole group). Child buttons are forced flat
+		// and shadowless so a per-child `rounded` / `elevation` (own prop
+		// or active/hover state) can't break the unified segmented look —
+		// e.g. rounded pills with the group surface bleeding through the
+		// gaps. `!important` is intentional: the group's design wins.
+		:deep(.origam-btn) {
+			border-radius: 0 !important;
+			box-shadow: none !important;
 		}
 
 		&--divided {

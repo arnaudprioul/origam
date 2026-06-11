@@ -62,6 +62,35 @@
 		</Variant>
 
 		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IBtnGroupProps>>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-btn-group
+          v-model="state.modelValue"
+						:bg-color="state.bgColor"
+						:color="state.color"
+						:hover="resolveHoverState(state.hover)"
+						:active="previewActiveState(state.active)"
+				>
+					<origam-btn text="One"/>
+					<origam-btn text="Two"/>
+					<origam-btn text="Three"/>
+				</origam-btn-group>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IBtnGroupProps>>({
 					divided: false,
@@ -158,14 +187,29 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
+
+	// `active` is press-only by default (you'd have to hold the mouse to
+	// see it), so the State variant FORCES the resolved active state to
+	// preview persistently (`enabled: true`) — selecting an Active option
+	// paints the surface immediately, mirroring how `hover` previews on
+	// hover. The hover-over-active cascade still holds at runtime.
+	function previewActiveState (key: string | boolean | undefined) {
+		const state = resolveActiveState(key)
+
+		return state && typeof state === 'object' ? { ...state, enabled: true } : state
+	}
 
 	const appendIcon = MDI_ICONS.CHEVRON_RIGHT
 

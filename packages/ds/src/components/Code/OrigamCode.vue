@@ -15,31 +15,31 @@
 			>
 				<span v-if="filename" class="origam-code__filename" data-cy="origam-code-filename">{{ filename }}</span>
 				<span v-else class="origam-code__lang-badge" data-cy="origam-code-lang">{{ lang }}</span>
-				<button
+				<origam-btn
 						v-if="copyable"
-						type="button"
+						variant="text"
 						class="origam-code__copy origam-code__copy--header"
+						:text="copyButtonLabel"
 						:aria-label="copyAriaLabel"
+						:style="copyBtnStyle"
 						aria-live="polite"
 						data-cy="origam-code-copy"
 						@click="handleCopy"
-				>
-					<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
-				</button>
+				/>
 			</slot>
 		</component>
 
-		<button
+		<origam-btn
 				v-if="copyable && !showHeader"
-				type="button"
+				variant="text"
 				class="origam-code__copy origam-code__copy--floating"
+				:text="copyButtonLabel"
 				:aria-label="copyAriaLabel"
+				:style="copyBtnStyle"
 				aria-live="polite"
 				data-cy="origam-code-copy"
 				@click="handleCopy"
-		>
-			<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
-		</button>
+		/>
 
 		<div class="origam-code__scroller" :style="scrollerStyles">
 			<pre class="origam-code__pre" :class="preClasses"><code
@@ -63,6 +63,8 @@
 >
 	import { computed, onMounted, ref, toRef, useSlots, watch } from 'vue'
 
+	import { OrigamBtn } from '../../components'
+
 	import {
 		useBorder,
 		useBothColor,
@@ -70,6 +72,7 @@
 		useCode,
 		useDimension,
 		useElevation,
+		useLocale,
 		useMargin,
 		usePadding,
 		useRounded
@@ -131,6 +134,7 @@
 	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const { dimensionStyles } = useDimension(props)
 	const { highlight } = useCode()
+	const { t } = useLocale()
 
 	/*********************************************************
 	 * Source extraction — prop wins over slot, slot used as fallback.
@@ -280,10 +284,21 @@
 	}
 
 	/*********************************************************
-	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.code.*` in the shipped locale messages.
 	 ********************************************************/
-	const copyButtonLabel = computed(() => copied.value ? 'Copied!' : 'Copy')
-	const copyAriaLabel = computed(() => copied.value ? 'Code copied to clipboard' : 'Copy code to clipboard')
+	const copyButtonLabel = computed(() => copied.value
+		? t('origam.code.copied', 'Copied!')
+		: t('origam.code.copy', 'Copy')
+	)
+	const copyAriaLabel = computed(() => copied.value
+		? t('origam.code.copiedAriaLabel', 'Code copied to clipboard')
+		: t('origam.code.copyAriaLabel', 'Copy code to clipboard')
+	)
+
+	const copyBtnStyle = {
+		padding: 'var(--origam-code__copy---padding-block) var(--origam-code__copy---padding-inline)'
+	}
 
 	/*********************************************************
 	 * Class & Style.
@@ -384,23 +399,18 @@
 	}
 
 	.origam-code__copy {
-		all: unset;
-		box-sizing: border-box;
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
+		--origam-btn---min-height: 0;
+		--origam-btn---min-width: 0;
+		--origam-btn---border-radius: var(--origam-code__copy---border-radius);
+		--origam-btn---font-size: var(--origam-code__copy---font-size);
+		--origam-btn---color: var(--origam-code__copy---color);
+		--origam-btn---background-color: var(--origam-code__copy---background-color);
 		gap: var(--origam-code__copy---gap);
-		padding: var(--origam-code__copy---padding-block) var(--origam-code__copy---padding-inline);
-		border-radius: var(--origam-code__copy---border-radius);
-		font-size: var(--origam-code__copy---font-size);
-		color: var(--origam-code__copy---color);
-		background-color: var(--origam-code__copy---background-color);
-		transition: color 120ms ease, background-color 120ms ease;
 	}
 
 	.origam-code__copy:hover {
-		color: var(--origam-code__copy---color-hover);
-		background-color: var(--origam-code__copy---background-color-hover);
+		--origam-btn---color: var(--origam-code__copy---color-hover);
+		background-color: var(--origam-code__copy---background-color-hover) !important;
 	}
 
 	.origam-code__copy--floating {

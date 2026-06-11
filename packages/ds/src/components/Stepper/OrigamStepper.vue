@@ -3,7 +3,7 @@
 			:id="id"
 			v-contrast
 			:class="stepperClasses"
-			aria-label="Progress steps"
+			:aria-label="t('origam.stepper.progressSteps', 'Progress steps')"
 	>
 		<slot name="default">
 			<template v-if="hasItems">
@@ -43,6 +43,7 @@
 	import {
 		useDensity,
 		useDimension,
+		useLocale,
 		useProps,
 		useSize,
 		useStateEffect,
@@ -64,6 +65,12 @@
 		density: DENSITY.DEFAULT,
 		size: SIZES.DEFAULT
 	})
+
+	/*********************************************************
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.stepper.*` in the shipped locale messages.
+	 ********************************************************/
+	const { t } = useLocale()
 
 	const emit = defineEmits<{
 		(e: 'update:modelValue', value: number): void

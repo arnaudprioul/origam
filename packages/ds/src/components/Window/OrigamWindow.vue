@@ -30,6 +30,9 @@
 						<origam-btn
 								v-if="canMoveBack"
 								v-bind="prevProps"
+								:bg-color="bgColor"
+								:hover="hover"
+								:active="active"
 						/>
 					</slot>
 
@@ -42,6 +45,9 @@
 						<origam-btn
 								v-if="canMoveForward"
 								v-bind="nextProps"
+								:bg-color="bgColor"
+								:hover="hover"
+								:active="active"
 						/>
 					</slot>
 				</slot>
@@ -63,9 +69,14 @@
 	import { OrigamBtn, OrigamSpacer } from '../../components'
 
 	import {
+	useBorder,
+	useElevation,
 	useGroup,
 	useLocale,
+	useMargin,
+	usePadding,
 	useProps,
+	useRounded,
 	useStyle
 } from '../../composables'
 
@@ -238,8 +249,24 @@
 	 * Root, container, and show-arrows-on-hover modifier
 	 * classes and styles for the window shell.
 	 ********************************************************/
+	// Cross-cutting SURFACE props (rounded / border / elevation / padding /
+	// margin) are consumed here so they actually paint the window shell —
+	// previously they were declared on the interface but silently ignored.
+	// color / bgColor / hover / active intentionally stay OUT (they're
+	// forwarded to the nav buttons, not the container).
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+
 	const windowStyles = computed(() => {
 		return [
+			roundedStyles.value,
+			borderStyles.value,
+			elevationStyles.value,
+			paddingStyles.value,
+			marginStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -249,6 +276,11 @@
 			{
 				'origam-window--show-arrows-on-hover': props.showArrows === 'hover'
 			},
+			roundedClasses.value,
+			borderClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

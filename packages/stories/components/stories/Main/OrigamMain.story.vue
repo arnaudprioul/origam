@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IMainProps>>({ tag: 'main' })"
+				:init-state="() => useStoryInitState<Partial<IMainProps>>({ tag: 'main', padding: undefined, margin: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-layout style="height: 280px; border: 1px dashed var(--origam-color__border---default, #ccc);">
@@ -24,6 +24,8 @@
 							:max-height="state.maxHeight"
 							:min-width="state.minWidth"
 							:min-height="state.minHeight"
+							:padding="state.padding"
+							:margin="state.margin"
 							:tag="state.tag"
 					>
 						<div class="demo-content">Main content</div>
@@ -51,6 +53,10 @@
 					<HstText v-model="state.maxHeight" title="Max Height"/>
 					<HstText v-model="state.minWidth"  title="Min Width"/>
 					<HstText v-model="state.minHeight" title="Min Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="MAIN_TAG_OPTIONS"/>

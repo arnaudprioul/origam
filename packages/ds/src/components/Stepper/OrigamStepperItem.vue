@@ -4,7 +4,7 @@
 			:class="itemClasses"
 			:type="isClickable ? 'button' : undefined"
 			:aria-current="resolvedStatus === 'active' ? 'step' : undefined"
-			:aria-label="title ? `Step ${(index ?? 0) + 1}: ${title}` : undefined"
+			:aria-label="stepAriaLabel"
 			:disabled="isClickable && resolvedStatus === 'active' ? true : undefined"
 			@click="handleClick"
 	>
@@ -49,7 +49,7 @@
 	import { OrigamIcon } from '../../components'
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { MDI_ICONS } from '../../enums'
-	import { useProps } from '../../composables'
+	import { useLocale, useProps } from '../../composables'
 	import { vContrast } from '../../directives'
 
 	import type { IStepperItemProps } from '../../interfaces'
@@ -60,6 +60,18 @@
 
 	const props = withDefaults(defineProps<IStepperItemProps>(), {
 		index: 0
+	})
+
+	/*********************************************************
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.stepper.*` in the shipped locale messages.
+	 * `stepAriaLabel` uses positional interpolation: {0} = step number, {1} = title.
+	 ********************************************************/
+	const { t } = useLocale()
+
+	const stepAriaLabel = computed<string | undefined>(() => {
+		if (!props.title) return undefined
+		return t('origam.stepper.stepAriaLabel', (props.index ?? 0) + 1, props.title)
 	})
 
 	const emit = defineEmits<{

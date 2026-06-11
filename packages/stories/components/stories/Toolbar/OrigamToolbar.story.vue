@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IToolbarProps>>({ title: 'My App', bgColor: 'primary', color: 'white' })"
+				:init-state="() => useStoryInitState<Partial<IToolbarProps>>({ title: 'My App', bgColor: 'primary', color: 'white', padding: undefined, margin: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-toolbar
@@ -21,6 +21,8 @@
 						:border-style="state.borderStyle"
 						:width="state.width"
 						:height="state.height"
+						:padding="state.padding"
+						:margin="state.margin"
 						:position="state.position"
 						:title="state.title"
 				/>
@@ -46,6 +48,10 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 				<StoryGroup title="Position">
 					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>

@@ -43,13 +43,15 @@
 				aria-label="Drilldown navigation"
 				data-cy="origam-chart-cartesian-breadcrumb"
 		>
-			<button
+			<origam-btn
 					class="origam-chart-cartesian__breadcrumb-back"
-					type="button"
+					variant="outlined"
+					:text="drilldownBackLabel"
 					:aria-label="drilldownBackLabel"
+					:style="{ '--origam-btn---min-height': '0', '--origam-btn---min-width': '0' }"
 					data-cy="origam-chart-cartesian-breadcrumb-back"
 					@click="onDrillUp"
-			>{{ drilldownBackLabel }}</button>
+			/>
 			<ol class="origam-chart-cartesian__breadcrumb-trail">
 				<li
 						v-for="item in breadcrumbItems"
@@ -510,6 +512,8 @@
 	} from '../../composables/Chart/chart.composable'
 
 	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS } from '../../consts/Chart/chart.const'
+
+	import { OrigamBtn } from '../Btn'
 
 	import OrigamChartAxis from './OrigamChartAxis.vue'
 	import OrigamChartLegend from './OrigamChartLegend.vue'

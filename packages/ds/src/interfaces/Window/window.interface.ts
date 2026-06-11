@@ -1,9 +1,12 @@
 import type {
+    IActiveProps,
+    IBgColorProps,
     IBorderProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
     IDirectionProps,
     IElevationProps,
+    IHoverProps,
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
@@ -15,7 +18,7 @@ import type { TIcon } from '../../types'
 
 import type { ComputedRef, Ref } from 'vue'
 
-export interface IWindowProps extends ICommonsComponentProps, ITagProps, IDirectionProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IElevationProps {
+export interface IWindowProps extends ICommonsComponentProps, ITagProps, IDirectionProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IElevationProps, IBgColorProps, IHoverProps, IActiveProps {
     continuous?: boolean,
     nextIcon?: TIcon
     prevIcon?: TIcon

@@ -129,6 +129,7 @@
 		line-height:     var(--origam-label---line-height);
 		letter-spacing:  var(--origam-label---letter-spacing);
 		pointer-events:  var(--origam-label---pointer-events);
+		transition-property:        var(--origam-label---transition-property, color);
 		transition-duration:        var(--origam-label---transition-duration);
 		transition-timing-function: var(--origam-label---transition-easing);
 

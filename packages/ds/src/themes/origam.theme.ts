@@ -2753,11 +2753,7 @@ export const origamLightTheme: IOrigamTheme = {
         '--origam-window__controls---position-top': '0px',
         '--origam-window__controls---width': '100%'
     },
-    component: {
-        global: {
-            density: 'comfortable'
-        }
-    }
+    component: {}
 }
 
 export const origamDarkTheme: IOrigamTheme = {
@@ -5505,11 +5501,7 @@ export const origamDarkTheme: IOrigamTheme = {
         '--origam-window__controls---position-top': '0px',
         '--origam-window__controls---width': '100%'
     },
-    component: {
-        global: {
-            density: 'comfortable'
-        }
-    }
+    component: {}
 }
 
 /**

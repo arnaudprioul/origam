@@ -10,6 +10,7 @@
 					type: 'line',
 					series: FIXTURE_SALES_SERIES,
 					categories: FIXTURE_MONTHS,
+					width: undefined,
 					height: 320,
 					title: 'Monthly sales',
 					subtitle: '2025 vs 2026',
@@ -26,6 +27,7 @@
 						:margin="state.margin"
 						:series="FIXTURE_SALES_SERIES"
 						:categories="FIXTURE_MONTHS"
+						:width="state.width"
 						:height="state.height"
 						:title="state.title"
 						:subtitle="state.subtitle"
@@ -49,6 +51,7 @@
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
+					<HstText   v-model="state.width"      title="Width"/>
 					<HstNumber v-model="state.height"     title="Height (px)" :min="100" :max="800" :step="20"/>
 					<HstText   v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
 				</StoryGroup>

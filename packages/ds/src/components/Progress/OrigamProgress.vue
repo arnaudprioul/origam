@@ -2,9 +2,9 @@
 	<component
 			:is="progressComponent"
 			ref="origamProgressRef"
-			:aria-busy="props.indeterminate ? true : undefined"
+			:aria-busy="indeterminate ? true : undefined"
 			:aria-hidden="!active"
-			:aria-label="props.label ?? 'Loading'"
+			:aria-label="progressAriaLabel"
 			:aria-valuemax="max"
 			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressClasses"
@@ -80,6 +80,8 @@
 
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {normalizedValue, hasContent} = useProgress(props)
+
+	const progressAriaLabel = computed(() => props.label ?? 'Loading')
 
 	/*********************************************************
 	 * Component selection

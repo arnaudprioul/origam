@@ -44,6 +44,9 @@ export default defineConfig({
          * alternative environment but broke 5 unrelated specs
          * (sanitize-html string normalisation, ssr-smoke class shape).
          */
-        setupFiles: ['./TU/vitest.setup.ts']
+        setupFiles: ['./TU/vitest.setup.ts'],
+        coverage: {
+            reporter: ["text", "lcov"]
+        }
     }
 })

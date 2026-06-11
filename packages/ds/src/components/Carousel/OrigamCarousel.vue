@@ -91,6 +91,7 @@
 	import { OrigamBtn, OrigamProgressLinear, OrigamWindow } from '../../components'
 
 	import {
+	useDimension,
 	useLocale,
 	useProps,
 	useStyle,
@@ -99,13 +100,14 @@
 
 	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
 
+	import { intentBgExpr, isCssColor, isIntent } from '../../utils/Commons/color.util'
+
 	import type { ICarouselProps, IGroupProvide} from '../../interfaces'
 
 	import type { ICarouselEmits } from '../../interfaces/Carousel/carousel.interface'
 
 	import type { TOrigamWindow } from "../../types"
 
-	import { convertToUnit } from '../../utils'
 
 	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
 
@@ -233,12 +235,20 @@
 				{
 					id: `carousel-item-${item.id}`,
 					'aria-label': t('origam.carousel.ariaLabel.delimiter', index + 1, group.items.value.length),
-					active: group.isSelected(item.id),
+					// The SELECTED dot is active. When the consumer passes an
+					// `active` STATE object, the selected dot wears that surface
+					// (forced); otherwise it just reads as active. Hover applies
+					// to any dot on hover.
+					active: group.isSelected(item.id)
+						? (props.active && typeof props.active === 'object' ? { ...props.active, enabled: true } : true)
+						: false,
+					hover: props.hover,
 					class: [
 						'origam-carousel__controls-item'
 					],
 					onClick: () => group.select(item.id, true),
 					icon: props.delimiterIcon,
+					bgColor: props.bgColor,
 					size: SIZES.SMALL,
 					density: DENSITY.COMPACT
 				})
@@ -253,9 +263,11 @@
 	 * Composes BEM modifier classes and height/position styles.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const carouselStyles = computed(() => {
 		return [
-			{height: convertToUnit(props.height)},
+			dimensionStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -269,11 +281,26 @@
 			props.class
 		]
 	})
+	// Pagination dots: the dot surface takes `bgColor`; its CENTER (the
+	// delimiter glyph) is always a MIX of that bgColor (a lighter shade)
+	// rather than a flat white — so the dot reads as one coherent coloured
+	// element. Resolved to a `color-mix(...)` expression from the intent
+	// token (or the raw custom colour).
+	const dotCenterColor = computed<string | undefined>(() => {
+		const bg = props.bgColor
+
+		if (bg && isIntent(bg)) return `color-mix(in srgb, ${ intentBgExpr(bg, 'default') }, #ffffff 55%)`
+		if (bg && typeof bg === 'string' && isCssColor(bg)) return `color-mix(in srgb, ${ bg }, #ffffff 55%)`
+
+		return undefined
+	})
+
 	const carouselControlsStyles = computed(() => {
 		return [
 			{
 				left: (props.verticalDelimiters === 'left') && props.verticalDelimiters ? 0 : 'auto',
-				right: (props.verticalDelimiters === 'right') ? 0 : 'auto'
+				right: (props.verticalDelimiters === 'right') ? 0 : 'auto',
+				'--origam-carousel__controls-item---center-color': dotCenterColor.value
 			},
 			props.style
 		] as StyleValue
@@ -330,12 +357,13 @@
 		&__controls-item {
 			margin-inline: var(--origam-carousel__controls-item---margin-inline, 8px);
 
-			.origam-icon {
+			:deep(.origam-icon) {
 				opacity: var(--origam-carousel__controls-item---opacity, 0.5);
+				color: var(--origam-carousel__controls-item---center-color, currentColor);
 			}
 
 			&--active {
-				.origam-icon {
+				:deep(.origam-icon) {
 					opacity: var(--origam-carousel__controls-item---opacity-active, 1);
 					vertical-align: middle;
 				}
@@ -344,7 +372,7 @@
 			&:hover {
 				background: none;
 
-				.origam-icon {
+				:deep(.origam-icon) {
 					opacity: var(--origam-carousel__controls-item---opacity-hover, 0.8);
 				}
 			}

@@ -21,6 +21,7 @@ vi.mock('shiki', () => ({
 // --- Import after mocks so composables pick up the mocked shiki ---
 import OrigamCode from '@origam/components/Code/OrigamCode.vue'
 import { CODE_DEFAULTS } from '@origam/consts'
+import { createOrigam } from '@origam/origam'
 
 // jsdom does not implement window.matchMedia — stub it globally so
 // the useTheme composable (called inside OrigamCode) does not throw.
@@ -70,7 +71,8 @@ describe('OrigamCode — copy-to-clipboard', () => {
 
         const wrapper = mount(OrigamCode, {
             props: { copyable: true, code: 'const x = 1' },
-            attachTo: document.body
+            attachTo: document.body,
+            global: { plugins: [createOrigam()] }
         })
 
         // Wait for onMounted rebuild to settle
@@ -96,7 +98,8 @@ describe('OrigamCode — copy-to-clipboard', () => {
 
         const wrapper = mount(OrigamCode, {
             props: { copyable: true, code: 'hello' },
-            attachTo: document.body
+            attachTo: document.body,
+            global: { plugins: [createOrigam()] }
         })
         await nextTick()
 
@@ -117,7 +120,8 @@ describe('OrigamCode — copy-to-clipboard', () => {
 
         const wrapper = mount(OrigamCode, {
             props: { copyable: true, code: 'hello' },
-            attachTo: document.body
+            attachTo: document.body,
+            global: { plugins: [createOrigam()] }
         })
         await nextTick()
 
@@ -145,7 +149,8 @@ describe('OrigamCode — copy-to-clipboard', () => {
 
         const wrapper = mount(OrigamCode, {
             props: { copyable: true, code: 'fail' },
-            attachTo: document.body
+            attachTo: document.body,
+            global: { plugins: [createOrigam()] }
         })
         await nextTick()
 

@@ -355,6 +355,10 @@
 			--origam-input---density: -8px;
 		}
 
+		&--density-comfortable {
+			--origam-input---density: 8px;
+		}
+
 		&--size-small {
 			--origam-input__control---height:        var(--origam-input__control---height-sm, 28px);
 			--origam-field__input---padding-top:     var(--origam-field__input---padding-block-sm, 2px);

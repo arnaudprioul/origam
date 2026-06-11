@@ -10,12 +10,14 @@
 				v-for="item in items"
 				:key="item"
 		>
-			<button
+			<origam-btn
 					v-if="!isLink(item)"
-					type="button"
+					variant="text"
+					:icon="true"
 					class="origam-rich-toolbar__btn"
 					:class="btnClassFor(item)"
 					:disabled="disabled || undefined"
+					:active="isActive(item)"
 					:aria-label="labelFor(item)"
 					:aria-pressed="isActive(item) ? 'true' : 'false'"
 					:data-command="item"
@@ -24,16 +26,18 @@
 					@click="emit('format', item)"
 			>
 				<origam-icon :name="iconFor(item)"/>
-			</button>
+			</origam-btn>
 			<div
 					v-else
 					class="origam-rich-toolbar__link-host"
 			>
-				<button
-						type="button"
+				<origam-btn
+						variant="text"
+						:icon="true"
 						class="origam-rich-toolbar__btn"
 						:class="btnClassFor(item)"
 						:disabled="disabled || undefined"
+						:active="isActive(item)"
 						:aria-label="labelFor(item)"
 						:aria-pressed="isActive(item) ? 'true' : 'false'"
 						:aria-expanded="linkPopoverOpen ? 'true' : 'false'"
@@ -43,7 +47,7 @@
 						@click="openLinkPopover"
 				>
 					<origam-icon :name="iconFor(item)"/>
-				</button>
+				</origam-btn>
 				<div
 						v-if="linkPopoverOpen"
 						class="origam-rich-toolbar__link-popover"
@@ -60,8 +64,8 @@
 							@keydown.enter.prevent="applyLink"
 							@keydown.escape.prevent="closeLinkPopover"
 					>
-					<button
-							type="button"
+					<origam-btn
+							variant="text"
 							class="origam-rich-toolbar__btn origam-rich-toolbar__link-apply"
 							:aria-label="linkApplyLabel"
 							data-cy="origam-rich-toolbar-link-apply"
@@ -69,7 +73,7 @@
 							@click="applyLink"
 					>
 						{{ linkApplyLabel }}
-					</button>
+					</origam-btn>
 				</div>
 			</div>
 		</template>
@@ -82,7 +86,7 @@
 >
 	import { computed, nextTick, ref } from 'vue'
 
-	import { OrigamIcon } from '../../components'
+	import { OrigamBtn, OrigamIcon } from '../../components'
 
 	import { useLocale } from '../../composables'
 

@@ -14,7 +14,9 @@
 					elevation: undefined,
 					border: false,
 					borderColor: undefined,
-					borderStyle: undefined
+					borderStyle: undefined,
+					padding: undefined,
+					margin: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -28,6 +30,8 @@
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
+						:padding="state.padding"
+						:margin="state.margin"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -46,6 +50,10 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

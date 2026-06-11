@@ -14,13 +14,7 @@
 						:color="state.color"
 						:padding="state.padding"
 						:margin="state.margin"
-						:bg-color="state.bgColor"
 						:density="state.density"
-						:rounded="state.rounded"
-						:elevation="state.elevation"
-						:border="state.border"
-						:border-color="state.borderColor"
-						:border-style="state.borderStyle"
 						:true-icon="state.trueIcon || undefined"
 						:false-icon="state.falseIcon || undefined"
 						:prepend-icon="state.prependIcon || undefined"
@@ -34,19 +28,9 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Shape">
-					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
-					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Border">
-					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
-					<HstText   v-model="state.borderColor" title="Border Color"/>
-					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.trueIcon"    title="True Icon"    :options="ICON_OPTIONS"/>
@@ -230,10 +214,7 @@
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
-					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
-					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
-					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
@@ -267,15 +248,11 @@
 	import {
 		ACTIVE_OPTIONS,
 		resolveActiveState,
-		BORDER_OPTIONS,
-		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
-		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
-		ICON_OPTIONS,
-		ROUNDED_OPTIONS
+		ICON_OPTIONS
 	} from '@stories/const'
 
 	const designModel         = ref(false)

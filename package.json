@@ -38,6 +38,7 @@
     "test:run": "pnpm -F @origam/tests test:unit:run",
     "test:e2e": "pnpm -F @origam/tests test:e2e",
     "test:a11y": "pnpm -F @origam/tests test:a11y",
+    "test:unit:coverage": "pnpm -F @origam/tests test:unit --coverage",
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0",
     "clean": "pnpm -r exec rm -rf dist node_modules && rm -rf node_modules",

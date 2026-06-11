@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ICalendarProps>>({
+				:init-state="() => useStoryInitState<Partial<ICalendarComponentProps> & { dsLocale?: string }>({
 					view: 'month',
 					currentDate: FIXTURE_REFERENCE_DATE,
 					firstDayOfWeek: 1,
@@ -16,35 +16,75 @@
 					showWeekNumbers: false,
 					dayStartHour: 0,
 					dayEndHour: 24,
-					slotDuration: 30
+					slotDuration: 30,
+					dsLocale: 'en'
 				})"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
-					<origam-calendar
-							:view="state.view"
-							:current-date="state.currentDate"
-							:first-day-of-week="Number(state.firstDayOfWeek)"
-							:time-format="state.timeFormat"
-							:locale="state.locale"
-							:weekend-highlight="state.weekendHighlight"
-							:show-week-numbers="state.showWeekNumbers"
-							:day-start-hour="Number(state.dayStartHour)"
-							:day-end-hour="Number(state.dayEndHour)"
-							:slot-duration="Number(state.slotDuration)"
-							:events="FIXTURE_EVENTS"
-							:category-colors="CATEGORY_COLORS"
-					/>
+					<locale-wrapper :locale="state.dsLocale">
+						<origam-calendar
+								:view="state.view"
+								:current-date="state.currentDate"
+								:first-day-of-week="Number(state.firstDayOfWeek)"
+								:time-format="state.timeFormat"
+								:locale="state.locale"
+								:weekend-highlight="state.weekendHighlight"
+								:show-week-numbers="state.showWeekNumbers"
+								:day-start-hour="Number(state.dayStartHour)"
+								:day-end-hour="Number(state.dayEndHour)"
+								:slot-duration="Number(state.slotDuration)"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:density="state.density"
+								:rounded="state.rounded"
+								:elevation="state.elevation"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:width="state.width"
+								:height="state.height"
+								:padding="state.padding"
+								:margin="state.margin"
+								:events="FIXTURE_EVENTS"
+								:category-colors="CATEGORY_COLORS"
+						/>
+					</locale-wrapper>
 				</div>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="View">
 					<HstSelect v-model="state.view" title="View" :options="VIEW_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderColor" title="Border Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 				<StoryGroup title="Localisation">
 					<HstSelect v-model="state.firstDayOfWeek" title="First Day Of Week" :options="FIRST_DAY_OPTIONS"/>
 					<HstSelect v-model="state.timeFormat"     title="Time Format"       :options="TIME_FORMAT_OPTIONS"/>
-					<HstText   v-model="state.locale"         title="Locale"/>
+					<HstSelect v-model="state.locale"         title="Locale (date format)" :options="LOCALE_OPTIONS"/>
+					<HstSelect v-model="state.dsLocale"       title="Language (en/fr)"     :options="DS_LOCALE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.weekendHighlight" title="Weekend Highlight"/>
@@ -60,7 +100,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ICalendarProps>>({
+				:init-state="() => useStoryInitState<Partial<ICalendarComponentProps>>({
 					view: 'month',
 					currentDate: FIXTURE_REFERENCE_DATE,
 					selectable: true,
@@ -285,7 +325,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ICalendarProps>({
+				:init-state="() => useStoryInitState<ICalendarComponentProps>({
 					view: 'month',
 					currentDate: FIXTURE_REFERENCE_DATE,
 					firstDayOfWeek: 1,
@@ -322,7 +362,7 @@
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.firstDayOfWeek" title="First Day Of Week"   :options="FIRST_DAY_OPTIONS"/>
 					<HstSelect v-model="state.timeFormat"     title="Time Format"         :options="TIME_FORMAT_OPTIONS"/>
-					<HstText   v-model="state.locale"         title="Locale"/>
+					<HstSelect v-model="state.locale"         title="Locale" :options="LOCALE_OPTIONS"/>
 					<HstSelect v-model="state.slotDuration"   title="Slot Duration (min)" :options="SLOT_DURATION_OPTIONS"/>
 					<HstNumber v-model="state.dayStartHour"   title="Day Start Hour" :min="0"  :max="23" :step="1"/>
 					<HstNumber v-model="state.dayEndHour"     title="Day End Hour"   :min="1"  :max="24" :step="1"/>
@@ -345,10 +385,25 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamCalendar } from '@origam/components'
-	import type { ICalendarProps } from '@origam/interfaces'
+	import type { ICalendarComponentProps } from '@origam/interfaces'
 
+	import LocaleWrapper from '@stories/components/_shared/LocaleWrapper.vue'
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		LOCALE_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
+
+	const DS_LOCALE_OPTIONS = [
+		{ label: 'English (en)', value: 'en' },
+		{ label: 'Français (fr)', value: 'fr' }
+	]
 
 	const VIEW_OPTIONS = [
 		{ value: 'month',  label: 'month' },
@@ -356,6 +411,7 @@
 		{ value: 'day',    label: 'day' },
 		{ value: 'agenda', label: 'agenda' }
 	]
+
 
 	const FIRST_DAY_OPTIONS = [
 		{ value: 0, label: 'Sunday (0)' },

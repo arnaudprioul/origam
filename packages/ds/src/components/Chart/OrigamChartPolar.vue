@@ -34,13 +34,15 @@
 				aria-label="Drilldown navigation"
 				data-cy="origam-chart-polar-breadcrumb"
 		>
-			<button
+			<origam-btn
 					class="origam-chart-polar__breadcrumb-back"
-					type="button"
+					variant="outlined"
+					:text="drilldownBackLabel"
 					:aria-label="drilldownBackLabel"
+					:style="{ '--origam-btn---min-height': '0', '--origam-btn---min-width': '0' }"
 					data-cy="origam-chart-polar-breadcrumb-back"
 					@click="onDrillUp"
-			>{{ drilldownBackLabel }}</button>
+			/>
 			<ol class="origam-chart-polar__breadcrumb-trail">
 				<li
 						v-for="item in breadcrumbItems"
@@ -177,6 +179,8 @@
 		usePadding,
 		useRounded
 	} from '../../composables'
+
+	import { OrigamBtn } from '../Btn'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'

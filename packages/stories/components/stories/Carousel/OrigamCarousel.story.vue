@@ -8,6 +8,7 @@
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<ICarouselProps>>({
 					color: undefined,
+					width: undefined,
 					height: 300,
 					hideDelimiters: false,
 					hideDelimiterBackground: false,
@@ -23,6 +24,8 @@
 			<template #default="{ state }">
 				<origam-carousel
 						:color="state.color"
+						:bg-color="state.bgColor"
+						:width="state.width"
 						:height="state.height"
 						:hide-delimiters="state.hideDelimiters"
 						:hide-delimiter-background="state.hideDelimiterBackground"
@@ -47,7 +50,8 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
-					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Delimiters">
 					<HstCheckbox v-model="state.hideDelimiters"          title="Hide Delimiters"/>
@@ -65,7 +69,45 @@
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
+					<HstText   v-model="state.width"  title="Width"/>
 					<HstNumber v-model="state.height" title="Height (px)" :min="100" :max="800"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<Partial<ICarouselProps>>({ bgColor: 'primary', modelValue: 0 })"
+		>
+			<template #default="{ state }">
+				<origam-carousel
+						v-model="state.modelValue"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
+						:height="220"
+						show-arrows
+						style="max-width: 600px"
+				>
+					<origam-carousel-item
+							v-for="(slide, i) in slides"
+							:key="i"
+					>
+						<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+							{{ slide.label }}
+						</div>
+					</origam-carousel-item>
+				</origam-carousel>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -301,6 +343,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstNumber v-model="state.height"    title="Height (px)" :min="100" :max="800"/>
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
@@ -335,10 +378,14 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS

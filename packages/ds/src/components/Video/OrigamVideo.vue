@@ -182,45 +182,33 @@
 					@download="onDownloadClick"
 			>
 				<template #extraControlsRight>
-					<button
+					<origam-btn
 							v-if="hasCaptions"
-							type="button"
+							:icon="ICONS.CAPTIONS"
+							variant="text"
+							:active="captionsEnabled"
 							class="origam-video__btn"
-							:class="{ 'origam-video__btn--active': captionsEnabled }"
 							:aria-label="t(captionsLabelKey)"
 							data-cy="origam-video-captions"
 							@click="toggleCaptions"
-					>
-						<origam-icon
-								:icon="ICONS.CAPTIONS"
-								aria-hidden="true"
-						/>
-					</button>
-					<button
+					/>
+					<origam-btn
 							v-if="pipSupported"
-							type="button"
+							:icon="ICONS.PIP"
+							variant="text"
 							class="origam-video__btn"
 							:aria-label="t(pipLabelKey)"
 							data-cy="origam-video-pip"
 							@click="togglePipBtn"
-					>
-						<origam-icon
-								:icon="ICONS.PIP"
-								aria-hidden="true"
-						/>
-					</button>
-					<button
-							type="button"
+					/>
+					<origam-btn
+							:icon="fullscreenIcon"
+							variant="text"
 							class="origam-video__btn"
 							:aria-label="t(fullscreenLabelKey)"
 							data-cy="origam-video-fullscreen"
 							@click="toggleFullscreenBtn"
-					>
-						<origam-icon
-								:icon="fullscreenIcon"
-								aria-hidden="true"
-						/>
-					</button>
+					/>
 				</template>
 			</origam-media-controller>
 		</slot>
@@ -1304,49 +1292,45 @@
 		}
 	}
 
-	.origam-video__btn {
-		all: unset;
-		box-sizing: border-box;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 36px;
-		height: 36px;
-		border-radius: 50%;
-		cursor: pointer;
-		color: #ffffff;
-		transition: background-color 120ms ease, transform 120ms ease, opacity 120ms ease;
+	:deep(.origam-video__btn.origam-btn) {
+		--origam-btn---color: #ffffff;
+		--origam-btn---min-width: 36px;
+		--origam-btn---width: 36px;
+		--origam-btn---height: 36px;
+		--origam-btn---min-height: 36px;
+		--origam-btn---border-radius: 50%;
 		opacity: 0.95;
+		transition: background-color 120ms ease, transform 120ms ease, opacity 120ms ease;
+
+		&:hover,
+		&:focus-visible {
+			opacity: 1;
+			background-color: rgba(255, 255, 255, 0.12);
+		}
+
+		&:active {
+			transform: scale(0.92);
+		}
+
+		.origam-icon {
+			font-size: 20px;
+			line-height: 1;
+		}
 	}
 
-	.origam-video__btn:hover,
-	.origam-video__btn:focus-visible {
-		opacity: 1;
-		background-color: rgba(255, 255, 255, 0.12);
-	}
-
-	.origam-video__btn:active {
-		transform: scale(0.92);
-	}
-
-	.origam-video__btn--active {
+	:deep(.origam-video__btn.origam-btn.origam-btn--active) {
 		opacity: 1;
 		position: relative;
-	}
 
-	.origam-video__btn--active::after {
-		content: '';
-		position: absolute;
-		bottom: 2px;
-		width: 4px;
-		height: 4px;
-		border-radius: 50%;
-		background: #ef4444;
-	}
-
-	.origam-video__btn .origam-icon {
-		font-size: 20px;
-		line-height: 1;
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: 2px;
+			width: 4px;
+			height: 4px;
+			border-radius: 50%;
+			background: #ef4444;
+		}
 	}
 
 	.origam-video--fullscreen {

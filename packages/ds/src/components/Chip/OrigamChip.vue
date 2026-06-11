@@ -94,12 +94,16 @@
 			</slot>
 		</div>
 
-		<button
+		<origam-btn
 				v-if="hasClose"
 				key="close"
 				:aria-label="t(closeLabel)"
 				class="origam-chip__close"
-				type="button"
+				variant="text"
+				:icon="true"
+				size="x-small"
+				density="compact"
+				:style="{'--origam-btn---min-width': '0', '--origam-btn---min-height': '0'}"
 				@click.stop="handleClickClose"
 		>
 			<slot
@@ -115,7 +119,7 @@
 						size="x-small"
 				/>
 			</slot>
-		</button>
+		</origam-btn>
 
 	</component>
 </template>
@@ -124,7 +128,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamExpandX, OrigamIcon } from '../../components'
+	import { OrigamAvatar, OrigamBtn, OrigamExpandX, OrigamIcon } from '../../components'
 
 	import {
 		useAdjacent,

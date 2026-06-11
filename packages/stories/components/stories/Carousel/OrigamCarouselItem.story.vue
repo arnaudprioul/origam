@@ -50,7 +50,7 @@
 					<HstText     v-model="state.src"      title="Src"/>
 					<HstText     v-model="state.alt"      title="Alt"/>
 					<HstCheckbox v-model="state.cover"    title="Cover"/>
-					<HstText     v-model="state.position" title="Position (CSS)"/>
+					<HstSelect   v-model="state.position" title="Position" :options="IMG_POSITION_OPTIONS"/>
 					<HstText     v-model="state.gradient" title="Gradient"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
@@ -268,6 +268,7 @@
 	import {
 		BORDER_OPTIONS,
 		COLOR_OPTIONS,
+		IMG_POSITION_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

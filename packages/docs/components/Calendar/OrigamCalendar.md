@@ -68,6 +68,33 @@ event-source. SSR-safe.
 | `maxDate`           | `Date \| string`                                              | —             | Upper navigation bound (disables `>`).                             |
 | `disabledDates`     | `Array<Date \| string> \| (d: Date) => boolean`               | —             | Cells to grey out.                                                 |
 
+### Cross-cutting surface
+
+Like every other origam component, the calendar carries the standard
+Commons surface — consumed through the shared composables, so it paints /
+sizes / spaces consistently with the rest of the system.
+
+| Prop          | Type                                              | Default | Notes                                                                |
+|---------------|---------------------------------------------------|---------|----------------------------------------------------------------------|
+| `bgColor`     | `TIntent \| <css-color>`                          | —       | Paints the **header band** (toolbar + weekday row). Day cells keep their own light surface. |
+| `color`       | `TIntent \| <css-color>`                          | —       | Drives the text colour. On the painted header it auto-contrasts; on the day cells it applies directly. |
+| `rounded`     | `TRounded \| number \| string \| boolean`         | `8px`   | Corner radius (root). `overflow:hidden` clips the grid to it.        |
+| `elevation`   | `number` / shadow rung                            | —       | Drop shadow rung.                                                    |
+| `border`      | `'thin' \| 'thick' \| number \| string \| boolean` | `1px`   | Border width.                                                        |
+| `borderColor` | `TIntent \| <css-color>`                          | subtle  | Intent keywords resolve to their token.                             |
+| `borderStyle` | `'solid' \| 'dashed' \| 'dotted' \| …`            | `solid` | Border style.                                                       |
+| `density`     | `'default' \| 'compact' \| 'comfortable'`         | —       | Compresses / expands toolbar padding + day-cell height.             |
+| `width` / `height` / `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | `number \| string` | — | Root dimensions. |
+| `padding*` / `margin*` | `number \| string`                       | —       | Use a CSS unit (`40px`, `1rem`); a bare number string is ignored.   |
+
+**Contrast is region-aware.** `bgColor` paints only the header band, never
+the day cells. The header text always **contrasts that painted surface**
+(readability wins), while the day cells — which keep their light surface —
+render `color` directly. So `color="primary"` + `bgColor="primary"` gives a
+primary header with white text **and** primary-tinted day numbers, instead
+of bleeding white text onto the white cells. With no `bgColor`, the header
+adopts `color` like the body.
+
 ## Emits
 
 | Event                  | Payload                                              | Notes                                                                       |

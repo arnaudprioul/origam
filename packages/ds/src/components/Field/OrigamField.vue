@@ -733,7 +733,7 @@
 			max-width: calc(100% - var(--origam-field__input---padding-start, 0) - var(--origam-field__input---padding-end, 0));
 			pointer-events: none;
 			position: absolute;
-			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density) - 8px);
+			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px) - 8px);
 			transform-origin: left center;
 			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 			transition-property: opacity, transform;

@@ -1,7 +1,7 @@
-import type { IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDimensionProps, ITagProps, IWindowProps } from '../../interfaces'
+import type { IActiveProps, IBgColorProps, IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDimensionProps, IHoverProps, ITagProps, IWindowProps } from '../../interfaces'
 import type { TIcon, TInline } from '../../types'
 
-export interface ICarouselProps extends IWindowProps, IColorProps, ICommonsComponentProps, ITagProps, IDimensionProps {
+export interface ICarouselProps extends IWindowProps, IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, IDimensionProps, IHoverProps, IActiveProps {
     cycle?: boolean
     delimiterIcon?: TIcon
     hideDelimiters?: boolean

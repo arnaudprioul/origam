@@ -208,15 +208,32 @@
 	const {isActive: active, activeState} = useActive(props)
 
 	const isActive = computed(() => {
-		if (active.value !== undefined) {
-			return active.value
+		// An explicitly FORCED active (`active=true` or `{ enabled: true }`)
+		// wins everywhere — incl. inside a group (e.g. OrigamBottomNav
+		// diffuses a forced active to every button).
+		const a = props.active
+		const forcedActive = a === true || (!!a && typeof a === 'object' && (a as { enabled?: boolean }).enabled === true)
+
+		if (forcedActive) {
+			return true
+		}
+
+		// Otherwise, inside a toggle group the SELECTION owns the active
+		// state — only the selected item is active. A styling-only `active`
+		// config still customises that item's surface (via `activeState`),
+		// but it must not activate every button. (Previously this read
+		// `active.value`, which `useActive` always resolves to a boolean —
+		// never `undefined` — so the `group.isSelected` fallback was dead
+		// code and toggle selection never highlighted the chosen item.)
+		if (group) {
+			return group.isSelected.value
 		}
 
 		if (link.isLink.value) {
 			return link.isActive?.value
 		}
 
-		return group?.isSelected.value
+		return active.value
 	})
 	/*********************************************************
 	 * Disabled

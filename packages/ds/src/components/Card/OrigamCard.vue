@@ -121,6 +121,7 @@
 						<slot name="text">
 							<origam-card-text
 									key="text"
+									:density="density"
 									:text="text"
 									class="origam-card__text"
 							/>
@@ -549,6 +550,19 @@
 			}
 		}
 
+		&--loading &__loader:has(.origam-card__progress--circular) {
+			position: absolute;
+			inset: 0;
+			z-index: var(--origam-card__loader---z-index, 3);
+			min-height: 0;
+			border-radius: inherit;
+			background-color: var(--origam-card__loader---overlay-background, color-mix(in srgb, var(--origam-card---background) 62%, transparent));
+
+			:deep(.origam-progress--circular) {
+				margin: 0;
+			}
+		}
+
 		&--rounded-shaped {
 			border-start-start-radius: var(--origam-card---border-radius-rounded, 16px);
 			border-start-end-radius: 0;
@@ -577,6 +591,10 @@
 
 		&--density-compact {
 			--origam-card---density: -8px;
+		}
+
+		&--density-comfortable {
+			--origam-card---density: 8px;
 		}
 
 		&:hover,

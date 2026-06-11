@@ -14,7 +14,11 @@
 					cover: PICSUM_COVER,
 					variant: 'expanded',
 					coverPosition: 'left',
-					waveform: true
+					waveform: true,
+					width: undefined,
+					height: undefined,
+					padding: undefined,
+					margin: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -32,6 +36,10 @@
 							:rounded="state.rounded"
 							:elevation="state.elevation"
 							:border="state.border"
+							:width="state.width"
+							:height="state.height"
+							:padding="state.padding"
+							:margin="state.margin"
 							:waveform="state.waveform"
 							:waveform-color="state.waveformColor || undefined"
 							class="story-audio"
@@ -59,6 +67,14 @@
 				<StoryGroup title="Waveform">
 					<HstCheckbox v-model="state.waveform"      title="Waveform"/>
 					<HstText     v-model="state.waveformColor" title="Waveform Color"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

@@ -63,6 +63,8 @@
 
 	import {
 		useFocus,
+		useMargin,
+		usePadding,
 		useProps,
 		useStyle,
 		useVModel
@@ -142,14 +144,25 @@
 	 * Composes BEM classes and passes through host styles.
 	 ********************************************************/
 
+	// Spacing (padding / margin) is consumed HERE on the checkbox root —
+	// the SelectionControl chain below only owns color / density / dimension,
+	// so without this the `padding*` / `margin*` props are declared on the
+	// interface but silently ignored.
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+
 	const checkboxStyles = computed(() => {
 		return [
+			paddingStyles.value,
+			marginStyles.value,
 			props.style
 		] as StyleValue
 	})
 	const checkboxClasses = computed(() => {
 		return [
 			'origam-checkbox',
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
@@ -184,7 +197,7 @@
 		}
 
 		.origam-selection-control {
-			min-height: calc(56px + 2 * var(--origam-input---density));
+			min-height: calc(56px + 2 * var(--origam-input---density, 0px));
 		}
 	}
 </style>

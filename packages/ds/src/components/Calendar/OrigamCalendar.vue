@@ -23,37 +23,37 @@
         :aria-label="ariaToolbarLabel"
         data-cy="origam-calendar-toolbar"
       >
-        <div class="origam-calendar__toolbar-nav">
-          <button
-            type="button"
-            class="origam-calendar__toolbar-btn"
+        <origam-btn-group
+          class="origam-calendar__toolbar-nav"
+          density="compact"
+        >
+          <origam-btn
+            variant="text"
+            size="small"
+            :text="prevGlyph"
             :aria-label="ariaPrevLabel"
             :disabled="!canPrev"
             data-cy="origam-calendar-prev"
             @click="onNavigate('prev')"
-          >
-            &lt;
-          </button>
-          <button
-            type="button"
-            class="origam-calendar__toolbar-btn"
+          />
+          <origam-btn
+            variant="text"
+            size="small"
+            :text="todayLabel"
             :aria-label="ariaTodayLabel"
             data-cy="origam-calendar-today"
             @click="onNavigate('today')"
-          >
-            {{ todayLabel }}
-          </button>
-          <button
-            type="button"
-            class="origam-calendar__toolbar-btn"
+          />
+          <origam-btn
+            variant="text"
+            size="small"
+            :text="nextGlyph"
             :aria-label="ariaNextLabel"
             :disabled="!canNext"
             data-cy="origam-calendar-next"
             @click="onNavigate('next')"
-          >
-            &gt;
-          </button>
-        </div>
+          />
+        </origam-btn-group>
 
         <div
           class="origam-calendar__toolbar-title"
@@ -62,25 +62,25 @@
           {{ headerTitle }}
         </div>
 
-        <div
+        <origam-btn-group
           class="origam-calendar__toolbar-views"
-          role="tablist"
+          density="compact"
           :aria-label="ariaViewListLabel"
         >
-          <button
+          <origam-btn
             v-for="viewOption in VIEW_OPTIONS"
             :key="viewOption"
-            type="button"
-            class="origam-calendar__toolbar-btn origam-calendar__toolbar-btn--view"
-            :class="{ 'origam-calendar__toolbar-btn--active': resolvedView === viewOption }"
-            role="tab"
-            :aria-selected="resolvedView === viewOption"
+            size="small"
+            :text="viewLabel(viewOption)"
+            :variant="viewBtnVariant(viewOption)"
+            :bg-color="viewBtnBgColor(viewOption)"
+            :active="isViewActive(viewOption)"
+            class="origam-calendar__view-btn"
+            :aria-pressed="isViewActive(viewOption)"
             :data-cy="`origam-calendar-view-${viewOption}`"
             @click="onSetView(viewOption)"
-          >
-            {{ viewOption }}
-          </button>
-        </div>
+          />
+        </origam-btn-group>
       </div>
     </slot>
 
@@ -253,13 +253,12 @@
                 :style="{ height: `${slotPx}px` }"
                 :data-slot-index="slotIndex"
               />
-              <div
+              <button
                 v-for="event in eventsOnTimeline(day)"
                 :key="`${event.id}-${day.toISOString()}`"
+                type="button"
                 class="origam-calendar__event origam-calendar__event--timeline"
                 :style="timelineEventStyle(event, day)"
-                role="button"
-                tabindex="0"
                 :aria-label="ariaEventLabel(event)"
                 :data-cy="`origam-calendar-event-${event.id}`"
                 @click="onEventClick(event, $event)"
@@ -275,7 +274,7 @@
                   <span class="origam-calendar__event-title">{{ event.title }}</span>
                   <span class="origam-calendar__event-time">{{ eventTimeLabel(event) }}</span>
                 </slot>
-              </div>
+              </button>
               <div
                 v-if="dragSelection && isSameDayLocal(dragSelection.day, day)"
                 class="origam-calendar__range-overlay"
@@ -347,10 +346,28 @@
   import {
     computed,
     ref,
+    watch,
     type StyleValue
   } from 'vue'
 
-  import { useCalendar } from '../../composables'
+  import { OrigamBtn, OrigamBtnGroup } from '../../components'
+
+  import {
+    useCalendar,
+    useDensity,
+    useDimension,
+    useLocale,
+    useStateEffect
+  } from '../../composables'
+
+  import {
+    getForeground,
+    isCssColor,
+    isIntent,
+    parseColor,
+    tokenForegroundForIntent,
+    tokenStylesForIntent
+  } from '../../utils/Commons/color.util'
 
   import type {
     ICalendarComponentProps,
@@ -361,7 +378,8 @@
   import type {
     TCalendarNavigate,
     TCalendarView,
-    TIntent
+    TIntent,
+    TVariant
   } from '../../types'
 
   import {
@@ -428,15 +446,31 @@
   const MONTH_EVENT_LIMIT = 3
   const DEFAULT_SLOT_HEIGHT_PX = 32
 
-  const ariaLabel = computed(() => 'Calendar')
-  const ariaToolbarLabel = computed(() => 'Calendar toolbar')
-  const ariaPrevLabel = computed(() => 'Previous')
-  const ariaNextLabel = computed(() => 'Next')
-  const ariaTodayLabel = computed(() => 'Today')
-  const ariaViewListLabel = computed(() => 'View')
-  const ariaMonthLabel = computed(() => 'Month grid')
-  const todayLabel = computed(() => 'Today')
-  const emptyLabel = computed(() => 'No events to display')
+  // UI chrome is localised through the DS i18n provider (`useLocale`) —
+  // keys under `origam.calendar.*` in the shipped locale messages. Dates /
+  // month / weekday names stay `Intl`-localised from the `locale` prop.
+  const {t} = useLocale()
+
+  const VIEW_LABEL_FALLBACK: Record<TCalendarView, string> = {
+    month: 'Month',
+    week: 'Week',
+    day: 'Day',
+    agenda: 'Agenda'
+  }
+
+  function viewLabel(view: TCalendarView): string {
+    return t(`origam.calendar.view.${ view }`, VIEW_LABEL_FALLBACK[view])
+  }
+
+  const ariaLabel = computed(() => t('origam.calendar.ariaLabel', 'Calendar'))
+  const ariaToolbarLabel = computed(() => t('origam.calendar.toolbar', 'Calendar toolbar'))
+  const ariaPrevLabel = computed(() => t('origam.calendar.previous', 'Previous'))
+  const ariaNextLabel = computed(() => t('origam.calendar.next', 'Next'))
+  const ariaTodayLabel = computed(() => t('origam.calendar.today', 'Today'))
+  const ariaViewListLabel = computed(() => t('origam.calendar.viewSwitcher', 'View'))
+  const ariaMonthLabel = computed(() => t('origam.calendar.monthGrid', 'Month grid'))
+  const todayLabel = computed(() => t('origam.calendar.today', 'Today'))
+  const emptyLabel = computed(() => t('origam.calendar.empty', 'No events to display'))
 
   const slotPx = DEFAULT_SLOT_HEIGHT_PX
   const slotDuration = computed(() => props.slotDuration)
@@ -450,12 +484,26 @@
    * the disabled-date predicate once. Anything downstream consumes
    * the normalised forms.
    ********************************************************/
-  const resolvedView = computed<TCalendarView>(() => props.view ?? 'month')
+  // View + current date are UNCONTROLLED-capable: the calendar owns its
+  // own state so a standalone `<origam-calendar>` (no v-model) stays
+  // interactive — the toolbar switches views / navigates on click. When
+  // the parent binds `v-model:view` / `v-model:current-date`, the watchers
+  // sync the controlled value back in.
+  const internalView = ref<TCalendarView>(props.view ?? 'month')
+  const internalDate = ref<Date>(toDate(props.currentDate as Date | string) ?? new Date())
 
-  const resolvedDate = computed<Date>(() => {
-    const d = toDate(props.currentDate as Date | string)
-    return d ?? new Date()
+  watch(() => props.view, (next) => {
+    if (next != null) internalView.value = next
   })
+
+  watch(() => props.currentDate, (next) => {
+    const parsed = toDate(next as Date | string)
+    if (parsed) internalDate.value = parsed
+  })
+
+  const resolvedView = computed<TCalendarView>(() => internalView.value)
+
+  const resolvedDate = computed<Date>(() => internalDate.value)
 
   const resolvedLocale = computed<string>(() => {
     if (props.locale) return props.locale
@@ -490,10 +538,12 @@
       locale: () => resolvedLocale.value
     },
     (next) => {
+      internalView.value = next
       emit('update:view', next)
       emit('view-change', next)
     },
     (next) => {
+      internalDate.value = next
       emit('update:currentDate', next)
     }
   )
@@ -505,6 +555,42 @@
   function onNavigate(direction: TCalendarNavigate): void {
     calendar.navigate(direction)
     emit('navigate', direction)
+  }
+
+  /*********************************************************
+   * Toolbar — rendered with `<OrigamBtn>` (never raw `<button>`).
+   * The selected view reads as a raised, primary-tinted pill
+   * (`variant="elevated"` + `active`) so it stands out clearly on ANY
+   * header surface, including a painted `bgColor` band; the other views
+   * stay flat/transparent and inherit the header foreground.
+   ********************************************************/
+  const prevGlyph = '‹'
+  const nextGlyph = '›'
+
+  function isViewActive(view: TCalendarView): boolean {
+    return resolvedView.value === view
+  }
+
+  function viewBtnVariant(view: TCalendarView): TVariant {
+    return isViewActive(view) ? 'flat' : 'text'
+  }
+
+  // The active view segment follows the calendar's OWN intent — the
+  // header's `bgColor`, else the `color` accent, else the primary
+  // default. Never a hardcoded colour: a `success` calendar paints a
+  // darker-success active segment, not a stray primary one.
+  const toolbarIntent = computed<TIntent>(() => {
+    const bg = props.bgColor
+    if (bg && isIntent(bg as string)) return bg as TIntent
+
+    const fg = props.color
+    if (fg && isIntent(fg as string)) return fg as TIntent
+
+    return 'primary'
+  })
+
+  function viewBtnBgColor(view: TCalendarView): TIntent | undefined {
+    return isViewActive(view) ? toolbarIntent.value : undefined
   }
 
   /*********************************************************
@@ -941,9 +1027,95 @@
     }
     if (next) {
       event.preventDefault()
+      internalDate.value = next
       emit('update:currentDate', next)
     }
   }
+
+  /*********************************************************
+   * Cross-cutting surface — same contract as every other origam
+   * component for the non-colour axes (border / rounded / elevation /
+   * padding / margin via `useStateEffect`, dimension via
+   * `useDimension`, density via `useDensity`).
+   ********************************************************/
+  const {
+    borderClasses, borderStyles,
+    roundedClasses, roundedStyles,
+    elevationClasses, elevationStyles,
+    paddingClasses, paddingStyles,
+    marginClasses, marginStyles
+  } = useStateEffect(props)
+
+  const {dimensionStyles} = useDimension(props)
+  const {densityClasses} = useDensity(props, 'origam-calendar')
+
+  // `useBorder` (via useStateEffect) emits the raw `borderColor` value,
+  // invalid for an intent keyword — resolve intents to their token here.
+  const borderColorStyle = computed<string[]>(() => {
+    const value = props.borderColor
+
+    return value && isIntent(value as TIntent) ? [ `border-color: ${ tokenForegroundForIntent(value as TIntent) }` ] : []
+  })
+
+  /*********************************************************
+   * Colour surface — REGION-AWARE. `bgColor` paints ONLY the header
+   * (the toolbar), never the root: the body (weekday row, month grid,
+   * week / day timeline, agenda) is transparent and would otherwise let
+   * the colour bleed through everything that isn't an opaque cell — which
+   * is exactly what happens in the timeline views.
+   *
+   *   - TOOLBAR (painted by `bgColor`) → its text CONTRASTS that surface.
+   *   - BODY (everything else, on the calendar's own light surface) →
+   *     text uses the `color` intent directly (coloured-on-light).
+   ********************************************************/
+  const surfaceVars = computed<Record<string, string>>(() => {
+    const vars: Record<string, string> = {}
+
+    const bg = props.bgColor as string | undefined
+    const fg = props.color as string | undefined
+
+    const bgIntent = Boolean(bg) && isIntent(bg as string)
+    const bgCss = Boolean(bg) && typeof bg === 'string' && isCssColor(bg)
+    const fgIntent = Boolean(fg) && isIntent(fg as string)
+    const fgCss = Boolean(fg) && typeof fg === 'string' && isCssColor(fg)
+
+    // 1. Toolbar paint — the HEADER only. Never the root, so no view
+    //    (month / week / day / agenda) ever tints its body.
+    if (bgIntent) {
+      vars['--origam-calendar__toolbar---background-color'] = tokenStylesForIntent(bg as TIntent, 'default')['background-color']
+    } else if (bgCss) {
+      vars['--origam-calendar__toolbar---background-color'] = bg as string
+    }
+
+    // 2. Toolbar foreground — contrasts the painted toolbar; falls back
+    //    to the `color` accent when the toolbar isn't painted.
+    let headerFg: string | undefined
+    if (bgIntent) {
+      headerFg = tokenStylesForIntent(bg as TIntent, 'default').color
+    } else if (bgCss) {
+      headerFg = getForeground(parseColor(bg as string))
+    } else if (fgIntent) {
+      headerFg = tokenForegroundForIntent(fg as TIntent)
+    } else if (fgCss) {
+      headerFg = fg as string
+    }
+
+    if (headerFg) vars['--origam-calendar__toolbar---color'] = headerFg
+
+    // 3. Body foreground — weekday labels + day cells sit on the light
+    //    body surface, so they use the `color` intent directly. Left
+    //    unset when `color` is absent so they keep their natural text.
+    let bodyFg: string | undefined
+    if (fgIntent) bodyFg = tokenForegroundForIntent(fg as TIntent)
+    else if (fgCss) bodyFg = fg as string
+
+    if (bodyFg) {
+      vars['--origam-calendar__day-cell---color'] = bodyFg
+      vars['--origam-calendar__weekday---color'] = bodyFg
+    }
+
+    return vars
+  })
 
   /*********************************************************
    * Class & Style
@@ -953,10 +1125,26 @@
     {
       'origam-calendar--week-numbers': showWeekNumbers.value
     },
+    borderClasses.value,
+    roundedClasses.value,
+    elevationClasses.value,
+    paddingClasses.value,
+    marginClasses.value,
+    densityClasses.value,
     props.class
   ])
 
-  const rootStyles = computed<StyleValue>(() => [ props.style ] as StyleValue)
+  const rootStyles = computed<StyleValue>(() => [
+    surfaceVars.value,
+    borderStyles.value,
+    borderColorStyle.value,
+    roundedStyles.value,
+    elevationStyles.value,
+    paddingStyles.value,
+    marginStyles.value,
+    dimensionStyles.value,
+    props.style
+  ] as StyleValue)
 
   /*********************************************************
    * Expose
@@ -984,24 +1172,35 @@
     overflow: hidden;
   }
 
+  .origam-calendar--density-compact {
+    --origam-calendar__toolbar---padding: 8px;
+    --origam-calendar__day-cell---height: 72px;
+    --origam-calendar__day-cell---padding: 4px;
+  }
+
+  .origam-calendar--density-comfortable {
+    --origam-calendar__toolbar---padding: 16px;
+    --origam-calendar__day-cell---height: 120px;
+    --origam-calendar__day-cell---padding: 10px;
+  }
+
   .origam-calendar__toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--origam-calendar__toolbar---gap, 8px);
     padding: var(--origam-calendar__toolbar---padding, 12px);
+    color: var(--origam-calendar__toolbar---color, inherit);
     background-color: var(--origam-calendar__toolbar---background-color, transparent);
     border-bottom: 1px solid var(--origam-calendar__toolbar---border-color, #e5e7eb);
-  }
-
-  .origam-calendar__toolbar-nav,
-  .origam-calendar__toolbar-views {
-    display: inline-flex;
-    gap: 4px;
+    --origam-btn---color: var(--origam-calendar__toolbar---color, inherit);
+    --origam-color__overlay---scrim: currentColor;
+    --origam-btn---overlay-opacity-hover: 0.16;
   }
 
   .origam-calendar__toolbar-title {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+    min-width: 0;
     text-align: center;
     color: var(--origam-calendar__toolbar---title-color, inherit);
     font-size: var(--origam-calendar__toolbar---title-font-size, 1rem);
@@ -1009,54 +1208,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .origam-calendar__toolbar-btn {
-    all: unset;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 32px;
-    min-height: 32px;
-    padding: 0 8px;
-    text-transform: capitalize;
-    border-radius: 4px;
-    cursor: pointer;
-    font: inherit;
-    color: inherit;
-    transition: background-color 120ms ease, color 120ms ease;
-  }
-
-  .origam-calendar__toolbar-btn:hover:not(:disabled),
-  .origam-calendar__toolbar-btn:focus-visible {
-    background-color: var(--origam-calendar__day-cell---bg-color-hover, rgba(0, 0, 0, 0.06));
-  }
-
-  .origam-calendar__toolbar-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  /*
-   * Active toolbar button (selected view: Month / Week / Day / Agenda).
-   * Previously fell back to `currentColor` for bg + `#ffffff` for fg —
-   * when the calendar lived on a light surface with white-ish
-   * `currentColor` (e.g. tinted via a wrapper, or the unset token
-   * resolved to a near-white value), the active btn rendered as
-   * white-on-white and the user lost the selected view indicator.
-   *
-   * Use the DS primary intent pair (`action.primary.bg` + matching
-   * `.fg`) so the selected view is unambiguously highlighted on any
-   * surface, light or dark, with WCAG-validated contrast.
-   */
-  .origam-calendar__toolbar-btn--active {
-    background-color: var(--origam-calendar__toolbar-btn--active---background-color, var(--origam-color__action--primary---bg));
-    color: var(--origam-calendar__toolbar-btn--active---color, var(--origam-color__action--primary---fg));
-  }
-
-  .origam-calendar__toolbar-btn--active:hover:not(:disabled),
-  .origam-calendar__toolbar-btn--active:focus-visible {
-    background-color: var(--origam-calendar__toolbar-btn--active---background-color-hover, color-mix(in srgb, var(--origam-color__action--primary---bg) 88%, black));
   }
 
   .origam-calendar__body {
@@ -1081,7 +1232,7 @@
     text-align: center;
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--origam-calendar__day-cell---color-muted, #6b7280);
+    color: var(--origam-calendar__weekday---color, var(--origam-calendar__day-cell---color-muted, #6b7280));
   }
 
   .origam-calendar__week-number {
@@ -1128,7 +1279,11 @@
   }
 
   .origam-calendar__day-cell--today {
-    background-color: var(--origam-calendar__day-cell---bg-color-today, rgba(59, 130, 246, 0.08));
+    background-image: linear-gradient(
+        0deg,
+        var(--origam-calendar__day-cell---bg-color-today, rgba(59, 130, 246, 0.08)),
+        var(--origam-calendar__day-cell---bg-color-today, rgba(59, 130, 246, 0.08))
+    );
   }
 
   .origam-calendar__day-cell--outside {
@@ -1147,7 +1302,11 @@
   }
 
   .origam-calendar__day-cell--selected {
-    background-color: var(--origam-calendar__range-select---bg-color, rgba(59, 130, 246, 0.12));
+    background-image: linear-gradient(
+        0deg,
+        var(--origam-calendar__range-select---bg-color, rgba(59, 130, 246, 0.12)),
+        var(--origam-calendar__range-select---bg-color, rgba(59, 130, 246, 0.12))
+    );
   }
 
   .origam-calendar__day-number {

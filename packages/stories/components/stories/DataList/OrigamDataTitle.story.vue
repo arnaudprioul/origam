@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IDataTitleProps>>({ text: 'Email', color: undefined, bgColor: undefined, density: undefined })"
+				:init-state="() => useStoryInitState<Partial<IDataTitleProps>>({ text: 'Email', color: undefined, bgColor: undefined, density: undefined, padding: undefined, margin: undefined })"
 		>
 			<template #default="{ state }">
 				<dl style="margin: 24px;">
@@ -15,6 +15,8 @@
 							:color="state.color"
 							:bg-color="state.bgColor"
 							:density="state.density"
+							:padding="state.padding"
+							:margin="state.margin"
 							:prepend-icon="state.prependIcon || undefined"
 							:append-icon="state.appendIcon || undefined"
 							:prepend-avatar="state.prependAvatar || undefined"
@@ -37,6 +39,10 @@
 				<StoryGroup title="Avatars">
 					<HstText v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
 					<HstText v-model="state.appendAvatar"  title="Append Avatar (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
 			</template>
 		</Variant>

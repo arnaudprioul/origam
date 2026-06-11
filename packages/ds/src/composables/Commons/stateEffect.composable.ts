@@ -97,11 +97,13 @@ function pickEffective<T> (
     key: keyof IHoverState,
 ): ComputedRef<T | undefined> {
     return computed(() => {
-        if (isActive.value && activeState.value?.[key] != null) {
-            return activeState.value[key] as unknown as T
-        }
+        // Display priority: normal → active → HOVER. Hover wins over active,
+        // so hovering a pressed / selected element shows the hover surface.
         if (isHover.value && hoverState.value?.[key] != null) {
             return hoverState.value[key] as unknown as T
+        }
+        if (isActive.value && activeState.value?.[key] != null) {
+            return activeState.value[key] as unknown as T
         }
         return rest()
     })
@@ -196,14 +198,15 @@ export function useStateEffect (
     const colorStyles = computed<string[]>(() => {
         void isDisabled.value // accepted for API symmetry; disabled is an opacity veil, not a token swap
 
-        // Roles per axis — `active` takes precedence over `hover` so a
-        // simultaneous press+hover lands on `bgActive`/`bgHover` correctly.
+        // Display priority: normal → active → HOVER. Hover takes precedence
+        // over active, so a simultaneous press+hover lands on the hover
+        // surface (matches `pickEffective`).
         const hoverHasOwnBg  = hoverState.value?.bgColor != null && !sameIntent(hoverState.value.bgColor, props.bgColor)
         const activeHasOwnBg = activeState.value?.bgColor != null && !sameIntent(activeState.value.bgColor, props.bgColor)
 
         const bgRole: TBgFgRole =
-            isActive.value && !activeHasOwnBg ? 'active' :
             isHover.value && !hoverHasOwnBg ? 'hover' :
+            isActive.value && !activeHasOwnBg ? 'active' :
             'default'
 
         let bgDecl: string | null = null

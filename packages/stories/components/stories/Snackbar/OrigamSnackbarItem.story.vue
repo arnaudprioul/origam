@@ -164,8 +164,7 @@
 
 	import { OrigamIcon, OrigamSnackbarItem } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { ISnackbarItemProps } from '@origam/interfaces'
-	import type { ISnackbarGroupItemAction } from '@origam/interfaces'
+	import type { ISnackbarGroupItemAction, ISnackbarItemProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

@@ -291,6 +291,10 @@
 			--origam-card-header---density: -8px;
 		}
 
+		&--density-comfortable {
+			--origam-card-header---density: 8px;
+		}
+
 		&__underlay {
 			position: var(--origam-card-header__underlay---position);
 		}

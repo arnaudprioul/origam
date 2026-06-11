@@ -59,7 +59,7 @@
 							:disabled="disabled"
 							type="number"
 							class="origam-pagination__compact-input"
-							aria-label="Page number"
+							:aria-label="t(pageNumberAriaLabel)"
 							data-cy="pagination-compact-input"
 							@change="handleCompactInput"
 							@keydown.enter.prevent="handleCompactInput"
@@ -218,7 +218,8 @@
 		ofText: 'origam.pagination.of',
 		withInfo: false,
 		infoText: 'origam.pagination.info',
-		perPage: 10
+		perPage: 10,
+		pageNumberAriaLabel: 'origam.pagination.ariaLabel.pageNumber'
 	})
 
 	const emits = defineEmits<IPaginationEmits>()

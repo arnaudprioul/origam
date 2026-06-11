@@ -1,7 +1,7 @@
 import { defineSetupVue3 } from '@histoire/plugin-vue'
 import { createOrigam } from '@origam/origam'
 
-import OrigamStoryLayout from '@stories/components/wrapper/OrigamStoryLayout.vue'
+import OrigamStoryLayout from '@stories/components/_shared/OrigamStoryLayout.vue'
 
 // Design-system tokens must be loaded before any component renders —
 // otherwise `var(--origam-color__action--*---bg)` and friends resolve to

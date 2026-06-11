@@ -6,11 +6,11 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IOverlayProps>>({ scrim: true, transition: true })"
+				:init-state="() => useStoryInitState<Partial<IOverlayProps>>({ scrim: true, transition: true, width: undefined, height: undefined })"
 		>
 			<template #default="{ state }">
 				<div class="story-host">
-					<origam-overlay v-model="designOpen" :scrim="state.scrim" :transition="state.transition">
+					<origam-overlay v-model="designOpen" :scrim="state.scrim" :transition="state.transition" :width="state.width" :height="state.height">
 						<template #activator="{ props: activator }">
 							<origam-btn v-bind="activator" text="Open (design)"/>
 						</template>
@@ -27,6 +27,10 @@
 				</StoryGroup>
 				<StoryGroup title="Transition">
 					<HstCheckbox v-model="state.transition" title="Transition"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
 				</StoryGroup>
 			</template>
 		</Variant>
