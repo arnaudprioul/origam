@@ -13,10 +13,16 @@
 import { Repl, useStore } from '@vue/repl'
 import CodeMirrorEditor from '@vue/repl/codemirror-editor'
 import '@vue/repl/style.css'
-import { PLAYGROUND_SNIPPET } from '~/consts/playground.const'
+import { PLAYGROUND_REPL_SNIPPET } from '~/consts/playground.const'
 
+/*
+ * The live editor runs a self-contained Vue SFC (PLAYGROUND_REPL_SNIPPET) so
+ * the preview renders with a clean console — the published `origam` ESM cannot
+ * be reliably resolved inside the browser sandbox. The origam-branded source
+ * is showcased by the static <OrigamCode> fallback in HomePlayground.vue.
+ */
 const store = useStore()
-void store.setFiles({ 'App.vue': PLAYGROUND_SNIPPET }, 'App.vue').catch(() => {})
+void store.setFiles({ 'App.vue': PLAYGROUND_REPL_SNIPPET }, 'App.vue').catch(() => {})
 </script>
 
 <template>

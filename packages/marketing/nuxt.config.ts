@@ -45,6 +45,14 @@ export default defineNuxtConfig({
         // data-theme="sobre" (see app.head.htmlAttrs below).
         'origam/tokens/css/sobre-light',
         'origam/tokens/css/sobre-dark',
+        // Brand theme sheets for the Themes-section preview tiles. The
+        // origam/nuxt module only injects the root identity at runtime, and
+        // these themes are not in the package `exports` map — so we load the
+        // generated sheets directly from the ds dist via the alias below.
+        // They stay inert until <OrigamThemeProvider theme="…"> scopes them.
+        resolve(__dirname, '../ds/dist/src/assets/css/tokens/editorial-light.css'),
+        resolve(__dirname, '../ds/dist/src/assets/css/tokens/ecom-light.css'),
+        resolve(__dirname, '../ds/dist/src/assets/css/tokens/dark.css'),
         // Marketing display tokens — single source for site presentation tokens
         // (hero/cta sizes, glows, radii). :root:root specificity wins over the
         // theme sheets above. MUST load after them.

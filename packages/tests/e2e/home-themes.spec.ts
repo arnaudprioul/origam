@@ -46,15 +46,17 @@ test.describe('HomeThemes section', () => {
     // ── 3. H2 title ────────────────────────────────────────────────────────
 
     test('h2 title is a non-empty <h2> element', async ({ page }) => {
-        const title = page.locator('section.home-themes h2#themes-title')
-        await expect(title).toBeVisible()
-        const text = await title.textContent()
+        // OrigamTitle renders the <h2>; the aria-target id lives on the inner
+        // <span id="themes-title"> (OrigamTitle ignores `id`).
+        const h2 = page.locator('section.home-themes h2:has(#themes-title)')
+        await expect(h2).toBeVisible()
+        const text = await h2.textContent()
         expect(text?.trim().length).toBeGreaterThan(0)
     })
 
     test('h2 title contains expected text', async ({ page }) => {
-        const title = page.locator('section.home-themes h2#themes-title')
-        await expect(title).toContainText('One design system')
+        const h2 = page.locator('section.home-themes h2:has(#themes-title)')
+        await expect(h2).toContainText('One design system')
     })
 
     // ── 4. Exactly 7 brand chips ───────────────────────────────────────────
@@ -90,16 +92,16 @@ test.describe('HomeThemes section', () => {
         await expect(tiles).toHaveCount(4)
     })
 
-    test('all 4 preview tile labels are visible', async ({ page }) => {
+    test('all 4 preview tile labels are visible (real theme ids)', async ({ page }) => {
         const section = page.locator('section.home-themes')
-        await expect(section).toContainText('light')
-        await expect(section).toContainText('dark')
-        await expect(section).toContainText('brand-a')
-        await expect(section).toContainText('brand-b')
+        await expect(section).toContainText('light.json')
+        await expect(section).toContainText('dark.json')
+        await expect(section).toContainText('editorial.json')
+        await expect(section).toContainText('ecom.json')
     })
 
     test('preview tiles have data-cy attributes', async ({ page }) => {
-        const tileKeys = ['light', 'dark', 'brand-a', 'brand-b']
+        const tileKeys = ['light', 'dark', 'editorial', 'ecom']
         for (const key of tileKeys) {
             const tile = page.locator(`[data-cy="themes-preview-${key}"]`)
             await expect(tile).toBeVisible()
@@ -118,17 +120,26 @@ test.describe('HomeThemes section', () => {
         }
     })
 
-    test('each preview tile has a .json label', async ({ page }) => {
-        const tiles = page.locator('[data-cy^="themes-preview-"]')
-        const count = await tiles.count()
-        expect(count).toBe(4)
+    // ── Theming proof: tiles are powered by OrigamThemeProvider, NOT hardcoded
+    //    hex — each tile's surface resolves from its own theme's
+    //    `--origam-color__surface---default`. Assert ≥2 distinct surfaces.
 
-        for (let i = 0; i < count; i++) {
-            const tile = tiles.nth(i)
-            const jsonLabel = tile.locator('.home-themes__preview-json')
-            await expect(jsonLabel).toBeVisible()
-            await expect(jsonLabel).toContainText('.json')
-        }
+    test('preview tiles render distinct theme surfaces (theming is live)', async ({ page }) => {
+        const surfaceBg = async (key: string) =>
+            page.locator(`[data-cy="themes-tile-surface-${key}"]`)
+                .evaluate(el => getComputedStyle(el).backgroundColor)
+
+        const light = await surfaceBg('light')
+        const dark = await surfaceBg('dark')
+        const editorial = await surfaceBg('editorial')
+        const ecom = await surfaceBg('ecom')
+
+        expect(light).toBe('rgb(255, 255, 255)')
+        expect(dark).toBe('rgb(10, 10, 10)')
+        // editorial (#fafaf7) and ecom (#fff7f0) come from their own themes.
+        expect(editorial).not.toBe(light)
+        expect(ecom).not.toBe(light)
+        expect(new Set([light, dark, editorial, ecom]).size).toBeGreaterThanOrEqual(3)
     })
 
     // ── 6. Tooling mentions ────────────────────────────────────────────────
@@ -155,12 +166,9 @@ test.describe('HomeThemes section', () => {
         await expect(items).toHaveCount(4)
     })
 
-    test('tooling mentions are rendered inside a <ul> with <li> items', async ({ page }) => {
-        const list = page.locator('section.home-themes ul.home-themes__tooling')
-        await expect(list).toBeVisible()
-
-        const items = list.locator('li.home-themes__tooling-item')
-        await expect(items).toHaveCount(2)
+    test('tooling mentions render as 2 OrigamChip pills', async ({ page }) => {
+        const pills = page.locator('section.home-themes [data-cy^="themes-tooling-"]')
+        await expect(pills).toHaveCount(2)
     })
 
     // ── 8. No raw i18n key leakage ─────────────────────────────────────────
