@@ -48,6 +48,8 @@
 
     --origam-gradient---hero-glow: radial-gradient(ellipse 48% 30% at 50% 0%, rgba(124, 58, 237, 0.13), transparent 60%);
     --origam-gradient---cta-glow: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(124, 58, 237, 0.08), transparent 70%);
+    --origam-gradient---hero-title: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 45%, var(--origam-color__text---secondary) 100%);
+    --origam-gradient---hero-grid: linear-gradient(var(--origam-color__border---subtle) 1px, transparent 1px), linear-gradient(90deg, var(--origam-color__border---subtle) 1px, transparent 1px);
 
     --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px -8px rgba(124, 58, 237, 0.5);
 }

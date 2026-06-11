@@ -32,9 +32,10 @@
           {{ t('home.hero.badge', 'v2.5.0') }}
         </origam-chip>
 
-        <origam-title
+        <origam-text-mask
           tag="h1"
           class="home-hero__title"
+          background="var(--origam-gradient---hero-title)"
         >
           <span
             id="hero-title-line1"
@@ -44,7 +45,7 @@
             id="hero-title-line2"
             class="home-hero__title-line"
           >{{ t('home.hero.titleLine2', 'that just works.') }}</span>
-        </origam-title>
+        </origam-text-mask>
 
         <p class="home-hero__subtitle">
           {{ t('home.hero.subtitle', '95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.') }}
@@ -97,9 +98,25 @@
     padding-block: var(--origam-space---16, 4rem) var(--origam-space---12, 3rem);
   }
 
+  /* DS gap: no DS token paints a decorative grid. Consumes the marketing
+     display token --origam-gradient---hero-grid (64px theme-aware lines),
+     faded out toward the bottom via a mask. */
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--origam-gradient---hero-grid);
+    background-size: 64px 64px;
+    background-position: center top;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
   /* DS gap: no DS token/prop paints a section-scoped decorative glow.
      Consumes the marketing display token --origam-gradient---hero-glow. */
-  .home-hero::before {
+  .home-hero::after {
     content: '';
     position: absolute;
     inset-inline: 0;
@@ -133,10 +150,12 @@
     margin: 0;
     display: flex;
     flex-direction: column;
+    align-items: center;
     font-size: var(--origam-font-size---hero, 5.25rem);
     font-weight: var(--origam-font-weight---extrabold, 800);
     line-height: var(--origam-line-height---hero, 0.95);
     letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+    padding-block-end: 0.12em;
     color: var(--origam-color__text---ink, #0a0a0a);
   }
 
