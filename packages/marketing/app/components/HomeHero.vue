@@ -79,18 +79,14 @@
         </origam-btn>
       </nav>
 
-      <figure class="home-hero__install">
-        <origam-code
-          class="home-hero__code"
-          :code="installCommand"
-          lang="bash"
-          copyable
-          data-cy="hero-install-command"
-        />
-        <figcaption class="home-hero__sr-only">
-          {{ installCommand }}
-        </figcaption>
-      </figure>
+      <origam-code
+        :code="installCommand"
+        prompt="$"
+        lang="bash"
+        compact
+        copyable
+        data-cy="hero-install-command"
+      />
     </origam-container>
   </section>
 </template>
@@ -98,7 +94,7 @@
 <style scoped>
   .home-hero {
     position: relative;
-    padding-block: var(--origam-space---24, 6rem) var(--origam-space---20, 5rem);
+    padding-block: var(--origam-space---16, 4rem) var(--origam-space---12, 3rem);
   }
 
   /* DS gap: no DS token/prop paints a section-scoped decorative glow.
@@ -120,7 +116,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--origam-space---8, 2rem);
+    gap: var(--origam-space---6, 1.5rem);
     text-align: center;
   }
 
@@ -128,7 +124,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--origam-space---5, 1.25rem);
+    gap: var(--origam-space---4, 1rem);
   }
 
   /* DS gap: hero display size/tracking/leading exceed OrigamTitle's token
@@ -170,31 +166,6 @@
      selector wins without !important and consumes the marketing glow token. */
   .home-hero__btn.home-hero__btn--primary {
     box-shadow: var(--origam-shadow---glow-primary);
-  }
-
-  .home-hero__install {
-    margin: 0;
-    inline-size: 100%;
-    max-inline-size: 26rem;
-  }
-
-  /* DS gap: OrigamCode default font-size follows its own token; the hero
-     snippet aligns to the marketing mono scale. Surface/colours come from
-     the sobre theme via the component. */
-  .home-hero__code {
-    text-align: start;
-  }
-
-  .home-hero__sr-only {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
   }
 
   @media (max-width: 1080px) {

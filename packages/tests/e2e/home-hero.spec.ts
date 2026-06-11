@@ -87,10 +87,17 @@ test.describe('HomeHero — T1 (DS-first)', () => {
         expect(rel).toContain('noopener')
     })
 
-    test('snippet "npm install origam" est rendu par OrigamCode dans un <pre><code>', async ({ page }) => {
-        const pre = page.locator('#hero .home-hero__install pre code')
+    test('snippet "npm install origam" est rendu par OrigamCode (compact pill) dans un <pre><code>', async ({ page }) => {
+        const root = page.locator('#hero [data-cy="hero-install-command"]')
+        await expect(root).toHaveClass(/origam-code--compact/)
+
+        const pre = root.locator('pre code')
         await expect(pre).toBeAttached()
         await expect(pre).toContainText('npm install origam')
+
+        // decorative "$" prompt is rendered outside <pre><code> (never copied)
+        const prompt = root.locator('[data-cy="origam-code-prompt"]')
+        await expect(prompt).toHaveText('$')
     })
 
     test('bouton Copy (OrigamCode) est présent, accessible et focusable', async ({ page }) => {
