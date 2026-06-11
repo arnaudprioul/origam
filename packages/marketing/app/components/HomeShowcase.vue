@@ -7,6 +7,7 @@ import {
     SHOWCASE_GRID_COLUMNS,
     SHOWCASE_SPARKLINE_DATA,
     SHOWCASE_TABLE_ROWS,
+    SHOWCASE_WIDGET_RADIUS,
     SHOWCASE_WIDGET_VARS
 } from '~/consts/showcase.const'
 
@@ -34,10 +35,11 @@ const sparklineSeries = computed(() => [
             </p>
 
             <origam-title
+                id="showcase-title"
                 tag="h2"
                 class="home-showcase__title"
             >
-                <span id="showcase-title">{{ t('home.showcase.title', '95 components. One vibe.') }}</span>
+                {{ t('home.showcase.title', '95 components. One vibe.') }}
             </origam-title>
 
             <origam-btn
@@ -66,6 +68,7 @@ const sparklineSeries = computed(() => [
                 <origam-card
                     tag="figure"
                     flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
                 >
@@ -129,6 +132,7 @@ const sparklineSeries = computed(() => [
                 <origam-card
                     tag="figure"
                     flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
                 >
@@ -162,6 +166,7 @@ const sparklineSeries = computed(() => [
                 <origam-card
                     tag="figure"
                     flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
                 >
@@ -174,21 +179,19 @@ const sparklineSeries = computed(() => [
                         </span>
                     </figcaption>
 
-                    <client-only>
-                        <origam-chip-group
-                            class="home-showcase__chip-group"
-                            data-cy="showcase-chip-group"
-                        >
-                            <origam-chip
-                                v-for="chip in SHOWCASE_CHIP_ITEMS"
-                                :key="chip.intent"
-                                :bg-color="chip.intent"
-                                :text="t(chip.labelKey, chip.labelFallback)"
-                                pill
-                                :data-cy="`showcase-chip-${chip.intent}`"
-                            />
-                        </origam-chip-group>
-                    </client-only>
+                    <origam-chip-group
+                        class="home-showcase__chip-group"
+                        data-cy="showcase-chip-group"
+                    >
+                        <origam-chip
+                            v-for="chip in SHOWCASE_CHIP_ITEMS"
+                            :key="chip.intent"
+                            :bg-color="chip.intent"
+                            :text="t(chip.labelKey, chip.labelFallback)"
+                            pill
+                            :data-cy="`showcase-chip-${chip.intent}`"
+                        />
+                    </origam-chip-group>
                 </origam-card>
             </origam-grid-item>
 
@@ -199,6 +202,7 @@ const sparklineSeries = computed(() => [
                 <origam-card
                     tag="figure"
                     flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
                 >
@@ -220,16 +224,14 @@ const sparklineSeries = computed(() => [
                             :key="index"
                             class="home-showcase__switch-item"
                         >
-                            <client-only>
-                                <origam-switch
-                                    :model-value="variant.modelValue"
-                                    :inset="variant.inset"
-                                    :flat="variant.flat"
-                                    color="primary"
-                                    readonly
-                                    :data-cy="`showcase-switch-${index}`"
-                                />
-                            </client-only>
+                            <origam-switch
+                                :model-value="variant.modelValue"
+                                :inset="variant.inset"
+                                :flat="variant.flat"
+                                color="primary"
+                                readonly
+                                :data-cy="`showcase-switch-${index}`"
+                            />
                         </li>
                     </ul>
                 </origam-card>
@@ -242,6 +244,7 @@ const sparklineSeries = computed(() => [
                 <origam-card
                     tag="figure"
                     flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
                 >

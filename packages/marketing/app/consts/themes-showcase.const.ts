@@ -23,17 +23,16 @@ export const THEMES_TOOLING_VARS: CSSProperties = {
 } as CSSProperties
 
 /**
- * Preview-tile (OrigamSheet) radius override. The named `rounded` prop maps to
- * a per-THEME radius rung (each preview theme resolves `radius---*` differently
- * — editorial 0, ecom 10, light 14…), which would make the tiles inconsistent.
- * To keep one uniform 10px corner regardless of the tile's theme, we pin the
- * sheet's public radius custom-prop to the sobre md radius (resolved against
- * the document root, not the tile theme). bg is intentionally NOT set — it
- * comes from each tile theme's surface---default.
+ * Preview-tile (OrigamSheet) uniform radius. Each preview theme resolves
+ * `radius---*` differently (editorial 0, ecom 10, light 14…), which would make
+ * the tiles inconsistent. To keep one uniform corner regardless of the tile's
+ * theme, we pin a single radius — the `--origam-radius---card` ref resolved
+ * against the document root (sobre), NOT the tile theme. Since the v2.6 DS fix
+ * `useRounded` accepts custom-property refs, so this rides the typed `rounded`
+ * prop. bg is intentionally NOT set — it comes from each tile theme's
+ * `surface---default`.
  */
-export const THEMES_TILE_VARS: CSSProperties = {
-    '--origam-sheet---border-radius': 'var(--origam-radius---card, 10px)'
-} as CSSProperties
+export const THEMES_TILE_RADIUS = 'var(--origam-radius---card, 10px)'
 
 export const THEMES_TOOLING_PILLS: IThemeChip[] = [
     { key: 'tokens-studio', labelKey: 'home.themes.tokensStudio', labelFallback: 'tokens.studio compatible' },

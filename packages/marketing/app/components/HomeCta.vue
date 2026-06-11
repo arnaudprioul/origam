@@ -16,10 +16,11 @@ const installCommand = computed(() => t('home.cta.install', CTA_INSTALL_COMMAND)
     >
         <div class="home-cta__inner">
             <origam-title
+                id="cta-title"
                 tag="h2"
                 class="home-cta__title"
             >
-                <span id="cta-title">{{ t('home.cta.title', 'Ready to ship faster?') }}</span>
+                {{ t('home.cta.title', 'Ready to ship faster?') }}
             </origam-title>
 
             <p class="home-cta__description">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { KPIS, KPIS_GRID_COLUMNS } from '~/consts/kpis.const'
+import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS } from '~/consts/kpis.const'
 
 const { t } = useT()
 </script>
@@ -19,8 +19,8 @@ const { t } = useT()
         </h2>
 
         <origam-divider
-            class="home-kpis__rule"
             color="var(--origam-color__border---default)"
+            :style="KPIS_RULE_VARS"
             data-cy="kpis-rule-top"
         />
 
@@ -45,8 +45,8 @@ const { t } = useT()
         </origam-grid>
 
         <origam-divider
-            class="home-kpis__rule"
             color="var(--origam-color__border---default)"
+            :style="KPIS_RULE_VARS"
             data-cy="kpis-rule-bottom"
         />
     </section>
@@ -56,13 +56,6 @@ const { t } = useT()
 .home-kpis {
     padding-block: var(--origam-space---10, 2.5rem);
     padding-inline: var(--origam-space---6, 1.5rem);
-}
-
-/* DS gap: OrigamDivider bakes opacity:0.12 for its hairline look. The KPI
-   rule must read the sobre border token at full strength, so we reset the
-   opacity here. No DS prop exposes the divider's opacity. */
-.home-kpis__rule {
-    opacity: 1;
 }
 
 .home-kpis__list {

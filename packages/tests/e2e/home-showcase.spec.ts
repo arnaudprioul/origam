@@ -51,9 +51,9 @@ test.describe('HomeShowcase section', () => {
     // ── 3. H2 title ────────────────────────────────────────────────────────
 
     test('h2 title is a non-empty <h2> element', async ({ page }) => {
-        // OrigamTitle renders the <h2>; the aria-target id lives on the inner
-        // <span id="showcase-title"> (OrigamTitle ignores `id`).
-        const h2 = page.locator('section.home-showcase h2:has(#showcase-title)')
+        // OrigamTitle renders the <h2> and now carries the aria-target `id`
+        // on that <h2> root directly (DS fix).
+        const h2 = page.locator('section.home-showcase h2#showcase-title')
         await expect(h2).toBeVisible()
         const text = await h2.textContent()
         expect(text?.trim().length).toBeGreaterThan(0)

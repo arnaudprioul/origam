@@ -46,16 +46,16 @@ test.describe('HomeThemes section', () => {
     // ── 3. H2 title ────────────────────────────────────────────────────────
 
     test('h2 title is a non-empty <h2> element', async ({ page }) => {
-        // OrigamTitle renders the <h2>; the aria-target id lives on the inner
-        // <span id="themes-title"> (OrigamTitle ignores `id`).
-        const h2 = page.locator('section.home-themes h2:has(#themes-title)')
+        // OrigamTitle renders the <h2> and now carries the aria-target `id`
+        // on that <h2> root directly (DS fix).
+        const h2 = page.locator('section.home-themes h2#themes-title')
         await expect(h2).toBeVisible()
         const text = await h2.textContent()
         expect(text?.trim().length).toBeGreaterThan(0)
     })
 
     test('h2 title contains expected text', async ({ page }) => {
-        const h2 = page.locator('section.home-themes h2:has(#themes-title)')
+        const h2 = page.locator('section.home-themes h2#themes-title')
         await expect(h2).toContainText('One design system')
     })
 

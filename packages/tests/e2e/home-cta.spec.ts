@@ -29,7 +29,9 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         await expect(section).toBeVisible()
         await expect(section).toHaveAttribute('aria-labelledby', 'cta-title')
 
-        const target = page.locator('h2 #cta-title')
+        // OrigamTitle now carries the `id` on its rendered <h2> root (DS fix),
+        // so the aria-labelledby target IS the heading element itself.
+        const target = page.locator('h2#cta-title')
         await expect(target).toBeVisible()
     })
 

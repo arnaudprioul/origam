@@ -12,22 +12,22 @@ export const SHOWCASE_GRID_COLUMNS = '2fr 1fr 1fr'
 /**
  * Per-instance OrigamCard token overrides for a showcase widget card.
  *
- * `bgColor`/`rounded` reject `var(--origam-…)` (they expect a TIntent / a
- * radius literal). The widget surface/radius/shadow are non-intent semantic
- * tokens, so — per the project color policy — we paint the card's public
- * custom-props with the sobre tokens directly (same hatch as FEATURE_CARD_VARS).
+ * Radius now rides the typed `rounded="var(--origam-radius---md)"` prop
+ * (useRounded accepts custom-property refs since the v2.6 DS fix). `bgColor`
+ * still rejects `var(--origam-…)` (it expects a TIntent), so the non-intent
+ * `surface---raised` token is painted on the card's public bg custom-prop —
+ * the documented color-policy hatch (same as FEATURE_CARD_VARS). The padding
+ * tokens stay on the per-instance custom-props (the `padding` prop's regex
+ * rejects `var(...)`).
  *
  *   bg     #fafafa → --origam-color__surface---raised (sobre)
- *   radius 10px    → --origam-radius---md (sobre)
  *   shadow         → --origam-shadow---card-elevated (marketing display token)
  *   padding 24px   → --origam-space---6
  */
+export const SHOWCASE_WIDGET_RADIUS = 'var(--origam-radius---md, 10px)'
+
 export const SHOWCASE_WIDGET_VARS: CSSProperties = {
     '--origam-card---background': 'var(--origam-color__surface---raised, #fafafa)',
-    '--origam-card---border-start-start-radius': 'var(--origam-radius---md, 10px)',
-    '--origam-card---border-start-end-radius': 'var(--origam-radius---md, 10px)',
-    '--origam-card---border-end-end-radius': 'var(--origam-radius---md, 10px)',
-    '--origam-card---border-end-start-radius': 'var(--origam-radius---md, 10px)',
     '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
     '--origam-card---padding-block-start': 'var(--origam-space---6, 1.5rem)',
     '--origam-card---padding-block-end': 'var(--origam-space---6, 1.5rem)',

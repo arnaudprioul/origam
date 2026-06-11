@@ -1,4 +1,17 @@
+import type { CSSProperties } from 'vue'
+
 import type { IKpi } from '~/interfaces/kpi.interface'
+
+/**
+ * OrigamDivider opacity override for the KPI hairlines. The divider bakes a
+ * 0.12 fade for its default hairline look; the KPI rules must read the sobre
+ * border token at full strength. Since the v2.6 DS fix the opacity is exposed
+ * as the overridable `--origam-divider---opacity` custom-prop, so we set it
+ * via the divider's public `:style` channel instead of a scoped CSS exception.
+ */
+export const KPIS_RULE_VARS: CSSProperties = {
+    '--origam-divider---opacity': '1'
+} as CSSProperties
 
 /**
  * Track template forwarded verbatim to <OrigamGrid columns>.

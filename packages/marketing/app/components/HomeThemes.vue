@@ -2,7 +2,7 @@
 import { useT } from '~/composables/useT'
 import {
     THEMES_GRID_COLUMNS,
-    THEMES_TILE_VARS,
+    THEMES_TILE_RADIUS,
     THEMES_TOOLING_PILLS,
     THEMES_TOOLING_VARS,
     THEME_CHIPS,
@@ -32,45 +32,42 @@ const { t } = useT()
                 </p>
 
                 <origam-title
+                    id="themes-title"
                     tag="h2"
                     class="home-themes__title"
                 >
-                    <span id="themes-title">{{ t('home.themes.title', 'One design system. Every brand.') }}</span>
+                    {{ t('home.themes.title', 'One design system. Every brand.') }}
                 </origam-title>
 
-                <client-only>
-                    <origam-chip-group class="home-themes__chips">
-                        <origam-chip
-                            v-for="chip in THEME_CHIPS"
-                            :key="chip.key"
-                            color="primary"
-                            pill
-                            size="small"
-                            :data-cy="`themes-chip-${chip.key}`"
-                        >
-                            {{ t(chip.labelKey, chip.labelFallback) }}
-                        </origam-chip>
-                    </origam-chip-group>
-                </client-only>
+                <origam-chip-group class="home-themes__chips">
+                    <origam-chip
+                        v-for="chip in THEME_CHIPS"
+                        :key="chip.key"
+                        color="primary"
+                        pill
+                        size="small"
+                        :data-cy="`themes-chip-${chip.key}`"
+                    >
+                        {{ t(chip.labelKey, chip.labelFallback) }}
+                    </origam-chip>
+                </origam-chip-group>
 
-                <client-only>
-                    <origam-chip-group class="home-themes__tooling">
-                        <origam-chip
-                            v-for="pill in THEMES_TOOLING_PILLS"
-                            :key="pill.key"
-                            :style="THEMES_TOOLING_VARS"
-                            color="neutral"
-                            border
-                            border-color="var(--origam-color__border---ghost)"
-                            pill
-                            size="small"
-                            class="home-themes__tooling-pill"
-                            :data-cy="`themes-tooling-${pill.key}`"
-                        >
-                            {{ t(pill.labelKey, pill.labelFallback) }}
-                        </origam-chip>
-                    </origam-chip-group>
-                </client-only>
+                <origam-chip-group class="home-themes__tooling">
+                    <origam-chip
+                        v-for="pill in THEMES_TOOLING_PILLS"
+                        :key="pill.key"
+                        :style="THEMES_TOOLING_VARS"
+                        color="neutral"
+                        border
+                        border-color="var(--origam-color__border---ghost)"
+                        pill
+                        size="small"
+                        class="home-themes__tooling-pill"
+                        :data-cy="`themes-tooling-${pill.key}`"
+                    >
+                        {{ t(pill.labelKey, pill.labelFallback) }}
+                    </origam-chip>
+                </origam-chip-group>
             </origam-grid-item>
 
             <origam-grid-item
@@ -97,7 +94,7 @@ const { t } = useT()
                         >
                             <origam-sheet
                                 :data-cy="`themes-tile-surface-${tile.key}`"
-                                :style="THEMES_TILE_VARS"
+                                :rounded="THEMES_TILE_RADIUS"
                                 tag="article"
                                 border
                                 border-color="var(--origam-color__border---ghost)"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import {
+    PLAYGROUND_FRAME_RADIUS,
     PLAYGROUND_FRAME_VARS,
     PLAYGROUND_OPEN_PILL_VARS,
     PLAYGROUND_SNIPPET
@@ -21,16 +22,18 @@ const { t } = useT()
             </p>
 
             <origam-title
+                id="playground-heading"
                 tag="h2"
                 class="home-playground__title"
             >
-                <span id="playground-heading">{{ t('home.playground.title', 'Try before you ship.') }}</span>
+                {{ t('home.playground.title', 'Try before you ship.') }}
             </origam-title>
         </header>
 
         <figure class="home-playground__window">
             <origam-sheet
                 tag="div"
+                :rounded="PLAYGROUND_FRAME_RADIUS"
                 :style="PLAYGROUND_FRAME_VARS"
                 border
                 border-color="var(--origam-color__border---default)"

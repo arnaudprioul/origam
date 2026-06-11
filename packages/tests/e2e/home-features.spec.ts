@@ -30,9 +30,9 @@ test.describe('HomeFeatures section', () => {
         await expect(section).toBeVisible()
         await expect(section).toHaveAttribute('aria-labelledby', 'features-title')
 
-        // OrigamTitle drops its own id (known DS gap) — the aria target is a
-        // <span id> we control inside the rendered <h2>.
-        const target = page.locator('h2 #features-title')
+        // OrigamTitle now carries the `id` on its rendered <h2> root (DS fix),
+        // so the aria-labelledby target IS the heading element itself.
+        const target = page.locator('h2#features-title')
         await expect(target).toBeVisible()
     })
 

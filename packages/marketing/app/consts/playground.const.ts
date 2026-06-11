@@ -76,15 +76,21 @@ const count = ref(0)
  * props in the template.
  *
  *   bg     #fafafa → --origam-color__surface---raised (sobre)
- *   radius 14px    → --origam-radius---lg (sobre)
+ *   shadow         → --origam-shadow---card-elevated (marketing display token)
+ *
+ * Radius rides the typed `rounded="var(--origam-radius---lg)"` prop now
+ * (useRounded accepts custom-property refs since the v2.6 DS fix). The shadow
+ * is set on the BASE `--origam-sheet---box-shadow` custom-prop: since the v2.6
+ * Sheet fix, the `.origam-sheet--border` rule reads
+ * `var(--origam-sheet--border---box-shadow, var(--origam-sheet---box-shadow))`,
+ * so the base var is honoured even when `border` is active (border no longer
+ * clobbers the elevation).
  */
+export const PLAYGROUND_FRAME_RADIUS = 'var(--origam-radius---lg, 14px)'
+
 export const PLAYGROUND_FRAME_VARS: CSSProperties = {
     '--origam-sheet---background': 'var(--origam-color__surface---raised, #fafafa)',
-    '--origam-sheet---border-radius': 'var(--origam-radius---lg, 14px)',
-    // The Sheet's `.origam-sheet--border` rule overrides box-shadow with the
-    // border-state var (NOT --origam-sheet---box-shadow), so the elevated
-    // shadow must be set on THAT custom-prop when `border` is active.
-    '--origam-sheet--border---box-shadow': 'var(--origam-shadow---card-elevated)'
+    '--origam-sheet---box-shadow': 'var(--origam-shadow---card-elevated)'
 } as CSSProperties
 
 /**

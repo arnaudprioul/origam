@@ -31,17 +31,18 @@ export const FEATURE_CARD_VARS: CSSProperties = {
 /**
  * Per-instance OrigamSheet override for the feature icon tile.
  *
- * `bgColor`/`color` warn + deprecate when handed a raw `var(...)` (they
- * expect a TIntent), and `rounded`'s BORDER_RADIUS_REGEX rejects `var(...)`
- * too. `surface`/`action-primary` token surfaces are NOT intents, so — per
- * the project color policy ("one-off custom colors via :style custom-prop")
- * — we paint the sheet's public bg + radius custom-props with the sobre
- * tokens directly. Border colour/width still ride the Sheet's typed props
- * (borderColor passthrough does not deprecate).
+ * Radius now rides the typed `rounded="var(--origam-radius---card)"` prop
+ * (useRounded accepts custom-property refs since the v2.6 DS fix). `bgColor`
+ * still warns + deprecates a raw `var(...)` (it expects a TIntent), and the
+ * `action-primary---bgSubtle` token is NOT an intent, so — per the project
+ * color policy ("one-off custom colors via :style custom-prop") — we paint
+ * the sheet's public bg custom-prop directly. Border colour/width still ride
+ * the Sheet's typed props (borderColor passthrough does not deprecate).
  */
+export const FEATURE_ICON_TILE_RADIUS = 'var(--origam-radius---card, 10px)'
+
 export const FEATURE_ICON_TILE_VARS: CSSProperties = {
-    '--origam-sheet---background': 'var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1))',
-    '--origam-sheet---border-radius': 'var(--origam-radius---card, 10px)'
+    '--origam-sheet---background': 'var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1))'
 } as CSSProperties
 
 /** Icon tint = sobre action-primary fgSubtle, via the icon's bg/colour token. */

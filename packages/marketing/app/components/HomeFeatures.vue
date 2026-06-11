@@ -5,6 +5,7 @@ import {
     FEATURES,
     FEATURES_GRID_COLUMNS,
     FEATURE_CARD_VARS,
+    FEATURE_ICON_TILE_RADIUS,
     FEATURE_ICON_TILE_VARS,
     FEATURE_ICON_VARS
 } from '~/consts/features.const'
@@ -25,10 +26,11 @@ const features = computed(() => FEATURES)
             </p>
 
             <origam-title
+                id="features-title"
                 tag="h2"
                 class="home-features__title"
             >
-                <span id="features-title">{{ t('home.features.title', `Everything you'd expect. Nothing you wouldn't.`) }}</span>
+                {{ t('home.features.title', `Everything you'd expect. Nothing you wouldn't.`) }}
             </origam-title>
         </header>
 
@@ -52,6 +54,7 @@ const features = computed(() => FEATURES)
                 >
                     <origam-sheet
                         aria-hidden="true"
+                        :rounded="FEATURE_ICON_TILE_RADIUS"
                         :style="FEATURE_ICON_TILE_VARS"
                         border
                         border-color="var(--origam-color__action--primary---bg)"
