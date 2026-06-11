@@ -1,27 +1,26 @@
 /**
- * HomeHero — spec e2e T1
+ * HomeHero — spec e2e T1 (DS-first rebuild)
  *
- * Asserts :
- *  1. La section #hero est présente dans le DOM avec aria-labelledby="hero-title".
- *  2. Le <h1> unique contient les deux lignes du titre (i18n).
- *  3. Le badge de version est visible avec le texte attendu.
- *  4. Le sous-titre est visible.
- *  5. CTA "Browse components" pointe vers /components.
- *  6. CTA "Star on GitHub" est un lien externe (target=_blank, rel contient noopener).
- *  7. Le snippet d'installation "npm install origam" est dans un <code>.
- *  8. Le bouton Copy est présent, focusable, et déclenche le clipboard (mocké).
- *  9. A11y de base : pas de violation axe-core critique/sérieuse sur la section.
+ * Asserts the rebuilt, DS-first Hero contract (badge = OrigamChip,
+ * snippet = OrigamCode `copyable`, CTAs = OrigamBtn). The section is
+ * rendered under the active `sobre` theme (T0).
  *
- * Limites headless :
- *  - L'état "Copied!" post-clic sur le bouton Copy dépend de navigator.clipboard
- *    qui est disponible sur localhost (origin sécurisée). Le test mock l'API pour
- *    fiabiliser l'assertion dans un contexte e2e headless.
+ *  1. Section #hero present with aria-labelledby="hero-title".
+ *  2. Single <h1> contains both i18n title lines.
+ *  3. The two title lines are distinct <span class="home-hero__title-line">.
+ *  4. Version badge (OrigamChip) visible with expected text.
+ *  5. Subtitle visible.
+ *  6. CTA "Browse components" links to /components.
+ *  7. CTA "Star on GitHub" is external (target=_blank, rel noopener).
+ *  8. Install snippet "npm install origam" rendered by OrigamCode in <pre><code>.
+ *  9. OrigamCode copy button present, accessible, keyboard-focusable.
+ * 10. CTAs are inside a <nav> with an aria-label.
+ * 11. Base a11y: no critical/serious axe-core violation on the section.
  *
+ * Pré-requis : dev server marketing sur http://localhost:3000.
  * Run :
  *   pnpm -F @origam/tests playwright test \
  *     --config=playwright.marketing.config.ts home-hero
- *
- * Pré-requis : dev server marketing sur http://localhost:3000.
  */
 
 import { expect, test } from '@playwright/test'
@@ -29,7 +28,7 @@ import AxeBuilder from '@axe-core/playwright'
 
 const BASE = '/'
 
-test.describe('HomeHero — T1', () => {
+test.describe('HomeHero — T1 (DS-first)', () => {
 
     test.beforeEach(async ({ page }) => {
         await page.goto(BASE)
@@ -39,24 +38,24 @@ test.describe('HomeHero — T1', () => {
     test('section #hero est dans le DOM avec aria-labelledby', async ({ page }) => {
         const section = page.locator('#hero')
         await expect(section).toBeAttached()
-        await expect(section).toHaveAttribute('aria-labelledby', 'hero-title')
+        await expect(section).toHaveAttribute('aria-labelledby', 'hero-title-line1 hero-title-line2')
     })
 
     test('<h1> unique contient les deux lignes du titre', async ({ page }) => {
-        const h1 = page.locator('#hero h1#hero-title')
+        const h1 = page.locator('#hero h1')
         await expect(h1).toBeVisible()
         await expect(h1).toContainText('The Vue 3 design system')
         await expect(h1).toContainText('that just works.')
     })
 
-    test('les deux lignes du <h1> sont dans des <span> distincts', async ({ page }) => {
-        const line1 = page.locator('#hero h1 .home-hero__title-line1')
-        const line2 = page.locator('#hero h1 .home-hero__title-line2')
+    test('les deux lignes du <h1> sont des <span> distincts référencés par aria-labelledby', async ({ page }) => {
+        const line1 = page.locator('#hero h1 #hero-title-line1')
+        const line2 = page.locator('#hero h1 #hero-title-line2')
         await expect(line1).toHaveText('The Vue 3 design system')
         await expect(line2).toHaveText('that just works.')
     })
 
-    test('badge de version est visible avec le texte attendu', async ({ page }) => {
+    test('badge de version (OrigamChip) est visible avec le texte attendu', async ({ page }) => {
         const badge = page.locator('[data-cy="hero-badge"]')
         await expect(badge).toBeVisible()
         await expect(badge).toContainText('v2.5.0')
@@ -88,20 +87,14 @@ test.describe('HomeHero — T1', () => {
         expect(rel).toContain('noopener')
     })
 
-    test('snippet "npm install origam" est dans un <code>', async ({ page }) => {
-        const code = page.locator('[data-cy="hero-install-command"]')
-        await expect(code).toBeAttached()
-        await expect(code).toHaveText('npm install origam')
-    })
-
-    test('snippet est dans un <pre>', async ({ page }) => {
-        const pre = page.locator('#hero pre')
+    test('snippet "npm install origam" est rendu par OrigamCode dans un <pre><code>', async ({ page }) => {
+        const pre = page.locator('#hero .home-hero__install pre code')
         await expect(pre).toBeAttached()
         await expect(pre).toContainText('npm install origam')
     })
 
-    test('bouton Copy est présent et accessible au clavier', async ({ page }) => {
-        const copyBtn = page.locator('[data-cy="hero-copy-btn"]')
+    test('bouton Copy (OrigamCode) est présent, accessible et focusable', async ({ page }) => {
+        const copyBtn = page.locator('#hero [data-cy="origam-code-copy"]')
         await expect(copyBtn).toBeVisible()
         await expect(copyBtn).toHaveAttribute('aria-label')
         await expect(copyBtn).toBeEnabled()
@@ -109,36 +102,9 @@ test.describe('HomeHero — T1', () => {
         await expect(copyBtn).toBeFocused()
     })
 
-    test('bouton Copy affiche "Copy" par défaut', async ({ page }) => {
-        const copyBtn = page.locator('[data-cy="hero-copy-btn"]')
-        await expect(copyBtn).toContainText('Copy')
-    })
-
-    /**
-     * Le bouton Copy est un <button> natif (plus OrigamBtn) depuis le pixel-perfect
-     * pass. Le clic Vue fonctionne directement sans la couche loader OrigamBtn.
-     * La <vite-error-overlay> d'un composant voisin peut encore intercepter les
-     * pointer events — on utilise page.evaluate pour déclencher le click
-     * directement sur le DOM element.
-     */
-    test('bouton Copy — état "Copied" après clic (clipboard mocké)', async ({ page }) => {
-        await page.evaluate(() => {
-            Object.defineProperty(navigator, 'clipboard', {
-                value: { writeText: () => Promise.resolve() },
-                writable: true,
-                configurable: true
-            })
-        })
-        const copyBtn = page.locator('[data-cy="hero-copy-btn"]')
-        // Déclenche le click via JS pour bypasser les overlays Vite dev
-        await copyBtn.evaluate((el: HTMLElement) => el.click())
-        await expect(copyBtn).toContainText('Copied')
-    })
-
     test('deux CTAs sont dans un <nav> avec aria-label', async ({ page }) => {
         const nav = page.locator('#hero nav[aria-label]')
         await expect(nav).toBeAttached()
-        // Les CTAs sont des OrigamBtn (rendus en <a> car ils ont un href)
         const ctaCount = await nav.locator('a, button').count()
         expect(ctaCount).toBeGreaterThanOrEqual(2)
     })

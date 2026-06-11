@@ -1,3 +1,5 @@
+import { resolve } from 'node:path'
+
 import { MARKETING_DEFAULTS } from './app/consts/marketing.const'
 import { I18N_LOCALES, I18N_COOKIE_KEY } from './app/consts/i18n.const'
 
@@ -19,7 +21,8 @@ export default defineNuxtConfig({
     ],
 
     origam: {
-        defaultMode: 'auto'
+        defaultTheme: 'sobre',
+        defaultMode: 'light'
     },
 
     ogImage: {
@@ -35,6 +38,16 @@ export default defineNuxtConfig({
     },
 
     css: [
+        // Sobre brand token sheets (scoped to [data-theme="sobre"][data-mode="…"]).
+        // ADR-004: the origam/nuxt module only injects the ROOT origam identity at
+        // runtime — brand themes are NOT auto-injected. We load the generated
+        // sobre sheets statically; they stay inert until htmlAttrs sets
+        // data-theme="sobre" (see app.head.htmlAttrs below).
+        'origam/tokens/css/sobre-light',
+        'origam/tokens/css/sobre-dark',
+        // Marketing display tokens — single source for site presentation tokens
+        // (hero/cta sizes, glows, radii). :root:root specificity wins over the
+        // theme sheets above. MUST load after them.
         '~/assets/css/marketing-tokens.css',
         '~/assets/css/base.css'
     ],
@@ -59,7 +72,9 @@ export default defineNuxtConfig({
         head: {
             titleTemplate: `%s · ${MARKETING_DEFAULTS.siteName}`,
             htmlAttrs: {
-                lang: MARKETING_DEFAULTS.defaultLocale
+                lang: MARKETING_DEFAULTS.defaultLocale,
+                'data-theme': 'sobre',
+                'data-mode': 'light'
             },
             link: [
                 { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },
@@ -108,17 +123,17 @@ export default defineNuxtConfig({
         },
         resolve: {
             alias: {
-                'origam/nuxt': new URL('../ds/src/nuxt/module.ts', import.meta.url).pathname,
-                'origam/components': new URL('../ds/src/components', import.meta.url).pathname,
-                'origam/composables': new URL('../ds/src/composables', import.meta.url).pathname,
-                'origam/directives': new URL('../ds/src/directives', import.meta.url).pathname,
-                'origam/enums': new URL('../ds/src/enums', import.meta.url).pathname,
-                'origam/consts': new URL('../ds/src/consts', import.meta.url).pathname,
-                'origam/utils': new URL('../ds/src/utils', import.meta.url).pathname,
-                'origam/types': new URL('../ds/src/types', import.meta.url).pathname,
-                'origam/interfaces': new URL('../ds/src/interfaces', import.meta.url).pathname,
-                'origam/services': new URL('../ds/src/services', import.meta.url).pathname,
-                'origam/themes': new URL('../ds/src/themes', import.meta.url).pathname
+                'origam/nuxt': resolve(__dirname, '../ds/src/nuxt/module.ts'),
+                'origam/components': resolve(__dirname, '../ds/src/components'),
+                'origam/composables': resolve(__dirname, '../ds/src/composables'),
+                'origam/directives': resolve(__dirname, '../ds/src/directives'),
+                'origam/enums': resolve(__dirname, '../ds/src/enums'),
+                'origam/consts': resolve(__dirname, '../ds/src/consts'),
+                'origam/utils': resolve(__dirname, '../ds/src/utils'),
+                'origam/types': resolve(__dirname, '../ds/src/types'),
+                'origam/interfaces': resolve(__dirname, '../ds/src/interfaces'),
+                'origam/services': resolve(__dirname, '../ds/src/services'),
+                'origam/themes': resolve(__dirname, '../ds/src/themes')
             }
         }
     }

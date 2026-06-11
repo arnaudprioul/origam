@@ -64,7 +64,8 @@
       "ctaGithub": "Star on GitHub",
       "install": "npm install origam",
       "copy": "Copy",
-      "copied": "Copied"
+      "copied": "Copied",
+      "ctasLabel": "Hero calls to action"
     },
     "kpis": {
       "title": "origam by the numbers",

@@ -1,0 +1,65 @@
+/*
+ * Marketing-local design tokens.
+ *
+ * Presentational values pulled from the official Sobre maquette that are
+ * site-specific (display typography, hero/CTA glow, card/button radius,
+ * ghost border, app-bar surface) and intentionally NOT part of the published
+ * origam DS — which is component-token based, not global-display-token based.
+ *
+ * ── Override priority ──────────────────────────────────────────────────────
+ * createOrigam injects the active theme as a runtime <style>:root{…} block in
+ * <head>, AFTER this stylesheet's <link>. A plain `:root` rule here would be
+ * BEATEN by the theme on equal specificity + later source order. So we raise
+ * specificity with `:root:root` (0,2,0 > the theme's 0,1,0): these tokens win
+ * regardless of injection order. That's the contract — anything declared here
+ * reliably overrides the DS theme, by CSS, without `!important`.
+ *
+ * Light values at :root:root; dark overrides under :root:root[data-mode=dark].
+ * See packages/marketing/PIXEL-SPEC.md.
+ */
+
+:root:root {
+    --origam-font-size---hero: 5.25rem;
+    --origam-font-size---section: 3rem;
+    --origam-font-size---cta: 4rem;
+
+    --origam-letter-spacing---hero: -0.045em;
+    --origam-letter-spacing---tight: -0.03em;
+
+    --origam-line-height---hero: 0.95;
+
+    --origam-font-weight---extrabold: 800;
+
+    --origam-radius---card: 10px;
+    --origam-radius---btn: 10px;
+    --origam-radius---pill: 9999px;
+
+    --origam-space---24: 6rem;
+    --origam-space---30: 7.5rem;
+
+    --origam-color__border---subtle-alpha: rgba(0, 0, 0, 0.08);
+    --origam-color__border---ghost: rgba(0, 0, 0, 0.08);
+
+    --origam-color__text---ink: #0a0a0a;
+
+    --origam-appbar---bg: rgba(255, 255, 255, 0.72);
+
+    --origam-shadow---card-elevated: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+
+    --origam-gradient---hero-glow: radial-gradient(ellipse 48% 30% at 50% 0%, rgba(124, 58, 237, 0.13), transparent 60%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(124, 58, 237, 0.08), transparent 70%);
+
+    --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px -8px rgba(124, 58, 237, 0.5);
+}
+
+:root:root[data-mode="dark"] {
+    --origam-color__border---ghost: rgba(255, 255, 255, 0.08);
+    --origam-color__border---subtle-alpha: rgba(255, 255, 255, 0.08);
+    --origam-color__text---ink: #fafafa;
+
+    --origam-color__surface---overlay: rgb(14, 14, 14);
+
+    --origam-appbar---bg: rgba(10, 10, 10, 0.72);
+
+    --origam-shadow---card-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+}
