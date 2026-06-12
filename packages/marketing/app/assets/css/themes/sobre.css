@@ -96,6 +96,18 @@
     --origam-gradient---hero-title: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 45%, var(--origam-color__text---secondary) 100%);
     --origam-gradient---hero-grid: linear-gradient(var(--origam-color__border---default) 1px, transparent 1px), linear-gradient(90deg, var(--origam-color__border---default) 1px, transparent 1px);
     --origam-gradient---kpi-value: linear-gradient(var(--origam-color__action--primary---bg), var(--origam-color__action--primary---bg));
+
+    /* Button tokens — primary: transparent bg + violet glow (text variant look) */
+    --origam-gradient---btn-primary: none;
+    --origam-shadow---btn-primary: rgba(255, 255, 255, 0.20) 0px 1px 0px 0px inset, rgba(124, 58, 237, 0.50) 0px 8px 24px -8px;
+    --origam-color---btn-primary-text: var(--origam-color__text---ink);
+
+    /* Button tokens — secondary: clean ghost, no glow */
+    --origam-gradient---btn-secondary: none;
+    --origam-color---btn-secondary-bg: transparent;
+    --origam-color---btn-secondary-border: transparent;
+    --origam-color---btn-secondary-text: var(--origam-color__text---secondary);
+    --origam-shadow---btn-secondary: none;
 }
 
 /* ── SOBRE DARK ──────────────────────────────────────────────────────────── */
@@ -184,4 +196,15 @@
     --origam-gradient---hero-title: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 50%, var(--origam-color__text---secondary) 100%);
     --origam-gradient---hero-grid: linear-gradient(var(--origam-color__border---default) 1px, transparent 1px), linear-gradient(90deg, var(--origam-color__border---default) 1px, transparent 1px);
     --origam-gradient---kpi-value: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 50%, var(--origam-color__text---secondary) 100%);
+
+    /* Button tokens — dark: same ghost look, darker bg for contrast */
+    --origam-gradient---btn-primary: none;
+    --origam-shadow---btn-primary: rgba(255, 255, 255, 0.08) 0px 1px 0px 0px inset, rgba(139, 92, 246, 0.50) 0px 8px 24px -8px;
+    --origam-color---btn-primary-text: var(--origam-color__text---ink);
+
+    --origam-gradient---btn-secondary: none;
+    --origam-color---btn-secondary-bg: transparent;
+    --origam-color---btn-secondary-border: transparent;
+    --origam-color---btn-secondary-text: var(--origam-color__text---secondary);
+    --origam-shadow---btn-secondary: none;
 }

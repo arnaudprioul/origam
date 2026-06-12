@@ -110,6 +110,18 @@
     --origam-gradient---hero-title: linear-gradient(110deg, #0891b2 0%, #a21caf 55%, #db2777 100%);
     --origam-gradient---hero-grid: linear-gradient(rgba(168, 85, 247, 0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(168, 85, 247, 0.10) 1px, transparent 1px);
     --origam-gradient---kpi-value: linear-gradient(110deg, #0891b2 0%, #a21caf 55%, #db2777 100%);
+
+    /* Button tokens — primary: cyan→violet→magenta gradient pill */
+    --origam-gradient---btn-primary: linear-gradient(110deg, #0891b2, #a21caf 60%, #db2777);
+    --origam-shadow---btn-primary: rgba(217, 70, 239, 0.50) 0px 0px 18px -4px, rgba(8, 145, 178, 0.40) 0px 0px 30px -8px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset;
+    --origam-color---btn-primary-text: #ffffff;
+
+    /* Button tokens — secondary: ghost/outline with strong border glow */
+    --origam-gradient---btn-secondary: none;
+    --origam-color---btn-secondary-bg: transparent;
+    --origam-color---btn-secondary-border: rgba(217, 70, 239, 0.55);
+    --origam-color---btn-secondary-text: #a21caf;
+    --origam-shadow---btn-secondary: rgba(217, 70, 239, 0.35) 0px 0px 10px -4px;
 }
 
 /* ── GEEK DARK ───────────────────────────────────────────────────────────── */
@@ -210,6 +222,18 @@
     --origam-gradient---hero-title: linear-gradient(110deg, #00f0ff 0%, #c77dff 50%, #ff3cac 100%);
     --origam-gradient---hero-grid: linear-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(199, 125, 255, 0.06) 1px, transparent 1px);
     --origam-gradient---kpi-value: linear-gradient(110deg, #00f0ff 0%, #c77dff 50%, #ff3cac 100%);
+
+    /* Button tokens — primary: cyan→purple→magenta neon gradient */
+    --origam-gradient---btn-primary: linear-gradient(110deg, #00f0ff, #c77dff 60%, #ff3cac);
+    --origam-shadow---btn-primary: rgba(0, 240, 255, 0.50) 0px 0px 18px -2px, rgba(199, 125, 255, 0.45) 0px 0px 32px -6px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset;
+    --origam-color---btn-primary-text: #0a0612;
+
+    /* Button tokens — secondary: ghost/outline cyan border */
+    --origam-gradient---btn-secondary: none;
+    --origam-color---btn-secondary-bg: transparent;
+    --origam-color---btn-secondary-border: rgba(0, 240, 255, 0.40);
+    --origam-color---btn-secondary-text: #00f0ff;
+    --origam-shadow---btn-secondary: rgba(0, 240, 255, 0.25) 0px 0px 12px -4px;
 }
 
 /* ── GEEK — Marketing heading font override ──────────────────────────────── */

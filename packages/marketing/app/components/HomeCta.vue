@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { CTA_START_HREF, CTA_DOCS_HREF } from '~/consts/cta.const'
-import { CTA_BTN_START_VARS, CTA_BTN_DOCS_VARS } from '~/consts/cta.const'
 
 const { t } = useT()
 </script>
@@ -30,8 +29,7 @@ const { t } = useT()
             >
                 <origam-btn
                     class="home-cta__btn home-cta__btn--start"
-                    :style="CTA_BTN_START_VARS"
-                    variant="elevated"
+                    variant="text"
                     append-icon="mdi-arrow-right"
                     :href="CTA_START_HREF"
                     data-cy="cta-btn-start"
@@ -41,7 +39,6 @@ const { t } = useT()
 
                 <origam-btn
                     class="home-cta__btn home-cta__btn--docs"
-                    :style="CTA_BTN_DOCS_VARS"
                     variant="text"
                     prepend-icon="mdi-code-tags"
                     :href="CTA_DOCS_HREF"
@@ -115,18 +112,30 @@ const { t } = useT()
     margin-block-start: var(--origam-space---2, 0.5rem);
 }
 
-/* DS gap: OrigamBtn variant="elevated" produces a surface+shadow button
-   but the DS shadow rung doesn't match the maquette's light 0-4-8 shadow.
-   We override --origam-btn---box-shadow with the marketing card-elevated
-   token which visually matches.
-   In dark mode the surface token resolves to a dark tone — we add the
-   ghost border token (subtle rgba) to keep the button visible on the
-   dark background, matching the dark maquette. */
+/* Shared CTA button sizing — theme-independent */
+.home-cta__btn {
+    --origam-btn---height: 52px;
+    --origam-btn---density: 0px;
+    --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
+    --origam-btn---font-size: 1rem;
+    --origam-btn---font-weight: 400;
+    --origam-btn---border-radius: var(--origam-radius---btn, 10px);
+}
+
+/* Primary CTA — gradient + glow driven by theme tokens */
 .home-cta__btn--start {
-    --origam-btn---box-shadow: var(--origam-shadow---card-elevated);
-    --origam-btn---color: var(--origam-color__text---ink, #0a0a0a);
-    outline: 1px solid var(--origam-color__border---ghost);
-    outline-offset: -1px;
-    border-radius: var(--origam-radius---btn, 10px);
+    background-image: var(--origam-gradient---btn-primary);
+    box-shadow: var(--origam-shadow---btn-primary);
+    --origam-btn---color: var(--origam-color---btn-primary-text);
+}
+
+/* Secondary CTA — ghost driven by theme tokens */
+.home-cta__btn--docs {
+    background-image: var(--origam-gradient---btn-secondary);
+    background-color: var(--origam-color---btn-secondary-bg);
+    box-shadow: var(--origam-shadow---btn-secondary);
+    border: 1px solid var(--origam-color---btn-secondary-border);
+    --origam-btn---color: var(--origam-color---btn-secondary-text);
+    --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
 }
 </style>

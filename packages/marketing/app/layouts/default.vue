@@ -128,7 +128,10 @@
             @click="toggleMode"
           />
 
-          <origam-menu>
+          <origam-menu
+            class="appbar-menu appbar-menu--lang"
+            location="bottom"
+          >
             <template #activator="{ props }">
               <origam-btn
                 class="appbar-actions__btn appbar-actions__btn--lang"
@@ -155,7 +158,10 @@
             </template>
           </origam-menu>
 
-          <origam-menu>
+          <origam-menu
+            class="appbar-menu appbar-menu--theme"
+            location="bottom"
+          >
             <template #activator="{ props }">
               <origam-btn
                 class="appbar-actions__btn"
@@ -460,5 +466,16 @@
   .site-footer__line {
     margin: 0;
     font-size: var(--origam-font-size---sm, 0.875rem);
+  }
+</style>
+
+<style>
+  .appbar-menu .origam-menu__content {
+    min-width: 200px;
+    width: 200px;
+  }
+
+  .appbar-menu .origam-menu__list {
+    min-width: 200px;
   }
 </style>

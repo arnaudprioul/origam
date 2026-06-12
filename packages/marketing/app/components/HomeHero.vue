@@ -3,7 +3,7 @@
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-  import { HERO_BTN_VARS, HERO_BADGE_VARS } from '~/consts/hero.const'
+  import { HERO_BADGE_VARS } from '~/consts/hero.const'
 
   const { t } = useT()
   const { version } = useVersion()
@@ -63,7 +63,6 @@
       >
         <origam-btn
           class="home-hero__btn home-hero__btn--primary"
-          :style="HERO_BTN_VARS"
           variant="text"
           href="/components"
           data-cy="hero-cta-components"
@@ -72,8 +71,7 @@
         </origam-btn>
 
         <origam-btn
-          class="home-hero__btn"
-          :style="HERO_BTN_VARS"
+          class="home-hero__btn home-hero__btn--secondary"
           variant="text"
           prepend-icon="mdi-star-outline"
           :href="githubRepo"
@@ -185,11 +183,30 @@
     gap: var(--origam-space---3, 0.75rem);
   }
 
-  /* DS gap: no DS btn variant produces "transparent background + glow
-     shadow". variant="text" hard-sets box-shadow:none at 0,1,0; this 0,2,0
-     selector wins without !important and consumes the marketing glow token. */
+  /* Shared hero button sizing — theme-independent */
+  .home-hero__btn {
+    --origam-btn---height: 57.5px;
+    --origam-btn---density: 0px;
+    --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
+    --origam-btn---font-size: 1rem;
+    --origam-btn---font-weight: 400;
+    --origam-btn---border-radius: var(--origam-radius---btn, 10px);
+  }
+
+  /* Primary CTA — gradient + glow driven by theme tokens */
   .home-hero__btn.home-hero__btn--primary {
-    box-shadow: var(--origam-shadow---glow-primary);
+    background-image: var(--origam-gradient---btn-primary);
+    box-shadow: var(--origam-shadow---btn-primary);
+    --origam-btn---color: var(--origam-color---btn-primary-text);
+  }
+
+  /* Secondary CTA — ghost/outline driven by theme tokens */
+  .home-hero__btn.home-hero__btn--secondary {
+    background-image: var(--origam-gradient---btn-secondary);
+    background-color: var(--origam-color---btn-secondary-bg);
+    box-shadow: var(--origam-shadow---btn-secondary);
+    border: 1px solid var(--origam-color---btn-secondary-border);
+    --origam-btn---color: var(--origam-color---btn-secondary-text);
   }
 
   @media (max-width: 1080px) {
