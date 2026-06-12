@@ -473,9 +473,16 @@
   .appbar-menu .origam-menu__content {
     min-width: 200px;
     width: 200px;
+    padding: 4px;
   }
 
   .appbar-menu .origam-menu__list {
     min-width: 200px;
+  }
+
+  [data-theme="geek"] .appbar-menu .origam-list-item__title {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.8125rem;
+    letter-spacing: -0.01em;
   }
 </style>

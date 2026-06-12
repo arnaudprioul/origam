@@ -99,6 +99,18 @@
     /* Appbar */
     --origam-appbar---bg: rgba(251, 245, 255, 0.80);
 
+    /* Menu — appbar dropdowns */
+    --origam-menu---background: var(--origam-color__surface---raised);
+    --origam-menu---color: var(--origam-color__text---primary);
+    --origam-menu---border-radius: 4px;
+    --origam-menu---box-shadow: 0 4px 16px -4px rgba(124, 58, 237, 0.14), 0 1px 4px -1px rgba(124, 58, 237, 0.08), 0 0 0 1px var(--origam-color__border---default);
+    --origam-menu__content---padding: 4px;
+    --origam-list---background: transparent;
+    --origam-list---padding-block-start: 0;
+    --origam-list---padding-block-end: 0;
+    --origam-list-item---padding-inline-start: 12px;
+    --origam-list-item---padding-inline-end: 12px;
+
     /* Shadows */
     --origam-shadow---card-elevated: 0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20);
     --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 24px -8px rgba(124, 58, 237, 0.55), 0 0 32px -8px rgba(8, 145, 178, 0.30);
@@ -210,6 +222,18 @@
 
     /* Appbar */
     --origam-appbar---bg: rgba(10, 6, 18, 0.85);
+
+    /* Menu — appbar dropdowns */
+    --origam-menu---background: var(--origam-color__surface---raised);
+    --origam-menu---color: var(--origam-color__text---primary);
+    --origam-menu---border-radius: 8px;
+    --origam-menu---box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.70), 0 1px 4px -1px rgba(0, 0, 0, 0.40), 0 0 0 1px var(--origam-color__border---default), 0 0 20px -8px rgba(0, 240, 255, 0.20);
+    --origam-menu__content---padding: 4px;
+    --origam-list---background: transparent;
+    --origam-list---padding-block-start: 0;
+    --origam-list---padding-block-end: 0;
+    --origam-list-item---padding-inline-start: 12px;
+    --origam-list-item---padding-inline-end: 12px;
 
     /* Shadows */
     --origam-shadow---card-elevated: inset 0 1px 0 rgba(199, 125, 255, 0.08), 0 8px 28px -12px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 240, 255, 0.04);
