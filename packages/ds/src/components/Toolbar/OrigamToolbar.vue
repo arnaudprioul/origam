@@ -247,6 +247,8 @@
 		border-end-start-radius: var(--origam-toolbar---border-end-start-radius, 0);
 
 		background: var(--origam-toolbar---background);
+		backdrop-filter: var(--origam-appbar---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-appbar---backdrop-filter, none);
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
 

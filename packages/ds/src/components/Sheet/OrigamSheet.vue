@@ -287,6 +287,8 @@
 		margin-inline-end: var(--origam-sheet---margin-inline-end);
 
 		background: var(--origam-sheet---background);
+		backdrop-filter: var(--origam-sheet---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-sheet---backdrop-filter, none);
 		box-shadow: var(--origam-sheet---box-shadow);
 		color: var(--origam-sheet---color);
 

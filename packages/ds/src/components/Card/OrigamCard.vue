@@ -420,6 +420,8 @@
 		cursor: var(--origam-card---cursor);
 
 		background-color: var(--origam-card---background);
+		backdrop-filter: var(--origam-card---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-card---backdrop-filter, none);
 		box-shadow: var(--origam-card---box-shadow);
 		color: var(--origam-card---color);
 
