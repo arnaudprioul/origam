@@ -6,22 +6,6 @@
     "semantic/dark",
     "semantic/gradient-light",
     "semantic/gradient-dark",
-    "semantic/sobre-light",
-    "semantic/sobre-dark",
-    "semantic/glass-light",
-    "semantic/glass-dark",
-    "semantic/geek-light",
-    "semantic/geek-dark",
-    "semantic/cartoon-light",
-    "semantic/cartoon-dark",
-    "semantic/editorial-light",
-    "semantic/editorial-dark",
-    "semantic/material-light",
-    "semantic/material-dark",
-    "semantic/ecom-light",
-    "semantic/ecom-dark",
-    "semantic/apple-light",
-    "semantic/apple-dark",
     "component/btn",
     "component/btn-group",
     "component/card",
@@ -122,5 +106,5 @@
     "component/media-scrubber",
     "component/media-controller"
   ],
-  "_note": "FUTURE: add semantic/brand-a.json and semantic/brand-b.json here between semantic/dark and component/* to enable brand theming. Each brand file overrides only the semantic tokens it needs (and optionally a primitive-override file for a different brand color ramp)."
+  "_note": "ADR-004 (Implemented): brand themes live in the consumer app (e.g. marketing package), not in the DS. The DS ships only `light` and `dark` as token sets. Consumer apps author brand themes as IOrigamTheme objects (semantic JSON) and pass them to createOrigam / the Nuxt module."
 }

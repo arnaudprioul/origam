@@ -147,7 +147,7 @@ export function applyTheme (theme: IOrigamTheme): string | null {
     if (Object.keys(vars).length === 0) return null
 
     // The id is keyed by BOTH name and mode so a brand installed for several
-    // modes (sobre-light + sobre-dark) gets one `<style>` block per mode
+    // modes (brand-light + brand-dark) gets one `<style>` block per mode
     // instead of overwriting itself. Re-applying the same name×mode replaces
     // its block in place.
     const namePart = theme.name ? `-${theme.name}` : ''

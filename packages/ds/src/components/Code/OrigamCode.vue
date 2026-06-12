@@ -598,7 +598,7 @@
 	 * `data-mode` (always concrete: "light" | "dark") carries the light/dark
 	 * choice (see useTheme). The light/dark token swap MUST therefore key on
 	 * `data-mode`, NOT on `data-theme="dark"` — a brand theme like
-	 * `data-theme="sobre"` is never named "dark", so the old selector silently
+	 * `data-theme="brand"` is never named "dark", so the old selector silently
 	 * fell through to the `prefers-color-scheme` block and painted the dark
 	 * (near-white) github-dark foreground on a LIGHT surface whenever the OS
 	 * was in dark mode. We resolve `--shiki-light` by default, `--shiki-dark`

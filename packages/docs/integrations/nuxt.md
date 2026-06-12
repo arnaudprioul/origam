@@ -42,12 +42,13 @@ external consumer would: it takes the `themes` option (already an
 each brand as a `[data-theme="…"][data-mode="…"]` scoped `--origam-*` block.
 Only the theme-invariant `primitive` + `utilities` sheets are loaded as CSS.
 
-> **ADR-004**: the DS ships exactly one theme, `sobre` (the neutral base),
-> installed implicitly by `createOrigam` when you pass no theme. Every other
-> brand theme lives in **your** app — you author it yourself in plain
+> **ADR-004 (Implemented)**: the DS ships exactly one neutral identity (the
+> origam baseline), installed implicitly by `createOrigam` when you pass no
+> theme. Every brand theme lives in **your** app — you author it in plain
 > semantic JSON (see [Theme authoring](theming-authoring.md)) and pass the
 > objects in. There is no `origam/themes` preset registry and no
-> `origam/tokens/css/{brand}-*` sheet to import.
+> `origam/tokens/css/{brand}-*` sheet to import — all brand sheets have been
+> removed from the DS package.
 
 **No-flash SSR**: the server plugin also emits every configured theme's
 scoped block as a real `<style data-origam-theme-ssr>` in the rendered HTML
@@ -67,7 +68,7 @@ import { myBrand } from './themes/my-brand.theme' // your own / a Builder export
 export default defineNuxtConfig({
     modules: ['origam/nuxt'],
     origam: {
-        // sobre is the DS base (implicit when omitted); list your brands here.
+        // DS baseline is implicit when omitted; list your brand themes here.
         themes: [glassLightTheme, glassDarkTheme, myBrand],
         defaultTheme: 'glass',
         defaultMode: 'auto'
@@ -103,7 +104,7 @@ export default defineNuxtConfig({
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `themes` | `(IOrigamTheme \| IOrigamTheme[])[]` | `[]` | Brand themes to install, as `IOrigamTheme` objects you author yourself (see [Theme authoring](theming-authoring.md)). Objects/arrays are injected as-is — no preset-name resolution, no per-theme CSS file. An empty list installs the DS base `sobre`. |
+| `themes` | `(IOrigamTheme \| IOrigamTheme[])[]` | `[]` | Brand themes to install, as `IOrigamTheme` objects you author yourself (see [Theme authoring](theming-authoring.md)). Objects/arrays are injected as-is — no preset-name resolution, no per-theme CSS file. An empty list installs the DS neutral baseline. |
 | `defaultTheme` | `string` | `'auto'` | Active brand when no cookie is set. `'auto'` renders no `data-theme` (the default brand). |
 | `modes` | `string[]` | `['light', 'dark']` | Color modes supported by the loaded token sheets. Used to validate the resolved mode. |
 | `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then to a concrete `'light'` SSR default (the client upgrades to the system preference). `data-mode` is always written concrete. |

@@ -25,10 +25,10 @@ const NUXT_COMPOSABLES_BLOCKLIST = new Set([
     'useHydration'
 ])
 
-// ADR-004: the DS ships exactly ONE theme, `sobre`, installed implicitly by
-// `createOrigam` when no theme is supplied. A bare install therefore needs no
-// default `themes` array here — an empty list lets `createOrigam` fall back to
-// its built-in `sobre`.
+// ADR-004 (Implemented): the DS ships exactly ONE neutral identity (the origam
+// baseline, scoped to :root). It is the implicit default when no themes are
+// supplied. A bare install therefore needs no default `themes` array here —
+// an empty list lets `createOrigam` fall back to its built-in baseline.
 //
 // Array-valued options are NOT placed in `defineNuxtModule`'s `defaults`
 // because Nuxt merges defaults via `defu`, which CONCATENATES arrays. Array
@@ -78,7 +78,7 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
 
         // Array options use OVERRIDE semantics (see DEFAULT_THEMES note): the
         // consumer's value replaces the default — never merged/concatenated.
-        // An empty default lets `createOrigam` install its built-in `sobre`.
+        // An empty default lets `createOrigam` install its built-in baseline.
         const themes = options.themes ?? DEFAULT_THEMES
         const defaultTheme = options.defaultTheme ?? DEFAULTS.defaultTheme
         const modes = options.modes ?? DEFAULT_MODES

@@ -9,8 +9,9 @@ variable. You never write `--origam-…` prefixes and you never use the DTCG
 Because a theme is plain JSON, it is fully serialisable — a Theme Builder can
 export it, store it, and round-trip it without losing fidelity.
 
-> ADR-004: the DS ships **one** theme, `sobre` (the neutral base). Every other
-> brand theme lives in the consuming app and is written in exactly this format.
+> ADR-004 (Implemented): the DS ships **one** neutral identity (the origam
+> baseline). Every brand theme lives in the consuming app and is written in
+> exactly this format — there is no preset registry in the DS.
 
 ## Shape
 
@@ -77,7 +78,7 @@ colors: { surface: { default: 'linear-gradient(135deg, #ff7e5f, #feb47b)' } }
 
 Each table lists the authoring path (what you write under the field) and the
 `--origam-*` variable it resolves to. Any slot you omit falls back to the DS
-default (the `sobre` base / primitive scale).
+default (the DS baseline / primitive scale).
 
 ### `colors` → `--origam-color-*`
 
