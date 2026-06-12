@@ -86,7 +86,7 @@
     --origam-appbar---bg: rgba(255, 255, 255, 0.72);
 
     /* Menu — appbar dropdowns */
-    --origam-menu---background: var(--origam-color__surface---raised);
+    --origam-menu---background: var(--origam-color__surface---default);
     --origam-menu---color: var(--origam-color__text---primary);
     --origam-menu---border-radius: 10px;
     --origam-menu---box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.10), 0 1px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px var(--origam-color__border---default);
@@ -198,7 +198,7 @@
     --origam-appbar---bg: rgba(10, 10, 10, 0.72);
 
     /* Menu — appbar dropdowns */
-    --origam-menu---background: var(--origam-color__surface---raised);
+    --origam-menu---background: var(--origam-color__surface---default);
     --origam-menu---color: var(--origam-color__text---primary);
     --origam-menu---border-radius: 10px;
     --origam-menu---box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 4px -1px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default);

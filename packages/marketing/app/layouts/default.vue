@@ -480,6 +480,16 @@
     min-width: 200px;
   }
 
+  .appbar-menu .origam-list-item {
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.12s ease;
+  }
+
+  .appbar-menu .origam-list-item:hover {
+    background-color: var(--origam-color__action--primary---bgSubtle);
+  }
+
   [data-theme="geek"] .appbar-menu .origam-list-item__title {
     font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
     font-size: 0.8125rem;
