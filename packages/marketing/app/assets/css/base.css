@@ -14,6 +14,8 @@ body {
     margin: 0;
     min-height: 100vh;
     background-color: var(--origam-color__surface---default, #ffffff);
+    background-image: var(--origam-page---background-image, none);
+    background-attachment: fixed;
     color: var(--origam-color__text---primary, #0a0a0a);
     font-family: var(--origam-font__family---sans, system-ui, -apple-system, "Segoe UI", roboto, sans-serif);
     line-height: var(--origam-line-height---normal, 1.5);

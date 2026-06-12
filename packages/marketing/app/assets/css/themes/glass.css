@@ -1,129 +1,499 @@
 /*
- * glass.css — Glass brand theme: placeholder (Phase 4 will complete).
+ * glass.css — Glass brand theme: liquid-glass / glassmorphism.
  *
- * Covers the minimum required tokens so the theme chip + preview tile do not
- * break. Values derived from Glass_Light.html / Glass_Dark.html maquettes.
+ * Source of truth: Glass_Light.html / Glass_Dark.html maquettes.
+ * Specificity: :root:root[data-theme="glass"] = 0,3,0 — beats DS identity
+ * sheet (:root = 0,1,0) regardless of source order.
+ *
+ * Palette:
+ *   Light — soft lavender bg #F5F3FF / violet accent #7C3AED
+ *           Glass surfaces rgba(255,255,255,0.18–0.65)
+ *   Dark  — deep near-black #07060F / purple accent #A78BFA
+ *           Glass surfaces rgba(255,255,255,0.05–0.08)
+ *
+ * PAGE BACKGROUND: the characteristic glass look requires a colourful
+ * gradient backdrop BEHIND the translucent surfaces. body receives
+ * background-color + background-image via DS token --origam-page---background-image
+ * (set in the token block above) — the DS surfaces sit on top and let
+ * the gradient bleed through.
+ *
+ * BACKDROP-FILTER: now exposed as DS tokens —
+ *   --origam-card---backdrop-filter, --origam-sheet---backdrop-filter,
+ *   --origam-appbar---backdrop-filter, --origam-menu---backdrop-filter.
+ * Set in the token block above. No component-level CSS overrides needed.
  */
 
-/* ── GLASS LIGHT ─────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════════════
+   GLASS LIGHT
+   ════════════════════════════════════════════════════════════════════════════ */
 
 :root:root[data-theme="glass"],
 :root:root[data-theme="glass"][data-mode="light"] {
-    --origam-color__surface---default: #f5f3ff;
-    --origam-color__surface---raised: rgba(255, 255, 255, 0.65);
-    --origam-color__surface---sunken: rgba(255, 255, 255, 0.85);
-    --origam-color__surface---overlay: rgba(255, 255, 255, 0.85);
+
+    /* ── Radii — rounded, pill-heavy ──────────────────────────────────────── */
+    --origam-radius---card: 16px;
+    --origam-radius---btn:  999px;
+    --origam-radius---pill: 999px;
+    --origam-radius---sm:   10px;
+    --origam-radius---md:   16px;
+    --origam-radius---lg:   22px;
+
+    /* ── Surfaces — translucent white glass ───────────────────────────────── */
+    --origam-color__surface---default:  #e9ecff;
+    --origam-color__surface---raised:   rgba(255, 255, 255, 0.65);
+    --origam-color__surface---sunken:   rgba(255, 255, 255, 0.85);
+    --origam-color__surface---overlay:  rgba(255, 255, 255, 0.85);
     --origam-color__surface---disabled: rgba(196, 181, 253, 0.20);
 
-    --origam-color__text---primary: #1a1538;
-    --origam-color__text---secondary: #3f2e7e;
-    --origam-color__text---tertiary: #4c3a8c;
-    --origam-color__text---disabled: #a78bfa;
-    --origam-color__text---inverse: #ffffff;
-    --origam-color__text---onColor: #ffffff;
-    --origam-color__text---ink: #1a1538;
+    /* Page background gradient — consumed via DS token on body */
+    --origam-glass---page-bg-color: #e9ecff;
+    --origam-page---background-image:
+        radial-gradient(40% 50% at 12% 14%, rgba(167, 139, 250, 0.65), transparent 70%),
+        radial-gradient(38% 46% at 90%  6%, rgba(94, 234, 212, 0.60), transparent 70%),
+        radial-gradient(44% 52% at 78% 82%, rgba(244, 114, 182, 0.52), transparent 72%),
+        radial-gradient(40% 48% at 18% 94%, rgba(125, 211, 252, 0.56), transparent 70%);
 
-    --origam-color__action--primary---bg: #7c3aed;
-    --origam-color__action--primary---bgHover: #6d28d9;
-    --origam-color__action--primary---bgSubtle: rgba(124, 58, 237, 0.10);
+    /* ── Glassmorphism backdrop-filter tokens (DS Phase A) ───────────────── */
+    --origam-card---backdrop-filter:   blur(3px) saturate(1.8) brightness(1.08);
+    --origam-sheet---backdrop-filter:  blur(3px) saturate(1.8) brightness(1.08);
+    --origam-appbar---backdrop-filter: saturate(2) brightness(1.1) blur(26px);
+    --origam-menu---backdrop-filter:   blur(20px) saturate(1.8) brightness(1.05);
+
+    /* ── Text ─────────────────────────────────────────────────────────────── */
+    --origam-color__text---primary:   #1a1538;
+    --origam-color__text---secondary: #3f2e7e;
+    --origam-color__text---tertiary:  #4c3a8c;
+    --origam-color__text---disabled:  #a78bfa;
+    --origam-color__text---inverse:   #ffffff;
+    --origam-color__text---onColor:   #ffffff;
+    --origam-color__text---ink:       #1a1538;
+
+    /* ── Actions / primary ────────────────────────────────────────────────── */
+    --origam-color__action--primary---bg:         #7c3aed;
+    --origam-color__action--primary---bgHover:    #6d28d9;
+    --origam-color__action--primary---bgSubtle:   rgba(124, 58, 237, 0.10);
     --origam-color__action--primary---bgDisabled: rgba(196, 181, 253, 0.20);
-    --origam-color__action--primary---fg: #ffffff;
-    --origam-color__action--primary---fgSubtle: #6d28d9;
+    --origam-color__action--primary---fg:         #ffffff;
+    --origam-color__action--primary---fgSubtle:   #6d28d9;
     --origam-color__action--primary---fgDisabled: #a78bfa;
 
-    --origam-color__border---default: rgba(124, 58, 237, 0.20);
-    --origam-color__border---subtle: rgba(124, 58, 237, 0.10);
-    --origam-color__border---strong: rgba(124, 58, 237, 0.35);
-    --origam-color__border---focus: #7c3aed;
-    --origam-color__border---subtle-alpha: rgba(124, 58, 237, 0.12);
-    --origam-color__border---ghost: rgba(124, 58, 237, 0.16);
+    /* ── Actions / secondary ──────────────────────────────────────────────── */
+    --origam-color__action--secondary---bg:         rgba(255, 255, 255, 0.18);
+    --origam-color__action--secondary---bgHover:    rgba(255, 255, 255, 0.28);
+    --origam-color__action--secondary---bgDisabled: rgba(255, 255, 255, 0.08);
+    --origam-color__action--secondary---fg:         #1a1538;
+    --origam-color__action--secondary---fgDisabled: #a78bfa;
 
+    /* ── Actions / ghost ──────────────────────────────────────────────────── */
+    --origam-color__action--ghost---bg:         transparent;
+    --origam-color__action--ghost---bgHover:    rgba(124, 58, 237, 0.08);
+    --origam-color__action--ghost---bgDisabled: transparent;
+    --origam-color__action--ghost---fg:         #6d28d9;
+    --origam-color__action--ghost---fgDisabled: #a78bfa;
+
+    /* ── Borders ──────────────────────────────────────────────────────────── */
+    --origam-color__border---default:      rgba(124, 58, 237, 0.20);
+    --origam-color__border---subtle:       rgba(124, 58, 237, 0.10);
+    --origam-color__border---strong:       rgba(124, 58, 237, 0.35);
+    --origam-color__border---focus:        #7c3aed;
+    --origam-color__border---subtle-alpha: rgba(124, 58, 237, 0.12);
+    --origam-color__border---ghost:        rgba(124, 58, 237, 0.16);
+
+    /* ── Feedback ─────────────────────────────────────────────────────────── */
+    --origam-color__feedback--success---bg:       #15803d;
+    --origam-color__feedback--success---bgSubtle: rgba(21, 128, 61, 0.08);
+    --origam-color__feedback--success---fg:       #ffffff;
+    --origam-color__feedback--success---fgSubtle: #15803d;
+    --origam-color__feedback--success---border:   #15803d;
+    --origam-color__feedback--warning---bg:       #b45309;
+    --origam-color__feedback--warning---bgSubtle: rgba(180, 83, 9, 0.08);
+    --origam-color__feedback--warning---fg:       #ffffff;
+    --origam-color__feedback--warning---fgSubtle: #b45309;
+    --origam-color__feedback--warning---border:   #b45309;
+    --origam-color__feedback--danger---bg:        #b91c1c;
+    --origam-color__feedback--danger---bgSubtle:  rgba(185, 28, 28, 0.08);
+    --origam-color__feedback--danger---fg:        #ffffff;
+    --origam-color__feedback--danger---fgSubtle:  #b91c1c;
+    --origam-color__feedback--danger---border:    #b91c1c;
+    --origam-color__feedback--info---bg:          #0891b2;
+    --origam-color__feedback--info---bgSubtle:    rgba(8, 145, 178, 0.08);
+    --origam-color__feedback--info---fg:          #ffffff;
+    --origam-color__feedback--info---fgSubtle:    #0891b2;
+    --origam-color__feedback--info---border:      #0891b2;
+
+    /* ── Appbar ───────────────────────────────────────────────────────────── */
     --origam-appbar---bg: rgba(255, 255, 255, 0.30);
 
-    /* Menu — appbar dropdowns */
-    --origam-menu---background: rgba(255, 255, 255, 0.80);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 16px;
-    --origam-menu---box-shadow: 0 8px 32px -8px rgba(124, 58, 237, 0.18), 0 1px 4px -1px rgba(124, 58, 237, 0.10), 0 0 0 1px var(--origam-color__border---default), inset 0 1px 0 rgba(255, 255, 255, 0.50);
-    --origam-menu__content---padding: 6px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
+    /* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
+    --origam-menu---background:     rgba(255, 255, 255, 0.80);
+    --origam-menu---color:          var(--origam-color__text---primary);
+    --origam-menu---border-radius:  16px;
+    --origam-menu---box-shadow:
+        0 8px 32px -8px rgba(124, 58, 237, 0.18),
+        0 1px 4px -1px rgba(124, 58, 237, 0.10),
+        0 0 0 1px var(--origam-color__border---default),
+        inset 0 1px 0 rgba(255, 255, 255, 0.60);
+    --origam-menu__content---padding:         6px;
+    --origam-list---background:               transparent;
+    --origam-list---padding-block-start:      0;
+    --origam-list---padding-block-end:        0;
     --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;
+    --origam-list-item---padding-inline-end:   12px;
 
-    --origam-radius---card: 16px;
-    --origam-radius---btn: 16px;
-    --origam-radius---pill: 9999px;
+    /* ── Shadows ──────────────────────────────────────────────────────────── */
+    --origam-shadow---card-elevated:
+        inset 0 1px 1px rgba(255, 255, 255, 0.90),
+        inset 1px 0 1px rgba(255, 255, 255, 0.50),
+        inset 0 -1px 1px rgba(124, 58, 237, 0.12),
+        0 10px 30px -12px rgba(60, 30, 120, 0.40);
+    --origam-shadow---glow-primary:
+        inset 0 1px 0 rgba(255, 255, 255, 0.60),
+        0 8px 24px -8px rgba(124, 58, 237, 0.45);
 
-    --origam-shadow---card-elevated: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 16px 40px -20px rgba(167, 139, 250, 0.40);
-    --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px -8px rgba(124, 58, 237, 0.5);
+    /* ── Marketing display gradients ──────────────────────────────────────── */
+    --origam-gradient---hero-glow:
+        radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167, 139, 250, 0.30), transparent 60%);
+    --origam-gradient---cta-glow:
+        radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45, 212, 191, 0.18), transparent 60%);
+    --origam-gradient---cta-glow-top:
+        radial-gradient(ellipse 70% 55% at 50% 0%, rgba(124, 58, 237, 0.14), transparent 65%);
+    --origam-gradient---hero-title:
+        linear-gradient(180deg, #1a1538 0%, #3f2e7e 60%, #7c3aed 100%);
+    --origam-gradient---hero-grid:
+        linear-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.08) 1px, transparent 1px);
+    --origam-gradient---kpi-value:
+        linear-gradient(135deg, #7c3aed, #a78bfa);
 
-    --origam-gradient---hero-glow: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167, 139, 250, 0.30), transparent 60%);
-    --origam-gradient---cta-glow: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45, 212, 191, 0.18), transparent 60%);
-    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(124, 58, 237, 0.14), transparent 65%);
-    --origam-gradient---hero-title: linear-gradient(180deg, #ffffff 0%, #ddd6fe 50%, #a78bfa 100%);
-    --origam-gradient---hero-grid: linear-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(124, 58, 237, 0.08) 1px, transparent 1px);
-    --origam-gradient---kpi-value: linear-gradient(135deg, #7c3aed, #a78bfa);
+    /* ── Button display tokens ────────────────────────────────────────────── */
+    --origam-gradient---btn-primary:   none;
+    --origam-color---btn-primary-text: #1a1538;
+    --origam-shadow---btn-primary:
+        inset 0 1px 1px rgba(255, 255, 255, 0.90),
+        inset 1px 0 1px rgba(255, 255, 255, 0.50),
+        inset 0 -1px 1px rgba(124, 58, 237, 0.12),
+        0 10px 30px -12px rgba(60, 30, 120, 0.40);
+
+    --origam-gradient---btn-secondary:   none;
+    --origam-color---btn-secondary-bg:   rgba(255, 255, 255, 0.22);
+    --origam-color---btn-secondary-border: transparent;
+    --origam-color---btn-secondary-text: #1a1538;
+    --origam-shadow---btn-secondary:
+        inset 0 1px 1px rgba(255, 255, 255, 0.90),
+        inset 1px 0 1px rgba(255, 255, 255, 0.50),
+        inset 0 -1px 1px rgba(124, 58, 237, 0.12),
+        0 10px 30px -12px rgba(60, 30, 120, 0.40);
 }
 
-/* ── GLASS DARK ──────────────────────────────────────────────────────────── */
+
+/* ════════════════════════════════════════════════════════════════════════════
+   GLASS DARK
+   ════════════════════════════════════════════════════════════════════════════ */
 
 :root:root[data-theme="glass"][data-mode="dark"] {
-    --origam-color__surface---default: #0f0e1a;
-    --origam-color__surface---raised: rgba(255, 255, 255, 0.06);
-    --origam-color__surface---sunken: rgba(255, 255, 255, 0.04);
-    --origam-color__surface---overlay: rgba(255, 255, 255, 0.04);
+
+    /* ── Radii ────────────────────────────────────────────────────────────── */
+    --origam-radius---card: 22px;
+    --origam-radius---btn:  999px;
+    --origam-radius---pill: 999px;
+    --origam-radius---sm:   16px;
+    --origam-radius---md:   22px;
+    --origam-radius---lg:   30px;
+
+    /* ── Surfaces ─────────────────────────────────────────────────────────── */
+    --origam-color__surface---default:  #07060f;
+    --origam-color__surface---raised:   rgba(255, 255, 255, 0.05);
+    --origam-color__surface---sunken:   rgba(255, 255, 255, 0.04);
+    --origam-color__surface---overlay:  rgba(255, 255, 255, 0.04);
     --origam-color__surface---disabled: rgba(107, 95, 175, 0.20);
 
-    --origam-color__text---primary: #ffffff;
-    --origam-color__text---secondary: #e4deff;
-    --origam-color__text---tertiary: #cfc4f5;
-    --origam-color__text---disabled: #6b5faf;
-    --origam-color__text---inverse: #0f0e1a;
-    --origam-color__text---onColor: #0f0e1a;
-    --origam-color__text---ink: #ffffff;
+    /* Page background gradient — consumed via DS token on body */
+    --origam-glass---page-bg-color: #07060f;
+    --origam-page---background-image:
+        radial-gradient(40% 50% at 12% 14%, rgba(167, 139, 250, 0.75), transparent 70%),
+        radial-gradient(38% 46% at 90%  6%, rgba(45, 212, 191, 0.65),  transparent 70%),
+        radial-gradient(44% 52% at 78% 82%, rgba(236, 72, 153, 0.62),  transparent 72%),
+        radial-gradient(40% 48% at 18% 94%, rgba(56, 189, 248, 0.58),  transparent 70%),
+        radial-gradient(50% 60% at 50% 50%, rgba(124, 58, 237, 0.30),  transparent 80%);
 
-    --origam-color__action--primary---bg: #a78bfa;
-    --origam-color__action--primary---bgHover: #8b5cf6;
-    --origam-color__action--primary---bgSubtle: rgba(167, 139, 250, 0.14);
+    /* ── Glassmorphism backdrop-filter tokens (DS Phase A) ───────────────── */
+    --origam-card---backdrop-filter:   blur(3px) saturate(1.8) brightness(1.08);
+    --origam-sheet---backdrop-filter:  blur(3px) saturate(1.8) brightness(1.08);
+    --origam-appbar---backdrop-filter: saturate(2) brightness(1.1) blur(26px);
+    --origam-menu---backdrop-filter:   blur(20px) saturate(1.6) brightness(1.02);
+
+    /* ── Text ─────────────────────────────────────────────────────────────── */
+    --origam-color__text---primary:   #ffffff;
+    --origam-color__text---secondary: #e4deff;
+    --origam-color__text---tertiary:  #cfc4f5;
+    --origam-color__text---disabled:  #6b5faf;
+    --origam-color__text---inverse:   #07060f;
+    --origam-color__text---onColor:   #07060f;
+    --origam-color__text---ink:       #ffffff;
+
+    /* ── Actions / primary ────────────────────────────────────────────────── */
+    --origam-color__action--primary---bg:         rgba(255, 255, 255, 0.08);
+    --origam-color__action--primary---bgHover:    rgba(255, 255, 255, 0.14);
+    --origam-color__action--primary---bgSubtle:   rgba(167, 139, 250, 0.14);
     --origam-color__action--primary---bgDisabled: rgba(107, 95, 175, 0.20);
-    --origam-color__action--primary---fg: #0f0e1a;
-    --origam-color__action--primary---fgSubtle: #ddd6fe;
+    --origam-color__action--primary---fg:         #ffffff;
+    --origam-color__action--primary---fgSubtle:   #ddd6fe;
     --origam-color__action--primary---fgDisabled: #6b5faf;
 
-    --origam-color__border---default: rgba(255, 255, 255, 0.12);
-    --origam-color__border---subtle: rgba(255, 255, 255, 0.06);
-    --origam-color__border---strong: rgba(255, 255, 255, 0.20);
-    --origam-color__border---focus: #a78bfa;
-    --origam-color__border---subtle-alpha: rgba(255, 255, 255, 0.08);
-    --origam-color__border---ghost: rgba(255, 255, 255, 0.08);
+    /* ── Actions / secondary ──────────────────────────────────────────────── */
+    --origam-color__action--secondary---bg:         rgba(255, 255, 255, 0.05);
+    --origam-color__action--secondary---bgHover:    rgba(255, 255, 255, 0.10);
+    --origam-color__action--secondary---bgDisabled: rgba(255, 255, 255, 0.02);
+    --origam-color__action--secondary---fg:         #ffffff;
+    --origam-color__action--secondary---fgDisabled: #6b5faf;
 
+    /* ── Actions / ghost ──────────────────────────────────────────────────── */
+    --origam-color__action--ghost---bg:         transparent;
+    --origam-color__action--ghost---bgHover:    rgba(167, 139, 250, 0.10);
+    --origam-color__action--ghost---bgDisabled: transparent;
+    --origam-color__action--ghost---fg:         #ddd6fe;
+    --origam-color__action--ghost---fgDisabled: #6b5faf;
+
+    /* ── Borders ──────────────────────────────────────────────────────────── */
+    --origam-color__border---default:      rgba(255, 255, 255, 0.12);
+    --origam-color__border---subtle:       rgba(255, 255, 255, 0.06);
+    --origam-color__border---strong:       rgba(255, 255, 255, 0.20);
+    --origam-color__border---focus:        #a78bfa;
+    --origam-color__border---subtle-alpha: rgba(255, 255, 255, 0.08);
+    --origam-color__border---ghost:        rgba(255, 255, 255, 0.08);
+
+    /* ── Feedback ─────────────────────────────────────────────────────────── */
+    --origam-color__feedback--success---bg:       #6ee7b7;
+    --origam-color__feedback--success---bgSubtle: rgba(110, 231, 183, 0.10);
+    --origam-color__feedback--success---fg:       #07060f;
+    --origam-color__feedback--success---fgSubtle: #6ee7b7;
+    --origam-color__feedback--success---border:   #6ee7b7;
+    --origam-color__feedback--warning---bg:       #fcd34d;
+    --origam-color__feedback--warning---bgSubtle: rgba(252, 211, 77, 0.10);
+    --origam-color__feedback--warning---fg:       #07060f;
+    --origam-color__feedback--warning---fgSubtle: #fcd34d;
+    --origam-color__feedback--warning---border:   #fcd34d;
+    --origam-color__feedback--danger---bg:        #fca5a5;
+    --origam-color__feedback--danger---bgSubtle:  rgba(252, 165, 165, 0.10);
+    --origam-color__feedback--danger---fg:        #07060f;
+    --origam-color__feedback--danger---fgSubtle:  #fca5a5;
+    --origam-color__feedback--danger---border:    #fca5a5;
+    --origam-color__feedback--info---bg:          #7dd3fc;
+    --origam-color__feedback--info---bgSubtle:    rgba(125, 211, 252, 0.10);
+    --origam-color__feedback--info---fg:          #07060f;
+    --origam-color__feedback--info---fgSubtle:    #7dd3fc;
+    --origam-color__feedback--info---border:      #7dd3fc;
+
+    /* ── Appbar ───────────────────────────────────────────────────────────── */
     --origam-appbar---bg: rgba(255, 255, 255, 0.06);
 
-    /* Menu — appbar dropdowns */
-    --origam-menu---background: rgba(255, 255, 255, 0.08);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 22px;
-    --origam-menu---box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    --origam-menu__content---padding: 6px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
+    /* ── Menu ─────────────────────────────────────────────────────────────── */
+    --origam-menu---background:     rgba(20, 18, 40, 0.85);
+    --origam-menu---color:          var(--origam-color__text---primary);
+    --origam-menu---border-radius:  22px;
+    --origam-menu---box-shadow:
+        0 8px 32px -8px rgba(0, 0, 0, 0.60),
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    --origam-menu__content---padding:         6px;
+    --origam-list---background:               transparent;
+    --origam-list---padding-block-start:      0;
+    --origam-list---padding-block-end:        0;
     --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;
+    --origam-list-item---padding-inline-end:   12px;
 
-    --origam-radius---card: 22px;
-    --origam-radius---btn: 22px;
-    --origam-radius---pill: 9999px;
+    /* ── Shadows ──────────────────────────────────────────────────────────── */
+    --origam-shadow---card-elevated:
+        inset 0 1px 1px rgba(255, 255, 255, 0.60),
+        inset 1.5px 0 1px rgba(255, 255, 255, 0.28),
+        inset -1.5px 0 1px rgba(255, 255, 255, 0.14),
+        inset 0 -10px 22px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.20),
+        0 12px 34px -10px rgba(0, 0, 0, 0.50),
+        0 2px 6px -2px rgba(0, 0, 0, 0.30);
+    --origam-shadow---glow-primary:
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        0 8px 24px -6px rgba(167, 139, 250, 0.60);
 
-    --origam-shadow---card-elevated: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 16px 40px -20px rgba(167, 139, 250, 0.40);
-    --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px -8px rgba(167, 139, 250, 0.50);
+    /* ── Marketing display gradients ──────────────────────────────────────── */
+    --origam-gradient---hero-glow:
+        radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167, 139, 250, 0.30), transparent 60%);
+    --origam-gradient---cta-glow:
+        radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45, 212, 191, 0.18), transparent 60%);
+    --origam-gradient---cta-glow-top:
+        radial-gradient(ellipse 70% 55% at 50% 0%, rgba(167, 139, 250, 0.18), transparent 65%);
+    --origam-gradient---hero-title:
+        linear-gradient(180deg, #ffffff 0%, #ddd6fe 50%, #a78bfa 100%);
+    --origam-gradient---hero-grid:
+        linear-gradient(rgba(167, 139, 250, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(167, 139, 250, 0.08) 1px, transparent 1px);
+    --origam-gradient---kpi-value:
+        linear-gradient(135deg, #a78bfa, #ddd6fe);
 
-    --origam-gradient---hero-glow: radial-gradient(ellipse 70% 60% at 30% 20%, rgba(167, 139, 250, 0.30), transparent 60%);
-    --origam-gradient---cta-glow: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(45, 212, 191, 0.18), transparent 60%);
-    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(167, 139, 250, 0.18), transparent 65%);
-    --origam-gradient---hero-title: linear-gradient(180deg, #ffffff 0%, #ddd6fe 50%, #a78bfa 100%);
-    --origam-gradient---hero-grid: linear-gradient(rgba(167, 139, 250, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(167, 139, 250, 0.08) 1px, transparent 1px);
-    --origam-gradient---kpi-value: linear-gradient(135deg, #a78bfa, #ddd6fe);
+    /* ── Button display tokens ────────────────────────────────────────────── */
+    --origam-gradient---btn-primary:   none;
+    --origam-color---btn-primary-text: #ffffff;
+    --origam-shadow---btn-primary:
+        inset 0 1px 1px rgba(255, 255, 255, 0.70),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.15),
+        0 8px 24px -6px rgba(167, 139, 250, 0.60);
+
+    --origam-gradient---btn-secondary:   none;
+    --origam-color---btn-secondary-bg:   rgba(255, 255, 255, 0.08);
+    --origam-color---btn-secondary-border: transparent;
+    --origam-color---btn-secondary-text: #ffffff;
+    --origam-shadow---btn-secondary:
+        inset 0 1px 1px rgba(255, 255, 255, 0.30),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.10),
+        0 8px 24px -6px rgba(167, 139, 250, 0.30);
 }
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   GLASS — PAGE BACKGROUND (multi-colour radial gradient)
+   background-color + background-image + background-attachment are now all
+   handled by base.css via DS tokens set in the token blocks above.
+   No direct body override needed anymore.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root:root[data-theme="glass"] body,
+:root:root[data-theme="glass"][data-mode="light"] body {
+    background-color: var(--origam-glass---page-bg-color, #e9ecff);
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] body {
+    background-color: var(--origam-glass---page-bg-color, #07060f);
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   GLASS — APPBAR CHROME
+   backdrop-filter now flows through --origam-appbar---backdrop-filter in DS.
+   Only appbar-specific non-token overrides remain here.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* — Appbar — */
+:root:root[data-theme="glass"] .site-appbar {
+    --origam-toolbar---background: var(--origam-appbar---bg);
+    border-block-end: 1px solid var(--origam-color__border---default);
+}
+
+/* — Feature grid cells — */
+:root:root[data-theme="glass"] .home-features__grid {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.40);
+}
+
+:root:root[data-theme="glass"] .home-features__item {
+    border-inline-end-color: rgba(255, 255, 255, 0.40);
+    border-block-end-color: rgba(255, 255, 255, 0.40);
+    backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    -webkit-backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    background-color: rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.40);
+}
+
+/* The OrigamCard inside feature cells must be transparent to let the
+   cell's glass background show through. */
+:root:root[data-theme="glass"] .home-features__card.origam-card {
+    background-color: transparent !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-features__item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-inline-end-color: rgba(255, 255, 255, 0.12);
+    border-block-end-color: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-features__grid {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* — Hero CTA buttons — glass pill shape with liquid-glass effect — */
+:root:root[data-theme="glass"] .home-hero__btn--primary,
+:root:root[data-theme="glass"] .home-hero__btn--secondary {
+    background-color: rgba(255, 255, 255, 0.22) !important;
+    background-image: none !important;
+    backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    -webkit-backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    border: none !important;
+    border-radius: 999px;
+    color: #1a1538;
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-hero__btn--primary,
+:root:root[data-theme="glass"][data-mode="dark"] .home-hero__btn--secondary {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    color: #ffffff;
+}
+
+/* — Menu glass effect — */
+/* backdrop-filter now flows through --origam-menu---backdrop-filter in DS token blocks above. */
+
+/* — Showcase cards — backdrop-filter via --origam-card---backdrop-filter token */
+:root:root[data-theme="glass"] .home-showcase__widget.origam-card {
+    background-color: rgba(255, 255, 255, 0.22) !important;
+    box-shadow: var(--origam-shadow---card-elevated);
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-showcase__widget.origam-card {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* — Theme preview tiles — these are OrigamCard, backdrop-filter via DS token */
+
+/* — Theme switcher chip buttons — */
+:root:root[data-theme="glass"] .home-themes__chip {
+    backdrop-filter: blur(3px) saturate(1.8);
+    -webkit-backdrop-filter: blur(3px) saturate(1.8);
+    background-color: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.50);
+    color: #3f2e7e;
+}
+
+:root:root[data-theme="glass"] .home-themes__chip[data-active="true"],
+:root:root[data-theme="glass"] .home-themes__chip[aria-pressed="true"] {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+    color: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-themes__chip {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #e4deff;
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-themes__chip[data-active="true"],
+:root:root[data-theme="glass"][data-mode="dark"] .home-themes__chip[aria-pressed="true"] {
+    background-color: #a78bfa;
+    border-color: #a78bfa;
+    color: #07060f;
+}
+
+/* — Footer — */
+:root:root[data-theme="glass"] .site-footer {
+    background-color: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .site-footer {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   GLASS — HEADING FONT (Inter — no override, keep the clean sans-serif)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * The glass maquette uses Inter (the default heading font) — no font override.
+ * The geek monospace override is intentionally NOT applied here.
+ */
