@@ -528,12 +528,12 @@
 			background-color: var(--origam-switch__thumb---background-color, rgb(255, 255, 255));
 			color: var(--origam-switch__thumb---color, currentColor);
 			border: 1px solid var(--origam-switch__thumb---border-color, rgba(0, 0, 0, 0.18));
-			border-radius: 50%;
+			border-radius: var(--origam-switch__thumb---border-radius, 50%);
 			display: flex;
 			font-size: 0.75rem;
-			height: 20px;
+			height: var(--origam-switch__thumb---size, 20px);
 			justify-content: center;
-			width: 20px;
+			width: var(--origam-switch__thumb---size, 20px);
 			pointer-events: none;
 			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1), 0.2s color cubic-bezier(0.4, 0, 0.2, 1), 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1), 0.2s border-color cubic-bezier(0.4, 0, 0.2, 1);
 			position: relative;

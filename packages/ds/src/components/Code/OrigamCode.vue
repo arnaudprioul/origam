@@ -262,7 +262,7 @@
 			const lineNo = i + 1
 			const isHl = highlightSet.has(lineNo) ? ' origam-code__row--highlighted' : ''
 			return `<span class="origam-code__row${isHl}" data-line="${lineNo}">${line || '&nbsp;'}</span>`
-		}).join('\n')
+		}).join('')
 
 		// Background colour comes from origam tokens via SCSS — we ignore
 		// any background colour shiki would emit because our surface is
@@ -393,6 +393,21 @@
 		line-height: var(--origam-code---line-height);
 		overflow: hidden;
 
+	}
+
+	/* Non-compact blocks lay their regions out as a vertical flex column so the
+	 * scroller fills the leftover height when the host CONSTRAINS the block
+	 * (grid cell, explicit height, max-height). With an auto height the column
+	 * collapses to content, so unconstrained consumers are unaffected. Scoped
+	 * to :not(.--compact) because the compact variant is an inline-flex ROW. */
+	.origam-code:not(.origam-code--compact) {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.origam-code:not(.origam-code--compact) .origam-code__scroller {
+		flex: 1 1 auto;
+		min-height: 0;
 	}
 
 	.origam-code--compact {
@@ -578,8 +593,18 @@
 	 * `.origam-code__code` class instead — collisions are impossible.
 	 *
 	 * shiki output per token: `<span style="--shiki-light:#X;--shiki-dark:#Y">`.
-	 * We resolve --shiki-light by default, --shiki-dark under data-theme="dark"
-	 * (or prefers-color-scheme: dark when no data-theme is set). */
+	 *
+	 * The DS theming is TWO-AXIS: `data-theme` carries the brand identity and
+	 * `data-mode` (always concrete: "light" | "dark") carries the light/dark
+	 * choice (see useTheme). The light/dark token swap MUST therefore key on
+	 * `data-mode`, NOT on `data-theme="dark"` — a brand theme like
+	 * `data-theme="sobre"` is never named "dark", so the old selector silently
+	 * fell through to the `prefers-color-scheme` block and painted the dark
+	 * (near-white) github-dark foreground on a LIGHT surface whenever the OS
+	 * was in dark mode. We resolve `--shiki-light` by default, `--shiki-dark`
+	 * when `data-mode="dark"`. Legacy single-axis `data-theme="dark"` (no
+	 * `data-mode` present) is still honoured, and `prefers-color-scheme` is the
+	 * fallback ONLY when neither axis pins a choice (SSR / un-themed host). */
 	.origam-code__code span {
 		color: var(--shiki-light);
 	}
@@ -588,20 +613,22 @@
 		background-color: var(--shiki-light-bg, transparent);
 	}
 
-	html[data-theme="dark"] .origam-code__code span {
+	html[data-mode="dark"] .origam-code__code span,
+	html:not([data-mode])[data-theme="dark"] .origam-code__code span {
 		color: var(--shiki-dark);
 	}
 
-	html[data-theme="dark"] .origam-code .shiki {
+	html[data-mode="dark"] .origam-code .shiki,
+	html:not([data-mode])[data-theme="dark"] .origam-code .shiki {
 		background-color: var(--shiki-dark-bg, transparent);
 	}
 
 	@media (prefers-color-scheme: dark) {
-		html:not([data-theme="light"]) .origam-code__code span {
+		html:not([data-mode]):not([data-theme="light"]):not([data-theme="dark"]) .origam-code__code span {
 			color: var(--shiki-dark);
 		}
 
-		html:not([data-theme="light"]) .origam-code .shiki {
+		html:not([data-mode]):not([data-theme="light"]):not([data-theme="dark"]) .origam-code .shiki {
 			background-color: var(--shiki-dark-bg, transparent);
 		}
 	}
