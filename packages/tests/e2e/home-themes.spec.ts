@@ -59,15 +59,16 @@ test.describe('HomeThemes section', () => {
         await expect(h2).toContainText('One design system')
     })
 
-    // ── 4. Exactly 7 brand chips ───────────────────────────────────────────
+    // ── 4. Exactly 8 brand chips (Sobre inclus en v5-phase1) ──────────────
 
-    test('renders exactly 7 brand chips', async ({ page }) => {
+    test('renders exactly 8 brand chips (Sobre + 7 variants)', async ({ page }) => {
         const chips = page.locator('section.home-themes .home-themes__chips .origam-chip')
-        await expect(chips).toHaveCount(7)
+        await expect(chips).toHaveCount(8)
     })
 
-    test('all 7 brand chip labels are visible', async ({ page }) => {
+    test('all 8 brand chip labels are visible', async ({ page }) => {
         const section = page.locator('section.home-themes')
+        await expect(section).toContainText('Sobre')
         await expect(section).toContainText('Glass')
         await expect(section).toContainText('Geek')
         await expect(section).toContainText('Cartoon')
@@ -78,7 +79,7 @@ test.describe('HomeThemes section', () => {
     })
 
     test('chips have data-cy attributes', async ({ page }) => {
-        const chipKeys = ['glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+        const chipKeys = ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
         for (const key of chipKeys) {
             const chip = page.locator(`[data-cy="themes-chip-${key}"]`)
             await expect(chip).toBeVisible()
@@ -92,16 +93,16 @@ test.describe('HomeThemes section', () => {
         await expect(tiles).toHaveCount(4)
     })
 
-    test('all 4 preview tile labels are visible (real theme ids)', async ({ page }) => {
+    test('all 4 preview tile labels are visible (v5-phase1: brand-a/brand-b remplacent editorial/ecom)', async ({ page }) => {
         const section = page.locator('section.home-themes')
         await expect(section).toContainText('light.json')
         await expect(section).toContainText('dark.json')
-        await expect(section).toContainText('editorial.json')
-        await expect(section).toContainText('ecom.json')
+        await expect(section).toContainText('brand-a.json')
+        await expect(section).toContainText('brand-b.json')
     })
 
     test('preview tiles have data-cy attributes', async ({ page }) => {
-        const tileKeys = ['light', 'dark', 'editorial', 'ecom']
+        const tileKeys = ['light', 'dark', 'brand-a', 'brand-b']
         for (const key of tileKeys) {
             const tile = page.locator(`[data-cy="themes-preview-${key}"]`)
             await expect(tile).toBeVisible()
@@ -131,29 +132,32 @@ test.describe('HomeThemes section', () => {
 
         const light = await surfaceBg('light')
         const dark = await surfaceBg('dark')
-        const editorial = await surfaceBg('editorial')
-        const ecom = await surfaceBg('ecom')
+        // brand-a (editorial base + surface override #f5f0e8) and brand-b (ecom base + #e8f5f0)
+        const brandA = await surfaceBg('brand-a')
+        const brandB = await surfaceBg('brand-b')
 
         expect(light).toBe('rgb(255, 255, 255)')
         expect(dark).toBe('rgb(10, 10, 10)')
-        // editorial (#fafaf7) and ecom (#fff7f0) come from their own themes.
-        expect(editorial).not.toBe(light)
-        expect(ecom).not.toBe(light)
-        expect(new Set([light, dark, editorial, ecom]).size).toBeGreaterThanOrEqual(3)
+        // brand tiles have custom surface overrides — they must differ from white
+        expect(brandA).not.toBe(light)
+        expect(brandB).not.toBe(light)
+        expect(new Set([light, dark, brandA, brandB]).size).toBeGreaterThanOrEqual(3)
     })
 
     // ── 6. Tooling mentions ────────────────────────────────────────────────
+    // En v5-phase1 les tooling mentions sont des <span> dans un <p.home-themes__tooling>,
+    // plus des OrigamChip pills avec data-cy. On assert le texte dans la section.
 
-    test('tokens.studio mention is visible with data-cy', async ({ page }) => {
-        const tokensStudio = page.locator('[data-cy="themes-tooling-tokens-studio"]')
-        await expect(tokensStudio).toBeVisible()
-        await expect(tokensStudio).toContainText('tokens.studio compatible')
+    test('tokens.studio mention is visible in the tooling <p>', async ({ page }) => {
+        const tooling = page.locator('section.home-themes p.home-themes__tooling')
+        await expect(tooling).toBeVisible()
+        await expect(tooling).toContainText('tokens.studio compatible')
     })
 
-    test('Style Dictionary v4 mention is visible with data-cy', async ({ page }) => {
-        const styleDictionary = page.locator('[data-cy="themes-tooling-style-dictionary"]')
-        await expect(styleDictionary).toBeVisible()
-        await expect(styleDictionary).toContainText('Style Dictionary v4')
+    test('Style Dictionary v4 mention is visible in the tooling <p>', async ({ page }) => {
+        const tooling = page.locator('section.home-themes p.home-themes__tooling')
+        await expect(tooling).toBeVisible()
+        await expect(tooling).toContainText('Style Dictionary v4')
     })
 
     // ── 7. Semantic structure ─────────────────────────────────────────────
@@ -166,9 +170,11 @@ test.describe('HomeThemes section', () => {
         await expect(items).toHaveCount(4)
     })
 
-    test('tooling mentions render as 2 OrigamChip pills', async ({ page }) => {
-        const pills = page.locator('section.home-themes [data-cy^="themes-tooling-"]')
-        await expect(pills).toHaveCount(2)
+    test('tooling mentions render as 2 <span> items inside the tooling <p>', async ({ page }) => {
+        // En v5-phase1 : plain <span class="home-themes__tooling-item"> dans un <p>,
+        // plus des OrigamChip pills avec data-cy.
+        const items = page.locator('section.home-themes p.home-themes__tooling .home-themes__tooling-item')
+        await expect(items).toHaveCount(2)
     })
 
     // ── 8. No raw i18n key leakage ─────────────────────────────────────────

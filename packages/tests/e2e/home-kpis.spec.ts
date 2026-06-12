@@ -87,11 +87,20 @@ test.describe('HomeKpis — T2', () => {
 
     // ── Sobre computed-style assertions (≥3) ───────────────────────────────
 
-    test('Sobre — le nombre KPI est peint en violet action-primary', async ({ page }) => {
+    test('Sobre — le nombre KPI est peint via gradient (kpi-value)', async ({ page }) => {
         const value = page.locator('#kpis dd.home-kpis__value').first()
-        const color = await value.evaluate(el => getComputedStyle(el).color)
-        // sobre action--primary---bg = #7C3AED = rgb(124, 58, 237)
-        expect(color).toBe('rgb(124, 58, 237)')
+        const styles = await value.evaluate(el => {
+            const s = getComputedStyle(el)
+            return {
+                bgImage: s.backgroundImage,
+                webkitTextFillColor: (s as CSSStyleDeclaration & Record<string, string>)['-webkit-text-fill-color'] ?? s.getPropertyValue('-webkit-text-fill-color')
+            }
+        })
+        // .home-kpis__value peint le texte via background-clip:text + gradient kpi-value.
+        // getComputedStyle().color retourne rgba(0,0,0,0) quand -webkit-text-fill-color: transparent.
+        // On assert la présence du gradient sur backgroundImage.
+        expect(styles.bgImage).not.toBe('none')
+        expect(styles.bgImage.toLowerCase()).toContain('gradient')
     })
 
     test('Sobre — le label KPI est uppercase + gris secondaire', async ({ page }) => {

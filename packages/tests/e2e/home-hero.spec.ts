@@ -58,7 +58,10 @@ test.describe('HomeHero — T1 (DS-first)', () => {
     test('badge de version (OrigamChip) est visible avec le texte attendu', async ({ page }) => {
         const badge = page.locator('[data-cy="hero-badge"]')
         await expect(badge).toBeVisible()
-        await expect(badge).toContainText('v2.5.0')
+        // La version est dynamique (lue depuis packages/ds/package.json via useVersion()).
+        // On valide le format "v{semver} — " plutôt qu'une valeur figée.
+        const text = await badge.textContent()
+        expect(text?.trim()).toMatch(/^v\d+\.\d+\.\d+/)
         await expect(badge).toContainText('WCAG 2.1 AA pass')
     })
 

@@ -71,32 +71,33 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         await expect(btn).toBeFocused()
     })
 
-    // ── 5. Install snippet via OrigamCode copyable ─────────────────────────
+    // ── 5. Get started CTA (OrigamBtn) ────────────────────────────────────
 
-    test('install snippet rendered by OrigamCode (<figure><pre><code>)', async ({ page }) => {
-        const code = page.locator('[data-cy="cta-install-command"]')
-        await expect(code).toBeVisible()
-        await expect(code).toContainText('npm install origam')
-
-        const pre = page.locator('section.home-cta figure pre code')
-        await expect(pre).toBeAttached()
+    test('Get started button renders and links to /docs/getting-started', async ({ page }) => {
+        const btn = page.locator('[data-cy="cta-btn-start"]')
+        await expect(btn).toBeVisible()
+        await expect(btn).toContainText('Get started')
+        await expect(btn).toHaveAttribute('href', '/docs/getting-started')
     })
 
-    test('OrigamCode copy button present and keyboard-reachable', async ({ page }) => {
-        const copyBtn = page.locator('section.home-cta [data-cy="origam-code-copy"]')
-        await expect(copyBtn).toBeVisible()
-        await copyBtn.focus()
-        await expect(copyBtn).toBeFocused()
+    test('Get started button is keyboard-focusable', async ({ page }) => {
+        const btn = page.locator('[data-cy="cta-btn-start"]')
+        await btn.focus()
+        await expect(btn).toBeFocused()
     })
+
+    // NOTE: install snippet (OrigamCode + copy button) a été supprimé de la section
+    // CTA lors du rework v5-phase1. La section ne contient plus qu'un <nav> avec
+    // deux OrigamBtn ("Get started" + "Read docs"). Les clés i18n home.cta.install /
+    // home.cta.copy / home.cta.copied ont été supprimées intentionnellement.
 
     // ── 6. Sobre computed-style assertions (≥3) ────────────────────────────
 
-    test('Sobre — la section CTA peint le gradient cta-glow', async ({ page }) => {
-        const section = page.locator('section.home-cta')
-        const bgImage = await section.evaluate(el => getComputedStyle(el).backgroundImage)
-        expect(bgImage).toContain('radial-gradient')
-        // cta-glow uses the action-primary purple at low alpha
-        expect(bgImage).toContain('124, 58, 237')
+    test('Sobre — la section CTA a un <nav> contenant exactement 2 boutons', async ({ page }) => {
+        const nav = page.locator('section.home-cta nav.home-cta__actions')
+        await expect(nav).toBeVisible()
+        const btns = await nav.locator('a, button').count()
+        expect(btns).toBe(2)
     })
 
     test('Sobre — le H2 CTA est à la taille display cta (64px)', async ({ page }) => {
@@ -111,12 +112,11 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         expect(styles.color).toBe('rgb(10, 10, 10)')
     })
 
-    test('Sobre — le bouton "Read docs" porte le glow primaire partagé', async ({ page }) => {
-        const btn = page.locator('[data-cy="cta-btn-docs"]')
-        const shadow = await btn.evaluate(el => getComputedStyle(el).boxShadow)
-        // glow-primary references the action-primary purple at .5 alpha
-        expect(shadow).not.toBe('none')
-        expect(shadow).toContain('124, 58, 237')
+    test('Sobre — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
+        const title = page.locator('section.home-cta h2.home-cta__title')
+        const color = await title.evaluate(el => getComputedStyle(el).color)
+        // sobre text---ink = #0A0A0A = rgb(10, 10, 10)
+        expect(color).toBe('rgb(10, 10, 10)')
     })
 
     // ── 7. No raw i18n key leakage ─────────────────────────────────────────
