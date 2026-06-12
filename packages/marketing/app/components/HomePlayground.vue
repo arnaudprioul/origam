@@ -3,7 +3,8 @@ import { useT } from '~/composables/useT'
 import {
     PLAYGROUND_FRAME_RADIUS,
     PLAYGROUND_FRAME_VARS,
-    PLAYGROUND_OPEN_PILL_VARS,
+    PLAYGROUND_PREVIEW_BTN_VARS,
+    PLAYGROUND_PREVIEW_VARS,
     PLAYGROUND_SNIPPET
 } from '~/consts/playground.const'
 
@@ -56,57 +57,47 @@ const { t } = useT()
                     <span class="home-playground__tab">
                         {{ t('home.playground.file', 'App.vue') }}
                     </span>
-
-                    <span class="home-playground__actions">
-                        <origam-btn
-                            variant="text"
-                            size="small"
-                            density="compact"
-                            aria-label="share"
-                            data-cy="playground-btn-share"
-                        >
-                            {{ t('home.playground.share', 'SHARE') }}
-                        </origam-btn>
-
-                        <origam-chip
-                            :style="PLAYGROUND_OPEN_PILL_VARS"
-                            color="primary"
-                            border
-                            border-color="var(--origam-color__action--primary---bg)"
-                            pill
-                            size="small"
-                            tag="button"
-                            aria-label="open in new tab"
-                            data-cy="playground-btn-open"
-                        >
-                            {{ t('home.playground.open', 'OPEN') }}
-                        </origam-chip>
-                    </span>
                 </div>
 
-                <client-only>
-                    <nuxt-error-boundary>
-                        <home-playground-editor />
+                <div class="home-playground__panes">
+                    <origam-code
+                        :code="PLAYGROUND_SNIPPET"
+                        lang="vue"
+                        line-numbers
+                        :copyable="false"
+                        class="home-playground__code"
+                        data-cy="playground-code"
+                    />
 
-                        <template #error>
-                            <origam-code
-                                :code="PLAYGROUND_SNIPPET"
-                                lang="vue"
-                                class="home-playground__static"
-                                data-cy="playground-static"
+                    <div class="home-playground__preview">
+                        <origam-card
+                            tag="div"
+                            rounded="lg"
+                            border
+                            border-color="var(--origam-color__border---default)"
+                            :style="PLAYGROUND_PREVIEW_VARS"
+                            class="home-playground__preview-card"
+                            data-cy="playground-preview"
+                        >
+                            <origam-title
+                                tag="h3"
+                                class="home-playground__preview-title"
+                                :text="t('home.playground.previewTitle', 'Hello Origam')"
                             />
-                        </template>
-                    </nuxt-error-boundary>
-
-                    <template #fallback>
-                        <origam-code
-                            :code="PLAYGROUND_SNIPPET"
-                            lang="vue"
-                            class="home-playground__static"
-                            data-cy="playground-fallback"
-                        />
-                    </template>
-                </client-only>
+                            <p class="home-playground__preview-text">
+                                {{ t('home.playground.previewText', 'The Vue 3 design system that just works. Try a component live.') }}
+                            </p>
+                            <origam-btn
+                                color="primary"
+                                append-icon="mdi-arrow-right"
+                                class="home-playground__preview-btn"
+                                :style="PLAYGROUND_PREVIEW_BTN_VARS"
+                            >
+                                {{ t('home.playground.previewCta', 'Get started') }}
+                            </origam-btn>
+                        </origam-card>
+                    </div>
+                </div>
             </origam-sheet>
         </figure>
 
@@ -198,31 +189,76 @@ const { t } = useT()
 
 .home-playground__tab {
     flex: 1;
-    font-size: var(--origam-font-size---xs, 0.75rem);
+    font-size: var(--origam-font-size---sm, 0.875rem);
     font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---primary, #0a0a0a);
+    color: var(--origam-color__text---secondary, #525252);
     font-family: var(--origam-font__family---mono, ui-monospace, monospace);
-    padding: var(--origam-space---1, 0.25rem) var(--origam-space---2, 0.5rem);
-    border-block-start: 2px solid var(--origam-color__action--primary---bg, #7C3AED);
+}
+
+/* Two-pane split: code (left) | live preview (right), like the maquette.
+   No DS prop lays out a split editor — CSS grid, divider is the sobre border. */
+.home-playground__panes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-block-size: 320px;
+}
+
+/* OrigamCode fills the left pane flush (the frame owns the rounding/clip);
+   surface/colours come from the theme. */
+.home-playground__code {
+    --origam-code---border-radius: 0;
+    --origam-code---border-width: 0;
+    border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    overflow: hidden;
+    font-size: var(--origam-font-size---sm, 0.875rem);
+}
+
+/* DS gap: no DS token paints a dotted-grid preview backdrop. 16px dot grid,
+   theme-aware via the sobre subtle-border token. */
+.home-playground__preview {
+    display: grid;
+    place-items: center;
+    padding: var(--origam-space---8, 2.5rem);
     background-color: var(--origam-color__surface---raised, #fafafa);
-    border-radius: 0 0 var(--origam-radius---sm, 6px) var(--origam-radius---sm, 6px);
-    align-self: stretch;
-    display: flex;
-    align-items: center;
+    background-image: radial-gradient(var(--origam-color__border---default, rgba(0, 0, 0, 0.08)) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
 }
 
-.home-playground__actions {
+.home-playground__preview-card {
     display: flex;
-    align-items: center;
-    gap: var(--origam-space---2, 0.5rem);
-    flex-shrink: 0;
+    flex-direction: column;
+    gap: var(--origam-space---3, 0.75rem);
+    align-items: flex-start;
+    max-inline-size: 22rem;
+    padding: var(--origam-space---6, 1.5rem);
 }
 
-/* DS gap: OrigamCode default font-size follows its own token; the static
-   fallback aligns to the editor height. Surface/colours come from the theme. */
-.home-playground__static {
-    max-height: 480px;
-    overflow: auto;
+.home-playground__preview-title {
+    --origam-title---font-size: var(--origam-font-size---xl, 1.25rem);
+    --origam-title---font-weight: 700;
+    margin: 0;
+}
+
+.home-playground__preview-text {
+    margin: 0;
+    font-size: var(--origam-font-size---sm, 0.875rem);
+    line-height: 1.5;
+    color: var(--origam-color__text---secondary, #525252);
+}
+
+.home-playground__preview-btn {
+    margin-block-start: var(--origam-space---2, 0.5rem);
+}
+
+@media (max-width: 800px) {
+    .home-playground__panes {
+        grid-template-columns: 1fr;
+    }
+
+    .home-playground__code {
+        border-inline-end: 0;
+        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    }
 }
 
 .home-playground__caption {

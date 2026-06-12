@@ -11,7 +11,6 @@
     "language": "Changer de langue"
   },
   "chrome": {
-    "version": "v2.5.1",
     "searchPlaceholder": "Rechercher…",
     "searchShortcut": "⌘K",
     "starCount": "4.2k",
@@ -57,7 +56,7 @@
       "description": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first."
     },
     "hero": {
-      "badge": "v2.5.0 — 29 graphiques livrés, conforme WCAG 2.1 AA",
+      "badge": "v{version} — 29 graphiques livrés, conforme WCAG 2.1 AA",
       "titleLine1": "Le design system Vue 3",
       "titleLine2": "qui marche, tout simplement.",
       "subtitle": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first.",
@@ -116,20 +115,26 @@
       "eyebrow": "PLAYGROUND EN DIRECT",
       "title": "Essayez avant de livrer.",
       "file": "App.vue",
-      "share": "PARTAGER",
-      "open": "OUVRIR",
-      "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct."
+      "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
+      "previewTitle": "Hello Origam",
+      "previewText": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
+      "previewCta": "Commencer"
     },
     "showcase": {
       "eyebrow": "VITRINE",
       "title": "95 composants. Une seule âme.",
+      "titleLine1": "95 composants.",
+      "titleLine2": "Une seule âme.",
       "viewAll": "Voir tout",
       "dataTable": {
         "title": "Data Table",
         "caption": "Triable · filtrable · virtualisé",
+        "badge": "Data",
+        "colProject": "PROJET",
         "colName": "Nom",
         "colOwner": "Responsable",
         "colStatus": "Statut",
+        "rowMenu": "Actions de ligne",
         "row1Name": "Version Aurora",
         "row1Owner": "Arnaud",
         "row1Status": "Livré",
@@ -138,13 +143,13 @@
         "row2Status": "En revue",
         "row3Name": "Audit a11y",
         "row3Owner": "Jade",
-        "row3Status": "En cours",
+        "row3Status": "Livré",
         "row4Name": "Moteur de graphiques",
         "row4Owner": "Marc",
         "row4Status": "Brouillon",
         "row5Name": "Nouveau thème",
         "row5Owner": "Romi",
-        "row5Status": "Brouillon"
+        "row5Status": "En revue"
       },
       "chartLine": {
         "title": "Chart Line",
@@ -171,31 +176,32 @@
     },
     "themes": {
       "eyebrow": "THÉMATISATION",
-      "title": "Un design system. Toutes les marques.",
+      "titleLine1": "Un design system.",
+      "titleLine2": "Toutes les marques.",
+      "subtitle": "Design tokens conformes DTCG, multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution — sans remontage, sans clignotement.",
+      "chipSobre": "Sobre",
       "chipGlass": "Glass",
       "chipGeek": "Geek",
       "chipCartoon": "Cartoon",
-      "chipEditorial": "Editorial",
+      "chipEditorial": "Éditorial",
       "chipMaterial": "Material",
       "chipEcom": "Ecom",
       "chipApple": "Apple",
-      "tokensStudio": "compatible tokens.studio",
-      "styleDictionary": "Style Dictionary v4",
+      "toolingLabel": "Outillage",
+      "tokensStudio": "→ compatible tokens.studio",
+      "styleDictionary": "→ Style Dictionary v4",
       "previewLight": "light.json",
       "previewDark": "dark.json",
-      "previewEditorial": "editorial.json",
-      "previewEcom": "ecom.json",
-      "previewButton": "Bouton",
-      "previewJson": ".json"
+      "previewBrandA": "brand-a.json",
+      "previewBrandB": "brand-b.json",
+      "previewButton": "Bouton"
     },
     "cta": {
       "title": "Prêt à livrer plus vite ?",
       "description": "Démarrez votre projet Vue 3 avec origam en 30 secondes.",
+      "ctaStart": "Commencer",
       "ctaDocs": "Lire la doc",
-      "actionsLabel": "Commencer",
-      "install": "npm install origam",
-      "copy": "Copier",
-      "copied": "Copié"
+      "actionsLabel": "Commencer"
     }
   }
 }

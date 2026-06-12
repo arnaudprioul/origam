@@ -1,6 +1,4 @@
-import type { CSSProperties } from 'vue'
-
-import type { IThemeChip, IThemePreviewTile } from '~/interfaces/themes-showcase.interface'
+import type { IThemeChip, IThemePreviewTileDecorative } from '~/interfaces/themes-showcase.interface'
 
 /**
  * Two-column theming layout (text | 2×2 preview grid). `auto-fit` + `minmax`
@@ -9,18 +7,6 @@ import type { IThemeChip, IThemePreviewTile } from '~/interfaces/themes-showcase
  * `--origam-grid---template-columns` (same pattern as FEATURES_GRID_COLUMNS).
  */
 export const THEMES_GRID_COLUMNS = 'repeat(auto-fit, minmax(320px, 1fr))'
-
-/**
- * Tooling / preview pills (OrigamChip) instance override. OrigamChip has NO
- * `variant` prop — the ghost-outlined pill is built from color="neutral" +
- * border + borderColor + pill in the template; only the transparent surface
- * needs a token override here (same pattern as HERO_BADGE_VARS). The mono font
- * (no chip font-family prop/var) is a documented DS gap handled by a scoped
- * `.home-themes__tooling-pill` class in HomeThemes.vue.
- */
-export const THEMES_TOOLING_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties
 
 /**
  * Preview-tile (OrigamSheet) uniform radius. Each preview theme resolves
@@ -34,12 +20,12 @@ export const THEMES_TOOLING_VARS: CSSProperties = {
  */
 export const THEMES_TILE_RADIUS = 'var(--origam-radius---card, 10px)'
 
-export const THEMES_TOOLING_PILLS: IThemeChip[] = [
-    { key: 'tokens-studio', labelKey: 'home.themes.tokensStudio', labelFallback: 'tokens.studio compatible' },
-    { key: 'style-dictionary', labelKey: 'home.themes.styleDictionary', labelFallback: 'Style Dictionary v4' }
-]
-
+/**
+ * Theme chips — Sobre first (current page theme), then alphabetical variants.
+ * Rendered as a plain flex-wrap <ul> (no OrigamChipGroup slide behaviour).
+ */
 export const THEME_CHIPS: IThemeChip[] = [
+    { key: 'sobre', labelKey: 'home.themes.chipSobre', labelFallback: 'Sobre' },
     { key: 'glass', labelKey: 'home.themes.chipGlass', labelFallback: 'Glass' },
     { key: 'geek', labelKey: 'home.themes.chipGeek', labelFallback: 'Geek' },
     { key: 'cartoon', labelKey: 'home.themes.chipCartoon', labelFallback: 'Cartoon' },
@@ -50,15 +36,66 @@ export const THEME_CHIPS: IThemeChip[] = [
 ]
 
 /**
- * Four REAL registered themes (packages/ds/tokens/$themes.json), each with a
- * distinct `surface---default` so the tiles prove the theme system live:
- *   light     → #ffffff   dark    → #0a0a0a
- *   editorial → #fafaf7   ecom    → #fff7f0
- * The matching `{theme}-{mode}.css` sheets are loaded in nuxt.config css[].
+ * Tooling meta line — monospaced, grey, displayed below the chips as a
+ * separate <p> row (NOT inside the chip group / carousel).
  */
-export const THEME_PREVIEW_TILES: IThemePreviewTile[] = [
-    { key: 'light', labelKey: 'home.themes.previewLight', labelFallback: 'light.json', theme: 'light', mode: 'light' },
-    { key: 'dark', labelKey: 'home.themes.previewDark', labelFallback: 'dark.json', theme: 'dark', mode: 'dark' },
-    { key: 'editorial', labelKey: 'home.themes.previewEditorial', labelFallback: 'editorial.json', theme: 'editorial', mode: 'light' },
-    { key: 'ecom', labelKey: 'home.themes.previewEcom', labelFallback: 'ecom.json', theme: 'ecom', mode: 'light' },
+export const THEMES_TOOLING_TEXT: IThemeChip[] = [
+    { key: 'tokens-studio', labelKey: 'home.themes.tokensStudio', labelFallback: '→ tokens.studio compatible' },
+    { key: 'style-dictionary', labelKey: 'home.themes.styleDictionary', labelFallback: '→ Style Dictionary v4' },
+]
+
+/**
+ * Four preview tiles.
+ *   light / dark  → real DS registered themes, surface comes from their token sheet.
+ *   brand-a       → decorative (editorial theme surface ≈ cream #fafaf7 → close to
+ *                   maquette brand-a; button uses amber override vars).
+ *   brand-b       → decorative (uses local CSS vars for mint-green surface; no DS
+ *                   theme registered yet — documented DS gap).
+ *
+ * DS gap: no "brand-a" / "brand-b" themes registered in packages/ds/tokens/$themes.json.
+ * The two brand tiles use the closest real themes (editorial / ecom) as base for
+ * OrigamThemeProvider, then override surface + button color via CSS custom props on
+ * the tile element (--themes-tile--surface, --themes-tile--btn-bg, etc.).
+ */
+export const THEME_PREVIEW_TILES: IThemePreviewTileDecorative[] = [
+    {
+        key: 'light',
+        labelKey: 'home.themes.previewLight',
+        labelFallback: 'light.json',
+        theme: 'light',
+        mode: 'light',
+        surfaceColor: null,
+        btnBgColor: null,
+        barColors: null,
+    },
+    {
+        key: 'dark',
+        labelKey: 'home.themes.previewDark',
+        labelFallback: 'dark.json',
+        theme: 'dark',
+        mode: 'dark',
+        surfaceColor: null,
+        btnBgColor: null,
+        barColors: null,
+    },
+    {
+        key: 'brand-a',
+        labelKey: 'home.themes.previewBrandA',
+        labelFallback: 'brand-a.json',
+        theme: 'editorial',
+        mode: 'light',
+        surfaceColor: '#f5f0e8',
+        btnBgColor: '#d97706',
+        barColors: ['#92400e', '#c4a47a'],
+    },
+    {
+        key: 'brand-b',
+        labelKey: 'home.themes.previewBrandB',
+        labelFallback: 'brand-b.json',
+        theme: 'ecom',
+        mode: 'light',
+        surfaceColor: '#e8f5f0',
+        btnBgColor: '#059669',
+        barColors: ['#065f46', '#6ee7b7'],
+    },
 ]

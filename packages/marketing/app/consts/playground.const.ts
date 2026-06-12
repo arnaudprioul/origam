@@ -10,26 +10,40 @@ import type { CSSProperties } from 'vue'
  * — without that map the sandbox throws
  * `Failed to resolve module specifier "origam"`.
  */
-export const PLAYGROUND_SNIPPET = `<script setup>
-import { OrigamCard, OrigamBtn } from 'origam'
+export const PLAYGROUND_SNIPPET = `<script setup lang="ts">
+import { OrigamCard, OrigamTitle, OrigamBtn } from 'origam'
 </script>
 
 <template>
-  <OrigamCard
-    title="Hello origam"
-    subtitle="Live playground — edit me"
-    rounded
-    border
-    style="max-width:360px; margin:auto"
-  >
-    <template #footer>
-      <OrigamBtn color="primary" rounded>
-        Get started
-      </OrigamBtn>
-    </template>
+  <OrigamCard rounded="lg" border>
+    <OrigamTitle tag="h3">Hello Origam</OrigamTitle>
+    <p>The Vue 3 design system that just works. Try a component live.</p>
+    <OrigamBtn color="primary" append-icon="mdi-arrow-right">
+      Get started
+    </OrigamBtn>
   </OrigamCard>
 </template>
 `
+
+/**
+ * Preview-card surface (right pane). Non-intent surface token painted via the
+ * card's public bg custom-prop (bgColor rejects var() refs by DS policy).
+ */
+export const PLAYGROUND_PREVIEW_VARS: CSSProperties = {
+    '--origam-card---background': 'var(--origam-color__surface---default, #ffffff)',
+    '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)'
+} as CSSProperties
+
+/**
+ * Preview "Get started" button — the maquette renders a light pill (raised
+ * surface + ink text + 10px radius), not a solid violet. Driven through the
+ * btn's public instance custom-props (the documented escape hatch).
+ */
+export const PLAYGROUND_PREVIEW_BTN_VARS: CSSProperties = {
+    '--origam-btn---background-color': 'var(--origam-color__surface---raised, #fafafa)',
+    '--origam-btn---color': 'var(--origam-color__text---primary, #0a0a0a)',
+    '--origam-btn---border-radius': 'var(--origam-radius---btn, 10px)'
+} as CSSProperties
 
 /**
  * Snippet actually compiled + executed in the live @vue/repl sandbox.
@@ -93,17 +107,3 @@ export const PLAYGROUND_FRAME_VARS: CSSProperties = {
     '--origam-sheet---box-shadow': 'var(--origam-shadow---card-elevated)'
 } as CSSProperties
 
-/**
- * "OPEN" pill (OrigamChip) instance override. OrigamChip has NO `variant`
- * prop — the outlined-pill chrome is built from color="primary" + border +
- * borderColor + pill in the template, identical to HERO_BADGE.
- *
- * The surface is TRANSPARENT (not a purple tint): the chip carries the DS
- * `v-contrast` a11y directive, which — on a purple-tinted fill — forces white
- * text for contrast and overrides the purple ink. Against a transparent
- * surface it correctly keeps the primary purple ink (proven against the live
- * hero badge). A transparent outlined purple pill is the DS-faithful rendering.
- */
-export const PLAYGROUND_OPEN_PILL_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties

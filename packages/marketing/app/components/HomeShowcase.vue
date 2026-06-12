@@ -13,15 +13,23 @@ import {
 
 const { t } = useT()
 
-const switchVariants = computed(() => [
-    { modelValue: true,  inset: true,  flat: false },
-    { modelValue: true,  inset: false, flat: false },
-    { modelValue: false, inset: false, flat: true  }
-])
-
 const sparklineSeries = computed(() => [
     { name: 'growth', data: SHOWCASE_SPARKLINE_DATA }
 ])
+
+const switchPairs = computed(() => [
+    { modelValue: false, inset: false, flat: false },
+    { modelValue: true,  inset: false, flat: false }
+])
+
+const STATUS_DOT_COLOR: Record<string, string> = {
+    success: 'var(--origam-color__feedback--success---fgSubtle, #15803d)',
+    warning: 'var(--origam-color__feedback--warning---fgSubtle, #b45309)',
+    danger:  'var(--origam-color__feedback--danger---fgSubtle, #b91c1c)',
+    info:    'var(--origam-color__feedback--info---fgSubtle, #1d4ed8)',
+    neutral: 'var(--origam-color__text---secondary, #525252)',
+    primary: 'var(--origam-color__action--primary---fgSubtle, #6d28d9)',
+}
 </script>
 
 <template>
@@ -34,23 +42,26 @@ const sparklineSeries = computed(() => [
                 {{ t('home.showcase.eyebrow', 'SHOWCASE') }}
             </p>
 
-            <origam-title
-                id="showcase-title"
-                tag="h2"
-                class="home-showcase__title"
-            >
-                {{ t('home.showcase.title', '95 components. One vibe.') }}
-            </origam-title>
+            <div class="home-showcase__title-row">
+                <origam-title
+                    id="showcase-title"
+                    tag="h2"
+                    class="home-showcase__title"
+                >
+                    <span class="home-showcase__title-line">{{ t('home.showcase.titleLine1', '95 components.') }}</span>
+                    <span class="home-showcase__title-line">{{ t('home.showcase.titleLine2', 'One vibe.') }}</span>
+                </origam-title>
 
-            <origam-btn
-                variant="text"
-                href="/components"
-                class="home-showcase__view-all"
-                append-icon="mdi-arrow-right"
-                data-cy="showcase-view-all"
-            >
-                {{ t('home.showcase.viewAll', 'View all') }}
-            </origam-btn>
+                <origam-btn
+                    variant="text"
+                    href="/components"
+                    class="home-showcase__view-all"
+                    append-icon="mdi-arrow-right"
+                    data-cy="showcase-view-all"
+                >
+                    {{ t('home.showcase.viewAll', 'View all') }}
+                </origam-btn>
+            </div>
         </header>
 
         <origam-grid
@@ -72,13 +83,25 @@ const sparklineSeries = computed(() => [
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
                 >
-                    <figcaption class="home-showcase__widget-label">
-                        <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.dataTable.title', 'Data Table') }}
-                        </strong>
-                        <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.dataTable.caption', 'Sortable · filterable · virtualized') }}
-                        </span>
+                    <figcaption class="home-showcase__widget-header">
+                        <div class="home-showcase__widget-label">
+                            <strong class="home-showcase__widget-title">
+                                {{ t('home.showcase.dataTable.title', 'Data Table') }}
+                            </strong>
+                            <span class="home-showcase__widget-caption">
+                                {{ t('home.showcase.dataTable.caption', 'Sortable · filterable · virtualized') }}
+                            </span>
+                        </div>
+
+                        <origam-chip
+                            :text="t('home.showcase.dataTable.badge', 'Data')"
+                            color="primary"
+                            border
+                            pill
+                            size="x-small"
+                            class="home-showcase__data-badge"
+                            data-cy="showcase-data-badge"
+                        />
                     </figcaption>
 
                     <table
@@ -88,7 +111,8 @@ const sparklineSeries = computed(() => [
                         <thead class="home-showcase__table-head">
                             <tr>
                                 <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.dataTable.colName', 'Name') }}
+                                    {{ t('home.showcase.dataTable.colProject', 'PROJECT') }}
+                                    <span class="home-showcase__th-sort" aria-hidden="true">↓</span>
                                 </th>
                                 <th scope="col" class="home-showcase__th">
                                     {{ t('home.showcase.dataTable.colOwner', 'Owner') }}
@@ -111,13 +135,28 @@ const sparklineSeries = computed(() => [
                                     {{ t(row.ownerKey, row.ownerFallback) }}
                                 </td>
                                 <td class="home-showcase__td home-showcase__td--status">
-                                    <origam-chip
-                                        :bg-color="row.statusIntent"
-                                        :text="t(row.statusKey, row.statusFallback)"
-                                        pill
-                                        size="x-small"
-                                        :data-cy="`showcase-status-${rowIndex}`"
-                                    />
+                                    <span class="home-showcase__status-cell">
+                                        <span
+                                            class="home-showcase__status-dot"
+                                            :style="{ backgroundColor: STATUS_DOT_COLOR[row.statusIntent] }"
+                                            aria-hidden="true"
+                                        />
+                                        <span
+                                            class="home-showcase__status-text"
+                                            :style="{ color: STATUS_DOT_COLOR[row.statusIntent] }"
+                                        >
+                                            {{ t(row.statusKey, row.statusFallback) }}
+                                        </span>
+
+                                        <origam-btn
+                                            variant="text"
+                                            icon="mdi-dots-horizontal"
+                                            size="x-small"
+                                            class="home-showcase__row-menu"
+                                            :aria-label="t('home.showcase.dataTable.rowMenu', 'Row actions')"
+                                            :data-cy="`showcase-row-menu-${rowIndex}`"
+                                        />
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
@@ -140,7 +179,7 @@ const sparklineSeries = computed(() => [
                         <strong class="home-showcase__widget-title">
                             {{ t('home.showcase.chartLine.title', 'Chart Line') }}
                         </strong>
-                        <span class="home-showcase__widget-caption">
+                        <span class="home-showcase__widget-caption home-showcase__widget-caption--accent">
                             {{ t('home.showcase.chartLine.caption', '+12.4% this month') }}
                         </span>
                     </figcaption>
@@ -172,26 +211,28 @@ const sparklineSeries = computed(() => [
                 >
                     <figcaption class="home-showcase__widget-label">
                         <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.chips.title', 'Chips') }}
+                            {{ t('home.showcase.switch.title', 'Switch') }}
                         </strong>
                         <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.chips.caption', '6 intents') }}
+                            {{ t('home.showcase.switch.caption', 'inset · flat · default') }}
                         </span>
                     </figcaption>
 
-                    <origam-chip-group
-                        class="home-showcase__chip-group"
-                        data-cy="showcase-chip-group"
+                    <div
+                        class="home-showcase__switch-row"
+                        role="group"
+                        :aria-label="t('home.showcase.switch.title', 'Switch')"
                     >
-                        <origam-chip
-                            v-for="chip in SHOWCASE_CHIP_ITEMS"
-                            :key="chip.intent"
-                            :bg-color="chip.intent"
-                            :text="t(chip.labelKey, chip.labelFallback)"
-                            pill
-                            :data-cy="`showcase-chip-${chip.intent}`"
+                        <origam-switch
+                            v-for="(variant, index) in switchPairs"
+                            :key="index"
+                            :model-value="variant.modelValue"
+                            :inset="variant.inset"
+                            :flat="variant.flat"
+                            readonly
+                            :data-cy="`showcase-switch-${index}`"
                         />
-                    </origam-chip-group>
+                    </div>
                 </origam-card>
             </origam-grid-item>
 
@@ -208,29 +249,29 @@ const sparklineSeries = computed(() => [
                 >
                     <figcaption class="home-showcase__widget-label">
                         <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.switch.title', 'Switch') }}
+                            {{ t('home.showcase.chips.title', 'Chips') }}
                         </strong>
                         <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.switch.caption', 'inset · flat · default') }}
+                            {{ t('home.showcase.chips.caption', '6 intents') }}
                         </span>
                     </figcaption>
 
                     <ul
-                        class="home-showcase__switch-list"
-                        aria-label="Switch variants"
+                        class="home-showcase__chip-list"
+                        data-cy="showcase-chip-group"
+                        aria-label="Chip intents"
                     >
                         <li
-                            v-for="(variant, index) in switchVariants"
-                            :key="index"
-                            class="home-showcase__switch-item"
+                            v-for="chip in SHOWCASE_CHIP_ITEMS"
+                            :key="chip.intent"
                         >
-                            <origam-switch
-                                :model-value="variant.modelValue"
-                                :inset="variant.inset"
-                                :flat="variant.flat"
-                                color="primary"
-                                readonly
-                                :data-cy="`showcase-switch-${index}`"
+                            <origam-chip
+                                :color="chip.intent"
+                                border
+                                pill
+                                size="small"
+                                :text="t(chip.labelKey, chip.labelFallback)"
+                                :data-cy="`showcase-chip-${chip.intent}`"
                             />
                         </li>
                     </ul>
@@ -257,13 +298,23 @@ const sparklineSeries = computed(() => [
                         </span>
                     </figcaption>
 
-                    <origam-avatar-group
-                        :items="SHOWCASE_AVATAR_ITEMS"
-                        :max="4"
-                        class="home-showcase__avatar-group"
-                        data-cy="showcase-avatar-group"
-                        :aria-label="t('home.showcase.avatarGroup.caption', '+24 members')"
-                    />
+                    <div class="home-showcase__avatar-row">
+                        <origam-avatar-group
+                            :items="SHOWCASE_AVATAR_ITEMS"
+                            :max="5"
+                            class="home-showcase__avatar-group"
+                            data-cy="showcase-avatar-group"
+                            :aria-label="t('home.showcase.avatarGroup.caption', '+24 members')"
+                        />
+                        <origam-chip
+                            text="+24"
+                            color="neutral"
+                            border
+                            pill
+                            size="x-small"
+                            class="home-showcase__avatar-pill"
+                        />
+                    </div>
                 </origam-card>
             </origam-grid-item>
         </origam-grid>
@@ -279,36 +330,44 @@ const sparklineSeries = computed(() => [
 }
 
 .home-showcase__header {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
     margin-block-end: var(--origam-space---8, 2rem);
 }
 
-/* DS gap: no DS prop sets text-transform / wide tracking on a bare <p>.
-   Colour is the sobre action-primary fgSubtle token (purple), zero CSS. */
 .home-showcase__eyebrow {
-    width: 100%;
-    margin: 0;
+    margin: 0 0 var(--origam-space---3, 0.75rem);
     font-size: var(--origam-font-size---xs, 0.75rem);
     font-weight: var(--origam-font__weight---semibold, 600);
     color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-
     text-transform: uppercase;
     letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
 }
 
-/* DS gap: section display size/tracking exceed OrigamTitle's token scale
-   (max 3xl). Consumes the marketing display tokens, like the Hero H1. */
+.home-showcase__title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--origam-space---4, 1rem);
+}
+
 .home-showcase__title {
-    flex: 1;
     margin: 0;
     font-size: var(--origam-font-size---section, 3rem);
     font-weight: var(--origam-font__weight---bold, 700);
     letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
     line-height: var(--origam-line-height---tight, 1.1);
     color: var(--origam-color__text---primary, #0a0a0a);
+    display: flex;
+    flex-direction: column;
+}
+
+.home-showcase__title-line {
+    display: block;
+}
+
+.home-showcase__view-all {
+    flex-shrink: 0;
+    align-self: flex-end;
+    padding-block-end: var(--origam-space---1, 0.25rem);
 }
 
 .home-showcase__grid {
@@ -330,6 +389,14 @@ const sparklineSeries = computed(() => [
     margin: 0;
 }
 
+.home-showcase__widget-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--origam-space---3, 0.75rem);
+    flex-shrink: 0;
+}
+
 .home-showcase__widget-label {
     display: flex;
     flex-direction: column;
@@ -348,9 +415,16 @@ const sparklineSeries = computed(() => [
     color: var(--origam-color__text---secondary, #525252);
 }
 
-/* DS gap: no DS table component is used here — native <table> by W3C choice.
-   Head/row rules are the irreducible chrome a bare table needs; colours come
-   from sobre border/text tokens. */
+.home-showcase__widget-caption--accent {
+    color: var(--origam-color__feedback--success---fgSubtle, #15803d);
+    font-weight: var(--origam-font__weight---medium, 500);
+}
+
+.home-showcase__data-badge {
+    flex-shrink: 0;
+    margin-block-start: var(--origam-space---1, 0.25rem);
+}
+
 .home-showcase__table {
     width: 100%;
     border-collapse: collapse;
@@ -368,6 +442,12 @@ const sparklineSeries = computed(() => [
     color: var(--origam-color__text---secondary, #525252);
     border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
     white-space: nowrap;
+}
+
+.home-showcase__th-sort {
+    margin-inline-start: var(--origam-space---1, 0.25rem);
+    font-size: var(--origam-font-size---xs, 0.75rem);
+    opacity: 0.7;
 }
 
 .home-showcase__tr {
@@ -395,38 +475,78 @@ const sparklineSeries = computed(() => [
     white-space: nowrap;
 }
 
+.home-showcase__status-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--origam-space---2, 0.5rem);
+    width: 100%;
+}
+
+.home-showcase__status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.home-showcase__status-text {
+    font-size: var(--origam-font-size---sm, 0.875rem);
+    font-weight: var(--origam-font__weight---medium, 500);
+    flex: 1;
+}
+
+.home-showcase__row-menu {
+    flex-shrink: 0;
+    color: var(--origam-color__text---secondary, #525252);
+}
+
 .home-showcase__sparkline {
     display: block;
     flex: 1;
 }
 
-.home-showcase__switch-list {
+.home-showcase__switch-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--origam-space---4, 1rem);
+    flex: 1;
+}
+
+.home-showcase__switch-row :deep(.origam-switch-track--dirty:not(.origam-switch-track--disabled)) {
+    background-color: var(--origam-color__action--primary---bg, #7c3aed);
+}
+
+.home-showcase__switch-row :deep(.origam-switch__thumb) {
+    background-color: var(--origam-color__text---inverse, #ffffff);
+}
+
+.home-showcase__chip-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---2, 0.5rem);
-    flex: 1;
-    justify-content: center;
-}
-
-.home-showcase__switch-item {
-    display: flex;
-    align-items: center;
-}
-
-.home-showcase__chip-group {
     flex-wrap: wrap;
     gap: var(--origam-space---2, 0.5rem);
+    flex: 1;
+    align-content: flex-start;
 }
 
-/* DS gap: OrigamAvatarGroup overlaps via this public token (intended DS-first
-   usage); the white ring between stacked avatars has no dedicated prop. */
+.home-showcase__avatar-row {
+    display: flex;
+    align-items: center;
+    gap: var(--origam-space---2, 0.5rem);
+    flex: 1;
+}
+
 .home-showcase__avatar-group {
     --origam-avatar-group__item---margin-inline-start: -8px;
     --origam-avatar---box-shadow: 0 0 0 2px var(--origam-color__surface---raised, #fafafa);
-    margin-block-start: var(--origam-space---2, 0.5rem);
+}
+
+.home-showcase__avatar-pill {
+    flex-shrink: 0;
 }
 
 @media (max-width: 48rem) {

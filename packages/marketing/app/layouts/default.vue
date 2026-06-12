@@ -7,11 +7,13 @@
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_LINKS } from '~/consts/nav.const'
-  import { CHROME_VERSION, SEARCH_SHORTCUT, STAR_COUNT } from '~/consts/chrome.const'
+  import { SEARCH_SHORTCUT, STAR_COUNT } from '~/consts/chrome.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { useT } from '~/composables/useT'
+  import { useVersion } from '~/composables/useVersion'
 
   const { t } = useT()
+  const { versionTag } = useVersion()
   const { resolvedMode, toggleMode } = useTheme()
 
   const { locale, locales, setLocale } = useI18n()
@@ -61,7 +63,7 @@
             size="x-small"
             color="primary"
             border
-          >{{ CHROME_VERSION }}</origam-chip>
+          >{{ versionTag }}</origam-chip>
         </NuxtLink>
       </template>
 

@@ -159,7 +159,7 @@ const features = computed(() => FEATURES)
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space---4, 1rem);
+    gap: var(--origam-space---2, 0.5rem);
 }
 
 /* DS gap: OrigamSheet defaults to display:block; centering the 44×44 icon
@@ -168,6 +168,7 @@ const features = computed(() => FEATURES)
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    margin-block-end: var(--origam-space---3, 0.75rem);
 }
 
 .home-features__icon {

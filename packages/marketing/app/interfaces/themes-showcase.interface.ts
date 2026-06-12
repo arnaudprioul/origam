@@ -1,4 +1,13 @@
-import type { TMode, TTheme } from 'origam/types'
+import type { TTheme } from 'origam/types'
+
+/**
+ * Color mode for OrigamThemeProvider.
+ * DS gap: `TMode` from `origam/types` currently resolves to the Commons mode
+ * enum ('horizontal' | 'vertical' | 'shift') due to export ordering in
+ * dist/types/index.d.ts (line 61 < 213). The theme TMode ('auto'|'light'|'dark')
+ * is re-declared here as a local type until the DS dist is rebuilt.
+ */
+export type TColorMode = 'auto' | 'light' | 'dark'
 
 export interface IThemeChip {
     key: string
@@ -18,5 +27,28 @@ export interface IThemePreviewTile {
      */
     theme: TTheme
     /** Color mode applied via <OrigamThemeProvider mode>. */
-    mode: TMode
+    mode: TColorMode
+}
+
+/**
+ * Extended tile variant that allows decorative brand overrides.
+ * `surfaceColor` / `btnBgColor` / `barColors` are null for real DS-themed
+ * tiles (light/dark) and set to CSS color values for brand demo tiles that
+ * don't have a registered DS theme yet.
+ *
+ * DS gap: brand-a and brand-b themes are not registered in
+ * packages/ds/tokens/$themes.json — these overrides are a temporary
+ * decorative layer until those themes exist.
+ *
+ * DS gap: TMode from origam/types currently resolves to the Commons orientation
+ * enum due to export ordering in dist/types/index.d.ts. Using local TColorMode
+ * until DS is rebuilt. See themes-showcase.interface.ts for details.
+ */
+export interface IThemePreviewTileDecorative extends IThemePreviewTile {
+    /** Override the tile surface color (null = use DS theme surface token). */
+    surfaceColor: string | null
+    /** Override the preview button background color (null = use DS primary). */
+    btnBgColor: string | null
+    /** Two bar colors [dark, light] (null = use DS neutral skeleton tokens). */
+    barColors: [string, string] | null
 }

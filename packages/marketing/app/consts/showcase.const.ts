@@ -60,8 +60,8 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerKey: 'home.showcase.dataTable.row3Owner',
         ownerFallback: 'Jade',
         statusKey: 'home.showcase.dataTable.row3Status',
-        statusFallback: 'In progress',
-        statusIntent: 'info',
+        statusFallback: 'Shipped',
+        statusIntent: 'success',
     },
     {
         nameKey: 'home.showcase.dataTable.row4Name',
@@ -78,13 +78,19 @@ export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
         ownerKey: 'home.showcase.dataTable.row5Owner',
         ownerFallback: 'Romi',
         statusKey: 'home.showcase.dataTable.row5Status',
-        statusFallback: 'Draft',
-        statusIntent: 'neutral',
+        statusFallback: 'In review',
+        statusIntent: 'warning',
     },
 ]
 
 export const SHOWCASE_SPARKLINE_DATA = [6, 8, 7, 10, 9, 11, 12, 10, 13, 14, 12, 15]
 
+/**
+ * 3 chips shown inline in the Showcase card (matches the maquette).
+ * Primary = outline violet, Neutral = outline grey, Success = tinted green.
+ * We avoid OrigamChipGroup (slides/scroll) and render them directly in a flex
+ * container so they never overflow.
+ */
 export const SHOWCASE_CHIP_ITEMS: IShowcaseChipItem[] = [
     {
         intent: 'primary',
@@ -100,21 +106,6 @@ export const SHOWCASE_CHIP_ITEMS: IShowcaseChipItem[] = [
         intent: 'success',
         labelKey: 'home.showcase.chips.success',
         labelFallback: 'Success',
-    },
-    {
-        intent: 'warning',
-        labelKey: 'home.showcase.chips.warning',
-        labelFallback: 'Warning',
-    },
-    {
-        intent: 'danger',
-        labelKey: 'home.showcase.chips.danger',
-        labelFallback: 'Danger',
-    },
-    {
-        intent: 'info',
-        labelKey: 'home.showcase.chips.info',
-        labelFallback: 'Info',
     },
 ]
 

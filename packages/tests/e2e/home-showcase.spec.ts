@@ -81,9 +81,9 @@ test.describe('HomeShowcase section', () => {
 
     // ── 6. Data table headers ──────────────────────────────────────────────
 
-    test('data table headers contain Name, Owner and Status columns', async ({ page }) => {
+    test('data table headers contain Project, Owner and Status columns', async ({ page }) => {
         const table = page.locator('[data-cy="showcase-data-table"]')
-        await expect(table).toContainText('Name')
+        await expect(table).toContainText('PROJECT')
         await expect(table).toContainText('Owner')
         await expect(table).toContainText('Status')
     })
@@ -111,29 +111,26 @@ test.describe('HomeShowcase section', () => {
         await expect(svg).toBeVisible()
     })
 
-    // ── 9. Switch — 3 variants ─────────────────────────────────────────────
+    // ── 9. Switch — 2 variants (OFF + ON) ─────────────────────────────────
 
-    test('renders exactly 3 switch inputs', async ({ page }) => {
+    test('renders exactly 2 switch inputs (off + on)', async ({ page }) => {
         const switches = page.locator('section.home-showcase input[type="checkbox"]')
-        await expect(switches).toHaveCount(3)
+        await expect(switches).toHaveCount(2)
     })
 
-    // ── 10. Chips — 6 intents ──────────────────────────────────────────────
+    // ── 10. Chips — 3 visible intents (Primary, Neutral, Success) ──────────
 
-    test('renders exactly 6 chips', async ({ page }) => {
+    test('renders exactly 3 chips inline', async ({ page }) => {
         const chips = page.locator('[data-cy="showcase-chip-group"] .origam-chip')
-        await expect(chips).toHaveCount(6)
+        await expect(chips).toHaveCount(3)
     })
 
-    test('chip intents are all represented', async ({ page }) => {
+    test('chip intents Primary, Neutral and Success are rendered', async ({ page }) => {
         const chipGroup = page.locator('[data-cy="showcase-chip-group"]')
         await expect(chipGroup).toBeVisible()
         await expect(chipGroup).toContainText('Primary')
         await expect(chipGroup).toContainText('Neutral')
         await expect(chipGroup).toContainText('Success')
-        await expect(chipGroup).toContainText('Warning')
-        await expect(chipGroup).toContainText('Danger')
-        await expect(chipGroup).toContainText('Info')
     })
 
     // ── 11. Avatar group ───────────────────────────────────────────────────

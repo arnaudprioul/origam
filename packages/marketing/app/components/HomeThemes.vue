@@ -1,15 +1,26 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import {
     THEMES_GRID_COLUMNS,
     THEMES_TILE_RADIUS,
-    THEMES_TOOLING_PILLS,
-    THEMES_TOOLING_VARS,
+    THEMES_TOOLING_TEXT,
     THEME_CHIPS,
     THEME_PREVIEW_TILES
 } from '~/consts/themes-showcase.const'
 
 const { t } = useT()
+
+const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
+    const vars: Record<string, string> = {}
+    if (tile.surfaceColor) vars['--themes-tile--surface'] = tile.surfaceColor
+    if (tile.btnBgColor) vars['--themes-tile--btn-bg'] = tile.btnBgColor
+    if (tile.barColors) {
+        vars['--themes-tile--bar-dark'] = tile.barColors[0]
+        vars['--themes-tile--bar-light'] = tile.barColors[1]
+    }
+    return vars
+})
 </script>
 
 <template>
@@ -36,38 +47,50 @@ const { t } = useT()
                     tag="h2"
                     class="home-themes__title"
                 >
-                    {{ t('home.themes.title', 'One design system. Every brand.') }}
+                    <span class="home-themes__title-line">{{ t('home.themes.titleLine1', 'One design system.') }}</span>
+                    <span class="home-themes__title-line">{{ t('home.themes.titleLine2', 'Every brand.') }}</span>
                 </origam-title>
 
-                <origam-chip-group class="home-themes__chips">
-                    <origam-chip
+                <p class="home-themes__subtitle">
+                    {{ t('home.themes.subtitle', 'DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.') }}
+                </p>
+
+                <ul
+                    class="home-themes__chips"
+                    aria-label="Available themes"
+                >
+                    <li
                         v-for="chip in THEME_CHIPS"
                         :key="chip.key"
-                        color="primary"
-                        pill
-                        size="small"
-                        :data-cy="`themes-chip-${chip.key}`"
+                        class="home-themes__chip-item"
                     >
-                        {{ t(chip.labelKey, chip.labelFallback) }}
-                    </origam-chip>
-                </origam-chip-group>
+                        <origam-chip
+                            color="neutral"
+                            border
+                            border-color="var(--origam-color__border---default)"
+                            pill
+                            size="small"
+                            :data-active="chip.key === 'sobre'"
+                            :data-cy="`themes-chip-${chip.key}`"
+                        >
+                            {{ t(chip.labelKey, chip.labelFallback) }}
+                        </origam-chip>
+                    </li>
+                </ul>
 
-                <origam-chip-group class="home-themes__tooling">
-                    <origam-chip
-                        v-for="pill in THEMES_TOOLING_PILLS"
+                <p
+                    class="home-themes__tooling"
+                    aria-label="Tooling compatibility"
+                >
+                    <span
+                        v-for="(pill, index) in THEMES_TOOLING_TEXT"
                         :key="pill.key"
-                        :style="THEMES_TOOLING_VARS"
-                        color="neutral"
-                        border
-                        border-color="var(--origam-color__border---ghost)"
-                        pill
-                        size="small"
-                        class="home-themes__tooling-pill"
-                        :data-cy="`themes-tooling-${pill.key}`"
+                        class="home-themes__tooling-item"
                     >
+                        <span v-if="index > 0" aria-hidden="true" class="home-themes__tooling-sep">·</span>
                         {{ t(pill.labelKey, pill.labelFallback) }}
-                    </origam-chip>
-                </origam-chip-group>
+                    </span>
+                </p>
             </origam-grid-item>
 
             <origam-grid-item
@@ -99,31 +122,35 @@ const { t } = useT()
                                 border
                                 border-color="var(--origam-color__border---ghost)"
                                 class="home-themes__preview-tile"
+                                :style="tileStyle(tile)"
                             >
                                 <figure class="home-themes__preview-figure">
                                     <figcaption class="home-themes__preview-label">
                                         {{ t(tile.labelKey, tile.labelFallback) }}
                                     </figcaption>
 
-                                    <div class="home-themes__preview-content">
+                                    <div
+                                        class="home-themes__skeleton"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="home-themes__skeleton-bar home-themes__skeleton-bar--long" />
+                                        <span class="home-themes__skeleton-bar home-themes__skeleton-bar--short" />
+                                    </div>
+
+                                    <div class="home-themes__preview-footer">
                                         <origam-btn
                                             color="primary"
                                             size="small"
+                                            class="home-themes__preview-btn"
+                                            :style="tile.btnBgColor ? {
+                                                '--origam-btn---background-color': tile.btnBgColor,
+                                                '--origam-btn--hover---background-color': tile.btnBgColor,
+                                                '--origam-btn--active---background-color': tile.btnBgColor
+                                            } : {}"
                                             data-cy="themes-tile-button"
                                         >
                                             {{ t('home.themes.previewButton', 'Button') }}
                                         </origam-btn>
-
-                                        <origam-chip
-                                            :style="THEMES_TOOLING_VARS"
-                                            color="neutral"
-                                            border
-                                            border-color="var(--origam-color__border---ghost)"
-                                            pill
-                                            size="x-small"
-                                        >
-                                            {{ t('home.themes.previewJson', '.json') }}
-                                        </origam-chip>
                                     </div>
                                 </figure>
                             </origam-sheet>
@@ -137,10 +164,10 @@ const { t } = useT()
 
 <style scoped>
 .home-themes {
+    width: 100%;
     padding-block: var(--origam-space---24, 6rem);
     padding-inline: var(--origam-space---14, 3.5rem);
-    max-width: var(--origam-layout---max-width, 80rem);
-    margin-inline: auto;
+    box-sizing: border-box;
 }
 
 .home-themes__text-col {
@@ -150,39 +177,61 @@ const { t } = useT()
     gap: var(--origam-space---6, 1.5rem);
 }
 
-/* DS gap: no DS prop sets text-transform / wide tracking on a bare <p>.
-   Colour is the sobre action-primary fgSubtle token (purple), zero CSS. */
 .home-themes__eyebrow {
     margin: 0;
     font-size: var(--origam-font-size---xs, 0.75rem);
     font-weight: var(--origam-font__weight---semibold, 600);
     color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 
-/* DS gap: section display size/tracking exceed OrigamTitle's token scale
-   (max 3xl). Consumes the marketing display tokens, like the Hero H1. */
 .home-themes__title {
     margin: 0;
+    display: flex;
+    flex-direction: column;
     font-size: var(--origam-font-size---section, 3rem);
     font-weight: var(--origam-font__weight---bold, 700);
     letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--origam-color__text---primary, #0a0a0a);
 }
 
-.home-themes__chips,
-.home-themes__tooling {
-    flex-wrap: wrap;
-    gap: var(--origam-space---2, 0.5rem);
+.home-themes__subtitle {
+    margin: 0;
+    max-inline-size: 34rem;
+    font-size: var(--origam-font-size---base, 1rem);
+    line-height: 1.6;
+    color: var(--origam-color__text---secondary, #525252);
 }
 
-/* DS gap: OrigamChip exposes no font-family prop/var — the tooling pills are
-   mono per the maquette. Targets the chip label via the marketing mono token. */
-.home-themes__tooling-pill {
+.home-themes__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--origam-space---2, 0.5rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.home-themes__chip-item {
+    list-style: none;
+}
+
+.home-themes__tooling {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--origam-space---2, 0.5rem);
+    font-size: var(--origam-font-size---sm, 0.875rem);
     font-family: var(--origam-font__family---mono, 'JetBrains Mono', monospace);
+    color: var(--origam-color__text---tertiary, #737373);
+}
+
+.home-themes__tooling-sep {
+    color: var(--origam-color__text---tertiary, #737373);
+    user-select: none;
 }
 
 .home-themes__previews {
@@ -195,13 +244,10 @@ const { t } = useT()
     list-style: none;
 }
 
-/* DS gap: aspect-ratio is a CSS-first sizing primitive with no DS prop. The
-   tile SURFACE (bg) is NOT set here — it comes from each tile's theme via
-   OrigamThemeProvider (--origam-color__surface---default of that theme). */
 .home-themes__preview-tile {
-    aspect-ratio: 1 / 1;
     padding: var(--origam-space---4, 1rem);
     overflow: hidden;
+    background-color: var(--themes-tile--surface, var(--origam-color__surface---default));
 }
 
 .home-themes__preview-figure {
@@ -209,7 +255,6 @@ const { t } = useT()
     flex-direction: column;
     gap: var(--origam-space---3, 0.75rem);
     margin: 0;
-    height: 100%;
 }
 
 .home-themes__preview-label {
@@ -217,15 +262,34 @@ const { t } = useT()
     font-weight: var(--origam-font__weight---semibold, 600);
     letter-spacing: 0.04em;
     color: var(--origam-color__text---secondary, #525252);
-
     font-family: var(--origam-font__family---mono, 'JetBrains Mono', monospace);
 }
 
-.home-themes__preview-content {
+.home-themes__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-space---2, 0.5rem);
+}
+
+.home-themes__skeleton-bar {
+    display: block;
+    height: 10px;
+    border-radius: var(--origam-radius---sm, 4px);
+    background-color: var(--themes-tile--bar-dark, var(--origam-color__neutral---300, #d4d4d4));
+}
+
+.home-themes__skeleton-bar--long {
+    width: 100%;
+}
+
+.home-themes__skeleton-bar--short {
+    width: 72%;
+    background-color: var(--themes-tile--bar-light, var(--origam-color__neutral---200, #e5e5e5));
+}
+
+.home-themes__preview-footer {
     display: flex;
     align-items: center;
-    gap: var(--origam-space---3, 0.75rem);
-    flex-wrap: wrap;
 }
 
 @media (max-width: 40rem) {

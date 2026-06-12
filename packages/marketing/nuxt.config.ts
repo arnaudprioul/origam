@@ -1,7 +1,16 @@
 import { resolve } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
 import { MARKETING_DEFAULTS } from './app/consts/marketing.const'
 import { I18N_LOCALES, I18N_COOKIE_KEY } from './app/consts/i18n.const'
+
+// Single source of truth for the displayed version: the published `origam`
+// package version. Read at build time so badges/translations never need a
+// manual edit on release — bump packages/ds/package.json and it flows here.
+const DS_VERSION = JSON.parse(
+    readFileSync(fileURLToPath(new URL('../ds/package.json', import.meta.url)), 'utf-8')
+).version as string
 
 export default defineNuxtConfig({
     compatibilityDate: '2026-05-27',
@@ -64,7 +73,7 @@ export default defineNuxtConfig({
         public: {
             githubRepo: process.env.NUXT_PUBLIC_GITHUB_REPO ?? MARKETING_DEFAULTS.githubRepo,
             npmPkg: process.env.NUXT_PUBLIC_NPM_PKG ?? MARKETING_DEFAULTS.npmPkg,
-            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? MARKETING_DEFAULTS.npmVersion,
+            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? DS_VERSION,
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl
         }
     },

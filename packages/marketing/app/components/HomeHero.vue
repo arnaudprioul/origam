@@ -1,12 +1,17 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useT } from '~/composables/useT'
+  import { useVersion } from '~/composables/useVersion'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { HERO_BTN_VARS, HERO_BADGE_VARS } from '~/consts/hero.const'
 
   const { t } = useT()
+  const { version } = useVersion()
 
   const installCommand = computed(() => t('home.hero.install', 'npm install origam'))
+  const badge = computed(() =>
+    t('home.hero.badge', `v${version} — 29 charts shipped, WCAG 2.1 AA pass`, { version })
+  )
   const githubRepo = MARKETING_DEFAULTS.githubRepo
 </script>
 
@@ -29,7 +34,7 @@
           pill
           data-cy="hero-badge"
         >
-          {{ t('home.hero.badge', 'v2.5.0') }}
+          {{ badge }}
         </origam-chip>
 
         <origam-text-mask
