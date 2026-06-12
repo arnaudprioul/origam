@@ -1,0 +1,105 @@
+/*
+ * editorial.css — Editorial brand theme: placeholder (Phase 4 will complete).
+ *
+ * Values derived from Editorial_Light.html / Editorial_Dark.html maquettes.
+ * Serif display font, sharp radii (0px), ink-on-paper aesthetic.
+ */
+
+/* ── EDITORIAL LIGHT ─────────────────────────────────────────────────────── */
+
+:root:root[data-theme="editorial"],
+:root:root[data-theme="editorial"][data-mode="light"] {
+    --origam-color__surface---default: #fbf7ee;
+    --origam-color__surface---raised: #fffdf7;
+    --origam-color__surface---sunken: #f3ecdd;
+    --origam-color__surface---overlay: #f3ecdd;
+    --origam-color__surface---disabled: #e6dfd1;
+
+    --origam-color__text---primary: #1a1714;
+    --origam-color__text---secondary: #4a4036;
+    --origam-color__text---tertiary: #6b5f50;
+    --origam-color__text---disabled: #a3a3a3;
+    --origam-color__text---inverse: #ffffff;
+    --origam-color__text---onColor: #ffffff;
+    --origam-color__text---ink: #1a1714;
+
+    --origam-color__action--primary---bg: #5b21b6;
+    --origam-color__action--primary---bgHover: #4c1d95;
+    --origam-color__action--primary---bgSubtle: rgba(91, 33, 182, 0.10);
+    --origam-color__action--primary---bgDisabled: #e6dfd1;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #4c1d95;
+    --origam-color__action--primary---fgDisabled: #a3a3a3;
+
+    --origam-color__border---default: rgba(26, 23, 20, 0.16);
+    --origam-color__border---subtle: rgba(26, 23, 20, 0.08);
+    --origam-color__border---strong: rgba(26, 23, 20, 0.40);
+    --origam-color__border---focus: #5b21b6;
+    --origam-color__border---subtle-alpha: rgba(26, 23, 20, 0.10);
+    --origam-color__border---ghost: rgba(26, 23, 20, 0.08);
+
+    --origam-appbar---bg: color-mix(in srgb, #fbf7ee 72%, transparent);
+
+    --origam-radius---card: 0px;
+    --origam-radius---btn: 0px;
+    --origam-radius---pill: 0px;
+
+    --origam-shadow---card-elevated: none;
+    --origam-shadow---glow-primary: none;
+
+    --origam-gradient---hero-glow: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167, 139, 250, 0.16), transparent 60%);
+    --origam-gradient---cta-glow: none;
+    --origam-gradient---cta-glow-top: none;
+    --origam-gradient---hero-title: none;
+    --origam-gradient---hero-grid: linear-gradient(rgba(26, 23, 20, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(26, 23, 20, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(#1a1714, #1a1714);
+}
+
+/* ── EDITORIAL DARK ──────────────────────────────────────────────────────── */
+
+:root:root[data-theme="editorial"][data-mode="dark"] {
+    --origam-color__surface---default: #0a0a0a;
+    --origam-color__surface---raised: #0e0e0e;
+    --origam-color__surface---sunken: #131313;
+    --origam-color__surface---overlay: #131313;
+    --origam-color__surface---disabled: #262626;
+
+    --origam-color__text---primary: #ffffff;
+    --origam-color__text---secondary: #d4d4d4;
+    --origam-color__text---tertiary: #d4d4d4;
+    --origam-color__text---disabled: #525252;
+    --origam-color__text---inverse: #0a0a0a;
+    --origam-color__text---onColor: #0a0a0a;
+    --origam-color__text---ink: #ffffff;
+
+    --origam-color__action--primary---bg: #a78bfa;
+    --origam-color__action--primary---bgHover: #8b5cf6;
+    --origam-color__action--primary---bgSubtle: rgba(167, 139, 250, 0.14);
+    --origam-color__action--primary---bgDisabled: #262626;
+    --origam-color__action--primary---fg: #0a0a0a;
+    --origam-color__action--primary---fgSubtle: #c4b5fd;
+    --origam-color__action--primary---fgDisabled: #525252;
+
+    --origam-color__border---default: rgba(255, 255, 255, 0.10);
+    --origam-color__border---subtle: rgba(255, 255, 255, 0.05);
+    --origam-color__border---strong: rgba(255, 255, 255, 0.20);
+    --origam-color__border---focus: #a78bfa;
+    --origam-color__border---subtle-alpha: rgba(255, 255, 255, 0.08);
+    --origam-color__border---ghost: rgba(255, 255, 255, 0.06);
+
+    --origam-appbar---bg: color-mix(in srgb, #0a0a0a 72%, transparent);
+
+    --origam-radius---card: 0px;
+    --origam-radius---btn: 0px;
+    --origam-radius---pill: 0px;
+
+    --origam-shadow---card-elevated: none;
+    --origam-shadow---glow-primary: none;
+
+    --origam-gradient---hero-glow: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167, 139, 250, 0.16), transparent 60%);
+    --origam-gradient---cta-glow: none;
+    --origam-gradient---cta-glow-top: none;
+    --origam-gradient---hero-title: none;
+    --origam-gradient---hero-grid: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(#ffffff, #ffffff);
+}

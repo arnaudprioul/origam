@@ -1,0 +1,105 @@
+/*
+ * material.css — Material brand theme: placeholder (Phase 4 will complete).
+ *
+ * Values derived from Material_Light.html / Material_Dark.html maquettes.
+ * Material You palette: deep purple primary, generous radii.
+ */
+
+/* ── MATERIAL LIGHT ──────────────────────────────────────────────────────── */
+
+:root:root[data-theme="material"],
+:root:root[data-theme="material"][data-mode="light"] {
+    --origam-color__surface---default: #fef7ff;
+    --origam-color__surface---raised: #ffffff;
+    --origam-color__surface---sunken: #f7f2fa;
+    --origam-color__surface---overlay: #f7f2fa;
+    --origam-color__surface---disabled: #e8def8;
+
+    --origam-color__text---primary: #1c1b1f;
+    --origam-color__text---secondary: #49454f;
+    --origam-color__text---tertiary: #49454f;
+    --origam-color__text---disabled: #79747e;
+    --origam-color__text---inverse: #ffffff;
+    --origam-color__text---onColor: #ffffff;
+    --origam-color__text---ink: #1c1b1f;
+
+    --origam-color__action--primary---bg: #6750a4;
+    --origam-color__action--primary---bgHover: #21005d;
+    --origam-color__action--primary---bgSubtle: #eaddff;
+    --origam-color__action--primary---bgDisabled: #e8def8;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #21005d;
+    --origam-color__action--primary---fgDisabled: #79747e;
+
+    --origam-color__border---default: rgba(28, 27, 31, 0.12);
+    --origam-color__border---subtle: rgba(28, 27, 31, 0.06);
+    --origam-color__border---strong: rgba(28, 27, 31, 0.30);
+    --origam-color__border---focus: #6750a4;
+    --origam-color__border---subtle-alpha: rgba(28, 27, 31, 0.08);
+    --origam-color__border---ghost: rgba(28, 27, 31, 0.06);
+
+    --origam-appbar---bg: color-mix(in srgb, #fef7ff 72%, transparent);
+
+    --origam-radius---card: 16px;
+    --origam-radius---btn: 16px;
+    --origam-radius---pill: 9999px;
+
+    --origam-shadow---card-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --origam-shadow---glow-primary: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15);
+
+    --origam-gradient---hero-glow: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208, 188, 255, 0.16), transparent 60%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(128, 206, 254, 0.08), transparent 70%);
+    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(208, 188, 255, 0.14), transparent 65%);
+    --origam-gradient---hero-title: linear-gradient(180deg, #ffffff 0%, #eaddff 60%, #d0bcff 100%);
+    --origam-gradient---hero-grid: linear-gradient(rgba(28, 27, 31, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(28, 27, 31, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(135deg, #6750a4, #d0bcff);
+}
+
+/* ── MATERIAL DARK ───────────────────────────────────────────────────────── */
+
+:root:root[data-theme="material"][data-mode="dark"] {
+    --origam-color__surface---default: #1c1b1f;
+    --origam-color__surface---raised: #2b2930;
+    --origam-color__surface---sunken: #36343b;
+    --origam-color__surface---overlay: #36343b;
+    --origam-color__surface---disabled: #49454f;
+
+    --origam-color__text---primary: #e6e1e5;
+    --origam-color__text---secondary: #cac4d0;
+    --origam-color__text---tertiary: #cac4d0;
+    --origam-color__text---disabled: #79747e;
+    --origam-color__text---inverse: #1c1b1f;
+    --origam-color__text---onColor: #381e72;
+    --origam-color__text---ink: #e6e1e5;
+
+    --origam-color__action--primary---bg: #d0bcff;
+    --origam-color__action--primary---bgHover: #eaddff;
+    --origam-color__action--primary---bgSubtle: #4a4458;
+    --origam-color__action--primary---bgDisabled: #49454f;
+    --origam-color__action--primary---fg: #381e72;
+    --origam-color__action--primary---fgSubtle: #eaddff;
+    --origam-color__action--primary---fgDisabled: #79747e;
+
+    --origam-color__border---default: rgba(202, 196, 208, 0.12);
+    --origam-color__border---subtle: rgba(202, 196, 208, 0.06);
+    --origam-color__border---strong: rgba(202, 196, 208, 0.30);
+    --origam-color__border---focus: #d0bcff;
+    --origam-color__border---subtle-alpha: rgba(202, 196, 208, 0.08);
+    --origam-color__border---ghost: rgba(202, 196, 208, 0.06);
+
+    --origam-appbar---bg: color-mix(in srgb, #1c1b1f 72%, transparent);
+
+    --origam-radius---card: 16px;
+    --origam-radius---btn: 16px;
+    --origam-radius---pill: 9999px;
+
+    --origam-shadow---card-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --origam-shadow---glow-primary: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15);
+
+    --origam-gradient---hero-glow: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208, 188, 255, 0.16), transparent 60%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 60% 60% at 80% 70%, rgba(128, 206, 254, 0.08), transparent 70%);
+    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(208, 188, 255, 0.14), transparent 65%);
+    --origam-gradient---hero-title: linear-gradient(180deg, #ffffff 0%, #eaddff 60%, #d0bcff 100%);
+    --origam-gradient---hero-grid: linear-gradient(rgba(202, 196, 208, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(202, 196, 208, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(135deg, #d0bcff, #eaddff);
+}

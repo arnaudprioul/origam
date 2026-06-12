@@ -94,9 +94,9 @@ test.describe('A · Vérif finale install model', () => {
             await page.goto('/'); await applyTheme(page, 'apple', 'dark')
             expect(await getBodyBg(page)).toBe('rgb(0, 0, 0)')
         })
-        test('geek/dark = rgb(5, 10, 5)', async ({ page }) => {
+        test('geek/dark = rgb(10, 6, 18)', async ({ page }) => {
             await page.goto('/'); await applyTheme(page, 'geek', 'dark')
-            expect(await getBodyBg(page)).toBe('rgb(5, 10, 5)')
+            expect(await getBodyBg(page)).toBe('rgb(10, 6, 18)')
         })
         test('cada brand dark a une bg rgb valide (tokens injectés)', async ({ page }) => {
             await page.goto('/')

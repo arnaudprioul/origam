@@ -1,0 +1,41 @@
+/*
+ * _shared.css — Marketing display geometry tokens (theme-agnostic).
+ *
+ * Declared once at :root:root (specificity 0,2,0) and apply to every theme.
+ * NO brand colour here — only font sizes, letter-spacing, line-heights,
+ * font-weights, radii, spaces, layout max-width, and the heading font-family
+ * default (Inter). Brands override --origam-font-family---heading in their
+ * own theme file.
+ */
+
+:root:root {
+    /* ── Typography — display scale ─────────────────────────────────────── */
+    --origam-font-size---hero: 5.25rem;
+    --origam-font-size---section: 3rem;
+    --origam-font-size---cta: 4rem;
+
+    --origam-letter-spacing---hero: -0.045em;
+    --origam-letter-spacing---tight: -0.03em;
+    --origam-letter-spacing---wide: 0.08em;
+
+    --origam-line-height---hero: 0.95;
+    --origam-line-height---relaxed: 1.7;
+    --origam-line-height---tight: 1.25;
+
+    --origam-font-weight---extrabold: 800;
+
+    /* ── Heading font-family (overridden per brand) ──────────────────────── */
+    --origam-font-family---heading: Inter, 'Helvetica Neue', Arial, sans-serif;
+
+    /* ── Radii ───────────────────────────────────────────────────────────── */
+    --origam-radius---card: 10px;
+    --origam-radius---btn: 10px;
+    --origam-radius---pill: 9999px;
+
+    /* ── Spaces (marketing-specific scale beyond DS primitives) ─────────── */
+    --origam-space---24: 6rem;
+    --origam-space---30: 7.5rem;
+
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    --origam-layout---max-width: 1280px;
+}

@@ -1,0 +1,105 @@
+/*
+ * cartoon.css — Cartoon brand theme: placeholder (Phase 4 will complete).
+ *
+ * Values derived from Cartoon_Light.html / Cartoon_Dark.html maquettes.
+ * Bold black borders (3px solid), offset shadows, playful palette.
+ */
+
+/* ── CARTOON LIGHT ───────────────────────────────────────────────────────── */
+
+:root:root[data-theme="cartoon"],
+:root:root[data-theme="cartoon"][data-mode="light"] {
+    --origam-color__surface---default: #fff9f0;
+    --origam-color__surface---raised: #ffffff;
+    --origam-color__surface---sunken: #fff3d6;
+    --origam-color__surface---overlay: #fff3d6;
+    --origam-color__surface---disabled: #e5e5e5;
+
+    --origam-color__text---primary: #2b2b2b;
+    --origam-color__text---secondary: #5a5048;
+    --origam-color__text---tertiary: #6b6258;
+    --origam-color__text---disabled: #737373;
+    --origam-color__text---inverse: #ffffff;
+    --origam-color__text---onColor: #3a2a2e;
+    --origam-color__text---ink: #2b2b2b;
+
+    --origam-color__action--primary---bg: #7c3aed;
+    --origam-color__action--primary---bgHover: #6d28d9;
+    --origam-color__action--primary---bgSubtle: #ffe5ec;
+    --origam-color__action--primary---bgDisabled: #e5e5e5;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #5b21b6;
+    --origam-color__action--primary---fgDisabled: #737373;
+
+    --origam-color__border---default: #171717;
+    --origam-color__border---subtle: #171717;
+    --origam-color__border---strong: #000000;
+    --origam-color__border---focus: #7c3aed;
+    --origam-color__border---subtle-alpha: rgba(23, 23, 23, 0.60);
+    --origam-color__border---ghost: rgba(23, 23, 23, 0.40);
+
+    --origam-appbar---bg: #fff9f0;
+
+    --origam-radius---card: 14px;
+    --origam-radius---btn: 14px;
+    --origam-radius---pill: 9999px;
+
+    --origam-shadow---card-elevated: 6px 6px 0 #171717;
+    --origam-shadow---glow-primary: 5px 5px 0 #171717;
+
+    --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%);
+    --origam-gradient---cta-glow: radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%);
+    --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, #fcd34d 0%, transparent 30%);
+    --origam-gradient---hero-title: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
+    --origam-gradient---hero-grid: linear-gradient(rgba(23, 23, 23, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(23, 23, 23, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(90deg, #7c3aed, #ec4899);
+}
+
+/* ── CARTOON DARK ────────────────────────────────────────────────────────── */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] {
+    --origam-color__surface---default: #1a1a1a;
+    --origam-color__surface---raised: #262626;
+    --origam-color__surface---sunken: #3d2e0a;
+    --origam-color__surface---overlay: #262626;
+    --origam-color__surface---disabled: #404040;
+
+    --origam-color__text---primary: #fffefb;
+    --origam-color__text---secondary: #d4d4d4;
+    --origam-color__text---tertiary: #d4d4d4;
+    --origam-color__text---disabled: #737373;
+    --origam-color__text---inverse: #2b2b2b;
+    --origam-color__text---onColor: #3a2a2e;
+    --origam-color__text---ink: #fffefb;
+
+    --origam-color__action--primary---bg: #ff8fa3;
+    --origam-color__action--primary---bgHover: #f472b6;
+    --origam-color__action--primary---bgSubtle: #ffe5ec;
+    --origam-color__action--primary---bgDisabled: #404040;
+    --origam-color__action--primary---fg: #3a2a2e;
+    --origam-color__action--primary---fgSubtle: #ffd6a5;
+    --origam-color__action--primary---fgDisabled: #737373;
+
+    --origam-color__border---default: #fffefb;
+    --origam-color__border---subtle: #fffefb;
+    --origam-color__border---strong: #ffffff;
+    --origam-color__border---focus: #ff8fa3;
+    --origam-color__border---subtle-alpha: rgba(255, 254, 251, 0.60);
+    --origam-color__border---ghost: rgba(255, 254, 251, 0.40);
+
+    --origam-appbar---bg: #1a1a1a;
+
+    --origam-radius---card: 14px;
+    --origam-radius---btn: 14px;
+    --origam-radius---pill: 9999px;
+
+    --origam-shadow---card-elevated: 6px 6px 0 #fffefb;
+    --origam-shadow---glow-primary: 5px 5px 0 #fffefb;
+
+    --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%);
+    --origam-gradient---cta-glow: radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%);
+    --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, #fcd34d 0%, transparent 30%);
+    --origam-gradient---hero-title: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
+    --origam-gradient---hero-grid: linear-gradient(rgba(255, 254, 251, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 254, 251, 0.08) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(90deg, #ff8fa3, #ffd6a5);
+}

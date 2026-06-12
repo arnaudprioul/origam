@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     ],
 
     origam: {
-        defaultTheme: 'sobre',
+        defaultTheme: 'geek',
         defaultMode: 'light'
     },
 
@@ -47,25 +47,26 @@ export default defineNuxtConfig({
     },
 
     css: [
-        // Sobre brand token sheets (scoped to [data-theme="sobre"][data-mode="…"]).
-        // ADR-004: the origam/nuxt module only injects the ROOT origam identity at
-        // runtime — brand themes are NOT auto-injected. We load the generated
-        // sobre sheets statically; they stay inert until htmlAttrs sets
-        // data-theme="sobre" (see app.head.htmlAttrs below).
-        'origam/tokens/css/sobre-light',
-        'origam/tokens/css/sobre-dark',
-        // Brand theme sheets for the Themes-section preview tiles. The
-        // origam/nuxt module only injects the root identity at runtime; brand
-        // themes are loaded via the package `exports` map (added to origam's
-        // package.json in v2.6 — no more dist-path imports). They stay inert
-        // until <OrigamThemeProvider theme="…"> scopes them.
-        'origam/tokens/css/editorial-light',
-        'origam/tokens/css/ecom-light',
+        // DS base identity sheets — light/dark neutral DS root (no brand).
+        // The origam/nuxt module injects the active token block at runtime via
+        // createOrigam({ themes }). These static sheets provide the DS primitive
+        // layer (spaces, radii, shadows, feedback colours) as the neutral base.
         'origam/tokens/css/dark',
-        // Marketing display tokens — single source for site presentation tokens
-        // (hero/cta sizes, glows, radii). :root:root specificity wins over the
-        // theme sheets above. MUST load after them.
-        '~/assets/css/marketing-tokens.css',
+        // Marketing brand themes — autonomous CSS layers, self-contained.
+        // ADR-004: brand themes live in packages/marketing/, not in the DS.
+        // Each file declares :root:root[data-theme="X"] (specificity 0,3,0)
+        // to beat the DS identity root (0,1,0). Order matters: shared geometry
+        // first, then individual brand files. All stay inert until data-theme
+        // is set on <html>.
+        '~/assets/css/themes/_shared.css',
+        '~/assets/css/themes/sobre.css',
+        '~/assets/css/themes/geek.css',
+        '~/assets/css/themes/glass.css',
+        '~/assets/css/themes/cartoon.css',
+        '~/assets/css/themes/editorial.css',
+        '~/assets/css/themes/material.css',
+        '~/assets/css/themes/ecom.css',
+        '~/assets/css/themes/apple.css',
         '~/assets/css/base.css'
     ],
 
@@ -90,7 +91,7 @@ export default defineNuxtConfig({
             titleTemplate: `%s · ${MARKETING_DEFAULTS.siteName}`,
             htmlAttrs: {
                 lang: MARKETING_DEFAULTS.defaultLocale,
-                'data-theme': 'sobre',
+                'data-theme': 'geek',
                 'data-mode': 'light'
             },
             link: [
@@ -149,8 +150,7 @@ export default defineNuxtConfig({
                 'origam/utils': resolve(__dirname, '../ds/src/utils'),
                 'origam/types': resolve(__dirname, '../ds/src/types'),
                 'origam/interfaces': resolve(__dirname, '../ds/src/interfaces'),
-                'origam/services': resolve(__dirname, '../ds/src/services'),
-                'origam/themes': resolve(__dirname, '../ds/src/themes')
+                'origam/services': resolve(__dirname, '../ds/src/services')
             }
         }
     }

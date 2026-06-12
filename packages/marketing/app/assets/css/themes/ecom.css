@@ -1,0 +1,105 @@
+/*
+ * ecom.css — Ecom brand theme: placeholder (Phase 4 will complete).
+ *
+ * Values derived from Ecom_Light.html / Ecom_Dark.html maquettes.
+ * Commerce palette: warm red/orange/amber, warm cream bg.
+ */
+
+/* ── ECOM LIGHT ──────────────────────────────────────────────────────────── */
+
+:root:root[data-theme="ecom"],
+:root:root[data-theme="ecom"][data-mode="light"] {
+    --origam-color__surface---default: #fff7f0;
+    --origam-color__surface---raised: #ffffff;
+    --origam-color__surface---sunken: #ffedd5;
+    --origam-color__surface---overlay: #ffedd5;
+    --origam-color__surface---disabled: #fed7aa;
+
+    --origam-color__text---primary: #1a1a1a;
+    --origam-color__text---secondary: #404040;
+    --origam-color__text---tertiary: #404040;
+    --origam-color__text---disabled: #a3a3a3;
+    --origam-color__text---inverse: #ffffff;
+    --origam-color__text---onColor: #ffffff;
+    --origam-color__text---ink: #1a1a1a;
+
+    --origam-color__action--primary---bg: #e11d48;
+    --origam-color__action--primary---bgHover: #be123c;
+    --origam-color__action--primary---bgSubtle: #ffe4e6;
+    --origam-color__action--primary---bgDisabled: #fed7aa;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #be123c;
+    --origam-color__action--primary---fgDisabled: #a3a3a3;
+
+    --origam-color__border---default: #fed7aa;
+    --origam-color__border---subtle: #ffedd5;
+    --origam-color__border---strong: #fb923c;
+    --origam-color__border---focus: #e11d48;
+    --origam-color__border---subtle-alpha: rgba(254, 215, 170, 0.60);
+    --origam-color__border---ghost: rgba(254, 215, 170, 0.40);
+
+    --origam-appbar---bg: color-mix(in srgb, #fff7f0 72%, transparent);
+
+    --origam-radius---card: 6px;
+    --origam-radius---btn: 6px;
+    --origam-radius---pill: 9999px;
+
+    --origam-shadow---card-elevated: 0 1px 3px rgba(225, 29, 72, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --origam-shadow---glow-primary: 0 2px 0 rgba(225, 29, 72, 0.2), 0 4px 12px -2px rgba(225, 29, 72, 0.35);
+
+    --origam-gradient---hero-glow: linear-gradient(180deg, #ffedd5 0%, transparent 40%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 50% 50% at 90% 20%, rgba(251, 146, 60, 0.20), transparent 60%);
+    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(225, 29, 72, 0.12), transparent 65%);
+    --origam-gradient---hero-title: linear-gradient(90deg, #e11d48 0%, #ea580c 50%, #f59e0b 100%);
+    --origam-gradient---hero-grid: linear-gradient(rgba(225, 29, 72, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(225, 29, 72, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(90deg, #e11d48, #ea580c);
+}
+
+/* ── ECOM DARK ───────────────────────────────────────────────────────────── */
+
+:root:root[data-theme="ecom"][data-mode="dark"] {
+    --origam-color__surface---default: #1a0f0a;
+    --origam-color__surface---raised: #231510;
+    --origam-color__surface---sunken: #2e1b14;
+    --origam-color__surface---overlay: #2e1b14;
+    --origam-color__surface---disabled: #3d2518;
+
+    --origam-color__text---primary: #fff7f0;
+    --origam-color__text---secondary: #fed7aa;
+    --origam-color__text---tertiary: #fed7aa;
+    --origam-color__text---disabled: #a3786a;
+    --origam-color__text---inverse: #1a0f0a;
+    --origam-color__text---onColor: #ffffff;
+    --origam-color__text---ink: #fff7f0;
+
+    --origam-color__action--primary---bg: #f43f5e;
+    --origam-color__action--primary---bgHover: #fb7185;
+    --origam-color__action--primary---bgSubtle: rgba(244, 63, 94, 0.14);
+    --origam-color__action--primary---bgDisabled: #3d2518;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #fb7185;
+    --origam-color__action--primary---fgDisabled: #a3786a;
+
+    --origam-color__border---default: rgba(251, 146, 60, 0.20);
+    --origam-color__border---subtle: rgba(251, 146, 60, 0.10);
+    --origam-color__border---strong: #fb923c;
+    --origam-color__border---focus: #f43f5e;
+    --origam-color__border---subtle-alpha: rgba(251, 146, 60, 0.16);
+    --origam-color__border---ghost: rgba(251, 146, 60, 0.12);
+
+    --origam-appbar---bg: color-mix(in srgb, #1a0f0a 72%, transparent);
+
+    --origam-radius---card: 6px;
+    --origam-radius---btn: 6px;
+    --origam-radius---pill: 9999px;
+
+    --origam-shadow---card-elevated: 0 1px 3px rgba(225, 29, 72, 0.08), 0 1px 2px rgba(0, 0, 0, 0.30);
+    --origam-shadow---glow-primary: 0 2px 0 rgba(225, 29, 72, 0.2), 0 4px 12px -2px rgba(244, 63, 94, 0.35);
+
+    --origam-gradient---hero-glow: linear-gradient(180deg, rgba(255, 237, 213, 0.06) 0%, transparent 40%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 50% 50% at 90% 20%, rgba(251, 146, 60, 0.15), transparent 60%);
+    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(244, 63, 94, 0.14), transparent 65%);
+    --origam-gradient---hero-title: linear-gradient(90deg, #e11d48 0%, #ea580c 50%, #f59e0b 100%);
+    --origam-gradient---hero-grid: linear-gradient(rgba(244, 63, 94, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(244, 63, 94, 0.06) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(90deg, #f43f5e, #fb923c);
+}
