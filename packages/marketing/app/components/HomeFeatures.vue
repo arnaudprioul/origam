@@ -30,8 +30,13 @@ const features = computed(() => FEATURES)
                 tag="h2"
                 class="home-features__title"
             >
-                {{ t('home.features.title', `Everything you'd expect. Nothing you wouldn't.`) }}
+                <span class="home-features__title-line">{{ t('home.features.titleLine1', `Everything you'd expect.`) }}</span>
+                <span class="home-features__title-line home-features__title-line--muted">{{ t('home.features.titleLine2', `Nothing you wouldn't.`) }}</span>
             </origam-title>
+
+            <p class="home-features__subtitle">
+                {{ t('home.features.subtitle', 'A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.') }}
+            </p>
         </header>
 
         <origam-grid
@@ -85,8 +90,8 @@ const features = computed(() => FEATURES)
 <style scoped>
 .home-features {
     padding-block: var(--origam-space---24, 6rem);
-    padding-inline: var(--origam-space---14, 3.5rem);
-    max-width: var(--origam-layout---max-width, 80rem);
+    padding-inline: var(--origam-space---6, 1.5rem);
+    max-width: 83rem;
     margin-inline: auto;
 }
 
@@ -110,6 +115,8 @@ const features = computed(() => FEATURES)
    (max 3xl). Consumes the marketing display tokens, like the Hero H1. */
 .home-features__title {
     margin: 0;
+    display: flex;
+    flex-direction: column;
     font-size: var(--origam-font-size---section, 3rem);
     font-weight: var(--origam-font__weight---bold, 700);
     letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
@@ -117,15 +124,35 @@ const features = computed(() => FEATURES)
     color: var(--origam-color__text---primary, #0a0a0a);
 }
 
+.home-features__title-line--muted {
+    color: var(--origam-color__text---secondary, #525252);
+}
+
+.home-features__subtitle {
+    margin: var(--origam-space---5, 1.25rem) 0 0;
+    max-inline-size: 34rem;
+    font-size: var(--origam-font-size---lg, 1.125rem);
+    line-height: 1.6;
+    color: var(--origam-color__text---secondary, #525252);
+}
+
+/* DS gap: no DS prop frames an OrigamGrid as a bordered/rounded card with
+   internal dividers (the maquette "flat table" look). border + radius come
+   from sobre tokens; overflow clips the edge cells' borders to the radius. */
 .home-features__grid {
     list-style: none;
     margin: 0;
     padding: 0;
+    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    border-radius: var(--origam-radius---lg, 14px);
+    overflow: hidden;
 }
 
 .home-features__item {
     list-style: none;
     display: flex;
+    border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 
 .home-features__card {

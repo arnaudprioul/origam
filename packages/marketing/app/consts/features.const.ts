@@ -8,7 +8,7 @@ import type { IFeature } from '~/interfaces/feature.interface'
  * collapse to 2 then 1 on narrow viewports with no media query and no
  * `!important` override of the grid's `--origam-grid---template-columns`.
  */
-export const FEATURES_GRID_COLUMNS = 'repeat(auto-fit, minmax(280px, 1fr))'
+export const FEATURES_GRID_COLUMNS = 'repeat(3, minmax(0, 1fr))'
 
 /**
  * Per-instance OrigamCard padding override (maquette = 32px on all sides).

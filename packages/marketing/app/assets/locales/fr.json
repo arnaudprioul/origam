@@ -84,6 +84,9 @@
     "features": {
       "eyebrow": "CE QU'IL Y A DEDANS",
       "title": "Tout ce que vous attendez. Rien de superflu.",
+      "titleLine1": "Tout ce que vous attendez.",
+      "titleLine2": "Rien de superflu.",
+      "subtitle": "Une boîte à outils complète pour livrer des apps Vue 3 — des primitives atomiques à la dataviz complexe, chaque pièce testée, thémée et conforme a11y.",
       "charts": {
         "title": "29 primitives de graphiques",
         "description": "Ligne, aire, barre, donut, chandelier, heatmap — une couverture digne de Highcharts, sans la licence."

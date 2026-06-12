@@ -84,6 +84,9 @@
     "features": {
       "eyebrow": "WHAT'S INSIDE",
       "title": "Everything you'd expect. Nothing you wouldn't.",
+      "titleLine1": "Everything you'd expect.",
+      "titleLine2": "Nothing you wouldn't.",
+      "subtitle": "A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.",
       "charts": {
         "title": "29 chart primitives",
         "description": "Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license."
