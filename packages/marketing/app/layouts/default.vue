@@ -490,6 +490,16 @@
     background-color: var(--origam-color__action--primary---bgSubtle);
   }
 
+  .appbar-menu .origam-list-item--active {
+    --origam-list-item__overlay---background-color: var(--origam-color__action--primary---bg);
+    background-color: var(--origam-color__action--primary---bgSubtle);
+  }
+
+  .appbar-menu .origam-list-item--active .origam-list-item__title {
+    color: var(--origam-color__action--primary---fgSubtle);
+    font-weight: 600;
+  }
+
   [data-theme="geek"] .appbar-menu .origam-list-item__title {
     font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
     font-size: 0.8125rem;
