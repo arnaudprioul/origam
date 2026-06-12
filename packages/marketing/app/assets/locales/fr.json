@@ -6,15 +6,19 @@
   "a11y": {
     "skipToContent": "Aller au contenu",
     "toggleTheme": "Basculer entre thème clair et sombre",
+    "toggleBrandTheme": "Changer de thème",
     "search": "Rechercher dans la documentation",
     "starCount": "Étoiles GitHub",
-    "language": "Changer de langue"
+    "language": "Changer de langue",
+    "themesChipsList": "Thèmes disponibles"
   },
   "chrome": {
     "searchPlaceholder": "Rechercher…",
     "searchShortcut": "⌘K",
     "starCount": "4.2k",
-    "theme": "Thème : Sobre"
+    "theme": "Thème",
+    "themeActive": "Thème : {label}",
+    "themeSelectLabel": "Choisir le thème"
   },
   "nav": {
     "components": "Composants",

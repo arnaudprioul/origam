@@ -9,12 +9,13 @@
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_LINKS } from '~/consts/nav.const'
   import { SEARCH_SHORTCUT, STAR_COUNT } from '~/consts/chrome.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+  import { THEME_CHIPS } from '~/consts/themes-showcase.const'
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
 
   const { t } = useT()
   const { versionTag } = useVersion()
-  const { resolvedMode, toggleMode } = useTheme()
+  const { theme, setTheme, resolvedMode, toggleMode } = useTheme()
 
   const { locale, locales, setLocale } = useI18n()
   const availableLocales = computed(() => locales.value as LocaleObject[])
@@ -30,7 +31,14 @@
   const searchAriaLabel = computed(() => t('a11y.search', 'Search the documentation'))
   const starCountAriaLabel = computed(() => t('a11y.starCount', 'GitHub stars'))
   const themeAriaLabel = computed(() => t('a11y.toggleTheme', 'Toggle light and dark mode'))
-  const themeMenuLabel = computed(() => t('chrome.theme', 'Theme: Sobre'))
+  const themeMenuAriaLabel = computed(() => t('a11y.toggleBrandTheme', 'Switch brand theme'))
+  const themeSelectLabel = computed(() => t('chrome.themeSelectLabel', 'Select brand theme'))
+
+  const activeThipLabel = computed(() => {
+    const active = THEME_CHIPS.find(c => c.key === theme.value)
+    return active ? t(active.labelKey, active.labelFallback) : t('chrome.theme', 'Theme')
+  })
+  const themeMenuLabel = computed(() => t('chrome.themeActive', 'Theme: {label}', { label: activeThipLabel.value }))
 </script>
 
 <template>
@@ -152,7 +160,7 @@
               <origam-btn
                 class="appbar-actions__btn"
                 variant="outlined"
-                :aria-label="themeMenuLabel"
+                :aria-label="themeMenuAriaLabel"
                 :text="themeMenuLabel"
                 :append-icon="MDI_ICONS.CHEVRON_DOWN"
                 v-bind="props"
@@ -160,6 +168,7 @@
                 <template #prepend>
                   <span
                     class="theme-switcher__swatch"
+                    :data-theme-swatch="theme"
                     aria-hidden="true"
                   />
                 </template>
@@ -167,7 +176,19 @@
             </template>
 
             <template #default>
-
+              <origam-list
+                nav
+                :aria-label="themeSelectLabel"
+              >
+                <origam-list-item
+                  v-for="chip in THEME_CHIPS"
+                  :key="chip.key"
+                  :title="t(chip.labelKey, chip.labelFallback)"
+                  :active="chip.key === theme"
+                  :data-cy="`theme-menu-${chip.key}`"
+                  @click="setTheme(chip.key)"
+                />
+              </origam-list>
             </template>
           </origam-menu>
         </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useTheme } from 'origam/composables'
 import { useT } from '~/composables/useT'
 import {
     THEMES_GRID_COLUMNS,
@@ -10,6 +11,7 @@ import {
 } from '~/consts/themes-showcase.const'
 
 const { t } = useT()
+const { theme, setTheme } = useTheme()
 
 const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
     const vars: Record<string, string> = {}
@@ -57,24 +59,23 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
 
                 <ul
                     class="home-themes__chips"
-                    aria-label="Available themes"
+                    :aria-label="t('a11y.themesChipsList', 'Available themes')"
                 >
                     <li
                         v-for="chip in THEME_CHIPS"
                         :key="chip.key"
                         class="home-themes__chip-item"
                     >
-                        <origam-chip
-                            color="neutral"
-                            border
-                            border-color="var(--origam-color__border---default)"
-                            pill
-                            size="small"
-                            :data-active="chip.key === 'sobre'"
+                        <button
+                            type="button"
+                            class="home-themes__chip"
+                            :aria-pressed="chip.key === theme"
+                            :data-active="chip.key === theme"
                             :data-cy="`themes-chip-${chip.key}`"
+                            @click="setTheme(chip.key)"
                         >
                             {{ t(chip.labelKey, chip.labelFallback) }}
-                        </origam-chip>
+                        </button>
                     </li>
                 </ul>
 
@@ -216,6 +217,41 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
 
 .home-themes__chip-item {
     list-style: none;
+}
+
+.home-themes__chip {
+    display: inline-flex;
+    align-items: center;
+    padding-block: var(--origam-space---1, 0.25rem);
+    padding-inline: var(--origam-space---3, 0.75rem);
+    border-radius: 999px;
+    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
+    background-color: var(--origam-color__surface---default, #ffffff);
+    color: var(--origam-color__text---secondary, #525252);
+    font-size: var(--origam-font-size---sm, 0.875rem);
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.home-themes__chip:hover {
+    background-color: var(--origam-color__surface---raised, rgba(0, 0, 0, 0.04));
+    border-color: var(--origam-color__border---strong, rgba(0, 0, 0, 0.24));
+    color: var(--origam-color__text---primary, #0a0a0a);
+}
+
+.home-themes__chip:focus-visible {
+    outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+    outline-offset: 2px;
+}
+
+.home-themes__chip[data-active="true"],
+.home-themes__chip[aria-pressed="true"] {
+    background-color: var(--origam-color__action--primary---bg, #7c3aed);
+    border-color: var(--origam-color__action--primary---bg, #7c3aed);
+    color: var(--origam-color__action--primary---fg, #ffffff);
 }
 
 .home-themes__tooling {
