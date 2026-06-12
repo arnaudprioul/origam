@@ -60,7 +60,8 @@ const { t } = useT()
 
 .home-kpis__list {
     margin: 0;
-    padding: 0;
+    padding-block: var(--origam-space---10, 2.5rem);
+    padding-inline: 0;
     text-align: center;
 }
 
@@ -75,7 +76,11 @@ const { t } = useT()
 
 .home-kpis__value {
     margin: 0;
-    color: var(--origam-color__action--primary---bg, #7c3aed);
+    background: var(--origam-gradient---kpi-value);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     line-height: 1;
     font-weight: var(--origam-font-weight---extrabold, 800);
     letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
