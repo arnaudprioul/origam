@@ -48,4 +48,16 @@
     --origam-color---btn-secondary-border: transparent;
     --origam-color---btn-secondary-text: var(--origam-color__text---secondary, #525252);
     --origam-shadow---btn-secondary: none;
+
+    /* ── OrigamCode — follow the active theme ────────────────────────────────
+       Style Dictionary bakes component tokens to literals at build time, so the
+       DS code surface keeps the base value (#fafafa) and ignores runtime theme
+       overrides of the semantic surfaces. Re-point the code tokens (base +
+       compact, used by the hero install pill) at the live semantic vars so the
+       code chrome follows each theme instead of staying grey. */
+    --origam-code---background-color: var(--origam-color__surface---sunken);
+    --origam-code---color: var(--origam-color__text---primary);
+    --origam-code---border-color: var(--origam-color__border---subtle);
+    --origam-code__compact---background-color: var(--origam-color__surface---overlay);
+    --origam-code__compact---color: var(--origam-color__text---secondary);
 }
