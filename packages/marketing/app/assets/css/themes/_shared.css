@@ -61,3 +61,15 @@
     --origam-code__compact---background-color: var(--origam-color__surface---overlay);
     --origam-code__compact---color: var(--origam-color__text---secondary);
 }
+
+/* Hero install pill — the DS compact OrigamCode ships no inner padding/gap,
+   so "$ npm install origam [copy]" sits flush against the pill edges. Give it
+   breathing room + spacing between prompt / code / copy. Applies to every
+   theme (the cramping is theme-independent). */
+[data-cy="hero-install-command"] {
+    --origam-code__compact---padding-block: 0.5rem;
+    --origam-code__compact---padding-inline: 0.9rem;
+    --origam-code__compact---gap: 0.5rem;
+    padding: 0.5rem 0.9rem !important;
+    column-gap: 0.5rem;
+}
