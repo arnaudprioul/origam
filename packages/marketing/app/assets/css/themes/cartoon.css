@@ -204,13 +204,11 @@
     --origam-color__surface---overlay:  #3d2e0a;
     --origam-color__surface---disabled: #404040;
 
-    /* ── Page background: amber + pink corner glows (measured on the maquette
-       dark: #fcd34d @10%/10%, #fbcfe8 @90%/10%, full opacity). ────────────── */
-    --origam-page---background-image:
-        radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%),
-        radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%),
-        radial-gradient(circle at 85% 88%, #fbcfe8 0%, transparent 26%),
-        radial-gradient(circle at 12% 90%, #fcd34d 0%, transparent 26%);
+    /* ── Page background: NO page-wide glow in dark. The maquette glows are
+       per-section decor (amber/pink, section-sized), so they ride the
+       hero-glow / cta-glow tokens below — a page-wide background-image would
+       stretch the radial over the whole tall page into a garish wash. ─────── */
+    --origam-page---background-image: none;
 
     /* ── Text ───────────────────────────────────────────────────────────────── */
     --origam-color__text---primary:   #fffefb;
@@ -297,10 +295,13 @@
     --origam-shadow---glow-primary:  4px 4px 0 #fffefb;
 
     /* ── Gradients — marketing display ─────────────────────────────────────── */
-    /* Hero amber glow: same amber top-left (works on dark bg) */
-    --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, rgba(252, 211, 77, 0.35) 0%, transparent 30%);
-    --origam-gradient---cta-glow:     radial-gradient(circle at 90% 10%, rgba(251, 207, 232, 0.18) 0%, transparent 30%);
-    --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, rgba(252, 211, 77, 0.25) 0%, transparent 30%);
+    /* Section-scoped glows (sized to the hero/cta band, not the whole page):
+       amber top-left + pink top-right, like the maquette m-decor. */
+    --origam-gradient---hero-glow:
+        radial-gradient(circle at 12% 22%, rgba(252, 211, 77, 0.55) 0%, transparent 42%),
+        radial-gradient(circle at 88% 22%, rgba(251, 207, 232, 0.45) 0%, transparent 42%);
+    --origam-gradient---cta-glow:     radial-gradient(circle at 88% 35%, rgba(251, 207, 232, 0.40) 0%, transparent 45%);
+    --origam-gradient---cta-glow-top: radial-gradient(circle at 12% 0%, rgba(252, 211, 77, 0.45) 0%, transparent 45%);
     /* Hero title gradient: identical to light (violet → rose → amber) */
     --origam-gradient---hero-title: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
     /* Grid lines: subtle near-white */
