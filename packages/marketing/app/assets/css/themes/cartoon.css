@@ -1,129 +1,431 @@
 /*
- * cartoon.css — Cartoon brand theme: placeholder (Phase 4 will complete).
+ * cartoon.css — Cartoon brand theme: complete, autonomous token layer.
  *
- * Values derived from Cartoon_Light.html / Cartoon_Dark.html maquettes.
- * Bold black borders (3px solid), offset shadows, playful palette.
+ * Specificity: :root:root[data-theme="cartoon"] = 0,3,0
+ * Beats DS identity sheet (:root = 0,1,0) regardless of source order.
+ *
+ * Values measured from Cartoon_Light.html / Cartoon_Dark.html maquettes
+ * (computed styles extracted via Playwright, June 2026).
+ *
+ * Design language: Inter font, playful chunky aesthetic, bold black borders
+ * (3 px solid #171717), hard offset shadows ("hard-shadow"), rounded cards
+ * (14 px), vivid pastel palette, 4-corner radial glows on page background.
+ *
+ * Palette (light):
+ *   Page bg:   #fff9f0 (warm cream) + 4 radial glows (amber/blue/pink/green)
+ *   Primary:   #ff8fa3 (rose pink), text #3a2a2e
+ *   Borders:   #171717 (near-black, everywhere)
+ *   Shadows:   4–6 px hard offset, #171717
+ *   Hero title gradient: #7c3aed → #ec4899 → #f59e0b
+ *
+ * Palette (dark):
+ *   Page bg: #1a1a1a (near-black), no decorative glows
+ *   Borders: #fffefb (near-white)
+ *   Same rose primary #ff8fa3
+ *
+ * Button semantics (Cartoon-specific):
+ *   Primary  = solid rose pill (#ff8fa3), near-black text, 3 px border,
+ *              hard shadow 4 px 4 px 0 #171717. No gradient.
+ *   Secondary/ghost = transparent, 3 px near-black border, same hard shadow.
+ *   Border width override (3 px vs. scoped 1 px) applied via extra rule below.
  */
 
 /* ── CARTOON LIGHT ───────────────────────────────────────────────────────── */
 
 :root:root[data-theme="cartoon"],
 :root:root[data-theme="cartoon"][data-mode="light"] {
-    --origam-color__surface---default: #fff9f0;
-    --origam-color__surface---raised: #ffffff;
-    --origam-color__surface---sunken: #fff3d6;
-    --origam-color__surface---overlay: #fff3d6;
+    /* ── Heading font — Inter (matches maquette, same as shared default) ──── */
+    --origam-font-family---heading: Inter, -apple-system, 'system-ui', sans-serif;
+    --origam-title---font-family:   Inter, -apple-system, 'system-ui', sans-serif;
+
+    /* ── Radii — chunky rounded for cartoon aesthetic ─────────────────────── */
+    --origam-radius---card: 14px;
+    --origam-radius---btn:  14px;
+    --origam-radius---pill: 9999px;
+    --origam-radius---sm:   8px;
+    --origam-radius---md:   14px;
+    --origam-radius---lg:   20px;
+
+    /* ── Surfaces ───────────────────────────────────────────────────────────── */
+    --origam-color__surface---default:  #fff9f0;
+    --origam-color__surface---raised:   #ffffff;
+    --origam-color__surface---sunken:   #fff3d6;
+    --origam-color__surface---overlay:  #fff3d6;
     --origam-color__surface---disabled: #e5e5e5;
 
-    --origam-color__text---primary: #2b2b2b;
-    --origam-color__text---secondary: #5a5048;
-    --origam-color__text---tertiary: #6b6258;
-    --origam-color__text---disabled: #737373;
-    --origam-color__text---inverse: #ffffff;
-    --origam-color__text---onColor: #3a2a2e;
-    --origam-color__text---ink: #2b2b2b;
+    /* ── Page background: warm cream + 4 radial pastel glows ─────────────── */
+    --origam-page---background-image:
+        radial-gradient(circle at 10% 12%, #ffe5a5 0%, transparent 26%),
+        radial-gradient(circle at 90% 14%, #c5e8ff 0%, transparent 26%),
+        radial-gradient(circle at 78% 88%, #ffd6e8 0%, transparent 28%),
+        radial-gradient(circle at 14% 90%, #c8f5d9 0%, transparent 26%);
 
-    --origam-color__action--primary---bg: #7c3aed;
-    --origam-color__action--primary---bgHover: #6d28d9;
-    --origam-color__action--primary---bgSubtle: #ffe5ec;
+    /* ── Text ───────────────────────────────────────────────────────────────── */
+    --origam-color__text---primary:   #2b2b2b;
+    --origam-color__text---secondary: #5a5048;
+    --origam-color__text---tertiary:  #6b6258;
+    --origam-color__text---disabled:  #737373;
+    --origam-color__text---inverse:   #ffffff;
+    --origam-color__text---onColor:   #3a2a2e;
+    --origam-color__text---ink:       #2b2b2b;
+
+    /* ── Actions / primary ──────────────────────────────────────────────────── */
+    --origam-color__action--primary---bg:         #ff8fa3;
+    --origam-color__action--primary---bgHover:    #ff6b8a;
+    --origam-color__action--primary---bgSubtle:   #ffe5ec;
     --origam-color__action--primary---bgDisabled: #e5e5e5;
-    --origam-color__action--primary---fg: #ffffff;
-    --origam-color__action--primary---fgSubtle: #5b21b6;
+    --origam-color__action--primary---fg:         #3a2a2e;
+    --origam-color__action--primary---fgSubtle:   #c0174a;
     --origam-color__action--primary---fgDisabled: #737373;
 
-    --origam-color__border---default: #171717;
-    --origam-color__border---subtle: #171717;
-    --origam-color__border---strong: #000000;
-    --origam-color__border---focus: #7c3aed;
-    --origam-color__border---subtle-alpha: rgba(23, 23, 23, 0.60);
-    --origam-color__border---ghost: rgba(23, 23, 23, 0.40);
+    /* ── Actions / secondary ────────────────────────────────────────────────── */
+    --origam-color__action--secondary---bg:         #ffffff;
+    --origam-color__action--secondary---bgHover:    #fff9f0;
+    --origam-color__action--secondary---bgDisabled: #e5e5e5;
+    --origam-color__action--secondary---fg:         #2b2b2b;
+    --origam-color__action--secondary---fgDisabled: #737373;
 
+    /* ── Actions / ghost ────────────────────────────────────────────────────── */
+    --origam-color__action--ghost---bg:         transparent;
+    --origam-color__action--ghost---bgHover:    rgba(255, 143, 163, 0.10);
+    --origam-color__action--ghost---bgDisabled: transparent;
+    --origam-color__action--ghost---fg:         #2b2b2b;
+    --origam-color__action--ghost---fgDisabled: #737373;
+
+    /* ── Borders — near-black everywhere (Cartoon aesthetic) ─────────────── */
+    --origam-color__border---default:      #171717;
+    --origam-color__border---subtle:       #171717;
+    --origam-color__border---strong:       #000000;
+    --origam-color__border---focus:        #ff8fa3;
+    --origam-color__border---subtle-alpha: rgba(23, 23, 23, 0.60);
+    --origam-color__border---ghost:        rgba(23, 23, 23, 0.40);
+
+    /* ── Feedback ───────────────────────────────────────────────────────────── */
+    --origam-color__feedback--success---bg:       #15803d;
+    --origam-color__feedback--success---bgSubtle: rgba(21, 128, 61, 0.10);
+    --origam-color__feedback--success---fg:       #ffffff;
+    --origam-color__feedback--success---fgSubtle: #15803d;
+    --origam-color__feedback--success---border:   #15803d;
+    --origam-color__feedback--warning---bg:       #b45309;
+    --origam-color__feedback--warning---bgSubtle: rgba(180, 83, 9, 0.10);
+    --origam-color__feedback--warning---fg:       #ffffff;
+    --origam-color__feedback--warning---fgSubtle: #b45309;
+    --origam-color__feedback--warning---border:   #b45309;
+    --origam-color__feedback--danger---bg:        #dc2626;
+    --origam-color__feedback--danger---bgSubtle:  rgba(220, 38, 38, 0.10);
+    --origam-color__feedback--danger---fg:        #ffffff;
+    --origam-color__feedback--danger---fgSubtle:  #dc2626;
+    --origam-color__feedback--danger---border:    #dc2626;
+    --origam-color__feedback--info---bg:          #0891b2;
+    --origam-color__feedback--info---bgSubtle:    rgba(8, 145, 178, 0.10);
+    --origam-color__feedback--info---fg:          #ffffff;
+    --origam-color__feedback--info---fgSubtle:    #0891b2;
+    --origam-color__feedback--info---border:      #0891b2;
+
+    /* ── Appbar — warm cream, hard bottom border (measured: 3 px solid #171717) */
     --origam-appbar---bg: #fff9f0;
 
-    /* Menu — appbar dropdowns */
-    --origam-menu---background: var(--origam-color__surface---default);
-    --origam-menu---color: var(--origam-color__text---primary);
+    /* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
+    --origam-menu---background:    var(--origam-color__surface---default);
+    --origam-menu---color:         var(--origam-color__text---primary);
     --origam-menu---border-radius: 14px;
-    --origam-menu---box-shadow: 4px 4px 0 var(--origam-color__border---default), 0 0 0 2px var(--origam-color__border---default);
+    --origam-menu---box-shadow:    4px 4px 0 #171717, 0 0 0 3px #171717;
     --origam-menu__content---padding: 6px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
+    --origam-list---background:              transparent;
+    --origam-list---padding-block-start:     0;
+    --origam-list---padding-block-end:       0;
     --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;
+    --origam-list-item---padding-inline-end:   12px;
 
-    --origam-radius---card: 14px;
-    --origam-radius---btn: 14px;
-    --origam-radius---pill: 9999px;
-
+    /* ── Shadows — hard offset (Cartoon "neo-brutalist" style) ───────────── */
     --origam-shadow---card-elevated: 6px 6px 0 #171717;
-    --origam-shadow---glow-primary: 5px 5px 0 #171717;
+    --origam-shadow---glow-primary:  4px 4px 0 #171717;
 
+    /* ── Gradients — marketing display ─────────────────────────────────────── */
+    /* Hero section: amber glow top-left (measured on hero inner div) */
     --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%);
-    --origam-gradient---cta-glow: radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%);
+    /* CTA section glows */
+    --origam-gradient---cta-glow:     radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%);
     --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, #fcd34d 0%, transparent 30%);
+    /* Hero title: violet → rose → amber gradient (measured: #7c3aed → #ec4899 → #f59e0b) */
     --origam-gradient---hero-title: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
-    --origam-gradient---hero-grid: linear-gradient(rgba(23, 23, 23, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(23, 23, 23, 0.06) 1px, transparent 1px);
-    --origam-gradient---kpi-value: linear-gradient(90deg, #7c3aed, #ec4899);
+    /* Grid lines: subtle near-black */
+    --origam-gradient---hero-grid:
+        linear-gradient(rgba(23, 23, 23, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 23, 23, 0.06) 1px, transparent 1px);
+    /* KPI values: solid rose (measured: rgb(255,143,163) — no gradient in light) */
+    --origam-gradient---kpi-value: linear-gradient(#ff8fa3, #ff8fa3);
+
+    /* ── Button tokens ──────────────────────────────────────────────────────── */
+    /*
+     * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
+     * Measured: bg #ff8fa3, color #3a2a2e, border 3px #171717,
+     *           box-shadow rgb(23,23,23) 4px 4px 0.
+     * NOTE: OrigamBtn variant="text" sets background-color: transparent !important.
+     * We bypass it via background-image (not blocked by !important) using a
+     * single-color gradient, which HomeHero.vue reads as --origam-gradient---btn-primary.
+     */
+    --origam-gradient---btn-primary:    linear-gradient(#ff8fa3, #ff8fa3);
+    --origam-color---btn-primary-bg:    #ff8fa3;
+    --origam-color---btn-primary-text:  #3a2a2e;
+    --origam-shadow---btn-primary:      4px 4px 0 #171717;
+
+    /*
+     * SECONDARY/GHOST — transparent, same near-black border + hard shadow.
+     * Measured: bg transparent, color #2b2b2b, border 3px #171717,
+     *           box-shadow rgb(23,23,23) 4px 4px 0.
+     */
+    --origam-gradient---btn-secondary:    none;
+    --origam-color---btn-secondary-bg:    transparent;
+    --origam-color---btn-secondary-border: #171717;
+    --origam-color---btn-secondary-text:  #2b2b2b;
+    --origam-shadow---btn-secondary:      4px 4px 0 #171717;
 }
 
 /* ── CARTOON DARK ────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="cartoon"][data-mode="dark"] {
-    --origam-color__surface---default: #1a1a1a;
-    --origam-color__surface---raised: #262626;
-    --origam-color__surface---sunken: #3d2e0a;
-    --origam-color__surface---overlay: #262626;
+    /* ── Heading font — identical Inter stack ─────────────────────────────── */
+    --origam-font-family---heading: Inter, -apple-system, 'system-ui', sans-serif;
+    --origam-title---font-family:   Inter, -apple-system, 'system-ui', sans-serif;
+
+    /* ── Radii — identical to light ─────────────────────────────────────────── */
+    --origam-radius---card: 14px;
+    --origam-radius---btn:  14px;
+    --origam-radius---pill: 9999px;
+    --origam-radius---sm:   8px;
+    --origam-radius---md:   14px;
+    --origam-radius---lg:   20px;
+
+    /* ── Surfaces — near-black ────────────────────────────────────────────── */
+    --origam-color__surface---default:  #1a1a1a;
+    --origam-color__surface---raised:   #262626;
+    --origam-color__surface---sunken:   #3d2e0a;
+    --origam-color__surface---overlay:  #262626;
     --origam-color__surface---disabled: #404040;
 
-    --origam-color__text---primary: #fffefb;
-    --origam-color__text---secondary: #d4d4d4;
-    --origam-color__text---tertiary: #d4d4d4;
-    --origam-color__text---disabled: #737373;
-    --origam-color__text---inverse: #2b2b2b;
-    --origam-color__text---onColor: #3a2a2e;
-    --origam-color__text---ink: #fffefb;
+    /* ── Page background: no decorative glows in dark (measured: none) ────── */
+    --origam-page---background-image: none;
 
-    --origam-color__action--primary---bg: #ff8fa3;
-    --origam-color__action--primary---bgHover: #f472b6;
-    --origam-color__action--primary---bgSubtle: #ffe5ec;
+    /* ── Text ───────────────────────────────────────────────────────────────── */
+    --origam-color__text---primary:   #fffefb;
+    --origam-color__text---secondary: #d4d4d4;
+    --origam-color__text---tertiary:  #a3a3a3;
+    --origam-color__text---disabled:  #737373;
+    --origam-color__text---inverse:   #2b2b2b;
+    --origam-color__text---onColor:   #3a2a2e;
+    --origam-color__text---ink:       #fffefb;
+
+    /* ── Actions / primary — same rose pink in dark ─────────────────────── */
+    --origam-color__action--primary---bg:         #ff8fa3;
+    --origam-color__action--primary---bgHover:    #ff6b8a;
+    --origam-color__action--primary---bgSubtle:   rgba(255, 143, 163, 0.14);
     --origam-color__action--primary---bgDisabled: #404040;
-    --origam-color__action--primary---fg: #3a2a2e;
-    --origam-color__action--primary---fgSubtle: #ffd6a5;
+    --origam-color__action--primary---fg:         #3a2a2e;
+    --origam-color__action--primary---fgSubtle:   #ffd6a5;
     --origam-color__action--primary---fgDisabled: #737373;
 
-    --origam-color__border---default: #fffefb;
-    --origam-color__border---subtle: #fffefb;
-    --origam-color__border---strong: #ffffff;
-    --origam-color__border---focus: #ff8fa3;
-    --origam-color__border---subtle-alpha: rgba(255, 254, 251, 0.60);
-    --origam-color__border---ghost: rgba(255, 254, 251, 0.40);
+    /* ── Actions / secondary ────────────────────────────────────────────────── */
+    --origam-color__action--secondary---bg:         #262626;
+    --origam-color__action--secondary---bgHover:    #333333;
+    --origam-color__action--secondary---bgDisabled: #404040;
+    --origam-color__action--secondary---fg:         #fffefb;
+    --origam-color__action--secondary---fgDisabled: #737373;
 
+    /* ── Actions / ghost ────────────────────────────────────────────────────── */
+    --origam-color__action--ghost---bg:         transparent;
+    --origam-color__action--ghost---bgHover:    rgba(255, 254, 251, 0.08);
+    --origam-color__action--ghost---bgDisabled: transparent;
+    --origam-color__action--ghost---fg:         #fffefb;
+    --origam-color__action--ghost---fgDisabled: #737373;
+
+    /* ── Borders — near-white in dark (measured: #fffefb) ────────────────── */
+    --origam-color__border---default:      #fffefb;
+    --origam-color__border---subtle:       #fffefb;
+    --origam-color__border---strong:       #ffffff;
+    --origam-color__border---focus:        #ff8fa3;
+    --origam-color__border---subtle-alpha: rgba(255, 254, 251, 0.60);
+    --origam-color__border---ghost:        rgba(255, 254, 251, 0.40);
+
+    /* ── Feedback ───────────────────────────────────────────────────────────── */
+    --origam-color__feedback--success---bg:       #86efac;
+    --origam-color__feedback--success---bgSubtle: rgba(134, 239, 172, 0.12);
+    --origam-color__feedback--success---fg:       #1a1a1a;
+    --origam-color__feedback--success---fgSubtle: #86efac;
+    --origam-color__feedback--success---border:   #86efac;
+    --origam-color__feedback--warning---bg:       #fcd34d;
+    --origam-color__feedback--warning---bgSubtle: rgba(252, 211, 77, 0.12);
+    --origam-color__feedback--warning---fg:       #1a1a1a;
+    --origam-color__feedback--warning---fgSubtle: #fcd34d;
+    --origam-color__feedback--warning---border:   #fcd34d;
+    --origam-color__feedback--danger---bg:        #ff6961;
+    --origam-color__feedback--danger---bgSubtle:  rgba(255, 105, 97, 0.12);
+    --origam-color__feedback--danger---fg:        #ffffff;
+    --origam-color__feedback--danger---fgSubtle:  #ff6961;
+    --origam-color__feedback--danger---border:    #ff6961;
+    --origam-color__feedback--info---bg:          #7dd3fc;
+    --origam-color__feedback--info---bgSubtle:    rgba(125, 211, 252, 0.12);
+    --origam-color__feedback--info---fg:          #1a1a1a;
+    --origam-color__feedback--info---fgSubtle:    #7dd3fc;
+    --origam-color__feedback--info---border:      #7dd3fc;
+
+    /* ── Appbar — near-black, hard bottom border near-white ─────────────── */
     --origam-appbar---bg: #1a1a1a;
 
-    /* Menu — appbar dropdowns */
-    --origam-menu---background: var(--origam-color__surface---default);
-    --origam-menu---color: var(--origam-color__text---primary);
+    /* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
+    --origam-menu---background:    var(--origam-color__surface---default);
+    --origam-menu---color:         var(--origam-color__text---primary);
     --origam-menu---border-radius: 14px;
-    --origam-menu---box-shadow: 4px 4px 0 var(--origam-color__border---default), 0 0 0 2px var(--origam-color__border---default);
+    --origam-menu---box-shadow:    4px 4px 0 #fffefb, 0 0 0 3px #fffefb;
     --origam-menu__content---padding: 6px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
+    --origam-list---background:              transparent;
+    --origam-list---padding-block-start:     0;
+    --origam-list---padding-block-end:       0;
     --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;
+    --origam-list-item---padding-inline-end:   12px;
 
-    --origam-radius---card: 14px;
-    --origam-radius---btn: 14px;
-    --origam-radius---pill: 9999px;
-
+    /* ── Shadows — near-white hard offset in dark ────────────────────────── */
     --origam-shadow---card-elevated: 6px 6px 0 #fffefb;
-    --origam-shadow---glow-primary: 5px 5px 0 #fffefb;
+    --origam-shadow---glow-primary:  4px 4px 0 #fffefb;
 
-    --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%);
-    --origam-gradient---cta-glow: radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%);
-    --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, #fcd34d 0%, transparent 30%);
+    /* ── Gradients — marketing display ─────────────────────────────────────── */
+    /* Hero amber glow: same amber top-left (works on dark bg) */
+    --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, rgba(252, 211, 77, 0.35) 0%, transparent 30%);
+    --origam-gradient---cta-glow:     radial-gradient(circle at 90% 10%, rgba(251, 207, 232, 0.18) 0%, transparent 30%);
+    --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, rgba(252, 211, 77, 0.25) 0%, transparent 30%);
+    /* Hero title gradient: identical to light (violet → rose → amber) */
     --origam-gradient---hero-title: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
-    --origam-gradient---hero-grid: linear-gradient(rgba(255, 254, 251, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 254, 251, 0.08) 1px, transparent 1px);
-    --origam-gradient---kpi-value: linear-gradient(90deg, #ff8fa3, #ffd6a5);
+    /* Grid lines: subtle near-white */
+    --origam-gradient---hero-grid:
+        linear-gradient(rgba(255, 254, 251, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 254, 251, 0.08) 1px, transparent 1px);
+    /* KPI values dark: gradient (measured in dark maquette: #7c3aed → #ec4899 → #f59e0b) */
+    --origam-gradient---kpi-value: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
+
+    /* ── Button tokens ──────────────────────────────────────────────────────── */
+    /*
+     * PRIMARY dark — same rose pill, near-black border stays #171717.
+     * Same single-color gradient trick to bypass DS !important on bg-color.
+     */
+    --origam-gradient---btn-primary:   linear-gradient(#ff8fa3, #ff8fa3);
+    --origam-color---btn-primary-bg:   #ff8fa3;
+    --origam-color---btn-primary-text: #3a2a2e;
+    --origam-shadow---btn-primary:     4px 4px 0 #171717;
+
+    /*
+     * SECONDARY/GHOST dark — transparent, near-black border (same as light).
+     * Measured: border 3px solid rgb(23,23,23), box-shadow #171717 4px 4px 0.
+     * Color: rgb(255,254,251) in dark.
+     */
+    --origam-gradient---btn-secondary:     none;
+    --origam-color---btn-secondary-bg:     transparent;
+    --origam-color---btn-secondary-border: #171717;
+    --origam-color---btn-secondary-text:   #fffefb;
+    --origam-shadow---btn-secondary:       4px 4px 0 #171717;
+}
+
+/* ── CARTOON — Appbar hard border bottom ───────────────────────────────── */
+/*
+ * The DS appbar token only controls background. The 3 px solid bottom border
+ * is a Cartoon-specific structural detail.
+ * default.vue scoped CSS: .site-appbar[data-v-xxx] sets border-block-end: 1px.
+ * We override with (0,3,0) specificity to beat the scoped (0,2,0).
+ * Also targets .origam-toolbar for DS-level override.
+ */
+
+:root:root[data-theme="cartoon"] .site-appbar,
+:root:root[data-theme="cartoon"] .origam-toolbar {
+    border-block-end: 3px solid var(--origam-color__border---default) !important;
+}
+
+/* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── */
+/*
+ * The DS OrigamCard "flat" variant has no border. Cartoon shows all cards with
+ * a 3 px solid near-black border (measured: 3px solid #171717 in light,
+ * 3px solid #fffefb in dark via the border-color token).
+ * We use DS card tokens to propagate globally to OrigamCard, and add a fallback
+ * for the scoped showcase/feature card classes.
+ */
+
+:root:root[data-theme="cartoon"] {
+    --origam-card---border-color:        var(--origam-color__border---default);
+    --origam-card---border-style:        solid;
+    --origam-card---border-top-width:    3px;
+    --origam-card---border-right-width:  3px;
+    --origam-card---border-bottom-width: 3px;
+    --origam-card---border-left-width:   3px;
+}
+
+/* ── CARTOON — button 3 px border override ─────────────────────────────── */
+/*
+ * HomeHero / HomeCta scoped CSS writes `border: 1px solid …` on secondary
+ * buttons. The Cartoon design requires 3 px. We override with higher specificity
+ * (0,3,0 + class → 0,4,0 beats Vue scoped 0,2,0) so no !important needed.
+ *
+ * Primary btn: the token --origam-color---btn-primary-bg fills background-color.
+ * We also enforce the 3 px border on primary (maquette: 3px solid #171717).
+ */
+
+:root:root[data-theme="cartoon"] .home-hero__btn--primary,
+:root:root[data-theme="cartoon"] .home-cta__btn--start {
+    background-color: var(--origam-color---btn-primary-bg, #ff8fa3);
+    border: 3px solid #171717;
+    font-weight: 800;
+}
+
+:root:root[data-theme="cartoon"] .home-hero__btn--secondary,
+:root:root[data-theme="cartoon"] .home-cta__btn--docs {
+    border: 3px solid var(--origam-color---btn-secondary-border, #171717);
+    font-weight: 800;
+}
+
+/* ── CARTOON — Features grid: cartoon border style ─────────────────────── */
+/*
+ * .home-features__grid has `border: 1px solid` and .home-features__item has
+ * `border-inline-end/border-block-end: 1px solid`. Cartoon uses 3 px.
+ * The feature cells in the maquette use directional borders (top, right, bottom
+ * depending on position) — we keep 3 px on the grid outline + dividers.
+ */
+
+:root:root[data-theme="cartoon"] .home-features__grid {
+    border: 3px solid var(--origam-color__border---default);
+}
+
+:root:root[data-theme="cartoon"] .home-features__item {
+    border-inline-end: 3px solid var(--origam-color__border---default);
+    border-block-end:  3px solid var(--origam-color__border---default);
+}
+
+/* ── CARTOON — Hero badge (chip) specific style ─────────────────────────── */
+/*
+ * The hero badge uses OrigamChip color="primary" which inlines
+ * --origam-chip---background-color: transparent via the DS useColorEffect.
+ * Inline CSS custom properties beat external CSS for that same variable,
+ * so we must use !important on the resolved property (background-color)
+ * to enforce the Cartoon amber pill appearance.
+ * Measured: bg #ffe5a5, text #3a2a2e, border 3px #171717, shadow 3px 3px 0 #171717.
+ */
+
+:root:root[data-theme="cartoon"] [data-cy="hero-badge"] {
+    background-color: #ffe5a5 !important;
+    color:            #3a2a2e !important;
+    border-color:     #171717 !important;
+    border-width:     3px !important;
+    border-style:     solid !important;
+    box-shadow:       3px 3px 0 #171717;
+}
+
+/* ── CARTOON — Marketing heading font override ──────────────────────────── */
+/*
+ * Section headings use scoped CSS with Inter (body font). No change needed
+ * for Cartoon (maquette also uses Inter). Rule kept for parity with other themes.
+ */
+
+:root:root[data-theme="cartoon"] .home-hero__title,
+:root:root[data-theme="cartoon"] .home-features__title,
+:root:root[data-theme="cartoon"] .home-playground__title,
+:root:root[data-theme="cartoon"] .home-showcase__title,
+:root:root[data-theme="cartoon"] .home-themes__title,
+:root:root[data-theme="cartoon"] .home-cta__title {
+    font-family: Inter, -apple-system, 'system-ui', sans-serif;
 }
