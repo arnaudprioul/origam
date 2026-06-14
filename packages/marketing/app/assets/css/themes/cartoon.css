@@ -422,6 +422,22 @@
     box-shadow:       3px 3px 0 #171717;
 }
 
+/* In dark, the hero/cta badge + buttons sit on the dark page background, so
+   their hard border + offset shadow go near-white to pop — exactly like the
+   maquette. (Cards live on a raised surface and keep their black border.) */
+:root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="hero-badge"] {
+    border-color: #fffefb !important;
+    box-shadow:   3px 3px 0 #fffefb !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-hero__btn--primary,
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__btn--start,
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-hero__btn--secondary,
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__btn--docs {
+    border-color: #fffefb !important;
+    box-shadow: 4px 4px 0 #fffefb !important;
+}
+
 /* ── CARTOON — Marketing heading font override ──────────────────────────── */
 /*
  * Section headings use scoped CSS with Inter (body font). No change needed
