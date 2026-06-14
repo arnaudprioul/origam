@@ -239,10 +239,11 @@
     --origam-color__action--ghost---fg:         #fffefb;
     --origam-color__action--ghost---fgDisabled: #737373;
 
-    /* ── Borders — near-white in dark (measured: #fffefb) ────────────────── */
-    --origam-color__border---default:      #fffefb;
-    --origam-color__border---subtle:       #fffefb;
-    --origam-color__border---strong:       #ffffff;
+    /* ── Borders — hard black in dark like the maquette cards (#171717);
+       only the appbar uses the near-white border (overridden below). ──────── */
+    --origam-color__border---default:      #171717;
+    --origam-color__border---subtle:       #171717;
+    --origam-color__border---strong:       #000000;
     --origam-color__border---focus:        #ff8fa3;
     --origam-color__border---subtle-alpha: rgba(255, 254, 251, 0.60);
     --origam-color__border---ghost:        rgba(255, 254, 251, 0.40);
@@ -284,8 +285,8 @@
     --origam-list-item---padding-inline-start: 12px;
     --origam-list-item---padding-inline-end:   12px;
 
-    /* ── Shadows — near-white hard offset in dark ────────────────────────── */
-    --origam-shadow---card-elevated: 6px 6px 0 #fffefb;
+    /* ── Shadows — hard black offset in dark, like the maquette cards ──────── */
+    --origam-shadow---card-elevated: 6px 6px 0 #171717;
     --origam-shadow---glow-primary:  4px 4px 0 #fffefb;
 
     /* ── Gradients — marketing display ─────────────────────────────────────── */
@@ -336,6 +337,12 @@
 :root:root[data-theme="cartoon"] .site-appbar,
 :root:root[data-theme="cartoon"] .origam-toolbar {
     border-block-end: 3px solid var(--origam-color__border---default) !important;
+}
+
+/* Appbar keeps the near-white rule in dark (cards/sections use black). */
+:root:root[data-theme="cartoon"][data-mode="dark"] .site-appbar,
+:root:root[data-theme="cartoon"][data-mode="dark"] .origam-toolbar {
+    border-block-end-color: #fffefb !important;
 }
 
 /* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── */
