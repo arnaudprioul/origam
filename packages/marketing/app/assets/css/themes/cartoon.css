@@ -766,6 +766,13 @@
     border: none !important;
 }
 
+/* Install pill surface: the maquette uses a neutral dark-grey #262626 in dark
+   (not the olive #3d2e0a surface-overlay used by the playground toolbar). */
+:root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="hero-install-command"] {
+    --origam-code---background-color: #262626;
+    --origam-code__compact---background-color: #262626;
+}
+
 /* ── CARTOON — Feature cell dark: top + left borders near-white ─────────── */
 /*
  * In the live dark, .home-features__item top/left border-color is
