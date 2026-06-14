@@ -65,6 +65,7 @@
           class="home-hero__btn home-hero__btn--primary"
           variant="text"
           href="/components"
+          append-icon="mdi-arrow-right"
           data-cy="hero-cta-components"
         >
           {{ t('home.hero.ctaComponents', 'Browse components') }}
