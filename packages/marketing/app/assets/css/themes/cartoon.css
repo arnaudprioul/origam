@@ -201,7 +201,7 @@
     --origam-color__surface---default:  #1a1a1a;
     --origam-color__surface---raised:   #262626;
     --origam-color__surface---sunken:   #3d2e0a;
-    --origam-color__surface---overlay:  #262626;
+    --origam-color__surface---overlay:  #3d2e0a;
     --origam-color__surface---disabled: #404040;
 
     /* ── Page background: amber + pink corner glows (measured on the maquette
@@ -227,7 +227,9 @@
     --origam-color__action--primary---bgSubtle:   rgba(255, 143, 163, 0.14);
     --origam-color__action--primary---bgDisabled: #404040;
     --origam-color__action--primary---fg:         #3a2a2e;
-    --origam-color__action--primary---fgSubtle:   #ffd6a5;
+    /* fgSubtle dark: maquette eyebrow/sections use violet #5b21b6 (rgb(91,33,182)),
+       same as light value (not amber). */
+    --origam-color__action--primary---fgSubtle:   #5b21b6;
     --origam-color__action--primary---fgDisabled: #737373;
 
     /* ── Actions / secondary ────────────────────────────────────────────────── */
@@ -244,8 +246,8 @@
     --origam-color__action--ghost---fg:         #fffefb;
     --origam-color__action--ghost---fgDisabled: #737373;
 
-    /* ── Borders — hard black in dark like the maquette cards (#171717);
-       only the appbar uses the near-white border (overridden below). ──────── */
+    /* ── Borders — hard black in dark for cards/surfaces (#171717);
+       near-white elements (appbar, playground frame, hero/cta btns) overridden below. ── */
     --origam-color__border---default:      #171717;
     --origam-color__border---subtle:       #171717;
     --origam-color__border---strong:       #000000;
@@ -305,12 +307,18 @@
     --origam-gradient---hero-grid:
         linear-gradient(rgba(255, 254, 251, 0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 254, 251, 0.08) 1px, transparent 1px);
-    /* KPI values dark: gradient (measured in dark maquette: #7c3aed → #ec4899 → #f59e0b) */
-    --origam-gradient---kpi-value: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
+    /*
+     * KPI values dark: maquette measured webkitTextFillColor = rgb(255,143,163) (NOT transparent).
+     * This means the DS -webkit-background-clip: text + -webkit-text-fill-color: transparent
+     * is NOT active on the KPI value in the maquette — it renders as solid rose #ff8fa3.
+     * We keep a solid single-color gradient so the .home-kpis__value background-clip:text
+     * still resolves, but the colour is solid rose not the violet-rose-amber gradient.
+     */
+    --origam-gradient---kpi-value: linear-gradient(#ff8fa3, #ff8fa3);
 
     /* ── Button tokens ──────────────────────────────────────────────────────── */
     /*
-     * PRIMARY dark — same rose pill, near-black border stays #171717.
+     * PRIMARY dark — same rose pill, near-black border #171717 (matches maquette).
      * Same single-color gradient trick to bypass DS !important on bg-color.
      */
     --origam-gradient---btn-primary:   linear-gradient(#ff8fa3, #ff8fa3);
@@ -319,7 +327,7 @@
     --origam-shadow---btn-primary:     4px 4px 0 #171717;
 
     /*
-     * SECONDARY/GHOST dark — transparent, near-black border (same as light).
+     * SECONDARY/GHOST dark — transparent, near-black border #171717 (maquette measured).
      * Measured: border 3px solid rgb(23,23,23), box-shadow #171717 4px 4px 0.
      * Color: rgb(255,254,251) in dark.
      */
@@ -427,20 +435,23 @@
     box-shadow:       3px 3px 0 #171717;
 }
 
-/* In dark, the hero/cta badge + buttons sit on the dark page background, so
-   their hard border + offset shadow go near-white to pop — exactly like the
-   maquette. (Cards live on a raised surface and keep their black border.) */
+/*
+ * Dark mode: hero badge + hero/cta buttons keep near-BLACK border+shadow (#171717),
+ * matching the maquette (measured: border rgb(23,23,23), shadow rgb(23,23,23) 4px 4px 0).
+ * The near-white rule was incorrect. Reverting.
+ * Appbar keeps its near-white bottom border (handled by the dedicated rule above).
+ */
 :root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="hero-badge"] {
-    border-color: #fffefb !important;
-    box-shadow:   3px 3px 0 #fffefb !important;
+    border-color: #171717 !important;
+    box-shadow:   3px 3px 0 #171717 !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-hero__btn--primary,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__btn--start,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-hero__btn--secondary,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__btn--docs {
-    border-color: #fffefb !important;
-    box-shadow: 4px 4px 0 #fffefb !important;
+    border-color: #171717 !important;
+    box-shadow: 4px 4px 0 #171717 !important;
 }
 
 /* ── CARTOON — Marketing heading font override ──────────────────────────── */
@@ -456,4 +467,192 @@
 :root:root[data-theme="cartoon"] .home-themes__title,
 :root:root[data-theme="cartoon"] .home-cta__title {
     font-family: Inter, -apple-system, 'system-ui', sans-serif;
+}
+
+/* ── CARTOON — Hero + CTA title font-weight 900 ─────────────────────────── */
+/*
+ * Maquette H1/H2 display measured at font-weight 900.
+ * The scoped CSS caps at --origam-font-weight---extrabold (800).
+ * We override directly on the classes.
+ */
+
+:root:root[data-theme="cartoon"] .home-hero__title,
+:root:root[data-theme="cartoon"] .home-cta__title {
+    font-weight: 900;
+}
+
+/* ── CARTOON — KPI value font-weight 900 + solid rose color in dark ──────── */
+/*
+ * Maquette .m-stat__num measured at font-weight 900.
+ * Dark maquette: webkitTextFillColor = rgb(255,143,163) (NOT transparent).
+ * The maquette does NOT use background-clip:text on KPI values — it renders
+ * the number in solid rose #ff8fa3. We override the scoped component CSS
+ * to disable the gradient clip and show solid rose.
+ */
+
+:root:root[data-theme="cartoon"] .home-kpis__value {
+    font-weight: 900;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-kpis__value {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: #ff8fa3;
+    color: #ff8fa3;
+}
+
+/* ── CARTOON — CTA title gradient (dark only) ───────────────────────────── */
+/*
+ * Maquette CTA h2 uses the same violet→rose→amber gradient as the hero H1.
+ * The CTA component sets color via --origam-color__text---ink (solid #fffefb in dark)
+ * instead of the gradient. We force the gradient + clip here.
+ * Measured: bgImg linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b), textFill transparent.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__title {
+    background: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ── CARTOON — Features grid: near-white borders in dark ───────────────── */
+/*
+ * Maquette: feature cells have border-right + border-bottom #fffefb (near-white).
+ * The feature cells background is #262626 (surface--raised), not transparent.
+ * Grid outline: 3px near-white.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-features__grid {
+    border-color: #fffefb;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-features__item {
+    border-inline-end-color: #fffefb;
+    border-block-end-color:  #fffefb;
+}
+
+/* Feature cells: raised surface bg in dark (measured: rgb(38,38,38) = #262626) */
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-features__card {
+    background-color: #262626;
+}
+
+/* Feature icon tile: light rose bg in dark (measured: rgb(255,229,236) = #ffe5ec),
+   near-black border (measured: 3px #171717). */
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-features__icon-tile {
+    background-color: #ffe5ec !important;
+    border-color:     #171717 !important;
+}
+
+/* ── CARTOON — Playground frame: near-white border 3px + bigger shadow (dark) ── */
+/*
+ * Maquette playground frame measured:
+ *   border: 3px solid #fffefb
+ *   box-shadow: #171717 9px 9px 0
+ *   border-radius: 20px (= --origam-radius---lg, already set)
+ * The live renders 1px #171717 border and 6px shadow.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__frame {
+    border-width: 3px !important;
+    border-color: #fffefb !important;
+    box-shadow:   9px 9px 0 #171717 !important;
+}
+
+/* ── CARTOON — Playground toolbar: sunken amber bg + 3px bottom border (dark) ── */
+/*
+ * Maquette toolbar measured: bg rgb(61,46,10) = #3d2e0a (sunken amber),
+ * border-bottom: 3px solid #171717 (near-black).
+ * The live uses surface--overlay (#262626) and 1px border.
+ * #3d2e0a is already set as --origam-color__surface---sunken in dark block above.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__toolbar {
+    background-color: #3d2e0a;
+    border-block-end-width: 3px !important;
+    border-block-end-color: #171717;
+}
+
+/* ── CARTOON — Playground preview area: near-white dot-grid + transparent bg (dark) ── */
+/*
+ * Maquette preview dotgrid measured:
+ *   background-color: transparent
+ *   background-image: radial-gradient(circle, #fffefb 1px, transparent 1px)
+ *   background-size: 18px 18px (kept from live)
+ * The live renders dark dots on raised surface bg — inverted.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__preview {
+    background-color: transparent;
+    background-image: radial-gradient(circle, #fffefb 1px, transparent 1px);
+}
+
+/* ── CARTOON — Playground preview card: near-white border 3px + shadow (dark) ── */
+/*
+ * The preview card sits inside the dotgrid. It should follow card rules:
+ * 3px border near-white, shadow near-black hard offset.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__preview-card {
+    border-width: 3px !important;
+    border-color: #fffefb !important;
+    box-shadow:   6px 6px 0 #171717 !important;
+}
+
+/* ── CARTOON — Showcase chips: amber bg + near-black border 3px (dark) ─── */
+/*
+ * Maquette showcase pills (for "Data", "Primary", etc.) measured:
+ *   bg: #ffe5a5 (amber), color: #3a2a2e, border: 3px #171717,
+ *   shadow: #171717 3px 3px 0.
+ * The neutral pill (Neutral, Sobre, Glass, etc.) has:
+ *   bg: #c5e8ff (light blue), color: #1e3a5f.
+ * In the live, showcase chips use DS intent colors (transparent bg + intent border).
+ * We force all showcase chips to amber pill style in dark.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__chip-list .origam-chip {
+    background-color: #ffe5a5 !important;
+    color:            #3a2a2e !important;
+    border-color:     #171717 !important;
+    border-width:     3px !important;
+    border-style:     solid !important;
+    box-shadow:       3px 3px 0 #171717;
+}
+
+/* ── CARTOON — Showcase data badge: same amber pill (dark) ─────────────── */
+/*
+ * Maquette "Data" badge = same amber #ffe5a5, border 3px #171717, shadow same.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="showcase-data-badge"] {
+    background-color: #ffe5a5 !important;
+    color:            #3a2a2e !important;
+    border-color:     #171717 !important;
+    border-width:     3px !important;
+    border-style:     solid !important;
+    box-shadow:       3px 3px 0 #171717;
+}
+
+/* ── CARTOON — Themes section chips: light-blue pill + near-black border 3px (dark) ── */
+/*
+ * Maquette themes switcher pills (Sobre, Glass, Geek, Cartoon…) measured:
+ *   bg: #c5e8ff (light blue), color: #1e3a5f (dark navy), border: 3px #171717.
+ * The live renders 1px near-black border on near-black bg (invisible).
+ * Active chip: rose bg #ff8fa3 + near-black text + near-black border.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip {
+    background-color: #c5e8ff;
+    color:            #1e3a5f;
+    border-width:     3px;
+    border-color:     #171717;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[data-active="true"],
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[aria-pressed="true"] {
+    background-color: #ff8fa3;
+    border-color:     #171717;
+    color:            #3a2a2e;
 }
