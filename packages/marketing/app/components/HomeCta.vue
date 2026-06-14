@@ -125,6 +125,7 @@ const { t } = useT()
 /* Primary CTA — gradient + glow driven by theme tokens */
 .home-cta__btn--start {
     background-image: var(--origam-gradient---btn-primary);
+    background-color: var(--origam-color---btn-primary-bg, transparent);
     box-shadow: var(--origam-shadow---btn-primary);
     --origam-btn---color: var(--origam-color---btn-primary-text);
 }

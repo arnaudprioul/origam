@@ -197,6 +197,7 @@
   /* Primary CTA — gradient + glow driven by theme tokens */
   .home-hero__btn.home-hero__btn--primary {
     background-image: var(--origam-gradient---btn-primary);
+    background-color: var(--origam-color---btn-primary-bg, transparent);
     box-shadow: var(--origam-shadow---btn-primary);
     --origam-btn---color: var(--origam-color---btn-primary-text);
   }
