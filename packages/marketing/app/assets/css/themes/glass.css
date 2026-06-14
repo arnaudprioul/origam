@@ -385,12 +385,12 @@
 }
 
 :root:root[data-theme="glass"] .home-features__item {
-    border-inline-end-color: rgba(255, 255, 255, 0.40);
-    border-block-end-color: rgba(255, 255, 255, 0.40);
-    backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
-    -webkit-backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
-    background-color: rgba(255, 255, 255, 0.18);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.40);
+    border-inline-end-color: rgba(255, 255, 255, 0.45);
+    border-block-end-color: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(8px) saturate(1.8) brightness(1.06);
+    -webkit-backdrop-filter: blur(8px) saturate(1.8) brightness(1.06);
+    background-color: rgba(255, 255, 255, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 /* The OrigamCard inside feature cells must be transparent to let the
@@ -416,32 +416,116 @@
 /* — Hero CTA buttons — glass pill shape with liquid-glass effect — */
 :root:root[data-theme="glass"] .home-hero__btn--primary,
 :root:root[data-theme="glass"] .home-hero__btn--secondary {
-    background-color: rgba(255, 255, 255, 0.22) !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
     background-image: none !important;
-    backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
-    -webkit-backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    backdrop-filter: blur(12px) saturate(1.8) brightness(1.05);
+    -webkit-backdrop-filter: blur(12px) saturate(1.8) brightness(1.05);
     border: none !important;
     border-radius: 999px;
     color: #1a1538;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.75),
+        inset 1px 0 0 rgba(255, 255, 255, 0.40),
+        inset -1px 0 0 rgba(255, 255, 255, 0.20),
+        inset 0 -1px 0 rgba(124, 58, 237, 0.10),
+        0 6px 20px -6px rgba(60, 30, 120, 0.30) !important;
 }
 
 :root:root[data-theme="glass"][data-mode="dark"] .home-hero__btn--primary,
 :root:root[data-theme="glass"][data-mode="dark"] .home-hero__btn--secondary {
     background-color: rgba(255, 255, 255, 0.10) !important;
     color: #ffffff;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        0 8px 24px -6px rgba(167, 139, 250, 0.35) !important;
+}
+
+/* — CTA section buttons — */
+/* Primary CTA: violet solid pill (like the maquette) */
+:root:root[data-theme="glass"] .home-cta__btn--start {
+    background-color: #7c3aed !important;
+    background-image: none !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none !important;
+    border-radius: 999px;
+    color: #ffffff !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        0 8px 24px -6px rgba(124, 58, 237, 0.50) !important;
+}
+
+/* Secondary CTA: glass translucent white pill */
+:root:root[data-theme="glass"] .home-cta__btn--docs {
+    background-color: rgba(255, 255, 255, 0.28) !important;
+    background-image: none !important;
+    backdrop-filter: blur(12px) saturate(1.8) brightness(1.05);
+    -webkit-backdrop-filter: blur(12px) saturate(1.8) brightness(1.05);
+    border: none !important;
+    border-radius: 999px;
+    color: #1a1538 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.80),
+        inset 1px 0 0 rgba(255, 255, 255, 0.40),
+        inset -1px 0 0 rgba(255, 255, 255, 0.20),
+        inset 0 -1px 0 rgba(124, 58, 237, 0.08),
+        0 4px 16px -4px rgba(60, 30, 120, 0.20) !important;
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-cta__btn--start {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    color: #ffffff !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        0 8px 24px -6px rgba(167, 139, 250, 0.35) !important;
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-cta__btn--docs {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+        0 6px 20px -6px rgba(167, 139, 250, 0.25) !important;
 }
 
 /* — Menu glass effect — */
 /* backdrop-filter now flows through --origam-menu---backdrop-filter in DS token blocks above. */
 
+/* — Playground frame — glass surface for the editor window — */
+:root:root[data-theme="glass"] .home-playground__frame.origam-sheet {
+    background-color: rgba(255, 255, 255, 0.30) !important;
+    backdrop-filter: blur(16px) saturate(1.8) brightness(1.05);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8) brightness(1.05);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.70),
+        0 16px 48px -12px rgba(60, 30, 120, 0.25);
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .home-playground__frame.origam-sheet {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 16px 48px -12px rgba(0, 0, 0, 0.50);
+}
+
 /* — Showcase cards — backdrop-filter via --origam-card---backdrop-filter token */
 :root:root[data-theme="glass"] .home-showcase__widget.origam-card {
-    background-color: rgba(255, 255, 255, 0.22) !important;
+    background-color: rgba(255, 255, 255, 0.28) !important;
+    backdrop-filter: blur(12px) saturate(1.8) brightness(1.05);
+    -webkit-backdrop-filter: blur(12px) saturate(1.8) brightness(1.05);
     box-shadow: var(--origam-shadow---card-elevated);
 }
 
 :root:root[data-theme="glass"][data-mode="dark"] .home-showcase__widget.origam-card {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(167, 139, 250, 0.08) !important;
+    backdrop-filter: blur(12px) saturate(1.6) brightness(1.04);
+    -webkit-backdrop-filter: blur(12px) saturate(1.6) brightness(1.04);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 8px 32px -8px rgba(0, 0, 0, 0.40);
 }
 
 /* — Theme preview tiles — these are OrigamCard, backdrop-filter via DS token */
@@ -479,13 +563,17 @@
 
 /* — Footer — */
 :root:root[data-theme="glass"] .site-footer {
-    background-color: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(12px) saturate(1.4);
-    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px) saturate(1.6) brightness(1.04);
+    -webkit-backdrop-filter: blur(16px) saturate(1.6) brightness(1.04);
+    border-block-start: 1px solid rgba(255, 255, 255, 0.30);
 }
 
 :root:root[data-theme="glass"][data-mode="dark"] .site-footer {
     background-color: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px) saturate(1.4) brightness(1.02);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4) brightness(1.02);
+    border-block-start: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 
