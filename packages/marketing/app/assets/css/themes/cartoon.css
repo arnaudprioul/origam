@@ -204,8 +204,13 @@
     --origam-color__surface---overlay:  #262626;
     --origam-color__surface---disabled: #404040;
 
-    /* ── Page background: no decorative glows in dark (measured: none) ────── */
-    --origam-page---background-image: none;
+    /* ── Page background: amber + pink corner glows (measured on the maquette
+       dark: #fcd34d @10%/10%, #fbcfe8 @90%/10%, full opacity). ────────────── */
+    --origam-page---background-image:
+        radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%),
+        radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%),
+        radial-gradient(circle at 85% 88%, #fbcfe8 0%, transparent 26%),
+        radial-gradient(circle at 12% 90%, #fcd34d 0%, transparent 26%);
 
     /* ── Text ───────────────────────────────────────────────────────────────── */
     --origam-color__text---primary:   #fffefb;
