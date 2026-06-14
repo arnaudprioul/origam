@@ -350,13 +350,60 @@
 
 :root:root[data-theme="cartoon"] .site-appbar,
 :root:root[data-theme="cartoon"] .origam-toolbar {
-    border-block-end: 3px solid var(--origam-color__border---default) !important;
+    border-block-end: 3px solid #171717 !important;
 }
 
 /* Appbar keeps the near-white rule in dark (cards/sections use black). */
 :root:root[data-theme="cartoon"][data-mode="dark"] .site-appbar,
 :root:root[data-theme="cartoon"][data-mode="dark"] .origam-toolbar {
-    border-block-end-color: #fffefb !important;
+    border-block-end: 3px solid #fffefb !important;
+}
+
+/* ── CARTOON — Appbar version chip: 3 px near-black border ──────────────── */
+/*
+ * The chip uses color="primary" which renders DS violet (fgSubtle) border.
+ * Cartoon: 3px solid #171717 + hard shadow (same as hero badge).
+ * Measured maquette: the version label is a plain pill — no separate chip in maq.
+ * We apply cartoon chip rules to match the hero badge aesthetic.
+ */
+
+:root:root[data-theme="cartoon"] .site-appbar .origam-chip,
+:root:root[data-theme="cartoon"] .brand__version {
+    border-color:  #171717 !important;
+    border-width:  3px !important;
+    border-style:  solid !important;
+    box-shadow:    2px 2px 0 #171717 !important;
+    background-color: #ffe5a5 !important;
+    color:         #3a2a2e !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .site-appbar .origam-chip,
+:root:root[data-theme="cartoon"][data-mode="dark"] .brand__version {
+    border-color:  #171717 !important;
+    border-width:  3px !important;
+    border-style:  solid !important;
+    box-shadow:    2px 2px 0 #171717 !important;
+    background-color: #ffe5a5 !important;
+    color:         #3a2a2e !important;
+}
+
+/* ── CARTOON — Appbar action buttons: 3 px border + hard shadow ─────────── */
+/*
+ * The appbar-actions__btn buttons (GitHub "4.2k", theme toggle, lang menu,
+ * theme menu) use variant="outlined" which the DS renders as 1px.
+ * Cartoon: 3px solid #171717 + 3px 3px 0 shadow for playful look.
+ * These are secondary/action buttons — transparent bg, near-black border.
+ */
+
+:root:root[data-theme="cartoon"] .appbar-actions__btn {
+    border:     3px solid #171717 !important;
+    box-shadow: 3px 3px 0 #171717 !important;
+    border-radius: var(--origam-radius---btn, 14px) !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .appbar-actions__btn {
+    border:     3px solid #fffefb !important;
+    box-shadow: 3px 3px 0 #171717 !important;
 }
 
 /* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── */
@@ -482,25 +529,29 @@
     font-weight: 900;
 }
 
-/* ── CARTOON — KPI value font-weight 900 + solid rose color in dark ──────── */
+/* ── CARTOON — KPI value font-weight 900 + solid rose color (light + dark) ── */
 /*
- * Maquette .m-stat__num measured at font-weight 900.
- * Dark maquette: webkitTextFillColor = rgb(255,143,163) (NOT transparent).
- * The maquette does NOT use background-clip:text on KPI values — it renders
- * the number in solid rose #ff8fa3. We override the scoped component CSS
- * to disable the gradient clip and show solid rose.
+ * Maquette .m-stat__num measured at font-weight 900, color #ff8fa3 solid.
+ * The live uses background-clip:text + transparent fill which renders rgba(0,0,0,0).
+ * The maquette does NOT use background-clip — it renders solid rose in both modes.
+ * We override the scoped component CSS to disable the gradient clip in both modes.
  */
 
 :root:root[data-theme="cartoon"] .home-kpis__value {
     font-weight: 900;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #ff8fa3 !important;
+    color: #ff8fa3 !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-kpis__value {
-    background: none;
-    -webkit-background-clip: unset;
-    background-clip: unset;
-    -webkit-text-fill-color: #ff8fa3;
-    color: #ff8fa3;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #ff8fa3 !important;
+    color: #ff8fa3 !important;
 }
 
 /* ── CARTOON — CTA title gradient (dark only) ───────────────────────────── */
@@ -547,14 +598,21 @@
     border-color:     #171717 !important;
 }
 
-/* ── CARTOON — Playground frame: near-white border 3px + bigger shadow (dark) ── */
+/* ── CARTOON — Playground frame: 3 px border + bigger shadow ───────────── */
 /*
- * Maquette playground frame measured:
- *   border: 3px solid #fffefb
- *   box-shadow: #171717 9px 9px 0
- *   border-radius: 20px (= --origam-radius---lg, already set)
- * The live renders 1px #171717 border and 6px shadow.
+ * The live origam-sheet renders 1px (DS default via `border` prop).
+ * Cartoon: 3px border (light = #171717, dark = #fffefb), hard shadow.
+ * Maquette dc-card (playground wrapper) measured:
+ *   light: no outer border on dc-card itself (border on inner m-winbar)
+ *   dark:  border 3px #fffefb, box-shadow 9px 9px 0 #171717
+ * We apply 3px to the frame in both modes.
  */
+
+:root:root[data-theme="cartoon"] .home-playground__frame {
+    border-width: 3px !important;
+    border-color: #171717 !important;
+    box-shadow:   9px 9px 0 #171717 !important;
+}
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__frame {
     border-width: 3px !important;
@@ -562,18 +620,20 @@
     box-shadow:   9px 9px 0 #171717 !important;
 }
 
-/* ── CARTOON — Playground toolbar: sunken amber bg + 3px bottom border (dark) ── */
+/* ── CARTOON — Playground toolbar: 3px bottom border ────────────────────── */
 /*
- * Maquette toolbar measured: bg rgb(61,46,10) = #3d2e0a (sunken amber),
- * border-bottom: 3px solid #171717 (near-black).
- * The live uses surface--overlay (#262626) and 1px border.
- * #3d2e0a is already set as --origam-color__surface---sunken in dark block above.
+ * Maquette m-winbar measured: 3px solid #171717 on all sides (full outline).
+ * In the live, .home-playground__toolbar only has border-block-end.
+ * We upgrade from 1px to 3px in both modes. Dark = near-black (same as light).
  */
+
+:root:root[data-theme="cartoon"] .home-playground__toolbar {
+    border-block-end: 3px solid #171717 !important;
+}
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__toolbar {
     background-color: #3d2e0a;
-    border-block-end-width: 3px !important;
-    border-block-end-color: #171717;
+    border-block-end: 3px solid #171717 !important;
 }
 
 /* ── CARTOON — Playground preview area: near-white dot-grid + transparent bg (dark) ── */
@@ -590,11 +650,17 @@
     background-image: radial-gradient(circle, #fffefb 1px, transparent 1px);
 }
 
-/* ── CARTOON — Playground preview card: near-white border 3px + shadow (dark) ── */
+/* ── CARTOON — Playground preview card: 3 px border + hard shadow ────────── */
 /*
- * The preview card sits inside the dotgrid. It should follow card rules:
- * 3px border near-white, shadow near-black hard offset.
+ * Maquette m-card measured: 3px solid #171717, shadow 6px 6px 0 #171717.
+ * Live renders 1px.
  */
+
+:root:root[data-theme="cartoon"] .home-playground__preview-card {
+    border-width: 3px !important;
+    border-color: #171717 !important;
+    box-shadow:   6px 6px 0 #171717 !important;
+}
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__preview-card {
     border-width: 3px !important;
@@ -602,58 +668,157 @@
     box-shadow:   6px 6px 0 #171717 !important;
 }
 
-/* ── CARTOON — Showcase chips: amber bg + near-black border 3px (dark) ─── */
+/* ── CARTOON — Playground code panel: no border ────────────────────────── */
 /*
- * Maquette showcase pills (for "Data", "Primary", etc.) measured:
+ * Maquette: the code editor area (m-code-line) has no border.
+ * Live origam-code renders with border: 1px solid (from DS default).
+ * The component class .home-playground__code is a Vue prop `class` that lands
+ * on the origam-code root — but in the pane context we target the pane parent.
+ * We remove the border on any origam-code inside the playground panes.
+ */
+
+:root:root[data-theme="cartoon"] .home-playground__panes .origam-code {
+    border: none !important;
+}
+
+/* ── CARTOON — Showcase chips + data badge: amber pill (light + dark) ──── */
+/*
+ * Maquette showcase pills (for "Data", "Primary", etc.) measured in both modes:
  *   bg: #ffe5a5 (amber), color: #3a2a2e, border: 3px #171717,
  *   shadow: #171717 3px 3px 0.
  * The neutral pill (Neutral, Sobre, Glass, etc.) has:
  *   bg: #c5e8ff (light blue), color: #1e3a5f.
- * In the live, showcase chips use DS intent colors (transparent bg + intent border).
- * We force all showcase chips to amber pill style in dark.
+ * In the live (light + dark), showcase chips use DS intent colors (1px violet border).
+ * We force all showcase chips to amber pill style in BOTH modes.
  */
 
-:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__chip-list .origam-chip {
+:root:root[data-theme="cartoon"] .home-showcase__chip-list .origam-chip,
+:root:root[data-theme="cartoon"] [data-cy="showcase-data-badge"] {
     background-color: #ffe5a5 !important;
     color:            #3a2a2e !important;
     border-color:     #171717 !important;
     border-width:     3px !important;
     border-style:     solid !important;
-    box-shadow:       3px 3px 0 #171717;
+    box-shadow:       3px 3px 0 #171717 !important;
 }
 
-/* ── CARTOON — Showcase data badge: same amber pill (dark) ─────────────── */
-/*
- * Maquette "Data" badge = same amber #ffe5a5, border 3px #171717, shadow same.
- */
-
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__chip-list .origam-chip,
 :root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="showcase-data-badge"] {
     background-color: #ffe5a5 !important;
     color:            #3a2a2e !important;
     border-color:     #171717 !important;
     border-width:     3px !important;
     border-style:     solid !important;
-    box-shadow:       3px 3px 0 #171717;
+    box-shadow:       3px 3px 0 #171717 !important;
 }
 
-/* ── CARTOON — Themes section chips: light-blue pill + near-black border 3px (dark) ── */
+/* ── CARTOON — Themes section chips: correct border + active state ──────── */
 /*
- * Maquette themes switcher pills (Sobre, Glass, Geek, Cartoon…) measured:
- *   bg: #c5e8ff (light blue), color: #1e3a5f (dark navy), border: 3px #171717.
- * The live renders 1px near-black border on near-black bg (invisible).
- * Active chip: rose bg #ff8fa3 + near-black text + near-black border.
+ * Maquette measured:
+ *   Inactive light: 1px solid #171717 (surface-bg transparent + border)
+ *   Inactive dark:  1px solid #fffefb
+ *   Active   light: 1px solid #171717 (NOT rose — border matches inactive)
+ *   Active   dark:  1px solid #fffefb
+ *
+ * Live issues:
+ *   - Active light: 1px solid #ff8fa3 (wrong — rose border instead of near-black)
+ *   - Active dark:  1px solid rgb(176,102,116) (wrong muted rose)
+ *   - Inactive dark: 1px solid #171717 (wrong — should be #fffefb)
+ *   - Active dark:   1px solid muted rose (wrong — should be #fffefb)
+ *
+ * Note: the maquette theme switcher is a static widget, not the exact
+ * .home-themes__chip buttons. But all pills follow cartoon border language.
  */
+
+:root:root[data-theme="cartoon"] .home-themes__chip {
+    border-color: #171717 !important;
+    border-style: solid !important;
+}
+
+:root:root[data-theme="cartoon"] .home-themes__chip[data-active="true"],
+:root:root[data-theme="cartoon"] .home-themes__chip[aria-pressed="true"] {
+    border-color: #171717 !important;
+}
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip {
     background-color: #c5e8ff;
     color:            #1e3a5f;
-    border-width:     3px;
-    border-color:     #171717;
+    border-color:     #fffefb !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[data-active="true"],
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[aria-pressed="true"] {
     background-color: #ff8fa3;
-    border-color:     #171717;
     color:            #3a2a2e;
+    border-color:     #fffefb !important;
+}
+
+/* ── CARTOON — Hero install code pill: no border ────────────────────────── */
+/*
+ * Maquette .m-code-line measured: 0px none (no border, transparent bg).
+ * The live origam-code--compact renders with border: 1px solid #171717.
+ * Remove border on the hero install pill to match maquette.
+ * The playground code panel is handled separately (.home-playground__code).
+ */
+
+:root:root[data-theme="cartoon"] [data-cy="hero-install-command"].origam-code,
+:root:root[data-theme="cartoon"] #hero .origam-code--compact {
+    border: none !important;
+}
+
+/* ── CARTOON — Feature cell dark: top + left borders near-white ─────────── */
+/*
+ * In the live dark, .home-features__item top/left border-color is
+ * rgb(151,150,149) (tertiary text token). The maquette uses #fffefb on all
+ * sides where borders are present. Since only right+bottom have 3px borders,
+ * this only affects the scoped base color.
+ * Fix: force border-top-color and border-left-color to transparent (they have
+ * 0px width anyway, so color doesn't matter — the real issue is the inline
+ * border-color fallback from scoped CSS leaking the tertiary color token).
+ * Safer: just re-assert the correct directional colors on all 4 sides.
+ */
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-features__item {
+    border-top-color:   transparent !important;
+    border-left-color:  transparent !important;
+    border-right-color: #fffefb !important;
+    border-bottom-color: #fffefb !important;
+}
+
+/* ── CARTOON — Avatar: surface-bg ring border ───────────────────────────── */
+/*
+ * Maquette .m-avatar measured:
+ *   light: 2px solid #fff9f0 (= surface-default, the page bg)
+ *   dark:  2px solid #1a1a1a (= surface-default dark)
+ * The live renders 0px border + white box-shadow ring (wrong color in both modes).
+ * We override to use the correct border + remove the white ring.
+ * DS gap note: origam-avatar may not support border prop — override directly.
+ */
+
+:root:root[data-theme="cartoon"] .origam-avatar {
+    border:     2px solid var(--origam-color__surface---default, #fff9f0) !important;
+    box-shadow: none !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .origam-avatar {
+    border:     2px solid #1a1a1a !important;
+    box-shadow: none !important;
+}
+
+/* ── CARTOON — Footer top border: 3 px ─────────────────────────────────── */
+/*
+ * Maquette footer measured:
+ *   light: border-top: 3px solid #171717
+ *   dark:  border-top: 3px solid #fffefb
+ * The live renders border-block-start: 1px solid from default.vue scoped CSS.
+ * We upgrade to 3px + correct dark color.
+ * Specificity (0,3,0 + class) beats scoped (0,2,0).
+ */
+
+:root:root[data-theme="cartoon"] .site-footer {
+    border-block-start: 3px solid #171717 !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .site-footer {
+    border-block-start: 3px solid #fffefb !important;
 }
