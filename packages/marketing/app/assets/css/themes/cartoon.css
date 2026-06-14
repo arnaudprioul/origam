@@ -829,3 +829,47 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .site-footer {
     border-block-start: 3px solid #fffefb !important;
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * CARTOON — targeted maquette-match fixes (KPIs borders, hero glow, datatable)
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+/* KPIs: top + bottom 3px borders. The section sits on the page bg, so the dark
+   border is near-white (#fffefb) like the appbar; light is black. The
+   OrigamDivider hairlines (border-default) are invisible on dark — these solid
+   borders are the visible rule the maquette shows. */
+:root:root[data-theme="cartoon"] .home-kpis__list {
+    border-block: 3px solid var(--origam-color__border---default);
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-kpis__list {
+    border-block-color: #fffefb;
+}
+
+/* Hero glow: the maquette decor covers the whole 751 px hero. The marketing
+   ::after band was only 320 px tall, so the radial got cut into an ugly seam.
+   Stretch it to the full hero and fade it out smoothly. */
+:root:root[data-theme="cartoon"] .home-hero::after {
+    block-size: 100%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 22%, transparent 82%);
+    mask-image: linear-gradient(to bottom, #000 22%, transparent 82%);
+}
+
+/* Reposition the dark glow near the top corners now that the band is tall. */
+:root:root[data-theme="cartoon"][data-mode="dark"] {
+    --origam-gradient---hero-glow:
+        radial-gradient(circle at 10% 14%, rgba(252, 211, 77, 0.50) 0%, transparent 38%),
+        radial-gradient(circle at 90% 14%, rgba(251, 207, 232, 0.42) 0%, transparent 38%);
+}
+
+/* Showcase data table: 3px hard cell rule like the cartoon cards
+   (dark = near-white, light = black). */
+:root:root[data-theme="cartoon"] .home-showcase__th,
+:root:root[data-theme="cartoon"] .home-showcase__td {
+    border-block-end: 3px solid var(--origam-color__border---default) !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__th,
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__td {
+    border-block-end-color: #fffefb !important;
+}
