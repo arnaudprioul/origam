@@ -41,11 +41,11 @@ automatic theme integration with the origam design system.
 | `lang` | `TCodeLang` | `'plaintext'` | Grammar to apply. Unknown values fall back to `plaintext` with a one-shot console warning. |
 | `lineNumbers` | `boolean` | `false` | Show a left gutter with line numbers (pure CSS counter). |
 | `highlightLines` | `number[] \| string \| null` | `null` | Lines to highlight. Accepts an array (`[2, 5]`) or a range string (`'2,5-7'`). |
-| `copyable` | `boolean` | `true` | Show the copy-to-clipboard button (top-right or in the header when `filename` is set). |
+| `copyable` | `boolean` | `true` | Show the copy-to-clipboard button. In non-compact mode it always renders a header bar so the button sits next to the filename (or the language badge when no filename is set) — never floating over the code. |
 | `maxHeight` | `number \| string \| null` | `null` | Cap the rendered height and enable vertical scroll past it. |
 | `format` | `boolean` | `false` | **Stub in v2.x.** Currently normalises whitespace only. Prettier is intentionally not bundled at runtime (size cost). |
 | `wrap` | `boolean` | `false` | Wrap long lines instead of scrolling horizontally. |
-| `filename` | `string` | `undefined` | Display a header bar with the filename. The copy button moves into the header when this is set. |
+| `filename` | `string` | `undefined` | Display the filename on the left of the header bar. Without a filename the header still renders (showing the language badge) as long as `copyable` is on, so the chrome stays consistent with or without a filename. |
 | `compact` | `boolean` | `false` | Render a single-line **pill** instead of a multi-line surface — ideal for an install command. Suppresses header / filename / line-numbers, shrinks vertical padding to one line, and collapses the copy control to a small inline icon button at the end of the row. `<figure><pre><code>` semantics are preserved. |
 | `prompt` | `string` | `undefined` | Decorative prompt prefix rendered before the code (e.g. `'$'`). Purely visual — it is NOT part of the highlighted code and is NEVER included in the clipboard copy. Most useful with `compact`. |
 

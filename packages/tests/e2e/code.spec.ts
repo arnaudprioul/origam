@@ -38,6 +38,23 @@ test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
         await expect(figcaption.locator('[data-cy="origam-code-filename"]')).toHaveText('design.ts')
     })
 
+    test('copyable without a filename still renders a header (lang badge + copy, no floating)', async ({ page }) => {
+        await gotoVariant(page, 'Functional - No filename (lang badge header)')
+        const sandbox = sandboxOf(page)
+
+        const figure = sandbox.locator('figure.origam-code').first()
+        await expect(figure).toBeVisible({ timeout: 5000 })
+
+        // header bar is present even though there is no filename
+        const header = figure.locator('.origam-code__header').first()
+        await expect(header).toBeVisible()
+        // the lang badge fills the left side in place of the filename
+        await expect(header.locator('[data-cy="origam-code-lang"]')).toHaveText('bash')
+        // copy button lives inside the header, not as a floating overlay
+        await expect(header.locator('[data-cy="origam-code-copy"]')).toBeVisible()
+        await expect(figure.locator('.origam-code__copy--floating')).toHaveCount(0)
+    })
+
     test('figure is accessible via getByRole("figure")', async ({ page }) => {
         await gotoVariant(page, 'Design')
         const sandbox = sandboxOf(page)

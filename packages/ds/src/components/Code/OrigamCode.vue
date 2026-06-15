@@ -319,7 +319,7 @@
 	/*********************************************************
 	 * Class & Style.
 	 ********************************************************/
-	const showHeader = computed(() => !props.compact && (!!props.filename || !!slots.header))
+	const showHeader = computed(() => !props.compact && (!!props.filename || !!slots.header || props.copyable))
 
 	/**
 	 * Compact-mode copy control is an icon button, not a text "Copy". It swaps

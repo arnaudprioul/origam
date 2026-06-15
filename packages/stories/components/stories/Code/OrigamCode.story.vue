@@ -118,6 +118,14 @@
 			</template>
 		</Variant>
 
+		<Variant title="Functional - No filename (lang badge header)">
+			<origam-code
+					:lang="CODE_LANG.BASH"
+					copyable
+					:code="installSnippet"
+			/>
+		</Variant>
+
 		<Variant
 				title="Functional - Compact (install pill)"
 				:init-state="() => useStoryInitState<Partial<ICodeProps>>({
