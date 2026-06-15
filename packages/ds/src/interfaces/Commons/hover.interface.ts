@@ -24,8 +24,24 @@ export interface IHoverProps {
     hover?: boolean | IHoverState
 }
 
+/**
+ * Object config accepted by the `v-hover` directive.
+ *
+ *   • `class`      — class toggled on the element while hovered
+ *                    (defaults to `{componentName}--hover` when omitted).
+ *   • `mouseenter` — handler called on pointer/touch enter.
+ *   • `mouseleave` — handler called on pointer/touch leave.
+ *
+ * Both handlers receive the hovered element and the originating event.
+ */
+export interface IHoverDirectiveConfig {
+    class?: string
+    mouseenter?: (el: HTMLElement, e: Event) => void
+    mouseleave?: (el: HTMLElement, e: Event) => void
+}
+
 export interface IHoverDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {
-    value?: boolean | { class: string }
+    value?: boolean | IHoverDirectiveConfig
     modifiers: {
         callback: () => void,
         stop?: boolean
@@ -45,6 +61,8 @@ export interface IHoverHtmlElementHover {
     class?: string
     touched?: boolean
     isTouch?: boolean
+    mouseenter?: (el: HTMLElement, e: Event) => void
+    mouseleave?: (el: HTMLElement, e: Event) => void
 }
 
 /** Emit signature for components that propagate their hover state. */
