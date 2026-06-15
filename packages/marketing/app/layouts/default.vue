@@ -7,15 +7,17 @@
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_LINKS } from '~/consts/nav.const'
-  import { SEARCH_SHORTCUT, STAR_COUNT } from '~/consts/chrome.const'
+  import { SEARCH_SHORTCUT } from '~/consts/chrome.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { THEME_CHIPS } from '~/consts/themes-showcase.const'
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
+  import { useGithubStars } from '~/composables/useGithubStars'
 
   const { t } = useT()
   const { versionTag } = useVersion()
   const { theme, setTheme, resolvedMode, toggleMode } = useTheme()
+  const { stars } = useGithubStars()
 
   const { locale, locales, setLocale } = useI18n()
   const availableLocales = computed(() => locales.value as LocaleObject[])
@@ -115,10 +117,15 @@
             target="_blank"
             variant="outlined"
             :prepend-icon="MDI_ICONS.GITHUB"
-            :text="STAR_COUNT"
             rel="noopener noreferrer"
             :aria-label="starCountAriaLabel"
-          />
+          >
+            <origam-number-format
+              :value="stars"
+              format="compact"
+              compact-display="short"
+            />
+          </origam-btn>
 
           <origam-btn
             class="appbar-actions__btn appbar-actions__btn--icon"
