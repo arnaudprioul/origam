@@ -1195,8 +1195,8 @@ export const COMPONENTS_CATALOG: IComponentEntry[] = [
     {
         slug: 'text-mask',
         name: 'TextMask',
-        icon: 'mdi-form-textbox-password',
-        category: 'Form & Input',
+        icon: 'mdi-format-color-text',
+        category: 'Data Display',
         descriptionKey: 'components.catalog.text_mask.description',
         descriptionFallback: 'Text input with a configurable input mask (date, phone, etc.).',
         family: []
@@ -1595,8 +1595,8 @@ export const COMPONENTS_CATALOG: IComponentEntry[] = [
     {
         slug: 'confirm-wrapper',
         name: 'ConfirmWrapper',
-        icon: 'mdi-check-circle-outline',
-        category: 'Feedback & Status',
+        icon: 'mdi-form-textbox',
+        category: 'Form & Input',
         descriptionKey: 'components.catalog.confirm_wrapper.description',
         descriptionFallback: 'Wraps any action with a confirmation dialog before proceeding.',
         family: []
