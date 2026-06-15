@@ -728,7 +728,8 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     margin-block-end: var(--origam-space---3, 0.75rem);
 }
 
-.installation-step__code--tabbed :deep(.origam-code__header) {
+:deep([data-cy="installation-code-install"] .origam-code__header) {
+    --origam-code__header---padding-block: 0px;
     padding-block: 0;
     padding-inline: var(--origam-space---3, 0.75rem);
     align-items: stretch;
