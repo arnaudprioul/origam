@@ -383,7 +383,7 @@
   .search-field {
     inline-size: 220px;
     --origam-input__control---height: 38px;
-    --origam-field---border-radius: 10px;
+    --origam-field---border-radius: var(--origam-radius---btn, 10px);
     --origam-field__input---font-size: 13px;
   }
 
@@ -489,7 +489,7 @@
 
   .appbar-menu .origam-list-item {
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: var(--origam-radius---sm, 6px);
     transition: background-color 0.12s ease;
   }
 
