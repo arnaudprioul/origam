@@ -202,6 +202,162 @@
       "actionsLabel": "Try origam"
     }
   },
+  "roadmap": {
+    "meta": {
+      "title": "Roadmap · origam design system",
+      "description": "Where origam is today, what has been delivered, and what is coming next. Public, honest, updated with each release."
+    },
+    "hero": {
+      "badge": "v2.2.1 — first public release",
+      "titleLine1": "Roadmap.",
+      "titleLine2": "Honest & public.",
+      "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon."
+    },
+    "status": {
+      "eyebrow": "WHERE WE STAND",
+      "titleLine1": "Post-2.2.1",
+      "titleLine2": "Status.",
+      "subtitle": "An honest snapshot of what works, what is in progress, and what is still missing.",
+      "npmPublished": "First public release on npm — tarball 869 kB, 0 critical vulnerabilities",
+      "preDelivery": "Pre-delivery automated via prepublishOnly (tokens + build + 220 unit tests)",
+      "readmeChangelog": "README correct, CHANGELOG up to date",
+      "monorepo": "Monorepo migration complete (May 2026) — 6 pnpm workspace packages",
+      "docOnline": "No online documentation yet. No deployed stories.",
+      "ci": "CI pipeline incomplete — lint / test / build / publish not yet automated",
+      "playwrightCoverage": "Partial Playwright coverage (~100 specs for 161 stories)",
+      "bundleMonitoring": "No bundle-size monitoring yet. No systematic a11y audit."
+    },
+    "delivered": {
+      "eyebrow": "ALREADY SHIPPED",
+      "titleLine1": "Three waves.",
+      "titleLine2": "Delivered.",
+      "subtitle": "Every item below is merged on the develop branch and will ship in the next minor release.",
+      "badgeDone": "Delivered"
+    },
+    "waves": {
+      "wave1": {
+        "title": "Wave 1 — New components",
+        "tabs": "Tabs / Tab / TabPanel / TabPanels — 3 variants, 2 orientations, ARIA WAI-ARIA APG, lazy panel mount",
+        "commandPalette": "CommandPalette (⌘K) — fuzzy match, useHotkey cross-platform, reuses OrigamKbd",
+        "snackbarStack": "SnackbarStack — 8 locations, FIFO max stack, useSnackbarStack singleton, role=status/alert per intent",
+        "bracket": "Bracket (tournament bracket) — 3 variants (single-elim, double-elim, round-robin), SVG connectors"
+      },
+      "wave2": {
+        "title": "Wave 2 — Enrichments",
+        "parallax": "OrigamParallax — multi-layer, direction, easing, CSS-first scroll-driven animation",
+        "code": "OrigamCode — Shiki syntax highlighting, 14 languages, 2 themes, line numbers, copy, filename",
+        "textareaRichtext": "OrigamTextareaField — rich mode contenteditable editor with 9 toolbar commands",
+        "textFieldMask": "OrigamTextField — mask engine with 13 built-in patterns + Luhn + IBAN mod-97"
+      },
+      "wave3": {
+        "title": "Wave 3 — Infrastructure",
+        "nuxtModule": "Official Nuxt module (sub-export origam/nuxt) — auto-import, SSR-safe theme plugin",
+        "ssrSafety": "SSR safety audit + useCssSupportClient + OrigamClientOnly",
+        "monorepo": "pnpm monorepo — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)"
+      }
+    },
+    "phases": {
+      "eyebrow": "WHAT'S NEXT",
+      "title": "A phased roadmap.",
+      "subtitle": "Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones.",
+      "shortTerm": {
+        "eyebrow": "Q3 2026",
+        "title": "Short term",
+        "ci": {
+          "title": "Complete CI / CD pipeline",
+          "description": "GitHub Actions: lint, token:lint, unit tests, e2e, build on every PR. Automated publish on tag v*."
+        },
+        "deployment": {
+          "title": "Deploy VitePress + Histoire",
+          "description": "Docs on origam.dev, stories on stories.origam.dev. Blocks all external adoption."
+        },
+        "playwright": {
+          "title": "Full Playwright coverage",
+          "description": "100 % of public components covered — one spec per component exercising every Variant and prop."
+        },
+        "a11yAudit": {
+          "title": "Overlay a11y audit",
+          "description": "Focus trap, focus restoration, aria-modal, Esc key for Dialog, Menu, Tooltip, Drawer, Snackbar."
+        },
+        "bundleSize": {
+          "title": "Bundle-size monitoring",
+          "description": "size-limit on every sub-export. PR comments auto-generated. The 5.6 MB → 869 kB drop must stay an asset."
+        }
+      },
+      "midTerm": {
+        "eyebrow": "Q4 2026 / Q1 2027",
+        "title": "Mid term",
+        "v3": {
+          "title": "v3.0.0 — Strategy B",
+          "description": "Remove *Styles returns when the value is tokenised. Utility classes become the sole API. ~2× less reactive computation."
+        },
+        "nuxtModule": {
+          "title": "Official Nuxt module (enhanced)",
+          "description": "{'@'}origam/nuxt — auto-import, SSR-safe theme plugin (cookie + prefers-color-scheme), auto token injection, themes option."
+        },
+        "ssrCssSupport": {
+          "title": "SSR safety for useCssSupport",
+          "description": "During SSR all feature flags are false. Automatic ClientOnly wrapper or useCssSupportClient() with suspense."
+        },
+        "motionTokens": {
+          "title": "Motion & a11y media tokens",
+          "description": "tokens/semantic/motion.json — durations, easings. Auto 0ms if prefers-reduced-motion. High-contrast ramp."
+        },
+        "vrt": {
+          "title": "Visual regression testing",
+          "description": "Playwright toHaveScreenshot() per Variant, or Chromatic / Lost-Pixel. Baseline on main, diff blocks PR."
+        }
+      },
+      "longTerm": {
+        "eyebrow": "> 6 MONTHS",
+        "title": "Long term",
+        "vapor": {
+          "title": "Vue Vapor mode (exploratory)",
+          "description": "No-virtual-DOM compilation — ~40 % less runtime overhead. POC on 5 pivot components, benchmarks first."
+        },
+        "webComponents": {
+          "title": "Web Components export",
+          "description": "origam/elements sub-export via defineCustomElement. Cross-framework demo (React, Svelte, Angular)."
+        },
+        "themeBuilder": {
+          "title": "Theme Builder UI",
+          "description": "Standalone app consuming origam itself: edit primitive tokens, preview components in real time, export brand JSON."
+        }
+      }
+    },
+    "wave4": {
+      "eyebrow": "WAVE 4",
+      "titleLine1": "13 components",
+      "titleLine2": "on the horizon.",
+      "subtitle": "These are on the ideas list. Order is indicative — final prioritisation will depend on community feedback.",
+      "grid": { "name": "OrigamGrid", "note": "Declarative CSS Grid with columns, rows, areas, gap, auto-flow", "effort": "S" },
+      "masonry": { "name": "OrigamMasonry", "note": "CSS-first via grid-template-rows: masonry, JS fallback", "effort": "M" },
+      "blockquote": { "name": "OrigamBlockquote", "note": "Typography: quote + author + source + variants", "effort": "S" },
+      "emptyState": { "name": "OrigamEmptyState", "note": "5 presets: no-data, no-results, error, offline, locked", "effort": "S" },
+      "clipboard": { "name": "OrigamClipboard", "note": "Copy wrapper + Copied! feedback, no dependencies", "effort": "S" },
+      "inlineEdit": { "name": "OrigamInlineEdit", "note": "Edit-in-place pattern, v-model + validators, ARIA live", "effort": "M" },
+      "numberFormat": { "name": "OrigamNumberFormat", "note": "i18n formatting via Intl.NumberFormat, display only", "effort": "S" },
+      "qrCode": { "name": "OrigamQRCode", "note": "SVG output, ISO/IEC 18004, error correction level, logo overlay", "effort": "M" },
+      "watermark": { "name": "OrigamWatermark", "note": "Diagonal repeat overlay, SVG text or canvas data-URI", "effort": "S" },
+      "video": { "name": "OrigamVideo", "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional", "effort": "M" },
+      "sound": { "name": "OrigamSound", "note": "Audio player + waveform via Web Audio API, Media Session API", "effort": "M" },
+      "calendar": { "name": "OrigamCalendar", "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house", "effort": "XL" },
+      "chart": { "name": "OrigamChart", "note": "SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js", "effort": "XL" }
+    },
+    "effort": {
+      "small": "S",
+      "medium": "M",
+      "large": "L",
+      "xlarge": "XL"
+    },
+    "cta": {
+      "title": "Follow the progress.",
+      "description": "Star the repository on GitHub to stay updated. Contributions and feedback are welcome.",
+      "ctaGithub": "Star on GitHub",
+      "ctaChangelog": "Read CHANGELOG",
+      "actionsLabel": "Follow origam"
+    }
+  },
   "home": {
     "meta": {
       "title": "origam · Vue 3 design system",
