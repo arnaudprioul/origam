@@ -26,6 +26,10 @@ useSeoMeta({
 const peerDeps = computed(() => INSTALLATION_PEER_DEPS)
 const packageManagers = computed(() => INSTALLATION_PACKAGE_MANAGERS)
 const activePackageManager = ref<string>(INSTALLATION_PACKAGE_MANAGERS[0].value)
+const currentInstallCmd = computed(() =>
+    INSTALLATION_PACKAGE_MANAGERS.find(pm => pm.value === activePackageManager.value)?.code
+        ?? INSTALLATION_PACKAGE_MANAGERS[0].code
+)
 const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 </script>
 
@@ -129,41 +133,43 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                                 {{ t('installation.steps.install.description', 'Add origam to your project with your preferred package manager.') }}
                             </p>
 
-                            <origam-tabs
-                                v-model="activePackageManager"
-                                variant="pills"
-                                color="primary"
-                                class="installation-step__pm-tabs"
-                                :aria-label="t('installation.steps.install.pmLabel', 'Package manager')"
+                            <origam-code
+                                :code="currentInstallCmd"
+                                lang="bash"
+                                copyable
+                                rounded="lg"
+                                class="installation-step__code installation-step__code--tabbed"
+                                data-cy="installation-code-install"
                             >
-                                <origam-tab
-                                    v-for="pm in packageManagers"
-                                    :key="pm.value"
-                                    :value="pm.value"
-                                >
-                                    {{ pm.label }}
-                                </origam-tab>
-                            </origam-tabs>
+                                <template #header="{ copy, copied }">
+                                    <origam-tabs
+                                        v-model="activePackageManager"
+                                        variant="underline"
+                                        color="primary"
+                                        class="installation-step__pm-tabs"
+                                        :aria-label="t('installation.steps.install.pmLabel', 'Package manager')"
+                                    >
+                                        <origam-tab
+                                            v-for="pm in packageManagers"
+                                            :key="pm.value"
+                                            :value="pm.value"
+                                        >
+                                            {{ pm.label }}
+                                        </origam-tab>
+                                    </origam-tabs>
 
-                            <origam-tab-panels
-                                v-model="activePackageManager"
-                                class="installation-step__pm-panels"
-                            >
-                                <origam-tab-panel
-                                    v-for="pm in packageManagers"
-                                    :key="pm.value"
-                                    :value="pm.value"
-                                >
-                                    <origam-code
-                                        :code="pm.code"
-                                        lang="bash"
-                                        copyable
-                                        rounded="lg"
-                                        class="installation-step__code"
-                                        :data-cy="`installation-code-install-${pm.value}`"
-                                    />
-                                </origam-tab-panel>
-                            </origam-tab-panels>
+                                    <origam-btn
+                                        variant="text"
+                                        size="small"
+                                        prepend-icon="mdi-content-copy"
+                                        class="installation-step__code-copy"
+                                        data-cy="installation-code-install-copy"
+                                        @click="copy"
+                                    >
+                                        {{ copied ? t('installation.steps.install.copied', 'Copied') : t('installation.steps.install.copy', 'Copy') }}
+                                    </origam-btn>
+                                </template>
+                            </origam-code>
                         </div>
                     </origam-grid-item>
 
@@ -720,6 +726,23 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 .installation-step__code {
     max-inline-size: 52rem;
     margin-block-end: var(--origam-space---3, 0.75rem);
+}
+
+.installation-step__code--tabbed :deep(.origam-code__header) {
+    padding-block: 0;
+    padding-inline: var(--origam-space---3, 0.75rem);
+    align-items: stretch;
+    gap: var(--origam-space---4, 1rem);
+}
+
+.installation-step__pm-tabs {
+    align-self: stretch;
+    --origam-tabs---border-width: 0;
+}
+
+.installation-step__code-copy {
+    flex-shrink: 0;
+    align-self: center;
 }
 
 .installation-step__note {

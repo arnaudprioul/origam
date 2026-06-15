@@ -737,7 +737,9 @@
       "install": {
         "title": "1. Install",
         "description": "Add origam to your project with your preferred package manager.",
-        "pmLabel": "Package manager"
+        "pmLabel": "Package manager",
+        "copy": "Copy",
+        "copied": "Copied"
       },
       "register": {
         "title": "2. Register the plugin",

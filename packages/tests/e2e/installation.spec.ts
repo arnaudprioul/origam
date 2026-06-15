@@ -60,23 +60,25 @@ test.describe('installation — DS-first', () => {
         expect(count).toBeGreaterThanOrEqual(5)
     })
 
-    test('le step install propose des OrigamTabs npm/pnpm/yarn', async ({ page }) => {
-        const tabs = page.locator('.installation-step__pm-tabs .origam-tab')
+    test('les OrigamTabs npm/pnpm/yarn vivent dans le header du bloc install', async ({ page }) => {
+        const code = page.locator('[data-cy="installation-code-install"]')
+        await expect(code).toHaveClass(/origam-code/)
+        const tabs = code.locator('.origam-code__header .installation-step__pm-tabs .origam-tab')
         await expect(tabs).toHaveCount(3)
         await expect(tabs.nth(0)).toHaveText('npm')
+        await expect(code.locator('[data-cy="installation-code-install-copy"]')).toBeVisible()
+        await expect(code.locator('.origam-code__copy--floating')).toHaveCount(0)
     })
 
-    test('le bloc install actif est un OrigamCode (data-cy par gestionnaire)', async ({ page }) => {
-        const codeInstall = page.locator('[data-cy="installation-code-install-npm"]')
-        await expect(codeInstall).toBeVisible()
-        await expect(codeInstall).toHaveClass(/origam-code/)
-    })
+    test('changer d\'onglet swappe la commande affichée dans le code', async ({ page }) => {
+        const code = page.locator('[data-cy="installation-code-install"]')
+        await expect(code).toContainText('npm install origam')
 
-    test('le bloc install affiche un header propre (lang badge + copy, pas de floating)', async ({ page }) => {
-        const codeInstall = page.locator('[data-cy="installation-code-install-npm"]')
-        await expect(codeInstall.locator('.origam-code__header')).toBeVisible()
-        await expect(codeInstall.locator('.origam-code__lang-badge')).toHaveText('bash')
-        await expect(codeInstall.locator('.origam-code__copy--floating')).toHaveCount(0)
+        await code.locator('.installation-step__pm-tabs .origam-tab', { hasText: 'pnpm' }).first().click()
+        await expect(code).toContainText('pnpm add origam')
+
+        await code.locator('.installation-step__pm-tabs .origam-tab', { hasText: 'yarn' }).first().click()
+        await expect(code).toContainText('yarn add origam')
     })
 
     test('le bloc register a un filename main.ts affiché', async ({ page }) => {
