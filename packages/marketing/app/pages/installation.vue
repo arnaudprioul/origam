@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
 import {
     INSTALLATION_HERO_BADGE_VARS,
     INSTALLATION_PEER_DEPS,
-    INSTALLATION_CODE_INSTALL,
+    INSTALLATION_PACKAGE_MANAGERS,
     INSTALLATION_CODE_REGISTER,
     INSTALLATION_CODE_USE,
     INSTALLATION_CODE_THEME_HTML,
@@ -24,6 +24,8 @@ useSeoMeta({
 })
 
 const peerDeps = computed(() => INSTALLATION_PEER_DEPS)
+const packageManagers = computed(() => INSTALLATION_PACKAGE_MANAGERS)
+const activePackageManager = ref<string>(INSTALLATION_PACKAGE_MANAGERS[0].value)
 const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 </script>
 
@@ -127,14 +129,41 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                                 {{ t('installation.steps.install.description', 'Add origam to your project with your preferred package manager.') }}
                             </p>
 
-                            <origam-code
-                                :code="INSTALLATION_CODE_INSTALL.code"
-                                :lang="INSTALLATION_CODE_INSTALL.lang"
-                                copyable
-                                rounded="lg"
-                                class="installation-step__code"
-                                data-cy="installation-code-install"
-                            />
+                            <origam-tabs
+                                v-model="activePackageManager"
+                                variant="pills"
+                                color="primary"
+                                class="installation-step__pm-tabs"
+                                :aria-label="t('installation.steps.install.pmLabel', 'Package manager')"
+                            >
+                                <origam-tab
+                                    v-for="pm in packageManagers"
+                                    :key="pm.value"
+                                    :value="pm.value"
+                                >
+                                    {{ pm.label }}
+                                </origam-tab>
+                            </origam-tabs>
+
+                            <origam-tab-panels
+                                v-model="activePackageManager"
+                                class="installation-step__pm-panels"
+                            >
+                                <origam-tab-panel
+                                    v-for="pm in packageManagers"
+                                    :key="pm.value"
+                                    :value="pm.value"
+                                >
+                                    <origam-code
+                                        :code="pm.code"
+                                        lang="bash"
+                                        copyable
+                                        rounded="lg"
+                                        class="installation-step__code"
+                                        :data-cy="`installation-code-install-${pm.value}`"
+                                    />
+                                </origam-tab-panel>
+                            </origam-tab-panels>
                         </div>
                     </origam-grid-item>
 

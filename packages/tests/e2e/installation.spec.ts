@@ -60,10 +60,23 @@ test.describe('installation — DS-first', () => {
         expect(count).toBeGreaterThanOrEqual(5)
     })
 
-    test('le bloc install est visible (data-cy)', async ({ page }) => {
-        const codeInstall = page.locator('[data-cy="installation-code-install"]')
+    test('le step install propose des OrigamTabs npm/pnpm/yarn', async ({ page }) => {
+        const tabs = page.locator('.installation-step__pm-tabs .origam-tab')
+        await expect(tabs).toHaveCount(3)
+        await expect(tabs.nth(0)).toHaveText('npm')
+    })
+
+    test('le bloc install actif est un OrigamCode (data-cy par gestionnaire)', async ({ page }) => {
+        const codeInstall = page.locator('[data-cy="installation-code-install-npm"]')
         await expect(codeInstall).toBeVisible()
         await expect(codeInstall).toHaveClass(/origam-code/)
+    })
+
+    test('le bloc install affiche un header propre (lang badge + copy, pas de floating)', async ({ page }) => {
+        const codeInstall = page.locator('[data-cy="installation-code-install-npm"]')
+        await expect(codeInstall.locator('.origam-code__header')).toBeVisible()
+        await expect(codeInstall.locator('.origam-code__lang-badge')).toHaveText('bash')
+        await expect(codeInstall.locator('.origam-code__copy--floating')).toHaveCount(0)
     })
 
     test('le bloc register a un filename main.ts affiché', async ({ page }) => {

@@ -2,7 +2,8 @@ import type { CSSProperties } from 'vue'
 import type {
     IInstallationStep,
     IInstallationCodeBlock,
-    IInstallationPeerDep
+    IInstallationPeerDep,
+    IInstallationPackageManager
 } from '~/interfaces/installation.interface'
 
 /**
@@ -56,14 +57,11 @@ export const INSTALLATION_STEPS: IInstallationStep[] = [
  * Code snippets — pure data, identical across all locales.
  * Never put these in i18n (brace conflicts with vue-i18n).
  */
-export const INSTALLATION_CODE_INSTALL: IInstallationCodeBlock = {
-    lang: 'bash',
-    code: `npm install origam
-# or
-pnpm add origam
-# or
-yarn add origam`
-}
+export const INSTALLATION_PACKAGE_MANAGERS: IInstallationPackageManager[] = [
+    { value: 'npm', label: 'npm', code: 'npm install origam' },
+    { value: 'pnpm', label: 'pnpm', code: 'pnpm add origam' },
+    { value: 'yarn', label: 'yarn', code: 'yarn add origam' }
+]
 
 export const INSTALLATION_CODE_REGISTER: IInstallationCodeBlock = {
     lang: 'ts',

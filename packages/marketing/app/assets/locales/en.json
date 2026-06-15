@@ -736,7 +736,8 @@
       "listLabel": "Installation steps",
       "install": {
         "title": "1. Install",
-        "description": "Add origam to your project with your preferred package manager."
+        "description": "Add origam to your project with your preferred package manager.",
+        "pmLabel": "Package manager"
       },
       "register": {
         "title": "2. Register the plugin",

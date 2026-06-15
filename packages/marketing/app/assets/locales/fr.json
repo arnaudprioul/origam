@@ -736,7 +736,8 @@
       "listLabel": "Étapes d'installation",
       "install": {
         "title": "1. Installer",
-        "description": "Ajoutez origam à votre projet avec votre gestionnaire de paquets préféré."
+        "description": "Ajoutez origam à votre projet avec votre gestionnaire de paquets préféré.",
+        "pmLabel": "Gestionnaire de paquets"
       },
       "register": {
         "title": "2. Enregistrer le plugin",

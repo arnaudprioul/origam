@@ -23,3 +23,9 @@ export interface IInstallationPeerDep {
     required: string
     usedByKey: string
 }
+
+export interface IInstallationPackageManager {
+    value: string
+    label: string
+    code: string
+}
