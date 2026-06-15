@@ -607,9 +607,12 @@
     },
     "list": {
       "eyebrow": "RELEASE HISTORY",
-      "titleLine1": "All versions.",
-      "titleLine2": "Curated.",
-      "subtitle": "3 to 6 highlights per release. The most recent versions are expanded by default."
+      "titleLine1": "Pick a release.",
+      "titleLine2": "See what shipped.",
+      "subtitle": "Choose any version to see exactly what shipped — the summary plus its key highlights."
+    },
+    "select": {
+      "label": "Select a version"
     },
     "type": {
       "unreleased": "Next",

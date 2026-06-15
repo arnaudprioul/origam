@@ -607,9 +607,12 @@
     },
     "list": {
       "eyebrow": "HISTORIQUE DES VERSIONS",
-      "titleLine1": "Toutes les versions.",
-      "titleLine2": "Curées.",
-      "subtitle": "3 à 6 points marquants par version. Les plus récentes sont dépliées par défaut."
+      "titleLine1": "Choisissez une version.",
+      "titleLine2": "Voyez ce qui a changé.",
+      "subtitle": "Sélectionnez n'importe quelle version pour voir exactement ce qui a été livré — le résumé et ses points marquants."
+    },
+    "select": {
+      "label": "Choisir une version"
     },
     "type": {
       "unreleased": "Prochain",

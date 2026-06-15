@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
 import {
     CHANGELOG_VERSIONS,
@@ -20,10 +20,6 @@ useSeoMeta({
 
 const versions = computed(() => CHANGELOG_VERSIONS)
 const fullChangelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main/CHANGELOG.md`)
-
-function versionSlug (version: string): string {
-    return version.replaceAll('.', '-')
-}
 
 function typeColor (type: string): string {
     return CHANGELOG_TYPE_COLOR[type as keyof typeof CHANGELOG_TYPE_COLOR] ?? 'neutral'
@@ -59,10 +55,25 @@ function highlightTypeLabel (type: string): string {
     return t(key, fallbacks[type] ?? type)
 }
 
-const initialOpen = computed(() => {
-    const firstIndex = versions.value.findIndex(v => v.type !== 'unreleased' && v.type !== 'patch')
-    return firstIndex >= 0 ? firstIndex : 0
-})
+const DEFAULT_VERSION = CHANGELOG_VERSIONS.find(v => v.type !== 'unreleased')?.version ?? CHANGELOG_VERSIONS[0].version
+const selectedVersion = ref<string>(DEFAULT_VERSION)
+
+const currentVersion = computed(() =>
+    versions.value.find(v => v.version === selectedVersion.value) ?? versions.value[0]
+)
+
+const versionSelectItems = computed(() => versions.value.map(v => ({
+    value: v.version,
+    title: v.type === 'unreleased'
+        ? `${t('changelog.type.unreleased', 'Next')} · ${t('changelog.unreleased.label', 'Not yet released')}`
+        : `${v.version} · ${typeLabel(v.type)} · ${v.date}`
+})))
+
+const currentVersionLabel = computed(() =>
+    currentVersion.value.type === 'unreleased'
+        ? t('changelog.type.unreleased', 'Next')
+        : currentVersion.value.version
+)
 </script>
 
 <template>
@@ -140,121 +151,114 @@ const initialOpen = computed(() => {
                     </origam-title>
 
                     <p class="changelog-section__subtitle">
-                        {{ t('changelog.list.subtitle', '3 to 6 highlights per release. The most recent versions are expanded by default.') }}
+                        {{ t('changelog.list.subtitle', 'Pick a release to see exactly what shipped — the summary plus its key highlights.') }}
                     </p>
                 </header>
 
-                <origam-expansion-panels
-                    class="changelog-panels"
-                    accordion
-                    rounded="lg"
-                    data-cy="changelog-expansion-panels"
-                    :model-value="initialOpen"
-                >
-                    <origam-expansion-panel
-                        v-for="version in versions"
-                        :key="version.version"
-                        eager
-                        class="changelog-panel"
-                        :class="`changelog-panel--${version.type}`"
-                        :data-cy="`changelog-panel-${versionSlug(version.version)}`"
+                <div class="changelog-release">
+                    <div class="changelog-release__control">
+                        <origam-select
+                            v-model="selectedVersion"
+                            :items="versionSelectItems"
+                            item-title="title"
+                            item-value="value"
+                            :label="t('changelog.select.label', 'Select a version')"
+                            rounded="lg"
+                            prepend-inner-icon="mdi-tag-outline"
+                            class="changelog-release__select"
+                            data-cy="changelog-version-select"
+                        />
+                    </div>
+
+                    <article
+                        :key="currentVersion.version"
+                        class="changelog-release__card"
+                        data-cy="changelog-release-card"
                     >
-                        <origam-expansion-panel-header class="changelog-panel__header">
-                            <template #prepend>
-                                <div class="changelog-panel__meta">
-                                    <origam-chip
-                                        :color="typeColor(version.type)"
-                                        size="small"
-                                        pill
-                                        class="changelog-panel__version-chip"
-                                        :aria-label="`${t('changelog.aria.version', 'Version')} ${version.version}`"
-                                    >
-                                        {{ version.type === 'unreleased' ? t('changelog.type.unreleased', 'Next') : version.version }}
-                                    </origam-chip>
-
-                                    <origam-chip
-                                        :color="typeColor(version.type)"
-                                        variant="text"
-                                        size="x-small"
-                                        pill
-                                        class="changelog-panel__type-chip"
-                                    >
-                                        {{ typeLabel(version.type) }}
-                                    </origam-chip>
-                                </div>
-                            </template>
-
-                            <template #append>
-                                <p
-                                    v-if="version.date"
-                                    class="changelog-panel__date"
+                        <header class="changelog-release__head">
+                            <div class="changelog-release__head-main">
+                                <origam-title
+                                    tag="h3"
+                                    class="changelog-release__version"
                                 >
-                                    <time :datetime="version.date">{{ version.date }}</time>
-                                </p>
-                                <p
-                                    v-else
-                                    class="changelog-panel__date changelog-panel__date--unreleased"
+                                    {{ currentVersionLabel }}
+                                </origam-title>
+
+                                <origam-chip
+                                    :color="typeColor(currentVersion.type)"
+                                    size="small"
+                                    pill
+                                    class="changelog-release__type"
                                 >
-                                    {{ t('changelog.unreleased.label', 'Not yet released') }}
-                                </p>
-                            </template>
-                        </origam-expansion-panel-header>
-
-                        <origam-expansion-panel-content>
-                            <div class="changelog-panel__body">
-                                <p class="changelog-panel__summary">
-                                    {{ t(version.summaryKey, version.summaryKey) }}
-                                </p>
-
-                                <origam-grid
-                                    tag="ul"
-                                    columns="1"
-                                    gap="0.5rem"
-                                    class="changelog-panel__highlights"
-                                    :aria-label="t('changelog.aria.highlights', 'Release highlights')"
-                                >
-                                    <origam-grid-item
-                                        v-for="highlight in version.highlights"
-                                        :key="highlight.textKey"
-                                        tag="li"
-                                        class="changelog-panel__highlight"
-                                    >
-                                        <origam-chip
-                                            :color="highlightColor(highlight.type)"
-                                            size="x-small"
-                                            pill
-                                            class="changelog-panel__highlight-badge"
-                                            :prepend-icon="highlightIcon(highlight.type)"
-                                        >
-                                            {{ highlightTypeLabel(highlight.type) }}
-                                        </origam-chip>
-
-                                        <span class="changelog-panel__highlight-text">
-                                            {{ t(highlight.textKey, highlight.textKey) }}
-                                        </span>
-                                    </origam-grid-item>
-                                </origam-grid>
-
-                                <nav
-                                    class="changelog-panel__footer"
-                                    :aria-label="t('changelog.aria.versionLinks', 'Version links')"
-                                >
-                                    <origam-btn
-                                        variant="text"
-                                        size="small"
-                                        prepend-icon="mdi-open-in-new"
-                                        :href="fullChangelogHref"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="changelog-panel__full-link"
-                                    >
-                                        {{ t('changelog.panel.fullLink', 'Full changelog on GitHub') }}
-                                    </origam-btn>
-                                </nav>
+                                    {{ typeLabel(currentVersion.type) }}
+                                </origam-chip>
                             </div>
-                        </origam-expansion-panel-content>
-                    </origam-expansion-panel>
-                </origam-expansion-panels>
+
+                            <p
+                                v-if="currentVersion.date"
+                                class="changelog-release__date"
+                            >
+                                <time :datetime="currentVersion.date">{{ currentVersion.date }}</time>
+                            </p>
+                            <p
+                                v-else
+                                class="changelog-release__date changelog-release__date--unreleased"
+                            >
+                                {{ t('changelog.unreleased.label', 'Not yet released') }}
+                            </p>
+                        </header>
+
+                        <p class="changelog-release__summary">
+                            {{ t(currentVersion.summaryKey, currentVersion.summaryKey) }}
+                        </p>
+
+                        <origam-grid
+                            tag="ul"
+                            columns="1"
+                            gap="0.75rem"
+                            class="changelog-release__highlights"
+                            :aria-label="t('changelog.aria.highlights', 'Release highlights')"
+                        >
+                            <origam-grid-item
+                                v-for="highlight in currentVersion.highlights"
+                                :key="highlight.textKey"
+                                tag="li"
+                                class="changelog-release__highlight"
+                            >
+                                <origam-chip
+                                    :color="highlightColor(highlight.type)"
+                                    size="x-small"
+                                    pill
+                                    class="changelog-release__highlight-badge"
+                                    :prepend-icon="highlightIcon(highlight.type)"
+                                >
+                                    {{ highlightTypeLabel(highlight.type) }}
+                                </origam-chip>
+
+                                <span class="changelog-release__highlight-text">
+                                    {{ t(highlight.textKey, highlight.textKey) }}
+                                </span>
+                            </origam-grid-item>
+                        </origam-grid>
+
+                        <nav
+                            class="changelog-release__footer"
+                            :aria-label="t('changelog.aria.versionLinks', 'Version links')"
+                        >
+                            <origam-btn
+                                variant="text"
+                                size="small"
+                                prepend-icon="mdi-open-in-new"
+                                :href="fullChangelogHref"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="changelog-release__full-link"
+                            >
+                                {{ t('changelog.panel.fullLink', 'Full changelog on GitHub') }}
+                            </origam-btn>
+                        </nav>
+                    </article>
+                </div>
             </origam-container>
         </section>
 
@@ -449,97 +453,124 @@ const initialOpen = computed(() => {
     margin-block-end: var(--origam-space---10, 2.5rem);
 }
 
-.changelog-panels {
+.changelog-release {
     max-inline-size: 56rem;
-    --origam-expansion-panel---border-radius: var(--origam-radius---lg, 12px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-space---8, 2rem);
 }
 
-/* Panel header meta (chips + date) */
-
-.changelog-panel__header {
-    min-block-size: 64px;
+.changelog-release__control {
+    max-inline-size: 26rem;
 }
 
-.changelog-panel__meta {
+.changelog-release__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-space---6, 1.5rem);
+    animation: changelog-release-in 0.28s ease;
+}
+
+.changelog-release__head {
     display: flex;
     align-items: center;
-    gap: var(--origam-space---2, 0.5rem);
+    justify-content: space-between;
     flex-wrap: wrap;
+    gap: var(--origam-space---4, 1rem);
+    padding-block-end: var(--origam-space---5, 1.25rem);
+    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 
-.changelog-panel__version-chip {
+.changelog-release__head-main {
+    display: flex;
+    align-items: center;
+    gap: var(--origam-space---3, 0.75rem);
+}
+
+.changelog-release__version {
+    margin: 0;
+    font-size: var(--origam-font-size---3xl, 2rem);
+    font-weight: var(--origam-font__weight---bold, 700);
     font-family: var(--origam-font-family---mono, monospace);
-    font-weight: var(--origam-font__weight---semibold, 600);
+    letter-spacing: var(--origam-letter-spacing---tight, -0.02em);
+    color: var(--origam-color__text---primary, #0a0a0a);
 }
 
-.changelog-panel__type-chip {
-    font-size: var(--origam-font-size---xs, 0.75rem);
+.changelog-release__type {
+    flex-shrink: 0;
 }
 
-.changelog-panel__date {
+.changelog-release__date {
     margin: 0;
     font-size: var(--origam-font-size---sm, 0.875rem);
     color: var(--origam-color__text---secondary, #525252);
     font-family: var(--origam-font-family---mono, monospace);
-    margin-inline-start: auto;
 }
 
-.changelog-panel__date--unreleased {
+.changelog-release__date--unreleased {
     font-style: italic;
 }
 
-/* Panel body */
-
-.changelog-panel__body {
-    padding: var(--origam-space---5, 1.25rem) var(--origam-space---6, 1.5rem) var(--origam-space---6, 1.5rem);
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---5, 1.25rem);
-}
-
-.changelog-panel__summary {
+.changelog-release__summary {
     margin: 0;
-    font-size: var(--origam-font-size---base, 1rem);
-    line-height: 1.65;
+    font-size: var(--origam-font-size---lg, 1.125rem);
+    line-height: 1.6;
     color: var(--origam-color__text---secondary, #525252);
-    font-style: italic;
-    padding-inline-start: var(--origam-space---4, 1rem);
-    border-inline-start: 3px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
 }
 
-.changelog-panel__highlights {
+.changelog-release__highlights {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-space---3, 0.75rem);
 }
 
-.changelog-panel__highlight {
+.changelog-release__highlight {
     list-style: none;
     display: flex;
     align-items: flex-start;
     gap: var(--origam-space---3, 0.75rem);
 }
 
-.changelog-panel__highlight-badge {
+.changelog-release__highlight-badge {
     flex-shrink: 0;
     margin-block-start: 2px;
 }
 
-.changelog-panel__highlight-text {
-    font-size: var(--origam-font-size---sm, 0.875rem);
+.changelog-release__highlight-text {
+    font-size: var(--origam-font-size---base, 1rem);
     line-height: 1.6;
     color: var(--origam-color__text---primary, #0a0a0a);
 }
 
-.changelog-panel__footer {
+.changelog-release__footer {
     display: flex;
-    align-items: center;
-    padding-block-start: var(--origam-space---3, 0.75rem);
+    padding-block-start: var(--origam-space---4, 1rem);
     border-block-start: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 
-.changelog-panel__full-link {
+.changelog-release__full-link {
     font-size: var(--origam-font-size---sm, 0.875rem);
+}
+
+@keyframes changelog-release-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .changelog-release__card {
+        animation: none;
+    }
 }
 
 /* ── CTA ─────────────────────────────────────────────────────────────────── */
