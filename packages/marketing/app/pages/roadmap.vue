@@ -309,7 +309,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                                 :icon="item.icon"
                                                 :color="phase.intent"
                                                 rounded="lg"
-                                                size="32"
+                                                size="44"
                                                 class="roadmap-timeline__item-avatar"
                                                 aria-hidden="true"
                                             />
@@ -715,6 +715,10 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-timeline__card {
     margin-block-start: var(--origam-space---2, 0.5rem);
+    --origam-card---padding-block-start: var(--origam-space---6, 1.5rem);
+    --origam-card---padding-block-end: var(--origam-space---6, 1.5rem);
+    --origam-card---padding-inline-start: var(--origam-space---6, 1.5rem);
+    --origam-card---padding-inline-end: var(--origam-space---6, 1.5rem);
 }
 
 .roadmap-timeline__card-header {
