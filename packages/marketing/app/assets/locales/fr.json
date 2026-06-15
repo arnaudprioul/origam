@@ -784,5 +784,90 @@
       "cta_github": "Voir sur GitHub",
       "actions_label": "Explorer origam"
     }
+  },
+  "components": {
+    "meta": {
+      "title": "Composants · origam design system",
+      "description": "Parcourez 95+ composants Vue 3 accessibles et pilotés par tokens, groupés par catégorie. Cliquez sur un composant pour voir son API, ses props, emits, slots et exemples."
+    },
+    "hero": {
+      "badge": "95+ composants — Vue 3",
+      "title_line1": "Catalogue de",
+      "title_line2": "composants.",
+      "subtitle": "Chaque composant d'origam est accessible, piloté par tokens et thémable. Explorez-les par catégorie, lisez l'API et voyez-les en action.",
+      "search_placeholder": "Rechercher un composant…",
+      "search_label": "Filtrer les composants par nom ou catégorie",
+      "count_families": "familles de composants réparties dans",
+      "count_categories": "catégories",
+      "count_filtered_of": "sur",
+      "count_filtered_match": "composants correspondent"
+    },
+    "catalog": {
+      "eyebrow": "PARCOURIR PAR CATÉGORIE",
+      "title": "Tous les composants.",
+      "empty_title": "Aucun composant trouvé",
+      "empty_desc": "Aucun composant ne correspond à votre recherche. Essayez un autre terme."
+    },
+    "detail": {
+      "meta": {
+        "title": "{name} · composants origam"
+      },
+      "breadcrumb_label": "Emplacement de la page",
+      "breadcrumb_catalog": "Composants",
+      "external_links_label": "Ressources externes",
+      "story_link": "Voir la story",
+      "doc_link": "Documentation complète",
+      "toc_label": "Table des matières",
+      "toc_heading": "Sur cette page",
+      "not_found": {
+        "title": "Composant introuvable",
+        "desc": "Aucun composant ne correspond au slug",
+        "back": "Retour au catalogue"
+      },
+      "family": {
+        "title": "Famille",
+        "desc": "Ces composants appartiennent au même dossier et fonctionnent ensemble."
+      },
+      "related": {
+        "title": "Éléments liés",
+        "desc": "Composants et directives d'autres dossiers qui collaborent avec celui-ci.",
+        "kind_component": "composant",
+        "kind_directive": "directive"
+      },
+      "props": {
+        "title": "Props",
+        "desc": "Toutes les props acceptées par ce composant, avec leur type, valeur par défaut et description.",
+        "table_caption": "Props",
+        "col_name": "Nom",
+        "col_type": "Type",
+        "col_default": "Défaut",
+        "col_description": "Description",
+        "required": "requis"
+      },
+      "emits": {
+        "title": "Emits",
+        "desc": "Événements émis par ce composant.",
+        "table_caption": "Événements",
+        "col_event": "Événement",
+        "col_payload": "Payload",
+        "col_description": "Description"
+      },
+      "slots": {
+        "title": "Slots",
+        "desc": "Emplacements de contenu exposés par ce composant.",
+        "table_caption": "Slots",
+        "col_slot": "Slot",
+        "col_slot_props": "Props du slot",
+        "col_description": "Description"
+      },
+      "examples": {
+        "title": "Exemples",
+        "desc": "Extraits de code prêts à coller dans vos templates."
+      },
+      "no_doc": {
+        "title": "Documentation à venir",
+        "desc": "La référence API détaillée de ce composant est en cours de rédaction. Consultez les stories Histoire ou la doc VitePress en attendant."
+      }
+    }
   }
 }

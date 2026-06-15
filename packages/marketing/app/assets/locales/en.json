@@ -784,5 +784,90 @@
       "cta_github": "View on GitHub",
       "actions_label": "Explore origam"
     }
+  },
+  "components": {
+    "meta": {
+      "title": "Components · origam design system",
+      "description": "Browse 95+ accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples."
+    },
+    "hero": {
+      "badge": "95+ components — Vue 3",
+      "title_line1": "Component",
+      "title_line2": "catalogue.",
+      "subtitle": "Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.",
+      "search_placeholder": "Search components…",
+      "search_label": "Filter components by name or category",
+      "count_families": "component families across",
+      "count_categories": "categories",
+      "count_filtered_of": "of",
+      "count_filtered_match": "components match"
+    },
+    "catalog": {
+      "eyebrow": "BROWSE BY CATEGORY",
+      "title": "All components.",
+      "empty_title": "No components found",
+      "empty_desc": "No component matches your search. Try a different term."
+    },
+    "detail": {
+      "meta": {
+        "title": "{name} · origam components"
+      },
+      "breadcrumb_label": "Page location",
+      "breadcrumb_catalog": "Components",
+      "external_links_label": "External resources",
+      "story_link": "View story",
+      "doc_link": "Full docs",
+      "toc_label": "Table of contents",
+      "toc_heading": "On this page",
+      "not_found": {
+        "title": "Component not found",
+        "desc": "No component matches the slug",
+        "back": "Back to catalogue"
+      },
+      "family": {
+        "title": "Family",
+        "desc": "These components belong to the same folder and work together."
+      },
+      "related": {
+        "title": "Related elements",
+        "desc": "Components and directives from different folders that collaborate with this one.",
+        "kind_component": "component",
+        "kind_directive": "directive"
+      },
+      "props": {
+        "title": "Props",
+        "desc": "All props accepted by this component, with their type, default value and description.",
+        "table_caption": "Props",
+        "col_name": "Name",
+        "col_type": "Type",
+        "col_default": "Default",
+        "col_description": "Description",
+        "required": "required"
+      },
+      "emits": {
+        "title": "Emits",
+        "desc": "Events emitted by this component.",
+        "table_caption": "Events",
+        "col_event": "Event",
+        "col_payload": "Payload",
+        "col_description": "Description"
+      },
+      "slots": {
+        "title": "Slots",
+        "desc": "Content slots exposed by this component.",
+        "table_caption": "Slots",
+        "col_slot": "Slot",
+        "col_slot_props": "Slot props",
+        "col_description": "Description"
+      },
+      "examples": {
+        "title": "Examples",
+        "desc": "Ready-to-paste code snippets for your templates."
+      },
+      "no_doc": {
+        "title": "Documentation coming soon",
+        "desc": "The detailed API reference for this component is being written. Check the Histoire stories or VitePress docs in the meantime."
+      }
+    }
   }
 }
