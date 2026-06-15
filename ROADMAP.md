@@ -444,6 +444,32 @@ obligatoire** (touche le rendu de toutes les variantes).
 `border-inline-start` (SCSS, sur le bloc) ; conflit connu avec le prop `border`
 (box) assumé temporairement, résolu par cette évolution.
 
+### `OrigamList` — variants de liste sémantiques **(M, spec)**
+
+> Demande mainteneur (juin 2026). **Statut : planifié, non implémenté.**
+
+**Constat** : `OrigamList` et `OrigamListItem` rendent par défaut `tag: 'div'`
+avec `role="listbox"` hardcodé, et exposent une prop booléenne `nav`. Résultat :
+ce ne sont PAS de vraies listes sémantiques (`<ul>/<ol>/<li>`) — c'est la raison
+pour laquelle le marketing utilise `OrigamGrid tag="ul"` / `OrigamGridItem
+tag="li"` en attendant, au lieu d'`OrigamList`. Régression d'accessibilité / SEO
+(W3C : préférer l'élément natif).
+
+**Principe cible** : remplacer la prop booléenne `nav` par une prop `variant`
+qui pilote À LA FOIS le tag rendu ET le rôle ARIA :
+- `unordered` → `<ul>` + `<li>` (pas de `role` redondant) ;
+- `ordered` → `<ol>` + `<li>` ;
+- `nav` → `<nav><ul>…` (navigation) ;
+- `listbox` → conserve `<div role="listbox">` actuel (widget interactif sélectionnable).
+Le défaut bascule vers une vraie liste sémantique ; `listbox` reste pour les cas
+widget (select-like). `OrigamListItem` aligne son `tag` par défaut sur le variant
+du parent (via defaults-provider).
+
+**Portée / liens** : breaking (changement de défaut + suppression de `nav`) →
+v3, alias rétro-compatible (`nav` déprécié → `variant="nav"`, warn once) +
+codemod. Story + doc + e2e + audit a11y (axe) dans la même PR. Une fois livré,
+migrer le marketing d'`OrigamGrid tag="ul"` vers `OrigamList variant="unordered"`.
+
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
   Lost-Pixel. Baseline sur main, diff bloquant sur PR.

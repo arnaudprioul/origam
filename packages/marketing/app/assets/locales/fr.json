@@ -331,6 +331,10 @@
           "title": "Renommage accentColor (breaking v3)",
           "description": "Renommage bgColor → accentColor, aligné sur le standard CSS accent-color. Chemin de dépréciation complet inclus."
         },
+        "listSemantics": {
+          "title": "Variants de liste sémantiques (OrigamList)",
+          "description": "OrigamList / OrigamListItem rendent aujourd'hui des <div role=\"listbox\">. Une nouvelle prop variant (unordered → ul/li, ordered → ol/li, nav, listbox) émettra du vrai <ul>/<ol>/<li>, en remplacement de la prop booléenne nav."
+        },
         "turborepo": {
           "title": "Cache de build Turborepo",
           "description": "Remplacement des scripts pnpm -r bruts par des pipelines Turborepo. Le cache distant réduit drastiquement les temps de rebuild en CI."

@@ -331,6 +331,10 @@
           "title": "accentColor rename (breaking v3)",
           "description": "bgColor → accentColor prop rename, aligned with the CSS accent-color standard. Full deprecation path included."
         },
+        "listSemantics": {
+          "title": "Semantic list variants (OrigamList)",
+          "description": "OrigamList / OrigamListItem render <div role=\"listbox\"> today. A new variant prop (unordered → ul/li, ordered → ol/li, nav, listbox) will emit real <ul>/<ol>/<li> semantics, replacing the boolean nav prop."
+        },
         "turborepo": {
           "title": "Turborepo build cache",
           "description": "Replace raw pnpm -r scripts with Turborepo pipelines. Remote cache drastically cuts CI rebuild time."

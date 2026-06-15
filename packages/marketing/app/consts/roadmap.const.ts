@@ -161,6 +161,12 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.medium'
             },
             {
+                titleKey: 'roadmap.phases.midTerm.listSemantics.title',
+                descriptionKey: 'roadmap.phases.midTerm.listSemantics.description',
+                icon: 'mdi-format-list-bulleted',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
                 titleKey: 'roadmap.phases.midTerm.motionTokens.title',
                 descriptionKey: 'roadmap.phases.midTerm.motionTokens.description',
                 icon: 'mdi-animation-play-outline',
