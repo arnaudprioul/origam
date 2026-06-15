@@ -6,7 +6,7 @@
   import { MDI_ICONS } from 'origam/enums'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
-  import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_LINKS } from '~/consts/nav.const'
+  import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
   import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY } from '~/consts/chrome.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { THEME_CHIPS } from '~/consts/themes-showcase.const'
@@ -29,7 +29,6 @@
 
   const themeIcon = computed(() => (resolvedMode.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'))
   const brandName = computed(() => t('brand.name', 'origam'))
-  const tagline = computed(() => t('brand.tagline', 'The Vue 3 design system that just works.'))
   const searchPlaceholder = computed(() => t('chrome.searchPlaceholder', 'Search…'))
   const searchAriaLabel = computed(() => t('a11y.search', 'Search the documentation'))
   const starCountAriaLabel = computed(() => t('a11y.starCount', 'GitHub stars'))
@@ -42,6 +41,11 @@
     return active ? t(active.labelKey, active.labelFallback) : t('chrome.theme', 'Theme')
   })
   const themeMenuLabel = computed(() => t('chrome.themeActive', 'Theme: {label}', { label: activeThipLabel.value }))
+
+  const primaryNavAriaLabel = computed(() => t('nav.a11y.navPrimary', 'Primary navigation'))
+  const themingLabel = computed(() => t(NAV_THEMING_LINK.i18nKey, NAV_THEMING_LINK.i18nFallback))
+  const sectionAriaLabel = (section: { titleKey: string; titleFallback: string }) =>
+    t('nav.a11y.openSection', 'Open {section} menu', { section: t(section.titleKey, section.titleFallback) })
 </script>
 
 <template>
@@ -81,17 +85,47 @@
       <template #content>
         <nav
           class="primary-nav"
-          :aria-label="tagline"
+          :aria-label="primaryNavAriaLabel"
         >
+          <origam-menu
+            v-for="section in NAV_SECTIONS"
+            :key="section.titleKey"
+            class="appbar-menu appbar-menu--nav"
+            location="bottom"
+          >
+            <template #activator="{ props: menuProps }">
+              <origam-btn
+                variant="text"
+                class="primary-nav__link"
+                :aria-label="sectionAriaLabel(section)"
+                :append-icon="MDI_ICONS.CHEVRON_DOWN"
+                :data-cy="`nav-section-${section.titleFallback.toLowerCase().replace(/\s+/g, '-')}`"
+                v-bind="menuProps"
+              >
+                {{ t(section.titleKey, section.titleFallback) }}
+              </origam-btn>
+            </template>
+
+            <template #default>
+              <origam-list nav>
+                <origam-list-item
+                  v-for="item in section.items"
+                  :key="item.href"
+                  :title="t(item.i18nKey, item.i18nFallback)"
+                  :href="item.href"
+                  :data-cy="`nav-item-${item.i18nFallback.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`"
+                />
+              </origam-list>
+            </template>
+          </origam-menu>
+
           <origam-btn
-            v-for="link in NAV_LINKS"
-            :key="link.href"
-            :href="link.href"
+            :href="NAV_THEMING_LINK.href"
             variant="text"
             class="primary-nav__link"
-            :data-cy="`nav-${link.i18nFallback.toLowerCase()}`"
+            data-cy="nav-theming"
           >
-            {{ t(link.i18nKey, link.i18nFallback) }}
+            {{ themingLabel }}
           </origam-btn>
         </nav>
       </template>
@@ -513,5 +547,18 @@
     font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
     font-size: 0.8125rem;
     letter-spacing: -0.01em;
+  }
+
+  .appbar-menu--nav .origam-menu__content {
+    min-width: 180px;
+    width: 180px;
+  }
+
+  .appbar-menu--nav .origam-menu__list {
+    min-width: 180px;
+  }
+
+  .appbar-menu--nav .origam-list-item {
+    text-decoration: none;
   }
 </style>

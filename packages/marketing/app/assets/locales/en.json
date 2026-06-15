@@ -27,7 +27,22 @@
     "stories": "Stories",
     "blog": "Blog",
     "changelog": "Changelog",
-    "github": "GitHub"
+    "github": "GitHub",
+    "whyOrigam": "Why origam?",
+    "roadmap": "Roadmap",
+    "installation": "Installation",
+    "wireframe": "Wireframe",
+    "directives": "Directives",
+    "theming": "Theming",
+    "sections": {
+      "introduction": "Introduction",
+      "gettingStarted": "Getting started",
+      "features": "Features"
+    },
+    "a11y": {
+      "openSection": "Open {section} menu",
+      "navPrimary": "Primary navigation"
+    }
   },
   "footer": {
     "tagline": "The Vue 3 design system that just works.",

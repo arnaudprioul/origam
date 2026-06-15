@@ -5,6 +5,12 @@ export interface INavLink {
     external?: boolean
 }
 
+export interface INavSection {
+    titleKey: string
+    titleFallback: string
+    items: INavLink[]
+}
+
 export interface IFooterColumn {
     titleKey: string
     titleFallback: string

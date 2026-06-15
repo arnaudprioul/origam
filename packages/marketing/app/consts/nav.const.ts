@@ -1,4 +1,4 @@
-import type { IFooterColumn, INavLink } from '../interfaces/nav.interface'
+import type { IFooterColumn, INavLink, INavSection } from '../interfaces/nav.interface'
 
 import { MARKETING_DEFAULTS } from './marketing.const'
 
@@ -10,6 +10,42 @@ export const NAV_LINKS: INavLink[] = [
     { i18nKey: 'nav.blog', i18nFallback: 'Blog', href: '/blog' },
     { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
 ]
+
+export const NAV_SECTIONS: INavSection[] = [
+    {
+        titleKey: 'nav.sections.introduction',
+        titleFallback: 'Introduction',
+        items: [
+            { i18nKey: 'nav.whyOrigam', i18nFallback: 'Why origam?', href: '/why-origam' },
+            { i18nKey: 'nav.roadmap', i18nFallback: 'Roadmap', href: '/roadmap' },
+            { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
+        ]
+    },
+    {
+        titleKey: 'nav.sections.gettingStarted',
+        titleFallback: 'Getting started',
+        items: [
+            { i18nKey: 'nav.installation', i18nFallback: 'Installation', href: '/installation' },
+            { i18nKey: 'nav.wireframe', i18nFallback: 'Wireframe', href: '/wireframe' }
+        ]
+    },
+    {
+        titleKey: 'nav.sections.features',
+        titleFallback: 'Features',
+        items: [
+            { i18nKey: 'nav.components', i18nFallback: 'Components', href: '/components' },
+            { i18nKey: 'nav.directives', i18nFallback: 'Directives', href: '/directives' },
+            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories' },
+            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs' }
+        ]
+    }
+]
+
+export const NAV_THEMING_LINK: INavLink = {
+    i18nKey: 'nav.theming',
+    i18nFallback: 'Theming',
+    href: '/theming'
+}
 
 export const GITHUB_LINK: INavLink = {
     i18nKey: 'nav.github',
