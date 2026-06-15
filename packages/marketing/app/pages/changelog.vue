@@ -159,46 +159,48 @@ const initialOpen = computed(() => {
                         :class="`changelog-panel--${version.type}`"
                         :data-cy="`changelog-panel-${versionSlug(version.version)}`"
                     >
-                        <template #prepend>
-                            <div class="changelog-panel__meta">
-                                <origam-chip
-                                    :color="typeColor(version.type)"
-                                    size="small"
-                                    pill
-                                    class="changelog-panel__version-chip"
-                                    :aria-label="`${t('changelog.aria.version', 'Version')} ${version.version}`"
+                        <origam-expansion-panel-header class="changelog-panel__header">
+                            <template #prepend>
+                                <div class="changelog-panel__meta">
+                                    <origam-chip
+                                        :color="typeColor(version.type)"
+                                        size="small"
+                                        pill
+                                        class="changelog-panel__version-chip"
+                                        :aria-label="`${t('changelog.aria.version', 'Version')} ${version.version}`"
+                                    >
+                                        {{ version.type === 'unreleased' ? t('changelog.type.unreleased', 'Next') : version.version }}
+                                    </origam-chip>
+
+                                    <origam-chip
+                                        :color="typeColor(version.type)"
+                                        variant="text"
+                                        size="x-small"
+                                        pill
+                                        class="changelog-panel__type-chip"
+                                    >
+                                        {{ typeLabel(version.type) }}
+                                    </origam-chip>
+                                </div>
+                            </template>
+
+                            <template #append>
+                                <p
+                                    v-if="version.date"
+                                    class="changelog-panel__date"
                                 >
-                                    {{ version.type === 'unreleased' ? t('changelog.type.unreleased', 'Next') : version.version }}
-                                </origam-chip>
-
-                                <origam-chip
-                                    :color="typeColor(version.type)"
-                                    variant="text"
-                                    size="x-small"
-                                    pill
-                                    class="changelog-panel__type-chip"
+                                    <time :datetime="version.date">{{ version.date }}</time>
+                                </p>
+                                <p
+                                    v-else
+                                    class="changelog-panel__date changelog-panel__date--unreleased"
                                 >
-                                    {{ typeLabel(version.type) }}
-                                </origam-chip>
-                            </div>
-                        </template>
+                                    {{ t('changelog.unreleased.label', 'Not yet released') }}
+                                </p>
+                            </template>
+                        </origam-expansion-panel-header>
 
-                        <template #append>
-                            <p
-                                v-if="version.date"
-                                class="changelog-panel__date"
-                            >
-                                <time :datetime="version.date">{{ version.date }}</time>
-                            </p>
-                            <p
-                                v-else
-                                class="changelog-panel__date changelog-panel__date--unreleased"
-                            >
-                                {{ t('changelog.unreleased.label', 'Not yet released') }}
-                            </p>
-                        </template>
-
-                        <template #content>
+                        <origam-expansion-panel-content>
                             <div class="changelog-panel__body">
                                 <p class="changelog-panel__summary">
                                     {{ t(version.summaryKey, version.summaryKey) }}
@@ -250,7 +252,7 @@ const initialOpen = computed(() => {
                                     </origam-btn>
                                 </nav>
                             </div>
-                        </template>
+                        </origam-expansion-panel-content>
                     </origam-expansion-panel>
                 </origam-expansion-panels>
             </origam-container>
@@ -313,6 +315,8 @@ const initialOpen = computed(() => {
     flex-direction: column;
 }
 
+/* ── Section shared tokens ───────────────────────────────────────────────── */
+
 .changelog-section__eyebrow {
     margin: 0 0 var(--origam-space---3, 0.75rem);
     font-size: var(--origam-font-size---xs, 0.75rem);
@@ -344,6 +348,8 @@ const initialOpen = computed(() => {
     line-height: 1.65;
     color: var(--origam-color__text---secondary, #525252);
 }
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
 
 .changelog-hero {
     position: relative;
@@ -431,6 +437,8 @@ const initialOpen = computed(() => {
     --origam-btn---border-radius: var(--origam-radius---btn, 10px);
 }
 
+/* ── Panels list ─────────────────────────────────────────────────────────── */
+
 .changelog-list {
     padding-block: var(--origam-space---24, 6rem);
     background: var(--origam-color__surface---sunken, #f5f5f5);
@@ -444,6 +452,12 @@ const initialOpen = computed(() => {
 .changelog-panels {
     max-inline-size: 56rem;
     --origam-expansion-panel---border-radius: var(--origam-radius---lg, 12px);
+}
+
+/* Panel header meta (chips + date) */
+
+.changelog-panel__header {
+    min-block-size: 64px;
 }
 
 .changelog-panel__meta {
@@ -473,6 +487,8 @@ const initialOpen = computed(() => {
 .changelog-panel__date--unreleased {
     font-style: italic;
 }
+
+/* Panel body */
 
 .changelog-panel__body {
     padding: var(--origam-space---5, 1.25rem) var(--origam-space---6, 1.5rem) var(--origam-space---6, 1.5rem);
@@ -525,6 +541,8 @@ const initialOpen = computed(() => {
 .changelog-panel__full-link {
     font-size: var(--origam-font-size---sm, 0.875rem);
 }
+
+/* ── CTA ─────────────────────────────────────────────────────────────────── */
 
 .changelog-cta {
     position: relative;
@@ -606,6 +624,8 @@ const initialOpen = computed(() => {
     --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
 }
 
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
 @media (max-width: 1080px) {
     .changelog-hero__title {
         font-size: clamp(2.5rem, 9vw, 5.25rem);
@@ -619,11 +639,6 @@ const initialOpen = computed(() => {
 
     .changelog-cta__title {
         font-size: clamp(2rem, 8vw, 4rem) !important;
-    }
-
-    .changelog-panel__header {
-        flex-direction: column;
-        align-items: flex-start;
     }
 
     .changelog-panel__date {

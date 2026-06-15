@@ -83,6 +83,33 @@ test.describe('changelog — DS-first', () => {
         await expect(panel200).toBeVisible()
     })
 
+    test('un panel ouvert affiche bien les highlights (BUG 1 régression)', async ({ page }) => {
+        const panel260 = page.locator('[data-cy="changelog-panel-2-6-0"]').first()
+        await expect(panel260).toBeVisible()
+
+        const header = panel260.locator('.origam-expansion-panel-header')
+        await header.click()
+        await page.waitForTimeout(400)
+
+        const highlights = panel260.locator('.changelog-panel__highlight')
+        const count = await highlights.count()
+        expect(count).toBeGreaterThan(0)
+
+        const firstHighlightText = highlights.first().locator('.changelog-panel__highlight-text')
+        await expect(firstHighlightText).toBeVisible()
+        const text = await firstHighlightText.textContent()
+        expect(text?.trim().length).toBeGreaterThan(0)
+    })
+
+    test('le panel actif par défaut affiche ses highlights sans interaction', async ({ page }) => {
+        const panelActive = page.locator('.origam-expansion-panel--active').first()
+        await expect(panelActive).toBeVisible()
+
+        const highlights = panelActive.locator('.changelog-panel__highlight')
+        const count = await highlights.count()
+        expect(count).toBeGreaterThan(0)
+    })
+
     test('le badge hero est un OrigamChip (.origam-chip)', async ({ page }) => {
         const badge = page.locator('[data-cy="changelog-hero-badge"]')
         await expect(badge).toBeVisible()
