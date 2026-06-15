@@ -45,43 +45,43 @@ export const WHY_WEAKNESS_ICON_VARS: CSSProperties = {
 export const WHY_STRENGTHS: IStrength[] = [
     {
         icon: 'mdi-vuejs',
-        titleKey: 'whyOrigam.strengths.vue3.title',
-        descriptionKey: 'whyOrigam.strengths.vue3.description'
+        titleKey: 'why_origam.strengths.vue3.title',
+        descriptionKey: 'why_origam.strengths.vue3.description'
     },
     {
         icon: 'mdi-palette-outline',
-        titleKey: 'whyOrigam.strengths.tokens.title',
-        descriptionKey: 'whyOrigam.strengths.tokens.description'
+        titleKey: 'why_origam.strengths.tokens.title',
+        descriptionKey: 'why_origam.strengths.tokens.description'
     },
     {
         icon: 'mdi-chart-line',
-        titleKey: 'whyOrigam.strengths.charts.title',
-        descriptionKey: 'whyOrigam.strengths.charts.description'
+        titleKey: 'why_origam.strengths.charts.title',
+        descriptionKey: 'why_origam.strengths.charts.description'
     },
     {
         icon: 'mdi-human',
-        titleKey: 'whyOrigam.strengths.a11y.title',
-        descriptionKey: 'whyOrigam.strengths.a11y.description'
+        titleKey: 'why_origam.strengths.a11y.title',
+        descriptionKey: 'why_origam.strengths.a11y.description'
     },
     {
         icon: 'mdi-language-css3',
-        titleKey: 'whyOrigam.strengths.css.title',
-        descriptionKey: 'whyOrigam.strengths.css.description'
+        titleKey: 'why_origam.strengths.css.title',
+        descriptionKey: 'why_origam.strengths.css.description'
     },
     {
         icon: 'mdi-package-variant-closed',
-        titleKey: 'whyOrigam.strengths.treeshake.title',
-        descriptionKey: 'whyOrigam.strengths.treeshake.description'
+        titleKey: 'why_origam.strengths.treeshake.title',
+        descriptionKey: 'why_origam.strengths.treeshake.description'
     },
     {
         icon: 'mdi-puzzle-outline',
-        titleKey: 'whyOrigam.strengths.composables.title',
-        descriptionKey: 'whyOrigam.strengths.composables.description'
+        titleKey: 'why_origam.strengths.composables.title',
+        descriptionKey: 'why_origam.strengths.composables.description'
     },
     {
         icon: 'mdi-scale-balance',
-        titleKey: 'whyOrigam.strengths.mit.title',
-        descriptionKey: 'whyOrigam.strengths.mit.description'
+        titleKey: 'why_origam.strengths.mit.title',
+        descriptionKey: 'why_origam.strengths.mit.description'
     }
 ]
 
@@ -96,7 +96,7 @@ export const WHY_STRENGTHS: IStrength[] = [
  */
 export const WHY_COMPARISONS: IComparison[] = [
     {
-        nameKey: 'whyOrigam.comparison.origam',
+        nameKey: 'why_origam.comparison.origam',
         vueNative: true,
         designTokens: true,
         a11yTested: true,
@@ -105,54 +105,54 @@ export const WHY_COMPARISONS: IComparison[] = [
         chartsIncluded: true
     },
     {
-        nameKey: 'whyOrigam.comparison.vuetify',
+        nameKey: 'why_origam.comparison.vuetify',
         vueNative: true,
         designTokens: false,
         a11yTested: true,
         cssFist: false,
         treeShakable: true,
         chartsIncluded: false,
-        noteKey: 'whyOrigam.comparison.vuetifyNote'
+        noteKey: 'why_origam.comparison.vuetify_note'
     },
     {
-        nameKey: 'whyOrigam.comparison.primeVue',
+        nameKey: 'why_origam.comparison.prime_vue',
         vueNative: true,
         designTokens: true,
         a11yTested: true,
         cssFist: false,
         treeShakable: true,
         chartsIncluded: false,
-        noteKey: 'whyOrigam.comparison.primeVueNote'
+        noteKey: 'why_origam.comparison.prime_vue_note'
     },
     {
-        nameKey: 'whyOrigam.comparison.quasar',
+        nameKey: 'why_origam.comparison.quasar',
         vueNative: true,
         designTokens: false,
         a11yTested: false,
         cssFist: false,
         treeShakable: false,
         chartsIncluded: false,
-        noteKey: 'whyOrigam.comparison.quasarNote'
+        noteKey: 'why_origam.comparison.quasar_note'
     },
     {
-        nameKey: 'whyOrigam.comparison.elementPlus',
+        nameKey: 'why_origam.comparison.element_plus',
         vueNative: true,
         designTokens: false,
         a11yTested: false,
         cssFist: false,
         treeShakable: true,
         chartsIncluded: false,
-        noteKey: 'whyOrigam.comparison.elementPlusNote'
+        noteKey: 'why_origam.comparison.element_plus_note'
     },
     {
-        nameKey: 'whyOrigam.comparison.naiveUi',
+        nameKey: 'why_origam.comparison.naive_ui',
         vueNative: true,
         designTokens: false,
         a11yTested: false,
         cssFist: false,
         treeShakable: true,
         chartsIncluded: false,
-        noteKey: 'whyOrigam.comparison.naiveUiNote'
+        noteKey: 'why_origam.comparison.naive_ui_note'
     }
 ]
 
@@ -162,18 +162,18 @@ export const WHY_COMPARISONS: IComparison[] = [
 export const WHY_WEAKNESSES: IWeakness[] = [
     {
         icon: 'mdi-account-group-outline',
-        titleKey: 'whyOrigam.weaknesses.community.title',
-        descriptionKey: 'whyOrigam.weaknesses.community.description'
+        titleKey: 'why_origam.weaknesses.community.title',
+        descriptionKey: 'why_origam.weaknesses.community.description'
     },
     {
         icon: 'mdi-book-open-outline',
-        titleKey: 'whyOrigam.weaknesses.templates.title',
-        descriptionKey: 'whyOrigam.weaknesses.templates.description'
+        titleKey: 'why_origam.weaknesses.templates.title',
+        descriptionKey: 'why_origam.weaknesses.templates.description'
     },
     {
         icon: 'mdi-server-network',
-        titleKey: 'whyOrigam.weaknesses.scale.title',
-        descriptionKey: 'whyOrigam.weaknesses.scale.description'
+        titleKey: 'why_origam.weaknesses.scale.title',
+        descriptionKey: 'why_origam.weaknesses.scale.description'
     }
 ]
 
@@ -183,38 +183,38 @@ export const WHY_WEAKNESSES: IWeakness[] = [
 export const WHY_USE_CASES: IUseCase[] = [
     {
         icon: 'mdi-check-circle-outline',
-        titleKey: 'whyOrigam.useCases.greenfield.title',
-        descriptionKey: 'whyOrigam.useCases.greenfield.description',
+        titleKey: 'why_origam.use_cases.greenfield.title',
+        descriptionKey: 'why_origam.use_cases.greenfield.description',
         fits: true
     },
     {
         icon: 'mdi-check-circle-outline',
-        titleKey: 'whyOrigam.useCases.tokenTeam.title',
-        descriptionKey: 'whyOrigam.useCases.tokenTeam.description',
+        titleKey: 'why_origam.use_cases.token_team.title',
+        descriptionKey: 'why_origam.use_cases.token_team.description',
         fits: true
     },
     {
         icon: 'mdi-check-circle-outline',
-        titleKey: 'whyOrigam.useCases.saasProduct.title',
-        descriptionKey: 'whyOrigam.useCases.saasProduct.description',
+        titleKey: 'why_origam.use_cases.saas_product.title',
+        descriptionKey: 'why_origam.use_cases.saas_product.description',
         fits: true
     },
     {
         icon: 'mdi-check-circle-outline',
-        titleKey: 'whyOrigam.useCases.dataviz.title',
-        descriptionKey: 'whyOrigam.useCases.dataviz.description',
+        titleKey: 'why_origam.use_cases.dataviz.title',
+        descriptionKey: 'why_origam.use_cases.dataviz.description',
         fits: true
     },
     {
         icon: 'mdi-close-circle-outline',
-        titleKey: 'whyOrigam.useCases.migration.title',
-        descriptionKey: 'whyOrigam.useCases.migration.description',
+        titleKey: 'why_origam.use_cases.migration.title',
+        descriptionKey: 'why_origam.use_cases.migration.description',
         fits: false
     },
     {
         icon: 'mdi-close-circle-outline',
-        titleKey: 'whyOrigam.useCases.ecosystem.title',
-        descriptionKey: 'whyOrigam.useCases.ecosystem.description',
+        titleKey: 'why_origam.use_cases.ecosystem.title',
+        descriptionKey: 'why_origam.use_cases.ecosystem.description',
         fits: false
     }
 ]
@@ -223,10 +223,10 @@ export const WHY_USE_CASES: IUseCase[] = [
  * Comparison table columns definition (for i18n header keys only).
  */
 export const WHY_COMPARISON_COLUMNS: string[] = [
-    'whyOrigam.comparison.colVueNative',
-    'whyOrigam.comparison.colDesignTokens',
-    'whyOrigam.comparison.colA11yTested',
-    'whyOrigam.comparison.colCssFirst',
-    'whyOrigam.comparison.colTreeShakable',
-    'whyOrigam.comparison.colCharts'
+    'why_origam.comparison.col_vue_native',
+    'why_origam.comparison.col_design_tokens',
+    'why_origam.comparison.col_a11y_tested',
+    'why_origam.comparison.col_css_first',
+    'why_origam.comparison.col_tree_shakable',
+    'why_origam.comparison.col_charts'
 ]

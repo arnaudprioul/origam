@@ -133,16 +133,16 @@ export const INSTALLATION_PEER_DEPS: IInstallationPeerDep[] = [
     {
         pkg: 'vue',
         required: '^3.5',
-        usedByKey: 'installation.peerDeps.vueUsedBy'
+        usedByKey: 'installation.peer_deps.vue_used_by'
     },
     {
         pkg: 'vue-i18n',
         required: '^11.1',
-        usedByKey: 'installation.peerDeps.vueI18nUsedBy'
+        usedByKey: 'installation.peer_deps.vue_i18n_used_by'
     },
     {
         pkg: 'vue-router',
         required: '^4.5',
-        usedByKey: 'installation.peerDeps.vueRouterUsedBy'
+        usedByKey: 'installation.peer_deps.vue_router_used_by'
     }
 ]

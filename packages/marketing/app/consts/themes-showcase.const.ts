@@ -25,14 +25,14 @@ export const THEMES_TILE_RADIUS = 'var(--origam-radius---card, 10px)'
  * Rendered as a plain flex-wrap <ul> (no OrigamChipGroup slide behaviour).
  */
 export const THEME_CHIPS: IThemeChip[] = [
-    { key: 'sobre', labelKey: 'home.themes.chipSobre', labelFallback: 'Sobre' },
-    { key: 'glass', labelKey: 'home.themes.chipGlass', labelFallback: 'Glass' },
-    { key: 'geek', labelKey: 'home.themes.chipGeek', labelFallback: 'Geek' },
-    { key: 'cartoon', labelKey: 'home.themes.chipCartoon', labelFallback: 'Cartoon' },
-    { key: 'editorial', labelKey: 'home.themes.chipEditorial', labelFallback: 'Editorial' },
-    { key: 'material', labelKey: 'home.themes.chipMaterial', labelFallback: 'Material' },
-    { key: 'ecom', labelKey: 'home.themes.chipEcom', labelFallback: 'Ecom' },
-    { key: 'apple', labelKey: 'home.themes.chipApple', labelFallback: 'Apple' },
+    { key: 'sobre', labelKey: 'home.themes.chip_sobre', labelFallback: 'Sobre' },
+    { key: 'glass', labelKey: 'home.themes.chip_glass', labelFallback: 'Glass' },
+    { key: 'geek', labelKey: 'home.themes.chip_geek', labelFallback: 'Geek' },
+    { key: 'cartoon', labelKey: 'home.themes.chip_cartoon', labelFallback: 'Cartoon' },
+    { key: 'editorial', labelKey: 'home.themes.chip_editorial', labelFallback: 'Editorial' },
+    { key: 'material', labelKey: 'home.themes.chip_material', labelFallback: 'Material' },
+    { key: 'ecom', labelKey: 'home.themes.chip_ecom', labelFallback: 'Ecom' },
+    { key: 'apple', labelKey: 'home.themes.chip_apple', labelFallback: 'Apple' },
 ]
 
 /**
@@ -40,8 +40,8 @@ export const THEME_CHIPS: IThemeChip[] = [
  * separate <p> row (NOT inside the chip group / carousel).
  */
 export const THEMES_TOOLING_TEXT: IThemeChip[] = [
-    { key: 'tokens-studio', labelKey: 'home.themes.tokensStudio', labelFallback: '→ tokens.studio compatible' },
-    { key: 'style-dictionary', labelKey: 'home.themes.styleDictionary', labelFallback: '→ Style Dictionary v4' },
+    { key: 'tokens-studio', labelKey: 'home.themes.tokens_studio', labelFallback: '→ tokens.studio compatible' },
+    { key: 'style-dictionary', labelKey: 'home.themes.style_dictionary', labelFallback: '→ Style Dictionary v4' },
 ]
 
 /**
@@ -60,7 +60,7 @@ export const THEMES_TOOLING_TEXT: IThemeChip[] = [
 export const THEME_PREVIEW_TILES: IThemePreviewTileDecorative[] = [
     {
         key: 'light',
-        labelKey: 'home.themes.previewLight',
+        labelKey: 'home.themes.preview_light',
         labelFallback: 'light.json',
         theme: 'light',
         mode: 'light',
@@ -70,7 +70,7 @@ export const THEME_PREVIEW_TILES: IThemePreviewTileDecorative[] = [
     },
     {
         key: 'dark',
-        labelKey: 'home.themes.previewDark',
+        labelKey: 'home.themes.preview_dark',
         labelFallback: 'dark.json',
         theme: 'dark',
         mode: 'dark',
@@ -80,7 +80,7 @@ export const THEME_PREVIEW_TILES: IThemePreviewTileDecorative[] = [
     },
     {
         key: 'brand-a',
-        labelKey: 'home.themes.previewBrandA',
+        labelKey: 'home.themes.preview_brand_a',
         labelFallback: 'brand-a.json',
         theme: 'editorial',
         mode: 'light',
@@ -90,7 +90,7 @@ export const THEME_PREVIEW_TILES: IThemePreviewTileDecorative[] = [
     },
     {
         key: 'brand-b',
-        labelKey: 'home.themes.previewBrandB',
+        labelKey: 'home.themes.preview_brand_b',
         labelFallback: 'brand-b.json',
         theme: 'ecom',
         mode: 'light',

@@ -29,8 +29,8 @@ const features = computed(() => FEATURES)
                 tag="h2"
                 class="home-features__title"
             >
-                <span class="home-features__title-line">{{ t('home.features.titleLine1', `Everything you'd expect.`) }}</span>
-                <span class="home-features__title-line home-features__title-line--muted">{{ t('home.features.titleLine2', `Nothing you wouldn't.`) }}</span>
+                <span class="home-features__title-line">{{ t('home.features.title_line1', `Everything you'd expect.`) }}</span>
+                <span class="home-features__title-line home-features__title-line--muted">{{ t('home.features.title_line2', `Nothing you wouldn't.`) }}</span>
             </origam-title>
 
             <p class="home-features__subtitle">

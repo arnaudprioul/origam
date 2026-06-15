@@ -29,23 +29,23 @@
 
   const themeIcon = computed(() => (resolvedMode.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'))
   const brandName = computed(() => t('brand.name', 'origam'))
-  const searchPlaceholder = computed(() => t('chrome.searchPlaceholder', 'Search…'))
+  const searchPlaceholder = computed(() => t('chrome.search_placeholder', 'Search…'))
   const searchAriaLabel = computed(() => t('a11y.search', 'Search the documentation'))
-  const starCountAriaLabel = computed(() => t('a11y.starCount', 'GitHub stars'))
-  const themeAriaLabel = computed(() => t('a11y.toggleTheme', 'Toggle light and dark mode'))
-  const themeMenuAriaLabel = computed(() => t('a11y.toggleBrandTheme', 'Switch brand theme'))
-  const themeSelectLabel = computed(() => t('chrome.themeSelectLabel', 'Select brand theme'))
+  const starCountAriaLabel = computed(() => t('a11y.star_count', 'GitHub stars'))
+  const themeAriaLabel = computed(() => t('a11y.toggle_theme', 'Toggle light and dark mode'))
+  const themeMenuAriaLabel = computed(() => t('a11y.toggle_brand_theme', 'Switch brand theme'))
+  const themeSelectLabel = computed(() => t('chrome.theme_select_label', 'Select brand theme'))
 
   const activeThipLabel = computed(() => {
     const active = THEME_CHIPS.find(c => c.key === theme.value)
     return active ? t(active.labelKey, active.labelFallback) : t('chrome.theme', 'Theme')
   })
-  const themeMenuLabel = computed(() => t('chrome.themeActive', 'Theme: {label}', { label: activeThipLabel.value }))
+  const themeMenuLabel = computed(() => t('chrome.theme_active', 'Theme: {label}', { label: activeThipLabel.value }))
 
-  const primaryNavAriaLabel = computed(() => t('nav.a11y.navPrimary', 'Primary navigation'))
+  const primaryNavAriaLabel = computed(() => t('nav.a11y.nav_primary', 'Primary navigation'))
   const themingLabel = computed(() => t(NAV_THEMING_LINK.i18nKey, NAV_THEMING_LINK.i18nFallback))
   const sectionAriaLabel = (section: { titleKey: string; titleFallback: string }) =>
-    t('nav.a11y.openSection', 'Open {section} menu', { section: t(section.titleKey, section.titleFallback) })
+    t('nav.a11y.open_section', 'Open {section} menu', { section: t(section.titleKey, section.titleFallback) })
 </script>
 
 <template>
@@ -54,7 +54,7 @@
       :href="SKIP_LINK_HREF"
       class="skip-link"
     >
-      {{ t('a11y.skipToContent', 'Skip to content') }}
+      {{ t('a11y.skip_to_content', 'Skip to content') }}
     </a>
 
     <origam-app-bar class="site-appbar">
@@ -320,7 +320,7 @@
 
       <div class="site-footer__bottom">
         <p class="site-footer__line">{{ t('footer.copyright', '© 2026 origam · MIT') }}</p>
-        <p class="site-footer__line">{{ t('footer.madeWith', 'Made with origam, by humans.') }}</p>
+        <p class="site-footer__line">{{ t('footer.made_with', 'Made with origam, by humans.') }}</p>
       </div>
     </footer>
   </origam-app>

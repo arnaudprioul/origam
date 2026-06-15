@@ -58,8 +58,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     tag="h1"
                     class="roadmap-hero__title"
                 >
-                    <span class="roadmap-hero__title-line">{{ t('roadmap.hero.titleLine1', 'Roadmap.') }}</span>
-                    <span class="roadmap-hero__title-line roadmap-hero__title-line--accent">{{ t('roadmap.hero.titleLine2', 'Honest & public.') }}</span>
+                    <span class="roadmap-hero__title-line">{{ t('roadmap.hero.title_line1', 'Roadmap.') }}</span>
+                    <span class="roadmap-hero__title-line roadmap-hero__title-line--accent">{{ t('roadmap.hero.title_line2', 'Honest & public.') }}</span>
                 </origam-title>
 
                 <p class="roadmap-hero__subtitle">
@@ -84,8 +84,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.status.titleLine1', 'Post-2.6.0') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.status.titleLine2', 'Status.') }}</span>
+                        <span class="roadmap-section__title-line">{{ t('roadmap.status.title_line1', 'Post-2.6.0') }}</span>
+                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.status.title_line2', 'Status.') }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
@@ -148,8 +148,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.delivered.titleLine1', 'Four waves.') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.delivered.titleLine2', 'Delivered.') }}</span>
+                        <span class="roadmap-section__title-line">{{ t('roadmap.delivered.title_line1', 'Four waves.') }}</span>
+                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.delivered.title_line2', 'Delivered.') }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
@@ -218,7 +218,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                     class="roadmap-delivered__badge"
                                     aria-hidden="true"
                                 >
-                                    {{ t('roadmap.delivered.badgeDone', 'Delivered') }}
+                                    {{ t('roadmap.delivered.badge_done', 'Delivered') }}
                                 </origam-chip>
                             </template>
 
@@ -394,7 +394,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
             <origam-container>
                 <header class="roadmap-wave4__header">
                     <p class="roadmap-section__eyebrow">
-                        {{ t('roadmap.wave4Grid.eyebrow', 'WAVE 4 — SHIPPED') }}
+                        {{ t('roadmap.wave4_grid.eyebrow', 'WAVE 4 — SHIPPED') }}
                     </p>
 
                     <origam-title
@@ -402,12 +402,12 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.wave4Grid.titleLine1', '15 components & features') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4Grid.titleLine2', 'already shipped.') }}</span>
+                        <span class="roadmap-section__title-line">{{ t('roadmap.wave4_grid.title_line1', '15 components & features') }}</span>
+                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4_grid.title_line2', 'already shipped.') }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
-                        {{ t('roadmap.wave4Grid.subtitle', 'Everything in Wave 4 is live on npm. These are the components and features available right now in origam.') }}
+                        {{ t('roadmap.wave4_grid.subtitle', 'Everything in Wave 4 is live on npm. These are the components and features available right now in origam.') }}
                     </p>
                 </header>
 
@@ -456,7 +456,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                             class="roadmap-wave4__shipped-badge"
                                             aria-label="Shipped"
                                         >
-                                            {{ t('roadmap.wave4Grid.badgeShipped', 'Shipped') }}
+                                            {{ t('roadmap.wave4_grid.badge_shipped', 'Shipped') }}
                                         </origam-chip>
                                     </div>
 
@@ -491,7 +491,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
                 <nav
                     class="roadmap-cta__actions"
-                    :aria-label="t('roadmap.cta.actionsLabel', 'Follow origam')"
+                    :aria-label="t('roadmap.cta.actions_label', 'Follow origam')"
                 >
                     <origam-btn
                         class="roadmap-cta__btn roadmap-cta__btn--primary"
@@ -502,7 +502,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         rel="noopener noreferrer"
                         data-cy="roadmap-cta-github"
                     >
-                        {{ t('roadmap.cta.ctaGithub', 'Star on GitHub') }}
+                        {{ t('roadmap.cta.cta_github', 'Star on GitHub') }}
                     </origam-btn>
 
                     <origam-btn
@@ -514,7 +514,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         rel="noopener noreferrer"
                         data-cy="roadmap-cta-changelog"
                     >
-                        {{ t('roadmap.cta.ctaChangelog', 'Read CHANGELOG') }}
+                        {{ t('roadmap.cta.cta_changelog', 'Read CHANGELOG') }}
                     </origam-btn>
                 </nav>
             </div>

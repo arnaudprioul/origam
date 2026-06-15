@@ -25,7 +25,7 @@ const { t } = useT()
 
             <nav
                 class="home-cta__actions"
-                :aria-label="t('home.cta.actionsLabel', 'Get started')"
+                :aria-label="t('home.cta.actions_label', 'Get started')"
             >
                 <origam-btn
                     class="home-cta__btn home-cta__btn--start"
@@ -34,7 +34,7 @@ const { t } = useT()
                     :href="CTA_START_HREF"
                     data-cy="cta-btn-start"
                 >
-                    {{ t('home.cta.ctaStart', 'Get started') }}
+                    {{ t('home.cta.cta_start', 'Get started') }}
                 </origam-btn>
 
                 <origam-btn
@@ -44,7 +44,7 @@ const { t } = useT()
                     :href="CTA_DOCS_HREF"
                     data-cy="cta-btn-docs"
                 >
-                    {{ t('home.cta.ctaDocs', 'Read docs') }}
+                    {{ t('home.cta.cta_docs', 'Read docs') }}
                 </origam-btn>
             </nav>
         </div>

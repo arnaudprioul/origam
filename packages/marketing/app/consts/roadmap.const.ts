@@ -18,15 +18,15 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  * Current status items — sourced from CHANGELOG.md (post-2.6.0 state).
  */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
-    { labelKey: 'roadmap.status.npmPublished', done: true },
-    { labelKey: 'roadmap.status.preDelivery', done: true },
-    { labelKey: 'roadmap.status.readmeChangelog', done: true },
+    { labelKey: 'roadmap.status.npm_published', done: true },
+    { labelKey: 'roadmap.status.pre_delivery', done: true },
+    { labelKey: 'roadmap.status.readme_changelog', done: true },
     { labelKey: 'roadmap.status.monorepo', done: true },
-    { labelKey: 'roadmap.status.wave4Shipped', done: true },
-    { labelKey: 'roadmap.status.docOnline', done: false },
+    { labelKey: 'roadmap.status.wave4_shipped', done: true },
+    { labelKey: 'roadmap.status.doc_online', done: false },
     { labelKey: 'roadmap.status.ci', done: false },
-    { labelKey: 'roadmap.status.playwrightCoverage', done: false },
-    { labelKey: 'roadmap.status.bundleMonitoring', done: false }
+    { labelKey: 'roadmap.status.playwright_coverage', done: false },
+    { labelKey: 'roadmap.status.bundle_monitoring', done: false }
 ]
 
 /**
@@ -40,7 +40,7 @@ export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
     { value: '6', labelKey: 'roadmap.overview.directives', icon: 'mdi-code-tags' },
     { value: '200+', labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
     { value: '2', labelKey: 'roadmap.overview.themes', icon: 'mdi-theme-light-dark' },
-    { value: '3', labelKey: 'roadmap.overview.tokenTiers', icon: 'mdi-layers-triple-outline' }
+    { value: '3', labelKey: 'roadmap.overview.token_tiers', icon: 'mdi-layers-triple-outline' }
 ]
 
 /**
@@ -51,8 +51,8 @@ export const ROADMAP_WAVES: IRoadmapWave[] = [
         titleKey: 'roadmap.waves.wave1.title',
         items: [
             { nameKey: 'roadmap.waves.wave1.tabs', done: true },
-            { nameKey: 'roadmap.waves.wave1.commandPalette', done: true },
-            { nameKey: 'roadmap.waves.wave1.snackbarStack', done: true },
+            { nameKey: 'roadmap.waves.wave1.command_palette', done: true },
+            { nameKey: 'roadmap.waves.wave1.snackbar_stack', done: true },
             { nameKey: 'roadmap.waves.wave1.bracket', done: true }
         ]
     },
@@ -61,15 +61,15 @@ export const ROADMAP_WAVES: IRoadmapWave[] = [
         items: [
             { nameKey: 'roadmap.waves.wave2.parallax', done: true },
             { nameKey: 'roadmap.waves.wave2.code', done: true },
-            { nameKey: 'roadmap.waves.wave2.textareaRichtext', done: true },
-            { nameKey: 'roadmap.waves.wave2.textFieldMask', done: true }
+            { nameKey: 'roadmap.waves.wave2.textarea_richtext', done: true },
+            { nameKey: 'roadmap.waves.wave2.text_field_mask', done: true }
         ]
     },
     {
         titleKey: 'roadmap.waves.wave3.title',
         items: [
-            { nameKey: 'roadmap.waves.wave3.nuxtModule', done: true },
-            { nameKey: 'roadmap.waves.wave3.ssrSafety', done: true },
+            { nameKey: 'roadmap.waves.wave3.nuxt_module', done: true },
+            { nameKey: 'roadmap.waves.wave3.ssr_safety', done: true },
             { nameKey: 'roadmap.waves.wave3.monorepo', done: true }
         ]
     },
@@ -79,18 +79,18 @@ export const ROADMAP_WAVES: IRoadmapWave[] = [
             { nameKey: 'roadmap.waves.wave4.grid', done: true },
             { nameKey: 'roadmap.waves.wave4.masonry', done: true },
             { nameKey: 'roadmap.waves.wave4.blockquote', done: true },
-            { nameKey: 'roadmap.waves.wave4.emptyState', done: true },
+            { nameKey: 'roadmap.waves.wave4.empty_state', done: true },
             { nameKey: 'roadmap.waves.wave4.clipboard', done: true },
-            { nameKey: 'roadmap.waves.wave4.inlineEdit', done: true },
-            { nameKey: 'roadmap.waves.wave4.numberFormat', done: true },
-            { nameKey: 'roadmap.waves.wave4.qrCode', done: true },
+            { nameKey: 'roadmap.waves.wave4.inline_edit', done: true },
+            { nameKey: 'roadmap.waves.wave4.number_format', done: true },
+            { nameKey: 'roadmap.waves.wave4.qr_code', done: true },
             { nameKey: 'roadmap.waves.wave4.watermark', done: true },
             { nameKey: 'roadmap.waves.wave4.video', done: true },
             { nameKey: 'roadmap.waves.wave4.sound', done: true },
             { nameKey: 'roadmap.waves.wave4.calendar', done: true },
             { nameKey: 'roadmap.waves.wave4.chart', done: true },
             { nameKey: 'roadmap.waves.wave4.gradient', done: true },
-            { nameKey: 'roadmap.waves.wave4.textMask', done: true }
+            { nameKey: 'roadmap.waves.wave4.text_mask', done: true }
         ]
     }
 ]
@@ -104,38 +104,38 @@ export const ROADMAP_WAVES: IRoadmapWave[] = [
 export const ROADMAP_PHASES: IRoadmapPhase[] = [
     {
         id: 'short-term',
-        eyebrowKey: 'roadmap.phases.shortTerm.eyebrow',
-        titleKey: 'roadmap.phases.shortTerm.title',
+        eyebrowKey: 'roadmap.phases.short_term.eyebrow',
+        titleKey: 'roadmap.phases.short_term.title',
         intent: 'primary',
         icon: 'mdi-rocket-launch-outline',
         items: [
             {
-                titleKey: 'roadmap.phases.shortTerm.ci.title',
-                descriptionKey: 'roadmap.phases.shortTerm.ci.description',
+                titleKey: 'roadmap.phases.short_term.ci.title',
+                descriptionKey: 'roadmap.phases.short_term.ci.description',
                 icon: 'mdi-github',
                 effortKey: 'roadmap.effort.large'
             },
             {
-                titleKey: 'roadmap.phases.shortTerm.deployment.title',
-                descriptionKey: 'roadmap.phases.shortTerm.deployment.description',
+                titleKey: 'roadmap.phases.short_term.deployment.title',
+                descriptionKey: 'roadmap.phases.short_term.deployment.description',
                 icon: 'mdi-cloud-upload-outline',
                 effortKey: 'roadmap.effort.medium'
             },
             {
-                titleKey: 'roadmap.phases.shortTerm.playwright.title',
-                descriptionKey: 'roadmap.phases.shortTerm.playwright.description',
+                titleKey: 'roadmap.phases.short_term.playwright.title',
+                descriptionKey: 'roadmap.phases.short_term.playwright.description',
                 icon: 'mdi-test-tube',
                 effortKey: 'roadmap.effort.xlarge'
             },
             {
-                titleKey: 'roadmap.phases.shortTerm.a11yAudit.title',
-                descriptionKey: 'roadmap.phases.shortTerm.a11yAudit.description',
+                titleKey: 'roadmap.phases.short_term.a11y_audit.title',
+                descriptionKey: 'roadmap.phases.short_term.a11y_audit.description',
                 icon: 'mdi-human-wheelchair',
                 effortKey: 'roadmap.effort.medium'
             },
             {
-                titleKey: 'roadmap.phases.shortTerm.bundleSize.title',
-                descriptionKey: 'roadmap.phases.shortTerm.bundleSize.description',
+                titleKey: 'roadmap.phases.short_term.bundle_size.title',
+                descriptionKey: 'roadmap.phases.short_term.bundle_size.description',
                 icon: 'mdi-package-variant-closed',
                 effortKey: 'roadmap.effort.small'
             }
@@ -143,44 +143,44 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
     },
     {
         id: 'mid-term',
-        eyebrowKey: 'roadmap.phases.midTerm.eyebrow',
-        titleKey: 'roadmap.phases.midTerm.title',
+        eyebrowKey: 'roadmap.phases.mid_term.eyebrow',
+        titleKey: 'roadmap.phases.mid_term.title',
         intent: 'warning',
         icon: 'mdi-layers-outline',
         items: [
             {
-                titleKey: 'roadmap.phases.midTerm.v3.title',
-                descriptionKey: 'roadmap.phases.midTerm.v3.description',
+                titleKey: 'roadmap.phases.mid_term.v3.title',
+                descriptionKey: 'roadmap.phases.mid_term.v3.description',
                 icon: 'mdi-lightning-bolt-outline',
                 effortKey: 'roadmap.effort.xlarge'
             },
             {
-                titleKey: 'roadmap.phases.midTerm.accentColor.title',
-                descriptionKey: 'roadmap.phases.midTerm.accentColor.description',
+                titleKey: 'roadmap.phases.mid_term.accent_color.title',
+                descriptionKey: 'roadmap.phases.mid_term.accent_color.description',
                 icon: 'mdi-palette-outline',
                 effortKey: 'roadmap.effort.medium'
             },
             {
-                titleKey: 'roadmap.phases.midTerm.listSemantics.title',
-                descriptionKey: 'roadmap.phases.midTerm.listSemantics.description',
+                titleKey: 'roadmap.phases.mid_term.list_semantics.title',
+                descriptionKey: 'roadmap.phases.mid_term.list_semantics.description',
                 icon: 'mdi-format-list-bulleted',
                 effortKey: 'roadmap.effort.medium'
             },
             {
-                titleKey: 'roadmap.phases.midTerm.motionTokens.title',
-                descriptionKey: 'roadmap.phases.midTerm.motionTokens.description',
+                titleKey: 'roadmap.phases.mid_term.motion_tokens.title',
+                descriptionKey: 'roadmap.phases.mid_term.motion_tokens.description',
                 icon: 'mdi-animation-play-outline',
                 effortKey: 'roadmap.effort.medium'
             },
             {
-                titleKey: 'roadmap.phases.midTerm.vrt.title',
-                descriptionKey: 'roadmap.phases.midTerm.vrt.description',
+                titleKey: 'roadmap.phases.mid_term.vrt.title',
+                descriptionKey: 'roadmap.phases.mid_term.vrt.description',
                 icon: 'mdi-image-compare',
                 effortKey: 'roadmap.effort.medium'
             },
             {
-                titleKey: 'roadmap.phases.midTerm.turborepo.title',
-                descriptionKey: 'roadmap.phases.midTerm.turborepo.description',
+                titleKey: 'roadmap.phases.mid_term.turborepo.title',
+                descriptionKey: 'roadmap.phases.mid_term.turborepo.description',
                 icon: 'mdi-rocket-outline',
                 effortKey: 'roadmap.effort.small'
             }
@@ -188,26 +188,26 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
     },
     {
         id: 'long-term',
-        eyebrowKey: 'roadmap.phases.longTerm.eyebrow',
-        titleKey: 'roadmap.phases.longTerm.title',
+        eyebrowKey: 'roadmap.phases.long_term.eyebrow',
+        titleKey: 'roadmap.phases.long_term.title',
         intent: 'info',
         icon: 'mdi-telescope',
         items: [
             {
-                titleKey: 'roadmap.phases.longTerm.vapor.title',
-                descriptionKey: 'roadmap.phases.longTerm.vapor.description',
+                titleKey: 'roadmap.phases.long_term.vapor.title',
+                descriptionKey: 'roadmap.phases.long_term.vapor.description',
                 icon: 'mdi-speedometer',
                 effortKey: 'roadmap.effort.xlarge'
             },
             {
-                titleKey: 'roadmap.phases.longTerm.webComponents.title',
-                descriptionKey: 'roadmap.phases.longTerm.webComponents.description',
+                titleKey: 'roadmap.phases.long_term.web_components.title',
+                descriptionKey: 'roadmap.phases.long_term.web_components.description',
                 icon: 'mdi-web',
                 effortKey: 'roadmap.effort.large'
             },
             {
-                titleKey: 'roadmap.phases.longTerm.themeBuilder.title',
-                descriptionKey: 'roadmap.phases.longTerm.themeBuilder.description',
+                titleKey: 'roadmap.phases.long_term.theme_builder.title',
+                descriptionKey: 'roadmap.phases.long_term.theme_builder.description',
                 icon: 'mdi-palette-swatch-outline',
                 effortKey: 'roadmap.effort.xlarge'
             }
@@ -220,19 +220,19 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
  * All 13 components + gradient support + OrigamTextMask are delivered.
  */
 export const ROADMAP_WAVE4_COMPONENTS: IRoadmapWave4Component[] = [
-    { nameKey: 'roadmap.wave4Grid.grid.name', noteKey: 'roadmap.wave4Grid.grid.note', icon: 'mdi-grid' },
-    { nameKey: 'roadmap.wave4Grid.masonry.name', noteKey: 'roadmap.wave4Grid.masonry.note', icon: 'mdi-view-quilt-outline' },
-    { nameKey: 'roadmap.wave4Grid.blockquote.name', noteKey: 'roadmap.wave4Grid.blockquote.note', icon: 'mdi-format-quote-close' },
-    { nameKey: 'roadmap.wave4Grid.emptyState.name', noteKey: 'roadmap.wave4Grid.emptyState.note', icon: 'mdi-inbox-outline' },
-    { nameKey: 'roadmap.wave4Grid.clipboard.name', noteKey: 'roadmap.wave4Grid.clipboard.note', icon: 'mdi-clipboard-outline' },
-    { nameKey: 'roadmap.wave4Grid.inlineEdit.name', noteKey: 'roadmap.wave4Grid.inlineEdit.note', icon: 'mdi-pencil-outline' },
-    { nameKey: 'roadmap.wave4Grid.numberFormat.name', noteKey: 'roadmap.wave4Grid.numberFormat.note', icon: 'mdi-numeric' },
-    { nameKey: 'roadmap.wave4Grid.qrCode.name', noteKey: 'roadmap.wave4Grid.qrCode.note', icon: 'mdi-qrcode' },
-    { nameKey: 'roadmap.wave4Grid.watermark.name', noteKey: 'roadmap.wave4Grid.watermark.note', icon: 'mdi-watermark' },
-    { nameKey: 'roadmap.wave4Grid.video.name', noteKey: 'roadmap.wave4Grid.video.note', icon: 'mdi-play-circle-outline' },
-    { nameKey: 'roadmap.wave4Grid.sound.name', noteKey: 'roadmap.wave4Grid.sound.note', icon: 'mdi-volume-high' },
-    { nameKey: 'roadmap.wave4Grid.calendar.name', noteKey: 'roadmap.wave4Grid.calendar.note', icon: 'mdi-calendar-outline' },
-    { nameKey: 'roadmap.wave4Grid.chart.name', noteKey: 'roadmap.wave4Grid.chart.note', icon: 'mdi-chart-line' },
-    { nameKey: 'roadmap.wave4Grid.gradient.name', noteKey: 'roadmap.wave4Grid.gradient.note', icon: 'mdi-gradient-horizontal' },
-    { nameKey: 'roadmap.wave4Grid.textMask.name', noteKey: 'roadmap.wave4Grid.textMask.note', icon: 'mdi-text-box-outline' }
+    { nameKey: 'roadmap.wave4_grid.grid.name', noteKey: 'roadmap.wave4_grid.grid.note', icon: 'mdi-grid' },
+    { nameKey: 'roadmap.wave4_grid.masonry.name', noteKey: 'roadmap.wave4_grid.masonry.note', icon: 'mdi-view-quilt-outline' },
+    { nameKey: 'roadmap.wave4_grid.blockquote.name', noteKey: 'roadmap.wave4_grid.blockquote.note', icon: 'mdi-format-quote-close' },
+    { nameKey: 'roadmap.wave4_grid.empty_state.name', noteKey: 'roadmap.wave4_grid.empty_state.note', icon: 'mdi-inbox-outline' },
+    { nameKey: 'roadmap.wave4_grid.clipboard.name', noteKey: 'roadmap.wave4_grid.clipboard.note', icon: 'mdi-clipboard-outline' },
+    { nameKey: 'roadmap.wave4_grid.inline_edit.name', noteKey: 'roadmap.wave4_grid.inline_edit.note', icon: 'mdi-pencil-outline' },
+    { nameKey: 'roadmap.wave4_grid.number_format.name', noteKey: 'roadmap.wave4_grid.number_format.note', icon: 'mdi-numeric' },
+    { nameKey: 'roadmap.wave4_grid.qr_code.name', noteKey: 'roadmap.wave4_grid.qr_code.note', icon: 'mdi-qrcode' },
+    { nameKey: 'roadmap.wave4_grid.watermark.name', noteKey: 'roadmap.wave4_grid.watermark.note', icon: 'mdi-watermark' },
+    { nameKey: 'roadmap.wave4_grid.video.name', noteKey: 'roadmap.wave4_grid.video.note', icon: 'mdi-play-circle-outline' },
+    { nameKey: 'roadmap.wave4_grid.sound.name', noteKey: 'roadmap.wave4_grid.sound.note', icon: 'mdi-volume-high' },
+    { nameKey: 'roadmap.wave4_grid.calendar.name', noteKey: 'roadmap.wave4_grid.calendar.note', icon: 'mdi-calendar-outline' },
+    { nameKey: 'roadmap.wave4_grid.chart.name', noteKey: 'roadmap.wave4_grid.chart.note', icon: 'mdi-chart-line' },
+    { nameKey: 'roadmap.wave4_grid.gradient.name', noteKey: 'roadmap.wave4_grid.gradient.note', icon: 'mdi-gradient-horizontal' },
+    { nameKey: 'roadmap.wave4_grid.text_mask.name', noteKey: 'roadmap.wave4_grid.text_mask.note', icon: 'mdi-text-box-outline' }
 ]

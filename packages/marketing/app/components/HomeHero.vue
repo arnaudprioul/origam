@@ -45,11 +45,11 @@
           <span
             id="hero-title-line1"
             class="home-hero__title-line"
-          >{{ t('home.hero.titleLine1', 'The Vue 3 design system') }}</span>
+          >{{ t('home.hero.title_line1', 'The Vue 3 design system') }}</span>
           <span
             id="hero-title-line2"
             class="home-hero__title-line"
-          >{{ t('home.hero.titleLine2', 'that just works.') }}</span>
+          >{{ t('home.hero.title_line2', 'that just works.') }}</span>
         </origam-text-mask>
 
         <p class="home-hero__subtitle">
@@ -59,7 +59,7 @@
 
       <nav
         class="home-hero__ctas"
-        :aria-label="t('home.hero.ctasLabel', 'Hero calls to action')"
+        :aria-label="t('home.hero.ctas_label', 'Hero calls to action')"
       >
         <origam-btn
           class="home-hero__btn home-hero__btn--primary"
@@ -68,7 +68,7 @@
           append-icon="mdi-arrow-right"
           data-cy="hero-cta-components"
         >
-          {{ t('home.hero.ctaComponents', 'Browse components') }}
+          {{ t('home.hero.cta_components', 'Browse components') }}
         </origam-btn>
 
         <origam-btn
@@ -80,7 +80,7 @@
           rel="noopener noreferrer"
           data-cy="hero-cta-github"
         >
-          {{ t('home.hero.ctaGithub', 'Star on GitHub') }}
+          {{ t('home.hero.cta_github', 'Star on GitHub') }}
         </origam-btn>
       </nav>
 

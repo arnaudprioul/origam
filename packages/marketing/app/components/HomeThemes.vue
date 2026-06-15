@@ -49,8 +49,8 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
                     tag="h2"
                     class="home-themes__title"
                 >
-                    <span class="home-themes__title-line">{{ t('home.themes.titleLine1', 'One design system.') }}</span>
-                    <span class="home-themes__title-line">{{ t('home.themes.titleLine2', 'Every brand.') }}</span>
+                    <span class="home-themes__title-line">{{ t('home.themes.title_line1', 'One design system.') }}</span>
+                    <span class="home-themes__title-line">{{ t('home.themes.title_line2', 'Every brand.') }}</span>
                 </origam-title>
 
                 <p class="home-themes__subtitle">
@@ -59,7 +59,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
 
                 <ul
                     class="home-themes__chips"
-                    :aria-label="t('a11y.themesChipsList', 'Available themes')"
+                    :aria-label="t('a11y.themes_chips_list', 'Available themes')"
                 >
                     <li
                         v-for="chip in THEME_CHIPS"
@@ -150,7 +150,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
                                             } : {}"
                                             data-cy="themes-tile-button"
                                         >
-                                            {{ t('home.themes.previewButton', 'Button') }}
+                                            {{ t('home.themes.preview_button', 'Button') }}
                                         </origam-btn>
                                     </div>
                                 </figure>

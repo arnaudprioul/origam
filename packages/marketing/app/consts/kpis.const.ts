@@ -24,33 +24,33 @@ export const KPIS_GRID_COLUMNS = 'repeat(auto-fit, minmax(140px, 1fr))'
 
 export const KPIS: IKpi[] = [
     {
-        valueKey: 'home.kpis.componentsValue',
+        valueKey: 'home.kpis.components_value',
         valueFallback: '95',
-        labelKey: 'home.kpis.componentsLabel',
+        labelKey: 'home.kpis.components_label',
         labelFallback: 'Components',
     },
     {
-        valueKey: 'home.kpis.chartsValue',
+        valueKey: 'home.kpis.charts_value',
         valueFallback: '29',
-        labelKey: 'home.kpis.chartsLabel',
+        labelKey: 'home.kpis.charts_label',
         labelFallback: 'Chart primitives',
     },
     {
-        valueKey: 'home.kpis.a11yValue',
+        valueKey: 'home.kpis.a11y_value',
         valueFallback: '100%',
-        labelKey: 'home.kpis.a11yLabel',
+        labelKey: 'home.kpis.a11y_label',
         labelFallback: 'WCAG 2.1 AA',
     },
     {
-        valueKey: 'home.kpis.sizeValue',
+        valueKey: 'home.kpis.size_value',
         valueFallback: '<50kb',
-        labelKey: 'home.kpis.sizeLabel',
+        labelKey: 'home.kpis.size_label',
         labelFallback: 'Tree-shakable',
     },
     {
-        valueKey: 'home.kpis.licenseValue',
+        valueKey: 'home.kpis.license_value',
         valueFallback: 'MIT',
-        labelKey: 'home.kpis.licenseLabel',
+        labelKey: 'home.kpis.license_label',
         labelFallback: 'Open source',
     },
 ]

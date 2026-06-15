@@ -4,21 +4,21 @@
     "tagline": "Le design system Vue 3 qui marche, tout simplement."
   },
   "a11y": {
-    "skipToContent": "Aller au contenu",
-    "toggleTheme": "Basculer entre thème clair et sombre",
-    "toggleBrandTheme": "Changer de thème",
+    "skip_to_content": "Aller au contenu",
+    "toggle_theme": "Basculer entre thème clair et sombre",
+    "toggle_brand_theme": "Changer de thème",
     "search": "Rechercher dans la documentation",
-    "starCount": "Étoiles GitHub",
+    "star_count": "Étoiles GitHub",
     "language": "Changer de langue",
-    "themesChipsList": "Thèmes disponibles"
+    "themes_chips_list": "Thèmes disponibles"
   },
   "chrome": {
-    "searchPlaceholder": "Rechercher…",
-    "searchShortcut": "⌘K",
-    "starCount": "4.2k",
+    "search_placeholder": "Rechercher…",
+    "search_shortcut": "⌘K",
+    "star_count": "4.2k",
     "theme": "Thème",
-    "themeActive": "Thème : {label}",
-    "themeSelectLabel": "Choisir le thème"
+    "theme_active": "Thème : {label}",
+    "theme_select_label": "Choisir le thème"
   },
   "nav": {
     "components": "Composants",
@@ -28,7 +28,7 @@
     "blog": "Blog",
     "changelog": "Journal",
     "github": "GitHub",
-    "whyOrigam": "Pourquoi origam ?",
+    "why_origam": "Pourquoi origam ?",
     "roadmap": "Feuille de route",
     "installation": "Installation",
     "wireframe": "Wireframe",
@@ -36,12 +36,12 @@
     "theming": "Thématisation",
     "sections": {
       "introduction": "Introduction",
-      "gettingStarted": "Prise en main",
+      "getting_started": "Prise en main",
       "features": "Fonctionnalités"
     },
     "a11y": {
-      "openSection": "Ouvrir le menu {section}",
-      "navPrimary": "Navigation principale"
+      "open_section": "Ouvrir le menu {section}",
+      "nav_primary": "Navigation principale"
     }
   },
   "footer": {
@@ -67,24 +67,24 @@
       "contact": "Contact"
     },
     "copyright": "© 2026 origam · MIT",
-    "madeWith": "Fait avec origam, par des humains."
+    "made_with": "Fait avec origam, par des humains."
   },
-  "whyOrigam": {
+  "why_origam": {
     "meta": {
       "title": "Pourquoi origam ? · Design system Vue 3",
       "description": "Un regard honnête sur ce qu'est origam, ce qui le différencie, et quand vous devriez — ou non — le choisir."
     },
     "hero": {
       "badge": "Honnête par conception",
-      "titleLine1": "Pourquoi origam ?",
-      "titleLine2": "Une réponse honnête.",
+      "title_line1": "Pourquoi origam ?",
+      "title_line2": "Une réponse honnête.",
       "subtitle": "Nous avons construit origam pour les équipes Vue 3 qui accordent de l'importance à la qualité du design, à l'accessibilité et à la cohérence par tokens. Voici ce que nous faisons bien — et où nous progressons encore."
     },
     "strengths": {
       "eyebrow": "CE QUE NOUS FAISONS BIEN",
       "title": "Conçu pour Vue 3. Depuis la base.",
-      "titleLine1": "Conçu pour Vue 3.",
-      "titleLine2": "Depuis la base.",
+      "title_line1": "Conçu pour Vue 3.",
+      "title_line2": "Depuis la base.",
       "subtitle": "Chaque API, chaque composable, chaque prop — pensés pour la Composition API et TypeScript dès le premier jour.",
       "vue3": {
         "title": "Vue 3 natif",
@@ -124,32 +124,32 @@
       "title": "Comment se positionne origam ?",
       "subtitle": "Un aperçu fonctionnalité par fonctionnalité des principaux design systems de l'écosystème Vue. Les appréciations sont les nôtres et peuvent être obsolètes — vérifiez toujours auprès de la documentation actuelle des projets.",
       "disclaimer": "Certaines appréciations reflètent notre interprétation de la documentation publique disponible. Les concurrents évoluent vite — vérifiez leurs docs.",
-      "colLibrary": "Bibliothèque",
-      "colVueNative": "Vue 3 natif",
-      "colDesignTokens": "Tokens DTCG",
-      "colA11yTested": "A11y testée",
-      "colCssFirst": "CSS-first",
-      "colTreeShakable": "Tree-shakable",
-      "colCharts": "Graphiques inclus",
+      "col_library": "Bibliothèque",
+      "col_vue_native": "Vue 3 natif",
+      "col_design_tokens": "Tokens DTCG",
+      "col_a11y_tested": "A11y testée",
+      "col_css_first": "CSS-first",
+      "col_tree_shakable": "Tree-shakable",
+      "col_charts": "Graphiques inclus",
       "origam": "origam",
       "vuetify": "Vuetify",
-      "vuetifyNote": "Design system Material Design mature, grande communauté et riche écosystème.",
-      "primeVue": "PrimeVue",
-      "primeVueNote": "Très grand nombre de composants, dispose de son propre système de tokens (PrimeFlex).",
+      "vuetify_note": "Design system Material Design mature, grande communauté et riche écosystème.",
+      "prime_vue": "PrimeVue",
+      "prime_vue_note": "Très grand nombre de composants, dispose de son propre système de tokens (PrimeFlex).",
       "quasar": "Quasar",
-      "quasarNote": "Framework multi-plateforme complet (web, Cordova, Electron). Un périmètre différent.",
-      "elementPlus": "Element Plus",
-      "elementPlusNote": "Populaire dans la communauté de développeurs chinoise, large couverture de composants.",
-      "naiveUi": "Naive UI",
-      "naiveUiNote": "TypeScript-first, personnalisation du thème par JS, léger.",
+      "quasar_note": "Framework multi-plateforme complet (web, Cordova, Electron). Un périmètre différent.",
+      "element_plus": "Element Plus",
+      "element_plus_note": "Populaire dans la communauté de développeurs chinoise, large couverture de composants.",
+      "naive_ui": "Naive UI",
+      "naive_ui_note": "TypeScript-first, personnalisation du thème par JS, léger.",
       "yes": "Oui",
       "no": "Non"
     },
     "weaknesses": {
       "eyebrow": "SOYONS HONNÊTES",
       "title": "Là où nous progressons encore.",
-      "titleLine1": "Là où nous",
-      "titleLine2": "progressons encore.",
+      "title_line1": "Là où nous",
+      "title_line2": "progressons encore.",
       "subtitle": "origam est jeune. C'est un atout en termes de fraîcheur d'API — et une contrainte en termes de maturité.",
       "community": {
         "title": "Communauté plus petite",
@@ -164,20 +164,20 @@
         "description": "Nous n'avons pas encore été mis à l'épreuve dans des apps avec des centaines de développeurs et des millions d'utilisateurs quotidiens. Si c'est votre cas, prenez-le en compte."
       }
     },
-    "useCases": {
+    "use_cases": {
       "eyebrow": "À QUI S'ADRESSE ORIGAM",
       "title": "Choisissez origam quand…",
-      "fitsTitle": "origam est un excellent choix",
-      "noFitsTitle": "origam n'est peut-être pas le bon choix",
+      "fits_title": "origam est un excellent choix",
+      "no_fits_title": "origam n'est peut-être pas le bon choix",
       "greenfield": {
         "title": "Projet Vue 3 greenfield",
         "description": "Vous démarrez sur Vue 3 avec une équipe design qui travaille en Figma et en tokens ? origam est conçu exactement pour cette configuration."
       },
-      "tokenTeam": {
+      "token_team": {
         "title": "Équipe pilotée par les design tokens",
         "description": "Si votre designer utilise Tokens Studio ou Style Dictionary, origam s'intègre nativement — sans couche de traduction."
       },
-      "saasProduct": {
+      "saas_product": {
         "title": "SaaS / produit nécessitant plusieurs thèmes de marque",
         "description": "Besoin de livrer la même app aux couleurs du client A et du client B ? Le multi-thème à l'exécution est une fonctionnalité de première classe."
       },
@@ -197,9 +197,9 @@
     "cta": {
       "title": "Prêt à l'essayer ?",
       "description": "Installez origam en 30 secondes et voyez jusqu'où les valeurs par défaut vous emmènent.",
-      "ctaComponents": "Parcourir les composants",
-      "ctaInstall": "Commencer",
-      "actionsLabel": "Essayer origam"
+      "cta_components": "Parcourir les composants",
+      "cta_install": "Commencer",
+      "actions_label": "Essayer origam"
     }
   },
   "roadmap": {
@@ -209,31 +209,31 @@
     },
     "hero": {
       "badge": "v2.6.0 — Vague 4 livrée",
-      "titleLine1": "Feuille de route.",
-      "titleLine2": "Honnête & publique.",
+      "title_line1": "Feuille de route.",
+      "title_line2": "Honnête & publique.",
       "subtitle": "origam est un design system Vue 3 en phase de démarrage. Voici où nous en sommes aujourd'hui, ce que nous avons livré, et ce qui arrive."
     },
     "status": {
       "eyebrow": "OÙ ON EN EST",
-      "titleLine1": "Statut",
-      "titleLine2": "post-2.6.0.",
+      "title_line1": "Statut",
+      "title_line2": "post-2.6.0.",
       "subtitle": "Un état honnête de ce qui fonctionne, ce qui est en cours et ce qui manque encore.",
-      "npmPublished": "Première release publique sur npm — tarball 869 ko, 0 vulnérabilité critique",
-      "preDelivery": "Pre-delivery automatisé via prepublishOnly (tokens + build + 220 tests unitaires)",
-      "readmeChangelog": "README correct, CHANGELOG à jour",
+      "npm_published": "Première release publique sur npm — tarball 869 ko, 0 vulnérabilité critique",
+      "pre_delivery": "Pre-delivery automatisé via prepublishOnly (tokens + build + 220 tests unitaires)",
+      "readme_changelog": "README correct, CHANGELOG à jour",
       "monorepo": "Migration monorepo terminée (mai 2026) — 6 packages pnpm workspace",
-      "docOnline": "Pas de documentation en ligne. Pas de stories déployées.",
+      "doc_online": "Pas de documentation en ligne. Pas de stories déployées.",
       "ci": "Pipeline CI incomplet — lint / test / build / publication pas encore automatisés",
-      "playwrightCoverage": "Coverage Playwright partielle (~100 specs pour 161 stories)",
-      "bundleMonitoring": "Pas de monitoring bundle-size. Pas d'audit a11y systématique.",
-      "wave4Shipped": "Vague 4 livrée — 13 composants + support gradient + OrigamTextMask (v2.6.0)"
+      "playwright_coverage": "Coverage Playwright partielle (~100 specs pour 161 stories)",
+      "bundle_monitoring": "Pas de monitoring bundle-size. Pas d'audit a11y systématique.",
+      "wave4_shipped": "Vague 4 livrée — 13 composants + support gradient + OrigamTextMask (v2.6.0)"
     },
     "delivered": {
       "eyebrow": "DÉJÀ LIVRÉ",
-      "titleLine1": "Un design system complet.",
-      "titleLine2": "Déjà en production.",
+      "title_line1": "Un design system complet.",
+      "title_line2": "Déjà en production.",
       "subtitle": "origam ne part pas de zéro — voici l'ampleur déjà livrée sur npm, avec les dernières vagues ci-dessous.",
-      "badgeDone": "Livré"
+      "badge_done": "Livré"
     },
     "overview": {
       "label": "Ce qu'origam est déjà",
@@ -242,27 +242,27 @@
       "directives": "directives",
       "stories": "stories interactives",
       "themes": "thèmes de base (clair + sombre)",
-      "tokenTiers": "niveaux de design tokens"
+      "token_tiers": "niveaux de design tokens"
     },
     "waves": {
       "wave1": {
         "title": "Vague 1 — Nouveaux composants",
         "tabs": "Tabs / Tab / TabPanel / TabPanels — 3 variantes, 2 orientations, ARIA WAI-ARIA APG, lazy panel mount",
-        "commandPalette": "CommandPalette (⌘K) — fuzzy match, useHotkey cross-platform, réutilise OrigamKbd",
-        "snackbarStack": "SnackbarStack — 8 emplacements, pile FIFO max, singleton useSnackbarStack, role=status/alert par intent",
+        "command_palette": "CommandPalette (⌘K) — fuzzy match, useHotkey cross-platform, réutilise OrigamKbd",
+        "snackbar_stack": "SnackbarStack — 8 emplacements, pile FIFO max, singleton useSnackbarStack, role=status/alert par intent",
         "bracket": "Bracket (arbre tournoi) — 3 variantes (simple-élim, double-élim, round-robin), connecteurs SVG"
       },
       "wave2": {
         "title": "Vague 2 — Enrichissements",
         "parallax": "OrigamParallax — multi-layer, direction, easing, animation scroll-driven CSS-first",
         "code": "OrigamCode — coloration syntaxique Shiki, 14 langages, 2 thèmes, numéros de ligne, copie, nom de fichier",
-        "textareaRichtext": "OrigamTextareaField — éditeur contenteditable rich mode avec 9 commandes de barre d'outils",
-        "textFieldMask": "OrigamTextField — moteur de masque avec 13 patterns intégrés + Luhn + IBAN mod-97"
+        "textarea_richtext": "OrigamTextareaField — éditeur contenteditable rich mode avec 9 commandes de barre d'outils",
+        "text_field_mask": "OrigamTextField — moteur de masque avec 13 patterns intégrés + Luhn + IBAN mod-97"
       },
       "wave3": {
         "title": "Vague 3 — Infrastructure",
-        "nuxtModule": "Module Nuxt officiel (sous-export origam/nuxt) — auto-import, plugin thème SSR-safe",
-        "ssrSafety": "Audit sécurité SSR + useCssSupportClient + OrigamClientOnly",
+        "nuxt_module": "Module Nuxt officiel (sous-export origam/nuxt) — auto-import, plugin thème SSR-safe",
+        "ssr_safety": "Audit sécurité SSR + useCssSupportClient + OrigamClientOnly",
         "monorepo": "Monorepo pnpm — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)"
       },
       "wave4": {
@@ -270,25 +270,25 @@
         "grid": "OrigamGrid — CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow",
         "masonry": "OrigamMasonry — CSS-first via grid-template-rows: masonry, fallback JS",
         "blockquote": "OrigamBlockquote — typographie : citation + auteur + source + variantes",
-        "emptyState": "OrigamEmptyState — 5 presets : no-data, no-results, error, offline, locked",
+        "empty_state": "OrigamEmptyState — 5 presets : no-data, no-results, error, offline, locked",
         "clipboard": "OrigamClipboard — wrapper copie + feedback Copié !, sans dépendance",
-        "inlineEdit": "OrigamInlineEdit — pattern edit-in-place, v-model + validators, ARIA live",
-        "numberFormat": "OrigamNumberFormat — formatage i18n via Intl.NumberFormat, affichage seul",
-        "qrCode": "OrigamQRCode — rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo",
+        "inline_edit": "OrigamInlineEdit — pattern edit-in-place, v-model + validators, ARIA live",
+        "number_format": "OrigamNumberFormat — formatage i18n via Intl.NumberFormat, affichage seul",
+        "qr_code": "OrigamQRCode — rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo",
         "watermark": "OrigamWatermark — overlay diagonal en répétition, texte SVG ou canvas data-URI",
         "video": "OrigamVideo — player custom : play/pause, scrubber, PIP, légendes, HLS optionnel",
         "sound": "OrigamSound — player audio + waveform via Web Audio API, Media Session API",
         "calendar": "OrigamCalendar — vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison",
         "chart": "OrigamChart — SVG natif : ligne, aire, barre, camembert, radar, scatter — sans d3 ni chart.js",
         "gradient": "Support gradient — les props color/bgColor/textColor acceptent les valeurs gradient",
-        "textMask": "OrigamTextMask — révélation de texte via background-clip: text, fonds gradient + image"
+        "text_mask": "OrigamTextMask — révélation de texte via background-clip: text, fonds gradient + image"
       }
     },
     "phases": {
       "eyebrow": "LA SUITE",
       "title": "Une roadmap par phases.",
       "subtitle": "Chaque phase s'appuie sur la précédente. L'ordre reflète de vraies dépendances techniques, pas des jalons arbitraires.",
-      "shortTerm": {
+      "short_term": {
         "eyebrow": "Q3 2026",
         "title": "Court terme",
         "ci": {
@@ -303,23 +303,23 @@
           "title": "Coverage Playwright complète",
           "description": "100 % des composants publics couverts — un spec par composant exerçant chaque Variant et prop."
         },
-        "a11yAudit": {
+        "a11y_audit": {
           "title": "Audit a11y des overlays",
           "description": "Focus trap, restitution du focus, aria-modal, touche Esc pour Dialog, Menu, Tooltip, Drawer, Snackbar."
         },
-        "bundleSize": {
+        "bundle_size": {
           "title": "Monitoring bundle-size",
           "description": "size-limit sur chaque sous-export. Commentaires PR auto-générés. La chute 5,6 Mo → 869 ko doit rester un acquis."
         }
       },
-      "midTerm": {
+      "mid_term": {
         "eyebrow": "Q4 2026 / Q1 2027",
         "title": "Moyen terme",
         "v3": {
           "title": "v3.0.0 — Strategy B",
           "description": "Suppression des retours *Styles quand la valeur est tokenisée. Les classes utilitaires deviennent l'unique API. ~2× moins de calcul réactif."
         },
-        "motionTokens": {
+        "motion_tokens": {
           "title": "Tokens motion & media a11y",
           "description": "tokens/semantic/motion.json — durées, easings. Auto 0ms si prefers-reduced-motion. Rampe high-contrast."
         },
@@ -327,11 +327,11 @@
           "title": "Tests de régression visuelle",
           "description": "Playwright toHaveScreenshot() par Variant, ou Chromatic / Lost-Pixel. Baseline sur main, diff bloque les PR."
         },
-        "accentColor": {
+        "accent_color": {
           "title": "Renommage accentColor (breaking v3)",
           "description": "Renommage bgColor → accentColor, aligné sur le standard CSS accent-color. Chemin de dépréciation complet inclus."
         },
-        "listSemantics": {
+        "list_semantics": {
           "title": "Variants de liste sémantiques (OrigamList)",
           "description": "OrigamList / OrigamListItem rendent aujourd'hui des <div role=\"listbox\">. Une nouvelle prop variant (unordered → ul/li, ordered → ol/li, nav, listbox) émettra du vrai <ul>/<ol>/<li>, en remplacement de la prop booléenne nav."
         },
@@ -340,18 +340,18 @@
           "description": "Remplacement des scripts pnpm -r bruts par des pipelines Turborepo. Le cache distant réduit drastiquement les temps de rebuild en CI."
         }
       },
-      "longTerm": {
+      "long_term": {
         "eyebrow": "> 6 MOIS",
         "title": "Long terme",
         "vapor": {
           "title": "Vue Vapor mode (exploratoire)",
           "description": "Compilation sans virtual DOM — ~40 % moins d'overhead runtime. POC sur 5 composants pivots, benchmarks d'abord."
         },
-        "webComponents": {
+        "web_components": {
           "title": "Export Web Components",
           "description": "Sous-export origam/elements via defineCustomElement. Démo cross-framework (React, Svelte, Angular)."
         },
-        "themeBuilder": {
+        "theme_builder": {
           "title": "Theme Builder UI",
           "description": "App standalone consommant origam elle-même : édition tokens primitifs, preview composants en temps réel, export JSON de marque."
         }
@@ -366,16 +366,16 @@
     "cta": {
       "title": "Suivez l'avancement.",
       "description": "Mettez une étoile au dépôt sur GitHub pour rester informé. Les contributions et retours sont les bienvenus.",
-      "ctaGithub": "Star sur GitHub",
-      "ctaChangelog": "Lire le CHANGELOG",
-      "actionsLabel": "Suivre origam"
+      "cta_github": "Star sur GitHub",
+      "cta_changelog": "Lire le CHANGELOG",
+      "actions_label": "Suivre origam"
     },
-    "wave4Grid": {
+    "wave4_grid": {
       "eyebrow": "VAGUE 4 — LIVRÉE",
-      "titleLine1": "15 composants et fonctionnalités",
-      "titleLine2": "déjà livrés.",
+      "title_line1": "15 composants et fonctionnalités",
+      "title_line2": "déjà livrés.",
       "subtitle": "Tout ce qui est dans la Vague 4 est disponible sur npm. Ce sont les composants et fonctionnalités accessibles dès maintenant dans origam.",
-      "badgeShipped": "Livré",
+      "badge_shipped": "Livré",
       "grid": {
         "name": "OrigamGrid",
         "note": "CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow"
@@ -388,7 +388,7 @@
         "name": "OrigamBlockquote",
         "note": "Typographie : citation + auteur + source + variantes"
       },
-      "emptyState": {
+      "empty_state": {
         "name": "OrigamEmptyState",
         "note": "5 presets : no-data, no-results, error, offline, locked"
       },
@@ -396,15 +396,15 @@
         "name": "OrigamClipboard",
         "note": "Wrapper copie + feedback Copié !, sans dépendance"
       },
-      "inlineEdit": {
+      "inline_edit": {
         "name": "OrigamInlineEdit",
         "note": "Pattern edit-in-place, v-model + validators, ARIA live"
       },
-      "numberFormat": {
+      "number_format": {
         "name": "OrigamNumberFormat",
         "note": "Formatage i18n via Intl.NumberFormat, affichage seul"
       },
-      "qrCode": {
+      "qr_code": {
         "name": "OrigamQRCode",
         "note": "Rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo"
       },
@@ -432,7 +432,7 @@
         "name": "Support gradient",
         "note": "Les props color/bgColor/textColor acceptent désormais les valeurs gradient"
       },
-      "textMask": {
+      "text_mask": {
         "name": "OrigamTextMask",
         "note": "Révélation de texte via background-clip: text, fonds gradient + image"
       }
@@ -445,34 +445,34 @@
     },
     "hero": {
       "badge": "v{version} — 29 graphiques livrés, conforme WCAG 2.1 AA",
-      "titleLine1": "Le design system Vue 3",
-      "titleLine2": "qui marche, tout simplement.",
+      "title_line1": "Le design system Vue 3",
+      "title_line2": "qui marche, tout simplement.",
       "subtitle": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first.",
-      "ctaComponents": "Parcourir les composants",
-      "ctaGithub": "Star sur GitHub",
+      "cta_components": "Parcourir les composants",
+      "cta_github": "Star sur GitHub",
       "install": "npm install origam",
       "copy": "Copier",
       "copied": "Copié",
-      "ctasLabel": "Appels à l'action du hero"
+      "ctas_label": "Appels à l'action du hero"
     },
     "kpis": {
       "title": "origam en chiffres",
-      "componentsValue": "95",
-      "componentsLabel": "Composants",
-      "chartsValue": "29",
-      "chartsLabel": "Primitives de graphiques",
-      "a11yValue": "100%",
-      "a11yLabel": "WCAG 2.1 AA",
-      "sizeValue": "<50ko",
-      "sizeLabel": "Tree-shakable",
-      "licenseValue": "MIT",
-      "licenseLabel": "Open source"
+      "components_value": "95",
+      "components_label": "Composants",
+      "charts_value": "29",
+      "charts_label": "Primitives de graphiques",
+      "a11y_value": "100%",
+      "a11y_label": "WCAG 2.1 AA",
+      "size_value": "<50ko",
+      "size_label": "Tree-shakable",
+      "license_value": "MIT",
+      "license_label": "Open source"
     },
     "features": {
       "eyebrow": "CE QU'IL Y A DEDANS",
       "title": "Tout ce que vous attendez. Rien de superflu.",
-      "titleLine1": "Tout ce que vous attendez.",
-      "titleLine2": "Rien de superflu.",
+      "title_line1": "Tout ce que vous attendez.",
+      "title_line2": "Rien de superflu.",
       "subtitle": "Une boîte à outils complète pour livrer des apps Vue 3 — des primitives atomiques à la dataviz complexe, chaque pièce testée, thémée et conforme a11y.",
       "charts": {
         "title": "29 primitives de graphiques",
@@ -504,42 +504,42 @@
       "title": "Essayez avant de livrer.",
       "file": "App.vue",
       "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
-      "previewTitle": "Hello Origam",
-      "previewText": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
-      "previewCta": "Commencer"
+      "preview_title": "Hello Origam",
+      "preview_text": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
+      "preview_cta": "Commencer"
     },
     "showcase": {
       "eyebrow": "VITRINE",
       "title": "95 composants. Une seule âme.",
-      "titleLine1": "95 composants.",
-      "titleLine2": "Une seule âme.",
-      "viewAll": "Voir tout",
-      "dataTable": {
+      "title_line1": "95 composants.",
+      "title_line2": "Une seule âme.",
+      "view_all": "Voir tout",
+      "data_table": {
         "title": "Data Table",
         "caption": "Triable · filtrable · virtualisé",
         "badge": "Data",
-        "colProject": "PROJET",
-        "colName": "Nom",
-        "colOwner": "Responsable",
-        "colStatus": "Statut",
-        "rowMenu": "Actions de ligne",
-        "row1Name": "Version Aurora",
-        "row1Owner": "Arnaud",
-        "row1Status": "Livré",
-        "row2Name": "Tokens v2",
-        "row2Owner": "Léa",
-        "row2Status": "En revue",
-        "row3Name": "Audit a11y",
-        "row3Owner": "Jade",
-        "row3Status": "Livré",
-        "row4Name": "Moteur de graphiques",
-        "row4Owner": "Marc",
-        "row4Status": "Brouillon",
-        "row5Name": "Nouveau thème",
-        "row5Owner": "Romi",
-        "row5Status": "En revue"
+        "col_project": "PROJET",
+        "col_name": "Nom",
+        "col_owner": "Responsable",
+        "col_status": "Statut",
+        "row_menu": "Actions de ligne",
+        "row1_name": "Version Aurora",
+        "row1_owner": "Arnaud",
+        "row1_status": "Livré",
+        "row2_name": "Tokens v2",
+        "row2_owner": "Léa",
+        "row2_status": "En revue",
+        "row3_name": "Audit a11y",
+        "row3_owner": "Jade",
+        "row3_status": "Livré",
+        "row4_name": "Moteur de graphiques",
+        "row4_owner": "Marc",
+        "row4_status": "Brouillon",
+        "row5_name": "Nouveau thème",
+        "row5_owner": "Romi",
+        "row5_status": "En revue"
       },
-      "chartLine": {
+      "chart_line": {
         "title": "Chart Line",
         "caption": "+12,4 % ce mois-ci"
       },
@@ -557,39 +557,39 @@
         "danger": "Danger",
         "info": "Info"
       },
-      "avatarGroup": {
+      "avatar_group": {
         "title": "Groupe d'avatars",
         "caption": "+24 membres"
       }
     },
     "themes": {
       "eyebrow": "THÉMATISATION",
-      "titleLine1": "Un design system.",
-      "titleLine2": "Toutes les marques.",
+      "title_line1": "Un design system.",
+      "title_line2": "Toutes les marques.",
       "subtitle": "Design tokens conformes DTCG, multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution — sans remontage, sans clignotement.",
-      "chipSobre": "Sobre",
-      "chipGlass": "Glass",
-      "chipGeek": "Geek",
-      "chipCartoon": "Cartoon",
-      "chipEditorial": "Éditorial",
-      "chipMaterial": "Material",
-      "chipEcom": "Ecom",
-      "chipApple": "Apple",
-      "toolingLabel": "Outillage",
-      "tokensStudio": "→ compatible tokens.studio",
-      "styleDictionary": "→ Style Dictionary v4",
-      "previewLight": "light.json",
-      "previewDark": "dark.json",
-      "previewBrandA": "brand-a.json",
-      "previewBrandB": "brand-b.json",
-      "previewButton": "Bouton"
+      "chip_sobre": "Sobre",
+      "chip_glass": "Glass",
+      "chip_geek": "Geek",
+      "chip_cartoon": "Cartoon",
+      "chip_editorial": "Éditorial",
+      "chip_material": "Material",
+      "chip_ecom": "Ecom",
+      "chip_apple": "Apple",
+      "tooling_label": "Outillage",
+      "tokens_studio": "→ compatible tokens.studio",
+      "style_dictionary": "→ Style Dictionary v4",
+      "preview_light": "light.json",
+      "preview_dark": "dark.json",
+      "preview_brand_a": "brand-a.json",
+      "preview_brand_b": "brand-b.json",
+      "preview_button": "Bouton"
     },
     "cta": {
       "title": "Prêt à livrer plus vite ?",
       "description": "Démarrez votre projet Vue 3 avec origam en 30 secondes.",
-      "ctaStart": "Commencer",
-      "ctaDocs": "Lire la doc",
-      "actionsLabel": "Commencer"
+      "cta_start": "Commencer",
+      "cta_docs": "Lire la doc",
+      "actions_label": "Commencer"
     }
   },
   "changelog": {
@@ -599,16 +599,16 @@
     },
     "hero": {
       "badge": "Journal",
-      "titleLine1": "Journal.",
-      "titleLine2": "Chaque version.",
+      "title_line1": "Journal.",
+      "title_line2": "Chaque version.",
       "subtitle": "Un résumé curé de ce qui a été livré dans chaque version d'origam. Les dates sont celles de publication ; le diff complet est sur GitHub.",
-      "actionsLabel": "Liens changelog",
-      "fullChangelog": "Journal complet sur GitHub"
+      "actions_label": "Liens changelog",
+      "full_changelog": "Journal complet sur GitHub"
     },
     "list": {
       "eyebrow": "HISTORIQUE DES VERSIONS",
-      "titleLine1": "Choisissez une version.",
-      "titleLine2": "Voyez ce qui a changé.",
+      "title_line1": "Choisissez une version.",
+      "title_line2": "Voyez ce qui a changé.",
       "subtitle": "Sélectionnez n'importe quelle version pour voir exactement ce qui a été livré — le résumé et ses points marquants."
     },
     "select": {
@@ -632,17 +632,17 @@
     "aria": {
       "version": "Version",
       "highlights": "Points marquants de la version",
-      "versionLinks": "Liens de version"
+      "version_links": "Liens de version"
     },
     "panel": {
-      "fullLink": "Journal complet sur GitHub"
+      "full_link": "Journal complet sur GitHub"
     },
     "cta": {
       "title": "Restez informé.",
       "description": "Suivez le dépôt sur GitHub pour être notifié de chaque nouvelle version.",
-      "ctaGithub": "Étoile sur GitHub",
-      "ctaFulllog": "Lire le CHANGELOG complet",
-      "actionsLabel": "Suivre origam"
+      "cta_github": "Étoile sur GitHub",
+      "cta_fulllog": "Lire le CHANGELOG complet",
+      "actions_label": "Suivre origam"
     },
     "versions": {
       "unreleased": {
@@ -724,20 +724,20 @@
     },
     "hero": {
       "badge": "npm install origam",
-      "titleLine1": "Prêt à tourner",
-      "titleLine2": "en quelques minutes.",
+      "title_line1": "Prêt à tourner",
+      "title_line2": "en quelques minutes.",
       "subtitle": "Installez origam, enregistrez le plugin et commencez à construire avec 95+ composants Vue 3 accessibles et pilotés par tokens."
     },
     "steps": {
       "eyebrow": "ÉTAPE PAR ÉTAPE",
-      "titleLine1": "Cinq étapes.",
-      "titleLine2": "C'est parti.",
+      "title_line1": "Cinq étapes.",
+      "title_line2": "C'est parti.",
       "subtitle": "De zéro à une app Vue 3 entièrement thémée avec origam — sans boilerplate.",
-      "listLabel": "Étapes d'installation",
+      "list_label": "Étapes d'installation",
       "install": {
         "title": "1. Installer",
         "description": "Ajoutez origam à votre projet avec votre gestionnaire de paquets préféré.",
-        "pmLabel": "Gestionnaire de paquets",
+        "pm_label": "Gestionnaire de paquets",
         "copy": "Copier",
         "copied": "Copié"
       },
@@ -753,9 +753,9 @@
       "theming": {
         "title": "4. Thématisation",
         "description": "origam est livré avec des thèmes clair et sombre. Basculez statiquement via un attribut HTML, ou à l'exécution avec le composable useTheme.",
-        "subStatic": "Bascule statique — attribut HTML (omettre pour suivre la préférence système) :",
-        "subRuntime": "Bascule à l'exécution — composable useTheme :",
-        "subScoped": "Surcharge de sous-arbre :",
+        "sub_static": "Bascule statique — attribut HTML (omettre pour suivre la préférence système) :",
+        "sub_runtime": "Bascule à l'exécution — composable useTheme :",
+        "sub_scoped": "Surcharge de sous-arbre :",
         "note": "Importez origam/tokens/css/dark une fois au démarrage pour activer la feuille de tokens sombre."
       },
       "nuxt": {
@@ -764,25 +764,25 @@
         "note": "Le module Nuxt est livré en sous-export (origam/nuxt) — aucun package séparé à installer. Il auto-importe tous les composants et composables, et résout les thèmes de manière SSR-safe."
       }
     },
-    "peerDeps": {
+    "peer_deps": {
       "eyebrow": "PRÉREQUIS",
       "title": "Dépendances pairs.",
       "subtitle": "origam a une empreinte minimale. Vue 3 est le seul peer obligatoire — tout le reste est optionnel et tree-shaké quand non utilisé.",
-      "tableCaption": "Dépendances pairs",
-      "colPkg": "Package",
-      "colRequired": "Requis",
-      "colUsedBy": "Utilisé par",
-      "vueUsedBy": "Toujours — runtime de base",
-      "vueI18nUsedBy": "Optionnel — composable locale",
-      "vueRouterUsedBy": "Optionnel — composants lien",
-      "nodeNote": "Node >= 22 est requis pour compiler origam depuis les sources. Les consommateurs n'ont besoin que de Vue 3.5+ à l'exécution."
+      "table_caption": "Dépendances pairs",
+      "col_pkg": "Package",
+      "col_required": "Requis",
+      "col_used_by": "Utilisé par",
+      "vue_used_by": "Toujours — runtime de base",
+      "vue_i18n_used_by": "Optionnel — composable locale",
+      "vue_router_used_by": "Optionnel — composants lien",
+      "node_note": "Node >= 22 est requis pour compiler origam depuis les sources. Les consommateurs n'ont besoin que de Vue 3.5+ à l'exécution."
     },
     "cta": {
       "title": "Prêt à construire ?",
       "description": "Explorez le catalogue complet de composants, parcourez les stories interactives ou plongez dans le code source sur GitHub.",
-      "ctaComponents": "Parcourir les composants",
-      "ctaGithub": "Voir sur GitHub",
-      "actionsLabel": "Explorer origam"
+      "cta_components": "Parcourir les composants",
+      "cta_github": "Voir sur GitHub",
+      "actions_label": "Explorer origam"
     }
   }
 }

@@ -61,8 +61,8 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                     tag="h1"
                     class="installation-hero__title"
                 >
-                    <span class="installation-hero__title-line">{{ t('installation.hero.titleLine1', 'Up and running') }}</span>
-                    <span class="installation-hero__title-line installation-hero__title-line--accent">{{ t('installation.hero.titleLine2', 'in minutes.') }}</span>
+                    <span class="installation-hero__title-line">{{ t('installation.hero.title_line1', 'Up and running') }}</span>
+                    <span class="installation-hero__title-line installation-hero__title-line--accent">{{ t('installation.hero.title_line2', 'in minutes.') }}</span>
                 </origam-title>
 
                 <p class="installation-hero__subtitle">
@@ -87,8 +87,8 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                         tag="h2"
                         class="installation-section__title"
                     >
-                        <span class="installation-section__title-line">{{ t('installation.steps.titleLine1', 'Five steps.') }}</span>
-                        <span class="installation-section__title-line installation-section__title-line--muted">{{ t('installation.steps.titleLine2', 'You\'re set.') }}</span>
+                        <span class="installation-section__title-line">{{ t('installation.steps.title_line1', 'Five steps.') }}</span>
+                        <span class="installation-section__title-line installation-section__title-line--muted">{{ t('installation.steps.title_line2', 'You\'re set.') }}</span>
                     </origam-title>
 
                     <p class="installation-section__subtitle">
@@ -101,7 +101,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                     columns="1"
                     gap="0"
                     class="installation-steps__list"
-                    :aria-label="t('installation.steps.listLabel', 'Installation steps')"
+                    :aria-label="t('installation.steps.list_label', 'Installation steps')"
                 >
                     <origam-grid-item
                         tag="li"
@@ -147,7 +147,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                                         variant="underline"
                                         color="primary"
                                         class="installation-step__pm-tabs"
-                                        :aria-label="t('installation.steps.install.pmLabel', 'Package manager')"
+                                        :aria-label="t('installation.steps.install.pm_label', 'Package manager')"
                                     >
                                         <origam-tab
                                             v-for="pm in packageManagers"
@@ -294,7 +294,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                             </p>
 
                             <p class="installation-step__sublabel">
-                                {{ t('installation.steps.theming.subStatic', 'Static switch — HTML attribute (omit to follow system preference):') }}
+                                {{ t('installation.steps.theming.sub_static', 'Static switch — HTML attribute (omit to follow system preference):') }}
                             </p>
 
                             <origam-code
@@ -308,7 +308,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                             />
 
                             <p class="installation-step__sublabel">
-                                {{ t('installation.steps.theming.subRuntime', 'Runtime switch — useTheme composable:') }}
+                                {{ t('installation.steps.theming.sub_runtime', 'Runtime switch — useTheme composable:') }}
                             </p>
 
                             <origam-code
@@ -322,7 +322,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                             />
 
                             <p class="installation-step__sublabel">
-                                {{ t('installation.steps.theming.subScoped', 'Scoped sub-tree override:') }}
+                                {{ t('installation.steps.theming.sub_scoped', 'Scoped sub-tree override:') }}
                             </p>
 
                             <origam-code
@@ -397,7 +397,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
             <origam-container>
                 <header class="installation-peer-deps__header">
                     <p class="installation-section__eyebrow">
-                        {{ t('installation.peerDeps.eyebrow', 'REQUIREMENTS') }}
+                        {{ t('installation.peer_deps.eyebrow', 'REQUIREMENTS') }}
                     </p>
 
                     <origam-title
@@ -405,11 +405,11 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                         tag="h2"
                         class="installation-section__title installation-section__title--single"
                     >
-                        {{ t('installation.peerDeps.title', 'Peer dependencies.') }}
+                        {{ t('installation.peer_deps.title', 'Peer dependencies.') }}
                     </origam-title>
 
                     <p class="installation-section__subtitle">
-                        {{ t('installation.peerDeps.subtitle', 'origam has a minimal footprint. Vue 3 is the only mandatory peer — everything else is optional and tree-shaken when unused.') }}
+                        {{ t('installation.peer_deps.subtitle', 'origam has a minimal footprint. Vue 3 is the only mandatory peer — everything else is optional and tree-shaken when unused.') }}
                     </p>
                 </header>
 
@@ -417,7 +417,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                     class="installation-peer-deps__table"
                     border
                     rounded="lg"
-                    :caption="t('installation.peerDeps.tableCaption', 'Peer dependencies')"
+                    :caption="t('installation.peer_deps.table_caption', 'Peer dependencies')"
                     data-cy="installation-peer-deps-table"
                 >
                     <thead>
@@ -426,19 +426,19 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                                 scope="col"
                                 class="installation-peer-deps__th"
                             >
-                                {{ t('installation.peerDeps.colPkg', 'Package') }}
+                                {{ t('installation.peer_deps.col_pkg', 'Package') }}
                             </th>
                             <th
                                 scope="col"
                                 class="installation-peer-deps__th"
                             >
-                                {{ t('installation.peerDeps.colRequired', 'Required') }}
+                                {{ t('installation.peer_deps.col_required', 'Required') }}
                             </th>
                             <th
                                 scope="col"
                                 class="installation-peer-deps__th"
                             >
-                                {{ t('installation.peerDeps.colUsedBy', 'Used by') }}
+                                {{ t('installation.peer_deps.col_used_by', 'Used by') }}
                             </th>
                         </tr>
                     </thead>
@@ -473,7 +473,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                 </origam-table>
 
                 <p class="installation-peer-deps__note">
-                    {{ t('installation.peerDeps.nodeNote', 'Node >= 22 is required to build origam from source. Consumers need only Vue 3.5+ at runtime.') }}
+                    {{ t('installation.peer_deps.node_note', 'Node >= 22 is required to build origam from source. Consumers need only Vue 3.5+ at runtime.') }}
                 </p>
             </origam-container>
         </section>
@@ -498,7 +498,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 
                 <nav
                     class="installation-cta__actions"
-                    :aria-label="t('installation.cta.actionsLabel', 'Explore origam')"
+                    :aria-label="t('installation.cta.actions_label', 'Explore origam')"
                 >
                     <origam-btn
                         class="installation-cta__btn installation-cta__btn--primary"
@@ -507,7 +507,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                         href="/components"
                         data-cy="installation-cta-components"
                     >
-                        {{ t('installation.cta.ctaComponents', 'Browse components') }}
+                        {{ t('installation.cta.cta_components', 'Browse components') }}
                     </origam-btn>
 
                     <origam-btn
@@ -519,7 +519,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                         rel="noopener noreferrer"
                         data-cy="installation-cta-github"
                     >
-                        {{ t('installation.cta.ctaGithub', 'View on GitHub') }}
+                        {{ t('installation.cta.cta_github', 'View on GitHub') }}
                     </origam-btn>
                 </nav>
             </div>

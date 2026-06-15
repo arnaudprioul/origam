@@ -82,10 +82,10 @@ const { t } = useT()
                             <origam-title
                                 tag="h3"
                                 class="home-playground__preview-title"
-                                :text="t('home.playground.previewTitle', 'Hello Origam')"
+                                :text="t('home.playground.preview_title', 'Hello Origam')"
                             />
                             <p class="home-playground__preview-text">
-                                {{ t('home.playground.previewText', 'The Vue 3 design system that just works. Try a component live.') }}
+                                {{ t('home.playground.preview_text', 'The Vue 3 design system that just works. Try a component live.') }}
                             </p>
                             <origam-btn
                                 color="primary"
@@ -93,7 +93,7 @@ const { t } = useT()
                                 class="home-playground__preview-btn"
                                 :style="PLAYGROUND_PREVIEW_BTN_VARS"
                             >
-                                {{ t('home.playground.previewCta', 'Get started') }}
+                                {{ t('home.playground.preview_cta', 'Get started') }}
                             </origam-btn>
                         </origam-card>
                     </div>

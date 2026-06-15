@@ -13,10 +13,10 @@ import { CTA_START_HREF } from '~/consts/cta.const'
 const { t } = useT()
 
 useSeoMeta({
-    title: () => t('whyOrigam.meta.title', 'Why origam? · Vue 3 design system'),
-    description: () => t('whyOrigam.meta.description', 'An honest look at origam.'),
-    ogTitle: () => t('whyOrigam.meta.title', 'Why origam? · Vue 3 design system'),
-    ogDescription: () => t('whyOrigam.meta.description', 'An honest look at origam.')
+    title: () => t('why_origam.meta.title', 'Why origam? · Vue 3 design system'),
+    description: () => t('why_origam.meta.description', 'An honest look at origam.'),
+    ogTitle: () => t('why_origam.meta.title', 'Why origam? · Vue 3 design system'),
+    ogDescription: () => t('why_origam.meta.description', 'An honest look at origam.')
 })
 
 const strengths = computed(() => WHY_STRENGTHS)
@@ -30,7 +30,7 @@ const comparisonItems = computed(() =>
     WHY_COMPARISONS.map(lib => ({
         library: lib.nameKey,
         libraryNote: lib.noteKey,
-        isOrigam: lib.nameKey === 'whyOrigam.comparison.origam',
+        isOrigam: lib.nameKey === 'why_origam.comparison.origam',
         vueNative: lib.vueNative,
         designTokens: lib.designTokens,
         a11yTested: lib.a11yTested,
@@ -61,7 +61,7 @@ const comparisonItems = computed(() =>
                     pill
                     data-cy="why-hero-badge"
                 >
-                    {{ t('whyOrigam.hero.badge', 'Honest by design') }}
+                    {{ t('why_origam.hero.badge', 'Honest by design') }}
                 </origam-chip>
 
                 <origam-title
@@ -69,12 +69,12 @@ const comparisonItems = computed(() =>
                     tag="h1"
                     class="why-hero__title"
                 >
-                    <span class="why-hero__title-line">{{ t('whyOrigam.hero.titleLine1', 'Why origam?') }}</span>
-                    <span class="why-hero__title-line why-hero__title-line--accent">{{ t('whyOrigam.hero.titleLine2', 'An honest answer.') }}</span>
+                    <span class="why-hero__title-line">{{ t('why_origam.hero.title_line1', 'Why origam?') }}</span>
+                    <span class="why-hero__title-line why-hero__title-line--accent">{{ t('why_origam.hero.title_line2', 'An honest answer.') }}</span>
                 </origam-title>
 
                 <p class="why-hero__subtitle">
-                    {{ t('whyOrigam.hero.subtitle', 'We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency.') }}
+                    {{ t('why_origam.hero.subtitle', 'We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency.') }}
                 </p>
             </origam-container>
         </section>
@@ -86,7 +86,7 @@ const comparisonItems = computed(() =>
             <origam-container>
                 <header class="why-strengths__header">
                     <p class="why-section__eyebrow">
-                        {{ t('whyOrigam.strengths.eyebrow', 'WHAT WE DO WELL') }}
+                        {{ t('why_origam.strengths.eyebrow', 'WHAT WE DO WELL') }}
                     </p>
 
                     <origam-title
@@ -94,12 +94,12 @@ const comparisonItems = computed(() =>
                         tag="h2"
                         class="why-section__title"
                     >
-                        <span class="why-section__title-line">{{ t('whyOrigam.strengths.titleLine1', 'Built for Vue 3.') }}</span>
-                        <span class="why-section__title-line why-section__title-line--muted">{{ t('whyOrigam.strengths.titleLine2', 'From the ground up.') }}</span>
+                        <span class="why-section__title-line">{{ t('why_origam.strengths.title_line1', 'Built for Vue 3.') }}</span>
+                        <span class="why-section__title-line why-section__title-line--muted">{{ t('why_origam.strengths.title_line2', 'From the ground up.') }}</span>
                     </origam-title>
 
                     <p class="why-section__subtitle">
-                        {{ t('whyOrigam.strengths.subtitle', 'Every API, every composable, every prop — designed for Composition API and TypeScript from day one.') }}
+                        {{ t('why_origam.strengths.subtitle', 'Every API, every composable, every prop — designed for Composition API and TypeScript from day one.') }}
                     </p>
                 </header>
 
@@ -146,7 +146,7 @@ const comparisonItems = computed(() =>
             <origam-container>
                 <header class="why-comparison__header">
                     <p class="why-section__eyebrow">
-                        {{ t('whyOrigam.comparison.eyebrow', 'HONEST COMPARISON') }}
+                        {{ t('why_origam.comparison.eyebrow', 'HONEST COMPARISON') }}
                     </p>
 
                     <origam-title
@@ -154,11 +154,11 @@ const comparisonItems = computed(() =>
                         tag="h2"
                         class="why-section__title why-section__title--single"
                     >
-                        {{ t('whyOrigam.comparison.title', 'How does origam compare?') }}
+                        {{ t('why_origam.comparison.title', 'How does origam compare?') }}
                     </origam-title>
 
                     <p class="why-section__subtitle">
-                        {{ t('whyOrigam.comparison.subtitle', 'A feature-by-feature look at the Vue ecosystem main design systems.') }}
+                        {{ t('why_origam.comparison.subtitle', 'A feature-by-feature look at the Vue ecosystem main design systems.') }}
                     </p>
                 </header>
 
@@ -167,7 +167,7 @@ const comparisonItems = computed(() =>
                     border
                     rounded="lg"
                     data-cy="why-comparison-table"
-                    :caption="t('whyOrigam.comparison.title', 'How does origam compare?')"
+                    :caption="t('why_origam.comparison.title', 'How does origam compare?')"
                 >
                     <thead>
                         <tr>
@@ -175,43 +175,43 @@ const comparisonItems = computed(() =>
                                 scope="col"
                                 class="why-comparison__th why-comparison__th--lib"
                             >
-                                {{ t('whyOrigam.comparison.colLibrary', 'Library') }}
+                                {{ t('why_origam.comparison.col_library', 'Library') }}
                             </th>
                             <th
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('whyOrigam.comparison.colVueNative', 'Vue 3 native') }}
+                                {{ t('why_origam.comparison.col_vue_native', 'Vue 3 native') }}
                             </th>
                             <th
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('whyOrigam.comparison.colDesignTokens', 'DTCG tokens') }}
+                                {{ t('why_origam.comparison.col_design_tokens', 'DTCG tokens') }}
                             </th>
                             <th
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('whyOrigam.comparison.colA11yTested', 'A11y tested') }}
+                                {{ t('why_origam.comparison.col_a11y_tested', 'A11y tested') }}
                             </th>
                             <th
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('whyOrigam.comparison.colCssFirst', 'CSS-first') }}
+                                {{ t('why_origam.comparison.col_css_first', 'CSS-first') }}
                             </th>
                             <th
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('whyOrigam.comparison.colTreeShakable', 'Tree-shakable') }}
+                                {{ t('why_origam.comparison.col_tree_shakable', 'Tree-shakable') }}
                             </th>
                             <th
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('whyOrigam.comparison.colCharts', 'Charts included') }}
+                                {{ t('why_origam.comparison.col_charts', 'Charts included') }}
                             </th>
                         </tr>
                     </thead>
@@ -235,7 +235,7 @@ const comparisonItems = computed(() =>
                                 <origam-icon
                                     :icon="lib.vueNative ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
                                     :color="lib.vueNative ? 'success' : 'error'"
-                                    :aria-label="lib.vueNative ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    :aria-label="lib.vueNative ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>
@@ -243,7 +243,7 @@ const comparisonItems = computed(() =>
                                 <origam-icon
                                     :icon="lib.designTokens ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
                                     :color="lib.designTokens ? 'success' : 'error'"
-                                    :aria-label="lib.designTokens ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    :aria-label="lib.designTokens ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>
@@ -251,7 +251,7 @@ const comparisonItems = computed(() =>
                                 <origam-icon
                                     :icon="lib.a11yTested ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
                                     :color="lib.a11yTested ? 'success' : 'error'"
-                                    :aria-label="lib.a11yTested ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    :aria-label="lib.a11yTested ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>
@@ -259,7 +259,7 @@ const comparisonItems = computed(() =>
                                 <origam-icon
                                     :icon="lib.cssFirst ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
                                     :color="lib.cssFirst ? 'success' : 'error'"
-                                    :aria-label="lib.cssFirst ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    :aria-label="lib.cssFirst ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>
@@ -267,7 +267,7 @@ const comparisonItems = computed(() =>
                                 <origam-icon
                                     :icon="lib.treeShakable ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
                                     :color="lib.treeShakable ? 'success' : 'error'"
-                                    :aria-label="lib.treeShakable ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    :aria-label="lib.treeShakable ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>
@@ -275,7 +275,7 @@ const comparisonItems = computed(() =>
                                 <origam-icon
                                     :icon="lib.charts ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
                                     :color="lib.charts ? 'success' : 'error'"
-                                    :aria-label="lib.charts ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    :aria-label="lib.charts ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>
@@ -284,7 +284,7 @@ const comparisonItems = computed(() =>
                 </origam-table>
 
                 <p class="why-comparison__disclaimer">
-                    {{ t('whyOrigam.comparison.disclaimer', 'Some assessments reflect our interpretation of publicly available documentation.') }}
+                    {{ t('why_origam.comparison.disclaimer', 'Some assessments reflect our interpretation of publicly available documentation.') }}
                 </p>
             </origam-container>
         </section>
@@ -297,7 +297,7 @@ const comparisonItems = computed(() =>
             <origam-container>
                 <header class="why-weaknesses__header">
                     <p class="why-section__eyebrow">
-                        {{ t('whyOrigam.weaknesses.eyebrow', "LET'S BE HONEST") }}
+                        {{ t('why_origam.weaknesses.eyebrow', "LET'S BE HONEST") }}
                     </p>
 
                     <origam-title
@@ -305,12 +305,12 @@ const comparisonItems = computed(() =>
                         tag="h2"
                         class="why-section__title"
                     >
-                        <span class="why-section__title-line">{{ t('whyOrigam.weaknesses.titleLine1', "Where we're") }}</span>
-                        <span class="why-section__title-line">{{ t('whyOrigam.weaknesses.titleLine2', 'still growing.') }}</span>
+                        <span class="why-section__title-line">{{ t('why_origam.weaknesses.title_line1', "Where we're") }}</span>
+                        <span class="why-section__title-line">{{ t('why_origam.weaknesses.title_line2', 'still growing.') }}</span>
                     </origam-title>
 
                     <p class="why-section__subtitle">
-                        {{ t('whyOrigam.weaknesses.subtitle', 'origam is young. An asset in terms of API freshness — a constraint in terms of maturity.') }}
+                        {{ t('why_origam.weaknesses.subtitle', 'origam is young. An asset in terms of API freshness — a constraint in terms of maturity.') }}
                     </p>
                 </header>
 
@@ -357,7 +357,7 @@ const comparisonItems = computed(() =>
             <origam-container>
                 <header class="why-usecases__header">
                     <p class="why-section__eyebrow">
-                        {{ t('whyOrigam.useCases.eyebrow', 'WHO IS ORIGAM FOR') }}
+                        {{ t('why_origam.use_cases.eyebrow', 'WHO IS ORIGAM FOR') }}
                     </p>
 
                     <origam-title
@@ -365,7 +365,7 @@ const comparisonItems = computed(() =>
                         tag="h2"
                         class="why-section__title why-section__title--single"
                     >
-                        {{ t('whyOrigam.useCases.title', 'Pick origam when…') }}
+                        {{ t('why_origam.use_cases.title', 'Pick origam when…') }}
                     </origam-title>
                 </header>
 
@@ -382,7 +382,7 @@ const comparisonItems = computed(() =>
                                 tag="h3"
                                 class="why-usecases__col-title why-usecases__col-title--yes"
                             >
-                                {{ t('whyOrigam.useCases.fitsTitle', 'origam is a great fit') }}
+                                {{ t('why_origam.use_cases.fits_title', 'origam is a great fit') }}
                             </origam-title>
 
                             <origam-grid
@@ -427,7 +427,7 @@ const comparisonItems = computed(() =>
                                 tag="h3"
                                 class="why-usecases__col-title why-usecases__col-title--no"
                             >
-                                {{ t('whyOrigam.useCases.noFitsTitle', 'origam might not be the right call') }}
+                                {{ t('why_origam.use_cases.no_fits_title', 'origam might not be the right call') }}
                             </origam-title>
 
                             <origam-grid
@@ -475,16 +475,16 @@ const comparisonItems = computed(() =>
                     tag="h2"
                     class="why-cta__title"
                 >
-                    {{ t('whyOrigam.cta.title', 'Ready to try it?') }}
+                    {{ t('why_origam.cta.title', 'Ready to try it?') }}
                 </origam-title>
 
                 <p class="why-cta__desc">
-                    {{ t('whyOrigam.cta.description', 'Install origam in 30 seconds and see how far the defaults take you.') }}
+                    {{ t('why_origam.cta.description', 'Install origam in 30 seconds and see how far the defaults take you.') }}
                 </p>
 
                 <nav
                     class="why-cta__actions"
-                    :aria-label="t('whyOrigam.cta.actionsLabel', 'Try origam')"
+                    :aria-label="t('why_origam.cta.actions_label', 'Try origam')"
                 >
                     <origam-btn
                         class="why-cta__btn why-cta__btn--primary"
@@ -493,7 +493,7 @@ const comparisonItems = computed(() =>
                         :href="CTA_START_HREF"
                         data-cy="why-cta-install"
                     >
-                        {{ t('whyOrigam.cta.ctaInstall', 'Get started') }}
+                        {{ t('why_origam.cta.cta_install', 'Get started') }}
                     </origam-btn>
 
                     <origam-btn
@@ -503,7 +503,7 @@ const comparisonItems = computed(() =>
                         href="/components"
                         data-cy="why-cta-components"
                     >
-                        {{ t('whyOrigam.cta.ctaComponents', 'Browse components') }}
+                        {{ t('why_origam.cta.cta_components', 'Browse components') }}
                     </origam-btn>
                 </nav>
             </div>

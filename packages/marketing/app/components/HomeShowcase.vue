@@ -48,8 +48,8 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                     tag="h2"
                     class="home-showcase__title"
                 >
-                    <span class="home-showcase__title-line">{{ t('home.showcase.titleLine1', '95 components.') }}</span>
-                    <span class="home-showcase__title-line">{{ t('home.showcase.titleLine2', 'One vibe.') }}</span>
+                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line1', '95 components.') }}</span>
+                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line2', 'One vibe.') }}</span>
                 </origam-title>
 
                 <origam-btn
@@ -59,7 +59,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                     append-icon="mdi-arrow-right"
                     data-cy="showcase-view-all"
                 >
-                    {{ t('home.showcase.viewAll', 'View all') }}
+                    {{ t('home.showcase.view_all', 'View all') }}
                 </origam-btn>
             </div>
         </header>
@@ -86,15 +86,15 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                     <figcaption class="home-showcase__widget-header">
                         <div class="home-showcase__widget-label">
                             <strong class="home-showcase__widget-title">
-                                {{ t('home.showcase.dataTable.title', 'Data Table') }}
+                                {{ t('home.showcase.data_table.title', 'Data Table') }}
                             </strong>
                             <span class="home-showcase__widget-caption">
-                                {{ t('home.showcase.dataTable.caption', 'Sortable · filterable · virtualized') }}
+                                {{ t('home.showcase.data_table.caption', 'Sortable · filterable · virtualized') }}
                             </span>
                         </div>
 
                         <origam-chip
-                            :text="t('home.showcase.dataTable.badge', 'Data')"
+                            :text="t('home.showcase.data_table.badge', 'Data')"
                             color="primary"
                             border
                             pill
@@ -111,14 +111,14 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                         <thead class="home-showcase__table-head">
                             <tr>
                                 <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.dataTable.colProject', 'PROJECT') }}
+                                    {{ t('home.showcase.data_table.col_project', 'PROJECT') }}
                                     <span class="home-showcase__th-sort" aria-hidden="true">↓</span>
                                 </th>
                                 <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.dataTable.colOwner', 'Owner') }}
+                                    {{ t('home.showcase.data_table.col_owner', 'Owner') }}
                                 </th>
                                 <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.dataTable.colStatus', 'Status') }}
+                                    {{ t('home.showcase.data_table.col_status', 'Status') }}
                                 </th>
                             </tr>
                         </thead>
@@ -153,7 +153,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                                             icon="mdi-dots-horizontal"
                                             size="x-small"
                                             class="home-showcase__row-menu"
-                                            :aria-label="t('home.showcase.dataTable.rowMenu', 'Row actions')"
+                                            :aria-label="t('home.showcase.data_table.row_menu', 'Row actions')"
                                             :data-cy="`showcase-row-menu-${rowIndex}`"
                                         />
                                     </span>
@@ -177,10 +177,10 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                 >
                     <figcaption class="home-showcase__widget-label">
                         <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.chartLine.title', 'Chart Line') }}
+                            {{ t('home.showcase.chart_line.title', 'Chart Line') }}
                         </strong>
                         <span class="home-showcase__widget-caption home-showcase__widget-caption--accent">
-                            {{ t('home.showcase.chartLine.caption', '+12.4% this month') }}
+                            {{ t('home.showcase.chart_line.caption', '+12.4% this month') }}
                         </span>
                     </figcaption>
 
@@ -193,7 +193,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                         :height="80"
                         class="home-showcase__sparkline"
                         data-cy="showcase-sparkline"
-                        :title="t('home.showcase.chartLine.caption', '+12.4% this month')"
+                        :title="t('home.showcase.chart_line.caption', '+12.4% this month')"
                     />
                 </origam-card>
             </origam-grid-item>
@@ -291,10 +291,10 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                 >
                     <figcaption class="home-showcase__widget-label">
                         <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.avatarGroup.title', 'Avatar Group') }}
+                            {{ t('home.showcase.avatar_group.title', 'Avatar Group') }}
                         </strong>
                         <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.avatarGroup.caption', '+24 members') }}
+                            {{ t('home.showcase.avatar_group.caption', '+24 members') }}
                         </span>
                     </figcaption>
 
@@ -304,7 +304,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                             :max="5"
                             class="home-showcase__avatar-group"
                             data-cy="showcase-avatar-group"
-                            :aria-label="t('home.showcase.avatarGroup.caption', '+24 members')"
+                            :aria-label="t('home.showcase.avatar_group.caption', '+24 members')"
                         />
                         <origam-chip
                             text="+24"

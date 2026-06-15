@@ -16,13 +16,13 @@ export const NAV_SECTIONS: INavSection[] = [
         titleKey: 'nav.sections.introduction',
         titleFallback: 'Introduction',
         items: [
-            { i18nKey: 'nav.whyOrigam', i18nFallback: 'Why origam?', href: '/why-origam' },
+            { i18nKey: 'nav.why_origam', i18nFallback: 'Why origam?', href: '/why-origam' },
             { i18nKey: 'nav.roadmap', i18nFallback: 'Roadmap', href: '/roadmap' },
             { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
         ]
     },
     {
-        titleKey: 'nav.sections.gettingStarted',
+        titleKey: 'nav.sections.getting_started',
         titleFallback: 'Getting started',
         items: [
             { i18nKey: 'nav.installation', i18nFallback: 'Installation', href: '/installation' },

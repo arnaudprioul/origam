@@ -103,8 +103,8 @@ const currentVersionLabel = computed(() =>
                     tag="h1"
                     class="changelog-hero__title"
                 >
-                    <span class="changelog-hero__title-line">{{ t('changelog.hero.titleLine1', 'Changelog.') }}</span>
-                    <span class="changelog-hero__title-line changelog-hero__title-line--accent">{{ t('changelog.hero.titleLine2', 'Every release.') }}</span>
+                    <span class="changelog-hero__title-line">{{ t('changelog.hero.title_line1', 'Changelog.') }}</span>
+                    <span class="changelog-hero__title-line changelog-hero__title-line--accent">{{ t('changelog.hero.title_line2', 'Every release.') }}</span>
                 </origam-title>
 
                 <p class="changelog-hero__subtitle">
@@ -113,7 +113,7 @@ const currentVersionLabel = computed(() =>
 
                 <nav
                     class="changelog-hero__actions"
-                    :aria-label="t('changelog.hero.actionsLabel', 'Changelog links')"
+                    :aria-label="t('changelog.hero.actions_label', 'Changelog links')"
                 >
                     <origam-btn
                         class="changelog-hero__cta"
@@ -124,7 +124,7 @@ const currentVersionLabel = computed(() =>
                         rel="noopener noreferrer"
                         data-cy="changelog-full-link"
                     >
-                        {{ t('changelog.hero.fullChangelog', 'Full changelog on GitHub') }}
+                        {{ t('changelog.hero.full_changelog', 'Full changelog on GitHub') }}
                     </origam-btn>
                 </nav>
             </origam-container>
@@ -146,8 +146,8 @@ const currentVersionLabel = computed(() =>
                         tag="h2"
                         class="changelog-section__title"
                     >
-                        <span class="changelog-section__title-line">{{ t('changelog.list.titleLine1', 'All versions.') }}</span>
-                        <span class="changelog-section__title-line changelog-section__title-line--muted">{{ t('changelog.list.titleLine2', 'Curated.') }}</span>
+                        <span class="changelog-section__title-line">{{ t('changelog.list.title_line1', 'All versions.') }}</span>
+                        <span class="changelog-section__title-line changelog-section__title-line--muted">{{ t('changelog.list.title_line2', 'Curated.') }}</span>
                     </origam-title>
 
                     <p class="changelog-section__subtitle">
@@ -243,7 +243,7 @@ const currentVersionLabel = computed(() =>
 
                         <nav
                             class="changelog-release__footer"
-                            :aria-label="t('changelog.aria.versionLinks', 'Version links')"
+                            :aria-label="t('changelog.aria.version_links', 'Version links')"
                         >
                             <origam-btn
                                 variant="text"
@@ -254,7 +254,7 @@ const currentVersionLabel = computed(() =>
                                 rel="noopener noreferrer"
                                 class="changelog-release__full-link"
                             >
-                                {{ t('changelog.panel.fullLink', 'Full changelog on GitHub') }}
+                                {{ t('changelog.panel.full_link', 'Full changelog on GitHub') }}
                             </origam-btn>
                         </nav>
                     </article>
@@ -282,7 +282,7 @@ const currentVersionLabel = computed(() =>
 
                 <nav
                     class="changelog-cta__actions"
-                    :aria-label="t('changelog.cta.actionsLabel', 'Follow origam')"
+                    :aria-label="t('changelog.cta.actions_label', 'Follow origam')"
                 >
                     <origam-btn
                         class="changelog-cta__btn changelog-cta__btn--primary"
@@ -293,7 +293,7 @@ const currentVersionLabel = computed(() =>
                         rel="noopener noreferrer"
                         data-cy="changelog-cta-github"
                     >
-                        {{ t('changelog.cta.ctaGithub', 'Star on GitHub') }}
+                        {{ t('changelog.cta.cta_github', 'Star on GitHub') }}
                     </origam-btn>
 
                     <origam-btn
@@ -305,7 +305,7 @@ const currentVersionLabel = computed(() =>
                         rel="noopener noreferrer"
                         data-cy="changelog-cta-fulllog"
                     >
-                        {{ t('changelog.cta.ctaFulllog', 'Read full CHANGELOG') }}
+                        {{ t('changelog.cta.cta_fulllog', 'Read full CHANGELOG') }}
                     </origam-btn>
                 </nav>
             </div>
