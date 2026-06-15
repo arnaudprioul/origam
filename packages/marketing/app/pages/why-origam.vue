@@ -4,15 +4,9 @@ import { useT } from '~/composables/useT'
 import {
     WHY_HERO_BADGE_VARS,
     WHY_STRENGTHS,
-    WHY_STRENGTH_ICON_TILE_VARS,
-    WHY_STRENGTH_ICON_TILE_RADIUS,
-    WHY_STRENGTH_ICON_VARS,
     WHY_WEAKNESSES,
-    WHY_WEAKNESS_ICON_TILE_VARS,
-    WHY_WEAKNESS_ICON_VARS,
     WHY_USE_CASES,
-    WHY_COMPARISONS,
-    WHY_COMPARISON_COLUMNS
+    WHY_COMPARISONS
 } from '~/consts/why-origam.const'
 import { CTA_START_HREF } from '~/consts/cta.const'
 
@@ -28,11 +22,23 @@ useSeoMeta({
 const strengths = computed(() => WHY_STRENGTHS)
 const weaknesses = computed(() => WHY_WEAKNESSES)
 const useCases = computed(() => WHY_USE_CASES)
-const comparisons = computed(() => WHY_COMPARISONS)
-const comparisonColumns = computed(() => WHY_COMPARISON_COLUMNS)
 
 const fits = computed(() => useCases.value.filter(u => u.fits))
 const noFits = computed(() => useCases.value.filter(u => !u.fits))
+
+const comparisonItems = computed(() =>
+    WHY_COMPARISONS.map(lib => ({
+        library: lib.nameKey,
+        libraryNote: lib.noteKey,
+        isOrigam: lib.nameKey === 'whyOrigam.comparison.origam',
+        vueNative: lib.vueNative,
+        designTokens: lib.designTokens,
+        a11yTested: lib.a11yTested,
+        cssFirst: lib.cssFist,
+        treeShakable: lib.treeShakable,
+        charts: lib.chartsIncluded
+    }))
+)
 </script>
 
 <template>
@@ -42,7 +48,7 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     >
         <section
             class="why-hero"
-            aria-labelledby="why-title-line1"
+            aria-labelledby="why-title"
         >
             <origam-container class="why-hero__inner">
                 <origam-chip
@@ -58,20 +64,14 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
                     {{ t('whyOrigam.hero.badge', 'Honest by design') }}
                 </origam-chip>
 
-                <h1
-                    id="why-title-line1"
+                <origam-title
+                    id="why-title"
+                    tag="h1"
                     class="why-hero__title"
-                    aria-labelledby="why-title-line1 why-title-line2"
                 >
-                    <span
-                        id="why-title-line1"
-                        class="why-hero__title-line"
-                    >{{ t('whyOrigam.hero.titleLine1', 'Why origam?') }}</span>
-                    <span
-                        id="why-title-line2"
-                        class="why-hero__title-line why-hero__title-line--accent"
-                    >{{ t('whyOrigam.hero.titleLine2', 'An honest answer.') }}</span>
-                </h1>
+                    <span class="why-hero__title-line">{{ t('whyOrigam.hero.titleLine1', 'Why origam?') }}</span>
+                    <span class="why-hero__title-line why-hero__title-line--accent">{{ t('whyOrigam.hero.titleLine2', 'An honest answer.') }}</span>
+                </origam-title>
 
                 <p class="why-hero__subtitle">
                     {{ t('whyOrigam.hero.subtitle', 'We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency.') }}
@@ -89,53 +89,52 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
                         {{ t('whyOrigam.strengths.eyebrow', 'WHAT WE DO WELL') }}
                     </p>
 
-                    <h2
+                    <origam-title
                         id="why-strengths-title"
+                        tag="h2"
                         class="why-section__title"
                     >
                         <span class="why-section__title-line">{{ t('whyOrigam.strengths.titleLine1', 'Built for Vue 3.') }}</span>
                         <span class="why-section__title-line why-section__title-line--muted">{{ t('whyOrigam.strengths.titleLine2', 'From the ground up.') }}</span>
-                    </h2>
+                    </origam-title>
 
                     <p class="why-section__subtitle">
                         {{ t('whyOrigam.strengths.subtitle', 'Every API, every composable, every prop — designed for Composition API and TypeScript from day one.') }}
                     </p>
                 </header>
 
-                <ul class="why-strengths__grid">
-                    <li
+                <origam-grid
+                    tag="ul"
+                    columns="repeat(auto-fit, minmax(260px, 1fr))"
+                    gap="1.5rem"
+                    class="why-strengths__grid"
+                >
+                    <origam-grid-item
                         v-for="strength in strengths"
                         :key="strength.titleKey"
+                        tag="li"
                         class="why-strengths__item"
                     >
-                        <article class="why-strengths__card">
-                            <origam-sheet
-                                aria-hidden="true"
-                                :rounded="WHY_STRENGTH_ICON_TILE_RADIUS"
-                                :style="WHY_STRENGTH_ICON_TILE_VARS"
-                                border
-                                border-color="var(--origam-color__action--primary---bg)"
-                                width="40"
-                                height="40"
-                                class="why-strengths__icon-tile"
-                            >
-                                <origam-icon
+                        <origam-card
+                            class="why-strengths__card"
+                            border
+                            rounded="lg"
+                            :title="t(strength.titleKey, strength.titleKey)"
+                            :text="t(strength.descriptionKey, strength.descriptionKey)"
+                        >
+                            <template #header.prepend>
+                                <origam-avatar
                                     :icon="strength.icon"
-                                    :style="WHY_STRENGTH_ICON_VARS"
-                                    class="why-strengths__icon"
+                                    color="primary"
+                                    rounded="lg"
+                                    size="40"
+                                    class="why-strengths__avatar"
+                                    aria-hidden="true"
                                 />
-                            </origam-sheet>
-
-                            <h3 class="why-strengths__card-title">
-                                {{ t(strength.titleKey, strength.titleKey) }}
-                            </h3>
-
-                            <p class="why-strengths__card-desc">
-                                {{ t(strength.descriptionKey, strength.descriptionKey) }}
-                            </p>
-                        </article>
-                    </li>
-                </ul>
+                            </template>
+                        </origam-card>
+                    </origam-grid-item>
+                </origam-grid>
             </origam-container>
         </section>
 
@@ -150,101 +149,139 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
                         {{ t('whyOrigam.comparison.eyebrow', 'HONEST COMPARISON') }}
                     </p>
 
-                    <h2
+                    <origam-title
                         id="why-comparison-title"
+                        tag="h2"
                         class="why-section__title why-section__title--single"
                     >
                         {{ t('whyOrigam.comparison.title', 'How does origam compare?') }}
-                    </h2>
+                    </origam-title>
 
                     <p class="why-section__subtitle">
                         {{ t('whyOrigam.comparison.subtitle', 'A feature-by-feature look at the Vue ecosystem main design systems.') }}
                     </p>
                 </header>
 
-                <div class="why-comparison__table-wrap">
-                    <table class="why-comparison__table">
-                        <caption class="sr-only">
-                            {{ t('whyOrigam.comparison.title', 'How does origam compare?') }}
-                        </caption>
-                        <thead>
-                            <tr>
-                                <th
-                                    scope="col"
-                                    class="why-comparison__th why-comparison__th--lib"
-                                >
-                                    {{ t('whyOrigam.comparison.colLibrary', 'Library') }}
-                                </th>
-                                <th
-                                    v-for="col in comparisonColumns"
-                                    :key="col"
-                                    scope="col"
-                                    class="why-comparison__th"
-                                >
-                                    {{ t(col, col) }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="lib in comparisons"
-                                :key="lib.nameKey"
-                                :class="['why-comparison__tr', { 'why-comparison__tr--origam': lib.nameKey === 'whyOrigam.comparison.origam' }]"
-                                :data-cy="`comparison-row-${lib.nameKey}`"
+                <origam-table
+                    class="why-comparison__table"
+                    border
+                    rounded="lg"
+                    data-cy="why-comparison-table"
+                    :caption="t('whyOrigam.comparison.title', 'How does origam compare?')"
+                >
+                    <thead>
+                        <tr>
+                            <th
+                                scope="col"
+                                class="why-comparison__th why-comparison__th--lib"
                             >
-                                <td class="why-comparison__td why-comparison__td--lib">
-                                    <span class="why-comparison__lib-name">{{ t(lib.nameKey, lib.nameKey) }}</span>
+                                {{ t('whyOrigam.comparison.colLibrary', 'Library') }}
+                            </th>
+                            <th
+                                scope="col"
+                                class="why-comparison__th"
+                            >
+                                {{ t('whyOrigam.comparison.colVueNative', 'Vue 3 native') }}
+                            </th>
+                            <th
+                                scope="col"
+                                class="why-comparison__th"
+                            >
+                                {{ t('whyOrigam.comparison.colDesignTokens', 'DTCG tokens') }}
+                            </th>
+                            <th
+                                scope="col"
+                                class="why-comparison__th"
+                            >
+                                {{ t('whyOrigam.comparison.colA11yTested', 'A11y tested') }}
+                            </th>
+                            <th
+                                scope="col"
+                                class="why-comparison__th"
+                            >
+                                {{ t('whyOrigam.comparison.colCssFirst', 'CSS-first') }}
+                            </th>
+                            <th
+                                scope="col"
+                                class="why-comparison__th"
+                            >
+                                {{ t('whyOrigam.comparison.colTreeShakable', 'Tree-shakable') }}
+                            </th>
+                            <th
+                                scope="col"
+                                class="why-comparison__th"
+                            >
+                                {{ t('whyOrigam.comparison.colCharts', 'Charts included') }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="lib in comparisonItems"
+                            :key="lib.library"
+                            :class="['why-comparison__tr', { 'why-comparison__tr--origam': lib.isOrigam }]"
+                            :data-cy="`comparison-row-${lib.library}`"
+                        >
+                            <td class="why-comparison__td why-comparison__td--lib">
+                                <div :class="['why-comparison__lib-cell', { 'why-comparison__lib-cell--origam': lib.isOrigam }]">
+                                    <span class="why-comparison__lib-name">{{ t(lib.library, lib.library) }}</span>
                                     <span
-                                        v-if="lib.noteKey"
+                                        v-if="lib.libraryNote"
                                         class="why-comparison__lib-note"
-                                    >{{ t(lib.noteKey, '') }}</span>
-                                </td>
-                                <td class="why-comparison__td">
-                                    <origam-icon
-                                        :icon="lib.vueNative ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                        :class="['why-comparison__icon', lib.vueNative ? 'why-comparison__icon--yes' : 'why-comparison__icon--no']"
-                                        :aria-label="lib.vueNative ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
-                                    />
-                                </td>
-                                <td class="why-comparison__td">
-                                    <origam-icon
-                                        :icon="lib.designTokens ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                        :class="['why-comparison__icon', lib.designTokens ? 'why-comparison__icon--yes' : 'why-comparison__icon--no']"
-                                        :aria-label="lib.designTokens ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
-                                    />
-                                </td>
-                                <td class="why-comparison__td">
-                                    <origam-icon
-                                        :icon="lib.a11yTested ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                        :class="['why-comparison__icon', lib.a11yTested ? 'why-comparison__icon--yes' : 'why-comparison__icon--no']"
-                                        :aria-label="lib.a11yTested ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
-                                    />
-                                </td>
-                                <td class="why-comparison__td">
-                                    <origam-icon
-                                        :icon="lib.cssFist ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                        :class="['why-comparison__icon', lib.cssFist ? 'why-comparison__icon--yes' : 'why-comparison__icon--no']"
-                                        :aria-label="lib.cssFist ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
-                                    />
-                                </td>
-                                <td class="why-comparison__td">
-                                    <origam-icon
-                                        :icon="lib.treeShakable ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                        :class="['why-comparison__icon', lib.treeShakable ? 'why-comparison__icon--yes' : 'why-comparison__icon--no']"
-                                        :aria-label="lib.treeShakable ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
-                                    />
-                                </td>
-                                <td class="why-comparison__td">
-                                    <origam-icon
-                                        :icon="lib.chartsIncluded ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                        :class="['why-comparison__icon', lib.chartsIncluded ? 'why-comparison__icon--yes' : 'why-comparison__icon--no']"
-                                        :aria-label="lib.chartsIncluded ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
-                                    />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                    >{{ t(lib.libraryNote, '') }}</span>
+                                </div>
+                            </td>
+                            <td class="why-comparison__td">
+                                <origam-icon
+                                    :icon="lib.vueNative ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.vueNative ? 'success' : 'error'"
+                                    :aria-label="lib.vueNative ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    class="why-comparison__cell-icon"
+                                />
+                            </td>
+                            <td class="why-comparison__td">
+                                <origam-icon
+                                    :icon="lib.designTokens ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.designTokens ? 'success' : 'error'"
+                                    :aria-label="lib.designTokens ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    class="why-comparison__cell-icon"
+                                />
+                            </td>
+                            <td class="why-comparison__td">
+                                <origam-icon
+                                    :icon="lib.a11yTested ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.a11yTested ? 'success' : 'error'"
+                                    :aria-label="lib.a11yTested ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    class="why-comparison__cell-icon"
+                                />
+                            </td>
+                            <td class="why-comparison__td">
+                                <origam-icon
+                                    :icon="lib.cssFirst ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.cssFirst ? 'success' : 'error'"
+                                    :aria-label="lib.cssFirst ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    class="why-comparison__cell-icon"
+                                />
+                            </td>
+                            <td class="why-comparison__td">
+                                <origam-icon
+                                    :icon="lib.treeShakable ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.treeShakable ? 'success' : 'error'"
+                                    :aria-label="lib.treeShakable ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    class="why-comparison__cell-icon"
+                                />
+                            </td>
+                            <td class="why-comparison__td">
+                                <origam-icon
+                                    :icon="lib.charts ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.charts ? 'success' : 'error'"
+                                    :aria-label="lib.charts ? t('whyOrigam.comparison.yes', 'Yes') : t('whyOrigam.comparison.no', 'No')"
+                                    class="why-comparison__cell-icon"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </origam-table>
 
                 <p class="why-comparison__disclaimer">
                     {{ t('whyOrigam.comparison.disclaimer', 'Some assessments reflect our interpretation of publicly available documentation.') }}
@@ -257,57 +294,59 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
             aria-labelledby="why-weaknesses-title"
             data-cy="why-weaknesses"
         >
-            <div class="why-weaknesses__inner">
+            <origam-container>
                 <header class="why-weaknesses__header">
-                    <p class="why-section__eyebrow why-section__eyebrow--light">
+                    <p class="why-section__eyebrow">
                         {{ t('whyOrigam.weaknesses.eyebrow', "LET'S BE HONEST") }}
                     </p>
 
-                    <h2
+                    <origam-title
                         id="why-weaknesses-title"
-                        class="why-section__title why-section__title--light"
+                        tag="h2"
+                        class="why-section__title"
                     >
                         <span class="why-section__title-line">{{ t('whyOrigam.weaknesses.titleLine1', "Where we're") }}</span>
                         <span class="why-section__title-line">{{ t('whyOrigam.weaknesses.titleLine2', 'still growing.') }}</span>
-                    </h2>
+                    </origam-title>
 
-                    <p class="why-section__subtitle why-section__subtitle--light">
+                    <p class="why-section__subtitle">
                         {{ t('whyOrigam.weaknesses.subtitle', 'origam is young. An asset in terms of API freshness — a constraint in terms of maturity.') }}
                     </p>
                 </header>
 
-                <ul class="why-weaknesses__list">
-                    <li
+                <origam-grid
+                    tag="ul"
+                    columns="1"
+                    gap="1.5rem"
+                    class="why-weaknesses__grid"
+                >
+                    <origam-grid-item
                         v-for="weakness in weaknesses"
                         :key="weakness.titleKey"
+                        tag="li"
                         class="why-weaknesses__item"
                     >
-                        <origam-sheet
-                            aria-hidden="true"
-                            rounded="var(--origam-radius---card, 10px)"
-                            :style="WHY_WEAKNESS_ICON_TILE_VARS"
-                            width="44"
-                            height="44"
-                            class="why-weaknesses__icon-tile"
+                        <origam-card
+                            class="why-weaknesses__card"
+                            border
+                            rounded="lg"
+                            :title="t(weakness.titleKey, weakness.titleKey)"
+                            :text="t(weakness.descriptionKey, weakness.descriptionKey)"
                         >
-                            <origam-icon
-                                :icon="weakness.icon"
-                                :style="WHY_WEAKNESS_ICON_VARS"
-                                class="why-weaknesses__icon"
-                            />
-                        </origam-sheet>
-
-                        <div class="why-weaknesses__text">
-                            <h3 class="why-weaknesses__item-title">
-                                {{ t(weakness.titleKey, weakness.titleKey) }}
-                            </h3>
-                            <p class="why-weaknesses__item-desc">
-                                {{ t(weakness.descriptionKey, weakness.descriptionKey) }}
-                            </p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+                            <template #header.prepend>
+                                <origam-avatar
+                                    :icon="weakness.icon"
+                                    color="warning"
+                                    rounded="lg"
+                                    size="44"
+                                    class="why-weaknesses__avatar"
+                                    aria-hidden="true"
+                                />
+                            </template>
+                        </origam-card>
+                    </origam-grid-item>
+                </origam-grid>
+            </origam-container>
         </section>
 
         <section
@@ -321,62 +360,106 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
                         {{ t('whyOrigam.useCases.eyebrow', 'WHO IS ORIGAM FOR') }}
                     </p>
 
-                    <h2
+                    <origam-title
                         id="why-usecases-title"
+                        tag="h2"
                         class="why-section__title why-section__title--single"
                     >
                         {{ t('whyOrigam.useCases.title', 'Pick origam when…') }}
-                    </h2>
+                    </origam-title>
                 </header>
 
                 <div class="why-usecases__columns">
-                    <div class="why-usecases__col why-usecases__col--yes">
-                        <h3 class="why-usecases__col-title why-usecases__col-title--yes">
-                            {{ t('whyOrigam.useCases.fitsTitle', 'origam is a great fit') }}
-                        </h3>
-
-                        <ul class="why-usecases__list">
-                            <li
-                                v-for="uc in fits"
-                                :key="uc.titleKey"
-                                class="why-usecases__item"
+                    <origam-card
+                        class="why-usecases__col why-usecases__col--yes"
+                        border
+                        border-color="var(--origam-color__feedback--success---border)"
+                        rounded="lg"
+                        flat
+                    >
+                        <template #default>
+                            <origam-title
+                                tag="h3"
+                                class="why-usecases__col-title why-usecases__col-title--yes"
                             >
-                                <origam-icon
-                                    icon="mdi-check-circle-outline"
-                                    class="why-usecases__item-icon why-usecases__item-icon--yes"
-                                    aria-hidden="true"
-                                />
-                                <div class="why-usecases__item-body">
-                                    <strong class="why-usecases__item-title">{{ t(uc.titleKey, uc.titleKey) }}</strong>
-                                    <p class="why-usecases__item-desc">{{ t(uc.descriptionKey, uc.descriptionKey) }}</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                                {{ t('whyOrigam.useCases.fitsTitle', 'origam is a great fit') }}
+                            </origam-title>
 
-                    <div class="why-usecases__col why-usecases__col--no">
-                        <h3 class="why-usecases__col-title why-usecases__col-title--no">
-                            {{ t('whyOrigam.useCases.noFitsTitle', 'origam might not be the right call') }}
-                        </h3>
-
-                        <ul class="why-usecases__list">
-                            <li
-                                v-for="uc in noFits"
-                                :key="uc.titleKey"
-                                class="why-usecases__item"
+                            <origam-grid
+                                tag="ul"
+                                columns="1"
+                                gap="1rem"
+                                class="why-usecases__list"
                             >
-                                <origam-icon
-                                    icon="mdi-close-circle-outline"
-                                    class="why-usecases__item-icon why-usecases__item-icon--no"
-                                    aria-hidden="true"
-                                />
-                                <div class="why-usecases__item-body">
-                                    <strong class="why-usecases__item-title">{{ t(uc.titleKey, uc.titleKey) }}</strong>
-                                    <p class="why-usecases__item-desc">{{ t(uc.descriptionKey, uc.descriptionKey) }}</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                                <origam-grid-item
+                                    v-for="uc in fits"
+                                    :key="uc.titleKey"
+                                    tag="li"
+                                >
+                                    <origam-card
+                                        class="why-usecases__item"
+                                        flat
+                                        :title="t(uc.titleKey, uc.titleKey)"
+                                        :text="t(uc.descriptionKey, uc.descriptionKey)"
+                                    >
+                                        <template #header.prepend>
+                                            <origam-icon
+                                                icon="mdi-check-circle-outline"
+                                                color="success"
+                                                class="why-usecases__item-icon"
+                                                aria-hidden="true"
+                                            />
+                                        </template>
+                                    </origam-card>
+                                </origam-grid-item>
+                            </origam-grid>
+                        </template>
+                    </origam-card>
+
+                    <origam-card
+                        class="why-usecases__col why-usecases__col--no"
+                        border
+                        rounded="lg"
+                        flat
+                    >
+                        <template #default>
+                            <origam-title
+                                tag="h3"
+                                class="why-usecases__col-title why-usecases__col-title--no"
+                            >
+                                {{ t('whyOrigam.useCases.noFitsTitle', 'origam might not be the right call') }}
+                            </origam-title>
+
+                            <origam-grid
+                                tag="ul"
+                                columns="1"
+                                gap="1rem"
+                                class="why-usecases__list"
+                            >
+                                <origam-grid-item
+                                    v-for="uc in noFits"
+                                    :key="uc.titleKey"
+                                    tag="li"
+                                >
+                                    <origam-card
+                                        class="why-usecases__item"
+                                        flat
+                                        :title="t(uc.titleKey, uc.titleKey)"
+                                        :text="t(uc.descriptionKey, uc.descriptionKey)"
+                                    >
+                                        <template #header.prepend>
+                                            <origam-icon
+                                                icon="mdi-close-circle-outline"
+                                                color="secondary"
+                                                class="why-usecases__item-icon"
+                                                aria-hidden="true"
+                                            />
+                                        </template>
+                                    </origam-card>
+                                </origam-grid-item>
+                            </origam-grid>
+                        </template>
+                    </origam-card>
                 </div>
             </origam-container>
         </section>
@@ -387,12 +470,13 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
             data-cy="why-cta"
         >
             <div class="why-cta__inner">
-                <h2
+                <origam-title
                     id="why-cta-title"
+                    tag="h2"
                     class="why-cta__title"
                 >
                     {{ t('whyOrigam.cta.title', 'Ready to try it?') }}
-                </h2>
+                </origam-title>
 
                 <p class="why-cta__desc">
                     {{ t('whyOrigam.cta.description', 'Install origam in 30 seconds and see how far the defaults take you.') }}
@@ -433,18 +517,6 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     flex-direction: column;
 }
 
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
 .why-section__eyebrow {
     margin: 0 0 var(--origam-space---3, 0.75rem);
     font-size: var(--origam-font-size---xs, 0.75rem);
@@ -452,10 +524,6 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-}
-
-.why-section__eyebrow--light {
-    color: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.4));
 }
 
 .why-section__title {
@@ -473,10 +541,6 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     display: block;
 }
 
-.why-section__title--light {
-    color: var(--origam-color__text---inverse, #ffffff);
-}
-
 .why-section__title-line--muted {
     color: var(--origam-color__text---secondary, #525252);
 }
@@ -487,10 +551,6 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     font-size: var(--origam-font-size---lg, 1.125rem);
     line-height: 1.65;
     color: var(--origam-color__text---secondary, #525252);
-}
-
-.why-section__subtitle--light {
-    color: var(--origam-color__text---inverseMuted, rgba(255, 255, 255, 0.72));
 }
 
 .why-hero {
@@ -578,132 +638,60 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: var(--origam-space---6, 1.5rem);
 }
 
 .why-strengths__item {
     list-style: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .why-strengths__card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---3, 0.75rem);
-    padding: var(--origam-space---6, 1.5rem);
-    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-    border-radius: var(--origam-radius---lg, 14px);
-    background: var(--origam-color__surface---raised, #fafafa);
     block-size: 100%;
 }
 
-.why-strengths__icon-tile {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.why-strengths__icon {
-    font-size: var(--origam-font-size---lg, 1.125rem);
-}
-
-.why-strengths__card-title {
-    margin: 0;
-    font-size: 1.0625rem;
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---primary, #0a0a0a);
-}
-
-.why-strengths__card-desc {
-    margin: 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    line-height: 1.6;
-    color: var(--origam-color__text---secondary, #525252);
+.why-strengths__avatar {
+    margin-inline-end: var(--origam-space---3, 0.75rem);
 }
 
 .why-comparison-wrap {
     padding-block: var(--origam-space---24, 6rem);
-    background: var(--origam-color__surface---subtle, #f5f5f5);
+    background: var(--origam-color__surface---sunken, #f5f5f5);
 }
 
 .why-comparison__header {
     margin-block-end: var(--origam-space---10, 2.5rem);
 }
 
-.why-comparison__table-wrap {
-    overflow-x: auto;
-    border-radius: var(--origam-radius---lg, 14px);
-    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-}
-
 .why-comparison__table {
     inline-size: 100%;
-    border-collapse: collapse;
-    font-size: var(--origam-font-size---sm, 0.875rem);
 }
 
-.why-comparison__th {
-    padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-    text-align: center;
-    font-size: var(--origam-font-size---xs, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---secondary, #525252);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: var(--origam-color__surface---raised, #fafafa);
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+.why-comparison__lib-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-space---1, 0.25rem);
 }
 
-.why-comparison__th--lib {
-    text-align: start;
-    min-inline-size: 160px;
-}
-
-.why-comparison__tr {
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.06));
-}
-
-.why-comparison__tr--origam {
-    background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.06));
-}
-
-.why-comparison__tr--origam .why-comparison__lib-name {
+.why-comparison__lib-cell--origam .why-comparison__lib-name {
     font-weight: var(--origam-font__weight---bold, 700);
-    color: var(--origam-color__action--primary---fg, #5b21b6);
-}
-
-.why-comparison__td {
-    padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-    text-align: center;
-    color: var(--origam-color__text---primary, #0a0a0a);
-    vertical-align: middle;
-}
-
-.why-comparison__td--lib {
-    text-align: start;
+    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
 }
 
 .why-comparison__lib-name {
     display: block;
     font-weight: var(--origam-font__weight---medium, 500);
+    font-size: var(--origam-font-size---sm, 0.875rem);
 }
 
 .why-comparison__lib-note {
     display: block;
     font-size: var(--origam-font-size---xs, 0.75rem);
     color: var(--origam-color__text---tertiary, #737373);
-    margin-block-start: var(--origam-space---1, 0.25rem);
     max-inline-size: 200px;
 }
 
-.why-comparison__icon--yes {
-    --origam-icon---color: var(--origam-color__feedback--success---fg, #16a34a);
-    font-size: var(--origam-font-size---xl, 1.25rem);
-}
-
-.why-comparison__icon--no {
-    --origam-icon---color: var(--origam-color__text---tertiary, #d4d4d4);
+.why-comparison__cell-icon {
     font-size: var(--origam-font-size---xl, 1.25rem);
 }
 
@@ -715,64 +703,29 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
 }
 
 .why-weaknesses-wrap {
-    background: var(--origam-color__surface---inverse, #0a0a0a);
+    background: var(--origam-color__surface---default);
     padding-block: var(--origam-space---24, 6rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-}
-
-.why-weaknesses__inner {
-    max-inline-size: 64rem;
-    margin-inline: auto;
+    border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 
 .why-weaknesses__header {
     margin-block-end: var(--origam-space---12, 3rem);
 }
 
-.why-weaknesses__list {
+.why-weaknesses__grid {
+    max-inline-size: 56rem;
     list-style: none;
-    margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---8, 2rem);
+    margin: 0;
 }
 
 .why-weaknesses__item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--origam-space---5, 1.25rem);
+    list-style: none;
 }
 
-.why-weaknesses__icon-tile {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.why-weaknesses__avatar {
+    margin-inline-end: var(--origam-space---5, 1.25rem);
     flex-shrink: 0;
-}
-
-.why-weaknesses__icon {
-    font-size: var(--origam-font-size---xl, 1.25rem);
-}
-
-.why-weaknesses__text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---2, 0.5rem);
-}
-
-.why-weaknesses__item-title {
-    margin: 0;
-    font-size: 1.0625rem;
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---inverse, #ffffff);
-}
-
-.why-weaknesses__item-desc {
-    margin: 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    line-height: 1.65;
-    color: var(--origam-color__text---inverseMuted, rgba(255, 255, 255, 0.65));
 }
 
 .why-usecases {
@@ -791,26 +744,17 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
 
 .why-usecases__col {
     padding: var(--origam-space---6, 1.5rem);
-    border-radius: var(--origam-radius---lg, 14px);
-    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-}
-
-.why-usecases__col--yes {
-    background: var(--origam-color__feedback--success---bgSubtle, rgba(22, 163, 74, 0.05));
-}
-
-.why-usecases__col--no {
-    background: var(--origam-color__surface---raised, #fafafa);
 }
 
 .why-usecases__col-title {
-    margin: 0 0 var(--origam-space---5, 1.25rem);
-    font-size: var(--origam-font-size---base, 1rem);
+    display: block;
+    margin-block-end: var(--origam-space---5, 1.25rem);
+    font-size: var(--origam-font-size---base, 1rem) !important;
     font-weight: var(--origam-font__weight---semibold, 600);
 }
 
 .why-usecases__col-title--yes {
-    color: var(--origam-color__feedback--success---fg, #16a34a);
+    color: var(--origam-color__feedback--success---fgSubtle, #15803d);
 }
 
 .why-usecases__col-title--no {
@@ -819,51 +763,12 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
 
 .why-usecases__list {
     list-style: none;
-    margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---5, 1.25rem);
-}
-
-.why-usecases__item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--origam-space---3, 0.75rem);
+    margin: 0;
 }
 
 .why-usecases__item-icon {
-    flex-shrink: 0;
     font-size: var(--origam-font-size---lg, 1.125rem);
-    margin-block-start: 0.1em;
-}
-
-.why-usecases__item-icon--yes {
-    --origam-icon---color: var(--origam-color__feedback--success---fg, #16a34a);
-}
-
-.why-usecases__item-icon--no {
-    --origam-icon---color: var(--origam-color__text---tertiary, #a3a3a3);
-}
-
-.why-usecases__item-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---1, 0.25rem);
-}
-
-.why-usecases__item-title {
-    display: block;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---primary, #0a0a0a);
-}
-
-.why-usecases__item-desc {
-    margin: 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    line-height: 1.6;
-    color: var(--origam-color__text---secondary, #525252);
 }
 
 .why-cta {
@@ -898,7 +803,7 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
 
 .why-cta__title {
     margin: 0;
-    font-size: var(--origam-font-size---cta, 4rem);
+    font-size: var(--origam-font-size---cta, 4rem) !important;
     font-weight: var(--origam-font-weight---extrabold, 800);
     letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
     line-height: var(--origam-line-height---hero, 0.95);
@@ -958,7 +863,7 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
     }
 
     .why-cta__title {
-        font-size: clamp(2rem, 8vw, 4rem);
+        font-size: clamp(2rem, 8vw, 4rem) !important;
     }
 
     .why-usecases__columns {
