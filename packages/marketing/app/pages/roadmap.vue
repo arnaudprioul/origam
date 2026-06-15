@@ -712,6 +712,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-timeline {
     max-inline-size: 54rem;
+    --origam-timeline---background-color: transparent;
     --origam-timeline---dot-size: 40px;
     --origam-timeline---track-width: 48px;
 }
