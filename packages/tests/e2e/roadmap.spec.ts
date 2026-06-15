@@ -98,12 +98,12 @@ test.describe('roadmap — DS-first', () => {
         }
     })
 
-    test('la grille Wave 4 contient des OrigamCard (.origam-card)', async ({ page }) => {
+    test('la grille Wave 4 (livrée) contient 15 OrigamCard (.origam-card)', async ({ page }) => {
         const grid = page.locator('[data-cy="roadmap-wave4-grid"]')
         await expect(grid).toBeVisible()
         const cards = page.locator('.roadmap-wave4__card')
         const count = await cards.count()
-        expect(count).toBe(13)
+        expect(count).toBe(15)
         for (let i = 0; i < count; i++) {
             await expect(cards.nth(i)).toHaveClass(/origam-card/)
         }
@@ -113,7 +113,7 @@ test.describe('roadmap — DS-first', () => {
         await page.locator('[data-cy="roadmap-wave4"]').scrollIntoViewIfNeeded()
         const avatars = page.locator('.roadmap-wave4__avatar')
         const count = await avatars.count()
-        expect(count).toBe(13)
+        expect(count).toBe(15)
         for (let i = 0; i < count; i++) {
             await expect(avatars.nth(i)).toHaveClass(/origam-avatar/)
         }

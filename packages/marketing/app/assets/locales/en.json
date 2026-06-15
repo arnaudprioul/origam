@@ -208,14 +208,14 @@
       "description": "Where origam is today, what has been delivered, and what is coming next. Public, honest, updated with each release."
     },
     "hero": {
-      "badge": "v2.2.1 — first public release",
+      "badge": "v2.6.0 — Wave 4 shipped",
       "titleLine1": "Roadmap.",
       "titleLine2": "Honest & public.",
       "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon."
     },
     "status": {
       "eyebrow": "WHERE WE STAND",
-      "titleLine1": "Post-2.2.1",
+      "titleLine1": "Post-2.6.0",
       "titleLine2": "Status.",
       "subtitle": "An honest snapshot of what works, what is in progress, and what is still missing.",
       "npmPublished": "First public release on npm — tarball 869 kB, 0 critical vulnerabilities",
@@ -225,13 +225,14 @@
       "docOnline": "No online documentation yet. No deployed stories.",
       "ci": "CI pipeline incomplete — lint / test / build / publish not yet automated",
       "playwrightCoverage": "Partial Playwright coverage (~100 specs for 161 stories)",
-      "bundleMonitoring": "No bundle-size monitoring yet. No systematic a11y audit."
+      "bundleMonitoring": "No bundle-size monitoring yet. No systematic a11y audit.",
+      "wave4Shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)"
     },
     "delivered": {
       "eyebrow": "ALREADY SHIPPED",
-      "titleLine1": "Three waves.",
+      "titleLine1": "Four waves.",
       "titleLine2": "Delivered.",
-      "subtitle": "Every item below is merged on the develop branch and will ship in the next minor release.",
+      "subtitle": "Every item below is shipped and available on npm since v2.6.0.",
       "badgeDone": "Delivered"
     },
     "waves": {
@@ -254,6 +255,24 @@
         "nuxtModule": "Official Nuxt module (sub-export origam/nuxt) — auto-import, SSR-safe theme plugin",
         "ssrSafety": "SSR safety audit + useCssSupportClient + OrigamClientOnly",
         "monorepo": "pnpm monorepo — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)"
+      },
+      "wave4": {
+        "title": "Wave 4 — New components & features",
+        "grid": "OrigamGrid — declarative CSS Grid with columns, rows, areas, gap, auto-flow",
+        "masonry": "OrigamMasonry — CSS-first via grid-template-rows: masonry, JS fallback",
+        "blockquote": "OrigamBlockquote — typography: quote + author + source + variants",
+        "emptyState": "OrigamEmptyState — 5 presets: no-data, no-results, error, offline, locked",
+        "clipboard": "OrigamClipboard — copy wrapper + Copied! feedback, no dependencies",
+        "inlineEdit": "OrigamInlineEdit — edit-in-place pattern, v-model + validators, ARIA live",
+        "numberFormat": "OrigamNumberFormat — i18n formatting via Intl.NumberFormat, display only",
+        "qrCode": "OrigamQRCode — SVG output, ISO/IEC 18004, error correction level, logo overlay",
+        "watermark": "OrigamWatermark — diagonal repeat overlay, SVG text or canvas data-URI",
+        "video": "OrigamVideo — custom player: play/pause, scrubber, PIP, captions, HLS optional",
+        "sound": "OrigamSound — audio player + waveform via Web Audio API, Media Session API",
+        "calendar": "OrigamCalendar — month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house",
+        "chart": "OrigamChart — SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js",
+        "gradient": "Gradient support — color/bgColor/textColor props accept gradient values",
+        "textMask": "OrigamTextMask — text reveal via background-clip: text, gradient + image backgrounds"
       }
     },
     "phases": {
@@ -291,14 +310,6 @@
           "title": "v3.0.0 — Strategy B",
           "description": "Remove *Styles returns when the value is tokenised. Utility classes become the sole API. ~2× less reactive computation."
         },
-        "nuxtModule": {
-          "title": "Official Nuxt module (enhanced)",
-          "description": "{'@'}origam/nuxt — auto-import, SSR-safe theme plugin (cookie + prefers-color-scheme), auto token injection, themes option."
-        },
-        "ssrCssSupport": {
-          "title": "SSR safety for useCssSupport",
-          "description": "During SSR all feature flags are false. Automatic ClientOnly wrapper or useCssSupportClient() with suspense."
-        },
         "motionTokens": {
           "title": "Motion & a11y media tokens",
           "description": "tokens/semantic/motion.json — durations, easings. Auto 0ms if prefers-reduced-motion. High-contrast ramp."
@@ -306,6 +317,14 @@
         "vrt": {
           "title": "Visual regression testing",
           "description": "Playwright toHaveScreenshot() per Variant, or Chromatic / Lost-Pixel. Baseline on main, diff blocks PR."
+        },
+        "accentColor": {
+          "title": "accentColor rename (breaking v3)",
+          "description": "bgColor → accentColor prop rename, aligned with the CSS accent-color standard. Full deprecation path included."
+        },
+        "turborepo": {
+          "title": "Turborepo build cache",
+          "description": "Replace raw pnpm -r scripts with Turborepo pipelines. Remote cache drastically cuts CI rebuild time."
         }
       },
       "longTerm": {
@@ -325,25 +344,6 @@
         }
       }
     },
-    "wave4": {
-      "eyebrow": "WAVE 4",
-      "titleLine1": "13 components",
-      "titleLine2": "on the horizon.",
-      "subtitle": "These are on the ideas list. Order is indicative — final prioritisation will depend on community feedback.",
-      "grid": { "name": "OrigamGrid", "note": "Declarative CSS Grid with columns, rows, areas, gap, auto-flow", "effort": "S" },
-      "masonry": { "name": "OrigamMasonry", "note": "CSS-first via grid-template-rows: masonry, JS fallback", "effort": "M" },
-      "blockquote": { "name": "OrigamBlockquote", "note": "Typography: quote + author + source + variants", "effort": "S" },
-      "emptyState": { "name": "OrigamEmptyState", "note": "5 presets: no-data, no-results, error, offline, locked", "effort": "S" },
-      "clipboard": { "name": "OrigamClipboard", "note": "Copy wrapper + Copied! feedback, no dependencies", "effort": "S" },
-      "inlineEdit": { "name": "OrigamInlineEdit", "note": "Edit-in-place pattern, v-model + validators, ARIA live", "effort": "M" },
-      "numberFormat": { "name": "OrigamNumberFormat", "note": "i18n formatting via Intl.NumberFormat, display only", "effort": "S" },
-      "qrCode": { "name": "OrigamQRCode", "note": "SVG output, ISO/IEC 18004, error correction level, logo overlay", "effort": "M" },
-      "watermark": { "name": "OrigamWatermark", "note": "Diagonal repeat overlay, SVG text or canvas data-URI", "effort": "S" },
-      "video": { "name": "OrigamVideo", "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional", "effort": "M" },
-      "sound": { "name": "OrigamSound", "note": "Audio player + waveform via Web Audio API, Media Session API", "effort": "M" },
-      "calendar": { "name": "OrigamCalendar", "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house", "effort": "XL" },
-      "chart": { "name": "OrigamChart", "note": "SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js", "effort": "XL" }
-    },
     "effort": {
       "small": "S",
       "medium": "M",
@@ -356,6 +356,73 @@
       "ctaGithub": "Star on GitHub",
       "ctaChangelog": "Read CHANGELOG",
       "actionsLabel": "Follow origam"
+    },
+    "wave4Grid": {
+      "eyebrow": "WAVE 4 — SHIPPED",
+      "titleLine1": "15 components & features",
+      "titleLine2": "already shipped.",
+      "subtitle": "Everything in Wave 4 is live on npm. These are the components and features available right now in origam.",
+      "badgeShipped": "Shipped",
+      "grid": {
+        "name": "OrigamGrid",
+        "note": "Declarative CSS Grid with columns, rows, areas, gap, auto-flow"
+      },
+      "masonry": {
+        "name": "OrigamMasonry",
+        "note": "CSS-first via grid-template-rows: masonry, JS fallback"
+      },
+      "blockquote": {
+        "name": "OrigamBlockquote",
+        "note": "Typography: quote + author + source + variants"
+      },
+      "emptyState": {
+        "name": "OrigamEmptyState",
+        "note": "5 presets: no-data, no-results, error, offline, locked"
+      },
+      "clipboard": {
+        "name": "OrigamClipboard",
+        "note": "Copy wrapper + Copied! feedback, no dependencies"
+      },
+      "inlineEdit": {
+        "name": "OrigamInlineEdit",
+        "note": "Edit-in-place pattern, v-model + validators, ARIA live"
+      },
+      "numberFormat": {
+        "name": "OrigamNumberFormat",
+        "note": "i18n formatting via Intl.NumberFormat, display only"
+      },
+      "qrCode": {
+        "name": "OrigamQRCode",
+        "note": "SVG output, ISO/IEC 18004, error correction level, logo overlay"
+      },
+      "watermark": {
+        "name": "OrigamWatermark",
+        "note": "Diagonal repeat overlay, SVG text or canvas data-URI"
+      },
+      "video": {
+        "name": "OrigamVideo",
+        "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional"
+      },
+      "sound": {
+        "name": "OrigamSound",
+        "note": "Audio player + waveform via Web Audio API, Media Session API"
+      },
+      "calendar": {
+        "name": "OrigamCalendar",
+        "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house"
+      },
+      "chart": {
+        "name": "OrigamChart",
+        "note": "SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js"
+      },
+      "gradient": {
+        "name": "Gradient support",
+        "note": "color/bgColor/textColor props now accept gradient values"
+      },
+      "textMask": {
+        "name": "OrigamTextMask",
+        "note": "Text reveal via background-clip: text, gradient + image backgrounds"
+      }
     }
   },
   "home": {

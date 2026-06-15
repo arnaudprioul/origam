@@ -30,9 +30,8 @@ export interface IRoadmapPhase {
     items: IRoadmapPhaseItem[]
 }
 
-export interface IRoadmapFutureComponent {
+export interface IRoadmapWave4Component {
     nameKey: string
     noteKey: string
-    effortKey: string
     icon: string
 }

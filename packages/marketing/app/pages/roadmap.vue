@@ -6,7 +6,7 @@ import {
     ROADMAP_STATUS_ITEMS,
     ROADMAP_WAVES,
     ROADMAP_PHASES,
-    ROADMAP_FUTURE_COMPONENTS
+    ROADMAP_WAVE4_COMPONENTS
 } from '~/consts/roadmap.const'
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
@@ -22,7 +22,7 @@ useSeoMeta({
 const statusItems = computed(() => ROADMAP_STATUS_ITEMS)
 const waves = computed(() => ROADMAP_WAVES)
 const phases = computed(() => ROADMAP_PHASES)
-const futureComponents = computed(() => ROADMAP_FUTURE_COMPONENTS)
+const wave4Components = computed(() => ROADMAP_WAVE4_COMPONENTS)
 
 const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main/CHANGELOG.md`)
@@ -48,7 +48,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     pill
                     data-cy="roadmap-hero-badge"
                 >
-                    {{ t('roadmap.hero.badge', 'v2.2.1 — first public release') }}
+                    {{ t('roadmap.hero.badge', 'v2.6.0 — Wave 4 shipped') }}
                 </origam-chip>
 
                 <origam-title
@@ -82,7 +82,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.status.titleLine1', 'Post-2.2.1') }}</span>
+                        <span class="roadmap-section__title-line">{{ t('roadmap.status.titleLine1', 'Post-2.6.0') }}</span>
                         <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.status.titleLine2', 'Status.') }}</span>
                     </origam-title>
 
@@ -146,12 +146,12 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.delivered.titleLine1', 'Three waves.') }}</span>
+                        <span class="roadmap-section__title-line">{{ t('roadmap.delivered.titleLine1', 'Four waves.') }}</span>
                         <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.delivered.titleLine2', 'Delivered.') }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
-                        {{ t('roadmap.delivered.subtitle', 'Every item below is merged on the develop branch and will ship in the next minor release.') }}
+                        {{ t('roadmap.delivered.subtitle', 'Every item below is shipped and available on npm since v2.6.0.') }}
                     </p>
                 </header>
 
@@ -356,7 +356,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
             <origam-container>
                 <header class="roadmap-wave4__header">
                     <p class="roadmap-section__eyebrow">
-                        {{ t('roadmap.wave4.eyebrow', 'WAVE 4') }}
+                        {{ t('roadmap.wave4Grid.eyebrow', 'WAVE 4 — SHIPPED') }}
                     </p>
 
                     <origam-title
@@ -364,12 +364,12 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.wave4.titleLine1', '13 components') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4.titleLine2', 'on the horizon.') }}</span>
+                        <span class="roadmap-section__title-line">{{ t('roadmap.wave4Grid.titleLine1', '15 components & features') }}</span>
+                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4Grid.titleLine2', 'already shipped.') }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
-                        {{ t('roadmap.wave4.subtitle', 'These are on the ideas list. Order is indicative — final prioritisation will depend on community feedback.') }}
+                        {{ t('roadmap.wave4Grid.subtitle', 'Everything in Wave 4 is live on npm. These are the components and features available right now in origam.') }}
                     </p>
                 </header>
 
@@ -381,7 +381,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     data-cy="roadmap-wave4-grid"
                 >
                     <origam-grid-item
-                        v-for="cmp in futureComponents"
+                        v-for="cmp in wave4Components"
                         :key="cmp.nameKey"
                         tag="li"
                         class="roadmap-wave4__item"
@@ -397,7 +397,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                     <div class="roadmap-wave4__card-header">
                                         <origam-avatar
                                             :icon="cmp.icon"
-                                            color="secondary"
+                                            color="success"
                                             rounded="lg"
                                             size="36"
                                             class="roadmap-wave4__avatar"
@@ -412,12 +412,13 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                         </origam-title>
 
                                         <origam-chip
+                                            color="success"
                                             size="x-small"
                                             pill
-                                            class="roadmap-wave4__effort"
-                                            aria-label="Effort"
+                                            class="roadmap-wave4__shipped-badge"
+                                            aria-label="Shipped"
                                         >
-                                            {{ t(cmp.effortKey, cmp.effortKey) }}
+                                            {{ t('roadmap.wave4Grid.badgeShipped', 'Shipped') }}
                                         </origam-chip>
                                     </div>
 
@@ -843,9 +844,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
     color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
 }
 
-.roadmap-wave4__effort {
+.roadmap-wave4__shipped-badge {
     flex-shrink: 0;
-    font-family: var(--origam-font-family---mono, monospace);
 }
 
 .roadmap-wave4__note {

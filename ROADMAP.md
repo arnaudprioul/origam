@@ -1,6 +1,6 @@
 # ROADMAP — origam Design System
 
-> Référentiel : `origam@2.2.1` (npm, premier release public).
+> Référentiel : `origam@2.6.0` (dernière version publiée, Wave 4 incluse).
 > Stack : Vue 3.5 + TypeScript, distribution ESM via `unbuild`,
 > tokens DTCG (Tokens Studio + Style Dictionary v4),
 > 78 familles de composants, 13+ composables transversaux.
@@ -13,7 +13,7 @@
 
 ---
 
-## Où on en est (post-2.2.1)
+## Où on en est (post-2.6.0)
 
 - ✅ Sortie publique sur npm, tarball 869 kB, 0 vuln critique.
 - ✅ Pre-delivery automatisé via `prepublishOnly` (tokens + build + 220 TU).
@@ -291,7 +291,7 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 |---|---|---|
 | **Turborepo** | M | Cache local + remote (Vercel ou self-hosted) sur `build`, `test`, `lint`. Critique dès que le pipeline CI dépasse 8 min. À ajouter après 1-2 semaines de stabilisation post-monorepo (cf. MONOREPO_PROPOSAL §5.3). |
 
-### Wave 4 — Nouveaux composants (à venir, à priorier)
+### ✅ Wave 4 — Nouveaux composants (livrée en v2.6.0)
 
 Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité business.
 
@@ -311,7 +311,7 @@ Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité busine
 | 12 | **OrigamCalendar** | XL | Calendar complet : vues mois/semaine/jour/agenda, navigation, events (start/end/color/category), range select, drag-to-create, recurring events (RRULE). 100% maison (pas de FullCalendar). Composable `useCalendar` pour la logique. Tokens dédiés pour grille + cellules + events. |
 | 13 | **OrigamChart** | XL | Charts custom inspirés Highcharts mais plus simples. SVG natif. Types : line / area / bar / column / pie / donut / scatter / radar. Animation entrée. Tooltip natif (réutilise `OrigamTooltip`). Légende (réutilise `OrigamChip`). Responsive via `viewBox`. Pas de dep externe (pas de d3, pas de chart.js). |
 
-### Enrichissements transversaux color/bgColor (Wave 4)
+### ✅ Enrichissements transversaux color/bgColor (Wave 4 — livrés en v2.6.0)
 
 | # | Item | Effort | Note |
 |---|---|---|---|
