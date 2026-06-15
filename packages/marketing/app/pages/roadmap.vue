@@ -259,16 +259,21 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     <origam-timeline-item
                         v-for="(phase, index) in phases"
                         :key="phase.id"
-                        :icon="phase.icon"
                         :intent="phase.intent"
                         :is-last="index === phases.length - 1"
                         class="roadmap-timeline__phase"
                         :data-cy="`roadmap-phase-${phase.id}`"
                     >
+                        <template #dot>
+                            <origam-icon
+                                :icon="phase.icon"
+                                :size="20"
+                                aria-hidden="true"
+                            />
+                        </template>
+
                         <template #default>
                             <origam-card
-                                border
-                                rounded="lg"
                                 flat
                                 class="roadmap-timeline__card"
                             >
@@ -707,6 +712,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-timeline {
     max-inline-size: 54rem;
+    --origam-timeline---dot-size: 40px;
+    --origam-timeline---track-width: 48px;
 }
 
 .roadmap-timeline__phase {
@@ -714,11 +721,12 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 }
 
 .roadmap-timeline__card {
-    margin-block-start: var(--origam-space---2, 0.5rem);
-    --origam-card---padding-block-start: var(--origam-space---6, 1.5rem);
+    margin-block-start: var(--origam-space---1, 0.25rem);
+    --origam-card---background: transparent;
+    --origam-card---padding-block-start: var(--origam-space---2, 0.5rem);
     --origam-card---padding-block-end: var(--origam-space---6, 1.5rem);
-    --origam-card---padding-inline-start: var(--origam-space---6, 1.5rem);
-    --origam-card---padding-inline-end: var(--origam-space---6, 1.5rem);
+    --origam-card---padding-inline-start: 0;
+    --origam-card---padding-inline-end: 0;
 }
 
 .roadmap-timeline__card-header {
