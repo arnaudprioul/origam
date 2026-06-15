@@ -134,7 +134,7 @@
   --origam-card---density: 0px;
   --origam-card---pointer-events: auto;
   --origam-card---user-select: auto;
-  --origam-card---cursor: auto;
+  --origam-card---cursor: inherit;
   --origam-card---text-decoration: none;
   --origam-card---transition-duration: 280ms;
   --origam-card---transition-property: box-shadow, opacity, background;
@@ -2886,7 +2886,7 @@
     --origam-card---density: 0px;
     --origam-card---pointer-events: auto;
     --origam-card---user-select: auto;
-    --origam-card---cursor: auto;
+    --origam-card---cursor: inherit;
     --origam-card---text-decoration: none;
     --origam-card---transition-duration: 280ms;
     --origam-card---transition-property: box-shadow, opacity, background;

@@ -18,7 +18,7 @@
 
     "pointer-events":       { "$type": "other",      "$value": "auto" },
     "user-select":          { "$type": "other",      "$value": "auto" },
-    "cursor":               { "$type": "other",      "$value": "auto" },
+    "cursor":               { "$type": "other",      "$value": "inherit" },
 
     "text-decoration":      { "$type": "other",      "$value": "none" },
     "transition-duration":  { "$type": "duration",   "$value": "{motion.duration.slow}" },
