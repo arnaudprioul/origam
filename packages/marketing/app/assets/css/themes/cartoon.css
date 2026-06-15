@@ -156,6 +156,12 @@
     /* KPI values: solid rose (measured: rgb(255,143,163) — no gradient in light) */
     --origam-gradient---kpi-value: linear-gradient(#ff8fa3, #ff8fa3);
 
+    /* ── Chip tokens — cartoon border + shadow in light (near-black) ───────── */
+    --origam-chip---border-color:         #171717;
+    --origam-chip---border-style:         solid;
+    --origam-chip---border-width:         3px;
+    --origam-chip---border-width-outlined: 3px;
+
     /* ── Button tokens ──────────────────────────────────────────────────────── */
     /*
      * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
@@ -290,9 +296,23 @@
     --origam-list-item---padding-inline-start: 12px;
     --origam-list-item---padding-inline-end:   12px;
 
-    /* ── Shadows — hard black offset in dark, like the maquette cards ──────── */
+    /* ── Shadows — near-white hard offset in dark (white border + black shadow) */
     --origam-shadow---card-elevated: 6px 6px 0 #171717;
     --origam-shadow---glow-primary:  4px 4px 0 #fffefb;
+
+    /* ── Card tokens — near-white border in dark ─────────────────────────── */
+    --origam-card---border-color:        #fffefb;
+    --origam-card---border-style:        solid;
+    --origam-card---border-top-width:    3px;
+    --origam-card---border-right-width:  3px;
+    --origam-card---border-bottom-width: 3px;
+    --origam-card---border-left-width:   3px;
+
+    /* ── Chip tokens — cartoon border + shadow in dark (near-white) ─────── */
+    --origam-chip---border-color:         #fffefb;
+    --origam-chip---border-style:         solid;
+    --origam-chip---border-width:         3px;
+    --origam-chip---border-width-outlined: 3px;
 
     /* ── Gradients — marketing display ─────────────────────────────────────── */
     /* Section-scoped glows (sized to the hero/cta band, not the whole page):
@@ -319,24 +339,23 @@
 
     /* ── Button tokens ──────────────────────────────────────────────────────── */
     /*
-     * PRIMARY dark — same rose pill, near-black border #171717 (matches maquette).
-     * Same single-color gradient trick to bypass DS !important on bg-color.
+     * PRIMARY dark — rose pill, near-WHITE border + shadow (cartoon dark rule).
+     * User spec: dark = borders + shadows near-white #fffefb.
      */
     --origam-gradient---btn-primary:   linear-gradient(#ff8fa3, #ff8fa3);
     --origam-color---btn-primary-bg:   #ff8fa3;
     --origam-color---btn-primary-text: #3a2a2e;
-    --origam-shadow---btn-primary:     4px 4px 0 #171717;
+    --origam-shadow---btn-primary:     4px 4px 0 #fffefb;
 
     /*
-     * SECONDARY/GHOST dark — transparent, near-black border #171717 (maquette measured).
-     * Measured: border 3px solid rgb(23,23,23), box-shadow #171717 4px 4px 0.
-     * Color: rgb(255,254,251) in dark.
+     * SECONDARY/GHOST dark — transparent, near-white border + shadow.
+     * User spec: dark = borders + shadows near-white #fffefb everywhere.
      */
     --origam-gradient---btn-secondary:     none;
     --origam-color---btn-secondary-bg:     transparent;
-    --origam-color---btn-secondary-border: #171717;
+    --origam-color---btn-secondary-border: #fffefb;
     --origam-color---btn-secondary-text:   #fffefb;
-    --origam-shadow---btn-secondary:       4px 4px 0 #171717;
+    --origam-shadow---btn-secondary:       4px 4px 0 #fffefb;
 }
 
 /* ── CARTOON — Appbar hard border bottom ───────────────────────────────── */
@@ -403,7 +422,7 @@
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .appbar-actions__btn {
     border:     3px solid #fffefb !important;
-    box-shadow: 3px 3px 0 #171717 !important;
+    box-shadow: 3px 3px 0 #fffefb !important;
 }
 
 /* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── */
@@ -447,12 +466,13 @@
     font-weight: 800;
 }
 
-/* ── CARTOON — Features grid: cartoon border style ─────────────────────── */
+/* ── CARTOON — Features grid: 3 px outline, 1 px internal dividers ─────── */
 /*
- * .home-features__grid has `border: 1px solid` and .home-features__item has
- * `border-inline-end/border-block-end: 1px solid`. Cartoon uses 3 px.
- * The feature cells in the maquette use directional borders (top, right, bottom
- * depending on position) — we keep 3 px on the grid outline + dividers.
+ * The grid outer frame gets the full 3 px cartoon border; internal cell
+ * dividers are kept at 1 px so the grid doesn't look overly heavy in light
+ * mode (the "too thick" feedback from the user, point 2). Dark keeps the
+ * same 1 px internal, which reads lighter on the near-black surface.
+ * The cartoon color still applies via the --default border token.
  */
 
 :root:root[data-theme="cartoon"] .home-features__grid {
@@ -460,8 +480,8 @@
 }
 
 :root:root[data-theme="cartoon"] .home-features__item {
-    border-inline-end: 3px solid var(--origam-color__border---default);
-    border-block-end:  3px solid var(--origam-color__border---default);
+    border-inline-end: 1px solid var(--origam-color__border---default);
+    border-block-end:  1px solid var(--origam-color__border---default);
 }
 
 /* ── CARTOON — Hero badge (chip) specific style ─────────────────────────── */
@@ -484,22 +504,20 @@
 }
 
 /*
- * Dark mode: hero badge + hero/cta buttons keep near-BLACK border+shadow (#171717),
- * matching the maquette (measured: border rgb(23,23,23), shadow rgb(23,23,23) 4px 4px 0).
- * The near-white rule was incorrect. Reverting.
- * Appbar keeps its near-white bottom border (handled by the dedicated rule above).
+ * Dark mode: hero badge + hero/cta buttons → near-WHITE border+shadow (#fffefb).
+ * User spec: dark = borders + shadows near-white (#fffefb) on ALL elements.
  */
 :root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="hero-badge"] {
-    border-color: #171717 !important;
-    box-shadow:   3px 3px 0 #171717 !important;
+    border-color: #fffefb !important;
+    box-shadow:   3px 3px 0 #fffefb !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-hero__btn--primary,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__btn--start,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-hero__btn--secondary,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-cta__btn--docs {
-    border-color: #171717 !important;
-    box-shadow: 4px 4px 0 #171717 !important;
+    border-color: #fffefb !important;
+    box-shadow: 4px 4px 0 #fffefb !important;
 }
 
 /* ── CARTOON — Marketing heading font override ──────────────────────────── */
@@ -582,8 +600,8 @@
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-features__item {
-    border-inline-end-color: #fffefb;
-    border-block-end-color:  #fffefb;
+    border-inline-end: 1px solid #fffefb;
+    border-block-end:  1px solid #fffefb;
 }
 
 /* Feature cells: raised surface bg in dark (measured: rgb(38,38,38) = #262626) */
@@ -706,10 +724,10 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="showcase-data-badge"] {
     background-color: #ffe5a5 !important;
     color:            #3a2a2e !important;
-    border-color:     #171717 !important;
+    border-color:     #fffefb !important;
     border-width:     3px !important;
     border-style:     solid !important;
-    box-shadow:       3px 3px 0 #171717 !important;
+    box-shadow:       3px 3px 0 #fffefb !important;
 }
 
 /* ── CARTOON — Themes section chips: correct border + active state ──────── */
@@ -731,19 +749,24 @@
  */
 
 :root:root[data-theme="cartoon"] .home-themes__chip {
+    border-width: 3px !important;
     border-color: #171717 !important;
     border-style: solid !important;
+    box-shadow:   3px 3px 0 #171717 !important;
 }
 
 :root:root[data-theme="cartoon"] .home-themes__chip[data-active="true"],
 :root:root[data-theme="cartoon"] .home-themes__chip[aria-pressed="true"] {
     border-color: #171717 !important;
+    box-shadow:   3px 3px 0 #171717 !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip {
     background-color: #c5e8ff;
     color:            #1e3a5f;
+    border-width:     3px !important;
     border-color:     #fffefb !important;
+    box-shadow:       3px 3px 0 #fffefb !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[data-active="true"],
@@ -751,26 +774,28 @@
     background-color: #ff8fa3;
     color:            #3a2a2e;
     border-color:     #fffefb !important;
+    box-shadow:       3px 3px 0 #fffefb !important;
 }
 
-/* ── CARTOON — Hero install code pill: no border ────────────────────────── */
+/* ── CARTOON — Hero install code pill: 3px border + hard shadow ──────────── */
 /*
- * Maquette .m-code-line measured: 0px none (no border, transparent bg).
- * The live origam-code--compact renders with border: 1px solid #171717.
- * Remove border on the hero install pill to match maquette.
- * The playground code panel is handled separately (.home-playground__code).
+ * User spec (updated): the install pill must have cartoon border + hard-shadow
+ * like the buttons. Light: 3px solid #171717 + shadow 3px 3px 0 #171717.
+ * Dark: 3px solid #fffefb + shadow 3px 3px 0 #fffefb.
+ * The origam-code border uses --origam-code---border-width / border-color.
  */
 
 :root:root[data-theme="cartoon"] [data-cy="hero-install-command"].origam-code,
 :root:root[data-theme="cartoon"] #hero .origam-code--compact {
-    border: none !important;
+    border: 3px solid #171717 !important;
+    box-shadow: 3px 3px 0 #171717 !important;
 }
 
-/* Install pill surface: the maquette uses a neutral dark-grey #262626 in dark
-   (not the olive #3d2e0a surface-overlay used by the playground toolbar). */
-:root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="hero-install-command"] {
+:root:root[data-theme="cartoon"][data-mode="dark"] [data-cy="hero-install-command"].origam-code,
+:root:root[data-theme="cartoon"][data-mode="dark"] #hero .origam-code--compact {
+    border: 3px solid #fffefb !important;
+    box-shadow: 3px 3px 0 #fffefb !important;
     --origam-code---background-color: #262626;
-    --origam-code__compact---background-color: #262626;
 }
 
 /* ── CARTOON — Feature cell dark: top + left borders near-white ─────────── */
@@ -786,10 +811,12 @@
  */
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-features__item {
-    border-top-color:   transparent !important;
-    border-left-color:  transparent !important;
-    border-right-color: #fffefb !important;
+    border-top-color:    transparent !important;
+    border-left-color:   transparent !important;
+    border-right-color:  #fffefb !important;
     border-bottom-color: #fffefb !important;
+    border-right-width:  1px !important;
+    border-bottom-width: 1px !important;
 }
 
 /* ── CARTOON — Avatar: surface-bg ring border ───────────────────────────── */
@@ -862,14 +889,104 @@
         radial-gradient(circle at 90% 14%, rgba(251, 207, 232, 0.42) 0%, transparent 38%);
 }
 
-/* Showcase data table: 3px hard cell rule like the cartoon cards
-   (dark = near-white, light = black). */
+/* Showcase data table: 1px cell rule + 3px top outer border (point 6).
+   Row dividers remain 1px for readability; the table outer top border is 3px. */
 :root:root[data-theme="cartoon"] .home-showcase__th,
 :root:root[data-theme="cartoon"] .home-showcase__td {
-    border-block-end: 3px solid var(--origam-color__border---default) !important;
+    border-block-end: 1px solid var(--origam-color__border---default) !important;
+}
+
+:root:root[data-theme="cartoon"] .home-showcase__table {
+    border-top: 3px solid var(--origam-color__border---default) !important;
 }
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__th,
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__td {
     border-block-end-color: #fffefb !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__table {
+    border-top-color: #fffefb !important;
+}
+
+/* ── CARTOON — Showcase widget cards: hard shadow ───────────────────────── */
+/*
+ * OrigamCard flat variant has no shadow. Cartoon cartoon aesthetic requires
+ * 6px 6px 0 hard-shadow. Light = #171717, dark = #fffefb (point 5 + 8).
+ * Token --origam-shadow---card-elevated is already set above (light black,
+ * dark black). The marketing widget uses SHOWCASE_WIDGET_VARS which lands on
+ * the card element. We also apply the shadow via a direct class override
+ * since flat cards don't pick up the elevated shadow token automatically.
+ */
+:root:root[data-theme="cartoon"] .home-showcase__widget {
+    box-shadow: 6px 6px 0 #171717 !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-showcase__widget {
+    box-shadow: 6px 6px 0 #fffefb !important;
+}
+
+/* ── CARTOON — Theming preview tiles: same card style ───────────────────── */
+/*
+ * The theme preview tiles (OrigamSheet with border-color="ghost") need the
+ * 3px cartoon border + hard shadow (point 8). Border color overrides the ghost
+ * token to be the solid cartoon border color.
+ */
+:root:root[data-theme="cartoon"] .home-themes__preview-tile {
+    border-width: 3px !important;
+    border-color: #171717 !important;
+    box-shadow: 6px 6px 0 #171717 !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__preview-tile {
+    border-width: 3px !important;
+    border-color: #fffefb !important;
+    box-shadow: 6px 6px 0 #fffefb !important;
+}
+
+/* ── CARTOON — Search field: 3px border + hard shadow (point 3) ──────────── */
+/*
+ * The appbar search input (variant="outlined") uses --origam-field---border-width.
+ * Cartoon: 3px border, opacity 1 (not the default 0.38), same shadow as buttons.
+ * Light = #171717 border + shadow. Dark = #fffefb border + shadow.
+ */
+:root:root[data-theme="cartoon"] .search-field {
+    --origam-field---border-width:   3px;
+    --origam-field---border-opacity: 1;
+    --origam-field---border-color:   #171717;
+    box-shadow: 3px 3px 0 #171717;
+    border-radius: var(--origam-radius---btn, 14px) !important;
+}
+
+:root:root[data-theme="cartoon"] .search-field:focus-within {
+    box-shadow: 3px 3px 0 #171717;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .search-field {
+    --origam-field---border-color: #fffefb;
+    box-shadow: 3px 3px 0 #fffefb;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .search-field:focus-within {
+    box-shadow: 3px 3px 0 #fffefb;
+}
+
+
+/* Appbar search input — finish the unification: a 3px hard border like the
+   buttons (the crashed pass added the shadow but not the border). */
+:root:root[data-theme="cartoon"] .search-field {
+    border: 3px solid var(--origam-color__border---default) !important;
+}
+
+:root:root[data-theme="cartoon"][data-mode="dark"] .search-field {
+    border-color: #fffefb !important;
+}
+
+/* CTA glow: the ::before band is only 280px tall and has no fade, so the dark
+   glow gets cut into a seam. Stretch it to the full section + fade out, like
+   the hero glow. */
+:root:root[data-theme="cartoon"] .home-cta::before {
+    block-size: 100%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 20%, transparent 80%);
+    mask-image: linear-gradient(to bottom, #000 20%, transparent 80%);
 }
