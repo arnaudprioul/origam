@@ -284,10 +284,16 @@
             class="site-footer__column-title"
             :text="t(column.titleKey, column.titleFallback)"
           />
-          <ul class="site-footer__list">
-            <li
+          <origam-grid
+            tag="ul"
+            columns="1"
+            gap="0"
+            class="site-footer__list"
+          >
+            <origam-grid-item
               v-for="link in column.links"
               :key="link.href"
+              tag="li"
             >
               <a
                 v-if="link.external"
@@ -305,8 +311,8 @@
               >
                 {{ t(link.i18nKey, link.i18nFallback) }}
               </NuxtLink>
-            </li>
-          </ul>
+            </origam-grid-item>
+          </origam-grid>
         </nav>
       </origam-grid>
 

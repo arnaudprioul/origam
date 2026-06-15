@@ -6,8 +6,7 @@ import {
     FEATURES_GRID_COLUMNS,
     FEATURE_CARD_VARS,
     FEATURE_ICON_TILE_RADIUS,
-    FEATURE_ICON_TILE_VARS,
-    FEATURE_ICON_VARS
+    FEATURE_ICON_TILE_VARS
 } from '~/consts/features.const'
 
 const { t } = useT()
@@ -57,26 +56,24 @@ const features = computed(() => FEATURES)
                     :style="FEATURE_CARD_VARS"
                     class="home-features__card"
                 >
-                    <origam-sheet
-                        aria-hidden="true"
+                    <origam-avatar
+                        :icon="feature.icon"
+                        color="primary"
                         :rounded="FEATURE_ICON_TILE_RADIUS"
                         :style="FEATURE_ICON_TILE_VARS"
                         border
                         border-color="var(--origam-color__action--primary---bg)"
-                        width="44"
-                        height="44"
+                        size="44"
                         class="home-features__icon-tile"
-                    >
-                        <origam-icon
-                            :icon="feature.icon"
-                            :style="FEATURE_ICON_VARS"
-                            class="home-features__icon"
-                        />
-                    </origam-sheet>
+                        aria-hidden="true"
+                    />
 
-                    <h3 class="home-features__card-title">
+                    <origam-title
+                        tag="h3"
+                        class="home-features__card-title"
+                    >
                         {{ t(feature.titleKey, feature.titleKey) }}
-                    </h3>
+                    </origam-title>
 
                     <p class="home-features__card-desc">
                         {{ t(feature.descriptionKey, feature.descriptionKey) }}
@@ -162,17 +159,11 @@ const features = computed(() => FEATURES)
     gap: var(--origam-space---2, 0.5rem);
 }
 
-/* DS gap: OrigamSheet defaults to display:block; centering the 44×44 icon
-   tile needs flex. No DS prop exposes the sheet's display/align/justify. */
 .home-features__icon-tile {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    --origam-avatar---background-color: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1));
+    --origam-avatar---border-color: var(--origam-color__action--primary---bg, #7c3aed);
+    --origam-avatar---icon-color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
     margin-block-end: var(--origam-space---3, 0.75rem);
-}
-
-.home-features__icon {
-    font-size: var(--origam-space---5, 1.25rem);
 }
 
 /* DS gap: maquette card-title is 17px, between DS base (16px) and lg (18px).

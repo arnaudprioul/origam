@@ -104,7 +104,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                         />
                     </figcaption>
 
-                    <table
+                    <origam-table
                         class="home-showcase__table"
                         data-cy="showcase-data-table"
                     >
@@ -160,7 +160,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </origam-table>
                 </origam-card>
             </origam-grid-item>
 
