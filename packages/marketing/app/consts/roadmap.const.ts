@@ -3,7 +3,8 @@ import type {
     IRoadmapStatusItem,
     IRoadmapWave,
     IRoadmapPhase,
-    IRoadmapWave4Component
+    IRoadmapWave4Component,
+    IRoadmapStat
 } from '~/interfaces/roadmap.interface'
 
 /**
@@ -26,6 +27,20 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.ci', done: false },
     { labelKey: 'roadmap.status.playwrightCoverage', done: false },
     { labelKey: 'roadmap.status.bundleMonitoring', done: false }
+]
+
+/**
+ * Delivered overview stats — conservative, verifiable lower bounds counted
+ * from the DS source tree (97 component dirs, 103 composables, 6 directives,
+ * 209 stories, light + dark token themes, 3-tier token pipeline).
+ */
+export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
+    { value: '90+', labelKey: 'roadmap.overview.components', icon: 'mdi-shape-outline' },
+    { value: '100+', labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
+    { value: '6', labelKey: 'roadmap.overview.directives', icon: 'mdi-code-tags' },
+    { value: '200+', labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
+    { value: '2', labelKey: 'roadmap.overview.themes', icon: 'mdi-theme-light-dark' },
+    { value: '3', labelKey: 'roadmap.overview.tokenTiers', icon: 'mdi-layers-triple-outline' }
 ]
 
 /**

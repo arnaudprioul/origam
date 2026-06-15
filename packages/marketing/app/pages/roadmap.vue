@@ -4,6 +4,7 @@ import { useT } from '~/composables/useT'
 import {
     ROADMAP_HERO_BADGE_VARS,
     ROADMAP_STATUS_ITEMS,
+    ROADMAP_OVERVIEW_STATS,
     ROADMAP_WAVES,
     ROADMAP_PHASES,
     ROADMAP_WAVE4_COMPONENTS
@@ -20,6 +21,7 @@ useSeoMeta({
 })
 
 const statusItems = computed(() => ROADMAP_STATUS_ITEMS)
+const overviewStats = computed(() => ROADMAP_OVERVIEW_STATS)
 const waves = computed(() => ROADMAP_WAVES)
 const phases = computed(() => ROADMAP_PHASES)
 const wave4Components = computed(() => ROADMAP_WAVE4_COMPONENTS)
@@ -154,6 +156,42 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         {{ t('roadmap.delivered.subtitle', 'Every item below is shipped and available on npm since v2.6.0.') }}
                     </p>
                 </header>
+
+                <origam-grid
+                    tag="ul"
+                    columns="repeat(auto-fit, minmax(160px, 1fr))"
+                    gap="1rem"
+                    class="roadmap-overview"
+                    data-cy="roadmap-overview"
+                    :aria-label="t('roadmap.overview.label', 'What origam already is')"
+                >
+                    <origam-grid-item
+                        v-for="stat in overviewStats"
+                        :key="stat.labelKey"
+                        tag="li"
+                        class="roadmap-overview__item"
+                    >
+                        <origam-card
+                            flat
+                            border
+                            rounded="lg"
+                            class="roadmap-overview__card"
+                        >
+                            <template #default>
+                                <origam-icon
+                                    :icon="stat.icon"
+                                    color="primary"
+                                    class="roadmap-overview__icon"
+                                    aria-hidden="true"
+                                />
+
+                                <strong class="roadmap-overview__value">{{ stat.value }}</strong>
+
+                                <span class="roadmap-overview__label">{{ t(stat.labelKey, stat.labelKey) }}</span>
+                            </template>
+                        </origam-card>
+                    </origam-grid-item>
+                </origam-grid>
 
                 <origam-grid
                     tag="ul"
@@ -649,7 +687,52 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 }
 
 .roadmap-delivered__header {
-    margin-block-end: var(--origam-space---12, 3rem);
+    margin-block-end: var(--origam-space---10, 2.5rem);
+}
+
+.roadmap-overview {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--origam-space---12, 3rem);
+}
+
+.roadmap-overview__item {
+    list-style: none;
+    display: flex;
+}
+
+.roadmap-overview__card {
+    flex: 1;
+    --origam-card---padding-block-start: var(--origam-space---5, 1.25rem);
+    --origam-card---padding-block-end: var(--origam-space---5, 1.25rem);
+    --origam-card---padding-inline-start: var(--origam-space---4, 1rem);
+    --origam-card---padding-inline-end: var(--origam-space---4, 1rem);
+}
+
+.roadmap-overview__card :deep(.origam-card__content) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--origam-space---1, 0.25rem);
+    text-align: center;
+}
+
+.roadmap-overview__icon {
+    margin-block-end: var(--origam-space---1, 0.25rem);
+    font-size: var(--origam-font-size---xl, 1.5rem);
+}
+
+.roadmap-overview__value {
+    font-size: var(--origam-font-size---section, 2rem);
+    font-weight: var(--origam-font__weight---bold, 700);
+    line-height: 1.1;
+    color: var(--origam-color__text---primary, #0a0a0a);
+}
+
+.roadmap-overview__label {
+    font-size: var(--origam-font-size---sm, 0.875rem);
+    line-height: 1.4;
+    color: var(--origam-color__text---secondary, #525252);
 }
 
 .roadmap-delivered__grid {

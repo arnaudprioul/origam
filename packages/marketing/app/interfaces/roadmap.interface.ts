@@ -35,3 +35,9 @@ export interface IRoadmapWave4Component {
     noteKey: string
     icon: string
 }
+
+export interface IRoadmapStat {
+    value: string
+    labelKey: string
+    icon: string
+}

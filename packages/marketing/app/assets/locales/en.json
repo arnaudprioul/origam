@@ -230,10 +230,19 @@
     },
     "delivered": {
       "eyebrow": "ALREADY SHIPPED",
-      "titleLine1": "Four waves.",
-      "titleLine2": "Delivered.",
-      "subtitle": "Every item below is shipped and available on npm since v2.6.0.",
+      "titleLine1": "A full design system.",
+      "titleLine2": "Already in production.",
+      "subtitle": "origam is not starting from zero — here is the scope already shipped on npm, with the latest waves below.",
       "badgeDone": "Delivered"
+    },
+    "overview": {
+      "label": "What origam already is",
+      "components": "component families",
+      "composables": "composables",
+      "directives": "directives",
+      "stories": "interactive stories",
+      "themes": "base themes (light + dark)",
+      "tokenTiers": "design-token tiers"
     },
     "waves": {
       "wave1": {

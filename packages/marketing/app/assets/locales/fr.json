@@ -230,10 +230,19 @@
     },
     "delivered": {
       "eyebrow": "DÉJÀ LIVRÉ",
-      "titleLine1": "Quatre vagues.",
-      "titleLine2": "Livrées.",
-      "subtitle": "Chaque item ci-dessous est disponible sur npm depuis la v2.6.0.",
+      "titleLine1": "Un design system complet.",
+      "titleLine2": "Déjà en production.",
+      "subtitle": "origam ne part pas de zéro — voici l'ampleur déjà livrée sur npm, avec les dernières vagues ci-dessous.",
       "badgeDone": "Livré"
+    },
+    "overview": {
+      "label": "Ce qu'origam est déjà",
+      "components": "familles de composants",
+      "composables": "composables",
+      "directives": "directives",
+      "stories": "stories interactives",
+      "themes": "thèmes de base (clair + sombre)",
+      "tokenTiers": "niveaux de design tokens"
     },
     "waves": {
       "wave1": {

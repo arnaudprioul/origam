@@ -64,6 +64,12 @@ test.describe('roadmap — DS-first', () => {
         expect(count).toBeGreaterThan(0)
     })
 
+    test('le bloc overview affiche 6 stats livrées (OrigamCard)', async ({ page }) => {
+        const cards = page.locator('[data-cy="roadmap-overview"] .roadmap-overview__card')
+        await expect(cards).toHaveCount(6)
+        await expect(page.locator('.roadmap-overview__value').first()).toHaveText('90+')
+    })
+
     test('les waves livrées contiennent des OrigamTable (.origam-table)', async ({ page }) => {
         const tables = page.locator('[data-cy="roadmap-wave-table"]')
         const count = await tables.count()
