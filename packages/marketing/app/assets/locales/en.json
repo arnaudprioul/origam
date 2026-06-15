@@ -716,5 +716,70 @@
         "h4": "Multiple critical bug fixes — OrigamMessages id binding, OrigamNumberField reactive loop, OrigamOtpInputField crash"
       }
     }
+  },
+  "installation": {
+    "meta": {
+      "title": "Installation · origam design system",
+      "description": "Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 95+ accessible Vue 3 components."
+    },
+    "hero": {
+      "badge": "npm install origam",
+      "titleLine1": "Up and running",
+      "titleLine2": "in minutes.",
+      "subtitle": "Install origam, register the plugin, and start building with 95+ accessible, token-driven Vue 3 components right away."
+    },
+    "steps": {
+      "eyebrow": "STEP BY STEP",
+      "titleLine1": "Five steps.",
+      "titleLine2": "You're set.",
+      "subtitle": "From zero to a fully themed Vue 3 app with origam — no boilerplate needed.",
+      "listLabel": "Installation steps",
+      "install": {
+        "title": "1. Install",
+        "description": "Add origam to your project with your preferred package manager."
+      },
+      "register": {
+        "title": "2. Register the plugin",
+        "description": "Import the token sheets and register origam as a Vue plugin in your entry file.",
+        "note": "createOrigam() accepts an optional options bag to configure icons, locale, display, SSR, aliases and more. By default, all components and directives are registered globally."
+      },
+      "use": {
+        "title": "3. Use a component",
+        "description": "All components are globally registered. Drop any Origam component into your templates — no per-file import needed."
+      },
+      "theming": {
+        "title": "4. Theming",
+        "description": "origam ships with light and dark themes. Switch statically via an HTML attribute, or at runtime with the useTheme composable.",
+        "subStatic": "Static switch — HTML attribute (omit to follow system preference):",
+        "subRuntime": "Runtime switch — useTheme composable:",
+        "subScoped": "Scoped sub-tree override:",
+        "note": "Import origam/tokens/css/dark once at boot to enable the dark token sheet."
+      },
+      "nuxt": {
+        "title": "5. Nuxt integration",
+        "description": "Using Nuxt 3 or Nuxt 4? The official origam Nuxt module is included in the same package — no extra install required.",
+        "note": "The Nuxt module is delivered as a sub-export (origam/nuxt) — no separate package to install. It auto-imports all components and composables, and resolves themes SSR-safely."
+      }
+    },
+    "peerDeps": {
+      "eyebrow": "REQUIREMENTS",
+      "title": "Peer dependencies.",
+      "subtitle": "origam has a minimal footprint. Vue 3 is the only mandatory peer — everything else is optional and tree-shaken when unused.",
+      "tableCaption": "Peer dependencies",
+      "colPkg": "Package",
+      "colRequired": "Required",
+      "colUsedBy": "Used by",
+      "vueUsedBy": "Always — core runtime",
+      "vueI18nUsedBy": "Optional — locale composable",
+      "vueRouterUsedBy": "Optional — link components",
+      "nodeNote": "Node >= 22 is required to build origam from source. Consumers need only Vue 3.5+ at runtime."
+    },
+    "cta": {
+      "title": "Ready to build?",
+      "description": "Explore the full component catalogue, browse interactive stories, or dive into the source on GitHub.",
+      "ctaComponents": "Browse components",
+      "ctaGithub": "View on GitHub",
+      "actionsLabel": "Explore origam"
+    }
   }
 }

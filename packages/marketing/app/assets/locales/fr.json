@@ -716,5 +716,70 @@
         "h4": "Nombreux correctifs critiques — id OrigamMessages, boucle réactive OrigamNumberField, crash OrigamOtpInputField"
       }
     }
+  },
+  "installation": {
+    "meta": {
+      "title": "Installation · origam design system",
+      "description": "Lancez origam en quelques minutes. Installez le package npm, enregistrez le plugin et commencez à construire avec 95+ composants Vue 3 accessibles."
+    },
+    "hero": {
+      "badge": "npm install origam",
+      "titleLine1": "Prêt à tourner",
+      "titleLine2": "en quelques minutes.",
+      "subtitle": "Installez origam, enregistrez le plugin et commencez à construire avec 95+ composants Vue 3 accessibles et pilotés par tokens."
+    },
+    "steps": {
+      "eyebrow": "ÉTAPE PAR ÉTAPE",
+      "titleLine1": "Cinq étapes.",
+      "titleLine2": "C'est parti.",
+      "subtitle": "De zéro à une app Vue 3 entièrement thémée avec origam — sans boilerplate.",
+      "listLabel": "Étapes d'installation",
+      "install": {
+        "title": "1. Installer",
+        "description": "Ajoutez origam à votre projet avec votre gestionnaire de paquets préféré."
+      },
+      "register": {
+        "title": "2. Enregistrer le plugin",
+        "description": "Importez les feuilles de tokens et enregistrez origam comme plugin Vue dans votre fichier d'entrée.",
+        "note": "createOrigam() accepte un sac d'options facultatif pour configurer les icônes, la locale, l'affichage, le SSR, les alias et plus encore. Par défaut, tous les composants et directives sont enregistrés globalement."
+      },
+      "use": {
+        "title": "3. Utiliser un composant",
+        "description": "Tous les composants sont enregistrés globalement. Placez n'importe quel composant Origam dans vos templates — aucun import par fichier nécessaire."
+      },
+      "theming": {
+        "title": "4. Thématisation",
+        "description": "origam est livré avec des thèmes clair et sombre. Basculez statiquement via un attribut HTML, ou à l'exécution avec le composable useTheme.",
+        "subStatic": "Bascule statique — attribut HTML (omettre pour suivre la préférence système) :",
+        "subRuntime": "Bascule à l'exécution — composable useTheme :",
+        "subScoped": "Surcharge de sous-arbre :",
+        "note": "Importez origam/tokens/css/dark une fois au démarrage pour activer la feuille de tokens sombre."
+      },
+      "nuxt": {
+        "title": "5. Intégration Nuxt",
+        "description": "Vous utilisez Nuxt 3 ou Nuxt 4 ? Le module Nuxt officiel origam est inclus dans le même package — pas d'installation supplémentaire.",
+        "note": "Le module Nuxt est livré en sous-export (origam/nuxt) — aucun package séparé à installer. Il auto-importe tous les composants et composables, et résout les thèmes de manière SSR-safe."
+      }
+    },
+    "peerDeps": {
+      "eyebrow": "PRÉREQUIS",
+      "title": "Dépendances pairs.",
+      "subtitle": "origam a une empreinte minimale. Vue 3 est le seul peer obligatoire — tout le reste est optionnel et tree-shaké quand non utilisé.",
+      "tableCaption": "Dépendances pairs",
+      "colPkg": "Package",
+      "colRequired": "Requis",
+      "colUsedBy": "Utilisé par",
+      "vueUsedBy": "Toujours — runtime de base",
+      "vueI18nUsedBy": "Optionnel — composable locale",
+      "vueRouterUsedBy": "Optionnel — composants lien",
+      "nodeNote": "Node >= 22 est requis pour compiler origam depuis les sources. Les consommateurs n'ont besoin que de Vue 3.5+ à l'exécution."
+    },
+    "cta": {
+      "title": "Prêt à construire ?",
+      "description": "Explorez le catalogue complet de composants, parcourez les stories interactives ou plongez dans le code source sur GitHub.",
+      "ctaComponents": "Parcourir les composants",
+      "ctaGithub": "Voir sur GitHub",
+      "actionsLabel": "Explorer origam"
+    }
   }
 }
