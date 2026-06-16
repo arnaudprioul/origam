@@ -344,32 +344,6 @@ export const CHART_CARTESIAN_DOC: IComponentDoc = {
             { num: 4, cls: '.origam-chart__series', descriptionKey: 'components.chart_cartesian.anatomy.series', descriptionFallback: '<g> container for series path, area fill, or bar/column rects.' },
             { num: 5, cls: '.origam-chart__legend (via OrigamChartLegend)', descriptionKey: 'components.chart_cartesian.anatomy.legend', descriptionFallback: 'Legend list rendered by OrigamChartLegend. grid-area: legend.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<div class="origam-chart-cartesian">
-  <div class="origam-chart-cartesian__header">
-    <div class="origam-chart-cartesian__title">…</div>
-  </div>
-  <origam-chart-range-selector v-if="hasRangeSelector" />
-  <nav class="origam-chart-cartesian__breadcrumb" v-if="isDrilled" />
-  <div class="origam-chart-cartesian__body">
-    <svg class="origam-chart-cartesian__svg origam-chart__svg">
-      <g class="origam-chart-cartesian__grid" />
-      <g class="origam-chart-cartesian__axis" />
-      <g class="origam-chart__series" />
-      <g class="origam-chart-cartesian__zoom-rect" v-if="zoomable" />
-    </svg>
-    <origam-chart-tooltip />
-    <div class="origam-chart-cartesian__empty" />
-  </div>
-  <origam-chart-legend />
-</div>`,
-        rootClass: 'origam-chart-cartesian',
-        classes: [
-            { cls: 'origam-chart-cartesian', descriptionKey: 'components.chart_cartesian.anatomy.root', descriptionFallback: 'Root grid container. Layout switches per legend position.' },
-            { cls: 'origam-chart-cartesian__header', descriptionKey: 'components.chart_cartesian.anatomy.header', descriptionFallback: 'Title + subtitle header.' },
-            { cls: 'origam-chart-cartesian__body', descriptionKey: 'components.chart_cartesian.anatomy.body', descriptionFallback: 'Body flex container holding the SVG and overlays.' },
-            { cls: 'origam-chart-cartesian__svg', descriptionKey: 'components.chart_cartesian.anatomy.svg', descriptionFallback: 'SVG element. Fixed viewBox scaled via CSS.' },
-            { cls: 'origam-chart-cartesian__empty', descriptionKey: 'components.chart_cartesian.anatomy.empty', descriptionFallback: 'Empty state overlay when series has no renderable data.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

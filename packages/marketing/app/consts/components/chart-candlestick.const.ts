@@ -307,44 +307,6 @@ export const CHART_CANDLESTICK_DOC: IComponentDoc = {
             { num: 5, cls: '.origam-chart-candlestick__axis', descriptionKey: 'components.chart_candlestick.anatomy.axis', descriptionFallback: '<g> holding all axis tick <text> labels. Hidden when showAxis=false.' },
             { num: 6, cls: '.origam-chart__legend (via OrigamChartLegend)', descriptionKey: 'components.chart_candlestick.anatomy.legend', descriptionFallback: 'Legend list rendered by the extracted OrigamChartLegend sub-component. grid-area: legend.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<div class="origam-chart-candlestick">
-  <div class="origam-chart-candlestick__header">
-    <div class="origam-chart-candlestick__title">…</div>
-    <div class="origam-chart-candlestick__subtitle">…</div>
-  </div>
-  <div class="origam-chart-candlestick__body">
-    <svg class="origam-chart-candlestick__svg origam-chart__svg">
-      <g class="origam-chart-candlestick__grid">
-        <line class="origam-chart-candlestick__grid-line" />
-      </g>
-      <g class="origam-chart-candlestick__axis">
-        <text class="origam-chart-candlestick__axis-label--y" />
-        <text class="origam-chart-candlestick__axis-label--x" />
-      </g>
-      <g class="origam-chart__series">
-        <g class="origam-chart-candlestick__candle origam-chart-candlestick__candle--bullish">
-          <line class="origam-chart-candlestick__wick" />
-          <rect class="origam-chart-candlestick__body-rect" />
-        </g>
-      </g>
-    </svg>
-    <origam-chart-tooltip />
-    <div class="origam-chart-candlestick__empty" />
-  </div>
-  <origam-chart-legend />
-</div>`,
-        rootClass: 'origam-chart-candlestick',
-        classes: [
-            { cls: 'origam-chart-candlestick', descriptionKey: 'components.chart_candlestick.anatomy.root', descriptionFallback: 'Root grid container. Layout switches between legend positions.' },
-            { cls: 'origam-chart-candlestick__header', descriptionKey: 'components.chart_candlestick.anatomy.header', descriptionFallback: 'Title + subtitle header block.' },
-            { cls: 'origam-chart-candlestick__body', descriptionKey: 'components.chart_candlestick.anatomy.body', descriptionFallback: 'Flex container for SVG + overlay layers.' },
-            { cls: 'origam-chart-candlestick__svg', descriptionKey: 'components.chart_candlestick.anatomy.svg', descriptionFallback: 'The inline SVG element. Uses a fixed viewBox scaled via CSS.' },
-            { cls: 'origam-chart-candlestick__grid-line', descriptionKey: 'components.chart_candlestick.anatomy.grid_line', descriptionFallback: 'Horizontal grid line per Y-axis tick.' },
-            { cls: 'origam-chart-candlestick__candle', descriptionKey: 'components.chart_candlestick.anatomy.candle', descriptionFallback: 'Per-datum group element. Modified by --bullish / --bearish / --active.' },
-            { cls: 'origam-chart-candlestick__wick', descriptionKey: 'components.chart_candlestick.anatomy.wick', descriptionFallback: 'Thin SVG line from low to high price.' },
-            { cls: 'origam-chart-candlestick__body-rect', descriptionKey: 'components.chart_candlestick.anatomy.body_rect', descriptionFallback: 'Filled rectangle between open and close price.' },
-            { cls: 'origam-chart-candlestick__empty', descriptionKey: 'components.chart_candlestick.anatomy.empty', descriptionFallback: 'Absolute overlay shown when series has no valid data.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

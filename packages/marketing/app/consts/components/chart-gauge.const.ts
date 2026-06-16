@@ -243,36 +243,6 @@ export const CHART_GAUGE_DOC: IComponentDoc = {
             { num: 5, cls: '.origam-chart__gauge-value', descriptionKey: 'components.chart_gauge.anatomy.value', descriptionFallback: 'Centre value label. Hidden when gaugeShowValue=false.' },
             { num: 6, cls: '.origam-chart__gauge-endpoint (min/max)', descriptionKey: 'components.chart_gauge.anatomy.endpoints', descriptionFallback: 'Min and max labels at arc endpoints. Hidden when gaugeShowEndpoints=false.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<div class="origam-chart-gauge">
-  <div class="origam-chart-gauge__header">
-    <div class="origam-chart-gauge__title">…</div>
-  </div>
-  <div class="origam-chart-gauge__body">
-    <svg class="origam-chart-gauge__svg origam-chart__svg"
-         role="img"
-         aria-valuemin="0" aria-valuemax="100" aria-valuenow="72">
-      <title>…</title>
-      <desc>…</desc>
-      <g class="origam-chart__gauge">
-        <path class="origam-chart__gauge-track" d="…" />
-        <path class="origam-chart__gauge-fill" d="…" />
-        <text class="origam-chart__gauge-value">72%</text>
-        <text class="origam-chart__gauge-endpoint--min">0</text>
-        <text class="origam-chart__gauge-endpoint--max">100</text>
-      </g>
-    </svg>
-    <div class="origam-chart-gauge__empty" />
-  </div>
-</div>`,
-        rootClass: 'origam-chart-gauge',
-        classes: [
-            { cls: 'origam-chart-gauge', descriptionKey: 'components.chart_gauge.anatomy.root', descriptionFallback: 'Root grid container.' },
-            { cls: 'origam-chart-gauge__header', descriptionKey: 'components.chart_gauge.anatomy.header', descriptionFallback: 'Title + subtitle header.' },
-            { cls: 'origam-chart-gauge__body', descriptionKey: 'components.chart_gauge.anatomy.body', descriptionFallback: 'Body container holding the SVG.' },
-            { cls: 'origam-chart__gauge-track', descriptionKey: 'components.chart_gauge.anatomy.track', descriptionFallback: 'Background full arc path.' },
-            { cls: 'origam-chart__gauge-fill', descriptionKey: 'components.chart_gauge.anatomy.fill', descriptionFallback: 'Foreground value arc path.' },
-            { cls: 'origam-chart__gauge-value', descriptionKey: 'components.chart_gauge.anatomy.value', descriptionFallback: 'Centre value text element.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [
