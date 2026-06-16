@@ -2,6 +2,7 @@ import type { ISticky } from "../../interfaces"
 import { convertToUnit } from '../../utils'
 
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import type { CSSProperties } from 'vue'
 
 /*********************************************************
  * useSticky
@@ -10,13 +11,13 @@ export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky) {
     const isStuck = shallowRef<boolean | 'top' | 'bottom'>(false)
     const stuckPosition = shallowRef(0)
 
-    const stickyStyles = computed(() => {
+    const stickyStyles = computed<Array<CSSProperties | undefined>>(() => {
         const side = typeof isStuck.value === 'boolean' ? 'top' : isStuck.value
         return [
             isSticky.value ? {top: 'auto', bottom: 'auto', height: undefined} : undefined,
             isStuck.value
-                ? {[side]: convertToUnit(stuckPosition.value)}
-                : {top: layoutItemStyles.value.top}
+                ? {[side]: convertToUnit(stuckPosition.value)} as CSSProperties
+                : {top: layoutItemStyles.value.top as CSSProperties['top']}
         ]
     })
 
