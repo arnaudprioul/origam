@@ -196,7 +196,6 @@ useSeoMeta({
                 <origam-avatar
                     icon="mdi-help-circle-outline"
                     color="warning"
-                    rounded="lg"
                     size="64"
                     aria-hidden="true"
                 />
@@ -876,7 +875,6 @@ useSeoMeta({
                                     :code="displayDoc?.composable?.signature"
                                     lang="typescript"
                                     copyable
-                                    rounded="lg"
                                     class="component-composable__code"
                                 />
 
@@ -891,7 +889,6 @@ useSeoMeta({
                                     :code="displayDoc?.composable?.usageCode"
                                     lang="vue"
                                     copyable
-                                    rounded="lg"
                                     class="component-composable__code"
                                 />
                             </div>
@@ -960,7 +957,6 @@ useSeoMeta({
 
                                     <origam-table
                                         border
-                                        rounded="lg"
                                         class="component-a11y__keyboard-table"
                                         :caption="t('components.detail.a11y.keyboard_label', 'Keyboard interactions')"
                                     >
@@ -1277,7 +1273,6 @@ useSeoMeta({
                                         :lang="example.lang"
                                         copyable
                                         :line-numbers="true"
-                                        rounded="lg"
                                         class="component-examples__code"
                                     />
                                 </div>
@@ -1327,7 +1322,6 @@ useSeoMeta({
                                         :data-cy="`component-family-card-${member.slug}`"
                                     >
                                         <origam-card
-                                            rounded="lg"
                                             class="component-family__card"
                                         >
                                             <template #default>
@@ -1402,7 +1396,6 @@ useSeoMeta({
                                         :data-cy="`component-related-card-${item.slug}`"
                                     >
                                         <origam-card
-                                            rounded="lg"
                                             class="component-related__card"
                                         >
                                             <template #default>
@@ -1443,7 +1436,6 @@ useSeoMeta({
                             data-cy="component-no-doc"
                         >
                             <origam-card
-                                rounded="lg"
                                 class="component-no-doc__card"
                             >
                                 <template #default>
@@ -1540,7 +1532,7 @@ useSeoMeta({
     position: absolute;
     inset-inline: 0;
     inset-block-start: 0;
-    block-size: 200px;
+    block-size: 100%;
     background: var(--origam-gradient---hero-glow);
     opacity: 0.45;
     pointer-events: none;
