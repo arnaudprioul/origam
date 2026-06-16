@@ -1213,22 +1213,17 @@ useSeoMeta({
                                         </ClientOnly>
                                     </div>
 
-                                    <div class="component-playground__code-block">
-                                        <p class="component-playground__code-label">
-                                            {{ t('components.detail.playground.code_label', 'Generated code') }}
-                                        </p>
-
-                                        <origam-code
-                                            :code="generatedCode"
-                                            lang="vue"
-                                            copyable
-                                            rounded="none"
-                                            class="component-playground__generated-code"
-                                            data-cy="playground-generated-code"
-                                        />
-                                    </div>
                                 </div>
                             </div>
+
+                            <origam-code
+                                :code="generatedCode"
+                                lang="vue"
+                                :filename="t('components.detail.playground.code_label', 'Generated code')"
+                                copyable
+                                class="component-playground__generated-code"
+                                data-cy="playground-generated-code"
+                            />
                         </section>
 
                         <section
@@ -1973,10 +1968,6 @@ useSeoMeta({
     max-inline-size: 100%;
 }
 
-:deep(.origam-code--compact) {
-    --origam-code__compact---gap: var(--origam-space---2, 0.5rem);
-}
-
 /* ── ANATOMY ──────────────────────────────────────────────── */
 .component-anatomy__figure {
     display: flex;
@@ -2248,7 +2239,6 @@ useSeoMeta({
 .component-playground__right {
     display: flex;
     flex-direction: column;
-    gap: 0;
 }
 
 .component-playground__preview {
@@ -2256,10 +2246,9 @@ useSeoMeta({
     align-items: center;
     justify-content: center;
     flex: 1;
-    min-block-size: 140px;
+    min-block-size: 200px;
     padding: var(--origam-space---8, 2rem);
     background: color-mix(in srgb, var(--origam-color__surface---sunken, #f5f5f5) 50%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 
 .component-preview__fallback {
@@ -2269,29 +2258,9 @@ useSeoMeta({
     color: var(--origam-color__text---tertiary, #737373);
 }
 
-.component-playground__code-block {
-    padding: 0;
-}
-
-.component-playground__code-label {
-    margin: 0;
-    padding: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
-    border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
-    font-size: var(--origam-font-size---xs, 0.75rem);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--origam-color__text---tertiary, #737373);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
-}
-
 .component-playground__generated-code {
     inline-size: 100%;
-}
-
-.component-playground__code-block :deep(.origam-code) {
-    border: none;
-    border-radius: 0;
+    margin-block-start: var(--origam-space---4, 1rem);
 }
 
 /* ── EXAMPLES ─────────────────────────────────────────────── */
