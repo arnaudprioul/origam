@@ -430,7 +430,7 @@ useSeoMeta({
                         <origam-grid
                             tag="ul"
                             columns="1"
-                            gap="1"
+                            gap="0.25rem"
                             class="component-toc__list"
                         >
                             <origam-grid-item
@@ -1013,7 +1013,7 @@ useSeoMeta({
                                     <origam-grid
                                         tag="ul"
                                         columns="1"
-                                        gap="3"
+                                        gap="0.75rem"
                                         class="component-a11y__notes"
                                     >
                                         <origam-grid-item
@@ -1310,7 +1310,7 @@ useSeoMeta({
                             <origam-grid
                                 tag="ul"
                                 columns="repeat(auto-fill, minmax(200px, 1fr))"
-                                gap="4"
+                                gap="1rem"
                                 class="component-family__grid"
                                 data-cy="component-family-grid"
                             >
@@ -1387,7 +1387,7 @@ useSeoMeta({
                             <origam-grid
                                 tag="ul"
                                 columns="repeat(auto-fill, minmax(200px, 1fr))"
-                                gap="4"
+                                gap="1rem"
                                 class="component-related__grid"
                                 data-cy="component-related-grid"
                             >
@@ -1869,9 +1869,6 @@ useSeoMeta({
 
 .component-table__td--name {
     white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: var(--origam-space---2, 0.5rem);
 }
 
 .component-table__td--type { max-inline-size: 20rem; }
@@ -1933,6 +1930,7 @@ useSeoMeta({
 }
 
 .prop-list__copy-icon {
+    margin-inline-start: var(--origam-space---2, 0.5rem);
     opacity: 0;
     transition: opacity 100ms;
     color: var(--origam-color__text---tertiary, #737373);
@@ -2302,6 +2300,11 @@ useSeoMeta({
 
 .component-playground__generated-code {
     inline-size: 100%;
+}
+
+.component-playground__code-block :deep(.origam-code) {
+    border: none;
+    border-radius: 0;
 }
 
 /* ── EXAMPLES ─────────────────────────────────────────────── */
