@@ -356,46 +356,6 @@ const onTrackChange = (track, index) => console.log('Now playing', track.title)
             { num: 4, cls: '.origam-audio__controller', descriptionKey: 'components.audio.anatomy.controller', descriptionFallback: '<OrigamMediaController> shell housing the transport row (play/pause, scrubber, volume, playback-rate menu).' },
             { num: 5, cls: '.origam-audio__playlist', descriptionKey: 'components.audio.anatomy.playlist', descriptionFallback: 'Ordered list of tracks shown below the transport when playlist prop is set.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<article class="origam-audio">
-  <!-- Hidden native audio element — drives all state via useAudioPlayer -->
-  <audio ref="audioRef" class="origam-audio__el" />
-
-  <!-- Custom controls shell (v-if="isCustomControls") -->
-  <origam-media-controller class="origam-audio__controller">
-    <!-- Cover + metadata header strip -->
-    <template #header>
-      <div class="origam-audio__header">
-        <figure class="origam-audio__cover">...</figure>
-        <div class="origam-audio__body">
-          <div class="origam-audio__metadata">...</div>
-        </div>
-      </div>
-    </template>
-
-    <!-- Waveform scrubber (v-if="waveformEnabled") -->
-    <template #waveform>
-      <slot name="waveform" />
-    </template>
-
-    <!-- Loading / error overlays -->
-    <template #loading><slot name="loading" /></template>
-    <template #error><slot name="error" /></template>
-  </origam-media-controller>
-
-  <!-- Playlist (v-if="hasPlaylist") -->
-  <ul class="origam-audio__playlist">...</ul>
-</article>`,
-        rootClass: 'origam-audio',
-        classes: [
-            { cls: 'origam-audio', descriptionKey: 'components.audio.anatomy.root', descriptionFallback: 'Root <article> element. Carries color, border, rounded and elevation classes.' },
-            { cls: 'origam-audio__el', descriptionKey: 'components.audio.anatomy.el', descriptionFallback: 'Hidden native <audio> element driving all state via useAudioPlayer.' },
-            { cls: 'origam-audio__controller', descriptionKey: 'components.audio.anatomy.controller', descriptionFallback: 'OrigamMediaController shell containing the transport row.' },
-            { cls: 'origam-audio__header', descriptionKey: 'components.audio.anatomy.header_class', descriptionFallback: 'Wrapper for cover + metadata. Has --no-cover modifier when cover is absent.' },
-            { cls: 'origam-audio__cover', descriptionKey: 'components.audio.anatomy.cover_class', descriptionFallback: 'Album cover <figure>. Size varies by variant (96 px / 48 px).' },
-            { cls: 'origam-audio__body', descriptionKey: 'components.audio.anatomy.body', descriptionFallback: 'Column container for metadata, meta row and waveform.' },
-            { cls: 'origam-audio__metadata', descriptionKey: 'components.audio.anatomy.metadata', descriptionFallback: 'Title, artist and album label group.' },
-            { cls: 'origam-audio__playlist', descriptionKey: 'components.audio.anatomy.playlist_class', descriptionFallback: 'Ordered list of track items below the transport.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

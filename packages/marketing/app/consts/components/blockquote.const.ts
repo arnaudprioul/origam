@@ -199,38 +199,6 @@ export const BLOCKQUOTE_DOC: IComponentDoc = {
             { num: 4, cls: '.origam-blockquote__attribution', descriptionKey: 'components.blockquote.anatomy.attribution', descriptionFallback: 'Footer <footer> containing the author span, separator and source <cite>. Renders only when author or source is present.' },
             { num: 5, cls: '.origam-blockquote__source', descriptionKey: 'components.blockquote.anatomy.source', descriptionFallback: '<cite> element wrapping the source label. Receives source---color token for secondary italic styling.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<blockquote class="origam-blockquote origam-blockquote--variant-default">
-  <!-- Decorative glyph (variant="quoted" only) -->
-  <span class="origam-blockquote__mark origam-blockquote__mark--bg" aria-hidden="true">"</span>
-
-  <!-- Citation body — #default slot -->
-  <div class="origam-blockquote__body">
-    <slot />
-  </div>
-
-  <!-- Attribution footer (v-if="hasAttribution") -->
-  <footer class="origam-blockquote__attribution">
-    <span class="origam-blockquote__dash" aria-hidden="true">— </span>
-    <span class="origam-blockquote__author">
-      <slot name="author">{{ author }}</slot>
-    </span>
-    <span class="origam-blockquote__separator" aria-hidden="true">, </span>
-    <cite class="origam-blockquote__source">
-      <slot name="source">{{ source }}</slot>
-    </cite>
-  </footer>
-</blockquote>`,
-        rootClass: 'origam-blockquote',
-        classes: [
-            { cls: 'origam-blockquote', descriptionKey: 'components.blockquote.anatomy.root_class', descriptionFallback: 'Root element.' },
-            { cls: 'origam-blockquote__mark', descriptionKey: 'components.blockquote.anatomy.mark_class', descriptionFallback: 'Quote glyph container (aria-hidden).' },
-            { cls: 'origam-blockquote__mark--bg', descriptionKey: 'components.blockquote.anatomy.mark_bg_class', descriptionFallback: 'Absolute positioned large background glyph for quoted variant.' },
-            { cls: 'origam-blockquote__body', descriptionKey: 'components.blockquote.anatomy.body_class', descriptionFallback: 'Citation body block.' },
-            { cls: 'origam-blockquote__attribution', descriptionKey: 'components.blockquote.anatomy.attribution_class', descriptionFallback: '<footer> for author and source.' },
-            { cls: 'origam-blockquote__author', descriptionKey: 'components.blockquote.anatomy.author_class', descriptionFallback: 'Author name span.' },
-            { cls: 'origam-blockquote__source', descriptionKey: 'components.blockquote.anatomy.source_class', descriptionFallback: '<cite> wrapping the source label.' },
-            { cls: 'origam-blockquote__dash', descriptionKey: 'components.blockquote.anatomy.dash_class', descriptionFallback: 'Em-dash before author (aria-hidden).' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

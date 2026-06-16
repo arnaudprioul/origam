@@ -190,28 +190,6 @@ export const BREADCRUMB_DOC: IComponentDoc = {
             { num: 3, cls: '.origam-breadcrumb__item', descriptionKey: 'components.breadcrumb.anatomy.item', descriptionFallback: '<li> wrapper for one item + its trailing divider. display: flex; align-items: center.' },
             { num: 4, cls: '.origam-breadcrumb__divider', descriptionKey: 'components.breadcrumb.anatomy.divider', descriptionFallback: 'OrigamBreadcrumbDivider separator. aria-hidden. Not rendered after the last item.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<nav class="origam-breadcrumb" aria-label="Breadcrumb">
-  <ol class="origam-breadcrumb__items">
-    <li class="origam-breadcrumb__item">
-      <origam-breadcrumb-item :to="'/'">Home</origam-breadcrumb-item>
-      <origam-breadcrumb-divider divider="/" />
-    </li>
-    <li class="origam-breadcrumb__item">
-      <origam-breadcrumb-item :to="'/components'">Components</origam-breadcrumb-item>
-      <origam-breadcrumb-divider divider="/" />
-    </li>
-    <li class="origam-breadcrumb__item">
-      <!-- Last item: disabled + aria-current="page" set automatically -->
-      <origam-breadcrumb-item :disabled="true" :is-active="true">Breadcrumb</origam-breadcrumb-item>
-    </li>
-  </ol>
-</nav>`,
-        rootClass: 'origam-breadcrumb',
-        classes: [
-            { cls: 'origam-breadcrumb', descriptionKey: 'components.breadcrumb.anatomy.root_class', descriptionFallback: 'Root navigation element.' },
-            { cls: 'origam-breadcrumb__items', descriptionKey: 'components.breadcrumb.anatomy.items_class', descriptionFallback: '<ol> flex row.' },
-            { cls: 'origam-breadcrumb__item', descriptionKey: 'components.breadcrumb.anatomy.item_class', descriptionFallback: '<li> item + divider wrapper.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

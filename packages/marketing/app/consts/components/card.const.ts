@@ -308,56 +308,6 @@ export const CARD_DOC: IComponentDoc = {
             { num: 7, cls: '.origam-card__footer', descriptionKey: 'components.card.anatomy.footer', descriptionFallback: '<div> rendered only when the #footer slot is populated. Typically contains action buttons.' },
             { num: 8, cls: '.origam-card__loader', descriptionKey: 'components.card.anatomy.loader', descriptionFallback: 'Loading overlay rendered when loading prop is set. Contains skeleton, progress-linear or progress-circular.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<component :is="link.tag" class="origam-card">
-  <!-- Hover/active scrim (v-if="isClickable") -->
-  <span class="origam-card__overlay" />
-  <span class="origam-card__underlay" />
-
-  <slot name="wrapper">
-    <!-- Loader overlay (v-if="hasLoading") -->
-    <div class="origam-card__loader">
-      <origam-skeleton v-if="loaderConfig.kind === 'skeleton'" variant="card" />
-      <origam-progress v-else :active="true" />
-    </div>
-
-    <!-- Header (v-if="hasHeader") -->
-    <origam-card-header class="origam-card__header"
-      :title="title" :subtitle="subtitle"
-      :prepend-icon="prependIcon" :append-icon="appendIcon"
-    />
-
-    <!-- Asset / Image (v-if="hasAsset") -->
-    <div class="origam-card__asset">
-      <slot name="asset">
-        <origam-img :src="image" class="origam-card__image" cover />
-      </slot>
-    </div>
-
-    <!-- Content area -->
-    <div class="origam-card__content">
-      <origam-card-text class="origam-card__text" :text="text" />
-      <slot name="default" />
-    </div>
-
-    <!-- Footer (v-if="hasFooter") -->
-    <div class="origam-card__footer">
-      <slot name="footer" />
-    </div>
-  </slot>
-</component>`,
-        rootClass: 'origam-card',
-        classes: [
-            { cls: 'origam-card', descriptionKey: 'components.card.anatomy.root_class', descriptionFallback: 'Root surface element.' },
-            { cls: 'origam-card__overlay', descriptionKey: 'components.card.anatomy.overlay_class', descriptionFallback: 'Absolute interaction scrim (hover tint).' },
-            { cls: 'origam-card__underlay', descriptionKey: 'components.card.anatomy.underlay_class', descriptionFallback: 'Absolute underlay reserved for future compositing.' },
-            { cls: 'origam-card__loader', descriptionKey: 'components.card.anatomy.loader_class', descriptionFallback: 'Loading state container.' },
-            { cls: 'origam-card__header', descriptionKey: 'components.card.anatomy.header_class', descriptionFallback: 'Header section (OrigamCardHeader).' },
-            { cls: 'origam-card__asset', descriptionKey: 'components.card.anatomy.asset_class', descriptionFallback: 'Image asset wrapper.' },
-            { cls: 'origam-card__image', descriptionKey: 'components.card.anatomy.image_class', descriptionFallback: '<origam-img> inside the asset area.' },
-            { cls: 'origam-card__content', descriptionKey: 'components.card.anatomy.content_class', descriptionFallback: 'Main content wrapper.' },
-            { cls: 'origam-card__text', descriptionKey: 'components.card.anatomy.text_class', descriptionFallback: 'OrigamCardText body.' },
-            { cls: 'origam-card__footer', descriptionKey: 'components.card.anatomy.footer_class', descriptionFallback: 'Footer area for action buttons.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

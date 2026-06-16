@@ -284,54 +284,6 @@ const onDateClick = (date) => console.log('date clicked', date)
             { num: 3, cls: '.origam-calendar__month-grid', descriptionKey: 'components.calendar.anatomy.month_grid', descriptionFallback: 'Month grid with role="grid". Contains __month-row (role="row") > __day-cell (role="gridcell").' },
             { num: 4, cls: '.origam-calendar__event', descriptionKey: 'components.calendar.anatomy.event', descriptionFallback: 'Event chip (<button>) with role="button" and aria-label. Carries inline background-color from categoryColors / event.color.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<div class="origam-calendar" role="application" aria-label="…" @keydown="onKeydown">
-  <!-- Toolbar (or #header slot) -->
-  <div class="origam-calendar__toolbar" role="toolbar">
-    <origam-btn-group class="origam-calendar__toolbar-nav" />
-    <div class="origam-calendar__toolbar-title">{{ headerTitle }}</div>
-    <origam-btn-group class="origam-calendar__toolbar-views" />
-  </div>
-
-  <!-- Month view body -->
-  <div class="origam-calendar__body origam-calendar__body--month">
-    <div class="origam-calendar__weekdays" role="row">
-      <div v-for="name in weekdayNames" role="columnheader">{{ name }}</div>
-    </div>
-    <div class="origam-calendar__month-grid" role="grid">
-      <div v-for="week in monthGrid" role="row" class="origam-calendar__month-row">
-        <div
-          v-for="day in week"
-          role="gridcell"
-          tabindex="0"
-          class="origam-calendar__day-cell"
-        >
-          <div class="origam-calendar__day-number">{{ day.getDate() }}</div>
-          <div class="origam-calendar__day-events">
-            <button
-              v-for="event in dayEventsCapped(day)"
-              type="button"
-              role="button"
-              class="origam-calendar__event"
-            >
-              <span class="origam-calendar__event-title">{{ event.title }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>`,
-        rootClass: 'origam-calendar',
-        classes: [
-            { cls: 'origam-calendar', descriptionKey: 'components.calendar.anatomy.root_class', descriptionFallback: 'Root element with role="application".' },
-            { cls: 'origam-calendar__toolbar', descriptionKey: 'components.calendar.anatomy.toolbar_class', descriptionFallback: 'Navigation toolbar with role="toolbar".' },
-            { cls: 'origam-calendar__body', descriptionKey: 'components.calendar.anatomy.body_class', descriptionFallback: 'Main content area. Gets --month / --week / --day / --agenda modifier.' },
-            { cls: 'origam-calendar__month-grid', descriptionKey: 'components.calendar.anatomy.month_grid_class', descriptionFallback: 'Month grid with role="grid".' },
-            { cls: 'origam-calendar__day-cell', descriptionKey: 'components.calendar.anatomy.day_cell_class', descriptionFallback: 'Individual day cell with role="gridcell" and tabindex="0".' },
-            { cls: 'origam-calendar__event', descriptionKey: 'components.calendar.anatomy.event_class', descriptionFallback: '<button> event chip with role="button".' },
-            { cls: 'origam-calendar__timeline', descriptionKey: 'components.calendar.anatomy.timeline_class', descriptionFallback: 'Week/day timeline container.' },
-            { cls: 'origam-calendar__agenda-day', descriptionKey: 'components.calendar.anatomy.agenda_day_class', descriptionFallback: 'Agenda view day group.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

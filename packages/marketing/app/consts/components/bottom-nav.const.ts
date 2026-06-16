@@ -210,22 +210,6 @@ const navItems = [
             { num: 2, cls: '.origam-bottom-nav__content', descriptionKey: 'components.bottom_nav.anatomy.content', descriptionFallback: 'Flex row containing all navigation buttons. justify-content: center by default.' },
             { num: 3, cls: '.origam-bottom-nav__btn', descriptionKey: 'components.bottom_nav.anatomy.btn', descriptionFallback: 'Each OrigamBtn item. Gets --selected modifier when active in the group.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<nav class="origam-bottom-nav origam-bottom-nav--vertical" aria-label="Bottom navigation">
-  <div class="origam-bottom-nav__content">
-    <!-- OrigamDefaultsProvider propagates density/color to all Btns -->
-    <origam-btn class="origam-bottom-nav__btn origam-bottom-nav__btn--selected" />
-    <origam-btn class="origam-bottom-nav__btn" />
-    <origam-btn class="origam-bottom-nav__btn" />
-    <origam-btn class="origam-bottom-nav__btn" />
-  </div>
-</nav>`,
-        rootClass: 'origam-bottom-nav',
-        classes: [
-            { cls: 'origam-bottom-nav', descriptionKey: 'components.bottom_nav.anatomy.root_class', descriptionFallback: 'Root element.' },
-            { cls: 'origam-bottom-nav__content', descriptionKey: 'components.bottom_nav.anatomy.content_class', descriptionFallback: 'Flex row wrapper for navigation buttons.' },
-            { cls: 'origam-bottom-nav__btn', descriptionKey: 'components.bottom_nav.anatomy.btn_class', descriptionFallback: 'Each OrigamBtn navigation item.' },
-            { cls: 'origam-bottom-nav__btn--selected', descriptionKey: 'components.bottom_nav.anatomy.btn_selected_class', descriptionFallback: 'Applied to the active/selected button.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [

@@ -250,43 +250,6 @@ const onMatchClick = (match, round, event) => console.log(match, round)
             { num: 4, cls: '.origam-bracket__connectors', descriptionKey: 'components.bracket.anatomy.connectors', descriptionFallback: 'SVG overlay drawing connector paths between match cards. aria-hidden, positioned absolutely.' },
             { num: 5, cls: '.origam-bracket__competitor', descriptionKey: 'components.bracket.anatomy.competitor', descriptionFallback: 'Competitor row rendered by OrigamBracketCompetitor. Carries winner/loser/pending state classes.' }
         ] satisfies IComponentAnatomyLegendItem[],
-        code: `<div class="origam-bracket" role="region" aria-label="…">
-  <!-- SVG connector overlay (aria-hidden) -->
-  <svg class="origam-bracket__connectors" aria-hidden="true">
-    <path v-for="path in connectorPaths" :d="path.d" />
-  </svg>
-
-  <!-- Single-elimination tree -->
-  <div class="origam-bracket__single">
-    <origam-bracket-round
-      v-for="round in displayRounds"
-      :key="round.id"
-      class="origam-bracket__round"
-    >
-      <origam-bracket-match
-        v-for="match in round.matches"
-        :key="match.id"
-        class="origam-bracket__match"
-      >
-        <origam-bracket-competitor
-          v-for="competitor in match.competitors"
-          :key="competitor.id"
-          class="origam-bracket__competitor"
-        />
-      </origam-bracket-match>
-    </origam-bracket-round>
-  </div>
-</div>`,
-        rootClass: 'origam-bracket',
-        classes: [
-            { cls: 'origam-bracket', descriptionKey: 'components.bracket.anatomy.root_class', descriptionFallback: 'Root container element.' },
-            { cls: 'origam-bracket__connectors', descriptionKey: 'components.bracket.anatomy.connectors_class', descriptionFallback: 'Absolute SVG overlay for connector paths.' },
-            { cls: 'origam-bracket__single', descriptionKey: 'components.bracket.anatomy.single_class', descriptionFallback: 'Flex container for single-elimination round columns.' },
-            { cls: 'origam-bracket__double', descriptionKey: 'components.bracket.anatomy.double_class', descriptionFallback: 'Container for double-elimination (winners + losers sections).' },
-            { cls: 'origam-bracket__round-robin', descriptionKey: 'components.bracket.anatomy.round_robin_class', descriptionFallback: 'Grid container for the NxN round-robin matrix.' },
-            { cls: 'origam-bracket__match', descriptionKey: 'components.bracket.anatomy.match_class', descriptionFallback: 'Match card root element.' },
-            { cls: 'origam-bracket__competitor', descriptionKey: 'components.bracket.anatomy.competitor_class', descriptionFallback: 'Competitor row within a match card.' }
-        ]
     } satisfies IComponentAnatomy,
 
     cssVars: [
