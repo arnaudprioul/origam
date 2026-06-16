@@ -28,9 +28,9 @@ export const GRIDS_DOC: IComponentDoc = {
 
     family: [
         {
-            slug: 'grids-container',
+            slug: 'container',
             name: 'Container',
-            descriptionKey: 'components.catalog.grids_container.description',
+            descriptionKey: 'components.catalog.container.description',
             descriptionFallback: 'Page-level structural wrapper with optional fluid / fullscreen modes.'
         },
         {
@@ -40,15 +40,15 @@ export const GRIDS_DOC: IComponentDoc = {
             descriptionFallback: 'Horizontal row that wraps Col children with configurable gutters and direction.'
         },
         {
-            slug: 'grids-col',
+            slug: 'col',
             name: 'Col',
-            descriptionKey: 'components.catalog.grids_col.description',
+            descriptionKey: 'components.catalog.col.description',
             descriptionFallback: 'Responsive column that spans 1–12 grid tracks with per-breakpoint overrides.'
         },
         {
-            slug: 'grids-spacer',
+            slug: 'spacer',
             name: 'Spacer',
-            descriptionKey: 'components.catalog.grids_spacer.description',
+            descriptionKey: 'components.catalog.spacer.description',
             descriptionFallback: 'Invisible flex-grow element that fills remaining space between cols.'
         }
     ],
