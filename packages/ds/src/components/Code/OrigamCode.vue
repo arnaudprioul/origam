@@ -414,7 +414,7 @@
 	.origam-code--compact {
 		display: inline-flex;
 		align-items: center;
-		gap: var(--origam-code__compact---gap);
+		gap: var(--origam-code__compact---gap, 0.5rem);
 		padding: var(--origam-code__compact---padding-block) var(--origam-code__compact---padding-inline);
 		line-height: var(--origam-code__compact---line-height);
 		max-inline-size: 100%;
