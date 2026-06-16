@@ -1055,78 +1055,50 @@ useSeoMeta({
                                 </div>
                             </div>
 
-                            <origam-table
-                                border
-                                rounded="lg"
-                                class="component-tokens__table"
-                                :caption="t('components.detail.tokens.col_token', 'Design tokens')"
+                            <dl
+                                class="prop-list"
                                 data-cy="component-tokens-table"
                             >
-                                <thead>
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            class="component-table__th"
+                                <div
+                                    v-for="token in displayDoc?.tokens?.excerpt"
+                                    :key="token.tokenPath"
+                                    class="prop-list__item"
+                                >
+                                    <dt class="prop-list__dt">
+                                        <origam-btn
+                                            variant="text"
+                                            size="x-small"
+                                            class="prop-list__name-btn"
+                                            :aria-label="`Copy ${token.tokenPath}`"
+                                            @click="copyPropText(token.tokenPath)"
                                         >
-                                            {{ t('components.detail.tokens.col_token', 'Token path') }}
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="component-table__th"
-                                        >
-                                            {{ t('components.detail.tokens.col_value', 'Value') }}
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="component-table__th"
-                                        >
-                                            {{ t('components.detail.tokens.col_type', 'Type') }}
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="component-table__th"
-                                        >
-                                            {{ t('components.detail.tokens.col_description', 'Description') }}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        v-for="token in displayDoc?.tokens?.excerpt"
-                                        :key="token.tokenPath"
-                                        class="component-table__row"
-                                    >
-                                        <td class="component-table__td component-table__td--name">
-                                            <origam-code
-                                                :code="token.tokenPath"
-                                                lang="plaintext"
-                                                compact
-                                                class="component-table__code"
+                                            <span class="prop-list__name-mono">{{ token.tokenPath }}</span>
+                                            <origam-icon
+                                                icon="mdi-content-copy"
+                                                size="11"
+                                                class="prop-list__copy-icon"
+                                                aria-hidden="true"
                                             />
-                                        </td>
-                                        <td class="component-table__td component-table__td--default">
-                                            <origam-code
-                                                :code="token.value"
-                                                lang="plaintext"
-                                                compact
-                                                class="component-table__code"
-                                            />
-                                        </td>
-                                        <td class="component-table__td component-table__td--type">
-                                            <origam-chip
-                                                size="x-small"
-                                                variant="outlined"
-                                                pill
-                                            >
-                                                {{ token.type }}
-                                            </origam-chip>
-                                        </td>
-                                        <td class="component-table__td component-table__td--desc">
-                                            {{ t(token.descriptionKey, token.descriptionFallback) }}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </origam-table>
+                                        </origam-btn>
+
+                                        <origam-chip
+                                            size="x-small"
+                                            variant="outlined"
+                                            class="prop-list__type-chip prop-list__type-chip--primitive"
+                                        >
+                                            {{ token.type }}
+                                        </origam-chip>
+
+                                        <span
+                                            v-if="token.value"
+                                            class="prop-list__default"
+                                        >= {{ token.value }}</span>
+                                    </dt>
+                                    <dd class="prop-list__dd">
+                                        {{ t(token.descriptionKey, token.descriptionFallback) }}
+                                    </dd>
+                                </div>
+                            </dl>
                         </section>
 
                         <section
