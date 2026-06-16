@@ -35,6 +35,8 @@ export const NAV_SECTIONS: INavSection[] = [
         items: [
             { i18nKey: 'nav.components', i18nFallback: 'Components', href: '/components' },
             { i18nKey: 'nav.directives', i18nFallback: 'Directives', href: '/directives' },
+            { i18nKey: 'nav.composables', i18nFallback: 'Composables', href: '/composables' },
+            { i18nKey: 'nav.types', i18nFallback: 'Types', href: '/types' },
             { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories' },
             { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs' }
         ]
