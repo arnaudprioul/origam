@@ -383,6 +383,7 @@
 	.origam-code {
 		position: relative;
 		display: block;
+		margin: 0;
 		background-color: var(--origam-code---background-color);
 		color: var(--origam-code---color);
 		border: var(--origam-code---border-width) solid var(--origam-code---border-color);

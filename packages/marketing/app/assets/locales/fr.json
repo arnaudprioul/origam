@@ -824,18 +824,90 @@
         "desc": "Aucun composant ne correspond au slug",
         "back": "Retour au catalogue"
       },
+      "no_doc": {
+        "title": "Documentation à venir",
+        "desc": "La référence API détaillée de ce composant est en cours de rédaction. Consultez les stories Histoire ou la doc VitePress en attendant."
+      },
+      "anatomy": {
+        "title": "Anatomie",
+        "eyebrow": "Structure",
+        "desc": "Décomposition visuelle de la structure interne du composant avec les appels de classes BEM.",
+        "dom_structure_label": "Structure DOM",
+        "col_class": "Classe",
+        "col_description": "Description"
+      },
+      "css_vars": {
+        "title": "Variables CSS",
+        "eyebrow": "Personnalisation",
+        "desc": "Propriétés CSS personnalisées exposées par ce composant. Surchargez-les pour personnaliser sans perdre la compatibilité avec le thème.",
+        "col_variable": "Variable",
+        "col_default": "Défaut",
+        "col_description": "Description"
+      },
+      "exposed": {
+        "title": "Membres exposés",
+        "eyebrow": "API",
+        "desc": "Propriétés et méthodes accessibles via ref template (defineExpose). Utilisés pour le contrôle programmatique.",
+        "col_name": "Nom",
+        "col_type": "Type",
+        "col_description": "Description"
+      },
+      "composable": {
+        "title": "Composable",
+        "eyebrow": "API",
+        "desc": "Composable headless pour utiliser la logique de ce composant sans le template.",
+        "signature_label": "Signature",
+        "usage_label": "Utilisation"
+      },
+      "a11y": {
+        "title": "Accessibilité",
+        "eyebrow": "Inclusion",
+        "desc": "Rôles ARIA, navigation clavier et gestion du focus. Sourcé depuis le template réel du composant.",
+        "roles_label": "Rôles ARIA",
+        "keyboard_label": "Interactions clavier",
+        "col_key": "Touche",
+        "col_action": "Action",
+        "notes_label": "Notes"
+      },
+      "tokens": {
+        "title": "Design tokens",
+        "eyebrow": "Fondation",
+        "desc": "Extrait DTCG du fichier de tokens du composant. Construit avec Style Dictionary v4.",
+        "col_token": "Chemin du token",
+        "col_value": "Valeur",
+        "col_type": "Type",
+        "col_description": "Description",
+        "source_label": "Source",
+        "pipeline_label": "Pipeline"
+      },
+      "playground": {
+        "title": "Playground",
+        "eyebrow": "Interactif",
+        "desc": "Modifiez les props en direct et observez le composant se mettre à jour. Le snippet de code généré suit vos changements.",
+        "preview_label": "Aperçu en direct",
+        "code_label": "Code généré",
+        "controls_label": "Contrôles"
+      },
+      "examples": {
+        "title": "Exemples",
+        "eyebrow": "Usage",
+        "desc": "Extraits de code prêts à coller dans vos templates."
+      },
       "family": {
         "title": "Famille",
-        "desc": "Ces composants appartiennent au même dossier et fonctionnent ensemble."
+        "eyebrow": "Écosystème",
+        "desc": "Composants du même dossier qui partagent les conventions et se composent souvent ensemble."
       },
       "related": {
         "title": "Éléments liés",
+        "eyebrow": "Écosystème",
         "desc": "Composants et directives d'autres dossiers qui collaborent avec celui-ci.",
         "kind_component": "composant",
         "kind_directive": "directive"
       },
       "props": {
         "title": "Props",
+        "eyebrow": "API",
         "desc": "Toutes les props acceptées par ce composant, avec leur type, valeur par défaut et description.",
         "table_caption": "Props",
         "col_name": "Nom",
@@ -846,6 +918,7 @@
       },
       "emits": {
         "title": "Emits",
+        "eyebrow": "API",
         "desc": "Événements émis par ce composant.",
         "table_caption": "Événements",
         "col_event": "Événement",
@@ -854,19 +927,29 @@
       },
       "slots": {
         "title": "Slots",
+        "eyebrow": "API",
         "desc": "Emplacements de contenu exposés par ce composant.",
         "table_caption": "Slots",
         "col_slot": "Slot",
         "col_slot_props": "Props du slot",
         "col_description": "Description"
       },
-      "examples": {
-        "title": "Exemples",
-        "desc": "Extraits de code prêts à coller dans vos templates."
+      "hero": {
+        "props_count": "{count} props",
+        "family_count": "{count} dans la famille",
+        "source_label": "Source",
+        "story_label": "Story",
+        "docs_label": "Docs",
+        "import_label": "Copier l'import",
+        "import_copied": "Copié !",
+        "preview_label": "Aperçu",
+        "stable_label": "stable"
       },
-      "no_doc": {
-        "title": "Documentation à venir",
-        "desc": "La référence API détaillée de ce composant est en cours de rédaction. Consultez les stories Histoire ou la doc VitePress en attendant."
+      "status": {
+        "stable": "stable",
+        "beta": "bêta",
+        "experimental": "expérimental",
+        "deprecated": "déprécié"
       }
     }
   }

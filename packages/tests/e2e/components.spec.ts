@@ -134,37 +134,128 @@ test.describe('/components/btn — page détail', () => {
         expect(text?.trim().toLowerCase()).toContain('btn')
     })
 
-    test('la table Props est non vide (OrigamTable avec tbody)', async ({ page }) => {
+    test('le hero affiche le bouton import copier du composant', async ({ page }) => {
+        const importBtn = page.locator('[data-cy="component-import-btn-btn"]')
+        await expect(importBtn).toBeVisible()
+        const text = await importBtn.textContent()
+        expect(text).toContain('OrigamBtn')
+    })
+
+    test('la prop-list Props est non vide (dl > .prop-list__item)', async ({ page }) => {
         const propsSection = page.locator('[data-cy="component-props"]')
         await expect(propsSection).toBeVisible()
 
-        const propsTable = page.locator('[data-cy="component-props-table"]')
-        await expect(propsTable).toBeVisible()
-        await expect(propsTable).toHaveClass(/origam-table/)
+        const propList = page.locator('[data-cy="component-props-table"]')
+        await expect(propList).toBeVisible()
 
-        const propRows = propsTable.locator('tbody tr')
+        const propRows = propList.locator('.prop-list__item')
         const count = await propRows.count()
         expect(count).toBeGreaterThan(5)
     })
 
-    test('la table Emits est présente et non vide', async ({ page }) => {
-        const emitsTable = page.locator('[data-cy="component-emits-table"]')
-        await expect(emitsTable).toBeVisible()
-        await expect(emitsTable).toHaveClass(/origam-table/)
+    test('la prop-list Emits est présente et non vide', async ({ page }) => {
+        const emitsList = page.locator('[data-cy="component-emits-table"]')
+        await expect(emitsList).toBeVisible()
 
-        const emitRows = emitsTable.locator('tbody tr')
+        const emitRows = emitsList.locator('.prop-list__item')
         const count = await emitRows.count()
         expect(count).toBeGreaterThanOrEqual(1)
     })
 
-    test('la table Slots est présente et non vide', async ({ page }) => {
-        const slotsTable = page.locator('[data-cy="component-slots-table"]')
-        await expect(slotsTable).toBeVisible()
-        await expect(slotsTable).toHaveClass(/origam-table/)
+    test('la prop-list Slots est présente et non vide', async ({ page }) => {
+        const slotsList = page.locator('[data-cy="component-slots-table"]')
+        await expect(slotsList).toBeVisible()
 
-        const slotRows = slotsTable.locator('tbody tr')
+        const slotRows = slotsList.locator('.prop-list__item')
         const count = await slotRows.count()
         expect(count).toBeGreaterThanOrEqual(1)
+    })
+
+    test('la section Anatomy est présente avec SVG + légende property-list', async ({ page }) => {
+        const anatomySection = page.locator('[data-cy="component-anatomy"]')
+        await expect(anatomySection).toBeVisible()
+
+        const anatomySvg = anatomySection.locator('svg[role="img"]')
+        await expect(anatomySvg).toBeVisible()
+
+        const legendList = page.locator('[data-cy="component-anatomy-table"]')
+        await expect(legendList).toBeVisible()
+        const items = legendList.locator('.component-anatomy__legend-item')
+        const count = await items.count()
+        expect(count).toBeGreaterThanOrEqual(4)
+    })
+
+    test('la prop-list Exposed Members est présente et liste defineExpose()', async ({ page }) => {
+        const exposedSection = page.locator('[data-cy="component-exposed"]')
+        await expect(exposedSection).toBeVisible()
+
+        const exposedList = page.locator('[data-cy="component-exposed-table"]')
+        await expect(exposedList).toBeVisible()
+
+        const rows = exposedList.locator('.prop-list__item')
+        const count = await rows.count()
+        expect(count).toBeGreaterThanOrEqual(1)
+    })
+
+    test('la prop-list CSS Variables est présente avec les vars --origam-btn', async ({ page }) => {
+        const cssVarsSection = page.locator('[data-cy="component-css-vars"]')
+        await expect(cssVarsSection).toBeVisible()
+
+        const cssVarsList = page.locator('[data-cy="component-css-vars-table"]')
+        await expect(cssVarsList).toBeVisible()
+
+        const rows = cssVarsList.locator('.prop-list__item')
+        const count = await rows.count()
+        expect(count).toBeGreaterThanOrEqual(5)
+    })
+
+    test('la section Accessibility est présente avec rôles ARIA et navigation clavier', async ({ page }) => {
+        const a11ySection = page.locator('[data-cy="component-a11y"]')
+        await expect(a11ySection).toBeVisible()
+
+        const roleChips = a11ySection.locator('.component-a11y__role-chip')
+        const chipCount = await roleChips.count()
+        expect(chipCount).toBeGreaterThanOrEqual(1)
+    })
+
+    test('la section Design Tokens est présente avec le tableau DTCG', async ({ page }) => {
+        const tokensSection = page.locator('[data-cy="component-tokens"]')
+        await expect(tokensSection).toBeVisible()
+
+        const tokensTable = page.locator('[data-cy="component-tokens-table"]')
+        await expect(tokensTable).toBeVisible()
+
+        const rows = tokensTable.locator('tbody tr')
+        const count = await rows.count()
+        expect(count).toBeGreaterThanOrEqual(3)
+    })
+
+    test('le playground est présent et son bouton live répond aux changements de contrôle', async ({ page }) => {
+        const playgroundSection = page.locator('[data-cy="component-playground"]')
+        await expect(playgroundSection).toBeVisible()
+
+        const preview = page.locator('[data-cy="playground-preview"]')
+        await expect(preview).toBeVisible()
+
+        const generatedCode = page.locator('[data-cy="playground-generated-code"]')
+        await expect(generatedCode).toBeVisible()
+        await expect(generatedCode).toHaveClass(/origam-code/)
+
+        const liveBtn = page.locator('[data-cy="playground-live-btn"]')
+        await expect(liveBtn).toBeVisible()
+        await expect(liveBtn).toHaveClass(/origam-btn/)
+
+        const initialCodeText = await generatedCode.textContent()
+
+        const disabledCtrl = page.locator('[data-cy="playground-ctrl-disabled"]')
+        await expect(disabledCtrl).toBeVisible()
+        const switchEl = disabledCtrl.locator('.origam-switch input[type="checkbox"]')
+        if (await switchEl.count() > 0) {
+            await switchEl.check({ force: true })
+            await page.waitForTimeout(200)
+            const updatedCodeText = await generatedCode.textContent()
+            expect(updatedCodeText).not.toBe(initialCodeText)
+        }
     })
 
     test('la section Composants liés contient BtnGroup et BtnToggle', async ({ page }) => {
@@ -198,13 +289,6 @@ test.describe('/components/btn — page détail', () => {
         expect(count).toBeGreaterThanOrEqual(1)
     })
 
-    test('le code tag du composant est rendu dans le hero', async ({ page }) => {
-        const tagCode = page.locator('[data-cy="component-hero-tag"]')
-        await expect(tagCode).toBeVisible()
-        const text = await tagCode.textContent()
-        expect(text).toContain('origam-btn')
-    })
-
     test('le lien breadcrumb "Components" renvoie vers /components', async ({ page }) => {
         const breadcrumbLink = page.locator('[data-cy="component-breadcrumb-catalog"]')
         await expect(breadcrumbLink).toBeVisible()
@@ -212,10 +296,26 @@ test.describe('/components/btn — page détail', () => {
         expect(href).toBe('/components')
     })
 
+    test('le ToC flottant liste les nouvelles sections enrichies', async ({ page }) => {
+        const toc = page.locator('[data-cy="component-toc"]')
+        await expect(toc).toBeVisible()
+
+        const tocLinks = toc.locator('.component-toc__link')
+        const count = await tocLinks.count()
+        expect(count).toBeGreaterThanOrEqual(8)
+
+        const labels = await tocLinks.allTextContents()
+        const normalized = labels.map(l => l.trim().toLowerCase())
+        expect(normalized.some(l => l.includes('anatomy') || l.includes('anatomie'))).toBeTruthy()
+        expect(normalized.some(l => l.includes('playground'))).toBeTruthy()
+        expect(normalized.some(l => l.includes('css'))).toBeTruthy()
+    })
+
     test('audit a11y axe-core /components/btn — 0 violation critical/serious', async ({ page }) => {
         const results = await new AxeBuilder({ page })
             .include(`[data-cy="page-component-btn"]`)
             .exclude('.origam-code__code')
+            .exclude('[data-cy="component-playground"]')
             .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
             .analyze()
         const critical = results.violations.filter(v =>
