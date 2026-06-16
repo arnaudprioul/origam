@@ -80,6 +80,9 @@ const importStatement = computed(() => `import { Origam${componentName.value} } 
 
 const copyImport = () => copyText(importStatement.value)
 
+const sanitizeAnatomyHtml = (html: string) =>
+    html.replace(/<(\/?)(textarea|script|style|title|select|option|xmp|noscript|noembed|iframe|plaintext)\b/gi, '&lt;$1$2')
+
 /* ── ToC ──────────────────────────────────────────────────────────── */
 const tocSections = computed(() => {
     const sections: { id: string; label: string }[] = []
@@ -390,13 +393,20 @@ useSeoMeta({
                                 :data-cy="`preview-variant-${variant.label.replace(/\s+/g, '-')}`"
                             >
                                 <ClientOnly>
-                                    <component
-                                        :is="`origam-${slug}`"
-                                        v-bind="variant.props"
-                                        :aria-label="variant.ariaLabel"
-                                    >
-                                        {{ variant.slotContent }}
-                                    </component>
+                                    <NuxtErrorBoundary>
+                                        <component
+                                            :is="`origam-${slug}`"
+                                            v-bind="variant.props"
+                                            :aria-label="variant.ariaLabel"
+                                        >
+                                            {{ variant.slotContent }}
+                                        </component>
+                                        <template #error>
+                                            <p class="component-preview__fallback">
+                                                {{ t('components.detail.preview.unavailable', 'Live preview unavailable for this component.') }}
+                                            </p>
+                                        </template>
+                                    </NuxtErrorBoundary>
                                 </ClientOnly>
                                 <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
                             </div>
@@ -484,7 +494,7 @@ useSeoMeta({
                                     <figcaption
                                         v-if="displayDoc?.anatomy?.figcaption"
                                         class="component-anatomy__figcaption"
-                                        v-html="displayDoc?.anatomy?.figcaption"
+                                        v-html="sanitizeAnatomyHtml(displayDoc?.anatomy?.figcaption ?? '')"
                                     />
                                 </figure>
 
@@ -508,7 +518,7 @@ useSeoMeta({
                                         </dt>
                                         <dd
                                             class="component-anatomy__legend-desc"
-                                            v-html="t(item.descriptionKey, item.descriptionFallback)"
+                                            v-html="sanitizeAnatomyHtml(t(item.descriptionKey, item.descriptionFallback))"
                                         />
                                     </div>
                                 </dl>
@@ -1188,15 +1198,22 @@ useSeoMeta({
                                         data-cy="playground-preview"
                                     >
                                         <ClientOnly>
-                                            <component
-                                                :is="`origam-${slug}`"
-                                                v-bind="Object.fromEntries(
-                                                    Object.entries(playgroundProps).filter(([, v]) => v !== '' && v !== false)
-                                                )"
-                                                :data-cy="`playground-live-${slug}`"
-                                            >
-                                                {{ displayDoc?.playground?.defaultSlotContent }}
-                                            </component>
+                                            <NuxtErrorBoundary>
+                                                <component
+                                                    :is="`origam-${slug}`"
+                                                    v-bind="Object.fromEntries(
+                                                        Object.entries(playgroundProps).filter(([, v]) => v !== '' && v !== false)
+                                                    )"
+                                                    :data-cy="`playground-live-${slug}`"
+                                                >
+                                                    {{ displayDoc?.playground?.defaultSlotContent }}
+                                                </component>
+                                                <template #error>
+                                                    <p class="component-preview__fallback">
+                                                        {{ t('components.detail.preview.unavailable', 'Live preview unavailable for this component.') }}
+                                                    </p>
+                                                </template>
+                                            </NuxtErrorBoundary>
                                         </ClientOnly>
                                     </div>
 
@@ -1971,6 +1988,10 @@ useSeoMeta({
     max-inline-size: 100%;
 }
 
+:deep(.origam-code--compact) {
+    --origam-code__compact---gap: var(--origam-space---2, 0.5rem);
+}
+
 /* ── ANATOMY ──────────────────────────────────────────────── */
 .component-anatomy__figure {
     display: flex;
@@ -2254,6 +2275,13 @@ useSeoMeta({
     padding: var(--origam-space---8, 2rem);
     background: color-mix(in srgb, var(--origam-color__surface---sunken, #f5f5f5) 50%, transparent);
     border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+}
+
+.component-preview__fallback {
+    margin: 0;
+    font-size: var(--origam-font-size---sm, 0.875rem);
+    font-style: italic;
+    color: var(--origam-color__text---tertiary, #737373);
 }
 
 .component-playground__code-block {
