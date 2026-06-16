@@ -389,13 +389,15 @@ useSeoMeta({
                                 class="component-hero__preview-variant"
                                 :data-cy="`preview-variant-${variant.label.replace(/\s+/g, '-')}`"
                             >
-                                <component
-                                    :is="`origam-${slug}`"
-                                    v-bind="variant.props"
-                                    :aria-label="variant.ariaLabel"
-                                >
-                                    {{ variant.slotContent }}
-                                </component>
+                                <ClientOnly>
+                                    <component
+                                        :is="`origam-${slug}`"
+                                        v-bind="variant.props"
+                                        :aria-label="variant.ariaLabel"
+                                    >
+                                        {{ variant.slotContent }}
+                                    </component>
+                                </ClientOnly>
                                 <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
                             </div>
                         </div>
@@ -766,6 +768,7 @@ useSeoMeta({
                                             :code="member.type"
                                             lang="typescript"
                                             compact
+                                            :copyable="false"
                                             class="prop-list__exposed-type-code"
                                         />
                                     </dt>
@@ -1145,6 +1148,7 @@ useSeoMeta({
                                             :items="ctrl.options?.map(o => ({ title: o.label, value: o.value })) ?? []"
                                             density="compact"
                                             variant="outlined"
+                                            hide-details
                                             class="component-playground__select"
                                         />
 
@@ -1159,6 +1163,7 @@ useSeoMeta({
                                                 v-model="playgroundProps[ctrl.prop]"
                                                 :aria-label="t(ctrl.labelKey, ctrl.labelFallback)"
                                                 density="compact"
+                                                hide-details
                                                 class="component-playground__switch"
                                             />
                                         </div>
@@ -1169,6 +1174,7 @@ useSeoMeta({
                                             :label="t(ctrl.labelKey, ctrl.labelFallback)"
                                             density="compact"
                                             variant="outlined"
+                                            hide-details
                                             class="component-playground__text"
                                         />
                                     </div>
@@ -1181,15 +1187,17 @@ useSeoMeta({
                                         aria-live="polite"
                                         data-cy="playground-preview"
                                     >
-                                        <component
-                                            :is="`origam-${slug}`"
-                                            v-bind="Object.fromEntries(
-                                                Object.entries(playgroundProps).filter(([, v]) => v !== '' && v !== false)
-                                            )"
-                                            :data-cy="`playground-live-${slug}`"
-                                        >
-                                            {{ displayDoc?.playground?.defaultSlotContent }}
-                                        </component>
+                                        <ClientOnly>
+                                            <component
+                                                :is="`origam-${slug}`"
+                                                v-bind="Object.fromEntries(
+                                                    Object.entries(playgroundProps).filter(([, v]) => v !== '' && v !== false)
+                                                )"
+                                                :data-cy="`playground-live-${slug}`"
+                                            >
+                                                {{ displayDoc?.playground?.defaultSlotContent }}
+                                            </component>
+                                        </ClientOnly>
                                     </div>
 
                                     <div class="component-playground__code-block">
