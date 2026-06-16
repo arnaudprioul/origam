@@ -1327,9 +1327,7 @@ useSeoMeta({
                                         :data-cy="`component-family-card-${member.slug}`"
                                     >
                                         <origam-card
-                                            border
                                             rounded="lg"
-                                            flat
                                             class="component-family__card"
                                         >
                                             <template #default>
@@ -1404,9 +1402,7 @@ useSeoMeta({
                                         :data-cy="`component-related-card-${item.slug}`"
                                     >
                                         <origam-card
-                                            border
                                             rounded="lg"
-                                            flat
                                             class="component-related__card"
                                         >
                                             <template #default>
@@ -1447,9 +1443,7 @@ useSeoMeta({
                             data-cy="component-no-doc"
                         >
                             <origam-card
-                                border
                                 rounded="lg"
-                                flat
                                 class="component-no-doc__card"
                             >
                                 <template #default>
