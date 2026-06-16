@@ -186,6 +186,18 @@
     --origam-color---btn-secondary-border: #171717;
     --origam-color---btn-secondary-text:  #2b2b2b;
     --origam-shadow---btn-secondary:      4px 4px 0 #171717;
+
+    /*
+     * OrigamBtn component-level defaults (consumed by the component itself,
+     * unlike the --origam-*---btn-* tokens above which the home page's bespoke
+     * CTA buttons read). Without these, real OrigamBtn instances fall back to
+     * the thin/flat base defaults instead of the cartoon chunky look.
+     */
+    --origam-btn---border-color:          #171717;
+    --origam-btn---border-width-outlined: 3px;
+    --origam-btn---border-width-ghost:    3px;
+    --origam-btn---box-shadow-elevated:   4px 4px 0 #171717;
+    --origam-btn---box-shadow-ghost:      4px 4px 0 #171717;
 }
 
 /* ── CARTOON DARK ────────────────────────────────────────────────────────── */
@@ -356,6 +368,13 @@
     --origam-color---btn-secondary-border: #fffefb;
     --origam-color---btn-secondary-text:   #fffefb;
     --origam-shadow---btn-secondary:       4px 4px 0 #fffefb;
+
+    /* OrigamBtn component-level defaults (dark) — see light-mode note. */
+    --origam-btn---border-color:          #fffefb;
+    --origam-btn---border-width-outlined: 3px;
+    --origam-btn---border-width-ghost:    3px;
+    --origam-btn---box-shadow-elevated:   4px 4px 0 #fffefb;
+    --origam-btn---box-shadow-ghost:      4px 4px 0 #fffefb;
 }
 
 /* ── CARTOON — Appbar hard border bottom ───────────────────────────────── */
