@@ -1542,6 +1542,7 @@ useSeoMeta({
     inset-block-start: 0;
     block-size: 200px;
     background: var(--origam-gradient---hero-glow);
+    opacity: 0.45;
     pointer-events: none;
 }
 
