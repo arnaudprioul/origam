@@ -1526,7 +1526,7 @@ useSeoMeta({
 /* ── HERO ──────────────────────────────────────────────────── */
 .component-hero {
     position: relative;
-    background: transparent;
+    background: color-mix(in srgb, var(--origam-color__surface---raised, #ffffff) 62%, transparent);
     border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
     overflow: hidden;
 }
