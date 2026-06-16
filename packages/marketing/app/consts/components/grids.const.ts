@@ -34,9 +34,9 @@ export const GRIDS_DOC: IComponentDoc = {
             descriptionFallback: 'Page-level structural wrapper with optional fluid / fullscreen modes.'
         },
         {
-            slug: 'grids-row',
+            slug: 'row',
             name: 'Row',
-            descriptionKey: 'components.catalog.grids_row.description',
+            descriptionKey: 'components.catalog.row.description',
             descriptionFallback: 'Horizontal row that wraps Col children with configurable gutters and direction.'
         },
         {

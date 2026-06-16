@@ -1,5 +1,5 @@
 /**
- * /components/grids-row — full documentation data for OrigamRow.
+ * /components/row — full documentation data for OrigamRow.
  *
  * SOURCE OF TRUTH:
  *   - packages/ds/src/interfaces/Grids/row.interface.ts    (props)
@@ -21,7 +21,7 @@ export const ROW_DOC: IComponentDoc = {
     tag: 'origam-row',
     icon: 'mdi-table-row',
     category: 'Layout',
-    descriptionKey: 'components.catalog.grids_row.description',
+    descriptionKey: 'components.catalog.row.description',
     descriptionFallback: 'Horizontal flex row that wraps Col children with configurable gutters, alignment, justify and direction. Sub-component of the Grids family.',
     packageNote: 'origam',
     storyUrl: 'http://localhost:6006/?story=components-grids--design',
@@ -37,21 +37,21 @@ export const ROW_DOC: IComponentDoc = {
             descriptionFallback: 'Responsive 12-column grid system based on CSS Grid.'
         },
         {
-            slug: 'grids-container',
+            slug: 'container',
             name: 'Container',
-            descriptionKey: 'components.catalog.grids_container.description',
+            descriptionKey: 'components.catalog.container.description',
             descriptionFallback: 'Page-level structural wrapper with optional fluid / fullscreen modes.'
         },
         {
-            slug: 'grids-col',
+            slug: 'col',
             name: 'Col',
-            descriptionKey: 'components.catalog.grids_col.description',
+            descriptionKey: 'components.catalog.col.description',
             descriptionFallback: 'Responsive column that spans 1–12 grid tracks with per-breakpoint overrides.'
         },
         {
-            slug: 'grids-spacer',
+            slug: 'spacer',
             name: 'Spacer',
-            descriptionKey: 'components.catalog.grids_spacer.description',
+            descriptionKey: 'components.catalog.spacer.description',
             descriptionFallback: 'Invisible flex-grow element that fills remaining space between cols.'
         }
     ],
@@ -61,77 +61,77 @@ export const ROW_DOC: IComponentDoc = {
             name: 'gutters',
             type: { label: 'string | number', slug: '', kind: 'primitive' },
             defaultValue: 'undefined',
-            descriptionKey: 'components.grids_row.props.gutters.description',
+            descriptionKey: 'components.row.props.gutters.description',
             descriptionFallback: 'Gap between Col children. Accepts a CSS length or a number (converted to px).'
         },
         {
             name: 'direction',
             type: { label: "TFlexDirection", slug: 'flex-direction', kind: 'type' },
             defaultValue: "'row'",
-            descriptionKey: 'components.grids_row.props.direction.description',
+            descriptionKey: 'components.row.props.direction.description',
             descriptionFallback: 'Flex direction of the row: row, row-reverse, column, column-reverse.'
         },
         {
             name: 'align',
             type: { label: "'start' | 'center' | 'end' | 'stretch' | 'baseline'", slug: '', kind: 'primitive' },
             defaultValue: "'stretch'",
-            descriptionKey: 'components.grids_row.props.align.description',
+            descriptionKey: 'components.row.props.align.description',
             descriptionFallback: 'Aligns Col children along the cross axis (align-items). Supports per-breakpoint variants: alignSm, alignMd, alignLg, alignXl, alignXxl.'
         },
         {
             name: 'justify',
             type: { label: "'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly'", slug: '', kind: 'primitive' },
             defaultValue: "'start'",
-            descriptionKey: 'components.grids_row.props.justify.description',
+            descriptionKey: 'components.row.props.justify.description',
             descriptionFallback: 'Distributes Col children along the main axis (justify-content). Supports per-breakpoint variants: justifySm, justifyMd, justifyLg, justifyXl, justifyXxl.'
         },
         {
             name: 'tag',
             type: { label: 'string', slug: '', kind: 'primitive' },
             defaultValue: "'div'",
-            descriptionKey: 'components.grids_row.props.tag.description',
+            descriptionKey: 'components.row.props.tag.description',
             descriptionFallback: 'HTML element rendered at the root. Default is div.'
         },
         {
             name: 'density',
             type: { label: 'TDensity', slug: 'density', kind: 'type' },
             defaultValue: "'default'",
-            descriptionKey: 'components.grids_row.props.density.description',
+            descriptionKey: 'components.row.props.density.description',
             descriptionFallback: 'Controls margin density offset applied to block and inline margins. compact: -8px, comfortable: +8px.'
         },
         {
             name: 'color',
             type: { label: 'TColor', slug: 'color', kind: 'type' },
             defaultValue: 'undefined',
-            descriptionKey: 'components.grids_row.props.color.description',
+            descriptionKey: 'components.row.props.color.description',
             descriptionFallback: 'Foreground color applied to the row element.'
         },
         {
             name: 'bgColor',
             type: { label: 'TColor', slug: 'color', kind: 'type' },
             defaultValue: 'undefined',
-            descriptionKey: 'components.grids_row.props.bg_color.description',
+            descriptionKey: 'components.row.props.bg_color.description',
             descriptionFallback: 'Background color applied to the row element.'
         },
         {
             name: 'border',
             type: { label: 'boolean | string', slug: '', kind: 'primitive' },
             defaultValue: 'false',
-            descriptionKey: 'components.grids_row.props.border.description',
+            descriptionKey: 'components.row.props.border.description',
             descriptionFallback: 'Applies a border to the row. Pass true for the default border or a CSS shorthand.'
         },
         {
             name: 'borderColor',
             type: { label: 'string', slug: '', kind: 'primitive' },
             defaultValue: 'undefined',
-            descriptionKey: 'components.grids_row.props.border_color.description',
+            descriptionKey: 'components.row.props.border_color.description',
             descriptionFallback: 'Override border color.'
         },
         {
             name: 'borderStyle',
             type: { label: 'string', slug: '', kind: 'primitive' },
             defaultValue: 'undefined',
-            descriptionKey: 'components.grids_row.props.border_style.description',
+            descriptionKey: 'components.row.props.border_style.description',
             descriptionFallback: 'Override border style (solid, dashed, dotted…).'
         }
     ],
@@ -142,14 +142,14 @@ export const ROW_DOC: IComponentDoc = {
         {
             slot: 'default',
             slotProps: '—',
-            descriptionKey: 'components.grids_row.slots.default.description',
+            descriptionKey: 'components.row.slots.default.description',
             descriptionFallback: 'Col children and any other content placed inside the row.'
         }
     ],
 
     examples: [
         {
-            titleKey: 'components.grids_row.examples.basic.title',
+            titleKey: 'components.row.examples.basic.title',
             titleFallback: 'Basic row with two columns',
             lang: 'vue',
             code: `<template>
@@ -162,7 +162,7 @@ export const ROW_DOC: IComponentDoc = {
 </template>`
         },
         {
-            titleKey: 'components.grids_row.examples.align_justify.title',
+            titleKey: 'components.row.examples.align_justify.title',
             titleFallback: 'Alignment and justify',
             lang: 'vue',
             code: `<template>
@@ -175,7 +175,7 @@ export const ROW_DOC: IComponentDoc = {
 </template>`
         },
         {
-            titleKey: 'components.grids_row.examples.direction.title',
+            titleKey: 'components.row.examples.direction.title',
             titleFallback: 'Column direction',
             lang: 'vue',
             code: `<template>
@@ -217,19 +217,19 @@ export const ROW_DOC: IComponentDoc = {
             {
                 num: 1,
                 cls: '.origam-row',
-                descriptionKey: 'components.grids_row.anatomy.root',
+                descriptionKey: 'components.row.anatomy.root',
                 descriptionFallback: 'Root element. Renders as a flex container (display: flex, flex-wrap: wrap). Tag is configurable via the tag prop.'
             },
             {
                 num: 2,
                 cls: '.origam-row (Col children)',
-                descriptionKey: 'components.grids_row.anatomy.cols',
+                descriptionKey: 'components.row.anatomy.cols',
                 descriptionFallback: 'Direct Col children receive gutter via negative margin on the row and padding on each Col.'
             },
             {
                 num: 3,
                 cls: '.origam-row--density-{compact|default|comfortable}',
-                descriptionKey: 'components.grids_row.anatomy.density',
+                descriptionKey: 'components.row.anatomy.density',
                 descriptionFallback: 'Density modifier class. Adjusts --origam-row---density offset on block and inline margins.'
             }
         ] satisfies IComponentAnatomyLegendItem[],
@@ -241,42 +241,42 @@ export const ROW_DOC: IComponentDoc = {
         classes: [
             {
                 cls: 'origam-row',
-                descriptionKey: 'components.grids_row.anatomy.root',
+                descriptionKey: 'components.row.anatomy.root',
                 descriptionFallback: 'Root flex container.'
             },
             {
                 cls: 'origam-row--density-default',
-                descriptionKey: 'components.grids_row.anatomy.density_default',
+                descriptionKey: 'components.row.anatomy.density_default',
                 descriptionFallback: 'Default density (0 offset).'
             },
             {
                 cls: 'origam-row--density-compact',
-                descriptionKey: 'components.grids_row.anatomy.density_compact',
+                descriptionKey: 'components.row.anatomy.density_compact',
                 descriptionFallback: 'Compact density (−8px margin offset).'
             },
             {
                 cls: 'origam-row--density-comfortable',
-                descriptionKey: 'components.grids_row.anatomy.density_comfortable',
+                descriptionKey: 'components.row.anatomy.density_comfortable',
                 descriptionFallback: 'Comfortable density (+8px margin offset).'
             },
             {
                 cls: 'origam-row--align-{value}',
-                descriptionKey: 'components.grids_row.anatomy.align',
+                descriptionKey: 'components.row.anatomy.align',
                 descriptionFallback: 'Sets --origam-row---align-items. Values: start, end, center, baseline, stretch.'
             },
             {
                 cls: 'origam-row--justify-{value}',
-                descriptionKey: 'components.grids_row.anatomy.justify',
+                descriptionKey: 'components.row.anatomy.justify',
                 descriptionFallback: 'Sets --origam-row---justify-content. Values: start, end, center, space-between, space-around, space-evenly.'
             },
             {
                 cls: 'origam-row--direction-{value}',
-                descriptionKey: 'components.grids_row.anatomy.direction',
+                descriptionKey: 'components.row.anatomy.direction',
                 descriptionFallback: 'Sets --origam-row---flex-direction. Values: row, row-reverse, column, column-reverse.'
             },
             {
                 cls: 'origam-row--border',
-                descriptionKey: 'components.grids_row.anatomy.border',
+                descriptionKey: 'components.row.anatomy.border',
                 descriptionFallback: 'Applied when border prop is set. Activates border-width and box-shadow tokens.'
             }
         ]
@@ -286,61 +286,61 @@ export const ROW_DOC: IComponentDoc = {
         {
             name: '--origam-row---display',
             defaultValue: 'flex',
-            descriptionKey: 'components.grids_row.css_vars.display',
+            descriptionKey: 'components.row.css_vars.display',
             descriptionFallback: 'Display value for the row (always flex).'
         },
         {
             name: '--origam-row---flex-direction',
             defaultValue: 'row',
-            descriptionKey: 'components.grids_row.css_vars.flex_direction',
+            descriptionKey: 'components.row.css_vars.flex_direction',
             descriptionFallback: 'Flex direction. Overridden by direction prop class.'
         },
         {
             name: '--origam-row---flex-wrap',
             defaultValue: 'wrap',
-            descriptionKey: 'components.grids_row.css_vars.flex_wrap',
+            descriptionKey: 'components.row.css_vars.flex_wrap',
             descriptionFallback: 'Wrap mode. Default: wrap (columns stack on overflow).'
         },
         {
             name: '--origam-row---flex',
             defaultValue: '1 1 auto',
-            descriptionKey: 'components.grids_row.css_vars.flex',
+            descriptionKey: 'components.row.css_vars.flex',
             descriptionFallback: 'Flex shorthand applied to the row itself.'
         },
         {
             name: '--origam-row---align-items',
             defaultValue: 'stretch',
-            descriptionKey: 'components.grids_row.css_vars.align_items',
+            descriptionKey: 'components.row.css_vars.align_items',
             descriptionFallback: 'Cross-axis alignment. Overridden by align / alignSm … alignXxl classes.'
         },
         {
             name: '--origam-row---justify-content',
             defaultValue: 'flex-start',
-            descriptionKey: 'components.grids_row.css_vars.justify_content',
+            descriptionKey: 'components.row.css_vars.justify_content',
             descriptionFallback: 'Main-axis distribution. Overridden by justify / justifySm … justifyXxl classes.'
         },
         {
             name: '--origam-row---margin-block-start',
             defaultValue: '-4px',
-            descriptionKey: 'components.grids_row.css_vars.margin_block_start',
+            descriptionKey: 'components.row.css_vars.margin_block_start',
             descriptionFallback: 'Default negative block-start margin that creates gutters with Col padding.'
         },
         {
             name: '--origam-row---margin-inline-start',
             defaultValue: '-4px',
-            descriptionKey: 'components.grids_row.css_vars.margin_inline_start',
+            descriptionKey: 'components.row.css_vars.margin_inline_start',
             descriptionFallback: 'Default negative inline-start margin.'
         },
         {
             name: '--origam-row---density',
             defaultValue: '0px',
-            descriptionKey: 'components.grids_row.css_vars.density',
+            descriptionKey: 'components.row.css_vars.density',
             descriptionFallback: 'Density offset added to block and inline margins. compact: −8px, comfortable: +8px.'
         },
         {
             name: '--origam-row--border---border-width',
             defaultValue: '{border.width.1}',
-            descriptionKey: 'components.grids_row.css_vars.border_width',
+            descriptionKey: 'components.row.css_vars.border_width',
             descriptionFallback: 'Border width when the border modifier class is active.'
         }
     ] satisfies IComponentCssVar[],
@@ -349,37 +349,37 @@ export const ROW_DOC: IComponentDoc = {
         {
             name: 'filterProps',
             type: '<T extends object>(props: T, exclude?: string[]) => Partial<T>',
-            descriptionKey: 'components.grids_row.exposed.filter_props',
+            descriptionKey: 'components.row.exposed.filter_props',
             descriptionFallback: 'Forwards a filtered subset of props to child components.'
         },
         {
             name: 'css',
             type: 'Ref<string>',
-            descriptionKey: 'components.grids_row.exposed.css',
+            descriptionKey: 'components.row.exposed.css',
             descriptionFallback: 'Reactive CSS string generated by useStyle from computed row styles.'
         },
         {
             name: 'id',
             type: 'string',
-            descriptionKey: 'components.grids_row.exposed.id',
+            descriptionKey: 'components.row.exposed.id',
             descriptionFallback: 'Unique style-sheet ID for this instance.'
         },
         {
             name: 'load',
             type: '() => void',
-            descriptionKey: 'components.grids_row.exposed.load',
+            descriptionKey: 'components.row.exposed.load',
             descriptionFallback: 'Injects the computed style sheet. Called automatically on mount.'
         },
         {
             name: 'unload',
             type: '() => void',
-            descriptionKey: 'components.grids_row.exposed.unload',
+            descriptionKey: 'components.row.exposed.unload',
             descriptionFallback: 'Removes the injected style sheet. Called automatically on unmount.'
         },
         {
             name: 'isLoaded',
             type: 'Ref<boolean>',
-            descriptionKey: 'components.grids_row.exposed.is_loaded',
+            descriptionKey: 'components.row.exposed.is_loaded',
             descriptionFallback: 'True once the style sheet has been injected into the DOM.'
         }
     ] satisfies IComponentExposed[],
@@ -389,7 +389,7 @@ export const ROW_DOC: IComponentDoc = {
         keyboard: [],
         notes: [
             {
-                noteKey: 'components.grids_row.a11y.semantic_note',
+                noteKey: 'components.row.a11y.semantic_note',
                 noteFallback: 'Row renders a plain div by default. For sectioning content, override the tag prop with a semantic element such as section or main.'
             }
         ]
