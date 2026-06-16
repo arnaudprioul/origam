@@ -120,6 +120,37 @@
     --origam-color---btn-secondary-border: transparent;
     --origam-color---btn-secondary-text: var(--origam-color__text---secondary);
     --origam-shadow---btn-secondary: none;
+
+    /*
+     * OrigamBtn component-level defaults (tokens consumed by the component).
+     * Sobre = minimal, clean: 1px discrete border, subtle card shadow for
+     * elevated variant, no ghost shadow.
+     */
+    --origam-btn---border-color: var(--origam-color__border---strong);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost: 1px;
+    --origam-btn---box-shadow-elevated: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+    --origam-btn---box-shadow-ghost: none;
+
+    /* ── OrigamCard component-level defaults ─────────────────────────── */
+    --origam-card---background: var(--origam-color__surface---raised);
+    --origam-card---border-color: var(--origam-color__border---default);
+    --origam-card---border-radius-rounded: 12px;
+
+    /* ── OrigamChip component-level defaults ─────────────────────────── */
+    --origam-chip---background-color: var(--origam-color__surface---raised);
+    --origam-chip---border-color: var(--origam-color__border---default);
+
+    /* ── OrigamCode component-level defaults ─────────────────────────── */
+    --origam-code---border-radius: 8px;
+    --origam-code---border-width: 1px;
+
+    /* ── OrigamAlert component-level defaults ────────────────────────── */
+    --origam-alert---border-radius: 10px;
+    --origam-alert---box-shadow-elevated: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+
+    /* ── OrigamTable component-level defaults ────────────────────────── */
+    --origam-table---border-radius: 10px;
 }
 
 /* ── SOBRE DARK ──────────────────────────────────────────────────────────── */
@@ -231,4 +262,31 @@
     --origam-color---btn-secondary-border: transparent;
     --origam-color---btn-secondary-text: var(--origam-color__text---secondary);
     --origam-shadow---btn-secondary: none;
+
+    /* OrigamBtn component-level defaults (dark) — see light-mode note. */
+    --origam-btn---border-color: var(--origam-color__border---strong);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost: 1px;
+    --origam-btn---box-shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+    --origam-btn---box-shadow-ghost: none;
+
+    /* OrigamCard component-level defaults (dark). */
+    --origam-card---background: var(--origam-color__surface---raised);
+    --origam-card---border-color: var(--origam-color__border---default);
+    --origam-card---border-radius-rounded: 12px;
+
+    /* OrigamChip component-level defaults (dark). */
+    --origam-chip---background-color: var(--origam-color__surface---raised);
+    --origam-chip---border-color: var(--origam-color__border---default);
+
+    /* OrigamCode component-level defaults (dark). */
+    --origam-code---border-radius: 8px;
+    --origam-code---border-width: 1px;
+
+    /* OrigamAlert component-level defaults (dark). */
+    --origam-alert---border-radius: 10px;
+    --origam-alert---box-shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+
+    /* OrigamTable component-level defaults (dark). */
+    --origam-table---border-radius: 10px;
 }

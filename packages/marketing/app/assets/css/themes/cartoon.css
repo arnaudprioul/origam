@@ -198,6 +198,25 @@
     --origam-btn---border-width-ghost:    3px;
     --origam-btn---box-shadow-elevated:   4px 4px 0 #171717;
     --origam-btn---box-shadow-ghost:      4px 4px 0 #171717;
+
+    /*
+     * OrigamCard component-level box-shadow (light).
+     * The DS default is a subtle Tailwind-like blur shadow.
+     * Cartoon: hard 6 px offset neo-brutalist shadow (same black as borders).
+     * --origam-shadow---card-elevated above is a bespoke marketing token only
+     * read by the home section wrappers; OrigamCard itself reads ---box-shadow.
+     */
+    --origam-card---box-shadow: 6px 6px 0 #171717;
+
+    /*
+     * OrigamCode component-level border (light).
+     * DS default: 1px subtle border. Cartoon: 3px solid near-black.
+     * The playground code pane suppresses this via a targeted override below,
+     * so only standalone Code blocks (hero install pill, snippet demos) pick
+     * up the cartoon border here.
+     */
+    --origam-code---border-width: 3px;
+    --origam-code---border-color: #171717;
 }
 
 /* ── CARTOON DARK ────────────────────────────────────────────────────────── */
@@ -375,6 +394,19 @@
     --origam-btn---border-width-ghost:    3px;
     --origam-btn---box-shadow-elevated:   4px 4px 0 #fffefb;
     --origam-btn---box-shadow-ghost:      4px 4px 0 #fffefb;
+
+    /*
+     * OrigamCard component-level box-shadow (dark).
+     * Cartoon dark: hard 6 px offset, black base (#171717) — not near-white,
+     * because the card border is already near-white and the shadow sits on a
+     * dark surface where the near-black offset reads as a "depth punch".
+     * Measured on the maquette card at rgb(38,38,38) surface + black shadow.
+     */
+    --origam-card---box-shadow: 6px 6px 0 #171717;
+
+    /* OrigamCode component-level border (dark). Near-white border, same weight. */
+    --origam-code---border-width: 3px;
+    --origam-code---border-color: #fffefb;
 }
 
 /* ── CARTOON — Appbar hard border bottom ───────────────────────────────── */

@@ -199,7 +199,35 @@
 
     --origam-chip---border-radius: 999px;
     --origam-chip---background: var(--origam-color__surface---raised);
+    --origam-chip---background-color: var(--origam-color__surface---raised);
     --origam-chip---border-color: var(--origam-color__border---default);
+
+    /*
+     * OrigamBtn component-level defaults (tokens consumed by the component,
+     * not the bespoke --origam-color---btn-* / --origam-shadow---btn-*
+     * tokens above which the home CTA reads). Without these, real OrigamBtn
+     * instances on /components/btn, previews, family cards etc. fall back to
+     * the DS base defaults (4px radius, thin border, flat surface) instead of
+     * the Material pill shape + two-layer elevation.
+     */
+    --origam-btn---border-radius: 999px;
+    --origam-btn---border-radius-rounded: 999px;
+    --origam-btn---border-color: var(--origam-color__border---default);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost: 1px;
+    --origam-btn---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --origam-btn---box-shadow-ghost: none;
+
+    /* ── OrigamCode component-level defaults ─────────────────────────── */
+    --origam-code---border-radius: 12px;
+    --origam-code---border-width: 0;
+
+    /* ── OrigamAlert component-level defaults ────────────────────────── */
+    --origam-alert---border-radius: var(--origam-radius---lg, 12px);
+    --origam-alert---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+
+    /* ── OrigamTable component-level defaults ────────────────────────── */
+    --origam-table---border-radius: 28px;
 }
 
 /* ── MATERIAL — appbar buttons: 16px radius (measured in maquette) ──────── */
@@ -467,7 +495,28 @@
 
     --origam-chip---border-radius: 999px;
     --origam-chip---background: var(--origam-color__surface---raised);
+    --origam-chip---background-color: var(--origam-color__surface---raised);
     --origam-chip---border-color: var(--origam-color__border---default);
+
+    /* OrigamBtn component-level defaults (dark) — see light-mode note. */
+    --origam-btn---border-radius: 999px;
+    --origam-btn---border-radius-rounded: 999px;
+    --origam-btn---border-color: var(--origam-color__border---default);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost: 1px;
+    --origam-btn---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --origam-btn---box-shadow-ghost: none;
+
+    /* OrigamCode component-level defaults (dark). */
+    --origam-code---border-radius: 12px;
+    --origam-code---border-width: 0;
+
+    /* OrigamAlert component-level defaults (dark). */
+    --origam-alert---border-radius: var(--origam-radius---lg, 12px);
+    --origam-alert---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+
+    /* OrigamTable component-level defaults (dark). */
+    --origam-table---border-radius: 28px;
 }
 
 /* ── MATERIAL DARK — hero glow section-scoped ────────────────────────────── */

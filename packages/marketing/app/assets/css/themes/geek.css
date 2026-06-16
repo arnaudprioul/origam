@@ -134,6 +134,32 @@
     --origam-color---btn-secondary-border: rgba(217, 70, 239, 0.55);
     --origam-color---btn-secondary-text: #a21caf;
     --origam-shadow---btn-secondary: rgba(217, 70, 239, 0.35) 0px 0px 10px -4px;
+
+    /*
+     * OrigamBtn component-level defaults (light) — consumed by the component.
+     * Without these, OrigamBtn falls back to base DS defaults (1px thin border,
+     * generic shadow). Geek light: violet-tinted subtle borders + soft glow.
+     * border-color matches the ghost/outlined secondary intent (fuchsia 55%).
+     */
+    --origam-btn---border-color:          rgba(217, 70, 239, 0.55);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost:    1px;
+    --origam-btn---box-shadow-elevated:   0 4px 14px -4px rgba(124, 58, 237, 0.30), 0 1px 3px -1px rgba(124, 58, 237, 0.15);
+    --origam-btn---box-shadow-ghost:      rgba(217, 70, 239, 0.35) 0px 0px 10px -4px;
+
+    /*
+     * OrigamCard component-level box-shadow (light).
+     * Geek light: violet-tinted depth shadow, matching --origam-shadow---card-elevated
+     * which is the bespoke marketing token. OrigamCard reads ---box-shadow instead.
+     */
+    --origam-card---box-shadow: 0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20);
+
+    /*
+     * OrigamCode component-level border (light).
+     * Geek: subtle violet-tinted border, 1px (keeps clean terminal look).
+     */
+    --origam-code---border-color: rgba(168, 85, 247, 0.28);
+    --origam-code---border-width: 1px;
 }
 
 /* ── GEEK DARK ───────────────────────────────────────────────────────────── */
@@ -258,6 +284,30 @@
     --origam-color---btn-secondary-border: rgba(0, 240, 255, 0.40);
     --origam-color---btn-secondary-text: #00f0ff;
     --origam-shadow---btn-secondary: rgba(0, 240, 255, 0.25) 0px 0px 12px -4px;
+
+    /*
+     * OrigamBtn component-level defaults (dark) — consumed by the component.
+     * Geek dark: cyan-tinted neon borders + glow shadow.
+     * border-color: cyan at 40% for ghost/outlined style.
+     */
+    --origam-btn---border-color:          rgba(0, 240, 255, 0.40);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost:    1px;
+    --origam-btn---box-shadow-elevated:   0 8px 24px -8px rgba(0, 240, 255, 0.50), 0 0 32px -8px rgba(199, 125, 255, 0.35);
+    --origam-btn---box-shadow-ghost:      rgba(0, 240, 255, 0.25) 0px 0px 12px -4px;
+
+    /*
+     * OrigamCard component-level box-shadow (dark).
+     * Geek dark: deep shadow with faint cyan/purple tint for depth.
+     */
+    --origam-card---box-shadow: inset 0 1px 0 rgba(199, 125, 255, 0.08), 0 8px 28px -12px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 240, 255, 0.04);
+
+    /*
+     * OrigamCode component-level border (dark).
+     * Geek dark: subtle cyan-tinted border (keeps terminal/code aesthetic).
+     */
+    --origam-code---border-color: rgba(124, 77, 255, 0.28);
+    --origam-code---border-width: 1px;
 }
 
 /* ── GEEK — Marketing heading font override ──────────────────────────────── */

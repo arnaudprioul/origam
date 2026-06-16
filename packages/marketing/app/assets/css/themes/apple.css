@@ -147,6 +147,31 @@
     --origam-color---btn-secondary-border: #d2d2d7;
     --origam-color---btn-secondary-text: #1d1d1f;
     --origam-shadow---btn-secondary: none;
+
+    /*
+     * OrigamBtn component-level defaults (light) — tokens consumed by
+     * OrigamBtn.vue directly (outlined border, ghost border, elevated shadow).
+     * Without these, real OrigamBtn instances fall back to the DS flat
+     * defaults: no shadow, no border width on outlined/ghost.
+     */
+    --origam-btn---border-color:          #d2d2d7;
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost:    1px;
+    --origam-btn---box-shadow-elevated:   0 2px 8px rgba(0, 113, 227, 0.25);
+    --origam-btn---box-shadow-ghost:      none;
+
+    /*
+     * OrigamCard component-level default — Apple uses soft shadows.
+     * On pages other than home (e.g. /components/btn), cards fall back to
+     * the DS default; redirect them to the themed Apple shadow.
+     */
+    --origam-card---box-shadow: var(--origam-shadow---card-elevated);
+
+    /*
+     * OrigamCode component-level default — Apple uses 12 px radii to match
+     * its refined language (DS default is 8 px).
+     */
+    --origam-code---border-radius: 12px;
 }
 
 /* ── APPLE — heading font override on marketing section titles ────────────── */
@@ -290,4 +315,17 @@
     --origam-color---btn-secondary-border: #38383a;
     --origam-color---btn-secondary-text: #f5f5f7;
     --origam-shadow---btn-secondary: none;
+
+    /* OrigamBtn component-level defaults (dark) — see light-mode note. */
+    --origam-btn---border-color:          #38383a;
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost:    1px;
+    --origam-btn---box-shadow-elevated:   0 2px 8px rgba(10, 132, 255, 0.30);
+    --origam-btn---box-shadow-ghost:      none;
+
+    /* OrigamCard component-level default (dark) */
+    --origam-card---box-shadow: var(--origam-shadow---card-elevated);
+
+    /* OrigamCode component-level default (dark) */
+    --origam-code---border-radius: 12px;
 }

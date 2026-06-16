@@ -174,6 +174,66 @@
     --origam-color---btn-secondary-border: #fed7aa;
     --origam-color---btn-secondary-text: #1a1a1a;
     --origam-shadow---btn-secondary: none;
+
+    /*
+     * OrigamBtn component-level defaults — consumed by the DS component itself.
+     * The bespoke --origam-color---btn-* tokens above are only read by HomeHero.vue
+     * hand-rolled CTAs. Without these, real OrigamBtn instances (component page,
+     * previews, showcase) fall back to DS base defaults (1px currentColor / soft shadow).
+     * Ecom: amber border, 6px radius, red glow on elevated, none on ghost.
+     */
+    --origam-btn---border-color:          #fed7aa;
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost:    1px;
+    --origam-btn---box-shadow-elevated:   0 2px 0 rgba(225, 29, 72, 0.20), 0 4px 12px -2px rgba(225, 29, 72, 0.35);
+    --origam-btn---box-shadow-ghost:      none;
+    --origam-btn---border-radius:         var(--origam-radius---btn, 6px);
+
+    /*
+     * OrigamCard component-level defaults — ecom cards: white raised bg, 10px radius,
+     * subtle amber border (1px), warm red card shadow.
+     */
+    --origam-card---background:               #ffffff;
+    --origam-card---border-color:             #fed7aa;
+    --origam-card---border-style:             solid;
+    --origam-card---border-top-width:         1px;
+    --origam-card---border-right-width:       1px;
+    --origam-card---border-bottom-width:      1px;
+    --origam-card---border-left-width:        1px;
+    --origam-card---border-start-start-radius: 10px;
+    --origam-card---border-start-end-radius:   10px;
+    --origam-card---border-end-end-radius:     10px;
+    --origam-card---border-end-start-radius:   10px;
+    --origam-card---box-shadow:               0 1px 3px rgba(225, 29, 72, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+
+    /*
+     * OrigamChip component-level defaults — ecom chips: 6px radius, amber border.
+     */
+    --origam-chip---border-radius:  6px;
+    --origam-chip---border-color:   #fed7aa;
+    --origam-chip---border-width:   1px;
+    --origam-chip---border-style:   solid;
+    --origam-chip---background-color: var(--origam-color__surface---sunken, #ffedd5);
+
+    /*
+     * OrigamCode component-level defaults — ecom code blocks: 6px radius, amber border.
+     */
+    --origam-code---border-radius:       6px;
+    --origam-code---border-color:        #fed7aa;
+    --origam-code---border-width:        1px;
+    --origam-code---background-color:    #ffedd5;
+
+    /*
+     * OrigamField component-level defaults — ecom inputs: 6px radius, amber border.
+     */
+    --origam-field---border-radius:  6px;
+    --origam-field---border-color:   #fb923c;
+    --origam-field---border-opacity: 0.50;
+
+    /*
+     * OrigamAlert component-level defaults — ecom alerts: 6px radius.
+     */
+    --origam-alert---border-radius: 6px;
 }
 
 /* ── ECOM — hero glow is section-scoped, needs full section height ────────── */
@@ -352,4 +412,47 @@
     --origam-color---btn-secondary-border: rgba(251, 146, 60, 0.30);
     --origam-color---btn-secondary-text: #fff7f0;
     --origam-shadow---btn-secondary: none;
+
+    /* OrigamBtn component-level defaults (dark) — see light-mode note. */
+    --origam-btn---border-color:          rgba(251, 146, 60, 0.30);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost:    1px;
+    --origam-btn---box-shadow-elevated:   0 2px 0 rgba(244, 63, 94, 0.25), 0 4px 12px -2px rgba(244, 63, 94, 0.40);
+    --origam-btn---box-shadow-ghost:      none;
+    --origam-btn---border-radius:         var(--origam-radius---btn, 6px);
+
+    /* OrigamCard component-level defaults (dark) — warm-dark surface, amber border. */
+    --origam-card---background:               #2e1b14;
+    --origam-card---border-color:             rgba(251, 146, 60, 0.20);
+    --origam-card---border-style:             solid;
+    --origam-card---border-top-width:         1px;
+    --origam-card---border-right-width:       1px;
+    --origam-card---border-bottom-width:      1px;
+    --origam-card---border-left-width:        1px;
+    --origam-card---border-start-start-radius: 10px;
+    --origam-card---border-start-end-radius:   10px;
+    --origam-card---border-end-end-radius:     10px;
+    --origam-card---border-end-start-radius:   10px;
+    --origam-card---box-shadow:               0 1px 3px rgba(225, 29, 72, 0.12), 0 1px 2px rgba(0, 0, 0, 0.30);
+
+    /* OrigamChip component-level defaults (dark). */
+    --origam-chip---border-radius:    6px;
+    --origam-chip---border-color:     rgba(251, 146, 60, 0.30);
+    --origam-chip---border-width:     1px;
+    --origam-chip---border-style:     solid;
+    --origam-chip---background-color: var(--origam-color__surface---sunken, #231510);
+
+    /* OrigamCode component-level defaults (dark). */
+    --origam-code---border-radius:    6px;
+    --origam-code---border-color:     rgba(251, 146, 60, 0.20);
+    --origam-code---border-width:     1px;
+    --origam-code---background-color: #231510;
+
+    /* OrigamField component-level defaults (dark). */
+    --origam-field---border-radius:  6px;
+    --origam-field---border-color:   #fb923c;
+    --origam-field---border-opacity: 0.40;
+
+    /* OrigamAlert component-level defaults (dark). */
+    --origam-alert---border-radius: 6px;
 }
