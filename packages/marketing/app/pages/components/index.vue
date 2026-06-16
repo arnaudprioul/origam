@@ -190,9 +190,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                                 :data-cy="`components-card-${entry.slug}`"
                             >
                             <origam-card
-                                border
                                 rounded="lg"
-                                flat
                                 class="components-catalog-card"
                             >
                                 <template #default>

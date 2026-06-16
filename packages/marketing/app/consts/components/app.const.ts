@@ -13,7 +13,6 @@ import type {
     IComponentExposed,
     IComponentA11y,
     IComponentTokens,
-    IComponentPlayground,
     IComponentPreviewVariant,
     IComponentAnatomyLegendItem
 } from '~/interfaces/components-catalog.interface'
@@ -121,18 +120,10 @@ export const APP_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'default',
-            props: { bgColor: 'surface' },
-            slotContent: 'App shell'
-        },
-        {
-            label: 'primary bg',
-            props: { bgColor: 'primary', color: 'white' },
-            slotContent: 'Primary surface'
-        }
-    ] satisfies IComponentPreviewVariant[],
+    /* App is a root layout shell (renders OrigamLayout, full-height). It cannot
+       render in the small preview band without blowing up the layout, so no
+       live preview / playground — the props + anatomy document the API. */
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-app',
@@ -305,43 +296,5 @@ export const APP_DOC: IComponentDoc = {
                 descriptionFallback: 'Always flex so the layout renders as a column.'
             }
         ]
-    } satisfies IComponentTokens,
-
-    playground: {
-        controls: [
-            {
-                prop: 'bgColor',
-                kind: 'select',
-                labelKey: 'components.app.playground.bg_color',
-                labelFallback: 'Background color',
-                defaultValue: 'surface',
-                options: [
-                    { label: 'surface', value: 'surface' },
-                    { label: 'primary', value: 'primary' },
-                    { label: 'secondary', value: 'secondary' },
-                    { label: 'success', value: 'success' },
-                    { label: 'danger', value: 'danger' }
-                ]
-            },
-            {
-                prop: 'color',
-                kind: 'select',
-                labelKey: 'components.app.playground.color',
-                labelFallback: 'Text color',
-                defaultValue: '',
-                options: [
-                    { label: '(default)', value: '' },
-                    { label: 'primary', value: 'primary' },
-                    { label: 'white', value: 'white' }
-                ]
-            },
-            {
-                prop: 'fullHeight',
-                kind: 'switch',
-                labelKey: 'components.app.playground.full_height',
-                labelFallback: 'Full height',
-                defaultValue: true
-            }
-        ]
-    } satisfies IComponentPlayground
+    } satisfies IComponentTokens
 }
