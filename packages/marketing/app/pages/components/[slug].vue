@@ -1226,7 +1226,7 @@ useSeoMeta({
                                             :code="generatedCode"
                                             lang="vue"
                                             copyable
-                                            rounded="lg"
+                                            rounded="none"
                                             class="component-playground__generated-code"
                                             data-cy="playground-generated-code"
                                         />
