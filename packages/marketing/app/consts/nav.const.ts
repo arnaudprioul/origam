@@ -40,6 +40,8 @@ export const NAV_SECTIONS: INavSection[] = [
             { i18nKey: 'nav.types', i18nFallback: 'Types', href: '/types' },
             { i18nKey: 'nav.enums', i18nFallback: 'Enums', href: '/enums' },
             { i18nKey: 'nav.interfaces', i18nFallback: 'Interfaces', href: '/interfaces' },
+            { i18nKey: 'nav.utils', i18nFallback: 'Utils', href: '/utils' },
+            { i18nKey: 'nav.consts', i18nFallback: 'Constants', href: '/consts' },
             { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories' },
             { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs' }
         ]
