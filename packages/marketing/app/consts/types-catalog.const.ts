@@ -18,8 +18,7 @@ export const TYPES_CATEGORIES = [
     'Navigation & Routing',
     'Data & Selection',
     'Time & Calendar',
-    'Animation & Transition',
-    'Enums'
+    'Animation & Transition'
 ] as const
 
 export type TTypeCategory = typeof TYPES_CATEGORIES[number]
@@ -292,45 +291,5 @@ export const TYPES_CATALOG: ITypeEntry[] = [
         category: 'Shape & Appearance',
         descriptionKey: 'types.catalog.blockquote_variant.description',
         descriptionFallback: 'Visual typographic variants for OrigamBlockquote — five self-contained treatments from neutral to editorial.',
-    },
-
-    // ─────────────────────────────────────────────
-    // Enums
-    // ─────────────────────────────────────────────
-    {
-        slug: 'enum-variant',
-        name: 'VARIANT',
-        icon: 'mdi-shape-outline',
-        kind: 'enum',
-        category: 'Enums',
-        descriptionKey: 'types.catalog.enum_variant.description',
-        descriptionFallback: 'TypeScript enum for component visual variants (text, flat, elevated, tonal, outlined, plain, ghost).',
-    },
-    {
-        slug: 'enum-density',
-        name: 'DENSITY',
-        icon: 'mdi-arrow-collapse-vertical',
-        kind: 'enum',
-        category: 'Enums',
-        descriptionKey: 'types.catalog.enum_density.description',
-        descriptionFallback: 'TypeScript enum for vertical spacing density (default, compact, comfortable).',
-    },
-    {
-        slug: 'enum-sizes',
-        name: 'SIZES',
-        icon: 'mdi-resize',
-        kind: 'enum',
-        category: 'Enums',
-        descriptionKey: 'types.catalog.enum_sizes.description',
-        descriptionFallback: 'TypeScript enum for component size scale (x-small, small, default, large, x-large).',
-    },
-    {
-        slug: 'enum-rounded',
-        name: 'ROUNDED',
-        icon: 'mdi-rounded-corner',
-        kind: 'enum',
-        category: 'Enums',
-        descriptionKey: 'types.catalog.enum_rounded.description',
-        descriptionFallback: 'TypeScript enum for corner radius tokens (x-small through x-large, shaped, shaped-invert).',
     },
 ]
