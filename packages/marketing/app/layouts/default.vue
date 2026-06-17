@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import type { LocaleObject } from '@nuxtjs/i18n'
   import { useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
+  import type { ICommand } from 'origam/interfaces'
   import type { INavLink } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
@@ -15,12 +16,24 @@
   import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
   import { useLinkAvailability } from '~/composables/useLinkAvailability'
+  import { useGlobalSearch } from '~/composables/useGlobalSearch'
 
   const { t } = useT()
   const { versionTag } = useVersion()
   const { theme, setTheme, resolvedMode, toggleMode } = useTheme()
   const { stars } = useGithubStars()
   const showGithubStars = computed(() => stars.value >= GITHUB_STARS_MIN_DISPLAY)
+
+  const paletteOpen = ref(false)
+  const { commands, getHref } = useGlobalSearch()
+
+  function openPalette () {
+    paletteOpen.value = true
+  }
+
+  function handlePaletteSelect (cmd: ICommand) {
+    navigateTo(getHref(cmd.id))
+  }
 
   const { locale, locales, setLocale } = useI18n()
   const availableLocales = computed(() => locales.value as LocaleObject[])
@@ -170,19 +183,22 @@
 
       <template #append>
         <div class="appbar-actions">
-          <origam-text-field
-            class="search-field"
-            :prepend-inner-icon="MDI_ICONS.MAGNIFY"
-            variant="outlined"
-            type="search"
-            :placeholder="searchPlaceholder"
+          <button
+            class="search-trigger"
+            type="button"
             :aria-label="searchAriaLabel"
-            hide-details
+            data-cy="search-trigger"
+            @click="openPalette"
           >
-            <template #appendInner>
-              <origam-kbd>{{ SEARCH_SHORTCUT }}</origam-kbd>
-            </template>
-          </origam-text-field>
+            <origam-icon
+              :icon="MDI_ICONS.MAGNIFY"
+              :size="16"
+              aria-hidden="true"
+              class="search-trigger__icon"
+            />
+            <span class="search-trigger__label">{{ searchPlaceholder }}</span>
+            <origam-kbd class="search-trigger__kbd">{{ SEARCH_SHORTCUT }}</origam-kbd>
+          </button>
 
           <origam-btn
             v-if="showGithubStars"
@@ -281,6 +297,15 @@
         </div>
       </template>
     </origam-app-bar>
+
+    <origam-command-palette
+      v-model="paletteOpen"
+      :commands="commands"
+      :placeholder="searchPlaceholder"
+      :empty-text="t('chrome.search_empty', 'No results')"
+      data-cy="global-command-palette"
+      @select="handlePaletteSelect"
+    />
 
     <origam-main :id="SKIP_LINK_TARGET_ID">
       <slot/>
@@ -464,11 +489,50 @@
     }
   }
 
-  .search-field {
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--origam-space---2, 0.5rem);
     inline-size: 220px;
-    --origam-input__control---height: 38px;
-    --origam-field---border-radius: var(--origam-radius---btn, 10px);
-    --origam-field__input---font-size: 13px;
+    block-size: 38px;
+    padding-inline: var(--origam-space---3, 0.75rem);
+    background-color: var(--origam-color__surface---variant, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
+    border-radius: var(--origam-radius---btn, 10px);
+    cursor: pointer;
+    color: var(--origam-color__text---secondary, #525252);
+    font-size: 13px;
+    font-family: inherit;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background-color: var(--origam-color__surface---variant, rgba(0, 0, 0, 0.06));
+      border-color: var(--origam-color__border---subtle, rgba(0, 0, 0, 0.2));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+      outline-offset: 2px;
+    }
+
+    &__icon {
+      flex: none;
+      color: var(--origam-color__text---secondary, #525252);
+    }
+
+    &__label {
+      flex: 1 1 auto;
+      text-align: start;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__kbd {
+      flex: none;
+      margin-inline-start: auto;
+      font-size: 11px;
+    }
   }
 
   .theme-switcher {

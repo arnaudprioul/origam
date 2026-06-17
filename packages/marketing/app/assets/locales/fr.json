@@ -15,6 +15,7 @@
   "chrome": {
     "search_placeholder": "Rechercher…",
     "search_shortcut": "⌘K",
+    "search_empty": "Aucun résultat",
     "star_count": "4.2k",
     "theme": "Thème",
     "theme_active": "Thème : {label}",
@@ -590,6 +591,39 @@
       "cta_start": "Commencer",
       "cta_docs": "Lire la doc",
       "actions_label": "Commencer"
+    }
+  },
+  "theming": {
+    "meta": {
+      "title": "Theme builder · origam design system",
+      "description": "Configurez visuellement un thème origam par défaut — éditez les props et les tokens CSS des composants avec un aperçu en direct, puis exportez un module de thème prêt à l'emploi."
+    },
+    "eyebrow": "Theme builder",
+    "title": "Composez votre thème par défaut",
+    "lead": "Choisissez un composant, ajustez ses props et ses tokens CSS, observez l'aperçu se mettre à jour, puis exportez un module de thème prêt à enregistrer.",
+    "name": {
+      "label": "Nom du thème",
+      "placeholder": "my-theme"
+    },
+    "reset": "Réinitialiser",
+    "validate": "Valider et exporter",
+    "nav": {
+      "label": "Composants"
+    },
+    "props": {
+      "legend": "Props par défaut"
+    },
+    "tokens": {
+      "legend": "Tokens CSS"
+    },
+    "preview": {
+      "unavailable": "Aperçu en direct indisponible pour ce composant."
+    },
+    "output": {
+      "title": "Thème généré"
+    },
+    "export": {
+      "filename": "Télécharge {file}"
     }
   },
   "changelog": {
